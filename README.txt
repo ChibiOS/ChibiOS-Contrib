@@ -1,6 +1,6 @@
 ChibiOS-Contrib
 ===============
-Code under /contrib director is not part of the core ChibiOS project 
+Code under this director is not part of the core ChibiOS project 
 and the copyright is retained by the original authors. See copyright
 notes in file headers.
 
