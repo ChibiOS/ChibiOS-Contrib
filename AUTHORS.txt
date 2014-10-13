@@ -6,7 +6,7 @@ Uladzimir Pylinsky aka barthess
 https://github.com/barthess
 Git repository maintainer
 
-marcoveeneman 
+Marco Veeneman aka Marco 
 https://github.com/marcoveeneman
 Maintainer of the ChibiOS port for the Texas Instruments 
 Tiva C Series Microcontrollers
