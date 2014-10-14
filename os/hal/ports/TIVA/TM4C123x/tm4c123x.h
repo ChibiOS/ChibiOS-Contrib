@@ -847,6 +847,15 @@ typedef struct
 #define GPIOD_BASE  0x40007000
 #define GPIOE_BASE  0x40024000
 #define GPIOF_BASE  0x40025000
+#define GPIOG_BASE  0x40026000
+#define GPIOH_BASE  0x40027000
+#define GPIOJ_BASE  0x4003D000
+#define GPIOK_BASE  0x40061000
+#define GPIOL_BASE  0x40062000
+#define GPIOM_BASE  0x40063000
+#define GPION_BASE  0x40064000
+#define GPIOP_BASE  0x40065000
+#define GPIOQ_BASE  0x40066000
 #define GPT0_BASE   0x40030000
 #define GPT1_BASE   0x40031000
 #define GPT2_BASE   0x40032000
@@ -879,6 +888,8 @@ typedef struct
 #define I2C1_BASE   0x40021000
 #define I2C2_BASE   0x40022000
 #define I2C3_BASE   0x40023000
+#define I2C4_BASE   0x40023000
+#define I2C5_BASE   0x40023000
 #define CAN0_BASE   0x40040000
 #define CAN1_BASE   0x40041000
 // usb
@@ -908,6 +919,15 @@ typedef struct
 #define GPIOD   ((GPIO_TypeDef *)   GPIOD_BASE)
 #define GPIOE   ((GPIO_TypeDef *)   GPIOE_BASE)
 #define GPIOF   ((GPIO_TypeDef *)   GPIOF_BASE)
+#define GPIOG   ((GPIO_TypeDef *)   GPIOG_BASE)
+#define GPIOH   ((GPIO_TypeDef *)   GPIOH_BASE)
+#define GPIOJ   ((GPIO_TypeDef *)   GPIOJ_BASE)
+#define GPIOK   ((GPIO_TypeDef *)   GPIOK_BASE)
+#define GPIOL   ((GPIO_TypeDef *)   GPIOL_BASE)
+#define GPIOM   ((GPIO_TypeDef *)   GPIOM_BASE)
+#define GPION   ((GPIO_TypeDef *)   GPION_BASE)
+#define GPIOP   ((GPIO_TypeDef *)   GPIOP_BASE)
+#define GPIOQ   ((GPIO_TypeDef *)   GPIOQ_BASE)
 #define GPT0    ((GPT_TypeDef *)    GPT0_BASE)
 #define GPT1    ((GPT_TypeDef *)    GPT1_BASE)
 #define GPT2    ((GPT_TypeDef *)    GPT2_BASE)
@@ -938,6 +958,8 @@ typedef struct
 #define I2C1    ((I2C_TypeDef *)    I2C1_BASE)
 #define I2C2    ((I2C_TypeDef *)    I2C2_BASE)
 #define I2C3    ((I2C_TypeDef *)    I2C3_BASE)
+#define I2C4    ((I2C_TypeDef *)    I2C4_BASE)
+#define I2C5    ((I2C_TypeDef *)    I2C5_BASE)
 #define CAN0    ((CAN_TypeDef *)    CAN0_BASE)
 #define CAN1    ((CAN_TypeDef *)    CAN1_BASE)
 // usb

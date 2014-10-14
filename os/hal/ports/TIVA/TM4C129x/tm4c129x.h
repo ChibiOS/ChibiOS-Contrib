@@ -944,18 +944,17 @@ typedef struct
 #define GPION_BASE  0x40064000
 #define GPIOP_BASE  0x40065000
 #define GPIOQ_BASE  0x40066000
+#define GPIOR_BASE  0x40067000
+#define GPIOS_BASE  0x40068000
+#define GPIOT_BASE  0x40069000
 #define GPT0_BASE   0x40030000
 #define GPT1_BASE   0x40031000
 #define GPT2_BASE   0x40032000
 #define GPT3_BASE   0x40033000
 #define GPT4_BASE   0x40034000
 #define GPT5_BASE   0x40035000
-#define WGPT0_BASE  0x40036000
-#define WGPT1_BASE  0x40037000
-#define WGPT2_BASE  0x4004C000
-#define WGPT3_BASE  0x4004D000
-#define WGPT4_BASE  0x4004E000
-#define WGPT5_BASE  0x4004F000
+#define GPT6_BASE   0x400E0000
+#define GPT7_BASE   0x400E1000
 #define WDT0_BASE   0x40000000
 #define WDT1_BASE   0x40001000
 #define ADC0_BASE   0x40038000
@@ -976,6 +975,12 @@ typedef struct
 #define I2C1_BASE   0x40021000
 #define I2C2_BASE   0x40022000
 #define I2C3_BASE   0x40023000
+#define I2C4_BASE   0x400C0000
+#define I2C5_BASE   0x400C1000
+#define I2C6_BASE   0x400C2000
+#define I2C7_BASE   0x400C3000
+#define I2C8_BASE   0x400B8000
+#define I2C9_BASE   0x400B9000
 #define CAN0_BASE   0x40040000
 #define CAN1_BASE   0x40041000
 // usb
@@ -1013,18 +1018,17 @@ typedef struct
 #define GPION   ((GPIO_TypeDef *)   GPION_BASE)
 #define GPIOP   ((GPIO_TypeDef *)   GPIOP_BASE)
 #define GPIOQ   ((GPIO_TypeDef *)   GPIOQ_BASE)
+#define GPIOR   ((GPIO_TypeDef *)   GPIOR_BASE)
+#define GPIOS   ((GPIO_TypeDef *)   GPIOS_BASE)
+#define GPIOT   ((GPIO_TypeDef *)   GPIOT_BASE)
 #define GPT0    ((GPT_TypeDef *)    GPT0_BASE)
 #define GPT1    ((GPT_TypeDef *)    GPT1_BASE)
 #define GPT2    ((GPT_TypeDef *)    GPT2_BASE)
 #define GPT3    ((GPT_TypeDef *)    GPT3_BASE)
 #define GPT4    ((GPT_TypeDef *)    GPT4_BASE)
 #define GPT5    ((GPT_TypeDef *)    GPT5_BASE)
-#define WGPT0   ((GPT_TypeDef *)    WGPT0_BASE)
-#define WGPT1   ((GPT_TypeDef *)    WGPT1_BASE)
-#define WGPT2   ((GPT_TypeDef *)    WGPT2_BASE)
-#define WGPT3   ((GPT_TypeDef *)    WGPT3_BASE)
-#define WGPT4   ((GPT_TypeDef *)    WGPT4_BASE)
-#define WGPT5   ((GPT_TypeDef *)    WGPT5_BASE)
+#define GPT6    ((GPT_TypeDef *)    GPT6_BASE)
+#define GPT7    ((GPT_TypeDef *)    GPT7_BASE)
 #define ADC0    ((ADC_TypeDef*)     ADC0_BASE)
 #define ADC1    ((ADC_TypeDef*)     ADC1_BASE)
 #define UART0   ((UART_TypeDef *)   UART0_BASE)
@@ -1043,6 +1047,12 @@ typedef struct
 #define I2C1    ((I2C_TypeDef *)    I2C1_BASE)
 #define I2C2    ((I2C_TypeDef *)    I2C2_BASE)
 #define I2C3    ((I2C_TypeDef *)    I2C3_BASE)
+#define I2C4    ((I2C_TypeDef *)    I2C4_BASE)
+#define I2C5    ((I2C_TypeDef *)    I2C5_BASE)
+#define I2C6    ((I2C_TypeDef *)    I2C6_BASE)
+#define I2C7    ((I2C_TypeDef *)    I2C7_BASE)
+#define I2C8    ((I2C_TypeDef *)    I2C8_BASE)
+#define I2C9    ((I2C_TypeDef *)    I2C9_BASE)
 #define CAN0    ((CAN_TypeDef *)    CAN0_BASE)
 #define CAN1    ((CAN_TypeDef *)    CAN1_BASE)
 // usb
