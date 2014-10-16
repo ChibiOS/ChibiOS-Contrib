@@ -340,7 +340,7 @@ void pwm_lld_start(PWMDriver *pwmp)
     /* Clock activation.*/
 #if TIVA_PWM_USE_PWM0
     if (&PWMD1 == pwmp) {
-      SYSCTL->RCGCPWM = (1 << 0);
+      SYSCTL->RCGC.PWM |= (1 << 0);
       nvicEnableVector(TIVA_PWM0FAULT_NUMBER,
                        TIVA_PWM_PWM0_FAULT_IRQ_PRIORITY);
       nvicEnableVector(TIVA_PWM0GEN0_NUMBER, TIVA_PWM_PWM0_0_IRQ_PRIORITY);
@@ -352,7 +352,7 @@ void pwm_lld_start(PWMDriver *pwmp)
 
 #if TIVA_PWM_USE_PWM1
     if (&PWMD2 == pwmp) {
-      SYSCTL->RCGCPWM = (1 << 1);
+      SYSCTL->RCGC.PWM |= (1 << 1);
       nvicEnableVector(TIVA_PWM1FAULT_NUMBER,
                        TIVA_PWM_PWM1_FAULT_IRQ_PRIORITY);
       nvicEnableVector(TIVA_PWM1GEN0_NUMBER, TIVA_PWM_PWM1_0_IRQ_PRIORITY);
@@ -427,7 +427,7 @@ void pwm_lld_stop(PWMDriver *pwmp)
       nvicDisableVector(TIVA_PWM0GEN1_NUMBER);
       nvicDisableVector(TIVA_PWM0GEN2_NUMBER);
       nvicDisableVector(TIVA_PWM0GEN3_NUMBER);
-      SYSCTL->RCGCPWM &= ~(1 << 0);
+      SYSCTL->RCGC.PWM &= ~(1 << 0);
     }
 #endif
 
@@ -438,7 +438,7 @@ void pwm_lld_stop(PWMDriver *pwmp)
       nvicDisableVector(TIVA_PWM1GEN1_NUMBER);
       nvicDisableVector(TIVA_PWM1GEN2_NUMBER);
       nvicDisableVector(TIVA_PWM1GEN3_NUMBER);
-      SYSCTL->RCGCPWM &= ~(1 << 1);
+      SYSCTL->RCGC.PWM &= ~(1 << 1);
     }
 #endif
   }

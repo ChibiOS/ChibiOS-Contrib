@@ -507,50 +507,50 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config)
   if (sdp->state == SD_STOP) {
 #if TIVA_SERIAL_USE_UART0
     if (&SD1 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 0);
-      nvicEnableVector(UART0_IRQn, TIVA_SERIAL_UART0_PRIORITY);
+      SYSCTL->RCGC.UART |= (1 << 0);
+      nvicEnableVector(TIVA_UART0_NUMBER, TIVA_SERIAL_UART0_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART1
     if (&SD2 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 1);
-      nvicEnableVector(UART1_IRQn, TIVA_SERIAL_UART1_PRIORITY);
+      SYSCTL->RCGC.UART |= (1 << 1);
+      nvicEnableVector(TIVA_UART1_NUMBER, TIVA_SERIAL_UART1_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART2
     if (&SD3 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 2);  /* enable UART2 module */
-      nvicEnableVector(UART2_IRQn, TIVA_SERIAL_UART2_PRIORITY);
+      SYSCTL->RCGC.UART |= (1 << 2);  /* enable UART2 module */
+      nvicEnableVector(TIVA_UART2_NUMBER, TIVA_SERIAL_UART2_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART3
     if (&SD4 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 3);  /* enable UART3 module */
-      nvicEnableVector(UART3_IRQn, TIVA_SERIAL_UART3_PRIORITY);
+      SYSCTL->RCGC.UART |= (1 << 3);  /* enable UART3 module */
+      nvicEnableVector(TIVA_UART3_NUMBER, TIVA_SERIAL_UART3_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART4
     if (&SD5 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 4);  /* enable UART4 module */
-      nvicEnableVector(UART4_IRQn, TIVA_SERIAL_UART4_PRIORITY);
+      SYSCTL->RCGC.UART |= (1 << 4);  /* enable UART4 module */
+      nvicEnableVector(TIVA_UART4_NUMBER, TIVA_SERIAL_UART4_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART5
     if (&SD6 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 5);  /* enable UART5 module */
-      nvicEnableVector(UART5_IRQn, TIVA_SERIAL_UART5_PRIORITY);
+      SYSCTL->RCGC.UART |= (1 << 5);  /* enable UART5 module */
+      nvicEnableVector(TIVA_UART5_NUMBER, TIVA_SERIAL_UART5_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART6
     if (&SD7 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 6);  /* enable UART6 module */
-      nvicEnableVector(UART6_IRQn, TIVA_SERIAL_UART6_PRIORITY);
+      SYSCTL->RCGC.UART |= (1 << 6);  /* enable UART6 module */
+      nvicEnableVector(TIVA_UART6_NUMBER, TIVA_SERIAL_UART6_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART7
     if (&SD8 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 7);  /* enable UART7 module */
-      nvicEnableVector(UART7_IRQn, TIVA_SERIAL_UART7_PRIORITY);
+      SYSCTL->RCGC.UART |= (1 << 7);  /* enable UART7 module */
+      nvicEnableVector(TIVA_UART7_NUMBER, TIVA_SERIAL_UART7_PRIORITY);
     }
 #endif
   }
@@ -570,57 +570,57 @@ void sd_lld_stop(SerialDriver *sdp)
     uart_deinit(sdp->uart);
 #if TIVA_SERIAL_USE_UART0
     if (&SD1 == sdp) {
-      SYSCTL->RCGCUART &= ~(1 << 0);  /* disable UART0 module */
-      nvicDisableVector(UART0_IRQn);
+      SYSCTL->RCGC.UART &= ~(1 << 0);  /* disable UART0 module */
+      nvicDisableVector(TIVA_UART0_NUMBER);
       return;
     }
 #endif
 #if TIVA_SERIAL_USE_UART1
     if (&SD2 == sdp) {
-      SYSCTL->RCGCUART &= ~(1 << 1);  /* disable UART1 module */
-      nvicDisableVector(UART1_IRQn);
+      SYSCTL->RCGC.UART &= ~(1 << 1);  /* disable UART1 module */
+      nvicDisableVector(TIVA_UART1_NUMBER);
       return;
     }
 #endif
 #if TIVA_SERIAL_USE_UART2
     if (&SD3 == sdp) {
-      SYSCTL->RCGCUART &= ~(1 << 2);  /* disable UART2 module */
-      nvicDisableVector(UART2_IRQn);
+      SYSCTL->RCGC.UART &= ~(1 << 2);  /* disable UART2 module */
+      nvicDisableVector(TIVA_UART2_NUMBER);
       return;
     }
 #endif
 #if TIVA_SERIAL_USE_UART3
     if (&SD4 == sdp) {
-      SYSCTL->RCGCUART &= ~(1 << 3);  /* disable UART3 module */
-      nvicDisableVector(UART3_IRQn);
+      SYSCTL->RCGC.UART &= ~(1 << 3);  /* disable UART3 module */
+      nvicDisableVector(TIVA_UART3_NUMBER);
       return;
     }
 #endif
 #if TIVA_SERIAL_USE_UART4
     if (&SD5 == sdp) {
-      SYSCTL->RCGCUART &= ~(1 << 4);  /* disable UART4 module */
-      nvicDisableVector(UART4_IRQn);
+      SYSCTL->RCGC.UART &= ~(1 << 4);  /* disable UART4 module */
+      nvicDisableVector(TIVA_UART4_NUMBER);
       return;
     }
 #endif
 #if TIVA_SERIAL_USE_UART5
     if (&SD6 == sdp) {
-      SYSCTL->RCGCUART &= ~(1 << 5);  /* disable UART5 module */
-      nvicDisableVector(UART5_IRQn);
+      SYSCTL->RCGC.UART &= ~(1 << 5);  /* disable UART5 module */
+      nvicDisableVector(TIVA_UART5_NUMBER);
       return;
     }
 #endif
 #if TIVA_SERIAL_USE_UART6
     if (&SD7 == sdp) {
-      SYSCTL->RCGCUART &= ~(1 << 6);  /* disable UART6 module */
-      nvicDisableVector(UART6_IRQn);
+      SYSCTL->RCGC.UART &= ~(1 << 6);  /* disable UART6 module */
+      nvicDisableVector(TIVA_UART6_NUMBER);
       return;
     }
 #endif
 #if TIVA_SERIAL_USE_UART7
     if (&SD8 == sdp) {
-      SYSCTL->RCGCUART &= ~(1 << 7);  /* disable UART7 module */
-      nvicDisableVector(UART7_IRQn);
+      SYSCTL->RCGC.UART &= ~(1 << 7);  /* disable UART7 module */
+      nvicDisableVector(TIVA_UART7_NUMBER);
       return;
     }
 #endif

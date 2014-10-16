@@ -109,8 +109,8 @@ void tiva_clock_init(void)
    * 6. Write the PLLFREQ0 and PLLFREQ1 registers with the values of Q, N, MINT, and MFRAC to
    * the configure the desired VCO frequency setting.
    */
-  SYSCTL->PLLFREQ1 = (0x04 << 0); // 5 - 1
-  SYSCTL->PLLFREQ0 = (0x60 << 0) | PLLFREQ0_PLLPWR;
+  SYSCTL->PLLFREQ[1] = (0x04 << 0); // 5 - 1
+  SYSCTL->PLLFREQ[0] = (0x60 << 0) | PLLFREQ0_PLLPWR;
 
   /*
    * 7. Write the MEMTIM0 register to correspond to the new system clock setting.

@@ -150,277 +150,136 @@ typedef enum IRQn
  * @{
  */
 
-/** 
- * @brief System Control
+/**
+ * @brief Analog Comparator
  */
 typedef struct
 {
-  __I  uint32_t DID0;           /**< Device Identification 0                 */
-  __I  uint32_t DID1;           /**< Device Identification 1                 */
-  __I  uint32_t RESERVED0[12];  /**< Reserved                                */
-  __IO uint32_t PBORCTL;        /**< Power-Temp Brown Out Control                 */
-  __I  uint32_t RESERVED1[5];   /**< Reserved                                */
+  __IO uint32_t MIS;            /**< Masked Interrupt Status                 */
   __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
-  __IO uint32_t IMC;            /**< Interrupt Mask Control                  */
-  __IO uint32_t MISC;           /**< Interrupt Status and Clear              */
-  __IO uint32_t RESC;           /**< Reset Cause                             */
-  __IO uint32_t PWRTC;          /**< Power-Temperature Cause */
-  __IO uint32_t NMIC;           /**< NMI Cause Register */
-  __I  uint32_t RESERVED2[5];   /**< Reserved */
-  __IO uint32_t MOSCCTL;        /**< Main Oscillator Control */
-  __I  uint32_t RESERVED3[12];  /**< Reserved */
-  __IO uint32_t RSCLKCFG;       /**< Run and Sleep Mode Configuration Register */
-  __I  uint32_t RESERVEDx[3];
-  __IO uint32_t MEMTIM0;        /**< Memory Timing Parameter Register 0 for Main Flash and EEPROM */
-  __I  uint32_t RESERVED4[29];  /**< Reserved */
-  __IO uint32_t ALTCLKCFG;      /**< Alternate Clock Configuration */
-  __I  uint32_t RESERVED5[2];   /**< Reserved                                */
-  __IO uint32_t DSLPCLKCFG;     /**< Deep Sleep Clock Configuration          */
-  __IO uint32_t DIVSCLK;        /**< Divisor and Source Clock Configuration  */
-  __I  uint32_t SYSPROP;        /**< System Properties                       */
-  __IO uint32_t PIOSCCAL;       /**< PIOSC Calibration                       */
-  __I  uint32_t PIOSCSTAT;      /**< PIOSC Statistics                        */
-  __I  uint32_t RESERVED6[2];   /**< Reserved                                */
-  __IO uint32_t PLLFREQ0;       /**< PLL Frequency 0                         */
-  __IO uint32_t PLLFREQ1;       /**< PLL Frequency 1                         */
-  __I  uint32_t PLLSTAT;        /**< PLL Frequency Status                    */
-  __I  uint32_t RESERVED7[7];   /**< Reserved                                */
-  __IO uint32_t SLPPWRCFG;      /**< Sleep Power Configuration               */
-  __IO uint32_t DSLPPWRCFG;     /**< Deep-Sleep Power Configuration          */
-  __I  uint32_t RESERVED8[4];   /**< Reserved                                */
-  __I  uint32_t NVMSTAT;        /**< Non-Volatile Memory Information */
-  __I  uint32_t RESERVED9[4];   /**< Reserved */
-  __IO uint32_t LDOSPCTL;       /**< LDO Sleep Power Control                 */
-  __I  uint32_t LDOSPCAL;       /**< LDO Sleep Power Calibration             */
-  __IO uint32_t LDODPCTL;       /**< LDO Deep-Sleep Power Control            */
-  __I  uint32_t LDODPCAL;       /**< LDO Deep-Sleep Power Calibration        */
-  __I  uint32_t RESERVED10[2];  /**< Reserved                                */
-  __I  uint32_t SDPMST;         /**< Sleep/Deep-Sleep Power Mode Status      */
-  __I  uint32_t RESERVED11[2];  /**< Reserved */
-  __IO uint32_t RESBEHAVCTL;    /**< Reset Behavior Control Register */
-  __I  uint32_t RESERVED12[6];  /**< Reserved */
-  __IO uint32_t HSSR;           /**< Hardware System Service Request */
-  __I  uint32_t RESERVED[34];   /**< Reserved */
-  __I  uint32_t USBPDS;         /**< USB Power Domain Status */
-  __IO uint32_t USBMPC;         /**< USB Memory Power Control */
-  __I  uint32_t EMACPDS;        /**< Ethernet MAC Power Domain Status */
-  __IO uint32_t EMACMPC;        /**< Ethernet MAC Memory Power Control */
-  __I  uint32_t RESERVED13[2];  /**< Reserved */
-  __I  uint32_t CAN0PDS;        /**< CAN 0 Power Domain Status */
-  __IO uint32_t CAN0MPC;        /**< CAN 0 Memory Power Control */
-  __I  uint32_t CAN1PDS;        /**< CAN 1 Power Domain Status */
-  __IO uint32_t CAN1MPC;        /**< CAN 1 Memory Power Control */
-  __I  uint32_t RESERVED14[22]; /**< Reserved */
-  __I  uint32_t PPWD;           /**< WDT Peripheral Present                  */
-  __I  uint32_t PPTIMER;        /**< GPT Peripheral Present                  */
-  __I  uint32_t PPGPIO;         /**< GPIO Peripheral Present                 */
-  __I  uint32_t PPDMA;          /**< UDMA Peripheral Present                 */
-  __I  uint32_t PPEPI;          /**< EPI Peripheral Present */
-  __I  uint32_t PPHIB;          /**< HIB Peripheral Present                  */
-  __I  uint32_t PPUART;         /**< UART Peripheral Present                 */
-  __I  uint32_t PPSSI;          /**< SSI Peripheral Present                  */
-  __I  uint32_t PPI2C;          /**< I2C Peripheral Present                  */
-  __I  uint32_t RESERVED15[1];  /**< Reserved                                */
-  __I  uint32_t PPUSB;          /**< USB Peripheral Present                  */
-  __I  uint32_t RESERVED16[1];  /**< Reserved                                */
-  __I  uint32_t PPEPHY;         /**< Ethernet PHY Peripheral Present */
-  __I  uint32_t PPCAN;          /**< CAN Peripheral Present                  */
-  __I  uint32_t PPADC;          /**< ADC Peripheral Present                  */
-  __I  uint32_t PPACMP;         /**< ACMP Peripheral Present                 */
-  __I  uint32_t PPPWM;          /**< PWM Peripheral Present                  */
-  __I  uint32_t PPQEI;          /**< QEI Peripheral Present                  */
-  __I  uint32_t PPLPC;          /**< Low Pin Count Interface Peripheral Present */
-  __I  uint32_t RESERVED17[1];  /**< Reserved */
-  __I  uint32_t PPPECI;         /**< Platform Environment Control Interface Peripheral Present */
-  __I  uint32_t PPFAN;          /**< Fan Control Peripheral Present */
-  __I  uint32_t PPEEPROM;       /**< EEPROM Peripheral Present               */
-  __I  uint32_t PPWTIMER;       /**< Wide GPT Peripheral Present             */
-  __I  uint32_t RESERVED18[4];  /**< Reserved */
-  __I  uint32_t PPRTS;          /**< Remote Temperature Sensor Peripheral Present */
-  __I  uint32_t PPCCM;          /**< CRC Module Peripheral Present */
-  __I  uint32_t RESERVED19[6];  /**< Reserved */
-  __I  uint32_t PPLCD;          /**< LCD Peripheral Present */
-  __I  uint32_t RESERVED20[1];  /**< Reserved */
-  __I  uint32_t PPOWIRE;        /**< 1-Wire Peripheral Present */
-  __I  uint32_t PPEMAC;         /**< Ethernet MAC Peripheral Present */
-  __I  uint32_t PPPRB;          /**< Power Regulator Bus Peripheral Present */
-  __I  uint32_t PPHIM;          /**< Human Interface Master Peripheral Present */
-  __I  uint32_t RESERVED21[86]; /**< Reserved */
-  __IO uint32_t SRWD;           /**< WDT Software Reset                      */
-  __IO uint32_t SRTIMER;        /**< GPT Software Reset                      */
-  __IO uint32_t SRGPIO;         /**< GPIO Software Reset                     */
-  __IO uint32_t SRDMA;          /**< UDMA Software Reset                     */
-  __IO uint32_t SREPI;          /**< EPI Software Reset */
-  __IO uint32_t SRHIB;          /**< HIB Software Reset                      */
-  __IO uint32_t SRUART;         /**< UART Software Reset                     */
-  __IO uint32_t SRSSI;          /**< SSI Software Reset                      */
-  __IO uint32_t SRI2C;          /**< I2C Software Reset                      */
-  __I  uint32_t RESERVED22[1];  /**< Reserved                                */
-  __IO uint32_t SRUSB;          /**< USB Software Reset                      */
-  __I  uint32_t RESERVED23[1];  /**< Reserved                                */
-  __IO uint32_t SREPHY;         /**< Ethernet PHY Software Reset */
-  __IO uint32_t SRCAN;          /**< CAN Software Reset                      */
-  __IO uint32_t SRADC;          /**< ADC Software Reset                      */
-  __IO uint32_t SRACMP;         /**< ACMP Software Reset                     */
-  __IO uint32_t SRPWM;          /**< PWM Software Reset                      */
-  __IO uint32_t SRQEI;          /**< QEI Software Reset                      */
-  __I  uint32_t RESERVED24[4];  /**< Reserved                                */
-  __IO uint32_t SREEPROM;       /**< EEPROM Software Reset                   */
-  __I  uint32_t RESERVED25[6];  /**< Reserved */
-  __IO uint32_t SRCCM;          /**< CRC Module Software Reset */
-  __I  uint32_t RESERVED26[9];  /**< Reserved */
-  __IO uint32_t SREMAC;         /**< Ethernet MAC Software Reset */
-  __I  uint32_t RESERVED27[24]; /**< Reserved                                */
-  __IO uint32_t RCGCWD;         /**< WDT Run Mode Clock Gating Control       */
-  __IO uint32_t RCGCTIMER;      /**< GPT Run Mode Clock Gating Control       */
-  __IO uint32_t RCGCGPIO;       /**< GPIO Run Mode Clock Gating Control      */
-  __IO uint32_t RCGCDMA;        /**< UDMA Run Mode Clock Gating Control      */
-  __IO uint32_t RCGCEPI;        /**< EPI Run Mode Clock Gating Control */
-  __IO uint32_t RCGCHIB;        /**< HIB Run Mode Clock Gating Control       */
-  __IO uint32_t RCGCUART;       /**< UART Run Mode Control                   */
-  __IO uint32_t RCGCSSI;        /**< SSI Run Mode Clock Gating Control       */
-  __IO uint32_t RCGCI2C;        /**< I2C Run Mode Clock Gating Control       */
-  __I  uint32_t RESERVED28[1];  /**< Reserved                                */
-  __IO uint32_t RCGCUSB;        /**< USB Run Mode Clock Gating Control       */
-  __I  uint32_t RESERVED29[1];  /**< Reserved                                */
-  __IO uint32_t RCGCEPHY;       /**< Ethernet PHY Run Mode Clock Gating Control */
-  __IO uint32_t RCGCCAN;        /**< CAN Run Mode Clock Gating Control       */
-  __IO uint32_t RCGCADC;        /**< ADC Run Mode Clock Gating Control       */
-  __IO uint32_t RCGCACMP;       /**< ACMP Run Mode Clock Gating Control      */
-  __IO uint32_t RCGCPWM;        /**< PWM Run Mode Clock Gating Control       */
-  __IO uint32_t RCGCQEI;        /**< QEI Run Mode Clock Gating Control       */
-  __I  uint32_t RESERVED30[4];  /**< Reserved                                */
-  __IO uint32_t RCGCEEPROM;     /**< EEPROM Run Mode Clock Gating Control    */
-  __I  uint32_t RESERVED31[6];  /**< Reserved */
-  __IO uint32_t RCGCCCM;        /**< CRC Module Run Mode Clock Gating Control */
-  __I  uint32_t RESERVED32[9];  /**< Reserved */
-  __IO uint32_t RCGCEMAC;       /**< Ethernet MAC Run Mode Clock Gating Control */
-  __I  uint32_t RESERVED33[24]; /**< Reserved */
-  __IO uint32_t SCGCWD;         /**< WDT Sleep Mode Clock Gating Control     */
-  __IO uint32_t SCGCTIMER;      /**< GPT Sleep Mode Clock Gating Control     */
-  __IO uint32_t SCGCGPIO;       /**< GPIO Sleep Mode Clock Gating Control    */
-  __IO uint32_t SCGCDMA;        /**< UDMA Sleep Mode Clock Gating Control    */
-  __IO uint32_t SCGCEPI;        /**< EPI Sleep Mode Clock Gating Control */
-  __IO uint32_t SCGCHIB;        /**< HIB Sleep Mode Clock Gating Control     */
-  __IO uint32_t SCGCUART;       /**< UART Sleep Mode Clock Gating Control    */
-  __IO uint32_t SCGCSSI;        /**< SSI Sleep Mode Clock Gating Control     */
-  __IO uint32_t SCGCI2C;        /**< I2C Sleep Mode Clock Gating Control     */
-  __I  uint32_t RESERVED34[1];  /**< Reserved                                */
-  __IO uint32_t SCGCUSB;        /**< USB Sleep Mode Clock Gating Control     */
-  __I  uint32_t RESERVED35[1];  /**< Reserved                                */
-  __IO uint32_t SCGCEPHY;       /**< Ethernet PHY Sleep Mode Clock Gating Control */
-  __IO uint32_t SCGCCAN;        /**< CAN Sleep Mode Clock Gating Control     */
-  __IO uint32_t SCGCADC;        /**< ADC Sleep Mode Clock Gating Control     */
-  __IO uint32_t SCGCACMP;       /**< ACMP Sleep Mode Clock Gating Control    */
-  __IO uint32_t SCGCPWM;        /**< PWM Sleep Mode Clock Gating Control     */
-  __IO uint32_t SCGCQEI;        /**< QEI Sleep Mode Clock Gating Control     */
-  __I  uint32_t RESERVED36[4];  /**< Reserved                                */
-  __IO uint32_t SCGCEEPROM;     /**< EEPROM Sleep Mode Clock Gating Control  */
-  __I  uint32_t RESERVED37[6];  /**< Reserved */
-  __IO uint32_t SCGCCCM;        /**< CRC Module Sleep Mode Clock Gating Control */
-  __I  uint32_t RESERVED38[9];  /**< Reserved */
-  __IO uint32_t SCGCEMAC;       /**< Ethernet MAC Sleep Mode Clock Gating Control */
-  __I  uint32_t RESERVED39[24]; /**< Reserved                                */
-  __IO uint32_t DCGCWD;         /**< WDT Deep-Sleep Mode Clock Gating Control*/
-  __IO uint32_t DCGCTIMER;      /**< GPT Deep-Sleep Mode Clock Gating Control*/
-  __IO uint32_t DCGCGPIO;       /**< GPIO Deep-Sleep Mode Clock Gating
-                                     Control                                 */
-  __IO uint32_t DCGCDMA;        /**< UDMA Deep-Sleep Mode Clock Gating
-                                     Control                                 */
-  __IO uint32_t DCGCEPI;        /**< EPI Deep-Sleep Mode Clock Gating Control */
-  __IO uint32_t DCGCHIB;        /**< HIB Deep-Sleep Mode Clock Gating Control*/
-  __IO uint32_t DCGCUART;       /**< UART Deep-Sleep Mode Clock Gating
-                                     Control                                 */
-  __IO uint32_t DCGCSSI;        /**< SSI Deep-Sleep Mode Clock Gating Control*/
-  __IO uint32_t DCGCI2C;        /**< I2C Deep-Sleep Mode Clock Gating Control*/
-  __I  uint32_t RESERVED40[1];  /**< Reserved                                */
-  __IO uint32_t DCGCUSB;        /**< USB Deep-Sleep Mode Clock Gating Control*/
-  __I  uint32_t RESERVED41[1];  /**< Reserved                                */
-  __IO uint32_t DCGCEPHY;       /**< Ethernet PHY Deep-Sleep Mode Clock Gating Control */
-  __IO uint32_t DCGCCAN;        /**< CAN Deep-Sleep Mode Clock Gating Control*/
-  __IO uint32_t DCGCADC;        /**< ADC Deep-Sleep Mode Clock Gating Control*/
-  __IO uint32_t DCGCACMP;       /**< ACMP Deep-Sleep Mode Clock Gating
-                                     Control                                 */
-  __IO uint32_t DCGCPWM;        /**< PWM Deep-Sleep Mode Clock Gating Control*/
-  __IO uint32_t DCGCQEI;        /**< QEI Deep-Sleep Mode Clock Gating Control*/
-  __I  uint32_t RESERVED42[4];  /**< Reserved                                */
-  __IO uint32_t DCGCEEPROM;     /**< EEPROM Deep-Sleep Mode Clock Gating
-                                     Control                                 */
-  __I  uint32_t RESERVED43[6];  /**< Reserved */
-  __IO uint32_t DCGCCCM;        /**< CRC Module Deep-Sleep Mode Clock Gating Control */
-  __I  uint32_t RESERVED44[9];  /**< Reserved */
-  __IO uint32_t DCGCEMAC;       /**< Ethernet MAC Deep-Sleep Mode Clock Gating Control */
-  __I  uint32_t RESERVED45[24]; /**< Reserved                                */
-  __IO uint32_t PCWD;           /**< Watchdog Timer Power Control       */
-  __IO uint32_t PCTIMER;        /**< 16/32-Bit General-Purpose Timer Power Control       */
-  __IO uint32_t PCGPIO;         /**< General-Purpose Input/Output Power Control      */
-  __IO uint32_t PCDMA;          /**< Micro Direct Memory Access Power Control      */
-  __IO uint32_t PCEPI;          /**< External Peripheral Interface Power Control */
-  __IO uint32_t PCHIB;          /**< Hibernation Power Control       */
-  __IO uint32_t PCUART;         /**< Universal Asynchronous Receiver/Transmitter Power Control                   */
-  __IO uint32_t PCSSI;          /**< Synchronous Serial Interface Power Control       */
-  __IO uint32_t PCI2C;          /**< Inter-Integrated Circuit Power Control       */
-  __I  uint32_t RESERVED46[1];  /**< Reserved                                */
-  __IO uint32_t PCUSB;          /**< Universal Serial Bus Power Control       */
-  __I  uint32_t RESERVED47[1];  /**< Reserved                                */
-  __IO uint32_t PCEPHY;         /**< Ethernet PHY Power Control */
-  __IO uint32_t PCCAN;          /**< Controller Area Network Power Control       */
-  __IO uint32_t PCADC;          /**< Analog-to-Digital Converter Power Control       */
-  __IO uint32_t PCACMP;         /**< Analog Comparator Power Control      */
-  __IO uint32_t PCPWM;          /**< Pulse Width Modulator Power Control       */
-  __IO uint32_t PCQEI;          /**< Quadrature Encoder Interface Power Control       */
-  __I  uint32_t RESERVED48[4];  /**< Reserved                                */
-  __IO uint32_t PCEEPROM;       /**< EEPROM Power Control    */
-  __I  uint32_t RESERVED49[6];  /**< Reserved */
-  __IO uint32_t PCCCM;          /**< CRC Module Power Control */
-  __I  uint32_t RESERVED50[9];  /**< Reserved */
-  __IO uint32_t PCEMAC;         /**< Ethernet MAC Power Control */
-  __I  uint32_t RESERVED51[24]; /**< Reserved */
-  __IO uint32_t PRWD;           /**< WDT Peripheral Ready                    */
-  __IO uint32_t PRTIMER;        /**< GPT Peripheral Ready                    */
-  __IO uint32_t PRGPIO;         /**< GPIO Peripheral Ready                   */
-  __IO uint32_t PRDMA;          /**< UDMA Peripheral Ready                   */
-  __IO uint32_t PREPI;          /**< EPI Peripheral Ready                                */
-  __IO uint32_t PRHIB;          /**< HIB Peripheral Ready                    */
-  __IO uint32_t PRUART;         /**< UART Peripheral Ready                   */
-  __IO uint32_t PRSSI;          /**< SSI Peripheral Ready                    */
-  __IO uint32_t PRI2C;          /**< I2C Peripheral Ready                    */
-  __I  uint32_t RESERVED52[1];  /**< Reserved                                */
-  __IO uint32_t PRUSB;          /**< USB Peripheral Ready                    */
-  __I  uint32_t RESERVED53[1];  /**< Reserved                                */
-  __IO uint32_t PREPHY;         /**< Ethernet PHY Peripheral Ready */
-  __IO uint32_t PRCAN;          /**< CAN Peripheral Ready                    */
-  __IO uint32_t PRADC;          /**< ADC Peripheral Ready                    */
-  __IO uint32_t PRACMP;         /**< ACMP Peripheral Ready                   */
-  __IO uint32_t PRPWM;          /**< PWM Peripheral Ready                    */
-  __IO uint32_t PRQEI;          /**< QEI Peripheral Ready                    */
-  __I  uint32_t RESERVED54[4];  /**< Reserved                                */
-  __IO uint32_t PREEPROM;       /**< EEPROM Peripheral Ready                 */
-  __I  uint32_t RESERVED55[6];  /**< Reserved */
-  __IO uint32_t PRCCM;          /**< CRC Module Peripheral Ready               */
-  __I  uint32_t RESERVED56[9];  /**< Reserved */
-  __IO uint32_t PREMAC;         /**< Ethernet MAC Peripheral Ready */
-} SYSCTL_TypeDef;
+  __IO uint32_t INTEN;          /**< Interrupt Enable                        */
+  __I  uint32_t _RESERVED0[1];  /**< Reserved                                */
+  __IO uint32_t REFCTL;         /**< Reference Voltage Control               */
+  __I  uint32_t _RESERVED1[3];  /**< Reserved                                */
+  __I  uint32_t STAT0;          /**< Status 0                                */
+  __IO uint32_t CTL0;           /**< Control 0                               */
+  __I  uint32_t _RESERVED2[6];  /**< Reserved                                */
+  __I  uint32_t STAT1;          /**< Status 1                                */
+  __IO uint32_t CTL1;           /**< Control 1                               */
+  __I  uint32_t _RESERVED3[990];/**< Reserved                                */
+  __I  uint32_t PP;             /**< Peripheral Properties                   */
+} ACMP_TypeDef;
 
 /**
- * @brief Hibernation Module
+ * @brief Analog-to-Digital Converter
  */
 typedef struct
 {
-  __I  uint32_t RTCC;           /**< RTC Counter                             */
-  __IO uint32_t RTCM0;          /**< RTC Match 0                             */
-  __I  uint32_t RESERVED0[1];   /**< Reserved                                */
-  __IO uint32_t RTCLD;          /**< RTC Load                                */
-  __IO uint32_t CTL;            /**< Control                                 */
-  __IO uint32_t IM;             /**< Interrupt Mask                          */
+  __IO uint32_t MUX;            /**< Sample Sequence Input Multiplexer
+                                     Select                                  */
+  __IO uint32_t CTL;            /**< Sample Sequence Control                 */
+  __I  uint32_t FIFO;           /**< Sample Sequence Result FIFO             */
+  __I  uint32_t FSTAT;          /**< Sample Sequence FIFO Status             */
+  __IO uint32_t OP;             /**< Sample Sequence Operation               */
+  __IO uint32_t DC;             /**< Sample Sequence Digital Comparator
+                                     Select                                  */
+  __I  uint32_t _RESERVED0[2];  /**< Reserved                                */
+} ADC_SS_t;
+
+typedef struct
+{
+  __IO uint32_t ACTSS;          /**< Active Sample Sequencer                 */
   __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
-  __I  uint32_t MIS;            /**< Masked Interrupt Status                 */
-  __IO uint32_t IC;             /**< Interrupt Clear                         */
-  __IO uint32_t RTCT;           /**< RTC Trim                                */
-  __IO uint32_t RTCSS;          /**< RTC Sub Seconds                         */
-  __I  uint32_t RESERVED1[1];   /**< Reserved                                */
-  __IO uint32_t DATA;           /**< Data                                    */
-} HIB_TypeDef;
+  __IO uint32_t IM;             /**< Interrupt Mask                          */
+  __IO uint32_t ISC;            /**< Interrupt Status and Clear              */
+  __IO uint32_t OSTAT;          /**< Overflow Status                         */
+  __IO uint32_t EMUX;           /**< Event Multiplexer Select                */
+  __IO uint32_t USTAT;          /**< Underflow Status                        */
+  __IO uint32_t TSSEL;          /**< Trigger Source Select                   */
+  __IO uint32_t SSPRI;          /**< Sample Sequencer Priority               */
+  __IO uint32_t SPC;            /**< Sample Phase Control                    */
+  __IO uint32_t PSSI;           /**< Processor Sample Sequence Initiate      */
+  __I  uint32_t _RESERVED0[1];  /**< Reserved                                */
+  __IO uint32_t SAC;            /**< Sample Averaging Control                */
+  __IO uint32_t DCISC;          /**< Digital Comparator Interrupt Status and
+                                     Clear                                   */
+  __IO uint32_t CTL;            /**< Control                                 */
+  __I  uint32_t _RESERVED1[1];  /**< Reserved                                */
+  ADC_SS_t SS[4];               /**< Sample Sequence 0, 1, 2 and 3           */
+  __I  uint32_t _RESERVED2[784];/**< Reserved */
+  __O  uint32_t DCRIC;          /**< Digital Comparator Reset Initial
+                                     Conditions                              */
+  __I  uint32_t _RESERVED3[63]; /**< Reserved                                */
+  __IO uint32_t DCCTL[8];       /**< Digital Comparator Control 0 - 7        */
+  __I  uint32_t _RESERVED4[8];  /**< Reserved                                */
+  __IO uint32_t DCCMP[8];       /**< Digital Comparator Range 0 - 7          */
+  __I  uint32_t _RESERVED5[88]; /**< Reserved                                */
+  __I  uint32_t PP;             /**< Peripheral Properties                   */
+  __IO uint32_t PC;             /**< Peripheral Configuration                */
+  __IO uint32_t CC;             /**< Clock Configuration                     */
+} ADC_TypeDef;
+
+/**
+ * @brief Controller Area Network
+ */
+typedef struct
+{
+  __IO uint32_t CRQ;            /**< Command Request                         */
+  __IO uint32_t CMSK;           /**< Command Mask                            */
+  __IO uint32_t MSK[2];         /**< Mask 1 and 2                            */
+  __IO uint32_t ARB[2];         /**< Arbitration 1 and 2                     */
+  __IO uint32_t MCTL;           /**< Message Control                         */
+  __IO uint32_t DA[2];          /**< Data A1 and A2                          */
+  __IO uint32_t DB[2];          /**< Data B1 and B2                          */
+  __I  uint32_t _RESERVED0[13]; /**< Reserved                                */
+} CAN_INTERFACE_t;
+
+typedef struct
+{
+  __IO uint32_t CTL;            /**< Control                                 */
+  __IO uint32_t STS;            /**< Status                                  */
+  __I  uint32_t ERR;            /**< Error Counter                           */
+  __IO uint32_t BIT;            /**< Bit Timing                              */
+  __I  uint32_t INT;            /**< Interrupt                               */
+  __IO uint32_t TST;            /**< Test                                    */
+  __IO uint32_t BRPE;           /**< Baud Rate Prescaler Extension           */
+  __I  uint32_t _RESERVED0[1];  /**< Reserved                                */
+  CAN_INTERFACE_t IF[2];        /**< IF1 and IF2                             */
+  __I  uint32_t _RESERVED1[8];  /**< Reserved                                */
+  __I  uint32_t TXRQ[2];        /**< Transmission Request 1 and 2            */
+  __I  uint32_t _RESERVED2[6];  /**< Reserved                                */
+  __I  uint32_t NWDA[2];        /**< New Data 1 and 2                        */
+  __I  uint32_t _RESERVED3[6];  /**< Reserved                                */
+  __I  uint32_t MSGINT[2];      /**< Message 1 and 2 Interrupt Pending       */
+  __I  uint32_t _RESERVED4[6];  /**< Reserved                                */
+  __I  uint32_t MSGVAL[2];      /**< Message 1 and 2 Valid                   */
+} CAN_TypeDef;
+
+/**
+ * @brief EEPROM Memory
+ */
+typedef struct
+{
+  __IO uint32_t EESIZE;         /**< Size Information                        */
+  __IO uint32_t EEBLOCK;        /**< Current Block                           */
+  __IO uint32_t EEOFFSET;       /**< Current Offset                          */
+  __I  uint32_t _RESERVED0[1];  /**< Reserved                                */
+  __IO uint32_t EERDWR;         /**< Read-Write                              */
+  __IO uint32_t EERDWRINC;      /**< Read-Write with Increment               */
+  __IO uint32_t EEDONE;         /**< Done Status                             */
+  __IO uint32_t EESUPP;         /**< Support Control and Status              */
+  __IO uint32_t EEUNLOCK;       /**< Unlock                                  */
+  __I  uint32_t _RESERVED1[3];  /**< Reserved                                */
+  __IO uint32_t EEPROT;         /**< Protection                              */
+  __IO uint32_t EEPASS[3];      /**< Password                                */
+  __IO uint32_t EEINT;          /**< Interrupt                               */
+  __I  uint32_t _RESERVED2[3];  /**< Reserved                                */
+  __IO uint32_t EEHIDE;         /**< Block Hide                              */
+  __I  uint32_t _RESERVED3[11]; /**< Reserved                                */
+  __IO uint32_t EEDBGME;        /**< Debug Mass Erase                        */
+  __I  uint32_t _RESERVED4[975];/**< Reserved                                */
+  __IO uint32_t EEPROMPP;       /**< Peripheral Properties                   */
+} EEPROM_TypeDef;
 
 /**
  * @brief Flash Memory
@@ -433,89 +292,30 @@ typedef struct
   __I  uint32_t FCRIS;          /**< Flash Controller Raw Interrupt Status   */
   __IO uint32_t FCIM;           /**< Flash Controller Interrupt Mask         */
   __IO uint32_t FCMISC;         /**< Masked Interrupt Status and Clear       */
-  __I  uint32_t RESERVED0[2];   /**< Reserved                                */
+  __I  uint32_t _RESERVED0[2];  /**< Reserved                                */
   __IO uint32_t FMC2;           /**< Flash Memory Control 2                  */
-  __I  uint32_t RESERVED1[3];   /**< Reserved                                */
+  __I  uint32_t _RESERVED1[3];  /**< Reserved                                */
   __IO uint32_t FWBVAL;         /**< Flash Write Buffer Valid                */
-  __I  uint32_t RESERVED2[51];  /**< Reserved                                */
+  __I  uint32_t _RESERVED2[51]; /**< Reserved                                */
   __IO uint32_t FWBN;           /**< Flash Write Buffer n                    */
-  __I  uint32_t RESERVED3[943]; /**< Reserved                                */
+  __I  uint32_t _RESERVED3[943];/**< Reserved                                */
   __I  uint32_t FSIZE;          /**< Flash Size                              */
   __I  uint32_t SSIZE;          /**< SRAM Size                               */
-  __I  uint32_t RESERVED4[1];   /**< Reserved                                */
+  __I  uint32_t _RESERVED4[1];  /**< Reserved                                */
   __IO uint32_t ROMSWMAP;       /**< ROM Software Map                        */
 } FLASH_TypeDef;
 
-/**
- * @brief EEPROM Memory
- */
-typedef struct
-{
-  __IO uint32_t EESIZE;         /**< Size Information                        */
-  __IO uint32_t EEBLOCK;        /**< Current Block                           */
-  __IO uint32_t EEOFFSET;       /**< Current Offset                          */
-  __I  uint32_t RESERVED0[1];   /**< Reserved                                */
-  __IO uint32_t EERDWR;         /**< Read-Write                              */
-  __IO uint32_t EERDWRINC;      /**< Read-Write with Increment               */
-  __IO uint32_t EEDONE;         /**< Done Status                             */
-  __IO uint32_t EESUPP;         /**< Support Control and Status              */
-  __IO uint32_t EEUNLOCK;       /**< Unlock                                  */
-  __I  uint32_t RESERVED1[3];   /**< Reserved                                */
-  __IO uint32_t EEPROT;         /**< Protection                              */
-  __IO uint32_t EEPASS0;        /**< Password                                */
-  __IO uint32_t EEPASS1;        /**< Password                                */
-  __IO uint32_t EEPASS2;        /**< Password                                */
-  __IO uint32_t EEINT;          /**< Interrupt                               */
-  __I  uint32_t RESERVED2[3];   /**< Reserved                                */
-  __IO uint32_t EEHIDE;         /**< Block Hide                              */
-  __I  uint32_t RESERVED3[11];  /**< Reserved                                */
-  __IO uint32_t EEDBGME;        /**< Debug Mass Erase                        */
-  __I  uint32_t RESERVED4[975]; /**< Reserved                                */
-  __IO uint32_t EEPROMPP;       /**< Peripheral Properties                   */
-} EEPROM_TypeDef;
 
-/**
- * @brief Micro Direct Memory Access
- */
-typedef struct 
-{
-  __IO uint32_t STAT;           /**< Status                                  */
-  __O  uint32_t CFG;            /**< Configuration                           */
-  __IO uint32_t CTLBASE;        /**< Channel Control Base Pointer            */
-  __IO uint32_t ALTBASE;        /**< Alternate Channel Control Base Pointer  */
-  __IO uint32_t WAITSTAT;       /**< Channel Wait-on-Request Status          */
-  __O  uint32_t SWREQ;          /**< Channel Software Request                */
-  __IO uint32_t USEBURSTSET;    /**< Channel Useburst Set                    */
-  __O  uint32_t USEBURSTCLR;    /**< Channel Useburst Clear                  */
-  __IO uint32_t REQMASKSET;     /**< Channel Request Mask Set                */
-  __O  uint32_t REQMASKCLR;     /**< Channel Request Mask Clear              */
-  __IO uint32_t ENASET;         /**< Channel Enable Set                      */
-  __O  uint32_t ENACLR;         /**< Channel Enable Clear                    */
-  __IO uint32_t ALTSET;         /**< Channel Primary Alternate Set           */
-  __O  uint32_t ALTCLR;         /**< Channel Primary Alternate Clear         */
-  __IO uint32_t PRIOSET;        /**< Channel Priority Set                    */
-  __O  uint32_t PRIOCLR;        /**< Channel Priority Clear                  */
-  __I  uint32_t RESERVED0[3];   /**< Reserved                                */
-  __IO uint32_t ERRCLR;         /**< Bus Error Clear                         */
-  __I  uint32_t RESERVED1[300]; /**< Reserved                                */
-  __IO uint32_t CHASGN;         /**< Channel Assignment                      */
-  __IO uint32_t CHIS;           /**< Channel Interrupt Status                */
-  __I  uint32_t RESERVED2[2];   /**< Reserved                                */
-  __IO uint32_t CHMAP0;         /**< Channel Map Select 0                    */
-  __IO uint32_t CHMAP1;         /**< Channel Map Select 1                    */
-  __IO uint32_t CHMAP2;         /**< Channel Map Select 2                    */
-  __IO uint32_t CHMAP3;         /**< Channel Map Select 3                    */
-} UDMA_TypeDef;
 
 /**
  * @brief General Purpose Input/Outputs
  */
-typedef struct 
+typedef struct
 {
   union {
     __IO uint32_t MASKED_ACCESS[256];   /**< Masked access of Data Register  */
     struct {
-      __I  uint32_t RESERVED0[255];     /**< Reserved                        */
+      __I  uint32_t _RESERVED0[255];    /**< Reserved                        */
       __IO uint32_t DATA;       /**< Data                                    */
     };
   };
@@ -528,7 +328,7 @@ typedef struct
   __I  uint32_t MIS;            /**< Masked Interrupt Status                 */
   __O  uint32_t ICR;            /**< Interrupt Clear                         */
   __IO uint32_t AFSEL;          /**< Alternate Function Select               */
-  __I  uint32_t RESERVED1[55];  /**< Reserved                                */
+  __I  uint32_t _RESERVED1[55]; /**< Reserved                                */
   __IO uint32_t DR2R;           /**< 2-mA Drive Select                       */
   __IO uint32_t DR4R;           /**< 4-mA Drive Select                       */
   __IO uint32_t DR8R;           /**< 8-mA Drive Select                       */
@@ -548,7 +348,7 @@ typedef struct
   __IO uint32_t WAKEPEN;        /**< */
   __IO uint32_t WAKELVL;        /**< */
   __IO uint32_t WAKESTAT;       /**< */
-  __I  uint32_t RESERVED2[669]; /**< */
+  __I  uint32_t _RESERVED2[669];/**< */
   __I  uint32_t PP;             /**< */
   __IO uint32_t PC;             /**< */
 } GPIO_TypeDef;
@@ -563,7 +363,7 @@ typedef struct
   __IO uint32_t TBMR;           /**< Timer B Mode                            */
   __IO uint32_t CTL;            /**< Control                                 */
   __IO uint32_t SYNC;           /**< Synchronize                             */
-  __I  uint32_t RESERVED0[1];   /**< Reserved                                */
+  __I  uint32_t _RESERVED0[1];  /**< Reserved                                */
   __IO uint32_t IMR;            /**< Interrupt Mask                          */
   __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
   __I  uint32_t MIS;            /**< Masked Interrupt Status                 */
@@ -585,167 +385,34 @@ typedef struct
   __I  uint32_t TBPS;           /**< Timer B Prescale Snapshot               */
   __I  uint32_t TAPV;           /**< Timer A Prescale Value                  */
   __I  uint32_t TBPV;           /**< Timer B Prescale Value                  */
-  __I  uint32_t RESERVED1[981]; /**< Reserved                                */
+  __I  uint32_t _RESERVED1[981];/**< Reserved                                */
   __I  uint32_t PP;             /**< Peripheral Properties                   */
 } GPT_TypeDef;
 
 /**
- * @brief Watchdog Timer
+ * @brief Hibernation Module
  */
 typedef struct
 {
-  __IO uint32_t LOAD;           /**< Load                                    */
-  __I  uint32_t VALUE;          /**< Value                                   */
+  __I  uint32_t RTCC;           /**< RTC Counter                             */
+  __IO uint32_t RTCM0;          /**< RTC Match 0                             */
+  __I  uint32_t _RESERVED0[1];  /**< Reserved                                */
+  __IO uint32_t RTCLD;          /**< RTC Load                                */
   __IO uint32_t CTL;            /**< Control                                 */
-  __O  uint32_t ICR;            /**< Interrupt Clear                         */
+  __IO uint32_t IM;             /**< Interrupt Mask                          */
   __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
   __I  uint32_t MIS;            /**< Masked Interrupt Status                 */
-  __I  uint32_t RESERVED0[256]; /**< Reserved                                */
-  __IO uint32_t TEST;           /**< Test                                    */
-  __I  uint32_t RESERVED1[505]; /**< Reserved                                */
-  __IO uint32_t LOCK;           /**< Lock                                    */
-} WATCHDOG_TypeDef;
+  __IO uint32_t IC;             /**< Interrupt Clear                         */
+  __IO uint32_t RTCT;           /**< RTC Trim                                */
+  __IO uint32_t RTCSS;          /**< RTC Sub Seconds                         */
+  __I  uint32_t _RESERVED1[1];  /**< Reserved                                */
+  __IO uint32_t DATA;           /**< Data                                    */
+} HIB_TypeDef;
 
 /**
- * @brief Analog-to-Digital Converter
- */
-typedef struct
-{
-  __IO uint32_t ACTSS;          /**< Active Sample Sequencer                 */
-  __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
-  __IO uint32_t IM;             /**< Interrupt Mask                          */
-  __IO uint32_t ISC;            /**< Interrupt Status and Clear              */
-  __IO uint32_t OSTAT;          /**< Overflow Status                         */
-  __IO uint32_t EMUX;           /**< Event Multiplexer Select                */
-  __IO uint32_t USTAT;          /**< Underflow Status                        */
-  __IO uint32_t TSSEL;          /**< Trigger Source Select                   */
-  __IO uint32_t SSPRI;          /**< Sample Sequencer Priority               */
-  __IO uint32_t SPC;            /**< Sample Phase Control                    */
-  __IO uint32_t PSSI;           /**< Processor Sample Sequence Initiate      */
-  __I  uint32_t RESERVED1[1];   /**< Reserved                                */
-  __IO uint32_t SAC;            /**< Sample Averaging Control                */
-  __IO uint32_t DCISC;          /**< Digital Comparator Interrupt Status and 
-                                     Clear                                   */
-  __IO uint32_t CTL;            /**< Control                                 */
-  __I  uint32_t RESERVED2[1];   /**< Reserved                                */
-  __IO uint32_t SSMUX0;         /**< Sample Sequence Input Multiplexer Select
-                                     0                                       */
-  __IO uint32_t SSCTL0;         /**< Sample Sequence Control 0               */
-  __I  uint32_t SSFIFO0;        /**< Sample Sequence Result FIFO 0           */
-  __I  uint32_t SSFSTAT0;       /**< Sample Sequence FIFO 0 Status           */
-  __IO uint32_t SSOP0;          /**< Sample Sequence 0 Operation             */
-  __IO uint32_t SSDC0;          /**< Sample Sequence 0 Digital Comparator
-                                     Select                                  */
-  __I  uint32_t RESERVED3[2];   /**< Reserved                                */
-  __IO uint32_t SSMUX1;         /**< Sample Sequence Input Multiplexer Select
-                                     1                                       */
-  __IO uint32_t SSCTL1;         /**< Sample Sequence Control 1               */
-  __I  uint32_t SSFIFO1;        /**< Sample Sequence Result FIFO 1           */
-  __I  uint32_t SSFSTAT1;       /**< Sample Sequence FIFO 1 Status           */
-  __IO uint32_t SSOP1;          /**< Sample Sequence 1 Operation             */
-  __IO uint32_t SSDC1;          /**< Sample Sequence 1 Digital Comparator
-                                     Select                                  */
-  __I  uint32_t RESERVED4[2];   /**< Reserved                                */
-  __IO uint32_t SSMUX2;         /**< Sample Sequence Input Multiplexer Select
-                                     2                                       */
-  __IO uint32_t SSCTL2;         /**< Sample Sequence Control 2               */
-  __I  uint32_t SSFIFO2;        /**< Sample Sequence Result FIFO 2           */
-  __I  uint32_t SSFSTAT2;       /**< Sample Sequence FIFO 2 Status           */
-  __IO uint32_t SSOP2;          /**< Sample Sequence 2 Operation             */
-  __IO uint32_t SSDC2;          /**< Sample Sequence 2 Digital Comparator
-                                     Select                                  */
-  __I  uint32_t RESERVED5[2];   /**< Reserved                                */
-  __IO uint32_t SSMUX3;         /**< Sample Sequence Input Multiplexer Select
-                                     3                                       */
-  __IO uint32_t SSCTL3;         /**< Sample Sequence Control 3               */
-  __I  uint32_t SSFIFO3;        /**< Sample Sequence Result FIFO 3           */
-  __I  uint32_t SSFSTAT3;       /**< Sample Sequence FIFO 3 Status           */
-  __IO uint32_t SSOP3;          /**< Sample Sequence 3 Operation             */
-  __IO uint32_t SSDC3;          /**< Sample Sequence 3 Digital Comparator
-                                     Select                                  */
-  __I  uint32_t RESERVED6[786]; /**< Reserved                                */
-  __O  uint32_t DCRIC;          /**< Digital Comparator Reset Initial
-                                     Conditions                              */
-  __I  uint32_t RESERVED7[63];  /**< Reserved                                */
-  __IO uint32_t DCCTL0;         /**< Digital Comparator Control 0            */
-  __IO uint32_t DCCTL1;         /**< Digital Comparator Control 1            */
-  __IO uint32_t DCCTL2;         /**< Digital Comparator Control 2            */
-  __IO uint32_t DCCTL3;         /**< Digital Comparator Control 3            */
-  __IO uint32_t DCCTL4;         /**< Digital Comparator Control 4            */
-  __IO uint32_t DCCTL5;         /**< Digital Comparator Control 5            */
-  __IO uint32_t DCCTL6;         /**< Digital Comparator Control 6            */
-  __IO uint32_t DCCTL7;         /**< Digital Comparator Control 7            */
-  __I  uint32_t RESERVED8[8];   /**< Reserved                                */
-  __IO uint32_t DCCMP0;         /**< Digital Comparator Range 0              */
-  __IO uint32_t DCCMP1;         /**< Digital Comparator Range 1              */
-  __IO uint32_t DCCMP2;         /**< Digital Comparator Range 2              */
-  __IO uint32_t DCCMP3;         /**< Digital Comparator Range 3              */
-  __IO uint32_t DCCMP4;         /**< Digital Comparator Range 4              */
-  __IO uint32_t DCCMP5;         /**< Digital Comparator Range 5              */
-  __IO uint32_t DCCMP6;         /**< Digital Comparator Range 6              */
-  __IO uint32_t DCCMP7;         /**< Digital Comparator Range 7              */
-  __I  uint32_t RESERVED9[88];  /**< Reserved                                */
-  __I  uint32_t PP;             /**< Peripheral Properties                   */
-  __IO uint32_t PC;             /**< Peripheral Configuration                */
-  __IO uint32_t CC;             /**< Clock Configuration                     */
-} ADC_TypeDef;
-
-/** 
- * @brief Universal Asynchronous Receiver/Transmitter
- */
-typedef struct 
-{
-  __IO uint32_t DR;             /**< Data                                    */
-  union  {
-    __I  uint32_t RSR;          /**< Receive Status                          */
-    __O  uint32_t ECR;          /**< Error Clear                             */
-  };
-  __I  uint32_t RESERVED0[4];   /**< Reserved                                */
-  __I  uint32_t FR;             /**< Flag                                    */
-  __I  uint32_t RESERVED1[1];   /**< Reserved                                */
-  __IO uint32_t ILPR;           /**< IrDA Low-Power Register                 */
-  __IO uint32_t IBRD;           /**< Integer Baud-Rate Divisor               */
-  __IO uint32_t FBRD;           /**< Fractional Baud-Rate Divisor            */
-  __IO uint32_t LCRH;           /**< Line Control                            */
-  __IO uint32_t CTL;            /**< Control                                 */
-  __IO uint32_t IFLS;           /**< Interrupt FIFO Level Select             */
-  __IO uint32_t IM;             /**< Interrupt Mask                          */
-  __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
-  __I  uint32_t MIS;            /**< Masked Interrupt Status                 */
-  __O uint32_t ICR;             /**< Interrupt Clear                         */
-  __IO uint32_t DMACTL;         /**< DMA Control                             */
-  __I  uint32_t RESERVED2[22];  /**< Reserved                                */
-  __IO uint32_t BIT9ADDR;       /**< 9-Bit Self Address                      */
-  __IO uint32_t BIT9AMASK;      /**< 9-Bit Self Address Mask                 */
-  __I  uint32_t RESERVED3[965]; /**< Reserved                                */
-  __I  uint32_t PP;             /**< Peripheral Properties                   */
-  __I  uint32_t RESERVED4[1];   /**< Reserved                                */
-  __IO uint32_t CC;             /**< Clock Configuration                     */
-} UART_TypeDef;
-
-/** 
- * @brief Synchronous Serial Interface
- */
-typedef struct 
-{
-  __IO uint32_t CR0;            /**< Control 0                               */
-  __IO uint32_t CR1;            /**< Control 1                               */
-  __IO uint32_t DR;             /**< Data                                    */
-  __I  uint32_t SR;             /**< Status                                  */
-  __IO uint32_t CPSR;           /**< Clock Prescale                          */
-  __IO uint32_t IM;             /**< Interrupt Mask                          */
-  __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
-  __I  uint32_t MIS;            /**< Masked Interrupt Status                 */
-  __O  uint32_t ICR;            /**< Interrupt Clear                         */
-  __IO uint32_t DMACTL;         /**< DMA Control                             */
-  __I  uint32_t RESERVED1[1000];/**< Reserved                                */
-  __IO uint32_t CC;             /**< Clock Configuration                     */
-} SSI_TypeDef;
-
-/** 
  * @brief Inter-Integrated Circuit
  */
-typedef struct 
+typedef struct
 {
   __IO uint32_t MSA;            /**< Master Slave Address                    */
   __IO uint32_t MCS;            /**< Master Control/Status                   */
@@ -757,10 +424,10 @@ typedef struct
   __O  uint32_t MICR;           /**< Master Interrupt Clear                  */
   __IO uint32_t MCR;            /**< Master Configuration                    */
   __IO uint32_t MCLKOCNT;       /**< Master Clock Low Timeout Count          */
-  __I  uint32_t RESERVED0;      /**< Reserved                                */
+  __I  uint32_t _RESERVED0[1];  /**< Reserved                                */
   __I  uint32_t MBMON;          /**< Master Bus Monitor                      */
   __IO uint32_t MCR2;           /**< Master Configuration 2                  */
-  __I  uint32_t RESERVED1[497]; /**< Reserved                                */
+  __I  uint32_t _RESERVED1[497];/**< Reserved                                */
   __IO uint32_t SOAR;           /**< Slave Own Address                       */
   __IO uint32_t SCSR;           /**< Slave Control/Status                    */
   __IO uint32_t SDR;            /**< Slave Data                              */
@@ -770,83 +437,14 @@ typedef struct
   __O  uint32_t SICR;           /**< Slave Interrupt Clear                   */
   __IO uint32_t SOAR2;          /**< Slave Own Address 2                     */
   __IO uint32_t SACKCTL;        /**< Slave ACK Control                       */
-  __I  uint32_t RESERVED2[487]; /**< Reserved                                */
+  __I  uint32_t _RESERVED2[487];/**< Reserved                                */
   __I  uint32_t PP;             /**< Peripheral Properties                   */
   __I  uint32_t PC;             /**< Peripheral Configuration                */
 } I2C_TypeDef;
 
-/**
- * @brief Controller Area Network
+/*
+ * @brief Pulse Width Modulator
  */
-typedef struct
-{
-  __IO uint32_t CTL;            /**< Control                                 */
-  __IO uint32_t STS;            /**< Status                                  */
-  __I  uint32_t ERR;            /**< Error Counter                           */
-  __IO uint32_t BIT;            /**< Bit Timing                              */
-  __I  uint32_t INT;            /**< Interrupt                               */
-  __IO uint32_t TST;            /**< Test                                    */
-  __IO uint32_t BRPE;           /**< Baud Rate Prescaler Extension           */
-  __I  uint32_t RESERVED0[1];   /**< Reserved                                */
-  __IO uint32_t IF1CRQ;         /**< IF1 Command Request                     */
-  __IO uint32_t IF1CMSK;        /**< IF1 Command Mask                        */
-  __IO uint32_t IF1MSK1;        /**< IF1 Mask 1                              */
-  __IO uint32_t IF1MSK2;        /**< IF1 Mask 2                              */
-  __IO uint32_t IF1ARB1;        /**< IF1 Arbitration 1                       */
-  __IO uint32_t IF1ARB2;        /**< IF1 Arbitration 2                       */
-  __IO uint32_t IF1MCTL;        /**< IF1 Message Control                     */
-  __IO uint32_t IF1DA1;         /**< IF1 Data A1                             */
-  __IO uint32_t IF1DA2;         /**< IF1 Data A2                             */
-  __IO uint32_t IF1DB1;         /**< IF1 Data B1                             */
-  __IO uint32_t IF1DB2;         /**< IF1 Data B2                             */
-  __I  uint32_t RESERVED1[13];  /**< Reserved                                */
-  __IO uint32_t IF2CRQ;         /**< IF2 Command Request                     */
-  __IO uint32_t IF2CMSK;        /**< IF2 Command Mask                        */
-  __IO uint32_t IF2MSK1;        /**< IF2 Mask 1                              */
-  __IO uint32_t IF2MSK2;        /**< IF2 Mask 2                              */
-  __IO uint32_t IF2ARB1;        /**< IF2 Arbitration 1                       */
-  __IO uint32_t IF2ARB2;        /**< IF2 Arbitration 2                       */
-  __IO uint32_t IF2MCTL;        /**< IF2 Message Control                     */
-  __IO uint32_t IF2DA1;         /**< IF2 Data A1                             */
-  __IO uint32_t IF2DA2;         /**< IF2 Data A2                             */
-  __IO uint32_t IF2DB1;         /**< IF2 Data B1                             */
-  __IO uint32_t IF2DB2;         /**< IF2 Data B2                             */
-  __I  uint32_t RESERVED2[21];  /**< Reserved                                */
-  __I  uint32_t TXRQ1;          /**< Transmission Request 1                  */
-  __I  uint32_t TXRQ2;          /**< Transmission Request 2                  */
-  __I  uint32_t RESERVED3[6];   /**< Reserved                                */
-  __I  uint32_t NWDA1;          /**< New Data 1                              */
-  __I  uint32_t NWDA2;          /**< New Data 2                              */
-  __I  uint32_t RESERVED4[6];   /**< Reserved                                */
-  __I  uint32_t MSG1INT;        /**< Message 1 Interrupt Pending             */
-  __I  uint32_t MSG2INT;        /**< Message 2 Interrupt Pending             */
-  __I  uint32_t RESERVED5[6];   /**< Reserved                                */
-  __I  uint32_t MSG1VAL;        /**< Message 1 Valid                         */
-  __I  uint32_t MSG2VAL;        /**< Message 2 Valid                         */
-} CAN_TypeDef;
-
-// USB
-
-/**
- * @brief Analog Comparator
- */
-typedef struct
-{
-  __IO uint32_t MIS;            /**< Masked Interrupt Status                 */
-  __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
-  __IO uint32_t INTEN;          /**< Interrupt Enable                        */
-  __I  uint32_t RESERVED0[1];   /**< Reserved                                */
-  __IO uint32_t REFCTL;         /**< Reference Voltage Control               */
-  __I  uint32_t RESERVED1[3];   /**< Reserved                                */
-  __I  uint32_t STAT0;          /**< Status 0                                */
-  __IO uint32_t CTL0;           /**< Control 0                               */
-  __I  uint32_t RESERVED2[6];   /**< Reserved                                */
-  __I  uint32_t STAT1;          /**< Status 1                                */
-  __IO uint32_t CTL1;           /**< Control 1                               */
-  __I  uint32_t RESERVED3[990]; /**< Reserved                                */
-  __I  uint32_t PP;             /**< Peripheral Properties                   */
-} AC_TypeDef;
-
 typedef struct
 {
   __IO uint32_t CTL;            /**< Control                                 */
@@ -864,9 +462,16 @@ typedef struct
   __IO uint32_t MINFLTPER;      /**< Minimum Fault Period                    */
 } PWM_GENERATOR_T;
 
-/*
- * @brief Pulse Width Modulator
- */
+typedef struct
+{
+  union {
+    __IO uint32_t SEN;          /**< Fault Pin Logic Sense, for GEN 0 and 1  */
+    __I  uint32_t _RESERVED0[1];/**< Reserved, for GEN 2 and 3               */
+  };
+  __IO uint32_t STAT[2];        /**< Fault Status                            */
+  __I  uint32_t _RESERVED1[29]; /**< Reserved                                */
+} PWM_FLT_t;
+
 typedef struct
 {
   __IO uint32_t CTL;            /**< Master Control                          */
@@ -880,27 +485,18 @@ typedef struct
   __I  uint32_t STATUS;         /**< Status                                  */
   __IO uint32_t FAULTVAL;       /**< Fault Condition Value                   */
   __IO uint32_t ENUPD;          /**< Enable Update                           */
-  __I  uint32_t RESERVED0[5];   /**< Reserved                                */
+  __I  uint32_t _RESERVED0[5];  /**< Reserved                                */
   __IO PWM_GENERATOR_T PWM[4];  /**< PWM Generator 0, 1, 2 and 3             */
-  __I  uint32_t RESERVED1[432]; /**< Reserved                                */
-  __IO uint32_t _0FLTSEN;       /**< Fault Pin Logic Sense                   */
-  __IO uint32_t _0FLTSTAT[2];   /**< Fault Status 0, 1                       */
-  __I  uint32_t RESERVED2[29];  /**< Reserved                                */
-  __IO uint32_t _1FLTSEN;       /**< Fault Pin Logic Sense                   */
-  __IO uint32_t _1FLSTSAT[2];   /**< Fault Status 0, 1                       */
-  __I  uint32_t RESERVED3[30];  /**< Reserved                                */
-  __IO uint32_t _2FLTSTAT[2];   /**< Fault Status 0, 1                       */
-  __I  uint32_t RESERVED4[30];  /**< Reserved                                */
-  __IO uint32_t _3FLTSTAT[2];   /**< Fault Status 0, 1                       */
-  __I  uint32_t RESERVED5[397]; /**< Reserved                                */
+  __I  uint32_t _RESERVED1[432];/**< Reserved                                */
+  PWM_FLT_t FLT[4];             /**< Fault registers 0, 1, 2 and 3           */
+  __I  uint32_t _RESERVED2[368];/**< Reserved                                */
   __I  uint32_t PP;             /**< Peripheral Properties                   */
-  __IO uint32_t CC;             /**< Clock Configuration                     */
 } PWM_TypeDef;
 
-/** 
+/**
  * @brief Quadrature Encoder Interface
  */
-typedef struct 
+typedef struct
 {
   __IO uint32_t CTL;            /**< Control                                 */
   __I  uint32_t STAT;           /**< Status                                  */
@@ -914,6 +510,217 @@ typedef struct
   __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
   __IO uint32_t ISC;            /**< Interrupt Status and Clear              */
 } QEI_TypeDef;
+
+/**
+ * @brief Synchronous Serial Interface
+ */
+typedef struct
+{
+  __IO uint32_t CR[2];          /**< Control 0, 1                            */
+  __IO uint32_t DR;             /**< Data                                    */
+  __I  uint32_t SR;             /**< Status                                  */
+  __IO uint32_t CPSR;           /**< Clock Prescale                          */
+  __IO uint32_t IM;             /**< Interrupt Mask                          */
+  __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
+  __I  uint32_t MIS;            /**< Masked Interrupt Status                 */
+  __O  uint32_t ICR;            /**< Interrupt Clear                         */
+  __IO uint32_t DMACTL;         /**< DMA Control                             */
+  __I  uint32_t _RESERVED0[1000];/**< Reserved                               */
+  __IO uint32_t CC;             /**< Clock Configuration                     */
+} SSI_TypeDef;
+
+/** 
+ * @brief System Control
+ */
+typedef struct
+{
+  __I  uint32_t PDS;        /**< Power Domain Status */
+  __IO uint32_t MPC;        /**< Memory Power Control */
+} SYSCTL_PDSMPC_t;
+
+typedef struct
+{
+  uint32_t WD;                  /**< Watchdog Timer                          */
+  uint32_t TIMER;               /**< General-Purpose Timer                   */
+  uint32_t GPIO;                /**< General-Purpose Input/Output            */
+  uint32_t DMA;                 /**< Micro Direct Memory Access              */
+  uint32_t EPI;                 /**< EPI */
+  uint32_t HIB;                 /**< Hibernation                             */
+  uint32_t UART;                /**< Universal Asynchronous
+                                     Receiver/Transmitter                    */
+  uint32_t SSI;                 /**< Synchronous Serial Interface            */
+  uint32_t I2C;                 /**< Inter-Integrated Circuit                */
+  uint32_t _RESERVED0[1];   /**< Reserved                                */
+  uint32_t USB;                 /**< Universal Serial Bus                    */
+  uint32_t _RESERVED1[1];   /**< Reserved                                */
+  uint32_t EPHY;                /**< Ethernet PHY*/
+  uint32_t CAN;                 /**< Controller Area Network                 */
+  uint32_t ADC;                 /**< Analog-to-Digital Converter             */
+  uint32_t ACMP;                /**< Analog Comparator                       */
+  uint32_t PWM;                 /**< Pulse Width Modulator                   */
+  uint32_t QEI;                 /**< Quadrature Encoder Interface            */
+  uint32_t LPC;                 /**< Low Pin Count Interface */
+  uint32_t _RESERVED2[1];   /**< Reserved */
+  uint32_t PECI;                /**< Platform Environment Control Interface */
+  uint32_t FAN;                 /**< Fan Control  */
+  uint32_t EEPROM;              /**< EEPROM                                  */
+  uint32_t WTIMER;              /**< Wide General-Purpose Timer              */
+  uint32_t _RESERVED3[4];   /**< Reserved */
+  uint32_t RTS;                 /**< Remote Temperature Sensor */
+  uint32_t CCM;                 /**< CRC Module  */
+  uint32_t _RESERVED4[6];   /**< Reserved */
+  uint32_t LCD;                 /**< LCD  */
+  uint32_t _RESERVED5[1];   /**< Reserved */
+  uint32_t OWIRE;               /**< 1-Wire */
+  uint32_t EMAC;                /**< Ethernet MAC */
+  uint32_t PRB;                 /**< Power Regulator Bus  */
+  uint32_t HIM;                 /**< Human Interface Master  */
+  uint32_t _RESERVED6[24];  /**< Reserved */
+} SYSCTL_PERIPH_t;
+
+typedef struct
+{
+  __I  uint32_t DID[2];         /**< Device Identification 0 and 1           */
+  __I  uint32_t _RESERVED0[12]; /**< Reserved                                */
+  __IO uint32_t PBORCTL;        /**< Power-Temp Brown Out Control            */
+  __I  uint32_t _RESERVED1[5];  /**< Reserved                                */
+  __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
+  __IO uint32_t IMC;            /**< Interrupt Mask Control                  */
+  __IO uint32_t MISC;           /**< Interrupt Status and Clear              */
+  __IO uint32_t RESC;           /**< Reset Cause                             */
+  __IO uint32_t PWRTC;          /**< Power-Temperature Cause */
+  __IO uint32_t NMIC;           /**< NMI Cause Register */
+  __I  uint32_t _RESERVED2[5];  /**< Reserved */
+  __IO uint32_t MOSCCTL;        /**< Main Oscillator Control */
+  __I  uint32_t _RESERVED3[12]; /**< Reserved */
+  __IO uint32_t RSCLKCFG;       /**< Run and Sleep Mode Configuration Register */
+  __I  uint32_t _RESERVED4[3];
+  __IO uint32_t MEMTIM0;        /**< Memory Timing Parameter Register 0 for Main Flash and EEPROM */
+  __I  uint32_t _RESERVED5[29]; /**< Reserved */
+  __IO uint32_t ALTCLKCFG;      /**< Alternate Clock Configuration */
+  __I  uint32_t _RESERVED6[2];  /**< Reserved                                */
+  __IO uint32_t DSLPCLKCFG;     /**< Deep Sleep Clock Configuration          */
+  __IO uint32_t DIVSCLK;        /**< Divisor and Source Clock Configuration  */
+  __I  uint32_t SYSPROP;        /**< System Properties                       */
+  __IO uint32_t PIOSCCAL;       /**< PIOSC Calibration                       */
+  __I  uint32_t PIOSCSTAT;      /**< PIOSC Statistics                        */
+  __I  uint32_t _RESERVED7[2];  /**< Reserved                                */
+  __IO uint32_t PLLFREQ[2];     /**< PLL Frequency 0 and 1                   */
+  __I  uint32_t PLLSTAT;        /**< PLL Frequency Status                    */
+  __I  uint32_t _RESERVED8[7];  /**< Reserved                                */
+  __IO uint32_t SLPPWRCFG;      /**< Sleep Power Configuration               */
+  __IO uint32_t DSLPPWRCFG;     /**< Deep-Sleep Power Configuration          */
+  __I  uint32_t _RESERVED9[4];  /**< Reserved                                */
+  __I  uint32_t NVMSTAT;        /**< Non-Volatile Memory Information */
+  __I  uint32_t _RESERVED10[4]; /**< Reserved */
+  __IO uint32_t LDOSPCTL;       /**< LDO Sleep Power Control                 */
+  __I  uint32_t LDOSPCAL;       /**< LDO Sleep Power Calibration             */
+  __IO uint32_t LDODPCTL;       /**< LDO Deep-Sleep Power Control            */
+  __I  uint32_t LDODPCAL;       /**< LDO Deep-Sleep Power Calibration        */
+  __I  uint32_t _RESERVED11[2]; /**< Reserved                                */
+  __I  uint32_t SDPMST;         /**< Sleep/Deep-Sleep Power Mode Status      */
+  __I  uint32_t _RESERVED12[2]; /**< Reserved */
+  __IO uint32_t RESBEHAVCTL;    /**< Reset Behavior Control Register */
+  __I  uint32_t _RESERVED13[6]; /**< Reserved */
+  __IO uint32_t HSSR;           /**< Hardware System Service Request */
+  __I  uint32_t _RESERVED14[34];/**< Reserved */
+  SYSCTL_PDSMPC_t USB;          /**< USB PDS/MPC */
+  SYSCTL_PDSMPC_t EMAC;         /**< EMAC PDS/MPC */
+  SYSCTL_PDSMPC_t LCD;          /**< LCD PDS/MPC */
+  SYSCTL_PDSMPC_t CAN[2];       /**< CAN 0 and 1 PDS/MPC */
+  __I  uint32_t _RESERVED15[22];/**< Reserved */
+  __I SYSCTL_PERIPH_t PP;       /**< Peripheral Present                      */
+  __I  uint32_t _RESERVED16[60];/**< Reserved */
+  __IO SYSCTL_PERIPH_t SR;      /**< Software Reset */
+  __IO SYSCTL_PERIPH_t RCGC;    /**< Run Mode Clock Gating Control           */
+  __IO SYSCTL_PERIPH_t SCGC;    /**< Sleep Mode Clock Gating Control         */
+  __IO SYSCTL_PERIPH_t DCGC;    /**< Deep-Sleep Mode Clock Gating Control    */
+  __IO SYSCTL_PERIPH_t PC;      /**< Power Control                           */
+  __IO SYSCTL_PERIPH_t PR;      /**< Peripheral Ready                        */
+} SYSCTL_TypeDef;
+
+/**
+ * @brief Universal Asynchronous Receiver/Transmitter
+ */
+typedef struct
+{
+  __IO uint32_t DR;             /**< Data                                    */
+  union  {
+    __I  uint32_t RSR;          /**< Receive Status                          */
+    __O  uint32_t ECR;          /**< Error Clear                             */
+  };
+  __I  uint32_t _RESERVED0[4];  /**< Reserved                                */
+  __I  uint32_t FR;             /**< Flag                                    */
+  __I  uint32_t _RESERVED1[1];  /**< Reserved                                */
+  __IO uint32_t ILPR;           /**< IrDA Low-Power Register                 */
+  __IO uint32_t IBRD;           /**< Integer Baud-Rate Divisor               */
+  __IO uint32_t FBRD;           /**< Fractional Baud-Rate Divisor            */
+  __IO uint32_t LCRH;           /**< Line Control                            */
+  __IO uint32_t CTL;            /**< Control                                 */
+  __IO uint32_t IFLS;           /**< Interrupt FIFO Level Select             */
+  __IO uint32_t IM;             /**< Interrupt Mask                          */
+  __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
+  __I  uint32_t MIS;            /**< Masked Interrupt Status                 */
+  __O uint32_t ICR;             /**< Interrupt Clear                         */
+  __IO uint32_t DMACTL;         /**< DMA Control                             */
+  __I  uint32_t _RESERVED2[22]; /**< Reserved                                */
+  __IO uint32_t BIT9ADDR;       /**< 9-Bit Self Address                      */
+  __IO uint32_t BIT9AMASK;      /**< 9-Bit Self Address Mask                 */
+  __I  uint32_t _RESERVED3[965];/**< Reserved                                */
+  __I  uint32_t PP;             /**< Peripheral Properties                   */
+  __I  uint32_t _RESERVED4[1];  /**< Reserved                                */
+  __IO uint32_t CC;             /**< Clock Configuration                     */
+} UART_TypeDef;
+
+/**
+ * @brief Micro Direct Memory Access
+ */
+typedef struct
+{
+  __IO uint32_t SET;            /**< Set                                     */
+  __O  uint32_t CLR;            /**< Clear                                   */
+} UDMA_SC_t;
+
+typedef struct
+{
+  __IO uint32_t STAT;           /**< Status                                  */
+  __O  uint32_t CFG;            /**< Configuration                           */
+  __IO uint32_t CTLBASE;        /**< Channel Control Base Pointer            */
+  __IO uint32_t ALTBASE;        /**< Alternate Channel Control Base Pointer  */
+  __IO uint32_t WAITSTAT;       /**< Channel Wait-on-Request Status          */
+  __O  uint32_t SWREQ;          /**< Channel Software Request                */
+  UDMA_SC_t USEBURST;           /**< Channel Useburst registers              */
+  UDMA_SC_t REQMASK;            /**< Channel Request Mask registers          */
+  UDMA_SC_t ENA;                /**< Channel Enable registers                */
+  UDMA_SC_t ALT;                /**< Channel Primary Alternate registers     */
+  UDMA_SC_t PRIO;               /**< Channel Priority registers              */
+  __I  uint32_t _RESERVED0[3];  /**< Reserved                                */
+  __IO uint32_t ERRCLR;         /**< Bus Error Clear                         */
+  __I  uint32_t _RESERVED1[300];/**< Reserved                                */
+  __IO uint32_t CHASGN;         /**< Channel Assignment                      */
+  __IO uint32_t CHIS;           /**< Channel Interrupt Status                */
+  __I  uint32_t _RESERVED2[2];  /**< Reserved                                */
+  __IO uint32_t CHMAP[4];       /**< Channel Map Select 0, 1, 2 and 3        */
+} UDMA_TypeDef;
+
+// USB
+
+/**
+ * @brief Watchdog Timer
+ */
+typedef struct
+{
+  __IO uint32_t LOAD;           /**< Load                                    */
+  __I  uint32_t VALUE;          /**< Value                                   */
+  __IO uint32_t CTL;            /**< Control                                 */
+  __O  uint32_t ICR;            /**< Interrupt Clear                         */
+  __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
+  __I  uint32_t MIS;            /**< Masked Interrupt Status                 */
+  __I  uint32_t _RESERVED0[256];/**< Reserved                                */
+  __IO uint32_t TEST;           /**< Test                                    */
+  __I  uint32_t _RESERVED1[505];/**< Reserved                                */
+  __IO uint32_t LOCK;           /**< Lock                                    */
+} WATCHDOG_TypeDef;
 
 /**
  * @}
@@ -984,7 +791,7 @@ typedef struct
 #define CAN0_BASE   0x40040000
 #define CAN1_BASE   0x40041000
 // usb
-#define AC_BASE     0x4003C000
+#define ACMP_BASE   0x4003C000
 #define PWM0_BASE   0x40028000
 #define QEI0_BASE   0x4002C000
 #define QEI1_BASE   0x4002D000
@@ -1056,7 +863,7 @@ typedef struct
 #define CAN0    ((CAN_TypeDef *)    CAN0_BASE)
 #define CAN1    ((CAN_TypeDef *)    CAN1_BASE)
 // usb
-#define AC      ((AC_TypeDef *)     AC_BASE)
+#define ACMP    ((ACMP_TypeDef *)   ACMP_BASE)
 #define PWM0    ((PWM_TypeDef *)    PWM0_BASE)
 #define QEI0    ((QEI_TypeDef *)    QEI0_BASE)
 #define QEI1    ((QEI_TypeDef *)    QEI1_BASE)
