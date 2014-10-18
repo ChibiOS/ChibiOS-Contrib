@@ -3,7 +3,7 @@ Quick start:
 1) git clone git@github.com:ChibiOS/ChibiOS-gitmain.git
 2) cd ChibiOS-gitmain && \
    git submodule add git@github.com:ChibiOS/ChibiOS-Contrib.git community
-Step #2 is optional if you interested in community code.
+Step #2 is optional if you not interested in community code.
 
 Contributing:
 
