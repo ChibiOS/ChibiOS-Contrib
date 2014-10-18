@@ -1,5 +1,5 @@
 /*
-    ChibiOS/RT - Copyright (C) 2006-2014 Giovanni Di Sirio
+    ChibiOS/RT - Copyright (C) 2013-2014 Uladzimir Pylinsky aka barthess
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,10 +13,6 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-/*
-   Concepts and parts of this file have been contributed by Uladzimir Pylinsky
-   aka barthess.
- */
 
 /*
 TODO:
@@ -66,10 +62,10 @@ static const SRAMConfig sram_cfg = {
 };
 
 /* benchmarking results in MiB/S */
-double memset_speed_ext;
-double memset_speed_int;
-double memcpy_speed_ext2int;
-double memcpy_speed_int2ext;
+volatile double memset_speed_ext;
+volatile double memset_speed_int;
+volatile double memcpy_speed_ext2int;
+volatile double memcpy_speed_int2ext;
 
 /*
  ******************************************************************************

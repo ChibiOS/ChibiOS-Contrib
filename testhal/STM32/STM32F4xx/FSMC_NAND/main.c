@@ -1,5 +1,5 @@
 /*
-    ChibiOS/RT - Copyright (C) 2006-2014 Giovanni Di Sirio
+    ChibiOS/RT - Copyright (C) 2013-2014 Uladzimir Pylinsky aka barthess
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,10 +13,6 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-/*
-   Concepts and parts of this file have been contributed by Uladzimir Pylinsky
-   aka barthess.
- */
 
 /*
  * Hardware notes.
@@ -185,7 +181,7 @@ static const EXTConfig extcfg = {
 };
 #endif /* STM32_NAND_USE_EXT_INT */
 
-static uint32_t BackgroundThdCnt = 0;
+static volatile uint32_t BackgroundThdCnt = 0;
 
 #if USE_KILL_BLOCK_TEST
 static uint32_t KillCycle = 0;

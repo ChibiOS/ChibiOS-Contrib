@@ -30,7 +30,7 @@ endif
 
 # Enable this if you want link time optimizations (LTO)
 ifeq ($(USE_LTO),)
-  USE_LTO = yes
+  USE_LTO = no
 endif
 
 # If enabled, this option allows to compile the application in THUMB mode.
@@ -80,10 +80,10 @@ endif
 PROJECT = ch
 
 # Imported source files and paths
-CHIBIOS = ../../../..
-include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS)/os/hal/boards/NONSTANDARD_STM32F4_BARTHESS2/board.mk
-include $(CHIBIOS)/os/hal/ports/STM32/STM32F4xx/platform.mk
+CHIBIOS = ../../../../..
+include $(CHIBIOS)/community/os/hal/hal.mk
+include $(CHIBIOS)/community/os/hal/boards/NONSTANDARD_STM32F4_BARTHESS2/board.mk
+include $(CHIBIOS)/community/os/hal/ports/STM32/STM32F4xx/platform.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_stm32f4xx.mk

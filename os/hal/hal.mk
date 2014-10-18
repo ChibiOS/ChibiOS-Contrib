@@ -1,4 +1,4 @@
-include ${CHIBIOS}/community/os/hal/hal.mk
+include ${CHIBIOS}/os/hal/hal.mk
 
 HALSRC += ${CHIBIOS}/community/os/hal/src/nand.c
 
