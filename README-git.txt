@@ -12,11 +12,9 @@ Make local clone of your fork
 git clone git@github.com:username/ChibiOS-gitmain.git
 
 Make local branch for your feature
-```
 cd ChibiOS-gitmain
 git branch feature
 git checkout feature
-```
 
 There is no code from ChibiOS-contrib in your repo. We have to connect 
 ChibiOS-contrib as a git submodule
@@ -44,6 +42,7 @@ Now all your changes published on github. Just use web interface to send
 pull 2 requests: for ChibiOS-contrib and for ChibiOS-gitmain.
 
 Links:
+======
 https://help.github.com/
 http://git-scm.com/
 http://chibios.org/dokuwiki/doku.php?id=chibios:guides:style_guide
