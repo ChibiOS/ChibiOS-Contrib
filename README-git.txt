@@ -1,4 +1,5 @@
 Quick start:
+============
 
 Assume you already have a github account. Lets your account name is
 "username".
@@ -11,9 +12,11 @@ Make local clone of your fork
 git clone git@github.com:username/ChibiOS-gitmain.git
 
 Make local branch for your feature
+```
 cd ChibiOS-gitmain
 git branch feature
 git checkout feature
+```
 
 There is no code from ChibiOS-contrib in your repo. We have to connect 
 ChibiOS-contrib as a git submodule
