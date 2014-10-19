@@ -19,5 +19,7 @@ to ChibiOS-Contrib
 3) send pull request as usual
 
 Links:
+https://help.github.com/
+http://git-scm.com/
 http://chibios.org/dokuwiki/doku.php?id=chibios:guides:style_guide
 
