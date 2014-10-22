@@ -40,9 +40,10 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-/** @defgroup FMC_ColumnBits_Number
-  * @{
-  */
+/**
+ * @defgroup FMC_ColumnBits_Number
+ * @{
+ */
 #define FMC_ColumnBits_Number_8b           ((uint32_t)0x00000000)
 #define FMC_ColumnBits_Number_9b           ((uint32_t)0x00000001)
 #define FMC_ColumnBits_Number_10b          ((uint32_t)0x00000002)
@@ -55,12 +56,13 @@
     ((COLUMN) == FMC_ColumnBits_Number_11b))
 
 /**
-  * @}
-  */
+ * @}
+ */
 
-/** @defgroup FMC_RowBits_Number
-  * @{
-  */
+/**
+ * @defgroup FMC_RowBits_Number
+ * @{
+ */
 #define FMC_RowBits_Number_11b             ((uint32_t)0x00000000)
 #define FMC_RowBits_Number_12b             ((uint32_t)0x00000004)
 #define FMC_RowBits_Number_13b             ((uint32_t)0x00000008)
@@ -71,12 +73,13 @@
     ((ROW) == FMC_RowBits_Number_13b))
 
 /**
-  * @}
-  */
+ * @}
+ */
 
-/** @defgroup FMC_SDMemory_Data_Width
-  * @{
-  */
+/**
+ * @defgroup FMC_SDMemory_Data_Width
+ * @{
+ */
 #define FMC_SDMemory_Width_8b                ((uint32_t)0x00000000)
 #define FMC_SDMemory_Width_16b               ((uint32_t)0x00000010)
 #define FMC_SDMemory_Width_32b               ((uint32_t)0x00000020)
@@ -87,12 +90,13 @@
     ((WIDTH) == FMC_SDMemory_Width_32b))
 
 /**
-  * @}
-  */
+ * @}
+ */
 
-/** @defgroup FMC_InternalBank_Number
-  * @{
-  */
+/**
+ * @defgroup FMC_InternalBank_Number
+ * @{
+ */
 #define FMC_InternalBank_Number_2          ((uint32_t)0x00000000)
 #define FMC_InternalBank_Number_4          ((uint32_t)0x00000040)
 
@@ -101,13 +105,14 @@
     ((NUMBER) == FMC_InternalBank_Number_4))
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 
-/** @defgroup FMC_CAS_Latency
-  * @{
-  */
+/**
+ * @defgroup FMC_CAS_Latency
+ * @{
+ */
 #define FMC_CAS_Latency_1                  ((uint32_t)0x00000080)
 #define FMC_CAS_Latency_2                  ((uint32_t)0x00000100)
 #define FMC_CAS_Latency_3                  ((uint32_t)0x00000180)
@@ -118,12 +123,13 @@
     ((LATENCY) == FMC_CAS_Latency_3))
 
 /**
-  * @}
-  */
+ * @}
+ */
 
-/** @defgroup FMC_Write_Protection
-  * @{
-  */
+/**
+ * @defgroup FMC_Write_Protection
+ * @{
+ */
 #define FMC_Write_Protection_Disable       ((uint32_t)0x00000000)
 #define FMC_Write_Protection_Enable        ((uint32_t)0x00000200)
 
@@ -132,13 +138,14 @@
     ((WRITE) == FMC_Write_Protection_Enable))
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 
-/** @defgroup FMC_SDClock_Period
-  * @{
-  */
+/**
+ * @defgroup FMC_SDClock_Period
+ * @{
+ */
 #define FMC_SDClock_Disable                ((uint32_t)0x00000000)
 #define FMC_SDClock_Period_2               ((uint32_t)0x00000800)
 #define FMC_SDClock_Period_3               ((uint32_t)0x00000C00)
@@ -150,12 +157,13 @@
     ((PERIOD) == FMC_SDClock_Period_3))
 
 /**
-  * @}
-  */
+ * @}
+ */
 
-/** @defgroup FMC_Read_Burst
-  * @{
-  */
+/**
+ * @defgroup FMC_Read_Burst
+ * @{
+ */
 #define FMC_Read_Burst_Disable             ((uint32_t)0x00000000)
 #define FMC_Read_Burst_Enable              ((uint32_t)0x00001000)
 #define FMC_Read_Burst_Mask                ((uint32_t)0x00001000)
@@ -165,12 +173,13 @@
     ((RBURST) == FMC_Read_Burst_Enable))
 
 /**
-  * @}
-  */
+ * @}
+ */
 
-/** @defgroup FMC_ReadPipe_Delay
-  * @{
-  */
+/**
+ * @defgroup FMC_ReadPipe_Delay
+ * @{
+ */
 #define FMC_ReadPipe_Delay_0               ((uint32_t)0x00000000)
 #define FMC_ReadPipe_Delay_1               ((uint32_t)0x00002000)
 #define FMC_ReadPipe_Delay_2               ((uint32_t)0x00004000)
@@ -182,12 +191,13 @@
     ((DELAY) == FMC_ReadPipe_Delay_2))
 
 /**
-  * @}
-  */
+ * @}
+ */
 
-/** @defgroup FMC_Command_Mode
-  * @{
-  */
+/**
+ * @defgroup FMC_Command_Mode
+ * @{
+ */
 #define FMC_Command_Mode_normal            ((uint32_t)0x00000000)
 #define FMC_Command_Mode_CLK_Enabled       ((uint32_t)0x00000001)
 #define FMC_Command_Mode_PALL              ((uint32_t)0x00000002)
@@ -206,12 +216,13 @@
     ((COMMAND) == FMC_Command_Mode_PowerDown))
 
 /**
-  * @}
-  */
+ * @}
+ */
 
-/** @defgroup FMC_Command_Target
-  * @{
-  */
+/**
+ *  @defgroup FMC_Command_Target
+ * @{
+ */
 #define FMC_Command_Target_bank2           ((uint32_t)0x00000008)
 #define FMC_Command_Target_bank1           ((uint32_t)0x00000010)
 #define FMC_Command_Target_bank1_2         ((uint32_t)0x00000018)
@@ -222,31 +233,33 @@
     ((TARGET) == FMC_Command_Target_bank1_2))
 
 /**
-  * @}
-  */   
+ * @}
+ */
   
-/** @defgroup FMC_AutoRefresh_Number
-  * @{
-  */  
+/**
+ * @defgroup FMC_AutoRefresh_Number
+ * @{
+ */
 #define IS_FMC_AUTOREFRESH_NUMBER(NUMBER) (((NUMBER) > 0) && ((NUMBER) <= 16))
 
 /**
-  * @}
-  */
+ * @}
+ */
 
-/** @defgroup FMC_ModeRegister_Definition
-  * @{
-  */
+/**
+ * @defgroup FMC_ModeRegister_Definition
+ * @{
+ */
 #define IS_FMC_MODE_REGISTER(CONTENT) ((CONTENT) <= 8191)
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 
 /**
-  * @brief  FMC SDRAM Mode definition register defines
-  */
+ * @brief  FMC SDRAM Mode definition register defines
+ */
 #define FMC_SDCMR_MRD_BURST_LENGTH_1             ((uint16_t)0x0000)
 #define FMC_SDCMR_MRD_BURST_LENGTH_2             ((uint16_t)0x0001)
 #define FMC_SDCMR_MRD_BURST_LENGTH_4             ((uint16_t)0x0002)
@@ -342,7 +355,7 @@ struct SDRAMDriver {
   /**
    * @brief     Pointer to the FMC SDRAM registers block.
    */
-  FSMC_SDRAM_TypeDef     *sdram;
+  FSMC_SDRAM_TypeDef        *sdram;
 };
 
 /*===========================================================================*/
@@ -368,7 +381,7 @@ extern "C" {
   void fsmcSdramStart(SDRAMDriver *sdramp, const SDRAMConfig *cfgp);
   void fsmcSdramStop(SDRAMDriver *sdramp);
   void fsmcSdram_WaitReady(void);
-  void fsmcSdram_WriteProtectionConfig(SDRAMDriver *sdramp, int State);
+  void fsmcSdram_WriteProtectionConfig(SDRAMDriver *sdramp, int state);
 #ifdef __cplusplus
 }
 #endif

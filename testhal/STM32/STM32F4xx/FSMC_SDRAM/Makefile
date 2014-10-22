@@ -82,7 +82,7 @@ PROJECT = ch
 # Imported source files and paths
 CHIBIOS = ../../../../..
 include $(CHIBIOS)/community/os/hal/hal.mk
-include $(CHIBIOS)/community/os/hal/boards/NONSTANDARD_STM32F4_BARTHESS2/board.mk
+include $(CHIBIOS)/os/hal/boards/ST_STM32F429I_DISCOVERY/board.mk
 include $(CHIBIOS)/community/os/hal/ports/STM32/STM32F4xx/platform.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 include $(CHIBIOS)/os/rt/rt.mk

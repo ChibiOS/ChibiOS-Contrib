@@ -29,7 +29,7 @@
 #ifndef _FSMC_H_
 #define _FSMC_H_
 
-#if HAL_USE_NAND || STM32_USE_FSMC_SRAM || defined(__DOXYGEN__)
+#if HAL_USE_NAND || STM32_USE_FSMC_SRAM || STM32_USE_FSMC_SDRAM || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -86,6 +86,11 @@
 #define FSMC_Bank2_MAP_BASE               ((uint32_t) 0x70000000)
 #define FSMC_Bank3_MAP_BASE               ((uint32_t) 0x80000000)
 #define FSMC_Bank4_MAP_BASE               ((uint32_t) 0x90000000)
+#if (defined(STM32F427xx) || defined(STM32F437xx) || \
+     defined(STM32F429xx) || defined(STM32F439xx))
+  #define FSMC_Bank5_MAP_BASE             ((uint32_t) 0xC0000000)
+  #define FSMC_Bank6_MAP_BASE             ((uint32_t) 0xD0000000)
+#endif
 
 /*
  * Subbunks of bank1
@@ -157,6 +162,15 @@ typedef struct {
   uint32_t      RESERVED[63]; /**< Reserved */
   __IO uint32_t BWTR;         /**< SRAM/NOR write timing registers */
 } FSMC_SRAM_NOR_TypeDef;
+
+#if (defined(STM32F427xx) || defined(STM32F437xx) || \
+     defined(STM32F429xx) || defined(STM32F439xx))
+  typedef struct {
+    __IO uint32_t SDCR;         /**< SDRAM control register */
+    uint32_t      RESERVED0;    /**< Reserved */
+    __IO uint32_t SDTR;         /**< SDRAM timing register */
+  } FSMC_SDRAM_TypeDef;
+#endif
 
 /**
  * @brief   PCR register
@@ -280,6 +294,15 @@ struct FSMCDriver {
 #if STM32_USE_FSMC_PCCARD
   FSMC_PCCard_TypeDef       *pccard;
 #endif
+#if (defined(STM32F427xx) || defined(STM32F437xx) || \
+     defined(STM32F429xx) || defined(STM32F439xx))
+  #if STM32_SDRAM_USE_FSMC_SDRAM1
+    FSMC_SDRAM_TypeDef       *sdram1;
+  #endif
+  #if STM32_SDRAM_USE_FSMC_SDRAM2
+    FSMC_SDRAM_TypeDef       *sdram2;
+  #endif
+#endif
 };
 
 /*===========================================================================*/
@@ -304,7 +327,7 @@ extern "C" {
 }
 #endif
 
-#endif /* HAL_USE_NAND || STM32_USE_FSMC_SRAM */
+#endif /* HAL_USE_NAND || STM32_USE_FSMC_SRAM || STM32_USE_FSMC_SDRAM */
 
 #endif /* _FSMC_H_ */
 

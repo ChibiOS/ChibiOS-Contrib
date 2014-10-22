@@ -39,6 +39,17 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+#define SDCR2_DONTCARE_BITS (FMC_SDClock_Period_Mask | \
+                             FMC_Read_Burst_Mask | \
+                             FMC_ReadPipe_Delay_Mask)
+
+#define SDTR2_DONTCARE_BITS (FMC_RowCycleDelay_Mask | FMC_RPDelay_Mask)
+
+/*
+ * FMC SDCRx write protection mask
+ */
+#define SDCR_WriteProtection_RESET ((uint32_t)0x00007DFF)
+
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -75,14 +86,14 @@ SDRAMDriver SDRAMD2;
  *
  * @notapi
  */
-static void fsmcSdramInitSequence(uint32_t CommandTarget) {
+static void fsmc_sdram_init_sequence(uint32_t command_target) {
   uint32_t tmpreg;
   /* Step 3 -----------------------------------------------------------------*/
   /* Wait until the SDRAM controller is ready */
   while (FMC_Bank5_6->SDSR & FMC_SDSR_BUSY);
   /* Configure a clock configuration enable command */
   FMC_Bank5_6->SDCMR = (uint32_t) FMC_Command_Mode_CLK_Enabled |
-    CommandTarget | 
+    command_target | 
     ((1 -1) <<  5) | // FMC_AutoRefreshNumber = 1
     (0 << 9);        // FMC_ModeRegisterDefinition = 0
   /* Step 4 -----------------------------------------------------------------*/
@@ -93,7 +104,7 @@ static void fsmcSdramInitSequence(uint32_t CommandTarget) {
   while (FMC_Bank5_6->SDSR & FMC_SDSR_BUSY);
   /* Configure a PALL (precharge all) command */
   FMC_Bank5_6->SDCMR = (uint32_t) FMC_Command_Mode_PALL |
-    CommandTarget |
+    command_target |
     ((1 -1) <<  5) | // FMC_AutoRefreshNumber = 1
     (0 << 9);        // FMC_ModeRegisterDefinition = 0
   /* Step 6 -----------------------------------------------------------------*/
@@ -101,14 +112,14 @@ static void fsmcSdramInitSequence(uint32_t CommandTarget) {
   while (FMC_Bank5_6->SDSR & FMC_SDSR_BUSY);
   /* Configure a Auto-Refresh command: Send the first command */
   FMC_Bank5_6->SDCMR = (uint32_t) FMC_Command_Mode_AutoRefresh |
-    CommandTarget |
+    command_target |
     ((4 -1) <<  5) | // FMC_AutoRefreshNumber = 4
     (0 << 9);        // FMC_ModeRegisterDefinition = 0
   /* Wait until the SDRAM controller is ready */
   while (FMC_Bank5_6->SDSR & FMC_SDSR_BUSY);
   /* Configure a Auto-Refresh command: Send the second command*/
   FMC_Bank5_6->SDCMR = (uint32_t) FMC_Command_Mode_AutoRefresh |
-    CommandTarget |
+    command_target |
     ((4 -1) <<  5) | // FMC_AutoRefreshNumber = 4
     (0 << 9);        // FMC_ModeRegisterDefinition = 0
   /* Step 7 -----------------------------------------------------------------*/
@@ -122,7 +133,7 @@ static void fsmcSdramInitSequence(uint32_t CommandTarget) {
     FMC_SDCMR_MRD_WRITEBURST_MODE_SINGLE;
   /* Send the command */
   FMC_Bank5_6->SDCMR = (uint32_t) FMC_Command_Mode_LoadMode |
-    CommandTarget |
+    command_target |
     ((1 -1) <<  5) | // FMC_AutoRefreshNumber = 1
     (tmpreg << 9);
   /* Step 8 -----------------------------------------------------------------*/
@@ -152,8 +163,6 @@ static void fsmcSdramInitSequence(uint32_t CommandTarget) {
 
 /**
  * @brief   Low level SDRAM driver initialization.
- *
- * @notapi
  */
 void fsmcSdramInit(void) {
 
@@ -168,7 +177,6 @@ void fsmcSdramInit(void) {
   SDRAMD2.sdram = FSMCD1.sdram2;
   SDRAMD2.state = SDRAM_STOP;
 #endif /* STM32_SDRAM_USE_FSMC_SDRAM2 */
-
 }
 
 /**
@@ -176,13 +184,7 @@ void fsmcSdramInit(void) {
  *
  * @param[in] sdramp        pointer to the @p SDRAMDriver object
  * @param[in] cfgp          pointer to the @p SDRAMConfig object
- *
- * @notapi
  */
-#define SDCR2_DONTCARE_BITS (FMC_SDClock_Period_Mask | \
-                             FMC_Read_Burst_Mask | \
-                             FMC_ReadPipe_Delay_Mask)
-#define SDTR2_DONTCARE_BITS (FMC_RowCycleDelay_Mask | FMC_RPDelay_Mask)
 void fsmcSdramStart(SDRAMDriver *sdramp, const SDRAMConfig *cfgp) {
 
   if (FSMCD1.state == FSMC_STOP)
@@ -196,19 +198,19 @@ void fsmcSdramStart(SDRAMDriver *sdramp, const SDRAMConfig *cfgp) {
     if (sdramp->sdram == (FSMC_SDRAM_TypeDef *)FSMC_Bank5_R_BASE) {
       sdramp->sdram->SDCR = cfgp->sdcr;
       sdramp->sdram->SDTR = cfgp->sdtr;
-      fsmcSdramInitSequence(FMC_Command_Target_bank1);
-    } else { /* SDCR2 "don't care" bits configuration */
+      fsmc_sdram_init_sequence(FMC_Command_Target_bank1);
+    }
+    else { /* SDCR2 "don't care" bits configuration */
       ((FSMC_SDRAM_TypeDef *)FSMC_Bank5_R_BASE)->SDCR = 
         cfgp->sdcr & SDCR2_DONTCARE_BITS;
       sdramp->sdram->SDCR = cfgp->sdcr;
       ((FSMC_SDRAM_TypeDef *)FSMC_Bank5_R_BASE)->SDTR = 
         cfgp->sdtr & SDTR2_DONTCARE_BITS;
       sdramp->sdram->SDTR = cfgp->sdtr;
-      fsmcSdramInitSequence(FMC_Command_Target_bank2);
+      fsmc_sdram_init_sequence(FMC_Command_Target_bank2);
     }
     sdramp->state = SDRAM_READY;
   }
-
 }
 
 /**
@@ -225,7 +227,6 @@ void fsmcSdramStop(SDRAMDriver *sdramp) {
   }
 }
 
-
 /**
  * @brief   Wait until the SDRAM controller is ready.
  *
@@ -237,24 +238,20 @@ void fsmcSdram_WaitReady(void) {
 }
 
 /**
-  * @brief  Enables or disables write protection to the specified SDRAM Bank.
-  * @param  SDRAM_Bank: Defines the FMC SDRAM bank. This parameter can be
-  *                     FMC_Bank1_SDRAM or FMC_Bank2_SDRAM.
-  * @param  NewState: new state of the write protection flag.
-  *          This parameter can be: ENABLE or DISABLE.
-  * @retval None
-  */
-/* FMC SDCRx write protection Mask*/
-#define SDCR_WriteProtection_RESET ((uint32_t)0x00007DFF)
-void fsmcSdram_WriteProtectionConfig(SDRAMDriver *sdramp, int State) {
+ * @brief  Enables or disables write protection to the specified SDRAM Bank.
+ * @param  SDRAM_Bank: Defines the FMC SDRAM bank. This parameter can be
+ *                     FMC_Bank1_SDRAM or FMC_Bank2_SDRAM.
+ * @param  NewState: new state of the write protection flag.
+ *          This parameter can be: ENABLE or DISABLE.
+ * @retval None
+ */
+void fsmcSdram_WriteProtectionConfig(SDRAMDriver *sdramp, int state) {
 
-  if (State)
+  if (state)
     sdramp->sdram->SDCR |= FMC_Write_Protection_Enable;
   else
     sdramp->sdram->SDCR &= SDCR_WriteProtection_RESET;
-
 }
-
 
 #endif /* STM32_USE_FSMC_SDRAM */
 

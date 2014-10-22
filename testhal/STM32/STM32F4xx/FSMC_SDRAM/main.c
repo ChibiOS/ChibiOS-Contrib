@@ -50,7 +50,6 @@ write memtest function using ideas from http://www.memtest86.com/technical.htm
  */
 
 /*
-/*
  ******************************************************************************
  * GLOBAL VARIABLES
  ******************************************************************************
@@ -80,7 +79,6 @@ static const SDRAMConfig sdram_cfg = {
                      (2 << 20) | // FMC_RPDelay = 2 (TRP:  20ns => 2x11.11ns)
                      (2 << 24)   // FMC_RCDDelay = 2 (TRCD: 20ns => 2x11.11ns)
 };
-
 
 /* benchmarking results in MiB/S */
 double memset_speed_ext;

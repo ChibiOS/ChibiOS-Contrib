@@ -28,7 +28,8 @@
 #include "hal.h"
 #include "fsmc.h"
 
-#if HAL_USE_NAND || STM32_USE_FSMC_SRAM || defined(__DOXYGEN__)
+#if HAL_USE_NAND || STM32_USE_FSMC_SRAM || STM32_USE_FSMC_SDRAM || \
+  defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -101,6 +102,17 @@ void fsmc_init(void) {
 
 #if STM32_USE_FSMC_PCCARD
     FSMCD1.pccard = (FSMC_PCCARD_TypeDef *)FSMC_Bank4_R_BASE;
+#endif
+
+#if (defined(STM32F427xx) || defined(STM32F437xx) || \
+     defined(STM32F429xx) || defined(STM32F439xx))
+  #if STM32_SDRAM_USE_FSMC_SDRAM1
+    FSMCD1.sdram1 = (FSMC_SDRAM_TypeDef *)FSMC_Bank5_R_BASE;
+  #endif
+
+  #if STM32_SDRAM_USE_FSMC_SDRAM2
+    FSMCD1.sdram2 = (FSMC_SDRAM_TypeDef *)FSMC_Bank6_R_BASE;
+  #endif
 #endif
   }
 }
@@ -183,6 +195,6 @@ CH_IRQ_HANDLER(STM32_FSMC_HANDLER) {
 }
 #endif /* !STM32_NAND_USE_EXT_INT */
 
-#endif /* HAL_USE_FSMC || STM32_USE_FSMC_SRAM */
+#endif /* HAL_USE_FSMC || STM32_USE_FSMC_SRAM || STM32_USE_FSMC_SDRAM */
 
 /** @} */
