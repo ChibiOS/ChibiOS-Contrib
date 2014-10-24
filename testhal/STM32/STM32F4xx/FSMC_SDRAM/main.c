@@ -62,7 +62,7 @@ static const size_t extram_size = 1024*1024;
  * SDRAM driver configuration structure.
  */
 static const SDRAMConfig sdram_cfg = {
-  .sdcr = (uint32_t) FMC_ColumnBits_Number_9b |
+  .sdcr1 = (uint32_t) FMC_ColumnBits_Number_9b |
                      FMC_RowBits_Number_13b |
                      FMC_SDMemory_Width_16b |
                      FMC_InternalBank_Number_4 |
@@ -71,7 +71,7 @@ static const SDRAMConfig sdram_cfg = {
                      FMC_SDClock_Period_3 |
                      FMC_Read_Burst_Enable |
                      FMC_ReadPipe_Delay_1,
-  .sdtr = (uint32_t) (2   - 1) | // FMC_LoadToActiveDelay = 2 (TMRD: 2 Clock cycles)
+  .sdtr1 = (uint32_t) (2   - 1) | // FMC_LoadToActiveDelay = 2 (TMRD: 2 Clock cycles)
                      (7 <<  4) | // FMC_ExitSelfRefreshDelay = 7 (TXSR: min=70ns (7x11.11ns))
                      (4 <<  8) | // FMC_SelfRefreshTime = 4 (TRAS: min=42ns (4x11.11ns) max=120k (ns))
                      (7 << 12) | // FMC_RowCycleDelay = 7 (TRC:  min=70 (7x11.11ns))
@@ -168,7 +168,7 @@ int main(void) {
   chSysInit();
 
   fsmcSdramInit();
-  fsmcSdramStart(&SDRAMD1, &sdram_cfg);
+  fsmcSdramStart(&SDRAMD, &sdram_cfg);
   extram_benchmark();
 
 #if USE_INFINITE_MEMTEST

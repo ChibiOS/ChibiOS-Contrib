@@ -56,10 +56,7 @@
   #define FSMC_Bank4_R_BASE               (FMC_R_BASE + 0x00A0)
   #endif
   #if !defined(FSMC_Bank5_R_BASE)
-  #define FSMC_Bank5_R_BASE               (FMC_R_BASE + 0x0140)
-  #endif
-  #if !defined(FSMC_Bank_R_BASE)
-  #define FSMC_Bank6_R_BASE               (FMC_R_BASE + 0x0144)
+  #define FSMC_Bank5_6_R_BASE             (FMC_R_BASE + 0x0140)
   #endif
 #else
   #if !defined(FSMC_Bank1_R_BASE)
@@ -165,11 +162,20 @@ typedef struct {
 
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx))
-  typedef struct {
-    __IO uint32_t SDCR;         /**< SDRAM control register */
-    uint32_t      RESERVED0;    /**< Reserved */
-    __IO uint32_t SDTR;         /**< SDRAM timing register */
-  } FSMC_SDRAM_TypeDef;
+
+typedef struct {
+  __IO uint32_t SDCR;         /**< SDRAM control register */
+  uint32_t      RESERVED;     /**< Reserved */
+  __IO uint32_t SDTR;         /**< SDRAM timing register */
+} FSMC_SDRAM_BANK_TypeDef;
+
+typedef struct {
+  FSMC_SDRAM_BANK_TypeDef banks[2]; /**< Banks mapping */
+  __IO uint32_t SDCMR;              /**< SDRAM comand mode register */
+  __IO uint32_t SDRTR;              /**< SDRAM refresh timer register */
+  __IO uint32_t SDSR;               /**< SDRAM status register */
+} FSMC_SDRAM_TypeDef;
+
 #endif
 
 /**
@@ -296,11 +302,8 @@ struct FSMCDriver {
 #endif
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx))
-  #if STM32_SDRAM_USE_FSMC_SDRAM1
-    FSMC_SDRAM_TypeDef       *sdram1;
-  #endif
-  #if STM32_SDRAM_USE_FSMC_SDRAM2
-    FSMC_SDRAM_TypeDef       *sdram2;
+  #if (STM32_SDRAM_USE_FSMC_SDRAM1 || STM32_SDRAM_USE_FSMC_SDRAM1)
+    FSMC_SDRAM_TypeDef       *sdram;
   #endif
 #endif
 };

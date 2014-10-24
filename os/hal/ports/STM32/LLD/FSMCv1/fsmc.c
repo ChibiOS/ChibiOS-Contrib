@@ -107,11 +107,7 @@ void fsmc_init(void) {
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx))
   #if STM32_SDRAM_USE_FSMC_SDRAM1
-    FSMCD1.sdram1 = (FSMC_SDRAM_TypeDef *)FSMC_Bank5_R_BASE;
-  #endif
-
-  #if STM32_SDRAM_USE_FSMC_SDRAM2
-    FSMCD1.sdram2 = (FSMC_SDRAM_TypeDef *)FSMC_Bank6_R_BASE;
+    FSMCD1.sdram = (FSMC_SDRAM_TypeDef *)FSMC_Bank5_6_R_BASE;
   #endif
 #endif
   }

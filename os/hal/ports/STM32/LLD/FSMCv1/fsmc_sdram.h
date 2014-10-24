@@ -48,13 +48,6 @@
 #define FMC_ColumnBits_Number_9b           ((uint32_t)0x00000001)
 #define FMC_ColumnBits_Number_10b          ((uint32_t)0x00000002)
 #define FMC_ColumnBits_Number_11b          ((uint32_t)0x00000003)
-
-#define IS_FMC_COLUMNBITS_NUMBER(COLUMN) \
-    (((COLUMN) == FMC_ColumnBits_Number_8b)  || \
-    ((COLUMN) == FMC_ColumnBits_Number_9b)  || \
-    ((COLUMN) == FMC_ColumnBits_Number_10b) || \
-    ((COLUMN) == FMC_ColumnBits_Number_11b))
-
 /**
  * @}
  */
@@ -66,12 +59,6 @@
 #define FMC_RowBits_Number_11b             ((uint32_t)0x00000000)
 #define FMC_RowBits_Number_12b             ((uint32_t)0x00000004)
 #define FMC_RowBits_Number_13b             ((uint32_t)0x00000008)
-
-#define IS_FMC_ROWBITS_NUMBER(ROW) \
-    (((ROW) == FMC_RowBits_Number_11b) || \
-    ((ROW) == FMC_RowBits_Number_12b) || \
-    ((ROW) == FMC_RowBits_Number_13b))
-
 /**
  * @}
  */
@@ -83,12 +70,6 @@
 #define FMC_SDMemory_Width_8b                ((uint32_t)0x00000000)
 #define FMC_SDMemory_Width_16b               ((uint32_t)0x00000010)
 #define FMC_SDMemory_Width_32b               ((uint32_t)0x00000020)
-
-#define IS_FMC_SDMEMORY_WIDTH(WIDTH) \
-    (((WIDTH) == FMC_SDMemory_Width_8b)  || \
-    ((WIDTH) == FMC_SDMemory_Width_16b) || \
-    ((WIDTH) == FMC_SDMemory_Width_32b))
-
 /**
  * @}
  */
@@ -99,11 +80,6 @@
  */
 #define FMC_InternalBank_Number_2          ((uint32_t)0x00000000)
 #define FMC_InternalBank_Number_4          ((uint32_t)0x00000040)
-
-#define IS_FMC_INTERNALBANK_NUMBER(NUMBER) \
-    (((NUMBER) == FMC_InternalBank_Number_2) || \
-    ((NUMBER) == FMC_InternalBank_Number_4))
-
 /**
  * @}
  */
@@ -116,12 +92,6 @@
 #define FMC_CAS_Latency_1                  ((uint32_t)0x00000080)
 #define FMC_CAS_Latency_2                  ((uint32_t)0x00000100)
 #define FMC_CAS_Latency_3                  ((uint32_t)0x00000180)
-
-#define IS_FMC_CAS_LATENCY(LATENCY) \
-    (((LATENCY) == FMC_CAS_Latency_1) || \
-    ((LATENCY) == FMC_CAS_Latency_2) || \
-    ((LATENCY) == FMC_CAS_Latency_3))
-
 /**
  * @}
  */
@@ -132,11 +102,6 @@
  */
 #define FMC_Write_Protection_Disable       ((uint32_t)0x00000000)
 #define FMC_Write_Protection_Enable        ((uint32_t)0x00000200)
-
-#define IS_FMC_WRITE_PROTECTION(WRITE) \
-    (((WRITE) == FMC_Write_Protection_Disable) || \
-    ((WRITE) == FMC_Write_Protection_Enable))
-
 /**
  * @}
  */
@@ -150,12 +115,6 @@
 #define FMC_SDClock_Period_2               ((uint32_t)0x00000800)
 #define FMC_SDClock_Period_3               ((uint32_t)0x00000C00)
 #define FMC_SDClock_Period_Mask            ((uint32_t)0x00000C00)
-
-#define IS_FMC_SDCLOCK_PERIOD(PERIOD) \
-    (((PERIOD) == FMC_SDClock_Disable) || \
-    ((PERIOD) == FMC_SDClock_Period_2) || \
-    ((PERIOD) == FMC_SDClock_Period_3))
-
 /**
  * @}
  */
@@ -167,11 +126,6 @@
 #define FMC_Read_Burst_Disable             ((uint32_t)0x00000000)
 #define FMC_Read_Burst_Enable              ((uint32_t)0x00001000)
 #define FMC_Read_Burst_Mask                ((uint32_t)0x00001000)
-
-#define IS_FMC_READ_BURST(RBURST) \
-    (((RBURST) == FMC_Read_Burst_Disable) || \
-    ((RBURST) == FMC_Read_Burst_Enable))
-
 /**
  * @}
  */
@@ -184,12 +138,6 @@
 #define FMC_ReadPipe_Delay_1               ((uint32_t)0x00002000)
 #define FMC_ReadPipe_Delay_2               ((uint32_t)0x00004000)
 #define FMC_ReadPipe_Delay_Mask            ((uint32_t)0x00006000)
-
-#define IS_FMC_READPIPE_DELAY(DELAY) \
-    (((DELAY) == FMC_ReadPipe_Delay_0) || \
-    ((DELAY) == FMC_ReadPipe_Delay_1) || \
-    ((DELAY) == FMC_ReadPipe_Delay_2))
-
 /**
  * @}
  */
@@ -205,57 +153,9 @@
 #define FMC_Command_Mode_LoadMode          ((uint32_t)0x00000004)
 #define FMC_Command_Mode_Selfrefresh       ((uint32_t)0x00000005)
 #define FMC_Command_Mode_PowerDown         ((uint32_t)0x00000006)
-
-#define IS_FMC_COMMAND_MODE(COMMAND) \
-    (((COMMAND) == FMC_Command_Mode_normal)      || \
-    ((COMMAND) == FMC_Command_Mode_CLK_Enabled) || \
-    ((COMMAND) == FMC_Command_Mode_PALL)        || \
-    ((COMMAND) == FMC_Command_Mode_AutoRefresh) || \
-    ((COMMAND) == FMC_Command_Mode_LoadMode)    || \
-    ((COMMAND) == FMC_Command_Mode_Selfrefresh) || \
-    ((COMMAND) == FMC_Command_Mode_PowerDown))
-
 /**
  * @}
  */
-
-/**
- *  @defgroup FMC_Command_Target
- * @{
- */
-#define FMC_Command_Target_bank2           ((uint32_t)0x00000008)
-#define FMC_Command_Target_bank1           ((uint32_t)0x00000010)
-#define FMC_Command_Target_bank1_2         ((uint32_t)0x00000018)
-
-#define IS_FMC_COMMAND_TARGET(TARGET) \
-    (((TARGET) == FMC_Command_Target_bank1) || \
-    ((TARGET) == FMC_Command_Target_bank2) || \
-    ((TARGET) == FMC_Command_Target_bank1_2))
-
-/**
- * @}
- */
-  
-/**
- * @defgroup FMC_AutoRefresh_Number
- * @{
- */
-#define IS_FMC_AUTOREFRESH_NUMBER(NUMBER) (((NUMBER) > 0) && ((NUMBER) <= 16))
-
-/**
- * @}
- */
-
-/**
- * @defgroup FMC_ModeRegister_Definition
- * @{
- */
-#define IS_FMC_MODE_REGISTER(CONTENT) ((CONTENT) <= 8191)
-
-/**
- * @}
- */
-
 
 /**
  * @brief  FMC SDRAM Mode definition register defines
@@ -340,8 +240,14 @@ typedef struct SDRAMDriver SDRAMDriver;
  * @note    It could be empty on some architectures.
  */
 typedef struct {
-  uint32_t                  sdcr;
-  uint32_t                  sdtr;
+#if STM32_SDRAM_USE_FSMC_SDRAM1
+  uint32_t                  sdcr1;
+  uint32_t                  sdtr1;
+#endif
+#if STM32_SDRAM_USE_FSMC_SDRAM2
+  uint32_t                  sdcr2;
+  uint32_t                  sdtr2;
+#endif
 } SDRAMConfig;
 
 /**
@@ -349,7 +255,7 @@ typedef struct {
  */
 struct SDRAMDriver {
   /**
-   * @brief   Driver state.
+   * @brief     Driver state.
    */
   sdramstate_t              state;
   /**
@@ -366,13 +272,7 @@ struct SDRAMDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_SDRAM_USE_FSMC_SDRAM1 && !defined(__DOXYGEN__)
-extern SDRAMDriver SDRAMD1;
-#endif
-
-#if STM32_SDRAM_USE_FSMC_SDRAM2 && !defined(__DOXYGEN__)
-extern SDRAMDriver SDRAMD2;
-#endif
+extern SDRAMDriver SDRAMD;
 
 #ifdef __cplusplus
 extern "C" {
@@ -380,8 +280,6 @@ extern "C" {
   void fsmcSdramInit(void);
   void fsmcSdramStart(SDRAMDriver *sdramp, const SDRAMConfig *cfgp);
   void fsmcSdramStop(SDRAMDriver *sdramp);
-  void fsmcSdram_WaitReady(void);
-  void fsmcSdram_WriteProtectionConfig(SDRAMDriver *sdramp, int state);
 #ifdef __cplusplus
 }
 #endif
