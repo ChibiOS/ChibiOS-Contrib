@@ -39,16 +39,16 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define SDCR2_DONTCARE_BITS (FMC_SDClock_Period_Mask | \
-                             FMC_Read_Burst_Mask | \
-                             FMC_ReadPipe_Delay_Mask)
-
-#define SDTR2_DONTCARE_BITS (FMC_RowCycleDelay_Mask | FMC_RPDelay_Mask)
-
-/*
- * FMC SDCRx write protection mask
+/**
+ * FMC_Command_Mode
  */
-#define SDCR_WriteProtection_RESET ((uint32_t)0x00007DFF)
+#define FMC_Command_Mode_normal            ((uint32_t)0x00000000)
+#define FMC_Command_Mode_CLK_Enabled       ((uint32_t)0x00000001)
+#define FMC_Command_Mode_PALL              ((uint32_t)0x00000002)
+#define FMC_Command_Mode_AutoRefresh       ((uint32_t)0x00000003)
+#define FMC_Command_Mode_LoadMode          ((uint32_t)0x00000004)
+#define FMC_Command_Mode_Selfrefresh       ((uint32_t)0x00000005)
+#define FMC_Command_Mode_PowerDown         ((uint32_t)0x00000006)
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -83,13 +83,12 @@ static void _sdram_wait_ready(void) {
 /**
  * @brief   Executes the SDRAM memory initialization sequence.
  *
- * @param[in] sdramp         pointer to the @p SDRAMDriver object
+ * @param[in] cfgp         pointer to the @p SDRAMConfig object
  *
  * @notapi
  */
-static void _sdram_init_sequence(void) {
+static void _sdram_init_sequence(const SDRAMConfig *cfgp) {
 
-  uint32_t tmp = 0;
   uint32_t command_target = 0;
 
 #if STM32_SDRAM_USE_FSMC_SDRAM1
@@ -101,58 +100,32 @@ static void _sdram_init_sequence(void) {
 
   /* Step 3: Configure a clock configuration enable command.*/
   _sdram_wait_ready();
-  SDRAMD.sdram->SDCMR = (uint32_t) FMC_Command_Mode_CLK_Enabled |
-          command_target |
-          ((1 -1) << 5) | // FMC_AutoRefreshNumber = 1
-          (0 << 9);        // FMC_ModeRegisterDefinition = 0
+  SDRAMD.sdram->SDCMR = FMC_Command_Mode_CLK_Enabled | command_target;
 
-  /* Step 4: Insert 10 ms delay.*/
-  chSysPolledDelayX(MS2ST(10));
+  /* Step 4: Insert 1 ms delay (tipically 100uS).*/
+  osalThreadSleepMilliseconds(1);
 
   /* Step 5: Configure a PALL (precharge all) command.*/
   _sdram_wait_ready();
-  SDRAMD.sdram->SDCMR = (uint32_t) FMC_Command_Mode_PALL |
-          command_target |
-          ((1 -1) << 5) | // FMC_AutoRefreshNumber = 1
-          (0 << 9);        // FMC_ModeRegisterDefinition = 0
+  SDRAMD.sdram->SDCMR = FMC_Command_Mode_PALL | command_target;
 
   /* Step 6.1: Configure a Auto-Refresh command: send the first command.*/
   _sdram_wait_ready();
-  SDRAMD.sdram->SDCMR = (uint32_t) FMC_Command_Mode_AutoRefresh |
-          command_target |
-          ((4 -1) << 5) | // FMC_AutoRefreshNumber = 4
-          (0 << 9);        // FMC_ModeRegisterDefinition = 0
+  SDRAMD.sdram->SDCMR = FMC_Command_Mode_AutoRefresh | command_target |
+      (cfgp->sdcmr & FMC_SDCMR_NRFS);
 
   /* Step 6.2: Send the second command.*/
-  SDRAMD.sdram->SDCMR = (uint32_t) FMC_Command_Mode_AutoRefresh |
-          command_target |
-          ((4 -1) << 5) | // FMC_AutoRefreshNumber = 4
-          (0 << 9);        // FMC_ModeRegisterDefinition = 0
+  SDRAMD.sdram->SDCMR = FMC_Command_Mode_AutoRefresh | command_target |
+      (cfgp->sdcmr & FMC_SDCMR_NRFS);
 
   /* Step 7: Program the external memory mode register.*/
   _sdram_wait_ready();
-  tmp = FMC_SDCMR_MRD_BURST_LENGTH_2 |
-          FMC_SDCMR_MRD_BURST_TYPE_SEQUENTIAL |
-          FMC_SDCMR_MRD_CAS_LATENCY_3 |
-          FMC_SDCMR_MRD_OPERATING_MODE_STANDARD |
-          FMC_SDCMR_MRD_WRITEBURST_MODE_SINGLE;
-  SDRAMD.sdram->SDCMR = (uint32_t) FMC_Command_Mode_LoadMode |
-          command_target |
-          ((1 -1) << 5) | // FMC_AutoRefreshNumber = 1
-          (tmp << 9);
+  SDRAMD.sdram->SDCMR = FMC_Command_Mode_LoadMode | command_target |
+      (cfgp->sdcmr & FMC_SDCMR_MRD);
 
   /* Step 8: Set clock.*/
   _sdram_wait_ready();
-  // 64ms/4096=15.625us
-#if (STM32_SYSCLK == 180000000)
-  //15.625us*90MHz=1406-20=1386
-  SDRAMD.sdram->SDRTR=1386<<1;
-#elif (STM32_SYSCLK == 168000000)
-  //15.625us*84MHz=1312-20=1292
-  SDRAMD.sdram->SDRTR=1292<<1;
-#else
-  #error No refresh timings for this clock
-#endif
+  SDRAMD.sdram->SDRTR = cfgp->sdrtr;
 
   _sdram_wait_ready();
 }
@@ -191,15 +164,16 @@ void fsmcSdramStart(SDRAMDriver *sdramp, const SDRAMConfig *cfgp) {
               "SDRAM. Invalid state.");
 
   if (sdramp->state == SDRAM_STOP) {
-#if STM32_SDRAM_USE_FSMC_SDRAM1
-    sdramp->sdram->banks[0].SDCR = cfgp->sdcr1;
-    sdramp->sdram->banks[0].SDTR = cfgp->sdtr1;
-#endif
-#if STM32_SDRAM_USE_FSMC_SDRAM2
-    sdramp->sdram->banks[1].SDCR = cfgp->sdcr2;
-    sdramp->sdram->banks[1].SDTR = cfgp->sdtr2;
-#endif
-    _sdram_init_sequence();
+
+    /* Even if you need only bank2 you must properly set up SDCR and SDTR
+       regitsters for bank1 too. Both banks will be tuned equally assuming
+       connected memory ICs are equal.*/
+    sdramp->sdram->banks[0].SDCR = cfgp->sdcr;
+    sdramp->sdram->banks[0].SDTR = cfgp->sdtr;
+    sdramp->sdram->banks[1].SDCR = cfgp->sdcr;
+    sdramp->sdram->banks[1].SDTR = cfgp->sdtr;
+
+    _sdram_init_sequence(cfgp);
 
     sdramp->state = SDRAM_READY;
   }
@@ -218,22 +192,6 @@ void fsmcSdramStop(SDRAMDriver *sdramp) {
     sdramp->state = SDRAM_STOP;
   }
 }
-
-/**
- * @brief  Enables or disables write protection to the specified SDRAM Bank.
- * @param  SDRAM_Bank: Defines the FMC SDRAM bank. This parameter can be
- *                     FMC_Bank1_SDRAM or FMC_Bank2_SDRAM.
- * @param  NewState: new state of the write protection flag.
- *          This parameter can be: ENABLE or DISABLE.
- * @retval None
- */
-//void fsmcSdram_WriteProtectionConfig(SDRAMDriver *sdramp, int state) {
-//
-//  if (state)
-//    sdramp->sdram->SDCR |= FMC_Write_Protection_Enable;
-//  else
-//    sdramp->sdram->SDCR &= SDCR_WriteProtection_RESET;
-//}
 
 #endif /* STM32_USE_FSMC_SDRAM */
 
