@@ -42,13 +42,13 @@
 /**
  * FMC_Command_Mode
  */
-#define FMC_Command_Mode_normal            ((uint32_t)0x00000000)
-#define FMC_Command_Mode_CLK_Enabled       ((uint32_t)0x00000001)
-#define FMC_Command_Mode_PALL              ((uint32_t)0x00000002)
-#define FMC_Command_Mode_AutoRefresh       ((uint32_t)0x00000003)
-#define FMC_Command_Mode_LoadMode          ((uint32_t)0x00000004)
-#define FMC_Command_Mode_Selfrefresh       ((uint32_t)0x00000005)
-#define FMC_Command_Mode_PowerDown         ((uint32_t)0x00000006)
+#define FMCCM_NORMAL              ((uint32_t)0x00000000)
+#define FMCCM_CLK_ENABLED         ((uint32_t)0x00000001)
+#define FMCCM_PALL                ((uint32_t)0x00000002)
+#define FMCCM_AUTO_REFRESH        ((uint32_t)0x00000003)
+#define FMCCM_LOAD_MODE           ((uint32_t)0x00000004)
+#define FMCCM_SELFREFRESH         ((uint32_t)0x00000005)
+#define FMCCM_POWER_DOWN          ((uint32_t)0x00000006)
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -100,27 +100,27 @@ static void _sdram_init_sequence(const SDRAMConfig *cfgp) {
 
   /* Step 3: Configure a clock configuration enable command.*/
   _sdram_wait_ready();
-  SDRAMD.sdram->SDCMR = FMC_Command_Mode_CLK_Enabled | command_target;
+  SDRAMD.sdram->SDCMR = FMCCM_CLK_ENABLED | command_target;
 
   /* Step 4: Insert 1 ms delay (tipically 100uS).*/
   osalThreadSleepMilliseconds(1);
 
   /* Step 5: Configure a PALL (precharge all) command.*/
   _sdram_wait_ready();
-  SDRAMD.sdram->SDCMR = FMC_Command_Mode_PALL | command_target;
+  SDRAMD.sdram->SDCMR = FMCCM_PALL | command_target;
 
   /* Step 6.1: Configure a Auto-Refresh command: send the first command.*/
   _sdram_wait_ready();
-  SDRAMD.sdram->SDCMR = FMC_Command_Mode_AutoRefresh | command_target |
+  SDRAMD.sdram->SDCMR = FMCCM_AUTO_REFRESH | command_target |
       (cfgp->sdcmr & FMC_SDCMR_NRFS);
 
   /* Step 6.2: Send the second command.*/
-  SDRAMD.sdram->SDCMR = FMC_Command_Mode_AutoRefresh | command_target |
+  SDRAMD.sdram->SDCMR = FMCCM_AUTO_REFRESH | command_target |
       (cfgp->sdcmr & FMC_SDCMR_NRFS);
 
   /* Step 7: Program the external memory mode register.*/
   _sdram_wait_ready();
-  SDRAMD.sdram->SDCMR = FMC_Command_Mode_LoadMode | command_target |
+  SDRAMD.sdram->SDCMR = FMCCM_LOAD_MODE | command_target |
       (cfgp->sdcmr & FMC_SDCMR_MRD);
 
   /* Step 8: Set clock.*/
@@ -188,7 +188,17 @@ void fsmcSdramStart(SDRAMDriver *sdramp, const SDRAMConfig *cfgp) {
  */
 void fsmcSdramStop(SDRAMDriver *sdramp) {
 
+  uint32_t command_target = 0;
+
+#if STM32_SDRAM_USE_FSMC_SDRAM1
+  command_target |= FMC_SDCMR_CTB1;
+#endif
+#if STM32_SDRAM_USE_FSMC_SDRAM2
+  command_target |= FMC_SDCMR_CTB2;
+#endif
+
   if (sdramp->state == SDRAM_READY) {
+    SDRAMD.sdram->SDCMR = FMCCM_POWER_DOWN | command_target;
     sdramp->state = SDRAM_STOP;
   }
 }
