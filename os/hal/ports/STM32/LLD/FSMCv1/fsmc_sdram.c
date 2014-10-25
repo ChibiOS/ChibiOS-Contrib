@@ -125,7 +125,7 @@ static void _sdram_init_sequence(const SDRAMConfig *cfgp) {
 
   /* Step 8: Set clock.*/
   _sdram_wait_ready();
-  SDRAMD.sdram->SDRTR = cfgp->sdrtr;
+  SDRAMD.sdram->SDRTR = cfgp->sdrtr & FMC_SDRTR_COUNT;
 
   _sdram_wait_ready();
 }
