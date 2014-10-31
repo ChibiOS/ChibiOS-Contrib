@@ -103,7 +103,7 @@ static void _sdram_init_sequence(const SDRAMConfig *cfgp) {
   SDRAMD.sdram->SDCMR = FMCCM_CLK_ENABLED | command_target;
 
   /* Step 4: Insert delay (tipically 100uS).*/
-  osalSysPolledDelayX(US2RTC(STM32_SYSCLK, 100));
+  osalThreadSleepMilliseconds(100);
 
   /* Step 5: Configure a PALL (precharge all) command.*/
   _sdram_wait_ready();
@@ -115,6 +115,7 @@ static void _sdram_init_sequence(const SDRAMConfig *cfgp) {
       (cfgp->sdcmr & FMC_SDCMR_NRFS);
 
   /* Step 6.2: Send the second command.*/
+  _sdram_wait_ready();
   SDRAMD.sdram->SDCMR = FMCCM_AUTO_REFRESH | command_target |
       (cfgp->sdcmr & FMC_SDCMR_NRFS);
 
@@ -168,10 +169,10 @@ void fsmcSdramStart(SDRAMDriver *sdramp, const SDRAMConfig *cfgp) {
     /* Even if you need only bank2 you must properly set up SDCR and SDTR
        regitsters for bank1 too. Both banks will be tuned equally assuming
        connected memory ICs are equal.*/
-    sdramp->sdram->banks[0].SDCR = cfgp->sdcr;
-    sdramp->sdram->banks[0].SDTR = cfgp->sdtr;
-    sdramp->sdram->banks[1].SDCR = cfgp->sdcr;
-    sdramp->sdram->banks[1].SDTR = cfgp->sdtr;
+    sdramp->sdram->SDCR1 = cfgp->sdcr;
+    sdramp->sdram->SDTR1 = cfgp->sdtr;
+    sdramp->sdram->SDCR2 = cfgp->sdcr;
+    sdramp->sdram->SDTR2 = cfgp->sdtr;
 
     _sdram_init_sequence(cfgp);
 

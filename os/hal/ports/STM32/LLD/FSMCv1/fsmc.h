@@ -164,13 +164,10 @@ typedef struct {
      defined(STM32F429xx) || defined(STM32F439xx))
 
 typedef struct {
-  __IO uint32_t SDCR;         /**< SDRAM control register */
-  uint32_t      RESERVED;     /**< Reserved */
-  __IO uint32_t SDTR;         /**< SDRAM timing register */
-} FSMC_SDRAM_BANK_TypeDef;
-
-typedef struct {
-  FSMC_SDRAM_BANK_TypeDef banks[2]; /**< Banks mapping */
+  __IO uint32_t SDCR1;              /**< SDRAM control register (bank 1) */
+  __IO uint32_t SDCR2;              /**< SDRAM control register (bank 2) */
+  __IO uint32_t SDTR1;              /**< SDRAM timing register (bank 1) */
+  __IO uint32_t SDTR2;              /**< SDRAM timing register (bank 2) */
   __IO uint32_t SDCMR;              /**< SDRAM comand mode register */
   __IO uint32_t SDRTR;              /**< SDRAM refresh timer register */
   __IO uint32_t SDSR;               /**< SDRAM status register */
