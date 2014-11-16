@@ -31,6 +31,13 @@
 #include "mcuconf.h"
 
 /**
+ * @brief   Enables the community overlay.
+ */
+#if !defined(HAL_USE_COMMUNITY) || defined(__DOXYGEN__)
+#define HAL_USE_COMMUNITY           TRUE
+#endif
+
+/**
  * @brief   Enables the PAL subsystem.
  */
 #if !defined(HAL_USE_PAL) || defined(__DOXYGEN__)
