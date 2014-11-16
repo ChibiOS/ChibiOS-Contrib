@@ -1,23 +1,49 @@
 Quick start:
+============
 
-1) git clone git@github.com:ChibiOS/ChibiOS-gitmain.git
-2) cd ChibiOS-gitmain && \
-   git submodule add git@github.com:ChibiOS/ChibiOS-Contrib.git community
-Step #2 is optional if you not interested in community code.
+Assume you already have a github account. Lets your account name is
+"username".
 
-Contributing:
+First you need to fork 2 repos:
+- ChibiOS-gitmain
+- ChibiOS-contrib
 
-to ChibiOS-gitmain
-1) fork git repository at your own account
-2) make fix and test it
-3) submit patch here http://sourceforge.net/projects/chibios/
-   or here http://forum.chibios.org
+Make local clone of your fork
+# git clone git@github.com:username/ChibiOS-gitmain.git
 
-to ChibiOS-Contrib
-1) fork git repository at your own account
-2) develop feature
-3) send pull request as usual
+Make local branch for your feature
+# cd ChibiOS-gitmain
+# git branch feature
+# git checkout feature
+
+There is no code from ChibiOS-contrib in your repo. We have to connect 
+ChibiOS-contrib as a git submodule
+# git submodule add git@github.com:username/ChibiOS-Contrib.git community
+
+Make branch again, but now in freshly connected submodule
+# cd community
+# git branch feature
+# git checkout feature
+
+Hack, hack, hack... Commit our changes and push to server. Note: you have 
+to do this for both repositories. First ChibiOS-Contrib
+# cd community
+# git add .
+# git commit -m "Feature implemented"
+# git push origin feature:feature
+
+Now for parent repo
+# cd ..
+# git add .
+# git commit -m "Feature implemented"
+# git push origin feature:feature
+
+Now all your changes published on github. Just use web interface to send
+pull 2 requests: for ChibiOS-contrib and for ChibiOS-gitmain.
 
 Links:
-http://chibios.org/dokuwiki/doku.php?id=chibios:guides:style_guide
+======
 
+https://help.github.com/
+http://git-scm.com/
+http://chibios.org/dokuwiki/doku.php?id=chibios:guides:style_guide
