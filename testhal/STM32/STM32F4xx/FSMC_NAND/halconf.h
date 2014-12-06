@@ -31,13 +31,6 @@
 #include "mcuconf.h"
 
 /**
- * @brief   Enables the community overlay.
- */
-#if !defined(HAL_USE_COMMUNITY) || defined(__DOXYGEN__)
-#define HAL_USE_COMMUNITY           TRUE
-#endif
-
-/**
  * @brief   Enables the PAL subsystem.
  */
 #if !defined(HAL_USE_PAL) || defined(__DOXYGEN__)
@@ -161,13 +154,6 @@
  */
 #if !defined(HAL_USE_USB) || defined(__DOXYGEN__)
 #define HAL_USE_USB                 FALSE
-#endif
-
-/**
- * @brief   Enables the NAND subsystem.
- */
-#if !defined(HAL_USE_NAND) || defined(__DOXYGEN__)
-#define HAL_USE_NAND                TRUE
 #endif
 
 /*===========================================================================*/
@@ -322,24 +308,10 @@
 #endif
 
 /*===========================================================================*/
-/* EMCNAND driver related settings.                                          */
+/* Community drivers's includes                                              */
 /*===========================================================================*/
 
-/**
- * @brief   Enables the @p nandAcquireBus() and @p nanReleaseBus() APIs.
- * @note    Disabling this option saves both code and data space.
- */
-#if !defined(NAND_USE_MUTUAL_EXCLUSION) || defined(__DOXYGEN__)
-#define NAND_USE_MUTUAL_EXCLUSION    TRUE
-#endif
-
-/**
- * @brief   Enables internal driver map for bad blocks.
- * @note    Disabling this option saves both code and data space.
- */
-#if !defined(NAND_USE_BAD_MAP) || defined(__DOXYGEN__)
-#define NAND_USE_BAD_MAP             TRUE
-#endif
+#include "halconf_community.h"
 
 #endif /* _HALCONF_H_ */
 

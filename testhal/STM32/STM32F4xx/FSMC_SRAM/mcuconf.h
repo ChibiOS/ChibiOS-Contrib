@@ -304,23 +304,7 @@
 #define STM32_USB_OTGFIFO_FILL_BASEPRI      0
 
 /*
- * FSMC driver system settings.
+ * header for community drivers.
  */
-#define STM32_FSMC_USE_FSMC1                TRUE
-#define STM32_FSMC_FSMC1_IRQ_PRIORITY       10
-
-/*
- * FSMC NAND driver system settings.
- */
-#define STM32_NAND_USE_FSMC_NAND1           FALSE
-#define STM32_NAND_USE_EXT_INT              FALSE
-#define STM32_NAND_DMA_STREAM               STM32_DMA_STREAM_ID(2, 7)
-#define STM32_NAND_DMA_PRIORITY             0
-#define STM32_NAND_DMA_ERROR_HOOK(nandp)    osalSysHalt("DMA failure")
-
-/*
- * FSMC SRAM driver system settings.
- */
-#define STM32_USE_FSMC_SRAM                 TRUE
-#define STM32_SRAM_USE_FSMC_SRAM4           TRUE
+#include "mcuconf_community.h"
 

@@ -304,13 +304,6 @@
 #define STM32_USB_OTGFIFO_FILL_BASEPRI      0
 
 /*
- * FSMC driver system settings.
+ * header for community drivers.
  */
-#define STM32_FSMC_USE_FSMC1                TRUE
-#define STM32_FSMC_FSMC1_IRQ_PRIORITY       10
-
-/*
- * FSMC SDRAM driver system settings.
- */
-#define STM32_USE_FSMC_SDRAM                TRUE
-#define STM32_SDRAM_USE_FSMC_SDRAM1         TRUE
+#include "mcuconf_community.h"
