@@ -67,7 +67,7 @@
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
-
+#if ONEWIRE_USE_STRONG_PULLUP
 /**
  * @brief   1-wire strong pull up assert callback type.
  */
@@ -77,6 +77,7 @@ typedef void (*onewire_pullup_assert_t)(void);
  * @brief   1-wire strong pull up release callback type.
  */
 typedef void (*onewire_pullup_release_t)(void);
+#endif /* ONEWIRE_USE_STRONG_PULLUP */
 
 /**
  * @brief   1-wire read bit callback type.
@@ -97,6 +98,7 @@ typedef enum {
 #endif
 } onewire_state_t;
 
+#if ONEWIRE_USE_SEARCH_ROM
 /**
  * @brief   Search ROM procedure possible state.
  */
@@ -113,6 +115,7 @@ typedef enum {
   ONEWIRE_SEARCH_ROM_FIRST = 0,     /**< First search run.                  */
   ONEWIRE_SEARCH_ROM_NEXT = 1       /**< Next search run.                   */
 } search_iteration_t;
+#endif /* ONEWIRE_USE_SEARCH_ROM */
 
 /**
  * @brief   Driver configuration structure.
@@ -147,6 +150,7 @@ typedef struct {
 #endif
 } onewireConfig;
 
+#if ONEWIRE_USE_SEARCH_ROM
 /**
  * @brief     Search ROM registry. Contains small variables used
  *            in 'search ROM' procedure.
@@ -212,6 +216,7 @@ typedef struct {
    */
   int8_t            prev_zero_branch;
 } onewire_search_rom_t;
+#endif /* ONEWIRE_USE_SEARCH_ROM */
 
 /**
  * @brief     Onewire registry. Some small variables combined
@@ -268,10 +273,12 @@ typedef struct {
    * @brief   Pointer to I/O data buffer.
    */
   uint8_t               *buf;
+#if ONEWIRE_USE_SEARCH_ROM
   /**
    * @brief   Search ROM helper structure.
    */
   onewire_search_rom_t  search_rom;
+#endif /* ONEWIRE_USE_SEARCH_ROM */
   /**
    * @brief   Thread waiting for I/O completion.
    */
@@ -297,14 +304,16 @@ extern "C" {
   void onewireStop(onewireDriver *owp);
   bool onewireReset(onewireDriver *owp);
   void onewireRead(onewireDriver *owp, uint8_t *rxbuf, size_t rxbytes);
+  uint8_t onewireCRC(const uint8_t *buf, size_t len);
   void onewireWrite(onewireDriver *owp,
                     uint8_t *txbuf,
                     size_t txbytes,
                     systime_t pullup_time);
+#if ONEWIRE_USE_SEARCH_ROM
   size_t onewireSearchRom(onewireDriver *owp,
                           uint8_t *result,
                           size_t max_rom_cnt);
-  uint8_t onewireCRC(const uint8_t *buf, size_t len);
+#endif /* ONEWIRE_USE_SEARCH_ROM */
 #if ONEWIRE_SYNTH_SEARCH_TEST
   void _synth_ow_write_bit(onewireDriver *owp, uint8_t bit);
   uint_fast8_t _synth_ow_read_bit(void);

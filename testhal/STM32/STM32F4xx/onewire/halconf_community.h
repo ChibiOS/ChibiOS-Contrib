@@ -61,12 +61,17 @@
 /*===========================================================================*/
 /* 1-wire driver related settings.                                           */
 /*===========================================================================*/
-
 /**
- * @brief   Enables strong pull up support.
+ * @brief   Enables strong pull up feature.
  * @note    Disabling this option saves both code and data space.
  */
 #define ONEWIRE_USE_STRONG_PULLUP   FALSE
+
+/**
+ * @brief   Enables search ROM feature.
+ * @note    Disabling this option saves both code and data space.
+ */
+#define ONEWIRE_USE_SEARCH_ROM      TRUE
 
 #endif /* _HALCONF_COMMUNITY_H_ */
 

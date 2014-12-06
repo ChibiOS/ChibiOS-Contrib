@@ -84,8 +84,10 @@ static void ow_read_bit_cb(PWMDriver *pwmp, onewireDriver *owp);
 static void pwm_read_bit_cb(PWMDriver *pwmp);
 static void ow_write_bit_cb(PWMDriver *pwmp, onewireDriver *owp);
 static void pwm_write_bit_cb(PWMDriver *pwmp);
+#if ONEWIRE_USE_SEARCH_ROM
 static void ow_search_rom_cb(PWMDriver *pwmp, onewireDriver *owp);
 static void pwm_search_rom_cb(PWMDriver *pwmp);
+#endif
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -182,12 +184,14 @@ static void pwm_write_bit_cb(PWMDriver *pwmp) {
   ow_write_bit_cb(pwmp, &OWD1);
 }
 
+#if ONEWIRE_USE_SEARCH_ROM
 /**
  * @brief     PWM adapter
  */
 static void pwm_search_rom_cb(PWMDriver *pwmp) {
   ow_search_rom_cb(pwmp, &OWD1);
 }
+#endif /* ONEWIRE_USE_SEARCH_ROM */
 
 /**
  * @brief     Write bit routine.
@@ -319,6 +323,7 @@ static void ow_write_bit_cb(PWMDriver *pwmp, onewireDriver *owp) {
   owp->reg.bit++;
 }
 
+#if ONEWIRE_USE_SEARCH_ROM
 /**
  * @brief   Helper function for collision handler
  *
@@ -514,6 +519,7 @@ static void search_clean_iteration(onewire_search_rom_t *sr) {
   sr->reg.bit_buf = 0;
   sr->reg.result = ONEWIRE_SEARCH_ROM_LAST;
 }
+#endif /* ONEWIRE_USE_SEARCH_ROM */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -755,6 +761,7 @@ void onewireWrite(onewireDriver *owp, uint8_t *txbuf,
 #endif
 }
 
+#if ONEWIRE_USE_SEARCH_ROM
 /**
  * @brief   Performs tree search on bus.
  * @note    This function does internal 1-wire reset calls every search
@@ -833,6 +840,7 @@ size_t onewireSearchRom(onewireDriver *owp, uint8_t *result,
   else
     return owp->search_rom.reg.devices_found;
 }
+#endif /* ONEWIRE_USE_SEARCH_ROM */
 
 /*
  * Include test code (if enabled).
