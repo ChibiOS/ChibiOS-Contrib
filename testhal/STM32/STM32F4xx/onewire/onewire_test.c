@@ -16,13 +16,20 @@
 
 #include <string.h>
 
-#include "onewire.h"
+#include "hal.h"
 
 /*
  ******************************************************************************
  * DEFINES
  ******************************************************************************
  */
+
+#if defined(BOARD_ST_STM32F4_DISCOVERY)
+#if ONEWIRE_USE_STRONG_PULLUP
+#error "F4 Discovery board has not enough voltage for this feature"
+#endif
+#endif
+
 #define ONEWIRE_MASTER_CHANNEL        2 /* this PWM channel drives bus */
 #define ONEWIRE_SAMPLE_CHANNEL        3 /* this one generates interrupts when sampling needed */
 
@@ -33,8 +40,8 @@
 #else
 #define GPIOB_ONEWIRE                 GPIOB_TACHOMETER
 #include "pads.h"
-#define search_led_on     red_led_on
-#define search_led_off    red_led_off
+#define search_led_on                 red_led_on
+#define search_led_off                red_led_off
 #endif
 
 /*
@@ -48,9 +55,10 @@
  * PROTOTYPES
  ******************************************************************************
  */
-
+/*
+ * Forward declarations
+ */
 static uint_fast8_t onewire_read_bit_X(void);
-
 #if ONEWIRE_USE_STRONG_PULLUP
 static void strong_pullup_assert(void);
 static void strong_pullup_release(void);

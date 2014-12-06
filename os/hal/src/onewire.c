@@ -18,19 +18,19 @@
 /* Main ideas:                                                               */
 /*===========================================================================
 
-1) switch PWM output pin it opendrain mode.
-2) start 2 channels simultaneously. First (master channel) generates
+1) switch PWM output pin it open drain mode.
+2) start 2 channels _simultaneously_. First (master channel) generates
    pulses (read time slots) second (sample channel) generates interrupts
    from where read pin function calls.
 
--        ---------------------------------------------- master channel
- |     /
-  ----
--                  ------------------------------------ sample channel
- |                 |
-  ------------------
-                   ^
-                   read interrupt here
+-      --------------------------------------- master channel generates pulses
+ |   /
+  --
+-                ----------------------------- sample channel reads pad state
+ |               |
+  ----------------
+                 ^
+                 | read interrupt fires here
 
 For data write it is only master channel needed. Data bit width updates
 on every timer overflow event.
@@ -39,8 +39,6 @@ on every timer overflow event.
 /*===========================================================================*/
 /* General recommendations for strong pull usage                             */
 /*===========================================================================
- *
- *
  * 1) Use separate power rail instead of strong pull up whenever possible.
  *    Driver's strong pull up feature is very interrupt jitter sensible.
  * 2) Use special 1-wire bus master (DS2484 for example) if you are
@@ -101,7 +99,7 @@ onewireDriver OWD1;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 /**
- * @brief     Config for fast intialization of all fields
+ * @brief     Config for fast initialization of all fields
  */
 static const PWMConfig pwm_default_cfg = {
   1000000,
@@ -837,7 +835,7 @@ size_t onewireSearchRom(onewireDriver *owp, uint8_t *result,
 }
 
 /*
- * Included (if enabled) test code
+ * Include test code (if enabled).
  */
 #if ONEWIRE_SYNTH_SEARCH_TEST
 #include "search_rom_synth.c"
