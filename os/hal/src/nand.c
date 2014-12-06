@@ -1,6 +1,5 @@
 /*
-    ChibiOS/HAL - Copyright (C) 2006,2007,2008,2009,2010,
-                  2011,2012,2013,2014 Giovanni Di Sirio.
+    ChibiOS/HAL - Copyright (C) 2014 Uladzimir Pylinsky aka barthess
 
     This file is part of ChibiOS/HAL
 

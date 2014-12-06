@@ -1,5 +1,5 @@
 /*
-    ChibiOS/HAL - Copyright (C) 2006-2014 Giovanni Di Sirio
+    ChibiOS/HAL - Copyright (C) 2014 Uladzimir Pylinsky aka barthess
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,10 +13,6 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-/*
-   Concepts and parts of this file have been contributed by Uladzimir Pylinsky
-   aka barthess.
- */
 
 /**
  * @file    fsmc_sram.h

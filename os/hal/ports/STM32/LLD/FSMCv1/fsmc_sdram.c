@@ -1,5 +1,5 @@
 /*
-    ChibiOS/HAL - Copyright (C) 2006-2014 Giovanni Di Sirio
+    ChibiOS/HAL - Copyright (C) 2014 Uladzimir Pylinsky aka barthess
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,8 +14,7 @@
     limitations under the License.
 */
 /*
-   Concepts and parts of this file have been contributed by Uladzimir Pylinsky
-   aka barthess (SDRAM routines added by Nick Klimov aka progfin).
+   SDRAM routines added by Nick Klimov aka progfin.
  */
 
 /**
