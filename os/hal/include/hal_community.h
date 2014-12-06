@@ -36,6 +36,7 @@
 #include "nand.h"
 
 /* Complex drivers.*/
+#include "onewire.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
