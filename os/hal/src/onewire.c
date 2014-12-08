@@ -155,11 +155,6 @@ static const uint8_t onewire_crc_table[256] = {
     0xb6, 0xe8, 0xa,  0x54, 0xd7, 0x89, 0x6b, 0x35
 };
 
-/**
- * @brief     Measurement unit for driver profiling.
- */
-static time_measurement_t search_rom_tm;
-
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
@@ -416,8 +411,6 @@ static uint_fast8_t collision_handler(onewire_search_rom_t *sr) {
  */
 static void ow_search_rom_cb(PWMDriver *pwmp, onewireDriver *owp) {
 
-  chTMStartMeasurementX(&search_rom_tm);
-
   onewire_search_rom_t *sr = &owp->search_rom;
 
   if (0 == sr->reg.bit_step) {                    /* read direct bit */
@@ -467,16 +460,13 @@ static void ow_search_rom_cb(PWMDriver *pwmp, onewireDriver *owp) {
     goto THE_END;
   }
 
-  /* next search bit iteration */
-  chTMStopMeasurementX(&search_rom_tm);
-  return;
+  return; /* next search bit iteration */
 
 THE_END:
 #if ONEWIRE_SYNTH_SEARCH_TEST
   (void)pwmp;
   return;
 #else
-  chTMStopMeasurementX(&search_rom_tm);
   osalSysLockFromISR();
   pwmDisableChannelI(pwmp, owp->config->master_channel);
   pwmDisableChannelI(pwmp, owp->config->sample_channel);
@@ -593,7 +583,6 @@ void onewireStart(onewireDriver *owp, const onewireConfig *config) {
 
   owp->config = config;
   owp->reg.state = ONEWIRE_READY;
-  chTMObjectInit(&search_rom_tm);
 }
 
 /**
