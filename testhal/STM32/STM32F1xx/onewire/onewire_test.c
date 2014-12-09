@@ -40,8 +40,8 @@
 #define GPIOB_ONEWIRE                 8
 #define search_led_off()              (palClearPad(GPIOC, GPIOC_LED))
 #define search_led_on()               (palSetPad(GPIOC, GPIOC_LED))
-#define ONEWIRE_MASTER_CHANNEL        3
-#define ONEWIRE_SAMPLE_CHANNEL        2
+#define ONEWIRE_MASTER_CHANNEL        2
+#define ONEWIRE_SAMPLE_CHANNEL        3
 #else
 #define GPIOB_ONEWIRE                 GPIOB_TACHOMETER
 #include "pads.h"
