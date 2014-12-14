@@ -578,7 +578,7 @@ void onewireStart(onewireDriver *owp, const onewireConfig *config) {
   osalDbgAssert(ONEWIRE_STOP == owp->reg.state, "Invalid state");
 #if ONEWIRE_USE_STRONG_PULLUP
   osalDbgCheck((NULL != config->pullup_assert) &&
-               (NULL != config->pullup_assert));
+               (NULL != config->pullup_release));
 #endif
 
   owp->config = config;
