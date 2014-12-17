@@ -32,19 +32,23 @@
 
 #if defined(BOARD_ST_STM32F4_DISCOVERY)
 #define GPIOB_ONEWIRE                 GPIOB_PIN8
+#define ONEWIRE_PAD_MODE_ACTIVE       (PAL_MODE_ALTERNATE(2) | PAL_STM32_OTYPE_OPENDRAIN | PAL_STM32_PUDR_PULLUP)
 #define search_led_off()              (palClearPad(GPIOD, GPIOD_LED4))
 #define search_led_on()               (palSetPad(GPIOD, GPIOD_LED4))
 #define ONEWIRE_MASTER_CHANNEL        2
 #define ONEWIRE_SAMPLE_CHANNEL        3
 #elif defined(BOARD_OLIMEX_STM32_103STK)
 #define GPIOB_ONEWIRE                 8
-#define search_led_off()              (palClearPad(GPIOC, GPIOC_LED))
-#define search_led_on()               (palSetPad(GPIOC, GPIOC_LED))
+#define ONEWIRE_PAD_MODE_IDLE         PAL_MODE_INPUT
+#define ONEWIRE_PAD_MODE_ACTIVE       PAL_MODE_STM32_ALTERNATE_OPENDRAIN
+#define search_led_on()               (palClearPad(GPIOC, GPIOC_LED))
+#define search_led_off()              (palSetPad(GPIOC, GPIOC_LED))
 #define ONEWIRE_MASTER_CHANNEL        2
 #define ONEWIRE_SAMPLE_CHANNEL        3
 #else
 #define GPIOB_ONEWIRE                 GPIOB_TACHOMETER
 #include "pads.h"
+#define ONEWIRE_PAD_MODE_ACTIVE       (PAL_MODE_ALTERNATE(2) | PAL_STM32_OTYPE_OPENDRAIN | PAL_STM32_PUDR_PULLUP)
 #define search_led_on                 red_led_on
 #define search_led_off                red_led_off
 #define ONEWIRE_MASTER_CHANNEL        2
@@ -65,7 +69,6 @@
 /*
  * Forward declarations
  */
-static uint_fast8_t onewire_read_bit_X(void);
 #if ONEWIRE_USE_STRONG_PULLUP
 static void strong_pullup_assert(void);
 static void strong_pullup_release(void);
@@ -88,7 +91,12 @@ static const onewireConfig ow_cfg = {
   &PWMD4,
   ONEWIRE_MASTER_CHANNEL,
   ONEWIRE_SAMPLE_CHANNEL,
-  onewire_read_bit_X,
+  GPIOB,
+  GPIOB_ONEWIRE,
+#if defined(STM32F1XX)
+  ONEWIRE_PAD_MODE_IDLE,
+#endif
+  ONEWIRE_PAD_MODE_ACTIVE,
 #if ONEWIRE_USE_STRONG_PULLUP
   strong_pullup_assert,
   strong_pullup_release
@@ -120,17 +128,6 @@ static void strong_pullup_release(void) {
                 PAL_STM32_OTYPE_OPENDRAIN | PAL_STM32_PUDR_PULLUP);
 }
 #endif /* ONEWIRE_USE_STRONG_PULLUP */
-
-/**
- *
- */
-static uint_fast8_t onewire_read_bit_X(void) {
-#if ONEWIRE_SYNTH_SEARCH_TEST
-  return _synth_ow_read_bit();
-#else
-  return palReadPad(GPIOB, GPIOB_ONEWIRE);
-#endif
-}
 
 /*
  ******************************************************************************

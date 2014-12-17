@@ -80,13 +80,6 @@ typedef void (*onewire_pullup_release_t)(void);
 #endif /* ONEWIRE_USE_STRONG_PULLUP */
 
 /**
- * @brief   1-wire read bit callback type.
- *
- * @return  Bit acquired directly from pin (0 or 1)
- */
-typedef uint_fast8_t (*onewire_read_bit_t)(void);
-
-/**
  * @brief   Driver state machine possible states.
  */
 typedef enum {
@@ -134,10 +127,29 @@ typedef struct {
    */
   size_t                    sample_channel;
   /**
-   * @brief Pointer to function performing read of single bit.
-   * @note  It must be callable from any context.
+   * @brief   Port Identifier.
+   * @details This type can be a scalar or some kind of pointer, do not make
+   *          any assumption about it, use the provided macros when populating
+   *          variables of this type.
    */
-  onewire_read_bit_t        readBitX;
+  ioportid_t                port;
+  /**
+   * @brief Digital I/O port pad.
+   */
+  ioportmask_t              pad;
+#if defined(STM32F1XX)
+  /**
+   * @brief   Digital I/O mode for idle bus.
+   * @details This is a kind of workaround against F1x realization of alternate
+   *          function. Alternate function mode will be activated only
+   *          when you starts appropriate peripheral.
+   */
+  iomode_t                  pad_mode_idle;
+#endif
+  /**
+   * @brief   Digital I/O mode for active bus.
+   */
+  iomode_t                  pad_mode_active;
 #if ONEWIRE_USE_STRONG_PULLUP
   /**
    * @brief Pointer to function asserting of strong pull up.

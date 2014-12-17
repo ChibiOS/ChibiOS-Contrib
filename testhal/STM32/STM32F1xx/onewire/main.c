@@ -35,12 +35,6 @@ int main(void) {
   chSysInit();
 
   /*
-   * Connect PB8 to TIM4 channel 2, set open drain mode
-   * and enable internal pullup for slave absence detection.
-   */
-  palSetPadMode(GPIOB, 8, PAL_MODE_STM32_ALTERNATE_OPENDRAIN);
-
-  /*
    * Executes infinite onewire test code.
    */
   onewireTest();

@@ -18,14 +18,14 @@
 /* Main ideas:                                                               */
 /*===========================================================================
 
-1) switch PWM output pin it open drain mode.
+1) switch PWM output pin to open drain mode.
 2) start 2 channels _simultaneously_. First (master channel) generates
    pulses (read time slots) second (sample channel) generates interrupts
-   from where read pin function calls.
+   from where read pin function will be called.
 
 -      --------------------------------------- master channel generates pulses
- |   /
-  --
+ |   /                            .
+  --.............................  <---------- slave (not)pulls down bus here
 -                ----------------------------- sample channel reads pad state
  |               |
   ----------------
@@ -40,8 +40,8 @@ on every timer overflow event.
 /* General recommendations for strong pull usage                             */
 /*===========================================================================
  * 1) Use separate power rail instead of strong pull up whenever possible.
- *    Driver's strong pull up feature is very interrupt jitter sensible.
- * 2) Use special 1-wire bus master (DS2484 for example) if you are
+ *    Driver's strong pull up feature is very sensible to interrupt jitter.
+ * 2) Use specialized 1-wire bus master (DS2484 for example) if you are
  *    forced to handle bus requiring strong pull up feature.
  */
 
@@ -76,7 +76,7 @@ on every timer overflow event.
 #define ONEWIRE_RESET_TOTAL_WIDTH     960
 
 /**
- * @brief     Forward declarations.
+ * @brief     Local function declarations.
  */
 static void ow_reset_cb(PWMDriver *pwmp, onewireDriver *owp);
 static void pwm_reset_cb(PWMDriver *pwmp);
@@ -101,17 +101,17 @@ onewireDriver OWD1;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 /**
- * @brief     Config for fast initialization of all fields
+ * @brief     Config for fast initialization of all config's fields
  */
 static const PWMConfig pwm_default_cfg = {
   1000000,
   ONEWIRE_RESET_TOTAL_WIDTH,
   NULL,
   {
-   {PWM_OUTPUT_ACTIVE_LOW, NULL},
-   {PWM_OUTPUT_ACTIVE_LOW, NULL},
-   {PWM_OUTPUT_ACTIVE_LOW, NULL},
-   {PWM_OUTPUT_ACTIVE_LOW, NULL}
+   {PWM_OUTPUT_DISABLED, NULL},
+   {PWM_OUTPUT_DISABLED, NULL},
+   {PWM_OUTPUT_DISABLED, NULL},
+   {PWM_OUTPUT_DISABLED, NULL}
   },
   0,
   0
@@ -158,6 +158,41 @@ static const uint8_t onewire_crc_table[256] = {
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
+/**
+ * @brief     Put bus in idle mode.
+ */
+static void onewire_bus_idle(onewireDriver *owp) {
+#if defined(STM32F1XX)
+  palSetPadMode(owp->config->port, owp->config->pad,
+      owp->config->pad_mode_idle);
+#endif
+  pwmStop(owp->config->pwmd);
+}
+
+/**
+ * @brief     Put bus in active mode.
+ */
+static void onewire_bus_active(onewireDriver *owp) {
+  pwmStart(owp->config->pwmd, &owp->pwmcfg);
+#if defined(STM32F1XX)
+  palSetPadMode(owp->config->port, owp->config->pad,
+      owp->config->pad_mode_active);
+#endif
+}
+
+/**
+ * @brief     Function performing read of single bit.
+ * @note      It must be callable from any context.
+ */
+static uint_fast8_t readBitX(onewireDriver *owp) {
+#if ONEWIRE_SYNTH_SEARCH_TEST
+  (void)owp;
+  return _synth_ow_read_bit();
+#else
+  return palReadPad(owp->config->port, owp->config->pad);
+#endif
+}
+
 /**
  * @brief     PWM adapter
  */
@@ -226,7 +261,7 @@ static void ow_write_bit_I(onewireDriver *owp, uint_fast8_t bit) {
  */
 static void ow_reset_cb(PWMDriver *pwmp, onewireDriver *owp) {
 
-  owp->reg.slave_present = (PAL_LOW == owp->config->readBitX());
+  owp->reg.slave_present = (PAL_LOW == readBitX(owp));
 
   osalSysLockFromISR();
   pwmDisableChannelI(pwmp, owp->config->sample_channel);
@@ -253,7 +288,7 @@ static void ow_read_bit_cb(PWMDriver *pwmp, onewireDriver *owp) {
     return;
   }
   else {
-    *owp->buf |= owp->config->readBitX() << owp->reg.bit;
+    *owp->buf |= readBitX(owp) << owp->reg.bit;
     owp->reg.bit++;
     if (8 == owp->reg.bit) {
       owp->reg.bit = 0;
@@ -414,11 +449,11 @@ static void ow_search_rom_cb(PWMDriver *pwmp, onewireDriver *owp) {
   onewire_search_rom_t *sr = &owp->search_rom;
 
   if (0 == sr->reg.bit_step) {                    /* read direct bit */
-    sr->reg.bit_buf |= owp->config->readBitX();
+    sr->reg.bit_buf |= readBitX(owp);
     sr->reg.bit_step++;
   }
   else if (1 == sr->reg.bit_step) {               /* read complement bit */
-    sr->reg.bit_buf |= owp->config->readBitX() << 1;
+    sr->reg.bit_buf |= readBitX(owp) << 1;
     sr->reg.bit_step++;
     switch(sr->reg.bit_buf){
     case 0b11:
@@ -572,7 +607,6 @@ void onewireObjectInit(onewireDriver *owp) {
 void onewireStart(onewireDriver *owp, const onewireConfig *config) {
 
   osalDbgCheck((NULL != owp) && (NULL != config));
-  osalDbgCheck(NULL != config->readBitX);
   osalDbgAssert(PWM_STOP == config->pwmd->state,
       "PWM will be started by onewire driver internally");
   osalDbgAssert(ONEWIRE_STOP == owp->reg.state, "Invalid state");
@@ -582,7 +616,11 @@ void onewireStart(onewireDriver *owp, const onewireConfig *config) {
 #endif
 
   owp->config = config;
-  pwmStart(owp->config->pwmd, &pwm_default_cfg);
+#if !defined(STM32F1XX)
+  palSetPadMode(owp->config->port, owp->config->pad,
+      owp->config->pad_mode_active);
+#endif
+  onewire_bus_idle(owp);
   owp->reg.state = ONEWIRE_READY;
 }
 
@@ -598,6 +636,7 @@ void onewireStop(onewireDriver *owp) {
 #if ONEWIRE_USE_STRONG_PULLUP
   owp->config->pullup_release();
 #endif
+  onewire_bus_idle(owp);
   pwmStop(owp->config->pwmd);
   owp->config = NULL;
   owp->reg.state = ONEWIRE_STOP;
@@ -613,41 +652,40 @@ void onewireStop(onewireDriver *owp) {
  */
 bool onewireReset(onewireDriver *owp) {
   PWMDriver *pwmd;
+  size_t mch, sch;
 
   osalDbgCheck(NULL != owp);
   osalDbgAssert(owp->reg.state == ONEWIRE_READY, "Invalid state");
 
   /* short circuit on bus or any other device transmit data */
-  if (PAL_LOW == owp->config->readBitX())
+  if (PAL_LOW == readBitX(owp))
     return false;
 
-  palSetPad(GPIOC, GPIOC_LED);
-
   pwmd = owp->config->pwmd;
+  mch = owp->config->master_channel;
+  sch = owp->config->sample_channel;
 
   owp->pwmcfg.period = ONEWIRE_RESET_LOW_WIDTH + ONEWIRE_RESET_SAMPLE_WIDTH;
   owp->pwmcfg.callback = NULL;
-  owp->pwmcfg.channels[owp->config->master_channel].callback = NULL;
-  owp->pwmcfg.channels[owp->config->master_channel].mode = PWM_OUTPUT_ACTIVE_LOW;
-  owp->pwmcfg.channels[owp->config->sample_channel].callback = pwm_reset_cb;
-  owp->pwmcfg.channels[owp->config->sample_channel].mode = PWM_OUTPUT_ACTIVE_LOW;
+  owp->pwmcfg.channels[mch].callback = NULL;
+  owp->pwmcfg.channels[mch].mode = PWM_OUTPUT_ACTIVE_LOW;
+  owp->pwmcfg.channels[sch].callback = pwm_reset_cb;
+  owp->pwmcfg.channels[sch].mode = PWM_OUTPUT_ACTIVE_LOW;
 
-  pwmStart(pwmd, &owp->pwmcfg);
-  palSetPadMode(GPIOB, 8, PAL_MODE_STM32_ALTERNATE_OPENDRAIN);
-  pwmEnableChannel(pwmd, owp->config->master_channel, ONEWIRE_RESET_LOW_WIDTH);
-  pwmEnableChannel(pwmd, owp->config->sample_channel, ONEWIRE_RESET_SAMPLE_WIDTH);
-  pwmEnableChannelNotification(pwmd, owp->config->sample_channel);
+  onewire_bus_active(owp);
+  pwmEnableChannel(pwmd, mch, ONEWIRE_RESET_LOW_WIDTH);
+  pwmEnableChannel(pwmd, sch, ONEWIRE_RESET_SAMPLE_WIDTH);
+  pwmEnableChannelNotification(pwmd, sch);
 
   osalSysLock();
   osalThreadSuspendS(&owp->thread);
   osalSysUnlock();
 
-  palSetPadMode(GPIOB, 8, PAL_MODE_INPUT);
-  pwmStop(pwmd);
+  onewire_bus_idle(owp);
 
   /* wait until slave release bus to discriminate short circuit condition */
   osalThreadSleepMicroseconds(500);
-  return (PAL_HIGH == owp->config->readBitX()) && (true == owp->reg.slave_present);
+  return (PAL_HIGH == readBitX(owp)) && (true == owp->reg.slave_present);
 }
 
 /**
@@ -659,6 +697,7 @@ bool onewireReset(onewireDriver *owp) {
  */
 void onewireRead(onewireDriver *owp, uint8_t *rxbuf, size_t rxbytes) {
   PWMDriver *pwmd;
+  size_t mch, sch;
 
   osalDbgCheck((NULL != owp) && (NULL != rxbuf));
   osalDbgCheck((rxbytes > 0) && (rxbytes < 65536));
@@ -669,6 +708,8 @@ void onewireRead(onewireDriver *owp, uint8_t *rxbuf, size_t rxbytes) {
   memset(rxbuf, 0, rxbytes);
 
   pwmd = owp->config->pwmd;
+  mch = owp->config->master_channel;
+  sch = owp->config->sample_channel;
 
   owp->reg.bit = 0;
   owp->reg.final_timeslot = false;
@@ -677,23 +718,21 @@ void onewireRead(onewireDriver *owp, uint8_t *rxbuf, size_t rxbytes) {
 
   owp->pwmcfg.period = ONEWIRE_ZERO_WIDTH + ONEWIRE_RECOVERY_WIDTH;
   owp->pwmcfg.callback = NULL;
-  owp->pwmcfg.channels[owp->config->master_channel].callback = NULL;
-  owp->pwmcfg.channels[owp->config->master_channel].mode = PWM_OUTPUT_ACTIVE_LOW;
-  owp->pwmcfg.channels[owp->config->sample_channel].callback = pwm_read_bit_cb;
-  owp->pwmcfg.channels[owp->config->sample_channel].mode = PWM_OUTPUT_ACTIVE_LOW;
+  owp->pwmcfg.channels[mch].callback = NULL;
+  owp->pwmcfg.channels[mch].mode = PWM_OUTPUT_ACTIVE_LOW;
+  owp->pwmcfg.channels[sch].callback = pwm_read_bit_cb;
+  owp->pwmcfg.channels[sch].mode = PWM_OUTPUT_ACTIVE_LOW;
 
-  pwmStart(pwmd, &owp->pwmcfg);
-  palSetPadMode(GPIOB, 8, PAL_MODE_STM32_ALTERNATE_OPENDRAIN);
-  pwmEnableChannel(pwmd, owp->config->master_channel, ONEWIRE_ONE_WIDTH);
-  pwmEnableChannel(pwmd, owp->config->sample_channel, ONEWIRE_SAMPLE_WIDTH);
-  pwmEnableChannelNotification(pwmd, owp->config->sample_channel);
+  onewire_bus_active(owp);
+  pwmEnableChannel(pwmd, mch, ONEWIRE_ONE_WIDTH);
+  pwmEnableChannel(pwmd, sch, ONEWIRE_SAMPLE_WIDTH);
+  pwmEnableChannelNotification(pwmd, sch);
 
   osalSysLock();
   osalThreadSuspendS(&owp->thread);
   osalSysUnlock();
 
-  palSetPadMode(GPIOB, 8, PAL_MODE_INPUT);
-  pwmStop(pwmd);
+  onewire_bus_idle(owp);
 }
 
 /**
@@ -708,6 +747,7 @@ void onewireRead(onewireDriver *owp, uint8_t *rxbuf, size_t rxbytes) {
 void onewireWrite(onewireDriver *owp, uint8_t *txbuf,
                   size_t txbytes, systime_t pullup_time) {
   PWMDriver *pwmd;
+  size_t mch, sch;
 
   osalDbgCheck((NULL != owp) && (NULL != txbuf));
   osalDbgCheck((txbytes > 0) && (txbytes < 65536));
@@ -718,6 +758,8 @@ void onewireWrite(onewireDriver *owp, uint8_t *txbuf,
 #endif
 
   pwmd = owp->config->pwmd;
+  mch = owp->config->master_channel;
+  sch = owp->config->sample_channel;
 
   owp->buf = txbuf;
   owp->reg.bit = 0;
@@ -726,10 +768,10 @@ void onewireWrite(onewireDriver *owp, uint8_t *txbuf,
 
   owp->pwmcfg.period = ONEWIRE_ZERO_WIDTH + ONEWIRE_RECOVERY_WIDTH;
   owp->pwmcfg.callback = pwm_write_bit_cb;
-  owp->pwmcfg.channels[owp->config->master_channel].callback = NULL;
-  owp->pwmcfg.channels[owp->config->master_channel].mode = PWM_OUTPUT_ACTIVE_LOW;
-  owp->pwmcfg.channels[owp->config->sample_channel].callback = NULL;
-  owp->pwmcfg.channels[owp->config->sample_channel].mode = PWM_OUTPUT_DISABLED;
+  owp->pwmcfg.channels[mch].callback = NULL;
+  owp->pwmcfg.channels[mch].mode = PWM_OUTPUT_ACTIVE_LOW;
+  owp->pwmcfg.channels[sch].callback = NULL;
+  owp->pwmcfg.channels[sch].mode = PWM_OUTPUT_DISABLED;
 
 #if ONEWIRE_USE_STRONG_PULLUP
   if (pullup_time > 0) {
@@ -738,8 +780,7 @@ void onewireWrite(onewireDriver *owp, uint8_t *txbuf,
   }
 #endif
 
-  pwmStart(pwmd, &owp->pwmcfg);
-  palSetPadMode(GPIOB, 8, PAL_MODE_STM32_ALTERNATE_OPENDRAIN);
+  onewire_bus_active(owp);
   pwmEnablePeriodicNotification(pwmd);
 
   osalSysLock();
@@ -747,8 +788,7 @@ void onewireWrite(onewireDriver *owp, uint8_t *txbuf,
   osalSysUnlock();
 
   pwmDisablePeriodicNotification(pwmd);
-  palSetPadMode(GPIOB, 8, PAL_MODE_INPUT);
-  pwmStop(pwmd);
+  onewire_bus_idle(owp);
 
 #if ONEWIRE_USE_STRONG_PULLUP
   if (pullup_time > 0) {
@@ -776,6 +816,7 @@ size_t onewireSearchRom(onewireDriver *owp, uint8_t *result,
                         size_t max_rom_cnt) {
   PWMDriver *pwmd;
   uint8_t cmd;
+  size_t mch, sch;
 
   osalDbgCheck(NULL != owp);
   osalDbgAssert(ONEWIRE_READY == owp->reg.state, "Invalid state");
@@ -783,6 +824,8 @@ size_t onewireSearchRom(onewireDriver *owp, uint8_t *result,
 
   pwmd = owp->config->pwmd;
   cmd = ONEWIRE_CMD_SEARCH_ROM;
+  mch = owp->config->master_channel;
+  sch = owp->config->sample_channel;
 
   search_clean_start(&owp->search_rom);
 
@@ -807,22 +850,21 @@ size_t onewireSearchRom(onewireDriver *owp, uint8_t *result,
     /* Reconfiguration always needed because of previous call onewireWrite.*/
     owp->pwmcfg.period = ONEWIRE_ZERO_WIDTH + ONEWIRE_RECOVERY_WIDTH;
     owp->pwmcfg.callback = NULL;
-    owp->pwmcfg.channels[owp->config->master_channel].callback = NULL;
-    owp->pwmcfg.channels[owp->config->master_channel].mode = PWM_OUTPUT_ACTIVE_LOW;
-    owp->pwmcfg.channels[owp->config->sample_channel].callback = pwm_search_rom_cb;
-    owp->pwmcfg.channels[owp->config->sample_channel].mode = PWM_OUTPUT_ACTIVE_LOW;
-    pwmStart(pwmd, &owp->pwmcfg);
-    palSetPadMode(GPIOB, 8, PAL_MODE_STM32_ALTERNATE_OPENDRAIN);
-    pwmEnableChannel(pwmd, owp->config->master_channel, ONEWIRE_ONE_WIDTH);
-    pwmEnableChannel(pwmd, owp->config->sample_channel, ONEWIRE_SAMPLE_WIDTH);
-    pwmEnableChannelNotification(pwmd, owp->config->sample_channel);
+    owp->pwmcfg.channels[mch].callback = NULL;
+    owp->pwmcfg.channels[mch].mode = PWM_OUTPUT_ACTIVE_LOW;
+    owp->pwmcfg.channels[sch].callback = pwm_search_rom_cb;
+    owp->pwmcfg.channels[sch].mode = PWM_OUTPUT_ACTIVE_LOW;
+
+    onewire_bus_active(owp);
+    pwmEnableChannel(pwmd, mch, ONEWIRE_ONE_WIDTH);
+    pwmEnableChannel(pwmd, sch, ONEWIRE_SAMPLE_WIDTH);
+    pwmEnableChannelNotification(pwmd, sch);
 
     osalSysLock();
     osalThreadSuspendS(&owp->thread);
     osalSysUnlock();
 
-    palSetPadMode(GPIOB, 8, PAL_MODE_INPUT);
-    pwmStop(pwmd);
+    onewire_bus_idle(owp);
 
     if (ONEWIRE_SEARCH_ROM_ERROR != owp->search_rom.reg.result) {
       /* check CRC and return 0 (error status) if mismatch */
