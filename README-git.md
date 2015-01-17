@@ -10,12 +10,12 @@ First you need to fork 2 repos:
 
 Make local clone of your fork
 ```bash
-# git clone git@github.com:username/ChibiOS-gitmain.git
+# git clone git@github.com:username/ChibiOS.git
 ```
 
 Make local branch for your feature
 ```bash
-# cd ChibiOS-gitmain
+# cd ChibiOS
 # git branch feature
 # git checkout feature
 ```
@@ -51,7 +51,7 @@ Now for parent repo
 ```
 
 Now all your changes published on github. Just use web interface to send
-pull 2 requests: for ChibiOS-contrib and for ChibiOS-gitmain.
+2 pull requests: for ChibiOS-contrib and for ChibiOS.
 
 Links:
 ======
