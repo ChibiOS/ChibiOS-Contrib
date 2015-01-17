@@ -57,5 +57,7 @@ Links:
 ======
 
 https://help.github.com/
+
 http://git-scm.com/
+
 http://chibios.org/dokuwiki/doku.php?id=chibios:guides:style_guide
