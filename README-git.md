@@ -5,7 +5,7 @@ Assume you already have a github account. Lets your account name is
 "username".
 
 First you need to fork 2 repos:
-- ChibiOS-gitmain
+- ChibiOS
 - ChibiOS-contrib
 
 Make local clone of your fork
