@@ -28,6 +28,14 @@
 #define BOARD_NAME              "Texas Instruments TM4C1294 Launchpad"
 
 /*
+ * Ethernet PHY type.
+ */
+#define BOARD_PHY_ADDR                  0   /* 0 is internal PHY */
+#define BOARD_PHY_ID                    0x2000A221  /* internal PHY ID */
+/* uncomment when using RMII */
+//#define BOARD_PHY_RMII
+
+/*
  * MCU type
  */
 //#define TM4C1290NCPDT
@@ -269,18 +277,18 @@
 #define VAL_GPIOE_PCTL          0x00000000
 
 #define VAL_GPIOF_DATA          0b00000000
-#define VAL_GPIOF_DIR           0b00010001
-#define VAL_GPIOF_AFSEL         0b00000000
+#define VAL_GPIOF_DIR           0b00010011
+#define VAL_GPIOF_AFSEL         0b00010011
 #define VAL_GPIOF_DR2R          0b11111111
 #define VAL_GPIOF_DR4R          0b00000000
 #define VAL_GPIOF_DR8R          0b00000000
 #define VAL_GPIOF_ODR           0b00000000
-#define VAL_GPIOF_PUR           0b00010001
+#define VAL_GPIOF_PUR           0b00000000
 #define VAL_GPIOF_PDR           0b00000000
 #define VAL_GPIOF_SLR           0b00000000
 #define VAL_GPIOF_DEN           0b11111111
 #define VAL_GPIOF_AMSEL         0b0000
-#define VAL_GPIOF_PCTL          0x00000000
+#define VAL_GPIOF_PCTL          0x00050055
 
 #define VAL_GPIOG_DATA          0b00000000
 #define VAL_GPIOG_DIR           0b00000000
