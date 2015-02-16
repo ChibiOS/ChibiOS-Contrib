@@ -507,7 +507,7 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config)
   if (sdp->state == SD_STOP) {
 #if TIVA_SERIAL_USE_UART0
     if (&SD1 == sdp) {
-      SYSCTL->RCGC.UART |= (1 << 0);
+      SYSCTL->RCGCUART |= (1 << 0);
       nvicEnableVector(TIVA_UART0_NUMBER, TIVA_SERIAL_UART0_PRIORITY);
     }
 #endif
@@ -570,7 +570,7 @@ void sd_lld_stop(SerialDriver *sdp)
     uart_deinit(sdp->uart);
 #if TIVA_SERIAL_USE_UART0
     if (&SD1 == sdp) {
-      SYSCTL->RCGC.UART &= ~(1 << 0);  /* disable UART0 module */
+      SYSCTL->RCGCUART &= ~(1 << 0);  /* disable UART0 module */
       nvicDisableVector(TIVA_UART0_NUMBER);
       return;
     }
