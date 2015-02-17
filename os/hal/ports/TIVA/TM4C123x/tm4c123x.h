@@ -523,74 +523,173 @@ typedef struct
  */
 typedef struct
 {
-  uint32_t WD;                  /**< Watchdog Timer                          */
-  uint32_t TIMER;               /**< General-Purpose Timer                   */
-  uint32_t GPIO;                /**< General-Purpose Input/Output            */
-  uint32_t DMA;                 /**< Micro Direct Memory Access              */
-  uint32_t _RESERVED0[1];       /**< Reserved                                */
-  uint32_t HIB;                 /**< Hibernation                             */
-  uint32_t UART;                /**< Universal Asynchronous
-                                     Receiver/Transmitter                    */
-  uint32_t SSI;                 /**< Synchronous Serial Interface            */
-  uint32_t I2C;                 /**< Inter-Integrated Circuit                */
-  uint32_t _RESERVED1[1];       /**< Reserved                                */
-  uint32_t USB;                 /**< Universal Serial Bus                    */
-  uint32_t _RESERVED2[2];       /**< Reserved                                */
-  uint32_t CAN;                 /**< Controller Area Network                 */
-  uint32_t ADC;                 /**< Analog-to-Digital Converter             */
-  uint32_t ACMP;                /**< Analog Comparator                       */
-  uint32_t PWM;                 /**< Pulse Width Modulator                   */
-  uint32_t QEI;                 /**< Quadrature Encoder Interface            */
-  uint32_t _RESERVED3[4];       /**< Reserved                                */
-  uint32_t EEPROM;              /**< EEPROM                                  */
-  uint32_t WTIMER;              /**< Wide General-Purpose Timer              */
-  uint32_t _RESERVED4[40];      /**< Reserved                                */
-} SYSCTL_PERIPH_t;
-
-typedef struct
-{
-  __I  uint32_t DID[2];         /**< Device Identification 0 and 1           */
-  __I  uint32_t _RESERVED0[10]; /**< Reserved                                */
+  __I  uint32_t DID0;           /**< Device Identification 0                 */
+  __I  uint32_t DID1;           /**< Device Identification 1                 */
+  __I  uint32_t RESERVED0[10];  /**< Reserved                                */
   __IO uint32_t PBORCTL;        /**< Brown-Out Reset Control                 */
-  __I  uint32_t _RESERVED1[7];  /**< Reserved                                */
+  __I  uint32_t RESERVED1[7];   /**< Reserved                                */
   __I  uint32_t RIS;            /**< Raw Interrupt Status                    */
   __IO uint32_t IMC;            /**< Interrupt Mask Control                  */
   __IO uint32_t MISC;           /**< Interrupt Status and Clear              */
   __IO uint32_t RESC;           /**< Reset Cause                             */
   __IO uint32_t RCC;            /**< Run-Mode Clock Configuration            */
-  __I  uint32_t _RESERVED2[2];  /**< Reserved                                */
+  __I  uint32_t RESERVED2[2];   /**< Reserved                                */
   __IO uint32_t GPIOHBCTL;      /**< GPIO High-Performance Bus Control       */
   __IO uint32_t RCC2;           /**< Run-Mode Clock Configuration 2          */
-  __I  uint32_t _RESERVED3[2];  /**< Reserved                                */
+  __I  uint32_t RESERVED3[2];   /**< Reserved                                */
   __IO uint32_t MOSCCTL;        /**< Main Oscillator Control                 */
-  __I  uint32_t _RESERVED4[49]; /**< Reserved                                */
+  __I  uint32_t RESERVED4[49];  /**< Reserved                                */
   __IO uint32_t DSLPCLKCFG;     /**< Deep Sleep Clock Configuration          */
-  __I  uint32_t _RESERVED5[1];  /**< Reserved                                */
+  __I  uint32_t RESERVED5[1];   /**< Reserved                                */
   __I  uint32_t SYSPROP;        /**< System Properties                       */
   __IO uint32_t PIOSCCAL;       /**< PIOSC Calibration                       */
   __I  uint32_t PIOSCSTAT;      /**< PIOSC Statistics                        */
-  __I  uint32_t _RESERVED6[2];  /**< Reserved                                */
-  __I  uint32_t PLLFREQ[2];     /**< PLL Frequency 0 and 1                   */
+  __I  uint32_t RESERVED6[2];   /**< Reserved                                */
+  __I  uint32_t PLLFREQ0;       /**< PLL Frequency 0                         */
+  __I  uint32_t PLLFREQ1;       /**< PLL Frequency 1                         */
   __I  uint32_t PLLSTAT;        /**< PLL Frequency Status                    */
-  __I  uint32_t _RESERVED7[7];  /**< Reserved                                */
+  __I  uint32_t RESERVED7[7];   /**< Reserved                                */
   __IO uint32_t SLPPWRCFG;      /**< Sleep Power Configuration               */
   __IO uint32_t DSLPPWRCFG;     /**< Deep-Sleep Power Configuration          */
-  __I  uint32_t _RESERVED8[9];  /**< Reserved                                */
+  __I  uint32_t RESERVED8[9];   /**< Reserved                                */
   __IO uint32_t LDOSPCTL;       /**< LDO Sleep Power Control                 */
   __I  uint32_t LDOSPCAL;       /**< LDO Sleep Power Calibration             */
   __IO uint32_t LDODPCTL;       /**< LDO Deep-Sleep Power Control            */
   __I  uint32_t LDODPCAL;       /**< LDO Deep-Sleep Power Calibration        */
-  __I  uint32_t _RESERVED9[2];  /**< Reserved                                */
+  __I  uint32_t RESERVED9[2];   /**< Reserved                                */
   __I  uint32_t SDPMST;         /**< Sleep/Deep-Sleep Power Mode Status      */
-  __I  uint32_t _RESERVED10[76];/**< Reserved                                */
-  __I  SYSCTL_PERIPH_t PP;      /**< Peripheral Present                      */
-  __I  uint32_t _RESERVED11[64];/**< Reserved                                */
-  __IO SYSCTL_PERIPH_t SR;      /**< Software Reset                          */
-  __IO SYSCTL_PERIPH_t RCGC;    /**< Run Mode Clock Gating Control           */
-  __IO SYSCTL_PERIPH_t SCGC;    /**< Sleep Mode Clock Gating Control         */
-  __IO SYSCTL_PERIPH_t DCGC;    /**< Deep-Sleep Mode Clock Gating Control    */
-  __I  uint32_t _RESERVED12[64];/**< Reserved                                */
-  __IO SYSCTL_PERIPH_t PR;      /**< Peripheral Ready                        */
+  __I  uint32_t RESERVED10[76]; /**< Reserved                                */
+  __I  uint32_t PPWD;           /**< WDT Peripheral Present                  */
+  __I  uint32_t PPTIMER;        /**< GPT Peripheral Present                  */
+  __I  uint32_t PPGPIO;         /**< GPIO Peripheral Present                 */
+  __I  uint32_t PPDMA;          /**< UDMA Peripheral Present                 */
+  __I  uint32_t RESERVED11[1];  /**< Reserved                                */
+  __I  uint32_t PPHIB;          /**< HIB Peripheral Present                  */
+  __I  uint32_t PPUART;         /**< UART Peripheral Present                 */
+  __I  uint32_t PPSSI;          /**< SSI Peripheral Present                  */
+  __I  uint32_t PPI2C;          /**< I2C Peripheral Present                  */
+  __I  uint32_t RESERVED12[1];  /**< Reserved                                */
+  __I  uint32_t PPUSB;          /**< USB Peripheral Present                  */
+  __I  uint32_t RESERVED13[2];  /**< Reserved                                */
+  __I  uint32_t PPCAN;          /**< CAN Peripheral Present                  */
+  __I  uint32_t PPADC;          /**< ADC Peripheral Present                  */
+  __I  uint32_t PPACMP;         /**< ACMP Peripheral Present                 */
+  __I  uint32_t PPPWM;          /**< PWM Peripheral Present                  */
+  __I  uint32_t PPQEI;          /**< QEI Peripheral Present                  */
+  __I  uint32_t RESERVED14[4];  /**< Reserved                                */
+  __I  uint32_t PPEEPROM;       /**< EEPROM Peripheral Present               */
+  __I  uint32_t PPWTIMER;       /**< Wide GPT Peripheral Present             */
+  __I  uint32_t RESERVED15[104];/**< Reserved                                */
+  __IO uint32_t SRWD;           /**< WDT Software Reset                      */
+  __IO uint32_t SRTIMER;        /**< GPT Software Reset                      */
+  __IO uint32_t SRGPIO;         /**< GPIO Software Reset                     */
+  __IO uint32_t SRDMA;          /**< UDMA Software Reset                     */
+  __I  uint32_t RESERVED16[1];  /**< Reserved                                */
+  __IO uint32_t SRHIB;          /**< HIB Software Reset                      */
+  __IO uint32_t SRUART;         /**< UART Software Reset                     */
+  __IO uint32_t SRSSI;          /**< SSI Software Reset                      */
+  __IO uint32_t SRI2C;          /**< I2C Software Reset                      */
+  __I  uint32_t RESERVED17[1];  /**< Reserved                                */
+  __IO uint32_t SRUSB;          /**< USB Software Reset                      */
+  __I  uint32_t RESERVED18[2];  /**< Reserved                                */
+  __IO uint32_t SRCAN;          /**< CAN Software Reset                      */
+  __IO uint32_t SRADC;          /**< ADC Software Reset                      */
+  __IO uint32_t SRACMP;         /**< ACMP Software Reset                     */
+  __IO uint32_t SRPWM;          /**< PWM Software Reset                      */
+  __IO uint32_t SRQEI;          /**< QEI Software Reset                      */
+  __I  uint32_t RESERVED19[4];  /**< Reserved                                */
+  __IO uint32_t SREEPROM;       /**< EEPROM Software Reset                   */
+  __IO uint32_t SRWTIMER;       /**< Wide GPT Software Reset                 */
+  __I  uint32_t RESERVED20[40]; /**< Reserved                                */
+  __IO uint32_t RCGCWD;         /**< WDT Run Mode Clock Gating Control       */
+  __IO uint32_t RCGCTIMER;      /**< GPT Run Mode Clock Gating Control       */
+  __IO uint32_t RCGCGPIO;       /**< GPIO Run Mode Clock Gating Control      */
+  __IO uint32_t RCGCDMA;        /**< UDMA Run Mode Clock Gating Control      */
+  __I  uint32_t RESERVED21[1];  /**< Reserved                                */
+  __IO uint32_t RCGCHIB;        /**< HIB Run Mode Clock Gating Control       */
+  __IO uint32_t RCGCUART;       /**< UART Run Mode Control                   */
+  __IO uint32_t RCGCSSI;        /**< SSI Run Mode Clock Gating Control       */
+  __IO uint32_t RCGCI2C;        /**< I2C Run Mode Clock Gating Control       */
+  __I  uint32_t RESERVED22[1];  /**< Reserved                                */
+  __IO uint32_t RCGCUSB;        /**< USB Run Mode Clock Gating Control       */
+  __I  uint32_t RESERVED23[2];  /**< Reserved                                */
+  __IO uint32_t RCGCCAN;        /**< CAN Run Mode Clock Gating Control       */
+  __IO uint32_t RCGCADC;        /**< ADC Run Mode Clock Gating Control       */
+  __IO uint32_t RCGCACMP;       /**< ACMP Run Mode Clock Gating Control      */
+  __IO uint32_t RCGCPWM;        /**< PWM Run Mode Clock Gating Control       */
+  __IO uint32_t RCGCQEI;        /**< QEI Run Mode Clock Gating Control       */
+  __I  uint32_t RESERVED24[4];  /**< Reserved                                */
+  __IO uint32_t RCGCEEPROM;     /**< EEPROM Run Mode Clock Gating Control    */
+  __IO uint32_t RCGCWTIMER;     /**< Wide GPT Run Mode Clock Gating Control  */
+  __I  uint32_t RESERVED25[40]; /**< Reserved                                */
+  __IO uint32_t SCGCWD;         /**< WDT Sleep Mode Clock Gating Control     */
+  __IO uint32_t SCGCTIMER;      /**< GPT Sleep Mode Clock Gating Control     */
+  __IO uint32_t SCGCGPIO;       /**< GPIO Sleep Mode Clock Gating Control    */
+  __IO uint32_t SCGCDMA;        /**< UDMA Sleep Mode Clock Gating Control    */
+  __I  uint32_t RESERVED26[1];  /**< Reserved                                */
+  __IO uint32_t SCGCHIB;        /**< HIB Sleep Mode Clock Gating Control     */
+  __IO uint32_t SCGCUART;       /**< UART Sleep Mode Clock Gating Control    */
+  __IO uint32_t SCGCSSI;        /**< SSI Sleep Mode Clock Gating Control     */
+  __IO uint32_t SCGCI2C;        /**< I2C Sleep Mode Clock Gating Control     */
+  __I  uint32_t RESERVED27[1];  /**< Reserved                                */
+  __IO uint32_t SCGCUSB;        /**< USB Sleep Mode Clock Gating Control     */
+  __I  uint32_t RESERVED28[2];  /**< Reserved                                */
+  __IO uint32_t SCGCCAN;        /**< CAN Sleep Mode Clock Gating Control     */
+  __IO uint32_t SCGCADC;        /**< ADC Sleep Mode Clock Gating Control     */
+  __IO uint32_t SCGCACMP;       /**< ACMP Sleep Mode Clock Gating Control    */
+  __IO uint32_t SCGCPWM;        /**< PWM Sleep Mode Clock Gating Control     */
+  __IO uint32_t SCGCQEI;        /**< QEI Sleep Mode Clock Gating Control     */
+  __I  uint32_t RESERVED29[4];  /**< Reserved                                */
+  __IO uint32_t SCGCEEPROM;     /**< EEPROM Sleep Mode Clock Gating Control  */
+  __IO uint32_t SCGCWTIMER;     /**< Wide GPT Sleep Mode Clock Gating Control*/
+  __I  uint32_t RESERVED30[40]; /**< Reserved                                */
+  __IO uint32_t DCGCWD;         /**< WDT Deep-Sleep Mode Clock Gating Control*/
+  __IO uint32_t DCGCTIMER;      /**< GPT Deep-Sleep Mode Clock Gating Control*/
+  __IO uint32_t DCGCGPIO;       /**< GPIO Deep-Sleep Mode Clock Gating
+                                     Control                                 */
+  __IO uint32_t DCGCDMA;        /**< UDMA Deep-Sleep Mode Clock Gating
+                                     Control                                 */
+  __I  uint32_t RESERVED31[1];  /**< Reserved                                */
+  __IO uint32_t DCGCHIB;        /**< HIB Deep-Sleep Mode Clock Gating Control*/
+  __IO uint32_t DCGCUART;       /**< UART Deep-Sleep Mode Clock Gating
+                                     Control                                 */
+  __IO uint32_t DCGCSSI;        /**< SSI Deep-Sleep Mode Clock Gating Control*/
+  __IO uint32_t DCGCI2C;        /**< I2C Deep-Sleep Mode Clock Gating Control*/
+  __I  uint32_t RESERVED32[1];  /**< Reserved                                */
+  __IO uint32_t DCGCUSB;        /**< USB Deep-Sleep Mode Clock Gating Control*/
+  __I  uint32_t RESERVED33[2];  /**< Reserved                                */
+  __IO uint32_t DCGCCAN;        /**< CAN Deep-Sleep Mode Clock Gating Control*/
+  __IO uint32_t DCGCADC;        /**< ADC Deep-Sleep Mode Clock Gating Control*/
+  __IO uint32_t DCGCACMP;       /**< ACMP Deep-Sleep Mode Clock Gating
+                                     Control                                 */
+  __IO uint32_t DCGCPWM;        /**< PWM Deep-Sleep Mode Clock Gating Control*/
+  __IO uint32_t DCGCQEI;        /**< QEI Deep-Sleep Mode Clock Gating Control*/
+  __I  uint32_t RESERVED34[4];  /**< Reserved                                */
+  __IO uint32_t DCGCEEPROM;     /**< EEPROM Deep-Sleep Mode Clock Gating
+                                     Control                                 */
+  __IO uint32_t DCGCWTIMER;     /**< Wide GPT Deep-Sleep Mode Clock Gating
+                                     Control                                 */
+  __I  uint32_t RESERVED35[104];/**< Reserved                                */
+  __IO uint32_t PRWD;           /**< WDT Peripheral Ready                    */
+  __IO uint32_t PRTIMER;        /**< GPT Peripheral Ready                    */
+  __IO uint32_t PRGPIO;         /**< GPIO Peripheral Ready                   */
+  __IO uint32_t PRDMA;          /**< UDMA Peripheral Ready                   */
+  __I  uint32_t RESERVED36[1];  /**< Reserved                                */
+  __IO uint32_t PRHIB;          /**< HIB Peripheral Ready                    */
+  __IO uint32_t PRUART;         /**< UART Peripheral Ready                   */
+  __IO uint32_t PRSSI;          /**< SSI Peripheral Ready                    */
+  __IO uint32_t PRI2C;          /**< I2C Peripheral Ready                    */
+  __I  uint32_t RESERVED37[1];  /**< Reserved                                */
+  __IO uint32_t PRUSB;          /**< USB Peripheral Ready                    */
+  __I  uint32_t RESERVED38[2];  /**< Reserved                                */
+  __IO uint32_t PRCAN;          /**< CAN Peripheral Ready                    */
+  __IO uint32_t PRADC;          /**< ADC Peripheral Ready                    */
+  __IO uint32_t PRACMP;         /**< ACMP Peripheral Ready                   */
+  __IO uint32_t PRPWM;          /**< PWM Peripheral Ready                    */
+  __IO uint32_t PRQEI;          /**< QEI Peripheral Ready                    */
+  __I  uint32_t RESERVED39[4];  /**< Reserved                                */
+  __IO uint32_t PREEPROM;       /**< EEPROM Peripheral Ready                 */
+  __IO uint32_t PRWTIMER;       /**< Wide GPT Peripheral Ready               */
 } SYSCTL_TypeDef;
 
 /**
