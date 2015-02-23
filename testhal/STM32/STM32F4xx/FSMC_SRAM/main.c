@@ -14,24 +14,20 @@
     limitations under the License.
 */
 
-/*
-TODO:
-write memtest function using ideas from http://www.memtest86.com/technical.htm
-*/
-
 #include "ch.h"
 #include "hal.h"
 
-#include "string.h"
-
 #include "fsmc_sram.h"
+#include "membench.h"
+#include "memtest.hpp"
 
 /*
  ******************************************************************************
  * DEFINES
  ******************************************************************************
  */
-#define USE_INFINITE_MEMTEST        FALSE
+#define SRAM_START      ((void *)FSMC_Bank1_4_MAP)
+#define SRAM_SIZE       (512 * 1024)
 
 /*
  ******************************************************************************
@@ -45,27 +41,58 @@ write memtest function using ideas from http://www.memtest86.com/technical.htm
  ******************************************************************************
  */
 
+static void mem_error_cb(memtest_t *memp, testtype_t e, size_t address);
+
 /*
  ******************************************************************************
  * GLOBAL VARIABLES
  ******************************************************************************
  */
-static uint32_t sram_check_buf[16 * 1024];
-static uint32_t *sram_start = (uint32_t *)FSMC_Bank1_4_MAP;
-static const size_t sram_size = 524288;
 
 /*
  * SRAM driver configuration structure.
  */
 static const SRAMConfig sram_cfg = {
-    .btr = 2 << 8
+    2 << 8
 };
 
-/* benchmarking results in MiB/S */
-volatile double memset_speed_ext;
-volatile double memset_speed_int;
-volatile double memcpy_speed_ext2int;
-volatile double memcpy_speed_int2ext;
+/*
+ *
+ */
+static memtest_t memtest_struct = {
+    SRAM_START,
+    SRAM_SIZE,
+    MEMTEST_WIDTH_16,
+    mem_error_cb,
+    42
+};
+
+/*
+ *
+ */
+static membench_t membench_ext = {
+    SRAM_START,
+    SRAM_SIZE,
+};
+
+/*
+ *
+ */
+static uint8_t int_buf[64*1024];
+
+/*
+ *
+ */
+static membench_t membench_int = {
+    int_buf,
+    sizeof(int_buf),
+};
+
+/*
+ *
+ */
+static membench_result_t membench_result_ext2int;
+static membench_result_t membench_result_int2ext;
 
 /*
  ******************************************************************************
@@ -74,58 +101,53 @@ volatile double memcpy_speed_int2ext;
  ******************************************************************************
  ******************************************************************************
  */
-/**
- *
- */
-static void sram_benchmark(void){
 
-  size_t i=0;
-  time_measurement_t mem_tmu;
+static inline void red_led_on(void)       {palSetPad(GPIOI,     GPIOI_LED_R);}
+static inline void red_led_off(void)      {palClearPad(GPIOI,   GPIOI_LED_R);}
+static inline void green_led_on(void)     {palSetPad(GPIOI,     GPIOI_LED_G);}
+static inline void green_led_off(void)    {palClearPad(GPIOI,   GPIOI_LED_G);}
+static inline void green_led_toggle(void) {palTogglePad(GPIOI,  GPIOI_LED_G);}
 
-  /* memset speed ext */
-  chTMObjectInit(&mem_tmu);
-  chTMStartMeasurementX(&mem_tmu);
-  memset(sram_start, 0x55, sram_size);
-  memset(sram_start, 0x00, sram_size);
-  chTMStopMeasurementX(&mem_tmu);
-  memset_speed_ext = 1 / (mem_tmu.cumulative / (double)STM32_SYSCLK);
+static void mem_error_cb(memtest_t *memp, testtype_t e, size_t address) {
+  (void)memp;
+  (void)e;
+  (void)address;
 
-  /* memset speed int */
-  chTMObjectInit(&mem_tmu);
-  chTMStartMeasurementX(&mem_tmu);
-  for (i=0; i<16; i++)
-    memset(sram_check_buf, i, sizeof(sram_check_buf));
-  chTMStopMeasurementX(&mem_tmu);
-  memset_speed_int = 1 / (mem_tmu.cumulative / (double)STM32_SYSCLK);
-
-  /* memcpy ext2int */
-  chTMObjectInit(&mem_tmu);
-  chTMStartMeasurementX(&mem_tmu);
-  for (i=0; i<16; i++)
-    memcpy(sram_check_buf, sram_start+ i * sizeof(sram_check_buf), sizeof(sram_check_buf));
-  chTMStopMeasurementX(&mem_tmu);
-  memcpy_speed_ext2int = 1 / (mem_tmu.cumulative / (double)STM32_SYSCLK);
-
-  /* memcpy int2ext */
-  chTMObjectInit(&mem_tmu);
-  memset(sram_check_buf, 0xAA, sizeof(sram_check_buf));
-  chTMStartMeasurementX(&mem_tmu);
-  for (i=0; i<16; i++)
-    memcpy(sram_start + i * sizeof(sram_check_buf), sram_check_buf, sizeof(sram_check_buf));
-  chTMStopMeasurementX(&mem_tmu);
-  memcpy_speed_int2ext = 1 / (mem_tmu.cumulative / (double)STM32_SYSCLK);
+  green_led_off();
+  red_led_on();
+  osalSysHalt("Memory broken");
 }
 
-/**
+/*
  *
  */
-#if USE_INFINITE_MEMTEST
-static void memstest(void){
+static void memtest(void) {
+
+  red_led_off();
+
   while (true) {
-    ;
+    memtest_struct.width = MEMTEST_WIDTH_16;
+    memtest_struct.rand_seed = chSysGetRealtimeCounterX();
+    memtest_run(&memtest_struct, MEMTEST_RUN_ALL);
+
+    memtest_struct.width = MEMTEST_WIDTH_8;
+    memtest_struct.rand_seed = chSysGetRealtimeCounterX();
+    memtest_run(&memtest_struct, MEMTEST_RUN_ALL);
+
+    green_led_toggle();
   }
+
+  green_led_on();
+  green_led_off();
 }
-#endif /* USE_INFINITE_MEMTEST */
+
+/*
+ *
+ */
+static void membench(void) {
+  membench_run(&membench_ext, &membench_int, &membench_result_int2ext);
+  membench_run(&membench_int, &membench_ext, &membench_result_ext2int);
+}
 
 /*
  ******************************************************************************
@@ -150,11 +172,9 @@ int main(void) {
 
   fsmcSramInit();
   fsmcSramStart(&SRAMD4, &sram_cfg);
-  sram_benchmark();
 
-#if USE_INFINITE_MEMTEST
+  membench();
   memtest();
-#endif
 
   /*
    * Normal main() thread activity, in this demo it does nothing.
