@@ -26,8 +26,8 @@
  * DEFINES
  ******************************************************************************
  */
-#define SRAM_START      ((void *)FSMC_Bank1_4_MAP)
 #define SRAM_SIZE       (512 * 1024)
+#define SRAM_START      ((void *)FSMC_Bank1_4_MAP)
 
 /*
  ******************************************************************************
@@ -49,11 +49,18 @@ static void mem_error_cb(memtest_t *memp, testtype_t e, size_t address);
  ******************************************************************************
  */
 
+static size_t errors = 0;
+
+/*
+ *
+ */
+static uint8_t int_buf[64*1024];
+
 /*
  * SRAM driver configuration structure.
  */
 static const SRAMConfig sram_cfg = {
-    2 << 8
+    (0 << 16) | (2 << 8) | (1 << 0)
 };
 
 /*
@@ -74,11 +81,6 @@ static membench_t membench_ext = {
     SRAM_START,
     SRAM_SIZE,
 };
-
-/*
- *
- */
-static uint8_t int_buf[64*1024];
 
 /*
  *
@@ -108,13 +110,15 @@ static inline void green_led_on(void)     {palSetPad(GPIOI,     GPIOI_LED_G);}
 static inline void green_led_off(void)    {palClearPad(GPIOI,   GPIOI_LED_G);}
 static inline void green_led_toggle(void) {palTogglePad(GPIOI,  GPIOI_LED_G);}
 
-static void mem_error_cb(memtest_t *memp, testtype_t e, size_t address) {
+void mem_error_cb(memtest_t *memp, testtype_t e, size_t address) {
   (void)memp;
   (void)e;
   (void)address;
 
   green_led_off();
   red_led_on();
+  osalThreadSleepMilliseconds(10);
+  errors++;
   osalSysHalt("Memory broken");
 }
 
@@ -126,14 +130,8 @@ static void memtest(void) {
   red_led_off();
 
   while (true) {
-    memtest_struct.width = MEMTEST_WIDTH_16;
     memtest_struct.rand_seed = chSysGetRealtimeCounterX();
     memtest_run(&memtest_struct, MEMTEST_RUN_ALL);
-
-    memtest_struct.width = MEMTEST_WIDTH_8;
-    memtest_struct.rand_seed = chSysGetRealtimeCounterX();
-    memtest_run(&memtest_struct, MEMTEST_RUN_ALL);
-
     green_led_toggle();
   }
 

@@ -4,13 +4,15 @@
 #define MEMTEST_WALKING_ONE               (1 << 0)
 #define MEMTEST_WALKING_ZERO              (1 << 1)
 #define MEMTEST_OWN_ADDRESS               (1 << 2)
-#define MEMTEST_MOVING_INVERSION          (1 << 3)
-#define MEMTEST_MOVING_INVERSION_RAND     (1 << 4)
+#define MEMTEST_MOVING_INVERSION_ZERO     (1 << 3)
+#define MEMTEST_MOVING_INVERSION_55AA     (1 << 4)
+#define MEMTEST_MOVING_INVERSION_RAND     (1 << 5)
 
 #define MEMTEST_RUN_ALL                   (MEMTEST_WALKING_ONE | \
                                            MEMTEST_WALKING_ZERO | \
                                            MEMTEST_OWN_ADDRESS | \
-                                           MEMTEST_MOVING_INVERSION | \
+                                           MEMTEST_MOVING_INVERSION_ZERO | \
+                                           MEMTEST_MOVING_INVERSION_55AA | \
                                            MEMTEST_MOVING_INVERSION_RAND)
 
 typedef struct memtest_t memtest_t;

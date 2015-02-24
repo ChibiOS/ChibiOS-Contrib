@@ -591,7 +591,7 @@
                                      PIN_PUPDR_FLOATING(GPIOD_MEM_OE) |     \
                                      PIN_PUPDR_FLOATING(GPIOD_MEM_WE) |     \
                                      NAND_RB_NWAIT_PUPDR(GPIOD_NAND_RB_NWAIT) |  \
-                                     PIN_PUPDR_FLOATING(GPIOD_NAND_CE1) |   \
+                                     PIN_PUPDR_PULLUP(GPIOD_NAND_CE1) |   \
                                      PIN_PUPDR_FLOATING(GPIOD_MEM_D13) |    \
                                      PIN_PUPDR_FLOATING(GPIOD_MEM_D14) |    \
                                      PIN_PUPDR_FLOATING(GPIOD_MEM_D15) |    \
@@ -899,7 +899,7 @@
                                      NAND_RB1_PUPDR(GPIOG_NAND_RB1) |       \
                                      PIN_PUPDR_FLOATING(GPIOG_NAND_RB2) |   \
                                      PIN_PUPDR_FLOATING(GPIOG_PIN8) |       \
-                                     PIN_PUPDR_FLOATING(GPIOG_NAND_CE2) |   \
+                                     PIN_PUPDR_PULLUP(GPIOG_NAND_CE2) |   \
                                      PIN_PUPDR_FLOATING(GPIOG_PIN10) |      \
                                      PIN_PUPDR_FLOATING(GPIOG_PIN11) |      \
                                      PIN_PUPDR_FLOATING(GPIOG_SRAM_CS1) |   \
