@@ -101,7 +101,8 @@ CSRC = $(PORTSRC) \
        $(PLATFORMSRC) \
        $(BOARDSRC) \
        main.c \
-       membench.c
+       membench.c \
+       memcpy_dma.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.

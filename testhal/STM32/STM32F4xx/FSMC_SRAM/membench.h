@@ -10,12 +10,13 @@ typedef struct {
 } membench_t;
 
 /*
- *
+ * all values in B/s
  */
 typedef struct {
-  double  memset_spd;
-  double  memcpy_spd;
-  double  memcmp_spd;
+  uint32_t  memset;
+  uint32_t  memcpy;
+  uint32_t  memcpy_dma;
+  uint32_t  memcmp;
 } membench_result_t;
 
 /*
