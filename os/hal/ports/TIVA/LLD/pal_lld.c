@@ -178,15 +178,21 @@ void _pal_lld_init(const PALConfig *config)
 
   gpio_init(GPIOB, &config->PBData);
 
+  /* Unlock pin 0, 1, 2 and 3 */
   GPIOC->LOCK = TIVA_GPIO_LOCK_PWD;
-  GPIOC->CR = 0x01;
+  GPIOC->CR = 0x0F;
   gpio_init(GPIOC, &config->PCData);
   GPIOC->LOCK = 0;
 
+  /* Unlock pin 7 */
+  GPIOD->LOCK = TIVA_GPIO_LOCK_PWD;
+  GPIOD->CR = 0x80;
   gpio_init(GPIOD, &config->PDData);
+  GPIOC->LOCK = 0;
 
   gpio_init(GPIOE, &config->PEData);
 
+  /* Unlock pin 0 */
   GPIOF->LOCK = TIVA_GPIO_LOCK_PWD;
   GPIOF->CR = 0x01;
   gpio_init(GPIOF, &config->PFData);
