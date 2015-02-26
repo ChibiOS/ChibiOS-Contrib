@@ -28,7 +28,7 @@
 #if HAL_USE_PAL || defined(__DOXYGEN__)
 
 /*===========================================================================*/
-/* Unsupported modes and specific modes                                      */
+/* Driver constants.                                                         */
 /*===========================================================================*/
 
 /**
@@ -85,11 +85,108 @@
  * @}
  */
 
+/** @brief   GPIOA port identifier.*/
+#define IOPORT1         GPIOA
+
+/** @brief   GPIOB port identifier.*/
+#define IOPORT2         GPIOB
+
+/** @brief   GPIOC port identifier.*/
+#define IOPORT3         GPIOC
+
+/** @brief   GPIOD port identifier.*/
+#define IOPORT4         GPIOD
+
+/** @brief   GPIOE port identifier.*/
+#define IOPORT5         GPIOE
+
+/** @brief   GPIOF port identifier.*/
+#define IOPORT6         GPIOF
+
+#if TIVA_HAS_GPIOG || defined(__DOXYGEN__)
+/** @brief Port G setup data.*/
+#define IOPORT7         GPIOG
+#endif /* TIVA_HAS_GPIOG.*/
+
+#if TIVA_HAS_GPIOH || defined(__DOXYGEN__)
+/** @brief Port H setup data.*/
+#define IOPORT8         GPIOH
+#endif /* TIVA_HAS_GPIOH.*/
+
+#if TIVA_HAS_GPIOJ || defined(__DOXYGEN__)
+/** @brief Port J setup data.*/
+#define IOPORT9         GPIOJ
+#endif /* TIVA_HAS_GPIOJ.*/
+
+#if TIVA_HAS_GPIOK || defined(__DOXYGEN__)
+/** @brief Port K setup data.*/
+#define IOPORT10        GPIOK
+#endif /* TIVA_HAS_GPIOK.*/
+
+#if TIVA_HAS_GPIOL || defined(__DOXYGEN__)
+/** @brief Port L setup data.*/
+#define IOPORT11        GPIOL
+#endif /* TIVA_HAS_GPIOL.*/
+
+#if TIVA_HAS_GPIOM || defined(__DOXYGEN__)
+/** @brief Port M setup data.*/
+#define IOPORT12        GPIOM
+#endif /* TIVA_HAS_GPIOM.*/
+
+#if TIVA_HAS_GPION || defined(__DOXYGEN__)
+/** @brief Port N setup data.*/
+#define IOPORT13        GPION
+#endif /* TIVA_HAS_GPION.*/
+
+#if TIVA_HAS_GPIOP || defined(__DOXYGEN__)
+/** @brief Port P setup data.*/
+#define IOPORT14        GPIOP
+#endif /* TIVA_HAS_GPIOP.*/
+
+#if TIVA_HAS_GPIOQ || defined(__DOXYGEN__)
+/** @brief Port Q setup data.*/
+#define IOPORT15        GPIOQ
+#endif /* TIVA_HAS_GPIOQ.*/
+
+#if TIVA_HAS_GPIOR || defined(__DOXYGEN__)
+/** @brief Port R setup data.*/
+#define IOPORT16        GPIOR
+#endif /* TIVA_HAS_GPIOR.*/
+
+#if TIVA_HAS_GPIOS || defined(__DOXYGEN__)
+/** @brief Port S setup data.*/
+#define IOPORT17        GPIOS
+#endif /* TIVA_HAS_GPIOS.*/
+
+#if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
+/** @brief Port T setup data.*/
+#define IOPORT18        GPIOT
+#endif /* TIVA_HAS_GPIOT.*/
+
+/**
+ * @brief   Width, in bits, of an I/O port.
+ */
+#define PAL_IOPORTS_WIDTH 8
+
+/**
+ * @brief   Whole port mask.
+ * @brief   This macro specifies all the valid bits into a port.
+ */
+#define PAL_WHOLE_PORT ((ioportmask_t)0xFF)
+
 /*===========================================================================*/
-/* I/O Ports Types and constants.                                            */
+/* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
-/**	
+/*===========================================================================*/
+/* Derived constants and error checks.                                       */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver data structures and types.                                         */
+/*===========================================================================*/
+
+/**
  * @brief   GPIO port setup info.
  */
 typedef struct 
@@ -206,17 +303,6 @@ typedef struct
 } PALConfig;
 
 /**
- * @brief   Width, in bits, of an I/O port.
- */
-#define PAL_IOPORTS_WIDTH 8
-
-/**
- * @brief   Whole port mask.
- * @brief   This macro specifies all the valid bits into a port.
- */
-#define PAL_WHOLE_PORT ((ioportmask_t)0xFF)
-
-/**
  * @brief   Digital I/O port sized unsigned type.
  */
 typedef uint32_t ioportmask_t;
@@ -232,90 +318,7 @@ typedef uint32_t iomode_t;
 typedef GPIO_TypeDef *ioportid_t;
 
 /*===========================================================================*/
-/* I/O Ports Identifiers.                                                    */
-/*===========================================================================*/
-
-/** @brief   GPIOA port identifier.*/
-#define IOPORT1         GPIOA
-
-/** @brief   GPIOB port identifier.*/
-#define IOPORT2         GPIOB
-
-/** @brief   GPIOC port identifier.*/
-#define IOPORT3         GPIOC
-
-/** @brief   GPIOD port identifier.*/
-#define IOPORT4         GPIOD
-
-/** @brief   GPIOE port identifier.*/
-#define IOPORT5         GPIOE
-
-/** @brief   GPIOF port identifier.*/
-#define IOPORT6         GPIOF
-
-#if TIVA_HAS_GPIOG || defined(__DOXYGEN__)
-/** @brief Port G setup data.*/
-#define IOPORT7         GPIOG
-#endif /* TIVA_HAS_GPIOG.*/
-
-#if TIVA_HAS_GPIOH || defined(__DOXYGEN__)
-/** @brief Port H setup data.*/
-#define IOPORT8         GPIOH
-#endif /* TIVA_HAS_GPIOH.*/
-
-#if TIVA_HAS_GPIOJ || defined(__DOXYGEN__)
-/** @brief Port J setup data.*/
-#define IOPORT9         GPIOJ
-#endif /* TIVA_HAS_GPIOJ.*/
-
-#if TIVA_HAS_GPIOK || defined(__DOXYGEN__)
-/** @brief Port K setup data.*/
-#define IOPORT10        GPIOK
-#endif /* TIVA_HAS_GPIOK.*/
-
-#if TIVA_HAS_GPIOL || defined(__DOXYGEN__)
-/** @brief Port L setup data.*/
-#define IOPORT11        GPIOL
-#endif /* TIVA_HAS_GPIOL.*/
-
-#if TIVA_HAS_GPIOM || defined(__DOXYGEN__)
-/** @brief Port M setup data.*/
-#define IOPORT12        GPIOM
-#endif /* TIVA_HAS_GPIOM.*/
-
-#if TIVA_HAS_GPION || defined(__DOXYGEN__)
-/** @brief Port N setup data.*/
-#define IOPORT13        GPION
-#endif /* TIVA_HAS_GPION.*/
-
-#if TIVA_HAS_GPIOP || defined(__DOXYGEN__)
-/** @brief Port P setup data.*/
-#define IOPORT14        GPIOP
-#endif /* TIVA_HAS_GPIOP.*/
-
-#if TIVA_HAS_GPIOQ || defined(__DOXYGEN__)
-/** @brief Port Q setup data.*/
-#define IOPORT15        GPIOQ
-#endif /* TIVA_HAS_GPIOQ.*/
-
-#if TIVA_HAS_GPIOR || defined(__DOXYGEN__)
-/** @brief Port R setup data.*/
-#define IOPORT16        GPIOR
-#endif /* TIVA_HAS_GPIOR.*/
-
-#if TIVA_HAS_GPIOS || defined(__DOXYGEN__)
-/** @brief Port S setup data.*/
-#define IOPORT17        GPIOS
-#endif /* TIVA_HAS_GPIOS.*/
-
-#if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
-/** @brief Port T setup data.*/
-#define IOPORT18        GPIOT
-#endif /* TIVA_HAS_GPIOT.*/
-
-/*===========================================================================*/
-/* Implementation, some of the following macros could be implemented as      */
-/* functions, if so please put them in pal_lld.c.                            */
+/* Driver macros.                                                            */
 /*===========================================================================*/
 
 /**
@@ -495,6 +498,10 @@ typedef GPIO_TypeDef *ioportid_t;
  */
 #define pal_lld_clearpad(port, pad) \
   ((port)->MASKED_ACCESS[1 << (pad)] = 0)
+
+/*===========================================================================*/
+/* External declarations.                                                    */
+/*===========================================================================*/
 
 #if !defined(__DOXYGEN__)
 extern const PALConfig pal_default_config;
