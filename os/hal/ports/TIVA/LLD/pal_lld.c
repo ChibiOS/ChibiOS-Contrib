@@ -249,57 +249,59 @@ void _pal_lld_init(const PALConfig *config)
  *
  * @notapi
  */
-void _pal_lld_setgroupmode(ioportid_t port,
-                           ioportmask_t mask,
-                           iomode_t mode)
+void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode)
 {
-  uint32_t dir   = (mode & PAL_TIVA_DIR_MASK) >> 0;
+  uint32_t dir   = (mode & PAL_TIVA_DIR_MASK)   >> 0;
   uint32_t afsel = (mode & PAL_TIVA_AFSEL_MASK) >> 1;
-  uint32_t dr2r  = (mode & PAL_TIVA_DR2R_MASK) >> 2;
-  uint32_t dr4r  = (mode & PAL_TIVA_DR4R_MASK) >> 3;
-  uint32_t dr8r  = (mode & PAL_TIVA_DR8R_MASK) >> 4;
-  uint32_t odr   = (mode & PAL_TIVA_ODR_MASK) >> 5;
-  uint32_t pur   = (mode & PAL_TIVA_PUR_MASK) >> 6;
-  uint32_t pdr   = (mode & PAL_TIVA_PDR_MASK) >> 7;
-  uint32_t slr   = (mode & PAL_TIVA_SLR_MASK) >> 8;
-  uint32_t den   = (mode & PAL_TIVA_DEN_MASK) >> 9;
+  uint32_t dr2r  = (mode & PAL_TIVA_DR2R_MASK)  >> 2;
+  uint32_t dr4r  = (mode & PAL_TIVA_DR4R_MASK)  >> 3;
+  uint32_t dr8r  = (mode & PAL_TIVA_DR8R_MASK)  >> 4;
+  uint32_t odr   = (mode & PAL_TIVA_ODR_MASK)   >> 5;
+  uint32_t pur   = (mode & PAL_TIVA_PUR_MASK)   >> 6;
+  uint32_t pdr   = (mode & PAL_TIVA_PDR_MASK)   >> 7;
+  uint32_t slr   = (mode & PAL_TIVA_SLR_MASK)   >> 8;
+  uint32_t den   = (mode & PAL_TIVA_DEN_MASK)   >> 9;
   uint32_t amsel = (mode & PAL_TIVA_AMSEL_MASK) >> 10;
-  uint32_t pctl  = (mode & PAL_TIVA_PCTL_MASK) >> 11;
+  uint32_t pctl  = (mode & PAL_TIVA_PCTL_MASK)  >> 11;
   uint32_t bit   = 0;
 
   while(TRUE) {
     uint32_t pctl_mask = (7 << (4 * bit));
+    uint32_t bit_mask = (1 << bit);
+
     if ((mask & 1) != 0) {
-      port->DIR   = (port->DIR & ~mask) | dir;
-      port->AFSEL = (port->AFSEL & ~mask) | afsel;
-      port->DR2R  = (port->DR2R & ~mask) | dr2r;
-      port->DR4R  = (port->DR4R & ~mask) | dr4r;
-      port->DR8R  = (port->DR8R & ~mask) | dr8r;
-      port->ODR   = (port->ODR & ~mask) | odr;
-      port->PUR   = (port->PUR & ~mask) | pur;
-      port->PDR   = (port->PDR & ~mask) | pdr;
-      port->SLR   = (port->SLR & ~mask) | slr;
-      port->DEN   = (port->DEN & ~mask) | den;
-      port->AMSEL = (port->AMSEL & ~mask) | amsel;
-      port->PCTL  = (port->PCTL & ~pctl_mask) | pctl;
+      port->DIR   = (port->DIR   & ~bit_mask)  | dir;
+      port->AFSEL = (port->AFSEL & ~bit_mask)  | afsel;
+      port->DR2R  = (port->DR2R  & ~bit_mask)  | dr2r;
+      port->DR4R  = (port->DR4R  & ~bit_mask)  | dr4r;
+      port->DR8R  = (port->DR8R  & ~bit_mask)  | dr8r;
+      port->ODR   = (port->ODR   & ~bit_mask)  | odr;
+      port->PUR   = (port->PUR   & ~bit_mask)  | pur;
+      port->PDR   = (port->PDR   & ~bit_mask)  | pdr;
+      port->SLR   = (port->SLR   & ~bit_mask)  | slr;
+      port->DEN   = (port->DEN   & ~bit_mask)  | den;
+      port->AMSEL = (port->AMSEL & ~bit_mask)  | amsel;
+      port->PCTL  = (port->PCTL  & ~pctl_mask) | pctl;
     }
 
     mask >>= 1;
     if (!mask) {
       return;
     }
-    dir <<= 1;
+
+    dir   <<= 1;
     afsel <<= 1;
-    dr2r <<= 1;
-    dr4r <<= 1;
-    dr8r <<= 1;
-    odr <<= 1;
-    pur <<= 1;
-    pdr <<= 1;
-    slr <<= 1;
-    den <<= 1;
+    dr2r  <<= 1;
+    dr4r  <<= 1;
+    dr8r  <<= 1;
+    odr   <<= 1;
+    pur   <<= 1;
+    pdr   <<= 1;
+    slr   <<= 1;
+    den   <<= 1;
     amsel <<= 1;
-    pctl <<= 4;
+    pctl  <<= 4;
+
     bit++;
   }
 }
