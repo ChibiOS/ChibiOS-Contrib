@@ -130,7 +130,7 @@
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-void gpio_init (GPIO_TypeDef *gpiop, const tiva_gpio_setup_t *config)
+static void gpio_init (GPIO_TypeDef *gpiop, const tiva_gpio_setup_t *config)
 {
   gpiop->DATA   = config->data;
   gpiop->DIR    = config->dir;
