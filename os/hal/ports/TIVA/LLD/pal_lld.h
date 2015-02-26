@@ -31,6 +31,60 @@
 /* Unsupported modes and specific modes                                      */
 /*===========================================================================*/
 
+/**
+ * @name    TIVA-specific I/O mode flags
+ * @{
+ */
+#define PAL_TIVA_DIR_MASK           (1 << 0)
+#define PAL_TIVA_DIR_INPUT          (0 << 0)
+#define PAL_TIVA_DIR_OUTPUT         (1 << 0)
+
+#define PAL_TIVA_AFSEL_MASK         (1 << 1)
+#define PAL_TIVA_AFSEL_GPIO         (0 << 1)
+#define PAL_TIVA_AFSEL_ALTERNATE    (1 << 1)
+
+#define PAL_TIVA_DR2R_MASK          (1 << 2)
+#define PAL_TIVA_DR2R_DISABLE       (0 << 2)
+#define PAL_TIVA_DR2R_ENABLE        (1 << 2)
+
+#define PAL_TIVA_DR4R_MASK          (1 << 3)
+#define PAL_TIVA_DR4R_DISABLE       (0 << 3)
+#define PAL_TIVA_DR4R_ENABLE        (1 << 3)
+
+#define PAL_TIVA_DR8R_MASK          (1 << 4)
+#define PAL_TIVA_DR8R_DISABLE       (0 << 4)
+#define PAL_TIVA_DR8R_ENABLE        (1 << 4)
+
+#define PAL_TIVA_ODR_MASK           (1 << 5)
+#define PAL_TIVA_ODR_PUSHPULL       (0 << 5)
+#define PAL_TIVA_ODR_OPENDRAIN      (1 << 5)
+
+#define PAL_TIVA_PUR_MASK           (1 << 6)
+#define PAL_TIVA_PUR_DISABLE        (0 << 6)
+#define PAL_TIVA_PUR_ENABLE         (1 << 6)
+
+#define PAL_TIVA_PDR_MASK           (1 << 7)
+#define PAL_TIVA_PDR_DISABLE        (0 << 7)
+#define PAL_TIVA_PDR_ENABLE         (1 << 7)
+
+#define PAL_TIVA_SLR_MASK           (1 << 8)
+#define PAL_TIVA_SLR_DISABLE        (0 << 8)
+#define PAL_TIVA_SLR_ENABLE         (1 << 8)
+
+#define PAL_TIVA_DEN_MASK           (1 << 9)
+#define PAL_TIVA_DEN_DISABLE        (0 << 9)
+#define PAL_TIVA_DEN_ENABLE         (1 << 9)
+
+#define PAL_TIVA_AMSEL_MASK         (1 << 10)
+#define PAL_TIVA_AMSEL_DISABLE      (0 << 10)
+#define PAL_TIVA_AMSEL_ENABLE       (1 << 10)
+
+#define PAL_TIVA_PCTL_MASK          (7 << 11)
+#define PAL_TIVA_PCTL(n)            ((n) << 11)
+/**
+ * @}
+ */
+
 /*===========================================================================*/
 /* I/O Ports Types and constants.                                            */
 /*===========================================================================*/

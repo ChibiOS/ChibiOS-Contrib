@@ -253,57 +253,55 @@ void _pal_lld_setgroupmode(ioportid_t port,
                            ioportmask_t mask,
                            iomode_t mode)
 {
-  /* TODO: What does this function exactly do? The pins are already configured
-   * in board.h and initialized by the pal driver. */
+  uint32_t dir   = (mode & PAL_TIVA_DIR_MASK) >> 0;
+  uint32_t afsel = (mode & PAL_TIVA_AFSEL_MASK) >> 1;
+  uint32_t dr2r  = (mode & PAL_TIVA_DR2R_MASK) >> 2;
+  uint32_t dr4r  = (mode & PAL_TIVA_DR4R_MASK) >> 3;
+  uint32_t dr8r  = (mode & PAL_TIVA_DR8R_MASK) >> 4;
+  uint32_t odr   = (mode & PAL_TIVA_ODR_MASK) >> 5;
+  uint32_t pur   = (mode & PAL_TIVA_PUR_MASK) >> 6;
+  uint32_t pdr   = (mode & PAL_TIVA_PDR_MASK) >> 7;
+  uint32_t slr   = (mode & PAL_TIVA_SLR_MASK) >> 8;
+  uint32_t den   = (mode & PAL_TIVA_DEN_MASK) >> 9;
+  uint32_t amsel = (mode & PAL_TIVA_AMSEL_MASK) >> 10;
+  uint32_t pctl  = (mode & PAL_TIVA_PCTL_MASK) >> 11;
+  uint32_t bit   = 0;
 
-  (void) port;
-  (void) mask;
-  (void) mode;
+  while(TRUE) {
+    uint32_t pctl_mask = (7 << (4 * bit));
+    if ((mask & 1) != 0) {
+      port->DIR   = (port->DIR & ~mask) | dir;
+      port->AFSEL = (port->AFSEL & ~mask) | afsel;
+      port->DR2R  = (port->DR2R & ~mask) | dr2r;
+      port->DR4R  = (port->DR4R & ~mask) | dr4r;
+      port->DR8R  = (port->DR8R & ~mask) | dr8r;
+      port->ODR   = (port->ODR & ~mask) | odr;
+      port->PUR   = (port->PUR & ~mask) | pur;
+      port->PDR   = (port->PDR & ~mask) | pdr;
+      port->SLR   = (port->SLR & ~mask) | slr;
+      port->DEN   = (port->DEN & ~mask) | den;
+      port->AMSEL = (port->AMSEL & ~mask) | amsel;
+      port->PCTL  = (port->PCTL & ~pctl_mask) | pctl;
+    }
 
-  /*
-  switch (mode) {
-  case PAL_MODE_UNCONNECTED:
-  case PAL_MODE_INPUT_PULLUP:
-    port->PUR |= mask;
-  case PAL_MODE_INPUT:
-    port->AFSEL &= ~mask;
-    port->DIR &= ~mask;
-    port->ODR &= ~mask;
-    port->DEN |= mask;
-    break;
-
-  case PAL_MODE_INPUT_PULLDOWN:
-    port->AFSEL &= ~mask;
-    port->DIR &= ~mask;
-    port->ODR &= ~mask;
-    port->DEN |= mask;
-    port->PDR |= mask;
-    break;
-
-  case PAL_MODE_RESET:
-  case PAL_MODE_INPUT_ANALOG:
-    port->AFSEL &= ~mask;
-    port->DIR &= ~mask;
-    port->ODR &= ~mask;
-    port->DEN &= ~mask;
-    port->PUR &= ~mask;
-    port->PDR &= ~mask;
-    break;
-
-  case PAL_MODE_OUTPUT_PUSHPULL:
-    port->AFSEL &= ~mask;
-    port->DIR |= mask;
-    port->ODR &= ~mask;
-    port->DEN |= mask;
-    break;
-
-  case PAL_MODE_OUTPUT_OPENDRAIN:
-    port->AFSEL &= ~mask;
-    port->DIR |= mask;
-    port->ODR |= mask;
-    port->DEN |= mask;
-    break;
-  }*/
+    mask >>= 1;
+    if (!mask) {
+      return;
+    }
+    dir <<= 1;
+    afsel <<= 1;
+    dr2r <<= 1;
+    dr4r <<= 1;
+    dr8r <<= 1;
+    odr <<= 1;
+    pur <<= 1;
+    pdr <<= 1;
+    slr <<= 1;
+    den <<= 1;
+    amsel <<= 1;
+    pctl <<= 4;
+    bit++;
+  }
 }
 
 #endif /* HAL_USE_PAL */
