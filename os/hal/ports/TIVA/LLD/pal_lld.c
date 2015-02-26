@@ -109,7 +109,7 @@
 #define RCGCGPIOT       0
 #endif
 
-#define RCGCGPIO_VALUE  (RCGCGPIOA | RCGCGPIOB | RCGCGPIOC | RCGCGPIOD |      \
+#define RCGCGPIO_MASK   (RCGCGPIOA | RCGCGPIOB | RCGCGPIOC | RCGCGPIOD |      \
                          RCGCGPIOE | RCGCGPIOF | RCGCGPIOG | RCGCGPIOH |      \
                          RCGCGPIOJ | RCGCGPIOK | RCGCGPIOL | RCGCGPIOM |      \
                          RCGCGPION | RCGCGPIOP | RCGCGPIOQ | RCGCGPIOR |      \
@@ -165,8 +165,11 @@ void gpio_init (GPIO_TypeDef *gpiop, const tiva_gpio_setup_t *config)
  */
 void _pal_lld_init(const PALConfig *config)
 {
-  SYSCTL->RCGCGPIO = RCGCGPIO_VALUE;
+  SYSCTL->RCGCGPIO = RCGCGPIO_MASK;
 
+  /* Datasheet chapter 5.2.6: "There must be a delay of 3 system clocks after a
+   * peripheral module clock is enabled in the RCGC register before any module
+   * registers are accessed." */
   __NOP();
   __NOP();
   __NOP();
