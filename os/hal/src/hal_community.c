@@ -59,6 +59,10 @@ void halCommunityInit(void) {
 #if HAL_USE_NAND || defined(__DOXYGEN__)
   nandInit();
 #endif
+
+#if HAL_USE_EICU || defined(__DOXYGEN__)
+  eicuInit();
+#endif
 }
 
 #endif /* HAL_USE_COMMUNITY */
