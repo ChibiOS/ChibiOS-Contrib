@@ -354,7 +354,7 @@ struct EICUDriver
    */
   stm32_tim_t             *tim;
   /**
-   * @brief   Driver state for the interal state machine.
+   * @brief   Driver state for the internal state machine.
    */
   eicustate_t             state;
   /**

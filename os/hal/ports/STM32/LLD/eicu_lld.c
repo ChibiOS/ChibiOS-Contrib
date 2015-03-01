@@ -19,7 +19,7 @@
 */
 /*
    Rewritten by Emil Fresk (1/5 - 2014) for extended input capture
-   functionallity. And fix for spourious callbacks in the interrupt handler.
+   functionality. And fix for spurious callbacks in the interrupt handler.
 */
 
 /*
