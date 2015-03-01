@@ -138,8 +138,8 @@ void eicuDisable(EICUDriver *eicup) {
   osalDbgCheck(eicup != NULL);
 
   osalSysLock();
-  osalDbgAssert((eicup->state == EICU_READY) || (eicup->state == EICU_WAITING) ||
-                (eicup->state == EICU_ACTIVE) || (eicup->state == EICU_IDLE),
+  osalDbgAssert((eicup->state == EICU_READY) || (eicup->state == EICU_IDLE) ||
+                (eicup->state == EICU_ACTIVE) || (eicup->state == EICU_WAITING),
                  "invalid state");
   eicu_lld_disable(eicup);
   eicup->state = EICU_READY;

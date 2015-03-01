@@ -43,12 +43,12 @@
  * @brief   Driver state machine possible states.
  */
 typedef enum {
-  EICU_UNINIT = 0,              /* Not initialized.                           */
-  EICU_STOP = 1,                /* Stopped.                                   */
-  EICU_READY = 2,               /* Ready.                                     */
-  EICU_WAITING = 3,             /* Waiting for first edge.                    */
-  EICU_ACTIVE = 4,              /* Active cycle phase.                        */
-  EICU_IDLE = 5                 /* Idle cycle phase.                          */
+  EICU_UNINIT   = 0,          /* Not initialized.                           */
+  EICU_STOP     = 1,          /* Stopped.                                   */
+  EICU_READY    = 2,          /* Ready.                                     */
+  EICU_WAITING  = 3,          /* Waiting for first edge.                    */
+  EICU_ACTIVE   = 4,          /* Active cycle phase.                        */
+  EICU_IDLE     = 5           /* Idle cycle phase.                          */
 } eicustate_t;
 
 /** 
@@ -103,10 +103,10 @@ typedef void (*eicucallback_t)(EICUDriver *eicup, eicuchannel_t channel);
 #define eicuDisableI(eicup) eicu_lld_disable(eicup)
 
 /**
- * @brief   Returns the width of the latest pulse.
- * @details The pulse width is defined as number of ticks between the start
- *          edge and the stop edge.
- * @note    This function is meant to be invoked from the width capture
+ * @brief   Returns the time of the latest measurement.
+ * @details The pulse width is defined as number of ticks between the 2
+ *          capture events depending on EICU mode (pulse width or period).
+ * @note    This function is meant to be invoked from the capture
  *          callback only.
  *
  * @param[in] eicup     Pointer to the @p EICUDriver object
@@ -115,13 +115,13 @@ typedef void (*eicucallback_t)(EICUDriver *eicup, eicuchannel_t channel);
  *
  * @special
  */
-#define eicuGetWidth(eicup, channel) eicu_lld_get_width((eicup), (channel))
+#define eicuGetTime(eicup, channel) eicu_lld_get_time((eicup), (channel))
 
 /**
  * @brief   Returns the width of the latest cycle.
  * @details The cycle width is defined as number of ticks between a start
  *          edge and the next start edge.
- * @note    This function is meant to be invoked from the width capture
+ * @note    This function is meant to be invoked from the capture
  *          callback only.
  *
  * @param[in] eicup     Pointer to the @p EICUDriver object
@@ -144,11 +144,12 @@ typedef void (*eicucallback_t)(EICUDriver *eicup, eicuchannel_t channel);
  *
  * @notapi
  */
-#define _eicu_isr_invoke_pwm_width_cb(eicup, channel) {                        \
-  if ((eicup)->state != EICU_WAITING) {                                        \
-    (eicup)->state = EICU_IDLE;                                                \
-    (eicup)->config->iccfgp[channel]->width_cb((eicup), (channel));            \
-  }                                                                            \
+static inline void _eicu_isr_invoke_pwm_width_cb(EICUDriver *eicup,
+                                                 eicuchannel_t channel) {
+  if (eicup->state != EICU_WAITING) {
+    eicup->state = EICU_IDLE;
+    eicup->config->iccfgp[channel]->capture_cb(eicup, channel);
+  }
 }
 
 /**
@@ -159,11 +160,12 @@ typedef void (*eicucallback_t)(EICUDriver *eicup, eicuchannel_t channel);
  *
  * @notapi
  */
-#define _eicu_isr_invoke_pwm_period_cb(eicup, channel) {                       \
-  eicustate_t previous_state = (eicup)->state;                                 \
-  (eicup)->state = EICU_ACTIVE;                                                \
-  if (previous_state != EICU_WAITING)                                          \
-    (eicup)->config->period_cb((eicup), (channel));                            \
+static inline void _eicu_isr_invoke_pwm_period_cb(EICUDriver *eicup,
+                                                  eicuchannel_t channel) {
+  eicustate_t previous_state = eicup->state;
+  eicup->state = EICU_ACTIVE;
+  if (previous_state != EICU_WAITING)
+    eicup->config->period_cb(eicup, channel);
 }
 
 /**
@@ -178,16 +180,18 @@ typedef void (*eicucallback_t)(EICUDriver *eicup, eicuchannel_t channel);
  *
  * @notapi
  */
-#define _eicu_isr_invoke_pulse_width_cb(eicup, channel) {                      \
-  if ((eicup)->state == EICU_ACTIVE) {                                         \
-    (eicup)->state = EICU_READY;                                               \
-    eicu_lld_invert_polarity((eicup), (channel));                              \
-    (eicup)->config->iccfgp[(channel)]->width_cb((eicup), (channel));          \
-  } else {                                                                     \
-    (eicup)->state = EICU_ACTIVE;                                              \
-    (eicup)->last_count[(channel)] = eicu_lld_get_compare((eicup), (channel)); \
-    eicu_lld_invert_polarity((eicup), (channel));                              \
-  }                                                                            \
+static inline void _eicu_isr_invoke_pulse_width_cb(EICUDriver *eicup,
+                                                   eicuchannel_t channel) {
+  if (eicup->state == EICU_ACTIVE) {
+    eicup->state = EICU_READY;
+    eicu_lld_invert_polarity(eicup, channel);
+    eicup->config->iccfgp[channel]->capture_cb(eicup, channel);
+  }
+  else {
+    eicup->state = EICU_ACTIVE;
+    eicup->last_count[channel] = eicu_lld_get_compare(eicup, channel);
+    eicu_lld_invert_polarity(eicup, channel);
+  }
 }
 
 /**
@@ -198,9 +202,11 @@ typedef void (*eicucallback_t)(EICUDriver *eicup, eicuchannel_t channel);
  *
  * @notapi
  */
-#define _eicu_isr_invoke_edge_detect_cb(eicup, channel) {                      \
-  (eicup)->state = EICU_READY;                                                 \
-  (eicup)->config->iccfgp[(channel)]->width_cb((eicup), (channel));            \
+static inline void _eicu_isr_invoke_edge_detect_cb(EICUDriver *eicup,
+                                                   eicuchannel_t channel) {
+  eicup->state = EICU_READY;
+  eicup->config->iccfgp[channel]->capture_cb(eicup, channel);
+  eicup->last_count[channel] = eicu_lld_get_compare(eicup, channel);
 }
 
 /**
