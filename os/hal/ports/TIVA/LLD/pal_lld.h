@@ -31,6 +31,15 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
+#undef PAL_MODE_RESET
+#undef PAL_MODE_UNCONNECTED
+#undef PAL_MODE_INPUT
+#undef PAL_MODE_INPUT_PULLUP
+#undef PAL_MODE_INPUT_PULLDOWN
+#undef PAL_MODE_INPUT_ANALOG
+#undef PAL_MODE_OUTPUT_PUSHPULL
+#undef PAL_MODE_OUTPUT_OPENDRAIN
+
 /**
  * @name    TIVA-specific I/O mode flags
  * @{
@@ -81,6 +90,71 @@
 
 #define PAL_TIVA_PCTL_MASK          (7 << 11)
 #define PAL_TIVA_PCTL(n)            ((n) << 11)
+
+/**
+ * @brief   Alternate function.
+ *
+ * @param[in] n         alternate function selector
+ */
+#define PAL_MODE_ALTERNATE(n)       (PAL_TIVA_AFSEL_ALTERNATE |               \
+                                     PAL_TIVA_PCTL(n))
+/**
+ * @}
+ */
+
+/**
+ * @name    Standard I/O mode flags
+ * @{
+ */
+/**
+ * @brief   This mode is implemented as input.
+ */
+#define PAL_MODE_RESET                  PAL_MODE_INPUT
+
+/**
+ * @brief   This mode is implemented as input with pull-up.
+ */
+#define PAL_MODE_UNCONNECTED            PAL_MODE_INPUT_PULLUP
+
+/**
+ * @brief   Regular input high-Z pad.
+ */
+#define PAL_MODE_INPUT                  PAL_TIVA_DIR_INPUT
+
+/**
+ * @brief   Input pad with weak pull up resistor.
+ */
+#define PAL_MODE_INPUT_PULLUP           (PAL_TIVA_DIR_INPUT |                 \
+                                         PAL_TIVA_PUR_ENABLE |                \
+                                         PAL_TIVA_DEN_ENABLE)
+
+/**
+ * @brief   Input pad with weak pull down resistor.
+ */
+#define PAL_MODE_INPUT_PULLDOWN         (PAL_TIVA_DIR_INPUT |                 \
+                                         PAL_TIVA_PDR_ENABLE |                \
+                                         PAL_TIVA_DEN_ENABLE)
+
+/**
+ * @brief   Analog input mode.
+ */
+#define PAL_MODE_INPUT_ANALOG           (PAL_TIVA_DEN_DISABLE |               \
+                                         PAL_TIVA_AMSEL_ENABLE)
+
+/**
+ * @brief   Push-pull output pad.
+ */
+#define PAL_MODE_OUTPUT_PUSHPULL        (PAL_TIVA_DIR_OUTPUT |                \
+                                         PAL_TIVA_DR2R_ENABLE |               \
+                                         PAL_TIVA_ODR_PUSHPULL |              \
+                                         PAL_TIVA_DEN_ENABLE)
+
+/**
+ * @brief   Open-drain output pad.
+ */
+#define PAL_MODE_OUTPUT_OPENDRAIN       (PAL_TIVA_DIR_OUTPUT |                \
+                                         PAL_TIVA_ODR_OPENDRAIN |             \
+                                         PAL_TIVA_DEN_ENABLE)
 /**
  * @}
  */
