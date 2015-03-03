@@ -32,6 +32,16 @@
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
+/**
+ * @brief   Inverts the polarity for the given channel.
+ *
+ * @param[in] eicup     Pointer to the EICUDriver object.
+ * @param[in] channel   The timer channel to invert.
+ *
+ * @notapi
+ */
+#define eicu_lld_invert_polarity(eicup, channel)                              \
+  (eicup)->tim->CCER ^= ((uint16_t)(STM32_TIM_CCER_CC1P << ((channel) * 4)))
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -129,7 +139,7 @@ static eicuresult_t eicu_lld_get_both(EICUDriver *eicup,
 
   /* 16-bit timer */
   if (0xFFFF == eicup->tim->ARR) {
-    uint16_t cmp = compare & 0xFFFF;
+    uint16_t cmp = compare;
     uint16_t la = chp->last_active;
     uint16_t li = chp->last_idle;
     uint16_t w = li - la;
@@ -165,7 +175,7 @@ static eicucnt_t eicu_lld_get_width(EICUDriver *eicup,
 
   /* 16-bit timer */
   if (0xFFFF == eicup->tim->ARR) {
-    uint16_t cmp = compare & 0xFFFF;
+    uint16_t cmp = compare;
     uint16_t la  = chp->last_active;
     uint16_t ret = cmp - la;
     return ret;
@@ -195,7 +205,7 @@ static eicucnt_t eicu_lld_get_period(EICUDriver *eicup,
 
   /* 16-bit timer */
   if (0xFFFF == eicup->tim->ARR) {
-    uint16_t cmp = compare & 0xFFFF;
+    uint16_t cmp = compare;
     uint16_t li  = chp->last_idle;
     uint16_t ret = cmp - li;
     return ret;
@@ -212,7 +222,7 @@ static eicucnt_t eicu_lld_get_period(EICUDriver *eicup,
 }
 
 /**
- * @brief   Common ISR code, EICU width or (width + period) event.
+ * @brief   EICU width or (width + period) event.
  * @note    Needs special care since it needs to invert the
  *          correct polarity bit to detect pulses.
  * @note    Assumes that the polarity is not changed by some
@@ -248,15 +258,14 @@ static void isr_invoke_pulse_cb(EICUDriver *eicup, eicuchannel_t channel) {
 }
 
 /**
- * @brief   Common ISR code, EICU Edge detect event.
+ * @brief   EICU Edge detect event.
  *
  * @param[in] eicup     Pointer to the @p EICUDriver object
  * @param[in] channel   The timer channel that fired the interrupt.
  *
  * @notapi
  */
-static void isr_invoke_edge_cb(EICUDriver *eicup,
-                                                   eicuchannel_t channel) {
+static void isr_invoke_edge_cb(EICUDriver *eicup, eicuchannel_t channel) {
   EICUChannelDriver *chp = &eicup->channel[channel];
   eicucnt_t compare = eicu_lld_get_compare(chp);
   uint32_t period = eicu_lld_get_period(eicup, channel, compare);
@@ -284,7 +293,7 @@ static void eicu_isr_invoke_cb(EICUDriver *eicup, eicuchannel_t channel) {
 /**
  *
  */
-static void slow_mode_handler(EICUDriver *eicup, uint16_t sr) {
+static void slow_mode_isr_handler(EICUDriver *eicup, uint16_t sr) {
 
   if ((sr & STM32_TIM_SR_CC1IF) != 0)
     eicu_isr_invoke_cb(eicup, EICU_CHANNEL_1);
@@ -334,7 +343,7 @@ static void eicu_lld_serve_interrupt(EICUDriver *eicup) {
   if (EICU_FAST == eicup->config->mode)
     fast_mode_handler(eicup, sr);
   else
-    slow_mode_handler(eicup, sr);
+    slow_mode_isr_handler(eicup, sr);
 
   if ((sr & STM32_TIM_SR_UIF) != 0)
     _eicu_isr_invoke_overflow_cb(eicup);

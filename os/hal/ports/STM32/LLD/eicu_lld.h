@@ -298,7 +298,7 @@ typedef uint32_t eicufreq_t;
 typedef uint32_t eicucnt_t;
 
 /** 
- * @brief EICU Captured time(s).
+ * @brief EICU captured width and (or) period.
  */
 typedef struct {
   /**
@@ -445,17 +445,6 @@ struct EICUDriver {
  * @notapi
  */
 #define eicu_lld_get_compare(chp) (*((chp)->wccrp) + 1)
-
-/**
- * @brief   Inverts the polarity for the given channel.
- *
- * @param[in] eicup     Pointer to the EICUDriver object.
- * @param[in] channel   The timer channel to invert.
- *
- * @notapi
- */
-#define eicu_lld_invert_polarity(eicup, channel)                              \
-  (eicup)->tim->CCER ^= ((uint16_t)(STM32_TIM_CCER_CC1P << ((channel) * 4)))
 
 /*===========================================================================*/
 /* External declarations.                                                    */
