@@ -153,6 +153,7 @@
  * @brief   Open-drain output pad.
  */
 #define PAL_MODE_OUTPUT_OPENDRAIN       (PAL_TIVA_DIR_OUTPUT |                \
+                                         PAL_TIVA_DR2R_ENABLE |               \
                                          PAL_TIVA_ODR_OPENDRAIN |             \
                                          PAL_TIVA_DEN_ENABLE)
 /**
