@@ -208,7 +208,7 @@
  */
 #define VAL_GPIOA_DATA          0b00000000
 #define VAL_GPIOA_DIR           0b00000000
-#define VAL_GPIOA_AFSEL         0b00000011
+#define VAL_GPIOA_AFSEL         0b00000000
 #define VAL_GPIOA_DR2R          0b11111111
 #define VAL_GPIOA_DR4R          0b00000000
 #define VAL_GPIOA_DR8R          0b00000000
@@ -218,21 +218,21 @@
 #define VAL_GPIOA_SLR           0b00000000
 #define VAL_GPIOA_DEN           0b11111111
 #define VAL_GPIOA_AMSEL         0b0000
-#define VAL_GPIOA_PCTL          0x00000011
+#define VAL_GPIOA_PCTL          0x00000000
 
 #define VAL_GPIOB_DATA          0b00000000
 #define VAL_GPIOB_DIR           0b00000000
-#define VAL_GPIOB_AFSEL         0b00001100
+#define VAL_GPIOB_AFSEL         0b00000000
 #define VAL_GPIOB_DR2R          0b11111111
 #define VAL_GPIOB_DR4R          0b00000000
 #define VAL_GPIOB_DR8R          0b00000000
-#define VAL_GPIOB_ODR           0b00001000
+#define VAL_GPIOB_ODR           0b00000000
 #define VAL_GPIOB_PUR           0b00000000
 #define VAL_GPIOB_PDR           0b00000000
 #define VAL_GPIOB_SLR           0b00000000
 #define VAL_GPIOB_DEN           0b11111111
 #define VAL_GPIOB_AMSEL         0b0000
-#define VAL_GPIOB_PCTL          0x00003300
+#define VAL_GPIOB_PCTL          0x00000000
 
 #define VAL_GPIOC_DATA          0b00000000
 #define VAL_GPIOC_DIR           0b00001000
@@ -277,8 +277,8 @@
 #define VAL_GPIOE_PCTL          0x00000000
 
 #define VAL_GPIOF_DATA          0b00000000
-#define VAL_GPIOF_DIR           0b00010011
-#define VAL_GPIOF_AFSEL         0b00010011
+#define VAL_GPIOF_DIR           0b00000000
+#define VAL_GPIOF_AFSEL         0b00000000
 #define VAL_GPIOF_DR2R          0b11111111
 #define VAL_GPIOF_DR4R          0b00000000
 #define VAL_GPIOF_DR8R          0b00000000
@@ -288,7 +288,7 @@
 #define VAL_GPIOF_SLR           0b00000000
 #define VAL_GPIOF_DEN           0b11111111
 #define VAL_GPIOF_AMSEL         0b0000
-#define VAL_GPIOF_PCTL          0x00050055
+#define VAL_GPIOF_PCTL          0x00000000
 
 #define VAL_GPIOG_DATA          0b00000000
 #define VAL_GPIOG_DIR           0b00000000
@@ -375,7 +375,7 @@
 #define VAL_GPIOM_PCTL          0x00000000
 
 #define VAL_GPION_DATA          0b00000000
-#define VAL_GPION_DIR           0b00000011
+#define VAL_GPION_DIR           0b00000000
 #define VAL_GPION_AFSEL         0b00000000
 #define VAL_GPION_DR2R          0b11111111
 #define VAL_GPION_DR4R          0b00000000
