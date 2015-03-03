@@ -43,27 +43,27 @@
  * @brief   Driver state machine possible states.
  */
 typedef enum {
-  EICU_UNINIT   = 0,          /* Not initialized.                           */
-  EICU_STOP     = 1,          /* Stopped.                                   */
-  EICU_READY    = 2,          /* Ready.                                     */
-  EICU_WAITING  = 3,          /* Waiting for first edge.                    */
-  EICU_ACTIVE   = 4,          /* Active cycle phase.                        */
-  EICU_IDLE     = 5           /* Idle cycle phase.                          */
+  EICU_UNINIT,                /* Not initialized.                           */
+  EICU_STOP,                  /* Stopped.                                   */
+  EICU_READY,                 /* Ready.                                     */
+  EICU_WAITING,               /* Waiting for first edge.                    */
+  EICU_ACTIVE,                /* Active cycle phase.                        */
+  EICU_IDLE                   /* Idle cycle phase.                          */
 } eicustate_t;
 
 /**
  * @brief   Channel state machine possible states.
  */
 typedef enum {
-  EICU_CH_IDLE     = 0,       /* Idle cycle phase.                          */
-  EICU_CH_ACTIVE   = 1        /* Active cycle phase.                        */
+  EICU_CH_IDLE,               /* Idle cycle phase.                          */
+  EICU_CH_ACTIVE              /* Active cycle phase.                        */
 } eicuchannelstate_t;
 
 /** 
  * @brief EICU channel selection definition
  */
 typedef enum {
-  EICU_CHANNEL_1 = 0,
+  EICU_CHANNEL_1,
   EICU_CHANNEL_2,
   EICU_CHANNEL_3,
   EICU_CHANNEL_4,
@@ -158,9 +158,9 @@ static inline void _eicu_isr_invoke_pwm_period_cb(EICUDriver *eicup,
  *
  * @notapi
  */
-#define _eicu_isr_invoke_overflow_cb(icup) {                                   \
+#define _eicu_isr_invoke_overflow_cb(icup) do {                                \
   (eicup)->config->overflow_cb(eicup, 0, 0, 0);                                \
-}
+} while (0)
 /** @} */
 
 /*===========================================================================*/
