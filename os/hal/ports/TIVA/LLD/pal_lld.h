@@ -178,9 +178,168 @@
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
+#if defined(TM4C123x)
+
+/**
+ * @brief   GPIOA AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOA. When set
+ *          to @p FALSE the APB bus is used to access GPIOA.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOA_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOA_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOB AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOB. When set
+ *          to @p FALSE the APB bus is used to access GPIOB.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOB_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOB_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOC AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOC. When set
+ *          to @p FALSE the APB bus is used to access GPIOC.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOC_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOC_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOD AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOD. When set
+ *          to @p FALSE the APB bus is used to access GPIOD.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOD_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOD_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOE AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOE. When set
+ *          to @p FALSE the APB bus is used to access GPIOE.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOE_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOE_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOF AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOF. When set
+ *          to @p FALSE the APB bus is used to access GPIOF.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOF_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOF_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOG AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOG. When set
+ *          to @p FALSE the APB bus is used to access GPIOG.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOG_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOG_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOH AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOH. When set
+ *          to @p FALSE the APB bus is used to access GPIOH.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOH_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOH_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOJ AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOJ. When set
+ *          to @p FALSE the APB bus is used to access GPIOJ.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOJ_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOJ_USE_AHB             TRUE
+#endif
+
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+#if defined(TM4C123x)
+
+#if TIVA_GPIO_GPIOA_USE_AHB
+#define GPIOA                               GPIOA_AHB
+#else
+#define GPIOA                               GPIOA_APB
+#endif
+
+#if TIVA_GPIO_GPIOB_USE_AHB
+#define GPIOB                               GPIOB_AHB
+#else
+#define GPIOB                               GPIOB_APB
+#endif
+
+#if TIVA_GPIO_GPIOC_USE_AHB
+#define GPIOC                               GPIOC_AHB
+#else
+#define GPIOC                               GPIOC_APB
+#endif
+
+#if TIVA_GPIO_GPIOD_USE_AHB
+#define GPIOD                               GPIOD_AHB
+#else
+#define GPIOD                               GPIOD_APB
+#endif
+
+#if TIVA_GPIO_GPIOE_USE_AHB
+#define GPIOE                               GPIOE_AHB
+#else
+#define GPIOE                               GPIOE_APB
+#endif
+
+#if TIVA_GPIO_GPIOF_USE_AHB
+#define GPIOF                               GPIOF_AHB
+#else
+#define GPIOF                               GPIOF_APB
+#endif
+
+#if TIVA_GPIO_GPIOG_USE_AHB
+#define GPIOG                               GPIOG_AHB
+#else
+#define GPIOG                               GPIOG_APB
+#endif
+
+#if TIVA_GPIO_GPIOH_USE_AHB
+#define GPIOH                               GPIOH_AHB
+#else
+#define GPIOH                               GPIOH_APB
+#endif
+
+#if TIVA_GPIO_GPIOJ_USE_AHB
+#define GPIOJ                               GPIOJ_AHB
+#else
+#define GPIOJ                               GPIOJ_APB
+#endif
+
+#define GPIOK                               GPIOK_AHB
+#define GPIOL                               GPIOL_AHB
+#define GPIOM                               GPIOM_AHB
+#define GPION                               GPION_AHB
+#define GPIOP                               GPIOP_AHB
+#define GPIOQ                               GPIOQ_AHB
+
+#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */

@@ -30,93 +30,205 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define RCGCGPIOA       (1 << 0)
-#define RCGCGPIOB       (1 << 1)
-#define RCGCGPIOC       (1 << 2)
-#define RCGCGPIOD       (1 << 3)
-#define RCGCGPIOE       (1 << 4)
-#define RCGCGPIOF       (1 << 5)
+#if TIVA_HAS_GPIOA || defined(__DOXYGEN__)
+#define GPIOA_BIT       (1 << 0)
+#if TIVA_GPIO_GPIOA_USE_AHB && defined(TM4C123x)
+#define GPIOA_AHB_BIT   (1 << 0)
+#else
+#define GPIOA_AHB_BIT   0
+#endif
+#else
+#define GPIOA_BIT       0
+#define GPIOA_AHB_BIT   0
+#endif
+
+#if TIVA_HAS_GPIOB || defined(__DOXYGEN__)
+#define GPIOB_BIT       (1 << 1)
+#if TIVA_GPIO_GPIOB_USE_AHB && defined(TM4C123x)
+#define GPIOB_AHB_BIT   (1 << 1)
+#else
+#define GPIOB_AHB_BIT   0
+#endif
+#else
+#define GPIOB_BIT       0
+#define GPIOB_AHB_BIT   0
+#endif
+
+#if TIVA_HAS_GPIOC || defined(__DOXYGEN__)
+#define GPIOC_BIT       (1 << 2)
+#if TIVA_GPIO_GPIOC_USE_AHB && defined(TM4C123x)
+#define GPIOC_AHB_BIT   (1 << 2)
+#else
+#define GPIOC_AHB_BIT   0
+#endif
+#else
+#define GPIOC_BIT       0
+#define GPIOC_AHB_BIT   0
+#endif
+
+#if TIVA_HAS_GPIOD || defined(__DOXYGEN__)
+#define GPIOD_BIT       (1 << 3)
+#if TIVA_GPIO_GPIOD_USE_AHB && defined(TM4C123x)
+#define GPIOD_AHB_BIT   (1 << 3)
+#else
+#define GPIOD_AHB_BIT   0
+#endif
+#else
+#define GPIOD_BIT       0
+#define GPIOD_AHB_BIT   0
+#endif
+
+#if TIVA_HAS_GPIOE || defined(__DOXYGEN__)
+#define GPIOE_BIT       (1 << 4)
+#if TIVA_GPIO_GPIOE_USE_AHB && defined(TM4C123x)
+#define GPIOE_AHB_BIT   (1 << 4)
+#else
+#define GPIOE_AHB_BIT   0
+#endif
+#else
+#define GPIOE_BIT       0
+#define GPIOE_AHB_BIT   0
+#endif
+
+#if TIVA_HAS_GPIOF || defined(__DOXYGEN__)
+#define GPIOF_BIT       (1 << 5)
+#if TIVA_GPIO_GPIOF_USE_AHB && defined(TM4C123x)
+#define GPIOF_AHB_BIT   (1 << 5)
+#else
+#define GPIOF_AHB_BIT   0
+#endif
+#else
+#define GPIOF_BIT       0
+#define GPIOF_AHB_BIT   0
+#endif
 
 #if TIVA_HAS_GPIOG || defined(__DOXYGEN__)
-#define RCGCGPIOG       (1 << 6)
+#define GPIOG_BIT       (1 << 6)
+#if TIVA_GPIO_GPIOG_USE_AHB && defined(TM4C123x)
+#define GPIOG_AHB_BIT   (1 << 6)
 #else
-#define RCGCGPIOG       0
+#define GPIOG_AHB_BIT   0
+#endif
+#else
+#define GPIOG_BIT       0
+#define GPIOG_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOH || defined(__DOXYGEN__)
-#define RCGCGPIOH       (1 << 7)
+#define GPIOH_BIT       (1 << 7)
+#if TIVA_GPIO_GPIOH_USE_AHB && defined(TM4C123x)
+#define GPIOH_AHB_BIT   (1 << 7)
 #else
-#define RCGCGPIOH       0
+#define GPIOH_AHB_BIT   0
+#endif
+#else
+#define GPIOH_BIT       0
+#define GPIOH_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOJ || defined(__DOXYGEN__)
-#define RCGCGPIOJ       (1 << 8)
+#define GPIOJ_BIT       (1 << 8)
+#if TIVA_GPIO_GPIOJ_USE_AHB && defined(TM4C123x)
+#define GPIOJ_AHB_BIT   (1 << 8)
 #else
-#define RCGCGPIOJ       0
+#define GPIOJ_AHB_BIT   0
+#endif
+#else
+#define GPIOJ_BIT       0
+#define GPIOJ_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOK || defined(__DOXYGEN__)
-#define RCGCGPIOK       (1 << 9)
+#define GPIOK_BIT       (1 << 9)
+#define GPIOK_AHB_BIT   (1 << 9)
 #else
-#define RCGCGPIOK       0
+#define GPIOK_BIT       0
+#define GPIOK_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOL || defined(__DOXYGEN__)
-#define RCGCGPIOL       (1 << 10)
+#define GPIOL_BIT       (1 << 10)
+#define GPIOL_AHB_BIT   (1 << 10)
 #else
-#define RCGCGPIOL       0
+#define GPIOL_BIT       0
+#define GPIOL_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOM || defined(__DOXYGEN__)
-#define RCGCGPIOM       (1 << 11)
+#define GPIOM_BIT       (1 << 11)
+#define GPIOM_AHB_BIT   (1 << 11)
 #else
-#define RCGCGPIOM       0
+#define GPIOM_BIT       0
+#define GPIOM_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPION || defined(__DOXYGEN__)
-#define RCGCGPION       (1 << 12)
+#define GPION_BIT       (1 << 12)
+#define GPION_AHB_BIT   (1 << 12)
 #else
-#define RCGCGPION       0
+#define GPION_BIT       0
+#define GPION_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOP || defined(__DOXYGEN__)
-#define RCGCGPIOP       (1 << 13)
+#define GPIOP_BIT       (1 << 13)
+#define GPIOP_AHB_BIT   (1 << 13)
 #else
-#define RCGCGPIOP       0
+#define GPIOP_BIT       0
+#define GPIOP_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOQ || defined(__DOXYGEN__)
-#define RCGCGPIOQ       (1 << 14)
+#define GPIOQ_BIT       (1 << 14)
+#define GPIOQ_AHB_BIT   (1 << 14)
 #else
-#define RCGCGPIOQ       0
+#define GPIOQ_BIT       0
+#define GPIOQ_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOR || defined(__DOXYGEN__)
-#define RCGCGPIOR       (1 << 15)
+#define GPIOR_BIT       (1 << 15)
+#define GPIOR_AHB_BIT   (1 << 15)
 #else
-#define RCGCGPIOR       0
+#define GPIOR_BIT       0
+#define GPIOR_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOS || defined(__DOXYGEN__)
-#define RCGCGPIOS       (1 << 16)
+#define GPIOS_BIT       (1 << 16)
+#define GPIOS_AHB_BIT   (1 << 16)
 #else
-#define RCGCGPIOS       0
+#define GPIOS_BIT       0
+#define GPIOS_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
-#define RCGCGPIOT       (1 << 17)
+#define GPIOT_BIT       (1 << 17)
+#define GPIOT_AHB_BIT   (1 << 17)
 #else
-#define RCGCGPIOT       0
+#define GPIOT_BIT       0
+#define GPIOT_AHB_BIT   0
 #endif
 
-#define RCGCGPIO_MASK   (RCGCGPIOA | RCGCGPIOB | RCGCGPIOC | RCGCGPIOD |      \
-                         RCGCGPIOE | RCGCGPIOF | RCGCGPIOG | RCGCGPIOH |      \
-                         RCGCGPIOJ | RCGCGPIOK | RCGCGPIOL | RCGCGPIOM |      \
-                         RCGCGPION | RCGCGPIOP | RCGCGPIOQ | RCGCGPIOR |      \
-                         RCGCGPIOS | RCGCGPIOT)
+#define RCGCGPIO_MASK   (GPIOA_BIT | GPIOB_BIT | GPIOC_BIT | GPIOD_BIT |      \
+                         GPIOE_BIT | GPIOF_BIT | GPIOG_BIT | GPIOH_BIT |      \
+                         GPIOJ_BIT | GPIOK_BIT | GPIOL_BIT | GPIOM_BIT |      \
+                         GPION_BIT | GPIOP_BIT | GPIOQ_BIT | GPIOR_BIT |      \
+                         GPIOS_BIT | GPIOR_BIT)
+
+#define GPIOHBCTL_MASK  (GPIOA_AHB_BIT | GPIOB_AHB_BIT | GPIOC_AHB_BIT |      \
+                         GPIOD_AHB_BIT | GPIOE_AHB_BIT | GPIOF_AHB_BIT |      \
+                         GPIOG_AHB_BIT | GPIOH_AHB_BIT | GPIOJ_AHB_BIT |      \
+                         GPIOK_AHB_BIT | GPIOL_AHB_BIT | GPIOM_AHB_BIT |      \
+                         GPION_AHB_BIT | GPIOP_AHB_BIT | GPIOQ_AHB_BIT |      \
+                         GPIOR_AHB_BIT | GPIOS_AHB_BIT | GPIOT_AHB_BIT)
 
 /* GPIO lock password.*/
 #define TIVA_GPIO_LOCK_PWD                  0x4C4F434B
+
+#define GPIOC_JTAG_MASK     (0x0F)
+#define GPIOD_NMI_MASK      (0x80)
+#define GPIOF_NMI_MASK      (0x01)
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -130,21 +242,40 @@
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-static void gpio_init (GPIO_TypeDef *gpiop, const tiva_gpio_setup_t *config)
+/**
+ * @brief   Initializes the port with the port configuration.
+ *
+ * @param[in] port      the port identifier
+ * @param[in] config    the port configuration
+ */
+static void gpio_init(ioportid_t port, const tiva_gpio_setup_t *config)
 {
-  gpiop->DATA   = config->data;
-  gpiop->DIR    = config->dir;
-  gpiop->AFSEL  = config->afsel;
-  gpiop->DR2R   = config->dr2r;
-  gpiop->DR4R   = config->dr4r;
-  gpiop->DR8R   = config->dr8r;
-  gpiop->ODR    = config->odr;
-  gpiop->PUR    = config->pur;
-  gpiop->PDR    = config->pdr;
-  gpiop->SLR    = config->slr;
-  gpiop->DEN    = config->den;
-  gpiop->AMSEL  = config->amsel;
-  gpiop->PCTL   = config->pctl;
+  port->DATA   = config->data;
+  port->DIR    = config->dir;
+  port->AFSEL  = config->afsel;
+  port->DR2R   = config->dr2r;
+  port->DR4R   = config->dr4r;
+  port->DR8R   = config->dr8r;
+  port->ODR    = config->odr;
+  port->PUR    = config->pur;
+  port->PDR    = config->pdr;
+  port->SLR    = config->slr;
+  port->DEN    = config->den;
+  port->AMSEL  = config->amsel;
+  port->PCTL   = config->pctl;
+}
+
+/**
+ * @brief   Unlocks the masked pins of the GPIO peripheral.
+ * @note    This function is only useful for PORTC0-3, PORTD7 and PORTF0.
+ *
+ * @param[in] port      the port identifier
+ * @param[in] mask      the pin mask
+ */
+static void gpio_unlock(ioportid_t port, ioportmask_t mask)
+{
+  port->LOCK = TIVA_GPIO_LOCK_PWD;
+  port->CR = mask;
 }
 
 /*===========================================================================*/
@@ -156,95 +287,87 @@ static void gpio_init (GPIO_TypeDef *gpiop, const tiva_gpio_setup_t *config)
 /*===========================================================================*/
 
 /**
- * @brief   TIVA I/O ports configuration.
+ * @brief   Tiva I/O ports configuration.
  * @details Ports A-F (G, H, J, K, L, M, N, P, Q, R, S, T) clocks enabled.
  *
- * @param[in] config    the TIVA ports configuration
+ * @param[in] config    the Tiva ports configuration
  *
  * @notapi
  */
 void _pal_lld_init(const PALConfig *config)
 {
+  /*
+   * Enables all GPIO clocks.
+   */
   SYSCTL->RCGCGPIO = RCGCGPIO_MASK;
+#if defined(TM4C123x)
+  SYSCTL->GPIOHBCTL = GPIOHBCTL_MASK;
+#endif
 
-  /* Datasheet chapter 5.2.6: "There must be a delay of 3 system clocks after a
-   * peripheral module clock is enabled in the RCGC register before any module
-   * registers are accessed." */
-  __NOP();
-  __NOP();
-  __NOP();
+  /* Wait until all GPIO modules are ready */
+  while (!((SYSCTL->PRGPIO & RCGCGPIO_MASK) == RCGCGPIO_MASK))
+    ;
   
+#if TIVA_HAS_GPIOA
   gpio_init(GPIOA, &config->PAData);
-
+#endif
+#if TIVA_HAS_GPIOB
   gpio_init(GPIOB, &config->PBData);
-
-  /* Unlock pin 0, 1, 2 and 3 */
-  GPIOC->LOCK = TIVA_GPIO_LOCK_PWD;
-  GPIOC->CR = 0x0F;
+#endif
+#if TIVA_HAS_GPIOC
+  /* Unlock JTAG pins.*/
+  gpio_unlock(GPIOC, GPIOC_JTAG_MASK);
   gpio_init(GPIOC, &config->PCData);
-  GPIOC->LOCK = 0;
-
-  /* Unlock pin 7 */
-  GPIOD->LOCK = TIVA_GPIO_LOCK_PWD;
-  GPIOD->CR = 0x80;
+#endif
+#if TIVA_HAS_GPIOD
+  /* Unlock NMI pin.*/
+  gpio_unlock(GPIOD, GPIOD_NMI_MASK);
   gpio_init(GPIOD, &config->PDData);
-  GPIOC->LOCK = 0;
-
+#endif
+#if TIVA_HAS_GPIOE
   gpio_init(GPIOE, &config->PEData);
-
-  /* Unlock pin 0 */
-  GPIOF->LOCK = TIVA_GPIO_LOCK_PWD;
-  GPIOF->CR = 0x01;
+#endif
+#if TIVA_HAS_GPIOF
+  /* Unlock NMI pin.*/
+  gpio_unlock(GPIOF, GPIOF_NMI_MASK);
   gpio_init(GPIOF, &config->PFData);
-  GPIOF->LOCK = 0;
-  
+#endif
 #if TIVA_HAS_GPIOG || defined(__DOXYGEN__)
   gpio_init(GPIOG, &config->PGData);
-#endif /* TIVA_HAS_GPIOG.*/
-  
+#endif
 #if TIVA_HAS_GPIOH || defined(__DOXYGEN__)
   gpio_init(GPIOH, &config->PHData);
-#endif /* TIVA_HAS_GPIOH.*/
-  
+#endif
 #if TIVA_HAS_GPIOJ || defined(__DOXYGEN__)
   gpio_init(GPIOJ, &config->PJData);
-#endif /* TIVA_HAS_GPIOJ.*/
-  
+#endif
 #if TIVA_HAS_GPIOK || defined(__DOXYGEN__)
   gpio_init(GPIOK, &config->PKData);
-#endif /* TIVA_HAS_GPIOK.*/
-  
+#endif
 #if TIVA_HAS_GPIOL || defined(__DOXYGEN__)
   gpio_init(GPIOL, &config->PLData);
-#endif /* TIVA_HAS_GPIOL.*/
-  
+#endif
 #if TIVA_HAS_GPIOM || defined(__DOXYGEN__)
   gpio_init(GPIOM, &config->PMData);
-#endif /* TIVA_HAS_GPIOM.*/
-  
+#endif
 #if TIVA_HAS_GPION || defined(__DOXYGEN__)
   gpio_init(GPION, &config->PNData);
-#endif /* TIVA_HAS_GPION.*/
-  
+#endif
 #if TIVA_HAS_GPIOP || defined(__DOXYGEN__)
   gpio_init(GPIOP, &config->PPData);
-#endif /* TIVA_HAS_GPIOP.*/
-  
+#endif
 #if TIVA_HAS_GPIOQ || defined(__DOXYGEN__)
   gpio_init(GPIOQ, &config->PQData);
-#endif /* TIVA_HAS_GPIOQ.*/
-
+#endif
 #if TIVA_HAS_GPIOR || defined(__DOXYGEN__)
   gpio_init(GPIOR, &config->PRData);
-#endif /* TIVA_HAS_GPIOR.*/
-
+#endif
 #if TIVA_HAS_GPIOS || defined(__DOXYGEN__)
   gpio_init(GPIOS, &config->PSData);
-#endif /* TIVA_HAS_GPIOS.*/
-
+#endif
 #if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
   gpio_init(GPIOT, &config->PTData);
-#endif /* TIVA_HAS_GPIOT.*/
+#endif
 }
 
 /**

@@ -784,68 +784,77 @@ typedef struct
  * @{
  */
 
-#define SYSCTL_BASE 0x400FE000
-#define HIB_BASE    0x400FC000
-#define FLASH_BASE  0x400FD000
-#define EEPROM_BASE 0x400AF000
-#define UDMA_BASE   0x400FF000
-#define GPIOA_BASE  0x40004000
-#define GPIOB_BASE  0x40005000
-#define GPIOC_BASE  0x40006000
-#define GPIOD_BASE  0x40007000
-#define GPIOE_BASE  0x40024000
-#define GPIOF_BASE  0x40025000
-#define GPIOG_BASE  0x40026000
-#define GPIOH_BASE  0x40027000
-#define GPIOJ_BASE  0x4003D000
-#define GPIOK_BASE  0x40061000
-#define GPIOL_BASE  0x40062000
-#define GPIOM_BASE  0x40063000
-#define GPION_BASE  0x40064000
-#define GPIOP_BASE  0x40065000
-#define GPIOQ_BASE  0x40066000
-#define GPT0_BASE   0x40030000
-#define GPT1_BASE   0x40031000
-#define GPT2_BASE   0x40032000
-#define GPT3_BASE   0x40033000
-#define GPT4_BASE   0x40034000
-#define GPT5_BASE   0x40035000
-#define WGPT0_BASE  0x40036000
-#define WGPT1_BASE  0x40037000
-#define WGPT2_BASE  0x4004C000
-#define WGPT3_BASE  0x4004D000
-#define WGPT4_BASE  0x4004E000
-#define WGPT5_BASE  0x4004F000
-#define WDT0_BASE   0x40000000
-#define WDT1_BASE   0x40001000
-#define ADC0_BASE   0x40038000
-#define ADC1_BASE   0x40039000
-#define UART0_BASE  0x4000C000
-#define UART1_BASE  0x4000D000
-#define UART2_BASE  0x4000E000
-#define UART3_BASE  0x4000F000
-#define UART4_BASE  0x40010000
-#define UART5_BASE  0x40011000
-#define UART6_BASE  0x40012000
-#define UART7_BASE  0x40013000
-#define SSI0_BASE   0x40008000
-#define SSI1_BASE   0x40009000
-#define SSI2_BASE   0x4000A000
-#define SSI3_BASE   0x4000B000
-#define I2C0_BASE   0x40020000
-#define I2C1_BASE   0x40021000
-#define I2C2_BASE   0x40022000
-#define I2C3_BASE   0x40023000
-#define I2C4_BASE   0x40023000
-#define I2C5_BASE   0x40023000
-#define CAN0_BASE   0x40040000
-#define CAN1_BASE   0x40041000
+#define SYSCTL_BASE     0x400FE000
+#define HIB_BASE        0x400FC000
+#define FLASH_BASE      0x400FD000
+#define EEPROM_BASE     0x400AF000
+#define UDMA_BASE       0x400FF000
+#define GPIOA_APB_BASE  0x40004000
+#define GPIOA_AHB_BASE  0x40058000
+#define GPIOB_APB_BASE  0x40005000
+#define GPIOB_AHB_BASE  0x40059000
+#define GPIOC_APB_BASE  0x40006000
+#define GPIOC_AHB_BASE  0x4005A000
+#define GPIOD_APB_BASE  0x40007000
+#define GPIOD_AHB_BASE  0x4005B000
+#define GPIOE_APB_BASE  0x40024000
+#define GPIOE_AHB_BASE  0x4005C000
+#define GPIOF_APB_BASE  0x40025000
+#define GPIOF_AHB_BASE  0x4005D000
+#define GPIOG_APB_BASE  0x40026000
+#define GPIOG_AHB_BASE  0x4005E000
+#define GPIOH_APB_BASE  0x40027000
+#define GPIOH_AHB_BASE  0x4005F000
+#define GPIOJ_APB_BASE  0x4003D000
+#define GPIOJ_AHB_BASE  0x40060000
+#define GPIOK_AHB_BASE  0x40061000
+#define GPIOL_AHB_BASE  0x40062000
+#define GPIOM_AHB_BASE  0x40063000
+#define GPION_AHB_BASE  0x40064000
+#define GPIOP_AHB_BASE  0x40065000
+#define GPIOQ_AHB_BASE  0x40066000
+#define GPT0_BASE       0x40030000
+#define GPT1_BASE       0x40031000
+#define GPT2_BASE       0x40032000
+#define GPT3_BASE       0x40033000
+#define GPT4_BASE       0x40034000
+#define GPT5_BASE       0x40035000
+#define WGPT0_BASE      0x40036000
+#define WGPT1_BASE      0x40037000
+#define WGPT2_BASE      0x4004C000
+#define WGPT3_BASE      0x4004D000
+#define WGPT4_BASE      0x4004E000
+#define WGPT5_BASE      0x4004F000
+#define WDT0_BASE       0x40000000
+#define WDT1_BASE       0x40001000
+#define ADC0_BASE       0x40038000
+#define ADC1_BASE       0x40039000
+#define UART0_BASE      0x4000C000
+#define UART1_BASE      0x4000D000
+#define UART2_BASE      0x4000E000
+#define UART3_BASE      0x4000F000
+#define UART4_BASE      0x40010000
+#define UART5_BASE      0x40011000
+#define UART6_BASE      0x40012000
+#define UART7_BASE      0x40013000
+#define SSI0_BASE       0x40008000
+#define SSI1_BASE       0x40009000
+#define SSI2_BASE       0x4000A000
+#define SSI3_BASE       0x4000B000
+#define I2C0_BASE       0x40020000
+#define I2C1_BASE       0x40021000
+#define I2C2_BASE       0x40022000
+#define I2C3_BASE       0x40023000
+#define I2C4_BASE       0x40023000
+#define I2C5_BASE       0x40023000
+#define CAN0_BASE       0x40040000
+#define CAN1_BASE       0x40041000
 // usb
-#define ACMP_BASE     0x4003C000
-#define PWM0_BASE   0x40028000
-#define PWM1_BASE   0x40029000
-#define QEI0_BASE   0x4002C000
-#define QEI1_BASE   0x4002D000
+#define ACMP_BASE       0x4003C000
+#define PWM0_BASE       0x40028000
+#define PWM1_BASE       0x40029000
+#define QEI0_BASE       0x4002C000
+#define QEI1_BASE       0x4002D000
 
 /**
  * @}
@@ -856,66 +865,75 @@ typedef struct
  * @{
  */
 
-#define SYSCTL  ((SYSCTL_TypeDef *) SYSCTL_BASE)
-#define HIB     ((HIB_TypeDef *)    HIB_BASE)
-#define FLASH   ((FLASH_TypeDef *)  FLASH_BASE)
-#define EEPROM  ((EEPROM_TypeDef *) EEPROM_BASE)
-#define UDMA    ((UDMA_TypeDef *)   UDMA_BASE)										
-#define GPIOA   ((GPIO_TypeDef *)   GPIOA_BASE)
-#define GPIOB   ((GPIO_TypeDef *)   GPIOB_BASE)
-#define GPIOC   ((GPIO_TypeDef *)   GPIOC_BASE)
-#define GPIOD   ((GPIO_TypeDef *)   GPIOD_BASE)
-#define GPIOE   ((GPIO_TypeDef *)   GPIOE_BASE)
-#define GPIOF   ((GPIO_TypeDef *)   GPIOF_BASE)
-#define GPIOG   ((GPIO_TypeDef *)   GPIOG_BASE)
-#define GPIOH   ((GPIO_TypeDef *)   GPIOH_BASE)
-#define GPIOJ   ((GPIO_TypeDef *)   GPIOJ_BASE)
-#define GPIOK   ((GPIO_TypeDef *)   GPIOK_BASE)
-#define GPIOL   ((GPIO_TypeDef *)   GPIOL_BASE)
-#define GPIOM   ((GPIO_TypeDef *)   GPIOM_BASE)
-#define GPION   ((GPIO_TypeDef *)   GPION_BASE)
-#define GPIOP   ((GPIO_TypeDef *)   GPIOP_BASE)
-#define GPIOQ   ((GPIO_TypeDef *)   GPIOQ_BASE)
-#define GPT0    ((GPT_TypeDef *)    GPT0_BASE)
-#define GPT1    ((GPT_TypeDef *)    GPT1_BASE)
-#define GPT2    ((GPT_TypeDef *)    GPT2_BASE)
-#define GPT3    ((GPT_TypeDef *)    GPT3_BASE)
-#define GPT4    ((GPT_TypeDef *)    GPT4_BASE)
-#define GPT5    ((GPT_TypeDef *)    GPT5_BASE)
-#define WGPT0   ((GPT_TypeDef *)    WGPT0_BASE)
-#define WGPT1   ((GPT_TypeDef *)    WGPT1_BASE)
-#define WGPT2   ((GPT_TypeDef *)    WGPT2_BASE)
-#define WGPT3   ((GPT_TypeDef *)    WGPT3_BASE)
-#define WGPT4   ((GPT_TypeDef *)    WGPT4_BASE)
-#define WGPT5   ((GPT_TypeDef *)    WGPT5_BASE)
-#define ADC0    ((ADC_TypeDef*)     ADC0_BASE)
-#define ADC1    ((ADC_TypeDef*)     ADC1_BASE)
-#define UART0   ((UART_TypeDef *)   UART0_BASE)
-#define UART1   ((UART_TypeDef *)   UART1_BASE)
-#define UART2   ((UART_TypeDef *)   UART2_BASE)
-#define UART3   ((UART_TypeDef *)   UART3_BASE)
-#define UART4   ((UART_TypeDef *)   UART4_BASE)
-#define UART5   ((UART_TypeDef *)   UART5_BASE)
-#define UART6   ((UART_TypeDef *)   UART6_BASE)
-#define UART7   ((UART_TypeDef *)   UART7_BASE)
-#define SSI0    ((SSI_TypeDef *)    SSI0_BASE)
-#define SSI1    ((SSI_TypeDef *)    SSI1_BASE)
-#define SSI2    ((SSI_TypeDef *)    SSI2_BASE)
-#define SSI3    ((SSI_TypeDef *)    SSI3_BASE)
-#define I2C0    ((I2C_TypeDef *)    I2C0_BASE)
-#define I2C1    ((I2C_TypeDef *)    I2C1_BASE)
-#define I2C2    ((I2C_TypeDef *)    I2C2_BASE)
-#define I2C3    ((I2C_TypeDef *)    I2C3_BASE)
-#define I2C4    ((I2C_TypeDef *)    I2C4_BASE)
-#define I2C5    ((I2C_TypeDef *)    I2C5_BASE)
-#define CAN0    ((CAN_TypeDef *)    CAN0_BASE)
-#define CAN1    ((CAN_TypeDef *)    CAN1_BASE)
+#define SYSCTL          ((SYSCTL_TypeDef *) SYSCTL_BASE)
+#define HIB             ((HIB_TypeDef *)    HIB_BASE)
+#define FLASH           ((FLASH_TypeDef *)  FLASH_BASE)
+#define EEPROM          ((EEPROM_TypeDef *) EEPROM_BASE)
+#define UDMA            ((UDMA_TypeDef *)   UDMA_BASE)
+#define GPIOA_APB       ((GPIO_TypeDef *)   GPIOA_APB_BASE)
+#define GPIOA_AHB       ((GPIO_TypeDef *)   GPIOA_AHB_BASE)
+#define GPIOB_APB       ((GPIO_TypeDef *)   GPIOB_APB_BASE)
+#define GPIOB_AHB       ((GPIO_TypeDef *)   GPIOB_AHB_BASE)
+#define GPIOC_APB       ((GPIO_TypeDef *)   GPIOC_APB_BASE)
+#define GPIOC_AHB       ((GPIO_TypeDef *)   GPIOC_AHB_BASE)
+#define GPIOD_APB       ((GPIO_TypeDef *)   GPIOD_APB_BASE)
+#define GPIOD_AHB       ((GPIO_TypeDef *)   GPIOD_AHB_BASE)
+#define GPIOE_APB       ((GPIO_TypeDef *)   GPIOE_APB_BASE)
+#define GPIOE_AHB       ((GPIO_TypeDef *)   GPIOE_AHB_BASE)
+#define GPIOF_APB       ((GPIO_TypeDef *)   GPIOF_APB_BASE)
+#define GPIOF_AHB       ((GPIO_TypeDef *)   GPIOF_AHB_BASE)
+#define GPIOG_APB       ((GPIO_TypeDef *)   GPIOG_APB_BASE)
+#define GPIOG_AHB       ((GPIO_TypeDef *)   GPIOG_AHB_BASE)
+#define GPIOH_APB       ((GPIO_TypeDef *)   GPIOH_APB_BASE)
+#define GPIOH_AHB       ((GPIO_TypeDef *)   GPIOH_AHB_BASE)
+#define GPIOJ_APB       ((GPIO_TypeDef *)   GPIOJ_APB_BASE)
+#define GPIOJ_AHB       ((GPIO_TypeDef *)   GPIOJ_AHB_BASE)
+#define GPIOK_AHB       ((GPIO_TypeDef *)   GPIOK_AHB_BASE)
+#define GPIOL_AHB       ((GPIO_TypeDef *)   GPIOL_AHB_BASE)
+#define GPIOM_AHB       ((GPIO_TypeDef *)   GPIOM_AHB_BASE)
+#define GPION_AHB       ((GPIO_TypeDef *)   GPION_AHB_BASE)
+#define GPIOP_AHB       ((GPIO_TypeDef *)   GPIOP_AHB_BASE)
+#define GPIOQ_AHB       ((GPIO_TypeDef *)   GPIOQ_AHB_BASE)
+#define GPT0            ((GPT_TypeDef *)    GPT0_BASE)
+#define GPT1            ((GPT_TypeDef *)    GPT1_BASE)
+#define GPT2            ((GPT_TypeDef *)    GPT2_BASE)
+#define GPT3            ((GPT_TypeDef *)    GPT3_BASE)
+#define GPT4            ((GPT_TypeDef *)    GPT4_BASE)
+#define GPT5            ((GPT_TypeDef *)    GPT5_BASE)
+#define WGPT0           ((GPT_TypeDef *)    WGPT0_BASE)
+#define WGPT1           ((GPT_TypeDef *)    WGPT1_BASE)
+#define WGPT2           ((GPT_TypeDef *)    WGPT2_BASE)
+#define WGPT3           ((GPT_TypeDef *)    WGPT3_BASE)
+#define WGPT4           ((GPT_TypeDef *)    WGPT4_BASE)
+#define WGPT5           ((GPT_TypeDef *)    WGPT5_BASE)
+#define ADC0            ((ADC_TypeDef*)     ADC0_BASE)
+#define ADC1            ((ADC_TypeDef*)     ADC1_BASE)
+#define UART0           ((UART_TypeDef *)   UART0_BASE)
+#define UART1           ((UART_TypeDef *)   UART1_BASE)
+#define UART2           ((UART_TypeDef *)   UART2_BASE)
+#define UART3           ((UART_TypeDef *)   UART3_BASE)
+#define UART4           ((UART_TypeDef *)   UART4_BASE)
+#define UART5           ((UART_TypeDef *)   UART5_BASE)
+#define UART6           ((UART_TypeDef *)   UART6_BASE)
+#define UART7           ((UART_TypeDef *)   UART7_BASE)
+#define SSI0            ((SSI_TypeDef *)    SSI0_BASE)
+#define SSI1            ((SSI_TypeDef *)    SSI1_BASE)
+#define SSI2            ((SSI_TypeDef *)    SSI2_BASE)
+#define SSI3            ((SSI_TypeDef *)    SSI3_BASE)
+#define I2C0            ((I2C_TypeDef *)    I2C0_BASE)
+#define I2C1            ((I2C_TypeDef *)    I2C1_BASE)
+#define I2C2            ((I2C_TypeDef *)    I2C2_BASE)
+#define I2C3            ((I2C_TypeDef *)    I2C3_BASE)
+#define I2C4            ((I2C_TypeDef *)    I2C4_BASE)
+#define I2C5            ((I2C_TypeDef *)    I2C5_BASE)
+#define CAN0            ((CAN_TypeDef *)    CAN0_BASE)
+#define CAN1            ((CAN_TypeDef *)    CAN1_BASE)
 // usb
-#define ACMP    ((ACMP_TypeDef *)   ACMP_BASE)
-#define PWM0    ((PWM_TypeDef *)    PWM0_BASE)
-#define PWM1    ((PWM_TypeDef *)    PWM1_BASE)
-#define QEI0    ((QEI_TypeDef *)    QEI0_BASE)
-#define QEI1    ((QEI_TypeDef *)    QEI1_BASE)
+#define ACMP            ((ACMP_TypeDef *)   ACMP_BASE)
+#define PWM0            ((PWM_TypeDef *)    PWM0_BASE)
+#define PWM1            ((PWM_TypeDef *)    PWM1_BASE)
+#define QEI0            ((QEI_TypeDef *)    QEI0_BASE)
+#define QEI1            ((QEI_TypeDef *)    QEI1_BASE)
 
 /**
  * @}
