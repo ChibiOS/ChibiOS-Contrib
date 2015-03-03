@@ -256,17 +256,29 @@
  * @brief   Active level selector.
  */
 typedef enum {
-  EICU_INPUT_ACTIVE_HIGH = 0,       /**< Trigger on rising edge.            */
-  EICU_INPUT_ACTIVE_LOW = 1,        /**< Trigger on falling edge.           */
+  EICU_INPUT_ACTIVE_HIGH,           /**< Trigger on rising edge.            */
+  EICU_INPUT_ACTIVE_LOW,            /**< Trigger on falling edge.           */
 } eicuactivelevel_t;
 
 /**
  * @brief   Input type selector.
  */
 typedef enum {
-  EICU_INPUT_EDGE = 0,        /**< Measures time between consequent edges.*/
-  EICU_INPUT_PULSE = 1,       /**< Measures pulse width.*/
-  EICU_INPUT_BOTH = 2         /**< Measures both period and width. */
+  /**
+   * @brief   Measures time between consequent edges.
+   * @details Callback fires on every _active_ edge.
+   */
+  EICU_INPUT_EDGE,
+  /**
+   * @brief   Measures pulse width.
+   * @details Callback fires on _idle_ edge of pulse.
+   */
+  EICU_INPUT_PULSE,
+  /**
+   * @brief   Measures both period and width..
+   * @details Callback fires on _active_ edge of pulse.
+   */
+  EICU_INPUT_BOTH
 } eicucapturemode_t;
 
 /**

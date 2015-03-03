@@ -128,11 +128,12 @@ EICUDriver EICUD12;
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 /**
- * @brief     Returns the time between latest 2 capture events.
+ * @brief     Returns both pulse width and period.
  * @details   The time is defined as number of ticks.
  *
  * @param[in] eicup     Pointer to the EICUDriver object.
  * @param[in] channel   The timer channel that fired the interrupt.
+ * @param[in] compare   Content of the CCR register.
  * @return              The number of ticks.
  *
  * @notapi
@@ -172,7 +173,15 @@ static eicuresult_t get_time_both(EICUDriver *eicup,
 }
 
 /**
+ * @brief     Returns pulse width.
+ * @details   The time is defined as number of ticks.
  *
+ * @param[in] eicup     Pointer to the EICUDriver object.
+ * @param[in] channel   The timer channel that fired the interrupt.
+ * @param[in] compare   Content of the CCR register.
+ * @return              The number of ticks.
+ *
+ * @notapi
  */
 static eicucnt_t get_time_width(EICUDriver *eicup,
                                 eicuchannel_t channel,
@@ -202,7 +211,15 @@ static eicucnt_t get_time_width(EICUDriver *eicup,
 }
 
 /**
+ * @brief     Returns both pulse period.
+ * @details   The time is defined as number of ticks.
  *
+ * @param[in] eicup     Pointer to the EICUDriver object.
+ * @param[in] channel   The timer channel that fired the interrupt.
+ * @param[in] compare   Content of the CCR register.
+ * @return              The number of ticks.
+ *
+ * @notapi
  */
 static eicucnt_t get_time_period(EICUDriver *eicup,
                                  eicuchannel_t channel,
@@ -285,7 +302,7 @@ static void isr_invoke_edge_cb(EICUDriver *eicup, eicuchannel_t channel) {
 }
 
 /**
- * @brief   Common ISR call.
+ * @brief   Common EICU detect call.
  *
  * @param[in] eicup     Pointer to the @p EICUDriver object
  * @param[in] channel   The timer channel that fired the interrupt.
@@ -327,9 +344,11 @@ static void eicu_lld_serve_interrupt(EICUDriver *eicup) {
 }
 
 /**
+ * @brief   Starts every channel.
  *
+ * @param[in] eicup     Pointer to the @p EICUDriver object
  */
-static void eicu_channels_start(EICUDriver *eicup) {
+static void start_channels(EICUDriver *eicup) {
 
   /* Set each input channel that is used as: a normal input capture channel,
      link the corresponding CCR register and set polarity. */
@@ -827,7 +846,7 @@ void eicu_lld_start(EICUDriver *eicup) {
   }
 #endif
 
-  eicu_channels_start(eicup);
+  start_channels(eicup);
 }
 
 /**
