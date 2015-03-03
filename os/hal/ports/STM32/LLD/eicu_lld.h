@@ -253,24 +253,6 @@
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
 /**
- * @brief   EICU driver mode.
- */
-typedef enum {
-  /**
-   * @brief   Captures high speed signals.
-   * @note    Only one input per timer possible.
-   * @note    Needs at least 2 capture/compare channels in timer.
-   */
-  EICU_FAST,
-  /**
-   * @brief   Captures low speed signals.
-   * @details Suggested for example for PWM or PPM signals from RC receiver.
-   * @note    Only one input per capture/compare channel needed.
-   */
-  EICU_SLOW
-} eicumode_t;
-
-/**
  * @brief   Active level selector.
  */
 typedef enum {
@@ -331,7 +313,7 @@ typedef struct {
 } EICUChannelConfig;
 
 /** 
- * @brief EICU Capture Channel Config structure definition.
+ * @brief EICU Capture Channel structure definition.
  */
 typedef struct {
   /**
@@ -351,19 +333,15 @@ typedef struct {
    */
   const EICUChannelConfig *config;
   /**
-   * @brief   CCR registers for width capture.
+   * @brief   CCR register pointer for faster access.
    */
-  volatile uint32_t       *wccrp;
-} EICUChannelDriver;
+  volatile uint32_t       *ccrp;
+} EICUChannel;
 
 /**
  * @brief EICU Config structure definition.
  */
 typedef struct {
-  /**
-   * @brief   Specifies the EICU capture mode.
-   */
-  eicumode_t              mode;
   /**
    * @brief   Specifies the Timer clock in Hz.
    */
@@ -374,11 +352,6 @@ typedef struct {
    * @note    In PWM mode, only Channel 1 OR Channel 2 may be used.
    */
   const EICUChannelConfig *iccfgp[EICU_CHANNEL_ENUM_END];
-  /**
-   * @brief   Timer overflow event callback.
-   * @note    Meaningful only when in @p EICU_FAST mode
-   */
-  eicucallback_t          overflow_cb;
   /**
    * @brief   TIM DIER register initialization data.
    */
@@ -400,7 +373,7 @@ struct EICUDriver {
   /**
    * @brief   Channels' data structures.
    */
-  EICUChannelDriver       channel[EICU_CHANNEL_ENUM_END];
+  EICUChannel             channel[EICU_CHANNEL_ENUM_END];
   /**
    * @brief   Timer base clock.
    */
@@ -409,42 +382,11 @@ struct EICUDriver {
    * @brief   Pointer to configuration for the driver.
    */
   const EICUConfig        *config;
-//  /**
-//   * @brief   CCR registers for width capture.
-//   */
-//  volatile uint32_t       *wccrp[4];
-  /**
-   * @brief   CCR register for period capture.
-   * @note    Only one is needed since only one PWM input per timer is allowed.
-   */
-  volatile uint32_t       *pccrp;
 };
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
 /*===========================================================================*/
-
-/**
- * @brief   Returns the width of the latest cycle.
- * @details The cycle width is defined as number of ticks between a start
- *          edge and the next start edge.
- *
- * @param[in] eicup     Pointer to the EICUDriver object.
- * @return              The number of ticks.
- *
- * @notapi
- */
-#define eicu_lld_get_period_fast(eicup) (*((eicup)->pccrp) + 1)
-
-/**
- * @brief   Returns the compare value of the latest cycle.
- *
- * @param[in] chp       Pointer to channel structure that fired the interrupt.
- * @return              The number of ticks.
- *
- * @notapi
- */
-#define eicu_lld_get_compare(chp) (*((chp)->wccrp) + 1)
 
 /*===========================================================================*/
 /* External declarations.                                                    */
