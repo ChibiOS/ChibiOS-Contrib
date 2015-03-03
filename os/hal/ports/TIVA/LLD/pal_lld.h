@@ -119,7 +119,8 @@
 /**
  * @brief   Regular input high-Z pad.
  */
-#define PAL_MODE_INPUT                  PAL_TIVA_DIR_INPUT
+#define PAL_MODE_INPUT                  (PAL_TIVA_DEN_ENABLE |                \
+                                         PAL_TIVA_DIR_INPUT)
 
 /**
  * @brief   Input pad with weak pull up resistor.
