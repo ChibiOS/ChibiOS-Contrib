@@ -38,6 +38,9 @@ static msg_t blinkLed(void *arg)
 
   chRegSetThreadName("Blinker");
 
+  /* Configure pin as push-pull output.*/
+  palSetPadMode(ledConfig->port, ledConfig->pin, PAL_MODE_OUTPUT_PUSHPULL);
+
   while (TRUE) {
     chThdSleepMilliseconds(ledConfig->sleep);
     palTogglePad(ledConfig->port, ledConfig->pin);
