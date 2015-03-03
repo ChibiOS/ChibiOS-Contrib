@@ -51,14 +51,23 @@ typedef enum {
   EICU_IDLE     = 5           /* Idle cycle phase.                          */
 } eicustate_t;
 
+/**
+ * @brief   Channel state machine possible states.
+ */
+typedef enum {
+  EICU_CH_IDLE     = 0,       /* Idle cycle phase.                          */
+  EICU_CH_ACTIVE   = 1        /* Active cycle phase.                        */
+} eicuchannelstate_t;
+
 /** 
  * @brief EICU channel selection definition
  */
 typedef enum {
   EICU_CHANNEL_1 = 0,
-  EICU_CHANNEL_2 = 1,
-  EICU_CHANNEL_3 = 2,
-  EICU_CHANNEL_4 = 3
+  EICU_CHANNEL_2,
+  EICU_CHANNEL_3,
+  EICU_CHANNEL_4,
+  EICU_CHANNEL_ENUM_END
 } eicuchannel_t;
 
 /**
@@ -71,8 +80,11 @@ typedef struct EICUDriver EICUDriver;
  *
  * @param[in] eicup     Pointer to a EICUDriver object
  * @param[in] channel   EICU channel that fired the interrupt
+ * @param[in] width     Pulse width
+ * @param[in] period    Pulse period
  */
-typedef void (*eicucallback_t)(EICUDriver *eicup, eicuchannel_t channel);
+typedef void (*eicucallback_t)(EICUDriver *eicup, eicuchannel_t channel,
+                               uint32_t width, uint32_t period);
 
 #include "eicu_lld.h"
 
@@ -101,35 +113,6 @@ typedef void (*eicucallback_t)(EICUDriver *eicup, eicuchannel_t channel);
  * @iclass
  */
 #define eicuDisableI(eicup) eicu_lld_disable(eicup)
-
-/**
- * @brief   Returns the time of the latest measurement.
- * @details The pulse width is defined as number of ticks between the 2
- *          capture events depending on EICU mode (pulse width or period).
- * @note    This function is meant to be invoked from the capture
- *          callback only.
- *
- * @param[in] eicup     Pointer to the @p EICUDriver object
- * @param[in] channel   The timer channel that fired the interrupt.
- * @return              The number of ticks.
- *
- * @special
- */
-#define eicuGetTime(eicup, channel) eicu_lld_get_time((eicup), (channel))
-
-/**
- * @brief   Returns the width of the latest cycle.
- * @details The cycle width is defined as number of ticks between a start
- *          edge and the next start edge.
- * @note    This function is meant to be invoked from the capture
- *          callback only.
- *
- * @param[in] eicup     Pointer to the @p EICUDriver object
- * @return              The number of ticks.
- *
- * @special
- */
-#define eicuGetPeriod(eicup) eicu_lld_get_period(eicup)
 /** @} */
 
 /**
@@ -148,7 +131,7 @@ static inline void _eicu_isr_invoke_pwm_width_cb(EICUDriver *eicup,
                                                  eicuchannel_t channel) {
   if (eicup->state != EICU_WAITING) {
     eicup->state = EICU_IDLE;
-    eicup->config->iccfgp[channel]->capture_cb(eicup, channel);
+    eicup->config->iccfgp[channel]->capture_cb(eicup, channel, 0, 0);
   }
 }
 
@@ -165,48 +148,7 @@ static inline void _eicu_isr_invoke_pwm_period_cb(EICUDriver *eicup,
   eicustate_t previous_state = eicup->state;
   eicup->state = EICU_ACTIVE;
   if (previous_state != EICU_WAITING)
-    eicup->config->period_cb(eicup, channel);
-}
-
-/**
- * @brief   Common ISR code, EICU Pulse width event.
- * @details This macro needs special care since it needs to invert the
- *          correct polarity bit to detect pulses.
- * @note    This macro assumes that the polarity is not changed by some
- *          external user. It must only be changed using the HAL.
- * 
- * @param[in] eicup     Pointer to the @p EICUDriver object
- * @param[in] channel   The timer channel that fired the interrupt.
- *
- * @notapi
- */
-static inline void _eicu_isr_invoke_pulse_width_cb(EICUDriver *eicup,
-                                                   eicuchannel_t channel) {
-  if (eicup->state == EICU_ACTIVE) {
-    eicup->state = EICU_READY;
-    eicu_lld_invert_polarity(eicup, channel);
-    eicup->config->iccfgp[channel]->capture_cb(eicup, channel);
-  }
-  else {
-    eicup->state = EICU_ACTIVE;
-    eicup->last_count[channel] = eicu_lld_get_compare(eicup, channel);
-    eicu_lld_invert_polarity(eicup, channel);
-  }
-}
-
-/**
- * @brief   Common ISR code, EICU Edge detect event.
- *
- * @param[in] eicup     Pointer to the @p EICUDriver object
- * @param[in] channel   The timer channel that fired the interrupt.
- *
- * @notapi
- */
-static inline void _eicu_isr_invoke_edge_detect_cb(EICUDriver *eicup,
-                                                   eicuchannel_t channel) {
-  eicup->state = EICU_READY;
-  eicup->config->iccfgp[channel]->capture_cb(eicup, channel);
-  eicup->last_count[channel] = eicu_lld_get_compare(eicup, channel);
+    eicup->channel[channel].config->capture_cb(eicup, channel, 0, 0);
 }
 
 /**
@@ -217,7 +159,7 @@ static inline void _eicu_isr_invoke_edge_detect_cb(EICUDriver *eicup,
  * @notapi
  */
 #define _eicu_isr_invoke_overflow_cb(icup) {                                   \
-  (eicup)->config->overflow_cb(eicup, 0);                                      \
+  (eicup)->config->overflow_cb(eicup, 0, 0, 0);                                \
 }
 /** @} */
 
