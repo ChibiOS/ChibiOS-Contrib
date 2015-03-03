@@ -33,9 +33,6 @@
 #define TIVA_GPIO_GPIOD_USE_AHB             TRUE
 #define TIVA_GPIO_GPIOE_USE_AHB             TRUE
 #define TIVA_GPIO_GPIOF_USE_AHB             TRUE
-#define TIVA_GPIO_GPIOG_USE_AHB             FALSE
-#define TIVA_GPIO_GPIOH_USE_AHB             FALSE
-#define TIVA_GPIO_GPIOJ_USE_AHB             FALSE
 
 /*
  * GPT driver system settings.
