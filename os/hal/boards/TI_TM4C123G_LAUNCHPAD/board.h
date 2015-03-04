@@ -180,8 +180,8 @@
 /*
  * GPIOA Setup:
  *
- * PA0 - UART0 RX               (alternate 1)
- * PA1 - UART0 TX               (alternate 1)
+ * PA0 - UART0 RX               ()
+ * PA1 - UART0 TX               ()
  * PA2 - PIN2                   ()
  * PA3 - PIN3                   ()
  * PA4 - PIN4                   ()
@@ -207,8 +207,8 @@
                                  PIN_DIR_IN(GPIOA_PIN6) |                    \
                                  PIN_DIR_IN(GPIOA_PIN7))
 
-#define VAL_GPIOA_AFSEL         (PIN_AFSEL_ALTERNATE(GPIOA_UART0_RX) |       \
-                                 PIN_AFSEL_ALTERNATE(GPIOA_UART0_TX) |       \
+#define VAL_GPIOA_AFSEL         (PIN_AFSEL_GPIO(GPIOA_UART0_RX) |            \
+                                 PIN_AFSEL_GPIO(GPIOA_UART0_TX) |            \
                                  PIN_AFSEL_GPIO(GPIOA_PIN2) |                \
                                  PIN_AFSEL_GPIO(GPIOA_PIN3) |                \
                                  PIN_AFSEL_GPIO(GPIOA_PIN4) |                \
@@ -294,8 +294,8 @@
                                  PIN_SLR_DISABLE(GPIOA_PIN6) |               \
                                  PIN_SLR_DISABLE(GPIOA_PIN7))
 
-#define VAL_GPIOA_PCTL          (PIN_PCTL_MODE(GPIOA_UART0_RX, 1) |          \
-                                 PIN_PCTL_MODE(GPIOA_UART0_TX, 1) |          \
+#define VAL_GPIOA_PCTL          (PIN_PCTL_MODE(GPIOA_UART0_RX, 0) |          \
+                                 PIN_PCTL_MODE(GPIOA_UART0_TX, 0) |          \
                                  PIN_PCTL_MODE(GPIOA_PIN2, 0) |              \
                                  PIN_PCTL_MODE(GPIOA_PIN3, 0) |              \
                                  PIN_PCTL_MODE(GPIOA_PIN4, 0) |              \
@@ -308,8 +308,8 @@
  *
  * PB0 - PIN0                   ()
  * PB1 - PIN1                   ()
- * PB2 - I2C0_SCL               (alternate 3)
- * PB3 - I2C0_SDA               (alternate 3)
+ * PB2 - I2C0_SCL               ()
+ * PB3 - I2C0_SDA               ()
  * PB4 - PIN4                   ()
  * PB5 - PIN5                   ()
  * PB6 - PIN6                   ()
@@ -317,8 +317,8 @@
  */
 #define VAL_GPIOB_DATA          (PIN_DATA_LOW(GPIOB_PIN0) |                  \
                                  PIN_DATA_LOW(GPIOB_PIN1) |                  \
-                                 PIN_DATA_LOW(GPIOB_I2C0_SCL) |                  \
-                                 PIN_DATA_LOW(GPIOB_I2C0_SDA) |                  \
+                                 PIN_DATA_LOW(GPIOB_I2C0_SCL) |              \
+                                 PIN_DATA_LOW(GPIOB_I2C0_SDA) |              \
                                  PIN_DATA_LOW(GPIOB_PIN4) |                  \
                                  PIN_DATA_LOW(GPIOB_PIN5) |                  \
                                  PIN_DATA_LOW(GPIOB_PIN6) |                  \
@@ -326,8 +326,8 @@
 
 #define VAL_GPIOB_DIR           (PIN_DIR_IN(GPIOB_PIN0) |                    \
                                  PIN_DIR_IN(GPIOB_PIN1) |                    \
-                                 PIN_DIR_IN(GPIOB_I2C0_SCL) |                    \
-                                 PIN_DIR_IN(GPIOB_I2C0_SDA) |                    \
+                                 PIN_DIR_IN(GPIOB_I2C0_SCL) |                \
+                                 PIN_DIR_IN(GPIOB_I2C0_SDA) |                \
                                  PIN_DIR_IN(GPIOB_PIN4) |                    \
                                  PIN_DIR_IN(GPIOB_PIN5) |                    \
                                  PIN_DIR_IN(GPIOB_PIN6) |                    \
@@ -335,8 +335,8 @@
 
 #define VAL_GPIOB_AFSEL         (PIN_AFSEL_GPIO(GPIOB_PIN0) |                \
                                  PIN_AFSEL_GPIO(GPIOB_PIN1) |                \
-                                 PIN_AFSEL_ALTERNATE(GPIOB_I2C0_SCL) |                \
-                                 PIN_AFSEL_ALTERNATE(GPIOB_I2C0_SDA) |                \
+                                 PIN_AFSEL_GPIO(GPIOB_I2C0_SCL) |            \
+                                 PIN_AFSEL_GPIO(GPIOB_I2C0_SDA) |            \
                                  PIN_AFSEL_GPIO(GPIOB_PIN4) |                \
                                  PIN_AFSEL_GPIO(GPIOB_PIN5) |                \
                                  PIN_AFSEL_GPIO(GPIOB_PIN6) |                \
@@ -344,8 +344,8 @@
 
 #define VAL_GPIOB_DR2R          (PIN_DRxR_ENABLE(GPIOB_PIN0) |               \
                                  PIN_DRxR_ENABLE(GPIOB_PIN1) |               \
-                                 PIN_DRxR_ENABLE(GPIOB_I2C0_SCL) |               \
-                                 PIN_DRxR_ENABLE(GPIOB_I2C0_SDA) |               \
+                                 PIN_DRxR_ENABLE(GPIOB_I2C0_SCL) |           \
+                                 PIN_DRxR_ENABLE(GPIOB_I2C0_SDA) |           \
                                  PIN_DRxR_ENABLE(GPIOB_PIN4) |               \
                                  PIN_DRxR_ENABLE(GPIOB_PIN5) |               \
                                  PIN_DRxR_ENABLE(GPIOB_PIN6) |               \
@@ -353,8 +353,8 @@
 
 #define VAL_GPIOB_DR4R          (PIN_DRxR_DISABLE(GPIOB_PIN0) |              \
                                  PIN_DRxR_DISABLE(GPIOB_PIN1) |              \
-                                 PIN_DRxR_DISABLE(GPIOB_I2C0_SCL) |              \
-                                 PIN_DRxR_DISABLE(GPIOB_I2C0_SDA) |              \
+                                 PIN_DRxR_DISABLE(GPIOB_I2C0_SCL) |          \
+                                 PIN_DRxR_DISABLE(GPIOB_I2C0_SDA) |          \
                                  PIN_DRxR_DISABLE(GPIOB_PIN4) |              \
                                  PIN_DRxR_DISABLE(GPIOB_PIN5) |              \
                                  PIN_DRxR_DISABLE(GPIOB_PIN6) |              \
@@ -362,8 +362,8 @@
 
 #define VAL_GPIOB_DR8R          (PIN_DRxR_DISABLE(GPIOB_PIN0) |              \
                                  PIN_DRxR_DISABLE(GPIOB_PIN1) |              \
-                                 PIN_DRxR_DISABLE(GPIOB_I2C0_SCL) |              \
-                                 PIN_DRxR_DISABLE(GPIOB_I2C0_SDA) |              \
+                                 PIN_DRxR_DISABLE(GPIOB_I2C0_SCL) |          \
+                                 PIN_DRxR_DISABLE(GPIOB_I2C0_SDA) |          \
                                  PIN_DRxR_DISABLE(GPIOB_PIN4) |              \
                                  PIN_DRxR_DISABLE(GPIOB_PIN5) |              \
                                  PIN_DRxR_DISABLE(GPIOB_PIN6) |              \
@@ -371,8 +371,8 @@
 
 #define VAL_GPIOB_ODR           (PIN_ODR_DISABLE(GPIOB_PIN0) |               \
                                  PIN_ODR_DISABLE(GPIOB_PIN1) |               \
-                                 PIN_ODR_DISABLE(GPIOB_I2C0_SCL) |               \
-                                 PIN_ODR_ENABLE(GPIOB_I2C0_SDA) |               \
+                                 PIN_ODR_DISABLE(GPIOB_I2C0_SCL) |           \
+                                 PIN_ODR_DISABLE(GPIOB_I2C0_SDA) |           \
                                  PIN_ODR_DISABLE(GPIOB_PIN4) |               \
                                  PIN_ODR_DISABLE(GPIOB_PIN5) |               \
                                  PIN_ODR_DISABLE(GPIOB_PIN6) |               \
@@ -380,8 +380,8 @@
 
 #define VAL_GPIOB_PUR           (PIN_PxR_DISABLE(GPIOB_PIN0) |               \
                                  PIN_PxR_DISABLE(GPIOB_PIN1) |               \
-                                 PIN_PxR_DISABLE(GPIOB_I2C0_SCL) |               \
-                                 PIN_PxR_DISABLE(GPIOB_I2C0_SDA) |               \
+                                 PIN_PxR_DISABLE(GPIOB_I2C0_SCL) |           \
+                                 PIN_PxR_DISABLE(GPIOB_I2C0_SDA) |           \
                                  PIN_PxR_DISABLE(GPIOB_PIN4) |               \
                                  PIN_PxR_DISABLE(GPIOB_PIN5) |               \
                                  PIN_PxR_DISABLE(GPIOB_PIN6) |               \
@@ -389,8 +389,8 @@
 
 #define VAL_GPIOB_PDR           (PIN_PxR_DISABLE(GPIOB_PIN0) |               \
                                  PIN_PxR_DISABLE(GPIOB_PIN1) |               \
-                                 PIN_PxR_DISABLE(GPIOB_I2C0_SCL) |               \
-                                 PIN_PxR_DISABLE(GPIOB_I2C0_SDA) |               \
+                                 PIN_PxR_DISABLE(GPIOB_I2C0_SCL) |           \
+                                 PIN_PxR_DISABLE(GPIOB_I2C0_SDA) |           \
                                  PIN_PxR_DISABLE(GPIOB_PIN4) |               \
                                  PIN_PxR_DISABLE(GPIOB_PIN5) |               \
                                  PIN_PxR_DISABLE(GPIOB_PIN6) |               \
@@ -398,8 +398,8 @@
 
 #define VAL_GPIOB_SLR           (PIN_SLR_DISABLE(GPIOB_PIN0) |               \
                                  PIN_SLR_DISABLE(GPIOB_PIN1) |               \
-                                 PIN_SLR_DISABLE(GPIOB_I2C0_SCL) |               \
-                                 PIN_SLR_DISABLE(GPIOB_I2C0_SDA) |               \
+                                 PIN_SLR_DISABLE(GPIOB_I2C0_SCL) |           \
+                                 PIN_SLR_DISABLE(GPIOB_I2C0_SDA) |           \
                                  PIN_SLR_DISABLE(GPIOB_PIN4) |               \
                                  PIN_SLR_DISABLE(GPIOB_PIN5) |               \
                                  PIN_SLR_DISABLE(GPIOB_PIN6) |               \
@@ -407,8 +407,8 @@
 
 #define VAL_GPIOB_DEN           (PIN_DEN_ENABLE(GPIOB_PIN0) |                \
                                  PIN_DEN_ENABLE(GPIOB_PIN1) |                \
-                                 PIN_DEN_ENABLE(GPIOB_I2C0_SCL) |                \
-                                 PIN_DEN_ENABLE(GPIOB_I2C0_SDA) |                \
+                                 PIN_DEN_ENABLE(GPIOB_I2C0_SCL) |            \
+                                 PIN_DEN_ENABLE(GPIOB_I2C0_SDA) |            \
                                  PIN_DEN_ENABLE(GPIOB_PIN4) |                \
                                  PIN_DEN_ENABLE(GPIOB_PIN5) |                \
                                  PIN_DEN_ENABLE(GPIOB_PIN6) |                \
@@ -416,13 +416,13 @@
 
 #define VAL_GPIOB_AMSEL         (PIN_AMSEL_DISABLE(GPIOB_PIN0) |             \
                                  PIN_AMSEL_DISABLE(GPIOB_PIN1) |             \
-                                 PIN_AMSEL_DISABLE(GPIOB_I2C0_SCL) |             \
+                                 PIN_AMSEL_DISABLE(GPIOB_I2C0_SCL) |         \
                                  PIN_AMSEL_DISABLE(GPIOB_I2C0_SDA))
 
 #define VAL_GPIOB_PCTL          (PIN_PCTL_MODE(GPIOB_PIN0, 0) |              \
                                  PIN_PCTL_MODE(GPIOB_PIN1, 0) |              \
-                                 PIN_PCTL_MODE(GPIOB_I2C0_SCL, 3) |              \
-                                 PIN_PCTL_MODE(GPIOB_I2C0_SDA, 3) |              \
+                                 PIN_PCTL_MODE(GPIOB_I2C0_SCL, 0) |          \
+                                 PIN_PCTL_MODE(GPIOB_I2C0_SDA, 0) |          \
                                  PIN_PCTL_MODE(GPIOB_PIN4, 0) |              \
                                  PIN_PCTL_MODE(GPIOB_PIN5, 0) |              \
                                  PIN_PCTL_MODE(GPIOB_PIN6, 0) |              \
@@ -827,9 +827,9 @@
                                  PIN_DATA_LOW(GPIOF_PIN7))
 
 #define VAL_GPIOF_DIR           (PIN_DIR_IN(GPIOF_SW2) |                     \
-                                 PIN_DIR_OUT(GPIOF_LED_RED) |                \
-                                 PIN_DIR_OUT(GPIOF_LED_BLUE) |               \
-                                 PIN_DIR_OUT(GPIOF_LED_GREEN) |              \
+                                 PIN_DIR_IN(GPIOF_LED_RED) |                 \
+                                 PIN_DIR_IN(GPIOF_LED_BLUE) |                \
+                                 PIN_DIR_IN(GPIOF_LED_GREEN) |               \
                                  PIN_DIR_IN(GPIOF_SW1) |                     \
                                  PIN_DIR_IN(GPIOF_PIN5) |                    \
                                  PIN_DIR_IN(GPIOF_PIN6) |                    \
@@ -880,11 +880,11 @@
                                  PIN_ODR_DISABLE(GPIOF_PIN6) |               \
                                  PIN_ODR_DISABLE(GPIOF_PIN7))
 
-#define VAL_GPIOF_PUR           (PIN_PxR_ENABLE(GPIOF_SW2) |                 \
+#define VAL_GPIOF_PUR           (PIN_PxR_DISABLE(GPIOF_SW2) |                \
                                  PIN_PxR_DISABLE(GPIOF_LED_RED) |            \
                                  PIN_PxR_DISABLE(GPIOF_LED_BLUE) |           \
                                  PIN_PxR_DISABLE(GPIOF_LED_GREEN) |          \
-                                 PIN_PxR_ENABLE(GPIOF_SW1) |                 \
+                                 PIN_PxR_DISABLE(GPIOF_SW1) |                \
                                  PIN_PxR_DISABLE(GPIOF_PIN5) |               \
                                  PIN_PxR_DISABLE(GPIOF_PIN6) |               \
                                  PIN_PxR_DISABLE(GPIOF_PIN7))

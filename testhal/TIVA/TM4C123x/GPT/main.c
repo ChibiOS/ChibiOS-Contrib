@@ -71,6 +71,8 @@ int main(void)
   halInit();
   chSysInit();
 
+  palSetPadMode(GPIOF, GPIOF_LED_RED, PAL_MODE_OUTPUT_PUSHPULL);
+
   /*
    * Start the gpt drivers with the custom configurations.
    */

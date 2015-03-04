@@ -37,6 +37,8 @@ static msg_t blinkLed(void *arg)
 
   chRegSetThreadName("Blinker");
 
+  palSetPadMode(ledConfig->port, ledConfig->pin, PAL_MODE_OUTPUT_PUSHPULL);
+
   while (TRUE) {
     chThdSleepMilliseconds(ledConfig->sleep);
     palTogglePad(ledConfig->port, ledConfig->pin);
@@ -62,6 +64,17 @@ int main(void)
   halInit();
   chSysInit();
 
+  /* Configure RX and TX pins for UART0.*/
+  palSetPadMode(GPIOA, GPIOA_UART0_RX, PAL_MODE_INPUT | PAL_MODE_ALTERNATE(1));
+  palSetPadMode(GPIOA, GPIOA_UART0_TX, PAL_MODE_INPUT | PAL_MODE_ALTERNATE(1));
+
+  /* Start the serial driver with the default configuration.*/
+  sdStart(&SD1, NULL);
+
+  if (!palReadPad(GPIOF, GPIOF_SW2)) {
+    TestThread(&SD1);
+  }
+
   ledRed.port    = GPIOF;
   ledRed.pin     = GPIOF_LED_RED;
   ledRed.sleep   = 100;
@@ -74,39 +87,18 @@ int main(void)
   ledBlue.pin    = GPIOF_LED_BLUE;
   ledBlue.sleep  = 102;
 
-  /*
-   * Creating the blinker threads.
-   */
-  chThdCreateStatic(waBlinkLedRed,
-                    sizeof(waBlinkLedRed),
-                    NORMALPRIO,
-                    blinkLed,
+  /* Creating the blinker threads.*/
+  chThdCreateStatic(waBlinkLedRed, sizeof(waBlinkLedRed), NORMALPRIO, blinkLed,
                     &ledRed);
 
-  chThdCreateStatic(waBlinkLedGreen,
-                    sizeof(waBlinkLedGreen),
-                    NORMALPRIO,
-                    blinkLed,
-                    &ledGreen);
+  chThdCreateStatic(waBlinkLedGreen, sizeof(waBlinkLedGreen), NORMALPRIO,
+                    blinkLed, &ledGreen);
 
-  chThdCreateStatic(waBlinkLedBlue,
-                    sizeof(waBlinkLedBlue),
-                    NORMALPRIO,
-                    blinkLed,
-                    &ledBlue);
+  chThdCreateStatic(waBlinkLedBlue, sizeof(waBlinkLedBlue), NORMALPRIO,
+                    blinkLed, &ledBlue);
 
-  /*
-   * Start the serial driver with the default configuration.
-   */
-  sdStart(&SD1, NULL);
-
-  /*
-   * Normal main() thread activity
-   */
+  /* Normal main() thread activity.*/
   while (TRUE) {
-    if (!palReadPad(GPIOF, GPIOF_SW2)) {
-      TestThread(&SD1);
-    }
     chThdSleepMilliseconds(100);
   }
   
