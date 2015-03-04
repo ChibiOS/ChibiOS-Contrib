@@ -69,10 +69,18 @@ int main(void)
   halInit();
   chSysInit();
 
+  /* Configure RX and TX pins for UART0.*/
+  palSetPadMode(GPIOA, GPIOA_UART0_RX, PAL_MODE_INPUT | PAL_MODE_ALTERNATE(1));
+  palSetPadMode(GPIOA, GPIOA_UART0_TX, PAL_MODE_INPUT | PAL_MODE_ALTERNATE(1));
+
   /*
    * Start the serial driver with the default configuration.
    */
   sdStart(&SD1, NULL);
+
+  /* Configure SCK and SCL pins for I2C0.*/
+  palSetPadMode(GPIOB, GPIOB_I2C0_SCL, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(3));
+  palSetPadMode(GPIOB, GPIOB_I2C0_SDA, PAL_MODE_OUTPUT_OPENDRAIN | PAL_MODE_ALTERNATE(3));
 
   /*
    * Start the i2c driver with the custom configuration.
