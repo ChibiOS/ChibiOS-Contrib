@@ -138,7 +138,7 @@ EICUDriver EICUD12;
  *
  * @notapi
  */
-static eicuresult_t get_time_both(EICUDriver *eicup,
+static eicuresult_t get_time_both(const EICUDriver *eicup,
                                   eicuchannel_t channel,
                                   eicucnt_t compare) {
 
@@ -183,7 +183,7 @@ static eicuresult_t get_time_both(EICUDriver *eicup,
  *
  * @notapi
  */
-static eicucnt_t get_time_width(EICUDriver *eicup,
+static eicucnt_t get_time_width(const EICUDriver *eicup,
                                 eicuchannel_t channel,
                                 eicucnt_t compare) {
 
@@ -221,7 +221,7 @@ static eicucnt_t get_time_width(EICUDriver *eicup,
  *
  * @notapi
  */
-static eicucnt_t get_time_period(EICUDriver *eicup,
+static eicucnt_t get_time_period(const EICUDriver *eicup,
                                  eicuchannel_t channel,
                                  eicucnt_t compare) {
 
