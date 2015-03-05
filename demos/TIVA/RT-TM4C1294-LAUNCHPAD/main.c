@@ -38,6 +38,9 @@ static msg_t blinkLed(void *arg)
 
   chRegSetThreadName("Blinker");
 
+  /* Configure pin as push-pull output.*/
+  palSetPadMode(ledConfig->port, ledConfig->pin, PAL_MODE_OUTPUT_PUSHPULL);
+
   while (TRUE) {
     chThdSleepMilliseconds(ledConfig->sleep);
     palTogglePad(ledConfig->port, ledConfig->pin);
@@ -63,6 +66,17 @@ int main(void)
   halInit();
   chSysInit();
 
+  /* Configure RX and TX pins for UART0.*/
+  palSetPadMode(GPIOA, GPIOA_UART0_RX, PAL_MODE_INPUT | PAL_MODE_ALTERNATE(1));
+  palSetPadMode(GPIOA, GPIOA_UART0_TX, PAL_MODE_INPUT | PAL_MODE_ALTERNATE(1));
+
+  /* Start the serial driver with the default configuration.*/
+  sdStart(&SD1, NULL);
+
+  if (!palReadPad(GPIOJ, GPIOJ_SW1)) {
+    TestThread(&SD1);
+  }
+
   led1.port  = GPIOF;
   led1.pin   = GPIOF_LED0;
   led1.sleep = 100;
@@ -79,45 +93,23 @@ int main(void)
   led4.pin   = GPION_LED3;
   led4.sleep = 103;
 
-  /*
-   * Creating the blinker threads.
-   */
-  chThdCreateStatic(waBlinkLed1,
-                    sizeof(waBlinkLed1),
-                    NORMALPRIO,
-                    blinkLed,
+  /* Creating the blinker threads.*/
+  chThdCreateStatic(waBlinkLed1, sizeof(waBlinkLed1), NORMALPRIO, blinkLed,
                     &led1);
 
-  chThdCreateStatic(waBlinkLed2,
-                    sizeof(waBlinkLed2),
-                    NORMALPRIO,
-                    blinkLed,
+  chThdCreateStatic(waBlinkLed2, sizeof(waBlinkLed2), NORMALPRIO, blinkLed,
                     &led2);
 
-  chThdCreateStatic(waBlinkLed3,
-                    sizeof(waBlinkLed3),
-                    NORMALPRIO,
-                    blinkLed,
+  chThdCreateStatic(waBlinkLed3, sizeof(waBlinkLed3), NORMALPRIO, blinkLed,
                     &led3);
 
-  chThdCreateStatic(waBlinkLed4,
-                    sizeof(waBlinkLed4),
-                    NORMALPRIO,
-                    blinkLed,
+  chThdCreateStatic(waBlinkLed4, sizeof(waBlinkLed4), NORMALPRIO, blinkLed,
                     &led4);
-
-  /*
-   * Start the serial driver with the default configuration.
-   */
-  sdStart(&SD1, NULL);
 
   /*
    * Normal main() thread activity
    */
   while (TRUE) {
-    if (!palReadPad(GPIOJ, GPIOJ_SW1)) {
-      TestThread(&SD1);
-    }
     chThdSleepMilliseconds(100);
   }
   

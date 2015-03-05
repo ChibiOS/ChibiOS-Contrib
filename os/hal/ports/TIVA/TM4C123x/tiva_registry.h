@@ -58,6 +58,13 @@
 #error "No valid device defined."
 #endif
 
+/**
+ * @brief   Sub-family identifier.
+ */
+#if !defined(TM4C123x) || defined(__DOXYGEN__)
+#define TM4C123x
+#endif
+
 /*===========================================================================*/
 /* Platform capabilities.                                                    */
 /*===========================================================================*/

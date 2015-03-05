@@ -74,6 +74,10 @@ int main(void)
   halInit();
   chSysInit();
 
+  palSetPadMode(GPIOF, GPIOF_LED_RED, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(GPIOF, GPIOF_LED_GREEN, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(GPIOF, GPIOF_LED_BLUE, PAL_MODE_OUTPUT_PUSHPULL);
+
   /*
    * Start PWM driver
    */
@@ -109,24 +113,9 @@ int main(void)
         rgbColour[decColour] -= 1;
         rgbColour[incColour] += 1;
 
-        if (!palReadPad(GPIOF, GPIOF_SW1))
-        {
-          pwmEnableChannel(&PWMD1, 0, 0);
-          pwmEnableChannel(&PWMD1, 1, 1);
-          pwmEnableChannel(&PWMD1, 2, 2);
-        }
-        else if (!palReadPad(GPIOF, GPIOF_SW2))
-        {
-          pwmEnableChannel(&PWMD1, 0, pwmcfg.frequency - 2);
-          pwmEnableChannel(&PWMD1, 1, pwmcfg.frequency - 1);
-          pwmEnableChannel(&PWMD1, 2, pwmcfg.frequency);
-        }
-        else
-        {
-          pwmEnableChannel(&PWMD1, 0, rgbColour[0]);
-          pwmEnableChannel(&PWMD1, 1, rgbColour[1]);
-          pwmEnableChannel(&PWMD1, 2, rgbColour[2]);
-        }
+        pwmEnableChannel(&PWMD1, 0, rgbColour[0]);
+        pwmEnableChannel(&PWMD1, 1, rgbColour[1]);
+        pwmEnableChannel(&PWMD1, 2, rgbColour[2]);
 
         chThdSleepMilliseconds(1);
       }

@@ -28,14 +28,400 @@
 #if HAL_USE_PAL || defined(__DOXYGEN__)
 
 /*===========================================================================*/
-/* Unsupported modes and specific modes                                      */
+/* Driver constants.                                                         */
 /*===========================================================================*/
 
+#undef PAL_MODE_RESET
+#undef PAL_MODE_UNCONNECTED
+#undef PAL_MODE_INPUT
+#undef PAL_MODE_INPUT_PULLUP
+#undef PAL_MODE_INPUT_PULLDOWN
+#undef PAL_MODE_INPUT_ANALOG
+#undef PAL_MODE_OUTPUT_PUSHPULL
+#undef PAL_MODE_OUTPUT_OPENDRAIN
+
+/**
+ * @name    TIVA-specific I/O mode flags
+ * @{
+ */
+#define PAL_TIVA_DIR_MASK           (1 << 0)
+#define PAL_TIVA_DIR_INPUT          (0 << 0)
+#define PAL_TIVA_DIR_OUTPUT         (1 << 0)
+
+#define PAL_TIVA_AFSEL_MASK         (1 << 1)
+#define PAL_TIVA_AFSEL_GPIO         (0 << 1)
+#define PAL_TIVA_AFSEL_ALTERNATE    (1 << 1)
+
+#define PAL_TIVA_DR2R_MASK          (1 << 2)
+#define PAL_TIVA_DR2R_DISABLE       (0 << 2)
+#define PAL_TIVA_DR2R_ENABLE        (1 << 2)
+
+#define PAL_TIVA_DR4R_MASK          (1 << 3)
+#define PAL_TIVA_DR4R_DISABLE       (0 << 3)
+#define PAL_TIVA_DR4R_ENABLE        (1 << 3)
+
+#define PAL_TIVA_DR8R_MASK          (1 << 4)
+#define PAL_TIVA_DR8R_DISABLE       (0 << 4)
+#define PAL_TIVA_DR8R_ENABLE        (1 << 4)
+
+#define PAL_TIVA_ODR_MASK           (1 << 5)
+#define PAL_TIVA_ODR_PUSHPULL       (0 << 5)
+#define PAL_TIVA_ODR_OPENDRAIN      (1 << 5)
+
+#define PAL_TIVA_PUR_MASK           (1 << 6)
+#define PAL_TIVA_PUR_DISABLE        (0 << 6)
+#define PAL_TIVA_PUR_ENABLE         (1 << 6)
+
+#define PAL_TIVA_PDR_MASK           (1 << 7)
+#define PAL_TIVA_PDR_DISABLE        (0 << 7)
+#define PAL_TIVA_PDR_ENABLE         (1 << 7)
+
+#define PAL_TIVA_SLR_MASK           (1 << 8)
+#define PAL_TIVA_SLR_DISABLE        (0 << 8)
+#define PAL_TIVA_SLR_ENABLE         (1 << 8)
+
+#define PAL_TIVA_DEN_MASK           (1 << 9)
+#define PAL_TIVA_DEN_DISABLE        (0 << 9)
+#define PAL_TIVA_DEN_ENABLE         (1 << 9)
+
+#define PAL_TIVA_AMSEL_MASK         (1 << 10)
+#define PAL_TIVA_AMSEL_DISABLE      (0 << 10)
+#define PAL_TIVA_AMSEL_ENABLE       (1 << 10)
+
+#define PAL_TIVA_PCTL_MASK          (7 << 11)
+#define PAL_TIVA_PCTL(n)            ((n) << 11)
+
+/**
+ * @brief   Alternate function.
+ *
+ * @param[in] n         alternate function selector
+ */
+#define PAL_MODE_ALTERNATE(n)       (PAL_TIVA_AFSEL_ALTERNATE |               \
+                                     PAL_TIVA_PCTL(n))
+/**
+ * @}
+ */
+
+/**
+ * @name    Standard I/O mode flags
+ * @{
+ */
+/**
+ * @brief   This mode is implemented as input.
+ */
+#define PAL_MODE_RESET                  PAL_MODE_INPUT
+
+/**
+ * @brief   This mode is implemented as input with pull-up.
+ */
+#define PAL_MODE_UNCONNECTED            PAL_MODE_INPUT_PULLUP
+
+/**
+ * @brief   Regular input high-Z pad.
+ */
+#define PAL_MODE_INPUT                  (PAL_TIVA_DEN_ENABLE |                \
+                                         PAL_TIVA_DIR_INPUT)
+
+/**
+ * @brief   Input pad with weak pull up resistor.
+ */
+#define PAL_MODE_INPUT_PULLUP           (PAL_TIVA_DIR_INPUT |                 \
+                                         PAL_TIVA_PUR_ENABLE |                \
+                                         PAL_TIVA_DEN_ENABLE)
+
+/**
+ * @brief   Input pad with weak pull down resistor.
+ */
+#define PAL_MODE_INPUT_PULLDOWN         (PAL_TIVA_DIR_INPUT |                 \
+                                         PAL_TIVA_PDR_ENABLE |                \
+                                         PAL_TIVA_DEN_ENABLE)
+
+/**
+ * @brief   Analog input mode.
+ */
+#define PAL_MODE_INPUT_ANALOG           (PAL_TIVA_DEN_DISABLE |               \
+                                         PAL_TIVA_AMSEL_ENABLE)
+
+/**
+ * @brief   Push-pull output pad.
+ */
+#define PAL_MODE_OUTPUT_PUSHPULL        (PAL_TIVA_DIR_OUTPUT |                \
+                                         PAL_TIVA_DR2R_ENABLE |               \
+                                         PAL_TIVA_ODR_PUSHPULL |              \
+                                         PAL_TIVA_DEN_ENABLE)
+
+/**
+ * @brief   Open-drain output pad.
+ */
+#define PAL_MODE_OUTPUT_OPENDRAIN       (PAL_TIVA_DIR_OUTPUT |                \
+                                         PAL_TIVA_DR2R_ENABLE |               \
+                                         PAL_TIVA_ODR_OPENDRAIN |             \
+                                         PAL_TIVA_DEN_ENABLE)
+/**
+ * @}
+ */
+
+/** @brief   GPIOA port identifier.*/
+#define IOPORT1         GPIOA
+
+/** @brief   GPIOB port identifier.*/
+#define IOPORT2         GPIOB
+
+/** @brief   GPIOC port identifier.*/
+#define IOPORT3         GPIOC
+
+/** @brief   GPIOD port identifier.*/
+#define IOPORT4         GPIOD
+
+/** @brief   GPIOE port identifier.*/
+#define IOPORT5         GPIOE
+
+/** @brief   GPIOF port identifier.*/
+#define IOPORT6         GPIOF
+
+#if TIVA_HAS_GPIOG || defined(__DOXYGEN__)
+/** @brief Port G setup data.*/
+#define IOPORT7         GPIOG
+#endif /* TIVA_HAS_GPIOG.*/
+
+#if TIVA_HAS_GPIOH || defined(__DOXYGEN__)
+/** @brief Port H setup data.*/
+#define IOPORT8         GPIOH
+#endif /* TIVA_HAS_GPIOH.*/
+
+#if TIVA_HAS_GPIOJ || defined(__DOXYGEN__)
+/** @brief Port J setup data.*/
+#define IOPORT9         GPIOJ
+#endif /* TIVA_HAS_GPIOJ.*/
+
+#if TIVA_HAS_GPIOK || defined(__DOXYGEN__)
+/** @brief Port K setup data.*/
+#define IOPORT10        GPIOK
+#endif /* TIVA_HAS_GPIOK.*/
+
+#if TIVA_HAS_GPIOL || defined(__DOXYGEN__)
+/** @brief Port L setup data.*/
+#define IOPORT11        GPIOL
+#endif /* TIVA_HAS_GPIOL.*/
+
+#if TIVA_HAS_GPIOM || defined(__DOXYGEN__)
+/** @brief Port M setup data.*/
+#define IOPORT12        GPIOM
+#endif /* TIVA_HAS_GPIOM.*/
+
+#if TIVA_HAS_GPION || defined(__DOXYGEN__)
+/** @brief Port N setup data.*/
+#define IOPORT13        GPION
+#endif /* TIVA_HAS_GPION.*/
+
+#if TIVA_HAS_GPIOP || defined(__DOXYGEN__)
+/** @brief Port P setup data.*/
+#define IOPORT14        GPIOP
+#endif /* TIVA_HAS_GPIOP.*/
+
+#if TIVA_HAS_GPIOQ || defined(__DOXYGEN__)
+/** @brief Port Q setup data.*/
+#define IOPORT15        GPIOQ
+#endif /* TIVA_HAS_GPIOQ.*/
+
+#if TIVA_HAS_GPIOR || defined(__DOXYGEN__)
+/** @brief Port R setup data.*/
+#define IOPORT16        GPIOR
+#endif /* TIVA_HAS_GPIOR.*/
+
+#if TIVA_HAS_GPIOS || defined(__DOXYGEN__)
+/** @brief Port S setup data.*/
+#define IOPORT17        GPIOS
+#endif /* TIVA_HAS_GPIOS.*/
+
+#if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
+/** @brief Port T setup data.*/
+#define IOPORT18        GPIOT
+#endif /* TIVA_HAS_GPIOT.*/
+
+/**
+ * @brief   Width, in bits, of an I/O port.
+ */
+#define PAL_IOPORTS_WIDTH 8
+
+/**
+ * @brief   Whole port mask.
+ * @brief   This macro specifies all the valid bits into a port.
+ */
+#define PAL_WHOLE_PORT ((ioportmask_t)0xFF)
+
 /*===========================================================================*/
-/* I/O Ports Types and constants.                                            */
+/* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
-/**	
+#if defined(TM4C123x)
+
+/**
+ * @brief   GPIOA AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOA. When set
+ *          to @p FALSE the APB bus is used to access GPIOA.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOA_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOA_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOB AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOB. When set
+ *          to @p FALSE the APB bus is used to access GPIOB.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOB_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOB_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOC AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOC. When set
+ *          to @p FALSE the APB bus is used to access GPIOC.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOC_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOC_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOD AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOD. When set
+ *          to @p FALSE the APB bus is used to access GPIOD.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOD_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOD_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOE AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOE. When set
+ *          to @p FALSE the APB bus is used to access GPIOE.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOE_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOE_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOF AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOF. When set
+ *          to @p FALSE the APB bus is used to access GPIOF.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOF_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOF_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOG AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOG. When set
+ *          to @p FALSE the APB bus is used to access GPIOG.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOG_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOG_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOH AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOH. When set
+ *          to @p FALSE the APB bus is used to access GPIOH.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOH_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOH_USE_AHB             TRUE
+#endif
+
+/**
+ * @brief   GPIOJ AHB enable switch.
+ * @details When set to @p TRUE the AHB bus is used to access GPIOJ. When set
+ *          to @p FALSE the APB bus is used to access GPIOJ.
+ * @note    The default is TRUE.
+ */
+#if !defined(TIVA_GPIO_GPIOJ_USE_AHB) || defined(__DOXYGEN__)
+#define TIVA_GPIO_GPIOJ_USE_AHB             TRUE
+#endif
+
+#endif
+
+/*===========================================================================*/
+/* Derived constants and error checks.                                       */
+/*===========================================================================*/
+
+#if defined(TM4C123x)
+
+#if TIVA_GPIO_GPIOA_USE_AHB
+#define GPIOA                               GPIOA_AHB
+#else
+#define GPIOA                               GPIOA_APB
+#endif
+
+#if TIVA_GPIO_GPIOB_USE_AHB
+#define GPIOB                               GPIOB_AHB
+#else
+#define GPIOB                               GPIOB_APB
+#endif
+
+#if TIVA_GPIO_GPIOC_USE_AHB
+#define GPIOC                               GPIOC_AHB
+#else
+#define GPIOC                               GPIOC_APB
+#endif
+
+#if TIVA_GPIO_GPIOD_USE_AHB
+#define GPIOD                               GPIOD_AHB
+#else
+#define GPIOD                               GPIOD_APB
+#endif
+
+#if TIVA_GPIO_GPIOE_USE_AHB
+#define GPIOE                               GPIOE_AHB
+#else
+#define GPIOE                               GPIOE_APB
+#endif
+
+#if TIVA_GPIO_GPIOF_USE_AHB
+#define GPIOF                               GPIOF_AHB
+#else
+#define GPIOF                               GPIOF_APB
+#endif
+
+#if TIVA_GPIO_GPIOG_USE_AHB
+#define GPIOG                               GPIOG_AHB
+#else
+#define GPIOG                               GPIOG_APB
+#endif
+
+#if TIVA_GPIO_GPIOH_USE_AHB
+#define GPIOH                               GPIOH_AHB
+#else
+#define GPIOH                               GPIOH_APB
+#endif
+
+#if TIVA_GPIO_GPIOJ_USE_AHB
+#define GPIOJ                               GPIOJ_AHB
+#else
+#define GPIOJ                               GPIOJ_APB
+#endif
+
+#define GPIOK                               GPIOK_AHB
+#define GPIOL                               GPIOL_AHB
+#define GPIOM                               GPIOM_AHB
+#define GPION                               GPION_AHB
+#define GPIOP                               GPIOP_AHB
+#define GPIOQ                               GPIOQ_AHB
+
+#endif
+
+/*===========================================================================*/
+/* Driver data structures and types.                                         */
+/*===========================================================================*/
+
+/**
  * @brief   GPIO port setup info.
  */
 typedef struct 
@@ -152,17 +538,6 @@ typedef struct
 } PALConfig;
 
 /**
- * @brief   Width, in bits, of an I/O port.
- */
-#define PAL_IOPORTS_WIDTH 8
-
-/**
- * @brief   Whole port mask.
- * @brief   This macro specifies all the valid bits into a port.
- */
-#define PAL_WHOLE_PORT ((ioportmask_t)0xFF)
-
-/**
  * @brief   Digital I/O port sized unsigned type.
  */
 typedef uint32_t ioportmask_t;
@@ -178,90 +553,7 @@ typedef uint32_t iomode_t;
 typedef GPIO_TypeDef *ioportid_t;
 
 /*===========================================================================*/
-/* I/O Ports Identifiers.                                                    */
-/*===========================================================================*/
-
-/** @brief   GPIOA port identifier.*/
-#define IOPORT1         GPIOA
-
-/** @brief   GPIOB port identifier.*/
-#define IOPORT2         GPIOB
-
-/** @brief   GPIOC port identifier.*/
-#define IOPORT3         GPIOC
-
-/** @brief   GPIOD port identifier.*/
-#define IOPORT4         GPIOD
-
-/** @brief   GPIOE port identifier.*/
-#define IOPORT5         GPIOE
-
-/** @brief   GPIOF port identifier.*/
-#define IOPORT6         GPIOF
-
-#if TIVA_HAS_GPIOG || defined(__DOXYGEN__)
-/** @brief Port G setup data.*/
-#define IOPORT7         GPIOG
-#endif /* TIVA_HAS_GPIOG.*/
-
-#if TIVA_HAS_GPIOH || defined(__DOXYGEN__)
-/** @brief Port H setup data.*/
-#define IOPORT8         GPIOH
-#endif /* TIVA_HAS_GPIOH.*/
-
-#if TIVA_HAS_GPIOJ || defined(__DOXYGEN__)
-/** @brief Port J setup data.*/
-#define IOPORT9         GPIOJ
-#endif /* TIVA_HAS_GPIOJ.*/
-
-#if TIVA_HAS_GPIOK || defined(__DOXYGEN__)
-/** @brief Port K setup data.*/
-#define IOPORT10        GPIOK
-#endif /* TIVA_HAS_GPIOK.*/
-
-#if TIVA_HAS_GPIOL || defined(__DOXYGEN__)
-/** @brief Port L setup data.*/
-#define IOPORT11        GPIOL
-#endif /* TIVA_HAS_GPIOL.*/
-
-#if TIVA_HAS_GPIOM || defined(__DOXYGEN__)
-/** @brief Port M setup data.*/
-#define IOPORT12        GPIOM
-#endif /* TIVA_HAS_GPIOM.*/
-
-#if TIVA_HAS_GPION || defined(__DOXYGEN__)
-/** @brief Port N setup data.*/
-#define IOPORT13        GPION
-#endif /* TIVA_HAS_GPION.*/
-
-#if TIVA_HAS_GPIOP || defined(__DOXYGEN__)
-/** @brief Port P setup data.*/
-#define IOPORT14        GPIOP
-#endif /* TIVA_HAS_GPIOP.*/
-
-#if TIVA_HAS_GPIOQ || defined(__DOXYGEN__)
-/** @brief Port Q setup data.*/
-#define IOPORT15        GPIOQ
-#endif /* TIVA_HAS_GPIOQ.*/
-
-#if TIVA_HAS_GPIOR || defined(__DOXYGEN__)
-/** @brief Port R setup data.*/
-#define IOPORT16        GPIOR
-#endif /* TIVA_HAS_GPIOR.*/
-
-#if TIVA_HAS_GPIOS || defined(__DOXYGEN__)
-/** @brief Port S setup data.*/
-#define IOPORT17        GPIOS
-#endif /* TIVA_HAS_GPIOS.*/
-
-#if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
-/** @brief Port T setup data.*/
-#define IOPORT18        GPIOT
-#endif /* TIVA_HAS_GPIOT.*/
-
-/*===========================================================================*/
-/* Implementation, some of the following macros could be implemented as      */
-/* functions, if so please put them in pal_lld.c.                            */
+/* Driver macros.                                                            */
 /*===========================================================================*/
 
 /**
@@ -441,6 +733,10 @@ typedef GPIO_TypeDef *ioportid_t;
  */
 #define pal_lld_clearpad(port, pad) \
   ((port)->MASKED_ACCESS[1 << (pad)] = 0)
+
+/*===========================================================================*/
+/* External declarations.                                                    */
+/*===========================================================================*/
 
 #if !defined(__DOXYGEN__)
 extern const PALConfig pal_default_config;
