@@ -282,6 +282,14 @@ typedef enum {
 } eicucapturemode_t;
 
 /**
+ * @brief   Timer registers width in bits.
+ */
+typedef enum {
+  EICU_WIDTH_16,
+  EICU_WIDTH_32
+} eicutimerwidth_t;
+
+/**
  * @brief   EICU frequency type.
  */
 typedef uint32_t eicufreq_t;
@@ -390,6 +398,10 @@ struct EICUDriver {
    * @brief   Timer base clock.
    */
   uint32_t                clock;
+  /**
+   * @brief   Timer registers width in bits.
+   */
+  eicutimerwidth_t        width;
   /**
    * @brief   Pointer to configuration for the driver.
    */

@@ -149,7 +149,7 @@ static eicuresult_t get_time_both(EICUDriver *eicup,
      unsigned subtraction math.*/
 
   /* 16-bit timer */
-  if (0xFFFF == eicup->tim->ARR) {
+  if (EICU_WIDTH_16 == eicup->width) {
     uint16_t cmp = compare;
     uint16_t la = chp->last_active;
     uint16_t li = chp->last_idle;
@@ -159,7 +159,7 @@ static eicuresult_t get_time_both(EICUDriver *eicup,
     ret.period = p;
   }
   /* 32-bit timer */
-  else if (0xFFFFFFFF == eicup->tim->ARR) {
+  else if (EICU_WIDTH_32 == eicup->width) {
     ret.width  = chp->last_idle - chp->last_active;
     ret.period = compare - chp->last_active;
     return ret;
@@ -193,14 +193,14 @@ static eicucnt_t get_time_width(EICUDriver *eicup,
      unsigned subtraction math.*/
 
   /* 16-bit timer */
-  if (0xFFFF == eicup->tim->ARR) {
+  if (EICU_WIDTH_16 == eicup->width) {
     uint16_t cmp = compare;
     uint16_t la  = chp->last_active;
     uint16_t ret = cmp - la;
     return ret;
   }
   /* 32-bit timer */
-  else if (0xFFFFFFFF == eicup->tim->ARR) {
+  else if (EICU_WIDTH_32 == eicup->width) {
     return compare - chp->last_active;
   }
   /* error trap */
@@ -231,14 +231,14 @@ static eicucnt_t get_time_period(EICUDriver *eicup,
      unsigned subtraction math.*/
 
   /* 16-bit timer */
-  if (0xFFFF == eicup->tim->ARR) {
+  if (EICU_WIDTH_16 == eicup->width) {
     uint16_t cmp = compare;
     uint16_t li  = chp->last_idle;
     uint16_t ret = cmp - li;
     return ret;
   }
   /* 32-bit timer */
-  else if (0xFFFFFFFF == eicup->tim->ARR) {
+  else if (EICU_WIDTH_32 == eicup->width) {
     return compare - chp->last_idle;
   }
   /* error trap */
@@ -806,6 +806,14 @@ void eicu_lld_start(EICUDriver *eicup) {
                "invalid frequency");
   eicup->tim->PSC   = (uint16_t)psc;
   eicup->tim->ARR   = (eicucnt_t)-1;
+
+  /* Detect width.*/
+  if (0xFFFFFFFF == eicup->tim->ARR)
+    eicup->width = EICU_WIDTH_32;
+  else if (0xFFFF == eicup->tim->ARR)
+    eicup->width = EICU_WIDTH_16;
+  else
+    osalSysHalt("Unsupported width");
 
   /* Reset registers */
   eicup->tim->SMCR  = 0;
