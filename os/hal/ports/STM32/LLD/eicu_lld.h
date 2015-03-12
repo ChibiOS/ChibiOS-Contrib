@@ -399,6 +399,10 @@ struct EICUDriver {
    */
   uint32_t                clock;
   /**
+   * @brief   Number of available capture compare channels in timer.
+   */
+  size_t                  channels;
+  /**
    * @brief   Timer registers width in bits.
    */
   eicutimerwidth_t        width;

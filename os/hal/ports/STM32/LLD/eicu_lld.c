@@ -719,6 +719,7 @@ void eicu_lld_start(EICUDriver *eicup) {
       rccResetTIM1();
       nvicEnableVector(STM32_TIM1_UP_NUMBER, STM32_EICU_TIM1_IRQ_PRIORITY);
       nvicEnableVector(STM32_TIM1_CC_NUMBER, STM32_EICU_TIM1_IRQ_PRIORITY);
+      eicup->channels = 4;
 #if defined(STM32_TIM1CLK)
       eicup->clock = STM32_TIM1CLK;
 #else
@@ -731,6 +732,7 @@ void eicu_lld_start(EICUDriver *eicup) {
       rccEnableTIM2(FALSE);
       rccResetTIM2();
       nvicEnableVector(STM32_TIM2_NUMBER, STM32_EICU_TIM2_IRQ_PRIORITY);
+      eicup->channels = 4;
       eicup->clock = STM32_TIMCLK1;
     }
 #endif
@@ -739,6 +741,7 @@ void eicu_lld_start(EICUDriver *eicup) {
       rccEnableTIM3(FALSE);
       rccResetTIM3();
       nvicEnableVector(STM32_TIM3_NUMBER, STM32_EICU_TIM3_IRQ_PRIORITY);
+      eicup->channels = 4;
       eicup->clock = STM32_TIMCLK1;
     }
 #endif
@@ -747,6 +750,7 @@ void eicu_lld_start(EICUDriver *eicup) {
       rccEnableTIM4(FALSE);
       rccResetTIM4();
       nvicEnableVector(STM32_TIM4_NUMBER, STM32_EICU_TIM4_IRQ_PRIORITY);
+      eicup->channels = 4;
       eicup->clock = STM32_TIMCLK1;
     }
 #endif
@@ -755,6 +759,7 @@ void eicu_lld_start(EICUDriver *eicup) {
       rccEnableTIM5(FALSE);
       rccResetTIM5();
       nvicEnableVector(STM32_TIM5_NUMBER, STM32_EICU_TIM5_IRQ_PRIORITY);
+      eicup->channels = 4;
       eicup->clock = STM32_TIMCLK1;
     }
 #endif
@@ -764,6 +769,7 @@ void eicu_lld_start(EICUDriver *eicup) {
       rccResetTIM8();
       nvicEnableVector(STM32_TIM8_UP_NUMBER, STM32_EICU_TIM8_IRQ_PRIORITY);
       nvicEnableVector(STM32_TIM8_CC_NUMBER, STM32_EICU_TIM8_IRQ_PRIORITY);
+      eicup->channels = 4;
 #if defined(STM32_TIM8CLK)
       eicup->clock = STM32_TIM8CLK;
 #else
@@ -776,6 +782,7 @@ void eicu_lld_start(EICUDriver *eicup) {
       rccEnableTIM9(FALSE);
       rccResetTIM9();
       nvicEnableVector(STM32_TIM9_NUMBER, STM32_EICU_TIM9_IRQ_PRIORITY);
+      eicup->channels = 2;
       eicup->clock = STM32_TIMCLK2;
     }
 #endif
@@ -784,6 +791,7 @@ void eicu_lld_start(EICUDriver *eicup) {
       rccEnableTIM12(FALSE);
       rccResetTIM12();
       nvicEnableVector(STM32_TIM12_NUMBER, STM32_EICU_TIM12_IRQ_PRIORITY);
+      eicup->channels = 2;
       eicup->clock = STM32_TIMCLK1;
     }
 #endif
@@ -818,6 +826,8 @@ void eicu_lld_start(EICUDriver *eicup) {
   /* Reset registers */
   eicup->tim->SMCR  = 0;
   eicup->tim->CCMR1 = 0;
+  if (eicup->channels > 2)
+    eicup->tim->CCMR2 = 0;
 
   /* clean channel structures and set pointers to channel configs */
   for (ch=0; ch<EICU_CHANNEL_ENUM_END; ch++) {
@@ -827,32 +837,18 @@ void eicu_lld_start(EICUDriver *eicup) {
     eicup->channel[ch].state = EICU_CH_IDLE;
   }
 
-#if STM32_EICU_USE_TIM9 && !STM32_EICU_USE_TIM12
-  if (eicup != &EICUD9)
-    eicup->tim->CCMR2 = 0;
-#elif !STM32_EICU_USE_TIM9 && STM32_EICU_USE_TIM12
-  if (eicup != &EICUD12)
-    eicup->tim->CCMR2 = 0;
-#elif STM32_EICU_USE_TIM9 && STM32_EICU_USE_TIM12
-  if ((eicup != &EICUD9) && (eicup != &EICUD12))
-    eicup->tim->CCMR2 = 0;
-#else
-  eicup->tim->CCMR2 = 0;
-#endif
-
   /* TIM9 and TIM12 have only 2 channels.*/
-#if STM32_EICU_USE_TIM9
-  if (eicup == &EICUD9) {
+  if (eicup->channels == 2) {
     osalDbgCheck((eicup->config->iccfgp[2] == NULL) &&
                  (eicup->config->iccfgp[3] == NULL));
   }
-#endif
-#if STM32_EICU_USE_TIM12
-  if (eicup == &EICUD12) {
-    osalDbgCheck((eicup->config->iccfgp[2] == NULL) &&
+
+  /* TIM10, TIM11, TIM13 and TIM14 have only 1 channel.*/
+  if (eicup->channels == 1) {
+    osalDbgCheck((eicup->config->iccfgp[1] == NULL) &&
+                 (eicup->config->iccfgp[2] == NULL) &&
                  (eicup->config->iccfgp[3] == NULL));
   }
-#endif
 
   start_channels(eicup);
 }
