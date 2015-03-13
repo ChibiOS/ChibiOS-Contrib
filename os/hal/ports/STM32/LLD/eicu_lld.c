@@ -162,11 +162,10 @@ static eicuresult_t get_time_both(const EICUDriver *eicup,
   else if (EICU_WIDTH_32 == eicup->width) {
     ret.width  = chp->last_idle - chp->last_active;
     ret.period = compare - chp->last_active;
-    return ret;
   }
   /* error trap */
   else {
-    osalSysHalt("ARR register must be loaded with maximum possible value");
+    osalSysHalt("Unhandled width value");
   }
 
   return ret;
@@ -205,7 +204,7 @@ static eicucnt_t get_time_width(const EICUDriver *eicup,
   }
   /* error trap */
   else {
-    osalSysHalt("ARR register must be loaded with maximum possible value");
+    osalSysHalt("Unhandled width value");
     return 0;
   }
 }
@@ -243,7 +242,7 @@ static eicucnt_t get_time_period(const EICUDriver *eicup,
   }
   /* error trap */
   else {
-    osalSysHalt("ARR register must be loaded with maximum possible value");
+    osalSysHalt("Unhandled width value");
     return 0;
   }
 }
