@@ -25,6 +25,78 @@
 
 #if HAL_USE_EICU || defined(__DOXYGEN__)
 
+
+/*===========================================================================*/
+/* Temporal definitions to be moved in main repository.                      */
+/*===========================================================================*/
+
+
+
+#define STM32_TIM10_NUMBER          25
+#define STM32_TIM13_NUMBER          44
+
+#define STM32_TIM10_HANDLER         VectorA4
+#define STM32_TIM13_HANDLER         VectorF0
+
+/**
+ * @brief   Enables the TIM10 peripheral clock.
+ * @note    The @p lp parameter is ignored in this family.
+ *
+ * @param[in] lp        low power enable flag
+ *
+ * @api
+ */
+#define rccEnableTIM10(lp) rccEnableAPB2(RCC_APB2ENR_TIM10EN, lp)
+
+/**
+ * @brief   Disables the TIM10 peripheral clock.
+ * @note    The @p lp parameter is ignored in this family.
+ *
+ * @param[in] lp        low power enable flag
+ *
+ * @api
+ */
+#define rccDisableTIM10(lp) rccDisableAPB2(RCC_APB2ENR_TIM10EN, lp)
+
+/**
+ * @brief   Resets the TIM10 peripheral.
+ *
+ * @api
+ */
+#define rccResetTIM10() rccResetAPB2(RCC_APB2RSTR_TIM10RST)
+
+/**
+ * @brief   Enables the TIM13 peripheral clock.
+ * @note    The @p lp parameter is ignored in this family.
+ *
+ * @param[in] lp        low power enable flag
+ *
+ * @api
+ */
+#define rccEnableTIM13(lp) rccEnableAPB1(RCC_APB1ENR_TIM13EN, lp)
+
+/**
+ * @brief   Disables the TIM13 peripheral clock.
+ * @note    The @p lp parameter is ignored in this family.
+ *
+ * @param[in] lp        low power enable flag
+ *
+ * @api
+ */
+#define rccDisableTIM13(lp) rccDisableAPB1(RCC_APB1ENR_TIM13EN, lp)
+
+/**
+ * @brief   Resets the TIM13 peripheral.
+ *
+ * @api
+ */
+#define rccResetTIM13() rccResetAPB1(RCC_APB1RSTR_TIM13RST)
+
+
+
+
+
+
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -164,6 +236,34 @@
 #if !defined(STM32_EICU_TIM12_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define STM32_EICU_TIM12_IRQ_PRIORITY        7
 #endif
+
+/**
+ * @brief   EICUD10 interrupt priority level setting.
+ */
+#if !defined(STM32_EICU_TIM10_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define STM32_EICU_TIM10_IRQ_PRIORITY         7
+#endif
+
+/**
+ * @brief   EICUD11 interrupt priority level setting.
+ */
+#if !defined(STM32_EICU_TIM11_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define STM32_EICU_TIM11_IRQ_PRIORITY         7
+#endif
+
+/**
+ * @brief   EICUD13 interrupt priority level setting.
+ */
+#if !defined(STM32_EICU_TIM13_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define STM32_EICU_TIM13_IRQ_PRIORITY         7
+#endif
+
+/**
+ * @brief   EICUD14 interrupt priority level setting.
+ */
+#if !defined(STM32_EICU_TIM14_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define STM32_EICU_TIM14_IRQ_PRIORITY         7
+#endif
 /** @} */
 
 /*===========================================================================*/
@@ -202,51 +302,89 @@
 #error "TIM12 not present in the selected device"
 #endif
 
-#if !STM32_EICU_USE_TIM1 && !STM32_EICU_USE_TIM2 &&                          \
-    !STM32_EICU_USE_TIM3 && !STM32_EICU_USE_TIM4 &&                          \
-    !STM32_EICU_USE_TIM5 && !STM32_EICU_USE_TIM8 &&                          \
-    !STM32_EICU_USE_TIM9 && !STM32_EICU_USE_TIM12
+#if STM32_EICU_USE_TIM10 && !STM32_HAS_TIM10
+#error "TIM10 not present in the selected device"
+#endif
+
+#if STM32_EICU_USE_TIM11 && !STM32_HAS_TIM11
+#error "TIM11 not present in the selected device"
+#endif
+
+#if STM32_EICU_USE_TIM13 && !STM32_HAS_TIM13
+#error "TIM13 not present in the selected device"
+#endif
+
+#if STM32_EICU_USE_TIM14 && !STM32_HAS_TIM14
+#error "TIM14 not present in the selected device"
+#endif
+
+#if !STM32_EICU_USE_TIM1  && !STM32_EICU_USE_TIM2  &&                         \
+    !STM32_EICU_USE_TIM3  && !STM32_EICU_USE_TIM4  &&                         \
+    !STM32_EICU_USE_TIM5  && !STM32_EICU_USE_TIM8  &&                         \
+    !STM32_EICU_USE_TIM9  && !STM32_EICU_USE_TIM12 &&                         \
+    !STM32_EICU_USE_TIM10 && !STM32_EICU_USE_TIM11 &&                         \
+    !STM32_EICU_USE_TIM13 && !STM32_EICU_USE_TIM14
 #error "EICU driver activated but no TIM peripheral assigned"
 #endif
 
-#if STM32_EICU_USE_TIM1 &&                                                   \
+#if STM32_EICU_USE_TIM1 &&                                                    \
     !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM1"
 #endif
 
-#if STM32_EICU_USE_TIM2 &&                                                   \
+#if STM32_EICU_USE_TIM2 &&                                                    \
     !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM2"
 #endif
 
-#if STM32_EICU_USE_TIM3 &&                                                   \
+#if STM32_EICU_USE_TIM3 &&                                                    \
     !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM3"
 #endif
 
-#if STM32_EICU_USE_TIM4 &&                                                   \
+#if STM32_EICU_USE_TIM4 &&                                                    \
     !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM4_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM4"
 #endif
 
-#if STM32_EICU_USE_TIM5 &&                                                   \
+#if STM32_EICU_USE_TIM5 &&                                                    \
     !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM5_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM5"
 #endif
 
-#if STM32_EICU_USE_TIM8 &&                                                   \
+#if STM32_EICU_USE_TIM8 &&                                                    \
     !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM8_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM8"
 #endif
 
-#if STM32_EICU_USE_TIM9 &&                                                   \
+#if STM32_EICU_USE_TIM9 &&                                                    \
     !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM9_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM9"
 #endif
 
-#if STM32_EICU_USE_TIM12 &&                                                  \
+#if STM32_EICU_USE_TIM12 &&                                                   \
     !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM12_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM12"
+#endif
+
+#if STM32_EICU_USE_TIM10 &&                                                   \
+    !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM10_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to TIM10"
+#endif
+
+#if STM32_EICU_USE_TIM11 &&                                                   \
+    !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM11_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to TIM11"
+#endif
+
+#if STM32_EICU_USE_TIM13 &&                                                   \
+    !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM13_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to TIM13"
+#endif
+
+#if STM32_EICU_USE_TIM14 &&                                                   \
+    !CORTEX_IS_VALID_KERNEL_PRIORITY(STM32_EICU_TIM14_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to TIM14"
 #endif
 
 /*===========================================================================*/
@@ -449,6 +587,22 @@ extern EICUDriver EICUD9;
 
 #if STM32_EICU_USE_TIM12 && !defined(__DOXYGEN__)
 extern EICUDriver EICUD12;
+#endif
+
+#if STM32_EICU_USE_TIM10 && !defined(__DOXYGEN__)
+extern EICUDriver EICUD10;
+#endif
+
+#if STM32_EICU_USE_TIM11 && !defined(__DOXYGEN__)
+extern EICUDriver EICUD11;
+#endif
+
+#if STM32_EICU_USE_TIM13 && !defined(__DOXYGEN__)
+extern EICUDriver EICUD13;
+#endif
+
+#if STM32_EICU_USE_TIM14 && !defined(__DOXYGEN__)
+extern EICUDriver EICUD14;
 #endif
 
 #ifdef __cplusplus
