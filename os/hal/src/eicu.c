@@ -17,6 +17,10 @@
    Rewritten by Emil Fresk (1/5 - 2014) for extended input capture
    functionality. And fix for spurious callbacks in the interrupt handler.
 */
+/*
+   Improved by Uladzimir Pylinsky aka barthess (1/3 - 2015) for support of
+   32-bit timers and timers with single capture/compare channels.
+*/
 
 /*
  * Hardware Abstraction Layer for Extended Input Capture Unit
