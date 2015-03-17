@@ -349,6 +349,7 @@
 /* Various helpers.*/
 #include "nvic.h"
 #include "tiva_isr.h"
+#include "tiva_udma.h"
 
 #ifdef __cplusplus
 extern "C" {

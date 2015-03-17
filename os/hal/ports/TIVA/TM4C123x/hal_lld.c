@@ -131,6 +131,10 @@ void tiva_clock_init(void)
 #if HAL_USE_PWM
   SYSCTL->RCC |= TIVA_PWM_FIELDS;
 #endif
+
+#if defined(TIVA_UDMA_REQUIRED)
+  udmaInit();
+#endif
 }
 
 /**
