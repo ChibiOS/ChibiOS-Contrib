@@ -34,6 +34,13 @@
  * @{
  */
 
+/* UDMA units.*/
+#define TIVA_UDMA_SW_HANDLER                VectorF8
+#define TIVA_UDMA_ERR_HANDLER               VectorFC
+
+#define TIVA_UDMA_SW_NUMBER                 46
+#define TIVA_UDMA_ERR_NUMBER                47
+
 /* GPIO units.*/
 #if defined(TM4C1230C3PM) || defined(TM4C1230D5PM) || defined(TM4C1230E6PM)   \
   || defined(TM4C1230H6PM) || defined(TM4C1232C3PM) || defined(TM4C1232D5PM)  \
