@@ -505,7 +505,8 @@ typedef struct
  */
 typedef struct
 {
-  __IO uint32_t CR[2];          /**< Control 0, 1                            */
+  __IO uint32_t CR0;            /**< Control 0                               */
+  __IO uint32_t CR1;            /**< Control 1                               */
   __IO uint32_t DR;             /**< Data                                    */
   __I  uint32_t SR;             /**< Status                                  */
   __IO uint32_t CPSR;           /**< Clock Prescale                          */
@@ -742,11 +743,16 @@ typedef struct
   __IO uint32_t ALTBASE;        /**< Alternate Channel Control Base Pointer  */
   __IO uint32_t WAITSTAT;       /**< Channel Wait-on-Request Status          */
   __O  uint32_t SWREQ;          /**< Channel Software Request                */
-  UDMA_SC_t USEBURST;           /**< Channel Useburst registers              */
-  UDMA_SC_t REQMASK;            /**< Channel Request Mask registers          */
-  UDMA_SC_t ENA;                /**< Channel Enable registers                */
-  UDMA_SC_t ALT;                /**< Channel Primary Alternate registers     */
-  UDMA_SC_t PRIO;               /**< Channel Priority registers              */
+  __IO uint32_t USEBURSTSET;    /**< Channel Useburst Set                    */
+  __O  uint32_t USEBURSTCLR;    /**< Channel Useburst Clear                  */
+  __IO uint32_t REQMASKSET;     /**< Channel Request Mask Set                */
+  __O  uint32_t REQMASKCLR;     /**< Channel Request Mask Clear              */
+  __IO uint32_t ENASET;         /**< Channel Enable Set                      */
+  __O  uint32_t ENACLR;         /**< Channel Enable Clear                    */
+  __IO uint32_t ALTSET;         /**< Channel Primary Alternate Set           */
+  __O  uint32_t ALTCLR;         /**< Channel Primary Alternate Clear         */
+  __IO uint32_t PRIOSET;        /**< Channel Priority Set                    */
+  __O  uint32_t PRIOCLR;        /**< Channel Priority Clear                  */
   __I  uint32_t _RESERVED0[3];  /**< Reserved                                */
   __IO uint32_t ERRCLR;         /**< Bus Error Clear                         */
   __I  uint32_t _RESERVED1[300];/**< Reserved                                */
