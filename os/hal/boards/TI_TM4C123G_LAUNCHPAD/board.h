@@ -92,10 +92,10 @@
  */
 #define GPIOA_UART0_RX          0
 #define GPIOA_UART0_TX          1
-#define GPIOA_PIN2              2
+#define GPIOA_SSI0_CLK          2
 #define GPIOA_PIN3              3
-#define GPIOA_PIN4              4
-#define GPIOA_PIN5              5
+#define GPIOA_SSI0_RX           4
+#define GPIOA_SSI0_TX           5
 #define GPIOA_PIN6              6
 #define GPIOA_PIN7              7
 
@@ -191,115 +191,115 @@
  */
 #define VAL_GPIOA_DATA          (PIN_DATA_LOW(GPIOA_UART0_RX) |              \
                                  PIN_DATA_LOW(GPIOA_UART0_TX) |              \
-                                 PIN_DATA_LOW(GPIOA_PIN2) |                  \
+                                 PIN_DATA_LOW(GPIOA_SSI0_CLK) |                  \
                                  PIN_DATA_LOW(GPIOA_PIN3) |                  \
-                                 PIN_DATA_LOW(GPIOA_PIN4) |                  \
-                                 PIN_DATA_LOW(GPIOA_PIN5) |                  \
+                                 PIN_DATA_LOW(GPIOA_SSI0_RX) |                  \
+                                 PIN_DATA_LOW(GPIOA_SSI0_TX) |                  \
                                  PIN_DATA_LOW(GPIOA_PIN6) |                  \
                                  PIN_DATA_LOW(GPIOA_PIN7))
 
 #define VAL_GPIOA_DIR           (PIN_DIR_IN(GPIOA_UART0_RX) |                \
                                  PIN_DIR_IN(GPIOA_UART0_TX) |                \
-                                 PIN_DIR_IN(GPIOA_PIN2) |                    \
+                                 PIN_DIR_IN(GPIOA_SSI0_CLK) |                    \
                                  PIN_DIR_IN(GPIOA_PIN3) |                    \
-                                 PIN_DIR_IN(GPIOA_PIN4) |                    \
-                                 PIN_DIR_IN(GPIOA_PIN5) |                    \
+                                 PIN_DIR_IN(GPIOA_SSI0_RX) |                    \
+                                 PIN_DIR_IN(GPIOA_SSI0_TX) |                    \
                                  PIN_DIR_IN(GPIOA_PIN6) |                    \
                                  PIN_DIR_IN(GPIOA_PIN7))
 
 #define VAL_GPIOA_AFSEL         (PIN_AFSEL_GPIO(GPIOA_UART0_RX) |            \
                                  PIN_AFSEL_GPIO(GPIOA_UART0_TX) |            \
-                                 PIN_AFSEL_GPIO(GPIOA_PIN2) |                \
+                                 PIN_AFSEL_GPIO(GPIOA_SSI0_CLK) |                \
                                  PIN_AFSEL_GPIO(GPIOA_PIN3) |                \
-                                 PIN_AFSEL_GPIO(GPIOA_PIN4) |                \
-                                 PIN_AFSEL_GPIO(GPIOA_PIN5) |                \
+                                 PIN_AFSEL_GPIO(GPIOA_SSI0_RX) |                \
+                                 PIN_AFSEL_GPIO(GPIOA_SSI0_TX) |                \
                                  PIN_AFSEL_GPIO(GPIOA_PIN6) |                \
                                  PIN_AFSEL_GPIO(GPIOA_PIN7))
 
 #define VAL_GPIOA_ODR           (PIN_ODR_DISABLE(GPIOA_UART0_RX) |           \
                                  PIN_ODR_DISABLE(GPIOA_UART0_TX) |           \
-                                 PIN_ODR_DISABLE(GPIOA_PIN2) |               \
+                                 PIN_ODR_DISABLE(GPIOA_SSI0_CLK) |               \
                                  PIN_ODR_DISABLE(GPIOA_PIN3) |               \
-                                 PIN_ODR_DISABLE(GPIOA_PIN4) |               \
-                                 PIN_ODR_DISABLE(GPIOA_PIN5) |               \
+                                 PIN_ODR_DISABLE(GPIOA_SSI0_RX) |               \
+                                 PIN_ODR_DISABLE(GPIOA_SSI0_TX) |               \
                                  PIN_ODR_DISABLE(GPIOA_PIN6) |               \
                                  PIN_ODR_DISABLE(GPIOA_PIN7))
 
 #define VAL_GPIOA_PUR           (PIN_PxR_DISABLE(GPIOA_UART0_RX) |           \
                                  PIN_PxR_DISABLE(GPIOA_UART0_TX) |           \
-                                 PIN_PxR_DISABLE(GPIOA_PIN2) |               \
+                                 PIN_PxR_DISABLE(GPIOA_SSI0_CLK) |               \
                                  PIN_PxR_DISABLE(GPIOA_PIN3) |               \
-                                 PIN_PxR_DISABLE(GPIOA_PIN4) |               \
-                                 PIN_PxR_DISABLE(GPIOA_PIN5) |               \
+                                 PIN_PxR_DISABLE(GPIOA_SSI0_RX) |               \
+                                 PIN_PxR_DISABLE(GPIOA_SSI0_TX) |               \
                                  PIN_PxR_DISABLE(GPIOA_PIN6) |               \
                                  PIN_PxR_DISABLE(GPIOA_PIN7))
 
 #define VAL_GPIOA_PDR           (PIN_PxR_DISABLE(GPIOA_UART0_RX) |           \
                                  PIN_PxR_DISABLE(GPIOA_UART0_TX) |           \
-                                 PIN_PxR_DISABLE(GPIOA_PIN2) |               \
+                                 PIN_PxR_DISABLE(GPIOA_SSI0_CLK) |               \
                                  PIN_PxR_DISABLE(GPIOA_PIN3) |               \
-                                 PIN_PxR_DISABLE(GPIOA_PIN4) |               \
-                                 PIN_PxR_DISABLE(GPIOA_PIN5) |               \
+                                 PIN_PxR_DISABLE(GPIOA_SSI0_RX) |               \
+                                 PIN_PxR_DISABLE(GPIOA_SSI0_TX) |               \
                                  PIN_PxR_DISABLE(GPIOA_PIN6) |               \
                                  PIN_PxR_DISABLE(GPIOA_PIN7))
 
 #define VAL_GPIOA_DEN           (PIN_DEN_ENABLE(GPIOA_UART0_RX) |            \
                                  PIN_DEN_ENABLE(GPIOA_UART0_TX) |            \
-                                 PIN_DEN_ENABLE(GPIOA_PIN2) |                \
+                                 PIN_DEN_ENABLE(GPIOA_SSI0_CLK) |                \
                                  PIN_DEN_ENABLE(GPIOA_PIN3) |                \
-                                 PIN_DEN_ENABLE(GPIOA_PIN4) |                \
-                                 PIN_DEN_ENABLE(GPIOA_PIN5) |                \
+                                 PIN_DEN_ENABLE(GPIOA_SSI0_RX) |                \
+                                 PIN_DEN_ENABLE(GPIOA_SSI0_TX) |                \
                                  PIN_DEN_ENABLE(GPIOA_PIN6) |                \
                                  PIN_DEN_ENABLE(GPIOA_PIN7))
 
 #define VAL_GPIOA_AMSEL         (PIN_AMSEL_DISABLE(GPIOA_UART0_RX) |         \
                                  PIN_AMSEL_DISABLE(GPIOA_UART0_TX) |         \
-                                 PIN_AMSEL_DISABLE(GPIOA_PIN2) |             \
+                                 PIN_AMSEL_DISABLE(GPIOA_SSI0_CLK) |             \
                                  PIN_AMSEL_DISABLE(GPIOA_PIN3))
 
 #define VAL_GPIOA_DR2R          (PIN_DRxR_ENABLE(GPIOA_UART0_RX) |           \
                                  PIN_DRxR_ENABLE(GPIOA_UART0_TX) |           \
-                                 PIN_DRxR_ENABLE(GPIOA_PIN2) |               \
+                                 PIN_DRxR_ENABLE(GPIOA_SSI0_CLK) |               \
                                  PIN_DRxR_ENABLE(GPIOA_PIN3) |               \
-                                 PIN_DRxR_ENABLE(GPIOA_PIN4) |               \
-                                 PIN_DRxR_ENABLE(GPIOA_PIN5) |               \
+                                 PIN_DRxR_ENABLE(GPIOA_SSI0_RX) |               \
+                                 PIN_DRxR_ENABLE(GPIOA_SSI0_TX) |               \
                                  PIN_DRxR_ENABLE(GPIOA_PIN6) |               \
                                  PIN_DRxR_ENABLE(GPIOA_PIN7))
 
 #define VAL_GPIOA_DR4R          (PIN_DRxR_DISABLE(GPIOA_UART0_RX) |          \
                                  PIN_DRxR_DISABLE(GPIOA_UART0_TX) |          \
-                                 PIN_DRxR_DISABLE(GPIOA_PIN2) |              \
+                                 PIN_DRxR_DISABLE(GPIOA_SSI0_CLK) |              \
                                  PIN_DRxR_DISABLE(GPIOA_PIN3) |              \
-                                 PIN_DRxR_DISABLE(GPIOA_PIN4) |              \
-                                 PIN_DRxR_DISABLE(GPIOA_PIN5) |              \
+                                 PIN_DRxR_DISABLE(GPIOA_SSI0_RX) |              \
+                                 PIN_DRxR_DISABLE(GPIOA_SSI0_TX) |              \
                                  PIN_DRxR_DISABLE(GPIOA_PIN6) |              \
                                  PIN_DRxR_DISABLE(GPIOA_PIN7))
 
 #define VAL_GPIOA_DR8R          (PIN_DRxR_DISABLE(GPIOA_UART0_RX) |          \
                                  PIN_DRxR_DISABLE(GPIOA_UART0_TX) |          \
-                                 PIN_DRxR_DISABLE(GPIOA_PIN2) |              \
+                                 PIN_DRxR_DISABLE(GPIOA_SSI0_CLK) |              \
                                  PIN_DRxR_DISABLE(GPIOA_PIN3) |              \
-                                 PIN_DRxR_DISABLE(GPIOA_PIN4) |              \
-                                 PIN_DRxR_DISABLE(GPIOA_PIN5) |              \
+                                 PIN_DRxR_DISABLE(GPIOA_SSI0_RX) |              \
+                                 PIN_DRxR_DISABLE(GPIOA_SSI0_TX) |              \
                                  PIN_DRxR_DISABLE(GPIOA_PIN6) |              \
                                  PIN_DRxR_DISABLE(GPIOA_PIN7))
 
 
 #define VAL_GPIOA_SLR           (PIN_SLR_DISABLE(GPIOA_UART0_RX) |           \
                                  PIN_SLR_DISABLE(GPIOA_UART0_TX) |           \
-                                 PIN_SLR_DISABLE(GPIOA_PIN2) |               \
+                                 PIN_SLR_DISABLE(GPIOA_SSI0_CLK) |               \
                                  PIN_SLR_DISABLE(GPIOA_PIN3) |               \
-                                 PIN_SLR_DISABLE(GPIOA_PIN4) |               \
-                                 PIN_SLR_DISABLE(GPIOA_PIN5) |               \
+                                 PIN_SLR_DISABLE(GPIOA_SSI0_RX) |               \
+                                 PIN_SLR_DISABLE(GPIOA_SSI0_TX) |               \
                                  PIN_SLR_DISABLE(GPIOA_PIN6) |               \
                                  PIN_SLR_DISABLE(GPIOA_PIN7))
 
 #define VAL_GPIOA_PCTL          (PIN_PCTL_MODE(GPIOA_UART0_RX, 0) |          \
                                  PIN_PCTL_MODE(GPIOA_UART0_TX, 0) |          \
-                                 PIN_PCTL_MODE(GPIOA_PIN2, 0) |              \
+                                 PIN_PCTL_MODE(GPIOA_SSI0_CLK, 0) |              \
                                  PIN_PCTL_MODE(GPIOA_PIN3, 0) |              \
-                                 PIN_PCTL_MODE(GPIOA_PIN4, 0) |              \
-                                 PIN_PCTL_MODE(GPIOA_PIN5, 0) |              \
+                                 PIN_PCTL_MODE(GPIOA_SSI0_RX, 0) |              \
+                                 PIN_PCTL_MODE(GPIOA_SSI0_TX, 0) |              \
                                  PIN_PCTL_MODE(GPIOA_PIN6, 0) |              \
                                  PIN_PCTL_MODE(GPIOA_PIN7, 0))
 
