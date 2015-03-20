@@ -197,7 +197,7 @@ extern "C" {
  */
 static inline systime_t st_lld_get_counter(void)
 {
-  return (systime_t) 0xffffffff - TIVA_ST_TIM->TAV;
+  return (systime_t) 0xffffffff - TIVA_ST_TIM->TAR;
 }
 
 /**
@@ -247,7 +247,7 @@ static inline void st_lld_set_alarm(systime_t time)
  */
 static inline systime_t st_lld_get_alarm(void)
 {
-  return (systime_t) TIVA_ST_TIM->TAR;
+  return (systime_t) (0xffffffff - TIVA_ST_TIM->TAMATCHR);
 }
 
 /**
