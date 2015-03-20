@@ -35,42 +35,36 @@
 #if (TIVA_ST_USE_WIDE_TIMER == TRUE)
 
 #if TIVA_ST_TIMER_NUMBER == 0
-#warning "WGPT0"
 #define ST_HANDLER                          TIVA_WGPT0A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT0A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 0))
 
 #elif TIVA_ST_TIMER_NUMBER == 1
-#warning "WGPT1"
 #define ST_HANDLER                          TIVA_WGPT1A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT1A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 1))
 
 #elif TIVA_ST_TIMER_NUMBER == 2
-#warning "WGPT2"
 #define ST_HANDLER                          TIVA_WGPT2A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT2A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 2))
 
 #elif TIVA_ST_TIMER_NUMBER == 3
-#warning "WGPT3"
 #define ST_HANDLER                          TIVA_WGPT3A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT3A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 3))
 
 #elif TIVA_ST_TIMER_NUMBER == 4
-#warning "WGPT4"
 #define ST_HANDLER                          TIVA_WGPT4A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT4A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 4))
 
 #elif TIVA_ST_TIMER_NUMBER == 5
-#warning "WGPT5"
 #define ST_HANDLER                          TIVA_WGPT5A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT5A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
@@ -87,42 +81,36 @@
 #elif (TIVA_ST_USE_WIDE_TIMER == FALSE)
 
 #if TIVA_ST_TIMER_NUMBER == 0
-#warning "GPT0"
 #define ST_HANDLER                          TIVA_GPT0_HANDLER
 #define ST_NUMBER                           TIVA_GPT0_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 0))
 
 #elif TIVA_ST_TIMER_NUMBER == 1
-#warning "GPT1"
 #define ST_HANDLER                          TIVA_GPT1_HANDLER
 #define ST_NUMBER                           TIVA_GPT1_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 1))
 
 #elif TIVA_ST_TIMER_NUMBER == 2
-#warning "GPT2"
 #define ST_HANDLER                          TIVA_GPT2_HANDLER
 #define ST_NUMBER                           TIVA_GPT2_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 2))
 
 #elif TIVA_ST_TIMER_NUMBER == 3
-#warning "GPT3"
 #define ST_HANDLER                          TIVA_GPT3_HANDLER
 #define ST_NUMBER                           TIVA_GPT3_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 3))
 
 #elif TIVA_ST_TIMER_NUMBER == 4
-#warning "GPT4"
 #define ST_HANDLER                          TIVA_GPT4_HANDLER
 #define ST_NUMBER                           TIVA_GPT4_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 4))
 
 #elif TIVA_ST_TIMER_NUMBER == 5
-#warning "GPT5"
 #define ST_HANDLER                          TIVA_GPT5_HANDLER
 #define ST_NUMBER                           TIVA_GPT5_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
@@ -230,8 +218,7 @@ void st_lld_init(void)
   TIVA_ST_TIM->CTL  = 0;
   TIVA_ST_TIM->CFG  = GPTM_CFG_CFG_SPLIT;       /* Timer split mode */
   TIVA_ST_TIM->TAMR = (GPTM_TAMR_TAMR_PERIODIC |/* Periodic mode */
-                       GPTM_TAMR_TAMIE |        /* Match interrupt enable */
-                       /*GPTM_TAMR_TASNAPS*/0);      /* Snapshot mode */
+                       GPTM_TAMR_TAMIE);        /* Match interrupt enable */
   TIVA_ST_TIM->TAPR = (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1;
   TIVA_ST_TIM->CTL  = (GPTM_CTL_TAEN |          /* Timer A enable */
                        GPTM_CTL_TASTALL);       /* Timer A stall when paused */

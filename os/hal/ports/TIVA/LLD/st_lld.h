@@ -35,8 +35,6 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#define TIVA_ST_TIM_PRESCALER       ((80000000 / 10000) - 1)
-
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -62,7 +60,10 @@
 #define TIVA_ST_TIMER_NUMBER                0
 #endif
 
-/* TODO: Add description */
+/**
+ * @brief   When set to @p TRUE a wide timer is used. When set to @p FALSE a
+ *          normal timer is used.
+ */
 #if !defined(TIVA_ST_USE_WIDE_TIMER) || defined(__DOXYGEN__)
 #define TIVA_ST_USE_WIDE_TIMER              TRUE
 #endif
@@ -74,10 +75,6 @@
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
-
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
-
-//#error "Tickless system tick mode is not working yet! Please use the periodic system tick mode."
 
 #if (TIVA_ST_USE_WIDE_TIMER == TRUE)
 
@@ -167,8 +164,6 @@
 #error "wrong value defined for TIVA_ST_USE_WIDE_TIMER"
 #endif
 
-#endif
-
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
@@ -193,9 +188,6 @@ extern "C" {
 /* Driver inline functions.                                                  */
 /*===========================================================================*/
 
-#define OSAL_ST_FREQUENCY   10000
-#define ST_CLOCK_SRC        80000000
-
 /**
  * @brief   Returns the time counter value.
  *
@@ -205,13 +197,7 @@ extern "C" {
  */
 static inline systime_t st_lld_get_counter(void)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   return (systime_t) 0xffffffff - TIVA_ST_TIM->TAV;
-  //return (systime_t) TIVA_ST_TIM->TAV/((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1);
-  //return (systime_t) ((TIVA_ST_TIM->TAV >> 16) | (TIVA_ST_TIM->TAPV << 16))/((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1);
-#else
-  return (systime_t) 0;
-#endif
 }
 
 /**
@@ -225,38 +211,9 @@ static inline systime_t st_lld_get_counter(void)
  */
 static inline void st_lld_start_alarm(systime_t time)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
-//  uint64_t temp;
-//
-//  temp = (uint64_t) time * TIVA_ST_TIM_PRESCALER;
-//
-//  TIVA_ST_TIM->TAMATCHR = (uint32_t) temp;
-//
-//  temp = temp >> 32;
-//
-//  TIVA_ST_TIM->TAPMR = (uint16_t) temp;
-//
-//  TIVA_ST_TIM->ICR = 0xffffffff;
-//  TIVA_ST_TIM->IMR = GPTM_IMR_TAMIM;
-
-//  uint64_t settime = time * ((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1);
-//
-//  TIVA_ST_TIM->TAPMR = (uint16_t) ((settime >> 32) & 0xffff);
-//  TIVA_ST_TIM->TAMATCHR = (uint32_t) (settime);
-//
-//  TIVA_ST_TIM->ICR = TIVA_ST_TIM->MIS;
-//  TIVA_ST_TIM->IMR = GPTM_IMR_TAMIM;
-
-  //uint64_t settime = time * ((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1);
-
-  //TIVA_ST_TIM->TAPMR = (uint16_t) ((settime >> 32) & 0xffff);
   TIVA_ST_TIM->TAMATCHR = (uint32_t) 0xffffffff - time;
-
   TIVA_ST_TIM->ICR = TIVA_ST_TIM->MIS;
   TIVA_ST_TIM->IMR = GPTM_IMR_TAMIM;
-#else
-  (void)time;
-#endif
 }
 
 /**
@@ -266,9 +223,7 @@ static inline void st_lld_start_alarm(systime_t time)
  */
 static inline void st_lld_stop_alarm(void)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   TIVA_ST_TIM->IMR = 0;
-#endif
 }
 
 /**
@@ -280,29 +235,7 @@ static inline void st_lld_stop_alarm(void)
  */
 static inline void st_lld_set_alarm(systime_t time)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
-//  uint64_t temp;
-//
-//  temp = (uint64_t) time * TIVA_ST_TIM_PRESCALER;
-//
-//  TIVA_ST_TIM->TAMATCHR = (uint32_t) temp;
-//
-//  temp = temp >> 32;
-//
-//  TIVA_ST_TIM->TAPMR = (uint16_t) temp;
-
-//  uint64_t settime = time * ((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1);
-//
-//  TIVA_ST_TIM->TAPMR = (uint16_t) ((settime >> 32) & 0xffff);
-//  TIVA_ST_TIM->TAMATCHR = (uint32_t) (settime);
-
-  //uint64_t settime = time * ((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1);
-
-  //TIVA_ST_TIM->TAPMR = (uint16_t) ((settime >> 32) & 0xffff);
   TIVA_ST_TIM->TAMATCHR = (uint32_t) (0xffffffff - time);
-#else
-  (void)time;
-#endif
 }
 
 /**
@@ -314,24 +247,7 @@ static inline void st_lld_set_alarm(systime_t time)
  */
 static inline systime_t st_lld_get_alarm(void)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
-//  uint64_t temp;
-//
-//  temp = TIVA_ST_TIM->TAPR;
-//  temp = temp << 32;
-//  temp = TIVA_ST_TIM->TAR;
-//
-//  temp = temp / TIVA_ST_TIM_PRESCALER;
-//
-//  return (systime_t) temp;
-
-  //return (systime_t) (TIVA_ST_TIM->TAPR << 16 | TIVA_ST_TIM->TAR >> 16);
-  //return (systime_t) ((TIVA_ST_TIM->TAV >> 16) | (TIVA_ST_TIM->TAPV << 16))/((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1);
-
   return (systime_t) TIVA_ST_TIM->TAR;
-#else
-  return (systime_t) 0;
-#endif
 }
 
 /**
@@ -345,11 +261,7 @@ static inline systime_t st_lld_get_alarm(void)
  */
 static inline bool st_lld_is_alarm_active(void)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   return (bool) ((TIVA_ST_TIM->IMR & GPTM_IMR_TAMIM) !=0);
-#else
-  return (bool) false;
-#endif
 }
 
 #endif /* _ST_LLD_H_ */
