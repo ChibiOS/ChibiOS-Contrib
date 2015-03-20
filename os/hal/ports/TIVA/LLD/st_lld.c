@@ -73,8 +73,8 @@
 #warning "WGPT5"
 #define ST_HANDLER                          TIVA_WGPT5A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT5A_NUMBER
-//#define ST_CLOCK_SRC                        (80000000)
-#define ST_CLOCK_SRC                        (16000000)
+#define ST_CLOCK_SRC                        (80000000)
+//#define ST_CLOCK_SRC                        (16000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 5))
 
 #else
@@ -203,7 +203,7 @@ OSAL_IRQ_HANDLER(ST_HANDLER)
   OSAL_IRQ_PROLOGUE();
 
   mis = TIVA_ST_TIM->MIS;
-  TIVA_ST_TIM->ICR = 0xffffffff;
+  TIVA_ST_TIM->ICR = mis;
 
   if (mis & GPTM_IMR_TATOIM) {
     temp = 3;
