@@ -74,7 +74,6 @@
 #define ST_HANDLER                          TIVA_WGPT5A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT5A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
-//#define ST_CLOCK_SRC                        (16000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 5))
 
 #else
@@ -145,10 +144,6 @@
 
 #endif
 
-//#if (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1 > 0xFFFF
-//#error "the selected ST frequency is not obtainable because TIM timer prescaler limits"
-//#endif
-
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -190,7 +185,7 @@ OSAL_IRQ_HANDLER(SysTick_Handler)
 
 #if (OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING) || defined(__DOXYGEN__)
 /**
- * @brief   TIM2 interrupt handler.
+ * @brief   GPT interrupt handler.
  * @details This interrupt is used for system tick in free running mode.
  *
  * @isr
@@ -198,24 +193,11 @@ OSAL_IRQ_HANDLER(SysTick_Handler)
 OSAL_IRQ_HANDLER(ST_HANDLER)
 {
   uint32_t mis;
-  uint32_t temp;
 
   OSAL_IRQ_PROLOGUE();
 
   mis = TIVA_ST_TIM->MIS;
   TIVA_ST_TIM->ICR = mis;
-
-  if (mis & GPTM_IMR_TATOIM) {
-    temp = 3;
-  }
-
-  if (mis & GPTM_IMR_CAMIM) {
-    temp = 1;
-  }
-
-  if (mis & GPTM_IMR_CAEIM) {
-    temp = 2;
-  }
 
   if (mis & GPTM_IMR_TAMIM) {
     osalSysLockFromISR();
@@ -244,19 +226,15 @@ void st_lld_init(void)
   /* Enabling timer clock.*/
   ST_ENABLE_CLOCK();
 
-  /* Initializing the counter in free running mode.*/
+  /* Initializing the counter in free running down mode.*/
   TIVA_ST_TIM->CTL  = 0;
-  TIVA_ST_TIM->CFG  = GPTM_CFG_CFG_SPLIT;           /* Timer split mode */
-  TIVA_ST_TIM->TAMR = (GPTM_TAMR_TAMR_PERIODIC |    /* Periodic mode */
-                        /*GPTM_TAMR_TACDIR |*/          /* Count up */
-                        GPTM_TAMR_TAMIE |           /* Match interrupt enable */
-                        GPTM_TAMR_TASNAPS);         /* Snapshot mode */
+  TIVA_ST_TIM->CFG  = GPTM_CFG_CFG_SPLIT;       /* Timer split mode */
+  TIVA_ST_TIM->TAMR = (GPTM_TAMR_TAMR_PERIODIC |/* Periodic mode */
+                       GPTM_TAMR_TAMIE |        /* Match interrupt enable */
+                       /*GPTM_TAMR_TASNAPS*/0);      /* Snapshot mode */
   TIVA_ST_TIM->TAPR = (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1;
-  /* in up mode (used by tickless mode) the prescaler register extends the TAV
-   * and TAR registers. How to solve this? In down mode it is working better
-   * because the prescaler really works as prescaler. */
-  TIVA_ST_TIM->CTL  = (GPTM_CTL_TAEN |              /* Timer A enable */
-                        GPTM_CTL_TASTALL);          /* Timer A stall when paused */
+  TIVA_ST_TIM->CTL  = (GPTM_CTL_TAEN |          /* Timer A enable */
+                       GPTM_CTL_TASTALL);       /* Timer A stall when paused */
 
   /* IRQ enabled.*/
   nvicEnableVector(ST_NUMBER, TIVA_ST_IRQ_PRIORITY);

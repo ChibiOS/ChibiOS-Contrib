@@ -206,7 +206,7 @@ extern "C" {
 static inline systime_t st_lld_get_counter(void)
 {
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
-  return (systime_t) 0xffffffff - TTIVA_ST_TIM->TAV;
+  return (systime_t) 0xffffffff - TIVA_ST_TIM->TAV;
   //return (systime_t) TIVA_ST_TIM->TAV/((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1);
   //return (systime_t) ((TIVA_ST_TIM->TAV >> 16) | (TIVA_ST_TIM->TAPV << 16))/((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1);
 #else
@@ -250,7 +250,7 @@ static inline void st_lld_start_alarm(systime_t time)
   //uint64_t settime = time * ((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1);
 
   //TIVA_ST_TIM->TAPMR = (uint16_t) ((settime >> 32) & 0xffff);
-  TIVA_ST_TIM->TAMATCHR = (uint32_t) 0xffffffff - settime;
+  TIVA_ST_TIM->TAMATCHR = (uint32_t) 0xffffffff - time;
 
   TIVA_ST_TIM->ICR = TIVA_ST_TIM->MIS;
   TIVA_ST_TIM->IMR = GPTM_IMR_TAMIM;
@@ -299,7 +299,7 @@ static inline void st_lld_set_alarm(systime_t time)
   //uint64_t settime = time * ((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1);
 
   //TIVA_ST_TIM->TAPMR = (uint16_t) ((settime >> 32) & 0xffff);
-  TIVA_ST_TIM->TAMATCHR = (uint32_t) (0xffffffff - settime);
+  TIVA_ST_TIM->TAMATCHR = (uint32_t) (0xffffffff - time);
 #else
   (void)time;
 #endif
