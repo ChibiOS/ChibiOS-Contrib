@@ -214,6 +214,10 @@ void st_lld_init(void)
   /* Enabling timer clock.*/
   ST_ENABLE_CLOCK();
 
+  /* TODO: dynamic for all timers instead of hardcoded.*/
+  while (!(SYSCTL->PRWTIMER & (1 << 5)))
+    ;
+
   /* Initializing the counter in free running down mode.*/
   TIVA_ST_TIM->CTL  = 0;
   TIVA_ST_TIM->CFG  = GPTM_CFG_CFG_SPLIT;       /* Timer split mode */
