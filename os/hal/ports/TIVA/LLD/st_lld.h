@@ -197,7 +197,7 @@ extern "C" {
  */
 static inline systime_t st_lld_get_counter(void)
 {
-  return (systime_t) 0xffffffff - TIVA_ST_TIM->TAR;
+  return (systime_t) (((systime_t) 0xffffffff) - TIVA_ST_TIM->TAR);
 }
 
 /**
@@ -211,7 +211,7 @@ static inline systime_t st_lld_get_counter(void)
  */
 static inline void st_lld_start_alarm(systime_t time)
 {
-  TIVA_ST_TIM->TAMATCHR = (uint32_t) 0xffffffff - time;
+  TIVA_ST_TIM->TAMATCHR = (systime_t) (((systime_t) 0xffffffff) - time);
   TIVA_ST_TIM->ICR = TIVA_ST_TIM->MIS;
   TIVA_ST_TIM->IMR = GPTM_IMR_TAMIM;
 }
@@ -235,7 +235,7 @@ static inline void st_lld_stop_alarm(void)
  */
 static inline void st_lld_set_alarm(systime_t time)
 {
-  TIVA_ST_TIM->TAMATCHR = (uint32_t) (0xffffffff - time);
+  TIVA_ST_TIM->TAMATCHR = (systime_t) (((systime_t) 0xffffffff) - time);
 }
 
 /**
@@ -247,7 +247,7 @@ static inline void st_lld_set_alarm(systime_t time)
  */
 static inline systime_t st_lld_get_alarm(void)
 {
-  return (systime_t) (0xffffffff - TIVA_ST_TIM->TAMATCHR);
+  return (systime_t) (((systime_t)0xffffffff) - TIVA_ST_TIM->TAMATCHR);
 }
 
 /**
