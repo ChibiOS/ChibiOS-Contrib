@@ -81,38 +81,38 @@
 #elif (TIVA_ST_USE_WIDE_TIMER == FALSE)
 
 #if TIVA_ST_TIMER_NUMBER == 0
-#define ST_HANDLER                          TIVA_GPT0_HANDLER
-#define ST_NUMBER                           TIVA_GPT0_NUMBER
+#define ST_HANDLER                          TIVA_GPT0A_HANDLER
+#define ST_NUMBER                           TIVA_GPT0A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 0))
 
 #elif TIVA_ST_TIMER_NUMBER == 1
-#define ST_HANDLER                          TIVA_GPT1_HANDLER
-#define ST_NUMBER                           TIVA_GPT1_NUMBER
+#define ST_HANDLER                          TIVA_GPT1A_HANDLER
+#define ST_NUMBER                           TIVA_GPT1A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 1))
 
 #elif TIVA_ST_TIMER_NUMBER == 2
-#define ST_HANDLER                          TIVA_GPT2_HANDLER
-#define ST_NUMBER                           TIVA_GPT2_NUMBER
+#define ST_HANDLER                          TIVA_GPT2A_HANDLER
+#define ST_NUMBER                           TIVA_GPT2A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 2))
 
 #elif TIVA_ST_TIMER_NUMBER == 3
-#define ST_HANDLER                          TIVA_GPT3_HANDLER
-#define ST_NUMBER                           TIVA_GPT3_NUMBER
+#define ST_HANDLER                          TIVA_GPT3A_HANDLER
+#define ST_NUMBER                           TIVA_GPT3A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 3))
 
 #elif TIVA_ST_TIMER_NUMBER == 4
-#define ST_HANDLER                          TIVA_GPT4_HANDLER
-#define ST_NUMBER                           TIVA_GPT4_NUMBER
+#define ST_HANDLER                          TIVA_GPT4A_HANDLER
+#define ST_NUMBER                           TIVA_GPT4A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 4))
 
 #elif TIVA_ST_TIMER_NUMBER == 5
-#define ST_HANDLER                          TIVA_GPT5_HANDLER
-#define ST_NUMBER                           TIVA_GPT5_NUMBER
+#define ST_HANDLER                          TIVA_GPT5A_HANDLER
+#define ST_NUMBER                           TIVA_GPT5A_NUMBER
 #define ST_CLOCK_SRC                        (80000000)
 #define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 5))
 
