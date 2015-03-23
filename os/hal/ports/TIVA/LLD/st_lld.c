@@ -221,7 +221,9 @@ void st_lld_init(void)
   TIVA_ST_TIM->CTL  = 0;
   TIVA_ST_TIM->CFG  = GPTM_CFG_CFG_SPLIT;       /* Timer split mode */
   TIVA_ST_TIM->TAMR = (GPTM_TAMR_TAMR_PERIODIC |/* Periodic mode */
-                       GPTM_TAMR_TAMIE);        /* Match interrupt enable */
+                       GPTM_TAMR_TAMIE |        /* Match interrupt enable */
+                       GPTM_TAMR_TASNAPS);      /* Snapshot mode */
+
   TIVA_ST_TIM->TAPR = (TIVA_SYSCLK / OSAL_ST_FREQUENCY) - 1;
   TIVA_ST_TIM->CTL  = (GPTM_CTL_TAEN |          /* Timer A enable */
                        GPTM_CTL_TASTALL);       /* Timer A stall when paused */
