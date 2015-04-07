@@ -226,7 +226,6 @@ static THD_FUNCTION(BackgroundThread, arg) {
   while(true){
     BackgroundThdCnt++;
   }
-  return 0;
 }
 
 /*
