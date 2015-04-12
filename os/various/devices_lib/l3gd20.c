@@ -1,6 +1,6 @@
 /*
-    Pretty LAYer for ChibiOS/RT - Copyright (C) 2014 Rocco Marco Guglielmi
-
+    Pretty LAYer for ChibiOS/RT - Copyright (C) 2015 Rocco Marco Guglielmi
+	
     This file is part of PLAY for ChibiOS/RT.
 
     PLAY is free software; you can redistribute it and/or modify
@@ -21,7 +21,9 @@
     Special thanks to Giovanni Di Sirio for teachings, his moral support and
     friendship. Note that some or every piece of this file could be part of
     the ChibiOS project that is intellectual property of Giovanni Di Sirio.
-    Please refer to ChibiOS/RT license before use it.
+    Please refer to ChibiOS/RT license before use this file.
+	
+	For suggestion or Bug report - roccomarco.guglielmi@playembedded.org
  */
 
 /**
@@ -85,7 +87,7 @@ void l3gd20WriteRegister(SPIDriver *spip, uint8_t reg, uint8_t value) {
       /* Reserved register must not be written, according to the datasheet
        * this could permanently damage the device.
        */
-      chDbgAssert(FALSE, "lg3d20WriteRegister(), #1", "reserved register");
+      chDbgAssert(FALSE, "lg3d20WriteRegister(), reserved register");
     case L3GD20_AD_WHO_AM_I:
     case L3GD20_AD_OUT_TEMP :
     case L3GD20_AD_STATUS_REG:
