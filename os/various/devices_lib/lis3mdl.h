@@ -36,17 +36,14 @@
 #ifndef _LIS3MDL_H_
 #define _LIS3MDL_H_
 
-#if  (COMP_USE_LIS3MDL) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#if  (PLAY_USE_FLOAT) || defined(__DOXYGEN__)
 #define  LIS3MDL_COMP_SENS_4GA           ((float)6842.0f)            /*!< compass sensitivity with 4 GA full scale [LSB  / Ga] */
-#define  LIS3MDL_COMP_SENS_8GA           ((float)3421.0f)             /*!< compass sensitivity with 8 GA full scale [LSB  / Ga] */
-#define  LIS3MDL_COMP_SENS_12GA          ((float)2281.0f)             /*!< compass sensitivity with 12 GA full scale [LSB  / Ga] */
-#define  LIS3MDL_COMP_SENS_16GA          ((float)1711.0f)             /*!< compass sensitivity with 16 GA full scale [LSB  / Ga] */
-#endif /* PLAY_USE_FLOAT */
+#define  LIS3MDL_COMP_SENS_8GA           ((float)3421.0f)            /*!< compass sensitivity with 8 GA full scale [LSB  / Ga] */
+#define  LIS3MDL_COMP_SENS_12GA          ((float)2281.0f)            /*!< compass sensitivity with 12 GA full scale [LSB  / Ga] */
+#define  LIS3MDL_COMP_SENS_16GA          ((float)1711.0f)            /*!< compass sensitivity with 16 GA full scale [LSB  / Ga] */
 /**
  * @name    LIS3MDL register names
  * @{
@@ -256,7 +253,6 @@ extern "C" {
 }
 #endif
 
-#endif /* COMP_USE_LIS3MDL */
 #endif /* _LIS3MDL_H_ */
 
 /** @} */

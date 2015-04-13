@@ -37,10 +37,8 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "play.h"
 #include "l3gd20.h"
 
-#if (GYRO_USE_L3GD20) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
@@ -122,7 +120,4 @@ void l3gd20WriteRegister(SPIDriver *spip, uint8_t reg, uint8_t value) {
       spiUnselect(spip);
   }
 }
-
-#endif /* (GYRO_USE_L3GD20) */
-
 /** @} */

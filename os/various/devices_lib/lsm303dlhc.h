@@ -37,7 +37,6 @@
 #ifndef _LSM303DLHC_H_
 #define _LSM303DLHC_H_
 
-#if (ACCEL_USE_LSM303DLHC) || (COMP_USE_LSM303DLHC) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -350,10 +349,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif /* (ACCEL_USE_LSM303DLHC) || (COMP_USE_LSM303DLHC) */
 #endif /* _LSM303DLHC_H_ */
 /** @} */
 
-/*
- * TODO PLAY--> add spi support, and Multiple reg read.
- */

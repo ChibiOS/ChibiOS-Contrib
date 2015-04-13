@@ -36,7 +36,6 @@
 #ifndef _LSM6DS0_H_
 #define _LSM6DS0_H_
 
-#if  (ACCEL_USE_LSM6DS0) || (GYRO_USE_LSM6DS0) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -481,7 +480,6 @@ extern "C" {
 }
 #endif
 
-#endif /* (ACCEL_USE_LSM6DS0) || (GYRO_USE_LSM6DS0) */
 #endif /* _LSM6DS0_H_ */
 
 /** @} */

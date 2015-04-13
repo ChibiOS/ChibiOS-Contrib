@@ -37,10 +37,8 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "play.h"
 #include "max7219.h"
 
-#if (PLAY_USE_MAX7219) || defined (__DOXYGEN__)
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
@@ -93,5 +91,4 @@ void max7219WriteRegister(SPIDriver *spip, uint16_t adr, uint8_t data) {
       spiUnselect(spip);
   }
 }
-#endif /* PLAY_USE_MAX7219 */
 /** @} */
