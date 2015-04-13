@@ -1,6 +1,6 @@
 /*
-    Pretty LAYer for ChibiOS/RT - Copyright (C) 2014 Rocco Marco Guglielmi
-
+    Pretty LAYer for ChibiOS/RT - Copyright (C) 2015 Rocco Marco Guglielmi
+	
     This file is part of PLAY for ChibiOS/RT.
 
     PLAY is free software; you can redistribute it and/or modify
@@ -22,6 +22,8 @@
     friendship. Note that some or every piece of this file could be part of
     the ChibiOS project that is intellectual property of Giovanni Di Sirio.
     Please refer to ChibiOS/RT license before use this file.
+	
+	For suggestion or Bug report - roccomarco.guglielmi@playembedded.org
  */
 
 /**
@@ -121,7 +123,7 @@ void lsm303dlhcWriteRegister(I2CDriver *i2cp,uint8_t sad, uint8_t sub,
       /* Reserved register must not be written, according to the datasheet
        * this could permanently damage the device.
        */
-      chDbgAssert(FALSE, "lsm303dlhcWriteRegister(), #1", "reserved register");
+      chDbgAssert(FALSE, "lsm303dlhcWriteRegister(), reserved register");
     case LSM303DLHC_SUB_ACC_STATUS_REG:
     case LSM303DLHC_SUB_ACC_OUT_X_L:
     case LSM303DLHC_SUB_ACC_OUT_X_H:
@@ -172,7 +174,7 @@ void lsm303dlhcWriteRegister(I2CDriver *i2cp,uint8_t sad, uint8_t sub,
       /* Reserved register must not be written, according to the datasheet
        * this could permanently damage the device.
        */
-      chDbgAssert(FALSE, "lsm303dlhcWriteRegister(), #1", "reserved register");
+      chDbgAssert(FALSE, "lsm303dlhcWriteRegister(), reserved register");
     case LSM303DLHC_SUB_COMP_OUT_X_H:
     case LSM303DLHC_SUB_COMP_OUT_X_L:
     case LSM303DLHC_SUB_COMP_OUT_Z_H:
