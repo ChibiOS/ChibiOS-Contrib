@@ -34,43 +34,47 @@
  * @brief   Generic interrupt serving code for multiple pins per interrupt
  *          handler.
  */
-#define ext_serve_port_interrupt(gpiop, start) \
-  uint32_t mis = gpiop->MIS; \
-  \
-  gpiop->ICR = mis; \
-  \
-  if (mis & (1 << 0)) { \
-    EXTD1.config->channels[start + 0].cb(&EXTD1, start + 0);\
-  } \
-  if (mis & (1 << 1)) { \
-    EXTD1.config->channels[start + 1].cb(&EXTD1, start + 1);\
-  } \
-  if (mis & (1 << 2)) { \
-    EXTD1.config->channels[start + 2].cb(&EXTD1, start + 2);\
-  } \
-  if (mis & (1 << 3)) { \
-    EXTD1.config->channels[start + 3].cb(&EXTD1, start + 3);\
-  } \
-  if (mis & (1 << 4)) { \
-    EXTD1.config->channels[start + 4].cb(&EXTD1, start + 4);\
-  } \
-  if (mis & (1 << 5)) { \
-    EXTD1.config->channels[start + 5].cb(&EXTD1, start + 5);\
-  } \
-  if (mis & (1 << 6)) { \
-    EXTD1.config->channels[start + 6].cb(&EXTD1, start + 6);\
-  } \
-  if (mis & (1 << 7)) { \
-    EXTD1.config->channels[start + 7].cb(&EXTD1, start + 7);\
-  }
+#define ext_serve_port_interrupt(gpiop, start)                                \
+  do {                                                                        \
+    uint32_t mis = gpiop->MIS;                                                \
+                                                                              \
+    gpiop->ICR = mis;                                                         \
+                                                                              \
+    if (mis & (1 << 0)) {                                                     \
+      EXTD1.config->channels[start + 0].cb(&EXTD1, start + 0);                \
+    }                                                                         \
+    if (mis & (1 << 1)) {                                                     \
+      EXTD1.config->channels[start + 1].cb(&EXTD1, start + 1);                \
+    }                                                                         \
+    if (mis & (1 << 2)) {                                                     \
+      EXTD1.config->channels[start + 2].cb(&EXTD1, start + 2);                \
+    }                                                                         \
+    if (mis & (1 << 3)) {                                                     \
+      EXTD1.config->channels[start + 3].cb(&EXTD1, start + 3);                \
+    }                                                                         \
+    if (mis & (1 << 4)) {                                                     \
+      EXTD1.config->channels[start + 4].cb(&EXTD1, start + 4);                \
+    }                                                                         \
+    if (mis & (1 << 5)) {                                                     \
+      EXTD1.config->channels[start + 5].cb(&EXTD1, start + 5);                \
+    }                                                                         \
+    if (mis & (1 << 6)) {                                                     \
+      EXTD1.config->channels[start + 6].cb(&EXTD1, start + 6);                \
+    }                                                                         \
+    if (mis & (1 << 7)) {                                                     \
+      EXTD1.config->channels[start + 7].cb(&EXTD1, start + 7);                \
+    }                                                                         \
+  } while (0);
 
 /**
  * @brief   Generic interrupt serving code for single pin per interrupt
  *          handler.
  */
-#define ext_server_pin_interrupt(gpiop, start, pin) \
-    gpiop->ICR = (1 << pin); \
-    EXTD1.config->channels[start].cb(&EXTD1, start);
+#define ext_server_pin_interrupt(gpiop, start, pin)                           \
+  do {                                                                        \
+    gpiop->ICR = (1 << pin);                                                  \
+    EXTD1.config->channels[start].cb(&EXTD1, start);                          \
+  } while (0);
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
