@@ -34,7 +34,7 @@
  * @brief   Generic interrupt serving code for multiple pins per interrupt
  *          handler.
  */
-#define ext_serve_port_interrupt(gpiop, start)                                \
+#define ext_lld_serve_port_interrupt(gpiop, start)                            \
   do {                                                                        \
     uint32_t mis = gpiop->MIS;                                                \
                                                                               \
@@ -70,7 +70,7 @@
  * @brief   Generic interrupt serving code for single pin per interrupt
  *          handler.
  */
-#define ext_serve_pin_interrupt(gpiop, start, pin)                           \
+#define ext_lld_serve_pin_interrupt(gpiop, start, pin)                        \
   do {                                                                        \
     gpiop->ICR = (1 << pin);                                                  \
     EXTD1.config->channels[start].cb(&EXTD1, start);                          \
@@ -152,7 +152,7 @@ const ioportid_t gpio[] =
 /*===========================================================================*/
 
 /**
- * @brief   Enables EXTI IRQ sources.
+ * @brief   Enables GPIO IRQ sources.
  *
  * @notapi
  */
@@ -229,7 +229,7 @@ static void ext_lld_irq_enable(void)
 }
 
 /**
- * @brief   Disables EXTI IRQ sources.
+ * @brief   Disables GPIO IRQ sources.
  *
  * @notapi
  */
@@ -319,7 +319,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOA_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(GPIOA, 0);
+  ext_lld_serve_port_interrupt(GPIOA, 0);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -335,7 +335,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOB_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(GPIOB, 8);
+  ext_lld_serve_port_interrupt(GPIOB, 8);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -351,7 +351,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOC_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(GPIOC, 16);
+  ext_lld_serve_port_interrupt(GPIOC, 16);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -367,7 +367,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOD_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(GPIOD, 24);
+  ext_lld_serve_port_interrupt(GPIOD, 24);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -383,7 +383,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOE_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(GPIOE, 32);
+  ext_lld_serve_port_interrupt(GPIOE, 32);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -399,7 +399,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOF_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(GPIOF, 40);
+  ext_lld_serve_port_interrupt(GPIOF, 40);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -415,7 +415,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOG_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(&GPIOG, 48);
+  ext_lld_serve_port_interrupt(&GPIOG, 48);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -431,7 +431,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOH_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(&GPIOH, 56);
+  ext_lld_serve_port_interrupt(&GPIOH, 56);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -447,7 +447,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOJ_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(&GPIOJ, 64);
+  ext_lld_serve_port_interrupt(&GPIOJ, 64);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -463,7 +463,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOK_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(&GPIOK, 72);
+  ext_lld_serve_port_interrupt(&GPIOK, 72);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -479,7 +479,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOL_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(&GPIOL, 80);
+  ext_lld_serve_port_interrupt(&GPIOL, 80);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -495,7 +495,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOM_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(&GPIOM, 88);
+  ext_lld_serve_port_interrupt(&GPIOM, 88);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -511,7 +511,7 @@ OSAL_IRQ_HANDLER(TIVA_GPION_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(&GPION, 96);
+  ext_lld_serve_port_interrupt(&GPION, 96);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -527,7 +527,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOP0_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOP, 104, 0);
+  ext_lld_serve_pin_interrupt(&GPIOP, 104, 0);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -541,7 +541,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOP1_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOP, 105, 1);
+  ext_lld_serve_pin_interrupt(&GPIOP, 105, 1);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -555,7 +555,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOP2_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOP, 106, 2);
+  ext_lld_serve_pin_interrupt(&GPIOP, 106, 2);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -569,7 +569,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOP3_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOP, 107, 3);
+  ext_lld_serve_pin_interrupt(&GPIOP, 107, 3);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -583,7 +583,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOP4_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOP, 108, 4);
+  ext_lld_serve_pin_interrupt(&GPIOP, 108, 4);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -597,7 +597,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOP5_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOP, 109, 5);
+  ext_lld_serve_pin_interrupt(&GPIOP, 109, 5);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -611,7 +611,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOP6_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOP, 110, 6);
+  ext_lld_serve_pin_interrupt(&GPIOP, 110, 6);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -625,7 +625,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOP7_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOP, 111, 7);
+  ext_lld_serve_pin_interrupt(&GPIOP, 111, 7);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -641,7 +641,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOQ0_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOQ, 112, 0);
+  ext_lld_serve_pin_interrupt(&GPIOQ, 112, 0);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -655,7 +655,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOQ1_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOQ, 113, 1);
+  ext_lld_serve_pin_interrupt(&GPIOQ, 113, 1);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -669,7 +669,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOQ2_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOQ, 114, 2);
+  ext_lld_serve_pin_interrupt(&GPIOQ, 114, 2);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -683,7 +683,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOQ3_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOQ, 115, 3);
+  ext_lld_serve_pin_interrupt(&GPIOQ, 115, 3);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -697,7 +697,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOQ4_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOQ, 116, 4);
+  ext_lld_serve_pin_interrupt(&GPIOQ, 116, 4);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -711,7 +711,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOQ5_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOQ, 117, 5);
+  ext_lld_serve_pin_interrupt(&GPIOQ, 117, 5);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -725,7 +725,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOQ6_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOQ, 118, 6);
+  ext_lld_serve_pin_interrupt(&GPIOQ, 118, 6);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -739,7 +739,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOQ7_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_pin_interrupt(&GPIOQ, 119, 7);
+  ext_lld_serve_pin_interrupt(&GPIOQ, 119, 7);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -755,7 +755,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOR_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(&GPIOR, 120);
+  ext_lld_serve_port_interrupt(&GPIOR, 120);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -771,7 +771,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOS_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(&GPIOS, 128);
+  ext_lld_serve_port_interrupt(&GPIOS, 128);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -787,7 +787,7 @@ OSAL_IRQ_HANDLER(TIVA_GPIOT_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
 
-  ext_serve_port_interrupt(&GPIOT, 132);
+  ext_lld_serve_port_interrupt(&GPIOT, 132);
 
   OSAL_IRQ_EPILOGUE();
 }
