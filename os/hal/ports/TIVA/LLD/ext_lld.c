@@ -70,7 +70,7 @@
  * @brief   Generic interrupt serving code for single pin per interrupt
  *          handler.
  */
-#define ext_server_pin_interrupt(gpiop, start, pin)                           \
+#define ext_serve_pin_interrupt(gpiop, start, pin)                           \
   do {                                                                        \
     gpiop->ICR = (1 << pin);                                                  \
     EXTD1.config->channels[start].cb(&EXTD1, start);                          \
