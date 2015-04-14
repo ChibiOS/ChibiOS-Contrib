@@ -37,10 +37,8 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "play.h"
 #include "nrf24l01.h"
 
-#if  (RF_USE_NRF24L01) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
@@ -438,6 +436,5 @@ NRF24L01_status_t nrf24l01WriteTxPlNoAck(SPIDriver *spip, uint8_t paylen,
   return status;
 }
 #endif /* NRF24L01_USE_FEATURE */
-#endif /* RF_USE_NRF24L01 */
 
 /** @} */

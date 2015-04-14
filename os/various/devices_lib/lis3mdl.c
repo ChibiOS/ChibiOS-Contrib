@@ -37,10 +37,7 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "play.h"
 #include "lis3mdl.h"
-
-#if (COMP_USE_LIS3MDL) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -151,6 +148,4 @@ void lis3mdlWriteRegister(I2CDriver *i2cp, uint8_t sad, uint8_t sub,
     break;
   }
 }
-
-#endif /* COMP_USE_LIS3MDL */
 /** @} */

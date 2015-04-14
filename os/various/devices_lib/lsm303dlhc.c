@@ -37,10 +37,7 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "play.h"
 #include "lsm303dlhc.h"
-
-#if (ACCEL_USE_LSM303DLHC) || (COMP_USE_LSM303DLHC) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -205,5 +202,4 @@ void lsm303dlhcWriteRegister(I2CDriver *i2cp,uint8_t sad, uint8_t sub,
     }
   }
 }
-#endif /* (ACCEL_USE_LSM303DLHC) || (COMP_USE_LSM303DLHC) */
 /** @} */

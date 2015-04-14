@@ -36,7 +36,6 @@
 #ifndef _L3GD20_H_
 #define _L3GD20_H_
 
-#if  (GYRO_USE_L3GD20) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -240,11 +239,7 @@ extern "C" {
 }
 #endif
 
-#endif /* GYRO_USE_L3GD20 */
 #endif /* _L3GD20_H_ */
 
 /** @} */
 
-/*
- * TODO PLAY--> add i2c support, and Multiple reg read.
- */

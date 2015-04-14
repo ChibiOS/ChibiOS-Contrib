@@ -36,9 +36,6 @@
 #ifndef _NRF24L01_H_
 #define _NRF24L01_H_
 
-#include "playconf.h"
-
-#if  (RF_USE_NRF24L01) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -573,7 +570,6 @@ NRF24L01_status_t nrf24l01WriteTxPlNoAck(SPIDriver *spip, uint8_t paylen,
 }
 #endif
 
-#endif /* RF_USE_NRF24L01 */
 #endif /* _NRF24L01_H_ */
 
 /** @} */

@@ -37,10 +37,7 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "play.h"
 #include "lsm6ds0.h"
-
-#if (ACCEL_USE_LSM6DS0) || (GYRO_USE_LSM6DS0) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -184,5 +181,4 @@ void lsm6ds0WriteRegister(I2CDriver *i2cp, uint8_t sad, uint8_t sub,
   }
 }
 
-#endif /* (ACCEL_USE_LSM6DS0) || (GYRO_USE_LSM6DS0) */
 /** @} */
