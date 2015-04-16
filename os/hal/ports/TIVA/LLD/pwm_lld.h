@@ -154,52 +154,52 @@
 #endif
 
 #if TIVA_PWM_USE_PWM0 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_PWM_PWM0_FAULT_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PWM_PWM0_FAULT_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PWM0 FAULT"
 #endif
 
 #if TIVA_PWM_USE_PWM0 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_PWM_PWM0_0_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PWM_PWM0_0_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PWM0 GEN0"
 #endif
 
 #if TIVA_PWM_USE_PWM0 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_PWM_PWM0_1_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PWM_PWM0_1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PWM0 GEN1"
 #endif
 
 #if TIVA_PWM_USE_PWM0 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_PWM_PWM0_2_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PWM_PWM0_2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PWM0 GEN2"
 #endif
 
 #if TIVA_PWM_USE_PWM0 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_PWM_PWM0_3_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PWM_PWM0_3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PWM0 GEN3"
 #endif
 
 #if TIVA_PWM_USE_PWM1 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_PWM_PWM1_FAULT_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PWM_PWM1_FAULT_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PWM1 FAULT"
 #endif
 
 #if TIVA_PWM_USE_PWM1 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_PWM_PWM1_0_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PWM_PWM1_0_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PWM1 GEN0"
 #endif
 
 #if TIVA_PWM_USE_PWM1 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_PWM_PWM1_1_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PWM_PWM1_1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PWM1 GEN1"
 #endif
 
 #if TIVA_PWM_USE_PWM1 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_PWM_PWM1_2_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PWM_PWM1_2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PWM1 GEN2"
 #endif
 
 #if TIVA_PWM_USE_PWM1 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_PWM_PWM1_3_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PWM_PWM1_3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PWM1 GEN3"
 #endif
 
