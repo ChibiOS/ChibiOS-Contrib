@@ -95,6 +95,6 @@
  * ST driver system settings.
  */
 #define TIVA_ST_IRQ_PRIORITY                2
-#define TIVA_ST_USE_WIDE_TIMER              TRUE
+#define TIVA_ST_USE_WIDE_TIMER              FALSE
 #define TIVA_ST_TIMER_NUMBER                5
 #define TIVA_ST_TIMER_LETTER                A
