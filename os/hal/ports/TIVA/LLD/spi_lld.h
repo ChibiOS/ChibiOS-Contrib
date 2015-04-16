@@ -114,7 +114,7 @@
  */
 #define TIVA_DMACTL_RXDMAE      (1 << 0)
 #define TIVA_DMACTL_TXDMAE      (1 << 1)
-/** @}
+/** @} */
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -222,22 +222,22 @@
 #endif
 
 #if TIVA_SPI_USE_SSI0 && \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_SPI_SSI0_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_SPI_SSI0_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SSI0"
 #endif
 
 #if TIVA_SPI_USE_SSI1 && \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_SPI_SSI1_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_SPI_SSI1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SSI1"
 #endif
 
 #if TIVA_SPI_USE_SSI2 && \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_SPI_SSI2_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_SPI_SSI2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SSI2"
 #endif
 
 #if TM4C123x_SPI_USE_SSI3 && \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_SPI_SSI3_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_SPI_SSI3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SSI3"
 #endif
 

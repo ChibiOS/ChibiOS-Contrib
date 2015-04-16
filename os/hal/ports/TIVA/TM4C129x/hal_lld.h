@@ -345,7 +345,7 @@
 #define TIVA_SYSCLK             120000000
 
 #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC && \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_ST_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_ST_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SysTick"
 #endif
 

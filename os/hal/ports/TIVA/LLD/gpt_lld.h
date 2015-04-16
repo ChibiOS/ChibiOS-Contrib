@@ -294,62 +294,62 @@
 #endif
 
 #if TIVA_GPT_USE_GPT0 &&                                                     \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_GPT0A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_GPT0A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPT0"
 #endif
 
 #if TIVA_GPT_USE_GPT1 &&                                                     \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_GPT1A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_GPT1A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPT1"
 #endif
 
 #if TIVA_GPT_USE_GPT2 &&                                                     \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_GPT2A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_GPT2A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPT2"
 #endif
 
 #if TIVA_GPT_USE_GPT3 &&                                                     \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_GPT3A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_GPT3A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPT3"
 #endif
 
 #if TIVA_GPT_USE_GPT4 &&                                                     \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_GPT4A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_GPT4A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPT4"
 #endif
 
 #if TIVA_GPT_USE_GPT5 &&                                                     \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_GPT5A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_GPT5A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPT5"
 #endif
 
 #if TIVA_GPT_USE_WGPT0 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_WGPT0A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_WGPT0A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to WGPT0"
 #endif
 
 #if TIVA_GPT_USE_WGPT1 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_WGPT1A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_WGPT1A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to WGPT1"
 #endif
 
 #if TIVA_GPT_USE_WGPT2 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_WGPT2A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_WGPT2A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to WGPT2"
 #endif
 
 #if TIVA_GPT_USE_WGPT3 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_WGPT3A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_WGPT3A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to WGPT3"
 #endif
 
 #if TIVA_GPT_USE_WGPT4 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_WGPT4A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_WGPT4A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to WGPT4"
 #endif
 
 #if TIVA_GPT_USE_WGPT5 &&                                                    \
-    !CORTEX_IS_VALID_KERNEL_PRIORITY(TIVA_GPT_WGPT5A_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_GPT_WGPT5A_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to WGPT5"
 #endif
 
