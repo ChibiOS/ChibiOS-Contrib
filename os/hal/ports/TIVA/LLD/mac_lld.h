@@ -262,6 +262,10 @@
 #error "TIVA_MAC_PHY_TIMEOUT requires the realtime counter service"
 #endif
 
+#if !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_MAC_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to MAC"
+#endif
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
