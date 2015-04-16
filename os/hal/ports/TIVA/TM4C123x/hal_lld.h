@@ -329,11 +329,6 @@
  */
 #define TIVA_SYSCLK             (TIVA_SRC / (((TIVA_SYSDIV_VALUE << TIVA_DIV400_VALUE /*& TIVA_BYPASS_VALUE*/) | (TIVA_SYSDIV2LSB >> 22)) + 1))
 
-#if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC && \
-    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_ST_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to SysTick"
-#endif
-
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
