@@ -40,11 +40,9 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#if  (PLAY_USE_FLOAT) || defined(__DOXYGEN__)
 #define  L3GD20_SENS_250DPS                      ((float)131.072f)          /*!< gyroscope sensitivity with 250 dps full scale [LSB/dps] */
 #define  L3GD20_SENS_500DPS                      ((float)65.536f)           /*!< gyroscope sensitivity with 500 dps full scale [LSB/dps] */
 #define  L3GD20_SENS_2000DPS                     ((float)16.384f)           /*!< gyroscope sensitivity with 2000 dps full scale [LSB/dps] */
-#endif /* PLAY_USE_FLOAT */
 /**
  * @name    L3GD20 register names
  * @{

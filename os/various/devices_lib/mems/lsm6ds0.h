@@ -40,7 +40,6 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#if  (PLAY_USE_FLOAT) || defined(__DOXYGEN__)
 #define  LSM6DS0_ACC_SENS_2G                     ((float)1671.095f)         /*!< Accelerometer sensitivity with 2 G full scale [LSB * s^2 / m] */
 #define  LSM6DS0_ACC_SENS_4G                     ((float)835.547f)          /*!< Accelerometer sensitivity with 4 G full scale [LSB * s^2 / m] */
 #define  LSM6DS0_ACC_SENS_8G                     ((float)417.774)           /*!< Accelerometer sensitivity with 8 G full scale [LSB * s^2 / m] */
@@ -49,8 +48,6 @@
 #define  LSM6DS0_GYRO_SENS_245DPS                ((float)114.286f)          /*!< Gyroscope sensitivity with 245 dps full scale [LSB * s / °] */
 #define  LSM6DS0_GYRO_SENS_500DPS                ((float)57.143f)           /*!< Gyroscope sensitivity with 500 dps full scale [LSB * s / °] */
 #define  LSM6DS0_GYRO_SENS_2000DPS               ((float)14.286f)           /*!< Gyroscope sensitivity with 2000 dps full scale [LSB * s / °] */
-
-#endif /* PLAY_USE_FLOAT */
 /**
  * @name    LSM6DS0 register names
  * @{
