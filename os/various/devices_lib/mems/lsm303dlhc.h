@@ -1,6 +1,6 @@
 /*
-    Pretty LAYer for ChibiOS/RT - Copyright (C) 2014 Rocco Marco Guglielmi
-
+    Pretty LAYer for ChibiOS/RT - Copyright (C) 2015 Rocco Marco Guglielmi
+	
     This file is part of PLAY for ChibiOS/RT.
 
     PLAY is free software; you can redistribute it and/or modify
@@ -22,6 +22,8 @@
     friendship. Note that some or every piece of this file could be part of
     the ChibiOS project that is intellectual property of Giovanni Di Sirio.
     Please refer to ChibiOS/RT license before use this file.
+	
+	For suggestion or Bug report - roccomarco.guglielmi@playembedded.org
  */
 
 /**
@@ -35,12 +37,10 @@
 #ifndef _LSM303DLHC_H_
 #define _LSM303DLHC_H_
 
-#if (ACCEL_USE_LSM303DLHC) || (COMP_USE_LSM303DLHC) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#if  (PLAY_USE_FLOAT) || defined(__DOXYGEN__)
 #define  LSM303DLHC_ACC_SENS_2G                  ((float)1671.836f)          /*!< Accelerometer sensitivity with 2 G full scale [LSB * s^2 / m] */
 #define  LSM303DLHC_ACC_SENS_4G                  ((float)835.918f)           /*!< Accelerometer sensitivity with 4 G full scale [LSB * s^2 / m] */
 #define  LSM303DLHC_ACC_SENS_8G                  ((float)417.959f)           /*!< Accelerometer sensitivity with 8 G full scale [LSB * s^2 / m] */
@@ -61,7 +61,6 @@
 #define  LSM303DLHC_COMP_SENS_Z_4_7GA            ((float)355.0f)             /*!< Compass sensitivity with 4.7 GA full scale [LSB  / Ga] */
 #define  LSM303DLHC_COMP_SENS_Z_5_6GA            ((float)295.0f)             /*!< Compass sensitivity with 5.6 GA full scale [LSB  / Ga] */
 #define  LSM303DLHC_COMP_SENS_Z_8_1GA            ((float)205.0f)             /*!< Compass sensitivity with 8.1 GA full scale [LSB  / Ga] */
-#endif /* PLAY_USE_FLOAT */
 /**
  * @name    LSM303DLHC register names
  * @{
@@ -348,10 +347,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif /* (ACCEL_USE_LSM303DLHC) || (COMP_USE_LSM303DLHC) */
 #endif /* _LSM303DLHC_H_ */
 /** @} */
 
-/*
- * TODO PLAY--> add spi support, and Multiple reg read.
- */

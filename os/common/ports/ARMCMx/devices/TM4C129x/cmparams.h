@@ -26,7 +26,7 @@
 /**
  * @brief   Cortex core model.
  */
-#define CORTEX_MODEL            CORTEX_M4
+#define CORTEX_MODEL            4
 
 /**
  * @brief   Memory Protection unit presence.

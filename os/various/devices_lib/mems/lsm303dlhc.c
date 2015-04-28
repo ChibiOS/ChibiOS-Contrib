@@ -1,6 +1,6 @@
 /*
-    Pretty LAYer for ChibiOS/RT - Copyright (C) 2014 Rocco Marco Guglielmi
-
+    Pretty LAYer for ChibiOS/RT - Copyright (C) 2015 Rocco Marco Guglielmi
+	
     This file is part of PLAY for ChibiOS/RT.
 
     PLAY is free software; you can redistribute it and/or modify
@@ -22,23 +22,22 @@
     friendship. Note that some or every piece of this file could be part of
     the ChibiOS project that is intellectual property of Giovanni Di Sirio.
     Please refer to ChibiOS/RT license before use this file.
+	
+	For suggestion or Bug report - roccomarco.guglielmi@playembedded.org
  */
 
 /**
- * @file    lsm6ds0.c
- * @brief   LSM6DS0 MEMS interface module through I2C code.
+ * @file    lsm303dlhc.c
+ * @brief   LSM303DLHC MEMS interface module through I2C code.
  *
- * @addtogroup lsm6ds0
+ * @addtogroup lsm303dlhc
  * @{
  */
 
 #include "ch.h"
 #include "hal.h"
 
-#include "play.h"
-#include "lsm6ds0.h"
-
-#if (ACCEL_USE_LSM6DS0) || (GYRO_USE_LSM6DS0) || defined(__DOXYGEN__)
+#include "lsm303dlhc.h"
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -51,6 +50,7 @@
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
+
 
 /*===========================================================================*/
 /* Driver local functions.                                                   */
@@ -70,8 +70,8 @@
  * @param[in] message   pointer to message
  * @return              register value.
  */
-uint8_t lsm6ds0ReadRegister(I2CDriver *i2cp, uint8_t sad, uint8_t sub,
-                                 msg_t* message) {
+uint8_t lsm303dlhcReadRegister(I2CDriver *i2cp, uint8_t sad, uint8_t sub,
+                               msg_t* message) {
 
   uint8_t txbuf, rxbuf[2];
 #if defined(STM32F103_MCUCONF)
@@ -95,6 +95,8 @@ uint8_t lsm6ds0ReadRegister(I2CDriver *i2cp, uint8_t sad, uint8_t sub,
   }
   return rxbuf[0];
 #endif
+
+
 }
 
 /**
@@ -107,80 +109,97 @@ uint8_t lsm6ds0ReadRegister(I2CDriver *i2cp, uint8_t sad, uint8_t sub,
  * @param[in] value      the value to be written
  * @param[out] message   pointer to message
  */
-void lsm6ds0WriteRegister(I2CDriver *i2cp, uint8_t sad, uint8_t sub,
-                               uint8_t value, msg_t* message) {
+void lsm303dlhcWriteRegister(I2CDriver *i2cp,uint8_t sad, uint8_t sub,
+                             uint8_t value, msg_t* message) {
 
   uint8_t txbuf[2];
   uint8_t rxbuf;
-  switch (sub) {
-  default:
-    /* Reserved register must not be written, according to the datasheet
-     * this could permanently damage the device.
-     */
-    chDbgAssert(FALSE, "lsm6ds0WriteRegister(), #1", "reserved register");
-  case LSM6DS0_SUB_WHO_AM_I:
-  case LSM6DS0_SUB_INT_GEN_SRC_G:
-  case LSM6DS0_SUB_OUT_TEMP_L:
-  case LSM6DS0_SUB_OUT_TEMP_H:
-  case LSM6DS0_SUB_STATUS_REG1:
-  case LSM6DS0_SUB_OUT_X_L_G:
-  case LSM6DS0_SUB_OUT_X_H_G:
-  case LSM6DS0_SUB_OUT_Y_L_G:
-  case LSM6DS0_SUB_OUT_Y_H_G:
-  case LSM6DS0_SUB_OUT_Z_L_G:
-  case LSM6DS0_SUB_OUT_Z_H_G:
-  case LSM6DS0_SUB_INT_GEN_SRC_XL:
-  case LSM6DS0_SUB_STATUS_REG2:
-  case LSM6DS0_SUB_OUT_X_L_XL:
-  case LSM6DS0_SUB_OUT_X_H_XL:
-  case LSM6DS0_SUB_OUT_Y_L_XL:
-  case LSM6DS0_SUB_OUT_Y_H_XL:
-  case LSM6DS0_SUB_OUT_Z_L_XL:
-  case LSM6DS0_SUB_OUT_Z_H_XL:
-  case LSM6DS0_SUB_FIFO_SRC:
-  /* Read only registers cannot be written, the command is ignored.*/
-    return;
-  case LSM6DS0_SUB_ACT_THS:
-  case LSM6DS0_SUB_ACT_DUR:
-  case LSM6DS0_SUB_INT_GEN_CFG_XL:
-  case LSM6DS0_SUB_INT_GEN_THS_X_XL:
-  case LSM6DS0_SUB_INT_GEN_THS_Y_XL:
-  case LSM6DS0_SUB_INT_GEN_THS_Z_XL:
-  case LSM6DS0_SUB_INT_GEN_DUR_XL:
-  case LSM6DS0_SUB_REFERENCE_G:
-  case LSM6DS0_SUB_INT_CTRL:
-  case LSM6DS0_SUB_CTRL_REG1_G:
-  case LSM6DS0_SUB_CTRL_REG2_G:
-  case LSM6DS0_SUB_CTRL_REG3_G:
-  case LSM6DS0_SUB_ORIENT_CFG_G:
-  case LSM6DS0_SUB_CTRL_REG4:
-  case LSM6DS0_SUB_CTRL_REG5_XL:
-  case LSM6DS0_SUB_CTRL_REG6_XL:
-  case LSM6DS0_SUB_CTRL_REG7_XL:
-  case LSM6DS0_SUB_CTRL_REG8:
-  case LSM6DS0_SUB_CTRL_REG9:
-  case LSM6DS0_SUB_CTRL_REG10:
-  case LSM6DS0_SUB_FIFO_CTRL:
-  case LSM6DS0_SUB_INT_GEN_CFG_G:
-  case LSM6DS0_SUB_INT_GEN_THS_XH_G:
-  case LSM6DS0_SUB_INT_GEN_THS_XL_G:
-  case LSM6DS0_SUB_INT_GEN_THS_YH_G:
-  case LSM6DS0_SUB_INT_GEN_THS_YL_G:
-  case LSM6DS0_SUB_INT_GEN_THS_ZH_G:
-  case LSM6DS0_SUB_INT_GEN_THS_ZL_G:
-  case LSM6DS0_SUB_INT_GEN_DUR_G:
-    txbuf[0] = sub;
-    txbuf[1] = value;
-    if(message != NULL){
-      *message = i2cMasterTransmitTimeout(i2cp, sad, txbuf, 2, &rxbuf, 0,
-                                          TIME_INFINITE);
+  if(sad == LSM303DLHC_SAD_ACCEL){
+    switch (sub) {
+    default:
+      /* Reserved register must not be written, according to the datasheet
+       * this could permanently damage the device.
+       */
+      chDbgAssert(FALSE, "lsm303dlhcWriteRegister(), reserved register");
+    case LSM303DLHC_SUB_ACC_STATUS_REG:
+    case LSM303DLHC_SUB_ACC_OUT_X_L:
+    case LSM303DLHC_SUB_ACC_OUT_X_H:
+    case LSM303DLHC_SUB_ACC_OUT_Y_L:
+    case LSM303DLHC_SUB_ACC_OUT_Y_H:
+    case LSM303DLHC_SUB_ACC_OUT_Z_L:
+    case LSM303DLHC_SUB_ACC_OUT_Z_H:
+    case LSM303DLHC_SUB_ACC_FIFO_SRC_REG:
+    case LSM303DLHC_SUB_ACC_INT1_SOURCE:
+    case LSM303DLHC_SUB_ACC_INT2_SOURCE:
+    case LSM303DLHC_SUB_ACC_CLICK_SRC:
+    /* Read only registers cannot be written, the command is ignored.*/
+      return;
+    case LSM303DLHC_SUB_ACC_CTRL_REG1:
+    case LSM303DLHC_SUB_ACC_CTRL_REG2:
+    case LSM303DLHC_SUB_ACC_CTRL_REG3:
+    case LSM303DLHC_SUB_ACC_CTRL_REG4:
+    case LSM303DLHC_SUB_ACC_CTRL_REG5:
+    case LSM303DLHC_SUB_ACC_CTRL_REG6:
+    case LSM303DLHC_SUB_ACC_REFERENCE:
+    case LSM303DLHC_SUB_ACC_FIFO_CTRL_REG:
+    case LSM303DLHC_SUB_ACC_INT1_CFG:
+    case LSM303DLHC_SUB_ACC_INT1_THS:
+    case LSM303DLHC_SUB_ACC_INT1_DURATION:
+    case LSM303DLHC_SUB_ACC_INT2_CFG:
+    case LSM303DLHC_SUB_ACC_INT2_THS:
+    case LSM303DLHC_SUB_ACC_INT2_DURATION:
+    case LSM303DLHC_SUB_ACC_CLICK_CFG:
+    case LSM303DLHC_SUB_ACC_CLICK_THS:
+    case LSM303DLHC_SUB_ACC_TIME_LIMIT:
+    case LSM303DLHC_SUB_ACC_TIME_LATENCY:
+    case LSM303DLHC_SUB_ACC_TIME_WINDOW:
+      txbuf[0] = sub;
+      txbuf[1] = value;
+      if(message != NULL){
+        *message = i2cMasterTransmitTimeout(i2cp, sad, txbuf, 2, &rxbuf, 0,
+                                            TIME_INFINITE);
+      }
+      else{
+        i2cMasterTransmitTimeout(i2cp, sad, txbuf, 2, &rxbuf, 0, TIME_INFINITE);
+      }
+      break;
     }
-    else{
-      i2cMasterTransmitTimeout(i2cp, sad, txbuf, 2, &rxbuf, 0, TIME_INFINITE);
+  }
+  else if(sad == LSM303DLHC_SAD_COMPASS){
+    switch (sub) {
+    default:
+      /* Reserved register must not be written, according to the datasheet
+       * this could permanently damage the device.
+       */
+      chDbgAssert(FALSE, "lsm303dlhcWriteRegister(), reserved register");
+    case LSM303DLHC_SUB_COMP_OUT_X_H:
+    case LSM303DLHC_SUB_COMP_OUT_X_L:
+    case LSM303DLHC_SUB_COMP_OUT_Z_H:
+    case LSM303DLHC_SUB_COMP_OUT_Z_L:
+    case LSM303DLHC_SUB_COMP_OUT_Y_H:
+    case LSM303DLHC_SUB_COMP_OUT_Y_L:
+    case LSM303DLHC_SUB_COMP_SR_REG:
+    case LSM303DLHC_SUB_COMP_IRA_REG:
+    case LSM303DLHC_SUB_COMP_IRB_REG:
+    case LSM303DLHC_SUB_COMP_IRC_REG:
+    case LSM303DLHC_SUB_COMP_TEMP_OUT_H:
+    case LSM303DLHC_SUB_COMP_TEMP_OUT_L:
+      /* Read only registers cannot be written, the command is ignored.*/
+      return;
+    case LSM303DLHC_SUB_COMP_CRA_REG:
+    case LSM303DLHC_SUB_COMP_CRB_REG:
+    case LSM303DLHC_SUB_COMP_MR_REG:
+      txbuf[0] = sub;
+      txbuf[1] = value;
+      if(message != NULL){
+        *message = i2cMasterTransmitTimeout(i2cp, sad, txbuf, 2, &rxbuf, 0,
+                                            TIME_INFINITE);
+      }
+      else{
+        i2cMasterTransmitTimeout(i2cp, sad, txbuf, 2, &rxbuf, 0, TIME_INFINITE);
+      }
+      break;
     }
-    break;
   }
 }
-
-#endif /* (ACCEL_USE_LSM6DS0) || (GYRO_USE_LSM6DS0) */
 /** @} */

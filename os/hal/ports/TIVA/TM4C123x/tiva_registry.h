@@ -98,6 +98,7 @@
 #define TIVA_HAS_GPIOR                      FALSE
 #define TIVA_HAS_GPIOS                      FALSE
 #define TIVA_HAS_GPIOT                      FALSE
+#define TIVA_GPIO_PINS                      56
 #endif
 #if defined(TM4C1231C3PM) || defined(TM4C1231D5PM) || defined(TM4C1231E6PM)   \
   || defined(TM4C1231H6PM) || defined(TM4C1233C3PM) || defined(TM4C1233D5PM)  \
@@ -122,6 +123,7 @@
 #define TIVA_HAS_GPIOR                      FALSE
 #define TIVA_HAS_GPIOS                      FALSE
 #define TIVA_HAS_GPIOT                      FALSE
+#define TIVA_GPIO_PINS                      48
 #endif
 #if defined(TM4C1231D5PZ) || defined(TM4C1231E6PZ) || defined(TM4C1231H6PZ)   \
   || defined(TM4C1233D5PZ) || defined(TM4C1233E6PZ) || defined(TM4C1233H6PZ)  \
@@ -146,6 +148,7 @@
 #define TIVA_HAS_GPIOR                      FALSE
 #define TIVA_HAS_GPIOS                      FALSE
 #define TIVA_HAS_GPIOT                      FALSE
+#define TIVA_GPIO_PINS                      88
 #endif
 #if defined(TM4C1231H6PGE) || defined(TM4C1233H6PGE) || defined(TM4C1237H6PGE)\
   || defined(TM4C123BH6PGE) || defined(TM4C123GH6PGE)
@@ -167,6 +170,7 @@
 #define TIVA_HAS_GPIOR                      FALSE
 #define TIVA_HAS_GPIOS                      FALSE
 #define TIVA_HAS_GPIOT                      FALSE
+#define TIVA_GPIO_PINS                      112
 #endif
 #if defined(TM4C123BH6ZRB) || defined(TM4C123GH6ZRB) || defined(TM4C123GH5ZXR)
 #define TIVA_HAS_GPIOA                      TRUE
@@ -187,6 +191,7 @@
 #define TIVA_HAS_GPIOR                      FALSE
 #define TIVA_HAS_GPIOS                      FALSE
 #define TIVA_HAS_GPIOT                      FALSE
+#define TIVA_GPIO_PINS                      120
 #endif
 
 /* GPTM attributes.*/

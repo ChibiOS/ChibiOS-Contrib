@@ -1,6 +1,6 @@
 /*
-    Pretty LAYer for ChibiOS/RT - Copyright (C) 2014 Rocco Marco Guglielmi
-
+    Pretty LAYer for ChibiOS/RT - Copyright (C) 2015 Rocco Marco Guglielmi
+	
     This file is part of PLAY for ChibiOS/RT.
 
     PLAY is free software; you can redistribute it and/or modify
@@ -22,6 +22,8 @@
     friendship. Note that some or every piece of this file could be part of
     the ChibiOS project that is intellectual property of Giovanni Di Sirio.
     Please refer to ChibiOS/RT license before use this file.
+	
+	For suggestion or Bug report - roccomarco.guglielmi@playembedded.org
  */
 
 /**
@@ -34,12 +36,10 @@
 #ifndef _LSM6DS0_H_
 #define _LSM6DS0_H_
 
-#if  (ACCEL_USE_LSM6DS0) || (GYRO_USE_LSM6DS0) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#if  (PLAY_USE_FLOAT) || defined(__DOXYGEN__)
 #define  LSM6DS0_ACC_SENS_2G                     ((float)1671.095f)         /*!< Accelerometer sensitivity with 2 G full scale [LSB * s^2 / m] */
 #define  LSM6DS0_ACC_SENS_4G                     ((float)835.547f)          /*!< Accelerometer sensitivity with 4 G full scale [LSB * s^2 / m] */
 #define  LSM6DS0_ACC_SENS_8G                     ((float)417.774)           /*!< Accelerometer sensitivity with 8 G full scale [LSB * s^2 / m] */
@@ -48,8 +48,6 @@
 #define  LSM6DS0_GYRO_SENS_245DPS                ((float)114.286f)          /*!< Gyroscope sensitivity with 245 dps full scale [LSB * s / °] */
 #define  LSM6DS0_GYRO_SENS_500DPS                ((float)57.143f)           /*!< Gyroscope sensitivity with 500 dps full scale [LSB * s / °] */
 #define  LSM6DS0_GYRO_SENS_2000DPS               ((float)14.286f)           /*!< Gyroscope sensitivity with 2000 dps full scale [LSB * s / °] */
-
-#endif /* PLAY_USE_FLOAT */
 /**
  * @name    LSM6DS0 register names
  * @{
@@ -479,7 +477,6 @@ extern "C" {
 }
 #endif
 
-#endif /* (ACCEL_USE_LSM6DS0) || (GYRO_USE_LSM6DS0) */
 #endif /* _LSM6DS0_H_ */
 
 /** @} */

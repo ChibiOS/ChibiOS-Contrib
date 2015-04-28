@@ -1,6 +1,6 @@
 /*
-    Pretty LAYer for ChibiOS/RT - Copyright (C) 2014 Rocco Marco Guglielmi
-
+    Pretty LAYer for ChibiOS/RT - Copyright (C) 2015 Rocco Marco Guglielmi
+	
     This file is part of PLAY for ChibiOS/RT.
 
     PLAY is free software; you can redistribute it and/or modify
@@ -21,7 +21,9 @@
     Special thanks to Giovanni Di Sirio for teachings, his moral support and
     friendship. Note that some or every piece of this file could be part of
     the ChibiOS project that is intellectual property of Giovanni Di Sirio.
-    Please refer to ChibiOS/RT license before use it.
+    Please refer to ChibiOS/RT license before use this file.
+	
+	For suggestion or Bug report - roccomarco.guglielmi@playembedded.org
  */
 
 /**
@@ -35,10 +37,8 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "play.h"
 #include "nrf24l01.h"
 
-#if  (RF_USE_NRF24L01) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
@@ -123,7 +123,7 @@ NRF24L01_status_t nrf24l01WriteRegister(SPIDriver *spip, uint8_t reg,
       /* Reserved register must not be written, according to the datasheet
        * this could permanently damage the device.
        */
-      chDbgAssert(FALSE, "lg3d20WriteRegister(), #1", "reserved register");
+      chDbgAssert(FALSE, "lg3d20WriteRegister(), reserved register");
     case NRF24L01_AD_OBSERVE_TX:
     case NRF24L01_AD_CD:
     case NRF24L01_AD_RX_ADDR_P0:
@@ -182,7 +182,7 @@ NRF24L01_status_t nrf24l01WriteAddress(SPIDriver *spip, uint8_t reg,
   unsigned i;
 
   if(addlen > NRF24L01_MAX_ADD_LENGHT) {
-    chDbgAssert(FALSE, "nrf24l01WriteAddress(), #1", "wrong address length");
+    chDbgAssert(FALSE, "nrf24l01WriteAddress(), wrong address length");
     return 0;
   }
   txbuf[0] = (NRF24L01_CMD_WRITE | reg);
@@ -197,7 +197,7 @@ NRF24L01_status_t nrf24l01WriteAddress(SPIDriver *spip, uint8_t reg,
       /* Reserved register must not be written, according to the datasheet
        * this could permanently damage the device.
        */
-      chDbgAssert(FALSE, "nrf24l01WriteAddress(), #1", "reserved register");
+      chDbgAssert(FALSE, "nrf24l01WriteAddress(), reserved register");
     case NRF24L01_AD_OBSERVE_TX:
     case NRF24L01_AD_CD:
     case NRF24L01_AD_CONFIG:
@@ -436,6 +436,5 @@ NRF24L01_status_t nrf24l01WriteTxPlNoAck(SPIDriver *spip, uint8_t paylen,
   return status;
 }
 #endif /* NRF24L01_USE_FEATURE */
-#endif /* RF_USE_NRF24L01 */
 
 /** @} */

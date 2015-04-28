@@ -1,6 +1,6 @@
 /*
-    Pretty LAYer for ChibiOS/RT - Copyright (C) 2014 Rocco Marco Guglielmi
-
+    Pretty LAYer for ChibiOS/RT - Copyright (C) 2015 Rocco Marco Guglielmi
+	
     This file is part of PLAY for ChibiOS/RT.
 
     PLAY is free software; you can redistribute it and/or modify
@@ -22,6 +22,8 @@
     friendship. Note that some or every piece of this file could be part of
     the ChibiOS project that is intellectual property of Giovanni Di Sirio.
     Please refer to ChibiOS/RT license before use this file.
+	
+	For suggestion or Bug report - roccomarco.guglielmi@playembedded.org
  */
 
 /**
@@ -34,16 +36,13 @@
 #ifndef _L3GD20_H_
 #define _L3GD20_H_
 
-#if  (GYRO_USE_L3GD20) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#if  (PLAY_USE_FLOAT) || defined(__DOXYGEN__)
 #define  L3GD20_SENS_250DPS                      ((float)131.072f)          /*!< gyroscope sensitivity with 250 dps full scale [LSB/dps] */
 #define  L3GD20_SENS_500DPS                      ((float)65.536f)           /*!< gyroscope sensitivity with 500 dps full scale [LSB/dps] */
 #define  L3GD20_SENS_2000DPS                     ((float)16.384f)           /*!< gyroscope sensitivity with 2000 dps full scale [LSB/dps] */
-#endif /* PLAY_USE_FLOAT */
 /**
  * @name    L3GD20 register names
  * @{
@@ -238,11 +237,7 @@ extern "C" {
 }
 #endif
 
-#endif /* GYRO_USE_L3GD20 */
 #endif /* _L3GD20_H_ */
 
 /** @} */
 
-/*
- * TODO PLAY--> add i2c support, and Multiple reg read.
- */

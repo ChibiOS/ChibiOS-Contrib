@@ -1,6 +1,6 @@
 /*
-    Pretty LAYer for ChibiOS/RT - Copyright (C) 2014 Rocco Marco Guglielmi
-
+    Pretty LAYer for ChibiOS/RT - Copyright (C) 2015 Rocco Marco Guglielmi
+	
     This file is part of PLAY for ChibiOS/RT.
 
     PLAY is free software; you can redistribute it and/or modify
@@ -22,6 +22,8 @@
     friendship. Note that some or every piece of this file could be part of
     the ChibiOS project that is intellectual property of Giovanni Di Sirio.
     Please refer to ChibiOS/RT license before use this file.
+	
+	For suggestion or Bug report - roccomarco.guglielmi@playembedded.org
  */
 
 /**
@@ -34,9 +36,6 @@
 #ifndef _NRF24L01_H_
 #define _NRF24L01_H_
 
-#include "playconf.h"
-
-#if  (RF_USE_NRF24L01) || defined(__DOXYGEN__)
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -571,7 +570,6 @@ NRF24L01_status_t nrf24l01WriteTxPlNoAck(SPIDriver *spip, uint8_t paylen,
 }
 #endif
 
-#endif /* RF_USE_NRF24L01 */
 #endif /* _NRF24L01_H_ */
 
 /** @} */

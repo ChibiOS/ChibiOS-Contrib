@@ -1,6 +1,6 @@
 /*
-    Pretty LAYer for ChibiOS/RT - Copyright (C) 2014 Rocco Marco Guglielmi
-
+    Pretty LAYer for ChibiOS/RT - Copyright (C) 2015 Rocco Marco Guglielmi
+	
     This file is part of PLAY for ChibiOS/RT.
 
     PLAY is free software; you can redistribute it and/or modify
@@ -21,24 +21,24 @@
     Special thanks to Giovanni Di Sirio for teachings, his moral support and
     friendship. Note that some or every piece of this file could be part of
     the ChibiOS project that is intellectual property of Giovanni Di Sirio.
-    Please refer to ChibiOS/RT license before use it.
+    Please refer to ChibiOS/RT license before use this file.
+	
+	For suggestion or Bug report - roccomarco.guglielmi@playembedded.org
  */
 
 /**
- * @file    max7219.c
- * @brief   MAX7219 display driver module code.
+ * @file    l3gd20.c
+ * @brief   L3GD20 MEMS interface module code.
  *
- * @addtogroup max7219
+ * @addtogroup l3gd20
  * @{
  */
 
 #include "ch.h"
 #include "hal.h"
 
-#include "play.h"
-#include "max7219.h"
+#include "l3gd20.h"
 
-#if (PLAY_USE_MAX7219) || defined (__DOXYGEN__)
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
@@ -64,32 +64,60 @@
  * @pre     The SPI interface must be initialized and the driver started.
  *
  * @param[in] spip      pointer to the SPI interface
- * @param[in] adr       address number
- * @param[in] data      data value.
+ * @param[in] reg       register number
+ * @return              register value.
  */
-void max7219WriteRegister(SPIDriver *spip, uint16_t adr, uint8_t data) {
+uint8_t l3gd20ReadRegister(SPIDriver *spip, uint8_t reg) {
+  uint8_t txbuf[2] = {L3GD20_RW | reg, 0xFF};
+  uint8_t rxbuf[2] = {0x00, 0x00};
+  spiSelect(spip);
+  spiExchange(spip, 2, txbuf, rxbuf);
+  spiUnselect(spip);
+  return rxbuf[1];
+}
 
-  switch (adr) {
+
+void l3gd20WriteRegister(SPIDriver *spip, uint8_t reg, uint8_t value) {
+
+  switch (reg) {
+
     default:
+      /* Reserved register must not be written, according to the datasheet
+       * this could permanently damage the device.
+       */
+      chDbgAssert(FALSE, "lg3d20WriteRegister(), reserved register");
+    case L3GD20_AD_WHO_AM_I:
+    case L3GD20_AD_OUT_TEMP :
+    case L3GD20_AD_STATUS_REG:
+    case L3GD20_AD_OUT_X_L:
+    case L3GD20_AD_OUT_X_H:
+    case L3GD20_AD_OUT_Y_L:
+    case L3GD20_AD_OUT_Y_H:
+    case L3GD20_AD_OUT_Z_L:
+    case L3GD20_AD_OUT_Z_H:
+    case L3GD20_AD_FIFO_SRC_REG:
+    case L3GD20_AD_INT1_SRC:
+    /* Read only registers cannot be written, the command is ignored.*/
       return;
-    case MAX7219_AD_DIGIT_0:
-    case MAX7219_AD_DIGIT_1:
-    case MAX7219_AD_DIGIT_2:
-    case MAX7219_AD_DIGIT_3:
-    case MAX7219_AD_DIGIT_4:
-    case MAX7219_AD_DIGIT_5:
-    case MAX7219_AD_DIGIT_6:
-    case MAX7219_AD_DIGIT_7:
-    case MAX7219_AD_DECODE_MODE:
-    case MAX7219_AD_INTENSITY:
-    case MAX7219_AD_SCAN_LIMIT:
-    case MAX7219_AD_SHUTDOWN:
-    case MAX7219_AD_DISPLAY_TEST:
+    case L3GD20_AD_CTRL_REG1:
+    case L3GD20_AD_CTRL_REG2:
+    case L3GD20_AD_CTRL_REG3:
+    case L3GD20_AD_CTRL_REG4:
+    case L3GD20_AD_CTRL_REG5:
+    case L3GD20_AD_REFERENCE:
+    case L3GD20_AD_FIFO_CTRL_REG:
+    case L3GD20_AD_INT1_CFG:
+    case L3GD20_AD_INT1_TSH_XH:
+    case L3GD20_AD_INT1_TSH_XL:
+    case L3GD20_AD_INT1_TSH_YH:
+    case L3GD20_AD_INT1_TSH_YL:
+    case L3GD20_AD_INT1_TSH_ZH:
+    case L3GD20_AD_INT1_TSH_ZL:
+    case L3GD20_AD_INT1_DURATION:
       spiSelect(spip);
-      uint16_t txbuf = {adr | data};
-      spiSend(spip, 1, &txbuf);
+      uint8_t txbuf[2] = {reg, value};
+      spiSend(spip, 2, txbuf);
       spiUnselect(spip);
   }
 }
-#endif /* PLAY_USE_MAX7219 */
 /** @} */

@@ -164,6 +164,11 @@
 #error "wrong value defined for TIVA_ST_USE_WIDE_TIMER"
 #endif
 
+#if OSAL_ST_MODE != OSAL_ST_MODE_NONE && \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_ST_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to ST"
+#endif
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/

@@ -1,6 +1,6 @@
 /*
-    Pretty LAYer for ChibiOS/RT - Copyright (C) 2014 Rocco Marco Guglielmi
-
+    Pretty LAYer for ChibiOS/RT - Copyright (C) 2015 Rocco Marco Guglielmi
+	
     This file is part of PLAY for ChibiOS/RT.
 
     PLAY is free software; you can redistribute it and/or modify
@@ -22,6 +22,8 @@
     friendship. Note that some or every piece of this file could be part of
     the ChibiOS project that is intellectual property of Giovanni Di Sirio.
     Please refer to ChibiOS/RT license before use this file.
+	
+	For suggestion or Bug report - roccomarco.guglielmi@playembedded.org
  */
 
 /**
@@ -35,10 +37,7 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "play.h"
 #include "lis3mdl.h"
-
-#if (COMP_USE_LIS3MDL) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -117,7 +116,7 @@ void lis3mdlWriteRegister(I2CDriver *i2cp, uint8_t sad, uint8_t sub,
     /* Reserved register must not be written, according to the datasheet
      * this could permanently damage the device.
      */
-    chDbgAssert(FALSE, "lis3mdlWriteRegister(), #1", "reserved register");
+    chDbgAssert(FALSE, "lis3mdlWriteRegister(), reserved register");
   case LIS3MDL_SUB_WHO_AM_I:
   case LIS3MDL_SUB_STATUS_REG:
   case LIS3MDL_SUB_OUT_X_L:
@@ -149,6 +148,4 @@ void lis3mdlWriteRegister(I2CDriver *i2cp, uint8_t sad, uint8_t sub,
     break;
   }
 }
-
-#endif /* COMP_USE_LIS3MDL */
 /** @} */
