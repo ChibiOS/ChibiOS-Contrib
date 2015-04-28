@@ -41,7 +41,7 @@
  ******************************************************************************
  */
 
-static void mem_error_cb(memtest_t *memp, testtype_t e, size_t address);
+static void mem_error_cb(memtest_t *memp, testtype e, size_t address);
 
 /*
  ******************************************************************************
@@ -110,7 +110,7 @@ static inline void green_led_on(void)     {palSetPad(GPIOI,     GPIOI_LED_G);}
 static inline void green_led_off(void)    {palClearPad(GPIOI,   GPIOI_LED_G);}
 static inline void green_led_toggle(void) {palTogglePad(GPIOI,  GPIOI_LED_G);}
 
-void mem_error_cb(memtest_t *memp, testtype_t e, size_t address) {
+void mem_error_cb(memtest_t *memp, testtype e, size_t address) {
   (void)memp;
   (void)e;
   (void)address;
