@@ -26,6 +26,7 @@
 #define _NAND_LLD_H_
 
 #include "fsmc.h"
+#include "bitmap.h"
 
 #if HAL_USE_NAND || defined(__DOXYGEN__)
 
@@ -167,7 +168,7 @@ typedef struct {
   /**
    * @brief   Pointer to lower level driver.
    */
-  FSMCDriver                *fsmcp;
+  //const FSMCDriver                *fsmcp;
   /**
    * @brief   Number of erase blocks in NAND device.
    */
@@ -184,13 +185,6 @@ typedef struct {
    * @brief   Number of pages in block.
    */
   uint32_t                  pages_per_block;
-#if NAND_USE_BAD_MAP
-  /**
-   * @brief   Pointer to bad block map.
-   * @details One bit per block. Memory for map must be allocated by user.
-   */
-  uint32_t                  *bb_map;
-#endif /* NAND_USE_BAD_MAP */
   /**
    * @brief   Number of write cycles for row addressing.
    */
@@ -287,6 +281,11 @@ struct NANDDriver {
    * @brief     Memory mapping for addresses.
    */
   uint8_t                   *map_addr;
+  /**
+   * @brief   Pointer to bad block map.
+   * @details One bit per block. All memory allocation is user's responsibility.
+   */
+  bitmap_t                  *bb_map;
 };
 
 /*===========================================================================*/
@@ -311,14 +310,14 @@ extern "C" {
   void nand_lld_init(void);
   void nand_lld_start(NANDDriver *nandp);
   void nand_lld_stop(NANDDriver *nandp);
-  uint8_t nand_lld_write_data(NANDDriver *nandp, const uint8_t *data,
-          size_t datalen, uint8_t *addr, size_t addrlen, uint32_t *ecc);
   void nand_lld_read_data(NANDDriver *nandp, uint8_t *data,
-          size_t datalen, uint8_t *addr, size_t addrlen, uint32_t *ecc);
+                size_t datalen, uint8_t *addr, size_t addrlen, uint32_t *ecc);
   void nand_lld_polled_read_data(NANDDriver *nandp, uint8_t *data, size_t len);
-  uint8_t nand_lld_erase(NANDDriver *nandp, uint8_t *addr, size_t addrlen);
   void nand_lld_write_addr(NANDDriver *nandp, const uint8_t *addr, size_t len);
   void nand_lld_write_cmd(NANDDriver *nandp, uint8_t cmd);
+  uint8_t nand_lld_erase(NANDDriver *nandp, uint8_t *addr, size_t addrlen);
+  uint8_t nand_lld_write_data(NANDDriver *nandp, const uint8_t *data,
+                size_t datalen, uint8_t *addr, size_t addrlen, uint32_t *ecc);
   uint8_t nand_lld_read_status(NANDDriver *nandp);
 #ifdef __cplusplus
 }

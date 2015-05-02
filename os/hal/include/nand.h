@@ -111,31 +111,28 @@ extern "C" {
 #endif
   void nandInit(void);
   void nandObjectInit(NANDDriver *nandp);
-  void nandStart(NANDDriver *nandp, const NANDConfig *config);
+  void nandStart(NANDDriver *nandp, const NANDConfig *config, bitmap_t *bb_map);
   void nandStop(NANDDriver *nandp);
-  void nandReadPageWhole(NANDDriver *nandp, uint32_t block,
-          uint32_t page, uint8_t *data, size_t datalen);
-  uint8_t nandWritePageWhole(NANDDriver *nandp, uint32_t block,
-          uint32_t page, const uint8_t *data, size_t datalen);
-  void nandReadPageData(NANDDriver *nandp, uint32_t block,
-          uint32_t page, uint8_t *data, size_t datalen, uint32_t *ecc);
-  uint8_t nandWritePageData(NANDDriver *nandp, uint32_t block,
-          uint32_t page, const uint8_t *data, size_t datalen, uint32_t *ecc);
-  void nandReadPageSpare(NANDDriver *nandp, uint32_t block,
-          uint32_t page, uint8_t *spare, size_t sparelen);
-  uint8_t nandWritePageSpare(NANDDriver *nandp, uint32_t block,
-          uint32_t page, const uint8_t *spare, size_t sparelen);
+  void nandReadPageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
+                         uint8_t *data, size_t datalen);
   void nandMarkBad(NANDDriver *nandp, uint32_t block);
-  uint8_t nandReadBadMark(NANDDriver *nandp,
-          uint32_t block, uint32_t page);
+  void nandReadPageData(NANDDriver *nandp, uint32_t block, uint32_t page,
+                        uint8_t *data, size_t datalen, uint32_t *ecc);
+  void nandReadPageSpare(NANDDriver *nandp, uint32_t block, uint32_t page,
+                         uint8_t *spare, size_t sparelen);
+  uint8_t nandWritePageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
+                             const uint8_t *data, size_t datalen);
+  uint8_t nandWritePageData(NANDDriver *nandp, uint32_t block, uint32_t page,
+                            const uint8_t *data, size_t datalen, uint32_t *ecc);
+  uint8_t nandWritePageSpare(NANDDriver *nandp, uint32_t block, uint32_t page,
+                             const uint8_t *spare, size_t sparelen);
+  uint8_t nandReadBadMark(NANDDriver *nandp, uint32_t block, uint32_t page);
   uint8_t nandErase(NANDDriver *nandp, uint32_t block);
   bool nandIsBad(NANDDriver *nandp, uint32_t block);
-
 #if NAND_USE_MUTUAL_EXCLUSION
   void nandAcquireBus(NANDDriver *nandp);
   void nandReleaseBus(NANDDriver *nandp);
 #endif /* NAND_USE_MUTUAL_EXCLUSION */
-
 #ifdef __cplusplus
 }
 #endif

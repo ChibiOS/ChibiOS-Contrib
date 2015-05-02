@@ -62,7 +62,7 @@
  *
  * @notapi
  */
-static void pagesize_check(size_t page_data_size){
+static void pagesize_check(size_t page_data_size) {
 
   /* Page size out of bounds.*/
   osalDbgCheck((page_data_size >= NAND_MIN_PAGE_SIZE) &&
@@ -85,9 +85,8 @@ static void pagesize_check(size_t page_data_size){
  *
  * @notapi
  */
-static void calc_addr(const NANDConfig *cfg,
-                      uint32_t block, uint32_t page, uint32_t offset,
-                      uint8_t *addr, size_t addr_len){
+static void calc_addr(const NANDConfig *cfg, uint32_t block, uint32_t page,
+                      uint32_t offset, uint8_t *addr, size_t addr_len) {
   size_t i = 0;
   uint32_t row = 0;
 
@@ -121,8 +120,8 @@ static void calc_addr(const NANDConfig *cfg,
  *
  * @notapi
  */
-static void calc_blk_addr(const NANDConfig *cfg,
-                          uint32_t block, uint8_t *addr, size_t addr_len){
+static void calc_blk_addr(const NANDConfig *cfg, uint32_t block,
+                          uint8_t *addr, size_t addr_len) {
   size_t i = 0;
   uint32_t row = 0;
 
@@ -139,59 +138,55 @@ static void calc_blk_addr(const NANDConfig *cfg,
   }
 }
 
-#if NAND_USE_BAD_MAP
 /**
- * @brief   Add new bad block to map.
+ * @brief   Read block badness mark directly from NAND memory array.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
  * @param[in] block         block number
- * @param[in] map           pointer to bad block map
+ *
+ * @return                  block condition
+ * @retval true             if the block is bad.
+ * @retval false            if the block is good.
+ *
+ * @notapi
  */
-static void bad_map_update(NANDDriver *nandp, size_t block) {
+static bool read_is_block_bad(NANDDriver *nandp, size_t block) {
+  uint8_t m0;
+  uint8_t m1;
 
-  uint32_t *map = nandp->config->bb_map;
-  const size_t BPMC = sizeof(uint32_t) * 8; /* bits per map claster */
-  size_t i;
-  size_t shift;
+  m0 = nandReadBadMark(nandp, block, 0);
+  m1 = nandReadBadMark(nandp, block, 1);
 
-  /* Nand device overflow.*/
-  osalDbgCheck(nandp->config->blocks > block);
-
-  i = block / BPMC;
-  shift = block % BPMC;
-  /* This block already mapped.*/
-  osalDbgCheck(((map[i] >> shift) & 1) != 1);
-  map[i] |= (uint32_t)1 << shift;
+  if ((0xFF != m0) || (0xFF != m1))
+    return true;
+  else
+    return false;
 }
 
 /**
  * @brief   Scan for bad blocks and fill map with their numbers.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ *
+ * @notapi
  */
 static void scan_bad_blocks(NANDDriver *nandp) {
 
   const size_t blocks = nandp->config->blocks;
-  const size_t maplen = blocks / 32;
-
   size_t b;
-  uint8_t m0;
-  uint8_t m1;
+
+  osalDbgCheck(bitmapGetBitsCount(nandp->bb_map) >= blocks);
 
   /* clear map just to be safe */
-  for (b=0; b<maplen; b++)
-    nandp->config->bb_map[b] = 0;
+  bitmapObjectInit(nandp->bb_map, 0);
 
   /* now write numbers of bad block to map */
-  for (b=0; b<blocks; b++){
-    m0 = nandReadBadMark(nandp, b, 0);
-    m1 = nandReadBadMark(nandp, b, 1);
-    if ((0xFF != m0) || (0xFF != m1)){
-      bad_map_update(nandp, b);
+  for (b=0; b<blocks; b++) {
+    if (read_is_block_bad(nandp, b)) {
+      bitmapSet(nandp->bb_map, b);
     }
   }
 }
-#endif /* NAND_USE_BAD_MAP */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -235,10 +230,11 @@ void nandObjectInit(NANDDriver *nandp) {
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
  * @param[in] config        pointer to the @p NANDConfig object
+ * @param[in] bb_map        pointer to the bad block map or @NULL if not need
  *
  * @api
  */
-void nandStart(NANDDriver *nandp, const NANDConfig *config) {
+void nandStart(NANDDriver *nandp, const NANDConfig *config, bitmap_t *bb_map) {
 
   osalDbgCheck((nandp != NULL) && (config != NULL));
   osalDbgAssert((nandp->state == NAND_STOP) ||
@@ -250,9 +246,10 @@ void nandStart(NANDDriver *nandp, const NANDConfig *config) {
   nand_lld_start(nandp);
   nandp->state = NAND_READY;
 
-#if NAND_USE_BAD_MAP
-  scan_bad_blocks(nandp);
-#endif /* NAND_USE_BAD_MAP */
+  if (NULL != bb_map) {
+    nandp->bb_map = bb_map;
+    scan_bad_blocks(nandp);
+  }
 }
 
 /**
@@ -283,8 +280,8 @@ void nandStop(NANDDriver *nandp) {
  *
  * @api
  */
-void nandReadPageWhole(NANDDriver *nandp, uint32_t block,
-                            uint32_t page, uint8_t *data, size_t datalen) {
+void nandReadPageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
+                       uint8_t *data, size_t datalen) {
 
   const NANDConfig *cfg = nandp->config;
   uint8_t addrbuf[8];
@@ -311,8 +308,8 @@ void nandReadPageWhole(NANDDriver *nandp, uint32_t block,
  *
  * @api
  */
-uint8_t nandWritePageWhole(NANDDriver *nandp, uint32_t block,
-                    uint32_t page, const uint8_t *data, size_t datalen) {
+uint8_t nandWritePageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
+                           const uint8_t *data, size_t datalen) {
 
   uint8_t retval;
   const NANDConfig *cfg = nandp->config;
@@ -369,8 +366,8 @@ void nandReadPageData(NANDDriver *nandp, uint32_t block, uint32_t page,
  *
  * @api
  */
-uint8_t nandWritePageData(NANDDriver *nandp, uint32_t block,
-        uint32_t page, const uint8_t *data, size_t datalen, uint32_t *ecc) {
+uint8_t nandWritePageData(NANDDriver *nandp, uint32_t block, uint32_t page,
+                          const uint8_t *data, size_t datalen, uint32_t *ecc) {
 
   uint8_t retval;
   const NANDConfig *cfg = nandp->config;
@@ -397,8 +394,8 @@ uint8_t nandWritePageData(NANDDriver *nandp, uint32_t block,
  *
  * @api
  */
-void nandReadPageSpare(NANDDriver *nandp, uint32_t block,
-                          uint32_t page, uint8_t *spare, size_t sparelen) {
+void nandReadPageSpare(NANDDriver *nandp, uint32_t block, uint32_t page,
+                       uint8_t *spare, size_t sparelen) {
 
   const NANDConfig *cfg = nandp->config;
   uint8_t addr[8];
@@ -425,8 +422,8 @@ void nandReadPageSpare(NANDDriver *nandp, uint32_t block,
  *
  * @api
  */
-uint8_t nandWritePageSpare(NANDDriver *nandp, uint32_t block,
-                      uint32_t page, const uint8_t *spare, size_t sparelen) {
+uint8_t nandWritePageSpare(NANDDriver *nandp, uint32_t block, uint32_t page,
+                           const uint8_t *spare, size_t sparelen) {
 
   uint8_t retVal;
   const NANDConfig *cfg = nandp->config;
@@ -453,15 +450,12 @@ uint8_t nandWritePageSpare(NANDDriver *nandp, uint32_t block,
 void nandMarkBad(NANDDriver *nandp, uint32_t block) {
 
   uint8_t bb_mark[2] = {0, 0};
-  uint8_t op_status;
-  op_status = nandWritePageSpare(nandp, block, 0, bb_mark, sizeof(bb_mark));
-  osalDbgCheck(0 == (op_status & 1)); /* operation failed*/
-  op_status = nandWritePageSpare(nandp, block, 1, bb_mark, sizeof(bb_mark));
-  osalDbgCheck(0 == (op_status & 1)); /* operation failed*/
 
-#if NAND_USE_BAD_MAP
-  bad_map_update(nandp, block);
-#endif
+  nandWritePageSpare(nandp, block, 0, bb_mark, sizeof(bb_mark));
+  nandWritePageSpare(nandp, block, 1, bb_mark, sizeof(bb_mark));
+
+  if (NULL != nandp->bb_map)
+    bitmapSet(nandp->bb_map, block);
 }
 
 /**
@@ -475,9 +469,9 @@ void nandMarkBad(NANDDriver *nandp, uint32_t block) {
  *
  * @api
  */
-uint8_t nandReadBadMark(NANDDriver *nandp,
-                                  uint32_t block, uint32_t page) {
+uint8_t nandReadBadMark(NANDDriver *nandp, uint32_t block, uint32_t page) {
   uint8_t bb_mark[1];
+
   nandReadPageSpare(nandp, block, page, bb_mark, sizeof(bb_mark));
   return bb_mark[0];
 }
@@ -492,7 +486,7 @@ uint8_t nandReadBadMark(NANDDriver *nandp,
  *
  * @api
  */
-uint8_t nandErase(NANDDriver *nandp, uint32_t block){
+uint8_t nandErase(NANDDriver *nandp, uint32_t block) {
 
   uint8_t retVal;
   const NANDConfig *cfg = nandp->config;
@@ -508,7 +502,7 @@ uint8_t nandErase(NANDDriver *nandp, uint32_t block){
 }
 
 /**
- * @brief   Report block badness.
+ * @brief   Check block badness.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
  * @param[in] block         block number
@@ -519,32 +513,15 @@ uint8_t nandErase(NANDDriver *nandp, uint32_t block){
  *
  * @api
  */
-bool nandIsBad(NANDDriver *nandp, uint32_t block){
+bool nandIsBad(NANDDriver *nandp, uint32_t block) {
 
   osalDbgCheck(nandp != NULL);
   osalDbgAssert(nandp->state == NAND_READY, "invalid state");
 
-#if NAND_USE_BAD_MAP
-  uint32_t *map = nandp->config->bb_map;
-  const size_t BPMC = sizeof(uint32_t) * 8; /* bits per map claster */
-  size_t i;
-  size_t shift;
-
-  i = block / BPMC;
-  shift = block % BPMC;
-  if (((map[i] >> shift) & 1) == 1)
-    return true;
+  if (NULL != nandp->bb_map)
+    return 1 == bitmapGet(nandp->bb_map, block);
   else
-    return false;
-#else
-  uint8_t m0, m1;
-  m0 = nandReadBadMark(nandp, block, 0);
-  m1 = nandReadBadMark(nandp, block, 1);
-  if ((0xFF != m0) || (0xFF != m1))
-    return true;
-  else
-    return false;
-#endif /* NAND_USE_BAD_MAP */
+    return read_is_block_bad(nandp, block);
 }
 
 #if NAND_USE_MUTUAL_EXCLUSION || defined(__DOXYGEN__)
