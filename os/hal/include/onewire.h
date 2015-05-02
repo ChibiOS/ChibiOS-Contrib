@@ -14,8 +14,6 @@
     limitations under the License.
 */
 
-
-
 /**
  * @file    onewire.h
  * @brief   1-wire Driver macros and structures.
