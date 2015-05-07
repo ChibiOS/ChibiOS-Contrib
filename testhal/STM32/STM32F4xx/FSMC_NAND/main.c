@@ -139,7 +139,6 @@ static bitmap_t badblock_map = {
  *
  */
 static const NANDConfig nandcfg = {
-    //&FSMCD1,
     NAND_BLOCKS_COUNT,
     NAND_PAGE_DATA_SIZE,
     NAND_PAGE_SPARE_SIZE,
@@ -643,7 +642,7 @@ int main(void) {
   /*
    * Normal main() thread activity, in this demo it does nothing.
    */
-  while (TRUE) {
+  while (true) {
     chThdSleepMilliseconds(500);
   }
 }

@@ -68,32 +68,32 @@ static void pagesize_check(size_t page_data_size) {
 /**
  * @brief   Translate block-page-offset scheme to NAND internal address.
  *
- * @param[in] cfg       pointer to the @p NANDConfig from
- *                      corresponding NAND driver
- * @param[in] block     block number
- * @param[in] page      page number related to begin of block
- * @param[in] offset    data offset related to begin of page
- * @param[out] addr     buffer to store calculated address
- * @param[in] addr_len  length of address buffer
+ * @param[in] cfg         pointer to the @p NANDConfig from
+ *                        corresponding NAND driver
+ * @param[in] block       block number
+ * @param[in] page        page number related to begin of block
+ * @param[in] page_offset data offset related to begin of page
+ * @param[out] addr       buffer to store calculated address
+ * @param[in] addr_len    length of address buffer
  *
  * @notapi
  */
 static void calc_addr(const NANDConfig *cfg, uint32_t block, uint32_t page,
-                      uint32_t offset, uint8_t *addr, size_t addr_len) {
+                      uint32_t page_offset, uint8_t *addr, size_t addr_len) {
   size_t i = 0;
   uint32_t row = 0;
 
   /* Incorrect buffer length.*/
   osalDbgCheck(cfg->rowcycles + cfg->colcycles == addr_len);
   osalDbgCheck((block < cfg->blocks) && (page < cfg->pages_per_block) &&
-             (offset < cfg->page_data_size + cfg->page_spare_size));
+             (page_offset < cfg->page_data_size + cfg->page_spare_size));
 
   /* convert address to NAND specific */
   memset(addr, 0, addr_len);
   row = (block * cfg->pages_per_block) + page;
   for (i=0; i<cfg->colcycles; i++){
-    addr[i] = offset & 0xFF;
-    offset = offset >> 8;
+    addr[i] = page_offset & 0xFF;
+    page_offset = page_offset >> 8;
   }
   for (; i<addr_len; i++){
     addr[i] = row & 0xFF;
@@ -144,16 +144,13 @@ static void calc_blk_addr(const NANDConfig *cfg, uint32_t block,
  * @notapi
  */
 static bool read_is_block_bad(NANDDriver *nandp, size_t block) {
-  uint8_t m0;
-  uint8_t m1;
 
-  m0 = nandReadBadMark(nandp, block, 0);
-  m1 = nandReadBadMark(nandp, block, 1);
-
-  if ((0xFF != m0) || (0xFF != m1))
+  if (0xFF != nandReadBadMark(nandp, block, 0))
     return true;
-  else
-    return false;
+  if (0xFF != nandReadBadMark(nandp, block, 1))
+    return true;
+
+  return false;
 }
 
 /**
