@@ -24,7 +24,7 @@
 /*
  * Board identifier.
  */
-#define BOARD_NAME                  "NAND and SRAM test board. Codename Buod"
+#define BOARD_NAME                  "NAND and SRAM test board (codename Buod)"
 
 /*
  * Board oscillators-related settings.
@@ -60,13 +60,21 @@
 #define GPIOA_PIN6                  6
 #define GPIOA_PIN7                  7
 #define GPIOA_PIN8                  8
-#define GPIOA_PIN9                  9
+#define GPIOA_USB_PRESENT           9
 #define GPIOA_PIN10                 10
-#define GPIOA_PIN11                 11
-#define GPIOA_PIN12                 12
+#define GPIOA_OTG_FS_DM             11
+#define GPIOA_OTG_FS_DP             12
 #define GPIOA_JTMS                  13
 #define GPIOA_JTCK                  14
 #define GPIOA_JTDI                  15
+
+
+
+#define GPIOA_USB_PRESENT           9
+#define GPIOA_PIN10                 10
+#define GPIOA_OTG_FS_DM             11
+#define GPIOA_OTG_FS_DP             12
+
 
 #define GPIOB_PIN0                  0
 #define GPIOB_NAND_WP               1
@@ -238,10 +246,10 @@
                                      PIN_MODE_INPUT(GPIOA_PIN6) |           \
                                      PIN_MODE_INPUT(GPIOA_PIN7) |           \
                                      PIN_MODE_INPUT(GPIOA_PIN8) |           \
-                                     PIN_MODE_INPUT(GPIOA_PIN9) |           \
+                                     PIN_MODE_INPUT(GPIOA_USB_PRESENT) |    \
                                      PIN_MODE_INPUT(GPIOA_PIN10) |          \
-                                     PIN_MODE_INPUT(GPIOA_PIN11) |          \
-                                     PIN_MODE_INPUT(GPIOA_PIN12) |          \
+                                     PIN_MODE_ALTERNATE(GPIOA_OTG_FS_DM) |  \
+                                     PIN_MODE_ALTERNATE(GPIOA_OTG_FS_DP) |  \
                                      PIN_MODE_ALTERNATE(GPIOA_JTMS) |       \
                                      PIN_MODE_ALTERNATE(GPIOA_JTCK) |       \
                                      PIN_MODE_ALTERNATE(GPIOA_JTDI))
@@ -254,10 +262,10 @@
                                      PIN_OTYPE_PUSHPULL(GPIOA_PIN6) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOA_PIN7) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOA_PIN8) |       \
-                                     PIN_OTYPE_PUSHPULL(GPIOA_PIN9) |       \
+                                     PIN_OTYPE_PUSHPULL(GPIOA_USB_PRESENT) |\
                                      PIN_OTYPE_PUSHPULL(GPIOA_PIN10) |      \
-                                     PIN_OTYPE_PUSHPULL(GPIOA_PIN11) |      \
-                                     PIN_OTYPE_PUSHPULL(GPIOA_PIN12) |      \
+                                     PIN_OTYPE_PUSHPULL(GPIOA_OTG_FS_DM) |  \
+                                     PIN_OTYPE_PUSHPULL(GPIOA_OTG_FS_DP) |  \
                                      PIN_OTYPE_PUSHPULL(GPIOA_JTMS) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOA_JTCK) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOA_JTDI))
@@ -270,10 +278,10 @@
                                      PIN_OSPEED_100M(GPIOA_PIN6) |          \
                                      PIN_OSPEED_100M(GPIOA_PIN7) |          \
                                      PIN_OSPEED_100M(GPIOA_PIN8) |          \
-                                     PIN_OSPEED_100M(GPIOA_PIN9) |          \
+                                     PIN_OSPEED_100M(GPIOA_USB_PRESENT) |   \
                                      PIN_OSPEED_100M(GPIOA_PIN10) |         \
-                                     PIN_OSPEED_100M(GPIOA_PIN11) |         \
-                                     PIN_OSPEED_100M(GPIOA_PIN12) |         \
+                                     PIN_OSPEED_100M(GPIOA_OTG_FS_DM) |     \
+                                     PIN_OSPEED_100M(GPIOA_OTG_FS_DP) |     \
                                      PIN_OSPEED_100M(GPIOA_JTMS) |          \
                                      PIN_OSPEED_100M(GPIOA_JTCK) |          \
                                      PIN_OSPEED_100M(GPIOA_JTDI))
@@ -286,10 +294,10 @@
                                      PIN_PUPDR_FLOATING(GPIOA_PIN6) |       \
                                      PIN_PUPDR_FLOATING(GPIOA_PIN7) |       \
                                      PIN_PUPDR_FLOATING(GPIOA_PIN8) |       \
-                                     PIN_PUPDR_FLOATING(GPIOA_PIN9) |       \
+                                     PIN_PUPDR_FLOATING(GPIOA_USB_PRESENT) |\
                                      PIN_PUPDR_FLOATING(GPIOA_PIN10) |      \
-                                     PIN_PUPDR_FLOATING(GPIOA_PIN11) |      \
-                                     PIN_PUPDR_FLOATING(GPIOA_PIN12) |      \
+                                     PIN_PUPDR_FLOATING(GPIOA_OTG_FS_DM) |  \
+                                     PIN_PUPDR_FLOATING(GPIOA_OTG_FS_DP) |  \
                                      PIN_PUPDR_FLOATING(GPIOA_JTMS) |       \
                                      PIN_PUPDR_FLOATING(GPIOA_JTCK) |       \
                                      PIN_PUPDR_FLOATING(GPIOA_JTDI))
@@ -302,10 +310,10 @@
                                      PIN_ODR_HIGH(GPIOA_PIN6) |             \
                                      PIN_ODR_HIGH(GPIOA_PIN7) |             \
                                      PIN_ODR_HIGH(GPIOA_PIN8) |             \
-                                     PIN_ODR_HIGH(GPIOA_PIN9) |             \
+                                     PIN_ODR_HIGH(GPIOA_USB_PRESENT) |      \
                                      PIN_ODR_HIGH(GPIOA_PIN10) |            \
-                                     PIN_ODR_HIGH(GPIOA_PIN11) |            \
-                                     PIN_ODR_HIGH(GPIOA_PIN12) |            \
+                                     PIN_ODR_HIGH(GPIOA_OTG_FS_DM) |        \
+                                     PIN_ODR_HIGH(GPIOA_OTG_FS_DP) |        \
                                      PIN_ODR_HIGH(GPIOA_JTMS) |             \
                                      PIN_ODR_HIGH(GPIOA_JTCK) |             \
                                      PIN_ODR_HIGH(GPIOA_JTDI))
@@ -318,10 +326,10 @@
                                      PIN_AFIO_AF(GPIOA_PIN6, 0) |           \
                                      PIN_AFIO_AF(GPIOA_PIN7, 0))
 #define VAL_GPIOA_AFRH              (PIN_AFIO_AF(GPIOA_PIN8, 0) |           \
-                                     PIN_AFIO_AF(GPIOA_PIN9, 0) |           \
+                                     PIN_AFIO_AF(GPIOA_USB_PRESENT, 0) |    \
                                      PIN_AFIO_AF(GPIOA_PIN10, 0) |          \
-                                     PIN_AFIO_AF(GPIOA_PIN11, 0) |          \
-                                     PIN_AFIO_AF(GPIOA_PIN12, 0) |          \
+                                     PIN_AFIO_AF(GPIOA_OTG_FS_DM, 10) |     \
+                                     PIN_AFIO_AF(GPIOA_OTG_FS_DP, 10) |     \
                                      PIN_AFIO_AF(GPIOA_JTMS, 0) |           \
                                      PIN_AFIO_AF(GPIOA_JTCK, 0) |           \
                                      PIN_AFIO_AF(GPIOA_JTDI, 0))
