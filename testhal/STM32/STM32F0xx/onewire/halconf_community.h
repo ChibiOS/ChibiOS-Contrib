@@ -50,14 +50,6 @@
 #define NAND_USE_MUTUAL_EXCLUSION   TRUE
 #endif
 
-/**
- * @brief   Enables internal driver map for bad blocks.
- * @note    Disabling this option saves both code and data space.
- */
-#if !defined(NAND_USE_BAD_MAP) || defined(__DOXYGEN__)
-#define NAND_USE_BAD_MAP            TRUE
-#endif
-
 /*===========================================================================*/
 /* 1-wire driver related settings.                                           */
 /*===========================================================================*/

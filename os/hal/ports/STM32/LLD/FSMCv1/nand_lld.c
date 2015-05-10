@@ -70,7 +70,7 @@ NANDDriver NANDD2;
  *
  * @notapi
  */
-static void wakeup_isr(NANDDriver *nandp){
+static void wakeup_isr(NANDDriver *nandp) {
 
   osalDbgCheck(nandp->thread != NULL);
   osalThreadResumeI(&nandp->thread, MSG_OK);
@@ -91,7 +91,7 @@ static void nand_lld_suspend_thread(NANDDriver *nandp) {
  *
  * @param[in] nandp    pointer to the @p NANDDriver object
  */
-static uint32_t calc_eccps(NANDDriver *nandp){
+static uint32_t calc_eccps(NANDDriver *nandp) {
 
   uint32_t i = 0;
   uint32_t eccps = nandp->config->page_data_size;
@@ -148,7 +148,7 @@ static void nand_ready_isr_disable(NANDDriver *nandp) {
  *
  * @notapi
  */
-static void nand_isr_handler (NANDDriver *nandp){
+static void nand_isr_handler (NANDDriver *nandp) {
 
   osalSysLockFromISR();
 
@@ -252,6 +252,7 @@ void nand_lld_init(void) {
   NANDD1.map_data = (uint8_t*)FSMC_Bank2_MAP_COMMON_DATA;
   NANDD1.map_cmd  = (uint8_t*)FSMC_Bank2_MAP_COMMON_CMD;
   NANDD1.map_addr = (uint8_t*)FSMC_Bank2_MAP_COMMON_ADDR;
+  NANDD1.bb_map   = NULL;
 #endif /* STM32_NAND_USE_FSMC_NAND1 */
 
 #if STM32_NAND_USE_FSMC_NAND2
@@ -265,6 +266,7 @@ void nand_lld_init(void) {
   NANDD2.map_data = (uint8_t*)FSMC_Bank3_MAP_COMMON_DATA;
   NANDD2.map_cmd  = (uint8_t*)FSMC_Bank3_MAP_COMMON_CMD;
   NANDD2.map_addr = (uint8_t*)FSMC_Bank3_MAP_COMMON_ADDR;
+  NANDD2.bb_map   = NULL;
 #endif /* STM32_NAND_USE_FSMC_NAND2 */
 }
 
@@ -332,8 +334,8 @@ void nand_lld_stop(NANDDriver *nandp) {
  *
  * @notapi
  */
-void nand_lld_read_data(NANDDriver *nandp, uint8_t *data,
-                size_t datalen, uint8_t *addr, size_t addrlen, uint32_t *ecc){
+void nand_lld_read_data(NANDDriver *nandp, uint8_t *data, size_t datalen,
+                        uint8_t *addr, size_t addrlen, uint32_t *ecc){
 
   nandp->state = NAND_READ;
   nandp->rxdata = data;
@@ -381,7 +383,7 @@ void nand_lld_read_data(NANDDriver *nandp, uint8_t *data,
  * @notapi
  */
 uint8_t nand_lld_write_data(NANDDriver *nandp, const uint8_t *data,
-                size_t datalen, uint8_t *addr, size_t addrlen, uint32_t *ecc){
+                size_t datalen, uint8_t *addr, size_t addrlen, uint32_t *ecc) {
 
   nandp->state = NAND_WRITE;
 
@@ -425,7 +427,7 @@ uint8_t nand_lld_write_data(NANDDriver *nandp, const uint8_t *data,
  *
  * @notapi
  */
-uint8_t nand_lld_erase(NANDDriver *nandp, uint8_t *addr, size_t addrlen){
+uint8_t nand_lld_erase(NANDDriver *nandp, uint8_t *addr, size_t addrlen) {
 
   nandp->state = NAND_ERASE;
 
@@ -451,7 +453,7 @@ uint8_t nand_lld_erase(NANDDriver *nandp, uint8_t *addr, size_t addrlen){
  *
  * @notapi
  */
-void nand_lld_polled_read_data(NANDDriver *nandp, uint8_t *data, size_t len){
+void nand_lld_polled_read_data(NANDDriver *nandp, uint8_t *data, size_t len) {
   size_t i = 0;
 
   for (i=0; i<len; i++)
@@ -467,7 +469,7 @@ void nand_lld_polled_read_data(NANDDriver *nandp, uint8_t *data, size_t len){
  *
  * @notapi
  */
-void nand_lld_write_addr(NANDDriver *nandp, const uint8_t *addr, size_t len){
+void nand_lld_write_addr(NANDDriver *nandp, const uint8_t *addr, size_t len) {
   size_t i = 0;
 
   for (i=0; i<len; i++)
@@ -482,7 +484,7 @@ void nand_lld_write_addr(NANDDriver *nandp, const uint8_t *addr, size_t len){
  *
  * @notapi
  */
-void nand_lld_write_cmd(NANDDriver *nandp, uint8_t cmd){
+void nand_lld_write_cmd(NANDDriver *nandp, uint8_t cmd) {
   nandp->map_cmd[0] = cmd;
 }
 

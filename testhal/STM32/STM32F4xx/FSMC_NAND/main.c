@@ -44,6 +44,8 @@
 #include "ch.h"
 #include "hal.h"
 
+#include "bitmap.h"
+
 #include "dma_storm.h"
 #include "string.h"
 #include "stdlib.h"
@@ -53,6 +55,8 @@
  * DEFINES
  ******************************************************************************
  */
+
+#define USE_BAD_MAP               TRUE
 
 #define USE_KILL_BLOCK_TEST       FALSE
 
@@ -69,7 +73,7 @@
 #define NAND_ROW_WRITE_CYCLES     3
 #define NAND_COL_WRITE_CYCLES     2
 
-#define NANF_TEST_START_BLOCK     1200
+#define NAND_TEST_START_BLOCK     1200
 #define NAND_TEST_END_BLOCK       1220
 
 #if USE_KILL_BLOCK_TEST
@@ -120,23 +124,26 @@ static time_measurement_t tmu_write_data;
 static time_measurement_t tmu_write_spare;
 static time_measurement_t tmu_read_data;
 static time_measurement_t tmu_read_spare;
+static time_measurement_t tmu_driver_start;
 
-#if NAND_USE_BAD_MAP
-static uint32_t badblock_map[NAND_BLOCKS_COUNT / 32];
+#if USE_BAD_MAP
+#define BAD_MAP_LEN     (NAND_BLOCKS_COUNT / (sizeof(bitmap_word_t) * 8))
+static bitmap_word_t    badblock_map_array[BAD_MAP_LEN];
+static bitmap_t badblock_map = {
+    badblock_map_array,
+    BAD_MAP_LEN
+};
 #endif
 
 /*
  *
  */
 static const NANDConfig nandcfg = {
-    &FSMCD1,
+    //&FSMCD1,
     NAND_BLOCKS_COUNT,
     NAND_PAGE_DATA_SIZE,
     NAND_PAGE_SPARE_SIZE,
     NAND_PAGES_PER_BLOCK,
-#if NAND_USE_BAD_MAP
-    badblock_map,
-#endif
     NAND_ROW_WRITE_CYCLES,
     NAND_COL_WRITE_CYCLES,
     /* stm32 specific fields */
@@ -567,7 +574,14 @@ int main(void) {
 #if STM32_NAND_USE_EXT_INT
   extStart(&EXTD1, &extcfg);
 #endif
-  nandStart(&NAND, &nandcfg);
+  chTMObjectInit(&tmu_driver_start);
+  chTMStartMeasurementX(&tmu_driver_start);
+#if USE_BAD_MAP
+  nandStart(&NAND, &nandcfg, &badblock_map);
+#else
+  nandStart(&NAND, &nandcfg, NULL);
+#endif
+  chTMStopMeasurementX(&tmu_driver_start);
 
   chThdSleepMilliseconds(4000);
 
@@ -586,7 +600,7 @@ int main(void) {
   dma_storm_uart_start();
   dma_storm_spi_start();
   T = chVTGetSystemTimeX();
-  general_test(&NAND, NANF_TEST_START_BLOCK, NAND_TEST_END_BLOCK, 1);
+  general_test(&NAND, NAND_TEST_START_BLOCK, NAND_TEST_END_BLOCK, 1);
   T = chVTGetSystemTimeX() - T;
   adc_ints = dma_storm_adc_stop();
   uart_ints = dma_storm_uart_stop();
@@ -611,9 +625,9 @@ int main(void) {
    * ensure that NAND code have negligible impact on other subsystems
    */
   osalDbgCheck(background_cnt > (BackgroundThdCnt / 4));
-  osalDbgCheck(abs(adc_ints - adc_idle_ints)   < (adc_idle_ints  / 20));
+  osalDbgCheck(abs(adc_ints  - adc_idle_ints)  < (adc_idle_ints  / 20));
   osalDbgCheck(abs(uart_ints - uart_idle_ints) < (uart_idle_ints / 20));
-  osalDbgCheck(abs(spi_ints - spi_idle_ints)   < (spi_idle_ints  / 10));
+  osalDbgCheck(abs(spi_ints  - spi_idle_ints)  < (spi_idle_ints  / 10));
 
   /*
    * perform ECC calculation test
