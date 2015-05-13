@@ -33,5 +33,9 @@ int main(void) {
   chSysInit();
 
   while (1) {
+    NRF_GPIO->OUTCLR = (uint32_t) 1 << 18;
+    chThdSleepMilliseconds(500);
+    NRF_GPIO->OUTSET = (uint32_t) 1 << 18;
+    chThdSleepMilliseconds(500);
   }
 }
