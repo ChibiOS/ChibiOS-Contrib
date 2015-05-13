@@ -60,9 +60,6 @@ void hal_lld_init(void)
   NRF_GPIO->PIN_CNF[18] = 1;
   NRF_GPIO->PIN_CNF[19] = 1;
   NRF_GPIO->OUTSET = ((uint32_t) 1 << 18) | ((uint32_t) 1 << 19);
-
-  //FIXME!
-  while (1) {}
 }
 
 /**
