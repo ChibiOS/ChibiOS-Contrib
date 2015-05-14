@@ -20,5 +20,6 @@
 /*
  * HAL driver system settings.
  */
+#define NRF51_SERIAL_USE_UART0             TRUE
 
 #endif /* _MCUCONF_H_ */

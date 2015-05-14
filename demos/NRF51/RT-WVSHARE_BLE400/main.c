@@ -32,6 +32,10 @@ int main(void) {
   halInit();
   chSysInit();
 
+  sdStart(&SD1, NULL);
+
+  chSequentialStreamWrite(&SD1, (const uint8_t *)"***\r\n", 5);
+  //chSequentialStreamWrite(&SD1, (const uint8_t *)"*", 1);
   while (1) {
     NRF_GPIO->OUTCLR = (uint32_t) 1 << 18;
     chThdSleepMilliseconds(500);
