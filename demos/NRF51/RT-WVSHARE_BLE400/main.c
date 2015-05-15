@@ -16,6 +16,7 @@
 
 #include "ch.h"
 #include "hal.h"
+#include "test.h"
 
 /*
  * Application entry point.
@@ -34,8 +35,7 @@ int main(void) {
 
   sdStart(&SD1, NULL);
 
-  chSequentialStreamWrite(&SD1, (const uint8_t *)"***\r\n", 5);
-  //chSequentialStreamWrite(&SD1, (const uint8_t *)"*", 1);
+  TestThread(&SD1);
   while (1) {
     NRF_GPIO->OUTCLR = (uint32_t) 1 << 18;
     chThdSleepMilliseconds(500);

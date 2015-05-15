@@ -92,7 +92,7 @@ include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_v6m.mk
 # Other files (optional).
-#include $(CHIBIOS)/test/rt/test.mk
+include $(CHIBIOS)/test/rt/test.mk
 
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD)/NRF51822.ld
@@ -106,6 +106,7 @@ CSRC = $(STARTUPSRC) \
        $(HALSRC) \
        $(PLATFORMSRC) \
        $(BOARDSRC) \
+       $(TESTSRC) \
        main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
