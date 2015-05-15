@@ -32,6 +32,8 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+#define INVALID_BAUDRATE 0xFFFFFFFF
+
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -56,6 +58,33 @@ static const SerialConfig default_config = {
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
+/*
+ * @brief Maps a baudrate speed to a BAUDRATE register value.
+ */
+static uint32_t regval_from_baudrate(uint32_t speed)
+{
+  switch (speed) {
+  case 1200:    return 0x0004F000;
+  case 2400:    return 0x0009D000;
+  case 4800:    return 0x0013B000;
+  case 9600:    return 0x00275000;
+  case 14400:   return 0x003B0000;
+  case 19200:   return 0x004EA000;
+  case 28800:   return 0x0075F000;
+  case 38400:   return 0x009D5000;
+  case 57600:   return 0x00EBF000;
+  case 76800:   return 0x013A9000;
+  case 115200:  return 0x01D7E000;
+  case 230400:  return 0x03AFB000;
+  case 250000:  return 0x04000000;
+  case 460800:  return 0x075F7000;
+  case 921600:  return 0x0EBEDFA4;
+  case 1000000: return 0x10000000;
+  }
+  return INVALID_BAUDRATE;
+}
+
+
 /**
  * @brief   Driver output notification.
  */
@@ -64,15 +93,12 @@ static void notify1(io_queue_t *qp)
 {
   (void)qp;
 
-  //if (NRF_UART0->EVENTS_TXDRDY) {
-    msg_t b = oqGetI(&SD1.oqueue);
-    if (b < Q_OK) {
-      chnAddFlagsI(&SD1, CHN_OUTPUT_EMPTY);
-      return;
-    }
-    NRF_UART0->TXD = b;
-    //NRF_UART0->INTENCLR = 0x80; // clear TX interrupt
-  //}
+  msg_t b = oqGetI(&SD1.oqueue);
+  if (b < Q_OK) {
+    chnAddFlagsI(&SD1, CHN_OUTPUT_EMPTY);
+    return;
+  }
+  NRF_UART0->TXD = b;
 }
 #endif
 
@@ -87,17 +113,19 @@ OSAL_IRQ_HANDLER(Vector48) {
   OSAL_IRQ_PROLOGUE();
 
   if (NRF_UART0->EVENTS_RXDRDY) {
+    NRF_UART0->EVENTS_RXDRDY = 0;
     osalSysLockFromISR();
     if (iqIsEmptyI(&SD1.iqueue))
       chnAddFlagsI(&SD1, CHN_INPUT_AVAILABLE);
     if (iqPutI(&SD1.iqueue, NRF_UART0->RXD) < Q_OK)
       chnAddFlagsI(&SD1, SD_OVERRUN_ERROR);
-    //NRF_UART0->INTENCLR = 4;
     osalSysUnlockFromISR();
   }
 
   if (NRF_UART0->EVENTS_TXDRDY) {
     msg_t b;
+
+    NRF_UART0->EVENTS_TXDRDY = 0;
 
     osalSysLockFromISR();
     b = oqGetI(&SD1.oqueue);
@@ -107,11 +135,13 @@ OSAL_IRQ_HANDLER(Vector48) {
       osalSysLockFromISR();
       chnAddFlagsI(&SD1, CHN_OUTPUT_EMPTY);
       osalSysUnlockFromISR();
-      NRF_UART0->INTENCLR = 0x80; // clear TX interrupt
     } else {
        NRF_UART0->TXD = b;
     }
   }
+
+  //TODO
+  NRF_UART0->EVENTS_ERROR = 0;
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -153,6 +183,8 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
 
 #if NRF51_SERIAL_USE_UART0 == TRUE
     if (sdp == &SD1) {
+      uint32_t regval;
+
       /* FIXME: some board specific, some hardcodeds! */
 
       /* Configure PINs */
@@ -163,11 +195,15 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
       NRF_UART0->PSELTXD = 9;
       NRF_UART0->PSELRXD = 11;
 
-      /* 38400!!! */
-      NRF_UART0->BAUDRATE = 0x009D5000;
+      regval = regval_from_baudrate(config->speed);
+      osalDbgAssert(regval != INVALID_BAUDRATE, "invalid baudrate speed");
+      NRF_UART0->BAUDRATE = regval;
 
       /* Enable interrupts for RX, TX and ERROR */
       NRF_UART0->INTENSET = 0x284;
+
+      NRF_UART0->EVENTS_RXDRDY = 0;
+      NRF_UART0->EVENTS_TXDRDY = 0;
 
       nvicEnableVector(UART0_IRQn, 12);
 
