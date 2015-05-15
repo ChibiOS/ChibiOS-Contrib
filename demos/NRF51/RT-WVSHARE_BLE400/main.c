@@ -18,6 +18,20 @@
 #include "hal.h"
 #include "test.h"
 
+static THD_WORKING_AREA(waThread1, 64);
+static THD_FUNCTION(Thread1, arg) {
+
+  (void)arg;
+  uint8_t led = LED0;
+  chRegSetThreadName("Blinker");
+  while (1) {
+    palSetPad(IOPORT1, led);
+    chThdSleepMilliseconds(100);
+    palClearPad(IOPORT1, led);
+    if (++led > LED4) led = LED0;
+  }
+}
+
 /*
  * Application entry point.
  */
@@ -33,13 +47,18 @@ int main(void) {
   halInit();
   chSysInit();
 
+  /*
+   * Activates UART0 using the driver default configuration.
+   */
   sdStart(&SD1, NULL);
+
+  /*
+   * Creates the blinker thread.
+   */
+  chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
 
   TestThread(&SD1);
   while (1) {
-    NRF_GPIO->OUTCLR = (uint32_t) 1 << 18;
-    chThdSleepMilliseconds(500);
-    NRF_GPIO->OUTSET = (uint32_t) 1 << 18;
     chThdSleepMilliseconds(500);
   }
 }
