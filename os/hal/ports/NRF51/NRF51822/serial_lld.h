@@ -88,7 +88,8 @@ typedef struct {
   uint8_t                   ib[SERIAL_BUFFERS_SIZE];                        \
   /* Output circular buffer.*/                                              \
   uint8_t                   ob[SERIAL_BUFFERS_SIZE];                        \
-  /* End of the mandatory fields.*/
+  /* End of the mandatory fields.*/                                         \
+  thread_t                  *thread;
 
 /*===========================================================================*/
 /* Driver macros.                                                            */

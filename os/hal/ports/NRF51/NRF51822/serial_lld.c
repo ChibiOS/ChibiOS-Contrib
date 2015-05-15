@@ -98,7 +98,9 @@ static void notify1(io_queue_t *qp)
     chnAddFlagsI(&SD1, CHN_OUTPUT_EMPTY);
     return;
   }
+  SD1.thread = chThdGetSelfX();
   NRF_UART0->TXD = b;
+  chEvtWaitAny((eventmask_t) 1);
 }
 #endif
 
@@ -123,25 +125,14 @@ OSAL_IRQ_HANDLER(Vector48) {
   }
 
   if (NRF_UART0->EVENTS_TXDRDY) {
-    msg_t b;
-
     NRF_UART0->EVENTS_TXDRDY = 0;
-
     osalSysLockFromISR();
-    b = oqGetI(&SD1.oqueue);
+    chEvtSignalI(SD1.thread, (eventmask_t) 1);
     osalSysUnlockFromISR();
-
-    if (b < Q_OK) {
-      osalSysLockFromISR();
-      chnAddFlagsI(&SD1, CHN_OUTPUT_EMPTY);
-      osalSysUnlockFromISR();
-    } else {
-       NRF_UART0->TXD = b;
-    }
   }
 
   //TODO
-  NRF_UART0->EVENTS_ERROR = 0;
+  //NRF_UART0->EVENTS_ERROR = 0;
 
   OSAL_IRQ_EPILOGUE();
 }
