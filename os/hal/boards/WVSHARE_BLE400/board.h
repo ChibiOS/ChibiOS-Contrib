@@ -17,16 +17,21 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
-/*
- * Board identifier.
- */
+/* Board identifier. */
 #define BOARD_WVSHARE_BLE400
 #define BOARD_NAME              "WvShare BLE400"
 
-/*
- * Board oscillators-related settings.
- */
+/* Board oscillators-related settings. */
 #define XTAL_VALUE              16000000
+
+/* GPIO pins. */
+#define LED0           18
+#define LED1           19
+#define LED2           20
+#define LED3           21
+#define LED4           22
+#define UART_TX        9
+#define UART_RX        11
 
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
