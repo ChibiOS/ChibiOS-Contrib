@@ -55,11 +55,6 @@
  */
 void hal_lld_init(void)
 {
-  // XXX: LED at PIN0.20 was initialized at __early_init
-
-  NRF_GPIO->PIN_CNF[18] = 1;
-  NRF_GPIO->PIN_CNF[19] = 1;
-  NRF_GPIO->OUTSET = ((uint32_t) 1 << 18) | ((uint32_t) 1 << 19);
 }
 
 /**
