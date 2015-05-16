@@ -16,6 +16,51 @@
 
 #include "hal.h"
 
+#if HAL_USE_PAL || defined(__DOXYGEN__)
+/**
+ * @brief   PAL setup.
+ * @details Digital I/O ports static configuration as defined in @p board.h.
+ *          This variable is used by the HAL when initializing the PAL driver.
+ */
+const PALConfig pal_default_config =
+{
+  .pads = {
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_OUTPUT_PUSHPULL,            // UART_TX
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,                      // UART_RX
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_OUTPUT_PUSHPULL,            // LED0
+    PAL_MODE_OUTPUT_PUSHPULL,            // LED1
+    PAL_MODE_OUTPUT_PUSHPULL,            // LED2
+    PAL_MODE_OUTPUT_PUSHPULL,            // LED3
+    PAL_MODE_OUTPUT_PUSHPULL,            // LED4
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+    PAL_MODE_INPUT,
+  },
+};
+#endif
+
 /**
  * @brief   Early initialization code.
  * @details This initialization is performed just after reset before BSS and
@@ -23,8 +68,6 @@
  */
 void __early_init(void)
 {
-  NRF_GPIO->PIN_CNF[20] = 1;
-  NRF_GPIO->OUTSET = (uint32_t) 1 << 20;
 }
 
 /**
@@ -35,8 +78,8 @@ void __early_init(void)
 void boardInit(void)
 {
   //FIXME: not really needed yet
-  NRF_CLOCK->XTALFREQ = 0xff;
-  NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
-  NRF_CLOCK->TASKS_HFCLKSTART = 1;
-  while (!NRF_CLOCK->EVENTS_HFCLKSTARTED) {}
+  //NRF_CLOCK->XTALFREQ = 0xff;
+  //NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
+  //NRF_CLOCK->TASKS_HFCLKSTART = 1;
+  //while (!NRF_CLOCK->EVENTS_HFCLKSTARTED) {}
 }
