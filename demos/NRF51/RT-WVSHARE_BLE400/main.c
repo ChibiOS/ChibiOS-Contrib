@@ -37,6 +37,12 @@ static THD_FUNCTION(Thread1, arg) {
  */
 int main(void) {
 
+  SerialConfig serial_config = {
+    .speed = 38400,
+    .tx_pin = UART_TX,
+    .rx_pin = UART_RX,
+  };
+
   /*
    * System initializations.
    * - HAL initialization, this also initializes the configured device drivers
@@ -50,7 +56,7 @@ int main(void) {
   /*
    * Activates UART0 using the driver default configuration.
    */
-  sdStart(&SD1, NULL);
+  sdStart(&SD1, &serial_config);
 
   /*
    * Creates the blinker thread.

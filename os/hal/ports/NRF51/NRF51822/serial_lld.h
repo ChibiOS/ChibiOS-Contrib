@@ -71,6 +71,8 @@ typedef struct {
    */
   uint32_t                  speed;
   /* End of the mandatory fields.*/
+  uint8_t                   tx_pin;
+  uint8_t                   rx_pin;
 } SerialConfig;
 
 /**

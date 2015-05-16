@@ -33,6 +33,7 @@
 /*===========================================================================*/
 
 #define INVALID_BAUDRATE 0xFFFFFFFF
+#define INVALID_PIN      0xFF
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -51,7 +52,9 @@ SerialDriver SD1;
  * @brief   Driver default configuration.
  */
 static const SerialConfig default_config = {
-  38400
+  .speed = 38400,
+  .tx_pin = INVALID_PIN,
+  .rx_pin = INVALID_PIN,
 };
 
 /*===========================================================================*/
@@ -131,8 +134,7 @@ OSAL_IRQ_HANDLER(Vector48) {
     osalSysUnlockFromISR();
   }
 
-  //TODO
-  //NRF_UART0->EVENTS_ERROR = 0;
+  /* TODO: Error handling for EVENTS_ERROR */
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -176,15 +178,19 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
     if (sdp == &SD1) {
       uint32_t regval;
 
-      /* FIXME: some board specific, some hardcodeds! */
+      /* TODO: Add support for CTS/RTS! */
 
       /* Configure PINs */
       NRF_UART0->PSELRTS = ~0;
       NRF_UART0->PSELCTS = ~0;
-
-      NRF_GPIO->PIN_CNF[9] = 1;
-      NRF_UART0->PSELTXD = 9;
-      NRF_UART0->PSELRXD = 11;
+      if (config->tx_pin != INVALID_PIN) {
+        palSetPadMode(IOPORT1, config->tx_pin, PAL_MODE_OUTPUT_PUSHPULL);
+        NRF_UART0->PSELTXD = config->tx_pin;
+      }
+      if (config->rx_pin != INVALID_PIN) {
+        palSetPadMode(IOPORT1, config->rx_pin, PAL_MODE_INPUT);
+        NRF_UART0->PSELRXD = config->rx_pin;
+      }
 
       regval = regval_from_baudrate(config->speed);
       osalDbgAssert(regval != INVALID_BAUDRATE, "invalid baudrate speed");
