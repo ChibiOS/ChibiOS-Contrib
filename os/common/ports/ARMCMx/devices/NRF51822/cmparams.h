@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2015 Fabio Utzig
+    Copyright (C) 2015 Fabio Utzig
 
     This file is part of ChibiOS.
 
