@@ -949,7 +949,7 @@ void eicu_lld_start(EICUDriver *eicup) {
       rccResetTIM10();
       nvicEnableVector(STM32_TIM10_NUMBER, STM32_EICU_TIM10_IRQ_PRIORITY);
       eicup->channels = 1;
-      eicup->clock = STM32_TIMCLK1;
+      eicup->clock = STM32_TIMCLK2;
     }
 #endif
 #if STM32_EICU_USE_TIM11
@@ -958,7 +958,7 @@ void eicu_lld_start(EICUDriver *eicup) {
       rccResetTIM11();
       nvicEnableVector(STM32_TIM11_NUMBER, STM32_EICU_TIM11_IRQ_PRIORITY);
       eicup->channels = 1;
-      eicup->clock = STM32_TIMCLK1;
+      eicup->clock = STM32_TIMCLK2;
     }
 #endif
 #if STM32_EICU_USE_TIM13
