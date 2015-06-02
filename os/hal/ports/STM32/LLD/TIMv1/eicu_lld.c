@@ -247,7 +247,7 @@ static eicucnt_t get_time_width(const EICUDriver *eicup,
 }
 
 /**
- * @brief     Returns both pulse period.
+ * @brief     Returns pulse period.
  * @details   The time is defined as number of ticks.
  *
  * @param[in] eicup     Pointer to the EICUDriver object.
