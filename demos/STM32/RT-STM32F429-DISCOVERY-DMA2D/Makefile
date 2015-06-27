@@ -116,8 +116,8 @@ CSRC = $(STARTUPSRC) \
        $(CHIBIOS)/os/various/shell.c \
        $(CHIBIOS)/os/hal/lib/streams/memstreams.c \
        $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
+       $(CHIBIOS)/community/os/various/devices_lib/others/ili9341.c \
        ./main.c \
-       ./ili9341.c \
        ./wolf3d_palette.c \
        ./res/wolf3d_vgagraph_chunk87.c \
        ./stmdrivers/stm32f4xx_fmc.c \
@@ -155,6 +155,7 @@ INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
          $(CHIBIOS)/os/various \
          $(CHIBIOS)/os/hal/lib/streams \
+         $(CHIBIOS)/community/os/various/devices_lib/others \
          ./res \
          ./stmdrivers \
          # eol
