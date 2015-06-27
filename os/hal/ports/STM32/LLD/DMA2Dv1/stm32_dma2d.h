@@ -29,7 +29,7 @@
  * @brief   Using the DMA2D driver.
  */
 #if !defined(STM32_DMA2D_USE_DMA2D) || defined(__DOXYGEN__)
-#define STM32_DMA2D_USE_DMA2D   FALSE
+#define STM32_DMA2D_USE_DMA2D   (FALSE)
 #endif
 
 #if (TRUE == STM32_DMA2D_USE_DMA2D) || defined(__DOXYGEN__)
@@ -261,7 +261,7 @@ typedef uint32_t dma2d_color_t;
 /**
  * @brief   DMA2D color aliases.
  * @detail  Mapped with ARGB-8888, except for luminance (L mapped onto B).
- *          Padding fields prefixed with <tt>'x'</tt>, which should be clear
+ *          Padding fields are prefixed with <tt>'x'</tt>, and should be clear
  *          (all 0) before compression and set (all 1) after expansion.
  */
 typedef union dma2d_coloralias_t {

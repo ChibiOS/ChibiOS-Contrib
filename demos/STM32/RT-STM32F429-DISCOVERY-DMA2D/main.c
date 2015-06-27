@@ -92,7 +92,7 @@ static const ltdc_window_t ltdc_fullscreen_wincfg = {
   0,
   240 - 1,
   0,
-  320 - 1
+  320 - 1,
 };
 
 static const ltdc_frame_t ltdc_view_frmcfg1 = {
@@ -100,7 +100,7 @@ static const ltdc_frame_t ltdc_view_frmcfg1 = {
   240,
   320,
   240 * sizeof(uint8_t),
-  LTDC_FMT_L8
+  LTDC_FMT_L8,
 };
 
 static const ltdc_laycfg_t ltdc_view_laycfg1 = {
@@ -112,7 +112,7 @@ static const ltdc_laycfg_t ltdc_view_laycfg1 = {
   wolf3d_palette,
   256,
   LTDC_BLEND_FIX1_FIX2,
-  LTDC_LEF_ENABLE | LTDC_LEF_PALETTE
+  (LTDC_LEF_ENABLE | LTDC_LEF_PALETTE),
 };
 
 static const ltdc_frame_t ltdc_screen_frmcfg1 = {
@@ -120,7 +120,7 @@ static const ltdc_frame_t ltdc_screen_frmcfg1 = {
   240,
   320,
   240 * 3,
-  LTDC_FMT_RGB888
+  LTDC_FMT_RGB888,
 };
 
 static const ltdc_laycfg_t ltdc_screen_laycfg1 = {
@@ -132,7 +132,7 @@ static const ltdc_laycfg_t ltdc_screen_laycfg1 = {
   NULL,
   0,
   LTDC_BLEND_FIX1_FIX2,
-  LTDC_LEF_ENABLE
+  LTDC_LEF_ENABLE,
 };
 
 static const LTDCConfig ltdc_cfg = {
@@ -156,7 +156,7 @@ static const LTDCConfig ltdc_cfg = {
   /* Color and layer settings.*/
   LTDC_COLOR_TEAL,
   &ltdc_view_laycfg1,
-  NULL
+  NULL,
 };
 
 extern LTDCDriver LTDCD1;
@@ -165,7 +165,7 @@ const SPIConfig spi_cfg5 = {
   NULL,
   GPIOC,
   GPIOC_SPI5_LCD_CS,
-  ((1 << 3) & SPI_CR1_BR) | SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_MSTR
+  (((1 << 3) & SPI_CR1_BR) | SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_MSTR),
 };
 
 extern SPIDriver SPID5;
@@ -444,7 +444,7 @@ static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
   /* Write data value to all SDRAM memory */
   for (counter = 0; counter < IS42S16400J_SIZE; counter++)
   {
-    *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
+    *(volatile uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
   }
 
   chTMStopMeasurementX(&tm);
@@ -476,7 +476,7 @@ static void cmd_erase(BaseSequentialStream *chp, int argc, char *argv[]) {
   /* Erase SDRAM memory */
   for (counter = 0; counter < IS42S16400J_SIZE; counter++)
   {
-    *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
+    *(volatile uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
   }
 
   //XXX chTMStopMeasurement(&tm);
@@ -574,7 +574,7 @@ static void cmd_check(BaseSequentialStream *chp, int argc, char *argv[]) {
   uwReadwritestatus = 0;
   while ((counter < IS42S16400J_SIZE) && (uwReadwritestatus == 0))
   {
-    ubReaddata_8b = *(__IO uint8_t*)(SDRAM_BANK_ADDR + counter);
+    ubReaddata_8b = *(volatile uint8_t*)(SDRAM_BANK_ADDR + counter);
     if ( ubReaddata_8b != (uint8_t)(ubWritedata_8b + counter))
     {
       uwReadwritestatus = 1;
@@ -613,13 +613,13 @@ static void cmd_sdram(BaseSequentialStream *chp, int argc, char *argv[]) {
 //  /* Erase SDRAM memory */
 //  for (counter = 0; counter < IS42S16400J_SIZE; counter++)
 //  {
-//    *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
+//    *(volatile uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
 //  }
 
   /* Write data value to all SDRAM memory */
   for (counter = 0; counter < IS42S16400J_SIZE; counter++)
   {
-    *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
+    *(volatile uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
   }
 
   chTMStopMeasurementX(&tm);
@@ -631,7 +631,7 @@ static void cmd_sdram(BaseSequentialStream *chp, int argc, char *argv[]) {
   counter = 0;
   while ((counter < IS42S16400J_SIZE))
   {
-    ubReaddata_8b = *(__IO uint8_t*)(SDRAM_BANK_ADDR + counter);
+    ubReaddata_8b = *(volatile uint8_t*)(SDRAM_BANK_ADDR + counter);
     counter++;
   }
 
@@ -643,7 +643,7 @@ static void cmd_sdram(BaseSequentialStream *chp, int argc, char *argv[]) {
   uwReadwritestatus = 0;
   while ((counter < IS42S16400J_SIZE) && (uwReadwritestatus == 0))
   {
-    ubReaddata_8b = *(__IO uint8_t*)(SDRAM_BANK_ADDR + counter);
+    ubReaddata_8b = *(volatile uint8_t*)(SDRAM_BANK_ADDR + counter);
     if ( ubReaddata_8b != (uint8_t)(ubWritedata_8b + counter))
     {
       uwReadwritestatus = 1;
@@ -730,7 +730,8 @@ int main(void) {
 #endif /* HAL_USE_SERIAL_USB */
 
   /*
-   * Initialise SDRAM, board.h has already configured GPIO correctly (except that ST example uses 50MHz not 100MHz?)
+   * Initialise SDRAM, board.h has already configured GPIO correctly
+   * (except that ST example uses 50MHz not 100MHz?)
    */
   SDRAM_Init();
   sdram_bulk_erase();
@@ -739,13 +740,16 @@ int main(void) {
    * Activates the LCD-related drivers.
    */
   spiStart(&SPID5, &spi_cfg5);
+  ili9341ObjectInit(&ILI9341D1);
   ili9341Start(&ILI9341D1, &ili9341_cfg);
   initialize_lcd();
+  ltdcInit();
   ltdcStart(&LTDCD1, &ltdc_cfg);
 
   /*
    * Activates the DMA2D-related drivers.
    */
+  dma2dInit();
   dma2dStart(&DMA2DD1, &dma2d_cfg);
   dma2d_test();
 

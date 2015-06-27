@@ -274,8 +274,8 @@ void dma2dStart(DMA2DDriver *dma2dp, const DMA2DConfig *configp) {
   /* Enable interrupts, except Line Watermark.*/
   nvicEnableVector(STM32_DMA2D_NUMBER, STM32_DMA2D_IRQ_PRIORITY);
 
-  DMA2D->CR = DMA2D_CR_CEIE | DMA2D_CR_CTCIE | DMA2D_CR_CAEIE |
-              DMA2D_CR_TCIE | DMA2D_CR_TEIE;
+  DMA2D->CR = (DMA2D_CR_CEIE | DMA2D_CR_CTCIE | DMA2D_CR_CAEIE |
+               DMA2D_CR_TCIE | DMA2D_CR_TEIE);
 
   dma2dp->state = DMA2D_READY;
   chSysUnlock();
@@ -453,8 +453,8 @@ void dma2dSetWatermarkPosI(DMA2DDriver *dma2dp, uint16_t line) {
   osalDbgAssert(dma2dp->state == DMA2D_READY, "not ready");
   (void)dma2dp;
 
-  DMA2D->LWR = (DMA2D->LWR & ~DMA2D_LWR_LW) |
-               ((uint32_t)line & DMA2D_LWR_LW);
+  DMA2D->LWR = ((DMA2D->LWR & ~DMA2D_LWR_LW) |
+                ((uint32_t)line & DMA2D_LWR_LW));
 }
 
 /**
@@ -637,8 +637,8 @@ void dma2dSetDeadTimeI(DMA2DDriver *dma2dp, uint32_t cycles) {
   osalDbgAssert(cycles <= DMA2D_MAX_DEADTIME_CYCLES, "bounds");
   (void)dma2dp;
 
-  DMA2D->AMTCR = (DMA2D->AMTCR & ~DMA2D_AMTCR_DT) |
-                 ((cycles << 8) & DMA2D_AMTCR_DT);
+  DMA2D->AMTCR = ((DMA2D->AMTCR & ~DMA2D_AMTCR_DT) |
+                  ((cycles << 8) & DMA2D_AMTCR_DT));
 }
 
 /**
@@ -823,7 +823,8 @@ void dma2dJobSetModeI(DMA2DDriver *dma2dp, dma2d_jobmode_t mode) {
   osalDbgAssert((mode & ~DMA2D_CR_MODE) == 0, "bounds");
   (void)dma2dp;
 
-  DMA2D->CR = (DMA2D->CR & ~DMA2D_CR_MODE) | ((uint32_t)mode & DMA2D_CR_MODE);
+  DMA2D->CR = ((DMA2D->CR & ~DMA2D_CR_MODE) |
+               ((uint32_t)mode & DMA2D_CR_MODE));
 }
 
 /**
@@ -907,8 +908,8 @@ void dma2dJobSetSizeI(DMA2DDriver *dma2dp, uint16_t width, uint16_t height) {
   osalDbgAssert(height <= DMA2D_MAX_HEIGHT, "bounds");
   (void)dma2dp;
 
-  DMA2D->NLR = (((uint32_t)width  << 16) & DMA2D_NLR_PL) |
-               (((uint32_t)height <<  0) & DMA2D_NLR_NL);
+  DMA2D->NLR = ((((uint32_t)width  << 16) & DMA2D_NLR_PL) |
+                (((uint32_t)height <<  0) & DMA2D_NLR_NL));
 }
 
 /**
@@ -1290,8 +1291,8 @@ void dma2dBgSetWrapOffsetI(DMA2DDriver *dma2dp, size_t offset) {
   osalDbgAssert(offset <= DMA2D_MAX_OFFSET, "bounds");
   (void)dma2dp;
 
-  DMA2D->BGOR = (DMA2D->BGOR & ~DMA2D_BGOR_LO) |
-                ((uint32_t)offset & DMA2D_BGOR_LO);
+  DMA2D->BGOR = ((DMA2D->BGOR & ~DMA2D_BGOR_LO) |
+                 ((uint32_t)offset & DMA2D_BGOR_LO));
 }
 
 /**
@@ -1366,8 +1367,8 @@ void dma2dBgSetConstantAlphaI(DMA2DDriver *dma2dp, uint8_t a) {
   osalDbgAssert(dma2dp->state == DMA2D_READY, "not ready");
   (void)dma2dp;
 
-  DMA2D->BGPFCCR = (DMA2D->BGPFCCR & ~DMA2D_BGPFCCR_ALPHA) |
-                   (((uint32_t)a << 24) & DMA2D_BGPFCCR_ALPHA);
+  DMA2D->BGPFCCR = ((DMA2D->BGPFCCR & ~DMA2D_BGPFCCR_ALPHA) |
+                    (((uint32_t)a << 24) & DMA2D_BGPFCCR_ALPHA));
 }
 
 /**
@@ -1444,8 +1445,8 @@ void dma2dBgSetAlphaModeI(DMA2DDriver *dma2dp, dma2d_amode_t mode) {
   osalDbgAssert((mode & DMA2D_BGPFCCR_AM) != DMA2D_BGPFCCR_AM, "bounds");
   (void)dma2dp;
 
-  DMA2D->BGPFCCR = (DMA2D->BGPFCCR & ~DMA2D_BGPFCCR_AM) |
-                   ((uint32_t)mode & DMA2D_BGPFCCR_AM);
+  DMA2D->BGPFCCR = ((DMA2D->BGPFCCR & ~DMA2D_BGPFCCR_AM) |
+                    ((uint32_t)mode & DMA2D_BGPFCCR_AM));
 }
 
 /**
@@ -1521,8 +1522,8 @@ void dma2dBgSetPixelFormatI(DMA2DDriver *dma2dp, dma2d_pixfmt_t fmt) {
   osalDbgAssert(fmt <= DMA2D_MAX_PIXFMT_ID, "bounds");
   (void)dma2dp;
 
-  DMA2D->BGPFCCR = (DMA2D->BGPFCCR & ~DMA2D_BGPFCCR_CM) |
-                   ((uint32_t)fmt & DMA2D_BGPFCCR_CM);
+  DMA2D->BGPFCCR = ((DMA2D->BGPFCCR & ~DMA2D_BGPFCCR_CM) |
+                    ((uint32_t)fmt & DMA2D_BGPFCCR_CM));
 }
 
 /**
@@ -1687,9 +1688,11 @@ void dma2dBgSetPaletteS(DMA2DDriver *dma2dp, const dma2d_palcfg_t *palettep) {
                  (palettep->fmt == DMA2D_FMT_RGB888)), "invalid format");
 
   DMA2D->BGCMAR = (uint32_t)palettep->colorsp;
-  DMA2D->BGPFCCR = (DMA2D->BGPFCCR & ~(DMA2D_BGPFCCR_CS | DMA2D_BGPFCCR_CCM)) |
-                   ((((uint32_t)palettep->length - 1) << 8) & DMA2D_BGPFCCR_CS)
-                   | ((uint32_t)palettep->fmt << 4);
+  DMA2D->BGPFCCR = (
+    (DMA2D->BGPFCCR & ~(DMA2D_BGPFCCR_CS | DMA2D_BGPFCCR_CCM)) |
+    ((((uint32_t)palettep->length - 1) << 8) & DMA2D_BGPFCCR_CS) |
+    ((uint32_t)palettep->fmt << 4)
+  );
 
   dma2dp->state = DMA2D_ACTIVE;
   DMA2D->BGPFCCR |= DMA2D_BGPFCCR_START;
@@ -1953,8 +1956,8 @@ void dma2dFgSetWrapOffsetI(DMA2DDriver *dma2dp, size_t offset) {
   osalDbgAssert(offset <= DMA2D_MAX_OFFSET, "bounds");
   (void)dma2dp;
 
-  DMA2D->FGOR = (DMA2D->FGOR & ~DMA2D_FGOR_LO) |
-                ((uint32_t)offset & DMA2D_FGOR_LO);
+  DMA2D->FGOR = ((DMA2D->FGOR & ~DMA2D_FGOR_LO) |
+                 ((uint32_t)offset & DMA2D_FGOR_LO));
 }
 
 /**
@@ -2029,8 +2032,8 @@ void dma2dFgSetConstantAlphaI(DMA2DDriver *dma2dp, uint8_t a) {
   osalDbgAssert(dma2dp->state == DMA2D_READY, "not ready");
   (void)dma2dp;
 
-  DMA2D->FGPFCCR = (DMA2D->FGPFCCR & ~DMA2D_FGPFCCR_ALPHA) |
-                   (((uint32_t)a << 24) & DMA2D_FGPFCCR_ALPHA);
+  DMA2D->FGPFCCR = ((DMA2D->FGPFCCR & ~DMA2D_FGPFCCR_ALPHA) |
+                    (((uint32_t)a << 24) & DMA2D_FGPFCCR_ALPHA));
 }
 
 /**
@@ -2107,8 +2110,8 @@ void dma2dFgSetAlphaModeI(DMA2DDriver *dma2dp, dma2d_amode_t mode) {
   osalDbgAssert((mode & DMA2D_FGPFCCR_AM) != DMA2D_FGPFCCR_AM, "bounds");
   (void)dma2dp;
 
-  DMA2D->FGPFCCR = (DMA2D->FGPFCCR & ~DMA2D_FGPFCCR_AM) |
-                   ((uint32_t)mode & DMA2D_FGPFCCR_AM);
+  DMA2D->FGPFCCR = ((DMA2D->FGPFCCR & ~DMA2D_FGPFCCR_AM) |
+                    ((uint32_t)mode & DMA2D_FGPFCCR_AM));
 }
 
 /**
@@ -2184,8 +2187,8 @@ void dma2dFgSetPixelFormatI(DMA2DDriver *dma2dp, dma2d_pixfmt_t fmt) {
   osalDbgAssert(fmt <= DMA2D_MAX_PIXFMT_ID, "bounds");
   (void)dma2dp;
 
-  DMA2D->FGPFCCR = (DMA2D->FGPFCCR & ~DMA2D_FGPFCCR_CM) |
-                   ((uint32_t)fmt & DMA2D_FGPFCCR_CM);
+  DMA2D->FGPFCCR = ((DMA2D->FGPFCCR & ~DMA2D_FGPFCCR_CM) |
+                    ((uint32_t)fmt & DMA2D_FGPFCCR_CM));
 }
 
 /**
@@ -2350,9 +2353,11 @@ void dma2dFgSetPaletteS(DMA2DDriver *dma2dp, const dma2d_palcfg_t *palettep) {
                  (palettep->fmt == DMA2D_FMT_RGB888)), "invalid format");
 
   DMA2D->FGCMAR = (uint32_t)palettep->colorsp;
-  DMA2D->FGPFCCR = (DMA2D->FGPFCCR & ~(DMA2D_FGPFCCR_CS | DMA2D_FGPFCCR_CCM)) |
-                   ((((uint32_t)palettep->length - 1) << 8) & DMA2D_FGPFCCR_CS)
-                   | ((uint32_t)palettep->fmt << 4);
+  DMA2D->FGPFCCR = (
+    (DMA2D->FGPFCCR & ~(DMA2D_FGPFCCR_CS | DMA2D_FGPFCCR_CCM)) |
+    ((((uint32_t)palettep->length - 1) << 8) & DMA2D_FGPFCCR_CS) |
+    ((uint32_t)palettep->fmt << 4)
+  );
 
   dma2dp->state = DMA2D_ACTIVE;
   DMA2D->FGPFCCR |= DMA2D_FGPFCCR_START;
@@ -2616,8 +2621,8 @@ void dma2dOutSetWrapOffsetI(DMA2DDriver *dma2dp, size_t offset) {
   osalDbgAssert(offset <= DMA2D_MAX_OFFSET, "bounds");
   (void)dma2dp;
 
-  DMA2D->OOR = (DMA2D->OOR & ~DMA2D_OOR_LO) |
-               ((uint32_t)offset & DMA2D_OOR_LO);
+  DMA2D->OOR = ((DMA2D->OOR & ~DMA2D_OOR_LO) |
+                ((uint32_t)offset & DMA2D_OOR_LO));
 }
 
 /**
@@ -2693,8 +2698,8 @@ void dma2dOutSetPixelFormatI(DMA2DDriver *dma2dp, dma2d_pixfmt_t fmt) {
   osalDbgAssert(fmt <= DMA2D_MAX_OUTPIXFMT_ID, "bounds");
   (void)dma2dp;
 
-  DMA2D->OPFCCR = (DMA2D->OPFCCR & ~DMA2D_OPFCCR_CM) |
-                  ((uint32_t)fmt & DMA2D_OPFCCR_CM);
+  DMA2D->OPFCCR = ((DMA2D->OPFCCR & ~DMA2D_OPFCCR_CM) |
+                   ((uint32_t)fmt & DMA2D_OPFCCR_CM));
 }
 
 /**
@@ -2999,44 +3004,44 @@ dma2d_color_t dma2dFromARGB8888(dma2d_color_t c, dma2d_pixfmt_t fmt) {
     return c;
   }
   case DMA2D_FMT_RGB888: {
-    return c & 0x00FFFFFF;
+    return (c & 0x00FFFFFF);
   }
   case DMA2D_FMT_RGB565: {
-    return ((c & 0x000000F8) >> ( 8 -  5)) |
-           ((c & 0x0000FC00) >> (16 - 11)) |
-           ((c & 0x00F80000) >> (24 - 16));
+    return (((c & 0x000000F8) >> ( 8 -  5)) |
+            ((c & 0x0000FC00) >> (16 - 11)) |
+            ((c & 0x00F80000) >> (24 - 16)));
   }
   case DMA2D_FMT_ARGB1555: {
-    return ((c & 0x000000F8) >> ( 8 -  5)) |
-           ((c & 0x0000F800) >> (16 - 10)) |
-           ((c & 0x00F80000) >> (24 - 15)) |
-           ((c & 0x80000000) >> (32 - 16));
+    return (((c & 0x000000F8) >> ( 8 -  5)) |
+            ((c & 0x0000F800) >> (16 - 10)) |
+            ((c & 0x00F80000) >> (24 - 15)) |
+            ((c & 0x80000000) >> (32 - 16)));
   }
   case DMA2D_FMT_ARGB4444: {
-    return ((c & 0x000000F0) >> ( 8 -  4)) |
-           ((c & 0x0000F000) >> (16 -  8)) |
-           ((c & 0x00F00000) >> (24 - 12)) |
-           ((c & 0xF0000000) >> (32 - 16));
+    return (((c & 0x000000F0) >> ( 8 -  4)) |
+            ((c & 0x0000F000) >> (16 -  8)) |
+            ((c & 0x00F00000) >> (24 - 12)) |
+            ((c & 0xF0000000) >> (32 - 16)));
   }
   case DMA2D_FMT_L8: {
-    return c & 0x000000FF;
+    return (c & 0x000000FF);
   }
   case DMA2D_FMT_AL44: {
-    return ((c & 0x000000F0) >> ( 8 - 4)) |
-           ((c & 0xF0000000) >> (32 - 8));
+    return (((c & 0x000000F0) >> ( 8 - 4)) |
+            ((c & 0xF0000000) >> (32 - 8)));
   }
   case DMA2D_FMT_AL88: {
-    return ((c & 0x000000FF) >> ( 8 -  8)) |
-           ((c & 0xFF000000) >> (32 - 16));
+    return (((c & 0x000000FF) >> ( 8 -  8)) |
+            ((c & 0xFF000000) >> (32 - 16)));
   }
   case DMA2D_FMT_L4: {
-    return c & 0x0000000F;
+    return (c & 0x0000000F);
   }
   case DMA2D_FMT_A8: {
-    return (c & 0xFF000000) >> (32 - 8);
+    return ((c & 0xFF000000) >> (32 - 8));
   }
   case DMA2D_FMT_A4: {
-    return (c & 0xF0000000) >> (32 - 4);
+    return ((c & 0xF0000000) >> (32 - 4));
   }
   default:
     osalDbgAssert(false, "invalid format");
@@ -3063,29 +3068,29 @@ dma2d_color_t dma2dToARGB8888(dma2d_color_t c, dma2d_pixfmt_t fmt) {
     return c;
   }
   case DMA2D_FMT_RGB888: {
-    return (c & 0x00FFFFFF) | 0xFF000000;
+    return ((c & 0x00FFFFFF) | 0xFF000000);
   }
   case DMA2D_FMT_RGB565: {
     register dma2d_color_t output = 0xFF000000;
-    if (c & 0x001F) output |= ((c & 0x001F) << ( 8 -  5)) | 0x00000007;
-    if (c & 0x07E0) output |= ((c & 0x07E0) << (16 - 11)) | 0x00000300;
-    if (c & 0xF800) output |= ((c & 0xF800) << (24 - 16)) | 0x00070000;
+    if (c & 0x001F) output |= (((c & 0x001F) << ( 8 -  5)) | 0x00000007);
+    if (c & 0x07E0) output |= (((c & 0x07E0) << (16 - 11)) | 0x00000300);
+    if (c & 0xF800) output |= (((c & 0xF800) << (24 - 16)) | 0x00070000);
     return output;
   }
   case DMA2D_FMT_ARGB1555: {
     register dma2d_color_t output = 0x00000000;
-    if (c & 0x001F) output |= ((c & 0x001F) << ( 8 -  5)) | 0x00000007;
-    if (c & 0x03E0) output |= ((c & 0x03E0) << (16 - 10)) | 0x00000700;
-    if (c & 0x7C00) output |= ((c & 0x7C00) << (24 - 15)) | 0x00070000;
+    if (c & 0x001F) output |= (((c & 0x001F) << ( 8 -  5)) | 0x00000007);
+    if (c & 0x03E0) output |= (((c & 0x03E0) << (16 - 10)) | 0x00000700);
+    if (c & 0x7C00) output |= (((c & 0x7C00) << (24 - 15)) | 0x00070000);
     if (c & 0x8000) output |= 0xFF000000;
     return output;
   }
   case DMA2D_FMT_ARGB4444: {
     register dma2d_color_t output = 0x00000000;
-    if (c & 0x000F) output |= ((c & 0x000F) << ( 8 -  4)) | 0x0000000F;
-    if (c & 0x00F0) output |= ((c & 0x00F0) << (16 -  8)) | 0x00000F00;
-    if (c & 0x0F00) output |= ((c & 0x0F00) << (24 - 12)) | 0x000F0000;
-    if (c & 0xF000) output |= ((c & 0xF000) << (32 - 16)) | 0x0F000000;
+    if (c & 0x000F) output |= (((c & 0x000F) << ( 8 -  4)) | 0x0000000F);
+    if (c & 0x00F0) output |= (((c & 0x00F0) << (16 -  8)) | 0x00000F00);
+    if (c & 0x0F00) output |= (((c & 0x0F00) << (24 - 12)) | 0x000F0000);
+    if (c & 0xF000) output |= (((c & 0xF000) << (32 - 16)) | 0x0F000000);
     return output;
   }
   case DMA2D_FMT_L8: {
@@ -3093,22 +3098,22 @@ dma2d_color_t dma2dToARGB8888(dma2d_color_t c, dma2d_pixfmt_t fmt) {
   }
   case DMA2D_FMT_AL44: {
     register dma2d_color_t output = 0x00000000;
-    if (c & 0x0F) output |= ((c & 0x0F) << ( 8 - 4)) | 0x0000000F;
-    if (c & 0xF0) output |= ((c & 0xF0) << (32 - 8)) | 0x0F000000;
+    if (c & 0x0F) output |= (((c & 0x0F) << ( 8 - 4)) | 0x0000000F);
+    if (c & 0xF0) output |= (((c & 0xF0) << (32 - 8)) | 0x0F000000);
     return output;
   }
   case DMA2D_FMT_AL88: {
-    return ((c & 0x00FF) << ( 8 -  8)) |
-           ((c & 0xFF00) << (32 - 16));
+    return (((c & 0x00FF) << ( 8 -  8)) |
+            ((c & 0xFF00) << (32 - 16)));
   }
   case DMA2D_FMT_L4: {
-    return (c & 0x0F) | 0xFF000000;
+    return ((c & 0x0F) | 0xFF000000);
   }
   case DMA2D_FMT_A8: {
-    return (c & 0xFF) << (32 - 8);
+    return ((c & 0xFF) << (32 - 8));
   }
   case DMA2D_FMT_A4: {
-    return (c & 0x0F) << (32 - 4);
+    return ((c & 0x0F) << (32 - 4));
   }
   default:
     osalDbgAssert(false, "invalid format");

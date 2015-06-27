@@ -337,8 +337,8 @@ void ltdcStart(LTDCDriver *ltdcp, const LTDCConfig *configp) {
   hacc = configp->hsync_width - 1;
   vacc = configp->vsync_height - 1;
 
-  LTDC->SSCR = ((hacc << 16) & LTDC_SSCR_HSW) |
-               ((vacc <<  0) & LTDC_SSCR_VSH);
+  LTDC->SSCR = (((hacc << 16) & LTDC_SSCR_HSW) |
+                ((vacc <<  0) & LTDC_SSCR_VSH));
 
   /* Set accumulated back porch params.*/
   osalDbgAssert(configp->hbp_width >= LTDC_MIN_HBP_WIDTH, "bounds");
@@ -354,8 +354,8 @@ void ltdcStart(LTDCDriver *ltdcp, const LTDCConfig *configp) {
   osalDbgAssert(vacc + 1 >= LTDC_MIN_ACC_VBP_HEIGHT, "bounds");
   osalDbgAssert(vacc + 1 <= LTDC_MAX_ACC_VBP_HEIGHT, "bounds");
 
-  LTDC->BPCR = ((hacc << 16) & LTDC_BPCR_AHBP) |
-               ((vacc <<  0) & LTDC_BPCR_AVBP);
+  LTDC->BPCR = (((hacc << 16) & LTDC_BPCR_AHBP) |
+                ((vacc <<  0) & LTDC_BPCR_AVBP));
 
   ltdcp->active_window.hstart = hacc + 1;
   ltdcp->active_window.vstart = vacc + 1;
@@ -374,8 +374,8 @@ void ltdcStart(LTDCDriver *ltdcp, const LTDCConfig *configp) {
   osalDbgAssert(vacc + 1 >= LTDC_MIN_ACC_ACTIVE_HEIGHT, "bounds");
   osalDbgAssert(vacc + 1 <= LTDC_MAX_ACC_ACTIVE_HEIGHT, "bounds");
 
-  LTDC->AWCR = ((hacc << 16) & LTDC_AWCR_AAW) |
-               ((vacc <<  0) & LTDC_AWCR_AAH);
+  LTDC->AWCR = (((hacc << 16) & LTDC_AWCR_AAW) |
+                ((vacc <<  0) & LTDC_AWCR_AAH));
 
   ltdcp->active_window.hstop = hacc;
   ltdcp->active_window.vstop = vacc;
@@ -394,8 +394,8 @@ void ltdcStart(LTDCDriver *ltdcp, const LTDCConfig *configp) {
   osalDbgAssert(vacc + 1 >= LTDC_MIN_ACC_TOTAL_HEIGHT, "bounds");
   osalDbgAssert(vacc + 1 <= LTDC_MAX_ACC_TOTAL_HEIGHT, "bounds");
 
-  LTDC->TWCR = ((hacc << 16) & LTDC_TWCR_TOTALW) |
-               ((vacc <<  0) & LTDC_TWCR_TOTALH);
+  LTDC->TWCR = (((hacc << 16) & LTDC_TWCR_TOTALW) |
+                ((vacc <<  0) & LTDC_TWCR_TOTALH));
 
   /* Set signal polarities and other flags.*/
   ltdcSetEnableFlagsI(ltdcp, configp->flags & ~LTDC_EF_ENABLE);
@@ -980,8 +980,8 @@ void ltdcSetLineInterruptPosI(LTDCDriver *ltdcp, uint16_t line) {
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
 
-  LTDC->LIPCR = (LTDC->LIPCR & ~LTDC_LIPCR_LIPOS) |
-                ((uint32_t)line & LTDC_LIPCR_LIPOS);
+  LTDC->LIPCR = ((LTDC->LIPCR & ~LTDC_LIPCR_LIPOS) |
+                 ((uint32_t)line & LTDC_LIPCR_LIPOS));
 }
 
 /**
@@ -1203,8 +1203,8 @@ void ltdcBgSetEnableFlagsI(LTDCDriver *ltdcp, ltdc_flags_t flags) {
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
 
-  LTDC_Layer1->CR = (LTDC_Layer1->CR & ~LTDC_LEF_MASK) |
-                    ((uint32_t)flags & LTDC_LEF_MASK);
+  LTDC_Layer1->CR = ((LTDC_Layer1->CR & ~LTDC_LEF_MASK) |
+                     ((uint32_t)flags & LTDC_LEF_MASK));
 }
 
 /**
@@ -1453,7 +1453,7 @@ void ltdcBgSetPaletteColorI(LTDCDriver *ltdcp, uint8_t slot, ltdc_color_t c) {
   osalDbgAssert(!ltdcBgIsEnabledI(ltdcp), "invalid state");
   (void)ltdcp;
 
-  LTDC_Layer1->CLUTWR = ((uint32_t)slot << 24) | (c & 0x00FFFFFF);
+  LTDC_Layer1->CLUTWR = (((uint32_t)slot << 24) | (c & 0x00FFFFFF));
 }
 
 /**
@@ -1499,7 +1499,7 @@ void ltdcBgSetPaletteI(LTDCDriver *ltdcp, const ltdc_color_t colors[],
   (void)ltdcp;
 
   for (i = 0; i < length; ++i)
-    LTDC_Layer1->CLUTWR = ((uint32_t)i << 24) | (colors[i] & 0x00FFFFFF);
+    LTDC_Layer1->CLUTWR = (((uint32_t)i << 24) | (colors[i] & 0x00FFFFFF));
 }
 
 /**
@@ -1576,8 +1576,8 @@ void ltdcBgSetPixelFormatI(LTDCDriver *ltdcp, ltdc_pixfmt_t fmt) {
   osalDbgAssert(fmt <= LTDC_MAX_PIXFMT_ID, "bounds");
   (void)ltdcp;
 
-  LTDC_Layer1->PFCR = (LTDC_Layer1->PFCR & ~LTDC_LxPFCR_PF) |
-                      ((uint32_t)fmt & LTDC_LxPFCR_PF);
+  LTDC_Layer1->PFCR = ((LTDC_Layer1->PFCR & ~LTDC_LxPFCR_PF) |
+                       ((uint32_t)fmt & LTDC_LxPFCR_PF));
 }
 
 /**
@@ -1755,8 +1755,8 @@ void ltdcBgSetKeyingColorI(LTDCDriver *ltdcp, ltdc_color_t c) {
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
 
-  LTDC_Layer1->CKCR = (LTDC_Layer1->CKCR & ~0x00FFFFFF) |
-                      ((uint32_t)c & 0x00FFFFFF);
+  LTDC_Layer1->CKCR = ((LTDC_Layer1->CKCR & ~0x00FFFFFF) |
+                       ((uint32_t)c & 0x00FFFFFF));
 }
 
 /**
@@ -1828,8 +1828,8 @@ void ltdcBgSetConstantAlphaI(LTDCDriver *ltdcp, uint8_t a) {
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
 
-  LTDC_Layer1->CACR = (LTDC_Layer1->CACR & ~LTDC_LxCACR_CONSTA) |
-                      ((uint32_t)a & LTDC_LxCACR_CONSTA);
+  LTDC_Layer1->CACR = ((LTDC_Layer1->CACR & ~LTDC_LxCACR_CONSTA) |
+                       ((uint32_t)a & LTDC_LxCACR_CONSTA));
 }
 
 /**
@@ -1973,8 +1973,8 @@ void ltdcBgSetBlendingFactorsI(LTDCDriver *ltdcp, ltdc_blendf_t bf) {
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
 
-  LTDC_Layer1->BFCR = (LTDC_Layer1->BFCR & ~LTDC_LxBFCR_BF) |
-                      ((uint32_t)bf & LTDC_LxBFCR_BF);
+  LTDC_Layer1->BFCR = ((LTDC_Layer1->BFCR & ~LTDC_LxBFCR_BF) |
+                       ((uint32_t)bf & LTDC_LxBFCR_BF));
 }
 
 /**
@@ -2063,8 +2063,8 @@ void ltdcBgSetWindowI(LTDCDriver *ltdcp, const ltdc_window_t *windowp) {
   osalDbgAssert(start >= ltdcp->active_window.hstart, "bounds");
   osalDbgAssert(stop <= ltdcp->active_window.hstop, "bounds");
 
-  LTDC_Layer1->WHPCR = ((start <<  0) & LTDC_LxWHPCR_WHSTPOS) |
-                       ((stop  << 16) & LTDC_LxWHPCR_WHSPPOS);
+  LTDC_Layer1->WHPCR = (((start <<  0) & LTDC_LxWHPCR_WHSTPOS) |
+                        ((stop  << 16) & LTDC_LxWHPCR_WHSPPOS));
 
   /* Vertical boundaries.*/
   start = (uint32_t)windowp->vstart + ltdcp->active_window.vstart;
@@ -2073,8 +2073,8 @@ void ltdcBgSetWindowI(LTDCDriver *ltdcp, const ltdc_window_t *windowp) {
   osalDbgAssert(start >= ltdcp->active_window.vstart, "bounds");
   osalDbgAssert(stop <= ltdcp->active_window.vstop, "bounds");
 
-  LTDC_Layer1->WVPCR = ((start <<  0) & LTDC_LxWVPCR_WVSTPOS) |
-                       ((stop  << 16) & LTDC_LxWVPCR_WVSPPOS);
+  LTDC_Layer1->WVPCR = (((start <<  0) & LTDC_LxWVPCR_WVSTPOS) |
+                        ((stop  << 16) & LTDC_LxWVPCR_WVSPPOS));
 }
 
 /**
@@ -2199,7 +2199,7 @@ void ltdcBgSetFrameI(LTDCDriver *ltdcp, const ltdc_frame_t *framep) {
 
   LTDC_Layer1->CFBAR = (uint32_t)framep->bufferp & LTDC_LxCFBAR_CFBADD;
   LTDC_Layer1->CFBLR = ((((uint32_t)framep->pitch << 16) & LTDC_LxCFBLR_CFBP) |
-                       ((linesize + 3) & LTDC_LxCFBLR_CFBLL));
+                        ((linesize + 3) & LTDC_LxCFBLR_CFBLL));
   LTDC_Layer1->CFBLNR = (uint32_t)framep->height & LTDC_LxCFBLNR_CFBLNBR;
 }
 
@@ -2453,8 +2453,8 @@ void ltdcFgSetEnableFlagsI(LTDCDriver *ltdcp, ltdc_flags_t flags) {
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
 
-  LTDC_Layer2->CR = (LTDC_Layer2->CR & ~LTDC_LEF_MASK) |
-                    ((uint32_t)flags & LTDC_LEF_MASK);
+  LTDC_Layer2->CR = ((LTDC_Layer2->CR & ~LTDC_LEF_MASK) |
+                     ((uint32_t)flags & LTDC_LEF_MASK));
 }
 
 /**
@@ -2703,7 +2703,7 @@ void ltdcFgSetPaletteColorI(LTDCDriver *ltdcp, uint8_t slot, ltdc_color_t c) {
   osalDbgAssert(!ltdcFgIsEnabledI(ltdcp), "invalid state");
   (void)ltdcp;
 
-  LTDC_Layer2->CLUTWR = ((uint32_t)slot << 24) | (c & 0x00FFFFFF);
+  LTDC_Layer2->CLUTWR = (((uint32_t)slot << 24) | (c & 0x00FFFFFF));
 }
 
 /**
@@ -2749,7 +2749,7 @@ void ltdcFgSetPaletteI(LTDCDriver *ltdcp, const ltdc_color_t colors[],
   (void)ltdcp;
 
   for (i = 0; i < length; ++i)
-    LTDC_Layer2->CLUTWR = ((uint32_t)i << 24) | (colors[i] & 0x00FFFFFF);
+    LTDC_Layer2->CLUTWR = (((uint32_t)i << 24) | (colors[i] & 0x00FFFFFF));
 }
 
 /**
@@ -2826,8 +2826,8 @@ void ltdcFgSetPixelFormatI(LTDCDriver *ltdcp, ltdc_pixfmt_t fmt) {
   osalDbgAssert(fmt <= LTDC_MAX_PIXFMT_ID, "bounds");
   (void)ltdcp;
 
-  LTDC_Layer2->PFCR = (LTDC_Layer2->PFCR & ~LTDC_LxPFCR_PF) |
-                      ((uint32_t)fmt & LTDC_LxPFCR_PF);
+  LTDC_Layer2->PFCR = ((LTDC_Layer2->PFCR & ~LTDC_LxPFCR_PF) |
+                       ((uint32_t)fmt & LTDC_LxPFCR_PF));
 }
 
 /**
@@ -3005,8 +3005,8 @@ void ltdcFgSetKeyingColorI(LTDCDriver *ltdcp, ltdc_color_t c) {
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
 
-  LTDC_Layer2->CKCR = (LTDC_Layer2->CKCR & ~0x00FFFFFF) |
-                      ((uint32_t)c & 0x00FFFFFF);
+  LTDC_Layer2->CKCR = ((LTDC_Layer2->CKCR & ~0x00FFFFFF) |
+                       ((uint32_t)c & 0x00FFFFFF));
 }
 
 /**
@@ -3078,8 +3078,8 @@ void ltdcFgSetConstantAlphaI(LTDCDriver *ltdcp, uint8_t a) {
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
 
-  LTDC_Layer2->CACR = (LTDC_Layer2->CACR & ~LTDC_LxCACR_CONSTA) |
-                      ((uint32_t)a & LTDC_LxCACR_CONSTA);
+  LTDC_Layer2->CACR = ((LTDC_Layer2->CACR & ~LTDC_LxCACR_CONSTA) |
+                       ((uint32_t)a & LTDC_LxCACR_CONSTA));
 }
 
 /**
@@ -3223,8 +3223,8 @@ void ltdcFgSetBlendingFactorsI(LTDCDriver *ltdcp, ltdc_blendf_t bf) {
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
 
-  LTDC_Layer2->BFCR = (LTDC_Layer2->BFCR & ~LTDC_LxBFCR_BF) |
-                      ((uint32_t)bf & LTDC_LxBFCR_BF);
+  LTDC_Layer2->BFCR = ((LTDC_Layer2->BFCR & ~LTDC_LxBFCR_BF) |
+                       ((uint32_t)bf & LTDC_LxBFCR_BF));
 }
 
 /**
@@ -3313,8 +3313,8 @@ void ltdcFgSetWindowI(LTDCDriver *ltdcp, const ltdc_window_t *windowp) {
   osalDbgAssert(start >= ltdcp->active_window.hstart, "bounds");
   osalDbgAssert(stop <= ltdcp->active_window.hstop, "bounds");
 
-  LTDC_Layer2->WHPCR = ((start <<  0) & LTDC_LxWHPCR_WHSTPOS) |
-                       ((stop  << 16) & LTDC_LxWHPCR_WHSPPOS);
+  LTDC_Layer2->WHPCR = (((start <<  0) & LTDC_LxWHPCR_WHSTPOS) |
+                        ((stop  << 16) & LTDC_LxWHPCR_WHSPPOS));
 
   /* Vertical boundaries.*/
   start = (uint32_t)windowp->vstart + ltdcp->active_window.vstart;
@@ -3323,8 +3323,8 @@ void ltdcFgSetWindowI(LTDCDriver *ltdcp, const ltdc_window_t *windowp) {
   osalDbgAssert(start >= ltdcp->active_window.vstart, "bounds");
   osalDbgAssert(stop <= ltdcp->active_window.vstop, "bounds");
 
-  LTDC_Layer2->WVPCR = ((start <<  0) & LTDC_LxWVPCR_WVSTPOS) |
-                       ((stop  << 16) & LTDC_LxWVPCR_WVSPPOS);
+  LTDC_Layer2->WVPCR = (((start <<  0) & LTDC_LxWVPCR_WVSTPOS) |
+                        ((stop  << 16) & LTDC_LxWVPCR_WVSPPOS));
 }
 
 /**
@@ -3449,7 +3449,7 @@ void ltdcFgSetFrameI(LTDCDriver *ltdcp, const ltdc_frame_t *framep) {
 
   LTDC_Layer2->CFBAR = (uint32_t)framep->bufferp & LTDC_LxCFBAR_CFBADD;
   LTDC_Layer2->CFBLR = ((((uint32_t)framep->pitch << 16) & LTDC_LxCFBLR_CFBP) |
-                       ((linesize + 3) & LTDC_LxCFBLR_CFBLL));
+                        ((linesize + 3) & LTDC_LxCFBLR_CFBLL));
   LTDC_Layer2->CFBLNR = (uint32_t)framep->height & LTDC_LxCFBLNR_CFBLNBR;
 }
 
@@ -3684,35 +3684,35 @@ ltdc_color_t ltdcFromARGB8888(ltdc_color_t c, ltdc_pixfmt_t fmt) {
     return c;
   }
   case LTDC_FMT_RGB888: {
-    return c & 0x00FFFFFF;
+    return (c & 0x00FFFFFF);
   }
   case LTDC_FMT_RGB565: {
-    return ((c & 0x000000F8) >> ( 8 -  5)) |
-           ((c & 0x0000FC00) >> (16 - 11)) |
-           ((c & 0x00F80000) >> (24 - 16));
+    return (((c & 0x000000F8) >> ( 8 -  5)) |
+            ((c & 0x0000FC00) >> (16 - 11)) |
+            ((c & 0x00F80000) >> (24 - 16)));
   }
   case LTDC_FMT_ARGB1555: {
-    return ((c & 0x000000F8) >> ( 8 -  5)) |
-           ((c & 0x0000F800) >> (16 - 10)) |
-           ((c & 0x00F80000) >> (24 - 15)) |
-           ((c & 0x80000000) >> (32 - 16));
+    return (((c & 0x000000F8) >> ( 8 -  5)) |
+            ((c & 0x0000F800) >> (16 - 10)) |
+            ((c & 0x00F80000) >> (24 - 15)) |
+            ((c & 0x80000000) >> (32 - 16)));
   }
   case LTDC_FMT_ARGB4444: {
-    return ((c & 0x000000F0) >> ( 8 -  4)) |
-           ((c & 0x0000F000) >> (16 -  8)) |
-           ((c & 0x00F00000) >> (24 - 12)) |
-           ((c & 0xF0000000) >> (32 - 16));
+    return (((c & 0x000000F0) >> ( 8 -  4)) |
+            ((c & 0x0000F000) >> (16 -  8)) |
+            ((c & 0x00F00000) >> (24 - 12)) |
+            ((c & 0xF0000000) >> (32 - 16)));
   }
   case LTDC_FMT_L8: {
-    return c & 0x000000FF;
+    return (c & 0x000000FF);
   }
   case LTDC_FMT_AL44: {
-    return ((c & 0x000000F0) >> ( 8 - 4)) |
-           ((c & 0xF0000000) >> (32 - 8));
+    return (((c & 0x000000F0) >> ( 8 - 4)) |
+            ((c & 0xF0000000) >> (32 - 8)));
   }
   case LTDC_FMT_AL88: {
-    return ((c & 0x000000FF) >> ( 8 -  8)) |
-           ((c & 0xFF000000) >> (32 - 16));
+    return (((c & 0x000000FF) >> ( 8 -  8)) |
+            ((c & 0xFF000000) >> (32 - 16)));
   }
   default:
     osalDbgAssert(false, "invalid format");
@@ -3739,43 +3739,43 @@ ltdc_color_t ltdcToARGB8888(ltdc_color_t c, ltdc_pixfmt_t fmt) {
     return c;
   }
   case LTDC_FMT_RGB888: {
-    return (c & 0x00FFFFFF) | 0xFF000000;
+    return ((c & 0x00FFFFFF) | 0xFF000000);
   }
   case LTDC_FMT_RGB565: {
     register ltdc_color_t output = 0xFF000000;
-    if (c & 0x001F) output |= ((c & 0x001F) << ( 8 -  5)) | 0x00000007;
-    if (c & 0x07E0) output |= ((c & 0x07E0) << (16 - 11)) | 0x00000300;
-    if (c & 0xF800) output |= ((c & 0xF800) << (24 - 16)) | 0x00070000;
+    if (c & 0x001F) output |= (((c & 0x001F) << ( 8 -  5)) | 0x00000007);
+    if (c & 0x07E0) output |= (((c & 0x07E0) << (16 - 11)) | 0x00000300);
+    if (c & 0xF800) output |= (((c & 0xF800) << (24 - 16)) | 0x00070000);
     return output;
   }
   case LTDC_FMT_ARGB1555: {
     register ltdc_color_t output = 0x00000000;
-    if (c & 0x001F) output |= ((c & 0x001F) << ( 8 -  5)) | 0x00000007;
-    if (c & 0x03E0) output |= ((c & 0x03E0) << (16 - 10)) | 0x00000700;
-    if (c & 0x7C00) output |= ((c & 0x7C00) << (24 - 15)) | 0x00070000;
+    if (c & 0x001F) output |= (((c & 0x001F) << ( 8 -  5)) | 0x00000007);
+    if (c & 0x03E0) output |= (((c & 0x03E0) << (16 - 10)) | 0x00000700);
+    if (c & 0x7C00) output |= (((c & 0x7C00) << (24 - 15)) | 0x00070000);
     if (c & 0x8000) output |= 0xFF000000;
     return output;
   }
   case LTDC_FMT_ARGB4444: {
     register ltdc_color_t output = 0x00000000;
-    if (c & 0x000F) output |= ((c & 0x000F) << ( 8 -  4)) | 0x0000000F;
-    if (c & 0x00F0) output |= ((c & 0x00F0) << (16 -  8)) | 0x00000F00;
-    if (c & 0x0F00) output |= ((c & 0x0F00) << (24 - 12)) | 0x000F0000;
-    if (c & 0xF000) output |= ((c & 0xF000) << (32 - 16)) | 0x0F000000;
+    if (c & 0x000F) output |= (((c & 0x000F) << ( 8 -  4)) | 0x0000000F);
+    if (c & 0x00F0) output |= (((c & 0x00F0) << (16 -  8)) | 0x00000F00);
+    if (c & 0x0F00) output |= (((c & 0x0F00) << (24 - 12)) | 0x000F0000);
+    if (c & 0xF000) output |= (((c & 0xF000) << (32 - 16)) | 0x0F000000);
     return output;
   }
   case LTDC_FMT_L8: {
-    return (c & 0xFF) | 0xFF000000;
+    return ((c & 0xFF) | 0xFF000000);
   }
   case LTDC_FMT_AL44: {
     register ltdc_color_t output = 0x00000000;
-    if (c & 0x0F) output |= ((c & 0x0F) << ( 8 - 4)) | 0x0000000F;
-    if (c & 0xF0) output |= ((c & 0xF0) << (32 - 8)) | 0x0F000000;
+    if (c & 0x0F) output |= (((c & 0x0F) << ( 8 - 4)) | 0x0000000F);
+    if (c & 0xF0) output |= (((c & 0xF0) << (32 - 8)) | 0x0F000000);
     return output;
   }
   case LTDC_FMT_AL88: {
-    return ((c & 0x00FF) << ( 8 -  8)) |
-           ((c & 0xFF00) << (32 - 16));
+    return (((c & 0x00FF) << ( 8 -  8)) |
+            ((c & 0xFF00) << (32 - 16)));
   }
   default:
     osalDbgAssert(false, "invalid format");
