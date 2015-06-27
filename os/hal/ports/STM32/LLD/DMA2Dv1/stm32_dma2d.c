@@ -86,7 +86,7 @@ static const uint8_t dma2d_bpp[DMA2D_MAX_PIXFMT_ID + 1] = {
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(DMA2D_IRQHandler) {
+OSAL_IRQ_HANDLER(STM32_DMA2D_HANDLER) {
 
   DMA2DDriver *const dma2dp = &DMA2DD1;
   bool job_done = false;

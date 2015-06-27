@@ -171,28 +171,6 @@
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
-/*
- * These definitions should already be defined by stm32_isr.h
- */
-#if !defined(STM32_DMA2D_NUMBER) && !defined(__DOXYGEN__)
-#define STM32_DMA2D_NUMBER                  (DMA2D_IRQn)
-#endif
-
-/*
- * These definitions should already be defined by hal_lld.h
- */
-#if !defined(DMA2D_IRQHandler) && !defined(__DOXYGEN__)
-#define DMA2D_IRQHandler                    Vector1A8
-#endif
-
-#if !defined(STM32_HAS_DMA2D) && !defined(__DOXYGEN__)
-#ifdef STM32F429_439xx
-#define STM32_HAS_DMA2D                     (TRUE)
-#else
-#define STM32_HAS_DMA2D                     (FALSE)
-#endif
-#endif
-
 /**
  * @name    DMA2D configuration options
  * @{
@@ -243,10 +221,6 @@
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
-
-#ifndef STM32F429_439xx
-#error "Currently only STM32F429xx and STM32F439xx are supported"
-#endif
 
 #if (TRUE != STM32_HAS_DMA2D)
 #error "DMA2D must be present when using the DMA2D subsystem"

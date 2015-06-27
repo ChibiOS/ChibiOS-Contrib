@@ -203,36 +203,6 @@
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
-/*
- * These definitions should already be defined by stm32_isr.h
- */
-#if !defined(STM32_LTDC_EV_NUMBER) && !defined(__DOXYGEN__)
-#define STM32_LTDC_EV_NUMBER                LTDC_IRQn
-#endif
-
-#if !defined(STM32_LTDC_ER_NUMBER) && !defined(__DOXYGEN__)
-#define STM32_LTDC_ER_NUMBER                LTDC_ER_IRQn
-#endif
-
-/*
- * These definitions should already be defined by hal_lld.h
- */
-#if !defined(STM32_LTDC_EV_HANDLER) && !defined(__DOXYGEN__)
-#define STM32_LTDC_EV_HANDLER               Vector1A0
-#endif
-
-#if !defined(STM32_LTDC_ER_HANDLER) && !defined(__DOXYGEN__)
-#define STM32_LTDC_ER_HANDLER               Vector1A4
-#endif
-
-#if !defined(STM32_HAS_LTDC) && !defined(__DOXYGEN__)
-#ifdef STM32F429_439xx
-#define STM32_HAS_LTDC                      TRUE
-#else
-#define STM32_HAS_LTDC                      FALSE
-#endif
-#endif
-
 /**
  * @name    LTDC configuration options
  * @{
@@ -290,10 +260,6 @@
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
-
-#ifndef STM32F429_439xx
-#error "Currently only STM32F429xx and STM32F439xx are supported"
-#endif
 
 #if (TRUE != STM32_HAS_LTDC)
 #error "LTDC must be present when using the LTDC subsystem"
