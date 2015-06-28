@@ -38,6 +38,13 @@
 #define HAL_USE_ONEWIRE             TRUE
 #endif
 
+/**
+ * @brief   Enables the EICU subsystem.
+ */
+#if !defined(HAL_USE_EICU) || defined(__DOXYGEN__)
+#define HAL_USE_EICU                FALSE
+#endif
+
 /*===========================================================================*/
 /* FSMCNAND driver related settings.                                         */
 /*===========================================================================*/
