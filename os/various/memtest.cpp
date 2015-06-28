@@ -220,7 +220,7 @@ static void memtest_wrapper(memtest_t *testp,
                             void (*p_u8)(memtest_t *testp),
                             void (*p_u16)(memtest_t *testp),
                             void (*p_u32)(memtest_t *testp)) {
-  switch(testp->width){
+  switch(testp->width) {
   case MEMTEST_WIDTH_32:
     p_u8(testp);
     p_u16(testp);
