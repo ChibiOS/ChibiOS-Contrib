@@ -329,6 +329,12 @@
 #define SPI_USE_MUTUAL_EXCLUSION    TRUE
 #endif
 
+/*===========================================================================*/
+/* Community drivers' includes                                               */
+/*===========================================================================*/
+
+#include "halconf_community.h"
+
 #endif /* _HALCONF_H_ */
 
 /** @} */
