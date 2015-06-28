@@ -77,14 +77,14 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>os</name>
+			<name>os-community</name>
 			<type>2</type>
-			<locationURI>CHIBIOS/os</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/os</locationURI>
 		</link>
 		<link>
-			<name>test</name>
+			<name>os-git</name>
 			<type>2</type>
-			<locationURI>CHIBIOS/test</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/os</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -90,7 +90,7 @@ CHIBIOS = ../../../..
 # Startup files.
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_stm32f4xx.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/os/hal/hal.mk
+include $(CHIBIOS)/community/os/hal/hal.mk
 include $(CHIBIOS)/community/os/hal/ports/STM32/STM32F4xx/platform.mk
 include $(CHIBIOS)/os/hal/boards/ST_STM32F429I_DISCOVERY/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
@@ -120,8 +120,6 @@ CSRC = $(STARTUPSRC) \
        ./main.c \
        ./wolf3d_palette.c \
        ./res/wolf3d_vgagraph_chunk87.c \
-       ./stmdrivers/stm32f4xx_fmc.c \
-       ./stmdrivers/stm32f429i_discovery_sdram.c \
        # eol
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
@@ -157,7 +155,6 @@ INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(CHIBIOS)/os/hal/lib/streams \
          $(CHIBIOS)/community/os/various/devices_lib/others \
          ./res \
-         ./stmdrivers \
          # eol
 
 #

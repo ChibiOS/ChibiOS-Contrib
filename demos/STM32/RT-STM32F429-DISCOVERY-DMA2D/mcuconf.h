@@ -352,4 +352,9 @@
 #define STM32_DMA2D_USE_DMA2D               TRUE
 #define STM32_DMA2D_IRQ_PRIORITY            11
 
+/*
+ * Header for community drivers.
+ */
+#include "mcuconf_community.h"
+
 #endif /* _MCUCONF_H_ */

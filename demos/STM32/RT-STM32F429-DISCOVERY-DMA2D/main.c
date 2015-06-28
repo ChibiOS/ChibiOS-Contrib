@@ -24,15 +24,138 @@
 #include "usbcfg.h"
 #endif
 
-#include "stmdrivers/stm32f429i_discovery_sdram.h"
-#include "stmdrivers/stm32f4xx_fmc.h"
-
+#include "fsmc_sdram.h"
 #include "ili9341.h"
 #include "stm32_ltdc.h"
 #include "stm32_dma2d.h"
 
 #include "res/wolf3d_vgagraph_chunk87.h"
 
+/*===========================================================================*/
+/* SDRAM related.                                                            */
+/*===========================================================================*/
+
+// TODO: Move constants below elsewhere, and normalize their name
+
+/* SDRAM bank base address.*/
+#define SDRAM_BANK_ADDR     ((uint32_t)0xD0000000)
+
+/*
+ *  FMC SDRAM Mode definition register defines
+ */
+#define FMC_SDCMR_MRD_BURST_LENGTH_1             ((uint16_t)0x0000)
+#define FMC_SDCMR_MRD_BURST_LENGTH_2             ((uint16_t)0x0001)
+#define FMC_SDCMR_MRD_BURST_LENGTH_4             ((uint16_t)0x0002)
+#define FMC_SDCMR_MRD_BURST_LENGTH_8             ((uint16_t)0x0004)
+#define FMC_SDCMR_MRD_BURST_TYPE_SEQUENTIAL      ((uint16_t)0x0000)
+#define FMC_SDCMR_MRD_BURST_TYPE_INTERLEAVED     ((uint16_t)0x0008)
+#define FMC_SDCMR_MRD_CAS_LATENCY_2              ((uint16_t)0x0020)
+#define FMC_SDCMR_MRD_CAS_LATENCY_3              ((uint16_t)0x0030)
+#define FMC_SDCMR_MRD_OPERATING_MODE_STANDARD    ((uint16_t)0x0000)
+#define FMC_SDCMR_MRD_WRITEBURST_MODE_PROGRAMMED ((uint16_t)0x0000)
+#define FMC_SDCMR_MRD_WRITEBURST_MODE_SINGLE     ((uint16_t)0x0200)
+
+/*
+ * FMC_ReadPipe_Delay
+ */
+#define FMC_ReadPipe_Delay_0               ((uint32_t)0x00000000)
+#define FMC_ReadPipe_Delay_1               ((uint32_t)0x00002000)
+#define FMC_ReadPipe_Delay_2               ((uint32_t)0x00004000)
+#define FMC_ReadPipe_Delay_Mask            ((uint32_t)0x00006000)
+
+/*
+ * FMC_Read_Burst
+ */
+#define FMC_Read_Burst_Disable             ((uint32_t)0x00000000)
+#define FMC_Read_Burst_Enable              ((uint32_t)0x00001000)
+#define FMC_Read_Burst_Mask                ((uint32_t)0x00001000)
+
+/*
+ * FMC_SDClock_Period
+ */
+#define FMC_SDClock_Disable                ((uint32_t)0x00000000)
+#define FMC_SDClock_Period_2               ((uint32_t)0x00000800)
+#define FMC_SDClock_Period_3               ((uint32_t)0x00000C00)
+#define FMC_SDClock_Period_Mask            ((uint32_t)0x00000C00)
+
+/*
+ * FMC_ColumnBits_Number
+ */
+#define FMC_ColumnBits_Number_8b           ((uint32_t)0x00000000)
+#define FMC_ColumnBits_Number_9b           ((uint32_t)0x00000001)
+#define FMC_ColumnBits_Number_10b          ((uint32_t)0x00000002)
+#define FMC_ColumnBits_Number_11b          ((uint32_t)0x00000003)
+
+/*
+ * FMC_RowBits_Number
+ */
+#define FMC_RowBits_Number_11b             ((uint32_t)0x00000000)
+#define FMC_RowBits_Number_12b             ((uint32_t)0x00000004)
+#define FMC_RowBits_Number_13b             ((uint32_t)0x00000008)
+
+/*
+ * FMC_SDMemory_Data_Width
+ */
+#define FMC_SDMemory_Width_8b                ((uint32_t)0x00000000)
+#define FMC_SDMemory_Width_16b               ((uint32_t)0x00000010)
+#define FMC_SDMemory_Width_32b               ((uint32_t)0x00000020)
+
+/*
+ * FMC_InternalBank_Number
+ */
+#define FMC_InternalBank_Number_2          ((uint32_t)0x00000000)
+#define FMC_InternalBank_Number_4          ((uint32_t)0x00000040)
+
+/*
+ * FMC_CAS_Latency
+ */
+#define FMC_CAS_Latency_1                  ((uint32_t)0x00000080)
+#define FMC_CAS_Latency_2                  ((uint32_t)0x00000100)
+#define FMC_CAS_Latency_3                  ((uint32_t)0x00000180)
+
+/*
+ * FMC_Write_Protection
+ */
+#define FMC_Write_Protection_Disable       ((uint32_t)0x00000000)
+#define FMC_Write_Protection_Enable        ((uint32_t)0x00000200)
+
+/*
+ * SDRAM driver configuration structure.
+ */
+static const SDRAMConfig sdram_cfg = {
+  .sdcr = (uint32_t)(FMC_ColumnBits_Number_8b |
+                     FMC_RowBits_Number_12b |
+                     FMC_SDMemory_Width_16b |
+                     FMC_InternalBank_Number_4 |
+                     FMC_CAS_Latency_3 |
+                     FMC_Write_Protection_Disable |
+                     FMC_SDClock_Period_2 |
+                     FMC_Read_Burst_Disable |
+                     FMC_ReadPipe_Delay_1),
+
+  .sdtr = (uint32_t)((2   - 1) |  // FMC_LoadToActiveDelay = 2 (TMRD: 2 Clock cycles)
+                     (7 <<  4) |  // FMC_ExitSelfRefreshDelay = 7 (TXSR: min=70ns (7x11.11ns))
+                     (4 <<  8) |  // FMC_SelfRefreshTime = 4 (TRAS: min=42ns (4x11.11ns) max=120k (ns))
+                     (7 << 12) |  // FMC_RowCycleDelay = 7 (TRC:  min=70 (7x11.11ns))
+                     (2 << 16) |  // FMC_WriteRecoveryTime = 2 (TWR:  min=1+ 7ns (1+1x11.11ns))
+                     (2 << 20) |  // FMC_RPDelay = 2 (TRP:  20ns => 2x11.11ns)
+                     (2 << 24)),  // FMC_RCDDelay = 2 (TRCD: 20ns => 2x11.11ns)
+
+  .sdcmr = (uint32_t)(((4 - 1) << 5) |
+                      ((FMC_SDCMR_MRD_BURST_LENGTH_2 |
+                        FMC_SDCMR_MRD_BURST_TYPE_SEQUENTIAL |
+                        FMC_SDCMR_MRD_CAS_LATENCY_3 |
+                        FMC_SDCMR_MRD_OPERATING_MODE_STANDARD |
+                        FMC_SDCMR_MRD_WRITEBURST_MODE_SINGLE) << 9)),
+
+  /* if (STM32_SYSCLK == 180000000) ->
+     64ms / 4096 = 15.625us
+     15.625us * 90MHz = 1406 - 20 = 1386 */
+  //.sdrtr = (1386 << 1),
+  .sdrtr = (uint32_t)(683 << 1),
+};
+
+/* SDRAM size, in bytes.*/
 #define IS42S16400J_SIZE             (8 * 1024 * 1024)
 
 /*
@@ -424,251 +547,11 @@ static void cmd_reset(BaseSequentialStream *chp, int argc, char *argv[]) {
   NVIC_SystemReset();
 }
 
-static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
-  uint32_t counter = 0;
-  uint8_t ubWritedata_8b = 0x3C;
-  uint32_t uwReadwritestatus = 0;
-  time_measurement_t tm;
-
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: write\r\n");
-    return;
-  }
-
-  chTMObjectInit(&tm);
-
-  chTMStartMeasurementX(&tm);
-
-  /* Write data value to all SDRAM memory */
-  for (counter = 0; counter < IS42S16400J_SIZE; counter++)
-  {
-    *(volatile uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
-  }
-
-  chTMStopMeasurementX(&tm);
-  uint32_t write_ms = RTT2MS(tm.last);
-
-  if (!uwReadwritestatus) {
-    chprintf(chp, "SDRAM written in %dms.\r\n", write_ms);
-  }
-
-}
-
-static void cmd_erase(BaseSequentialStream *chp, int argc, char *argv[]) {
-  uint32_t counter = 0;
-  uint32_t uwReadwritestatus = 0;
-  time_measurement_t tm;
-
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: erase\r\n");
-    return;
-  }
-
-  chTMObjectInit(&tm);
-
-  //XXX chTMStartMeasurement(&tm);
-
-  /* Write data value to all SDRAM memory */
-  /* Erase SDRAM memory */
-  for (counter = 0; counter < IS42S16400J_SIZE; counter++)
-  {
-    *(volatile uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
-  }
-
-  //XXX chTMStopMeasurement(&tm);
-  uint32_t write_ms = 0;//XXX RTT2MS(tm.last);
-
-  if (!uwReadwritestatus) {
-    chprintf(chp, "SDRAM erased in %dms.\r\n", write_ms);
-  }
-
-}
-
-static void cmd_selfrefresh(BaseSequentialStream *chp, int argc, char *argv[]) {
-  (void)argv;
-
-  FMC_SDRAMCommandTypeDef FMC_SDRAMCommandStructure;
-
-  if (argc > 0) {
-    chprintf(chp, "Usage: selfrefresh\r\n");
-    return;
-  }
-
-  /* Program a self-refresh mode command */
-  FMC_SDRAMCommandStructure.FMC_CommandMode = FMC_Command_Mode_Selfrefresh;
-  FMC_SDRAMCommandStructure.FMC_CommandTarget = FMC_Command_Target_bank2;
-  FMC_SDRAMCommandStructure.FMC_AutoRefreshNumber = 1;
-  FMC_SDRAMCommandStructure.FMC_ModeRegisterDefinition = 0;
-
-  /* Send the command */
-  FMC_SDRAMCmdConfig(&FMC_SDRAMCommandStructure);
-
-  /* Wait until the SDRAM controller is ready */
-  while(FMC_GetFlagStatus(FMC_Bank2_SDRAM, FMC_FLAG_Busy) != RESET) {
-  }
-
-  /* Check the bank mode status */
-  if(FMC_GetModeStatus(FMC_Bank2_SDRAM) != FMC_SelfRefreshMode_Status) {
-    chprintf(chp, "SDRAM is not in self refresh mode, command FAILED.\r\n");
-  } else {
-    chprintf(chp, "SDRAM is in self refresh mode.\r\n");
-  }
-
-}
-
-static void cmd_normal(BaseSequentialStream *chp, int argc, char *argv[]) {
-  (void)argv;
-
-  FMC_SDRAMCommandTypeDef FMC_SDRAMCommandStructure;
-
-  if (argc > 0) {
-    chprintf(chp, "Usage: normal\r\n");
-    return;
-  }
-
-  /* Program a self-refresh mode command */
-  FMC_SDRAMCommandStructure.FMC_CommandMode = FMC_Command_Mode_normal;
-  FMC_SDRAMCommandStructure.FMC_CommandTarget = FMC_Command_Target_bank2;
-  FMC_SDRAMCommandStructure.FMC_AutoRefreshNumber = 1;
-  FMC_SDRAMCommandStructure.FMC_ModeRegisterDefinition = 0;
-
-  /* Send the command */
-  FMC_SDRAMCmdConfig(&FMC_SDRAMCommandStructure);
-
-  /* Wait until the SDRAM controller is ready */
-  while(FMC_GetFlagStatus(FMC_Bank2_SDRAM, FMC_FLAG_Busy) != RESET) {
-  }
-
-  /* Check the bank mode status */
-  if(FMC_GetModeStatus(FMC_Bank2_SDRAM) != FMC_NormalMode_Status) {
-    chprintf(chp, "SDRAM is not in normal mode, command FAILED.\r\n");
-  } else {
-    chprintf(chp, "SDRAM is in normal mode.\r\n");
-  }
-
-}
-
-static void cmd_check(BaseSequentialStream *chp, int argc, char *argv[]) {
-  uint32_t counter = 0;
-  uint8_t ubWritedata_8b = 0x3C, ubReaddata_8b = 0;
-  uint32_t uwReadwritestatus = 0;
-  time_measurement_t tm;
-
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: check\r\n");
-    return;
-  }
-
-  chTMObjectInit(&tm);
-
-  chTMStartMeasurementX(&tm);
-
-  /* Read back SDRAM memory and check content correctness*/
-  counter = 0;
-  uwReadwritestatus = 0;
-  while ((counter < IS42S16400J_SIZE) && (uwReadwritestatus == 0))
-  {
-    ubReaddata_8b = *(volatile uint8_t*)(SDRAM_BANK_ADDR + counter);
-    if ( ubReaddata_8b != (uint8_t)(ubWritedata_8b + counter))
-    {
-      uwReadwritestatus = 1;
-      chprintf(chp, "Error at %d, expected %d but read %d.\r\n", counter, ubWritedata_8b + counter, ubReaddata_8b);
-    }
-    counter++;
-  }
-
-  chTMStopMeasurementX(&tm);
-  uint32_t check_ms = RTT2MS(tm.last);
-
-  //FIXME time this
-  if (!uwReadwritestatus) {
-    chprintf(chp, "SDRAM read and check completed successfully in %dms.\r\n", check_ms);
-  }
-
-}
-
-static void cmd_sdram(BaseSequentialStream *chp, int argc, char *argv[]) {
-  uint32_t counter = 0;
-  uint8_t ubWritedata_8b = 0x3C, ubReaddata_8b = 0;
-  uint32_t uwReadwritestatus = 0;
-  time_measurement_t tm;
-
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: sdram\r\n");
-    return;
-  }
-
-  chTMObjectInit(&tm);
-
-  chTMStartMeasurementX(&tm);
-
-//  /* Erase SDRAM memory */
-//  for (counter = 0; counter < IS42S16400J_SIZE; counter++)
-//  {
-//    *(volatile uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
-//  }
-
-  /* Write data value to all SDRAM memory */
-  for (counter = 0; counter < IS42S16400J_SIZE; counter++)
-  {
-    *(volatile uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
-  }
-
-  chTMStopMeasurementX(&tm);
-  uint32_t write_ms = RTT2MS(tm.last);
-
-  chTMStartMeasurementX(&tm);
-
-  /* Read back SDRAM memory */
-  counter = 0;
-  while ((counter < IS42S16400J_SIZE))
-  {
-    ubReaddata_8b = *(volatile uint8_t*)(SDRAM_BANK_ADDR + counter);
-    counter++;
-  }
-
-  chTMStopMeasurementX(&tm);
-  uint32_t read_ms = RTT2MS(tm.last);
-
-  /* Read back SDRAM memory and check content correctness*/
-  counter = 0;
-  uwReadwritestatus = 0;
-  while ((counter < IS42S16400J_SIZE) && (uwReadwritestatus == 0))
-  {
-    ubReaddata_8b = *(volatile uint8_t*)(SDRAM_BANK_ADDR + counter);
-    if ( ubReaddata_8b != (uint8_t)(ubWritedata_8b + counter))
-    {
-      uwReadwritestatus = 1;
-      chprintf(chp, "Error at %d, expected %d but read %d.\r\n", counter, ubWritedata_8b + counter, ubReaddata_8b);
-    }
-    counter++;
-  }
-
-  if (!uwReadwritestatus) {
-    chprintf(chp, "SDRAM test completed successfully, writing entire memory took %dms, reading it took %dms.\r\n", write_ms, read_ms);
-  }
-
-}
-
 static const ShellCommand commands[] = {
   {"mem", cmd_mem},
   {"threads", cmd_threads},
   {"test", cmd_test},
-  {"sdram", cmd_sdram},
   {"reset", cmd_reset},
-  {"write", cmd_write},
-  {"check", cmd_check},
-  {"erase", cmd_erase},
-  {"selfrefresh", cmd_selfrefresh},
-  {"normal", cmd_normal},
   {NULL, NULL}
 };
 
@@ -730,10 +613,10 @@ int main(void) {
 #endif /* HAL_USE_SERIAL_USB */
 
   /*
-   * Initialise SDRAM, board.h has already configured GPIO correctly
-   * (except that ST example uses 50MHz not 100MHz?)
+   * Initialise FSMC for SDRAM.
    */
-  SDRAM_Init();
+  fsmcSdramInit();
+  fsmcSdramStart(&SDRAMD, &sdram_cfg);
   sdram_bulk_erase();
 
   /*

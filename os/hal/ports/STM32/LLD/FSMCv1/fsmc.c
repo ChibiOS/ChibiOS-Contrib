@@ -24,7 +24,7 @@
 #include "hal.h"
 #include "fsmc.h"
 
-#if HAL_USE_NAND || STM32_USE_FSMC_SRAM || STM32_USE_FSMC_SDRAM || \
+#if (HAL_USE_NAND || STM32_USE_FSMC_SRAM || STM32_USE_FSMC_SDRAM) || \
   defined(__DOXYGEN__)
 
 /*===========================================================================*/
@@ -119,7 +119,7 @@ void fsmc_init(void) {
 void fsmc_start(FSMCDriver *fsmcp) {
 
   osalDbgAssert((fsmcp->state == FSMC_STOP) || (fsmcp->state == FSMC_READY),
-              "invalid state");
+                "invalid state");
 
   if (fsmcp->state == FSMC_STOP) {
     /* Enables the peripheral.*/
@@ -174,12 +174,12 @@ CH_IRQ_HANDLER(STM32_FSMC_HANDLER) {
 
   CH_IRQ_PROLOGUE();
 #if STM32_NAND_USE_FSMC_NAND1
-  if (FSMCD1.nand1->SR & FSMC_SR_ISR_MASK){
+  if (FSMCD1.nand1->SR & FSMC_SR_ISR_MASK) {
     NANDD1.isr_handler(&NANDD1);
   }
 #endif
 #if STM32_NAND_USE_FSMC_NAND2
-  if (FSMCD1.nand2->SR & FSMC_SR_ISR_MASK){
+  if (FSMCD1.nand2->SR & FSMC_SR_ISR_MASK) {
     NANDD2.isr_handler(&NANDD2);
   }
 #endif
