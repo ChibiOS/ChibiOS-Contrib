@@ -30,7 +30,7 @@ endif
 
 # Enable this if you want link time optimizations (LTO)
 ifeq ($(USE_LTO),)
-  USE_LTO = yes
+  USE_LTO = no
 endif
 
 # If enabled, this option allows to compile the application in THUMB mode.
@@ -90,7 +90,7 @@ CHIBIOS = ../../../..
 # Startup files.
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_stm32f4xx.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/os/hal/hal.mk
+include $(CHIBIOS)/community/os/hal/hal.mk
 include $(CHIBIOS)/community/os/hal/ports/STM32/STM32F4xx/platform.mk
 include $(CHIBIOS)/os/hal/boards/ST_STM32F429I_DISCOVERY/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
@@ -101,7 +101,7 @@ include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 include $(CHIBIOS)/test/rt/test.mk
 
 # Define linker script file here
-LDSCRIPT = $(CHIBIOS)/community/os/common/ports/ARMCMx/compilers/GCC/ld/STM32F429xI.ld
+LDSCRIPT = STM32F429xI_SDRAM.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -116,7 +116,7 @@ CSRC = $(STARTUPSRC) \
        $(CHIBIOS)/os/various/shell.c \
        $(CHIBIOS)/os/hal/lib/streams/memstreams.c \
        $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
-       $(CHIBIOS)/community/os/various/devices_lib/others/ili9341.c \
+       $(CHIBIOS)/community/os/various/devices_lib/lcd/ili9341.c \
        ./main.c \
        ./wolf3d_palette.c \
        ./res/wolf3d_vgagraph_chunk87.c \
@@ -155,7 +155,7 @@ INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
          $(CHIBIOS)/os/various \
          $(CHIBIOS)/os/hal/lib/streams \
-         $(CHIBIOS)/community/os/various/devices_lib/others \
+         $(CHIBIOS)/community/os/various/devices_lib/lcd \
          ./res \
          ./stmdrivers \
          # eol
