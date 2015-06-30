@@ -60,6 +60,10 @@ void halCommunityInit(void) {
 #if HAL_USE_EICU || defined(__DOXYGEN__)
   eicuInit();
 #endif
+
+#if HAL_USE_CRC || defined(__DOXYGEN__)
+  crcInit();
+#endif
 }
 
 #endif /* HAL_USE_COMMUNITY */
