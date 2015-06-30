@@ -35,6 +35,7 @@
 
 /* Complex drivers.*/
 #include "onewire.h"
+#include "crc.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
