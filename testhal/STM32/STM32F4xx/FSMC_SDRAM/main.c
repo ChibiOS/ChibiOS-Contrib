@@ -18,24 +18,20 @@
    aka barthess.
  */
 
-/*
-TODO:
-write memtest function using ideas from http://www.memtest86.com/technical.htm
-*/
-
 #include "ch.h"
 #include "hal.h"
 
 #include "string.h"
 
 #include "fsmc_sdram.h"
+#include "membench.h"
+#include "memtest.hpp"
 
 /*
  ******************************************************************************
  * DEFINES
  ******************************************************************************
  */
-#define USE_INFINITE_MEMTEST        FALSE
 
 /*
  *  FMC SDRAM Mode definition register defines
@@ -116,6 +112,9 @@ write memtest function using ideas from http://www.memtest86.com/technical.htm
 #define FMC_Write_Protection_Disable       ((uint32_t)0x00000000)
 #define FMC_Write_Protection_Enable        ((uint32_t)0x00000200)
 
+#define SDRAM_SIZE       (8 * 1024 * 1024)
+#define SDRAM_START      ((void *)FSMC_Bank6_MAP_BASE)
+
 /*
  ******************************************************************************
  * EXTERNS
@@ -128,14 +127,13 @@ write memtest function using ideas from http://www.memtest86.com/technical.htm
  ******************************************************************************
  */
 
+static void mem_error_cb(memtest_t *memp, testtype e, size_t address);
+
 /*
  ******************************************************************************
  * GLOBAL VARIABLES
  ******************************************************************************
  */
-static uint32_t extram_check_buf[16 * 1024];
-static uint32_t *extram_start = (uint32_t *)STM32_SDRAM1_MAP_BASE;
-static const size_t extram_size = 1024*1024;
 
 /*
  * SDRAM driver configuration structure.
@@ -164,17 +162,46 @@ static const SDRAMConfig sdram_cfg = {
                        FMC_SDCMR_MRD_OPERATING_MODE_STANDARD |
                        FMC_SDCMR_MRD_WRITEBURST_MODE_SINGLE) << 9,
 
-  /* if (STM32_SYSCLK == 180000000) ->
-     64ms/4096=15.625us
-     15.625us*90MHz=1406-20=1386 */
-  .sdrtr = 1386 << 1
+  .sdrtr = (uint32_t)(683 << 1),
 };
 
-/* benchmarking results in MiB/S */
-double memset_speed_ext;
-double memset_speed_int;
-double memcpy_speed_ext2int;
-double memcpy_speed_int2ext;
+/*
+ *
+ */
+static uint8_t int_buf[64*1024];
+
+/*
+ *
+ */
+static memtest_t memtest_struct = {
+    SDRAM_START,
+    SDRAM_SIZE,
+    MEMTEST_WIDTH_16,
+    mem_error_cb,
+    42
+};
+
+/*
+ *
+ */
+static membench_t membench_ext = {
+    SDRAM_START,
+    SDRAM_SIZE,
+};
+
+/*
+ *
+ */
+static membench_t membench_int = {
+    int_buf,
+    sizeof(int_buf),
+};
+
+/*
+ *
+ */
+static membench_result_t membench_result_ext2int;
+static membench_result_t membench_result_int2ext;
 
 /*
  ******************************************************************************
@@ -183,58 +210,33 @@ double memcpy_speed_int2ext;
  ******************************************************************************
  ******************************************************************************
  */
-/**
- *
- */
-static void extram_benchmark(void){
 
-  size_t i=0;
-  time_measurement_t mem_tmu;
+void mem_error_cb(memtest_t *memp, testtype e, size_t address) {
+  (void)memp;
+  (void)e;
+  (void)address;
 
-  /* memset speed ext */
-  chTMObjectInit(&mem_tmu);
-  chTMStartMeasurementX(&mem_tmu);
-  memset(extram_start, 0x55, extram_size);
-  //memset(extram_start, 0x00, extram_size);
-  chTMStopMeasurementX(&mem_tmu);
-  memset_speed_ext = 1 / (mem_tmu.cumulative / (double)STM32_SYSCLK);
-
-  /* memset speed int */
-  chTMObjectInit(&mem_tmu);
-  chTMStartMeasurementX(&mem_tmu);
-  for (i=0; i<16; i++)
-    memset(extram_check_buf, i, sizeof(extram_check_buf));
-  chTMStopMeasurementX(&mem_tmu);
-  memset_speed_int = 1 / (mem_tmu.cumulative / (double)STM32_SYSCLK);
-
-  /* memcpy ext2int */
-  chTMObjectInit(&mem_tmu);
-  chTMStartMeasurementX(&mem_tmu);
-  for (i=0; i<16; i++)
-    memcpy(extram_check_buf, extram_start+ i * sizeof(extram_check_buf), sizeof(extram_check_buf));
-  chTMStopMeasurementX(&mem_tmu);
-  memcpy_speed_ext2int = 1 / (mem_tmu.cumulative / (double)STM32_SYSCLK);
-
-  /* memcpy int2ext */
-  chTMObjectInit(&mem_tmu);
-  memset(extram_check_buf, 0xAA, sizeof(extram_check_buf));
-  chTMStartMeasurementX(&mem_tmu);
-  for (i=0; i<16; i++)
-    memcpy(extram_start + i * sizeof(extram_check_buf), extram_check_buf, sizeof(extram_check_buf));
-  chTMStopMeasurementX(&mem_tmu);
-  memcpy_speed_int2ext = 1 / (mem_tmu.cumulative / (double)STM32_SYSCLK);
+  osalSysHalt("Memory broken");
 }
 
-/**
+/*
  *
  */
-#if USE_INFINITE_MEMTEST
-static void memstest(void){
+static void memtest(void) {
+
   while (true) {
-    ;
+    memtest_struct.rand_seed = chSysGetRealtimeCounterX();
+    memtest_run(&memtest_struct, MEMTEST_RUN_ALL);
   }
 }
-#endif /* USE_INFINITE_MEMTEST */
+
+/*
+ *
+ */
+static void membench(void) {
+  membench_run(&membench_ext, &membench_int, &membench_result_int2ext);
+  membench_run(&membench_int, &membench_ext, &membench_result_ext2int);
+}
 
 /*
  ******************************************************************************
@@ -259,11 +261,9 @@ int main(void) {
 
   fsmcSdramInit();
   fsmcSdramStart(&SDRAMD, &sdram_cfg);
-  extram_benchmark();
 
-#if USE_INFINITE_MEMTEST
+  membench();
   memtest();
-#endif
 
   /*
    * Normal main() thread activity, in this demo it does nothing.

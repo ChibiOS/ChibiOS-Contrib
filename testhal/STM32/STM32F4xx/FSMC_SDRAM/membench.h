@@ -1,5 +1,5 @@
 /*
-    ChibiOS/RT - Copyright (C) 2014 Uladzimir Pylinsky aka barthess
+    ChibiOS/RT - Copyright (C) 2013-2014 Uladzimir Pylinsky aka barthess
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,15 +14,36 @@
     limitations under the License.
 */
 
-/*
- * FSMC driver system settings.
- */
-#define STM32_FSMC_USE_FSMC1                TRUE
-#define STM32_FSMC_FSMC1_IRQ_PRIORITY       10
+#ifndef MEMBENCH_H_
+#define MEMBENCH_H_
 
 /*
- * FSMC SDRAM driver system settings.
+ *
  */
-#define STM32_USE_FSMC_SDRAM                TRUE
-#define STM32_SDRAM_USE_FSMC_SDRAM1         FALSE
-#define STM32_SDRAM_USE_FSMC_SDRAM2         TRUE
+typedef struct {
+  void    *start;
+  size_t  size;
+} membench_t;
+
+/*
+ * all values in B/s
+ */
+typedef struct {
+  uint32_t  memset;
+  uint32_t  memcpy;
+  uint32_t  memcpy_dma;
+  uint32_t  memcmp;
+} membench_result_t;
+
+/*
+ *
+ */
+#ifdef __cplusplus
+extern "C" {
+#endif
+  void membench_run(membench_t *dest, const membench_t *src, membench_result_t *ret);
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* MEMBENCH_H_ */

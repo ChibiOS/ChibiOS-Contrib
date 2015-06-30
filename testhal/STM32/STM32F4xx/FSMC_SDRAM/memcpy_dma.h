@@ -1,5 +1,5 @@
 /*
-    ChibiOS/RT - Copyright (C) 2014 Uladzimir Pylinsky aka barthess
+    ChibiOS/RT - Copyright (C) 2013-2014 Uladzimir Pylinsky aka barthess
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,15 +14,27 @@
     limitations under the License.
 */
 
-/*
- * FSMC driver system settings.
- */
-#define STM32_FSMC_USE_FSMC1                TRUE
-#define STM32_FSMC_FSMC1_IRQ_PRIORITY       10
+#ifndef MEMCPY_DMA_H_
+#define MEMCPY_DMA_H_
 
 /*
- * FSMC SDRAM driver system settings.
+ *
  */
-#define STM32_USE_FSMC_SDRAM                TRUE
-#define STM32_SDRAM_USE_FSMC_SDRAM1         FALSE
-#define STM32_SDRAM_USE_FSMC_SDRAM2         TRUE
+typedef struct {
+  const stm32_dma_stream_t *dma;
+} memcpy_dma_engine_t;
+
+/*
+ *
+ */
+#ifdef __cplusplus
+extern "C" {
+#endif
+  void memcpy_dma_start(void);
+  void memcpy_dma_stop(void);
+  void memcpy_dma(void *dest, const void *src, size_t size);
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* MEMCPY_DMA_H_ */
