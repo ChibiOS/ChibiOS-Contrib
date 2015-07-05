@@ -19,6 +19,7 @@
 #include "ch.h"
 #include "hal.h"
 
+#include "membench.h"
 #include "memcpy_dma.h"
 
 /*
@@ -26,8 +27,6 @@
  * DEFINES
  ******************************************************************************
  */
-#define STM32_MEMCPY_DMA_PRIORITY       0
-#define STM32_MEMCPY_DMA_STREAM         STM32_DMA_STREAM_ID(2, 6)
 
 /*
  ******************************************************************************
@@ -46,7 +45,7 @@
  * GLOBAL VARIABLES
  ******************************************************************************
  */
-static memcpy_dma_engine_t engine;
+volatile int warning_suppressor;
 
 /*
  ******************************************************************************
@@ -55,51 +54,80 @@ static memcpy_dma_engine_t engine;
  ******************************************************************************
  ******************************************************************************
  */
+/*
+ * Calculates memory access time in MiB/s.
+ */
+double speed_mibps(const time_measurement_t *tmu, size_t len) {
+  double size; // MiB
+  double time; // sec
+
+  size  = len;
+  size /= 1024 * 1024;
+
+  time  = tmu->last;
+  time /= STM32_SYSCLK;
+
+  return size / time;
+}
+
+/*
+ * Calculates memory access time in B/s.
+ */
+uint32_t speed_bps(const time_measurement_t *tmu, size_t len) {
+
+  uint64_t tmp = len;
+  tmp *= STM32_SYSCLK;
+
+  return tmp / tmu->last;
+}
 
 /*
  ******************************************************************************
  * EXPORTED FUNCTIONS
  ******************************************************************************
  */
-/*
- *
- */
-void memcpy_dma_start(void) {
-  bool b;
-
-  engine.dma = STM32_DMA_STREAM(STM32_MEMCPY_DMA_STREAM);
-  b = dmaStreamAllocate(engine.dma, STM32_MEMCPY_DMA_PRIORITY, NULL, NULL);
-  osalDbgAssert(!b, "stream already allocated");
-}
 
 /*
  *
  */
-void memcpy_dma_stop(void) {
-  dmaStreamRelease(engine.dma);
-}
+void membench_run(membench_t *dest, const membench_t *src,
+                  membench_result_t *result) {
+  time_measurement_t mem_tmu;
+  size_t len;
 
-/*
- *
- */
-void memcpy_dma(void *dest, const void *src, size_t size) {
+  if (src->size < dest->size)
+    len = src->size;
+  else
+    len = dest->size;
 
-  size_t words = size / 4;
-  size_t remainder = size % 4;
-  size_t max_block = 0xFFFF; /* DMA limitation */
+  /* memset */
+  chTMObjectInit(&mem_tmu);
+  chTMStartMeasurementX(&mem_tmu);
+  memset(dest->start, 0x55, dest->size);
+  chTMStopMeasurementX(&mem_tmu);
+  result->memset = speed_bps(&mem_tmu, dest->size);
 
-  uint32_t cr = STM32_DMA_CR_PSIZE_WORD | STM32_DMA_CR_MSIZE_WORD;
+  /* memcpy */
+  chTMObjectInit(&mem_tmu);
+  chTMStartMeasurementX(&mem_tmu);
+  memcpy(dest->start, src->start, len);
+  chTMStopMeasurementX(&mem_tmu);
+  result->memcpy = speed_bps(&mem_tmu, len);
 
-  while (words > max_block) {
-    dmaStartMemCopy(engine.dma, cr, src, dest, max_block)
-    dmaWaitCompletion(engine.dma);
-    words -= max_block;
-  }
+  /* memcmp */
+  chTMObjectInit(&mem_tmu);
+  chTMStartMeasurementX(&mem_tmu);
+  warning_suppressor = memcmp(dest->start, src->start, len);
+  chTMStopMeasurementX(&mem_tmu);
+  result->memcmp = speed_bps(&mem_tmu, len);
 
-  dmaStartMemCopy(engine.dma, cr, src, dest, words)
-  dmaWaitCompletion(engine.dma);
-
-  if (remainder > 0)
-    memcpy(dest+size-remainder, src+size-remainder, remainder);
+  /* memcpy DMA */
+  memcpy_dma_start();
+  chTMObjectInit(&mem_tmu);
+  chTMStartMeasurementX(&mem_tmu);
+  memcpy_dma(dest->start, src->start, len);
+  chTMStopMeasurementX(&mem_tmu);
+  result->memcpy_dma = speed_bps(&mem_tmu, len);
+  memcpy_dma_stop();
 }
 
