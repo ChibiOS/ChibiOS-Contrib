@@ -65,7 +65,7 @@ void tribufObjectInit(tribuf_t *handler, void *front, void *back, void *orphan) 
   handler->back = back;
   handler->orphan = orphan;
 #if (TRIBUF_USE_WAIT == TRUE)
-  chSemObjectInit(&handler->ready, 0);
+  chSemObjectInit(&handler->ready, (cnt_t)0);
 #else
   handler->ready = false;
 #endif
@@ -180,7 +180,7 @@ void tribufSwapBackI(tribuf_t *handler) {
   handler->back = back;
 
 #if (TRIBUF_USE_WAIT == TRUE)
-  if (0 == chSemGetCounterI(&handler->ready))
+  if (chSemGetCounterI(&handler->ready) < (cnt_t)1)
     chSemSignalI(&handler->ready);
 #else
   handler->ready = true;
@@ -205,6 +205,7 @@ void tribufSwapBack(tribuf_t *handler) {
 
   osalSysLock();
   tribufSwapBackI(handler);
+  chSchRescheduleS();
   osalSysUnlock();
 }
 

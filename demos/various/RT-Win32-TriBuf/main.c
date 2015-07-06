@@ -21,16 +21,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define WRITE_LOOPS         10
-#define WRITE_DELAY         2
-#define READ_DELAY          1
+/*===========================================================================*/
+/* TriBuf related.                                                           */
+/*===========================================================================*/
 
-#define WRITER_WA_SIZE      THD_WORKING_AREA_SIZE(4096)
+#define WRITER_DELAY        10
+#define READER_DELAY        20
 
-static thread_t *prodtp;
+#define WRITER_STACK_SIZE   4096
+#define READER_STACK_SIZE   4096
+
+#define WRITER_PRIORITY     (NORMALPRIO + 1)
+#define READER_PRIORITY     (NORMALPRIO + 2)
+
+static thread_t *writertp;
+static thread_t *readertp;
 
 static tribuf_t tribuf;
 static char buffers[3];
+
+static const char text[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n";
 
 /*
  * Reads from the front buffer.
@@ -40,14 +50,12 @@ static char read_front(void) {
   const char *front;
   msg_t error;
 
-  chSysLock();
-  error = tribufWaitReadyTimeoutS(&tribuf, MS2ST(1000));
-  if (error != MSG_OK)
-    halt("ERROR: read_front timeout");
-  tribufSwapFrontI(&tribuf);
-  front = tribufGetFrontI(&tribuf);
-  chSysUnlock();
-  return *front;
+  error = tribufWaitReadyTimeout(&tribuf, MS2ST(1000));
+  if (error == MSG_TIMEOUT)
+    chSysHalt("ERROR: read_front() timed out");
+  tribufSwapFront(&tribuf);
+  front = (const char *)tribufGetFront(&tribuf);
+  return front[0];
 }
 
 /*
@@ -57,31 +65,51 @@ static void write_back(char c) {
 
   char *back;
 
-  chSysLock();
-  back = tribufGetBackI(&tribuf);
-  *back = c;
-  tribufSwapBackI(&tribuf);
-  chSysUnlock();
+  back = (char *)tribufGetBack(&tribuf);
+  back[0] = c;
+  tribufSwapBack(&tribuf);
 }
 
 /*
- * Overwrites the back buffer with the alphabet 100 times.
+ * Overwrites the back buffer with a fixed text, character by character.
  */
+static THD_WORKING_AREA(writer_wa, WRITER_STACK_SIZE);
 static THD_FUNCTION(writer_thread, arg) {
 
   const uint32_t delay = (uint32_t)(msg_t)arg;
-  size_t loops = WRITE_LOOPS;
+  size_t i;
   char c;
 
-  while (loops--) {
-    for (c = 'A'; c <= 'Z'; ++c) {
+  chRegSetThreadName("writer_thread");
+  for (;;) {
+    for (i = 0; i < sizeof(text); ++i) {
+      c = text[i];
       write_back(c);
       chThdSleepMilliseconds(delay);
     }
-    write_back('\n');
+  }
+}
+
+/*
+ * Reads the front buffer and prints it.
+ */
+static THD_WORKING_AREA(reader_wa, READER_STACK_SIZE);
+static THD_FUNCTION(reader_thread, arg) {
+
+  const uint32_t delay = (uint32_t)(msg_t)arg;
+  char c;
+
+  chRegSetThreadName("reader_thread");
+  for (;;) {
+    c = read_front();
+    fprintf(stdout, "%c", c);
     chThdSleepMilliseconds(delay);
   }
 }
+
+/*===========================================================================*/
+/* Initialization and main thread.                                           */
+/*===========================================================================*/
 
 /*
  * Simulator main.
@@ -99,27 +127,24 @@ int main(void) {
   chSysInit();
 
   /*
-   * Triple buffer handler initialization.
+   * Writer and reader threads started for triple buffer demo.
    */
   tribufObjectInit(&tribuf, &buffers[0], &buffers[1], &buffers[2]);
 
-  /*
-   * Console thread started.
-   */
-  prodtp = chThdCreateFromHeap(NULL, WRITER_WA_SIZE, (NORMALPRIO + 1),
-                               writer_thread, (void *)WRITE_DELAY);
+  readertp = chThdCreateStatic(reader_wa, sizeof(reader_wa),
+                               READER_PRIORITY,
+                               reader_thread, (void *)READER_DELAY);
+
+  writertp = chThdCreateStatic(writer_wa, sizeof(writer_wa),
+                               WRITER_PRIORITY,
+                               writer_thread, (void *)WRITER_DELAY);
 
   /*
    * Reads from the front buffer.
    */
-  while (!chThdTerminatedX(prodtp)) {
-    putchar(read_front());
-    chThdSleepMilliseconds(READ_DELAY);
-  }
+  for (;;)
+    chThdSleepMilliseconds(1000);
 
-  chThdRelease(prodtp);
-  fputs("\n", stdout);
-  fflush(stdout);
   return 0;
 }
 
