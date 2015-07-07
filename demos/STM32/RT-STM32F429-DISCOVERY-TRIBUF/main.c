@@ -16,19 +16,19 @@
 
 #include "ch.h"
 #include "hal.h"
+#include "test.h"
 
 #include "chprintf.h"
-#if HAL_USE_SERIAL_USB
+#include "shell.h"
+#if (HAL_USE_SERIAL_USB == TRUE)
 #include "usbcfg.h"
 #endif
 
 #include "tribuf.h"
+#include <string.h>
+#include <stdlib.h>
 
-/*===========================================================================*/
-/* MISCELLANEOUS                                                             */
-/*===========================================================================*/
-
-#if HAL_USE_SERIAL_USB
+#if (HAL_USE_SERIAL_USB == TRUE)
 /* Virtual serial port over USB.*/
 SerialUSBDriver SDU1;
 static BaseSequentialStream *const chout = (BaseSequentialStream *)&SDU1;
@@ -36,58 +36,33 @@ static BaseSequentialStream *const chout = (BaseSequentialStream *)&SDU1;
 static BaseSequentialStream *const chout = (BaseSequentialStream *)&SD1;
 #endif
 
-/*
- * Red LED blinker thread, times are in milliseconds.
- */
-static THD_WORKING_AREA(waThread1, 128);
-static THD_FUNCTION(Thread1, arg) {
-
-  (void)arg;
-
-  chRegSetThreadName("blinker1");
-  while (true) {
-    palClearPad(GPIOG, GPIOG_LED4_RED);
-    chThdSleepMilliseconds(500);
-    palSetPad(GPIOG, GPIOG_LED4_RED);
-    chThdSleepMilliseconds(500);
-  }
-}
-
-/*
- * Green LED blinker thread, times are in milliseconds.
- */
-static THD_WORKING_AREA(waThread2, 128);
-static THD_FUNCTION(Thread2, arg) {
-
-  (void)arg;
-
-  chRegSetThreadName("blinker2");
-  while (true) {
-    palClearPad(GPIOG, GPIOG_LED3_GREEN);
-    chThdSleepMilliseconds(250);
-    palSetPad(GPIOG, GPIOG_LED3_GREEN);
-    chThdSleepMilliseconds(250);
-  }
-}
-
 /*===========================================================================*/
-/* TriBuf related.                                                           */
+/* Triple buffer related.                                                    */
 /*===========================================================================*/
 
-#define WRITER_DELAY        10
-#define READER_DELAY        20
-
-#define WRITER_STACK_SIZE      256
-#define READER_STACK_SIZE      256
-
-#define WRITER_PRIORITY     (NORMALPRIO + 1)
+#define READER_STACK_SIZE   256
+#define READER_WA_SIZE      THD_WORKING_AREA_SIZE(READER_STACK_SIZE)
+#define READER_DELAY_MS     200
 #define READER_PRIORITY     (NORMALPRIO + 2)
 
-static thread_t *writertp;
-static thread_t *readertp;
+#define WRITER_STACK_SIZE   256
+#define WRITER_WA_SIZE      THD_WORKING_AREA_SIZE(WRITER_STACK_SIZE)
+#define WRITER_DELAY_MS     100
+#define WRITER_PRIORITY     (NORMALPRIO + 1)
 
-static tribuf_t tribuf;
-static char buffers[3];
+static thread_t *reader_tp;
+static uint16_t reader_delay = READER_DELAY_MS;
+static tprio_t reader_priority = READER_PRIORITY;
+static bool reader_suspend = false;
+static systime_t reader_timeout = TIME_INFINITE;
+
+static thread_t *writer_tp;
+static uint16_t writer_delay = WRITER_DELAY_MS;
+static tprio_t writer_priority = WRITER_PRIORITY;
+static bool writer_suspend = false;
+
+static tribuf_t tribuf_handler;
+static char buffer_a, buffer_b, buffer_c;
 
 static const char text[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n";
 
@@ -99,11 +74,20 @@ static char read_front(void) {
   const char *front;
   msg_t error;
 
-  error = tribufWaitReadyTimeout(&tribuf, MS2ST(1000));
-  if (error == MSG_TIMEOUT)
-    chSysHalt("ERROR: read_front() timed out");
-  tribufSwapFront(&tribuf);
-  front = (const char *)tribufGetFront(&tribuf);
+  /* Wait until a new front buffer gets available with prepared data */
+  chSysLock();
+  error = tribufWaitReadyTimeoutS(&tribuf_handler, reader_timeout);
+  if (error == MSG_TIMEOUT) {
+    chSysUnlock();
+    return (reader_timeout == TIME_IMMEDIATE) ? '.' : '@';
+  }
+  chSysUnlock();
+
+  /* Retrieve the new front buffer */
+  tribufSwapFront(&tribuf_handler);
+  front = (const char *)tribufGetFront(&tribuf_handler);
+
+  /* Read data from the new front buffer */
   return front[0];
 }
 
@@ -114,29 +98,14 @@ static void write_back(char c) {
 
   char *back;
 
-  back = (char *)tribufGetBack(&tribuf);
+  /* Retrieve the current back buffer */
+  back = (char *)tribufGetBack(&tribuf_handler);
+
+  /* Prepare data onto the current back buffer */
   back[0] = c;
-  tribufSwapBack(&tribuf);
-}
 
-/*
- * Overwrites the back buffer with a fixed text, character by character.
- */
-static THD_WORKING_AREA(writer_wa, WRITER_STACK_SIZE);
-static THD_FUNCTION(writer_thread, arg) {
-
-  const uint32_t delay = (uint32_t)(msg_t)arg;
-  size_t i;
-  char c;
-
-  chRegSetThreadName("writer_thread");
-  for (;;) {
-    for (i = 0; i < sizeof(text); ++i) {
-      c = text[i];
-      write_back(c);
-      chThdSleepMilliseconds(delay);
-    }
-  }
+  /* Exchange the prepared buffer with a new one */
+  tribufSwapBack(&tribuf_handler);
 }
 
 /*
@@ -145,16 +114,349 @@ static THD_FUNCTION(writer_thread, arg) {
 static THD_WORKING_AREA(reader_wa, READER_STACK_SIZE);
 static THD_FUNCTION(reader_thread, arg) {
 
-  const uint32_t delay = (uint32_t)(msg_t)arg;
+  thread_reference_t thread_ref;
+  tprio_t old_priority;
   char c;
+  (void)arg;
 
   chRegSetThreadName("reader_thread");
+  old_priority = chThdGetPriorityX();
+
   for (;;) {
     c = read_front();
     chprintf(chout, "%c", c);
-    chThdSleepMilliseconds(delay);
+
+    osalSysLock();
+    palTogglePad(GPIOG, GPIOG_LED3_GREEN);
+    if (old_priority != reader_priority) {
+      chThdSetPriority(reader_priority);
+    }
+    if (reader_suspend) {
+      thread_ref = NULL;
+      osalThreadSuspendS(&thread_ref);
+      reader_suspend = false;
+    } else {
+      osalThreadSleepS(MS2ST(reader_delay));
+    }
+    old_priority = chThdGetPriorityX();
+    osalSysUnlock();
   }
 }
+
+/*
+ * Overwrites the back buffer with a fixed text, character by character.
+ */
+static THD_WORKING_AREA(writer_wa, WRITER_STACK_SIZE);
+static THD_FUNCTION(writer_thread, arg) {
+
+  thread_reference_t thread_ref;
+  tprio_t old_priority;
+  size_t i;
+  char c;
+  (void)arg;
+
+  chRegSetThreadName("writer_thread");
+  old_priority = chThdGetPriorityX();
+
+  for (;;) {
+    for (i = 0; i < sizeof(text); ++i) {
+      c = text[i];
+      write_back(c);
+
+      osalSysLock();
+      palTogglePad(GPIOG, GPIOG_LED4_RED);
+      if (old_priority != writer_priority) {
+        chThdSetPriority(writer_priority);
+      }
+      if (writer_suspend) {
+        thread_ref = NULL;
+        osalThreadSuspendS(&thread_ref);
+        writer_suspend = false;
+      } else {
+        osalThreadSleepS(MS2ST(writer_delay));
+      }
+      osalSysUnlock();
+    }
+  }
+}
+
+/*===========================================================================*/
+/* Command line related.                                                     */
+/*===========================================================================*/
+
+#define streq(s1, s2)   (strcmp((s1), (s2)) == 0)
+
+#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(2048)
+#define TEST_WA_SIZE    THD_WORKING_AREA_SIZE(256)
+
+static void cmd_mem(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  size_t n, size;
+  (void)argv;
+
+  if (argc > 0) {
+    chprintf(chp, "Usage: mem\r\n");
+    return;
+  }
+
+  n = chHeapStatus(NULL, &size);
+  chprintf(chp, "core free memory : %u bytes\r\n", chCoreGetStatusX());
+  chprintf(chp, "heap fragments   : %u\r\n", n);
+  chprintf(chp, "heap free total  : %u bytes\r\n", size);
+}
+
+static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  static const char *states[] = {CH_STATE_NAMES};
+  thread_t *tp;
+  (void)argv;
+
+  if (argc > 0) {
+    chprintf(chp, "Usage: threads\r\n");
+    return;
+  }
+
+  chprintf(chp, "    addr    stack prio refs     state name\r\n");
+  tp = chRegFirstThread();
+  do {
+    chprintf(chp, "%08lx %08lx %4lu %4lu %9s %s\r\n",
+            (uint32_t)tp, (uint32_t)tp->p_ctx.r13,
+            (uint32_t)tp->p_prio, (uint32_t)(tp->p_refs - 1),
+            states[tp->p_state], tp->p_name);
+    tp = chRegNextThread(tp);
+  } while (tp != NULL);
+}
+
+static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  thread_t *tp;
+  (void)argv;
+
+  if (argc > 0) {
+    chprintf(chp, "Usage: test\r\n");
+    return;
+  }
+
+  tp = chThdCreateFromHeap(NULL, TEST_WA_SIZE, chThdGetPriorityX(),
+                           TestThread, chp);
+  if (tp == NULL) {
+    chprintf(chp, "out of memory\r\n");
+    return;
+  }
+  chThdWait(tp);
+}
+
+static void cmd_reset(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+
+  if (argc > 0) {
+    chprintf(chp, "Usage: reset\r\n");
+    return;
+  }
+
+  chprintf(chp, "Will reset in 200ms\r\n");
+  chThdSleepMilliseconds(200);
+  NVIC_SystemReset();
+}
+
+static void cmd_run(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  thread_reference_t thread_ref;
+  const char *const usage = "Usage: run (reader|writer)\r\n";
+
+  if (argc != 1) {
+    chprintf(chp, usage);
+    return;
+  }
+
+  if (streq(argv[0], "reader")) {
+    osalSysLock();
+    if (reader_suspend) {
+      thread_ref = (thread_reference_t)reader_tp;
+      osalThreadResumeS(&thread_ref, MSG_OK);
+    }
+    osalSysUnlock();
+  }
+  else if (streq(argv[0], "writer")) {
+    osalSysLock();
+    if (writer_suspend) {
+      thread_ref = (thread_reference_t)writer_tp;
+      osalThreadResumeS(&thread_ref, MSG_OK);
+    }
+    osalSysUnlock();
+  }
+  else {
+    chprintf(chp, usage);
+  }
+}
+
+static void cmd_stop(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  const char *const usage = "Usage: stop (reader|writer)\r\n";
+
+  if (argc != 1) {
+    chprintf(chp, usage);
+    return;
+  }
+
+  if (streq(argv[0], "reader")) {
+    osalSysLock();
+    reader_suspend = true;
+    osalSysUnlock();
+  }
+  else if (streq(argv[0], "writer")) {
+    osalSysLock();
+    writer_suspend = true;
+    osalSysUnlock();
+  }
+  else {
+    chprintf(chp, usage);
+  }
+}
+
+static void cmd_delay(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  const char *const usage = "Usage: delay (reader|writer) DELAY_MS\r\n";
+  uint16_t delay;
+
+  if (argc != 2) {
+    chprintf(chp, usage);
+    return;
+  }
+  delay = (uint16_t)atoi(argv[1]);
+
+  if (streq(argv[0], "reader")) {
+    osalSysLock();
+    reader_delay = delay;
+    osalSysUnlock();
+  }
+  else if (streq(argv[0], "writer")) {
+    osalSysLock();
+    writer_delay = delay;
+    osalSysUnlock();
+  }
+  else {
+    chprintf(chp, usage);
+  }
+}
+
+static void cmd_priority(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  const char *const usage =
+    "Usage: priority (reader|writer) THREAD_PRIORITY\r\n";
+  tprio_t priority;
+
+  if (argc != 2) {
+    chprintf(chp, usage);
+    return;
+  }
+  priority = (tprio_t)atoi(argv[1]);
+
+  if (streq(argv[0], "reader")) {
+    osalSysLock();
+    reader_priority = priority;
+    osalSysUnlock();
+  }
+  else if (streq(argv[0], "writer")) {
+    osalSysLock();
+    writer_priority = priority;
+    osalSysUnlock();
+  }
+  else {
+    chprintf(chp, usage);
+  }
+}
+
+static void cmd_timeout(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  const char *const usage = "Usage: timeout TIMEOUT_MS\r\n";
+  systime_t timeout;
+
+  if (argc != 1) {
+    chprintf(chp, usage);
+    return;
+  }
+
+  if (streq(argv[0], "-"))
+    timeout = TIME_IMMEDIATE;
+  else if (streq(argv[0], "*"))
+    timeout = TIME_INFINITE;
+  else
+    timeout = (systime_t)atoi(argv[0]);
+
+  osalSysLock();
+  reader_timeout = timeout;
+  osalSysUnlock();
+}
+
+static void cmd_params(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  const char *const usage = "Usage: params\r\n";
+
+  uint32_t reader_delay_;
+  uint32_t reader_priority_;
+  uint32_t reader_suspend_;
+  uint32_t reader_timeout_;
+
+  uint32_t writer_delay_;
+  uint32_t writer_priority_;
+  uint32_t writer_suspend_;
+
+  (void)argv;
+  if (argc != 0) {
+    chprintf(chp, usage);
+    return;
+  }
+
+  osalSysLock();
+  reader_delay_     = (uint32_t)reader_delay;
+  reader_priority_  = (uint32_t)reader_priority;
+  reader_suspend_   = (uint32_t)reader_suspend;
+  reader_timeout_   = (uint32_t)reader_timeout;
+
+  writer_delay_     = (uint32_t)writer_delay;
+  writer_priority_  = (uint32_t)writer_priority;
+  writer_suspend_   = (uint32_t)writer_suspend;
+  osalSysUnlock();
+
+  chprintf(chp, "reader_delay       %U\r\n", reader_delay_);
+  chprintf(chp, "reader_priority    %U\r\n", reader_priority_);
+  chprintf(chp, "reader_suspend     %U\r\n", reader_suspend_);
+  if (reader_timeout_ == TIME_IMMEDIATE)
+    chprintf(chp, "reader_timeout     -\r\n");
+  if (reader_timeout_ == TIME_INFINITE)
+    chprintf(chp, "reader_timeout     *\r\n");
+  else
+    chprintf(chp, "reader_timeout     %U\r\n", reader_timeout_);
+
+  chprintf(chp, "writer_delay       %U\r\n", writer_delay_);
+  chprintf(chp, "writer_priority    %U\r\n", writer_priority_);
+  chprintf(chp, "writer_suspend     %U\r\n", writer_suspend_);
+}
+
+static const ShellCommand commands[] = {
+  {"mem", cmd_mem},
+  {"threads", cmd_threads},
+  {"test", cmd_test},
+  {"reset", cmd_reset},
+  {"run", cmd_run},
+  {"stop", cmd_stop},
+  {"delay", cmd_delay},
+  {"priority", cmd_priority},
+  {"timeout", cmd_timeout},
+  {"params", cmd_params},
+  {NULL, NULL}
+};
+
+static const ShellConfig shell_cfg1 = {
+#if (HAL_USE_SERIAL_USB == TRUE)
+  (BaseSequentialStream *)&SDU1,
+#else
+  (BaseSequentialStream *)&SD1,
+#endif
+  commands
+};
 
 /*===========================================================================*/
 /* Initialization and main thread.                                           */
@@ -164,6 +466,8 @@ static THD_FUNCTION(reader_thread, arg) {
  * Application entry point.
  */
 int main(void) {
+
+  thread_t *shelltp = NULL;
 
   /*
    * System initializations.
@@ -175,7 +479,7 @@ int main(void) {
   halInit();
   chSysInit();
 
-#if HAL_USE_SERIAL_USB
+#if (HAL_USE_SERIAL_USB == TRUE)
   /*
    * Initializes a serial-over-USB CDC driver.
    */
@@ -199,30 +503,41 @@ int main(void) {
 #endif /* HAL_USE_SERIAL_USB */
 
   /*
-   * Creating the blinker threads.
-   */
-  chThdCreateStatic(waThread1, sizeof(waThread1),
-                    NORMALPRIO + 10, Thread1, NULL);
-  chThdCreateStatic(waThread2, sizeof(waThread2),
-                    NORMALPRIO + 10, Thread2, NULL);
-
-  /*
    * Writer and reader threads started for triple buffer demo.
    */
-  tribufObjectInit(&tribuf, &buffers[0], &buffers[1], &buffers[2]);
+  tribufObjectInit(&tribuf_handler, &buffer_a, &buffer_b, &buffer_c);
 
-  readertp = chThdCreateStatic(reader_wa, sizeof(reader_wa),
-                               READER_PRIORITY,
-                               reader_thread, (void *)READER_DELAY);
+  reader_tp = chThdCreateStatic(reader_wa, READER_WA_SIZE,
+                                reader_priority, reader_thread, NULL);
 
-  writertp = chThdCreateStatic(writer_wa, sizeof(writer_wa),
-                               WRITER_PRIORITY,
-                               writer_thread, (void *)WRITER_DELAY);
+  writer_tp = chThdCreateStatic(writer_wa, WRITER_WA_SIZE,
+                                writer_priority, writer_thread, NULL);
 
-  /* TODO: Add shell commands with varying thread creation and delays */
-  for (;;)
-    chThdSleepMilliseconds(1000);
-
+  /*
+   * Normal main() thread activity, in this demo it just performs
+   * a shell respawn upon its termination.
+   */
+  for (;;) {
+    if (!shelltp) {
+#if (HAL_USE_SERIAL_USB == TRUE)
+      if (SDU1.config->usbp->state == USB_ACTIVE) {
+        /* Spawns a new shell.*/
+        shelltp = shellCreate(&shell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
+      }
+#else
+      shelltp = shellCreate(&shell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
+#endif
+    }
+    else {
+      /* If the previous shell exited.*/
+      if (chThdTerminatedX(shelltp)) {
+        /* Recovers memory of the previous shell.*/
+        chThdRelease(shelltp);
+        shelltp = NULL;
+      }
+    }
+    chThdSleepMilliseconds(500);
+  }
   return 0;
 }
 

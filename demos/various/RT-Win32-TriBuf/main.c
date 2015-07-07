@@ -25,8 +25,8 @@
 /* TriBuf related.                                                           */
 /*===========================================================================*/
 
-#define WRITER_DELAY        10
-#define READER_DELAY        20
+#define WRITER_DELAY_MS        10
+#define READER_DELAY_MS        20
 
 #define WRITER_STACK_SIZE   4096
 #define READER_STACK_SIZE   4096
@@ -50,11 +50,16 @@ static char read_front(void) {
   const char *front;
   msg_t error;
 
+  /* Wait until a new front buffer gets available with prepared data */
   error = tribufWaitReadyTimeout(&tribuf, MS2ST(1000));
   if (error == MSG_TIMEOUT)
     chSysHalt("ERROR: read_front() timed out");
+
+  /* Retrieve the new front buffer */
   tribufSwapFront(&tribuf);
   front = (const char *)tribufGetFront(&tribuf);
+
+  /* Read data from the new front buffer */
   return front[0];
 }
 
@@ -65,8 +70,13 @@ static void write_back(char c) {
 
   char *back;
 
+  /* Retrieve the current back buffer */
   back = (char *)tribufGetBack(&tribuf);
+
+  /* Prepare data onto the current back buffer */
   back[0] = c;
+
+  /* Exchange the prepared buffer with a new one */
   tribufSwapBack(&tribuf);
 }
 
@@ -133,14 +143,14 @@ int main(void) {
 
   readertp = chThdCreateStatic(reader_wa, sizeof(reader_wa),
                                READER_PRIORITY,
-                               reader_thread, (void *)READER_DELAY);
+                               reader_thread, (void *)READER_DELAY_MS);
 
   writertp = chThdCreateStatic(writer_wa, sizeof(writer_wa),
                                WRITER_PRIORITY,
-                               writer_thread, (void *)WRITER_DELAY);
+                               writer_thread, (void *)WRITER_DELAY_MS);
 
   /*
-   * Reads from the front buffer.
+   * Let the threads process data.
    */
   for (;;)
     chThdSleepMilliseconds(1000);

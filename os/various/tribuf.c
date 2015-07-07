@@ -205,7 +205,9 @@ void tribufSwapBack(tribuf_t *handler) {
 
   osalSysLock();
   tribufSwapBackI(handler);
-  chSchRescheduleS();
+#if (TRIBUF_USE_WAIT == TRUE)
+  osalOsRescheduleS();
+#endif
   osalSysUnlock();
 }
 
