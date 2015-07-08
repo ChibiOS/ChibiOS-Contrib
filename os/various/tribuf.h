@@ -38,10 +38,10 @@
  * @{
  */
 
-#if !defined(TRIBUF_USE_WAIT) || defined(__DOXYGEN__)
 /**
  * @brief   Triple buffers use blocking functions.
  */
+#if !defined(TRIBUF_USE_WAIT) || defined(__DOXYGEN__)
 #define TRIBUF_USE_WAIT       TRUE
 #endif
 

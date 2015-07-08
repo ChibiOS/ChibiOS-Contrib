@@ -66,33 +66,37 @@ static char buffer_a, buffer_b, buffer_c;
 
 static const char text[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n";
 
-/*
- * Reads from the front buffer.
+/**
+ * @brief   Reads from the front buffer.
+ *
+ * @return  Buffered character from @p text or special symbol.
+ * @retval '.'  No new front buffer within timeout.
  */
 static char read_front(void) {
 
   const char *front;
   msg_t error;
+  char c;
 
   /* Wait until a new front buffer gets available with prepared data */
-  chSysLock();
-  error = tribufWaitReadyTimeoutS(&tribuf_handler, reader_timeout);
-  if (error == MSG_TIMEOUT) {
-    chSysUnlock();
-    return (reader_timeout == TIME_IMMEDIATE) ? '.' : '@';
+  error = tribufWaitReadyTimeout(&tribuf_handler, reader_timeout);
+  if (error == MSG_OK) {
+    /* Retrieve the new front buffer */
+    tribufSwapFront(&tribuf_handler);
+    front = (const char *)tribufGetFront(&tribuf_handler);
+
+    /* Read data from the new front buffer */
+    c = front[0];
+  } else {
+    c = '.';  /* Timeout placeholder */
   }
-  chSysUnlock();
-
-  /* Retrieve the new front buffer */
-  tribufSwapFront(&tribuf_handler);
-  front = (const char *)tribufGetFront(&tribuf_handler);
-
-  /* Read data from the new front buffer */
-  return front[0];
+  return c;
 }
 
 /*
- * Overwrites the back buffer with the provided character.
+ * @brief   Overwrites the back buffer with the provided character.
+ *
+ * @param[in] c   Character to store into the current back buffer.
  */
 static void write_back(char c) {
 
@@ -123,9 +127,11 @@ static THD_FUNCTION(reader_thread, arg) {
   old_priority = chThdGetPriorityX();
 
   for (;;) {
+    /* Read from the fron buffer and print the retrieved character */
     c = read_front();
     chprintf(chout, "%c", c);
 
+    /* Change priority, suspend or delay */
     osalSysLock();
     palTogglePad(GPIOG, GPIOG_LED3_GREEN);
     if (old_priority != reader_priority) {
@@ -160,9 +166,11 @@ static THD_FUNCTION(writer_thread, arg) {
 
   for (;;) {
     for (i = 0; i < sizeof(text); ++i) {
+      /* Write the next character on the current back buffer */
       c = text[i];
       write_back(c);
 
+      /* Change priority, suspend or delay */
       osalSysLock();
       palTogglePad(GPIOG, GPIOG_LED4_RED);
       if (old_priority != writer_priority) {
