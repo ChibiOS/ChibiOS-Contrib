@@ -474,8 +474,6 @@ static void dma2d_test(void) {
 /* Command line related.                                                     */
 /*===========================================================================*/
 
-#define     RTT2MS(ticks)   ((ticks) / (STM32_HCLK / 1000UL))
-
 #if HAL_USE_SERIAL_USB
 /* Virtual serial port over USB.*/
 SerialUSBDriver SDU1;
