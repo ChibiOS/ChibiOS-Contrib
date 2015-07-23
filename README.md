@@ -6,4 +6,3 @@ notes in file headers.
 
 Code is maintained via Github https://github.com/ChibiOS/ChibiOS-Contrib
 Feel free to send pull request there.
-
