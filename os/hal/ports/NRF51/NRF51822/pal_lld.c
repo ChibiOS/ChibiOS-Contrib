@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2015 Fabio Utzig
+    Copyright (C) 2015 Stephen Caudle
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -43,36 +44,72 @@
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-void _pal_lld_setpadmode(uint8_t pad, iomode_t mode)
+void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
 {
-  uint8_t value = 0;
-
-  osalDbgAssert(pad < 32, "invalid pad");
+  (void)port;
+  osalDbgAssert(pad <= 31, "pal_lld_setpadmode() - invalid pad");
 
   switch (mode) {
   case PAL_MODE_RESET:
   case PAL_MODE_UNCONNECTED:
-    value = 2;
+    NRF_GPIO->DIRSET = ((uint32_t) 1 << pad);
+    NRF_GPIO->PIN_CNF[pad] =
+      (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
+      (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
+      (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) |
+      (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) |
+      (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_INPUT:
   case PAL_MODE_INPUT_ANALOG:
-    value = 0;
+    NRF_GPIO->DIRCLR = ((uint32_t) 1 << pad);
+    NRF_GPIO->PIN_CNF[pad] =
+      (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
+      (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
+      (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) |
+      (GPIO_PIN_CNF_INPUT_Connect << GPIO_PIN_CNF_INPUT_Pos) |
+      (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_INPUT_PULLUP:
-    value = 0xC;
+    NRF_GPIO->DIRCLR = ((uint32_t) 1 << pad);
+    NRF_GPIO->PIN_CNF[pad] =
+      (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
+      (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
+      (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos) |
+      (GPIO_PIN_CNF_INPUT_Connect << GPIO_PIN_CNF_INPUT_Pos) |
+      (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_INPUT_PULLDOWN:
-    value = 4;
+    NRF_GPIO->DIRCLR = ((uint32_t) 1 << pad);
+    NRF_GPIO->PIN_CNF[pad] =
+      (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
+      (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
+      (GPIO_PIN_CNF_PULL_Pulldown << GPIO_PIN_CNF_PULL_Pos) |
+      (GPIO_PIN_CNF_INPUT_Connect << GPIO_PIN_CNF_INPUT_Pos) |
+      (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_OUTPUT_PUSHPULL:
-    value = 1;
+    NRF_GPIO->DIRSET = ((uint32_t) 1 << pad);
+    NRF_GPIO->PIN_CNF[pad] =
+      (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
+      (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
+      (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) |
+      (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) |
+      (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_OUTPUT_OPENDRAIN:
-    value = 0x61;
+    NRF_GPIO->DIRSET = ((uint32_t) 1 << pad);
+    NRF_GPIO->PIN_CNF[pad] =
+      (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
+      (GPIO_PIN_CNF_DRIVE_S0D1 << GPIO_PIN_CNF_DRIVE_Pos) |
+      (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) |
+      (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) |
+      (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos);
+    break;
+  default:
+    osalDbgAssert(FALSE, "invalid pal mode");
     break;
   }
-
-  NRF_GPIO->PIN_CNF[pad] = value;
 }
 
 /*===========================================================================*/
@@ -84,10 +121,9 @@ void _pal_lld_setpadmode(uint8_t pad, iomode_t mode)
 /*===========================================================================*/
 
 /**
- * @brief   STM32 I/O ports configuration.
- * @details Ports A-D(E, F, G, H) clocks enabled.
+ * @brief   NRF51 I/O ports configuration.
  *
- * @param[in] config    the STM32 ports configuration
+ * @param[in] config    the NRF51 ports configuration
  *
  * @notapi
  */
@@ -117,10 +153,10 @@ void _pal_lld_setgroupmode(ioportid_t port,
 {
   uint8_t i;
 
-  (void)mask;
-
-  for (i = 0; i < TOTAL_GPIO_PADS; i++) {
-    pal_lld_setpadmode(port, i, mode);
+  for (i = 0; i < TOTAL_GPIO_PADS; i++, mask >>= 1) {
+    if (mask & 1) {
+      pal_lld_setpadmode(port, i, mode);
+    }
   }
 }
 
