@@ -69,7 +69,7 @@ typedef uint32_t ioportmask_t;
 /**
  * @brief   Digital I/O modes.
  */
-typedef uint32_t iomode_t;
+typedef uint8_t iomode_t;
 
 /**
  * @brief   Port Identifier.
@@ -77,7 +77,7 @@ typedef uint32_t iomode_t;
  *          any assumption about it, use the provided macros when populating
  *          variables of this type.
  */
-typedef uint32_t ioportid_t;
+typedef NRF_GPIO_Type *ioportid_t;
 
 /*===========================================================================*/
 /* I/O Ports Identifiers.                                                    */
@@ -94,8 +94,6 @@ typedef uint32_t ioportid_t;
 /* Implementation, some of the following macros could be implemented as      */
 /* functions, if so please put them in pal_lld.c.                            */
 /*===========================================================================*/
-
-void _pal_lld_setpadmode(uint8_t pad, iomode_t mode);
 
 /**
  * @brief   Low level PAL subsystem initialization.
@@ -114,7 +112,7 @@ void _pal_lld_setpadmode(uint8_t pad, iomode_t mode);
  *
  * @notapi
  */
-#define pal_lld_readport(port) 0U
+#define pal_lld_readport(port) (NRF_GPIO->IN)
 
 /**
  * @brief   Reads the output latch.
@@ -126,7 +124,7 @@ void _pal_lld_setpadmode(uint8_t pad, iomode_t mode);
  *
  * @notapi
  */
-#define pal_lld_readlatch(port) 0U
+#define pal_lld_readlatch(port) (NRF_GPIO->OUT)
 
 /**
  * @brief   Writes a bits mask on a I/O port.
@@ -136,12 +134,7 @@ void _pal_lld_setpadmode(uint8_t pad, iomode_t mode);
  *
  * @notapi
  */
-#define pal_lld_writeport(port, bits)                                       \
-  do {                                                                      \
-    (void)port;                                                             \
-    (void)bits;                                                             \
-  } while (false)
-
+#define pal_lld_writeport(port, bits) (NRF_GPIO->OUT = (bits))
 
 /**
  * @brief   Sets a bits mask on a I/O port.
@@ -154,11 +147,7 @@ void _pal_lld_setpadmode(uint8_t pad, iomode_t mode);
  *
  * @notapi
  */
-#define pal_lld_setport(port, bits)                                         \
-  do {                                                                      \
-    (void)port;                                                             \
-    (void)bits;                                                             \
-  } while (false)
+#define pal_lld_setport(port, bits) (NRF_GPIO->OUTSET = (bits))
 
 
 /**
@@ -172,67 +161,7 @@ void _pal_lld_setpadmode(uint8_t pad, iomode_t mode);
  *
  * @notapi
  */
-#define pal_lld_clearport(port, bits)                                       \
-  do {                                                                      \
-    (void)port;                                                             \
-    (void)bits;                                                             \
-  } while (false)
-
-
-/**
- * @brief   Toggles a bits mask on a I/O port.
- * @note    The @ref PAL provides a default software implementation of this
- *          functionality, implement this function if can optimize it by using
- *          special hardware functionalities or special coding.
- *
- * @param[in] port      port identifier
- * @param[in] bits      bits to be XORed on the specified port
- *
- * @notapi
- */
-#define pal_lld_toggleport(port, bits)                                      \
-  do {                                                                      \
-    (void)port;                                                             \
-    (void)bits;                                                             \
-  } while (false)
-
-
-/**
- * @brief   Reads a group of bits.
- * @note    The @ref PAL provides a default software implementation of this
- *          functionality, implement this function if can optimize it by using
- *          special hardware functionalities or special coding.
- *
- * @param[in] port      port identifier
- * @param[in] mask      group mask
- * @param[in] offset    group bit offset within the port
- * @return              The group logical states.
- *
- * @notapi
- */
-#define pal_lld_readgroup(port, mask, offset) 0U
-
-/**
- * @brief   Writes a group of bits.
- * @note    The @ref PAL provides a default software implementation of this
- *          functionality, implement this function if can optimize it by using
- *          special hardware functionalities or special coding.
- *
- * @param[in] port      port identifier
- * @param[in] mask      group mask
- * @param[in] offset    group bit offset within the port
- * @param[in] bits      bits to be written. Values exceeding the group width
- *                      are masked.
- *
- * @notapi
- */
-#define pal_lld_writegroup(port, mask, offset, bits)                        \
-  do {                                                                      \
-    (void)port;                                                             \
-    (void)mask;                                                             \
-    (void)offset;                                                           \
-    (void)bits;                                                             \
-  } while (false)
+#define pal_lld_clearport(port, bits) (NRF_GPIO->OUTCLR = (bits))
 
 /**
  * @brief   Pads group mode setup.
@@ -264,7 +193,8 @@ void _pal_lld_setpadmode(uint8_t pad, iomode_t mode);
  *
  * @notapi
  */
-#define pal_lld_readpad(port, pad) PAL_LOW
+#define pal_lld_readpad(port, pad)                                          \
+  ((NRF_GPIO->IN & ((uint32_t) 1 << pad)) ? PAL_HIGH : PAL_LOW)
 
 /**
  * @brief   Writes a logical state on an output pad.
@@ -284,8 +214,10 @@ void _pal_lld_setpadmode(uint8_t pad, iomode_t mode);
 #define pal_lld_writepad(port, pad, bit)                                    \
   do {                                                                      \
     (void)port;                                                             \
-    (void)pad;                                                              \
-    (void)bit;                                                              \
+    if (bit == PAL_HIGH)                                                    \
+      NRF_GPIO->OUTSET = ((uint32_t) 1 << pad);                             \
+    else                                                                    \
+      NRF_GPIO->OUTCLR = ((uint32_t) 1 << pad);                             \
   } while (false)
 
 /**
@@ -349,7 +281,7 @@ void _pal_lld_setpadmode(uint8_t pad, iomode_t mode);
  *
  * @notapi
  */
-#define pal_lld_setpadmode(port, pad, mode) _pal_lld_setpadmode(pad, mode)
+#define pal_lld_setpadmode(port, pad, mode) _pal_lld_setpadmode(port, pad, mode)
 
 #if !defined(__DOXYGEN__)
 extern const PALConfig pal_default_config;
@@ -362,6 +294,9 @@ extern "C" {
   void _pal_lld_setgroupmode(ioportid_t port,
                              ioportmask_t mask,
                              iomode_t mode);
+  void _pal_lld_setpadmode(ioportid_t port,
+                           uint8_t pad,
+                           iomode_t mode);
 #ifdef __cplusplus
 }
 #endif
