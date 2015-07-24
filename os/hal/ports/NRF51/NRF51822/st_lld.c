@@ -1,5 +1,6 @@
 /*
-    ChibiOS - Copyright (C) 2015 Fabio Utzig
+    Copyright (C) 2015 Fabio Utzig
+    Copyright (C) 2015 Stephen Caudle
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -99,8 +100,8 @@ void st_lld_init(void) {
    * and clear timer value when event is generated.
    */
   NRF_TIMER0->CC[0] = (1000000 / OSAL_ST_FREQUENCY) - 1;
-  NRF_TIMER0->SHORTS = 1;
-  NRF_TIMER0->INTENSET = 0x10000;
+  NRF_TIMER0->SHORTS = TIMER_SHORTS_COMPARE0_CLEAR_Msk;
+  NRF_TIMER0->INTENSET = TIMER_INTENSET_COMPARE0_Msk;
 
   nvicEnableVector(TIMER0_IRQn, 8);
 
