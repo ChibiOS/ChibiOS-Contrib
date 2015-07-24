@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2015 Fabio Utzig
+    Copyright (C) 2015 Stephen Caudle
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -40,13 +41,26 @@
  * @{
  */
 /**
- * @brief   USART1 driver enable switch.
- * @details If set to @p TRUE the support for USART1 is included.
+ * @brief   SD1 driver enable switch.
+ * @details If set to @p TRUE the support for SD1 is included.
  * @note    The default is @p FALSE.
  */
 #if !defined(NRF51_SERIAL_USE_UART0) || defined(__DOXYGEN__)
 #define NRF51_SERIAL_USE_UART0             FALSE
 #endif
+
+/**
+ * @brief   UART0 interrupt priority level setting.
+ */
+#if !defined(NRF51_SERIAL_UART0_PRIORITY) || defined(__DOXYGEN__)
+#define NRF51_SERIAL_UART0_PRIORITY        12
+#endif
+
+/* Value indicating that no pin is connected to this UART register. */
+#define  NRF51_SERIAL_PIN_DISCONNECTED 0xFFFFFFFFU
+#define  NRF51_SERIAL_INVALID_BAUDRATE 0xFFFFFFFFU
+#define  NRF51_SERIAL_INVALID_PIN      0xFFU
+
 /** @} */
 
 /*===========================================================================*/
@@ -90,6 +104,8 @@ typedef struct {
   uint8_t                   ib[SERIAL_BUFFERS_SIZE];                        \
   /* Output circular buffer.*/                                              \
   uint8_t                   ob[SERIAL_BUFFERS_SIZE];                        \
+  /* 1 if port is busy transmitting, 0 otherwise. */                        \
+  uint8_t                   tx_busy;                                        \
   /* End of the mandatory fields.*/                                         \
   thread_t                  *thread;
 
