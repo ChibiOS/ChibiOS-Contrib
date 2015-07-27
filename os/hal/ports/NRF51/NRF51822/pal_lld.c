@@ -51,7 +51,6 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
   switch (mode) {
   case PAL_MODE_RESET:
   case PAL_MODE_UNCONNECTED:
-    NRF_GPIO->DIRSET = ((uint32_t) 1 << pad);
     NRF_GPIO->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
@@ -61,7 +60,6 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
     break;
   case PAL_MODE_INPUT:
   case PAL_MODE_INPUT_ANALOG:
-    NRF_GPIO->DIRCLR = ((uint32_t) 1 << pad);
     NRF_GPIO->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
@@ -70,7 +68,6 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
       (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_INPUT_PULLUP:
-    NRF_GPIO->DIRCLR = ((uint32_t) 1 << pad);
     NRF_GPIO->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
@@ -79,7 +76,6 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
       (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_INPUT_PULLDOWN:
-    NRF_GPIO->DIRCLR = ((uint32_t) 1 << pad);
     NRF_GPIO->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
@@ -88,7 +84,6 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
       (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_OUTPUT_PUSHPULL:
-    NRF_GPIO->DIRSET = ((uint32_t) 1 << pad);
     NRF_GPIO->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
@@ -97,7 +92,6 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
       (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_OUTPUT_OPENDRAIN:
-    NRF_GPIO->DIRSET = ((uint32_t) 1 << pad);
     NRF_GPIO->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0D1 << GPIO_PIN_CNF_DRIVE_Pos) |
