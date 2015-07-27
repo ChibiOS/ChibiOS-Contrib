@@ -25,38 +25,38 @@
 const PALConfig pal_default_config =
 {
   .pads = {
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_OUTPUT_PUSHPULL,            // UART_TX
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,                      // UART_RX
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_OUTPUT_PUSHPULL,            // LED0
-    PAL_MODE_OUTPUT_PUSHPULL,            // LED1
-    PAL_MODE_OUTPUT_PUSHPULL,            // LED2
-    PAL_MODE_OUTPUT_PUSHPULL,            // LED3
-    PAL_MODE_OUTPUT_PUSHPULL,            // LED4
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
-    PAL_MODE_INPUT,
+        PAL_MODE_OUTPUT_OPENDRAIN,    /* P0.0:  SDA      */
+        PAL_MODE_OUTPUT_OPENDRAIN,    /* P0.1:  SCL      */
+        PAL_MODE_UNCONNECTED,         /* P0.2 */
+        PAL_MODE_UNCONNECTED,         /* P0.3 */
+        PAL_MODE_UNCONNECTED,         /* P0.4 */
+        PAL_MODE_UNCONNECTED,         /* P0.5 */
+        PAL_MODE_UNCONNECTED,         /* P0.6 */
+        PAL_MODE_UNCONNECTED,         /* P0.7 */
+        PAL_MODE_UNCONNECTED,         /* P0.8   UART_RTS */
+        PAL_MODE_OUTPUT_PUSHPULL,     /* P0.9:  UART_TX  */
+        PAL_MODE_UNCONNECTED,         /* P0.10  UART_CTS */
+        PAL_MODE_INPUT_PULLUP,        /* P0.11: UART_RX  */
+        PAL_MODE_UNCONNECTED,         /* P0.12 */
+        PAL_MODE_UNCONNECTED,         /* P0.13 */
+        PAL_MODE_UNCONNECTED,         /* P0.14 */
+        PAL_MODE_UNCONNECTED,         /* P0.15 */
+        PAL_MODE_INPUT_PULLUP,        /* P0.16: KEY1     */
+        PAL_MODE_INPUT_PULLUP,        /* P0.17: KEY2     */
+        PAL_MODE_OUTPUT_PUSHPULL,     /* P0.18: LED0     */
+        PAL_MODE_OUTPUT_PUSHPULL,     /* P0.19: LED1     */
+        PAL_MODE_OUTPUT_PUSHPULL,     /* P0.20: LED2     */
+        PAL_MODE_OUTPUT_PUSHPULL,     /* P0.21: LED3     */
+        PAL_MODE_OUTPUT_PUSHPULL,     /* P0.22: LED4     */
+        PAL_MODE_INPUT,               /* P0.23: SPI_MISO */
+        PAL_MODE_OUTPUT_PUSHPULL,     /* P0.24: SPI_MOSI */
+        PAL_MODE_OUTPUT_PUSHPULL,     /* P0.25: SPI_SCK  */
+        PAL_MODE_UNCONNECTED,         /* P0.26 */
+        PAL_MODE_UNCONNECTED,         /* P0.27 */
+        PAL_MODE_UNCONNECTED,         /* P0.28 */
+        PAL_MODE_UNCONNECTED,         /* P0.29 */
+        PAL_MODE_OUTPUT_PUSHPULL,     /* P0.30: SPI_NSS  */
+        PAL_MODE_UNCONNECTED,         /* P0.31 */
   },
 };
 #endif
