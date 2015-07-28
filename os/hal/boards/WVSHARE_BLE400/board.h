@@ -25,6 +25,8 @@
 #define XTAL_VALUE              16000000
 
 /* GPIO pins. */
+#define KEY1           16
+#define KEY2           17
 #define LED0           18
 #define LED1           19
 #define LED2           20
