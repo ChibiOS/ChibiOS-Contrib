@@ -216,7 +216,7 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp)
         break;
       }
       case STATE_READ_NEXT: {
-        if(i2cp->rxbytes == 0) {
+        if(i2cp->rxbytes == 2) {
           i2cp->intstate = STATE_READ_FINAL;
         }
         *(i2cp->rxbuf) = dp->MDR;
