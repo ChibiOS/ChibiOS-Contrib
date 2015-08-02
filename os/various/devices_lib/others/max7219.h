@@ -120,13 +120,13 @@ typedef enum {
 typedef enum {
   MAX7219_DM_No_decode  = 0x00,                 /*!< No decode */
   MAX7219_DM_CodeB_0    = 0x01,                 /*!< Code B on Digit 0 */
-  MAX7219_DM_CodeB_1    = 0x02,                 /*!< Code B on Digit 1 */
-  MAX7219_DM_CodeB_2    = 0x04,                 /*!< Code B on Digit 2 */
-  MAX7219_DM_CodeB_3    = 0x08,                 /*!< Code B on Digit 3 */
-  MAX7219_DM_CodeB_4    = 0x10,                 /*!< Code B on Digit 4 */
-  MAX7219_DM_CodeB_5    = 0x20,                 /*!< Code B on Digit 5 */
-  MAX7219_DM_CodeB_6    = 0x40,                 /*!< Code B on Digit 6 */
-  MAX7219_DM_CodeB_7    = 0x80                  /*!< Code B on Digit 7 */
+  MAX7219_DM_CodeB_1    = 0x03,                 /*!< Code B on Digits 0-1 */
+  MAX7219_DM_CodeB_2    = 0x07,                 /*!< Code B on Digits from 0 to 2 */
+  MAX7219_DM_CodeB_3    = 0x0F,                 /*!< Code B on Digits from 0 to 3 */
+  MAX7219_DM_CodeB_4    = 0x1F,                 /*!< Code B on Digits from 0 to 4 */
+  MAX7219_DM_CodeB_5    = 0x3F,                 /*!< Code B on Digits from 0 to 5 */
+  MAX7219_DM_CodeB_6    = 0x7F,                 /*!< Code B on Digits from 0 to 6 */
+  MAX7219_DM_CodeB_7    = 0xFF                  /*!< Code B on every digit */
 } MAX7219_DM_t;
 
 /**
