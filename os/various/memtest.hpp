@@ -37,7 +37,8 @@ typedef uint32_t testtype;
 /*
  * Error call back.
  */
-typedef void (*memtestecb_t)(memtest_t *testp, testtype type, size_t address);
+typedef void (*memtestecb_t)(memtest_t *testp, testtype type, size_t offset,
+                           size_t current_width, uint32_t got, uint32_t expect);
 
 /*
  *
@@ -45,18 +46,32 @@ typedef void (*memtestecb_t)(memtest_t *testp, testtype type, size_t address);
 typedef enum {
   MEMTEST_WIDTH_8,
   MEMTEST_WIDTH_16,
-  MEMTEST_WIDTH_32
+  MEMTEST_WIDTH_32,
 } memtest_bus_width_t;
 
 /*
  *
  */
 struct memtest_t {
+  /*
+   * Pointer to the test area start. Must be word aligned.
+   */
   void                *start;
+  /*
+   * Test area size in bytes.
+   */
   size_t              size;
+  /*
+   * Maximum width of transactions.
+   * Note: it implies all narrower tests.
+   * Note: width my be wider then your memory interface because AHB is
+   *       smart enough to split big transactions to smaller ones.
+   */
   memtest_bus_width_t width;
-  memtestecb_t        ecb;
-  unsigned int        rand_seed;
+  /*
+   * Error callback pointer. Set to NULL if unused.
+   */
+  memtestecb_t        errcb;
 };
 
 /*

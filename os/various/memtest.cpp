@@ -20,6 +20,8 @@
 
 #include "memtest.hpp"
 
+static unsigned int prng_seed = 42;
+
 /*
  *
  */
@@ -156,6 +158,8 @@ static void memtest_sequential(memtest_t *testp, Generator<T> &generator, T seed
   const size_t steps = testp->size / sizeof(T);
   size_t i;
   T *mem = static_cast<T *>(testp->start);
+  T got;
+  T expect;
 
   /* fill ram */
   generator.init(seed);
@@ -165,8 +169,10 @@ static void memtest_sequential(memtest_t *testp, Generator<T> &generator, T seed
   /* read back and compare */
   generator.init(seed);
   for (i=0; i<steps; i++) {
-    if (mem[i] != generator.get()) {
-      testp->ecb(testp, generator.get_type(), i*sizeof(T));
+    got = mem[i];
+    expect = generator.get();
+    if ((got != expect) && (nullptr != testp->errcb)) {
+      testp->errcb(testp, generator.get_type(), i, sizeof(T), got, expect);
       return;
     }
   }
@@ -210,7 +216,8 @@ template <typename T>
 static void moving_inversion_rand(memtest_t *testp) {
   GeneratorMovingInvRand<T> generator;
   T mask = -1;
-  memtest_sequential<T>(testp, generator, testp->rand_seed & mask);
+  prng_seed++;
+  memtest_sequential<T>(testp, generator, prng_seed & mask);
 }
 
 /*
