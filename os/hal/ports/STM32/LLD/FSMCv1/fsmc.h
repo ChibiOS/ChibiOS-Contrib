@@ -196,19 +196,31 @@ typedef struct {
 /**
  * @brief   BCR register
  */
-#define  FSMC_BCR_MBKEN           ((uint32_t)0x00000001)
-#define  FSMC_BCR_MUXEN           ((uint32_t)0x00000002)
-#define  FSMC_BCR_MWID_0          ((uint32_t)0x00000010)
-#define  FSMC_BCR_FACCEN          ((uint32_t)0x00000040)
-#define  FSMC_BCR_BURSTEN         ((uint32_t)0x00000100)
-#define  FSMC_BCR_WAITPOL         ((uint32_t)0x00000200)
-#define  FSMC_BCR_WRAPMOD         ((uint32_t)0x00000400)
-#define  FSMC_BCR_WAITCFG         ((uint32_t)0x00000800)
-#define  FSMC_BCR_WREN            ((uint32_t)0x00001000)
-#define  FSMC_BCR_WAITEN          ((uint32_t)0x00002000)
-#define  FSMC_BCR_EXTMOD          ((uint32_t)0x00004000)
-#define  FSMC_BCR_ASYNCWAIT       ((uint32_t)0x00008000)
-#define  FSMC_BCR_CBURSTRW        ((uint32_t)0x00080000)
+#define  FSMC_BCR_MBKEN           ((uint32_t)1 << 0)
+#define  FSMC_BCR_MUXEN           ((uint32_t)1 << 1)
+#define  FSMC_BCR_MTYP_SRAM       ((uint32_t)0 << 2)
+#define  FSMC_BCR_MTYP_PSRAM      ((uint32_t)1 << 2)
+#define  FSMC_BCR_MTYP_NOR_NAND   ((uint32_t)2 << 2)
+#define  FSMC_BCR_MTYP_RESERVED   ((uint32_t)3 << 2)
+#define  FSMC_BCR_MWID_8          ((uint32_t)0 << 4)
+#define  FSMC_BCR_MWID_16         ((uint32_t)1 << 4)
+#if (defined(STM32F427xx) || defined(STM32F437xx) || \
+     defined(STM32F429xx) || defined(STM32F439xx))
+#define  FSMC_BCR_MWID_32         ((uint32_t)2 << 4)
+#else
+#define  FSMC_BCR_MWID_RESERVED1  ((uint32_t)2 << 4)
+#endif
+#define  FSMC_BCR_MWID_RESERVED2  ((uint32_t)3 << 4)
+#define  FSMC_BCR_FACCEN          ((uint32_t)1 << 6)
+#define  FSMC_BCR_BURSTEN         ((uint32_t)1 << 8)
+#define  FSMC_BCR_WAITPOL         ((uint32_t)1 << 9)
+#define  FSMC_BCR_WRAPMOD         ((uint32_t)1 << 10)
+#define  FSMC_BCR_WAITCFG         ((uint32_t)1 << 11)
+#define  FSMC_BCR_WREN            ((uint32_t)1 << 12)
+#define  FSMC_BCR_WAITEN          ((uint32_t)1 << 13)
+#define  FSMC_BCR_EXTMOD          ((uint32_t)1 << 14)
+#define  FSMC_BCR_ASYNCWAIT       ((uint32_t)1 << 15)
+#define  FSMC_BCR_CBURSTRW        ((uint32_t)1 << 19)
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */

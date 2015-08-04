@@ -18,7 +18,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "memtest.hpp"
+#include "memtest.h"
 
 static unsigned int prng_seed = 42;
 

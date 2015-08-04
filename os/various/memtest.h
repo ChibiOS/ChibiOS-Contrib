@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef MEMTEST_HPP_
-#define MEMTEST_HPP_
+#ifndef MEMTEST_H_
+#define MEMTEST_H_
 
 #define MEMTEST_WALKING_ONE               (1 << 0)
 #define MEMTEST_WALKING_ZERO              (1 << 1)
@@ -37,7 +37,7 @@ typedef uint32_t testtype;
 /*
  * Error call back.
  */
-typedef void (*memtestecb_t)(memtest_t *testp, testtype type, size_t offset,
+typedef void (*memtestecb_t)(memtest_t *testp, testtype type, size_t index,
                            size_t current_width, uint32_t got, uint32_t expect);
 
 /*
@@ -85,4 +85,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MEMTEST_HPP_ */
+#endif /* MEMTEST_H_ */

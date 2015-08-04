@@ -109,9 +109,12 @@ typedef struct SRAMDriver SRAMDriver;
 /**
  * @brief   Driver configuration structure.
  * @note    It could be empty on some architectures.
+ * @note    Some bits in BCR register will be forced by driver.
  */
 typedef struct {
-  uint32_t                  btr;
+  uint32_t  bcr;
+  uint32_t  btr;
+  uint32_t  bwtr;
 } SRAMConfig;
 
 /**

@@ -128,8 +128,9 @@ void fsmcSramStart(SRAMDriver *sramp, const SRAMConfig *cfgp) {
               "invalid state");
 
   if (sramp->state == SRAM_STOP) {
-    sramp->sram->BCR = FSMC_BCR_WREN | FSMC_BCR_MBKEN | FSMC_BCR_MWID_0;
-    sramp->sram->BTR = cfgp->btr;
+    sramp->sram->BCR  = cfgp->bcr | FSMC_BCR_MBKEN;
+    sramp->sram->BTR  = cfgp->btr;
+    sramp->sram->BWTR = cfgp->bwtr;
     sramp->state = SRAM_READY;
   }
 }

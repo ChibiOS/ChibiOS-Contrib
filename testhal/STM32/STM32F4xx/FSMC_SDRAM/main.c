@@ -25,7 +25,7 @@
 
 #include "fsmc_sdram.h"
 #include "membench.h"
-#include "memtest.hpp"
+#include "memtest.h"
 
 /*
  ******************************************************************************
@@ -127,7 +127,8 @@
  ******************************************************************************
  */
 
-static void mem_error_cb(memtest_t *memp, testtype e, size_t address);
+static void mem_error_cb(memtest_t *memp, testtype type, size_t index,
+                         size_t width, uint32_t got, uint32_t expect);
 
 /*
  ******************************************************************************
@@ -176,9 +177,8 @@ static uint8_t int_buf[64*1024];
 static memtest_t memtest_struct = {
     SDRAM_START,
     SDRAM_SIZE,
-    MEMTEST_WIDTH_16,
-    mem_error_cb,
-    42
+    MEMTEST_WIDTH_32,
+    mem_error_cb
 };
 
 /*
@@ -211,10 +211,14 @@ static membench_result_t membench_result_int2ext;
  ******************************************************************************
  */
 
-void mem_error_cb(memtest_t *memp, testtype e, size_t address) {
+static void mem_error_cb(memtest_t *memp, testtype type, size_t index,
+                         size_t width, uint32_t got, uint32_t expect) {
   (void)memp;
-  (void)e;
-  (void)address;
+  (void)type;
+  (void)index;
+  (void)width;
+  (void)got;
+  (void)expect;
 
   osalSysHalt("Memory broken");
 }
@@ -225,7 +229,6 @@ void mem_error_cb(memtest_t *memp, testtype e, size_t address) {
 static void memtest(void) {
 
   while (true) {
-    memtest_struct.rand_seed = chSysGetRealtimeCounterX();
     memtest_run(&memtest_struct, MEMTEST_RUN_ALL);
   }
 }

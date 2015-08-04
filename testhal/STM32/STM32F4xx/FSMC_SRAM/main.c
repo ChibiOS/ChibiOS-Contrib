@@ -19,7 +19,7 @@
 
 #include "fsmc_sram.h"
 #include "membench.h"
-#include "memtest.hpp"
+#include "memtest.h"
 
 /*
  ******************************************************************************
@@ -41,7 +41,8 @@
  ******************************************************************************
  */
 
-static void mem_error_cb(memtest_t *memp, testtype e, size_t address);
+static void mem_error_cb(memtest_t *memp, testtype type, size_t index,
+                         size_t width, uint32_t got, uint32_t expect);
 
 /*
  ******************************************************************************
@@ -60,7 +61,9 @@ static uint8_t int_buf[64*1024];
  * SRAM driver configuration structure.
  */
 static const SRAMConfig sram_cfg = {
-    (0 << 16) | (2 << 8) | (1 << 0)
+    .bcr  = (FSMC_BCR_MWID_16 | FSMC_BCR_MTYP_SRAM | FSMC_BCR_WREN),
+    .btr  = (0 << 16) | (2 << 8) | (1 << 0),
+    .bwtr = (0 << 16) | (2 << 8) | (1 << 0)
 };
 
 /*
@@ -69,9 +72,8 @@ static const SRAMConfig sram_cfg = {
 static memtest_t memtest_struct = {
     SRAM_START,
     SRAM_SIZE,
-    MEMTEST_WIDTH_16,
-    mem_error_cb,
-    42
+    MEMTEST_WIDTH_32,
+    mem_error_cb
 };
 
 /*
@@ -110,10 +112,14 @@ static inline void green_led_on(void)     {palSetPad(GPIOI,     GPIOI_LED_G);}
 static inline void green_led_off(void)    {palClearPad(GPIOI,   GPIOI_LED_G);}
 static inline void green_led_toggle(void) {palTogglePad(GPIOI,  GPIOI_LED_G);}
 
-void mem_error_cb(memtest_t *memp, testtype e, size_t address) {
+static void mem_error_cb(memtest_t *memp, testtype type, size_t index,
+                         size_t width, uint32_t got, uint32_t expect) {
   (void)memp;
-  (void)e;
-  (void)address;
+  (void)type;
+  (void)index;
+  (void)width;
+  (void)got;
+  (void)expect;
 
   green_led_off();
   red_led_on();
@@ -130,7 +136,6 @@ static void memtest(void) {
   red_led_off();
 
   while (true) {
-    memtest_struct.rand_seed = chSysGetRealtimeCounterX();
     memtest_run(&memtest_struct, MEMTEST_RUN_ALL);
     green_led_toggle();
   }
