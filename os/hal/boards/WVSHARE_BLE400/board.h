@@ -33,6 +33,11 @@
 #define UART_TX        9
 #define UART_RX        11
 
+#define SPI_SCK        25
+#define SPI_MOSI       24
+#define SPI_MISO       23
+#define SPI_SS         30
+
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
 extern "C" {
