@@ -151,9 +151,13 @@ void crcResetI(CRCDriver *crcp) {
  */
 uint32_t crcCalc(CRCDriver *crcp, size_t n, const void *buf) {
   uint32_t crc;
+#if CRC_USE_DMA
   osalSysLock();
+#endif
   crc = crcCalcI(crcp, n, buf);
+#if CRC_USE_DMA
   osalSysUnlock();
+#endif
   return crc;
 }
 
@@ -185,7 +189,7 @@ uint32_t crcCalcI(CRCDriver *crcp, size_t n, const void *buf) {
  * @brief   Performs a CRC calculation.
  * @details This asynchronous function starts a crc calcuation operation.
  * @pre     In order to use this function the driver must have been configured
- *          without callbacks (@p end_cb = @p NULL).
+ *          with callbacks (@p end_cb != @p NULL).
  * @post    At the end of the operation the configured callback is invoked.
  *
  * @param[in] crcp      pointer to the @p CRCDriver object
@@ -195,10 +199,7 @@ uint32_t crcCalcI(CRCDriver *crcp, size_t n, const void *buf) {
  * @api
  */
 void crcStartCalc(CRCDriver *crcp, size_t n, const void *buf) {
-  osalDbgCheck((crcp != NULL) && (n > 0U) && (buf != NULL));
   osalSysLock();
-  osalDbgAssert(crcp->state == CRC_READY, "not ready");
-  osalDbgAssert(crcp->config->end_cb != NULL, "callback not defined");
   crcStartCalcI(crcp, n, buf);
   osalSysUnlock();
 }
@@ -220,7 +221,7 @@ void crcStartCalc(CRCDriver *crcp, size_t n, const void *buf) {
 void crcStartCalcI(CRCDriver *crcp, size_t n, const void *buf) {
   osalDbgCheck((crcp != NULL) && (n > 0U) && (buf != NULL));
   osalDbgAssert(crcp->state == CRC_READY, "not ready");
-  osalDbgAssert(crcp->config->end_cb != NULL, "callback defined");
+  osalDbgAssert(crcp->config->end_cb != NULL, "callback not defined");
   (crcp)->state = CRC_ACTIVE;
   crc_lld_start_calc(crcp, n, buf);
 }
