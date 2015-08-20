@@ -80,13 +80,15 @@ endif
 PROJECT = ch
 
 # Imported source files and paths
-CHIBIOS = ../../../../..
+CHIBIOS = ../../../../../ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib/ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 # Startup files.
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_stm32f4xx.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/community/os/hal/hal.mk
-include $(CHIBIOS)/community/os/hal/ports/STM32/STM32F4xx/platform.mk
-include $(CHIBIOS)/community/os/hal/boards/NONSTANDARD_STM32F4_BARTHESS2/board.mk
+include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/STM32/STM32F4xx/platform.mk
+include $(CHIBIOS_CONTRIB)/os/hal/boards/NONSTANDARD_STM32F4_BARTHESS2/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
@@ -105,7 +107,7 @@ CSRC = $(STARTUPSRC) \
        $(PLATFORMSRC) \
        $(BOARDSRC) \
        $(TESTSRC) \
-       $(CHIBIOS)/community/os/various/bitmap.c \
+       $(CHIBIOS_CONTRIB)/os/various/bitmap.c \
        dma_storm_adc.c \
        dma_storm_spi.c \
        dma_storm_uart.c \
@@ -140,7 +142,7 @@ ASMSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 
 INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
-         $(CHIBIOS)/os/various $(CHIBIOS)/community/os/various
+         $(CHIBIOS)/os/various $(CHIBIOS_CONTRIB)/os/various
 
 
 #

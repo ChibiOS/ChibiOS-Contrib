@@ -80,12 +80,14 @@ endif
 PROJECT = ch
 
 # Imported source files and paths
-CHIBIOS = ../../../../..
+CHIBIOS = ../../../../../ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib/ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 # Startup files.
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_stm32f4xx.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/community/os/hal/hal.mk
-include $(CHIBIOS)/community/os/hal/ports/STM32/STM32F4xx/platform.mk
+include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/STM32/STM32F4xx/platform.mk
 include $(CHIBIOS)/os/hal/boards/ST_STM32F4_DISCOVERY/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).

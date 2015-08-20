@@ -80,12 +80,14 @@ endif
 PROJECT = ch
 
 # Imported source files and paths
-CHIBIOS = ../../../../..
+CHIBIOS = ../../../../../ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib/ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 # Startup files.
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_stm32f4xx.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/community/os/hal/hal.mk
-include $(CHIBIOS)/community/os/hal/ports/STM32/STM32F4xx/platform.mk
+include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/STM32/STM32F4xx/platform.mk
 include $(CHIBIOS)/os/hal/boards/ST_STM32F429I_DISCOVERY/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).
@@ -114,7 +116,7 @@ CSRC = $(STARTUPSRC) \
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
 CPPSRC = $(CHCPPSRC) \
-         $(CHIBIOS)/community/os/various/memtest.cpp
+         $(CHIBIOS_CONTRIB)/os/various/memtest.cpp
 
 # C sources to be compiled in ARM mode regardless of the global setting.
 # NOTE: Mixing ARM and THUMB mode enables the -mthumb-interwork compiler
@@ -143,7 +145,7 @@ INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
          $(CHIBIOS)/os/various/cpp_wrappers \
          $(CHIBIOS)/os/various \
-         $(CHIBIOS)/community/os/various
+         $(CHIBIOS_CONTRIB)/os/various
 
 #
 # Project, sources and paths
