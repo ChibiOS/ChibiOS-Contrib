@@ -39,8 +39,8 @@ int main(void) {
 
   SerialConfig serial_config = {
     .speed = 38400,
-    .tx_pin = UART_TX,
-    .rx_pin = UART_RX,
+    .tx_pad = UART_TX,
+    .rx_pad = UART_RX,
   };
 
   /*

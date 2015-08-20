@@ -32,9 +32,6 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define INVALID_BAUDRATE 0xFFFFFFFF
-#define INVALID_PIN      0xFF
-
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -53,8 +50,8 @@ SerialDriver SD1;
  */
 static const SerialConfig default_config = {
   .speed = 38400,
-  .tx_pin = INVALID_PIN,
-  .rx_pin = INVALID_PIN,
+  .tx_pad = NRF51_SERIAL_PAD_DISCONNECTED,
+  .rx_pad = NRF51_SERIAL_PAD_DISCONNECTED,
 };
 
 /*===========================================================================*/
@@ -64,27 +61,62 @@ static const SerialConfig default_config = {
 /*
  * @brief Maps a baudrate speed to a BAUDRATE register value.
  */
-static uint32_t regval_from_baudrate(uint32_t speed)
+
+/**
+ * @brief   Common UART configuration.
+ *
+ */
+static void configure_uart(const SerialConfig *config)
 {
-  switch (speed) {
-  case 1200:    return 0x0004F000;
-  case 2400:    return 0x0009D000;
-  case 4800:    return 0x0013B000;
-  case 9600:    return 0x00275000;
-  case 14400:   return 0x003B0000;
-  case 19200:   return 0x004EA000;
-  case 28800:   return 0x0075F000;
-  case 38400:   return 0x009D5000;
-  case 57600:   return 0x00EBF000;
-  case 76800:   return 0x013A9000;
-  case 115200:  return 0x01D7E000;
-  case 230400:  return 0x03AFB000;
-  case 250000:  return 0x04000000;
-  case 460800:  return 0x075F7000;
-  case 921600:  return 0x0EBEDFA4;
-  case 1000000: return 0x10000000;
+  /* TODO: Add support for CTS/RTS! */
+  uint32_t speed = UART_BAUDRATE_BAUDRATE_Baud250000;
+
+  switch (config->speed) {
+    case 1200: speed = UART_BAUDRATE_BAUDRATE_Baud1200; break;
+    case 2400: speed = UART_BAUDRATE_BAUDRATE_Baud2400; break;
+    case 4800: speed = UART_BAUDRATE_BAUDRATE_Baud4800; break;
+    case 9600: speed = UART_BAUDRATE_BAUDRATE_Baud9600; break;
+    case 14400: speed = UART_BAUDRATE_BAUDRATE_Baud14400; break;
+    case 19200: speed = UART_BAUDRATE_BAUDRATE_Baud19200; break;
+    case 28800: speed = UART_BAUDRATE_BAUDRATE_Baud28800; break;
+    case 38400: speed = UART_BAUDRATE_BAUDRATE_Baud38400; break;
+    case 57600: speed = UART_BAUDRATE_BAUDRATE_Baud57600; break;
+    case 76800: speed = UART_BAUDRATE_BAUDRATE_Baud76800; break;
+    case 115200: speed = UART_BAUDRATE_BAUDRATE_Baud115200; break;
+    case 230400: speed = UART_BAUDRATE_BAUDRATE_Baud230400; break;
+    case 250000: speed = UART_BAUDRATE_BAUDRATE_Baud250000; break;
+    case 460800: speed = UART_BAUDRATE_BAUDRATE_Baud460800; break;
+    case 921600: speed = UART_BAUDRATE_BAUDRATE_Baud921600; break;
+    case 1000000: speed = UART_BAUDRATE_BAUDRATE_Baud1M; break;
+    default: osalDbgAssert(0, "invalid baudrate"); break;
+  };
+
+  /* Configure PINs */
+  if (config->tx_pad != NRF51_SERIAL_PAD_DISCONNECTED) {
+    palSetPadMode(IOPORT1, config->tx_pad, PAL_MODE_OUTPUT_PUSHPULL);
+    NRF_UART0->PSELTXD = config->tx_pad;
   }
-  return INVALID_BAUDRATE;
+  if (config->rx_pad != NRF51_SERIAL_PAD_DISCONNECTED) {
+    palSetPadMode(IOPORT1, config->rx_pad, PAL_MODE_INPUT);
+    NRF_UART0->PSELRXD = config->rx_pad;
+  }
+
+  NRF_UART0->BAUDRATE = speed;
+  NRF_UART0->CONFIG = (UART_CONFIG_PARITY_Excluded << UART_CONFIG_PARITY_Pos);
+  NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Enabled;
+  NRF_UART0->EVENTS_RXDRDY = 0;
+  NRF_UART0->EVENTS_TXDRDY = 0;
+
+  NRF_UART0->CONFIG       &= ~(UART_CONFIG_HWFC_Enabled << UART_CONFIG_HWFC_Pos);
+
+  NRF_UART0->PSELRTS       = NRF51_SERIAL_PAD_DISCONNECTED;
+  NRF_UART0->PSELCTS       = NRF51_SERIAL_PAD_DISCONNECTED;
+
+  if (config->rx_pad != NRF51_SERIAL_PAD_DISCONNECTED) {
+    while (NRF_UART0->EVENTS_RXDRDY != 0) {
+      (void)NRF_UART0->RXD;
+    }
+  }
 }
 
 
@@ -94,16 +126,25 @@ static uint32_t regval_from_baudrate(uint32_t speed)
 #if NRF51_SERIAL_USE_UART0 || defined(__DOXYGEN__)
 static void notify1(io_queue_t *qp)
 {
+  SerialDriver *sdp = &SD1;
+
   (void)qp;
 
-  msg_t b = oqGetI(&SD1.oqueue);
-  if (b < Q_OK) {
-    chnAddFlagsI(&SD1, CHN_OUTPUT_EMPTY);
+  if (NRF_UART0->PSELTXD == NRF51_SERIAL_PAD_DISCONNECTED)
     return;
+
+  if (!sdp->tx_busy) {
+    msg_t b = chOQGetI(&sdp->oqueue);
+
+    if (b < Q_OK) {
+      chnAddFlagsI(sdp, CHN_OUTPUT_EMPTY);
+      NRF_UART0->TASKS_STOPTX = 1;
+      return;
+    }
+    sdp->tx_busy = 1;
+    NRF_UART0->TASKS_STARTTX = 1;
+    NRF_UART0->TXD = b;
   }
-  SD1.thread = chThdGetSelfX();
-  NRF_UART0->TXD = b;
-  chEvtWaitAny((eventmask_t) 1);
 }
 #endif
 
@@ -117,24 +158,49 @@ OSAL_IRQ_HANDLER(Vector48) {
 
   OSAL_IRQ_PROLOGUE();
 
-  if (NRF_UART0->EVENTS_RXDRDY) {
+  SerialDriver *sdp = &SD1;
+  uint32_t isr = NRF_UART0->INTENSET;
+
+  if ((NRF_UART0->EVENTS_RXDRDY != 0) && (isr & UART_INTENSET_RXDRDY_Msk)) {
+    // Clear UART RX event flag
     NRF_UART0->EVENTS_RXDRDY = 0;
+
     osalSysLockFromISR();
-    if (iqIsEmptyI(&SD1.iqueue))
-      chnAddFlagsI(&SD1, CHN_INPUT_AVAILABLE);
-    if (iqPutI(&SD1.iqueue, NRF_UART0->RXD) < Q_OK)
-      chnAddFlagsI(&SD1, SD_OVERRUN_ERROR);
+    if (chIQIsEmptyI(&sdp->iqueue))
+      chnAddFlagsI(sdp, CHN_INPUT_AVAILABLE);
+    if (chIQPutI(&sdp->iqueue, NRF_UART0->RXD) < Q_OK)
+      chnAddFlagsI(sdp, SD_OVERRUN_ERROR);
     osalSysUnlockFromISR();
   }
 
-  if (NRF_UART0->EVENTS_TXDRDY) {
+  if ((NRF_UART0->EVENTS_TXDRDY != 0) && (isr & UART_INTENSET_TXDRDY_Msk)) {
+    msg_t b;
+
+    // Clear UART TX event flag.
     NRF_UART0->EVENTS_TXDRDY = 0;
+
     osalSysLockFromISR();
-    chEvtSignalI(SD1.thread, (eventmask_t) 1);
+    b = chOQGetI(&sdp->oqueue);
     osalSysUnlockFromISR();
+
+    if (b < Q_OK) {
+      osalSysLockFromISR();
+      chnAddFlagsI(sdp, CHN_OUTPUT_EMPTY);
+      osalSysUnlockFromISR();
+      NRF_UART0->TASKS_STOPTX = 1;
+      sdp->tx_busy = 0;
+    } else {
+      sdp->tx_busy = 1;
+      NRF_UART0->TXD = b;
+    }
   }
 
   /* TODO: Error handling for EVENTS_ERROR */
+  if ((NRF_UART0->EVENTS_ERROR != 0) && (isr & UART_INTENSET_ERROR_Msk)) {
+    // Clear UART ERROR event flag.
+    NRF_UART0->EVENTS_ERROR = 0;
+  }
+
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -168,45 +234,31 @@ void sd_lld_init(void) {
  */
 void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
 
-  if (config == NULL) {
+  if (config == NULL)
     config = &default_config;
-  }
+
+  osalDbgAssert(
+      (config->rx_pad < TOTAL_GPIO_PADS) || (config->tx_pad < TOTAL_GPIO_PADS),
+      "must configure at least an RX or TX pad");
 
   if (sdp->state == SD_STOP) {
 
 #if NRF51_SERIAL_USE_UART0 == TRUE
     if (sdp == &SD1) {
-      uint32_t regval;
+      configure_uart(config);
 
-      /* TODO: Add support for CTS/RTS! */
+      // Enable UART interrupt
+      NRF_UART0->INTENCLR = (uint32_t)-1;
+      NRF_UART0->INTENSET = UART_INTENSET_ERROR_Msk;
+      if (config->rx_pad != NRF51_SERIAL_PAD_DISCONNECTED)
+          NRF_UART0->INTENSET |= UART_INTENSET_RXDRDY_Msk;
+      if (config->tx_pad != NRF51_SERIAL_PAD_DISCONNECTED)
+          NRF_UART0->INTENSET |= UART_INTENSET_TXDRDY_Msk;
 
-      /* Configure PINs */
-      NRF_UART0->PSELRTS = ~0;
-      NRF_UART0->PSELCTS = ~0;
-      if (config->tx_pin != INVALID_PIN) {
-        palSetPadMode(IOPORT1, config->tx_pin, PAL_MODE_OUTPUT_PUSHPULL);
-        NRF_UART0->PSELTXD = config->tx_pin;
-      }
-      if (config->rx_pin != INVALID_PIN) {
-        palSetPadMode(IOPORT1, config->rx_pin, PAL_MODE_INPUT);
-        NRF_UART0->PSELRXD = config->rx_pin;
-      }
+      nvicEnableVector(UART0_IRQn, NRF51_SERIAL_UART0_PRIORITY);
 
-      regval = regval_from_baudrate(config->speed);
-      osalDbgAssert(regval != INVALID_BAUDRATE, "invalid baudrate speed");
-      NRF_UART0->BAUDRATE = regval;
-
-      /* Enable interrupts for RX, TX and ERROR */
-      NRF_UART0->INTENSET = 0x284;
-
-      NRF_UART0->EVENTS_RXDRDY = 0;
-      NRF_UART0->EVENTS_TXDRDY = 0;
-
-      nvicEnableVector(UART0_IRQn, 12);
-
-      NRF_UART0->ENABLE = 4;
-      NRF_UART0->TASKS_STARTRX = 1;
-      NRF_UART0->TASKS_STARTTX = 1;
+      if (config->rx_pad != NRF51_SERIAL_PAD_DISCONNECTED)
+        NRF_UART0->TASKS_STARTRX = 1;
     }
 #endif
 
@@ -229,9 +281,9 @@ void sd_lld_stop(SerialDriver *sdp) {
 #if NRF51_SERIAL_USE_UART0 == TRUE
     if (&SD1 == sdp) {
       nvicDisableVector(UART0_IRQn);
+      NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Disabled;
     }
 #endif
-
   }
 }
 
