@@ -45,6 +45,13 @@
 #define HAL_USE_EICU                TRUE
 #endif
 
+/**
+ * @brief   Enables the CRC subsystem.
+ */
+#if !defined(HAL_USE_CRC) || defined(__DOXYGEN__)
+#define HAL_USE_CRC                 FALSE
+#endif
+
 /*===========================================================================*/
 /* FSMCNAND driver related settings.                                         */
 /*===========================================================================*/
