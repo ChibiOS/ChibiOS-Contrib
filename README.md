@@ -13,7 +13,7 @@ Feel free to send pull request there.
 # git clone git@github.com:Chibios/ChibiOS.git ChibiOS-RT
 # git clone git@github.com:ChibiOS/ChibiOS-Contrib.git ChibiOS-Contrib
 ```
-Note: this repos clonned in the same directory side by side (not inside).
+Note: this repos cloned in the same directory side by side (not inside).
 
 #### Useful links
 
