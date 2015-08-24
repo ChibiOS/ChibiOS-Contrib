@@ -73,7 +73,7 @@ SRC =  $(PORTSRC) \
        $(OSALSRC) \
        $(PLATFORMSRC) \
        $(BOARDSRC) \
-       $(CHIBIOS)/community/os/various/tribuf.c \
+       $(CHIBIOS_CONTRIB)/os/various/tribuf.c \
        main.c \
        # eol
 
@@ -83,7 +83,7 @@ ASRC =
 # List all user directories here
 UINCDIR = $(PORTINC) $(KERNINC) $(TESTINC) \
           $(HALINC) $(OSALINC) $(PLATFORMINC) $(BOARDINC) \
-          $(CHIBIOS)/community/os/various/ \
+          $(CHIBIOS_CONTRIB)/os/various/ \
           # eol
 
 # List the user directory to look for the libraries here

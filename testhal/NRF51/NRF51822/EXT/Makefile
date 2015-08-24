@@ -80,13 +80,15 @@ endif
 PROJECT = ch
 
 # Imported source files and paths
-CHIBIOS = ../../../../..
+CHIBIOS = ../../../../../ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib/ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 # Startup files.
-include $(CHIBIOS)/community/os/common/ports/ARMCMx/compilers/GCC/mk/startup_nrf51.mk
+include $(CHIBIOS_CONTRIB)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_nrf51.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS)/community/os/hal/ports/NRF51/NRF51822/platform.mk
-include $(CHIBIOS)/community/os/hal/boards/WVSHARE_BLE400/board.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/NRF51/NRF51822/platform.mk
+include $(CHIBIOS_CONTRIB)/os/hal/boards/WVSHARE_BLE400/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
