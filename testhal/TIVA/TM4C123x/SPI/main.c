@@ -51,7 +51,7 @@ static const SPIConfig ls_spicfg =
  * SPI bus contender 1.
  */
 static THD_WORKING_AREA(spi_thread_1_wa, 256);
-static msg_t spi_thread_1(void *p)
+static THD_FUNCTION(spi_thread_1, p)
 {
   (void)p;
   chRegSetThreadName("SPI thread 1");
@@ -65,14 +65,13 @@ static msg_t spi_thread_1(void *p)
     spiUnselect(&SPID1);                /* Slave Select de-assertion.       */
     spiReleaseBus(&SPID1);              /* Ownership release.               */
   }
-  return 0;
 }
 
 /*
  * SPI bus contender 2.
  */
 static THD_WORKING_AREA(spi_thread_2_wa, 256);
-static msg_t spi_thread_2(void *p)
+static THD_FUNCTION(spi_thread_2, p)
 {
   (void)p;
   chRegSetThreadName("SPI thread 2");
@@ -86,7 +85,6 @@ static msg_t spi_thread_2(void *p)
     spiUnselect(&SPID1);                /* Slave Select de-assertion.       */
     spiReleaseBus(&SPID1);              /* Ownership release.               */
   }
-  return 0;
 }
 
 /*
