@@ -14,3 +14,9 @@ Feel free to send pull request there.
 # git clone git@github.com:ChibiOS/ChibiOS-Contrib.git ChibiOS-Contrib
 ```
 Note: this repos clonned in the same directory side by side (not inside).
+
+#### Useful links
+
+https://help.github.com/
+http://git-scm.com/
+http://chibios.org/dokuwiki/doku.php?id=chibios:guides:style_guide
