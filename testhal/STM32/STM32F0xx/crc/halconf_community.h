@@ -45,6 +45,13 @@
 #define HAL_USE_EICU                FALSE
 #endif
 
+/**
+ * @brief   Enables the community subsystem.
+ */
+#if !defined(HAL_USE_CRC) || defined(__DOXYGEN__)
+#define HAL_USE_CRC                 TRUE
+#endif
+
 /*===========================================================================*/
 /* FSMCNAND driver related settings.                                         */
 /*===========================================================================*/
@@ -75,13 +82,6 @@
 /*===========================================================================*/
 /* CRC driver settings.                                                      */
 /*===========================================================================*/
-
-/**
- * @brief   Enables the community subsystem.
- */
-#if !defined(HAL_USE_CRC) || defined(__DOXYGEN__)
-#define HAL_USE_CRC                 TRUE
-#endif
 
 /**
  * @brief   Enables DMA engine when performing CRC transactions.

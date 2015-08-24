@@ -4,8 +4,8 @@ STARTUPSRC = $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/crt1.c \
 
 STARTUPASM = $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/crt0_v6m.s
 
-STARTUPINC = $(CHIBIOS)/community/os/common/ports/ARMCMx/devices/NRF51822 \
+STARTUPINC = $(CHIBIOS_CONTRIB)/os/common/ports/ARMCMx/devices/NRF51822 \
              $(CHIBIOS)/os/ext/CMSIS/include
 
-STARTUPLD  = $(CHIBIOS)/community/os/common/ports/ARMCMx/compilers/GCC/ld
+STARTUPLD  = $(CHIBIOS_CONTRIB)/os/common/ports/ARMCMx/compilers/GCC/ld
 
