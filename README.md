@@ -18,5 +18,7 @@ Note: this repos clonned in the same directory side by side (not inside).
 #### Useful links
 
 https://help.github.com/
+
 http://git-scm.com/
+
 http://chibios.org/dokuwiki/doku.php?id=chibios:guides:style_guide
