@@ -34,11 +34,12 @@
 #define LED4           22
 #define UART_TX        9
 #define UART_RX        11
-
 #define SPI_SCK        25
 #define SPI_MOSI       24
 #define SPI_MISO       23
 #define SPI_SS         30
+#define I2C_SCL        1
+#define I2C_SDA        0
 
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
