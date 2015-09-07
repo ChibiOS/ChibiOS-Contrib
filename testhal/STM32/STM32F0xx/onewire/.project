@@ -84,7 +84,7 @@
 		<link>
 			<name>os-git</name>
 			<type>2</type>
-			<locationURI>PARENT-5-PROJECT_LOC/os</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/ChibiOS-RT/os</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
