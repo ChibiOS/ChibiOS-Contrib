@@ -171,11 +171,12 @@ void adc_lld_stop(ADCDriver *adcp) {
   if (adcp->state == ADC_READY) {
 
 #if NRF51_ADC_USE_ADC1
-    if (&ADCD1 == adcp)
+    if (&ADCD1 == adcp) {
 
       nvicDisableVector(ADC_IRQn);
       adcp->adc->INTENCLR = ADC_INTENCLR_END_Clear << ADC_INTENCLR_END_Pos;
       adc_lld_stop_conversion(adcp);
+    }
 #endif
   }
 }
