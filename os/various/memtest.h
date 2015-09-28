@@ -17,6 +17,9 @@
 #ifndef MEMTEST_H_
 #define MEMTEST_H_
 
+/*
+ * Memtest types
+ */
 #define MEMTEST_WALKING_ONE               (1 << 0)
 #define MEMTEST_WALKING_ZERO              (1 << 1)
 #define MEMTEST_OWN_ADDRESS               (1 << 2)
@@ -24,12 +27,22 @@
 #define MEMTEST_MOVING_INVERSION_55AA     (1 << 4)
 #define MEMTEST_MOVING_INVERSION_RAND     (1 << 5)
 
+/*
+ * combined types for convenient
+ */
 #define MEMTEST_RUN_ALL                   (MEMTEST_WALKING_ONE              | \
                                            MEMTEST_WALKING_ZERO             | \
                                            MEMTEST_OWN_ADDRESS              | \
                                            MEMTEST_MOVING_INVERSION_ZERO    | \
                                            MEMTEST_MOVING_INVERSION_55AA    | \
                                            MEMTEST_MOVING_INVERSION_RAND)
+
+/*
+ * Memtest data widths
+ */
+#define MEMTEST_WIDTH_8   (1 << 0)
+#define MEMTEST_WIDTH_16  (1 << 1)
+#define MEMTEST_WIDTH_32  (1 << 2)
 
 typedef struct memtest_t memtest_t;
 typedef uint32_t testtype;
@@ -43,35 +56,23 @@ typedef void (*memtestecb_t)(memtest_t *testp, testtype type, size_t index,
 /*
  *
  */
-typedef enum {
-  MEMTEST_WIDTH_8,
-  MEMTEST_WIDTH_16,
-  MEMTEST_WIDTH_32,
-} memtest_bus_width_t;
-
-/*
- *
- */
 struct memtest_t {
   /*
    * Pointer to the test area start. Must be word aligned.
    */
-  void                *start;
+  void          *start;
   /*
    * Test area size in bytes.
    */
-  size_t              size;
+  size_t        size;
   /*
-   * Maximum width of transactions.
-   * Note: it implies all narrower tests.
-   * Note: width my be wider then your memory interface because AHB is
-   *       smart enough to split big transactions to smaller ones.
+   * Allowable data widths mask.
    */
-  memtest_bus_width_t width;
+  uint32_t      width_mask;
   /*
    * Error callback pointer. Set to NULL if unused.
    */
-  memtestecb_t        errcb;
+  memtestecb_t  errcb;
 };
 
 /*
