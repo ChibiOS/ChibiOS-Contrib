@@ -8,7 +8,8 @@ PLATFORMSRC = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/ext_lld_isr.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/ext_lld.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/i2c_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/adc_lld.c
+              ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/adc_lld.c \
+              ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/gpt_lld.c
 
 # Required include directories
 PLATFORMINC = ${CHIBIOS}/os/hal/ports/common/ARMCMx \
