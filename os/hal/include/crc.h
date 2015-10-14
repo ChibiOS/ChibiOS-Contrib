@@ -17,7 +17,7 @@
 #ifndef _CRC_H_
 #define _CRC_H_
 
-#if HAL_USE_CRC || defined(__DOXYGEN__)
+#if (HAL_USE_CRC == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */

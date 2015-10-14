@@ -31,7 +31,7 @@
  */
 #include "hal.h"
 
-#if (HAL_USE_EICU = TRUE) || defined(__DOXYGEN__)
+#if (HAL_USE_EICU == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
