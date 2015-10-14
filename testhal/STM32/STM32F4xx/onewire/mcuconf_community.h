@@ -40,11 +40,6 @@
 #define STM32_SRAM_USE_FSMC_SRAM4           FALSE
 
 /*
- * FSMC PC card driver system settings.
- */
-#define STM32_USE_FSMC_PCARD                FALSE
-
-/*
  * FSMC SDRAM driver system settings.
  */
 #define STM32_USE_FSMC_SDRAM                FALSE

@@ -28,7 +28,7 @@
 #include "fsmc.h"
 #include "bitmap.h"
 
-#if HAL_USE_NAND || defined(__DOXYGEN__)
+#if (HAL_USE_NAND == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */

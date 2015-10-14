@@ -25,7 +25,7 @@
 #ifndef _EICU_H_
 #define _EICU_H_
 
-#if HAL_USE_EICU || defined(__DOXYGEN__)
+#if (HAL_USE_EICU == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */

@@ -24,7 +24,7 @@
 
 #include "hal.h"
 
-#if HAL_USE_CRC || defined(__DOXYGEN__)
+#if (HAL_USE_CRC = TRUE) || defined(__DOXYGEN__)
 
 /**
  * Allow CRC Software override for ST drivers.  Some ST CRC implimentations

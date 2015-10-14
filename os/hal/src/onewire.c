@@ -55,7 +55,7 @@ on every timer overflow event.
 
 #include "hal.h"
 
-#if HAL_USE_ONEWIRE || defined(__DOXYGEN__)
+#if (HAL_USE_ONEWIRE == TRUE) || defined(__DOXYGEN__)
 
 #include <string.h>
 

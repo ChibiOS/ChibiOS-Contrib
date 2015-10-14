@@ -33,7 +33,7 @@
 
 #include "fsmc.h"
 
-#if STM32_USE_FSMC_SDRAM || defined(__DOXYGEN__)
+#if (STM32_USE_FSMC_SDRAM == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */

@@ -25,7 +25,7 @@
 #ifndef _ONEWIRE_H_
 #define _ONEWIRE_H_
 
-#if HAL_USE_ONEWIRE || defined(__DOXYGEN__)
+#if (HAL_USE_ONEWIRE == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */

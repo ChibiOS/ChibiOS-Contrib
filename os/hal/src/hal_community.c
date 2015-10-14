@@ -24,7 +24,7 @@
 
 #include "hal.h"
 
-#if HAL_USE_COMMUNITY || defined(__DOXYGEN__)
+#if (HAL_USE_COMMUNITY == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
