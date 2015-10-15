@@ -24,7 +24,7 @@
 #define HAL_USE_COMMUNITY           TRUE
 #endif
 /**
- * @brief   Enables the NAND subsystem.
+ * @brief   Enables the FSMC subsystem.
  */
 #if !defined(HAL_USE_FSMC) || defined(__DOXYGEN__)
 #define HAL_USE_FSMC                FALSE
