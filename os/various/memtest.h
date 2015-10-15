@@ -43,6 +43,7 @@
 #define MEMTEST_WIDTH_8   (1 << 0)
 #define MEMTEST_WIDTH_16  (1 << 1)
 #define MEMTEST_WIDTH_32  (1 << 2)
+#define MEMTEST_WIDTH_64  (1 << 3)
 
 typedef struct memtest_t memtest_t;
 typedef uint32_t testtype;
