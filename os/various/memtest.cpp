@@ -230,7 +230,7 @@ static void moving_inversion_rand(memtest_t *testp) {
  *
  */
 static void memtest_wrapper(memtest_t *testp,
-                            void (*p_u8)(memtest_t *testp),
+                            void (*p_u8) (memtest_t *testp),
                             void (*p_u16)(memtest_t *testp),
                             void (*p_u32)(memtest_t *testp),
                             void (*p_u64)(memtest_t *testp)) {
