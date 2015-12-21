@@ -14,9 +14,10 @@
     limitations under the License.
 */
 
-#include <stdint.h>
-#include <stddef.h>
-#include <stdlib.h>
+#include <cstdint>
+#include <cstddef>
+#include <cstdlib>
+#include <cstring>
 
 #include "memtest.h"
 
@@ -132,6 +133,7 @@ public:
     if ((step & 1) == 0) {
       ret  = 0;
       ret |= rand();
+      // for uint64_t we need to call rand() twice
       if (8 == sizeof(T)) {
         // multiplication used instead of 32 bit shift for warning avoidance
         ret *= 0x100000000;
@@ -205,17 +207,21 @@ static void own_address(memtest_t *testp) {
 template <typename T>
 static void moving_inversion_zero(memtest_t *testp) {
   GeneratorMovingInv<T> generator;
-  T mask = -1;
-  memtest_sequential<T>(testp, generator, 0);
-  memtest_sequential<T>(testp, generator, 0xFFFFFFFF & mask);
+  T seed;
+  seed = 0;
+  memtest_sequential<T>(testp, generator, seed);
+  seed = ~seed;
+  memtest_sequential<T>(testp, generator, seed);
 }
 
 template <typename T>
 static void moving_inversion_55aa(memtest_t *testp) {
   GeneratorMovingInv<T> generator;
-  T mask = -1;
-  memtest_sequential<T>(testp, generator, 0x55555555 & mask);
-  memtest_sequential<T>(testp, generator, 0xAAAAAAAA & mask);
+  T seed;
+  memset(&seed, 0x55, sizeof(seed));
+  memtest_sequential<T>(testp, generator, seed);
+  seed = ~seed;
+  memtest_sequential<T>(testp, generator, seed);
 }
 
 template <typename T>
