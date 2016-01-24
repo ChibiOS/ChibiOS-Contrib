@@ -46,6 +46,16 @@
 #define ONEWIRE_CMD_CONVERT_TEMP          0x44
 #define ONEWIRE_CMD_READ_SCRATCHPAD       0xBE
 
+/**
+ * @brief   How many bits will be used for transaction length storage.
+ */
+#define ONEWIRE_REG_BYTES_WIDTH           16U
+
+/**
+ * @brief   Precalculated maximum transaction length.
+ */
+#define ONEWIRE_MAX_TRANSACTION_LEN       ((1U << ONEWIRE_REG_BYTES_WIDTH) - 1U)
+
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -116,6 +126,20 @@ typedef struct {
    * @brief Pointer to @p PWM driver used for communication.
    */
   PWMDriver                 *pwmd;
+   /**
+   * @brief Pointer to configuration structure for underlying PWM driver.
+   * @note  It is NOT constant because 1-wire driver needs to change them
+   *        during normal functioning.
+   */
+  PWMConfig                 *pwmcfg;
+  /**
+   * @brief   Active logic level for master channel.
+   * @details Just set it to @p PWM_OUTPUT_ACTIVE_LOW when 1-wire bus
+   *          connected to direct (not complementary) output of the timer.
+   *          In opposite case you need to check documentation to choose
+   *          correct value.
+   */
+  pwmmode_t                 pwmmode;
   /**
    * @brief Number of PWM channel used as master pulse generator.
    */
@@ -167,7 +191,7 @@ typedef struct {
  */
 typedef struct {
   /**
-   * @brief Bool flag. If @p true than only bus has only one slave device.
+   * @brief Bool flag. True when bus has single slave device.
    */
   uint32_t      single_device: 1;
   /**
@@ -260,7 +284,7 @@ typedef struct {
   /**
    * @brief   Bytes number to be processing in current transaction.
    */
-  uint32_t      bytes: 16;
+  uint32_t      bytes: ONEWIRE_REG_BYTES_WIDTH;
 } onewire_reg_t;
 
 /**
@@ -275,10 +299,6 @@ typedef struct {
    * @brief   Onewire config.
    */
   const onewireConfig   *config;
-  /**
-   * @brief   Config for underlying PWM driver.
-   */
-  PWMConfig             pwmcfg;
   /**
    * @brief   Pointer to I/O data buffer.
    */
@@ -315,14 +335,11 @@ extern "C" {
   bool onewireReset(onewireDriver *owp);
   void onewireRead(onewireDriver *owp, uint8_t *rxbuf, size_t rxbytes);
   uint8_t onewireCRC(const uint8_t *buf, size_t len);
-  void onewireWrite(onewireDriver *owp,
-                    uint8_t *txbuf,
-                    size_t txbytes,
-                    systime_t pullup_time);
+  void onewireWrite(onewireDriver *owp, uint8_t *txbuf,
+                    size_t txbytes, systime_t pullup_time);
 #if ONEWIRE_USE_SEARCH_ROM
   size_t onewireSearchRom(onewireDriver *owp,
-                          uint8_t *result,
-                          size_t max_rom_cnt);
+                          uint8_t *result, size_t max_rom_cnt);
 #endif /* ONEWIRE_USE_SEARCH_ROM */
 #if ONEWIRE_SYNTH_SEARCH_TEST
   void _synth_ow_write_bit(onewireDriver *owp, uint8_t bit);

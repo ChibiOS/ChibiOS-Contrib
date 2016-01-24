@@ -59,7 +59,7 @@
   #define ONEWIRE_SAMPLE_CHANNEL        3
 #else
   #define ONEWIRE_PORT                  GPIOB
-  #define GPIOB_ONEWIRE                 GPIOB_TACHOMETER
+  #define ONEWIRE_PIN                   GPIOB_TACHOMETER
   #include "pads.h"
   #define ONEWIRE_PAD_MODE_ACTIVE       (PAL_MODE_ALTERNATE(2) | PAL_STM32_OTYPE_OPENDRAIN | PAL_STM32_PUDR_PULLUP)
   #define search_led_on                 red_led_on
@@ -98,21 +98,45 @@ static uint8_t testbuf[12];
 static int32_t temperature[3];
 
 /*
+ * Config for underlied PWM driver.
+ * Note! It is NOT constant because 1-wire driver needs to change them
+ * during functioning.
+ */
+static PWMConfig pwm_cfg = {
+    0,
+    0,
+    NULL,
+    {
+     {PWM_OUTPUT_DISABLED, NULL},
+     {PWM_OUTPUT_DISABLED, NULL},
+     {PWM_OUTPUT_DISABLED, NULL},
+     {PWM_OUTPUT_DISABLED, NULL}
+    },
+    0,
+#if STM32_PWM_USE_ADVANCED
+    0,
+#endif
+    0
+};
+
+/*
  *
  */
 static const onewireConfig ow_cfg = {
-  &PWMD3,
-  ONEWIRE_MASTER_CHANNEL,
-  ONEWIRE_SAMPLE_CHANNEL,
-  ONEWIRE_PORT,
-  ONEWIRE_PIN,
+    &PWMD3,
+    &pwm_cfg,
+    PWM_OUTPUT_ACTIVE_LOW,
+    ONEWIRE_MASTER_CHANNEL,
+    ONEWIRE_SAMPLE_CHANNEL,
+    ONEWIRE_PORT,
+    ONEWIRE_PIN,
 #if defined(STM32F1XX)
-  ONEWIRE_PAD_MODE_IDLE,
+    ONEWIRE_PAD_MODE_IDLE,
 #endif
-  ONEWIRE_PAD_MODE_ACTIVE,
+    ONEWIRE_PAD_MODE_ACTIVE,
 #if ONEWIRE_USE_STRONG_PULLUP
-  strong_pullup_assert,
-  strong_pullup_release
+    strong_pullup_assert,
+    strong_pullup_release
 #endif
 };
 
@@ -129,16 +153,14 @@ static const onewireConfig ow_cfg = {
  *
  */
 static void strong_pullup_assert(void) {
-  palSetPadMode(GPIOB, GPIOB_ONEWIRE, PAL_MODE_ALTERNATE(2) |
-                  PAL_STM32_OTYPE_PUSHPULL | PAL_STM32_PUDR_PULLUP);
+  palSetPadMode(ONEWIRE_PORT, ONEWIRE_PIN, PAL_MODE_STM32_ALTERNATE_PUSHPULL);
 }
 
 /**
  *
  */
 static void strong_pullup_release(void) {
-  palSetPadMode(GPIOB, GPIOB_ONEWIRE, PAL_MODE_ALTERNATE(2) |
-                PAL_STM32_OTYPE_OPENDRAIN | PAL_STM32_PUDR_PULLUP);
+  palSetPadMode(ONEWIRE_PORT, ONEWIRE_PIN, PAL_MODE_STM32_ALTERNATE_OPENDRAIN);
 }
 #endif /* ONEWIRE_USE_STRONG_PULLUP */
 
