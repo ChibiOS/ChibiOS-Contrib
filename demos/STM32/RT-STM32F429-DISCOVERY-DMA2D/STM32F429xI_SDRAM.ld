@@ -48,6 +48,9 @@ REGION_ALIAS("DATA_RAM", ram0);
 /* RAM region to be used for BSS segment.*/
 REGION_ALIAS("BSS_RAM", ram0);
 
+/* RAM region to be used for BSS segment.*/
+REGION_ALIAS("HEAP_RAM", ram0);
+
 /* RAM region to be used for SDRAM segment.*/
 REGION_ALIAS("SDRAM_RAM", ram7);
 

@@ -24,7 +24,7 @@
 #include "hal.h"
 #include "fsmc_sram.h"
 
-#if STM32_USE_FSMC_SRAM || defined(__DOXYGEN__)
+#if (STM32_USE_FSMC_SRAM == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */

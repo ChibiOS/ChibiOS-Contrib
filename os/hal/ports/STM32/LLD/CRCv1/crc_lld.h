@@ -25,7 +25,7 @@
 #ifndef _CRC_LLD_H_
 #define _CRC_LLD_H_
 
-#if HAL_USE_CRC || defined(__DOXYGEN__)
+#if (HAL_USE_CRC == TRUE) || defined(__DOXYGEN__)
 
 /*
  * This error check must occur outsite of CRCSW_USE_CRC1 to check if

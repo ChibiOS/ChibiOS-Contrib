@@ -14,9 +14,10 @@
     limitations under the License.
 */
 
-#include <stdint.h>
-#include <stddef.h>
-#include <stdlib.h>
+#include <cstdint>
+#include <cstddef>
+#include <cstdlib>
+#include <cstring>
 
 #include "memtest.h"
 
@@ -128,13 +129,20 @@ public:
 
   T get(void) {
     T ret;
-    T mask = -1;
+
     if ((step & 1) == 0) {
-      ret = rand() & mask;
+      ret  = 0;
+      ret |= rand();
+      // for uint64_t we need to call rand() twice
+      if (8 == sizeof(T)) {
+        // multiplication used instead of 32 bit shift for warning avoidance
+        ret *= 0x100000000;
+        ret |= rand();
+      }
       prev = ret;
     }
     else {
-      ret = ~prev & mask;
+      ret = ~prev;
     }
     step++;
 
@@ -199,17 +207,21 @@ static void own_address(memtest_t *testp) {
 template <typename T>
 static void moving_inversion_zero(memtest_t *testp) {
   GeneratorMovingInv<T> generator;
-  T mask = -1;
-  memtest_sequential<T>(testp, generator, 0);
-  memtest_sequential<T>(testp, generator, 0xFFFFFFFF & mask);
+  T seed;
+  seed = 0;
+  memtest_sequential<T>(testp, generator, seed);
+  seed = ~seed;
+  memtest_sequential<T>(testp, generator, seed);
 }
 
 template <typename T>
 static void moving_inversion_55aa(memtest_t *testp) {
   GeneratorMovingInv<T> generator;
-  T mask = -1;
-  memtest_sequential<T>(testp, generator, 0x55555555 & mask);
-  memtest_sequential<T>(testp, generator, 0xAAAAAAAA & mask);
+  T seed;
+  memset(&seed, 0x55, sizeof(seed));
+  memtest_sequential<T>(testp, generator, seed);
+  seed = ~seed;
+  memtest_sequential<T>(testp, generator, seed);
 }
 
 template <typename T>
@@ -224,9 +236,10 @@ static void moving_inversion_rand(memtest_t *testp) {
  *
  */
 static void memtest_wrapper(memtest_t *testp,
-                            void (*p_u8)(memtest_t *testp),
+                            void (*p_u8) (memtest_t *testp),
                             void (*p_u16)(memtest_t *testp),
-                            void (*p_u32)(memtest_t *testp)) {
+                            void (*p_u32)(memtest_t *testp),
+                            void (*p_u64)(memtest_t *testp)) {
 
   if (testp->width_mask & MEMTEST_WIDTH_8)
     p_u8(testp);
@@ -236,6 +249,9 @@ static void memtest_wrapper(memtest_t *testp,
 
   if (testp->width_mask & MEMTEST_WIDTH_32)
     p_u32(testp);
+
+  if (testp->width_mask & MEMTEST_WIDTH_64)
+    p_u64(testp);
 }
 
 /*
@@ -247,42 +263,48 @@ void memtest_run(memtest_t *testp, uint32_t testmask) {
     memtest_wrapper(testp,
         walking_one<uint8_t>,
         walking_one<uint16_t>,
-        walking_one<uint32_t>);
+        walking_one<uint32_t>,
+        walking_one<uint64_t>);
   }
 
   if (testmask & MEMTEST_WALKING_ZERO) {
     memtest_wrapper(testp,
         walking_zero<uint8_t>,
         walking_zero<uint16_t>,
-        walking_zero<uint32_t>);
+        walking_zero<uint32_t>,
+        walking_zero<uint64_t>);
   }
 
   if (testmask & MEMTEST_OWN_ADDRESS) {
     memtest_wrapper(testp,
         own_address<uint8_t>,
         own_address<uint16_t>,
-        own_address<uint32_t>);
+        own_address<uint32_t>,
+        own_address<uint64_t>);
   }
 
   if (testmask & MEMTEST_MOVING_INVERSION_ZERO) {
     memtest_wrapper(testp,
         moving_inversion_zero<uint8_t>,
         moving_inversion_zero<uint16_t>,
-        moving_inversion_zero<uint32_t>);
+        moving_inversion_zero<uint32_t>,
+        moving_inversion_zero<uint64_t>);
   }
 
   if (testmask & MEMTEST_MOVING_INVERSION_55AA) {
     memtest_wrapper(testp,
         moving_inversion_55aa<uint8_t>,
         moving_inversion_55aa<uint16_t>,
-        moving_inversion_55aa<uint32_t>);
+        moving_inversion_55aa<uint32_t>,
+        moving_inversion_55aa<uint64_t>);
   }
 
   if (testmask & MEMTEST_MOVING_INVERSION_RAND) {
     memtest_wrapper(testp,
         moving_inversion_rand<uint8_t>,
         moving_inversion_rand<uint16_t>,
-        moving_inversion_rand<uint32_t>);
+        moving_inversion_rand<uint32_t>,
+        moving_inversion_rand<uint64_t>);
   }
 }
 

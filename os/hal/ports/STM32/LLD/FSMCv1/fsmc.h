@@ -25,7 +25,7 @@
 #ifndef _FSMC_H_
 #define _FSMC_H_
 
-#if HAL_USE_NAND || STM32_USE_FSMC_SRAM || STM32_USE_FSMC_SDRAM || defined(__DOXYGEN__)
+#if (HAL_USE_FSMC == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -302,9 +302,6 @@ struct FSMCDriver {
 #if STM32_NAND_USE_FSMC_NAND2
   FSMC_NAND_TypeDef         *nand2;
 #endif
-#if STM32_USE_FSMC_PCCARD
-  FSMC_PCCard_TypeDef       *pccard;
-#endif
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx))
   #if STM32_USE_FSMC_SDRAM
@@ -335,7 +332,7 @@ extern "C" {
 }
 #endif
 
-#endif /* HAL_USE_NAND || STM32_USE_FSMC_SRAM || STM32_USE_FSMC_SDRAM */
+#endif /* HAL_USE_FSMC */
 
 #endif /* _FSMC_H_ */
 

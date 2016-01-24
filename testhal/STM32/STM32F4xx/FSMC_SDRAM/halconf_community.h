@@ -25,6 +25,13 @@
 #endif
 
 /**
+ * @brief   Enables the FSMC subsystem.
+ */
+#if !defined(HAL_USE_FSMC) || defined(__DOXYGEN__)
+#define HAL_USE_FSMC                TRUE
+#endif
+
+/**
  * @brief   Enables the NAND subsystem.
  */
 #if !defined(HAL_USE_NAND) || defined(__DOXYGEN__)

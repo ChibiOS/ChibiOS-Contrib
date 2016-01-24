@@ -24,7 +24,7 @@
 
 #include "hal.h"
 
-#if HAL_USE_NAND || defined(__DOXYGEN__)
+#if (HAL_USE_NAND == TRUE) || defined(__DOXYGEN__)
 
 #include "string.h" /* for memset */
 

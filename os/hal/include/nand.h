@@ -25,7 +25,7 @@
 #ifndef _NAND_H_
 #define _NAND_H_
 
-#if HAL_USE_NAND || defined(__DOXYGEN__)
+#if (HAL_USE_NAND == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
