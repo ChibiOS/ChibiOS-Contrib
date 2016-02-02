@@ -77,9 +77,4 @@ void __early_init(void)
  */
 void boardInit(void)
 {
-  //FIXME: not really needed yet
-  //NRF_CLOCK->XTALFREQ = 0xff;
-  //NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
-  //NRF_CLOCK->TASKS_HFCLKSTART = 1;
-  //while (!NRF_CLOCK->EVENTS_HFCLKSTARTED) {}
 }
