@@ -66,6 +66,7 @@
    from this header because we need this file to be usable also from
    assembler source files. We verify that the info matches instead.*/
 #include "nrf51.h"
+#include "nrf51_bitfields.h"
 
 #if CORTEX_MODEL != __CORTEX_M
 #error "CMSIS __CORTEX_M mismatch"
