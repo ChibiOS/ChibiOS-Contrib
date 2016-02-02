@@ -40,6 +40,16 @@
  * @{
  */
 /**
+ * @brief   SD flow control enable switch.
+ * @details If set to @p TRUE the support for hardware flow control
+ *          is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(NRF51_SERIAL_USE_HWFLOWCTRL) || defined(__DOXYGEN__)
+#define NRF51_SERIAL_USE_HWFLOWCTRL        FALSE
+#endif
+
+/**
  * @brief   SD1 driver enable switch.
  * @details If set to @p TRUE the support for SD1 is included.
  * @note    The default is @p FALSE.
@@ -85,6 +95,10 @@ typedef struct {
   /* End of the mandatory fields.*/
   uint32_t                  tx_pad;
   uint32_t                  rx_pad;
+#if (NRF51_SERIAL_USE_HWFLOWCTRL == TRUE)
+  uint32_t                  rts_pad;
+  uint32_t                  cts_pad;
+#endif
 } SerialConfig;
 
 /**
