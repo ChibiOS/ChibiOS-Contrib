@@ -49,9 +49,13 @@ SerialDriver SD1;
  * @brief   Driver default configuration.
  */
 static const SerialConfig default_config = {
-  .speed = 38400,
-  .tx_pad = NRF51_SERIAL_PAD_DISCONNECTED,
-  .rx_pad = NRF51_SERIAL_PAD_DISCONNECTED,
+  .speed   = 38400,
+  .tx_pad  = NRF51_SERIAL_PAD_DISCONNECTED,
+  .rx_pad  = NRF51_SERIAL_PAD_DISCONNECTED,
+#if (NRF51_SERIAL_USE_HWFLOWCTRL == TRUE)
+  .rts_pad = NRF51_SERIAL_PAD_DISCONNECTED,
+  .cts_pad = NRF51_SERIAL_PAD_DISCONNECTED,
+#endif
 };
 
 /*===========================================================================*/
@@ -68,7 +72,6 @@ static const SerialConfig default_config = {
  */
 static void configure_uart(const SerialConfig *config)
 {
-  /* TODO: Add support for CTS/RTS! */
   uint32_t speed = UART_BAUDRATE_BAUDRATE_Baud250000;
 
   switch (config->speed) {
@@ -91,26 +94,56 @@ static void configure_uart(const SerialConfig *config)
     default: osalDbgAssert(0, "invalid baudrate"); break;
   };
 
-  /* Configure PINs */
+  /* Configure PINs mode */
   if (config->tx_pad != NRF51_SERIAL_PAD_DISCONNECTED) {
     palSetPadMode(IOPORT1, config->tx_pad, PAL_MODE_OUTPUT_PUSHPULL);
-    NRF_UART0->PSELTXD = config->tx_pad;
   }
   if (config->rx_pad != NRF51_SERIAL_PAD_DISCONNECTED) {
     palSetPadMode(IOPORT1, config->rx_pad, PAL_MODE_INPUT);
-    NRF_UART0->PSELRXD = config->rx_pad;
   }
+#if (NRF51_SERIAL_USE_HWFLOWCTRL == TRUE)
+  if (config->rts_pad != NRF51_SERIAL_PAD_DISCONNECTED) {
+    palSetPadMode(IOPORT1, config->rts_pad, PAL_MODE_OUTPUT_PUSHPULL);
+  }
+  if (config->cts_pad != NRF51_SERIAL_PAD_DISCONNECTED) {
+    palSetPadMode(IOPORT1, config->cts_pad, PAL_MODE_INPUT);
+  }
+#endif
+  
+  /* Select PINs used by UART */
+  NRF_UART0->PSELTXD = config->tx_pad;
+  NRF_UART0->PSELRXD = config->rx_pad;
+#if (NRF51_SERIAL_USE_HWFLOWCTRL == TRUE)
+  NRF_UART0->PSELRTS = config->rts_pad;
+  NRF_UART0->PSELCTS = config->cts_pad;
+#else
+  NRF_UART0->PSELRTS = NRF51_SERIAL_PAD_DISCONNECTED;
+  NRF_UART0->PSELCTS = NRF51_SERIAL_PAD_DISCONNECTED;
+#endif
 
+  /* Set baud rate */
   NRF_UART0->BAUDRATE = speed;
+
+  /* Set config */
   NRF_UART0->CONFIG = (UART_CONFIG_PARITY_Excluded << UART_CONFIG_PARITY_Pos);
+
+  /* Adjust flow control */
+#if (NRF51_SERIAL_USE_HWFLOWCTRL == TRUE)
+  if ((config->rts_pad < TOTAL_GPIO_PADS) ||
+      (config->cts_pad < TOTAL_GPIO_PADS)) {
+    NRF_UART0->CONFIG |=   UART_CONFIG_HWFC_Enabled << UART_CONFIG_HWFC_Pos;
+  } else {
+    NRF_UART0->CONFIG &= ~(UART_CONFIG_HWFC_Enabled << UART_CONFIG_HWFC_Pos);
+  }
+#else
+  NRF_UART0->CONFIG   &= ~(UART_CONFIG_HWFC_Enabled << UART_CONFIG_HWFC_Pos);
+#endif
+  
+  /* Enable UART and clear events */
   NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Enabled;
   NRF_UART0->EVENTS_RXDRDY = 0;
   NRF_UART0->EVENTS_TXDRDY = 0;
 
-  NRF_UART0->CONFIG       &= ~(UART_CONFIG_HWFC_Enabled << UART_CONFIG_HWFC_Pos);
-
-  NRF_UART0->PSELRTS       = NRF51_SERIAL_PAD_DISCONNECTED;
-  NRF_UART0->PSELCTS       = NRF51_SERIAL_PAD_DISCONNECTED;
 
   if (config->rx_pad != NRF51_SERIAL_PAD_DISCONNECTED) {
     while (NRF_UART0->EVENTS_RXDRDY != 0) {
