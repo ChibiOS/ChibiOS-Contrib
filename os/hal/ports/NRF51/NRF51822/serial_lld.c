@@ -124,10 +124,10 @@ static void configure_uart(const SerialConfig *config)
   /* Set baud rate */
   NRF_UART0->BAUDRATE = speed;
 
-  /* Set parity */
+  /* Set config */
   NRF_UART0->CONFIG = (UART_CONFIG_PARITY_Excluded << UART_CONFIG_PARITY_Pos);
 
-  /* Set flow control */
+  /* Adjust flow control */
 #if (NRF51_SERIAL_USE_HWFLOWCTRL == TRUE)
   if ((config->rts_pad < TOTAL_GPIO_PADS) ||
       (config->cts_pad < TOTAL_GPIO_PADS)) {
