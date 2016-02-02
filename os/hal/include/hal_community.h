@@ -35,6 +35,7 @@
 #include "timcap.h"
 
 /* Complex drivers.*/
+#include "eeprom.h"
 #include "onewire.h"
 #include "crc.h"
 
