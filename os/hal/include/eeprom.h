@@ -71,8 +71,6 @@
   systime_t       write_time;
   
 typedef uint32_t fileoffset_t;
-//#define FILE_OK   0
-//#define FILE_ERROR   0xFFFFFFFFUL
 
 typedef struct {
   _eeprom_file_config_data
@@ -92,7 +90,7 @@ typedef struct {
  * @brief   @p EepromFileStream virtual methods table.
  */
 struct EepromFileStreamVMT {
-  _base_sequential_stream_methods
+  _file_stream_methods
 };
 
 /**
@@ -165,11 +163,11 @@ size_t EepromWriteByte(EepromFileStream *efs, uint8_t data);
 size_t EepromWriteHalfword(EepromFileStream *efs, uint16_t data);
 size_t EepromWriteWord(EepromFileStream *efs, uint32_t data);
 
-fileoffset_t eepfs_getsize(void *ip);
-fileoffset_t eepfs_getposition(void *ip);
-fileoffset_t eepfs_lseek(void *ip, fileoffset_t offset);
-uint32_t eepfs_close(void *ip);
-int eepfs_geterror(void *ip);
+msg_t eepfs_getsize(void *ip);
+msg_t eepfs_getposition(void *ip);
+msg_t eepfs_lseek(void *ip, fileoffset_t offset);
+msg_t eepfs_close(void *ip);
+msg_t eepfs_geterror(void *ip);
 msg_t eepfs_put(void *ip, uint8_t b);
 msg_t eepfs_get(void *ip);
 

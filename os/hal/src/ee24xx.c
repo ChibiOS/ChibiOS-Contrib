@@ -189,7 +189,7 @@ static msg_t eeprom_write(const I2CEepromFileConfig *eepcfg, uint32_t offset,
  */
 static size_t __clamp_size(void *ip, size_t n) {
 
-  if ((eepfs_getposition(ip) + n) > eepfs_getsize(ip))
+  if (((size_t)eepfs_getposition(ip) + n) > (size_t)eepfs_getsize(ip))
     return eepfs_getsize(ip) - eepfs_getposition(ip);
   else
     return n;
@@ -337,12 +337,12 @@ static const struct EepromFileStreamVMT vmt = {
   write,
   read,
   eepfs_put,
-  eepfs_get,/*
+  eepfs_get,
   eepfs_close,
   eepfs_geterror,
   eepfs_getsize,
   eepfs_getposition,
-  eepfs_lseek,*/
+  eepfs_lseek,
 };
 
 EepromDevice eepdev_24xx = {

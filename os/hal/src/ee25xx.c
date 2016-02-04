@@ -280,7 +280,7 @@ static void __fitted_write(void *ip, const uint8_t *data, size_t len, uint32_t *
                            eepfs_getposition(ip), data, len);
   if (status == MSG_OK) {
     *written += len;
-    eepfs_lseek(ip, eepfs_getposition(ip) + len);
+    (ip, eepfs_getposition(ip) + len);
   }
 }
 
@@ -379,12 +379,12 @@ static const struct EepromFileStreamVMT vmt = {
   write,
   read,
   eepfs_put,
-  eepfs_get,/*
+  eepfs_get,
   eepfs_close,
   eepfs_geterror,
   eepfs_getsize,
   eepfs_getposition,
-  eepfs_lseek,*/
+  eepfs_lseek,
 };
 
 EepromDevice eepdev_25xx = {
