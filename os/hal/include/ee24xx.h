@@ -7,7 +7,7 @@
 #ifndef EE24XX_H
 #define EE24XX_H
 
-#include "eeprom.h"
+#include "hal.h"
 
 #if HAL_USE_EEPROM && EEPROM_USE_EE24XX
 
