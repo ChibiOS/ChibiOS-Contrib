@@ -26,10 +26,10 @@
   The work is provided "as is" without warranty of any kind, neither express nor implied.
 */
 
-#if defined(HAL_USE_EEPROM) && HAL_USE_EEPROM
-
-#include "eeprom_driver.h"
+#include "eeprom.h"
 #include <string.h>
+
+#if defined(HAL_USE_EEPROM) && HAL_USE_EEPROM
 
 extern EepromDevice eepdev_24xx;
 extern EepromDevice eepdev_25xx;
@@ -38,7 +38,7 @@ EepromDevice *__eeprom_drv_table[] = {
   /* I2C related. */
 #if HAL_USE_I2C
 
-# if EEPROM_DRV_USE_24XX
+# if EEPROM_USE_EE24XX
   &eepdev_24xx,
 # endif
 
@@ -47,7 +47,7 @@ EepromDevice *__eeprom_drv_table[] = {
   /* SPI related. */
 #if HAL_USE_SPI
 
-# if EEPROM_DRV_USE_25XX
+# if EEPROM_USE_EE25XX
   &eepdev_25xx,
 # endif
 
@@ -65,7 +65,7 @@ const EepromDevice *EepromFindDevice(const char *name) {
 
   osalDbgCheck(name != NULL);
 
-  for (i = 0; i < EEPROM_DRV_TABLE_SIZE; i++) {
+  for (i = 0; i < EEPROM_TABLE_SIZE; i++) {
     drv = __eeprom_drv_table[i];
     if (drv->name != NULL && strcmp(drv->name, name) == 0) {
       return drv;
