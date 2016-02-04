@@ -261,7 +261,7 @@ static msg_t ll_eeprom_write(const SPIEepromFileConfig *eepcfg, uint32_t offset,
  */
 static size_t __clamp_size(void *ip, size_t n) {
 
-  if ((eepfs_getposition(ip) + n) > eepfs_getsize(ip))
+  if (((size_t)eepfs_getposition(ip) + n) > (size_t)eepfs_getsize(ip))
     return eepfs_getsize(ip) - eepfs_getposition(ip);
   else
     return n;
@@ -280,7 +280,7 @@ static void __fitted_write(void *ip, const uint8_t *data, size_t len, uint32_t *
                            eepfs_getposition(ip), data, len);
   if (status == MSG_OK) {
     *written += len;
-    (ip, eepfs_getposition(ip) + len);
+    eepfs_lseek(ip, eepfs_getposition(ip) + len);
   }
 }
 
