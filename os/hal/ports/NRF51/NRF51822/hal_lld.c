@@ -66,22 +66,16 @@ void hal_lld_init(void)
   NRF_CLOCK->XTALFREQ = 0x00;
 #endif
 #endif
+
   
   /* Low frequency clock initialisation
-   * If source not specified, use the internal RC (0) which is prefered 
-   * over synthetized clock from the high frequency clock (2)
+   * Clock is only started if st driver requires it
    */
-#if defined(NRF51_LFCLK_SOURCE)
-#if (NRF51_LFCLK_SOURCE >=0) && (NRF51_LFCLK_SOURCE <= 2)
+  NRF_CLOCK->TASKS_LFCLKSTOP = 1;
   NRF_CLOCK->LFCLKSRC = NRF51_LFCLK_SOURCE;
-#else
-#error "Possible value for NRF51_LFCLK_SOURCE are 0=RC, 1=XTAL, 2=Synth"
-#endif
-#else
-  NRF_CLOCK->LFCLKSRC = 0;
-#endif
   
-#if (OSAL_ST_MODE != OSAL_ST_MODE_NONE)
+#if (OSAL_ST_MODE != OSAL_ST_MODE_NONE) &&			\
+    (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_RTC)
   NRF_CLOCK->TASKS_LFCLKSTART = 1;
 #endif
 }

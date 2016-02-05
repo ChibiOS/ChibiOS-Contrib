@@ -31,13 +31,38 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
+/**
+ * @brief   SPI0 interrupt priority level setting.
+ */
+#define NRF51_SYSTEM_TICKS_AS_TIMER    1
+
+/**
+ * @brief   SPI0 interrupt priority level setting.
+ */
+#define NRF51_SYSTEM_TICKS_AS_RTC      2
+
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
+/**
+ * @brief   Select the method to generates system ticks
+ * @details Possibles values are:
+ *            NRF51_SYSTEM_TICKS_AS_TIMER for TIMER0
+ *            NRF51_SYSTEM_TICKS_AS_RTC   for RTC0
+ */
+#if !defined(NRF51_SYSTEM_TICKS) || defined(__DOXYGEN__)
+#define NRF51_SYSTEM_TICKS  NRF51_SYSTEM_TICKS_AS_RTC
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+#if ((NRF51_SYSTEM_TICKS != NRF51_SYSTEM_TICKS_AS_RTC) &&	\
+     (NRF51_SYSTEM_TICKS != NRF51_SYSTEM_TICKS_AS_TIMER))
+#error "NRF51_SYSTEM_TICKS illegal value"
+#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
