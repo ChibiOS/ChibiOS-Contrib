@@ -23,6 +23,7 @@
 
 /* Board oscillators-related settings. */
 #define NRF51_XTAL_VALUE        16000000
+#define NRF51_LFCLK_SOURCE      1
 
 /* GPIO pins. */
 #define BTN1           17
