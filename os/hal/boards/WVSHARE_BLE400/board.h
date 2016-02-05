@@ -22,7 +22,7 @@
 #define BOARD_NAME              "WvShare BLE400"
 
 /* Board oscillators-related settings. */
-#define XTAL_VALUE              16000000
+#define NRF51_XTAL_VALUE        16000000
 
 /* GPIO pins. */
 #define KEY1           16
