@@ -111,7 +111,7 @@ typedef struct {
  * @brief   Low level device descriptor.
  */
 typedef struct {
-  const char                          *name;
+  const uint8_t                       id;
   const struct EepromFileStreamVMT   *efsvmt;
 } EepromDevice;
 
@@ -150,7 +150,7 @@ typedef struct {
 #define chFileStreamWrite(ip, bp, n) (chSequentialStreamWrite(ip, bp, n))
 #endif
 
-const EepromDevice *EepromFindDevice(const char *name);
+const EepromDevice *EepromFindDevice(uint8_t id);
 
 EepromFileStream *EepromFileOpen(EepromFileStream *efs,
                                  const EepromFileConfig *eepcfg,

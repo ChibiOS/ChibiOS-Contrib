@@ -58,16 +58,14 @@ EepromDevice *__eeprom_drv_table[] = {
 /**
  * @breif  Find low level EEPROM device by id.
  */
-const EepromDevice *EepromFindDevice(const char *name) {
+const EepromDevice *EepromFindDevice(uint8_t id) {
 
   int i;
   const EepromDevice *drv;
 
-  osalDbgCheck(name != NULL);
-
   for (i = 0; i < EEPROM_TABLE_SIZE; i++) {
     drv = __eeprom_drv_table[i];
-    if (drv->name != NULL && strcmp(drv->name, name) == 0) {
+    if (drv->id == id) {
       return drv;
     }
   }
