@@ -58,6 +58,7 @@ void hal_lld_init(void)
   /* High frequency clock initialisation
    *  (If NRF51_XTAL_VALUE is not defined assume its an RC oscillator)
    */
+  NRF_CLOCK->TASKS_HFCLKSTOP = 1;
 #if defined(NRF51_XTAL_VALUE)
 #if   NRF51_XTAL_VALUE == 16000000
   NRF_CLOCK->XTALFREQ = 0xFF;
@@ -65,7 +66,6 @@ void hal_lld_init(void)
   NRF_CLOCK->XTALFREQ = 0x00;
 #endif
 #endif
-  NRF_CLOCK->TASKS_HFCLKSTOP = 1;
   
   /* Low frequency clock initialisation
    * If source not specified, use the internal RC (0) which is prefered 
