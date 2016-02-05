@@ -11,6 +11,8 @@
 
 #if HAL_USE_EEPROM && EEPROM_USE_EE25XX
 
+#define EEPROM_DEV_25XX 25
+
 /**
  * @extends EepromFileConfig
  */

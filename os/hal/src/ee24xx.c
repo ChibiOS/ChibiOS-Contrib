@@ -346,7 +346,7 @@ static const struct EepromFileStreamVMT vmt = {
 };
 
 EepromDevice eepdev_24xx = {
-  "24XX",
+  EEPROM_DEV_24XX,
   &vmt
 };
 
