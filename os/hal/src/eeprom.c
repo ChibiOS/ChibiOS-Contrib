@@ -99,37 +99,37 @@ EepromFileStream *EepromFileOpen(EepromFileStream *efs,
 uint8_t EepromReadByte(EepromFileStream *efs) {
 
   uint8_t buf;
-  chFileStreamRead(efs, &buf, sizeof(buf));
+  fileStreamRead(efs, &buf, sizeof(buf));
   return buf;
 }
 
 uint16_t EepromReadHalfword(EepromFileStream *efs) {
 
   uint16_t buf;
-  chFileStreamRead(efs, (uint8_t *)&buf, sizeof(buf));
+  fileStreamRead(efs, (uint8_t *)&buf, sizeof(buf));
   return buf;
 }
 
 uint32_t EepromReadWord(EepromFileStream *efs) {
 
   uint32_t buf;
-  chFileStreamRead(efs, (uint8_t *)&buf, sizeof(buf));
+  fileStreamRead(efs, (uint8_t *)&buf, sizeof(buf));
   return buf;
 }
 
 size_t EepromWriteByte(EepromFileStream *efs, uint8_t data) {
 
-  return chFileStreamWrite(efs, &data, sizeof(data));
+  return fileStreamWrite(efs, &data, sizeof(data));
 }
 
 size_t EepromWriteHalfword(EepromFileStream *efs, uint16_t data) {
 
-  return chFileStreamWrite(efs, (uint8_t *)&data, sizeof(data));
+  return fileStreamWrite(efs, (uint8_t *)&data, sizeof(data));
 }
 
 size_t EepromWriteWord(EepromFileStream *efs, uint32_t data) {
 
-  return chFileStreamWrite(efs, (uint8_t *)&data, sizeof(data));
+  return fileStreamWrite(efs, (uint8_t *)&data, sizeof(data));
 }
 
 msg_t eepfs_getsize(void *ip) {

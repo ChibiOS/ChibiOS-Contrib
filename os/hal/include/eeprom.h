@@ -115,41 +115,6 @@ typedef struct {
   const struct EepromFileStreamVMT   *efsvmt;
 } EepromDevice;
 
-#if !defined(chFileStreamRead)
-/**
- * @brief   File Stream read.
- * @details The function reads data from a file into a buffer.
- *
- * @param[in] ip        pointer to a @p BaseSequentialStream or derived class
- * @param[out] bp       pointer to the data buffer
- * @param[in] n         the maximum amount of data to be transferred
- * @return              The number of bytes transferred. The return value can
- *                      be less than the specified number of bytes if the
- *                      stream reaches the end of the available data.
- *
- * @api
- */
-#define chFileStreamRead(ip, bp, n)  (chSequentialStreamRead(ip, bp, n))
-#endif
-
-#if !defined(chFileStreamWrite)
-/**
- * @brief   File Stream write.
- * @details The function writes data from a buffer to a file.
- *
- * @param[in] ip        pointer to a @p BaseSequentialStream or derived class
- * @param[in] bp        pointer to the data buffer
- * @param[in] n         the maximum amount of data to be transferred
- * @return              The number of bytes transferred. The return value can
- *                      be less than the specified number of bytes if the
- *                      stream reaches a physical end of file and cannot be
- *                      extended.
- *
- * @api
- */
-#define chFileStreamWrite(ip, bp, n) (chSequentialStreamWrite(ip, bp, n))
-#endif
-
 const EepromDevice *EepromFindDevice(uint8_t id);
 
 EepromFileStream *EepromFileOpen(EepromFileStream *efs,
