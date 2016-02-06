@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    templates/wdg_lld.h
+ * @file    NRF51822/wdg_lld.h
  * @brief   WDG Driver subsystem low level driver header template.
  *
  * @addtogroup WDG

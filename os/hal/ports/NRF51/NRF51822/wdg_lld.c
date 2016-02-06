@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    templates/wdg_lld.c
+ * @file    NRF51822/wdg_lld.c
  * @brief   WDG Driver subsystem low level driver source template.
  *
  * @addtogroup WDG
