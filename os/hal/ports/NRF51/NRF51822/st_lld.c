@@ -31,14 +31,6 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#if   (OSAL_ST_RESOLUTION == 32)
-#define ST_OVERFLOW_VALUE                         0xFFFFFFFF
-#elif (OSAL_ST_RESOLUTION == 24)
-#define ST_OVERFLOW_VALUE                         0x00FFFFFF
-#elif (OSAL_ST_RESOLUTION == 16)
-#define ST_OVERFLOW_VALUE                         0x0000FFFF
-#endif
-
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -120,12 +112,21 @@ OSAL_IRQ_HANDLER(Vector6C) {
 
   OSAL_IRQ_PROLOGUE();
 
-  NRF_RTC0->EVENTS_COMPARE[0] = 0;
+  if (NRF_RTC0->EVENTS_COMPARE[0]) {
+      NRF_RTC0->EVENTS_COMPARE[0] = 0;
       
-  osalSysLockFromISR();
-  osalOsTimerHandlerI();
-  osalSysUnlockFromISR();
+      osalSysLockFromISR();
+      osalOsTimerHandlerI();
+      osalSysUnlockFromISR();
+  }
 
+#if OSAL_ST_RESOLUTION == 16
+  if (NRF_RTC0->EVENTS_COMPARE[1]) {
+      NRF_RTC0->EVENTS_COMPARE[1] = 0;
+      NRF_RTC0->TASKS_CLEAR = 1;
+  }
+#endif
+  
   OSAL_IRQ_EPILOGUE();
 }
 #endif
@@ -146,11 +147,18 @@ void st_lld_init(void) {
   /* Using RTC with prescaler */
   NRF_RTC0->TASKS_STOP  = 1;
   NRF_RTC0->PRESCALER   = (NRF51_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
-  NRF_RTC0->EVTENCLR    = RTC_EVTEN_COMPARE0_Msk;
+  NRF_RTC0->EVTENCLR    = RTC_EVTENSET_COMPARE0_Msk;
   NRF_RTC0->EVENTS_COMPARE[0] = 0;
   NRF_RTC0->INTENSET    = RTC_INTENSET_COMPARE0_Msk;
-
-  /* Start timer */
+#if OSAL_ST_RESOLUTION == 16
+  NRF_RTC0->CC[1]       = 0x10000; /* 2^16 */
+  NRF_RTC0->EVENTS_COMPARE[1] = 0;
+  NRF_RTC0->EVTENSET    = RTC_EVTENSET_COMPARE0_Msk;
+  NRF_RTC0->INTENSET    = RTC_INTENSET_COMPARE1_Msk;
+#endif
+  NRF_RTC0->TASKS_CLEAR  = 1;
+  
+    /* Start timer */
   nvicEnableVector(RTC0_IRQn, 8);
   NRF_RTC0->TASKS_START = 1;
 #endif
