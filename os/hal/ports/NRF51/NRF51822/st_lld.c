@@ -129,30 +129,6 @@ OSAL_IRQ_HANDLER(Vector6C) {
   OSAL_IRQ_EPILOGUE();
 }
 #endif
-
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
-/**
- * @brief   System Timer vector. (TIMER0)
- * @details This interrupt is used for freerunning mode (tick-less)
- *          if selected with NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(Vector60) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  /* Clear timer compare event */
-  if (NRF_TIMER0->EVENTS_COMPARE[0] != 0)
-    NRF_TIMER0->EVENTS_COMPARE[0] = 0;
-
-  osalSysLockFromISR();
-  osalOsTimerHandlerI();
-  osalSysUnlockFromISR();
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif
 #endif
 
 /*===========================================================================*/
@@ -172,33 +148,11 @@ void st_lld_init(void) {
   NRF_RTC0->PRESCALER   = (NRF51_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
   NRF_RTC0->EVTENCLR    = RTC_EVTEN_COMPARE0_Msk;
   NRF_RTC0->EVENTS_COMPARE[0] = 0;
+  NRF_RTC0->INTENSET    = RTC_INTENSET_COMPARE0_Msk;
 
   /* Start timer */
   nvicEnableVector(RTC0_IRQn, 8);
   NRF_RTC0->TASKS_START = 1;
-#endif
-
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
-  NRF_TIMER0->TASKS_CLEAR = 1;
-
-  /*
-   * Using 32-bit mode with prescaler 16 configures this
-   * timer with a 1MHz clock.
-   */
-  NRF_TIMER0->BITMODE = 3;
-  NRF_TIMER0->PRESCALER = 4;
-
-  /*
-   * Configure timer 0 compare capture 1 to generate interrupt
-   * for overflow according to ST_OVERFLOW_VALUE
-   */
-  NRF_TIMER0->CC[0] = (1000000 / OSAL_ST_FREQUENCY) - 1;
-  NRF_TIMER0->SHORTS = 1;
-  NRF_TIMER0->INTENSET = 0x10000;
-
-  /* Start timer */
-  nvicEnableVector(TIMER0_IRQn, 8);
-  NRF_TIMER0->TASKS_START = 1;
 #endif
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */
 

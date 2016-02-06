@@ -70,8 +70,9 @@
 #error "CH_CFG_ST_TIMEDELTA is too low"
 #endif
 
-#if (OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING)
-#error "Freeruning (tick-less) mode currently not working"
+#if (OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING) && \
+    (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
+#error "Freeruning (tick-less) mode not supported with TIMER, use RTC"
 #endif
 
 /*===========================================================================*/
@@ -106,13 +107,7 @@ extern "C" {
  * @notapi
  */
 static inline systime_t st_lld_get_counter(void) {
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_RTC)
   return (systime_t)NRF_RTC0->COUNTER;
-#endif
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
-  NRF_TIMER0->TASKS_CAPTURE[1] = 1;
-  return (systime_t)NRF_TIMER0->CC[1];
-#endif
 }
 
 /**
@@ -125,16 +120,9 @@ static inline systime_t st_lld_get_counter(void) {
  * @notapi
  */
 static inline void st_lld_start_alarm(systime_t abstime) {
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_RTC)
   NRF_RTC0->CC[0]               = abstime;
   NRF_RTC0->EVENTS_COMPARE[0]   = 0;
-  NRF_RTC0->EVTENSET            = RTC_EVTEN_COMPARE0_Msk;
-#endif
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
-  NRF_TIMER0->CC[0]             = abstime;
-  NRF_TIMER0->EVENTS_COMPARE[0] = 0;
-  NRF_TIMER0->INTENSET          = TIMER_INTENSET_COMPARE0_Msk;
-#endif
+  NRF_RTC0->EVTENSET            = RTC_EVTENSET_COMPARE0_Msk;
 }
 
 /**
@@ -143,14 +131,8 @@ static inline void st_lld_start_alarm(systime_t abstime) {
  * @notapi
  */
 static inline void st_lld_stop_alarm(void) {
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_RTC)
-  NRF_RTC0->EVTENCLR            = RTC_EVTEN_COMPARE0_Msk;
+  NRF_RTC0->EVTENCLR            = RTC_EVTENCLR_COMPARE0_Msk;
   NRF_RTC0->EVENTS_COMPARE[0]   = 0;
-#endif
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
-  NRF_TIMER0->INTENCLR          = TIMER_INTENCLR_COMPARE0_Msk;
-  NRF_TIMER0->EVENTS_COMPARE[0] = 0;
-#endif
 }
 
 /**
@@ -161,12 +143,7 @@ static inline void st_lld_stop_alarm(void) {
  * @notapi
  */
 static inline void st_lld_set_alarm(systime_t abstime) {
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_RTC)
     NRF_RTC0->CC[0]             = abstime;
-#endif
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
-    NRF_TIMER0->CC[0]           = abstime;
-#endif
 }
 
 /**
@@ -177,12 +154,7 @@ static inline void st_lld_set_alarm(systime_t abstime) {
  * @notapi
  */
 static inline systime_t st_lld_get_alarm(void) {
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_RTC)
   return (systime_t)NRF_RTC0->CC[0];
-#endif
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
-  return (systime_t)NRF_TIMER0->CC[0];
-#endif
 }
 
 /**
@@ -195,12 +167,7 @@ static inline systime_t st_lld_get_alarm(void) {
  * @notapi
  */
 static inline bool st_lld_is_alarm_active(void) {
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_RTC)
-  return NRF_RTC0->EVTEN & RTC_INTENSET_COMPARE0_Msk;
-#endif
-#if (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
-  return false;
-#endif
+  return NRF_RTC0->EVTEN & RTC_EVTEN_COMPARE0_Msk;
 }
 
 #endif /* _ST_LLD_H_ */
