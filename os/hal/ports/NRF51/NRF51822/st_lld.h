@@ -66,13 +66,13 @@
 #error "NRF51_SYSTEM_TICKS illegal value"
 #endif
 
-#if defined(CH_CFG_ST_TIMEDELTA) && CH_CFG_ST_TIMEDELTA < 5
+#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
+#if CH_CFG_ST_TIMEDELTA < 5
 #error "CH_CFG_ST_TIMEDELTA is too low"
 #endif
-
-#if (OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING) && \
-    (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
+#if NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER
 #error "Freeruning (tick-less) mode not supported with TIMER, use RTC"
+#endif
 #endif
 
 /*===========================================================================*/
