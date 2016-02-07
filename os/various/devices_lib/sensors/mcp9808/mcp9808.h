@@ -44,7 +44,6 @@ typedef enum __attribute__ ((__packed__)) {
     MCP9808_ERROR     = 6,            /**< Error.                          */
 } MCP9808_state_t;
 
-
 /**
  * @brief   MCP9808 configuration structure.
  */
@@ -54,6 +53,13 @@ typedef struct {
     MCP9808_resolution_t resolution;
     uint16_t             cfg;
 } MCP9808_drv;
+
+/**
+ * @brief   MCP9808 measure reading
+ */
+typedef struct {
+    float temperature;
+} MCP9808_measure;
 
 /**
  * @brief   Initialize the sensor driver
@@ -102,7 +108,7 @@ MCP9808_setResolution(MCP9808_drv *drv,
 static inline unsigned int
 MCP9808_getBootupTime(MCP9808_drv *drv) {
     (void)drv;
-    return 15;
+    return 0; /* no info found */
 };
 
 /**
@@ -114,7 +120,7 @@ MCP9808_getBootupTime(MCP9808_drv *drv) {
 static inline unsigned int
 MCP9808_getStartupTime(MCP9808_drv *drv) {
     (void)drv;
-    return 0;
+    return 0; /* no info found */
 };
 
 /**
@@ -131,6 +137,7 @@ MCP9808_getAcquisitionTime(MCP9808_drv *drv);
  */
 static inline msg_t
 MCP9808_startMeasure(MCP9808_drv *drv) {
+    return MSG_OK;
 }
 
 /**
