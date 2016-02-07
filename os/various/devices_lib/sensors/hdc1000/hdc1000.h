@@ -16,17 +16,16 @@
 #include <stdbool.h>
 #include "i2c_helpers.h"
 
-// I2C address
+/* I2C address */
 #define HDC1000_I2CADDR_1           0x40
 #define HDC1000_I2CADDR_2           0x41
 #define HDC1000_I2CADDR_3           0x42
 #define HDC1000_I2CADDR_4           0x43
 
-#ifndef HDC1000_I2CADDR
-#define HDC1000_I2CADDR             HDC1000_I2CADDR_1
-#endif
+#define HDC1000_I2CADDR_DEFAULT     HDC1000_I2CADDR_1
 
-// Size of serial (40 bits)
+
+/* Size of serial (40 bits) */
 #define HDC1000_SERIAL_SIZE         5
 
 #define HDC1000_CONTINUOUS_ACQUISITION_SUPPORTED   FALSE
