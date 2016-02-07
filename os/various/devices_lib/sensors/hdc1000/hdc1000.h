@@ -62,7 +62,6 @@ typedef enum __attribute__ ((__packed__)) {
 } HDC1000_state_t;
 
 
-
 /**
  * @brief   HDC1000 configuration structure.
  */

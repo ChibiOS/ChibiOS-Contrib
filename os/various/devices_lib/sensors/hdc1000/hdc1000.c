@@ -78,7 +78,7 @@
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-inline msg_t
+static inline msg_t
 _apply_config(HDC1000_drv *drv) {
     struct __attribute__((packed)) {
 	uint8_t  reg;
@@ -88,7 +88,7 @@ _apply_config(HDC1000_drv *drv) {
     return i2c_send((uint8_t*)&tx, sizeof(tx));
 }
 
-inline msg_t
+static inline msg_t
 _decode_measure(HDC1000_drv *drv,
 	uint32_t val, float *temperature, float *humidity) {
     (void)drv;
@@ -110,6 +110,7 @@ _decode_measure(HDC1000_drv *drv,
 	*humidity = hum;
     }
 
+    /* ok */
     return MSG_OK;
 }
 
