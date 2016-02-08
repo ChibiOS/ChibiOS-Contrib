@@ -1,3 +1,44 @@
+/**
+ * 
+ * Example of function calls.
+ *
+ * @code
+ * static SENSOR_config sensor_config = {
+ * };
+ * static SENSOR_drv    sensor_drv;
+ * @endcode
+ *
+ * 
+ * @code
+ * osalThreadSleepMilliseconds(SENSOR_BOOTUP_TIME);
+ * SENSOR_init(&sensor_drv);
+ * @endcode
+ *
+ * @code
+ * SENSOR_start(&sensor_drv, &sensor_config);
+ * osalThreadSleepMilliseconds(SENSOR_STARTUP_TIME);
+ * @endcode
+ *
+ * If using SENSOR_startMeasure()/SENSOR_readMeasure()
+ * @code
+ * while(true) {
+ *   SENSOR_startMeasure(&sensor_drv);
+ *   osalThreadSleepMilliseconds(SENSOR_getAcquisitionTime());
+ *   SENSOR_readMeasure(&sensor_drv, ...);
+ * }
+ * @endcode
+ *
+ * If using SENSOR_readValue() or SENSOR_getValue()
+ * @code
+ * #if SENSOR_CONTINUOUS_ACQUISITION_SUPPORTED == TRUE
+ * osalThreadSleepMilliseconds(SENSOR_getAcquisitionTime())
+ * #endif
+ * 
+ * while(true) {
+ *   SENSOR_readValue(&sensor_drv, ...);
+ * }
+ * @encode
+ */
 #ifndef _SENSOR_H_
 #define _SENSOR_H_
 

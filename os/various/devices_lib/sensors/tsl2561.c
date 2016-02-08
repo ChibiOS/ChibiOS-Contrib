@@ -249,9 +249,6 @@ _readChannel(TSL2561_drv *drv, uint16_t *broadband, uint16_t *ir) {
 				  TSL2561_REG_CHAN1_LOW,
 				  ir       )) < MSG_OK))
 	return msg;
-
-
-    chprintf(&SD1, "CHANNELS : %x, %x\r\n", *broadband, *ir);
     return MSG_OK;
 }
 
