@@ -63,6 +63,16 @@
 /*===========================================================================*/
 
 static inline msg_t
+_apply_config(MCP9808_drv *drv) {
+    struct __attribute__((packed)) {
+	uint8_t  reg;
+	uint16_t conf;
+    } tx = { MCP9808_REG_CONFIG, cpu_to_be16(drv->cfg) };
+    
+    return i2c_send((uint8_t*)&tx, sizeof(tx));
+}
+
+static inline msg_t
 _decode_measure(MCP9808_drv *drv,
 	uint16_t val, float *temperature) {
     
@@ -95,24 +105,21 @@ void
 MCP9808_init(MCP9808_drv *drv, MCP9808_config *config) {
     drv->config      = config;
     drv->cfg         = 0;
-    drv->resolution  = RES_16;
-    drv->state       = MCP9808_INIT;
+    drv->resolution  = RES_16; /* power up default */
+    drv->state       = SENSOR_INIT;
 }
 
 msg_t
 MCP9808_check(MCP9808_drv *drv) {
-    msg_t msg = -10;
-    uint16_t val;
+    uint16_t manuf, device;
 
-    if ((msg = i2c_reg_recv16_be(MCP9808_REG_MANUF_ID,  &val)) < MSG_OK)
+    msg_t msg;
+    if (((msg = i2c_reg_recv16_be(MCP9808_REG_MANUF_ID,  &manuf )) < MSG_OK) ||
+	((msg = i2c_reg_recv16_be(MCP9808_REG_DEVICE_ID, &device)) < MSG_OK))
 	return msg;
-    if (val != MCP9808_MANUF_ID)
-	return -2;
     
-    if ((msg = i2c_reg_recv16_be(MCP9808_REG_DEVICE_ID, &val)) < MSG_OK)
-	return msg;
-    if (val != MCP9808_DEVICE_ID)
-	return -2;
+    if ((manuf != MCP9808_MANUF_ID) || (device != MCP9808_DEVICE_ID))
+	return SENSOR_NOTFOUND;
 
     return MSG_OK;
 }
@@ -132,32 +139,17 @@ MCP9808_setResolution(MCP9808_drv *drv, MCP9808_resolution_t res) {
     return MSG_OK;
 }
 
-
 msg_t
 MCP9808_start(MCP9808_drv *drv) {
     drv->cfg &= ~(MCP9808_REG_CONFIG_SHUTDOWN);
-
-    struct __attribute__((packed)) {
-	uint8_t  reg;
-	uint16_t conf;
-    } tx = { MCP9808_REG_CONFIG, cpu_to_be16(drv->cfg) };
-    
-    return i2c_send((uint8_t*)&tx, sizeof(tx)) >= 0;
+    return _apply_config(drv);
 }
 
 msg_t
 MCP9808_stop(MCP9808_drv *drv) {
     drv->cfg |= (MCP9808_REG_CONFIG_SHUTDOWN);
-
-    struct __attribute__((packed)) {
-	uint8_t  reg;
-	uint16_t conf;
-    } tx = { MCP9808_REG_CONFIG, cpu_to_be16(drv->cfg) };
-    
-    return i2c_send((uint8_t*)&tx, sizeof(tx)) >= 0;
+    return _apply_config(drv);
 }
-
-
 
 unsigned int
 MCP9808_getAcquisitionTime(MCP9808_drv *drv) {
@@ -167,8 +159,8 @@ MCP9808_getAcquisitionTime(MCP9808_drv *drv) {
     case RES_8 : return MCP9808_DELAY_ACQUIRE_RES_8;
     case RES_16: return MCP9808_DELAY_ACQUIRE_RES_16;
     }
-    osalDbgAssert(false, "programming error");
-    return -1;
+    osalDbgAssert(false, "OOPS");
+    return 0;
 }
 
 msg_t
@@ -188,7 +180,7 @@ MCP9808_readMeasure(MCP9808_drv *drv,
 msg_t
 MCP9808_readTemperature(MCP9808_drv *drv,
 	float *temperature) {
-    osalDbgAssert(drv->state == MCP9808_STARTED, "invalid state");
+    osalDbgAssert(drv->state == SENSOR_STARTED, "invalid state");
 
     msg_t msg;
     uint16_t val;

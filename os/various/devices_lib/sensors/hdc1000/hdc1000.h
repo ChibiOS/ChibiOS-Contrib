@@ -6,6 +6,12 @@
  * @file    hdc1000.h
  * @brief   HDC1000 Temperature/Humidiry sensor interface module header.
  *
+ * When changing sensor settings, you generally need to wait
+ * for 2 * getAquisitionTime(), as usually the first acquisition
+ * will be corrupted by the change of settings.
+ *
+ * No locking is done.
+ *
  * @{
  */
 
@@ -15,6 +21,14 @@
 #include <math.h>
 #include <stdbool.h>
 #include "i2c_helpers.h"
+#include "sensor.h"
+
+
+/*===========================================================================*/
+/* Driver constants.                                                         */
+/*===========================================================================*/
+
+#define HDC1000_CONTINUOUS_ACQUISITION_SUPPORTED   FALSE
 
 /* I2C address */
 #define HDC1000_I2CADDR_1           0x40
@@ -22,23 +36,33 @@
 #define HDC1000_I2CADDR_3           0x42
 #define HDC1000_I2CADDR_4           0x43
 
+#define HDC1000_SERIAL_SIZE         5  /**< @brief Size of serial (40bits) */
+
+/**
+ * @brief Time necessary for the sensor to boot
+ */
+#define HDC1000_BOOTUP_TIME		15
+
+/**
+ * @brief Time necessary for the sensor to start
+ */
+#define HDC1000_STARTUP_TIME		0
+
+
+/*===========================================================================*/
+/* Driver pre-compile time settings.                                         */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Derived constants and error checks.                                       */
+/*===========================================================================*/
+
 #define HDC1000_I2CADDR_DEFAULT     HDC1000_I2CADDR_1
 
 
-/* Size of serial (40 bits) */
-#define HDC1000_SERIAL_SIZE         5
-
-#define HDC1000_CONTINUOUS_ACQUISITION_SUPPORTED   FALSE
-
-
-/**
- * When changing sensor settings, you generally need to wait
- * for 2 * getAquisitionTime(), as usually the first acquisition
- * will be corrupted by the change of settings.
- *
- * No locking is done.
- */
-
+/*===========================================================================*/
+/* Driver data structures and types.                                         */
+/*===========================================================================*/
 
 /**
  * @brief   HDC1000 configuration structure.
@@ -47,30 +71,24 @@ typedef struct {
     I2CHelper i2c; /* keep it first */
 } HDC1000_config;
 
-
-/**
- * @brief   Driver state machine possible states.
- */
-typedef enum __attribute__ ((__packed__)) {
-    HDC1000_UNINIT    = 0,            /**< Not initialized.                */
-    HDC1000_INIT      = 1,            /**< Initialized.                    */
-    HDC1000_STARTED   = 2,            /**< Started.                        */
-    HDC1000_MEASURING = 4,            /**< Measuring.                      */
-    HDC1000_READY     = 3,            /**< Ready.                          */
-    HDC1000_STOPPED   = 5,            /**< Stopped.                        */
-    HDC1000_ERROR     = 6,            /**< Error.                          */
-} HDC1000_state_t;
-
-
 /**
  * @brief   HDC1000 configuration structure.
  */
 typedef struct {
     HDC1000_config  *config;
-    HDC1000_state_t  state;
+    sensor_state_t   state;
     unsigned int     delay;    
     uint16_t         cfg;
 } HDC1000_drv;
+
+/*===========================================================================*/
+/* Driver macros.                                                            */
+/*===========================================================================*/
+
+
+/*===========================================================================*/
+/* External declarations.                                                    */
+/*===========================================================================*/
 
 /**
  * @brief Initialize the sensor driver
@@ -111,30 +129,6 @@ HDC1000_setHeater(HDC1000_drv *drv,
 	bool on);
 
 
-/**
- * @brief Time necessary for the sensor to boot
- *
- * @returns
- *   unsigned int   time in millis-seconds
- */
-
-static inline unsigned int
-HDC1000_getBootupTime(HDC1000_drv *drv) {
-    (void)drv;
-    return 15;
-};
-
-/**
- * @brief Time necessary the sensor to for starting
- *
- * @returns
- *   unsigned int   time in millis-seconds
- */
-static inline unsigned int
-HDC1000_getStartupTime(HDC1000_drv *drv) {
-    (void)drv;
-    return 0;
-};
 
 /**
  * @brief Time in milli-seconds necessary for acquiring a naw measure
@@ -178,7 +172,7 @@ HDC1000_readMeasure(HDC1000_drv *drv,
  *
  * @note    In continuous measurement mode, if you just started
  *          the sensor, you will need to wait getAcquisitionTime()
- *          in addition to the usual getStartupTime()
+ *          in addition to the usual #HDC1000_STARTUP_TIME
 
  * @note    If using several sensors, it is better to start all the
  *          measure together, wait for the sensor having the longuest
@@ -229,3 +223,6 @@ HDC1000_getTemperature(HDC1000_drv *drv) {
 
 #endif
 
+/**
+ * @}
+ */

@@ -125,23 +125,20 @@ HDC1000_init(HDC1000_drv *drv, HDC1000_config *config) {
 	             HDC1000_CONFIG_RES;
     drv->delay    = (HDC1000_DELAY_ACQUIRE +
 		     HDC1000_DELAY_ACQUIRE_SAFETY) / 1000;
-    drv->state    = HDC1000_INIT;
+    drv->state    = SENSOR_INIT;
 }
 
 msg_t
 HDC1000_check(HDC1000_drv *drv) {
-    msg_t msg = -10;
-    uint16_t val;
+    uint16_t manuf, device;
 
-    if ((msg = i2c_reg_recv16_be(HDC1000_REG_MANUF_ID,  &val)) < MSG_OK)
+    msg_t msg;
+    if (((msg = i2c_reg_recv16_be(HDC1000_REG_MANUF_ID,  &manuf )) < MSG_OK) ||
+	((msg = i2c_reg_recv16_be(HDC1000_REG_DEVICE_ID, &device)) < MSG_OK))
 	return msg;
-    if (val != HDC1000_MANUF_ID)
-	return -2;
     
-    if ((msg = i2c_reg_recv16_be(HDC1000_REG_DEVICE_ID, &val)) < MSG_OK)
-	return msg;
-    if (val != HDC1000_DEVICE_ID)
-	return -2;
+    if ((manuf != HDC1000_MANUF_ID) || (device != HDC1000_DEVICE_ID))
+	return SENSOR_NOTFOUND;
 
     return MSG_OK;
 }
@@ -149,22 +146,22 @@ HDC1000_check(HDC1000_drv *drv) {
 
 msg_t
 HDC1000_start(HDC1000_drv *drv) {
-    osalDbgAssert((drv->state == HDC1000_INIT   ) ||
-		  (drv->state == HDC1000_ERROR  ) ||
-		  (drv->state == HDC1000_STOPPED),
+    osalDbgAssert((drv->state == SENSOR_INIT   ) ||
+		  (drv->state == SENSOR_ERROR  ) ||
+		  (drv->state == SENSOR_STOPPED),
 		  "invalid state");
     msg_t msg;    
     if ((msg = _apply_config(drv)) < MSG_OK) {
-	drv->state = HDC1000_ERROR;
+	drv->state = SENSOR_ERROR;
 	return msg;
     }
-    drv->state = HDC1000_STARTED;
+    drv->state = SENSOR_STARTED;
     return MSG_OK;
 }
 
 msg_t
 HDC1000_stop(HDC1000_drv *drv) {
-    drv->state = HDC1000_STOPPED;
+    drv->state = SENSOR_STOPPED;
     return MSG_OK;
 }
 
@@ -175,7 +172,7 @@ HDC1000_setHeater(HDC1000_drv *drv, bool on) {
 
     msg_t msg;    
     if ((msg = _apply_config(drv)) < MSG_OK) {
-	drv->state = HDC1000_ERROR;
+	drv->state = SENSOR_ERROR;
 	return msg;
     }
     return MSG_OK;
@@ -184,10 +181,10 @@ HDC1000_setHeater(HDC1000_drv *drv, bool on) {
 msg_t
 HDC1000_startMeasure(HDC1000_drv *drv) {
     msg_t msg;
-    osalDbgAssert(drv->state == HDC1000_STARTED, "invalid state");
+    osalDbgAssert(drv->state == SENSOR_STARTED, "invalid state");
     if ((msg = i2c_reg(HDC1000_REG_TEMP_HUMID)) < MSG_OK)
 	return msg;
-    drv->state = HDC1000_MEASURING;
+    drv->state = SENSOR_MEASURING;
     return MSG_OK;
 }
 
@@ -195,7 +192,7 @@ HDC1000_startMeasure(HDC1000_drv *drv) {
 msg_t
 HDC1000_readSerial(HDC1000_drv *drv, uint8_t *serial) {
     msg_t msg;
-    osalDbgAssert(drv->state == HDC1000_STARTED, "invalid state");
+    osalDbgAssert(drv->state == SENSOR_STARTED, "invalid state");
 
     if (((msg = i2c_reg_recv16(HDC1000_REG_SERIAL_1,
 			       (uint16_t*)&serial[0])) < MSG_OK) ||
@@ -214,16 +211,16 @@ HDC1000_readMeasure(HDC1000_drv *drv,
     msg_t    msg;
     uint32_t val;
 
-    osalDbgAssert((drv->state == HDC1000_MEASURING) ||
-		  (drv->state == HDC1000_READY    ),
+    osalDbgAssert((drv->state == SENSOR_MEASURING) ||
+		  (drv->state == SENSOR_READY    ),
 		  "invalid state");
 
     if ((msg = i2c_recv32_be(&val)) < MSG_OK) {
-	drv->state = HDC1000_ERROR;
+	drv->state = SENSOR_ERROR;
 	return msg;
     }
 
-    drv->state = HDC1000_STARTED;
+    drv->state = SENSOR_STARTED;
 
     return _decode_measure(drv, val, temperature, humidity);
 }
@@ -234,7 +231,7 @@ HDC1000_readTemperatureHumidity(HDC1000_drv *drv,
     msg_t    msg;
     uint32_t val;
 
-    osalDbgAssert(drv->state == HDC1000_STARTED, "invalid state");
+    osalDbgAssert(drv->state == SENSOR_STARTED, "invalid state");
 
     /* Request value */
     if ((msg = i2c_reg(HDC1000_REG_TEMP_HUMID)) < MSG_OK)
@@ -245,7 +242,7 @@ HDC1000_readTemperatureHumidity(HDC1000_drv *drv,
 	
     /* Get value */
     if ((msg = i2c_recv32_be(&val)) < MSG_OK) {
-	drv->state = HDC1000_ERROR;
+	drv->state = SENSOR_ERROR;
 	return msg;
     }
 
