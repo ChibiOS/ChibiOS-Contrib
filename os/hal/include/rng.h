@@ -44,10 +44,6 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if NRF51_RNG_USE_RNG1 != TRUE && RNGSW_USE_RNG1 != TRUE
-#error "RNG requires at least one LLD driver."
-#endif
-
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
@@ -62,7 +58,6 @@ typedef enum {
 } rngstate_t;
 
 #include "rng_lld.h"
-//#include "rngsw.h" /* Include software LL driver */
 
 
 /*===========================================================================*/

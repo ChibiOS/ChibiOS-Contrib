@@ -124,19 +124,12 @@ msg_t rng_lld_write(RNGDriver *rngp, uint8_t *buf, size_t n,
   if (n == 0)
     return MSG_OK;
 
-  if (n == 1)
-	rngp->rng->SHORTS |= RNG_SHORTS_VALRDY_STOP_Msk;
+  NRF_RNG->EVENTS_VALRDY = 0;    
 
-  
-
-  NRF_RNG->EVENTS_VALRDY = 0;
-    
   for (i = 0 ; i < n ; i++) {
-    /* sleep until number is generated */
+    /* wait for next byte */
     while (NRF_RNG->EVENTS_VALRDY == 0) {
-      /* enable wake up on events for __WFE CPU sleep */
       SCB->SCR |= SCB_SCR_SEVONPEND_Msk;
-      /* sleep until next event */
       __SEV();
       __WFE();
       __WFE();

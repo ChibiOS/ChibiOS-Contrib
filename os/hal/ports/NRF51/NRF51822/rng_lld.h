@@ -27,19 +27,6 @@
 
 #if (HAL_USE_RNG == TRUE) || defined(__DOXYGEN__)
 
-/*
- * This error check must occur outsite of RNGSW_USE_RNG1 to check if
- * two LLD drivers are enabled at the same time
- */
-#if (NRF51_RNG_USE_RNG1 == TRUE) && (RNGSW_USE_RNG1 == TRUE)
-#error "Software RNG can't be enable with NRF51_RNG_USE_RNG1"
-#endif
-
-/**
- * Allow RNG Software override.
- */
-#if RNGSW_USE_RNG1 != TRUE
-
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -74,7 +61,7 @@
  * @brief   RNG1 interrupt priority level setting.
  */
 #if !defined(NRF51_RNG_RNG1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_RNG_RNG1_IRQ_PRIORITY     8
+#define NRF51_RNG_RNG1_IRQ_PRIORITY     10
 #endif
 
 
@@ -168,8 +155,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* RNGSW_USE_RNG1 */
 
 #endif /* HAL_USE_RNG */
 

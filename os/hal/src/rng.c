@@ -109,14 +109,13 @@ void rngStop(RNGDriver *rngp) {
 }
 
 /**
- * @brief   Performs a RNG calculation.
- * @details This synchronous function performs a rng calculation operation.
- * @pre     In order to use this function the driver must have been configured
- *          without callbacks (@p end_cb = @p NULL).
+ * @brief   Write random bytes
+ * @details Write the request number of bytes..
  *
  * @param[in] rngp      pointer to the @p RNGDriver object
- * @param[in] n         number of bytes to send
  * @param[in] buf       the pointer to the buffer
+ * @param[in] n         number of bytes to send
+ * @param[in] timeout   timeout value
  *
  * @api
  */
@@ -129,15 +128,13 @@ msg_t rngWrite(RNGDriver *rngp, uint8_t *buf, size_t n, systime_t timeout) {
 }
 
 /**
- * @brief   Performs a RNG calculation.
- * @details This synchronous function performs a rng calcuation operation.
- * @pre     In order to use this function the driver must have been configured
- *          without callbacks (@p end_cb = @p NULL).
- * @post    At the end of the operation the configured callback is invoked.
+ * @brief   Write random bytes
+ * @details Write the request number of bytes..
  *
  * @param[in] rngp      pointer to the @p RNGDriver object
- * @param[in] n         number of bytes to send
  * @param[in] buf       the pointer to the buffer
+ * @param[in] n         number of bytes to send
+ * @param[in] timeout   timeout value
  *
  * @iclass
  */
