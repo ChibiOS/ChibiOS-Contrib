@@ -144,7 +144,11 @@ uint8_t usbh_lld_roothub_get_statuschange_bitmap(USBHDriver *usbh);
 
 #define usbh_lld_epreset(ep) do {(ep)->dt_mask = HCTSIZ_DPID_DATA0;} while (0);
 
+#ifdef __IAR_SYSTEMS_ICC__
+#define USBH_LLD_DEFINE_BUFFER(type, name) type name
+#else
 #define USBH_LLD_DEFINE_BUFFER(type, name) type name __attribute__((aligned(4)))
+#endif
 
 #endif
 

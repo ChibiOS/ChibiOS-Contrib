@@ -213,7 +213,7 @@ static bool _activate_ep(USBHDriver *host, usbh_ep_t *ep) {
 				break;
 			case USBH_LLD_CTRLPHASE_DATA:
 				xfer_len = urb->requestedLength - urb->actualLength;
-				ep->xfer.buf = urb->buff + urb->actualLength;
+				ep->xfer.buf = (uint8_t *) urb->buff + urb->actualLength;
 				break;
 			case USBH_LLD_CTRLPHASE_STATUS:
 				xfer_len = 0;
@@ -229,7 +229,7 @@ static bool _activate_ep(USBHDriver *host, usbh_ep_t *ep) {
 			}
 		} else {
 			xfer_len = urb->requestedLength - urb->actualLength;
-			ep->xfer.buf = urb->buff + urb->actualLength;
+			ep->xfer.buf = (uint8_t *) urb->buff + urb->actualLength;
 		}
 
 		if (ep->xfer.error_count)
@@ -361,12 +361,12 @@ static bool _update_urb(usbh_ep_t *ep, uint32_t hctsiz, usbh_urb_t *urb, bool co
 static void _try_commit_np(USBHDriver *host) {
 	usbh_ep_t *item, *tmp;
 
-	list_for_each_entry_safe(item, tmp, &host->ep_pending_lists[USBH_EPTYPE_CTRL], node) {
+	list_for_each_entry_safe(item, usbh_ep_t, tmp, &host->ep_pending_lists[USBH_EPTYPE_CTRL], node) {
 		if (!_activate_ep(host, item))
 			return;
 	}
 
-	list_for_each_entry_safe(item, tmp, &host->ep_pending_lists[USBH_EPTYPE_BULK], node) {
+	list_for_each_entry_safe(item, usbh_ep_t, tmp, &host->ep_pending_lists[USBH_EPTYPE_BULK], node) {
 		if (!_activate_ep(host, item))
 			return;
 	}
@@ -375,12 +375,12 @@ static void _try_commit_np(USBHDriver *host) {
 static void _try_commit_p(USBHDriver *host, bool sof) {
 	usbh_ep_t *item, *tmp;
 
-	list_for_each_entry_safe(item, tmp, &host->ep_pending_lists[USBH_EPTYPE_ISO], node) {
+	list_for_each_entry_safe(item, usbh_ep_t, tmp, &host->ep_pending_lists[USBH_EPTYPE_ISO], node) {
 		if (!_activate_ep(host, item))
 			return;
 	}
 
-	list_for_each_entry_safe(item, tmp, &host->ep_pending_lists[USBH_EPTYPE_INT], node) {
+	list_for_each_entry_safe(item, usbh_ep_t, tmp, &host->ep_pending_lists[USBH_EPTYPE_INT], node) {
 		osalDbgCheck(item);
 		/* TODO: improve this */
 		if (sof && item->xfer.u.frame_counter)
@@ -403,7 +403,7 @@ static void _try_commit_p(USBHDriver *host, bool sof) {
 
 static void _purge_queue(USBHDriver *host, struct list_head *list) {
 	usbh_ep_t *ep, *tmp;
-	list_for_each_entry_safe(ep, tmp, list, node) {
+	list_for_each_entry_safe(ep, usbh_ep_t, tmp, list, node) {
 		usbh_urb_t *const urb = _active_urb(ep);
 		stm32_hc_management_t *const hcm = ep->xfer.hcm;
 		uwarnf("\t%s: Abort URB, USBH_URBSTATUS_DISCONNECTED", ep->name);
@@ -435,7 +435,7 @@ static uint32_t _write_packet(struct list_head *list, uint32_t space_available) 
 
 	uint32_t remaining = 0;
 
-	list_for_each_entry(ep, list, node) {
+	list_for_each_entry(ep, usbh_ep_t, list, node) {
 		if (ep->in || (ep->xfer.hcm->halt_reason != USBH_LLD_HALTREASON_NONE))
 			continue;
 
@@ -554,7 +554,7 @@ void usbh_lld_ep_open(usbh_ep_t *ep) {
 void usbh_lld_ep_close(usbh_ep_t *ep) {
 	usbh_urb_t *urb, *tmp;
 	uinfof("\t%s: Closing EP...", ep->name);
-	list_for_each_entry_safe(urb, tmp, &ep->urb_list, node) {
+	list_for_each_entry_safe(urb, usbh_urb_t, tmp, &ep->urb_list, node) {
 		uinfof("\t%s: Abort URB, USBH_URBSTATUS_DISCONNECTED", ep->name);
 		_usbh_urb_abort_and_waitS(urb, USBH_URBSTATUS_DISCONNECTED);
 	}

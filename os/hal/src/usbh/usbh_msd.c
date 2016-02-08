@@ -237,7 +237,7 @@ static void _msd_unload(usbh_baseclassdriver_t *drv) {
 
 
 /* USB Bulk Only Transport SCSI Command block wrapper */
-typedef struct {
+typedef PACKED_VAR struct {
 	uint32_t dCBWSignature;
 	uint32_t dCBWTag;
 	uint32_t dCBWDataTransferLength;
@@ -245,19 +245,19 @@ typedef struct {
 	uint8_t bCBWLUN;
 	uint8_t bCBWCBLength;
 	uint8_t CBWCB[16];
-} __attribute__((packed)) msd_cbw_t;
+} msd_cbw_t;
 #define MSD_CBW_SIGNATURE						0x43425355
 #define MSD_CBWFLAGS_D2H						0x80
 #define MSD_CBWFLAGS_H2D						0x00
 
 
 /* USB Bulk Only Transport SCSI Command status wrapper */
-typedef struct {
+typedef PACKED_VAR struct {
 	uint32_t dCSWSignature;
 	uint32_t dCSWTag;
 	uint32_t dCSWDataResidue;
 	uint8_t bCSWStatus;
-} __attribute__((packed)) msd_csw_t;
+} msd_csw_t;
 #define MSD_CSW_SIGNATURE						0x53425355
 
 
@@ -296,9 +296,9 @@ typedef struct {
 
 /* Request sense */
 #define SCSI_CMD_REQUEST_SENSE 					0x03
-typedef struct {
+typedef PACKED_VAR struct {
 	uint8_t byte[18];
-} __attribute__((packed)) scsi_sense_response_t;
+} scsi_sense_response_t;
 
 #define SCSI_SENSE_KEY_GOOD                     0x00
 #define SCSI_SENSE_KEY_RECOVERED_ERROR          0x01
@@ -330,7 +330,7 @@ typedef struct {
 
 /* Inquiry */
 #define SCSI_CMD_INQUIRY 						0x12
-typedef struct {
+typedef PACKED_VAR struct {
 	uint8_t peripheral;
 	uint8_t removable;
 	uint8_t version;
@@ -342,25 +342,25 @@ typedef struct {
 	uint8_t vendorID[8];
 	uint8_t productID[16];
 	uint8_t productRev[4];
-} __attribute__((packed)) scsi_inquiry_response_t;
+} scsi_inquiry_response_t;
 
 /* Read Capacity 10 */
 #define SCSI_CMD_READ_CAPACITY_10				0x25
-typedef struct {
+typedef PACKED_VAR struct {
 	uint32_t last_block_addr;
 	uint32_t block_size;
-} __attribute__((packed)) scsi_readcapacity10_response_t;
+} scsi_readcapacity10_response_t;
 
 /* Start/Stop Unit */
 #define SCSI_CMD_START_STOP_UNIT				0x1B
-typedef struct {
+typedef PACKED_VAR struct {
 	uint8_t op_code;
 	uint8_t lun_immed;
 	uint8_t res1;
 	uint8_t res2;
 	uint8_t loej_start;
 	uint8_t control;
-} __attribute__((packed)) scsi_startstopunit_request_t;
+} scsi_startstopunit_request_t;
 
 /* test unit ready */
 #define SCSI_CMD_TEST_UNIT_READY				0x00
@@ -702,26 +702,7 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 		goto failed;
 	}
 
-	// Read capacity
-	uinfo("READ CAPACITY(10)...");
-	res = scsi_readcapacity10(lunp, &u.cap);
-	if (res.tres != MSD_TRANSACTIONRESULT_OK) {
-		uerr("\tREAD CAPACITY(10): Transaction error");
-		goto failed;
-	} else if (res.cres == MSD_COMMANDRESULT_FAILED) {
-		uerr("\tREAD CAPACITY(10): Command Failed");
-		_requestsense(lunp);
-		goto failed;
-	} else if (res.cres == MSD_COMMANDRESULT_PHASE_ERROR) {
-		//TODO: Do reset, etc.
-		uerr("\tREAD CAPACITY(10): Command Phase Error");
-		goto failed;
-	}
-	lunp->info.blk_size = __REV(u.cap.block_size);
-	lunp->info.blk_num = __REV(u.cap.last_block_addr) + 1;
-	uinfof("\tBlock size=%dbytes, blocks=%u (~%u MB)", lunp->info.blk_size, lunp->info.blk_num,
-		(uint32_t)(((uint64_t)lunp->info.blk_size * lunp->info.blk_num) / (1024UL * 1024UL)));
-
+	// Test if unit ready
 	uint8_t i;
 	for (i = 0; i < 10; i++) {
 		uinfo("TEST UNIT READY...");
@@ -743,6 +724,26 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 		osalThreadSleepMilliseconds(200);
 	}
 	if (i == 10) goto failed;
+
+	// Read capacity
+	uinfo("READ CAPACITY(10)...");
+	res = scsi_readcapacity10(lunp, &u.cap);
+	if (res.tres != MSD_TRANSACTIONRESULT_OK) {
+		uerr("\tREAD CAPACITY(10): Transaction error");
+		goto failed;
+	} else if (res.cres == MSD_COMMANDRESULT_FAILED) {
+		uerr("\tREAD CAPACITY(10): Command Failed");
+		_requestsense(lunp);
+		goto failed;
+	} else if (res.cres == MSD_COMMANDRESULT_PHASE_ERROR) {
+		//TODO: Do reset, etc.
+		uerr("\tREAD CAPACITY(10): Command Phase Error");
+		goto failed;
+	}
+	lunp->info.blk_size = __REV(u.cap.block_size);
+	lunp->info.blk_num = __REV(u.cap.last_block_addr) + 1;
+	uinfof("\tBlock size=%dbytes, blocks=%u (~%u MB)", lunp->info.blk_size, lunp->info.blk_num,
+		(uint32_t)(((uint64_t)lunp->info.blk_size * lunp->info.blk_num) / (1024UL * 1024UL)));
 
 	uinfo("MSD Connected.");
 

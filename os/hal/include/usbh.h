@@ -182,6 +182,7 @@ struct usbh_device {
 	usbh_devspeed_t speed;
 
 	USBH_DEFINE_BUFFER(usbh_device_descriptor_t, devDesc);
+	unsigned char align_bytes[2];
 	USBH_DEFINE_BUFFER(usbh_config_descriptor_t, basicConfigDesc);
 
 	uint8_t *fullConfigurationDescriptor;

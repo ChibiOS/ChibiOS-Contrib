@@ -24,7 +24,7 @@
 
 #include "osal.h"
 
-typedef struct usbh_device_descriptor {
+typedef PACKED_VAR struct usbh_device_descriptor {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint16_t bcdUSB;
@@ -39,11 +39,11 @@ typedef struct usbh_device_descriptor {
 	uint8_t  iProduct;
 	uint8_t  iSerialNumber;
 	uint8_t  bNumConfigurations;
-} __attribute__ ((packed)) usbh_device_descriptor_t;
+} usbh_device_descriptor_t;
 #define USBH_DT_DEVICE                   0x01
 #define USBH_DT_DEVICE_SIZE              18
 
-typedef struct usbh_config_descriptor {
+typedef PACKED_VAR struct usbh_config_descriptor {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint16_t wTotalLength;
@@ -52,19 +52,19 @@ typedef struct usbh_config_descriptor {
 	uint8_t  iConfiguration;
 	uint8_t  bmAttributes;
 	uint8_t  bMaxPower;
-} __attribute__ ((packed)) usbh_config_descriptor_t;
+} usbh_config_descriptor_t;
 #define USBH_DT_CONFIG                   0x02
 #define USBH_DT_CONFIG_SIZE              9
 
-typedef struct usbh_string_descriptor {
+typedef PACKED_VAR struct usbh_string_descriptor {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint16_t wData[1];
-} __attribute__ ((packed)) usbh_string_descriptor_t;
+} usbh_string_descriptor_t;
 #define USBH_DT_STRING                   0x03
 #define USBH_DT_STRING_SIZE              2
 
-typedef struct usbh_interface_descriptor {
+typedef PACKED_VAR struct usbh_interface_descriptor {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint8_t  bInterfaceNumber;
@@ -74,22 +74,22 @@ typedef struct usbh_interface_descriptor {
 	uint8_t  bInterfaceSubClass;
 	uint8_t  bInterfaceProtocol;
 	uint8_t  iInterface;
-} __attribute__ ((packed)) usbh_interface_descriptor_t;
+} usbh_interface_descriptor_t;
 #define USBH_DT_INTERFACE                0x04
 #define USBH_DT_INTERFACE_SIZE           9
 
-typedef struct usbh_endpoint_descriptor {
+typedef PACKED_VAR struct usbh_endpoint_descriptor {
 	uint8_t	bLength;
 	uint8_t	bDescriptorType;
 	uint8_t	bEndpointAddress;
 	uint8_t	bmAttributes;
 	uint16_t wMaxPacketSize;
 	uint8_t	bInterval;
-} __attribute__ ((packed)) usbh_endpoint_descriptor_t;
+} usbh_endpoint_descriptor_t;
 #define USBH_DT_ENDPOINT                 0x05
 #define USBH_DT_ENDPOINT_SIZE            7
 
-typedef struct usbh_ia_descriptor {
+typedef PACKED_VAR struct usbh_ia_descriptor {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint8_t  bFirstInterface;
@@ -98,11 +98,11 @@ typedef struct usbh_ia_descriptor {
 	uint8_t  bFunctionSubClass;
 	uint8_t  bFunctionProtocol;
 	uint8_t  iFunction;
-} __attribute__ ((packed)) usbh_ia_descriptor_t;
+} usbh_ia_descriptor_t;
 #define USBH_DT_INTERFACE_ASSOCIATION    	0x0b
 #define USBH_DT_INTERFACE_ASSOCIATION_SIZE	8
 
-typedef struct usbh_hub_descriptor {
+typedef PACKED_VAR struct usbh_hub_descriptor {
 	uint8_t  bDescLength;
 	uint8_t  bDescriptorType;
 	uint8_t  bNbrPorts;
@@ -110,17 +110,17 @@ typedef struct usbh_hub_descriptor {
 	uint8_t  bPwrOn2PwrGood;
 	uint8_t  bHubContrCurrent;
 	uint32_t DeviceRemovable;
-} __attribute__ ((packed)) usbh_hub_descriptor_t;
+} usbh_hub_descriptor_t;
 #define USBH_DT_HUB				    	0x29
 #define USBH_DT_HUB_SIZE		    	(7 + 4)
 
-typedef struct usbh_control_request {
+typedef PACKED_VAR struct usbh_control_request {
 	uint8_t  bmRequestType;
 	uint8_t  bRequest;
 	uint16_t wValue;
 	uint16_t wIndex;
 	uint16_t wLength;
-} __attribute__ ((packed)) usbh_control_request_t;
+} usbh_control_request_t;
 
 
 #define USBH_REQ_GET_STATUS              0x00
