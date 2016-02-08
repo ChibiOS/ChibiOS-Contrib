@@ -16,6 +16,7 @@
 */
 
 #include "hal.h"
+#include "usbh/internal.h"
 
 #if HAL_USBH_USE_HUB
 
@@ -25,7 +26,6 @@
 
 #include <string.h>
 #include "usbh/dev/hub.h"
-#include "usbh/internal.h"
 
 #if USBHHUB_DEBUG_ENABLE_TRACE
 #define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
