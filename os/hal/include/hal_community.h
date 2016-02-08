@@ -32,6 +32,7 @@
 /* Normal drivers.*/
 #include "nand.h"
 #include "eicu.h"
+#include "rng.h"
 
 /* Complex drivers.*/
 #include "onewire.h"
