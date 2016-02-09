@@ -6,15 +6,6 @@ extern "C" {
 #endif
 
 #if !(defined(ARCH_BIG_ENDIAN) || defined(ARCH_LITTLE_ENDIAN))
-#if YOTTA_CFG_CONFIG_ARCH_LITTLE_ENDIAN
-#define ARCH_LITTLE_ENDIAN
-#endif
-#if YOTTA_CFG_CONFIG_ARCH_BIG_ENDIAN
-#define ARCH_BIG_ENDIAN
-#endif
-#endif
-
-#if !(defined(ARCH_BIG_ENDIAN) || defined(ARCH_LITTLE_ENDIAN))
 #error "ARCH_BIG_ENDIAN or ARCH_LITTLE_ENDIAN not set."
 #endif
 
@@ -27,8 +18,8 @@ extern "C" {
     (uint16_t)((((x) & 0xFF00) >> 8) | (((x) & 0x00FF) << 8))
 #define BSWAP_32(x)							\
     (uint32_t)((((x) & 0xFF000000UL) >> 24UL) |				\
-	       (((x) & 0x00FF0000UL) >> 8UL)  |				\
-	       (((x) & 0x0000FF00UL) << 8UL)  |				\
+	       (((x) & 0x00FF0000UL) >>  8UL) |				\
+	       (((x) & 0x0000FF00UL) <<  8UL) |				\
 	       (((x) & 0x000000FFUL) << 24UL))
 
     
