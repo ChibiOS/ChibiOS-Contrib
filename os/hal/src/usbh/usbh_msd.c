@@ -90,11 +90,13 @@ const usbh_classdriverinfo_t usbhmsdClassDriverInfo = {
 static usbh_baseclassdriver_t *_msd_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem) {
 	int i;
 	USBHMassStorageDriver *msdp;
+	uint8_t luns; // should declare it here to eliminate 'control bypass initialization' warning
+	usbh_urbstatus_t stat;  // should declare it here to eliminate 'control bypass initialization' warning
 
 	if ((rem < descriptor[0]) || (descriptor[1] != USBH_DT_INTERFACE))
 		return NULL;
 
-	const usbh_interface_descriptor_t * const ifdesc = (const usbh_interface_descriptor_t * const)descriptor;
+	const usbh_interface_descriptor_t * const ifdesc = (const usbh_interface_descriptor_t *)descriptor;
 
 	if ((ifdesc->bAlternateSetting != 0)
 			|| (ifdesc->bNumEndpoints < 2)
@@ -155,7 +157,7 @@ alloc_ok:
 	/* read the number of LUNs */
 	uinfo("Reading Max LUN:");
 	USBH_DEFINE_BUFFER(uint8_t, buff[4]);
-	usbh_urbstatus_t stat = usbhControlRequest(dev,
+	stat = usbhControlRequest(dev,
 			USBH_CLASSIN(USBH_REQTYPE_INTERFACE, MSD_GET_MAX_LUN, 0, msdp->ifnum),
 			1, buff);
 	if (stat == USBH_URBSTATUS_OK) {
@@ -178,7 +180,7 @@ alloc_ok:
 	usbhEPOpen(&msdp->epout);
 
 	/* Alloc one block device per logical unit found */
-	uint8_t luns = msdp->max_lun;
+	luns = msdp->max_lun;
 	for (i = 0; (luns > 0) && (i < HAL_USBHMSD_MAX_LUNS); i++) {
 		if (MSBLKD[i].msdp == NULL) {
 			/* link the new block driver to the list */
@@ -474,7 +476,7 @@ static msd_result_t scsi_inquiry(USBHMassStorageLUNDriver *lunp, scsi_inquiry_re
 
 	res.tres = _msd_transaction(&transaction, lunp, resp);
 	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = transaction.csw.bCSWStatus;
+		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
 	}
 	return res;
 }
@@ -492,7 +494,7 @@ static msd_result_t scsi_requestsense(USBHMassStorageLUNDriver *lunp, scsi_sense
 
 	res.tres = _msd_transaction(&transaction, lunp, resp);
 	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = transaction.csw.bCSWStatus;
+		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
 	}
 	return res;
 }
@@ -509,7 +511,7 @@ static msd_result_t scsi_testunitready(USBHMassStorageLUNDriver *lunp) {
 
 	res.tres = _msd_transaction(&transaction, lunp, NULL);
 	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = transaction.csw.bCSWStatus;
+		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
 	}
 	return res;
 }
@@ -526,7 +528,7 @@ static msd_result_t scsi_readcapacity10(USBHMassStorageLUNDriver *lunp, scsi_rea
 
 	res.tres = _msd_transaction(&transaction, lunp, resp);
 	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = transaction.csw.bCSWStatus;
+		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
 	}
 	return res;
 }
@@ -550,7 +552,7 @@ static msd_result_t scsi_read10(USBHMassStorageLUNDriver *lunp, uint32_t lba, ui
 
 	res.tres = _msd_transaction(&transaction, lunp, data);
 	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = transaction.csw.bCSWStatus;
+		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
 	}
 	return res;
 }
@@ -573,7 +575,7 @@ static msd_result_t scsi_write10(USBHMassStorageLUNDriver *lunp, uint32_t lba, u
 
 	res.tres = _msd_transaction(&transaction, lunp, (uint8_t *)data);
 	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = transaction.csw.bCSWStatus;
+		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
 	}
 	return res;
 }
@@ -721,7 +723,7 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 		}
 		uinfo("\tReady.");
 		break;
-		osalThreadSleepMilliseconds(200);
+		// osalThreadSleepMilliseconds(200); // will raise 'code is unreachable' warning
 	}
 	if (i == 10) goto failed;
 

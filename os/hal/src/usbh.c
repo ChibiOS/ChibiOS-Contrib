@@ -155,7 +155,7 @@ void usbhEPObjectInit(usbh_ep_t *ep, usbh_device_t *dev, const usbh_endpoint_des
 	ep->device = dev;
 	ep->wMaxPacketSize = desc->wMaxPacketSize;
 	ep->address = desc->bEndpointAddress & 0x0F;
-	ep->type = desc->bmAttributes & 0x03;
+	ep->type = (usbh_eptype_t) (desc->bmAttributes & 0x03);
 	if (ep->type != USBH_EPTYPE_CTRL) {
 		ep->in = (desc->bEndpointAddress & 0x80) ? TRUE : FALSE;
 	}

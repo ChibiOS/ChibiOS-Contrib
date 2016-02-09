@@ -339,7 +339,7 @@ unsigned_common:
 		}
 	}
 
-	return n;
+	//return n; // can raise 'code is unreachable' warning
 
 }
 
