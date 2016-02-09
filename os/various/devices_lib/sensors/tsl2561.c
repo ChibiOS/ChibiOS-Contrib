@@ -15,7 +15,7 @@
 */
 
 /**
- *
+ * Illuminance calculation code provided by www.taosinc.com
  * DOC: http://ams.com/eng/content/download/250096/975518/143687
  */
 #define I2C_HELPERS_AUTOMATIC_DRV TRUE
@@ -131,10 +131,6 @@
 #define TSL2561_LUX_M8C           (0x0000)  // 0.000   * 2^LUX_SCALE
 
 
-
-
-#define CEILING(x,y) (((x) + (y) - 1) / (y))
-
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -146,6 +142,8 @@
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
+
+#define CEILING(x,y) (((x) + (y) - 1) / (y))
 
 static inline unsigned int
 calculateIlluminance(TSL2561_integration_time_t integration_time,
@@ -276,7 +274,7 @@ void
 TSL2561_init(TSL2561_drv *drv, TSL2561_config *config) {
     drv->config           = config;
     drv->gain             = TSL2561_GAIN_1X;
-    drv->integration_time = TSL2561_INTEGRATIONTIME_SHORT;
+    drv->integration_time = TSL2561_INTEGRATIONTIME_LONG;
     drv->state            = SENSOR_INIT;
 
     i2c_reg_recv8(TSL2561_COMMAND_BIT | TSL2561_REG_ID,
@@ -297,7 +295,7 @@ TSL2561_check(TSL2561_drv *drv) {
   
 msg_t
 TSL2561_stop(TSL2561_drv *drv) {
-    struct PACKED {
+    struct __attribute__((packed)) {
 	uint8_t reg;
 	uint8_t conf;
     } tx = { TSL2561_COMMAND_BIT | TSL2561_REG_CONTROL,
@@ -308,7 +306,7 @@ TSL2561_stop(TSL2561_drv *drv) {
 
 msg_t
 TSL2561_start(TSL2561_drv *drv) {
-    struct PACKED {
+    struct __attribute__((packed)) {
 	uint8_t reg;
 	uint8_t conf;
     } tx = { TSL2561_COMMAND_BIT | TSL2561_REG_CONTROL,
@@ -320,7 +318,7 @@ TSL2561_start(TSL2561_drv *drv) {
 msg_t
 TSL2561_setIntegrationTime(TSL2561_drv *drv,
 	TSL2561_integration_time_t time) {
-    struct PACKED {
+    struct __attribute__((packed)) {
 	uint8_t reg;
 	uint8_t conf;
     } tx = { TSL2561_COMMAND_BIT | TSL2561_REG_TIMING,
@@ -338,7 +336,7 @@ TSL2561_setIntegrationTime(TSL2561_drv *drv,
 msg_t
 TSL2561_setGain(TSL2561_drv *drv,
 	TSL2561_gain_t gain) {
-    struct PACKED {
+    struct __attribute__((packed)) {
 	uint8_t reg;
 	uint8_t conf;
     } tx = { TSL2561_COMMAND_BIT | TSL2561_REG_TIMING,

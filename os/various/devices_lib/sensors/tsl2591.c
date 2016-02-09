@@ -163,29 +163,48 @@ TSL2591_check(TSL2591_drv *drv) {
 
 msg_t
 TSL2591_start(TSL2591_drv *drv) {
-    struct PACKED {
+    struct __attribute__((packed)) {
 	uint8_t reg;
 	uint8_t conf;
-    } tx = { TSL2591_REG_COMMAND | TSL2591_REG_NORMAL | TSL2591_REG_ENABLE,
-	     TSL2591_ENABLE_POWERON | TSL2591_ENABLE_AEN | TSL2591_ENABLE_AIEN };
-    return i2c_send((uint8_t*)&tx, sizeof(tx));
+    } tx_config = {
+	TSL2591_REG_COMMAND | TSL2591_REG_NORMAL | TSL2591_REG_CONFIG,
+	(uint8_t)(drv->integration_time | drv->gain) };
+
+    struct __attribute__((packed)) {
+	uint8_t reg;
+	uint8_t conf;
+    } tx_start = {
+	TSL2591_REG_COMMAND | TSL2591_REG_NORMAL | TSL2591_REG_ENABLE,
+	TSL2591_ENABLE_POWERON };
+
+    msg_t msg;
+
+    if (((msg = i2c_send((uint8_t*)&tx_config, sizeof(tx_config))) < MSG_OK) ||
+	((msg = i2c_send((uint8_t*)&tx_start,  sizeof(tx_start ))) < MSG_OK)) {
+	drv->state = SENSOR_ERROR;
+	return msg;
+    }
+    
+    drv->state = SENSOR_STARTED;
+    return MSG_OK;
 }
 
 msg_t
 TSL2591_stop(TSL2591_drv *drv) {
-    struct PACKED {
+    struct __attribute__((packed)) {
 	uint8_t reg;
 	uint8_t conf;
-    } tx = { TSL2591_REG_COMMAND | TSL2591_REG_NORMAL | TSL2591_REG_ENABLE,
-	     TSL2591_ENABLE_POWEROFF };
+    } tx_stop = {
+	TSL2591_REG_COMMAND | TSL2591_REG_NORMAL | TSL2591_REG_ENABLE,
+	TSL2591_ENABLE_POWEROFF };
     
-    return i2c_send((uint8_t*)&tx, sizeof(tx));
+    return i2c_send((uint8_t*)&tx_stop, sizeof(tx_stop));
 }
 
 msg_t
 TSL2591_setIntegrationTime(TSL2591_drv *drv,
 	TSL2591_integration_time_t time) {
-    struct PACKED {
+    struct __attribute__((packed)) {
 	uint8_t reg;
 	uint8_t conf;
     } tx = { TSL2591_REG_COMMAND | TSL2591_REG_NORMAL | TSL2591_REG_CONFIG,
@@ -203,7 +222,7 @@ TSL2591_setIntegrationTime(TSL2591_drv *drv,
 msg_t
 TSL2591_setGain(TSL2591_drv *drv,
 	TSL2591_gain_t gain) {
-    struct PACKED {
+    struct __attribute__((packed)) {
 	uint8_t reg;
 	uint8_t conf;
     } tx = { TSL2591_REG_COMMAND | TSL2591_REG_NORMAL | TSL2591_REG_CONFIG,

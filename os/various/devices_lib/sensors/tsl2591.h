@@ -113,9 +113,7 @@ typedef enum {
 typedef struct {
     TSL2591_config  *config;
     sensor_state_t   state;
-    unsigned int     delay;    
-    uint16_t         cfg;
-    TSL2591_gain_t   gain;
+    TSL2591_gain_t gain;
     TSL2591_integration_time_t integration_time;
 } TSL2591_drv;
 

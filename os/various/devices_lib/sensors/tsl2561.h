@@ -87,16 +87,26 @@ typedef struct {
     I2CHelper i2c; /* keep it first */
 } TSL2561_config;
 
-
+/**
+ * @brief   Available integration time
+ *
+ * @details Available integration time are:
+ *          13.7ms, 101ms, 402ms
+ */
 typedef enum {
-    TSL2561_INTEGRATIONTIME_SHORT      = 0x00,    // 13.7ms
-    TSL2561_INTEGRATIONTIME_MEDIUM     = 0x01,    // 101ms
-    TSL2561_INTEGRATIONTIME_LONG       = 0x02,    // 402ms
+    TSL2561_INTEGRATIONTIME_SHORT      = 0x00,    /**< @brief  13.7ms */
+    TSL2561_INTEGRATIONTIME_MEDIUM     = 0x01,    /**< @brief 101.0ms */
+    TSL2561_INTEGRATIONTIME_LONG       = 0x02,    /**< @brief 402.0ms */
 } TSL2561_integration_time_t;
 
+/**
+ * @brief   Available gain
+ *
+ * @details Available gain are 1x, 16x
+ */
 typedef enum {
-    TSL2561_GAIN_1X                    = 0x00,    // No gain
-    TSL2561_GAIN_16X                   = 0x10,    // 16x gain
+    TSL2561_GAIN_1X                    = 0x00,    /**< @brief  1x gain */
+    TSL2561_GAIN_16X                   = 0x10,    /**< @brief 16x gain */
 } TSL2561_gain_t;
 
 /**
@@ -105,8 +115,6 @@ typedef enum {
 typedef struct {
     TSL2561_config  *config;
     sensor_state_t   state;
-    unsigned int     delay;    
-    uint16_t         cfg;
     TSL2561_gain_t   gain;
     TSL2561_integration_time_t integration_time;
     struct PACKED {
