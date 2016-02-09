@@ -14,6 +14,10 @@
     limitations under the License.
 */
 
+/**
+ *
+ * DOC: http://ams.com/eng/content/download/250096/975518/143687
+ */
 #define I2C_HELPERS_AUTOMATIC_DRV TRUE
 
 #include "hal.h"
@@ -48,17 +52,17 @@
 // I2C Register
 #define TSL2561_REG_CONTROL           0x00
 #define TSL2561_REG_TIMING            0x01
-#define TSL2561_REG_THRESHHOLDL_LOW   0x02
-#define TSL2561_REG_THRESHHOLDL_HIGH  0x03
-#define TSL2561_REG_THRESHHOLDH_LOW   0x04
-#define TSL2561_REG_THRESHHOLDH_HIGH  0x05
+#define TSL2561_REG_THRESHHOLDLLOW    0x02
+#define TSL2561_REG_THRESHHOLDLHIGH   0x03
+#define TSL2561_REG_THRESHHOLDHLOW    0x04
+#define TSL2561_REG_THRESHHOLDHHIGH   0x05
 #define TSL2561_REG_INTERRUPT         0x06
 #define TSL2561_REG_CRC               0x08
 #define TSL2561_REG_ID                0x0A
-#define TSL2561_REG_CHAN0_LOW         0x0C
-#define TSL2561_REG_CHAN0_HIGH        0x0D
-#define TSL2561_REG_CHAN1_LOW         0x0E
-#define TSL2561_REG_CHAN1_HIGH        0x0F
+#define TSL2561_REG_DATA0LOW          0x0C
+#define TSL2561_REG_DATA0HIGH         0x0D
+#define TSL2561_REG_DATA1LOW          0x0E
+#define TSL2561_REG_DATA1HIGH         0x0F
 
 
 // Auto-gain thresholds
@@ -254,12 +258,12 @@ calculateIlluminance(TSL2561_integration_time_t integration_time,
 static inline msg_t
 _readChannel(TSL2561_drv *drv, uint16_t *broadband, uint16_t *ir) {
     msg_t msg;
-    if (((msg = i2c_reg_recv16_le(TSL2561_COMMAND_BIT | TSL2561_WORD_BIT |
-				  TSL2561_REG_CHAN0_LOW,
-				  broadband)) < MSG_OK) ||
-	((msg = i2c_reg_recv16_le(TSL2561_COMMAND_BIT | TSL2561_WORD_BIT |
-				  TSL2561_REG_CHAN1_LOW,
-				  ir       )) < MSG_OK))
+    if (((msg = i2c_reg_recv16_le(
+	  TSL2561_COMMAND_BIT | TSL2561_WORD_BIT | TSL2561_REG_DATA0LOW,
+	  broadband)) < MSG_OK) ||
+	((msg = i2c_reg_recv16_le(
+	  TSL2561_COMMAND_BIT | TSL2561_WORD_BIT | TSL2561_REG_DATA1LOW,
+	  ir       )) < MSG_OK))
 	return msg;
     return MSG_OK;
 }
