@@ -60,7 +60,7 @@ EepromDevice *__eeprom_drv_table[] = {
  */
 const EepromDevice *EepromFindDevice(uint8_t id) {
 
-  int i;
+  uint8_t i;
   const EepromDevice *drv;
 
   for (i = 0; i < EEPROM_TABLE_SIZE; i++) {
@@ -84,10 +84,10 @@ EepromFileStream *EepromFileOpen(EepromFileStream *efs,
 
   osalDbgAssert((efs != NULL) && (eepcfg != NULL) && (eepdev != NULL) &&
              (eepdev->efsvmt != NULL), "EepromFileOpen");
-  osalDbgAssert(efs->vmt != eepdev->efsvmt, "file allready opened");
-  osalDbgAssert(eepcfg->barrier_hi > eepcfg->barrier_low, "wrong barriers");
-  osalDbgAssert(eepcfg->pagesize < eepcfg->size, "pagesize can not be lager than EEPROM size");
-  osalDbgAssert(eepcfg->barrier_hi <= eepcfg->size, "barrier out of bounds");
+  osalDbgAssert(efs->vmt != eepdev->efsvmt, "File allready opened");
+  osalDbgAssert(eepcfg->barrier_hi > eepcfg->barrier_low, "Low barrier exceeds High barrier");
+  osalDbgAssert(eepcfg->pagesize < eepcfg->size, "Pagesize cannot be lager than EEPROM size");
+  osalDbgAssert(eepcfg->barrier_hi <= eepcfg->size, "Barrier exceeds EEPROM size");
 
   efs->vmt      = eepdev->efsvmt;
   efs->cfg      = eepcfg;

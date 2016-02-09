@@ -270,7 +270,7 @@ static size_t __clamp_size(void *ip, size_t n) {
 /**
  * @brief   Write data that can be fitted in one page boundary
  */
-static void __fitted_write(void *ip, const uint8_t *data, size_t len, uint32_t *written) {
+static msg_t __fitted_write(void *ip, const uint8_t *data, size_t len, uint32_t *written) {
 
   msg_t status = MSG_RESET;
 
@@ -282,6 +282,7 @@ static void __fitted_write(void *ip, const uint8_t *data, size_t len, uint32_t *
     *written += len;
     eepfs_lseek(ip, eepfs_getposition(ip) + len);
   }
+  return status;
 }
 
 /**
@@ -299,7 +300,9 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
   uint32_t firstpage;
   uint32_t lastpage;
 
-  osalDbgCheck((ip != NULL) && (((EepromFileStream *)ip)->vmt != NULL));
+  volatile const SPIEepromFileConfig *cfg = ((SPIEepromFileStream *)ip)->cfg;
+
+  osalDbgCheck((ip != NULL) && (((SPIEepromFileStream *)ip)->vmt != NULL));
 
   if (n == 0)
     return 0;
@@ -308,9 +311,9 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
   if (n == 0)
     return 0;
 
-  pagesize  = ((EepromFileStream *)ip)->cfg->pagesize;
-  firstpage = (((EepromFileStream *)ip)->cfg->barrier_low + eepfs_getposition(ip)) / pagesize;
-  lastpage  = (((EepromFileStream *)ip)->cfg->barrier_low + eepfs_getposition(ip) + n - 1) / pagesize;
+  pagesize  = cfg->pagesize;
+  firstpage = (cfg->barrier_low + eepfs_getposition(ip)) / pagesize;
+  lastpage  = ((cfg->barrier_low + eepfs_getposition(ip) + n) - 1) / pagesize;
 
   written = 0;
   /* data fitted in single page */
@@ -323,16 +326,19 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
   else {
     /* write first piece of data to first page boundary */
     len =  ((firstpage + 1) * pagesize) - eepfs_getposition(ip);
-    len -= ((EepromFileStream *)ip)->cfg->barrier_low;
+    len -= cfg->barrier_low;
     __fitted_write(ip, bp, len, &written);
     bp += len;
 
     /* now writes blocks at a size of pages (may be no one) */
     while ((n - written) > pagesize) {
       len = pagesize;
-      __fitted_write(ip, bp, len, &written);
+      if (__fitted_write(ip, bp, len, &written) != MSG_OK) // Fixed: Would increase bp forever and crash in case of timeouts...
+        return written;
+
       bp += len;
     }
+
 
     /* wrtie tail */
     len = n - written;
