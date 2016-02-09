@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006 Stephane D'Alu
+    ChibiOS - Copyright (C) 2016 Stephane D'Alu
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -94,7 +94,7 @@ void wdg_lld_init(void) {
 /**
  * @brief   Configures and activates the WDG peripheral.
  *
- * @note    Once started there is now way out.
+ * @note    Once started there is no way out.
  *
  * @param[in] wdgp      pointer to the @p WDGDriver object
  *
