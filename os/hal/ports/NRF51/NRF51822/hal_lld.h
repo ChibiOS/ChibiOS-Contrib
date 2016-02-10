@@ -61,6 +61,9 @@
 
 #include "nvic.h"
 
+#define NRF51_LFCLK_FREQUENCY		   32768
+#define NRF51_HFCLK_FREQUENCY		16000000
+
 #ifdef __cplusplus
 extern "C" {
 #endif
