@@ -103,11 +103,9 @@ typedef struct stm32_hc_management {
 	uint16_t lld_c_status;		\
 	uint16_t lld_status;
 
-#define _usbh_device_ll_data 	\
-	;
+#define _usbh_device_ll_data
 
-#define _usbh_hub_ll_data		\
-	;
+#define _usbh_hub_ll_data
 
 #define _usbh_urb_ll_data		\
 	struct list_head node;		\
