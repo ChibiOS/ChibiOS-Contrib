@@ -91,12 +91,10 @@ static void ll_25xx_transmit_receive(const SPIEepromFileConfig *eepcfg,
 #if SPI_USE_MUTUAL_EXCLUSION
   spiAcquireBus(eepcfg->spip);
 #endif
-
-  spiStart(eepcfg->spip, eepcfg->spicfg);
   spiSelect(eepcfg->spip);
-  spiSend(eepcfg->spip, txlen, &txbuf);
+  spiSend(eepcfg->spip, txlen, txbuf);
   if (rxlen) /* Check if receive is needed. */
-    spiReceive(eepcfg->spip, rxlen, &rxbuf);
+      spiReceive(eepcfg->spip, rxlen, rxbuf);
   spiUnselect(eepcfg->spip);
 
 #if SPI_USE_MUTUAL_EXCLUSION
@@ -192,6 +190,9 @@ static msg_t ll_eeprom_read(const SPIEepromFileConfig *eepcfg, uint32_t offset,
   osalDbgAssert(((len <= eepcfg->size) && ((offset + len) <= eepcfg->size)),
              "out of device bounds");
 
+  if (eepcfg->spip->state != SPI_READY)
+      return MSG_RESET;
+
   txlen = ll_eeprom_prepare_seq(txbuff, eepcfg->size, CMD_READ,
                                 (offset + eepcfg->barrier_low));
   ll_25xx_transmit_receive(eepcfg, txbuff, txlen, data, len);
@@ -222,6 +223,9 @@ static msg_t ll_eeprom_write(const SPIEepromFileConfig *eepcfg, uint32_t offset,
               (((offset + eepcfg->barrier_low) + len - 1) / eepcfg->pagesize)),
              "data can not be fitted in single page");
 
+  if (eepcfg->spip->state != SPI_READY)
+      return MSG_RESET;
+
   /* Unlock array for writting. */
   ll_eeprom_unlock(eepcfg);
 
@@ -229,7 +233,6 @@ static msg_t ll_eeprom_write(const SPIEepromFileConfig *eepcfg, uint32_t offset,
   spiAcquireBus(eepcfg->spip);
 #endif
 
-  spiStart(eepcfg->spip, eepcfg->spicfg);
   spiSelect(eepcfg->spip);
   txlen = ll_eeprom_prepare_seq(txbuff, eepcfg->size, CMD_WRITE,
                                 (offset + eepcfg->barrier_low));
