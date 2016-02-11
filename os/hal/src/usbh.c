@@ -1189,7 +1189,7 @@ void usbhMainLoop(USBHDriver *usbh) {
 
 	/* process connected hubs */
 	USBHHubDriver *hub;
-	list_for_each_entry(hub, &usbh->hubs, node) {
+    list_for_each_entry(hub, USBHHubDriver, &usbh->hubs, node) {
 		_hub_process(usbh, hub);
 	}
 #else

@@ -9,7 +9,7 @@
 
 #include "hal.h"
 
-#if HAL_USE_EEPROM && EEPROM_USE_EE24XX
+#if defined(HAL_USE_EEPROM) && HAL_USE_EEPROM && EEPROM_USE_EE24XX
 
 #define EEPROM_DEV_24XX 24
 

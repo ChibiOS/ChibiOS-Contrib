@@ -33,6 +33,7 @@
 #include "nand.h"
 #include "eicu.h"
 #include "timcap.h"
+#include "usbh.h"
 
 /* Complex drivers.*/
 #include "eeprom.h"

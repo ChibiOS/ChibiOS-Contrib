@@ -45,7 +45,7 @@ Note:
 #include "ee24xx.h"
 #include <string.h>
 
-#if (HAL_USE_EEPROM && EEPROM_USE_EE24XX) || defined(__DOXYGEN__)
+#if (defined(HAL_USE_EEPROM) && HAL_USE_EEPROM && EEPROM_USE_EE24XX) || defined(__DOXYGEN__)
 
 /*
  ******************************************************************************

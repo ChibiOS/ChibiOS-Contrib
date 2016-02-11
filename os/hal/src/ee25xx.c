@@ -45,7 +45,7 @@ Note:
 #include "ee25xx.h"
 #include <string.h>
 
-#if (HAL_USE_EEPROM && EEPROM_USE_EE25XX) || defined(__DOXYGEN__)
+#if (defined(HAL_USE_EEPROM) && HAL_USE_EEPROM && EEPROM_USE_EE25XX) || defined(__DOXYGEN__)
 
 /**
  * @name Commands of 25XX chip.

@@ -239,7 +239,7 @@ static void _msd_unload(usbh_baseclassdriver_t *drv) {
 
 
 /* USB Bulk Only Transport SCSI Command block wrapper */
-typedef PACKED_VAR struct {
+PACKED_STRUCT {
 	uint32_t dCBWSignature;
 	uint32_t dCBWTag;
 	uint32_t dCBWDataTransferLength;
@@ -254,7 +254,7 @@ typedef PACKED_VAR struct {
 
 
 /* USB Bulk Only Transport SCSI Command status wrapper */
-typedef PACKED_VAR struct {
+PACKED_STRUCT {
 	uint32_t dCSWSignature;
 	uint32_t dCSWTag;
 	uint32_t dCSWDataResidue;
@@ -298,7 +298,7 @@ typedef struct {
 
 /* Request sense */
 #define SCSI_CMD_REQUEST_SENSE 					0x03
-typedef PACKED_VAR struct {
+PACKED_STRUCT {
 	uint8_t byte[18];
 } scsi_sense_response_t;
 
@@ -332,7 +332,7 @@ typedef PACKED_VAR struct {
 
 /* Inquiry */
 #define SCSI_CMD_INQUIRY 						0x12
-typedef PACKED_VAR struct {
+PACKED_STRUCT {
 	uint8_t peripheral;
 	uint8_t removable;
 	uint8_t version;
@@ -348,14 +348,14 @@ typedef PACKED_VAR struct {
 
 /* Read Capacity 10 */
 #define SCSI_CMD_READ_CAPACITY_10				0x25
-typedef PACKED_VAR struct {
+PACKED_STRUCT {
 	uint32_t last_block_addr;
 	uint32_t block_size;
 } scsi_readcapacity10_response_t;
 
 /* Start/Stop Unit */
 #define SCSI_CMD_START_STOP_UNIT				0x1B
-typedef PACKED_VAR struct {
+PACKED_STRUCT {
 	uint8_t op_code;
 	uint8_t lun_immed;
 	uint8_t res1;
