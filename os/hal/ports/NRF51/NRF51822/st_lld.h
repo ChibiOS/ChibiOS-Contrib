@@ -61,7 +61,14 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if ((NRF51_SYSTEM_TICKS != NRF51_SYSTEM_TICKS_AS_RTC) &&	\
+#if (OSAL_ST_MODE != OSAL_ST_MODE_NONE)
+#if (NRF51_GPT_USE_TIMER0 == TRUE) &&			                \
+    (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
+#error "TIMER0 already used by GPT driver"
+#endif
+#endif
+
+#if ((NRF51_SYSTEM_TICKS != NRF51_SYSTEM_TICKS_AS_RTC) &&		\
      (NRF51_SYSTEM_TICKS != NRF51_SYSTEM_TICKS_AS_TIMER))
 #error "NRF51_SYSTEM_TICKS illegal value"
 #endif

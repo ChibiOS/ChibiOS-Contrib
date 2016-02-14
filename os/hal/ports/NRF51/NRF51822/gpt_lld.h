@@ -97,11 +97,6 @@
 #error "GPT driver activated but no TIMER peripheral assigned"
 #endif
 
-#if (NRF51_GPT_USE_TIMER0 == TRUE) &&			                      \
-    (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_TIMER)
-#error "GPT driver can't use TIMER0 as currently used by ST driver"
-#endif
-
 #if 0
 #if NRF51_GPT_USE_TIMER0 &&                                                   \
     !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_GPT_TIMER0_IRQ_PRIORITY)
