@@ -140,7 +140,7 @@ void crc_lld_init(void) {
   crcObjectInit(&CRCD1);
   CRCD1.crc    = CRC;
 #if CRC_USE_DMA == TRUE
-  CRCD1.dma    = STM32_CRC_CRC1_DMA_STREAM;
+  CRCD1.dma    = STM32_DMA_STREAM(STM32_CRC_CRC1_DMA_STREAM);
 #endif
 }
 
