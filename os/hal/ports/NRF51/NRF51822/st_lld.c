@@ -51,7 +51,7 @@
 
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
 
-static void serve_rtc_interrupt(NRF_RTC_Type *rtc) {
+static inline void serve_rtc_interrupt(NRF_RTC_Type *rtc) {
 
   if (rtc->EVENTS_COMPARE[0]) {
     rtc->EVENTS_COMPARE[0] = 0;
@@ -69,7 +69,7 @@ static void serve_rtc_interrupt(NRF_RTC_Type *rtc) {
 #endif
 }
 
-static void rtc_init(NRF_RTC_Type *rtc, int irq) {
+static inline void rtc_init(NRF_RTC_Type *rtc, int irq) {
 
   /* Using RTC with prescaler */
   rtc->TASKS_STOP  = 1;
@@ -92,7 +92,7 @@ static void rtc_init(NRF_RTC_Type *rtc, int irq) {
 
 #elif OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
 
-static void serve_rtc_interrupt(NRF_RTC_Type *rtc) {
+static inline void serve_rtc_interrupt(NRF_RTC_Type *rtc) {
 
   rtc->EVENTS_TICK = 0;
 
@@ -101,7 +101,7 @@ static void serve_rtc_interrupt(NRF_RTC_Type *rtc) {
   osalSysUnlockFromISR();
 }
 
-static void rtc_init(NRF_RTC_Type *rtc, int irq) {
+static inline void rtc_init(NRF_RTC_Type *rtc, int irq) {
 
   /* Using RTC with prescaler */
   rtc->TASKS_STOP  = 1;
