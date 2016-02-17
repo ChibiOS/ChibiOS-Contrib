@@ -37,6 +37,7 @@
 /* Complex drivers.*/
 #include "onewire.h"
 #include "crc.h"
+#include "eeprom.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
