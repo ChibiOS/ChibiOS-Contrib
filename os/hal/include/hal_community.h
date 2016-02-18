@@ -33,6 +33,7 @@
 #include "nand.h"
 #include "eicu.h"
 #include "usbh.h"
+#include "timcap.h"
 
 /* Complex drivers.*/
 #include "onewire.h"
