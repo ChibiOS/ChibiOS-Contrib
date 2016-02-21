@@ -94,7 +94,7 @@
 
 #if !NRF51_GPT_USE_TIMER0 && !NRF51_GPT_USE_TIMER1 &&                         \
     !NRF51_GPT_USE_TIMER2
-#error "GPT driver activated but no TIM peripheral assigned"
+#error "GPT driver activated but no TIMER peripheral assigned"
 #endif
 
 #if 0

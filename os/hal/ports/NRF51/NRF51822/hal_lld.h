@@ -39,13 +39,35 @@
  * @}
  */
 
+/**
+ * @brief  Frequency valuefor the Low Frequency Clock
+ */
+#define NRF51_LFCLK_FREQUENCY  32768
+
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
+/**
+ * @brief   Select source of Low Frequency Clock (LFCLK)
+ * @details Possible values for source are:
+ *            0 : RC oscillator
+ *            1 : External cristal
+ *            2 : Synthetized clock from High Frequency Clock (HFCLK)
+ *          When cristal is not available it's preferable to use the
+ *          internal RC oscillator that synthezing the clock.
+ */
+#if !defined(NRF51_LFCLK_SOURCE) || defined(__DOXYGEN__)
+#define NRF51_LFCLK_SOURCE             0
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+#if (NRF51_LFCLK_SOURCE < 0) || (NRF51_LFCLK_SOURCE > 2)
+#error "Possible value for NRF51_LFCLK_SOURCE are 0=RC, 1=XTAL, 2=Synth"
+#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */

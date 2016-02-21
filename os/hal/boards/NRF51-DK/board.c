@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2015 Fabio Utzig
+                  2016 Stéphane D'Alu / Bruno Remond
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,6 +18,14 @@
 #include "hal.h"
 
 #if HAL_USE_PAL || defined(__DOXYGEN__)
+
+/* RAM Banks
+ *  (Values are defined in Nordic gcc_startup_nrf51.s)
+ */
+#define NRF_POWER_RAMON_ADDRESS 0x40000524
+#define NRF_POWER_RAMONB_ADDRESS 0x40000554
+#define NRF_POWER_RAMONx_RAMxON_ONMODE_Msk 0x3
+
 /**
  * @brief   PAL setup.
  * @details Digital I/O ports static configuration as defined in @p board.h.
@@ -68,6 +77,9 @@ const PALConfig pal_default_config =
  */
 void __early_init(void)
 {
+  /* Make sure ALL RAM banks are powered on */
+  *(uint32_t *)NRF_POWER_RAMON_ADDRESS  |= NRF_POWER_RAMONx_RAMxON_ONMODE_Msk;
+  *(uint32_t *)NRF_POWER_RAMONB_ADDRESS |= NRF_POWER_RAMONx_RAMxON_ONMODE_Msk;
 }
 
 /**

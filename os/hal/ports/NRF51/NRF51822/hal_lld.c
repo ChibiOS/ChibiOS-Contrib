@@ -55,6 +55,29 @@
  */
 void hal_lld_init(void)
 {
+  /* High frequency clock initialisation
+   *  (If NRF51_XTAL_VALUE is not defined assume its an RC oscillator)
+   */
+  NRF_CLOCK->TASKS_HFCLKSTOP = 1;
+#if defined(NRF51_XTAL_VALUE)
+#if   NRF51_XTAL_VALUE == 16000000
+  NRF_CLOCK->XTALFREQ = 0xFF;
+#elif NRF51_XTAL_VALUE == 32000000
+  NRF_CLOCK->XTALFREQ = 0x00;
+#endif
+#endif
+
+  
+  /* Low frequency clock initialisation
+   * Clock is only started if st driver requires it
+   */
+  NRF_CLOCK->TASKS_LFCLKSTOP = 1;
+  NRF_CLOCK->LFCLKSRC = NRF51_LFCLK_SOURCE;
+  
+#if (OSAL_ST_MODE != OSAL_ST_MODE_NONE) &&			\
+    (NRF51_SYSTEM_TICKS == NRF51_SYSTEM_TICKS_AS_RTC)
+  NRF_CLOCK->TASKS_LFCLKSTART = 1;
+#endif
 }
 
 /**

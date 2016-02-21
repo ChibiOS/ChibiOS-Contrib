@@ -33,10 +33,13 @@
 #include "nand.h"
 #include "eicu.h"
 #include "rng.h"
+#include "usbh.h"
+#include "timcap.h"
 
 /* Complex drivers.*/
 #include "onewire.h"
 #include "crc.h"
+#include "eeprom.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
