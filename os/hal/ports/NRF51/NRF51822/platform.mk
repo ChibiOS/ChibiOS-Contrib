@@ -1,5 +1,5 @@
 ifeq ($(USE_SMART_BUILD),yes)
-HALCONF := $(strip $(shell cat halconf.h halconf_community.h | egrep -e "define"))
+HALCONF := $(strip $(shell cat halconf.h halconf_community.h 2>/dev/null | egrep -e "define"))
 
 # List of all the NRF51x platform files.
 PLATFORMSRC  = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
