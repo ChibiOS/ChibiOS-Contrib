@@ -32,6 +32,7 @@
 /* Normal drivers.*/
 #include "nand.h"
 #include "eicu.h"
+#include "rng.h"
 #include "usbh.h"
 #include "timcap.h"
 

@@ -65,6 +65,10 @@ void halCommunityInit(void) {
   crcInit();
 #endif
 
+#if HAL_USE_RNG || defined(__DOXYGEN__)
+  rngInit();
+#endif
+
 #if HAL_USE_USBH || defined(__DOXYGEN__)
   usbhInit();
 #endif

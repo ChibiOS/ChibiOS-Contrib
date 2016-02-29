@@ -1,5 +1,5 @@
 ifeq ($(USE_SMART_BUILD),yes)
-HALCONF := $(strip $(shell cat halconf.h | egrep -e "define"))
+HALCONF := $(strip $(shell cat halconf.h halconf_community.h 2>/dev/null | egrep -e "define"))
 
 # List of all the NRF51x platform files.
 PLATFORMSRC  = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
@@ -31,6 +31,9 @@ endif
 ifneq ($(findstring HAL_USE_WDG TRUE,$(HALCONF)),)
 PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/wdg_lld.c
 endif
+ifneq ($(findstring HAL_USE_RNG TRUE,$(HALCONF)),)
+PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/rng_lld.c
+endif
 else
 PLATFORMSRC  = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/hal_lld.c \
@@ -43,7 +46,8 @@ PLATFORMSRC  = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/i2c_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/adc_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/gpt_lld.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/wdg_lld.c
+               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/wdg_lld.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/rng_lld.c
 endif
 
 # Required include directories

@@ -5,6 +5,7 @@ HALSRC += ${CHIBIOS_CONTRIB}/os/hal/src/hal_community.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/onewire.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/eicu.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/crc.c \
+          ${CHIBIOS_CONTRIB}/os/hal/src/rng.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/usbh.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/usbh/usbh_debug.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/usbh/usbh_desciter.c \
