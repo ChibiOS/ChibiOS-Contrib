@@ -1,5 +1,5 @@
 /*
-    ChibiOS/RT - Copyright (C) 2006-2013 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@
 
 #ifndef _CHCONF_H_
 #define _CHCONF_H_
+
+#define _CHIBIOS_RT_CONF_
 
 /*===========================================================================*/
 /**
@@ -99,7 +101,8 @@
  * @details When this option is activated the function @p chSysInit()
  *          does not spawn the idle thread. The application @p main()
  *          function becomes the idle thread and must implement an
- *          infinite loop. */
+ *          infinite loop.
+ */
 #define CH_CFG_NO_IDLE_THREAD               FALSE
 
 /** @} */
@@ -324,7 +327,7 @@
  *
  * @note    The default is @p FALSE.
  */
-#define CH_DBG_STATISTICS                   TRUE
+#define CH_DBG_STATISTICS                   FALSE
 
 /**
  * @brief   Debug option, system state check.
@@ -333,7 +336,7 @@
  *
  * @note    The default is @p FALSE.
  */
-#define CH_DBG_SYSTEM_STATE_CHECK           TRUE
+#define CH_DBG_SYSTEM_STATE_CHECK           FALSE
 
 /**
  * @brief   Debug option, parameters checks.
@@ -342,7 +345,7 @@
  *
  * @note    The default is @p FALSE.
  */
-#define CH_DBG_ENABLE_CHECKS                TRUE
+#define CH_DBG_ENABLE_CHECKS                FALSE
 
 /**
  * @brief   Debug option, consistency checks.
@@ -352,16 +355,23 @@
  *
  * @note    The default is @p FALSE.
  */
-#define CH_DBG_ENABLE_ASSERTS               TRUE
+#define CH_DBG_ENABLE_ASSERTS               FALSE
 
 /**
  * @brief   Debug option, trace buffer.
  * @details If enabled then the context switch circular trace buffer is
  *          activated.
  *
- * @note    The default is @p FALSE.
+ * @note    The default is @p CH_DBG_TRACE_MASK_NONE.
  */
-#define CH_DBG_ENABLE_TRACE                 TRUE
+#define CH_DBG_TRACE_MASK                   CH_DBG_TRACE_MASK_NONE
+
+/**
+ * @brief   Trace buffer entries.
+ * @note    The trace buffer is only allocated if @p CH_DBG_TRACE_MASK is
+ *          different from @p CH_DBG_TRACE_MASK_NONE.
+ */
+#define CH_DBG_TRACE_BUFFER_SIZE            128
 
 /**
  * @brief   Debug option, stack checks.
@@ -373,7 +383,7 @@
  * @note    The default failure mode is to halt the system with the global
  *          @p panic_msg variable set to @p NULL.
  */
-#define CH_DBG_ENABLE_STACK_CHECK           TRUE
+#define CH_DBG_ENABLE_STACK_CHECK           FALSE
 
 /**
  * @brief   Debug option, stacks initialization.
@@ -383,7 +393,7 @@
  *
  * @note    The default is @p FALSE.
  */
-#define CH_DBG_FILL_THREADS                 TRUE
+#define CH_DBG_FILL_THREADS                 FALSE
 
 /**
  * @brief   Debug option, threads profiling.
@@ -426,10 +436,6 @@
 /**
  * @brief   Threads finalization hook.
  * @details User finalization code added to the @p chThdExit() API.
- *
- * @note    It is inserted into lock zone.
- * @note    It is also invoked when the threads simply return in order to
- *          terminate.
  */
 #define CH_CFG_THREAD_EXIT_HOOK(tp) {                                       \
   /* Add threads finalization code here.*/                                  \
@@ -440,7 +446,21 @@
  * @details This hook is invoked just before switching between threads.
  */
 #define CH_CFG_CONTEXT_SWITCH_HOOK(ntp, otp) {                              \
-  /* System halt code here.*/                                               \
+  /* Context switch code here.*/                                            \
+}
+
+/**
+ * @brief   ISR enter hook.
+ */
+#define CH_CFG_IRQ_PROLOGUE_HOOK() {                                        \
+  /* IRQ prologue code here.*/                                              \
+}
+
+/**
+ * @brief   ISR exit hook.
+ */
+#define CH_CFG_IRQ_EPILOGUE_HOOK() {                                        \
+  /* IRQ epilogue code here.*/                                              \
 }
 
 /**
@@ -449,7 +469,8 @@
  *          should be invoked from here.
  * @note    This macro can be used to activate a power saving mode.
  */
-#define CH_CFG_IDLE_ENTER_HOOK() {                                         \
+#define CH_CFG_IDLE_ENTER_HOOK() {                                          \
+  /* Idle-enter code here.*/                                                \
 }
 
 /**
@@ -458,7 +479,8 @@
  *          should be invoked from here.
  * @note    This macro can be used to deactivate a power saving mode.
  */
-#define CH_CFG_IDLE_LEAVE_HOOK() {                                         \
+#define CH_CFG_IDLE_LEAVE_HOOK() {                                          \
+  /* Idle-leave code here.*/                                                \
 }
 
 /**
@@ -484,7 +506,16 @@
  *          the system is halted.
  */
 #define CH_CFG_SYSTEM_HALT_HOOK(reason) {                                   \
-  /* System halt code here.*/                                               \
+  /* Halt code here.*/                                                      \
+}
+
+/**
+ * @brief   Trace hook.
+ * @details This hook is invoked each time a new record is written in the
+ *          trace buffer.
+ */
+#define CH_CFG_TRACE_HOOK(tep) {                                            \
+  /* Trace code here.*/                                                     \
 }
 
 /** @} */

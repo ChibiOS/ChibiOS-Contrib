@@ -53,10 +53,17 @@
 #endif
 
 /**
- * @brief   Enables the community subsystem.
+ * @brief   Enables the CRC subsystem.
  */
 #if !defined(HAL_USE_CRC) || defined(__DOXYGEN__)
 #define HAL_USE_CRC                 FALSE
+#endif
+
+/**
+ * @brief   Enables the RNG subsystem.
+ */
+#if !defined(HAL_USE_RNG) || defined(__DOXYGEN__)
+#define HAL_USE_RNG                 FALSE
 #endif
 
 /*===========================================================================*/

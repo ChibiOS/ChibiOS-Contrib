@@ -19,7 +19,11 @@
  */
 #define STM32_FSMC_USE_FSMC1                TRUE
 #define STM32_FSMC_FSMC1_IRQ_PRIORITY       10
+#define STM32_FSMC_DMA_CHN                  0x03010201
 
+/*
+ * FSMC NAND driver system settings.
+ */
 #define STM32_NAND_USE_FSMC_NAND1           TRUE
 #define STM32_NAND_USE_FSMC_NAND2           FALSE
 #define STM32_NAND_USE_EXT_INT              FALSE

@@ -124,12 +124,6 @@
 #error "External interrupt controller must be enabled to use this feature"
 #endif
 
-#if (STM32_NAND_USE_FSMC_NAND2 || STM32_NAND_USE_FSMC_NAND1) &&             \
-    !STM32_DMA_IS_VALID_ID(STM32_NAND_DMA_STREAM,                           \
-                           STM32_FSMC_DMA_MSK)
-#error "invalid DMA stream associated to NAND"
-#endif
-
 #if !defined(STM32_DMA_REQUIRED)
 #define STM32_DMA_REQUIRED
 #endif

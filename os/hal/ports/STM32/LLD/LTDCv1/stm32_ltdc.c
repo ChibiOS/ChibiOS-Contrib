@@ -173,7 +173,7 @@ OSAL_IRQ_HANDLER(STM32_LTDC_EV_HANDLER) {
     if (ltdcp->thread != NULL) {
       tp = ltdcp->thread;
       ltdcp->thread = NULL;
-      tp->p_u.rdymsg = MSG_OK;
+      tp->u.rdymsg = MSG_OK;
       chSchReadyI(tp);
     }
 #endif  /* LTDC_USE_WAIT */

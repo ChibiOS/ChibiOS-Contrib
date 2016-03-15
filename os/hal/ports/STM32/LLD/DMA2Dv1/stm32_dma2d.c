@@ -150,7 +150,7 @@ OSAL_IRQ_HANDLER(STM32_DMA2D_HANDLER) {
     if (dma2dp->thread != NULL) {
       tp = dma2dp->thread;
       dma2dp->thread = NULL;
-      tp->p_u.rdymsg = MSG_OK;
+      tp->u.rdymsg = MSG_OK;
       chSchReadyI(tp);
     }
   #endif  /* DMA2D_USE_WAIT */
