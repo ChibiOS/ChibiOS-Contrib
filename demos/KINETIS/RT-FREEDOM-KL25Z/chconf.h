@@ -362,9 +362,16 @@
  * @details If enabled then the context switch circular trace buffer is
  *          activated.
  *
- * @note    The default is @p FALSE.
+ * @note    The default is @p CH_DBG_TRACE_MASK_NONE.
  */
-#define CH_DBG_ENABLE_TRACE                 FALSE
+#define CH_DBG_TRACE_MASK                   CH_DBG_TRACE_MASK_NONE
+
+/**
+ * @brief   Trace buffer entries.
+ * @note    The trace buffer is only allocated if @p CH_DBG_TRACE_MASK is
+ *          different from @p CH_DBG_TRACE_MASK_NONE.
+ */
+#define CH_DBG_TRACE_BUFFER_SIZE            128
 
 /**
  * @brief   Debug option, stack checks.
@@ -467,6 +474,7 @@
  * @note    This macro can be used to activate a power saving mode.
  */
 #define CH_CFG_IDLE_ENTER_HOOK() {                                          \
+  /* Idle-enter code here.*/                                                \
 }
 
 /**
@@ -476,6 +484,7 @@
  * @note    This macro can be used to deactivate a power saving mode.
  */
 #define CH_CFG_IDLE_LEAVE_HOOK() {                                          \
+  /* Idle-leave code here.*/                                                \
 }
 
 /**
