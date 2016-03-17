@@ -291,10 +291,12 @@ void nand_lld_start(NANDDriver *nandp) {
                           (void *)nandp);
     osalDbgAssert(!b, "stream already allocated");
     nandp->dmamode = STM32_DMA_CR_CHSEL(NAND_DMA_CHANNEL) |
-                        STM32_DMA_CR_PL(STM32_NAND_NAND1_DMA_PRIORITY) |
-                        STM32_DMA_CR_PSIZE_BYTE     | STM32_DMA_CR_MSIZE_BYTE |
-                        STM32_DMA_CR_DMEIE          | STM32_DMA_CR_TEIE |
-                        STM32_DMA_CR_TCIE;
+                     STM32_DMA_CR_PL(STM32_NAND_NAND1_DMA_PRIORITY) |
+                     STM32_DMA_CR_PSIZE_BYTE |
+                     STM32_DMA_CR_MSIZE_BYTE |
+                     STM32_DMA_CR_DMEIE |
+                     STM32_DMA_CR_TEIE |
+                     STM32_DMA_CR_TCIE;
     /* dmaStreamSetFIFO(nandp->dma,
                     STM32_DMA_FCR_DMDIS | NAND_STM32_DMA_FCR_FTH_LVL); */
     nandp->nand->PCR = calc_eccps(nandp) | FSMC_PCR_PTYP | FSMC_PCR_PBKEN;
@@ -392,7 +394,7 @@ uint8_t nand_lld_write_data(NANDDriver *nandp, const uint8_t *data,
   nand_lld_write_addr(nandp, addr, addrlen);
 
   /* Now start DMA transfer to NAND buffer and put thread in sleep state.
-     Tread will we woken up from ready ISR. */
+     Tread will be woken up from ready ISR. */
   nandp->state = NAND_DMA_TX;
   osalDbgAssert((nandp->nand->PCR & FSMC_PCR_ECCEN) == 0,
           "State machine broken. ECCEN must be previously disabled.");
