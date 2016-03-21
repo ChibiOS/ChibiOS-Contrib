@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2016 flabbergast <s3+flabbergast@sdfeu.org>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,6 +13,8 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+#include "ch.h"
 #include "hal.h"
 
 #if HAL_USE_PAL || defined(__DOXYGEN__)
@@ -28,21 +30,19 @@ const PALConfig pal_default_config =
             /*
              * PORTA setup.
              *
-             * PTA4  - PIN33
-             * PTA5  - PIN24
-             * PTA12 - PIN3
-             * PTA13 - PIN4
+             * PTA1 - PIN3
+             * PTA2 - PIN4
              *
              * PTA18/19 crystal
              * PTA0/3 SWD
              */
             .port = IOPORT1,
             .pads = {
-                PAL_MODE_ALTERNATIVE_7,     PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_ALTERNATIVE_7,     PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,
+                PAL_MODE_ALTERNATIVE_7,     PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
-                PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_UNCONNECTED,
+                PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_INPUT_ANALOG,      PAL_MODE_INPUT_ANALOG,      PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
@@ -61,8 +61,6 @@ const PALConfig pal_default_config =
              * PTB3  - PIN18
              * PTB16 - PIN0 - UART0_TX
              * PTB17 - PIN1 - UART0_RX
-             * PTB18 - PIN32
-             * PTB19 - PIN25
              */
             .port = IOPORT2,
             .pads = {
@@ -72,7 +70,7 @@ const PALConfig pal_default_config =
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_ALTERNATIVE_3,     PAL_MODE_ALTERNATIVE_3,
-                PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_UNCONNECTED,
+                PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
@@ -91,17 +89,13 @@ const PALConfig pal_default_config =
              * PTC5  - PIN13
              * PTC6  - PIN11
              * PTC7  - PIN12
-             * PTC8  - PIN28
-             * PTC9  - PIN27
-             * PTC10 - PIN29
-             * PTC11 - PIN30
              */
             .port = IOPORT3,
             .pads = {
                 PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,
                 PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,
-                PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,
-                PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,
+                PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_UNCONNECTED,
+                PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
@@ -143,22 +137,23 @@ const PALConfig pal_default_config =
             /*
              * PORTE setup.
              *
-             * PTE0  - PIN31
-             * PTE1  - PIN26
+             * PTE20 - PIN24
+             * PTE21 - PIN25
+             * PTE30 - PIN26
              */
             .port = IOPORT5,
             .pads = {
-                PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
+                PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_OUTPUT_PUSHPULL,
+                PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
-                PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
-                PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
+                PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_UNCONNECTED,
             },
         },
     },
@@ -172,7 +167,7 @@ const PALConfig pal_default_config =
  */
 void __early_init(void) {
 
-  k20x_clock_init();
+  kl2x_clock_init();
 }
 
 /**

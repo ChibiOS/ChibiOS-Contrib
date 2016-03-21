@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2016 flabbergast <s3+flabbergast@sdfeu.org>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,43 +18,43 @@
 #define _BOARD_H_
 
 /*
- * Setup for the PJRC Teensy 3.0 board.
+ * Setup for the PJRC Teensy LC board.
  */
 
 /*
  * Board identifier.
  */
-#define BOARD_PJRC_TEENSY_3
-#define BOARD_NAME                  "PJRC Teensy 3.0"
+#define BOARD_PJRC_TEENSY_LC
+#define BOARD_NAME                  "PJRC Teensy LC"
 
 /* External 16 MHz crystal */
 #define KINETIS_XTAL_FREQUENCY      16000000UL
 
 /* Use internal capacitors for the crystal */
-#define KINETIS_BOARD_OSCILLATOR_SETTING OSC_CR_SC8P|OSC_CR_SC2P
+#define KINETIS_BOARD_OSCILLATOR_SETTING OSC_CR_SC8P|OSC_CR_SC2P|OSC_CR_ERCLKEN
 
 /*
  * MCU type
  */
-#define K20x5
+#define KL26
 
 /*
  * IO pins assignments.
  */
 #define PORTA_PIN0                  0
-#define PORTA_PIN1                  1
-#define PORTA_PIN2                  2
+#define TEENSY_PIN3                 1
+#define TEENSY_PIN4                 2
 #define PORTA_PIN3                  3
-#define TEENSY_PIN33                4
-#define TEENSY_PIN24                5
+#define PORTA_PIN4                  4
+#define PORTA_PIN5                  5
 #define PORTA_PIN6                  6
 #define PORTA_PIN7                  7
 #define PORTA_PIN8                  8
 #define PORTA_PIN9                  9
 #define PORTA_PIN10                 10
 #define PORTA_PIN11                 11
-#define TEENSY_PIN3                 12
-#define TEENSY_PIN4                 13
+#define PORTA_PIN12                 12
+#define PORTA_PIN13                 13
 #define PORTA_PIN14                 14
 #define PORTA_PIN15                 15
 #define PORTA_PIN16                 16
@@ -76,8 +76,6 @@
 
 #define TEENSY_PIN3_IOPORT  IOPORT1
 #define TEENSY_PIN4_IOPORT  IOPORT1
-#define TEENSY_PIN24_IOPORT IOPORT1
-#define TEENSY_PIN33_IOPORT IOPORT1
 
 #define TEENSY_PIN16                0
 #define TEENSY_PIN17                1
@@ -97,8 +95,8 @@
 #define PORTB_PIN15                 15
 #define TEENSY_PIN0                 16
 #define TEENSY_PIN1                 17
-#define TEENSY_PIN32                18
-#define TEENSY_PIN25                19
+#define PORTB_PIN18                 18
+#define PORTB_PIN19                 19
 #define PORTB_PIN20                 20
 #define PORTB_PIN21                 21
 #define PORTB_PIN22                 22
@@ -118,8 +116,6 @@
 #define TEENSY_PIN17_IOPORT IOPORT2
 #define TEENSY_PIN18_IOPORT IOPORT2
 #define TEENSY_PIN19_IOPORT IOPORT2
-#define TEENSY_PIN25_IOPORT IOPORT2
-#define TEENSY_PIN32_IOPORT IOPORT2
 
 #define TEENSY_PIN15                0
 #define TEENSY_PIN22                1
@@ -129,10 +125,10 @@
 #define TEENSY_PIN13                5
 #define TEENSY_PIN11                6
 #define TEENSY_PIN12                7
-#define TEENSY_PIN28                8
-#define TEENSY_PIN27                9
-#define TEENSY_PIN29                10
-#define TEENSY_PIN30                11
+#define PORTC_PIN8                  8
+#define PORTC_PIN9                  9
+#define PORTC_PIN10                 10
+#define PORTC_PIN11                 11
 #define PORTC_PIN12                 12
 #define PORTC_PIN13                 13
 #define PORTC_PIN14                 14
@@ -162,10 +158,6 @@
 #define TEENSY_PIN15_IOPORT IOPORT3
 #define TEENSY_PIN22_IOPORT IOPORT3
 #define TEENSY_PIN23_IOPORT IOPORT3
-#define TEENSY_PIN27_IOPORT IOPORT3
-#define TEENSY_PIN28_IOPORT IOPORT3
-#define TEENSY_PIN29_IOPORT IOPORT3
-#define TEENSY_PIN30_IOPORT IOPORT3
 
 #define TEENSY_PIN2                 0
 #define TEENSY_PIN14                1
@@ -209,8 +201,8 @@
 #define TEENSY_PIN20_IOPORT IOPORT4
 #define TEENSY_PIN21_IOPORT IOPORT4
 
-#define TEENSY_PIN31                0
-#define TEENSY_PIN26                1
+#define PORTE_PIN0                  0
+#define PORTE_PIN1                  1
 #define PORTE_PIN2                  2
 #define PORTE_PIN3                  3
 #define PORTE_PIN4                  4
@@ -229,8 +221,8 @@
 #define PORTE_PIN17                 17
 #define PORTE_PIN18                 18
 #define PORTE_PIN19                 19
-#define PORTE_PIN20                 20
-#define PORTE_PIN21                 21
+#define TEENSY_PIN24                20
+#define TEENSY_PIN25                21
 #define PORTE_PIN22                 22
 #define PORTE_PIN23                 23
 #define PORTE_PIN24                 24
@@ -239,11 +231,12 @@
 #define PORTE_PIN27                 27
 #define PORTE_PIN28                 28
 #define PORTE_PIN29                 29
-#define PORTE_PIN30                 30
+#define TEENSY_PIN26                30
 #define PORTE_PIN31                 31
 
+#define TEENSY_PIN24_IOPORT IOPORT5
+#define TEENSY_PIN25_IOPORT IOPORT5
 #define TEENSY_PIN26_IOPORT IOPORT5
-#define TEENSY_PIN31_IOPORT IOPORT5
 
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus

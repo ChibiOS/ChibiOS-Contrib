@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2016 flabbergast <s3+flabbergast@sdfeu.org>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,14 +18,14 @@
 #define _BOARD_H_
 
 /*
- * Setup for Freescale Freedom KL25Z board.
+ * Setup for Freescale Freedom KL26Z board.
  */
 
 /*
  * Board identifier.
  */
-#define BOARD_FREESCALE_FREEDOM_KL25Z
-#define BOARD_NAME                  "Freescale Freedom KL25Z"
+#define BOARD_FREESCALE_FREEDOM_KL26Z
+#define BOARD_NAME                  "Freescale Freedom KL26Z"
 
 /* External 8 MHz crystal. */
 #define KINETIS_XTAL_FREQUENCY      8000000UL
@@ -33,17 +33,21 @@
 /*
  * MCU type
  */
-#define KL25
+#define KL26
 
 /*
  * Onboard features.
  */
-#define GPIO_LED_RED    IOPORT2
-#define PIN_LED_RED     18
-#define GPIO_LED_GREEN  IOPORT2
-#define PIN_LED_GREEN   19
+#define GPIO_LED_RED    IOPORT5
+#define PIN_LED_RED     29
+#define GPIO_LED_GREEN  IOPORT5
+#define PIN_LED_GREEN   31
 #define GPIO_LED_BLUE   IOPORT4
-#define PIN_LED_BLUE    1
+#define PIN_LED_BLUE    5
+#define GPIO_BUTTON     IOPORT4
+#define PIN_BUTTON      0
+#define GPIO_LIGHTSNS   IOPORT5
+#define PIN_LIGHTSNS    22
 
 #define I2C_INERIAL_SENSOR I2C0
 

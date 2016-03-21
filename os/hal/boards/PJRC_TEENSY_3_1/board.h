@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2015 RedoX https://github.com/RedoXyde
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,14 +18,14 @@
 #define _BOARD_H_
 
 /*
- * Setup for the PJRC Teensy 3.0 board.
+ * Setup for the PJRC Teensy 3.1 board.
  */
 
 /*
  * Board identifier.
  */
-#define BOARD_PJRC_TEENSY_3
-#define BOARD_NAME                  "PJRC Teensy 3.0"
+#define BOARD_PJRC_TEENSY_3_1
+#define BOARD_NAME                  "PJRC Teensy 3.1"
 
 /* External 16 MHz crystal */
 #define KINETIS_XTAL_FREQUENCY      16000000UL
@@ -36,7 +36,7 @@
 /*
  * MCU type
  */
-#define K20x5
+#define K20x7
 
 /*
  * IO pins assignments.
