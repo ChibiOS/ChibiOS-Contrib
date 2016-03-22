@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    KINETIS/i2c_lld.h
+ * @file    KINETIS/LLD/i2c_lld.h
  * @brief   KINETIS I2C subsystem low level driver header.
  *
  * @addtogroup I2C
@@ -63,9 +63,37 @@
 #endif
 /** @} */
 
+/**
+ * @brief   I2C0 interrupt priority level setting.
+ */
+#if !defined(KINETIS_I2C_I2C0_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_I2C_I2C0_PRIORITY        12
+#endif
+
+/**
+ * @brief   I2C1 interrupt priority level setting.
+ */
+#if !defined(KINETIS_I2C_I2C1_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_I2C_I2C1_PRIORITY        12
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+/** @brief  error checks */
+#if KINETIS_I2C_USE_I2C0 && !KINETIS_HAS_I2C0
+#error "I2C0 not present in the selected device"
+#endif
+
+#if KINETIS_I2C_USE_I2C1 && !KINETIS_HAS_I2C1
+#error "I2C1 not present in the selected device"
+#endif
+
+
+#if !(KINETIS_I2C_USE_I2C0 || KINETIS_I2C_USE_I2C1)
+#error "I2C driver activated but no I2C peripheral assigned"
+#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */

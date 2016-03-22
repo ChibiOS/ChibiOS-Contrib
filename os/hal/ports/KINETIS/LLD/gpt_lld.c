@@ -30,11 +30,6 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define KINETIS_PIT0_HANDLER    VectorB8
-#define KINETIS_PIT1_HANDLER    VectorBC
-#define KINETIS_PIT2_HANDLER    VectorC0
-#define KINETIS_PIT3_HANDLER    VectorC4
-
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -75,6 +70,10 @@ GPTDriver GPTD4;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
+#if KINETIS_HAS_PIT_COMMON_IRQ
+static uint8_t active_channels = 0;
+#endif /* KINETIS_HAS_PIT_COMMON_IRQ */
+
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
@@ -87,7 +86,7 @@ GPTDriver GPTD4;
 static void gpt_lld_serve_interrupt(GPTDriver *gptp) {
 
   /* Clear the interrupt */
-  gptp->channel->TFLG |= PIT_TCTRL_TIE;
+  gptp->channel->TFLG |= PIT_TFLGn_TIF;
 
   if (gptp->state == GPT_ONESHOT) {
     gptp->state = GPT_READY;                /* Back in GPT_READY state.     */
@@ -100,81 +99,88 @@ static void gpt_lld_serve_interrupt(GPTDriver *gptp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
+#if !KINETIS_HAS_PIT_COMMON_IRQ
+
 #if KINETIS_GPT_USE_PIT0
-#if !defined(KINETIS_PIT0_HANDLER)
-#error "KINETIS_PIT0_HANDLER not defined"
-#endif
 /**
  * @brief   PIT1 interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(KINETIS_PIT0_HANDLER) {
-
+OSAL_IRQ_HANDLER(KINETIS_PIT0_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
-
   gpt_lld_serve_interrupt(&GPTD1);
-
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* KINETIS_GPT_USE_PIT0 */
 
 #if KINETIS_GPT_USE_PIT1
-#if !defined(KINETIS_PIT1_HANDLER)
-#error "KINETIS_PIT1_HANDLER not defined"
-#endif
 /**
  * @brief   PIT1 interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(KINETIS_PIT1_HANDLER) {
-
+OSAL_IRQ_HANDLER(KINETIS_PIT1_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
-
   gpt_lld_serve_interrupt(&GPTD2);
-
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* KINETIS_GPT_USE_PIT1 */
 
 #if KINETIS_GPT_USE_PIT2
-#if !defined(KINETIS_PIT2_HANDLER)
-#error "KINETIS_PIT2_HANDLER not defined"
-#endif
 /**
  * @brief   PIT2 interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(KINETIS_PIT2_HANDLER) {
-
+OSAL_IRQ_HANDLER(KINETIS_PIT2_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
-
   gpt_lld_serve_interrupt(&GPTD3);
-
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* KINETIS_GPT_USE_PIT2 */
 
 #if KINETIS_GPT_USE_PIT3
-#if !defined(KINETIS_PIT3_HANDLER)
-#error "KINETIS_PIT3_HANDLER not defined"
-#endif
 /**
  * @brief   PIT3 interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(KINETIS_PIT3_HANDLER) {
-
+OSAL_IRQ_HANDLER(KINETIS_PIT3_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
-
   gpt_lld_serve_interrupt(&GPTD4);
-
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* KINETIS_GPT_USE_PIT3 */
+
+#else /* !KINETIS_HAS_PIT_COMMON_IRQ */
+/**
+ * @brief   Common PIT interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(KINETIS_PIT_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+#if KINETIS_GPT_USE_PIT0
+  if(GPTD1.channel->TFLG & PIT_TFLGn_TIF)
+    gpt_lld_serve_interrupt(&GPTD1);
+#endif /* KINETIS_GPT_USE_PIT0 */
+#if KINETIS_GPT_USE_PIT1
+  if(GPTD2.channel->TFLG & PIT_TFLGn_TIF)
+    gpt_lld_serve_interrupt(&GPTD2);
+#endif /* KINETIS_GPT_USE_PIT1 */
+#if KINETIS_GPT_USE_PIT2
+  if(GPTD3.channel->TFLG & PIT_TFLGn_TIF)
+    gpt_lld_serve_interrupt(&GPTD3);
+#endif /* KINETIS_GPT_USE_PIT2 */
+#if KINETIS_GPT_USE_PIT3
+  if(GPTD4.channel->TFLG & PIT_TFLGn_TIF)
+    gpt_lld_serve_interrupt(&GPTD4);
+#endif /* KINETIS_GPT_USE_PIT3 */
+  OSAL_IRQ_EPILOGUE();
+}
+
+#endif /* !KINETIS_HAS_PIT_COMMON_IRQ */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -227,6 +233,8 @@ void gpt_lld_start(GPTDriver *gptp) {
     SIM->SCGC6 |= SIM_SCGC6_PIT;
     gptp->clock = KINETIS_SYSCLK_FREQUENCY;
 
+#if !KINETIS_HAS_PIT_COMMON_IRQ
+
 #if KINETIS_GPT_USE_PIT0
     if (&GPTD1 == gptp) {
       nvicEnableVector(PITChannel0_IRQn, KINETIS_GPT_PIT0_IRQ_PRIORITY);
@@ -248,6 +256,10 @@ void gpt_lld_start(GPTDriver *gptp) {
     }
 #endif
 
+#else /* !KINETIS_HAS_PIT_COMMON_IRQ */
+    nvicEnableVector(PIT_IRQn, KINETIS_GPT_PIT_IRQ_PRIORITY);
+    active_channels++;
+#endif /* !KINETIS_HAS_PIT_COMMON_IRQ */
   }
 
   /* Prescaler value calculation.*/
@@ -275,7 +287,9 @@ void gpt_lld_stop(GPTDriver *gptp) {
     gptp->channel->TCTRL = 0;
 
     /* Clear pending interrupts */
-    gptp->channel->TFLG |= PIT_TFLG_TIF;
+    gptp->channel->TFLG |= PIT_TFLGn_TIF;
+
+#if !KINETIS_HAS_PIT_COMMON_IRQ
 
 #if KINETIS_GPT_USE_PIT0
     if (&GPTD1 == gptp) {
@@ -297,6 +311,11 @@ void gpt_lld_stop(GPTDriver *gptp) {
       nvicDisableVector(PITChannel3_IRQn);
     }
 #endif
+
+#else /* !KINETIS_HAS_PIT_COMMON_IRQ */
+    if(--active_channels == 0)
+      nvicDisableVector(PIT_IRQn);
+#endif /* !KINETIS_HAS_PIT_COMMON_IRQ */
   }
 }
 
@@ -311,13 +330,13 @@ void gpt_lld_stop(GPTDriver *gptp) {
 void gpt_lld_start_timer(GPTDriver *gptp, gptcnt_t interval) {
 
   /* Clear pending interrupts */
-  gptp->channel->TFLG |= PIT_TFLG_TIF;
+  gptp->channel->TFLG |= PIT_TFLGn_TIF;
 
   /* Set the interval */
-  gptp->channel->LDVAL = (gptp->clock / gptp->config->frequency) * interval;
+  gpt_lld_change_interval(gptp, interval);
 
   /* Start the timer */
-  gptp->channel->TCTRL |= PIT_TCTRL_TIE | PIT_TCTRL_TEN;
+  gptp->channel->TCTRL |= PIT_TCTRLn_TIE | PIT_TCTRLn_TEN;
 }
 
 /**
@@ -351,16 +370,16 @@ void gpt_lld_polled_delay(GPTDriver *gptp, gptcnt_t interval) {
   channel->TCTRL = 0;
 
   /* Clear the interrupt flag */
-  channel->TFLG |= PIT_TFLG_TIF;
+  channel->TFLG |= PIT_TFLGn_TIF;
 
   /* Set the interval */
   channel->LDVAL = (gptp->clock / gptp->config->frequency) * interval;
 
   /* Enable Timer but keep interrupts disabled */
-  channel->TCTRL = PIT_TCTRL_TEN;
+  channel->TCTRL = PIT_TCTRLn_TEN;
 
   /* Wait for the interrupt flag to be set */
-  while (!(channel->TFLG & PIT_TFLG_TIF))
+  while (!(channel->TFLG & PIT_TFLGn_TIF))
     ;
 
   /* Disable timer and disable interrupts */

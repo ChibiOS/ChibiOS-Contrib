@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Adam J. Porter
+    ChibiOS/HAL - Copyright (C) 2014 Adam J. Porter
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    KL2x/pwm_lld.h
+ * @file    K20x7/pwm_lld.h
  * @brief   KINETIS PWM subsystem low level driver header.
  *
  * @addtogroup PWM
@@ -31,24 +31,49 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#if !defined(KINETIS_PWM_USE_TPM0)
-#define KINETIS_PWM_USE_TPM0 FALSE
-#endif
-#if !defined(KINETIS_PWM_USE_TPM1)
-#define KINETIS_PWM_USE_TPM1 FALSE
-#endif
-#if !defined(KINETIS_PWM_USE_TPM2)
-#define KINETIS_PWM_USE_TPM2 FALSE
-#endif
-
 /**
  * @brief   Number of PWM channels per PWM driver.
  */
-#define PWM_CHANNELS                            6
+#define PWM_CHANNELS                            8
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
+
+#if !defined(KINETIS_PWM_USE_FTM0)
+  #define KINETIS_PWM_USE_FTM0 FALSE
+#endif
+
+#if !defined(KINETIS_PWM_USE_FTM1)
+  #define KINETIS_PWM_USE_FTM1 FALSE
+#endif
+
+#if !defined(KINETIS_PWM_USE_FTM2)
+  #define KINETIS_PWM_USE_FTM2 FALSE
+#endif
+
+/**
+ * @brief   FTM0 interrupt priority level setting.
+ */
+#if !defined(KINETIS_PWM_FTM0_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_PWM_FTM0_PRIORITY        12
+#endif
+
+/**
+ * @brief   FTM1 interrupt priority level setting.
+ */
+#if !defined(KINETIS_PWM_FTM1_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_PWM_FTM1_PRIORITY        12
+#endif
+
+/**
+ * @brief   FTM2 interrupt priority level setting.
+ */
+#if !defined(KINETIS_PWM_FTM2_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_PWM_FTM2_PRIORITY        12
+#endif
+
+/** @} */
 
 /**
  * @name    Configuration options
@@ -63,78 +88,14 @@
 #if !defined(KINETIS_PWM_USE_ADVANCED) || defined(__DOXYGEN__)
 #define KINETIS_PWM_USE_ADVANCED              FALSE
 #endif
-
-/**
- * @brief   TPM0 interrupt priority level setting.
- * @note    The default is 2.
- */
-#if !defined(KINETIS_PWM_TPM0_IRQ_PRIORITY)|| defined(__DOXYGEN__)
-#define KINETIS_PWM_TPM0_IRQ_PRIORITY      2
-#endif
-
-/**
- * @brief   TPM1 interrupt priority level setting.
- * @note    The default is 2.
- */
-#if !defined(KINETIS_PWM_TPM1_IRQ_PRIORITY)|| defined(__DOXYGEN__)
-#define KINETIS_PWM_TPM1_IRQ_PRIORITY      2
-#endif
-
-/**
- * @brief   TPM2 interrupt priority level setting.
- * @note    The default is 2.
- */
-#if !defined(KINETIS_PWM_TPM2_IRQ_PRIORITY)|| defined(__DOXYGEN__)
-#define KINETIS_PWM_TPM2_IRQ_PRIORITY      2
-#endif
-
 /** @} */
 
 /*===========================================================================*/
 /* Configuration checks.                                                     */
 /*===========================================================================*/
 
-#if KINETIS_PWM_USE_TPM0 && !KINETIS_HAS_TPM0
-#error "TPM0 not present in the selected device"
-#endif
-
-#if KINETIS_PWM_USE_TPM1 && !KINETIS_HAS_TPM1
-#error "TPM1 not present in the selected device"
-#endif
-
-#if KINETIS_PWM_USE_TPM2 && !KINETIS_HAS_TPM2
-#error "TPM2 not present in the selected device"
-#endif
-
-#if !KINETIS_PWM_USE_TPM0 && !KINETIS_PWM_USE_TPM1 && !KINETIS_PWM_USE_TPM2
-#error "PWM driver activated but no TPM peripheral assigned"
-#endif
-
-#if KINETIS_PWM_USE_TPM0 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_PWM_TPM0_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to KINETIS_PWM_TPM0_IRQ_PRIORITY"
-#endif
-
-#if KINETIS_PWM_USE_TPM1 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_PWM_TPM1_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to KINETIS_PWM_TPM1_IRQ_PRIORITY"
-#endif
-
-#if KINETIS_PWM_USE_TPM2 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_PWM_TPM2_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to KINETIS_PWM_TPM2_IRQ_PRIORITY"
-#endif
-
-#if !defined(KINETIS_TPM0_IRQ_VECTOR)
-#error "KINETIS_TPM0_IRQ_VECTOR not defined"
-#endif
-
-#if !defined(KINETIS_TPM1_IRQ_VECTOR)
-#error "KINETIS_TPM1_IRQ_VECTOR not defined"
-#endif
-
-#if !defined(KINETIS_TPM2_IRQ_VECTOR)
-#error "KINETIS_TPM2_IRQ_VECTOR not defined"
+#if !KINETIS_PWM_USE_FTM0 && !KINETIS_PWM_USE_FTM1 && !KINETIS_PWM_USE_FTM2
+#error "PWM driver activated but no FTM peripheral assigned"
 #endif
 
 /*===========================================================================*/
@@ -169,6 +130,7 @@ typedef struct {
    * @brief Channel active logic level.
    */
   pwmmode_t                 mode;
+
   /**
    * @brief Channel callback pointer.
    * @note  This callback is invoked on the channel compare event. If set to
@@ -236,9 +198,9 @@ struct PWMDriver {
 #endif
   /* End of the mandatory fields.*/
   /**
-   * @brief Pointer to the TPM registers block.
+   * @brief Pointer to the FTM registers block.
    */
-  TPM_TypeDef               *tpm;
+  FTM_TypeDef               *ftm;
 };
 
 /*===========================================================================*/
@@ -262,19 +224,22 @@ struct PWMDriver {
  * @notapi
  */
 #define pwm_lld_change_period(pwmp, period)                                 \
-  ((pwmp)->tpm->MOD = ((period) - 1))
+  do { \
+    (pwmp)->ftm->MOD = ((period) - 1); \
+    pwmp->ftm->PWMLOAD = FTM_PWMLOAD_LDOK_MASK;\
+  } while(0)
 
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if KINETIS_PWM_USE_TPM0 || defined(__DOXYGEN__)
+#if KINETIS_PWM_USE_FTM0 || defined(__DOXYGEN__)
 extern PWMDriver PWMD1;
 #endif
-#if KINETIS_PWM_USE_TPM1 || defined(__DOXYGEN__)
+#if KINETIS_PWM_USE_FTM1 || defined(__DOXYGEN__)
 extern PWMDriver PWMD2;
 #endif
-#if KINETIS_PWM_USE_TPM2 || defined(__DOXYGEN__)
+#if KINETIS_PWM_USE_FTM2 || defined(__DOXYGEN__)
 extern PWMDriver PWMD3;
 #endif
 

@@ -82,11 +82,43 @@
 #define KINETIS_SERIAL_UART2_PRIORITY        12
 #endif
 
+/**
+ * @brief   UART0 clock source.
+ */
+#if !defined(KINETIS_UART0_CLOCK_SRC) || defined(__DOXYGEN__)
+#define KINETIS_UART0_CLOCK_SRC              1 /* MCGFLLCLK clock, or MCGPLLCLK/2; or IRC48M */
+#endif
+
+/**
+ * @brief   UART1 clock source.
+ */
+#if !defined(KINETIS_UART1_CLOCK_SRC) || defined(__DOXYGEN__)
+#define KINETIS_UART1_CLOCK_SRC              1 /* IRC48M */
+#endif
+
 /** @} */
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+/** @brief  error checks */
+#if KINETIS_SERIAL_USE_UART0 && !KINETIS_HAS_SERIAL0
+#error "UART0 not present in the selected device"
+#endif
+
+#if KINETIS_SERIAL_USE_UART1 && !KINETIS_HAS_SERIAL1
+#error "UART1 not present in the selected device"
+#endif
+
+#if KINETIS_SERIAL_USE_UART2 && !KINETIS_HAS_SERIAL2
+#error "UART2 not present in the selected device"
+#endif
+
+#if !(KINETIS_SERIAL_USE_UART0 || KINETIS_SERIAL_USE_UART1 || \
+      KINETIS_SERIAL_USE_UART2)
+#error "Serial driver activated but no UART peripheral assigned"
+#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
@@ -108,6 +140,31 @@ typedef struct {
 } SerialConfig;
 
 /**
+ * @brief   Generic UART register structure.
+ * @note    Individual UART register blocks (even within the same chip) can differ.
+ */
+
+typedef struct {
+  volatile uint8_t*  bdh_p;
+  volatile uint8_t*  bdl_p;
+  volatile uint8_t*  c1_p;
+  volatile uint8_t*  c2_p;
+  volatile uint8_t*  c3_p;
+  volatile uint8_t*  c4_p;
+  volatile uint8_t*  s1_p;
+  volatile uint8_t*  s2_p;
+  volatile uint8_t*  d_p;
+  UART_TypeDef *uart_p;
+#if KINETIS_SERIAL_USE_UART0 && KINETIS_SERIAL0_IS_UARTLP
+  UARTLP_TypeDef *uartlp_p;
+#endif /* KINETIS_SERIAL_USE_UART0 && KINETIS_SERIAL0_IS_UARTLP */
+#if  (KINETIS_SERIAL_USE_UART0 && KINETIS_SERIAL0_IS_LPUART) \
+  || (KINETIS_SERIAL_USE_UART1 && KINETIS_SERIAL1_IS_LPUART)
+  LPUART_TypeDef *lpuart_p;
+#endif /* KINETIS_SERIAL_USE_UART0 && KINETIS_SERIAL0_IS_LPUART */
+} UART_w_TypeDef;
+
+/**
  * @brief @p SerialDriver specific data.
  */
 #define _serial_driver_data                                                 \
@@ -124,7 +181,7 @@ typedef struct {
   uint8_t                   ob[SERIAL_BUFFERS_SIZE];                        \
   /* End of the mandatory fields.*/                                         \
   /* Pointer to the UART registers block.*/                                 \
-  UARTLP_TypeDef            *uart;
+  UART_w_TypeDef            uart;
 
 /*===========================================================================*/
 /* Driver macros.                                                            */

@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    MK20D5/pal_lld.c
+ * @file    KINETIS/LLD/pal_lld.c
  * @brief   PAL subsystem low level driver.
  *
  * @addtogroup PAL
@@ -108,7 +108,7 @@ void _pal_lld_setpadmode(ioportid_t port,
 
   PORT_TypeDef *portcfg = NULL;
 
-  chDbgAssert(pad <= 31, "pal_lld_setpadmode() #1, invalid pad");
+  chDbgAssert(pad < PADS_PER_PORT, "pal_lld_setpadmode() #1, invalid pad");
 
   if (mode == PAL_MODE_OUTPUT_PUSHPULL)
     port->PDDR |= ((uint32_t) 1 << pad);
@@ -134,10 +134,14 @@ void _pal_lld_setpadmode(ioportid_t port,
   case PAL_MODE_OUTPUT_PUSHPULL:
     portcfg->PCR[pad] = PIN_MUX_ALTERNATIVE(1);
     break;
+#if KINETIS_GPIO_HAS_OPENDRAIN
   case PAL_MODE_OUTPUT_OPENDRAIN:
     portcfg->PCR[pad] = PIN_MUX_ALTERNATIVE(1) |
                         PORTx_PCRn_ODE;
     break;
+#else
+#undef PAL_MODE_OUTPUT_OPENDRAIN
+#endif
   case PAL_MODE_INPUT_PULLUP:
     portcfg->PCR[pad] = PIN_MUX_ALTERNATIVE(1) |
                         PORTx_PCRn_PE |

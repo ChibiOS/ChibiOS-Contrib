@@ -89,6 +89,19 @@ static void ext_lld_exti_irq_enable(void) {
 #if KINETIS_EXT_PORTA_WIDTH > 0
   nvicEnableVector(PINA_IRQn, KINETIS_EXT_PORTA_IRQ_PRIORITY);
 #endif
+
+#if KINETIS_EXT_HAS_COMMON_BCDE_IRQ
+#if  (KINETIS_EXT_PORTB_WIDTH > 0) || (KINETIS_EXT_PORTC_WIDTH > 0) \
+  || (KINETIS_EXT_PORTD_WIDTH > 0) || (KINETIS_EXT_PORTE_WIDTH > 0)
+  nvicEnableVector(PINBCDE_IRQn, KINETIS_EXT_PORTD_IRQ_PRIORITY);
+#endif
+
+#elif KINETIS_EXT_HAS_COMMON_CD_IRQ /* KINETIS_EXT_HAS_COMMON_BCDE_IRQ */
+#if (KINETIS_EXT_PORTC_WIDTH > 0) || (KINETIS_EXT_PORTD_WIDTH > 0)
+  nvicEnableVector(PINCD_IRQn, KINETIS_EXT_PORTD_IRQ_PRIORITY);
+#endif
+
+#else /* KINETIS_EXT_HAS_COMMON_CD_IRQ */
 #if KINETIS_EXT_PORTB_WIDTH > 0
   nvicEnableVector(PINB_IRQn, KINETIS_EXT_PORTB_IRQ_PRIORITY);
 #endif
@@ -101,6 +114,7 @@ static void ext_lld_exti_irq_enable(void) {
 #if KINETIS_EXT_PORTE_WIDTH > 0
   nvicEnableVector(PINE_IRQn, KINETIS_EXT_PORTE_IRQ_PRIORITY);
 #endif
+#endif /* !KINETIS_EXT_HAS_COMMON_CD_IRQ */
 }
 
 /**
@@ -113,6 +127,19 @@ static void ext_lld_exti_irq_disable(void) {
 #if KINETIS_EXT_PORTA_WIDTH > 0
   nvicDisableVector(PINA_IRQn);
 #endif
+
+#if KINETIS_EXT_HAS_COMMON_BCDE_IRQ
+#if  (KINETIS_EXT_PORTB_WIDTH > 0) || (KINETIS_EXT_PORTC_WIDTH > 0) \
+  || (KINETIS_EXT_PORTD_WIDTH > 0) || (KINETIS_EXT_PORTE_WIDTH > 0)
+  nvicDisableVector(PINBCDE_IRQn);
+#endif
+
+#elif KINETIS_EXT_HAS_COMMON_CD_IRQ /* KINETIS_EXT_HAS_COMMON_BCDE_IRQ */
+#if (KINETIS_EXT_PORTC_WIDTH > 0) || (KINETIS_EXT_PORTD_WIDTH > 0)
+  nvicDisableVector(PINCD_IRQn);
+#endif
+
+#else /* KINETIS_EXT_HAS_COMMON_CD_IRQ */
 #if KINETIS_EXT_PORTB_WIDTH > 0
   nvicDisableVector(PINB_IRQn);
 #endif
@@ -125,6 +152,7 @@ static void ext_lld_exti_irq_disable(void) {
 #if KINETIS_EXT_PORTE_WIDTH > 0
   nvicDisableVector(PINE_IRQn);
 #endif
+#endif /* !KINETIS_EXT_HAS_COMMON_CD_IRQ */
 }
 
 /*===========================================================================*/
@@ -163,6 +191,49 @@ OSAL_IRQ_HANDLER(KINETIS_PORTA_IRQ_VECTOR) {
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* KINETIS_EXT_PORTA_WIDTH > 0 */
+
+#if KINETIS_EXT_HAS_COMMON_BCDE_IRQ
+
+#if defined(KINETIS_PORTD_IRQ_VECTOR)
+OSAL_IRQ_HANDLER(KINETIS_PORTD_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+
+#if (KINETIS_EXT_PORTB_WIDTH > 0)
+  irq_handler(PORTB, KINETIS_EXT_PORTB_WIDTH, portb_channel_map);
+#endif
+#if (KINETIS_EXT_PORTC_WIDTH > 0)
+  irq_handler(PORTC, KINETIS_EXT_PORTC_WIDTH, portc_channel_map);
+#endif
+#if (KINETIS_EXT_PORTD_WIDTH > 0)
+  irq_handler(PORTD, KINETIS_EXT_PORTD_WIDTH, portd_channel_map);
+#endif
+#if (KINETIS_EXT_PORTE_WIDTH > 0)
+  irq_handler(PORTE, KINETIS_EXT_PORTE_WIDTH, porte_channel_map);
+#endif
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* defined(KINETIS_PORTD_IRQ_VECTOR) */
+
+#elif KINETIS_EXT_HAS_COMMON_CD_IRQ /* KINETIS_EXT_HAS_COMMON_BCDE_IRQ */
+
+#if defined(KINETIS_PORTD_IRQ_VECTOR)
+OSAL_IRQ_HANDLER(KINETIS_PORTD_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+
+#if (KINETIS_EXT_PORTC_WIDTH > 0)
+  irq_handler(PORTC, KINETIS_EXT_PORTC_WIDTH, portc_channel_map);
+#endif
+#if (KINETIS_EXT_PORTD_WIDTH > 0)
+  irq_handler(PORTD, KINETIS_EXT_PORTD_WIDTH, portd_channel_map);
+#endif
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* defined(KINETIS_PORTD_IRQ_VECTOR) */
+
+
+#else /* KINETIS_EXT_HAS_COMMON_CD_IRQ */
 
 /**
  * @brief   PORTB interrupt handler.
@@ -223,6 +294,8 @@ OSAL_IRQ_HANDLER(KINETIS_PORTE_IRQ_VECTOR) {
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* KINETIS_EXT_PORTE_WIDTH > 0 */
+
+#endif /* !KINETIS_EXT_HAS_COMMON_CD_IRQ */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */

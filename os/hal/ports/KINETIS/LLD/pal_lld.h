@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    MK20D5/pal_lld.h
+ * @file    KINETIS/LLD/pal_lld.h
  * @brief   PAL subsystem low level driver header.
  *
  * @addtogroup PAL
@@ -31,13 +31,13 @@
 /* Unsupported modes and specific modes                                      */
 /*===========================================================================*/
 
-#define PAL_MODE_ALTERNATIVE_1      10
-#define PAL_MODE_ALTERNATIVE_2      11
-#define PAL_MODE_ALTERNATIVE_3      12
-#define PAL_MODE_ALTERNATIVE_4      13
-#define PAL_MODE_ALTERNATIVE_5      14
-#define PAL_MODE_ALTERNATIVE_6      15
-#define PAL_MODE_ALTERNATIVE_7      16
+#define PAL_MODE_ALTERNATIVE_1      0x10
+#define PAL_MODE_ALTERNATIVE_2      0x11
+#define PAL_MODE_ALTERNATIVE_3      0x12
+#define PAL_MODE_ALTERNATIVE_4      0x13
+#define PAL_MODE_ALTERNATIVE_5      0x14
+#define PAL_MODE_ALTERNATIVE_6      0x15
+#define PAL_MODE_ALTERNATIVE_7      0x16
 
 #define PIN_MUX_ALTERNATIVE(x)      PORTx_PCRn_MUX(x)
 
@@ -151,7 +151,8 @@ typedef struct {
  *
  * @notapi
  */
-#define pal_lld_readport(port) (port)->PDIR
+#define pal_lld_readport(port) \
+          (port)->PDIR
 
 /**
  * @brief   Reads the output latch.
@@ -163,7 +164,8 @@ typedef struct {
  *
  * @notapi
  */
-#define pal_lld_readlatch(port) (port)->PDOR
+#define pal_lld_readlatch(port) \
+          (port)->PDOR
 
 /**
  * @brief   Writes a bits mask on a I/O port.
@@ -173,7 +175,8 @@ typedef struct {
  *
  * @notapi
  */
-#define pal_lld_writeport(port, bits) (port)->PDOR = (bits)
+#define pal_lld_writeport(port, bits) \
+          (port)->PDOR = (bits)
 
 /**
  * @brief   Sets a bits mask on a I/O port.
@@ -186,7 +189,8 @@ typedef struct {
  *
  * @notapi
  */
-#define pal_lld_setport(port, bits) (port)->PSOR = (bits)
+#define pal_lld_setport(port, bits) \
+          (port)->PSOR = (bits)
 
 /**
  * @brief   Clears a bits mask on a I/O port.
@@ -199,7 +203,8 @@ typedef struct {
  *
  * @notapi
  */
-#define pal_lld_clearport(port, bits) (port)->PCOR = (bits)
+#define pal_lld_clearport(port, bits) \
+          (port)->PCOR = (bits)
 
 /**
  * @brief   Toggles a bits mask on a I/O port.
@@ -212,7 +217,8 @@ typedef struct {
  *
  * @notapi
  */
-#define pal_lld_toggleport(port, bits) (port)->PTOR = (bits)
+#define pal_lld_toggleport(port, bits) \
+          (port)->PTOR = (bits)
 
 /**
  * @brief   Reads a group of bits.
@@ -364,6 +370,11 @@ extern "C" {
   void _pal_lld_setpadmode(ioportid_t port,
                            uint8_t pad,
                            iomode_t mode);
+  uint8_t _pal_lld_readpad(ioportid_t port,
+                           uint8_t pad);
+  void _pal_lld_writepad(ioportid_t port,
+                         uint8_t pad,
+                         uint8_t bit);
 #ifdef __cplusplus
 }
 #endif

@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    KINETIS/KL2x/st_lld.c
+ * @file    KINETIS/LLD/st_lld.c
  * @brief   ST Driver subsystem low level driver code.
  *
  * @addtogroup ST

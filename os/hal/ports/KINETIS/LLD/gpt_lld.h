@@ -103,6 +103,14 @@
 #define KINETIS_GPT_PIT3_IRQ_PRIORITY         7
 #endif
 
+/**
+ * @brief   GPTD* common interrupt priority level setting.
+ */
+#if (KINETIS_HAS_PIT_COMMON_IRQ && !defined(KINETIS_GPT_PIT_IRQ_PRIORITY))    \
+     || defined(__DOXYGEN__)
+#define KINETIS_GPT_PIT_IRQ_PRIORITY          2
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
@@ -123,29 +131,58 @@
 #error "PIT3 not present in the selected device"
 #endif
 
-#if !KINETIS_GPT_USE_PIT0 && !KINETIS_GPT_USE_PIT1 &&                           \
+#if !KINETIS_GPT_USE_PIT0 && !KINETIS_GPT_USE_PIT1 &&                         \
     !KINETIS_GPT_USE_PIT2 && !KINETIS_GPT_USE_PIT3
 #error "GPT driver activated but no PIT peripheral assigned"
 #endif
 
-#if KINETIS_GPT_USE_PIT0 &&                                                   \
+#if KINETIS_GPT_USE_PIT0 && !KINETIS_HAS_PIT_COMMON_IRQ &&                    \
     !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_GPT_PIT0_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PIT0"
 #endif
 
-#if KINETIS_GPT_USE_PIT1 &&                                                   \
+#if KINETIS_GPT_USE_PIT1 && !KINETIS_HAS_PIT_COMMON_IRQ &&                    \
     !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_GPT_PIT1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PIT1"
 #endif
 
-#if KINETIS_GPT_USE_PIT2 &&                                                   \
+#if KINETIS_GPT_USE_PIT2 && !KINETIS_HAS_PIT_COMMON_IRQ &&                    \
     !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_GPT_PIT2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PIT2"
 #endif
 
-#if KINETIS_GPT_USE_PIT3 &&                                                   \
+#if KINETIS_GPT_USE_PIT3 && !KINETIS_HAS_PIT_COMMON_IRQ &&                    \
     !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_GPT_PIT3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to PIT3"
+#endif
+
+#if KINETIS_HAS_PIT_COMMON_IRQ &&                                             \
+    !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_GPT_PIT_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to PIT"
+#endif
+
+#if KINETIS_GPT_USE_PIT0 && !defined(KINETIS_PIT0_IRQ_VECTOR) && \
+    !KINETIS_HAS_PIT_COMMON_IRQ
+#error "KINETIS_PIT0_IRQ_VECTOR not defined"
+#endif
+
+#if KINETIS_GPT_USE_PIT1 && !defined(KINETIS_PIT1_IRQ_VECTOR) && \
+    !KINETIS_HAS_PIT_COMMON_IRQ
+#error "KINETIS_PIT1_IRQ_VECTOR not defined"
+#endif
+
+#if KINETIS_GPT_USE_PIT2 && !defined(KINETIS_PIT2_IRQ_VECTOR) && \
+    !KINETIS_HAS_PIT_COMMON_IRQ
+#error "KINETIS_PIT2_IRQ_VECTOR not defined"
+#endif
+
+#if KINETIS_GPT_USE_PIT3 && !defined(KINETIS_PIT3_IRQ_VECTOR) && \
+    !KINETIS_HAS_PIT_COMMON_IRQ
+#error "KINETIS_PIT3_IRQ_VECTOR not defined"
+#endif
+
+#if KINETIS_HAS_PIT_COMMON_IRQ && !defined(KINETIS_PIT_IRQ_VECTOR)
+#error "KINETIS_PIT_IRQ_VECTOR not defined"
 #endif
 
 /*===========================================================================*/
@@ -226,7 +263,9 @@ struct GPTDriver {
  * @notapi
  */
 #define gpt_lld_change_interval(gptp, interval)                               \
-  ((gptp)->channel->LDVAL = (uint32_t)((interval)))
+  ((gptp)->channel->LDVAL = (uint32_t)( \
+                            ( (gptp)->clock / (gptp)->config->frequency ) * \
+                            ( interval ) ))
 
 /**
  * @brief   Returns the interval of GPT peripheral.
@@ -237,7 +276,9 @@ struct GPTDriver {
  *
  * @notapi
  */
-#define gpt_lld_get_interval(gptp) ((gptcnt_t)(gptp)->pit->CHANNEL[gptp->channel].LDVAL)
+#define gpt_lld_get_interval(gptp)                                            \
+  ((uint32_t)( ( (uint64_t)(gptp)->channel->LDVAL * (gptp)->config->frequency ) / \
+               ( (uint32_t)(gptp)->clock ) ))
 
 /**
  * @brief   Returns the counter value of GPT peripheral.
