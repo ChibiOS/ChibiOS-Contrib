@@ -1,42 +1,25 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-*/
-
-/*
- * MK20DX128 memory setup.
+ * Copyright (C) 2013-2016 Fabio Utzig, http://fabioutzig.com
+ *           (C) 2016 flabbergast <s3+flabbergast@sdfeu.org>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
-MEMORY
-{
-    flash0   : org = 0x00000000, len = 0x100
-    flashcfg : org = 0x00000400, len = 0x10
-    flash    : org = 0x00000410, len = 128k - 0x410
-    ram0     : org = 0x1fffe000, len = 16k
-    ram1     : org = 0x00000000, len = 0
-    ram2     : org = 0x00000000, len = 0
-    ram3     : org = 0x00000000, len = 0
-    ram4     : org = 0x00000000, len = 0
-    ram5     : org = 0x00000000, len = 0
-    ram6     : org = 0x00000000, len = 0
-    ram7     : org = 0x00000000, len = 0
-}
-
-REGION_ALIAS("MAIN_STACK_RAM", ram0);
-REGION_ALIAS("PROCESS_STACK_RAM", ram0);
-REGION_ALIAS("DATA_RAM", ram0);
-REGION_ALIAS("BSS_RAM", ram0);
-REGION_ALIAS("HEAP_RAM", ram0);
 
 __ram0_start__          = ORIGIN(ram0);
 __ram0_size__           = LENGTH(ram0);
@@ -69,7 +52,7 @@ SECTIONS
 {
     . = 0;
 
-    startup : ALIGN(16) SUBALIGN(16)
+    .isr : ALIGN(4) SUBALIGN(4)
     {
         KEEP(*(.vectors))
     } > flash0
@@ -184,7 +167,7 @@ SECTIONS
         . = ALIGN(4);
         _bss_end = .;
         PROVIDE(end = .);
-    } > BSS_RAM
+    } > BSS_RAM    
 
     .ram0_init : ALIGN(4)
     {

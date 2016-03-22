@@ -1,27 +1,32 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
+    ChibiOS/RT - Copyright (C) 2006-2014 Giovanni Di Sirio.
+                           (C) 2015 RedoX https://github.com/RedoXyde
+                           (C) 2016 flabbergast <s3+flabbergast@sdfeu.org>
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+    This file is part of ChibiOS/RT.
 
-        http://www.apache.org/licenses/LICENSE-2.0
+    ChibiOS/RT is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    ChibiOS/RT is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /**
- * @file    GCC/ARMCMx/MK20Dx/cmparams.h
- * @brief   ARM Cortex-M4 parameters for the Kinetis MK20Dx.
+ * @file    GCC/ARMCMx/K20x5/cmparams.h
+ * @brief   ARM Cortex-M4 parameters for the Kinetis K20x5.
  *
- * @defgroup ARMCMx_MK20Dx Kinetis MK20Dx Specific Parameters
+ * @defgroup ARMCMx_K20x5 Kinetis K20x5 Specific Parameters
  * @ingroup ARMCMx_SPECIFIC
  * @details This file contains the Cortex-M4 specific parameters for the
- *          Kinetis MK20Dx platform.
+ *          Kinetis K20x5 platform.
  * @{
  */
 
@@ -62,7 +67,7 @@
 /* Including the device CMSIS header. Note, we are not using the definitions
    from this header because we need this file to be usable also from
    assembler source files. We verify that the info matches instead.*/
-#include "mk20d5.h"
+#include "k20x5.h"
 
 #if CORTEX_MODEL != __CORTEX_M
 #error "CMSIS __CORTEX_M mismatch"
