@@ -70,6 +70,11 @@ ifeq ($(USE_EXCEPTIONS_STACKSIZE),)
   USE_EXCEPTIONS_STACKSIZE = 0x400
 endif
 
+# Enables the use of FPU on Cortex-M4 (no, softfp, hard).
+ifeq ($(USE_FPU),)
+  USE_FPU = no
+endif
+
 #
 # Architecture or project specific options
 ##############################################################################
@@ -82,14 +87,19 @@ endif
 PROJECT = ch
 
 # Imported source files and paths
-CHIBIOS = ../../..
-include $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_k20x.mk
+CHIBIOS = ../../../../../ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
+# Startup files.
+include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_k20x5.mk
+# HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS)/os/hal/ports/KINETIS/K20x/platform.mk
-include $(CHIBIOS)/os/hal/boards/FREESCALE_FREEDOM_K20D50M/board.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/KINETIS/K20x/platform.mk
+include $(CHIBIOS_CONTRIB)/os/hal/boards/FREESCALE_FREEDOM_K20D50M/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
+# RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
+# Other files (optional).
 
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD)/MK20DX128.ld

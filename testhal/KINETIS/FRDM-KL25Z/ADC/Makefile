@@ -81,17 +81,19 @@ endif
 PROJECT = ch
 
 # Imported source files and paths
-CHIBIOS = ../../..
-include $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_kl2x.mk
+CHIBIOS = ../../../../../ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
+
+include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_kl2x.mk
 include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS)/os/hal/ports/KINETIS/KL2x/platform.mk
-include $(CHIBIOS)/os/hal/boards/FREESCALE_FREEDOM_KL25Z/board.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/KINETIS/KL2x/platform.mk
+include $(CHIBIOS_CONTRIB)/os/hal/boards/FREESCALE_FREEDOM_KL25Z/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v6m.mk
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD)/KL25Z128.ld
+LDSCRIPT= $(STARTUPLD)/MKL2xZ128.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
