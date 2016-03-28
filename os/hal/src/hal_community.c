@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    hal.c
+ * @file    hal_community.c
  * @brief   HAL subsystem code.
  *
  * @addtogroup HAL
