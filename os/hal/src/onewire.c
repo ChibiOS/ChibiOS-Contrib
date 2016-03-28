@@ -664,11 +664,11 @@ bool onewireReset(onewireDriver *owp) {
   pwmcfg->channels[sch].mode = PWM_OUTPUT_ACTIVE_LOW;
 
   ow_bus_active(owp);
-  pwmEnableChannel(pwmd, mch, ONEWIRE_RESET_LOW_WIDTH);
-  pwmEnableChannel(pwmd, sch, ONEWIRE_RESET_SAMPLE_WIDTH);
-  pwmEnableChannelNotification(pwmd, sch);
 
   osalSysLock();
+  pwmEnableChannelI(pwmd, mch, ONEWIRE_RESET_LOW_WIDTH);
+  pwmEnableChannelI(pwmd, sch, ONEWIRE_RESET_SAMPLE_WIDTH);
+  pwmEnableChannelNotificationI(pwmd, sch);
   osalThreadSuspendS(&owp->thread);
   osalSysUnlock();
 
@@ -717,11 +717,10 @@ void onewireRead(onewireDriver *owp, uint8_t *rxbuf, size_t rxbytes) {
   pwmcfg->channels[sch].mode = PWM_OUTPUT_ACTIVE_LOW;
 
   ow_bus_active(owp);
-  pwmEnableChannel(pwmd, mch, ONEWIRE_ONE_WIDTH);
-  pwmEnableChannel(pwmd, sch, ONEWIRE_SAMPLE_WIDTH);
-  pwmEnableChannelNotification(pwmd, sch);
-
   osalSysLock();
+  pwmEnableChannelI(pwmd, mch, ONEWIRE_ONE_WIDTH);
+  pwmEnableChannelI(pwmd, sch, ONEWIRE_SAMPLE_WIDTH);
+  pwmEnableChannelNotificationI(pwmd, sch);
   osalThreadSuspendS(&owp->thread);
   osalSysUnlock();
 
@@ -776,9 +775,8 @@ void onewireWrite(onewireDriver *owp, uint8_t *txbuf,
 #endif
 
   ow_bus_active(owp);
-  pwmEnablePeriodicNotification(pwmd);
-
   osalSysLock();
+  pwmEnablePeriodicNotificationI(pwmd);
   osalThreadSuspendS(&owp->thread);
   osalSysUnlock();
 
@@ -853,11 +851,10 @@ size_t onewireSearchRom(onewireDriver *owp, uint8_t *result,
     pwmcfg->channels[sch].mode = PWM_OUTPUT_ACTIVE_LOW;
 
     ow_bus_active(owp);
-    pwmEnableChannel(pwmd, mch, ONEWIRE_ONE_WIDTH);
-    pwmEnableChannel(pwmd, sch, ONEWIRE_SAMPLE_WIDTH);
-    pwmEnableChannelNotification(pwmd, sch);
-
     osalSysLock();
+    pwmEnableChannelI(pwmd, mch, ONEWIRE_ONE_WIDTH);
+    pwmEnableChannelI(pwmd, sch, ONEWIRE_SAMPLE_WIDTH);
+    pwmEnableChannelNotificationI(pwmd, sch);
     osalThreadSuspendS(&owp->thread);
     osalSysUnlock();
 
