@@ -25,7 +25,7 @@
 #ifndef _HAL_LLD_H_
 #define _HAL_LLD_H_
 
-#include "kl25z.h"
+#include "kl2xz.h"
 #include "kinetis_registry.h"
 
 /*===========================================================================*/
@@ -44,15 +44,30 @@
 #define PLATFORM_NAME           "Kinetis"
 /** @} */
 
-/**
- * @brief   Maximum system and core clock (f_SYS) frequency.
- */
-#define KINETIS_SYSCLK_MAX      48000000
+#if KINETIS_HAS_MCG_LITE
+/* MCU only has MCG_Lite */
 
 /**
- * @brief   Maximum bus clock (f_BUS) frequency.
+ * @name    Internal clock sources
+ * @{
  */
-#define KINETIS_BUSCLK_MAX      24000000
+#define KINETIS_HIRC            48000000  /**< High-frequency internal reference clock (USB recovery). */
+#define KINETIS_LIRC_8          8000000   /**< Low-frequency internal reference clock (faster). */
+#define KINETIS_LIRC_2          2000000   /**< Low-frequency internal reference clock (slower). */
+/** @} */
+
+/**
+ * @name    MCG modes of operation
+ * @{
+ */
+#define KINETIS_MCGLITE_MODE_LIRC8M 1   /**< Low frequency internal reference mode (8MHz). */
+#define KINETIS_MCGLITE_MODE_LIRC2M 2   /**< Low frequency internal reference mode (2MHz). */
+#define KINETIS_MCGLITE_MODE_HIRC   3   /**< High frequency internal reference mode (with optional USB recovery). */
+#define KINETIS_MCGLITE_MODE_EXT    4   /**< External reference mode. */
+/** @} */
+
+#else /* KINETIS_HAS_MCG_LITE */
+/* MCU has full blown MCG */
 
 /**
  * @name    Internal clock sources
@@ -62,6 +77,10 @@
 #define KINETIS_IRCLK_S         32768       /**< Slow internal reference clock, factory trimmed. */
 /** @} */
 
+/**
+ * @name    MCG modes of operation
+ * @{
+ */
 #define KINETIS_MCG_MODE_FEI  1    /**< FLL Engaged Internal. */
 #define KINETIS_MCG_MODE_FEE  2    /**< FLL Engaged External. */
 #define KINETIS_MCG_MODE_FBI  3    /**< FLL Bypassed Internal. */
@@ -70,6 +89,9 @@
 #define KINETIS_MCG_MODE_PBE  6    /**< PLL Bypassed External. */
 #define KINETIS_MCG_MODE_BLPI 7    /**< Bypassed Low Power Internal. */
 #define KINETIS_MCG_MODE_BLPE 8    /**< Bypassed Low Power External. */
+/** @} */
+
+#endif /* KINETIS_HAS_MCG_LITE */
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -93,14 +115,29 @@
 #define KINETIS_MCG_MODE            KINETIS_MCG_MODE_PEE
 #endif
 
+#if !defined(KINETIS_MCGLITE_MODE) || defined(__DOXYGEN__)
+#define KINETIS_MCGLITE_MODE        KINETIS_MCGLITE_MODE_HIRC
+#endif
+
+/**
+ * @brief   MCU PLL clock frequency.
+ */
+#if !defined(KINETIS_PLLCLK_FREQUENCY) || defined(__DOXYGEN__)
+#define KINETIS_PLLCLK_FREQUENCY    96000000UL
+#endif
+
 /**
  * @brief   Clock divider for core/system and bus/flash clocks (OUTDIV1).
  * @note    The allowed range is 1...16.
  * @note    The default value is calculated for a 48 MHz system clock
  *          from a 96 MHz PLL output.
  */
-#if !defined(KINETIS_MCG_FLL_OUTDIV1) || defined(__DOXYGEN__)
-#define KINETIS_MCG_FLL_OUTDIV1     2
+#if !defined(KINETIS_CLKDIV1_OUTDIV1) || defined(__DOXYGEN__)
+  #if defined(KINETIS_SYSCLK_FREQUENCY) && KINETIS_SYSCLK_FREQUENCY > 0
+    #define KINETIS_CLKDIV1_OUTDIV1     (KINETIS_PLLCLK_FREQUENCY/KINETIS_SYSCLK_FREQUENCY)
+  #else
+    #define KINETIS_CLKDIV1_OUTDIV1     2
+  #endif
 #endif
 
 /**
@@ -110,8 +147,12 @@
  * @note    The default value is calculated for 24 MHz bus/flash clocks
  *          from a 96 MHz PLL output and 48 MHz core/system clock.
  */
-#if !defined(KINETIS_MCG_FLL_OUTDIV4) || defined(__DOXYGEN__)
-#define KINETIS_MCG_FLL_OUTDIV4     2
+#if !defined(KINETIS_CLKDIV1_OUTDIV4) || defined(__DOXYGEN__)
+  #if defined(KINETIS_BUSCLK_FREQUENCY) && KINETIS_BUSCLK_FREQUENCY > 0
+    #define KINETIS_CLKDIV1_OUTDIV4     ((KINETIS_PLLCLK_FREQUENCY/KINETIS_CLKDIV1_OUTDIV1)/KINETIS_BUSCLK_FREQUENCY)
+  #else
+    #define KINETIS_CLKDIV1_OUTDIV4     2
+  #endif
 #endif
 
 /**
@@ -140,14 +181,14 @@
  * @brief   MCU system/core clock frequency.
  */
 #if !defined(KINETIS_SYSCLK_FREQUENCY) || defined(__DOXYGEN__)
-#define KINETIS_SYSCLK_FREQUENCY    48000000UL
+#define KINETIS_SYSCLK_FREQUENCY    (KINETIS_PLLCLK_FREQUENCY / KINETIS_CLKDIV1_OUTDIV1)
 #endif
 
 /**
  * @brief   MCU bus/flash clock frequency.
  */
 #if !defined(KINETIS_BUSCLK_FREQUENCY) || defined(__DOXYGEN__)
-#define KINETIS_BUSCLK_FREQUENCY    (KINETIS_SYSCLK_FREQUENCY / KINETIS_MCG_FLL_OUTDIV4)
+#define KINETIS_BUSCLK_FREQUENCY    (KINETIS_SYSCLK_FREQUENCY / KINETIS_CLKDIV1_OUTDIV4)
 #endif
 
 /**
@@ -190,14 +231,20 @@
 #error KINETIS_BUSCLK_FREQUENCY out of range
 #endif
 
-#if !(defined(KINETIS_MCG_FLL_OUTDIV1) && \
-      KINETIS_MCG_FLL_OUTDIV1 >= 1 && KINETIS_MCG_FLL_OUTDIV1 <= 16)
-#error KINETIS_MCG_FLL_OUTDIV1 must be 1 through 16
+#if KINETIS_BUSCLK_FREQUENCY > KINETIS_SYSCLK_FREQUENCY
+  #error KINETIS_BUSCLK_FREQUENCY must be an integer divide of\
+   KINETIS_SYSCLK_FREQUENCY
 #endif
 
-#if !(defined(KINETIS_MCG_FLL_OUTDIV4) && \
-      KINETIS_MCG_FLL_OUTDIV4 >= 1 && KINETIS_MCG_FLL_OUTDIV4 <= 8)
-#error KINETIS_MCG_FLL_OUTDIV4 must be 1 through 8
+
+#if !(defined(KINETIS_CLKDIV1_OUTDIV1) && \
+      KINETIS_CLKDIV1_OUTDIV1 >= 1 && KINETIS_CLKDIV1_OUTDIV1 <= 16)
+  #error KINETIS_CLKDIV1_OUTDIV1 must be 1 through 16
+#endif
+
+#if !(defined(KINETIS_CLKDIV1_OUTDIV4) && \
+      KINETIS_CLKDIV1_OUTDIV4 >= 1 && KINETIS_CLKDIV1_OUTDIV4 <= 16)
+#error KINETIS_CLKDIV1_OUTDIV4 must be 1 through 16
 #endif
 
 #if !(KINETIS_MCG_FLL_DMX32 == 0 || KINETIS_MCG_FLL_DMX32 == 1)

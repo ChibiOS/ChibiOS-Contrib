@@ -30,10 +30,6 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#if !defined(KINETIS_SPI_USE_SPI0)
-#define KINETIS_SPI_USE_SPI0                TRUE
-#endif
-
 #if !defined(KINETIS_SPI0_RX_DMA_IRQ_PRIORITY)
 #define KINETIS_SPI0_RX_DMA_IRQ_PRIORITY    8
 #endif
@@ -54,8 +50,35 @@
 #define KINETIS_SPI0_TX_DMA_CHANNEL         1
 #endif
 
+#if !defined(KINETIS_SPI1_RX_DMA_IRQ_PRIORITY)
+#define KINETIS_SPI1_RX_DMA_IRQ_PRIORITY    8
+#endif
+
+#if !defined(KINETIS_SPI1_RX_DMAMUX_CHANNEL)
+#define KINETIS_SPI1_RX_DMAMUX_CHANNEL      0
+#endif
+
+#if !defined(KINETIS_SPI1_RX_DMA_CHANNEL)
+#define KINETIS_SPI1_RX_DMA_CHANNEL         0
+#endif
+
+#if !defined(KINETIS_SPI1_TX_DMAMUX_CHANNEL)
+#define KINETIS_SPI1_TX_DMAMUX_CHANNEL      1
+#endif
+
+#if !defined(KINETIS_SPI1_TX_DMA_CHANNEL)
+#define KINETIS_SPI1_TX_DMA_CHANNEL         1
+#endif
+
+#if KINETIS_SPI_USE_SPI0
 #define DMAMUX_SPI_RX_SOURCE    16
 #define DMAMUX_SPI_TX_SOURCE    17
+#endif
+
+#if KINETIS_SPI_USE_SPI1
+#define DMAMUX_SPI_RX_SOURCE    18
+#define DMAMUX_SPI_TX_SOURCE    19
+#endif
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -64,6 +87,11 @@
 /** @brief SPI0 driver identifier.*/
 #if KINETIS_SPI_USE_SPI0 || defined(__DOXYGEN__)
 SPIDriver SPID1;
+#endif
+
+/** @brief SPI1 driver identifier.*/
+#if KINETIS_SPI_USE_SPI1 || defined(__DOXYGEN__)
+SPIDriver SPID2;
 #endif
 
 /*===========================================================================*/
@@ -137,7 +165,9 @@ static void spi_stop_xfer(SPIDriver *spip)
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-OSAL_IRQ_HANDLER(Vector40) {
+#if KINETIS_SPI_USE_SPI0 || defined(__DOXYGEN__)
+
+OSAL_IRQ_HANDLER(KINETIS_DMA0_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
 
   /* Clear bit 0 in Interrupt Request Register (INT) by writing 0 to CINT */
@@ -149,6 +179,25 @@ OSAL_IRQ_HANDLER(Vector40) {
 
   OSAL_IRQ_EPILOGUE();
 }
+
+#endif
+
+#if KINETIS_SPI_USE_SPI1 || defined(__DOXYGEN__)
+
+OSAL_IRQ_HANDLER(KINETIS_DMA0_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+
+  /* Clear bit 0 in Interrupt Request Register (INT) by writing 0 to CINT */
+  DMA->CINT = KINETIS_SPI1_RX_DMA_CHANNEL;
+
+  spi_stop_xfer(&SPID2);
+
+  _spi_isr_code(&SPID2);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+#endif
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -162,6 +211,9 @@ OSAL_IRQ_HANDLER(Vector40) {
 void spi_lld_init(void) {
 #if KINETIS_SPI_USE_SPI0
   spiObjectInit(&SPID1);
+#endif
+#if KINETIS_SPI_USE_SPI1
+  spiObjectInit(&SPID2);
 #endif
 }
 
@@ -193,6 +245,22 @@ void spi_lld_start(SPIDriver *spip) {
     }
 #endif
 
+#if KINETIS_SPI_USE_SPI1
+    if (&SPID2 == spip) {
+
+      /* Enable the clock for SPI0 */
+      SIM->SCGC6 |= SIM_SCGC6_SPI1;
+
+      SPID2.spi = SPI1;
+
+      if (spip->config->tar0) {
+        spip->spi->CTAR[0] = spip->config->tar0;
+      } else {
+        spip->spi->CTAR[0] = KINETIS_SPI_TAR0_DEFAULT;
+      }
+    }
+#endif
+
     nvicEnableVector(DMA0_IRQn, KINETIS_SPI0_RX_DMA_IRQ_PRIORITY);
 
     SIM->SCGC6 |= SIM_SCGC6_DMAMUX;
@@ -201,6 +269,7 @@ void spi_lld_start(SPIDriver *spip) {
     /* Clear DMA error flags */
     DMA->ERR = 0x0F;
 
+#if KINETIS_SPI_USE_SPI0
     /* Rx, select SPI Rx FIFO */
     DMAMUX->CHCFG[KINETIS_SPI0_RX_DMAMUX_CHANNEL] = DMAMUX_CHCFGn_ENBL |
         DMAMUX_CHCFGn_SOURCE(DMAMUX_SPI_RX_SOURCE);
@@ -239,6 +308,48 @@ void spi_lld_start(SPIDriver *spip) {
         DMA_ATTR_DSIZE(dma_size);
     DMA->TCD[KINETIS_SPI0_TX_DMA_CHANNEL].NBYTES_MLNO = spip->word_size;
     DMA->TCD[KINETIS_SPI0_TX_DMA_CHANNEL].CSR = DMA_CSR_DREQ_MASK;
+#endif
+
+#if KINETIS_SPI_USE_SPI1
+    /* Rx, select SPI Rx FIFO */
+    DMAMUX->CHCFG[KINETIS_SPI1_RX_DMAMUX_CHANNEL] = DMAMUX_CHCFGn_ENBL |
+        DMAMUX_CHCFGn_SOURCE(DMAMUX_SPI_RX_SOURCE);
+
+    /* Tx, select SPI Tx FIFO */
+    DMAMUX->CHCFG[KINETIS_SPI1_TX_DMAMUX_CHANNEL] = DMAMUX_CHCFGn_ENBL |
+        DMAMUX_CHCFGn_SOURCE(DMAMUX_SPI_TX_SOURCE);
+
+    /* Extract the frame size from the TAR */
+    uint16_t frame_size = ((spip->spi->CTAR[0] >> SPIx_CTARn_FMSZ_SHIFT) &
+        SPIx_CTARn_FMSZ_MASK) + 1;
+
+    /* DMA transfer size is 16 bits for a frame size > 8 bits */
+    uint16_t dma_size = frame_size > 8 ? 1 : 0;
+
+    /* DMA word size is 2 for a 16 bit frame size */
+    spip->word_size = frame_size > 8 ? 2 : 1;
+
+    /* configure DMA RX fixed values */
+    DMA->TCD[KINETIS_SPI1_RX_DMA_CHANNEL].SADDR = (uint32_t)&SPI1->POPR;
+    DMA->TCD[KINETIS_SPI1_RX_DMA_CHANNEL].SOFF = 0;
+    DMA->TCD[KINETIS_SPI1_RX_DMA_CHANNEL].SLAST = 0;
+    DMA->TCD[KINETIS_SPI1_RX_DMA_CHANNEL].DLASTSGA = 0;
+    DMA->TCD[KINETIS_SPI1_RX_DMA_CHANNEL].ATTR = DMA_ATTR_SSIZE(dma_size) |
+        DMA_ATTR_DSIZE(dma_size);
+    DMA->TCD[KINETIS_SPI1_RX_DMA_CHANNEL].NBYTES_MLNO = spip->word_size;
+    DMA->TCD[KINETIS_SPI1_RX_DMA_CHANNEL].CSR = DMA_CSR_DREQ_MASK |
+        DMA_CSR_INTMAJOR_MASK;
+
+    /* configure DMA TX fixed values */
+    DMA->TCD[KINETIS_SPI1_TX_DMA_CHANNEL].SLAST = 0;
+    DMA->TCD[KINETIS_SPI1_TX_DMA_CHANNEL].DADDR = (uint32_t)&SPI1->PUSHR;
+    DMA->TCD[KINETIS_SPI1_TX_DMA_CHANNEL].DOFF = 0;
+    DMA->TCD[KINETIS_SPI1_TX_DMA_CHANNEL].DLASTSGA = 0;
+    DMA->TCD[KINETIS_SPI1_TX_DMA_CHANNEL].ATTR = DMA_ATTR_SSIZE(dma_size) |
+        DMA_ATTR_DSIZE(dma_size);
+    DMA->TCD[KINETIS_SPI1_TX_DMA_CHANNEL].NBYTES_MLNO = spip->word_size;
+    DMA->TCD[KINETIS_SPI1_TX_DMA_CHANNEL].CSR = DMA_CSR_DREQ_MASK;
+#endif
   }
 }
 
@@ -264,10 +375,20 @@ void spi_lld_stop(SPIDriver *spip) {
       /* SPI halt.*/
       spip->spi->MCR |= SPIx_MCR_HALT;
     }
-#endif
 
     /* Disable the clock for SPI0 */
     SIM->SCGC6 &= ~SIM_SCGC6_SPI0;
+#endif
+
+#if KINETIS_SPI_USE_SPI1
+    if (&SPID2 == spip) {
+      /* SPI halt.*/
+      spip->spi->MCR |= SPIx_MCR_HALT;
+    }
+
+    /* Disable the clock for SPI1 */
+    SIM->SCGC6 &= ~SIM_SCGC6_SPI1;
+#endif
   }
 }
 

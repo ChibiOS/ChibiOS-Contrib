@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    KINETIS/i2c_lld.c
+ * @file    KINETIS/LLD/i2c_lld.c
  * @brief   KINETIS I2C subsystem low level driver source.
  *
  * @addtogroup I2C
@@ -191,8 +191,7 @@ OSAL_IRQ_HANDLER(KINETIS_I2C0_IRQ_VECTOR) {
 
 #if KINETIS_I2C_USE_I2C1 || defined(__DOXYGEN__)
 
-/* FIXME: KL2x has I2C1 on Vector64; K2x don't have I2C1! */
-OSAL_IRQ_HANDLER(Vector64) {
+OSAL_IRQ_HANDLER(KINETIS_I2C1_IRQ_VECTOR) {
 
   OSAL_IRQ_PROLOGUE();
   serve_interrupt(&I2CD2);

@@ -25,8 +25,6 @@
 #ifndef _PWM_LLD_H_
 #define _PWM_LLD_H_
 
-#include "kinetis_tpm.h"
-
 #if HAL_USE_PWM || defined(__DOXYGEN__)
 
 /*===========================================================================*/
@@ -65,14 +63,78 @@
 #if !defined(KINETIS_PWM_USE_ADVANCED) || defined(__DOXYGEN__)
 #define KINETIS_PWM_USE_ADVANCED              FALSE
 #endif
+
+/**
+ * @brief   TPM0 interrupt priority level setting.
+ * @note    The default is 2.
+ */
+#if !defined(KINETIS_PWM_TPM0_IRQ_PRIORITY)|| defined(__DOXYGEN__)
+#define KINETIS_PWM_TPM0_IRQ_PRIORITY      2
+#endif
+
+/**
+ * @brief   TPM1 interrupt priority level setting.
+ * @note    The default is 2.
+ */
+#if !defined(KINETIS_PWM_TPM1_IRQ_PRIORITY)|| defined(__DOXYGEN__)
+#define KINETIS_PWM_TPM1_IRQ_PRIORITY      2
+#endif
+
+/**
+ * @brief   TPM2 interrupt priority level setting.
+ * @note    The default is 2.
+ */
+#if !defined(KINETIS_PWM_TPM2_IRQ_PRIORITY)|| defined(__DOXYGEN__)
+#define KINETIS_PWM_TPM2_IRQ_PRIORITY      2
+#endif
+
 /** @} */
 
 /*===========================================================================*/
 /* Configuration checks.                                                     */
 /*===========================================================================*/
 
+#if KINETIS_PWM_USE_TPM0 && !KINETIS_HAS_TPM0
+#error "TPM0 not present in the selected device"
+#endif
+
+#if KINETIS_PWM_USE_TPM1 && !KINETIS_HAS_TPM1
+#error "TPM1 not present in the selected device"
+#endif
+
+#if KINETIS_PWM_USE_TPM2 && !KINETIS_HAS_TPM2
+#error "TPM2 not present in the selected device"
+#endif
+
 #if !KINETIS_PWM_USE_TPM0 && !KINETIS_PWM_USE_TPM1 && !KINETIS_PWM_USE_TPM2
 #error "PWM driver activated but no TPM peripheral assigned"
+#endif
+
+#if KINETIS_PWM_USE_TPM0 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_PWM_TPM0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to KINETIS_PWM_TPM0_IRQ_PRIORITY"
+#endif
+
+#if KINETIS_PWM_USE_TPM1 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_PWM_TPM1_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to KINETIS_PWM_TPM1_IRQ_PRIORITY"
+#endif
+
+#if KINETIS_PWM_USE_TPM2 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_PWM_TPM2_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to KINETIS_PWM_TPM2_IRQ_PRIORITY"
+#endif
+
+#if !defined(KINETIS_TPM0_IRQ_VECTOR)
+#error "KINETIS_TPM0_IRQ_VECTOR not defined"
+#endif
+
+#if !defined(KINETIS_TPM1_IRQ_VECTOR)
+#error "KINETIS_TPM1_IRQ_VECTOR not defined"
+#endif
+
+#if !defined(KINETIS_TPM2_IRQ_VECTOR)
+#error "KINETIS_TPM2_IRQ_VECTOR not defined"
 #endif
 
 /*===========================================================================*/

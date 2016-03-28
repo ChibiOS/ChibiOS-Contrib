@@ -55,23 +55,50 @@
 #define KINETIS_SPI_SPI0_IRQ_PRIORITY         10
 #endif
 
+/**
+ * @brief   SPI1 driver enable switch.
+ * @details If set to @p TRUE the support for SPI0 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(KINETIS_SPI_USE_SPI1) || defined(__DOXYGEN__)
+#define KINETIS_SPI_USE_SPI1                  FALSE
+#endif
+
+/**
+ * @brief   SPI1 interrupt priority level setting.
+ */
+#if !defined(KINETIS_SPI_SPI1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_SPI_SPI1_IRQ_PRIORITY         10
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
-
-#define KINETIS_HAS_SPI0    TRUE
 
 #if KINETIS_SPI_USE_SPI0 && !KINETIS_HAS_SPI0
 #error "SPI0 not present in the selected device"
 #endif
 
-#if !KINETIS_SPI_USE_SPI0
+#if KINETIS_SPI_USE_SPI1 && !KINETIS_HAS_SPI1
+#error "SPI1 not present in the selected device"
+#endif
+
+#if KINETIS_SPI_USE_SPI0 && KINETIS_SPI_USE_SPI1
+#error "Only one SPI peripheral can be enabled"
+#endif
+
+#if !(KINETIS_SPI_USE_SPI0 || KINETIS_SPI_USE_SPI1)
 #error "SPI driver activated but no SPI peripheral assigned"
 #endif
 
 #if KINETIS_SPI_USE_SPI0 &&                                                 \
     !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_SPI_SPI0_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SPI0"
+#endif
+
+#if KINETIS_SPI_USE_SPI1 &&                                                 \
+    !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_SPI_SPI1_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to SPI1"
 #endif
 
 /*===========================================================================*/
@@ -203,6 +230,10 @@ struct SPIDriver {
 
 #if KINETIS_SPI_USE_SPI0 && !defined(__DOXYGEN__)
 extern SPIDriver SPID1;
+#endif
+
+#if KINETIS_SPI_USE_SPI1 && !defined(__DOXYGEN__)
+extern SPIDriver SPID2;
 #endif
 
 #ifdef __cplusplus

@@ -89,7 +89,7 @@ PROJECT = ch
 CHIBIOS = ../../../../ChibiOS-RT
 CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 # Startup files.
-include $(CHIBIOS_CONTRIB)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_k20x.mk
+include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_k20x5.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/KINETIS/K20x/platform.mk
