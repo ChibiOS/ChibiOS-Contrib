@@ -27,6 +27,11 @@
 #define BOARD_MCHCK_K20_MX20DX128
 #define BOARD_NAME                  "MCHCK K20 MX20DX128"
 
+/*
+ * MCU type
+ */
+#define K20x5
+
 #define GPIOB_LED   16
 
 #if !defined(_FROM_ASM_)

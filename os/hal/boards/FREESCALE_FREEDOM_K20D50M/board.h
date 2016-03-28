@@ -27,6 +27,24 @@
 #define BOARD_FREESCALE_FREEDOM_K20D50M
 #define BOARD_NAME                  "Freescale Freedom K20D50M"
 
+/* External 8 MHz crystal. */
+#define KINETIS_XTAL_FREQUENCY      8000000UL
+
+/*
+ * MCU type
+ */
+#define K20x5
+
+/*
+ * Onboard features.
+ */
+#define GPIO_LED_RED    IOPORT3
+#define PIN_LED_RED     3
+#define GPIO_LED_GREEN  IOPORT4
+#define PIN_LED_GREEN   4
+#define GPIO_LED_BLUE   IOPORT1
+#define PIN_LED_BLUE    2
+
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
 extern "C" {

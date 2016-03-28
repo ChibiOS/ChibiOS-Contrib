@@ -116,7 +116,7 @@ const PALConfig pal_default_config =
  */
 void __early_init(void) {
 
-  mk20d50_clock_init();
+  k20x_clock_init();
 }
 
 /**

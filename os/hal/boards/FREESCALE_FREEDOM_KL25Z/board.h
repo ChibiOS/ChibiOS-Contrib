@@ -27,9 +27,30 @@
 #define BOARD_FREESCALE_FREEDOM_KL25Z
 #define BOARD_NAME                  "Freescale Freedom KL25Z"
 
-/* External 8 MHz crystal with PLL for 48 MHz core/system clock. */
-#define KINETIS_SYSCLK_FREQUENCY    48000000UL
-#define KINETIS_MCG_MODE            KINETIS_MCG_MODE_PEE
+/* External 8 MHz crystal. */
+#define KINETIS_XTAL_FREQUENCY      8000000UL
+
+/*
+ * MCU type
+ */
+#define KL25
+
+/*
+ * Onboard features.
+ */
+#define GPIO_LED_RED    IOPORT2
+#define PIN_LED_RED     18
+#define GPIO_LED_GREEN  IOPORT2
+#define PIN_LED_GREEN   19
+#define GPIO_LED_BLUE   IOPORT4
+#define PIN_LED_BLUE    1
+
+#define I2C_INERIAL_SENSOR I2C0
+
+/*
+ * Not configured:
+ *  - TSI Slider on PTB16/TSI0_CH9 and PTB17/TSI_CH10
+ */
 
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
