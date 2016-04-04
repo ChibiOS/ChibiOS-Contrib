@@ -213,5 +213,5 @@ ULIBS =
 # End of user defines
 ##############################################################################
 
-RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/ld
-include $(RULESPATH)/../rules.mk
+RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC
+include $(RULESPATH)/rules.mk
