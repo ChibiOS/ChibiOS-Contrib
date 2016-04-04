@@ -167,7 +167,7 @@ static void notify1(io_queue_t *qp)
     return;
 
   if (!sdp->tx_busy) {
-    msg_t b = chOQGetI(&sdp->oqueue);
+    msg_t b = oqGetI(&sdp->oqueue);
 
     if (b < Q_OK) {
       chnAddFlagsI(sdp, CHN_OUTPUT_EMPTY);
@@ -199,9 +199,9 @@ OSAL_IRQ_HANDLER(Vector48) {
     NRF_UART0->EVENTS_RXDRDY = 0;
 
     osalSysLockFromISR();
-    if (chIQIsEmptyI(&sdp->iqueue))
+    if (iqIsEmptyI(&sdp->iqueue))
       chnAddFlagsI(sdp, CHN_INPUT_AVAILABLE);
-    if (chIQPutI(&sdp->iqueue, NRF_UART0->RXD) < Q_OK)
+    if (iqPutI(&sdp->iqueue, NRF_UART0->RXD) < Q_OK)
       chnAddFlagsI(sdp, SD_OVERRUN_ERROR);
     osalSysUnlockFromISR();
   }
@@ -213,7 +213,7 @@ OSAL_IRQ_HANDLER(Vector48) {
     NRF_UART0->EVENTS_TXDRDY = 0;
 
     osalSysLockFromISR();
-    b = chOQGetI(&sdp->oqueue);
+    b = oqGetI(&sdp->oqueue);
     osalSysUnlockFromISR();
 
     if (b < Q_OK) {
