@@ -22,8 +22,8 @@
  * @{
  */
 
-#ifndef _WDG_LLD_H_
-#define _WDG_LLD_H_
+#ifndef HAL_WDG_LLD_H
+#define HAL_WDG_LLD_H
 
 #if (HAL_USE_WDG == TRUE) || defined(__DOXYGEN__)
 
@@ -31,7 +31,7 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#define WDG_MAX_TIMEOUT_MS					\
+#define WDG_MAX_TIMEOUT_MS \
     ((uint32_t)(0xFFFFFFFFu * 1000 / NRF51_LFCLK_FREQUENCY))
 
 /*===========================================================================*/
@@ -71,13 +71,13 @@ typedef struct WDGDriver WDGDriver;
  * @note    It could be empty on some architectures.
  */
 typedef struct {
-    struct {
-	uint8_t pause_on_sleep : 1;
-	uint8_t pause_on_halt  : 1;
-    } flags;
-    uint32_t timeout_ms;
+  struct {
+  uint8_t pause_on_sleep : 1;
+  uint8_t pause_on_halt  : 1;
+  } flags;
+  uint32_t timeout_ms;
 #if WDG_USE_TIMEOUT_CALLBACK == TRUE
-    void (*callback)(void);
+  void (*callback)(void);
 #endif
 } WDGConfig;
 
@@ -122,6 +122,6 @@ extern "C" {
 
 #endif /* HAL_USE_WDG == TRUE */
 
-#endif /* _WDG_LLD_H_ */
+#endif /* HAL_WDG_LLD_H */
 
 /** @} */
