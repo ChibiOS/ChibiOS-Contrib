@@ -22,8 +22,8 @@
  * @{
  */
 
-#ifndef _PAL_LLD_H_
-#define _PAL_LLD_H_
+#ifndef HAL_PAL_LLD_H_
+#define HAL_PAL_LLD_H_
 
 #if HAL_USE_PAL || defined(__DOXYGEN__)
 
@@ -381,6 +381,6 @@ extern "C" {
 
 #endif /* HAL_USE_PAL */
 
-#endif /* _PAL_LLD_H_ */
+#endif /* HAL_PAL_LLD_H_ */
 
 /** @} */

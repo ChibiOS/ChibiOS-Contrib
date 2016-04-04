@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef _KINETIS_REGISTRY_H_
-#define _KINETIS_REGISTRY_H_
+#ifndef KINETIS_REGISTRY_H_
+#define KINETIS_REGISTRY_H_
 
 #if !defined(K20x) || defined(__DOXYGEN__)
 #define K20x
@@ -253,6 +253,6 @@
 
 /** @} */
 
-#endif /* _KINETIS_REGISTRY_H_ */
+#endif /* KINETIS_REGISTRY_H_ */
 
 /** @} */
