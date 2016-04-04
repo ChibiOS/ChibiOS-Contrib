@@ -21,5 +21,8 @@
  * HAL driver system settings.
  */
 #define NRF51_SERIAL_USE_UART0             TRUE
+#define NRF51_ST_USE_RTC0                  FALSE
+#define NRF51_ST_USE_RTC1                  FALSE
+#define NRF51_ST_USE_TIMER0                TRUE
 
 #endif /* _MCUCONF_H_ */
