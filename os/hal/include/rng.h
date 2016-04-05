@@ -57,7 +57,7 @@ typedef enum {
   RNG_READY,                 /* Ready.                                     */
 } rngstate_t;
 
-#include "rng_lld.h"
+#include "hal_rng_lld.h"
 
 
 /*===========================================================================*/

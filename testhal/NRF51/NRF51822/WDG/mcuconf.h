@@ -17,5 +17,6 @@
 #ifndef _MCUCONF_H_
 #define _MCUCONF_H_
 
+#define WDG_USE_TIMEOUT_CALLBACK    TRUE
 
 #endif /* _MCUCONF_H_ */

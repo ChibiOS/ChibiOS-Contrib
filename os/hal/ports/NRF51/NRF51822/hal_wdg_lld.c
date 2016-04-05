@@ -30,7 +30,7 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define RELOAD_REQUEST_VALUE 		0x6E524635
+#define RELOAD_REQUEST_VALUE         0x6E524635
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -68,7 +68,7 @@ OSAL_IRQ_HANDLER(Vector84) {
   /* Notify */
   if (WDGD1.config->callback)
       WDGD1.config->callback();
-  
+
   /* Wait for reboot */
   while (1) { /* */ }
 
@@ -104,12 +104,12 @@ void wdg_lld_start(WDGDriver *wdgp) {
 #if WDG_USE_TIMEOUT_CALLBACK == TRUE
   wdgp->wdt->INTENSET = WDT_INTENSET_TIMEOUT_Msk;
 #endif
-  
+
   /* When to pause? (halt, sleep) */
   wdgp->wdt->CONFIG      =
       (wdgp->config->flags.pause_on_sleep * WDT_CONFIG_SLEEP_Msk) |
       (wdgp->config->flags.pause_on_halt  * WDT_CONFIG_HALT_Msk );
-  
+
   /* Timeout in milli-seconds */
   uint64_t tout = (NRF51_LFCLK_FREQUENCY * wdgp->config->timeout_ms / 1000) - 1;
   osalDbgAssert(tout <= 0xFFFFFFFF, "watchdog timout value exceeded");  

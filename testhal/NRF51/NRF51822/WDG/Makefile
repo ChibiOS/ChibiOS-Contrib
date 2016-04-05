@@ -81,13 +81,10 @@ endif
 PROJECT = ch
 
 # Imported source files and paths
-#CHIBIOS = ../../../../../ChibiOS-RT
-#CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
-CHIBIOS = /home/sdalu/ChibiOS/ChibiOS
-CHIBIOS_CONTRIB = /home/sdalu/ChibiOS/Y/ChibiOS-Contrib
-
+CHIBIOS = ../../../../../ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 # Startup files.
-include $(CHIBIOS_CONTRIB)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_nrf51.mk
+include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_nrf51.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/NRF51/NRF51822/platform.mk
@@ -95,8 +92,7 @@ include $(CHIBIOS_CONTRIB)/os/hal/boards/NRF51-DK/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
-include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_v6m.mk
-
+include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v6m.mk
 
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD)/NRF51822.ld
@@ -209,18 +205,16 @@ ULIBS =
 # End of user defines
 ##############################################################################
 
-RULESPATH = $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC
+RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC
 include $(RULESPATH)/rules.mk
-
 
 # Flash
 JLINK_DEVICE    = nrf51422
 JLINK_PRE_FLASH = w4 4001e504 1
 JLINK_ERASE_ALL = w4 4001e504 2\nw4 4001e50c 1\nsleep 100
 
-
-include /home/sdalu/ChibiOS/W/ChibiOS-Contrib/os/various/jlink.mk
-include /home/sdalu/ChibiOS/W/ChibiOS-Contrib/os/various/gdb.mk
+include $(CHIBIOS_CONTRIB)/os/various/jlink.mk
+include $(CHIBIOS_CONTRIB)/os/various/gdb.mk
 
 flash: all jlink-flash
 debug: gdb-debug
