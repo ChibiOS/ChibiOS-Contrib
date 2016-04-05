@@ -16,7 +16,7 @@
 
 #include "ch.h"
 #include "hal.h"
-#include "test.h"
+#include "ch_test.h"
 
 typedef struct led_config
 {
@@ -32,8 +32,7 @@ static THD_WORKING_AREA(waBlinkLed1, 128);
 static THD_WORKING_AREA(waBlinkLed2, 128);
 static THD_WORKING_AREA(waBlinkLed3, 128);
 static THD_WORKING_AREA(waBlinkLed4, 128);
-static msg_t blinkLed(void *arg)
-{
+static THD_FUNCTION(blinkLed, arg) {
   led_config_t *ledConfig = (led_config_t*) arg;
 
   chRegSetThreadName("Blinker");
@@ -45,8 +44,6 @@ static msg_t blinkLed(void *arg)
     chThdSleepMilliseconds(ledConfig->sleep);
     palTogglePad(ledConfig->port, ledConfig->pin);
   }
-
-  return (msg_t) 0;
 }
 
 /*
@@ -74,7 +71,7 @@ int main(void)
   sdStart(&SD1, NULL);
 
   if (!palReadPad(GPIOJ, GPIOJ_SW1)) {
-    TestThread(&SD1);
+    test_execute((BaseSequentialStream *)&SD1);
   }
 
   led1.port  = GPIOF;
@@ -112,6 +109,6 @@ int main(void)
   while (TRUE) {
     chThdSleepMilliseconds(100);
   }
-  
+
   return 0;
 }
