@@ -22,8 +22,8 @@
  * @{
  */
 
-#ifndef _GPT_LLD_H_
-#define _GPT_LLD_H_
+#ifndef HAL_GPT_LLD_H_
+#define HAL_GPT_LLD_H_
 
 #if HAL_USE_GPT || defined(__DOXYGEN__)
 
@@ -328,6 +328,6 @@ extern "C" {
 
 #endif /* HAL_USE_GPT */
 
-#endif /* _GPT_LLD_H_ */
+#endif /* HAL_GPT_LLD_H_ */
 
 /** @} */
