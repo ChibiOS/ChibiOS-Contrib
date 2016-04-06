@@ -779,7 +779,7 @@ typedef struct
   __IO uint32_t TEST;           /**< Test                                    */
   __I  uint32_t _RESERVED1[505];/**< Reserved                                */
   __IO uint32_t LOCK;           /**< Lock                                    */
-} WATCHDOG_TypeDef;
+} WDT_TypeDef;
 
 /**
  * @}
@@ -912,6 +912,8 @@ typedef struct
 #define WGPT3           ((GPT_TypeDef *)    WGPT3_BASE)
 #define WGPT4           ((GPT_TypeDef *)    WGPT4_BASE)
 #define WGPT5           ((GPT_TypeDef *)    WGPT5_BASE)
+#define WDT0            ((WDT_TypeDef *)    WDT0_BASE)
+#define WDT1            ((WDT_TypeDef *)    WDT1_BASE)
 #define ADC0            ((ADC_TypeDef*)     ADC0_BASE)
 #define ADC1            ((ADC_TypeDef*)     ADC1_BASE)
 #define UART0           ((UART_TypeDef *)   UART0_BASE)
