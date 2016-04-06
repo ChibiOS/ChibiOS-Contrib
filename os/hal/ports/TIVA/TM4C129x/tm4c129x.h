@@ -862,7 +862,7 @@ typedef struct
   __IO uint32_t TEST;           /**< Test                                    */
   __I  uint32_t _RESERVED1[505];/**< Reserved                                */
   __IO uint32_t LOCK;           /**< Lock                                    */
-} WATCHDOG_TypeDef;
+} WDG_TypeDef;
 
 /**
  * @brief   Ethernet peripheral
@@ -1080,6 +1080,8 @@ typedef struct {
 #define GPT5    ((GPT_TypeDef *)    GPT5_BASE)
 #define GPT6    ((GPT_TypeDef *)    GPT6_BASE)
 #define GPT7    ((GPT_TypeDef *)    GPT7_BASE)
+#define WDT0    ((WDT_TypeDef *)    WDT0_BASE)
+#define WDT1    ((WDT_TypeDef *)    WDT1_BASE)
 #define ADC0    ((ADC_TypeDef*)     ADC0_BASE)
 #define ADC1    ((ADC_TypeDef*)     ADC1_BASE)
 #define UART0   ((UART_TypeDef *)   UART0_BASE)
