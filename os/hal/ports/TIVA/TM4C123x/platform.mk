@@ -9,7 +9,8 @@ PLATFORMSRC = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/hal_pwm_lld.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/hal_spi_lld.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/tiva_udma.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/hal_ext_lld.c
+              ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/hal_ext_lld.c \
+              ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/hal_wdg_lld.c
 
 # Required include directories
 PLATFORMINC = ${CHIBIOS}/os/hal/ports/common/ARMCMx \
