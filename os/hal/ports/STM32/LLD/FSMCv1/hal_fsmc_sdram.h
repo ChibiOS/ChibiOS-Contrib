@@ -31,7 +31,7 @@
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx))
 
-#include "fsmc.h"
+#include "hal_fsmc.h"
 
 #if (STM32_USE_FSMC_SDRAM == TRUE) || defined(__DOXYGEN__)
 

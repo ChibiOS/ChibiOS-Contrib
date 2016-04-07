@@ -26,7 +26,7 @@
  * @{
  */
 
-#include "timcap.h"
+#include "hal_timcap.h"
 
 #if HAL_USE_TIMCAP || defined(__DOXYGEN__)
 

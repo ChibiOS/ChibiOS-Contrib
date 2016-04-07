@@ -25,7 +25,7 @@
 #ifndef _NAND_LLD_H_
 #define _NAND_LLD_H_
 
-#include "fsmc.h"
+#include "hal_fsmc.h"
 #include "bitmap.h"
 
 #if (HAL_USE_NAND == TRUE) || defined(__DOXYGEN__)

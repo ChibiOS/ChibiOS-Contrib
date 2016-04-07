@@ -26,7 +26,7 @@
   The work is provided "as is" without warranty of any kind, neither express nor implied.
 */
 
-#include "eeprom.h"
+#include "hal_eeprom.h"
 #include <string.h>
 
 #if defined(HAL_USE_EEPROM) && HAL_USE_EEPROM

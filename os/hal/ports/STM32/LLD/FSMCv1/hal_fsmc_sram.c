@@ -22,7 +22,7 @@
  * @{
  */
 #include "hal.h"
-#include "fsmc_sram.h"
+#include "hal_fsmc_sram.h"
 
 #if (STM32_USE_FSMC_SRAM == TRUE) || defined(__DOXYGEN__)
 

@@ -22,7 +22,7 @@
  * @{
  */
 #include "hal.h"
-#include "fsmc.h"
+#include "hal_fsmc.h"
 
 #if (HAL_USE_FSMC == TRUE) || defined(__DOXYGEN__)
 

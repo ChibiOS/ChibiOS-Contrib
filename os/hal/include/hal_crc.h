@@ -72,7 +72,7 @@ typedef enum {
   CRC_COMPLETE               /* Asynchronous operation complete.           */
 } crcstate_t;
 
-#include "crc_lld.h"
+#include "hal_crc_lld.h"
 #include "crcsw.h" /* Include software LL driver */
 
 

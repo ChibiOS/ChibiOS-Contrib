@@ -18,7 +18,7 @@
 #ifndef USBH_MSD_H_
 #define USBH_MSD_H_
 
-#include "usbh.h"
+#include "hal_usbh.h"
 
 #if HAL_USE_USBH && HAL_USBH_USE_MSD
 

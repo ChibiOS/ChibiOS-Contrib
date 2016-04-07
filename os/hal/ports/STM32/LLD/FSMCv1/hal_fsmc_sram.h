@@ -25,7 +25,7 @@
 #ifndef _FSMC_SRAM_H_
 #define _FSMC_SRAM_H_
 
-#include "fsmc.h"
+#include "hal_fsmc.h"
 
 #if (STM32_USE_FSMC_SRAM == TRUE) || defined(__DOXYGEN__)
 

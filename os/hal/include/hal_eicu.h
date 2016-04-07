@@ -90,7 +90,7 @@ typedef struct EICUDriver EICUDriver;
 typedef void (*eicucallback_t)(EICUDriver *eicup, eicuchannel_t channel,
                                uint32_t width, uint32_t period);
 
-#include "eicu_lld.h"
+#include "hal_eicu_lld.h"
 
 /*===========================================================================*/
 /* Driver macros.                                                            */

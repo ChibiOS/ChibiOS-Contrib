@@ -89,7 +89,7 @@ typedef enum {
  */
 typedef struct NANDDriver NANDDriver;
 
-#include "nand_lld.h"
+#include "hal_nand_lld.h"
 
 /*===========================================================================*/
 /* Driver macros.                                                            */

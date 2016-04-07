@@ -37,7 +37,7 @@
 #if HAL_USE_TIMCAP || defined(__DOXYGEN__)
 
 #include "stm32_tim.h"
-#include "timcap.h"
+#include "hal_timcap.h"
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */

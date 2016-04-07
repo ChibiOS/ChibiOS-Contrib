@@ -32,7 +32,7 @@
 
 #if (STM32_USE_FSMC_SDRAM == TRUE) || defined(__DOXYGEN__)
 
-#include "fsmc_sdram.h"
+#include "hal_fsmc_sdram.h"
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */

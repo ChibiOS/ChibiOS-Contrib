@@ -42,7 +42,7 @@ Note:
   being written to the next page as might be expected.
 *********************************************************************/
 
-#include "ee25xx.h"
+#include "hal_ee25xx.h"
 #include <string.h>
 
 #if (defined(HAL_USE_EEPROM) && HAL_USE_EEPROM && EEPROM_USE_EE25XX) || defined(__DOXYGEN__)
