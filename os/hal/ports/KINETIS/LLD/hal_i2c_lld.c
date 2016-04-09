@@ -330,7 +330,7 @@ static inline msg_t _i2c_txrx_timeout(I2CDriver *i2cp, i2caddr_t addr,
   //if (i2cp->i2c->S & I2Cx_S_RXAK)
   //  i2cp->errors |= I2C_ACK_FAILURE;
 
-  if (msg == MSG_OK && txbuf != NULL && rxbuf != NULL) {
+  if (msg == MSG_OK && txbuf != NULL && rxbuf != NULL && rxbytes > 0) {
     i2cp->i2c->C1 |= I2Cx_C1_RSTA;
     /* FIXME */
     while (!(i2cp->i2c->S & I2Cx_S_BUSY));
