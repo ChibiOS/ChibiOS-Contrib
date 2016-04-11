@@ -34,7 +34,7 @@
  * @brief   RNG default configuration.
  */
 static const RNGConfig default_config = {
-    .digital_error_correction = 1,
+  .digital_error_correction = 1,
 };
 
 /*===========================================================================*/
@@ -119,7 +119,7 @@ void rng_lld_stop(RNGDriver *rngp) {
  * @notapi
  */
 msg_t rng_lld_write(RNGDriver *rngp, uint8_t *buf, size_t n,
-		    systime_t timeout) {
+                    systime_t timeout) {
   size_t i;
 
   for (i = 0 ; i < n ; i++) {

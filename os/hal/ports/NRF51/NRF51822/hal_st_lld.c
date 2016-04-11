@@ -65,7 +65,7 @@ OSAL_IRQ_HANDLER(Vector6C) {
   OSAL_IRQ_PROLOGUE();
 
   NRF_RTC0->EVENTS_TICK = 0;
-      
+
   osalSysLockFromISR();
   osalOsTimerHandlerI();
   osalSysUnlockFromISR();
@@ -87,7 +87,7 @@ OSAL_IRQ_HANDLER(Vector84) {
   OSAL_IRQ_PROLOGUE();
 
   NRF_RTC1->EVENTS_TICK = 0;
-      
+
   osalSysLockFromISR();
   osalOsTimerHandlerI();
   osalSysUnlockFromISR();
@@ -135,20 +135,20 @@ OSAL_IRQ_HANDLER(Vector6C) {
   OSAL_IRQ_PROLOGUE();
 
   if (NRF_RTC0->EVENTS_COMPARE[0]) {
-      NRF_RTC0->EVENTS_COMPARE[0] = 0;
-      
-      osalSysLockFromISR();
-      osalOsTimerHandlerI();
-      osalSysUnlockFromISR();
+    NRF_RTC0->EVENTS_COMPARE[0] = 0;
+
+    osalSysLockFromISR();
+    osalOsTimerHandlerI();
+    osalSysUnlockFromISR();
   }
 
 #if OSAL_ST_RESOLUTION == 16
   if (NRF_RTC0->EVENTS_COMPARE[1]) {
-      NRF_RTC0->EVENTS_COMPARE[1] = 0;
-      NRF_RTC0->TASKS_CLEAR = 1;
+    NRF_RTC0->EVENTS_COMPARE[1] = 0;
+    NRF_RTC0->TASKS_CLEAR = 1;
   }
 #endif
-  
+
   OSAL_IRQ_EPILOGUE();
 }
 #endif
@@ -166,20 +166,20 @@ OSAL_IRQ_HANDLER(Vector84) {
   OSAL_IRQ_PROLOGUE();
 
   if (NRF_RTC1->EVENTS_COMPARE[0]) {
-      NRF_RTC1->EVENTS_COMPARE[0] = 0;
-      
-      osalSysLockFromISR();
-      osalOsTimerHandlerI();
-      osalSysUnlockFromISR();
+    NRF_RTC1->EVENTS_COMPARE[0] = 0;
+
+    osalSysLockFromISR();
+    osalOsTimerHandlerI();
+    osalSysUnlockFromISR();
   }
 
 #if OSAL_ST_RESOLUTION == 16
   if (NRF_RTC1->EVENTS_COMPARE[1]) {
-      NRF_RTC1->EVENTS_COMPARE[1] = 0;
-      NRF_RTC1->TASKS_CLEAR = 1;
+    NRF_RTC1->EVENTS_COMPARE[1] = 0;
+    NRF_RTC1->TASKS_CLEAR = 1;
   }
 #endif
-  
+
   OSAL_IRQ_EPILOGUE();
 }
 #endif
@@ -211,7 +211,7 @@ void st_lld_init(void) {
   NRF_RTC0->INTENSET    = RTC_INTENSET_COMPARE1_Msk;
 #endif
   NRF_RTC0->TASKS_CLEAR  = 1;
-  
+
     /* Start timer */
   nvicEnableVector(RTC0_IRQn, NRF51_ST_PRIORITY);
   NRF_RTC0->TASKS_START = 1;
@@ -231,8 +231,8 @@ void st_lld_init(void) {
   NRF_RTC1->INTENSET    = RTC_INTENSET_COMPARE1_Msk;
 #endif
   NRF_RTC1->TASKS_CLEAR  = 1;
-  
-    /* Start timer */
+
+  /* Start timer */
   nvicEnableVector(RTC1_IRQn, NRF51_ST_PRIORITY);
   NRF_RTC1->TASKS_START = 1;
 #endif /* NRF51_ST_USE_RTC1 == TRUE */
@@ -285,7 +285,7 @@ void st_lld_init(void) {
   nvicEnableVector(TIMER0_IRQn, NRF51_ST_PRIORITY);
   NRF_TIMER0->TASKS_START = 1;
 #endif /* NRF51_ST_USE_TIMER0 == TRUE */
-  
+
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC */
 }
 

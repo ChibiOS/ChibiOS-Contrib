@@ -22,8 +22,8 @@
  * @{
  */
 
-#ifndef _HAL_LLD_H_
-#define _HAL_LLD_H_
+#ifndef HAL_LLD_H
+#define HAL_LLD_H
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -83,8 +83,8 @@
 
 #include "nvic.h"
 
-#define NRF51_LFCLK_FREQUENCY		   32768
-#define NRF51_HFCLK_FREQUENCY		16000000
+#define NRF51_LFCLK_FREQUENCY       32768
+#define NRF51_HFCLK_FREQUENCY       16000000
 
 #ifdef __cplusplus
 extern "C" {
@@ -95,7 +95,7 @@ extern "C" {
 }
 #endif
 
-#endif /* _HAL_LLD_H_ */
+#endif /* HAL_LLD_H */
 
 /**
  * @}

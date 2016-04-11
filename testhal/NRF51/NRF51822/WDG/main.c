@@ -16,12 +16,10 @@
 #include "ch.h"
 #include "hal.h"
 
-
-
 void timeout_callback(void) {
-    palTogglePad(IOPORT1, LED2);
-    palTogglePad(IOPORT1, LED3);
-    palTogglePad(IOPORT1, LED4);
+  palTogglePad(IOPORT1, LED2);
+  palTogglePad(IOPORT1, LED3);
+  palTogglePad(IOPORT1, LED4);
 }
 
 /*
@@ -39,27 +37,24 @@ int main(void) {
   halInit();
   chSysInit();
 
-
   palSetPad(IOPORT1, LED1);
 
   WDGConfig WDG_config = {
-      .flags.pause_on_sleep = 0,
-      .flags.pause_on_halt  = 0,
-      .timeout_ms           = 5000,
-      .callback             = timeout_callback
+    .flags.pause_on_sleep = 0,
+    .flags.pause_on_halt  = 0,
+    .timeout_ms           = 5000,
+    .callback             = timeout_callback
   };
 
   wdgStart(&WDGD1, &WDG_config);
-  
-
 
   /*
    * Normal main() thread activity, in this demo it does nothing.
    */
   while (true) {
     if (palReadPad(IOPORT1, BTN1) == 0) {
-	palTogglePad(IOPORT1, LED1);
-	wdgReset(&WDGD1);
+      palTogglePad(IOPORT1, LED1);
+      wdgReset(&WDGD1);
     }
     chThdSleepMilliseconds(500);
   }

@@ -22,8 +22,8 @@
  * @{
  */
 
-#ifndef _RNG_LLD_H_
-#define _RNG_LLD_H_
+#ifndef HAL_RNG_LLD_H
+#define HAL_RNG_LLD_H
 
 #if (HAL_USE_RNG == TRUE) || defined(__DOXYGEN__)
 
@@ -61,7 +61,7 @@
  * @brief   RNG1 interrupt priority level setting.
  */
 #if !defined(NRF51_RNG_RNG1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_RNG_RNG1_IRQ_PRIORITY     10
+#define NRF51_RNG_RNG1_IRQ_PRIORITY         10
 #endif
 
 
@@ -151,13 +151,13 @@ extern "C" {
   void rng_lld_start(RNGDriver *rngp);
   void rng_lld_stop(RNGDriver *rngp);
   msg_t rng_lld_write(RNGDriver *rngp, uint8_t *buf, size_t n,
-		      systime_t timeout);
+                      systime_t timeout);
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* HAL_USE_RNG */
 
-#endif /* _RNG_LLD_H_ */
+#endif /* HAL_RNG_LLD_H */
 
 /** @} */

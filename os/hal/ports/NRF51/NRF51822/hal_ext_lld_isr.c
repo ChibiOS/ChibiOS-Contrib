@@ -16,64 +16,95 @@
 
 /**
  * @file    NRF51x22/ext_lld_isr.h
- * @brief   NRF51x22 EXT subsystem low level driver ISR header.
+ * @brief   NRF51x22 EXT subsystem low level driver ISR code.
  *
  * @addtogroup EXT
  * @{
  */
 
-#ifndef _EXT_LLD_ISR_H_
-#define _EXT_LLD_ISR_H_
+#include "hal.h"
 
 #if HAL_USE_EXT || defined(__DOXYGEN__)
 
+#include "hal_ext_lld_isr.h"
+
 /*===========================================================================*/
-/* Driver constants.                                                         */
+/* Driver local definitions.                                                 */
 /*===========================================================================*/
 
 /*===========================================================================*/
-/* Driver pre-compile time settings.                                         */
+/* Driver exported variables.                                                */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver local variables.                                                   */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver local functions.                                                   */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
 /**
- * @name    Configuration options
- * @{
+ * @brief   EXTI[0]...EXTI[1] interrupt handler.
+ *
+ * @isr
  */
-/**
- * @brief   GPIOTE interrupt priority level setting.
- */
-#if !defined(NRF51_EXT_GPIOTE_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_EXT_GPIOTE_IRQ_PRIORITY      3
-#endif
-/** @} */
+OSAL_IRQ_HANDLER(Vector58) {
 
-/*===========================================================================*/
-/* Derived constants and error checks.                                       */
-/*===========================================================================*/
+  OSAL_IRQ_PROLOGUE();
 
-/*===========================================================================*/
-/* Driver data structures and types.                                         */
-/*===========================================================================*/
+  if (NRF_GPIOTE->EVENTS_IN[0])
+  {
+    NRF_GPIOTE->EVENTS_IN[0] = 0;
+    EXTD1.config->channels[0].cb(&EXTD1, 0);
+  }
+  if (NRF_GPIOTE->EVENTS_IN[1])
+  {
+    NRF_GPIOTE->EVENTS_IN[1] = 0;
+    EXTD1.config->channels[1].cb(&EXTD1, 1);
+  }
+  if (NRF_GPIOTE->EVENTS_IN[2])
+  {
+    NRF_GPIOTE->EVENTS_IN[2] = 0;
+    EXTD1.config->channels[2].cb(&EXTD1, 2);
+  }
+  if (NRF_GPIOTE->EVENTS_IN[3])
+  {
+    NRF_GPIOTE->EVENTS_IN[3] = 0;
+    EXTD1.config->channels[3].cb(&EXTD1, 3);
+  }
 
-/*===========================================================================*/
-/* Driver macros.                                                            */
-/*===========================================================================*/
-
-/*===========================================================================*/
-/* External declarations.                                                    */
-/*===========================================================================*/
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-  void ext_lld_exti_irq_enable(void);
-  void ext_lld_exti_irq_disable(void);
-#ifdef __cplusplus
+  OSAL_IRQ_EPILOGUE();
 }
-#endif
+
+/*===========================================================================*/
+/* Driver exported functions.                                                */
+/*===========================================================================*/
+
+/**
+ * @brief   Enables EXTI IRQ sources.
+ *
+ * @notapi
+ */
+void ext_lld_exti_irq_enable(void) {
+
+  nvicEnableVector(GPIOTE_IRQn, NRF51_EXT_GPIOTE_IRQ_PRIORITY);
+}
+
+/**
+ * @brief   Disables EXTI IRQ sources.
+ *
+ * @notapi
+ */
+void ext_lld_exti_irq_disable(void) {
+
+  nvicDisableVector(GPIOTE_IRQn);
+}
 
 #endif /* HAL_USE_EXT */
-
-#endif /* _EXT_LLD_ISR_H_ */
 
 /** @} */
