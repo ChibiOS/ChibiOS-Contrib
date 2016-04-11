@@ -23,11 +23,14 @@ static bool watchdog_timeout(WDGDriver *wdgp)
 
   palSetPad(GPIOF, GPIOF_LED_RED);
 
+  /* Return true to prevent a reset on the next timeout.*/
   return true;
 }
 
 /*
- * Watchdog deadline set to more than one second (LSI=40000 / (64 * 1000)).
+ * Watchdog deadline set to one second.
+ * Use callback on first timeout.
+ * Stall timer if paused by debugger.
  */
 static const WDGConfig wdgcfg =
 {
@@ -67,6 +70,7 @@ int main(void) {
    */
   while (true) {
     if (palReadPad(GPIOF, GPIOF_SW1)) {
+      /* Only reset the watchdog if the button is not pressed */
       wdgReset(&WDGD1);
       palClearPad(GPIOF, GPIOF_LED_RED);
     }
