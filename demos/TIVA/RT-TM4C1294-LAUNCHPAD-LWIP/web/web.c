@@ -87,7 +87,7 @@ THD_WORKING_AREA(wa_http_server, WEB_THREAD_STACK_SIZE);
 /**
  * HTTP server thread.
  */
-msg_t http_server(void *p) {
+THD_FUNCTION(http_server, p) {
   struct netconn *conn, *newconn;
   err_t err;
 
@@ -95,7 +95,7 @@ msg_t http_server(void *p) {
 
   /* Create a new TCP connection handle */
   conn = netconn_new(NETCONN_TCP);
-  LWIP_ERROR("http_server: invalid conn", (conn != NULL), return MSG_RESET;);
+  LWIP_ERROR("http_server: invalid conn", (conn != NULL), return;);
 
   /* Bind to port 80 (HTTP) with default IP address */
   netconn_bind(conn, NULL, WEB_THREAD_PORT);
@@ -113,7 +113,6 @@ msg_t http_server(void *p) {
     http_server_serve(newconn);
     netconn_delete(newconn);
   }
-  return MSG_OK;
 }
 
 #endif /* LWIP_NETCONN */

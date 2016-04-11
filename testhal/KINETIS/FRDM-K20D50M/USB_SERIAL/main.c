@@ -20,7 +20,6 @@
 
 #include "ch.h"
 #include "hal.h"
-#include "test.h"
 
 #include "shell.h"
 #include "chprintf.h"

@@ -22,8 +22,8 @@
  * @{
  */
 
-#ifndef _HAL_LLD_H_
-#define _HAL_LLD_H_
+#ifndef HAL_LLD_H_
+#define HAL_LLD_H_
 
 #include "kl2xz.h"
 #include "kinetis_registry.h"
@@ -311,6 +311,6 @@ extern "C" {
 }
 #endif
 
-#endif /* _HAL_LLD_H_ */
+#endif /* HAL_LLD_H_ */
 
 /** @} */
