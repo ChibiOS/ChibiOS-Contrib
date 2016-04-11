@@ -18,7 +18,7 @@
 #ifndef USBH_HUB_H_
 #define USBH_HUB_H_
 
-#include "usbh.h"
+#include "hal_usbh.h"
 
 #if HAL_USE_USBH
 #if HAL_USBH_USE_HUB

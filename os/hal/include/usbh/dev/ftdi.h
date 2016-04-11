@@ -18,7 +18,7 @@
 #ifndef USBH_FTDI_H_
 #define USBH_FTDI_H_
 
-#include "usbh.h"
+#include "hal_usbh.h"
 
 #if HAL_USE_USBH && HAL_USBH_USE_FTDI
 

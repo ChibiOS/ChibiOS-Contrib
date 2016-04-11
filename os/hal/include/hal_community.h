@@ -30,16 +30,16 @@
 /* Shared headers.*/
 
 /* Normal drivers.*/
-#include "nand.h"
-#include "eicu.h"
-#include "rng.h"
-#include "usbh.h"
-#include "timcap.h"
+#include "hal_nand.h"
+#include "hal_eicu.h"
+#include "hal_rng.h"
+#include "hal_usbh.h"
+#include "hal_timcap.h"
 
 /* Complex drivers.*/
-#include "onewire.h"
-#include "crc.h"
-#include "eeprom.h"
+#include "hal_onewire.h"
+#include "hal_crc.h"
+#include "hal_eeprom.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */

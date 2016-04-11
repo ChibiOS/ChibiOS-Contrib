@@ -18,7 +18,7 @@
 #ifndef USBH_INTERNAL_H_
 #define USBH_INTERNAL_H_
 
-#include "usbh.h"
+#include "hal_usbh.h"
 
 #if HAL_USE_USBH
 

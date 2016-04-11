@@ -23,7 +23,7 @@
 
 #include "string.h"
 
-#include "fsmc_sdram.h"
+#include "hal_fsmc_sdram.h"
 #include "membench.h"
 #include "memtest.h"
 
