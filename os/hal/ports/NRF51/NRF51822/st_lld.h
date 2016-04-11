@@ -42,9 +42,9 @@
  */
 #if !defined(NRF51_ST_USE_RTC0) || defined(__DOXYGEN__)
 #if !defined(SOFTDEVICE_PRESENT)
-#define NRF51_ST_USE_RTC0 		TRUE
+#define NRF51_ST_USE_RTC0     TRUE
 #else
-#define NRF51_ST_USE_RTC0 		FALSE
+#define NRF51_ST_USE_RTC0     FALSE
 #endif
 #endif
 
@@ -53,9 +53,9 @@
  */
 #if !defined(NRF51_ST_USE_RTC1) || defined(__DOXYGEN__)
 #if !defined(SOFTDEVICE_PRESENT)
-#define NRF51_ST_USE_RTC1		FALSE
+#define NRF51_ST_USE_RTC1     FALSE
 #else
-#define NRF51_ST_USE_RTC1		TRUE
+#define NRF51_ST_USE_RTC1     TRUE
 #endif
 #endif
 
@@ -63,7 +63,7 @@
  * @brief   Use TIMER0 to generates system ticks
  */
 #if !defined(NRF51_ST_USE_TIMER0) || defined(__DOXYGEN__)
-#define NRF51_ST_USE_TIMER0		FALSE
+#define NRF51_ST_USE_TIMER0   FALSE
 #endif
 
 /**
@@ -92,8 +92,8 @@
 #error "One clock source is needed, enable one (RTC0, RTC1, or TIMER0)"
 #endif
 
-#if ((NRF51_ST_USE_RTC0   == TRUE ? 1 : 0) +	\
-     (NRF51_ST_USE_RTC1   == TRUE ? 1 : 0) +	\
+#if ((NRF51_ST_USE_RTC0   == TRUE ? 1 : 0) + \
+     (NRF51_ST_USE_RTC1   == TRUE ? 1 : 0) + \
      (NRF51_ST_USE_TIMER0 == TRUE ? 1 : 0)) > 1
 #error "Only one clock source can be used (RTC0, RTC1, or TIMER0)"
 #endif
@@ -156,10 +156,13 @@ extern "C" {
  */
 static inline systime_t st_lld_get_counter(void) {
 #if NRF51_ST_USE_RTC0 == TRUE
-    return (systime_t)NRF_RTC0->COUNTER;
+  return (systime_t)NRF_RTC0->COUNTER;
 #endif
 #if NRF51_ST_USE_RTC1 == TRUE
-    return (systime_t)NRF_RTC1->COUNTER;
+  return (systime_t)NRF_RTC1->COUNTER;
+#endif
+#if NRF51_ST_USE_TIMER0 == TRUE
+  return (systime_t)0;    /* TODO */
 #endif
 }
 
@@ -183,6 +186,9 @@ static inline void st_lld_start_alarm(systime_t abstime) {
   NRF_RTC1->EVENTS_COMPARE[0]   = 0;
   NRF_RTC1->EVTENSET            = RTC_EVTENSET_COMPARE0_Msk;
 #endif
+#if NRF51_ST_USE_TIMER0 == TRUE
+  (void)abstime;         /* TODO */
+#endif
 }
 
 /**
@@ -199,6 +205,9 @@ static inline void st_lld_stop_alarm(void) {
   NRF_RTC1->EVTENCLR            = RTC_EVTENCLR_COMPARE0_Msk;
   NRF_RTC1->EVENTS_COMPARE[0]   = 0;
 #endif
+#if NRF51_ST_USE_TIMER0 == TRUE
+  /* TODO */
+#endif
 }
 
 /**
@@ -210,10 +219,13 @@ static inline void st_lld_stop_alarm(void) {
  */
 static inline void st_lld_set_alarm(systime_t abstime) {
 #if NRF51_ST_USE_RTC0 == TRUE
-    NRF_RTC0->CC[0]             = abstime;
+  NRF_RTC0->CC[0] = abstime;
 #endif
 #if NRF51_ST_USE_RTC1 == TRUE
-    NRF_RTC1->CC[0]             = abstime;
+  NRF_RTC1->CC[0] = abstime;
+#endif
+#if NRF51_ST_USE_TIMER0 == TRUE
+  (void)abstime;    /* TODO */
 #endif
 }
 
@@ -230,6 +242,9 @@ static inline systime_t st_lld_get_alarm(void) {
 #endif
 #if NRF51_ST_USE_RTC1 == TRUE
   return (systime_t)NRF_RTC1->CC[0];
+#endif
+#if NRF51_ST_USE_TIMER0 == TRUE
+  return (systime_t)0;         /* TODO */
 #endif
 }
 
@@ -248,6 +263,9 @@ static inline bool st_lld_is_alarm_active(void) {
 #endif
 #if NRF51_ST_USE_RTC1 == TRUE
   return NRF_RTC1->EVTEN & RTC_EVTEN_COMPARE0_Msk;
+#endif
+#if NRF51_ST_USE_TIMER0 == TRUE
+  return false;      /* TODO */
 #endif
 }
 
