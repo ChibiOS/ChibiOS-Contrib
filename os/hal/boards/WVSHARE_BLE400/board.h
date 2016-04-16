@@ -34,6 +34,8 @@
 #define LED4           22
 #define UART_TX        9
 #define UART_RX        11
+#define UART_RTS       8
+#define UART_CTS       10
 #define SPI_SCK        25
 #define SPI_MOSI       24
 #define SPI_MISO       23
