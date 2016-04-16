@@ -152,7 +152,7 @@ typedef struct
   __IO uint8_t  A1;
   __IO uint8_t  F;
   __IO uint8_t  C1;
-  __IO uint8_t  S1;
+  __IO uint8_t  S; /* Denoted 'S1' in datasheet. */
   __IO uint8_t  D;
   __IO uint8_t  C2;
   __IO uint8_t  FLT;
@@ -876,14 +876,14 @@ typedef struct {
 #define I2Cx_C1_DMAEN                ((uint8_t)0x01)    /*!< DMA Enable */
 
 /***********  Bits definition for I2Cx_S1 register  *************/
-#define I2Cx_S1_TCF                  ((uint8_t)0x80)    /*!< Transfer Complete Flag */
-#define I2Cx_S1_IAAS                 ((uint8_t)0x40)    /*!< Addressed As A Slave */
-#define I2Cx_S1_BUSY                 ((uint8_t)0x20)    /*!< Bus Busy */
-#define I2Cx_S1_ARBL                 ((uint8_t)0x10)    /*!< Arbitration Lost */
-#define I2Cx_S1_RAM                  ((uint8_t)0x08)    /*!< Range Address Match */
-#define I2Cx_S1_SRW                  ((uint8_t)0x04)    /*!< Slave Read/Write */
-#define I2Cx_S1_IICIF                ((uint8_t)0x02)    /*!< Interrupt Flag */
-#define I2Cx_S1_RXAK                 ((uint8_t)0x01)    /*!< Receive Acknowledge */
+#define I2Cx_S_TCF                   ((uint8_t)0x80)    /*!< Transfer Complete Flag */
+#define I2Cx_S_IAAS                  ((uint8_t)0x40)    /*!< Addressed As A Slave */
+#define I2Cx_S_BUSY                  ((uint8_t)0x20)    /*!< Bus Busy */
+#define I2Cx_S_ARBL                  ((uint8_t)0x10)    /*!< Arbitration Lost */
+#define I2Cx_S_RAM                   ((uint8_t)0x08)    /*!< Range Address Match */
+#define I2Cx_S_SRW                   ((uint8_t)0x04)    /*!< Slave Read/Write */
+#define I2Cx_S_IICIF                 ((uint8_t)0x02)    /*!< Interrupt Flag */
+#define I2Cx_S_RXAK                  ((uint8_t)0x01)    /*!< Receive Acknowledge */
 
 /***********  Bits definition for I2Cx_D register  **************/
 #define I2Cx_D_DATA_SHIFT            0                  /*!< Data */
