@@ -63,7 +63,7 @@ void config_frequency(I2CDriver *i2cp) {
    * divider used to generate the SCL clock from the main
    * system clock.
    */
-  uint16_t icr_table[] = {
+  const uint16_t icr_table[] = {
     /* 0x00 - 0x0F */
     20,22,24,26,28,30,34,40,28,32,36,40,44,48,56,68,
     /* 0x10 - 0x1F */
@@ -117,53 +117,116 @@ static void serve_interrupt(I2CDriver *i2cp) {
   I2C_TypeDef *i2c = i2cp->i2c;
   intstate_t state = i2cp->intstate;
 
-  if (i2c->S & I2Cx_S_ARBL) {
+  /* check if we're master or slave */
+  if (i2c->C1 & I2Cx_C1_MST) {
+    /* master */
 
-    i2cp->errors |= I2C_ARBITRATION_LOST;
-    i2c->S |= I2Cx_S_ARBL;
+    if (i2c->S & I2Cx_S_ARBL) {
+      /* check if we lost arbitration */
+      i2cp->errors |= I2C_ARBITRATION_LOST;
+      i2c->S |= I2Cx_S_ARBL;
+      /* TODO: may need to do more here, reset bus? */
+      /* Perhaps clear MST? */
 
-  } else if (state == STATE_SEND) {
+    } else if (i2c->S & I2Cx_S_TCF) {
+      /* just completed byte transfer */
+      if (i2c->C1 & I2Cx_C1_TX) {
+        /* the byte was transmitted */
 
-    if (i2c->S & I2Cx_S_RXAK)
-      i2cp->errors |= I2C_ACK_FAILURE;
-    else if (i2cp->txbuf != NULL && i2cp->txidx < i2cp->txbytes)
-      i2c->D = i2cp->txbuf[i2cp->txidx++];
-    else
-      i2cp->intstate = STATE_STOP;
+        if (state == STATE_SEND) {
+          /* currently sending stuff */
 
-  } else if (state == STATE_DUMMY) {
+          if (i2c->S & I2Cx_S_RXAK) {
+            /* slave did not ACK */
+            i2cp->errors |= I2C_ACK_FAILURE;
+            /* the thread will be woken up at the end of ISR and release the bus */
 
-    if (i2c->S & I2Cx_S_RXAK)
-      i2cp->errors |= I2C_ACK_FAILURE;
-    else {
-      i2c->C1 &= ~I2Cx_C1_TX;
+          } else if (i2cp->txbuf != NULL && i2cp->txidx < i2cp->txbytes) {
+            /* slave ACK'd and we want to send more */
+            i2c->D = i2cp->txbuf[i2cp->txidx++];
+          } else {
+            /* slave ACK'd and we are done sending */
+            i2cp->intstate = STATE_STOP;
+            /* this wakes up the waiting thread at the end of ISR */
+          }
 
-      if (i2cp->rxbytes > 1)
-        i2c->C1 &= ~I2Cx_C1_TXAK;
-      else
-        i2c->C1 |= I2Cx_C1_TXAK;
-      (void) i2c->D;
-      i2cp->intstate = STATE_RECV;
-    }
+        } else if (state == STATE_RECV) {
+          /* should be receiving stuff, so we've just sent the address */
 
-  } else if (state == STATE_RECV) {
+          if (i2c->S & I2Cx_S_RXAK) {
+            /* slave did not ACK */
+            i2cp->errors |= I2C_ACK_FAILURE;
+            /* the thread will be woken up and release the bus */
 
-    if (i2cp->rxbytes > 1) {
-      if (i2cp->rxidx == (i2cp->rxbytes - 2))
-        i2c->C1 |= I2Cx_C1_TXAK;
-      else
-        i2c->C1 &= ~I2Cx_C1_TXAK;
-    }
+          } else {
+            /* slave ACK'd, we should be receiving next */
+            i2c->C1 &= ~I2Cx_C1_TX;
 
-    if (i2cp->rxidx == i2cp->rxbytes - 1)
-      i2c->C1 &= ~(I2Cx_C1_TX | I2Cx_C1_MST);
+            if (i2cp->rxbytes > 1) {
+              /* multi-byte read, send ACK after next transfer */
+              i2c->C1 &= ~I2Cx_C1_TXAK;
+            } else {
+              /* only 1 byte remaining, send NAK */
+              i2c->C1 |= I2Cx_C1_TXAK;
+            }
 
-    i2cp->rxbuf[i2cp->rxidx++] = i2c->D;
+            (void) i2c->D; /* dummy read; triggers next receive */
+          }
 
-    if (i2cp->rxidx == i2cp->rxbytes)
-      i2cp->intstate = STATE_STOP;
+        } /* possibly check other states here - should not happen! */
+
+      } else {
+        /* the byte was received */
+
+        if (state == STATE_RECV) {
+          /* currently receiving stuff */
+          /* the received byte is now in D */
+
+          if (i2cp->rxbytes > 1) {
+            /* expecting at least one byte after this one */
+            if (i2cp->rxidx == (i2cp->rxbytes - 2)) {
+              /* expecting exactly one byte after this one, NAK that one */
+              i2c->C1 |= I2Cx_C1_TXAK;
+            } else {
+              /* expecting more than one after this one, respond with ACK */
+              i2c->C1 &= ~I2Cx_C1_TXAK;
+            }
+          }
+
+          if (i2cp->rxidx == i2cp->rxbytes - 1) {
+            /* D is the last byte we're expecting */
+            /* release bus: switch to RX mode, send STOP */
+            /* need to do it now otherwise the I2C module will wait for another byte */
+            // delayMicroseconds(1);
+            i2c->C1 &= ~(I2Cx_C1_TX | I2Cx_C1_MST);
+            i2cp->intstate = STATE_STOP;
+            /* this wakes up the waiting thread at the end of ISR */
+          }
+
+          /* get the data from D; this triggers the next receive */
+          i2cp->rxbuf[i2cp->rxidx++] = i2c->D;
+
+          // if (i2cp->rxidx == i2cp->rxbytes) {
+            /* done receiving */
+          // }
+        } /* possibly check other states here - should not happen! */
+      }
+
+    } /* possibly check other interrupt flags here */
+
+  } else {
+    /* slave */
+
+    /* Not implemented yet */
   }
 
+  /* Reset other interrupt sources */
+#if defined(I2Cx_FLT_STOPF) /* extra flags on KL26Z and KL27Z */
+  i2cp->i2c->FLT |= I2Cx_FLT_STOPF;
+#endif
+#if defined(I2Cx_FLT_STARTF) /* extra flags on KL27Z */
+  i2cp->i2c->FLT |= I2Cx_FLT_STARTF;
+#endif
   /* Reset interrupt flag */
   i2c->S |= I2Cx_S_IICIF;
 
@@ -260,8 +323,9 @@ void i2c_lld_start(I2CDriver *i2cp) {
   }
 
   config_frequency(i2cp);
-  i2cp->i2c->C1 |= I2Cx_C1_IICEN | I2Cx_C1_IICIE;
-  i2cp->intstate = STATE_STOP;
+  i2cp->i2c->C1 = I2Cx_C1_IICEN | I2Cx_C1_IICIE; // reset I2C, enable interrupts
+  i2cp->i2c->S = I2Cx_S_IICIF | I2Cx_S_ARBL; // clear status flags just in case
+  i2cp->intstate = STATE_STOP; // internal state
 }
 
 /**
@@ -315,35 +379,58 @@ static inline msg_t _i2c_txrx_timeout(I2CDriver *i2cp, i2caddr_t addr,
   i2cp->rxbytes = rxbytes;
   i2cp->rxidx = 0;
 
-  /* send START */
-  i2cp->i2c->C1 |= I2Cx_C1_MST;
-  i2cp->i2c->C1 |= I2Cx_C1_TX;
+  /* clear status flags */
+#if defined(I2Cx_FLT_STOPF) /* extra flags on KL26Z and KL27Z */
+  i2cp->i2c->FLT |= I2Cx_FLT_STOPF;
+#endif
+#if defined(I2Cx_FLT_STARTF) /* extra flags on KL27Z */
+  i2cp->i2c->FLT |= I2Cx_FLT_STARTF;
+#endif
+  i2cp->i2c->S = I2Cx_S_IICIF|I2Cx_S_ARBL;
 
-  /* FIXME: should not use busy waiting! */
-  while (!(i2cp->i2c->S & I2Cx_S_BUSY));
+  /* acquire the bus */
+  /* check to see if we already have the bus */
+  if(i2cp->i2c->C1 & I2Cx_C1_MST) {
+    /* send repeated start */
+    i2cp->i2c->C1 |= I2Cx_C1_RSTA | I2Cx_C1_TX;
+  } else {
+    /* wait until the bus is released */
+    /* TODO: implement timeout here */
+    /* FIXME: should not use busy waiting! */
+    while (i2cp->i2c->S & I2Cx_S_BUSY);
+    /* send START */
+    i2cp->i2c->C1 |= I2Cx_C1_MST|I2Cx_C1_TX;
+  }
 
+  /* send slave address */
   i2cp->i2c->D = addr << 1 | op;
 
+  /* wait for the ISR to signal that the transmission (or receive if no transmission) phase is complete */
   msg = osalThreadSuspendTimeoutS(&i2cp->thread, TIME_INFINITE);
 
   /* FIXME */
   //if (i2cp->i2c->S & I2Cx_S_RXAK)
   //  i2cp->errors |= I2C_ACK_FAILURE;
 
-  if (msg == MSG_OK && txbuf != NULL && rxbuf != NULL && rxbytes > 0) {
+  /* the transmitting (or receiving if no transmission) phase has finished,
+   * do we expect to receive something? */
+  if (msg == MSG_OK && rxbuf != NULL && rxbytes > 0 && i2cp->rxidx < rxbytes) {
+    /* send repeated start */
     i2cp->i2c->C1 |= I2Cx_C1_RSTA;
     /* FIXME */
-    while (!(i2cp->i2c->S & I2Cx_S_BUSY));
+    // while (!(i2cp->i2c->S & I2Cx_S_BUSY));
 
-    i2cp->intstate = STATE_DUMMY;
+    i2cp->intstate = STATE_RECV;
     i2cp->i2c->D = i2cp->addr << 1 | 1;
 
     msg = osalThreadSuspendTimeoutS(&i2cp->thread, TIME_INFINITE);
   }
 
+  /* release bus - RX mode, send STOP */
+  // other kinetis I2C drivers wait here for 1us. is this needed?
   i2cp->i2c->C1 &= ~(I2Cx_C1_TX | I2Cx_C1_MST);
   /* FIXME */
-  while (i2cp->i2c->S & I2Cx_S_BUSY);
+  // while (i2cp->i2c->S & I2Cx_S_BUSY);
 
   return msg;
 }
@@ -373,7 +460,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
                                      uint8_t *rxbuf, size_t rxbytes,
                                      systime_t timeout) {
 
-  i2cp->intstate = STATE_DUMMY;
+  i2cp->intstate = STATE_RECV;
   return _i2c_txrx_timeout(i2cp, addr, NULL, 0, rxbuf, rxbytes, timeout);
 }
 
