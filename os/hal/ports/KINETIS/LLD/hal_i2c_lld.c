@@ -363,8 +363,8 @@ static inline msg_t _i2c_txrx_timeout(I2CDriver *i2cp, i2caddr_t addr,
                                       uint8_t *rxbuf, size_t rxbytes,
                                       systime_t timeout) {
 
-  (void)timeout;
   msg_t msg;
+  systime_t start, end;
 
   uint8_t op = (i2cp->intstate == STATE_SEND) ? 0 : 1;
 
@@ -394,10 +394,29 @@ static inline msg_t _i2c_txrx_timeout(I2CDriver *i2cp, i2caddr_t addr,
     /* send repeated start */
     i2cp->i2c->C1 |= I2Cx_C1_RSTA | I2Cx_C1_TX;
   } else {
+    /* unlock during the wait, so that tasks with
+     * higher priority can get attention */
+    osalSysUnlock();
+
     /* wait until the bus is released */
-    /* TODO: implement timeout here */
-    /* FIXME: should not use busy waiting! */
-    while (i2cp->i2c->S & I2Cx_S_BUSY);
+    /* Calculating the time window for the timeout on the busy bus condition.*/
+    start = osalOsGetSystemTimeX();
+    end = start + OSAL_MS2ST(KINETIS_I2C_BUSY_TIMEOUT);
+
+    while(true) {
+      osalSysLock();
+      /* If the bus is not busy then the operation can continue, note, the
+         loop is exited in the locked state.*/
+      if(!(i2cp->i2c->S & I2Cx_S_BUSY))
+        break;
+      /* If the system time went outside the allowed window then a timeout
+         condition is returned.*/
+      if (!osalOsIsTimeWithinX(osalOsGetSystemTimeX(), start, end)) {
+        return MSG_TIMEOUT;
+      }
+      osalSysUnlock();
+    }
+
     /* send START */
     i2cp->i2c->C1 |= I2Cx_C1_MST|I2Cx_C1_TX;
   }
@@ -406,7 +425,7 @@ static inline msg_t _i2c_txrx_timeout(I2CDriver *i2cp, i2caddr_t addr,
   i2cp->i2c->D = addr << 1 | op;
 
   /* wait for the ISR to signal that the transmission (or receive if no transmission) phase is complete */
-  msg = osalThreadSuspendTimeoutS(&i2cp->thread, TIME_INFINITE);
+  msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
 
   /* FIXME */
   //if (i2cp->i2c->S & I2Cx_S_RXAK)
@@ -423,7 +442,7 @@ static inline msg_t _i2c_txrx_timeout(I2CDriver *i2cp, i2caddr_t addr,
     i2cp->intstate = STATE_RECV;
     i2cp->i2c->D = i2cp->addr << 1 | 1;
 
-    msg = osalThreadSuspendTimeoutS(&i2cp->thread, TIME_INFINITE);
+    msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
   }
 
   /* release bus - RX mode, send STOP */

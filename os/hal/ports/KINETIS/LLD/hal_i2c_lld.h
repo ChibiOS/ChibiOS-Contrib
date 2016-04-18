@@ -77,6 +77,13 @@
 #define KINETIS_I2C_I2C1_PRIORITY        12
 #endif
 
+/**
+ * @brief   Timeout for external clearing BUSY bus (in ms).
+ */
+#if !defined(KINETIS_I2C_BUSY_TIMEOUT) || defined(__DOXYGEN__)
+#define KINETIS_I2C_BUSY_TIMEOUT 50
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
