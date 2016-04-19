@@ -34,7 +34,11 @@
 #define STATE_STOP    0x00
 #define STATE_SEND    0x01
 #define STATE_RECV    0x02
-#define STATE_DUMMY   0x03
+
+#if defined(KL27Zxxx) || defined(KL27Zxx) /* KL27Z RST workaround */
+#define RSTA_WORKAROUND_OFF    0x00
+#define RSTA_WORKAROUND_ON     0x01
+#endif /* KL27Z RST workaround */
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -188,6 +192,10 @@ struct I2CDriver {
   intstate_t                intstate;
   /* @brief Low-level register access. */
   I2C_TypeDef               *i2c;
+#if defined(KL27Zxxx) || defined(KL27Zxx) /* KL27Z RST workaround */
+  /* @brief Auxiliary variable for KL27Z repeated start workaround. */
+  intstate_t                rsta_workaround;
+#endif /* KL27Z RST workaround */
 };
 
 /*===========================================================================*/

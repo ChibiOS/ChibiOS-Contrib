@@ -127,8 +127,20 @@ static void serve_interrupt(I2CDriver *i2cp) {
       i2c->S |= I2Cx_S_ARBL;
       /* TODO: may need to do more here, reset bus? */
       /* Perhaps clear MST? */
+    }
 
-    } else if (i2c->S & I2Cx_S_TCF) {
+#if defined(KL27Zxxx) || defined(KL27Zxx) /* KL27Z RST workaround */
+    else if ((i2cp->rsta_workaround == RSTA_WORKAROUND_ON) && (i2cp->i2c->FLT & I2Cx_FLT_STARTF)) {
+      i2cp->rsta_workaround = RSTA_WORKAROUND_OFF;
+      /* clear+disable STARTF/STOPF interrupts and wake up the thread */
+      i2cp->i2c->FLT |= I2Cx_FLT_STOPF|I2Cx_FLT_STARTF;
+      i2cp->i2c->FLT &= ~I2Cx_FLT_SSIE;
+      i2c->S |= I2Cx_S_IICIF;
+      _i2c_wakeup_isr(i2cp);
+    }
+#endif /* KL27Z RST workaround */
+
+    else if (i2c->S & I2Cx_S_TCF) {
       /* just completed byte transfer */
       if (i2c->C1 & I2Cx_C1_TX) {
         /* the byte was transmitted */
@@ -213,7 +225,6 @@ static void serve_interrupt(I2CDriver *i2cp) {
       }
 
     } /* possibly check other interrupt flags here */
-
   } else {
     /* slave */
 
@@ -379,6 +390,10 @@ static inline msg_t _i2c_txrx_timeout(I2CDriver *i2cp, i2caddr_t addr,
   i2cp->rxbytes = rxbytes;
   i2cp->rxidx = 0;
 
+#if defined(KL27Zxxx) || defined(KL27Zxx) /* KL27Z RST workaround */
+  i2cp->rsta_workaround = RSTA_WORKAROUND_OFF;
+#endif /* KL27Z RST workaround */
+
   /* clear status flags */
 #if defined(I2Cx_FLT_STOPF) /* extra flags on KL26Z and KL27Z */
   i2cp->i2c->FLT |= I2Cx_FLT_STOPF;
@@ -391,8 +406,34 @@ static inline msg_t _i2c_txrx_timeout(I2CDriver *i2cp, i2caddr_t addr,
   /* acquire the bus */
   /* check to see if we already have the bus */
   if(i2cp->i2c->C1 & I2Cx_C1_MST) {
+
+#if defined(KL27Zxxx) || defined(KL27Zxx) /* KL27Z RST workaround */
+    /* need to wait for STARTF interrupt after issuing repeated start,
+     * otherwise the double buffering mechanism sends the last sent byte
+     * instead of the slave address.
+     * https://community.freescale.com/thread/377611
+     */
+    i2cp->rsta_workaround = RSTA_WORKAROUND_ON;
+    /* clear any interrupt bits and enable STARTF/STOPF interrupts */
+    i2cp->i2c->FLT |= I2Cx_FLT_STOPF|I2Cx_FLT_STARTF;
+    i2cp->i2c->S |= I2Cx_S_IICIF|I2Cx_S_ARBL;
+    i2cp->i2c->FLT |= I2Cx_FLT_SSIE;
+#endif /* KL27Z RST workaround */
+
     /* send repeated start */
     i2cp->i2c->C1 |= I2Cx_C1_RSTA | I2Cx_C1_TX;
+
+#if defined(KL27Zxxx) || defined(KL27Zxx) /* KL27Z RST workaround */
+    /* wait for the STARTF interrupt */
+    msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+    /* abort if this didn't go well (timed out) */
+    if (msg != MSG_OK) {
+      /* release bus - RX mode, send STOP */
+      i2cp->i2c->C1 &= ~(I2Cx_C1_TX | I2Cx_C1_MST);
+      return msg;
+    }
+#endif /* KL27Z RST workaround */
+
   } else {
     /* unlock during the wait, so that tasks with
      * higher priority can get attention */
@@ -434,8 +475,30 @@ static inline msg_t _i2c_txrx_timeout(I2CDriver *i2cp, i2caddr_t addr,
   /* the transmitting (or receiving if no transmission) phase has finished,
    * do we expect to receive something? */
   if (msg == MSG_OK && rxbuf != NULL && rxbytes > 0 && i2cp->rxidx < rxbytes) {
+
+#if defined(KL27Zxxx) || defined(KL27Zxx) /* KL27Z RST workaround */
+    /* the same KL27Z RST workaround as above */
+    i2cp->rsta_workaround = RSTA_WORKAROUND_ON;
+    /* clear any interrupt bits and enable STARTF/STOPF interrupts */
+    i2cp->i2c->FLT |= I2Cx_FLT_STOPF|I2Cx_FLT_STARTF;
+    i2cp->i2c->S |= I2Cx_S_IICIF|I2Cx_S_ARBL;
+    i2cp->i2c->FLT |= I2Cx_FLT_SSIE;
+#endif /* KL27Z RST workaround */
+
     /* send repeated start */
     i2cp->i2c->C1 |= I2Cx_C1_RSTA;
+
+#if defined(KL27Zxxx) || defined(KL27Zxx) /* KL27Z RST workaround */
+    /* wait for the STARTF interrupt */
+    msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+    /* abort if this didn't go well (timed out) */
+    if (msg != MSG_OK) {
+      /* release bus - RX mode, send STOP */
+      i2cp->i2c->C1 &= ~(I2Cx_C1_TX | I2Cx_C1_MST);
+      return msg;
+    }
+#endif /* KL27Z RST workaround */
+
     /* FIXME */
     // while (!(i2cp->i2c->S & I2Cx_S_BUSY));
 
