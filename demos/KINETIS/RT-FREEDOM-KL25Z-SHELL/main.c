@@ -26,12 +26,12 @@ SerialConfig s0cfg = {
  */
 static THD_WORKING_AREA(waBlinkThread, 128);
 static THD_FUNCTION(BlinkThread, arg) {
+  systime_t time = 500;
 
   (void)arg;
 
   chRegSetThreadName("blinker");
   while (true) {
-    systime_t time = 500;
     palTogglePad(GPIO_LED_BLUE, PIN_LED_BLUE);
     chThdSleepMilliseconds(time);
   }

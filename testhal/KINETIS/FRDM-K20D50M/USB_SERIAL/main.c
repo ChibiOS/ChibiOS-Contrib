@@ -91,12 +91,12 @@ static const ShellConfig shell_cfg1 = {
  */
 static THD_WORKING_AREA(waThread1, 128);
 static THD_FUNCTION(Thread1, arg) {
+  systime_t time;
 
   (void)arg;
+
   chRegSetThreadName("blinker");
   while (true) {
-    systime_t time;
-
     time = serusbcfg.usbp->state == USB_ACTIVE ? 250 : 500;
     palClearPad(GPIO_LED_RED, PIN_LED_RED);
     chThdSleepMilliseconds(time);
