@@ -80,9 +80,9 @@ void config_frequency(I2CDriver *i2cp) {
   uint16_t best, diff;
 
   if (i2cp->config != NULL)
-    divisor = KINETIS_SYSCLK_FREQUENCY / i2cp->config->clock;
+    divisor = KINETIS_BUSCLK_FREQUENCY / i2cp->config->clock;
   else
-    divisor = KINETIS_SYSCLK_FREQUENCY / 100000;
+    divisor = KINETIS_BUSCLK_FREQUENCY / 100000;
 
   best = ~0;
   index = 0;
