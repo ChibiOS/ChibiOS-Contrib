@@ -53,24 +53,31 @@
 #endif
 
 /**
- * @brief   Enables the community subsystem.
+ * @brief   Enables the CRC subsystem.
  */
 #if !defined(HAL_USE_CRC) || defined(__DOXYGEN__)
 #define HAL_USE_CRC                 FALSE
 #endif
 
 /**
+ * @brief   Enables the RNG subsystem.
+ */
+#if !defined(HAL_USE_RNG) || defined(__DOXYGEN__)
+#define HAL_USE_RNG                 FALSE
+#endif
+
+/**
  * @brief   Enables the EEPROM subsystem.
  */
 #if !defined(HAL_USE_EEPROM) || defined(__DOXYGEN__)
-#define HAL_USE_EEPROM            FALSE
+#define HAL_USE_EEPROM              FALSE
 #endif
 
 /**
  * @brief   Enables the TIMCAP subsystem.
  */
 #if !defined(HAL_USE_TIMCAP) || defined(__DOXYGEN__)
-#define HAL_USE_TIMCAP            TRUE
+#define HAL_USE_TIMCAP              TRUE
 #endif
 
 /*===========================================================================*/

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>RT-STM32F429-DISCOVERY-TRIBUF</name>
+	<name>STM32F429-DISCOVERY-TRIBUF</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -80,12 +80,22 @@
 		<link>
 			<name>os-community</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/os</locationURI>
+			<locationURI>copy_PARENT/os</locationURI>
 		</link>
 		<link>
 			<name>os-git</name>
 			<type>2</type>
-			<locationURI>PARENT-4-PROJECT_LOC/os</locationURI>
+			<locationURI>copy_PARENT1/os</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-1-CHIBIOS%7D/ChibiOS-Contrib</value>
+		</variable>
+		<variable>
+			<name>copy_PARENT1</name>
+			<value>$%7BPARENT-1-copy_PARENT%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

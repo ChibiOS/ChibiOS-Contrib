@@ -140,8 +140,8 @@ msg_t eepfs_geterror(void *ip);
 msg_t eepfs_put(void *ip, uint8_t b);
 msg_t eepfs_get(void *ip);
 
-#include "ee24xx.h"
-#include "ee25xx.h"
+#include "hal_ee24xx.h"
+#include "hal_ee25xx.h"
 
 #endif /* #if defined(HAL_USE_EEPROM) && HAL_USE_EEPROM */
 #endif /* __EEPROM_H__ */

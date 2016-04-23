@@ -79,7 +79,7 @@ typedef struct TIMCAPDriver TIMCAPDriver;
  */
 typedef void (*timcapcallback_t)(TIMCAPDriver *timcapp);
 
-#include "timcap_lld.h"
+#include "hal_timcap_lld.h"
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
