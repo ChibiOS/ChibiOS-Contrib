@@ -104,12 +104,13 @@ OSAL_IRQ_HANDLER(KINETIS_ADC0_IRQ_VECTOR) {
 
   /*  At the end of the buffer then we may be finished */
   if (adcp->current_index == adcp->number_of_samples) {
+    /* We are never finished in circular mode */
+    more = ADCD1.grpp->circular;
+
     _adc_isr_full_code(&ADCD1);
 
     adcp->current_index = 0;
 
-    /* We are never finished in circular mode */
-    more = ADCD1.grpp->circular;
   }
 
   if (more) {
