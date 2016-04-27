@@ -693,11 +693,87 @@ typedef struct
 
 /****************************************************************/
 /*                                                              */
-/*             Inter-Integrated Circuit (I2C)                   */
+/*   Inter-Integrated Circuit (I2C): Device independent part    */
 /*                                                              */
 /****************************************************************/
+/***********  Bits definition for I2Cx_A1 register  *************/
+#define I2Cx_A1_AD_MASK              ((uint8_t)0xFE)    /*!< Address [7:1] */
+#define I2Cx_A1_AD_SHIFT             1
+#define I2Cx_A1_AD(x)                ((uint8_t)(((uint8_t)(x) << I2Cx_A1_AD_SHIFT) & I2Cx_A1_AD_MASK)
 
-/* Device dependent */
+/***********  Bits definition for I2Cx_F register  **************/
+#define I2Cx_F_MULT_MASK             ((uint8_t)0xC0)    /*!< Multiplier factor */
+#define I2Cx_F_MULT_SHIFT            6
+#define I2Cx_F_MULT(x)               ((uint8_t)(((uint8_t)(x) << I2Cx_F_MULT_SHIFT) & I2Cx_F_MULT_MASK)
+#define I2Cx_F_ICR_MASK              ((uint8_t)0x3F)    /*!< Clock rate */
+#define I2Cx_F_ICR_SHIFT             0
+#define I2Cx_F_ICR(x)                ((uint8_t)(((uint8_t)(x) << I2Cx_F_ICR_SHIFT) & I2Cx_F_ICR_MASK)
+
+/***********  Bits definition for I2Cx_C1 register  *************/
+#define I2Cx_C1_IICEN                ((uint8_t)0x80)    /*!< I2C Enable */
+#define I2Cx_C1_IICIE                ((uint8_t)0x40)    /*!< I2C Interrupt Enable */
+#define I2Cx_C1_MST                  ((uint8_t)0x20)    /*!< Master Mode Select */
+#define I2Cx_C1_TX                   ((uint8_t)0x10)    /*!< Transmit Mode Select */
+#define I2Cx_C1_TXAK                 ((uint8_t)0x08)    /*!< Transmit Acknowledge Enable */
+#define I2Cx_C1_RSTA                 ((uint8_t)0x04)    /*!< Repeat START */
+#define I2Cx_C1_WUEN                 ((uint8_t)0x02)    /*!< Wakeup Enable */
+#define I2Cx_C1_DMAEN                ((uint8_t)0x01)    /*!< DMA Enable */
+
+/***********  Bits definition for I2Cx_S register  **************/
+/*** This register is referred to as 'S1' in KL26Z manual *******/
+#define I2Cx_S_TCF                   ((uint8_t)0x80)    /*!< Transfer Complete Flag */
+#define I2Cx_S_IAAS                  ((uint8_t)0x40)    /*!< Addressed As A Slave */
+#define I2Cx_S_BUSY                  ((uint8_t)0x20)    /*!< Bus Busy */
+#define I2Cx_S_ARBL                  ((uint8_t)0x10)    /*!< Arbitration Lost */
+#define I2Cx_S_RAM                   ((uint8_t)0x08)    /*!< Range Address Match */
+#define I2Cx_S_SRW                   ((uint8_t)0x04)    /*!< Slave Read/Write */
+#define I2Cx_S_IICIF                 ((uint8_t)0x02)    /*!< Interrupt Flag */
+#define I2Cx_S_RXAK                  ((uint8_t)0x01)    /*!< Receive Acknowledge */
+
+/***********  Bits definition for I2Cx_D register  **************/
+#define I2Cx_D_DATA_SHIFT            0                  /*!< Data */
+#define I2Cx_D_DATA_MASK             ((uint8_t)((uint8_t)0xFF << I2Cx_D_DATA_SHIFT))
+#define I2Cx_D_DATA(x)               ((uint8_t)(((uint8_t)(x) << I2Cx_D_DATA_SHIFT) & I2Cx_D_DATA_MASK))
+
+/***********  Bits definition for I2Cx_C2 register  *************/
+#define I2Cx_C2_GCAEN                ((uint8_t)0x80)    /*!< General Call Address Enable */
+#define I2Cx_C2_ADEXT                ((uint8_t)0x40)    /*!< Address Extension */
+#define I2Cx_C2_HDRS                 ((uint8_t)0x20)    /*!< High Drive Select */
+#define I2Cx_C2_SBRC                 ((uint8_t)0x10)    /*!< Slave Baud Rate Control */
+#define I2Cx_C2_RMEN                 ((uint8_t)0x08)    /*!< Range Address Matching Enable */
+#define I2Cx_C2_AD_SHIFT             0                  /*!< Slave Address [10:8] */
+#define I2Cx_C2_AD_MASK              ((uint8_t)((uint8_t)0x7 << I2Cx_C2_AD_SHIFT))
+#define I2Cx_C2_AD(x)                ((uint8_t)(((uint8_t)(x) << I2Cx_C2_AD_SHIFT) & I2Cx_C2_AD_MASK))
+
+/***********  Bits definition for I2Cx_RA register  *************/
+#define I2Cx_RA_RAD_SHIFT            1                  /*!< Range Slave Address */
+#define I2Cx_RA_RAD_MASK             ((uint8_t)((uint8_t)0x7F << I2Cx_RA_RAD_SHIFT))
+#define I2Cx_RA_RAD(x)               ((uint8_t)(((uint8_t)(x) << I2Cx_RA_RAD_SHIFT) & I2Cx_RA_RAD_MASK))
+
+/***********  Bits definition for I2Cx_SMB register  ************/
+#define I2Cx_SMB_FACK                ((uint8_t)0x80)    /*!< Fast NACK/ACK Enable */
+#define I2Cx_SMB_ALERTEN             ((uint8_t)0x40)    /*!< SMBus Alert Response Address Enable */
+#define I2Cx_SMB_SIICAEN             ((uint8_t)0x20)    /*!< Second I2C Address Enable */
+#define I2Cx_SMB_TCKSEL              ((uint8_t)0x10)    /*!< Timeout Counter Clock Select */
+#define I2Cx_SMB_SLTF                ((uint8_t)0x08)    /*!< SCL Low Timeout Flag */
+#define I2Cx_SMB_SHTF1               ((uint8_t)0x04)    /*!< SCL High Timeout Flag 1 */
+#define I2Cx_SMB_SHTF2               ((uint8_t)0x02)    /*!< SCL High Timeout Flag 2 */
+#define I2Cx_SMB_SHTF2IE             ((uint8_t)0x01)    /*!< SHTF2 Interrupt Enable */
+
+/***********  Bits definition for I2Cx_A2 register  *************/
+#define I2Cx_A2_SAD_SHIFT            1                  /*!< SMBus Address */
+#define I2Cx_A2_SAD_MASK             ((uint8_t)((uint8_t)0x7F << I2Cx_A2_SAD_SHIFT))
+#define I2Cx_A2_SAD(x)               ((uint8_t)(((uint8_t)(x) << I2Cx_A2_SAD_SHIFT) & I2Cx_A2_SAD_MASK))
+
+/***********  Bits definition for I2Cx_SLTH register  ***********/
+#define I2Cx_SLTH_SSLT_SHIFT         0                  /*!< MSB of SCL low timeout value */
+#define I2Cx_SLTH_SSLT_MASK          ((uint8_t)((uint8_t)0xFF << I2Cx_SLTH_SSLT_SHIFT))
+#define I2Cx_SLTH_SSLT(x)            ((uint8_t)(((uint8_t)(x) << I2Cx_SLTH_SSLT_SHIFT) & I2Cx_SLTH_SSLT_MASK))
+
+/***********  Bits definition for I2Cx_SLTL register  ***********/
+#define I2Cx_SLTL_SSLT_SHIFT         0                  /*!< LSB of SCL low timeout value */
+#define I2Cx_SLTL_SSLT_MASK          ((uint8_t)((uint8_t)0xFF << I2Cx_SLTL_SSLT_SHIFT))
+#define I2Cx_SLTL_SSLT(x)            ((uint8_t)(((uint8_t)(x) << I2Cx_SLTL_SSLT_SHIFT) & I2Cx_SLTL_SSLT_MASK))
 
 /****************************************************************/
 /*                                                              */

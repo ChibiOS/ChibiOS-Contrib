@@ -49,11 +49,13 @@
 #define GPIO_LIGHTSNS   IOPORT5
 #define PIN_LIGHTSNS    22
 
-#define I2C_INERIAL_SENSOR I2C0
-
 /*
  * Not configured:
  *  - TSI Slider on PTB16/TSI0_CH9 and PTB17/TSI_CH10
+ *  - I2C inertial sensor on I2C0, routed to PTE25 and PTE25
+ *    Note: these pins are assigned to I2C0 by default;
+ *          if I2C0 is wanted on other pins, these need to be
+ *          assigned another function explicitly!
  */
 
 #if !defined(_FROM_ASM_)
