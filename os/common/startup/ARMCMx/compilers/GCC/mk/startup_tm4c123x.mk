@@ -2,7 +2,7 @@
 STARTUPSRC = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/crt1.c \
              $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/vectors.c
 
-STARTUPASM = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/crt0_v7m.s
+STARTUPASM = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/crt0_v7m.S
 
 STARTUPINC = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC \
              $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/devices/TM4C123x \
