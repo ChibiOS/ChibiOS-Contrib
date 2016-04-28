@@ -37,13 +37,13 @@
 #define STM32_USE_FSMC_SRAM                 TRUE
 #define STM32_SRAM_USE_FSMC_SRAM1           FALSE
 #define STM32_SRAM_USE_FSMC_SRAM2           FALSE
-#define STM32_SRAM_USE_FSMC_SRAM3           FLASE
+#define STM32_SRAM_USE_FSMC_SRAM3           FALSE
 #define STM32_SRAM_USE_FSMC_SRAM4           TRUE
 
 /*
  * FSMC PC card driver system settings.
  */
-#define STM32_USE_FSMC_PCARD                FALSE
+#define STM32_USE_FSMC_PCCARD               FALSE
 
 /*
  * FSMC SDRAM driver system settings.
