@@ -34,7 +34,7 @@ static bool watchdog_timeout(WDGDriver *wdgp)
  */
 static const WDGConfig wdgcfg =
 {
-  80000000,
+  TIVA_SYSCLK,
   watchdog_timeout,
   TEST_STALL
 };
