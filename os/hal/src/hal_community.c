@@ -76,6 +76,10 @@ void halCommunityInit(void) {
 #if HAL_USE_TIMCAP || defined(__DOXYGEN__)
   timcapInit();
 #endif
+
+#if HAL_USE_QEI || defined(__DOXYGEN__)
+  qeiInit();
+#endif
 }
 
 #endif /* HAL_USE_COMMUNITY */
