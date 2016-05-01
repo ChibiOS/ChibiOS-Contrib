@@ -223,10 +223,10 @@ static void usart1_init(const SerialConfig *config) {
   UCA1STATW = 0;
   UCA1ABCTL = 0;
   UCA1IRCTL = 0;
-  UCA1IE = UCRXIE;
   UCA1CTLW0 = (MSP430X_USART1_PARITY << 14) | (MSP430X_USART1_ORDER << 13) | \
               (MSP430X_USART1_SIZE << 12) | (MSP430X_USART1_STOP << 11) | \
               (MSP430X_USART1_UCSSEL);
+  UCA1IE = UCRXIE;
 }
 #endif
 
@@ -237,10 +237,10 @@ static void usart2_init(const SerialConfig *config) {
   UCA2STATW = 0;
   UCA2ABCTL = 0;
   UCA2IRCTL = 0;
-  UCA2IE = UCRXIE;
   UCA2CTLW0 = (MSP430X_USART2_PARITY << 14) | (MSP430X_USART2_ORDER << 13) | \
               (MSP430X_USART2_SIZE << 12) | (MSP430X_USART2_STOP << 11) | \
               (MSP430X_USART2_UCSSEL);
+  UCA2IE = UCRXIE;
 }
 #endif
 
@@ -251,10 +251,10 @@ static void usart3_init(const SerialConfig *config) {
   UCA3STATW = 0;
   UCA3ABCTL = 0;
   UCA3IRCTL = 0;
-  UCA3IE = UCRXIE;
   UCA3CTLW0 = (MSP430X_USART3_PARITY << 14) | (MSP430X_USART3_ORDER << 13) | \
               (MSP430X_USART3_SIZE << 12) | (MSP430X_USART3_STOP << 11) | \
               (MSP430X_USART3_UCSSEL);
+  UCA3IE = UCRXIE;
 }
 #endif
 

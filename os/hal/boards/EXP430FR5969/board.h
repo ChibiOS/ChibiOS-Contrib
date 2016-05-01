@@ -18,7 +18,7 @@
 #define _BOARD_H_
 
 /*
- * Setup for the Arduino Uno or  board.
+ * Setup for the EXP430FR5969 LaunchPad board
  */
 
 /*
@@ -44,7 +44,7 @@
  * Port A setup:
  * 
  * P1.0 - Green LED               (output low)
- * P1.1 - Switch S2               (input pullup falling-edge interrupt)
+ * P1.1 - Switch S2               (input pullup)
  * P1.2 - BoosterPack BP19        (input pullup)
  * P1.3 - BoosterPack BP11        (input pullup)
  * P1.4 - BoosterPack BP12        (input pullup)
@@ -65,8 +65,8 @@
 #define VAL_IOPORT1_REN   0xFCFE
 #define VAL_IOPORT1_SEL0  0x0000
 #define VAL_IOPORT1_SEL1  0x0300
-#define VAL_IOPORT1_IES   0x0002
-#define VAL_IOPORT1_IE    0x0002
+#define VAL_IOPORT1_IES   0x0000
+#define VAL_IOPORT1_IE    0x0000
 
 /*
  * Port B setup:
@@ -79,12 +79,12 @@
  * P3.5 - BoosterPack BP9         (input pullup)
  * P3.6 - BoosterPack BP10        (input pullup)
  * P3.7 - N/C                     (input pullup)
- * P4.0 - Application UART CTS    (input pullup falling-edge interrupt)
+ * P4.0 - Application UART CTS    (input pullup)
  * P4.1 - Application UART RTS    (output high)
  * P4.2 - BoosterPack BP2         (input pullup)
  * P4.3 - BoosterPack BP5         (input pullup)
  * P4.4 - N/C                     (input pullup)
- * P4.5 - Switch S1               (input pullup falling-edge interrupt)
+ * P4.5 - Switch S1               (input pullup)
  * P4.6 - Red LED                 (output low)
  * P4.7 - N/C                     (input pullup)
  */
@@ -93,8 +93,8 @@
 #define VAL_IOPORT2_REN   0xBDFF
 #define VAL_IOPORT2_SEL0  0x0000
 #define VAL_IOPORT2_SEL1  0x0000
-#define VAL_IOPORT2_IES   0x2100
-#define VAL_IOPORT2_IE    0x2100
+#define VAL_IOPORT2_IES   0x0000
+#define VAL_IOPORT2_IE    0x0000
 
 /*
  * Port J setup:

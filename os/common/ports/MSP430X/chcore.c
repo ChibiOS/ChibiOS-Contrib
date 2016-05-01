@@ -58,11 +58,11 @@
  * @param[in] ntp       the thread to be switched in
  * @param[in] otp       the thread to be switched out
  */
-#if !defined(__DOXYGEN__) && defined(__OPTIMIZE__)
+#if !(__GNUC__ < 6 && __GNUC_MINOR__ < 4) || defined(__OPTIMIZE__)
 __attribute__((naked))
 #endif
 void _port_switch(thread_t *ntp, thread_t *otp) {
-#if !defined(__OPTIMIZE__)
+#if (__GNUC__ < 6 && __GNUC_MINOR__ < 4) && !defined(__OPTIMIZE__)
   asm volatile ("add #4, r1");
 #endif
   (void)(ntp);
