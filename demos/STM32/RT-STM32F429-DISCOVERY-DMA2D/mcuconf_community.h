@@ -21,8 +21,24 @@
 #define STM32_FSMC_FSMC1_IRQ_PRIORITY       10
 
 /*
+ * FSMC NAND driver system settings.
+ */
+#define STM32_NAND_USE_FSMC_NAND1           FALSE
+#define STM32_NAND_USE_FSMC_NAND2           FALSE
+#define STM32_NAND_USE_EXT_INT              FALSE
+
+/*
  * FSMC SDRAM driver system settings.
  */
 #define STM32_USE_FSMC_SDRAM                TRUE
 #define STM32_SDRAM_USE_FSMC_SDRAM1         FALSE
 #define STM32_SDRAM_USE_FSMC_SDRAM2         TRUE
+
+/*
+ * FSMC SRAM driver system settings.
+ */
+#define STM32_USE_FSMC_SRAM                 FALSE
+#define STM32_SRAM_USE_FSMC_SRAM1           FALSE
+#define STM32_SRAM_USE_FSMC_SRAM2           FALSE
+#define STM32_SRAM_USE_FSMC_SRAM3           FALSE
+#define STM32_SRAM_USE_FSMC_SRAM4           FALSE

@@ -1,6 +1,6 @@
 #include <ch.h>
 #include <hal.h>
-#include <stm32_ltdc.h>
+#include <hal_stm32_ltdc.h>
 
 const ltdc_color_t wolf3d_palette[256] __attribute__((aligned(4))) = {
   0xFF000000,   /* 0x00 */
