@@ -60,17 +60,17 @@
 #endif
 
 /**
- * @brief   Enables the IWDG subsystem.
+ * @brief   Enables the RNG subsystem.
  */
-#if !defined(HAL_USE_IWDG) || defined(__DOXYGEN__)
-#define HAL_USE_IWDG               FALSE
+#if !defined(HAL_USE_RNG) || defined(__DOXYGEN__)
+#define HAL_USE_RNG                 FALSE
 #endif
 
 /**
  * @brief   Enables the TIMCAP subsystem.
  */
 #if !defined(HAL_USE_TIMCAP) || defined(__DOXYGEN__)
-#define HAL_USE_TIMCAP            FALSE
+#define HAL_USE_TIMCAP              FALSE
 #endif
 
 /**

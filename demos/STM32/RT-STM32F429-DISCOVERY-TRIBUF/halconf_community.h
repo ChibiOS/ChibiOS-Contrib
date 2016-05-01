@@ -45,6 +45,28 @@
 #define HAL_USE_ONEWIRE             FALSE
 #endif
 
+/**
+ * @brief   Enables the EICU subsystem.
+ */
+#if !defined(HAL_USE_EICU) || defined(__DOXYGEN__)
+#define HAL_USE_EICU                FALSE
+#endif
+
+/**
+ * @brief   Enables the CRC subsystem.
+ */
+#if !defined(HAL_USE_CRC) || defined(__DOXYGEN__)
+#define HAL_USE_CRC                 FALSE
+#endif
+
+/**
+ * @brief   Enables the RNG subsystem.
+ */
+#if !defined(HAL_USE_RNG) || defined(__DOXYGEN__)
+#define HAL_USE_RNG                 FALSE
+#endif
+
+
 /*===========================================================================*/
 /* FSMCNAND driver related settings.                                         */
 /*===========================================================================*/
