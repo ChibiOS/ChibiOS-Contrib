@@ -93,6 +93,7 @@ include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 # Other files (optional).
+include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD)/TM4C123xH6.ld
@@ -107,7 +108,7 @@ CSRC = $(STARTUPSRC) \
        $(PLATFORMSRC) \
        $(BOARDSRC) \
        $(TESTSRC) \
-       $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
+       $(STREAMSSRC) \
        main.c 
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
@@ -135,11 +136,13 @@ TCSRC =
 TCPPSRC =
 
 # List ASM source files here
-ASMSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
+ASMSRC =
+ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 
-INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
+INCDIR = $(CHIBIOS)/os/license \
+         $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
-         $(CHIBIOS)/os/various $(CHIBIOS)/os/hal/lib/streams
+         $(STREAMSINC) $(CHIBIOS)/os/various
 
 #
 # Project, sources and paths
