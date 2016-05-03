@@ -100,7 +100,7 @@ endif
 PROJECT = nil
 
 # Imported source files and paths
-CHIBIOS = ../../../../../ChibiOS
+CHIBIOS = ../../../../../ChibiOS-RT
 CHIBIOS_CONTRIB = ../../../..
 # Startup files.
 include $(CHIBIOS_CONTRIB)/os/common/startup/MSP430X/compilers/GCC/mk/startup_msp430fr5xxx.mk
@@ -136,7 +136,8 @@ CPPSRC =
 # List ASM source files here
 ASMSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 
-INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
+INCDIR = $(CHIBIOS)/os/license \
+				 $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
          $(CHIBIOS)/os/various
 

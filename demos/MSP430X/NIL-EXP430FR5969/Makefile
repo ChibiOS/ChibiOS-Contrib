@@ -6,14 +6,14 @@
 # Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
 #     (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
-OPTIMIZE = 1
+OPTIMIZE = 0
 
 # Debugging format.
 DEBUG = 
 #DEBUG = stabs
 
 # Memory/data model
-MODEL = large
+MODEL = small
 
 # Object files directory
 #     To put object files in current directory, use a dot (.), do NOT make
@@ -133,9 +133,11 @@ CSRC = $(STARTUPSRC) \
 CPPSRC =
 
 # List ASM source files here
-ASMSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
+ASMSRC = 
+ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 
-INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
+INCDIR = $(CHIBIOS)/os/license \
+				 $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
          $(CHIBIOS)/os/various
 

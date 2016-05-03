@@ -26,6 +26,8 @@
 #include "ch.h"
 #include "hal_dma_lld.h"
 
+#if (HAL_USE_DMA == TRUE) || defined(__DOXYGEN__)
+
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
@@ -236,5 +238,7 @@ void dmaRelease(msp430x_dma_ch_t * channel) {
   chSemSignal(&dma_lock);
 #endif
 }
+
+#endif /* HAL_USE_DMA == TRUE */
 
 /** @} */
