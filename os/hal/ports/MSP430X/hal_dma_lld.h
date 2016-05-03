@@ -109,6 +109,8 @@ typedef struct {
   volatile uint32_t sa;  /**< @brief Source address register      */
   volatile uint32_t da;  /**< @brief Destination address register */
   volatile uint16_t sz;  /**< @brief Size register                */
+  volatile uint16_t pad1;
+  volatile uint16_t pad2;
 } msp430x_dma_ch_reg_t;
 
 /**

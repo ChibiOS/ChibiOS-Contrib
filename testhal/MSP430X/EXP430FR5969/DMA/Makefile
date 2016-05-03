@@ -6,14 +6,14 @@
 # Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
 #     (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
-OPTIMIZE = 1
+OPTIMIZE = 0
 
 # Debugging format.
 DEBUG = 
 #DEBUG = stabs
 
 # Memory/data model
-MODEL = large
+MODEL = small
 
 # Object files directory
 #     To put object files in current directory, use a dot (.), do NOT make
@@ -30,7 +30,7 @@ CSTANDARD = -std=gnu11
 # Compiler options here.
 ifeq ($(USE_OPT),)
   USE_OPT = -O$(OPTIMIZE) -g$(DEBUG) 
-  USE_OPT += -fsigned-char -fshort-enums 
+  USE_OPT += -funsigned-char -fshort-enums 
 endif
 
 # C specific options here (added to USE_OPT).
@@ -127,6 +127,7 @@ CSRC = $(STARTUPSRC) \
        $(PLATFORMSRC) \
        $(BOARDSRC) \
        $(TESTSRC) \
+       msp_vectors.c \
        main.c
 
 # C++ sources 

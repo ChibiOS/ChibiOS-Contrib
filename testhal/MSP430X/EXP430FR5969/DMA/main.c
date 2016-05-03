@@ -19,12 +19,110 @@
 #include "string.h"
 #include "hal_dma_lld.h"
 
+const char * start_msg = "\r\n\r\nExecuting DMA test suite...\r\n";
+const char * test_1_msg = "TEST 1: Word-to-word memcpy with DMA engine, no callbacks\r\n";
+const char * test_2_msg = "TEST 2: Byte-to-byte memcpy with DMA engine, no callbacks\r\n";
+const char * test_3_msg = "TEST 3: Byte-to-byte memset with DMA engine, no callbacks\r\n";
+const char * test_4_msg = "TEST 4: Word-to-word memcpy with DMA engine, with callback\r\n";
+const char * test_5_msg = "TEST 5: Claim DMA channel 0, perform a Word-to-word memcpy\r\n";
+const char * test_6_msg = "TEST 6: Attempt to claim already claimed DMA channel, fail. Release it, try to claim it again, and succeed.\r\n";
+const char * test_7_msg = "TEST 7: Claim DMA channel 1, perform a Word-to-word memcpy, and release it\r\n";
+
+const char * succeed_string = "SUCCESS\r\n\r\n";
+const char * fail_string = "FAILURE\r\n\r\n";
+
+char instring[256];  
+char outstring[256];
+msp430x_dma_req_t *request;
+uint8_t cb_arg = 1;
+
+void dma_callback_test(void* args) {
+  
+  *((uint8_t *)args) = 0;
+}
+
+msp430x_dma_req_t test_1_req = {
+    instring, /* source address */
+    outstring, /* destination address */
+    9, /* number of words */
+    MSP430X_DMA_SRCINCR | MSP430X_DMA_DSTINCR, /* address mode - dual increment */
+    MSP430X_DMA_SRCWORD | MSP430X_DMA_DSTWORD, /* word transfer */
+    MSP430X_DMA_BLOCK, /* block (and blocking) transfer */
+    DMA_TRIGGER_MNEM(DMAREQ), /* software-requested trigger */
+    {
+      NULL, /* no callback */
+      NULL /* no arguments */
+    }
+};
+
+msp430x_dma_req_t test_2_req = {
+    instring, /* source address */
+    outstring, /* destination address */
+    18, /* number of bytes */
+    MSP430X_DMA_SRCINCR | MSP430X_DMA_DSTINCR, /* address mode - dual increment */
+    MSP430X_DMA_SRCBYTE | MSP430X_DMA_DSTBYTE, /* byte transfer */
+    MSP430X_DMA_BLOCK, /* block (and blocking) transfer */
+    DMA_TRIGGER_MNEM(DMAREQ), /* software-requested trigger */
+    {
+      NULL, /* no callback */
+      NULL /* no arguments */
+    }
+};
+
+msp430x_dma_req_t test_3_req = {
+    instring, /* source address */
+    outstring, /* destination address */
+    16, /* number of words */
+    MSP430X_DMA_DSTINCR, /* address mode - dest increment only */
+    MSP430X_DMA_SRCBYTE | MSP430X_DMA_DSTBYTE, /* word transfer */
+    MSP430X_DMA_BLOCK, /* block (and blocking) transfer */
+    DMA_TRIGGER_MNEM(DMAREQ), /* software-requested trigger */
+    {
+      NULL, /* no callback */
+      NULL /* no arguments */
+    }
+};
+
+msp430x_dma_req_t test_4_req = {
+    instring, /* source address */
+    outstring, /* destination address */
+    9, /* number of words */
+    MSP430X_DMA_SRCINCR | MSP430X_DMA_DSTINCR, /* address mode - dual increment */
+    MSP430X_DMA_SRCWORD | MSP430X_DMA_DSTWORD, /* word transfer */
+    MSP430X_DMA_BLOCK, /* block (and blocking) transfer */
+    DMA_TRIGGER_MNEM(DMAREQ), /* software-requested trigger */
+    {
+      &dma_callback_test, /* test callback */
+      &cb_arg /* test arguments */
+    }
+};
+
+msp430x_dma_req_t test_5_req = {
+    instring, /* source address */
+    outstring, /* destination address */
+    9, /* number of words */
+    MSP430X_DMA_SRCINCR | MSP430X_DMA_DSTINCR, /* address mode - dual increment */
+    MSP430X_DMA_SRCWORD | MSP430X_DMA_DSTWORD, /* word transfer */
+    MSP430X_DMA_BLOCK, /* block (and blocking) transfer */
+    DMA_TRIGGER_MNEM(DMAREQ), /* software-requested trigger */
+    {
+      NULL, /* no callback */
+      NULL /* no arguments */
+    }
+};
+
+msp430x_dma_ch_t ch = {
+    NULL,
+    NULL,
+    NULL
+};
+
 /*
  * Thread 2.
  */
 THD_WORKING_AREA(waThread1, 2048);
 THD_FUNCTION(Thread1, arg) {
-
+    
   (void)arg;
 
   /*
@@ -33,31 +131,125 @@ THD_FUNCTION(Thread1, arg) {
   sdStart(&SD0, NULL);
 
   while (chnGetTimeout(&SD0, TIME_INFINITE)) {
-    chnWrite(&SD0, (const uint8_t *)"Executing DMA test suite...\r\n", 29);
+    chnWrite(&SD0, (const uint8_t *)start_msg, strlen(start_msg));
     chThdSleepMilliseconds(2000);
+    
     /* Test 1 - use DMA engine to execute a word-wise memory-to-memory copy. */
-    chnWrite(&SD0, (const uint8_t *)"TEST 1: Word-to-word, memory-to-memory copy with DMA engine, no callbacks\r\n", 82);
-    unsigned char instring[16];  
-    memcpy( instring,  "Before DMA test \r\n", 16 );
-    unsigned char outstring[16];
-    memcpy( outstring, "After DMA test  \r\n", 16 );
-    chnWrite(&SD0, instring, 16);
-    msp430x_dma_req_t request = {
-        outstring, /* source address */
-        instring, /* destination address */
-        8, /* number of words */
-        0, /* address mode - do nothing */
-        MSP430X_DMA_SRCWORD | MSP430X_DMA_DSTWORD, /* word transfer */
-        MSP430X_DMA_BLOCK, /* block (and blocking) transfer */
-        DMA_TRIGGER_MNEM(DMAREQ), /* software-requested trigger */
-        {
-          NULL, /* no callback */
-          NULL /* no arguments */
-        }
-    };
-    dmaRequest(&request, TIME_IMMEDIATE);
+    chnWrite(&SD0, (const uint8_t *)test_1_msg, strlen(test_1_msg));
+    strcpy( instring,  "After DMA test  \r\n" );
+    strcpy( outstring, "Before DMA test \r\n");
+    if (strcmp("Before DMA test \r\n", outstring)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    request = &test_1_req;
+    dmaRequest(request, TIME_INFINITE);
+    if (strcmp("After DMA test  \r\n", outstring)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    else {
+      chnWrite(&SD0, (const uint8_t *)succeed_string, strlen(succeed_string));
+    }
+    
+    /* Test 2 - use DMA engine to execute a byte-wise memory-to-memory copy. */
+    chnWrite(&SD0, (const uint8_t *)test_2_msg, strlen(test_2_msg));
+    strcpy( instring,  "After DMA test  \r\n" );
+    strcpy( outstring, "Before DMA test \r\n");
+    if (strcmp("Before DMA test \r\n", outstring)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    request = &test_2_req;
+    dmaRequest(request, TIME_INFINITE);
+    if (strcmp("After DMA test  \r\n", outstring)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    else {
+      chnWrite(&SD0, (const uint8_t *)succeed_string, strlen(succeed_string));
+    }
+    
+    /* Test 3 - use DMA engine to execute a word-wise memory-to-memory set. */
+    chnWrite(&SD0, (const uint8_t *)test_3_msg, strlen(test_3_msg));
+    strcpy( instring,  "After DMA test  \r\n" );
+    strcpy( outstring, "Before DMA test \r\n");
+    if (strcmp("Before DMA test \r\n", outstring)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    request = &test_3_req;
+    dmaRequest(request, TIME_INFINITE);
+    if (strcmp("AAAAAAAAAAAAAAAA\r\n", outstring)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    else {
+      chnWrite(&SD0, (const uint8_t *)succeed_string, strlen(succeed_string));
+    }
+    
+    /* Test 4 - use DMA engine to execute a word-wise memory-to-memory copy, 
+     * then call a callback. */
+    chnWrite(&SD0, (const uint8_t *)test_4_msg, strlen(test_4_msg));
+    strcpy( instring,  "After DMA test  \r\n" );
+    strcpy( outstring, "Before DMA test \r\n");
+    if (strcmp("Before DMA test \r\n", outstring) || (cb_arg != 1)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    request = &test_4_req;
+    dmaRequest(request, TIME_INFINITE);
+    if (strcmp("After DMA test  \r\n", outstring) || cb_arg) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    else {
+      chnWrite(&SD0, (const uint8_t *)succeed_string, strlen(succeed_string));
+    }
+    
+    /* Test 5 - use exclusive DMA channel 0 to execute a word-wise memory-to-memory copy. */
+    chnWrite(&SD0, (const uint8_t *)test_5_msg, strlen(test_5_msg));
+    strcpy( instring,  "After DMA test  \r\n" );
+    strcpy( outstring, "Before DMA test \r\n");
+    if (strcmp("Before DMA test \r\n", outstring)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    request = &test_5_req;
+    dmaAcquire(&ch, 0);
+    dmaTransfer(&ch, request);
+    if (strcmp("After DMA test  \r\n", outstring)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    else {
+      chnWrite(&SD0, (const uint8_t *)succeed_string, strlen(succeed_string));
+    }
+    
+    /* Test 6 - Attempt to claim DMA channel 0, fail, release it, attempt to claim it again */
+    chnWrite(&SD0, (const uint8_t *)test_6_msg, strlen(test_6_msg));
+    if (!dmaAcquire(&ch, 0)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    dmaRelease(&ch);
+    if (dmaAcquire(&ch, 0)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    else {
+      chnWrite(&SD0, (const uint8_t *)succeed_string, strlen(succeed_string));
+    }
+    dmaRelease(&ch);
+    
+    /* Test 7 - use exclusive DMA channel 1 to execute a word-wise memory-to-memory copy. */
+    chnWrite(&SD0, (const uint8_t *)test_7_msg, strlen(test_7_msg));
+    strcpy( instring,  "After DMA test  \r\n" );
+    strcpy( outstring, "Before DMA test \r\n");
+    if (strcmp("Before DMA test \r\n", outstring)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    request = &test_5_req;
+    dmaAcquire(&ch, 1);
+    dmaTransfer(&ch, request);
+    if (strcmp("After DMA test  \r\n", outstring)) {
+      chnWrite(&SD0, (const uint8_t *)fail_string, strlen(fail_string));
+    }
+    else {
+      chnWrite(&SD0, (const uint8_t *)succeed_string, strlen(succeed_string));
+    }
+    dmaRelease(&ch);
   }
 }
+
 
 /*
  * Threads static table, one entry per thread. The number of entries must
@@ -84,6 +276,7 @@ int main(void) {
 
   halInit();
   chSysInit();
+  dmaInit();
   
   /* This is now the idle thread loop, you may perform here a low priority
      task but you must never try to sleep or wait in this loop. Note that

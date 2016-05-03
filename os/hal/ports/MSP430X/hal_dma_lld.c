@@ -166,6 +166,7 @@ bool dmaAcquire(msp430x_dma_ch_t * channel, uint8_t index) {
   /* Acquire the channel in an idle mode */
   
   /* Is the channel already acquired? */
+  osalDbgAssert(index < MSP430X_DMA_CHANNELS, "invalid channel index");
   if (dma_channels[index].ctl & DMADT_4) {
     return true;
   }
@@ -186,6 +187,8 @@ bool dmaAcquire(msp430x_dma_ch_t * channel, uint8_t index) {
   channel->registers = dma_channels + index;
   channel->ctl = dma_ctls + index;
   channel->cb = callbacks + index;
+  
+  return false;
 }
 
 /**
@@ -202,11 +205,14 @@ void dmaTransfer(msp430x_dma_ch_t * channel, msp430x_dma_req_t * request) {
     channel->cb->callback = request->callback.callback;
     channel->cb->args = request->callback.args;
     
+    chSysLock();
+    channel->registers->ctl &= (~DMAEN);
     channel->registers->sa = (uintptr_t)request->source_addr;
     channel->registers->da = (uintptr_t)request->dest_addr;
     channel->registers->sz = request->size;
     channel->registers->ctl = DMAIE | request->data_mode | request->addr_mode
-      | request->transfer_mode | DMADT_4; /* repeated transfers */
+      | request->transfer_mode | DMADT_4 | DMAEN | DMAREQ; /* repeated transfers */
+    chSysUnlock();
 }
 
 /**
