@@ -78,7 +78,8 @@ static void pwm_lld_serve_interrupt(PWMDriver *pwmp) {
   }
 
   // Deal with PWM channels     
-  for (uint8_t n = 0 ; n < pwmp->channels ; n++) {
+  uint8_t n;
+  for (n = 0 ; n < pwmp->channels ; n++) {
     if (pwmp->timer->EVENTS_COMPARE[n]) {
       pwmp->timer->EVENTS_COMPARE[n] = 0;
       if (pwmp->config->channels[n].callback != NULL) {
