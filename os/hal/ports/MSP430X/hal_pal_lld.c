@@ -68,6 +68,7 @@ void _pal_lld_init(const PALConfig *config) {
   PASEL1 = config->porta.sel1;
   PAIES = config->porta.ies;
   PAIE = config->porta.ie;
+  PAIFG = 0;
 #endif
 #if defined(PB_BASE) || defined(__DOXYGEN__)
   PBOUT = config->portb.out;
@@ -77,6 +78,7 @@ void _pal_lld_init(const PALConfig *config) {
   PBSEL1 = config->portb.sel1;
   PBIES = config->portb.ies;
   PBIE = config->portb.ie;
+  PBIFG = 0;
 #endif
 #if defined(PC_BASE) || defined(__DOXYGEN__)
   PCOUT = config->portc.out;
@@ -84,8 +86,11 @@ void _pal_lld_init(const PALConfig *config) {
   PCREN = config->portc.ren;
   PCSEL0 = config->portc.sel0;
   PCSEL1 = config->portc.sel1;
+#if defined(PCIE) || defined(__DOXYGEN__)
   PCIES = config->portc.ies;
   PCIE = config->portc.ie;
+  PCIFG = 0;
+#endif
 #endif
 #if defined(PD_BASE) || defined(__DOXYGEN__)
   PDOUT = config->portd.out;
@@ -93,8 +98,11 @@ void _pal_lld_init(const PALConfig *config) {
   PDREN = config->portd.ren;
   PDSEL0 = config->portd.sel0;
   PDSEL1 = config->portd.sel1;
+#if defined(PDIE) || defined(__DOXYGEN__)
   PDIES = config->portd.ies;
   PDIE = config->portd.ie;
+  PDIFG = 0;
+#endif
 #endif
 #if defined(PE_BASE) || defined(__DOXYGEN__)
   PEOUT = config->porte.out;
@@ -102,8 +110,11 @@ void _pal_lld_init(const PALConfig *config) {
   PEREN = config->porte.ren;
   PESEL0 = config->porte.sel0;
   PESEL1 = config->porte.sel1;
+#if defined(PEIE) || defined(__DOXYGEN__)
   PEIES = config->porte.ies;
   PEIE = config->porte.ie;
+  PEIFG = 0;
+#endif
 #endif
 #if defined(PF_BASE) || defined(__DOXYGEN__)
   PFOUT = config->portf.out;
@@ -111,8 +122,11 @@ void _pal_lld_init(const PALConfig *config) {
   PFREN = config->portf.ren;
   PFSEL0 = config->portf.sel0;
   PFSEL1 = config->portf.sel1;
+#if defined(PFIE) || defined(__DOXYGEN__)
   PFIES = config->portf.ies;
   PFIE = config->portf.ie;
+  PFIFG = 0;
+#endif
 #endif
   PJOUT = config->portj.out;
   PJDIR = config->portj.dir;

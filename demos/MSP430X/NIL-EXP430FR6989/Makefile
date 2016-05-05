@@ -106,7 +106,7 @@ CHIBIOS_CONTRIB = ../../..
 include $(CHIBIOS_CONTRIB)/os/common/startup/MSP430X/compilers/GCC/mk/startup_msp430fr5xxx.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS_CONTRIB)/os/hal/boards/EXP430FR5969/board.mk
+include $(CHIBIOS_CONTRIB)/os/hal/boards/EXP430FR6989/board.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/MSP430X/platform.mk
 include $(CHIBIOS)/os/hal/osal/nil/osal.mk
 # RTOS files (optional).
@@ -116,7 +116,7 @@ include $(CHIBIOS_CONTRIB)/os/common/ports/MSP430X/compilers/GCC/mk/port.mk
 include $(CHIBIOS)/test/nil/test.mk
 
 # Define linker script file here
-LDSCRIPT = $(STARTUPLD)/msp430fr5969.ld
+LDSCRIPT = $(STARTUPLD)/msp430fr6989.ld
 
 # C sources 
 CSRC = $(STARTUPSRC) \
@@ -127,6 +127,7 @@ CSRC = $(STARTUPSRC) \
        $(PLATFORMSRC) \
        $(BOARDSRC) \
        $(TESTSRC) \
+			 msp_vectors.c \
        main.c
 
 # C++ sources 
@@ -149,7 +150,7 @@ INCDIR = $(CHIBIOS)/os/license \
 # Compiler settings
 #
 
-MCU = msp430fr5969
+MCU = msp430fr6989
 
 TRGT = msp430-elf-
 CC   = $(TRGT)gcc

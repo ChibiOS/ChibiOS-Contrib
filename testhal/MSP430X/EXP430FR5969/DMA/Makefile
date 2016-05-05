@@ -30,7 +30,7 @@ CSTANDARD = -std=gnu11
 # Compiler options here.
 ifeq ($(USE_OPT),)
   USE_OPT = -O$(OPTIMIZE) -g$(DEBUG) 
-  USE_OPT += -fsigned-char -fshort-enums 
+  USE_OPT += -funsigned-char -fshort-enums 
 endif
 
 # C specific options here (added to USE_OPT).
@@ -100,8 +100,8 @@ endif
 PROJECT = nil
 
 # Imported source files and paths
-CHIBIOS = ../../../../ChibiOS-RT
-CHIBIOS_CONTRIB = ../../..
+CHIBIOS = ../../../../../ChibiOS-RT
+CHIBIOS_CONTRIB = ../../../..
 # Startup files.
 include $(CHIBIOS_CONTRIB)/os/common/startup/MSP430X/compilers/GCC/mk/startup_msp430fr5xxx.mk
 # HAL-OSAL files (optional).
@@ -127,14 +127,14 @@ CSRC = $(STARTUPSRC) \
        $(PLATFORMSRC) \
        $(BOARDSRC) \
        $(TESTSRC) \
+       msp_vectors.c \
        main.c
 
 # C++ sources 
 CPPSRC =
 
 # List ASM source files here
-ASMSRC = 
-ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
+ASMSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 
 INCDIR = $(CHIBIOS)/os/license \
 				 $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \

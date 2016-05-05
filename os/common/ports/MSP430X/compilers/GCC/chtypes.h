@@ -94,6 +94,18 @@ typedef uint16_t            ucnt_t;         /**< Generic unsigned counter.  */
  */
 #define ALIGNED_VAR(n) __attribute__((aligned(n)))
 
-#endif /* _NILTYPES_H_ */
+/**
+ * @brief   Size of a pointer.
+ * @note    To be used where the sizeof operator cannot be used, preprocessor
+ *          expressions for example.
+ */
+#define SIZEOF_PTR          4
+
+/**
+ * @brief   True if alignment is low-high in current architecture.
+ */
+#define REVERSE_ORDER       1
+
+#endif /* CHTYPES_H */
 
 /** @} */
