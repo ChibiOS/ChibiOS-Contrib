@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef _HALCONF_COMMUNITY_H_
-#define _HALCONF_COMMUNITY_H_
+#ifndef HALCONF_COMMUNITY_H
+#define HALCONF_COMMUNITY_H
 
 /**
  * @brief   Enables the community overlay.
@@ -107,7 +107,7 @@
  */
 #define ONEWIRE_USE_SEARCH_ROM      TRUE
 
- /*===========================================================================*/
+/*===========================================================================*/
 /* EEProm driver related settings.                                           */
 /*===========================================================================*/
 
@@ -122,7 +122,6 @@
  */
 #define EEPROM_USE_EE25XX TRUE
 
-
-#endif /* _HALCONF_COMMUNITY_H_ */
+#endif /* HALCONF_COMMUNITY_H */
 
 /** @} */

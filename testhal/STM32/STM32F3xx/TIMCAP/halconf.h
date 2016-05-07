@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2006..2016 Giovanni Di Sirio
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@
  * @{
  */
 
-#ifndef _HALCONF_H_
-#define _HALCONF_H_
+#ifndef HALCONF_H
+#define HALCONF_H
 
 #include "mcuconf.h"
 
@@ -382,6 +382,6 @@
 
 #include "halconf_community.h"
 
-#endif /* _HALCONF_H_ */
+#endif /* HALCONF_H */
 
 /** @} */
