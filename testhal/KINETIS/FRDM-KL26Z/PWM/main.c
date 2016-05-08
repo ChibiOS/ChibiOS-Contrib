@@ -104,9 +104,9 @@ static THD_FUNCTION(ButtonThread, arg) {
   uint8_t newstate, state = PAL_HIGH;
 
   while(true) {
-    if(palReadPad(GPIO_BUTTON, PIN_BUTTON) != state) {
+    if(palReadLine(LINE_BUTTON) != state) {
       chThdSleepMilliseconds(20); /* debounce */
-      newstate = palReadPad(GPIO_BUTTON, PIN_BUTTON);
+      newstate = palReadLine(LINE_BUTTON);
       if(newstate != state) {
         state = newstate;
         if(newstate == PAL_LOW) {
@@ -135,9 +135,9 @@ int main(void) {
   /*
    * Turn off the RGB LED.
    */
-  palSetPad(GPIO_LED_RED, PIN_LED_RED); /* red */
-  palSetPad(GPIO_LED_GREEN, PIN_LED_GREEN); /* green */
-  palSetPad(GPIO_LED_BLUE, PIN_LED_BLUE); /* blue */
+  palSetLine(LINE_LED_RED); /* red */
+  palSetLine(LINE_LED_GREEN); /* green */
+  palSetLine(LINE_LED_BLUE); /* blue */
 
   /*
    * Create the button check thread.
@@ -149,9 +149,9 @@ int main(void) {
    * Enable channels now to avoid a blink later.
    */
   pwmStart(&PWM_DRIVER, &pwmcfg);
-  palSetPadMode(GPIO_LED_RED, PIN_LED_RED, PAL_MODE_ALTERNATIVE_3);
-  palSetPadMode(GPIO_LED_GREEN, PIN_LED_GREEN, PAL_MODE_ALTERNATIVE_3);
-  palSetPadMode(GPIO_LED_BLUE, PIN_LED_BLUE, PAL_MODE_ALTERNATIVE_4);
+  palSetLineMode(LINE_LED_RED, PAL_MODE_ALTERNATIVE_3);
+  palSetLineMode(LINE_LED_GREEN, PAL_MODE_ALTERNATIVE_3);
+  palSetLineMode(LINE_LED_BLUE, PAL_MODE_ALTERNATIVE_4);
   pwmEnableChannel(&PWM_DRIVER, 2, 0);
   pwmEnableChannel(&PWM_DRIVER, 4, 0);
   pwmEnableChannel(&PWM_DRIVER, 5, 0);

@@ -70,6 +70,11 @@ typedef uint32_t ioportmask_t;
 typedef uint32_t iomode_t;
 
 /**
+ * @brief   Type of an I/O line.
+ */
+typedef uint32_t ioline_t;
+
+/**
  * @brief   Port Identifier.
  * @details This type can be a scalar or some kind of pointer, do not make
  *          any assumption about it, use the provided macros when populating
@@ -128,6 +133,38 @@ typedef struct {
  * @brief   GPIO port E identifier.
  */
 #define IOPORT5          GPIOE
+
+/**
+ * @name    Line handling macros
+ * @{
+ */
+/**
+ * @brief   Forms a line identifier.
+ * @details A port/pad pair are encoded into an @p ioline_t type. The encoding
+ *          of this type is platform-dependent.
+ * @note    In this driver the pad number is encoded in the byte of the GPIO
+ *          address that's zero on all Kinetis devices.
+ */
+#define PAL_LINE(port, pad)                                                 \
+  ((ioline_t)((uint32_t)(port) | ((uint32_t)(pad)<<20)))
+
+/**
+ * @brief   Decodes a port identifier from a line identifier.
+ */
+#define PAL_PORT(line)                                                      \
+  ((GPIO_TypeDef *)(((uint32_t)(line)) & 0xF00FFFFFU))
+
+/**
+ * @brief   Decodes a pad identifier from a line identifier.
+ */
+#define PAL_PAD(line)                                                       \
+  ((uint32_t)((uint32_t)(line) & 0x0FF00000U)>>20)
+
+/**
+ * @brief   Value identifying an invalid line.
+ */
+#define PAL_NOLINE                      0U
+/** @} */
 
 /*===========================================================================*/
 /* Implementation, some of the following macros could be implemented as      */
