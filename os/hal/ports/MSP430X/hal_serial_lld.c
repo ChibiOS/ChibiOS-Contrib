@@ -37,33 +37,49 @@
 /** @brief USART0 serial driver identifier.*/
 #if (MSP430X_SERIAL_USE_USART0 == TRUE) || defined(__DOXYGEN__)
 #ifndef __MSP430_HAS_EUSCI_A0__
-  #error "Cannot find USCI module to use for SD0"
+#error "Cannot find USCI module to use for SD0"
+#endif
+#ifdef MSP430X_USCI_A0_USED
+#error "USCI module A0 already in use - USART0 not available"
 #endif
 SerialDriver SD0;
+#define MSP430X_USCI_A0_USED
 #endif
 
 /** @brief USART1 serial driver identifier.*/
 #if (MSP430X_SERIAL_USE_USART1 == TRUE) || defined(__DOXYGEN__)
 #ifndef __MSP430_HAS_EUSCI_A1__
-  #error "Cannot find USCI module to use for SD1"
+#error "Cannot find USCI module to use for SD1"
+#endif
+#ifdef MSP430X_USCI_A1_USED
+#error "USCI module A1 already in use - USART1 not available"
 #endif
 SerialDriver SD1;
+#define MSP430X_USCI_A1_USED
 #endif
 
 /** @brief USART2 serial driver identifier.*/
 #if (MSP430X_SERIAL_USE_USART2 == TRUE) || defined(__DOXYGEN__)
 #ifndef __MSP430_HAS_EUSCI_A2__
-  #error "Cannot find USCI module to use for SD2"
+#error "Cannot find USCI module to use for SD2"
+#endif
+#ifdef MSP430X_USCI_A2_USED
+#error "USCI module A2 already in use - USART2 not available"
 #endif
 SerialDriver SD2;
+#define MSP430X_USCI_A2_USED
 #endif
 
 /** @brief USART3 serial driver identifier.*/
 #if (MSP430X_SERIAL_USE_USART3 == TRUE) || defined(__DOXYGEN__)
 #ifndef __MSP430_HAS_EUSCI_A3__
-  #error "Cannot find USCI module to use for SD3"
+#error "Cannot find USCI module to use for SD3"
+#endif
+#ifdef MSP430X_USCI_A3_USED
+#error "USCI module A3 already in use - USART3 not available"
 #endif
 SerialDriver SD3;
+#define MSP430X_USCI_A3_USED
 #endif
 
 /*===========================================================================*/
@@ -73,9 +89,7 @@ SerialDriver SD3;
 /**
  * @brief   Driver default configuration.
  */
-static const SerialConfig default_config = {
-  SERIAL_DEFAULT_BITRATE
-};
+static const SerialConfig default_config = { SERIAL_DEFAULT_BITRATE };
 
 /*===========================================================================*/
 /* Driver local functions.                                                   */
@@ -85,7 +99,7 @@ static const SerialConfig default_config = {
  * @brief     UCBRS calculation.
  * @details   This function calculates the UCBRS value for oversampled baud
  *            rates.
- *            
+ *
  * @param[in] frac    Fractional part of baud rate division, times 10000.
  */
 static uint8_t UCBRS(uint16_t frac) {
@@ -160,7 +174,7 @@ static uint8_t UCBRS(uint16_t frac) {
     return 0xFB;
   else if (frac < 9288)
     return 0xFD;
-  else 
+  else
     return 0xFE;
 }
 
@@ -168,13 +182,13 @@ static uint8_t UCBRS(uint16_t frac) {
  * @brief     Modulation control word calculator.
  * @details   This function calculates the modulation control word from the
  *            input clock frequency and the requested baud rate.
- * 
+ *
  * @param[in] baud    Requested baud rate
  * @param[in] freq    Frequency of the clock driving the USCI module
  */
 static uint16_t UCAxMCTLW(uint32_t baud, uint32_t freq) {
-  
-  uint16_t n = freq/baud;
+
+  uint16_t n = freq / baud;
   /*uint16_t frac = (freq * 10000 / baud) - ((freq / baud) * 10000);*/
   uint16_t frac = (freq - (n * baud)) * 10000 / baud;
   if (n > 16) {
@@ -190,12 +204,12 @@ static uint16_t UCAxMCTLW(uint32_t baud, uint32_t freq) {
  * @brief     UCBRW calculation.
  * @details   This function calculates the UCBRW value for all baud
  *            rates.
- *            
+ *
  * @param[in] baud    Requested baud rate
  * @param[in] freq    Frequency of the clock driving the USCI module
  */
 static uint16_t UCAxBRW(uint32_t baud, uint32_t freq) {
-  uint16_t n = freq/baud;
+  uint16_t n = freq / baud;
   if (n > 16) {
     return n >> 4;
   }
@@ -203,88 +217,88 @@ static uint16_t UCAxBRW(uint32_t baud, uint32_t freq) {
 }
 
 #if (MSP430X_SERIAL_USE_USART0 == TRUE) || defined(__DOXYGEN__)
-static void usart0_init(const SerialConfig *config) {
-  UCA0BRW = UCAxBRW(config->sc_bitrate, MSP430X_USART0_CLK_FREQ);
+static void usart0_init(const SerialConfig * config) {
+  UCA0BRW   = UCAxBRW(config->sc_bitrate, MSP430X_USART0_CLK_FREQ);
   UCA0MCTLW = UCAxMCTLW(config->sc_bitrate, MSP430X_USART0_CLK_FREQ);
   UCA0STATW = 0;
   UCA0ABCTL = 0;
   UCA0IRCTL = 0;
-  UCA0CTLW0 = (MSP430X_USART0_PARITY << 14) | (MSP430X_USART0_ORDER << 13) | \
-              (MSP430X_USART0_SIZE << 12) | (MSP430X_USART0_STOP << 11) | \
+  UCA0CTLW0 = (MSP430X_USART0_PARITY << 14) | (MSP430X_USART0_ORDER << 13) |
+              (MSP430X_USART0_SIZE << 12) | (MSP430X_USART0_STOP << 11) |
               (MSP430X_USART0_UCSSEL);
   UCA0IE = UCRXIE;
 }
 #endif
 
 #if (MSP430X_SERIAL_USE_USART1 == TRUE) || defined(__DOXYGEN__)
-static void usart1_init(const SerialConfig *config) {
-  UCA1BRW = UCAxBRW(config->sc_bitrate, MSP430X_USART1_CLK_FREQ);
+static void usart1_init(const SerialConfig * config) {
+  UCA1BRW   = UCAxBRW(config->sc_bitrate, MSP430X_USART1_CLK_FREQ);
   UCA1MCTLW = UCAxMCTLW(config->sc_bitrate, MSP430X_USART1_CLK_FREQ);
   UCA1STATW = 0;
   UCA1ABCTL = 0;
   UCA1IRCTL = 0;
-  UCA1CTLW0 = (MSP430X_USART1_PARITY << 14) | (MSP430X_USART1_ORDER << 13) | \
-              (MSP430X_USART1_SIZE << 12) | (MSP430X_USART1_STOP << 11) | \
+  UCA1CTLW0 = (MSP430X_USART1_PARITY << 14) | (MSP430X_USART1_ORDER << 13) |
+              (MSP430X_USART1_SIZE << 12) | (MSP430X_USART1_STOP << 11) |
               (MSP430X_USART1_UCSSEL);
   UCA1IE = UCRXIE;
 }
 #endif
 
 #if (MSP430X_SERIAL_USE_USART2 == TRUE) || defined(__DOXYGEN__)
-static void usart2_init(const SerialConfig *config) {
-  UCA2BRW = UCAxBRW(config->sc_bitrate, MSP430X_USART2_CLK_FREQ);
+static void usart2_init(const SerialConfig * config) {
+  UCA2BRW   = UCAxBRW(config->sc_bitrate, MSP430X_USART2_CLK_FREQ);
   UCA2MCTLW = UCAxMCTLW(config->sc_bitrate);
   UCA2STATW = 0;
   UCA2ABCTL = 0;
   UCA2IRCTL = 0;
-  UCA2CTLW0 = (MSP430X_USART2_PARITY << 14) | (MSP430X_USART2_ORDER << 13) | \
-              (MSP430X_USART2_SIZE << 12) | (MSP430X_USART2_STOP << 11) | \
+  UCA2CTLW0 = (MSP430X_USART2_PARITY << 14) | (MSP430X_USART2_ORDER << 13) |
+              (MSP430X_USART2_SIZE << 12) | (MSP430X_USART2_STOP << 11) |
               (MSP430X_USART2_UCSSEL);
   UCA2IE = UCRXIE;
 }
 #endif
 
 #if (MSP430X_SERIAL_USE_USART3 == TRUE) || defined(__DOXYGEN__)
-static void usart3_init(const SerialConfig *config) {
-  UCA3BRW = UCAxBRW(config->sc_bitrate, MSP430X_USART3_CLK_FREQ);
+static void usart3_init(const SerialConfig * config) {
+  UCA3BRW   = UCAxBRW(config->sc_bitrate, MSP430X_USART3_CLK_FREQ);
   UCA3MCTLW = UCAxMCTLW(config->sc_bitrate, MSP430X_USART3_CLK_FREQ);
   UCA3STATW = 0;
   UCA3ABCTL = 0;
   UCA3IRCTL = 0;
-  UCA3CTLW0 = (MSP430X_USART3_PARITY << 14) | (MSP430X_USART3_ORDER << 13) | \
-              (MSP430X_USART3_SIZE << 12) | (MSP430X_USART3_STOP << 11) | \
+  UCA3CTLW0 = (MSP430X_USART3_PARITY << 14) | (MSP430X_USART3_ORDER << 13) |
+              (MSP430X_USART3_SIZE << 12) | (MSP430X_USART3_STOP << 11) |
               (MSP430X_USART3_UCSSEL);
   UCA3IE = UCRXIE;
 }
 #endif
 
 #if (MSP430X_SERIAL_USE_USART0 == TRUE) || defined(__DOXYGEN__)
-static void notify0(io_queue_t *qp) {
-  
+static void notify0(io_queue_t * qp) {
+
   (void)qp;
   UCA0IE |= UCTXIE;
 }
 #endif
 
 #if (MSP430X_SERIAL_USE_USART1 == TRUE) || defined(__DOXYGEN__)
-static void notify1(io_queue_t *qp) {
-  
+static void notify1(io_queue_t * qp) {
+
   (void)qp;
   UCA1IE |= UCTXIE;
 }
 #endif
 
 #if (MSP430X_SERIAL_USE_USART2 == TRUE) || defined(__DOXYGEN__)
-static void notify2(io_queue_t *qp) {
-  
+static void notify2(io_queue_t * qp) {
+
   (void)qp;
   UCA2IE |= UCTXIE;
 }
 #endif
 
 #if (MSP430X_SERIAL_USE_USART3 == TRUE) || defined(__DOXYGEN__)
-static void notify3(io_queue_t *qp) {
-  
+static void notify3(io_queue_t * qp) {
+
   (void)qp;
   UCA3IE |= UCTXIE;
 }
@@ -292,24 +306,23 @@ static void notify3(io_queue_t *qp) {
 
 /**
  * @brief     Error handling routine.
- * 
+ *
  * @param[in] sra     USCI status register containing errors
  * @param[in] sdp     pointer to a @p SerialDriver object
  */
-static void set_error(uint16_t sra, SerialDriver *sdp) {
-    eventflags_t sts = 0;
-    
-    if (sra & UCOE) 
-      sts |= SD_OVERRUN_ERROR;
-    if (sra & UCPE)
-      sts |= SD_PARITY_ERROR;
-    if (sra & UCFE)
-      sts |= SD_FRAMING_ERROR;
-    osalSysLockFromISR();
-    chnAddFlagsI(sdp, sts);
-    osalSysUnlockFromISR();
+static void set_error(uint16_t sra, SerialDriver * sdp) {
+  eventflags_t sts = 0;
+
+  if (sra & UCOE)
+    sts |= SD_OVERRUN_ERROR;
+  if (sra & UCPE)
+    sts |= SD_PARITY_ERROR;
+  if (sra & UCFE)
+    sts |= SD_FRAMING_ERROR;
+  osalSysLockFromISR();
+  chnAddFlagsI(sdp, sts);
+  osalSysUnlockFromISR();
 }
-  
 
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
@@ -318,235 +331,234 @@ static void set_error(uint16_t sra, SerialDriver *sdp) {
 #if MSP430X_SERIAL_USE_USART0 || defined(__DOXYGEN__)
 /**
  * @brief   USART0 interrupt handler.
- * 
+ *
  * @isr
  */
 PORT_IRQ_HANDLER(USCI_A0_VECTOR) {
   msg_t b;
-  
+
   OSAL_IRQ_PROLOGUE();
-  
-  switch (__even_in_range(UCA0IV,USCI_UART_UCTXCPTIFG)) {
-    case USCI_UART_UCRXIFG: /* RX interrupt */
-      
-      /* Detect errors */
-      if (UCA0STATW & UCRXERR)
-        set_error(UCA0STATW, &SD0);
-      
-      /* Data available */
-      osalSysLockFromISR();
-      sdIncomingDataI(&SD0, UCA0RXBUF);
-      osalSysUnlockFromISR();
-      break;
-      
-    case USCI_UART_UCTXIFG: /* TX interrupt */
-      
-      /* Transmission buffer empty */
-      osalSysLockFromISR();
-      b = sdRequestDataI(&SD0);
-      if (b < Q_OK) {
-        chnAddFlagsI(&SD0, CHN_OUTPUT_EMPTY);
-        UCA0IE = (UCA0IE & ~UCTXIE) | UCTXCPTIE;
-        UCA0IFG |= UCTXIFG; /* If we don't write to TXBUF, IFG won't get set */
-      }
-      else
-        UCA0TXBUF = b;
-      osalSysUnlockFromISR();
-      break;
-      
-    case USCI_UART_UCTXCPTIFG: /* TX complete interrupt */
-      
-      /* Physical transmission end */
-      osalSysLockFromISR();
-      if (oqIsEmptyI(&SD0.oqueue))
-        chnAddFlagsI(&SD0, CHN_TRANSMISSION_END);
-      UCA0IE &= ~UCTXCPTIE;
-      break;
-      
-    default: /* other interrupts */
-      while (1);
-      break;
+
+  switch (__even_in_range(UCA0IV, USCI_UART_UCTXCPTIFG)) {
+  case USCI_UART_UCRXIFG: /* RX interrupt */
+
+    /* Detect errors */
+    if (UCA0STATW & UCRXERR)
+      set_error(UCA0STATW, &SD0);
+
+    /* Data available */
+    osalSysLockFromISR();
+    sdIncomingDataI(&SD0, UCA0RXBUF);
+    osalSysUnlockFromISR();
+    break;
+
+  case USCI_UART_UCTXIFG: /* TX interrupt */
+
+    /* Transmission buffer empty */
+    osalSysLockFromISR();
+    b = sdRequestDataI(&SD0);
+    if (b < Q_OK) {
+      chnAddFlagsI(&SD0, CHN_OUTPUT_EMPTY);
+      UCA0IE = (UCA0IE & ~UCTXIE) | UCTXCPTIE;
+      UCA0IFG |= UCTXIFG; /* If we don't write to TXBUF, IFG won't get set */
+    }
+    else
+      UCA0TXBUF = b;
+    osalSysUnlockFromISR();
+    break;
+
+  case USCI_UART_UCTXCPTIFG: /* TX complete interrupt */
+
+    /* Physical transmission end */
+    osalSysLockFromISR();
+    if (oqIsEmptyI(&SD0.oqueue))
+      chnAddFlagsI(&SD0, CHN_TRANSMISSION_END);
+    UCA0IE &= ~UCTXCPTIE;
+    break;
+
+  default: /* other interrupts */
+    while (1)
+      ;
+    break;
   }
-  
+
   OSAL_IRQ_EPILOGUE();
-  
 }
 #endif
 
 #if MSP430X_SERIAL_USE_USART1 || defined(__DOXYGEN__)
 /**
  * @brief   USART1 interrupt handler.
- * 
+ *
  * @isr
  */
 PORT_IRQ_HANDLER(USCI_A1_VECTOR) {
   msg_t b;
-  
+
   OSAL_IRQ_PROLOGUE();
-  
-  switch (__even_in_range(UCA1IV,USCI_UART_UCTXCPTIFG)) {
-    case USCI_UART_UCRXIFG: /* RX interrupt */
-      
-      /* Detect errors */
-      if (UCA1STATW & UCRXERR)
-        set_error(UCA1STATW, &SD1);
-      
-      /* Data available */
-      osalSysLockFromISR();
-      sdIncomingDataI(&SD1, UCA1RXBUF);
-      osalSysUnlockFromISR();
-      break;
-      
-    case USCI_UART_UCTXIFG: /* TX interrupt */
-      
-      /* Transmission buffer empty */
-      osalSysLockFromISR();
-      b = sdRequestDataI(&SD1);
-      if (b < Q_OK) {
-        chnAddFlagsI(&SD1, CHN_OUTPUT_EMPTY);
-        UCA1IE = (UCA1IE & ~UCTXIE) | UCTXCPTIE;
-        UCA1IFG |= UCTXIFG; /* If we don't write to TXBUF, IFG won't get set */
-      }
-      else
-        UCA1TXBUF = b;
-      osalSysUnlockFromISR();
-      break;
-      
-    case USCI_UART_UCTXCPTIFG: /* TX complete interrupt */
-      
-      /* Physical transmission end */
-      osalSysLockFromISR();
-      if (oqIsEmptyI(&SD1.oqueue))
-        chnAddFlagsI(&SD1, CHN_TRANSMISSION_END);
-      UCA1IE &= ~UCTXCPTIE;
-      break;
-      
-    default: /* other interrupts */
-      while (1);
-      break;
+
+  switch (__even_in_range(UCA1IV, USCI_UART_UCTXCPTIFG)) {
+  case USCI_UART_UCRXIFG: /* RX interrupt */
+
+    /* Detect errors */
+    if (UCA1STATW & UCRXERR)
+      set_error(UCA1STATW, &SD1);
+
+    /* Data available */
+    osalSysLockFromISR();
+    sdIncomingDataI(&SD1, UCA1RXBUF);
+    osalSysUnlockFromISR();
+    break;
+
+  case USCI_UART_UCTXIFG: /* TX interrupt */
+
+    /* Transmission buffer empty */
+    osalSysLockFromISR();
+    b = sdRequestDataI(&SD1);
+    if (b < Q_OK) {
+      chnAddFlagsI(&SD1, CHN_OUTPUT_EMPTY);
+      UCA1IE = (UCA1IE & ~UCTXIE) | UCTXCPTIE;
+      UCA1IFG |= UCTXIFG; /* If we don't write to TXBUF, IFG won't get set */
+    }
+    else
+      UCA1TXBUF = b;
+    osalSysUnlockFromISR();
+    break;
+
+  case USCI_UART_UCTXCPTIFG: /* TX complete interrupt */
+
+    /* Physical transmission end */
+    osalSysLockFromISR();
+    if (oqIsEmptyI(&SD1.oqueue))
+      chnAddFlagsI(&SD1, CHN_TRANSMISSION_END);
+    UCA1IE &= ~UCTXCPTIE;
+    break;
+
+  default: /* other interrupts */
+    while (1)
+      ;
+    break;
   }
-  
+
   OSAL_IRQ_EPILOGUE();
-  
 }
 #endif
 
 #if MSP430X_SERIAL_USE_USART2 || defined(__DOXYGEN__)
 /**
  * @brief   USART2 interrupt handler.
- * 
+ *
  * @isr
  */
 PORT_IRQ_HANDLER(USCI_A2_VECTOR) {
   msg_t b;
-  
+
   OSAL_IRQ_PROLOGUE();
-  
-  switch (__even_in_range(UCA2IV,USCI_UART_UCTXCPTIFG)) {
-    case USCI_UART_UCRXIFG: /* RX interrupt */
-      
-      /* Detect errors */
-      if (UCA2STATW & UCRXERR)
-        set_error(UCA2STATW, &SD2);
-      
-      /* Data available */
-      osalSysLockFromISR();
-      sdIncomingDataI(&SD2, UCA2RXBUF);
-      osalSysUnlockFromISR();
-      break;
-      
-    case USCI_UART_UCTXIFG: /* TX interrupt */
-      
-      /* Transmission buffer empty */
-      osalSysLockFromISR();
-      b = sdRequestDataI(&SD2);
-      if (b < Q_OK) {
-        chnAddFlagsI(&SD2, CHN_OUTPUT_EMPTY);
-        UCA2IE = (UCA2IE & ~UCTXIE) | UCTXCPTIE;
-        UCA2IFG |= UCTXIFG; /* If we don't write to TXBUF, IFG won't get set */
-      }
-      else
-        UCA2TXBUF = b;
-      osalSysUnlockFromISR();
-      break;
-      
-    case USCI_UART_UCTXCPTIFG: /* TX complete interrupt */
-      
-      /* Physical transmission end */
-      osalSysLockFromISR();
-      if (oqIsEmptyI(&SD2.oqueue))
-        chnAddFlagsI(&SD2, CHN_TRANSMISSION_END);
-      UCA2IE &= ~UCTXCPTIE;
-      break;
-      
-    default: /* other interrupts */
-      while (1);
-      break;
+
+  switch (__even_in_range(UCA2IV, USCI_UART_UCTXCPTIFG)) {
+  case USCI_UART_UCRXIFG: /* RX interrupt */
+
+    /* Detect errors */
+    if (UCA2STATW & UCRXERR)
+      set_error(UCA2STATW, &SD2);
+
+    /* Data available */
+    osalSysLockFromISR();
+    sdIncomingDataI(&SD2, UCA2RXBUF);
+    osalSysUnlockFromISR();
+    break;
+
+  case USCI_UART_UCTXIFG: /* TX interrupt */
+
+    /* Transmission buffer empty */
+    osalSysLockFromISR();
+    b = sdRequestDataI(&SD2);
+    if (b < Q_OK) {
+      chnAddFlagsI(&SD2, CHN_OUTPUT_EMPTY);
+      UCA2IE = (UCA2IE & ~UCTXIE) | UCTXCPTIE;
+      UCA2IFG |= UCTXIFG; /* If we don't write to TXBUF, IFG won't get set */
+    }
+    else
+      UCA2TXBUF = b;
+    osalSysUnlockFromISR();
+    break;
+
+  case USCI_UART_UCTXCPTIFG: /* TX complete interrupt */
+
+    /* Physical transmission end */
+    osalSysLockFromISR();
+    if (oqIsEmptyI(&SD2.oqueue))
+      chnAddFlagsI(&SD2, CHN_TRANSMISSION_END);
+    UCA2IE &= ~UCTXCPTIE;
+    break;
+
+  default: /* other interrupts */
+    while (1)
+      ;
+    break;
   }
-  
+
   OSAL_IRQ_EPILOGUE();
-  
 }
 #endif
 
 #if MSP430X_SERIAL_USE_USART3 || defined(__DOXYGEN__)
 /**
  * @brief   USART3 interrupt handler.
- * 
+ *
  * @isr
  */
 PORT_IRQ_HANDLER(USCI_A3_VECTOR) {
   msg_t b;
-  
+
   OSAL_IRQ_PROLOGUE();
-  
-  switch (__even_in_range(UCA3IV,USCI_UART_UCTXCPTIFG)) {
-    case USCI_UART_UCRXIFG: /* RX interrupt */
-      
-      /* Detect errors */
-      if (UCA3STATW & UCRXERR)
-        set_error(UCA3STATW, &SD3);
-      
-      /* Data available */
-      osalSysLockFromISR();
-      sdIncomingDataI(&SD3, UCA3RXBUF);
-      osalSysUnlockFromISR();
-      break;
-      
-    case USCI_UART_UCTXIFG: /* TX interrupt */
-      
-      /* Transmission buffer empty */
-      osalSysLockFromISR();
-      b = sdRequestDataI(&SD3);
-      if (b < Q_OK) {
-        chnAddFlagsI(&SD3, CHN_OUTPUT_EMPTY);
-        UCA3IE = (UCA3IE & ~UCTXIE) | UCTXCPTIE;
-        UCA3IFG |= UCTXIFG; /* If we don't write to TXBUF, IFG won't get set */
-      }
-      else
-        UCA3TXBUF = b;
-      osalSysUnlockFromISR();
-      break;
-      
-    case USCI_UART_UCTXCPTIFG: /* TX complete interrupt */
-      
-      /* Physical transmission end */
-      osalSysLockFromISR();
-      if (oqIsEmptyI(&SD3.oqueue))
-        chnAddFlagsI(&SD3, CHN_TRANSMISSION_END);
-      UCA3IE &= ~UCTXCPTIE;
-      break;
-      
-    default: /* other interrupts */
-      while (1);
-      break;
+
+  switch (__even_in_range(UCA3IV, USCI_UART_UCTXCPTIFG)) {
+  case USCI_UART_UCRXIFG: /* RX interrupt */
+
+    /* Detect errors */
+    if (UCA3STATW & UCRXERR)
+      set_error(UCA3STATW, &SD3);
+
+    /* Data available */
+    osalSysLockFromISR();
+    sdIncomingDataI(&SD3, UCA3RXBUF);
+    osalSysUnlockFromISR();
+    break;
+
+  case USCI_UART_UCTXIFG: /* TX interrupt */
+
+    /* Transmission buffer empty */
+    osalSysLockFromISR();
+    b = sdRequestDataI(&SD3);
+    if (b < Q_OK) {
+      chnAddFlagsI(&SD3, CHN_OUTPUT_EMPTY);
+      UCA3IE = (UCA3IE & ~UCTXIE) | UCTXCPTIE;
+      UCA3IFG |= UCTXIFG; /* If we don't write to TXBUF, IFG won't get set */
+    }
+    else
+      UCA3TXBUF = b;
+    osalSysUnlockFromISR();
+    break;
+
+  case USCI_UART_UCTXCPTIFG: /* TX complete interrupt */
+
+    /* Physical transmission end */
+    osalSysLockFromISR();
+    if (oqIsEmptyI(&SD3.oqueue))
+      chnAddFlagsI(&SD3, CHN_TRANSMISSION_END);
+    UCA3IE &= ~UCTXCPTIE;
+    break;
+
+  default: /* other interrupts */
+    while (1)
+      ;
+    break;
   }
-  
+
   OSAL_IRQ_EPILOGUE();
-  
 }
 #endif
-
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -586,12 +598,11 @@ void sd_lld_init(void) {
  *
  * @notapi
  */
-void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
+void sd_lld_start(SerialDriver * sdp, const SerialConfig * config) {
 
   if (config == NULL) {
     config = &default_config;
   }
-
 
   if (sdp->state == SD_STOP) {
 #if MSP430X_SERIAL_USE_USART0 == TRUE
@@ -626,7 +637,7 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
  *
  * @notapi
  */
-void sd_lld_stop(SerialDriver *sdp) {
+void sd_lld_stop(SerialDriver * sdp) {
 
   if (sdp->state == SD_READY) {
 #if MSP430X_SERIAL_USE_USART0 == TRUE
