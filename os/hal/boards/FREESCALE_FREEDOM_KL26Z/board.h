@@ -38,16 +38,34 @@
 /*
  * Onboard features.
  */
-#define GPIO_LED_RED    IOPORT5
-#define PIN_LED_RED     29
-#define GPIO_LED_GREEN  IOPORT5
-#define PIN_LED_GREEN   31
-#define GPIO_LED_BLUE   IOPORT4
-#define PIN_LED_BLUE    5
-#define GPIO_BUTTON     IOPORT4
-#define PIN_BUTTON      0
-#define GPIO_LIGHTSNS   IOPORT5
-#define PIN_LIGHTSNS    22
+#define GPIO_LED_RED        IOPORT5
+#define PIN_LED_RED         29
+#define GPIO_LED_GREEN      IOPORT5
+#define PIN_LED_GREEN       31
+#define GPIO_LED_BLUE       IOPORT4
+#define PIN_LED_BLUE        5
+#define GPIO_BUTTON         IOPORT4
+#define PIN_BUTTON          0
+#define GPIO_LIGHT_SENSOR   IOPORT5
+#define PIN_LIGHT_SENSOR    22
+
+/* Inertial sensor: FXOS8700CQ */
+/* Default I2C address 0x1D */
+/* Note: the pins PTE24/25 are assigned to I2C0 by default;
+ *       if I2C0 is wanted on other pins, these need to be
+ *       assigned another function explicitly!
+ */
+#define I2C_GYRO I2C0
+
+#define LINE_LED_RED      PAL_LINE(GPIO_LED_RED, PIN_LED_RED)
+#define LINE_LED_GREEN    PAL_LINE(GPIO_LED_GREEN, PIN_LED_GREEN)
+#define LINE_LED_BLUE     PAL_LINE(GPIO_LED_BLUE, PIN_LED_BLUE)
+#define LINE_BUTTON       PAL_LINE(GPIO_BUTTON, PIN_BUTTON)
+#define LINE_LIGHT_SENSOR PAL_LINE(GPIO_LIGHT_SENSOR, PIN_LIGHT_SENSOR)
+#define LINE_GYRO_SCL     PAL_LINE(GPIOE, 24U)
+#define LINE_GYRO_SDA     PAL_LINE(GPIOE, 25U)
+#define LINE_GYRO_INT1    PAL_LINE(GPIOD, 0U)
+#define LINE_GYRO_INT2    PAL_LINE(GPIOD, 1U)
 
 /*
  * Not configured:

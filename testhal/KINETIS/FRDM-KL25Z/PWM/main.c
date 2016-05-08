@@ -99,17 +99,17 @@ int main(void) {
   /*
    * Turn off the RGB LED.
    */
-  palSetPad(GPIO_LED_RED, PIN_LED_RED); /* red */
-  palSetPad(GPIO_LED_GREEN, PIN_LED_GREEN); /* green */
-  palSetPad(GPIO_LED_BLUE, PIN_LED_BLUE); /* blue */
+  palSetLine(LINE_LED_RED); /* red */
+  palSetLine(LINE_LED_GREEN); /* green */
+  palSetLine(LINE_LED_BLUE); /* blue */
 
   /*
    * Start the PWM driver, route TPM2 output to PTB18, PTB19.
    * Enable channels now to avoid a blink later.
    */
   pwmStart(&PWM_DRIVER, &pwmcfg);
-  palSetPadMode(GPIO_LED_RED, PIN_LED_RED, PAL_MODE_ALTERNATIVE_3);
-  palSetPadMode(GPIO_LED_GREEN, PIN_LED_GREEN, PAL_MODE_ALTERNATIVE_3);
+  palSetLineMode(LINE_LED_RED, PAL_MODE_ALTERNATIVE_3);
+  palSetLineMode(LINE_LED_GREEN, PAL_MODE_ALTERNATIVE_3);
   pwmEnableChannel(&PWM_DRIVER, 0, 0);
   pwmEnableChannel(&PWM_DRIVER, 1, 0);
 

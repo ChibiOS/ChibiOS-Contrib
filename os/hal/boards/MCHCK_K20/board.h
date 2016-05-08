@@ -34,6 +34,8 @@
 
 #define GPIOB_LED   16
 
+#define LINE_LED    PAL_LINE(GPIOB, GPIOB_LED)
+
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
 extern "C" {

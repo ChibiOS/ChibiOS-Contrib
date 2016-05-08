@@ -19,12 +19,12 @@
 
 static void pwmpcb(PWMDriver *pwmp) {
   (void)pwmp;
-  palSetPad(GPIOB, GPIOB_LED);
+  palSetLine(LINE_LED);
 }
 
 static void pwmc0cb(PWMDriver *pwmp) {
   (void)pwmp;
-  palClearPad(GPIOB, GPIOB_LED);
+  palClearLine(LINE_LED);
 }
 
 static PWMConfig pwmcfg = {

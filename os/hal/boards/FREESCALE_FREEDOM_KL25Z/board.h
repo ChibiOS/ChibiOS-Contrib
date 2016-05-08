@@ -45,7 +45,21 @@
 #define GPIO_LED_BLUE   IOPORT4
 #define PIN_LED_BLUE    1
 
-#define I2C_INERIAL_SENSOR I2C0
+/* Inertial sensor: MMA8451Q */
+/* Default I2C address 0x1D */
+/* Note: the pins PTE24/25 are assigned to I2C0 by default;
+ *       if I2C0 is wanted on other pins, these need to be
+ *       assigned another function explicitly!
+ */
+#define I2C_GYRO I2C0
+
+#define LINE_LED_RED    PAL_LINE(GPIO_LED_RED, PIN_LED_RED)
+#define LINE_LED_GREEN  PAL_LINE(GPIO_LED_GREEN, PIN_LED_GREEN)
+#define LINE_LED_BLUE   PAL_LINE(GPIO_LED_BLUE, PIN_LED_BLUE)
+#define LINE_GYRO_SCL   PAL_LINE(GPIOE, 24U)
+#define LINE_GYRO_SDA   PAL_LINE(GPIOE, 25U)
+#define LINE_GYRO_INT1  PAL_LINE(GPIOA, 14U)
+#define LINE_GYRO_INT2  PAL_LINE(GPIOA, 15U)
 
 /*
  * Not configured:

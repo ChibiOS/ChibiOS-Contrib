@@ -19,12 +19,12 @@
 
 static void pwmpcb(PWMDriver *pwmp) {
   (void)pwmp;
-  palSetPad(TEENSY_PIN13_IOPORT, TEENSY_PIN13);
+  palSetLine(LINE_LED);
 }
 
 static void pwmc0cb(PWMDriver *pwmp) {
   (void)pwmp;
-  palClearPad(TEENSY_PIN13_IOPORT, TEENSY_PIN13);
+  palClearLine(LINE_LED);
 }
 
 static PWMConfig pwmcfg = {

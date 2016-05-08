@@ -45,6 +45,18 @@
 #define GPIO_LED_BLUE   IOPORT1
 #define PIN_LED_BLUE    2
 
+/* Inertial sensor: MMA8451Q */
+/* Default I2C address 0x1D */
+#define I2C_GYRO I2C0
+
+#define LINE_LED_RED    PAL_LINE(GPIO_LED_RED, PIN_LED_RED)
+#define LINE_LED_GREEN  PAL_LINE(GPIO_LED_GREEN, PIN_LED_GREEN)
+#define LINE_LED_BLUE   PAL_LINE(GPIO_LED_BLUE, PIN_LED_BLUE)
+#define LINE_GYRO_SCL   PAL_LINE(GPIOB, 0U)
+#define LINE_GYRO_SDA   PAL_LINE(GPIOB, 1U)
+#define LINE_GYRO_INT1  PAL_LINE(GPIOC, 11U)
+#define LINE_GYRO_INT2  PAL_LINE(GPIOC, 6U)
+
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
 extern "C" {
