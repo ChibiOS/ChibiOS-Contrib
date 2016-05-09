@@ -38,6 +38,52 @@
 #define TOTAL_GPIO_PADS 32
 
 /**
+ * @name    Port related definitions
+ * @{
+ */
+/**
+ * @brief   Width, in bits, of an I/O port.
+ */
+#define PAL_IOPORTS_WIDTH 32U
+
+/**
+ * @brief   Whole port mask.
+ * @brief   This macro specifies all the valid bits into a port.
+ */
+#define PAL_WHOLE_PORT ((ioportmask_t)0xFFFFFFFFU)
+/** @} */
+
+/**
+ * @name    Line handling macros
+ * @{
+ */
+/**
+ * @brief   Forms a line identifier.
+ * @details A port/pad pair are encoded into an @p ioline_t type. The encoding
+ *          of this type is platform-dependent.
+ */
+#define PAL_LINE(port, pad)                                                 \
+  ((ioline_t)((uint32_t)(pad)))
+
+/**
+ * @brief   Decodes a port identifier from a line identifier.
+ */
+#define PAL_PORT(line)                                                      \
+  ((ioportid_t)(IOPORT1))
+
+/**
+ * @brief   Decodes a pad identifier from a line identifier.
+ */
+#define PAL_PAD(line)                                                       \
+  ((uint32_t)(line))
+
+/**
+ * @brief   Value identifying an invalid line.
+ */
+#define PAL_NOLINE                      FFU
+/** @} */
+
+/**
  * @brief   Generic I/O ports static initializer.
  * @details An instance of this structure must be passed to @p palInit() at
  *          system startup time in order to initialized the digital I/O
@@ -51,17 +97,6 @@ typedef struct {
 } PALConfig;
 
 /**
- * @brief   Width, in bits, of an I/O port.
- */
-#define PAL_IOPORTS_WIDTH 32U
-
-/**
- * @brief   Whole port mask.
- * @brief   This macro specifies all the valid bits into a port.
- */
-#define PAL_WHOLE_PORT ((ioportmask_t)0xFFFFFFFFU)
-
-/**
  * @brief   Digital I/O port sized unsigned type.
  */
 typedef uint32_t ioportmask_t;
@@ -70,6 +105,11 @@ typedef uint32_t ioportmask_t;
  * @brief   Digital I/O modes.
  */
 typedef uint8_t iomode_t;
+
+/**
+ * @brief   Type of an I/O line.
+ */
+typedef uint32_t ioline_t;
 
 /**
  * @brief   Port Identifier.
@@ -265,7 +305,6 @@ typedef NRF_GPIO_Type *ioportid_t;
     else                                                                    \
       NRF_GPIO->OUTSET = 1 << (pad);                                        \
   } while (0)
-
 
 /**
  * @brief   Pad mode setup.
