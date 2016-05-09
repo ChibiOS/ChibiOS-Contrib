@@ -34,18 +34,18 @@
 /*===========================================================================*/
 
 #define MSP430X_DMA_SINGLE DMADT_0
-#define MSP430X_DMA_BLOCK  DMADT_1
-#define MSP430X_DMA_BURST  DMADT_2
+#define MSP430X_DMA_BLOCK DMADT_1
+#define MSP430X_DMA_BURST DMADT_2
 
-#define MSP430X_DMA_SRCINCR   DMASRCINCR_3
-#define MSP430X_DMA_SRCDECR   DMASRCINCR_2
-#define MSP430X_DMA_DSTINCR   DMADSTINCR_3
-#define MSP430X_DMA_DSTDECR   DMADSTINCR_2
+#define MSP430X_DMA_SRCINCR DMASRCINCR_3
+#define MSP430X_DMA_SRCDECR DMASRCINCR_2
+#define MSP430X_DMA_DSTINCR DMADSTINCR_3
+#define MSP430X_DMA_DSTDECR DMADSTINCR_2
 
-#define MSP430X_DMA_SRCBYTE   DMASRCBYTE
-#define MSP430X_DMA_DSTBYTE   DMADSTBYTE
-#define MSP430X_DMA_SRCWORD   0
-#define MSP430X_DMA_DSTWORD   0
+#define MSP430X_DMA_SRCBYTE DMASRCBYTE
+#define MSP430X_DMA_DSTBYTE DMADSTBYTE
+#define MSP430X_DMA_SRCWORD 0
+#define MSP430X_DMA_DSTWORD 0
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -56,8 +56,8 @@
 /*===========================================================================*/
 
 #if !defined(DMA_BASE) && !defined(MSP430X_DMA_SOFTWARE)
-  #error "The MSP430 device in use does not support DMA. Explicitly enable"
-  #error "software support by defining MSP430X_DMA_SOFTWARE."
+#error "The MSP430 device in use does not support DMA. Explicitly enable"
+#error "software emulation by defining MSP430X_DMA_SOFTWARE."
 #endif
 
 #if defined(__MSP430_HAS_DMAX_1__) || defined(__MSP430X_HAS_DMA_1__)
@@ -67,7 +67,7 @@
 #elif defined(__MSP430_HAS_DMAX_6__) || defined(__MSP430X_HAS_DMA_6__)
 #define MSP430X_DMA_CHANNELS 6
 #else
-  #error "Unexpected error - how many DMA channels does your MSP have?"
+#error "Unexpected error - how many DMA channels does your MSP have?"
 #endif
 
 /*===========================================================================*/
@@ -77,28 +77,28 @@
 /**
  * @brief     Type of DMA callback function pointer.
  */
-typedef void (*msp430x_dma_cbp_t)(void *args);
+typedef void (*msp430x_dma_cbp_t)(void * args);
 
 /**
  * @brief     DMA callback, function and argument.
  */
 typedef struct {
-  msp430x_dma_cbp_t   callback; /**< @brief Callback function pointer   */
-  void *              args;     /**< @brief Callback function arguments */
+  msp430x_dma_cbp_t callback; /**< @brief Callback function pointer   */
+  void * args;                /**< @brief Callback function arguments */
 } msp430x_dma_cb_t;
 
 /**
  * @brief     MSP430X DMA request structure.
  */
 typedef struct {
-  void *    source_addr;    /**< @brief Source address                       */
-  void *    dest_addr;      /**< @brief Destination address                  */
-  uint16_t  size;           /**< @brief Number of values to transfer         */
-  uint16_t  addr_mode;      /**< @brief Address manipulation mode            */
-  uint16_t  data_mode;      /**< @brief Data sizes (b2b, w2w, b2w, w2b)      */
-  uint16_t  transfer_mode;  /**< @brief Transfer mode (single, block, burst) */
-  uint16_t  trigger;        /**< @brief Triggering event (see datasheet)     */
-  msp430x_dma_cb_t callback;/**< @brief Callback function and arguments      */
+  const void * source_addr;  /**< @brief Source address                       */
+  void * dest_addr;          /**< @brief Destination address                  */
+  uint16_t size;             /**< @brief Number of values to transfer         */
+  uint16_t addr_mode;        /**< @brief Address manipulation mode            */
+  uint16_t data_mode;        /**< @brief Data sizes (b2b, w2w, b2w, w2b)      */
+  uint16_t transfer_mode;    /**< @brief Transfer mode (single, block, burst) */
+  uint16_t trigger;          /**< @brief Triggering event (see datasheet)     */
+  msp430x_dma_cb_t callback; /**< @brief Callback function and arguments      */
 } msp430x_dma_req_t;
 
 /**
@@ -133,7 +133,7 @@ typedef struct {
  */
 typedef struct {
   msp430x_dma_ch_reg_t * registers; /**< @brief Pointer to channel registers */
-  volatile uint8_t * ctl; /**< @brief Pointer to channel control register    */
+  uint8_t index; /**< @brief Index of channel trigger control register    */
   msp430x_dma_cb_t * cb; /**< @brief Pointer to callback function  and args  */
 } msp430x_dma_ch_t;
 
@@ -143,11 +143,11 @@ typedef struct {
 
 /**
  * @brief     Identifies a DMA trigger using a mnemonic.
- * 
+ *
  * @param[in] mnem    The mnemonic for the trigger, e.g. UCA0RXIFG to trigger
  *                    on UART receive.
  */
-#define DMA_TRIGGER_MNEM(mnem) DMA0TSEL__ ## mnem
+#define DMA_TRIGGER_MNEM(mnem) DMA0TSEL__##mnem
 
 /** @} */
 
@@ -158,12 +158,12 @@ typedef struct {
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void dmaInit(void);
-  bool dmaRequest(msp430x_dma_req_t * request, systime_t timeout);
-  bool dmaAcquire(msp430x_dma_ch_t * channel, uint8_t index);
-  void dmaTransfer(msp430x_dma_ch_t * channel, msp430x_dma_req_t * request); 
-  void dmaRelease(msp430x_dma_ch_t * channel);
-  
+void dmaInit(void);
+bool dmaRequest(msp430x_dma_req_t * request, systime_t timeout);
+bool dmaAcquire(msp430x_dma_ch_t * channel, uint8_t index);
+void dmaTransfer(msp430x_dma_ch_t * channel, msp430x_dma_req_t * request);
+void dmaRelease(msp430x_dma_ch_t * channel);
+
 #ifdef __cplusplus
 }
 #endif
@@ -171,4 +171,3 @@ extern "C" {
 #endif /* HAL_USE_DMA == true */
 
 #endif /* HAL_MSP430X_DMA_H */
-

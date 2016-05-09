@@ -42,25 +42,25 @@
 /**
  * @brief   Alternate mode 1
  */
-#define PAL_MSP430X_ALTERNATE_1   8
+#define PAL_MSP430X_ALTERNATE_1 8
 
 /**
  * @brief   Alternate mode 2
  */
-#define PAL_MSP430X_ALTERNATE_2   9
+#define PAL_MSP430X_ALTERNATE_2 9
 
 /**
  * @brief   Alternate mode 3
  */
-#define PAL_MSP430X_ALTERNATE_3   10
+#define PAL_MSP430X_ALTERNATE_3 10
 
-#define ALTERNATE_HELP(n)   (PAL_MSP430X_ALTERNATE_ ## n)
+#define ALTERNATE_HELP(n) (PAL_MSP430X_ALTERNATE_##n)
 /**
  * @brief   Alternate function.
- * 
+ *
  * @param[in] n   alternate function selector - 1 through 3
  */
-#define PAL_MODE_ALTERNATE(n)     (ALTERNATE_HELP(n))
+#define PAL_MODE_ALTERNATE(n) (ALTERNATE_HELP(n))
 
 /** @} */
 
@@ -75,16 +75,15 @@
 /**
  * @brief   Width, in bits, of an I/O port.
  */
-#define PAL_IOPORTS_WIDTH           16U
+#define PAL_IOPORTS_WIDTH 16U
 
 /**
  * @brief   Whole port mask.
  * @details This macro specifies all the valid bits into a port.
  */
-#define PAL_WHOLE_PORT              ((ioportmask_t)0xFFFFU)
+#define PAL_WHOLE_PORT ((ioportmask_t)0xFFFFU)
 
 /** @} */
-
 
 /**
  * @name    Line handling macros
@@ -97,25 +96,24 @@
  * @note    In this driver the pad number is encoded in the upper 4 bits of
  *          the GPIO address which are guaranteed to be zero.
  */
-#define PAL_LINE(port, pad)                                                 \
+#define PAL_LINE(port, pad)                                                    \
   ((ioline_t)((uint16_t)(port)) | (((uint16_t)(pad)) << 12))
 
 /**
  * @brief   Decodes a port identifier from a line identifier.
  */
-#define PAL_PORT(line)                                                      \
+#define PAL_PORT(line)                                                         \
   ((msp430x_gpio_registers_t *)(((uint16_t)(line)) & 0x0FFFU))
 
 /**
  * @brief   Decodes a pad identifier from a line identifier.
  */
-#define PAL_PAD(line)                                                       \
-  ((uint16_t)((uint16_t)(line) >> 12))
+#define PAL_PAD(line) ((uint16_t)((uint16_t)(line) >> 12))
 
 /**
  * @brief   Value identifying an invalid line.
  */
-#define PAL_NOLINE                      0U
+#define PAL_NOLINE 0U
 /** @} */
 
 /**
@@ -220,35 +218,35 @@ typedef msp430x_gpio_registers_t * ioportid_t;
  * @brief   GPIO port A identifier.
  */
 #if defined(PA_BASE) || defined(__DOXYGEN__)
-#define IOPORT1   ((volatile msp430x_gpio_registers_t *)PA_BASE)
+#define IOPORT1 ((volatile msp430x_gpio_registers_t *)PA_BASE)
 #endif
 
 /**
  * @brief   GPIO port B identifier.
  */
 #if defined(PB_BASE) || defined(__DOXYGEN__)
-#define IOPORT2   ((volatile msp430x_gpio_registers_t *)PB_BASE)
+#define IOPORT2 ((volatile msp430x_gpio_registers_t *)PB_BASE)
 #endif
 
 /**
  * @brief   GPIO port C identifier.
  */
 #if defined(PC_BASE) || defined(__DOXYGEN__)
-#define IOPORT3   ((volatile msp430x_gpio_registers_t *)PC_BASE)
+#define IOPORT3 ((volatile msp430x_gpio_registers_t *)PC_BASE)
 #endif
 
 /**
  * @brief   GPIO port D identifier.
  */
 #if defined(PD_BASE) || defined(__DOXYGEN__)
-#define IOPORT4   ((volatile msp430x_gpio_registers_t *)PD_BASE)
+#define IOPORT4 ((volatile msp430x_gpio_registers_t *)PD_BASE)
 #endif
 
 /**
  * @brief   GPIO port E identifier.
  */
 #if defined(PE_BASE) || defined(__DOXYGEN__)
-#define IOPORT5   ((volatile msp430x_gpio_registers_t *)PE_BASE)
+#define IOPORT5 ((volatile msp430x_gpio_registers_t *)PE_BASE)
 #endif
 
 /**
@@ -261,7 +259,7 @@ typedef msp430x_gpio_registers_t * ioportid_t;
 /**
  * @brief   GPIO port J identifier.
  */
-#define IOPORT0   ((volatile msp430x_gpio_registers_t *)PJ_BASE)
+#define IOPORT0 ((volatile msp430x_gpio_registers_t *)PJ_BASE)
 
 /*===========================================================================*/
 /* Implementation, some of the following macros could be implemented as      */
@@ -307,8 +305,7 @@ typedef msp430x_gpio_registers_t * ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_writeport(port, bits) ((port)->out = (bits)) 
-
+#define pal_lld_writeport(port, bits) ((port)->out = (bits))
 
 /**
  * @brief   Sets a bits mask on a I/O port.
@@ -353,7 +350,7 @@ typedef msp430x_gpio_registers_t * ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_setgroupmode(port, mask, offset, mode)                      \
+#define pal_lld_setgroupmode(port, mask, offset, mode)                         \
   _pal_lld_setgroupmode(port, mask << offset, mode)
 
 /**
@@ -366,7 +363,7 @@ typedef msp430x_gpio_registers_t * ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_clearpad(port, pad) ((port)->out &= ~(BIT ## pad))
+#define pal_lld_clearpad(port, pad) ((port)->out &= ~(1 << pad))
 
 #if !defined(__DOXYGEN__)
 extern const PALConfig pal_default_config;
@@ -375,10 +372,8 @@ extern const PALConfig pal_default_config;
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void _pal_lld_init(const PALConfig *config);
-  void _pal_lld_setgroupmode(ioportid_t port,
-                             ioportmask_t mask,
-                             iomode_t mode);
+void _pal_lld_init(const PALConfig * config);
+void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode);
 #ifdef __cplusplus
 }
 #endif
