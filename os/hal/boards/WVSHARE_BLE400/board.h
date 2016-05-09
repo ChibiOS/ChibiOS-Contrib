@@ -43,6 +43,48 @@
 #define I2C_SCL        1
 #define I2C_SDA        0
 
+/*
+ * IO pins assignments.
+ */
+#define IOPORT1_KEY1           16U
+#define IOPORT1_KEY2           17U
+#define IOPORT1_LED0           18U
+#define IOPORT1_LED1           19U
+#define IOPORT1_LED2           20U
+#define IOPORT1_LED3           21U
+#define IOPORT1_LED4           22U
+#define IOPORT1_UART_TX         9U
+#define IOPORT1_UART_RX        11U
+#define IOPORT1_UART_RTS        8U
+#define IOPORT1_UART_CTS       10U
+#define IOPORT1_SPI_SCK        25U
+#define IOPORT1_SPI_MOSI       24U
+#define IOPORT1_SPI_MISO       23U
+#define IOPORT1_SPI_SS         30U
+#define IOPORT1_I2C_SCL         1U
+#define IOPORT1_I2C_SDA         0U
+
+/*
+ * IO lines assignments.
+ */
+#define LINE_KEY1       PAL_LINE(IOPORT1, IOPORT1_KEY1)
+#define LINE_KEY2       PAL_LINE(IOPORT1, IOPORT1_KEY2)
+#define LINE_LED0       PAL_LINE(IOPORT1, IOPORT1_LED0)
+#define LINE_LED1       PAL_LINE(IOPORT1, IOPORT1_LED1)
+#define LINE_LED2       PAL_LINE(IOPORT1, IOPORT1_LED2)
+#define LINE_LED3       PAL_LINE(IOPORT1, IOPORT1_LED3)
+#define LINE_LED4       PAL_LINE(IOPORT1, IOPORT1_LED4)
+#define LINE_UART_TX    PAL_LINE(IOPORT1, IOPORT1_UART_TX)
+#define LINE_UART_RX    PAL_LINE(IOPORT1, IOPORT1_UART_RX)
+#define LINE_UART_RTS   PAL_LINE(IOPORT1, IOPORT1_UART_RTS)
+#define LINE_UART_CTS   PAL_LINE(IOPORT1, IOPORT1_UART_CTS)
+#define LINE_SPI_SCK    PAL_LINE(IOPORT1, IOPORT1_SPI_SCK)
+#define LINE_SPI_MOSI   PAL_LINE(IOPORT1, IOPORT1_SPI_MOSI)
+#define LINE_SPI_MISO   PAL_LINE(IOPORT1, IOPORT1_SPI_MISO)
+#define LINE_SPI_SS     PAL_LINE(IOPORT1, IOPORT1_SPI_SS)
+#define LINE_I2C_SCL    PAL_LINE(IOPORT1, IOPORT1_I2C_SCL)
+#define LINE_I2C_SDA    PAL_LINE(IOPORT1, IOPORT1_I2C_SDA)
+
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
 extern "C" {
