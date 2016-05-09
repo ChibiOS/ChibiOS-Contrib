@@ -45,6 +45,63 @@
 #define I2C_SCL         7
 #define I2C_SDA        30
 
+/*
+ * IO pins assignments.
+ */
+#define IOPORT1_BTN1           17U
+#define IOPORT1_BTN2           18U
+#define IOPORT1_BTN3           19U
+#define IOPORT1_BTN4           20U
+#define IOPORT1_LED1           21U
+#define IOPORT1_LED2           22U
+#define IOPORT1_LED3           23U
+#define IOPORT1_LED4           24U
+#define IOPORT1_UART_RTS        8U
+#define IOPORT1_UART_TX         9U
+#define IOPORT1_UART_CTS       10U
+#define IOPORT1_UART_RX        11U
+#define IOPORT1_SPI_SCK        29U
+#define IOPORT1_SPI_MOSI       25U
+#define IOPORT1_SPI_MISO       28U
+#define IOPORT1_SPI_SS         24U
+#define IOPORT1_I2C_SCL         7U
+#define IOPORT1_I2C_SDA        30U
+#define IOPORT1_A0              1U
+#define IOPORT1_A1              2U
+#define IOPORT1_A2              3U
+#define IOPORT1_A3              4U
+#define IOPORT1_A4              5U
+#define IOPORT1_A5              6U
+
+/*
+ * IO lines assignments.
+ */
+#define LINE_BTN1      PAL_LINE(IOPORT1, IOPORT1_BTN1)
+#define LINE_BTN2      PAL_LINE(IOPORT1, IOPORT1_BTN2)
+#define LINE_BTN3      PAL_LINE(IOPORT1, IOPORT1_BTN3)
+#define LINE_BTN4      PAL_LINE(IOPORT1, IOPORT1_BTN4)
+#define LINE_LED1      PAL_LINE(IOPORT1, IOPORT1_LED1)
+#define LINE_LED2      PAL_LINE(IOPORT1, IOPORT1_LED2)
+#define LINE_LED3      PAL_LINE(IOPORT1, IOPORT1_LED3)
+#define LINE_LED4      PAL_LINE(IOPORT1, IOPORT1_LED4)
+#define LINE_UART_RTS  PAL_LINE(IOPORT1, IOPORT1_UART_RTS)
+#define LINE_UART_TX   PAL_LINE(IOPORT1, IOPORT1_UART_TX)
+#define LINE_UART_CTS  PAL_LINE(IOPORT1, IOPORT1_UART_CTS)
+#define LINE_UART_RX   PAL_LINE(IOPORT1, IOPORT1_UART_RX)
+#define LINE_SPI_SCK   PAL_LINE(IOPORT1, IOPORT1_SPI_SCK)
+#define LINE_SPI_MOSI  PAL_LINE(IOPORT1, IOPORT1_SPI_MOSI)
+#define LINE_SPI_MISO  PAL_LINE(IOPORT1, IOPORT1_SPI_MISO)
+#define LINE_SPI_SS    PAL_LINE(IOPORT1, IOPORT1_SPI_SS)
+#define LINE_I2C_SCL   PAL_LINE(IOPORT1, IOPORT1_I2C_SCL)
+#define LINE_I2C_SDA   PAL_LINE(IOPORT1, IOPORT1_I2C_SDA)
+#define LINE_A0        PAL_LINE(IOPORT1, IOPORT1_A0)
+#define LINE_A1        PAL_LINE(IOPORT1, IOPORT1_A1)
+#define LINE_A2        PAL_LINE(IOPORT1, IOPORT1_A2)
+#define LINE_A3        PAL_LINE(IOPORT1, IOPORT1_A3)
+#define LINE_A4        PAL_LINE(IOPORT1, IOPORT1_A4)
+#define LINE_A5        PAL_LINE(IOPORT1, IOPORT1_A5)
+
+
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
 extern "C" {
