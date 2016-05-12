@@ -508,48 +508,80 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config)
 #if TIVA_SERIAL_USE_UART0
     if (&SD1 == sdp) {
       SYSCTL->RCGCUART |= (1 << 0);
+
+      while (!(SYSCTL->PRUART & (1 << 0)))
+        ;
+
       nvicEnableVector(TIVA_UART0_NUMBER, TIVA_SERIAL_UART0_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART1
     if (&SD2 == sdp) {
       SYSCTL->RCGCUART |= (1 << 1);
+
+      while (!(SYSCTL->PRUART & (1 << 1)))
+        ;
+
       nvicEnableVector(TIVA_UART1_NUMBER, TIVA_SERIAL_UART1_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART2
     if (&SD3 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 2);  /* enable UART2 module */
+      SYSCTL->RCGCUART |= (1 << 2);
+
+      while (!(SYSCTL->PRUART & (1 << 2)))
+        ;
+
       nvicEnableVector(TIVA_UART2_NUMBER, TIVA_SERIAL_UART2_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART3
     if (&SD4 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 3);  /* enable UART3 module */
+      SYSCTL->RCGCUART |= (1 << 3);
+
+      while (!(SYSCTL->PRUART & (1 << 3)))
+        ;
+
       nvicEnableVector(TIVA_UART3_NUMBER, TIVA_SERIAL_UART3_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART4
     if (&SD5 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 4);  /* enable UART4 module */
+      SYSCTL->RCGCUART |= (1 << 4);
+
+      while (!(SYSCTL->PRUART & (1 << 4)))
+        ;
+
       nvicEnableVector(TIVA_UART4_NUMBER, TIVA_SERIAL_UART4_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART5
     if (&SD6 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 5);  /* enable UART5 module */
+      SYSCTL->RCGCUART |= (1 << 5);
+
+      while (!(SYSCTL->PRUART & (1 << 5)))
+        ;
+
       nvicEnableVector(TIVA_UART5_NUMBER, TIVA_SERIAL_UART5_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART6
     if (&SD7 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 6);  /* enable UART6 module */
+      SYSCTL->RCGCUART |= (1 << 6);
+
+      while (!(SYSCTL->PRUART & (1 << 6)))
+        ;
+
       nvicEnableVector(TIVA_UART6_NUMBER, TIVA_SERIAL_UART6_PRIORITY);
     }
 #endif
 #if TIVA_SERIAL_USE_UART7
     if (&SD8 == sdp) {
-      SYSCTL->RCGCUART |= (1 << 7);  /* enable UART7 module */
+      SYSCTL->RCGCUART |= (1 << 7);
+
+      while (!(SYSCTL->PRUART & (1 << 7)))
+        ;
+
       nvicEnableVector(TIVA_UART7_NUMBER, TIVA_SERIAL_UART7_PRIORITY);
     }
 #endif
