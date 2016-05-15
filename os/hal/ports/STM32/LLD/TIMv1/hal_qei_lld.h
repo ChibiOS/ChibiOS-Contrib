@@ -238,7 +238,7 @@ typedef uint16_t qeicnt_t;
 /**
  * @brief   QEI delta type.
  */
-typedef int16_t qeidelta_t;
+typedef int32_t qeidelta_t;
 
 /**
  * @brief   Driver configuration structure.
