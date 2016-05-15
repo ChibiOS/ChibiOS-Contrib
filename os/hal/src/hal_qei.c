@@ -176,7 +176,7 @@ qeicnt_t qeiGetCount(QEIDriver *qeip) {
  * @api
  */
 qeidelta_t qeiUpdate(QEIDriver *qeip) {
-  qeicnt_t diff;
+  qeidelta_t diff;
 
   osalSysLock();
   diff = qeiUpdateI(qeip);
