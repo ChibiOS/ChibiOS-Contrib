@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2016 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2006..2016 Martino Migliavacca
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 #ifndef HAL_QEI_LLD_H
 #define HAL_QEI_LLD_H
 
-#if HAL_USE_QEI || defined(__DOXYGEN__)
+#if (HAL_USE_QEI == TRUE) || defined(__DOXYGEN__)
 
 #include "stm32_tim.h"
 
