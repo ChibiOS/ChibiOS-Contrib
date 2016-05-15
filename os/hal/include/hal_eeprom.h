@@ -32,10 +32,6 @@
 #include "ch.h"
 #include "hal.h"
 
-#ifndef HAL_USE_EEPROM
-#define HAL_USE_EEPROM FALSE
-#endif
-
 #ifndef EEPROM_USE_EE25XX
 #define EEPROM_USE_EE25XX FALSE
 #endif
@@ -44,7 +40,7 @@
 #define EEPROM_USE_EE24XX FALSE
 #endif
 
-#if HAL_USE_EEPROM
+#if (HAL_USE_EEPROM == TRUE) || defined(__DOXYGEN__)
 
 #if EEPROM_USE_EE25XX && EEPROM_USE_EE24XX
 #define EEPROM_TABLE_SIZE 2

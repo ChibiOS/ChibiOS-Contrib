@@ -32,11 +32,7 @@
 #include "ch.h"
 #include "hal.h"
 
-#ifndef HAL_USE_TIMCAP
-#define HAL_USE_TIMCAP FALSE
-#endif
-
-#if HAL_USE_TIMCAP || defined(__DOXYGEN__)
+#if (HAL_USE_TIMCAP == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
