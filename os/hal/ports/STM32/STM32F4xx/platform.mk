@@ -8,6 +8,7 @@ PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/STM32/LLD/CRCv1/hal_crc_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/STM32/LLD/LTDCv1/hal_stm32_ltdc.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/STM32/LLD/TIMv1/hal_eicu_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/STM32/LLD/TIMv1/hal_timcap_lld.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/STM32/LLD/TIMv1/hal_qei_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/STM32/LLD/USBHv1/hal_usbh_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/src/hal_fsmc_sdram.c
 

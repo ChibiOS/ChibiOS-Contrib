@@ -1,5 +1,5 @@
 /*
-    ChibiOS/RT - Copyright (C) 2014 Uladzimir Pylinsky aka barthess
+    ChibiOS - Copyright (C) 2006..2016 Martino Migliavacca
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,32 +15,17 @@
 */
 
 /**
- * @file    hal_community.h
- * @brief   HAL subsystem header (community part).
+ * @file    hal_qei.h
+ * @brief   QEI Driver macros and structures.
  *
- * @addtogroup HAL_COMMUNITY
+ * @addtogroup QEI
  * @{
  */
 
-#ifndef _HAL_COMMUNITY_H_
-#define _HAL_COMMUNITY_H_
+#ifndef HAL_QEI_H
+#define HAL_QEI_H
 
-/* Abstract interfaces.*/
-
-/* Shared headers.*/
-
-/* Normal drivers.*/
-#include "hal_nand.h"
-#include "hal_eicu.h"
-#include "hal_rng.h"
-#include "hal_usbh.h"
-#include "hal_timcap.h"
-#include "hal_qei.h"
-
-/* Complex drivers.*/
-#include "hal_onewire.h"
-#include "hal_crc.h"
-#include "hal_eeprom.h"
+#if (HAL_USE_QEI == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -58,9 +43,65 @@
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
 
+/**
+ * @brief   Driver state machine possible states.
+ */
+typedef enum {
+  QEI_UNINIT = 0,                   /**< Not initialized.                   */
+  QEI_STOP = 1,                     /**< Stopped.                           */
+  QEI_READY = 2,                    /**< Ready.                             */
+  QEI_ACTIVE = 3,                   /**< Active.                            */
+} qeistate_t;
+
+/**
+ * @brief   Type of a structure representing an QEI driver.
+ */
+typedef struct QEIDriver QEIDriver;
+
+/**
+ * @brief   QEI notification callback type.
+ *
+ * @param[in] qeip      pointer to a @p QEIDriver object
+ */
+typedef void (*qeicallback_t)(QEIDriver *qeip);
+
+#include "hal_qei_lld.h"
+
 /*===========================================================================*/
 /* Driver macros.                                                            */
 /*===========================================================================*/
+
+/**
+ * @name    Macro Functions
+ * @{
+ */
+/**
+ * @brief   Enables the input capture.
+ *
+ * @param[in] qeip      pointer to the @p QEIDriver object
+ *
+ * @iclass
+ */
+#define qeiEnableI(qeip) qei_lld_enable(qeip)
+
+/**
+ * @brief   Disables the input capture.
+ *
+ * @param[in] qeip      pointer to the @p QEIDriver object
+ *
+ * @iclass
+ */
+#define qeiDisableI(qeip) qei_lld_disable(qeip)
+
+/**
+ * @brief   Returns the counter value.
+ *
+ * @param[in] qeip      pointer to the @p QEIDriver object
+ * @return              The current counter value.
+ *
+ * @iclass
+ */
+#define qeiGetCountI(qeip) qei_lld_get_count(qeip)
 
 /*===========================================================================*/
 /* External declarations.                                                    */
@@ -69,11 +110,21 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void halCommunityInit(void);
+  void qeiInit(void);
+  void qeiObjectInit(QEIDriver *qeip);
+  void qeiStart(QEIDriver *qeip, const QEIConfig *config);
+  void qeiStop(QEIDriver *qeip);
+  void qeiEnable(QEIDriver *qeip);
+  void qeiDisable(QEIDriver *qeip);
+  qeicnt_t qeiGetCount(QEIDriver *qeip);
+  qeidelta_t qeiUpdate(QEIDriver *qeip);
+  qeidelta_t qeiUpdateI(QEIDriver *qeip);
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _HAL_COMMUNITY_H_ */
+#endif /* HAL_USE_QEI  == TRUE */
+
+#endif /* HAL_QEI_H */
 
 /** @} */
