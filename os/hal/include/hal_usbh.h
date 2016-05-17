@@ -20,9 +20,6 @@
 
 #include "hal.h"
 
-#ifndef HAL_USE_USBH
-#define HAL_USE_USBH FALSE
-#endif
 
 #ifndef HAL_USBH_USE_FTDI
 #define HAL_USBH_USE_FTDI FALSE
@@ -40,7 +37,7 @@
 #define HAL_USBH_USE_UVC FALSE
 #endif
 
-#if HAL_USE_USBH
+#if (HAL_USE_USBH == TRUE) || defined(__DOXYGEN__)
 
 #include "osal.h"
 #include "usbh/list.h"

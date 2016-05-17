@@ -22,8 +22,46 @@
  * @{
  */
 
-#ifndef _HAL_COMMUNITY_H_
-#define _HAL_COMMUNITY_H_
+#ifndef HAL_COMMUNITY_H
+#define HAL_COMMUNITY_H
+
+
+/* Error checks on the configuration header file.*/
+#if !defined(HAL_USE_CRC)
+#define HAL_USE_CRC                         FALSE
+#endif
+
+#if !defined(HAL_USE_EEPROM)
+#define HAL_USE_EEPROM                      FALSE
+#endif
+
+#if !defined(HAL_USE_EICU)
+#define HAL_USE_EICU                        FALSE
+#endif
+
+#if !defined(HAL_USE_NAND)
+#define HAL_USE_NAND                        FALSE
+#endif
+
+#if !defined(HAL_USE_ONEWIRE)
+#define HAL_USE_ONEWIRE                     FALSE
+#endif
+
+#if !defined(HAL_USE_QEI)
+#define HAL_USE_QEI                        FALSE
+#endif
+
+#if !defined(HAL_USE_RNG)
+#define HAL_USE_RNG                         FALSE
+#endif
+
+#if !defined(HAL_USE_TIMCAP)
+#define HAL_USE_TIMCAP                      FALSE
+#endif
+
+#if !defined(HAL_USE_USBH)
+#define HAL_USE_USBH                        FALSE
+#endif
 
 /* Abstract interfaces.*/
 
@@ -74,6 +112,6 @@ extern "C" {
 }
 #endif
 
-#endif /* _HAL_COMMUNITY_H_ */
+#endif /* HAL_COMMUNITY_H */
 
 /** @} */
