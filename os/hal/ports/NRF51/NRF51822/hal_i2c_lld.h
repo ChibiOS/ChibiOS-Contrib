@@ -66,20 +66,30 @@
  * @brief   I2C0 interrupt priority level setting.
  */
 #if !defined(NRF51_I2C_I2C0_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_I2C_I2C0_IRQ_PRIORITY         10
+#define NRF51_I2C_I2C0_IRQ_PRIORITY         3
 #endif
 
 /**
  * @brief   I2C1 interrupt priority level setting.
  */
 #if !defined(NRF51_I2C_I2C1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_I2C_I2C1_IRQ_PRIORITY         10
+#define NRF51_I2C_I2C1_IRQ_PRIORITY         3
 #endif
 /** @} */
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+#if NRF51_I2C_USE_I2C0 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_I2C_I2C0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to I2C0"
+#endif
+
+#if NRF51_I2C_USE_I2C1 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_I2C_I2C1_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to I2C1"
+#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */

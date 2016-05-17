@@ -39,14 +39,14 @@
  * @brief   SPI0 interrupt priority level setting.
  */
 #if !defined(NRF51_SPI_SPI0_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_SPI_SPI0_IRQ_PRIORITY    10
+#define NRF51_SPI_SPI0_IRQ_PRIORITY    3
 #endif
 
 /**
  * @brief   SPI1 interrupt priority level setting.
  */
 #if !defined(NRF51_SPI_SPI1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_SPI_SPI1_IRQ_PRIORITY    10
+#define NRF51_SPI_SPI1_IRQ_PRIORITY    3
 #endif
 
 /**
@@ -63,6 +63,16 @@
 
 #if !NRF51_SPI_USE_SPI0 && !NRF51_SPI_USE_SPI1
 #error "SPI driver activated but no SPI peripheral assigned"
+#endif
+
+#if NRF51_SPI_USE_SPI0 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_SPI_SPI0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to SPI0"
+#endif
+
+#if NRF51_SPI_USE_SPI1 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_SPI_SPI1_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to SPI1"
 #endif
 
 /*===========================================================================*/

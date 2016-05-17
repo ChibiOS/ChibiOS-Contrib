@@ -61,7 +61,7 @@
  * @brief   RNG1 interrupt priority level setting.
  */
 #if !defined(NRF51_RNG_RNG1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_RNG_RNG1_IRQ_PRIORITY         10
+#define NRF51_RNG_RNG1_IRQ_PRIORITY         3
 #endif
 
 
@@ -69,6 +69,10 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
+#if NRF51_RNG_USE_RNG1 &&					\
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_RNG_RNG1_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to RNG1"
+#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
