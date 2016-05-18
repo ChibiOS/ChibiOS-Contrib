@@ -39,9 +39,15 @@ int main(void) {
     .frequency = PWM_FREQUENCY_31250HZ, 
     .period = 31250,                 
     .callback = pwm_cb_period,
-    { {PWM_OUTPUT_ACTIVE_HIGH, pwm_cb_channel0},
-      {PWM_OUTPUT_DISABLED, NULL},
-      {PWM_OUTPUT_DISABLED, NULL}
+    { { .mode           = PWM_OUTPUT_DISABLED,
+	.callback       = pwm_cb_channel0, },
+      { .mode           = PWM_OUTPUT_ACTIVE_HIGH,
+	.callback       = NULL,
+	.ioline         = LINE_LED2,
+	.gpiote_channel = 0,
+	.ppi_channel    = { 0, 1 } },
+      { .mode           = PWM_OUTPUT_DISABLED,
+	.callback       = NULL, },
     },
   };
 
@@ -62,6 +68,7 @@ int main(void) {
   pwmEnablePeriodicNotification(&PWMD1);
   pwmEnableChannel(&PWMD1, 0, PWM_FRACTION_TO_WIDTH(&PWMD1, 2, 1));
   pwmEnableChannelNotification(&PWMD1, 0);
+  pwmEnableChannel(&PWMD1, 1, PWM_FRACTION_TO_WIDTH(&PWMD1, 4, 3));
 
   while (1) {
     chThdSleepMilliseconds(500);

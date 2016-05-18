@@ -52,14 +52,28 @@
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
+/**
+ * @name    Configuration options
+ * @{
+ */
+
+/**
+ * @brief   TIMER0 as driver implementation
+ */
 #if !defined(NRF51_PWM_USE_TIMER0)
 #define NRF51_PWM_USE_TIMER0 FALSE
 #endif
 
+/**
+ * @brief   TIMER1 as driver implementation
+ */
 #if !defined(NRF51_PWM_USE_TIMER1)
 #define NRF51_PWM_USE_TIMER1 FALSE
 #endif
 
+/**
+ * @brief   TIMER2 as driver implementation
+ */
 #if !defined(NRF51_PWM_USE_TIMER2)
 #define NRF51_PWM_USE_TIMER2 FALSE
 #endif
@@ -85,12 +99,13 @@
 #define NRF51_PWM_TIMER2_PRIORITY        12
 #endif
 
-/** @} */
-
 /**
- * @name    Configuration options
- * @{
+ * @brief   Allow driver to use GPIOTE/PPI to control PAL line
  */
+#if !defined(NRF51_PWM_USE_GPIOTE_PPI)
+#define NRF51_PWM_USE_GPIOTE_PPI FALSE
+#endif
+
 /** @} */
 
 /*===========================================================================*/
@@ -145,6 +160,32 @@ typedef struct {
    */
   pwmcallback_t             callback;
   /* End of the mandatory fields.*/
+
+  /**
+   * @brief PAL line to toggle.
+   * @note  Only used if mode is PWM_OUTPUT_HIGH or PWM_OUTPUT_LOW.
+   * @note  When NRF51_PWM_USE_GPIOTE_PPI is used and channel enabled,
+   *        it wont be possible to access this PAL line using the PAL
+   *        driver.
+   */
+  ioline_t ioline;
+
+#if NRF51_PWM_USE_GPIOTE_PPI || defined(__DOXYGEN__)
+  /**
+   * @brief Unique GPIOTE channel to use. (1 channel)
+   * @note  Only used if mode is PWM_OUTPUT_HIGH or PWM_OUTPUT_LOW.
+   * @note  Only 4 GPIOTE channels are available on nRF51.
+   */
+  uint8_t gpiote_channel;
+
+  /**
+   * @brief Unique PPI channels to use. (2 channels)
+   * @note  Only used if mode is PWM_OUTPUT_HIGH or PWM_OUTPUT_LOW.
+   * @note  Only 16 PPI channels are available on nRF51
+   *        (When Softdevice is enabled, only channels 0-7 are available)
+   */
+  uint8_t ppi_channel[2];
+#endif
 } PWMChannelConfig;
 
 /**
