@@ -420,7 +420,7 @@ void usb_lld_init(void) {
     }
   }
   usbfrac_match_found:
-  chDbgAssert(i<2 && j <8,"USB Init error");
+  osalDbgAssert(i<2 && j <8,"USB Init error");
 
 #else /* KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE */
 #error USB clock setting not implemented for this KINETIS_MCG_MODE

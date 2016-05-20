@@ -157,14 +157,10 @@ struct I2CDriver {
    */
   i2cflags_t                errors;
 #if I2C_USE_MUTUAL_EXCLUSION || defined(__DOXYGEN__)
-#if CH_CFG_USE_MUTEXES || defined(__DOXYGEN__)
   /**
    * @brief   Mutex protecting the bus.
    */
   mutex_t                   mutex;
-#elif CH_CFG_USE_SEMAPHORES
-  semaphore_t               semaphore;
-#endif
 #endif /* I2C_USE_MUTUAL_EXCLUSION */
 #if defined(I2C_DRIVER_EXT_FIELDS)
   I2C_DRIVER_EXT_FIELDS

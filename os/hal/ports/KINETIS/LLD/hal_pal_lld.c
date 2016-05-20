@@ -108,7 +108,7 @@ void _pal_lld_setpadmode(ioportid_t port,
 
   PORT_TypeDef *portcfg = NULL;
 
-  chDbgAssert(pad < PADS_PER_PORT, "pal_lld_setpadmode() #1, invalid pad");
+  osalDbgAssert(pad < PADS_PER_PORT, "pal_lld_setpadmode() #1, invalid pad");
 
   if (mode == PAL_MODE_OUTPUT_PUSHPULL)
     port->PDDR |= ((uint32_t) 1 << pad);
@@ -126,7 +126,7 @@ void _pal_lld_setpadmode(ioportid_t port,
   else if (port == IOPORT5)
     portcfg = PORTE;
 
-  chDbgAssert(portcfg != NULL, "pal_lld_setpadmode() #2, invalid port");
+  osalDbgAssert(portcfg != NULL, "pal_lld_setpadmode() #2, invalid port");
 
   switch (mode) {
   case PAL_MODE_RESET:
