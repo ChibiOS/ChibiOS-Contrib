@@ -374,6 +374,7 @@ PORT_IRQ_HANDLER(USCI_A0_VECTOR) {
     if (oqIsEmptyI(&SD0.oqueue))
       chnAddFlagsI(&SD0, CHN_TRANSMISSION_END);
     UCA0IE &= ~UCTXCPTIE;
+    osalSysUnlockFromISR();
     break;
 
   default: /* other interrupts */

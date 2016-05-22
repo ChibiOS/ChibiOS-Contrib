@@ -89,7 +89,9 @@ PORT_IRQ_HANDLER(DMA_VECTOR) {
 
   if (index < MSP430X_DMA_CHANNELS) {
 #if CH_CFG_USE_SEMAPHORES
+    chSysLockFromISR();
     chSemSignalI(&dma_lock);
+    chSysUnlockFromISR();
 #endif
 
     msp430x_dma_cb_t * cb = &callbacks[index];
@@ -129,7 +131,7 @@ void dmaInit(void) {
 bool dmaRequest(msp430x_dma_req_t * request, systime_t timeout) {
 /* Check if a DMA channel is available */
 #if CH_CFG_USE_SEMAPHORES
-  msg_t semresult = chSemWaitTimeout(&dma_lock, timeout);
+  msg_t semresult = chSemWaitTimeoutS(&dma_lock, timeout);
   if (semresult != MSG_OK)
     return true;
 #endif

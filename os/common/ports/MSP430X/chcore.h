@@ -232,14 +232,19 @@ struct port_context {
  * @details This macro must be inserted at the end of all IRQ handlers
  *          enabled to invoke system APIs.
  */
-#define PORT_IRQ_EPILOGUE() chSchRescheduleS()
+#define PORT_IRQ_EPILOGUE() {                                               \
+  _dbg_check_lock();                                                        \
+  if (chSchIsPreemptionRequired())                                          \
+    chSchDoReschedule();                                                    \
+  _dbg_check_unlock();                                                      \
+}
 
 /**
  * @brief   IRQ handler function declaration.
  * @note    @p id can be a function name or a vector number depending on the
  *          port implementation.
  */
-#define PORT_IRQ_HANDLER(id) __attribute__ ((interrupt(id)))                  \
+#define PORT_IRQ_HANDLER(id) __attribute__ ((interrupt(id)))                \
   void ISR_ ## id (void)
 
 /**

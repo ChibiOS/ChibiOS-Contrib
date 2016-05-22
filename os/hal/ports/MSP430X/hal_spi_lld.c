@@ -388,10 +388,11 @@ void spi_lld_start(SPIDriver * spip) {
   spip->regs->ctlw0 = UCSWRST;
   spip->regs->brw   = brw;
   spip->regs->ctlw0 =
-      (spip->config->spi_mode << 14) | (spip->config->bit_order << 13) |
+      ((spip->config->spi_mode ^ 0x02) << 14) | (spip->config->bit_order << 13) |
       (spip->config->data_size << 12) | (UCMST) |
       ((spip->config->ss_line ? 0 : 2) << 9) | (UCSYNC) | (ssel) | (UCSTEM);
   *(spip->ifg) = 0;
+  spi_lld_unselect(spip);
 }
 
 /**
@@ -561,15 +562,12 @@ void spi_lld_receive(SPIDriver * spip, size_t n, void * rxbuf) {
  * @param[in] frame     the data frame to send over the SPI bus
  * @return              The received data frame from the SPI bus.
  */
-uint16_t spi_lld_polled_exchange(SPIDriver * spip, uint16_t frame) {
+uint8_t spi_lld_polled_exchange(SPIDriver * spip, uint8_t frame) {
 
-  osalDbgAssert(!(frame & 0xFF00U), "16-bit transfers not supported");
-
-  while (!(*(spip->ifg) & UCTXIFG))
-    ;
   spip->regs->txbuf = frame;
   while (!(*(spip->ifg) & UCRXIFG))
     ;
+  *(spip->ifg) &= ~(UCRXIFG | UCTXIFG);
   return spip->regs->rxbuf;
 }
 
