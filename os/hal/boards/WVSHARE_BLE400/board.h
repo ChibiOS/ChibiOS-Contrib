@@ -42,6 +42,16 @@
 #define SPI_SS         30
 #define I2C_SCL        1
 #define I2C_SDA        0
+#define AIN0           26
+#define AIN1           27
+#define AIN2            1
+#define AIN3            2
+#define AIN4            3
+#define AIN5            4
+#define AIN6            5
+#define AIN7            6
+#define AREF0           0
+#define AREF1           6
 
 /*
  * IO pins assignments.
@@ -63,6 +73,16 @@
 #define IOPORT1_SPI_SS         30U
 #define IOPORT1_I2C_SCL         1U
 #define IOPORT1_I2C_SDA         0U
+#define IOPORT1_AIN0           26U
+#define IOPORT1_AIN1           27U
+#define IOPORT1_AIN2            1U
+#define IOPORT1_AIN3            2U
+#define IOPORT1_AIN4            3U
+#define IOPORT1_AIN5            4U
+#define IOPORT1_AIN6            5U
+#define IOPORT1_AIN7            6U
+#define IOPORT1_AREF0           0U
+#define IOPORT1_AREF1           6U
 
 /*
  * IO lines assignments.
@@ -84,6 +104,16 @@
 #define LINE_SPI_SS     PAL_LINE(IOPORT1, IOPORT1_SPI_SS)
 #define LINE_I2C_SCL    PAL_LINE(IOPORT1, IOPORT1_I2C_SCL)
 #define LINE_I2C_SDA    PAL_LINE(IOPORT1, IOPORT1_I2C_SDA)
+#define LINE_AIN0       PAL_LINE(IOPORT1, IOPORT1_AIN0)
+#define LINE_AIN1       PAL_LINE(IOPORT1, IOPORT1_AIN1)
+#define LINE_AIN2       PAL_LINE(IOPORT1, IOPORT1_AIN2)
+#define LINE_AIN3       PAL_LINE(IOPORT1, IOPORT1_AIN3)
+#define LINE_AIN4       PAL_LINE(IOPORT1, IOPORT1_AIN4)
+#define LINE_AIN5       PAL_LINE(IOPORT1, IOPORT1_AIN5)
+#define LINE_AIN6       PAL_LINE(IOPORT1, IOPORT1_AIN6)
+#define LINE_AIN7       PAL_LINE(IOPORT1, IOPORT1_AIN7)
+#define LINE_AREF0      PAL_LINE(IOPORT1, IOPORT1_AREF0)
+#define LINE_AREF1      PAL_LINE(IOPORT1, IOPORT1_AREF1)
 
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
