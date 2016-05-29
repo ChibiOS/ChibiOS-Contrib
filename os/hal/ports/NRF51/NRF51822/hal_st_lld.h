@@ -71,7 +71,7 @@
  */
 #if !defined(NRF51_ST_PRIORITY) || defined(__DOXYGEN__)
 #if !defined(SOFTDEVICE_PRESENT)
-#define NRF51_ST_PRIORITY        8
+#define NRF51_ST_PRIORITY        1
 #else
 #define NRF51_ST_PRIORITY        1
 #endif
@@ -122,6 +122,10 @@
 #error "Freeruning (tick-less) mode not supported with TIMER, use RTC"
 #endif
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */
+
+#if !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_ST_PRIORITY)
+#error "Invalid IRQ priority assigned to ST driver"
+#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */

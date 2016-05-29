@@ -70,21 +70,21 @@
  * @brief   GPTD1 interrupt priority level setting.
  */
 #if !defined(NRF51_GPT_TIMER0_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_GPT_TIMER0_IRQ_PRIORITY         7
+#define NRF51_GPT_TIMER0_IRQ_PRIORITY         3
 #endif
 
 /**
  * @brief   GPTD2 interrupt priority level setting.
  */
 #if !defined(NRF51_GPT_TIMER1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_GPT_TIMER1_IRQ_PRIORITY         7
+#define NRF51_GPT_TIMER1_IRQ_PRIORITY         3
 #endif
 
 /**
  * @brief   GPTD3 interrupt priority level setting.
  */
 #if !defined(NRF51_GPT_TIMER2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_GPT_TIMER2_IRQ_PRIORITY         7
+#define NRF51_GPT_TIMER2_IRQ_PRIORITY         3
 #endif
 /** @} */
 
@@ -97,7 +97,6 @@
 #error "GPT driver activated but no TIMER peripheral assigned"
 #endif
 
-#if 0
 #if NRF51_GPT_USE_TIMER0 &&                                                   \
     !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_GPT_TIMER0_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIMER0"
@@ -111,7 +110,6 @@
 #if NRF51_GPT_USE_TIMER2 &&                                                   \
     !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_GPT_TIMER2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIMER2"
-#endif
 #endif
 
 /*===========================================================================*/

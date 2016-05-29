@@ -82,21 +82,21 @@
  * @brief   TIMER0 interrupt priority level setting.
  */
 #if !defined(NRF51_PWM_TIMER0_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_PWM_TIMER0_PRIORITY        12
+#define NRF51_PWM_TIMER0_PRIORITY        3
 #endif
 
 /**
  * @brief   TIMER1 interrupt priority level setting.
  */
 #if !defined(NRF51_PWM_TIMER1_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_PWM_TIMER1_PRIORITY        12
+#define NRF51_PWM_TIMER1_PRIORITY        3
 #endif
 
 /**
  * @brief   TIMER2 interrupt priority level setting.
  */
 #if !defined(NRF51_PWM_TIMER2_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_PWM_TIMER2_PRIORITY        12
+#define NRF51_PWM_TIMER2_PRIORITY        3
 #endif
 
 /**
@@ -119,6 +119,22 @@
 #if (NRF51_ST_USE_TIMER0 == TRUE) && (NRF51_PWM_USE_TIMER0 == TRUE)
 #error "TIMER0 used for ST and PWM"
 #endif
+
+#if NRF51_PWM_USE_TIMER0 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_PWM_TIMER0_PRIORITY)
+#error "Invalid IRQ priority assigned to TIMER0"
+#endif
+
+#if NRF51_PWM_USE_TIMER1 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_PWM_TIMER1_PRIORITY)
+#error "Invalid IRQ priority assigned to TIMER1"
+#endif
+
+#if NRF51_PWM_USE_TIMER2 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_PWM_TIMER2_PRIORITY)
+#error "Invalid IRQ priority assigned to TIMER2"
+#endif
+
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */

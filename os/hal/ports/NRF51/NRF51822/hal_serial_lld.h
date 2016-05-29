@@ -62,7 +62,7 @@
  * @brief   UART0 interrupt priority level setting.
  */
 #if !defined(NRF51_SERIAL_UART0_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_SERIAL_UART0_PRIORITY        12
+#define NRF51_SERIAL_UART0_PRIORITY        3
 #endif
 
 /* Value indicating that no pad is connected to this UART register. */
@@ -74,6 +74,11 @@
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+#if NRF51_SERIAL_USE_UART0 &&					\
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_SERIAL_UART0_PRIORITY)
+#error "Invalid IRQ priority assigned to UART0"
+#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
