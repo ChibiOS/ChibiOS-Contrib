@@ -80,7 +80,7 @@
 /**
  * @brief   Value identifying an invalid line.
  */
-#define PAL_NOLINE                      FFU
+#define PAL_NOLINE              ((ioline_t)-1)
 /** @} */
 
 /**
