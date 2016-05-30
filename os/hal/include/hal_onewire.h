@@ -342,8 +342,8 @@ extern "C" {
                           uint8_t *result, size_t max_rom_cnt);
 #endif /* ONEWIRE_USE_SEARCH_ROM */
 #if ONEWIRE_SYNTH_SEARCH_TEST
-  void _synth_ow_write_bit(onewireDriver *owp, uint8_t bit);
-  uint_fast8_t _synth_ow_read_bit(void);
+  void _synth_ow_write_bit(onewireDriver *owp, ioline_t bit);
+  ioline_t _synth_ow_read_bit(void);
   void synthSearchRomTest(onewireDriver *owp);
 #endif /* ONEWIRE_SYNTH_SEARCH_TEST */
 #ifdef __cplusplus

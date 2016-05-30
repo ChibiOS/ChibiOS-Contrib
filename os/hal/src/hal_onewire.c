@@ -58,6 +58,7 @@ on every timer overflow event.
 #if (HAL_USE_ONEWIRE == TRUE) || defined(__DOXYGEN__)
 
 #include <string.h>
+#include <limits.h>
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -172,7 +173,7 @@ static void ow_bus_active(onewireDriver *owp) {
  * @brief     Function performing read of single bit.
  * @note      It must be callable from any context.
  */
-static uint_fast8_t ow_read_bit(onewireDriver *owp) {
+static ioline_t ow_read_bit(onewireDriver *owp) {
 #if ONEWIRE_SYNTH_SEARCH_TEST
   (void)owp;
   return _synth_ow_read_bit();
@@ -221,7 +222,7 @@ static void pwm_search_rom_cb(PWMDriver *pwmp) {
  *
  * @notapi
  */
-static void ow_write_bit_I(onewireDriver *owp, uint_fast8_t bit) {
+static void ow_write_bit_I(onewireDriver *owp, ioline_t bit) {
 #if ONEWIRE_SYNTH_SEARCH_TEST
   _synth_ow_write_bit(owp, bit);
 #else
@@ -348,12 +349,11 @@ static void ow_write_bit_cb(PWMDriver *pwmp, onewireDriver *owp) {
  * @param[in] sr        pointer to the @p onewire_search_rom_t helper structure
  * @param[in] bit       discovered bit to be stored in helper structure
  */
-static void store_bit(onewire_search_rom_t *sr, uint_fast8_t bit) {
+static void store_bit(onewire_search_rom_t *sr, uint8_t bit) {
 
   size_t rb = sr->reg.rombit;
 
-  /*             / 8                % 8                                     */
-  sr->retbuf[rb >> 3] |= bit << (rb & 7);
+  sr->retbuf[rb / CHAR_BIT] |= bit << (rb % CHAR_BIT);
   sr->reg.rombit++;
 }
 
@@ -365,9 +365,9 @@ static void store_bit(onewire_search_rom_t *sr, uint_fast8_t bit) {
  *                      'search ROM' helper structure
  * @param[in] bit       number of bit [0..63]
  */
-static uint_fast8_t extract_path_bit(const uint8_t *path, uint_fast8_t bit) {
-  /*                / 8          % 8                                        */
-  return (path[bit >> 3] >> (bit & 7)) & 1;
+static uint8_t extract_path_bit(const uint8_t *path, uint8_t bit) {
+
+  return (path[bit / CHAR_BIT] >> (bit % CHAR_BIT)) & 1;
 }
 
 /**
@@ -377,9 +377,9 @@ static uint_fast8_t extract_path_bit(const uint8_t *path, uint_fast8_t bit) {
  *
  * @param[in,out] sr    pointer to the @p onewire_search_rom_t helper structure
  */
-static uint_fast8_t collision_handler(onewire_search_rom_t *sr) {
+static uint8_t collision_handler(onewire_search_rom_t *sr) {
 
-  uint_fast8_t bit;
+  uint8_t bit;
 
   switch(sr->reg.search_iter) {
   case ONEWIRE_SEARCH_ROM_NEXT:

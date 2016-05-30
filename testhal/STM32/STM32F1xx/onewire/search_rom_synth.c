@@ -41,7 +41,7 @@ typedef struct {
   OWSynthDevice   devices[SYNTH_DEVICES_MAX];
   size_t          dev_present;
   bool            complement_bit;
-  uint_fast8_t    rom_bit;
+  ioline_t        rom_bit;
 } OWSynthBus;
 
 /*
@@ -86,12 +86,12 @@ static uint64_t detected_devices[SYNTH_DEVICES_MAX];
 /**
  *
  */
-void _synth_ow_write_bit(onewireDriver *owp, uint8_t bit) {
+void _synth_ow_write_bit(onewireDriver *owp, ioline_t bit) {
   (void)owp;
   size_t i;
 
   for (i=0; i<SYNTH_DEVICES_MAX; i++) {
-    if (((synth_bus.devices[i].id >> synth_bus.rom_bit) & 1) != bit) {
+    if (((synth_bus.devices[i].id >> synth_bus.rom_bit) & 1U) != bit) {
       synth_bus.devices[i].active = false;
     }
   }
@@ -101,16 +101,16 @@ void _synth_ow_write_bit(onewireDriver *owp, uint8_t bit) {
 /**
  *
  */
-uint_fast8_t _synth_ow_read_bit(void) {
-  uint_fast8_t ret = 0xFF;
+ioline_t _synth_ow_read_bit(void) {
+  ioline_t ret = 0xFF;
   size_t i;
-  uint_fast8_t bit;
+  ioline_t bit;
 
   for (i=0; i<SYNTH_DEVICES_MAX; i++) {
     if (synth_bus.devices[i].active){
-      bit = (synth_bus.devices[i].id >> synth_bus.rom_bit) & 1;
+      bit = (synth_bus.devices[i].id >> synth_bus.rom_bit) & 1U;
       if (synth_bus.complement_bit){
-        bit ^= 1;
+        bit ^= 1U;
       }
       if (0xFF == ret)
         ret = bit;
