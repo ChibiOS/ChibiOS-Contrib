@@ -365,7 +365,7 @@ static void store_bit(onewire_search_rom_t *sr, uint8_t bit) {
  *                      'search ROM' helper structure
  * @param[in] bit       number of bit [0..63]
  */
-static uint8_t extract_path_bit(const uint8_t *path, uint8_t bit) {
+static uint8_t extract_path_bit(const uint8_t *path, size_t bit) {
 
   return (path[bit / CHAR_BIT] >> (bit % CHAR_BIT)) & 1;
 }
