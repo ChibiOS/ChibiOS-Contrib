@@ -378,8 +378,7 @@ PORT_IRQ_HANDLER(USCI_A0_VECTOR) {
     break;
 
   default: /* other interrupts */
-    while (1)
-      ;
+    osalDbgAssert(false, "unhandled serial interrupt");
     break;
   }
 
@@ -433,11 +432,11 @@ PORT_IRQ_HANDLER(USCI_A1_VECTOR) {
     if (oqIsEmptyI(&SD1.oqueue))
       chnAddFlagsI(&SD1, CHN_TRANSMISSION_END);
     UCA1IE &= ~UCTXCPTIE;
+    osalSysUnlockFromISR();
     break;
 
   default: /* other interrupts */
-    while (1)
-      ;
+    osalDbgAssert(false, "unhandled serial interrupt");
     break;
   }
 
@@ -491,11 +490,11 @@ PORT_IRQ_HANDLER(USCI_A2_VECTOR) {
     if (oqIsEmptyI(&SD2.oqueue))
       chnAddFlagsI(&SD2, CHN_TRANSMISSION_END);
     UCA2IE &= ~UCTXCPTIE;
+    osalSysUnlockFromISR();
     break;
 
   default: /* other interrupts */
-    while (1)
-      ;
+    osalDbgAssert(false, "unhandled serial interrupt");
     break;
   }
 
@@ -549,11 +548,11 @@ PORT_IRQ_HANDLER(USCI_A3_VECTOR) {
     if (oqIsEmptyI(&SD3.oqueue))
       chnAddFlagsI(&SD3, CHN_TRANSMISSION_END);
     UCA3IE &= ~UCTXCPTIE;
+    osalSysUnlockFromISR();
     break;
 
   default: /* other interrupts */
-    while (1)
-      ;
+    osalDbgAssert(false, "unhandled serial interrupt");
     break;
   }
 

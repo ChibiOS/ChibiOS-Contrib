@@ -28,6 +28,8 @@
 #include <msp430.h>
 #include <in430.h>
 
+extern bool __msp430x_in_isr;
+
 /*===========================================================================*/
 /* Module constants.                                                         */
 /*===========================================================================*/
@@ -225,7 +227,7 @@ struct port_context {
  * @details This macro must be inserted at the start of all IRQ handlers
  *          enabled to invoke system APIs.
  */
-#define PORT_IRQ_PROLOGUE() 
+#define PORT_IRQ_PROLOGUE() __msp430x_in_isr = true;
 
 /**
  * @brief   IRQ epilogue code.
@@ -233,6 +235,7 @@ struct port_context {
  *          enabled to invoke system APIs.
  */
 #define PORT_IRQ_EPILOGUE() {                                               \
+  __msp430x_in_isr = false;                                                 \
   _dbg_check_lock();                                                        \
   if (chSchIsPreemptionRequired())                                          \
     chSchDoReschedule();                                                    \
@@ -298,7 +301,7 @@ extern "C" {
  * @brief   Port-related initialization code.
  */
 static inline void port_init(void) {
-
+  __msp430x_in_isr = false;
 }
 
 /**
@@ -333,9 +336,7 @@ static inline bool port_irq_enabled(syssts_t sts) {
  * @retval true         running in ISR mode.
  */
 static inline bool port_is_isr_context(void) {
-  /* Efficiency would be enhanced by not doing this, 
-   * because of implementation details */
-  return __get_SR_register() & GIE;
+  return __msp430x_in_isr;
 }
 
 /**

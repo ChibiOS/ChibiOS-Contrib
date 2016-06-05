@@ -118,7 +118,7 @@
  * @note    This increases the size of the compiled executable somewhat.
  * @note    The default is @p FALSE.
  */
-#if !defined(MSP430X_SPI_EXCLUSIVE_DMA) | defined(__DOXYGEN__)
+#if !defined(MSP430X_SPI_EXCLUSIVE_DMA) || defined(__DOXYGEN__)
 #define MSP430X_SPI_EXCLUSIVE_DMA              FALSE
 #endif
 
