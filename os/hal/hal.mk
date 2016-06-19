@@ -18,5 +18,6 @@ HALSRC += ${CHIBIOS_CONTRIB}/os/hal/src/hal_community.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/hal_eeprom.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/hal_timcap.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/hal_qei.c \
+          ${CHIBIOS_CONTRIB}/os/hal/src/hal_usb_hid.c
 
 HALINC += ${CHIBIOS_CONTRIB}/os/hal/include
