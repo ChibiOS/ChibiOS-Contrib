@@ -63,6 +63,10 @@
 #define HAL_USE_USBH                        FALSE
 #endif
 
+#if !defined(HAL_USE_USB_HID)
+#define HAL_USE_USB_HID                     FALSE
+#endif
+
 /* Abstract interfaces.*/
 
 /* Shared headers.*/
@@ -79,6 +83,7 @@
 #include "hal_onewire.h"
 #include "hal_crc.h"
 #include "hal_eeprom.h"
+#include "hal_usb_hid.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
