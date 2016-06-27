@@ -95,6 +95,7 @@ static void strong_pullup_release(void);
 
 static uint8_t testbuf[12];
 
+/* stores 3 temperature values in millicelsius */
 static int32_t temperature[3];
 
 /*
@@ -242,9 +243,8 @@ void onewireTest(void) {
 
         onewireRead(&OWD1, testbuf, 9);
         osalDbgCheck(testbuf[8] == onewireCRC(testbuf, 8));
-        tmp = 0;
-        tmp |= (testbuf[1] << 8) | testbuf[0];
-        temperature[i] = (tmp * 625) / 10;
+        memcpy(&tmp, &testbuf, 2);
+        temperature[i] = ((int32_t)tmp * 625) / 10;
       }
     }
     else {
