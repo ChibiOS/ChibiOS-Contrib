@@ -18,6 +18,10 @@
  * @file    NRF51/hal_qei_lld.h
  * @brief   NRF51 QEI subsystem low level driver header.
  *
+ * @note    Not tested with LED pin
+ *
+ * @note    Pins are configured as input with no pull.
+ *
  * @addtogroup QEI
  * @{
  */
