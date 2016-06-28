@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2016 Martino Migliavacca
+    ChibiOS - Copyright (C) 2016..2016 Stéphane D'Alu
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    TIMv1/hal_qei_lld.c
- * @brief   STM32 QEI subsystem low level driver header.
+ * @file    NRF51/hal_qei_lld.c
+ * @brief   NRF51 QEI subsystem low level driver header.
  *
  * @addtogroup QEI
  * @{
@@ -31,46 +31,14 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-
-/*===========================================================================*/
-/* Driver exported variables.                                                */
-/*===========================================================================*/
-
 /**
- * @brief   QEID1 driver identifier.
- */
-#if NRF51_QEI_USE_QDEC1 || defined(__DOXYGEN__)
-QEIDriver QEID1;
-#endif
-
-
-/*===========================================================================*/
-/* Driver local variables and types.                                         */
-/*===========================================================================*/
-
-/*===========================================================================*/
-/* Driver local functions.                                                   */
-/*===========================================================================*/
-
-/*===========================================================================*/
-/* Driver interrupt handlers.                                                */
-/*===========================================================================*/
-
-#if NRF51_QEI_USE_QDEC1 == TRUE
-/**
- * @brief   Quadrature decoder vector (QDEC)
+ * @brief   Common IRQ handler.
  *
- * @isr
+ * @param[in] qeip         pointer to an QEIDriver
  */
-OSAL_IRQ_HANDLER(Vector88) {
-  QEIDriver *qeip = &QEID1;
+static void serve_interrupt(QEIDriver *qeip) {
   NRF_QDEC_Type *qdec = qeip->qdec;
 
-  OSAL_IRQ_PROLOGUE();
-
-
-  osalSysLockFromISR();
-  
   if (qdec->EVENTS_ACCOF) {
       qdec->EVENTS_ACCOF = 0;
       qeip->overflowed++;
@@ -152,10 +120,43 @@ OSAL_IRQ_HANDLER(Vector88) {
       if (overflowed && qeip->config->overflow_cb)
 	  qeip->config->overflow_cb(qeip, delta);
   }
+}
 
-  
-  osalSysUnlockFromISR();
 
+/*===========================================================================*/
+/* Driver exported variables.                                                */
+/*===========================================================================*/
+
+/**
+ * @brief   QEID1 driver identifier.
+ */
+#if NRF51_QEI_USE_QDEC1 || defined(__DOXYGEN__)
+QEIDriver QEID1;
+#endif
+
+
+/*===========================================================================*/
+/* Driver local variables and types.                                         */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver local functions.                                                   */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver interrupt handlers.                                                */
+/*===========================================================================*/
+
+#if NRF51_QEI_USE_QDEC1 == TRUE
+/**
+ * @brief   Quadrature decoder vector (QDEC)
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(Vector88) {
+
+  OSAL_IRQ_PROLOGUE();
+  serve_interrupt(&QEID1);
   OSAL_IRQ_EPILOGUE();
 }
 #endif
@@ -263,6 +264,13 @@ void qei_lld_stop(QEIDriver *qeip) {
 #endif
     qdec->INTENCLR = QDEC_INTENSET_REPORTRDY_Msk |
 	             QDEC_INTENSET_ACCOF_Msk;
+
+    // Return pins to reset state
+    palSetLineMode(cfg->phase_a, PAL_MODE_RESET);
+    palSetLineMode(cfg->phase_b, PAL_MODE_RESET);
+    if (cfg->led != PAL_NOLINE) {
+	palSetLineMode(cfg->led, PAL_MODE_RESET);
+    }
   }
 }
 
@@ -292,10 +300,6 @@ void qei_lld_enable(QEIDriver *qeip) {
 void qei_lld_disable(QEIDriver *qeip) {
   qeip->qdec->TASKS_STOP = 1;
 }
-
-
-
-
 
 
 #endif /* HAL_USE_QEI */

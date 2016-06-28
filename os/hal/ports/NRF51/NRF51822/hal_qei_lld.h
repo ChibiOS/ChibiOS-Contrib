@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2016 Martino Migliavacca
+    ChibiOS - Copyright (C) 2016..2016 Stéphane D'Alu
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    TIMv1/hal_qei_lld.h
- * @brief   STM32 QEI subsystem low level driver header.
+ * @file    NRF51/hal_qei_lld.h
+ * @brief   NRF51 QEI subsystem low level driver header.
  *
  * @addtogroup QEI
  * @{
@@ -28,7 +28,6 @@
 #if (HAL_USE_QEI == TRUE) || defined(__DOXYGEN__)
 
 
-
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -38,8 +37,6 @@
 
 #define QEI_COUNT_MIN 0
 #define QEI_COUNT_MAX 65535
-
-
 
 
 /*===========================================================================*/
@@ -104,7 +101,7 @@ typedef enum {
 } qeiresolution_t;
 
 /**
- *
+ * @brief   Clusters of samples.
  */
 typedef enum {
   QEI_REPORT_10          = 0x00UL, /**< 10 samples per report. */
@@ -117,9 +114,8 @@ typedef enum {
   QEI_REPORT_280         = 0x07UL, /**< 280 samples per report. */
 } qeireport_t;
 
-
 /**
- * @brief   Handling of counter overflow/underflow
+ * @brief   Handling of counter overflow/underflow.
  */
 typedef enum {
   QEI_OVERFLOW_WRAP    = 0, /**< Counter value will wrap around.        */
@@ -167,11 +163,8 @@ typedef struct {
   /**
    * @brief   Handling of counter overflow/underflow
    *
-   * @details When overflow callback is called, the counter value
-   *          is not updated, the decision on how to update is left
-   *          to the callback.
-   *
-   *          Three implementation are provided
+   * @details When overflow accours, the counter value is updated
+   *          according to:
    *            - QEI_OVERFLOW_DISCARD:
    *                discard the update value, counter doesn't change
    *            - QEI_OVERFLOW_MINMAX
@@ -183,17 +176,19 @@ typedef struct {
   /**
    * @brief   Min count value.
    * 
-   * @note    If min == max, the QEI_COUNT_MIN is used as default
+   * @note    If min == max, then QEI_COUNT_MIN is used.
    */
   qeicnt_t                  min;
   /**
    * @brief   Max count value.
    * 
-   * @note    If min == max, the QEI_COUNT_MAX is used as default
+   * @note    If min == max, then QEI_COUNT_MAX is used.
    */
   qeicnt_t                  max;
   /**
     * @brief  Notify of value change
+    *
+    * @note   Called from ISR context.
     */
   qeicallback_t             notify_cb;
   /**
@@ -201,6 +196,7 @@ typedef struct {
    *
    * @note    Overflow notification is performed after 
    *          value changed notification.
+   * @note    Called from ISR context.
    */
   void (*overflow_cb)(QEIDriver *qeip, qeidelta_t delta);
   /* End of the mandatory fields.*/
@@ -251,6 +247,7 @@ typedef struct {
     * @brief  Notify of internal accumulator overflowed
     * 
     * @note   MCU has discarded some of the samples.
+    * @note   Called from ISR context.
     */
   qeicallback_t             overflowed_cb;
 } QEIConfig;
@@ -275,9 +272,6 @@ struct QEIDriver {
   QEI_DRIVER_EXT_FIELDS
 #endif
   /* End of the mandatory fields.*/
-  /**
-   */
-  qeidelta_t                 delta;
   /**
    */
   qeicnt_t                   count;
