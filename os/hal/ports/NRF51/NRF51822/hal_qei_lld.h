@@ -354,9 +354,14 @@ extern "C" {
   void qei_lld_stop(QEIDriver *qeip);
   void qei_lld_enable(QEIDriver *qeip);
   void qei_lld_disable(QEIDriver *qeip);
+  qeidelta_t qei_lld_adjust_count(QEIDriver *qeip, qeidelta_t delta);
 #ifdef __cplusplus
 }
 #endif
+
+/*===========================================================================*/
+/* To be moved in hal_qei                                                    */
+/*===========================================================================*/
 
 void qeiSetCount(QEIDriver *qeip, qeicnt_t value);
 qeidelta_t qeiAdjust(QEIDriver *qeip, qeidelta_t delta);

@@ -28,7 +28,7 @@
 
 
 /*===========================================================================*/
-/* Driver local definitions.                                                 */
+/* To be moved in hal_qei                                                    */
 /*===========================================================================*/
 
 static inline
@@ -84,35 +84,6 @@ bool qei_adjust_count(qeicnt_t *count, qeidelta_t *delta,
   }
 }
 
-qeidelta_t qei_lld_adjust_count(QEIDriver *qeip, qeidelta_t delta) {
-  // Get boundaries
-  qeicnt_t min = QEI_COUNT_MIN;
-  qeicnt_t max = QEI_COUNT_MAX;
-  if (qeip->config->min != qeip->config->max) {
-    min = qeip->config->min;
-    max = qeip->config->max;
-  }
-
-  // Snapshot counter for later comparison
-  qeicnt_t count = qeip->count;
-
-  // Adjust counter value
-  bool overflowed = qei_adjust_count(&qeip->count, &delta,
-				     min, max, qeip->config->overflow);
-
-  // Notify for value change
-  if ((qeip->count != count) && qeip->config->notify_cb)
-    qeip->config->notify_cb(qeip);
-
-  // Notify for overflow (passing the remaining delta)
-  if (overflowed && qeip->config->overflow_cb)
-    qeip->config->overflow_cb(qeip, delta);
-
-  // Remaining delta
-  return delta;
-}
-  
-
 /**
  * @brief   Adjust the counter by delta.
  *
@@ -152,8 +123,29 @@ void qeiSetCount(QEIDriver *qeip, qeicnt_t value) {
 }
 
 
+/*===========================================================================*/
+/* Driver local definitions.                                                 */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver exported variables.                                                */
+/*===========================================================================*/
+
+/**
+ * @brief   QEID1 driver identifier.
+ */
+#if NRF51_QEI_USE_QDEC0 || defined(__DOXYGEN__)
+QEIDriver QEID1;
+#endif
 
 
+/*===========================================================================*/
+/* Driver local variables and types.                                         */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver local functions.                                                   */
+/*===========================================================================*/
 
 /**
  * @brief   Common IRQ handler.
@@ -190,27 +182,6 @@ static void serve_interrupt(QEIDriver *qeip) {
     qei_lld_adjust_count(qeip, acc);
   }
 }
-
-
-/*===========================================================================*/
-/* Driver exported variables.                                                */
-/*===========================================================================*/
-
-/**
- * @brief   QEID1 driver identifier.
- */
-#if NRF51_QEI_USE_QDEC0 || defined(__DOXYGEN__)
-QEIDriver QEID1;
-#endif
-
-
-/*===========================================================================*/
-/* Driver local variables and types.                                         */
-/*===========================================================================*/
-
-/*===========================================================================*/
-/* Driver local functions.                                                   */
-/*===========================================================================*/
 
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
@@ -265,7 +236,7 @@ void qei_lld_start(QEIDriver *qeip) {
     palSetLineMode(cfg->phase_b, PAL_MODE_INPUT);
 #if NRF51_QEI_USE_LED == TRUE
     if (cfg->led != PAL_NOLINE) {
-	palSetLineMode(cfg->led, PAL_MODE_INPUT);
+      palSetLineMode(cfg->led, PAL_MODE_INPUT);
     }
 #endif
       
@@ -344,7 +315,7 @@ void qei_lld_stop(QEIDriver *qeip) {
     palSetLineMode(cfg->phase_b, PAL_MODE_RESET);
 #if NRF51_QEI_USE_LED == TRUE
     if (cfg->led != PAL_NOLINE) {
-	palSetLineMode(cfg->led, PAL_MODE_RESET);
+      palSetLineMode(cfg->led, PAL_MODE_RESET);
     }
 #endif
   }
@@ -376,6 +347,45 @@ void qei_lld_enable(QEIDriver *qeip) {
 void qei_lld_disable(QEIDriver *qeip) {
   qeip->qdec->TASKS_STOP = 1;
 }
+
+
+/**
+ * @brief   Adjust counter
+ *
+ * @param[in] qeip      pointer to the @p QEIDriver object
+ * @param[in] delta     value to use for adjustement
+ * @return              remaining adjustement that were not applied
+ *
+ * @notapi
+ */
+qeidelta_t qei_lld_adjust_count(QEIDriver *qeip, qeidelta_t delta) {
+  // Get boundaries
+  qeicnt_t min = QEI_COUNT_MIN;
+  qeicnt_t max = QEI_COUNT_MAX;
+  if (qeip->config->min != qeip->config->max) {
+    min = qeip->config->min;
+    max = qeip->config->max;
+  }
+
+  // Snapshot counter for later comparison
+  qeicnt_t count = qeip->count;
+
+  // Adjust counter value
+  bool overflowed = qei_adjust_count(&qeip->count, &delta,
+				     min, max, qeip->config->overflow);
+
+  // Notify for value change
+  if ((qeip->count != count) && qeip->config->notify_cb)
+    qeip->config->notify_cb(qeip);
+
+  // Notify for overflow (passing the remaining delta)
+  if (overflowed && qeip->config->overflow_cb)
+    qeip->config->overflow_cb(qeip, delta);
+
+  // Remaining delta
+  return delta;
+}
+  
 
 
 #endif /* HAL_USE_QEI */
