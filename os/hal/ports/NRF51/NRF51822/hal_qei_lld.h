@@ -52,6 +52,16 @@
  * @{
  */
 /**
+ * @brief   LED control enable switch.
+ * @details If set to @p TRUE the support for LED control
+ *          is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(NRF51_QEI_USE_LED) || defined(__DOXYGEN__)
+#define NRF51_QEI_USE_LED                   FALSE
+#endif
+
+/**
  * @brief   QEID1 driver enable switch.
  * @details If set to @p TRUE the support for QEID1 is included.
  * @note    The default is @p FALSE.
@@ -217,8 +227,9 @@ typedef struct {
    * @brief   Line for reading Phase B
    */
   ioline_t                  phase_b;
+#if (NRF51_QEI_USE_LED == TRUE) || defined(__DOXYGEN__)
   /**
-   * @brief   Line to use to control LED
+   * @brief   Line used to control LED
    *
    * @note    If LED is not controlled by MCU, you need to use the 
    *          PAL_NOLINE value.
@@ -239,6 +250,7 @@ typedef struct {
    * @brief   LED polarity to used (when LED is controlled by MCU) 
    */
   uint8_t                   led_polarity;
+#endif
    /**
     * @brief  Activate debouncing filter
     *

@@ -199,9 +199,11 @@ void qei_lld_start(QEIDriver *qeip) {
     // Set Pins
     palSetLineMode(cfg->phase_a, PAL_MODE_INPUT);
     palSetLineMode(cfg->phase_b, PAL_MODE_INPUT);
+#if NRF51_QEI_USE_LED == TRUE
     if (cfg->led != PAL_NOLINE) {
 	palSetLineMode(cfg->led, PAL_MODE_INPUT);
     }
+#endif
       
     // Set interrupt masks and enable interrupt
     qdec->INTENSET = QDEC_INTENSET_REPORTRDY_Msk |
@@ -217,13 +219,17 @@ void qei_lld_start(QEIDriver *qeip) {
     qdec->PSELB      = PAL_PAD(cfg->phase_b);
 
     // Select (optional) pin for LED, and configure it
+#if NRF51_QEI_USE_LED == TRUE
     qdec->PSELLED    = PAL_PAD(cfg->led);
     qdec->LEDPOL     = ((cfg->led_polarity == QEI_LED_POLARITY_LOW)
                          ? QDEC_LEDPOL_LEDPOL_ActiveLow 
 		         : QDEC_LEDPOL_LEDPOL_ActiveHigh)
                        << QDEC_LEDPOL_LEDPOL_Pos; 
     qdec->LEDPRE     = cfg->led_warming;
-
+#else
+    qdec->PSELLED    = (uint32_t)-1;
+#endif
+    
     // Set sampling resolution and debouncing
     qdec->SAMPLEPER  = cfg->resolution;
     qdec->DBFEN      = (cfg->debouncing ? QDEC_DBFEN_DBFEN_Enabled
@@ -272,9 +278,11 @@ void qei_lld_stop(QEIDriver *qeip) {
     // Return pins to reset state
     palSetLineMode(cfg->phase_a, PAL_MODE_RESET);
     palSetLineMode(cfg->phase_b, PAL_MODE_RESET);
+#if NRF51_QEI_USE_LED == TRUE
     if (cfg->led != PAL_NOLINE) {
 	palSetLineMode(cfg->led, PAL_MODE_RESET);
     }
+#endif
   }
 }
 
