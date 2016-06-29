@@ -155,6 +155,7 @@ QEIDriver QEID1;
 static void serve_interrupt(QEIDriver *qeip) {
   NRF_QDEC_Type *qdec = qeip->qdec;
 
+#if NRF51_QEI_USE_ACC_OVERFLOW_CB == TRUE
   /* Accumulator overflowed
    */
   if (qdec->EVENTS_ACCOF) {
@@ -164,7 +165,8 @@ static void serve_interrupt(QEIDriver *qeip) {
     if (qeip->config->overflowed_cb)
       qeip->config->overflowed_cb(qeip);
   }
-
+#endif
+  
   /* Report ready
    */
   if (qdec->EVENTS_REPORTRDY) {
@@ -241,8 +243,13 @@ void qei_lld_start(QEIDriver *qeip) {
 #endif
       
     // Set interrupt masks and enable interrupt
+#if NRF51_QEI_USE_ACC_OVERFLOW_CB == TRUE
     qdec->INTENSET = QDEC_INTENSET_REPORTRDY_Msk |
 	             QDEC_INTENSET_ACCOF_Msk;
+#else
+    qdec->INTENSET = QDEC_INTENSET_REPORTRDY_Msk;
+#endif
+    
 #if NRF51_QEI_USE_QDEC0 == TRUE
     if (&QEID1 == qeip) {
       nvicEnableVector(QDEC_IRQn, NRF51_QEI_QDEC0_IRQ_PRIORITY);
@@ -307,9 +314,14 @@ void qei_lld_stop(QEIDriver *qeip) {
       nvicDisableVector(QDEC_IRQn);
     }
 #endif
-    qdec->INTENCLR = QDEC_INTENSET_REPORTRDY_Msk |
-	             QDEC_INTENSET_ACCOF_Msk;
 
+#if NRF51_QEI_USE_ACC_OVERFLOW_CB == TRUE
+    qdec->INTENCLR = QDEC_INTENCLR_REPORTRDY_Msk |
+	             QDEC_INTENCLR_ACCOF_Msk;
+#else
+    qdec->INTENCLR = QDEC_INTENCLR_REPORTRDY_Msk;
+#endif
+    
     // Return pins to reset state
     palSetLineMode(cfg->phase_a, PAL_MODE_RESET);
     palSetLineMode(cfg->phase_b, PAL_MODE_RESET);
@@ -329,8 +341,10 @@ void qei_lld_stop(QEIDriver *qeip) {
  * @notapi
  */
 void qei_lld_enable(QEIDriver *qeip) {
+#if NRF51_QEI_USE_ACC_OVERFLOW_CB == TRUE
   qeip->overflowed = 0;
-
+#endif
+  
   qeip->qdec->EVENTS_SAMPLERDY = 0;
   qeip->qdec->EVENTS_REPORTRDY = 0;
   qeip->qdec->EVENTS_ACCOF = 0;

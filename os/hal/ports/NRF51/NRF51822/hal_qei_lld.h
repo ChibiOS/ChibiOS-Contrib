@@ -61,6 +61,16 @@
 #endif
 
 /**
+ * @brief   Accumulator overflow notification enable switch.
+ * @details If set to @p TRUE the support for accumulator overflow
+ *          is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(NRF51_QEI_USE_ACC_OVERFLOW_CB) || defined(__DOXYGEN__)
+#define NRF51_QEI_USE_ACC_OVERFLOW_CB          FALSE
+#endif
+
+/**
  * @brief   QEID1 driver enable switch.
  * @details If set to @p TRUE the support for QEID1 is included.
  * @note    The default is @p FALSE.
@@ -263,6 +273,7 @@ typedef struct {
     * @details Default to QEI_REPORT_10
     */
   qeireport_t 		    report;
+#if NRF51_QEI_USE_ACC_OVERFLOW_CB == TRUE
    /**
     * @brief  Notify of internal accumulator overflowed
     * 
@@ -270,6 +281,7 @@ typedef struct {
     * @note   Called from ISR context.
     */
   qeicallback_t             overflowed_cb;
+#endif
 } QEIConfig;
 
 /**
@@ -296,11 +308,13 @@ struct QEIDriver {
    * @brief Counter
    */
   qeicnt_t                  count;
+#if NRF51_QEI_USE_ACC_OVERFLOW_CB == TRUE
   /**
    * @brief Number of time the MCU discarded updates due to
    *        accumulator overflow
    */
   uint32_t                  overflowed;
+#endif
   /**
    * @brief Pointer to the QDECx registers block.
    */
