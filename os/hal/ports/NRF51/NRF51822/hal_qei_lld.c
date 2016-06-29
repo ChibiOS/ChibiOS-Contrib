@@ -39,13 +39,18 @@
 static void serve_interrupt(QEIDriver *qeip) {
   NRF_QDEC_Type *qdec = qeip->qdec;
 
+  /* Accumulator overflowed
+   */
   if (qdec->EVENTS_ACCOF) {
       qdec->EVENTS_ACCOF = 0;
+
       qeip->overflowed++;
       if (qeip->config->overflowed_cb)
 	  qeip->config->overflowed_cb(qeip);
   }
-  
+
+  /* Report ready
+   */
   if (qdec->EVENTS_REPORTRDY) {
       qdec->EVENTS_REPORTRDY = 0;
 
@@ -130,7 +135,7 @@ static void serve_interrupt(QEIDriver *qeip) {
 /**
  * @brief   QEID1 driver identifier.
  */
-#if NRF51_QEI_USE_QDEC1 || defined(__DOXYGEN__)
+#if NRF51_QEI_USE_QDEC0 || defined(__DOXYGEN__)
 QEIDriver QEID1;
 #endif
 
@@ -147,7 +152,7 @@ QEIDriver QEID1;
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if NRF51_QEI_USE_QDEC1 == TRUE
+#if NRF51_QEI_USE_QDEC0 == TRUE
 /**
  * @brief   Quadrature decoder vector (QDEC)
  *
@@ -172,7 +177,7 @@ OSAL_IRQ_HANDLER(Vector88) {
  */
 void qei_lld_init(void) {
 
-#if NRF51_QEI_USE_QDEC1
+#if NRF51_QEI_USE_QDEC0 == TRUE
   /* Driver initialization.*/
   qeiObjectInit(&QEID1);
   QEID1.qdec = NRF_QDEC; 
@@ -201,9 +206,9 @@ void qei_lld_start(QEIDriver *qeip) {
     // Set interrupt masks and enable interrupt
     qdec->INTENSET = QDEC_INTENSET_REPORTRDY_Msk |
 	             QDEC_INTENSET_ACCOF_Msk;
-#if NRF51_QEI_USE_QDEC1
+#if NRF51_QEI_USE_QDEC0 == TRUE
     if (&QEID1 == qeip) {
-      nvicEnableVector(QDEC_IRQn, NRF51_QEI_IRQ_PRIORITY);
+      nvicEnableVector(QDEC_IRQn, NRF51_QEI_QDEC0_IRQ_PRIORITY);
     }
 #endif
 
@@ -212,8 +217,7 @@ void qei_lld_start(QEIDriver *qeip) {
     qdec->PSELB      = PAL_PAD(cfg->phase_b);
 
     // Select (optional) pin for LED, and configure it
-    qdec->PSELLED    = (cfg->led == PAL_NOLINE) ? (uint32_t)-1
-	                                        : PAL_PAD(cfg->led);
+    qdec->PSELLED    = PAL_PAD(cfg->led);
     qdec->LEDPOL     = ((cfg->led_polarity == QEI_LED_POLARITY_LOW)
                          ? QDEC_LEDPOL_LEDPOL_ActiveLow 
 		         : QDEC_LEDPOL_LEDPOL_ActiveHigh)
@@ -257,7 +261,7 @@ void qei_lld_stop(QEIDriver *qeip) {
   if (qeip->state == QEI_READY) {
     qdec->TASKS_STOP = 1;
     qdec->ENABLE     = 0;
-#if NRF51_QEI_USE_QDEC1
+#if NRF51_QEI_USE_QDEC0 == TRUE
     if (&QEID1 == qeip) {
       nvicDisableVector(QDEC_IRQn);
     }

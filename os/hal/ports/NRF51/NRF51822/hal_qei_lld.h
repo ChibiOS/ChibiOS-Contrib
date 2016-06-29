@@ -56,15 +56,15 @@
  * @details If set to @p TRUE the support for QEID1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(NRF51_QEI_USE_QDEC1) || defined(__DOXYGEN__)
-#define NRF51_QEI_USE_QDEC1                 FALSE
+#if !defined(NRF51_QEI_USE_QDEC0) || defined(__DOXYGEN__)
+#define NRF51_QEI_USE_QDEC0                 FALSE
 #endif
 
 /**
  * @brief   QEID interrupt priority level setting.
  */
-#if !defined(NRF51_QEI_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_QEI_IRQ_PRIORITY              2
+#if !defined(NRF51_QEI_QDEC0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF51_QEI_QDEC0_IRQ_PRIORITY              2
 #endif
 /** @} */
 
@@ -72,10 +72,15 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if NRF51_QEI_USE_QDEC1 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_QEI_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to QDEC1"
+#if NRF51_QEI_USE_QDEC0 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_QEI_QDEC0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to QDEC0"
 #endif
+
+#if NRF51_QEI_USE_QDEC0 == FALSE
+#error "Requesting QEI driver, but no QDEC peripheric attached"
+#endif
+
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
@@ -277,6 +282,7 @@ struct QEIDriver {
 #endif
   /* End of the mandatory fields.*/
   /**
+   * @brief Counter
    */
   qeicnt_t                   count;
   /**
@@ -285,7 +291,7 @@ struct QEIDriver {
    */
   uint32_t                   overflowed;
   /**
-   * @brief Pointer to the ADCx registers block.
+   * @brief Pointer to the QDECx registers block.
    */
   NRF_QDEC_Type             *qdec;
 };
@@ -305,11 +311,25 @@ struct QEIDriver {
 #define qei_lld_get_count(qeip) ((qeip)->count)
 
 
+/**
+ * @brief   Set the counter value.
+ *
+ * @param[in] qeip      pointer to the @p QEIDriver object
+ * @param[in] value     counter value
+ *
+ * @notapi
+ */
+#define qei_lld_set_count(qeip, value)		\
+    do {					\
+	(qeip)->count = value;			\
+    } while(0)
+
+
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if NRF51_QEI_USE_QDEC1 && !defined(__DOXYGEN__)
+#if NRF51_QEI_USE_QDEC0 && !defined(__DOXYGEN__)
 extern QEIDriver QEID1;
 #endif
 
