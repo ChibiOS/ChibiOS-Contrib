@@ -38,8 +38,8 @@
 #define QEI_LED_POLARITY_LOW   0
 #define QEI_LED_POLARITY_HIGH  1
 
-#define QEI_COUNT_MIN 0
-#define QEI_COUNT_MAX 65535
+#define QEI_COUNT_MIN (-2147483648)
+#define QEI_COUNT_MAX (2147483647)
 
 
 /*===========================================================================*/
@@ -67,7 +67,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(NRF51_QEI_USE_ACC_OVERFLOW_CB) || defined(__DOXYGEN__)
-#define NRF51_QEI_USE_ACC_OVERFLOW_CB          FALSE
+#define NRF51_QEI_USE_ACC_OVERFLOW_CB       FALSE
 #endif
 
 /**
@@ -164,7 +164,7 @@ typedef enum {
 /**
  * @brief   QEI counter type.
  */
-typedef uint16_t qeicnt_t;
+typedef int32_t qeicnt_t;
 
 /**
  * @brief   QEI delta type.
