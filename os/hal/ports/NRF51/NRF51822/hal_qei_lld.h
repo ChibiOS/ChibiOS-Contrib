@@ -41,6 +41,9 @@
 #define QEI_COUNT_MIN (-2147483648)
 #define QEI_COUNT_MAX (2147483647)
 
+#define HAL_QEI_SUPPORT_OVERFLOW_MINMAX  TRUE
+#define HAM_QEI_SUPPORT_OVERFLOW_DISCARD TRUE
+
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -105,8 +108,6 @@
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
 
-
-
 /**
  * @brief   QEI count mode.
  */
@@ -118,40 +119,44 @@ typedef enum {
  * @brief   QEI resolution.
  */
 typedef enum {
-  QEI_RESOLUTION_128us   = 0x00UL, /**< 128us sample period. */
-  QEI_RESOLUTION_256us   = 0x01UL, /**< 256us sample period. */
-  QEI_RESOLUTION_512us   = 0x02UL, /**< 512us sample period. */
-  QEI_RESOLUTION_1024us  = 0x03UL, /**< 1024us sample period. */
-  QEI_RESOLUTION_2048us  = 0x04UL, /**< 2048us sample period. */
-  QEI_RESOLUTION_4096us  = 0x05UL, /**< 4096us sample period. */
-  QEI_RESOLUTION_8192us  = 0x06UL, /**< 8192us sample period. */
-  QEI_RESOLUTION_16384us = 0x07UL, /**< 16384us sample period. */
+  QEI_RESOLUTION_128us   = 0x00UL,  /**<   128us sample period. */
+  QEI_RESOLUTION_256us   = 0x01UL,  /**<   256us sample period. */
+  QEI_RESOLUTION_512us   = 0x02UL,  /**<   512us sample period. */
+  QEI_RESOLUTION_1024us  = 0x03UL,  /**<  1024us sample period. */
+  QEI_RESOLUTION_2048us  = 0x04UL,  /**<  2048us sample period. */
+  QEI_RESOLUTION_4096us  = 0x05UL,  /**<  4096us sample period. */
+  QEI_RESOLUTION_8192us  = 0x06UL,  /**<  8192us sample period. */
+  QEI_RESOLUTION_16384us = 0x07UL,  /**< 16384us sample period. */
 } qeiresolution_t;
 
 /**
  * @brief   Clusters of samples.
  */
 typedef enum {
-  QEI_REPORT_10          = 0x00UL, /**< 10 samples per report. */
-  QEI_REPORT_40          = 0x01UL, /**< 40 samples per report. */
-  QEI_REPORT_80          = 0x02UL, /**< 80 samples per report. */
-  QEI_REPORT_120         = 0x03UL, /**< 120 samples per report. */
-  QEI_REPORT_160         = 0x04UL, /**< 160 samples per report. */
-  QEI_REPORT_200         = 0x05UL, /**< 200 samples per report. */
-  QEI_REPORT_240         = 0x06UL, /**< 240 samples per report. */
-  QEI_REPORT_280         = 0x07UL, /**< 280 samples per report. */
+  QEI_REPORT_10          = 0x00UL,  /**<  10 samples per report. */
+  QEI_REPORT_40          = 0x01UL,  /**<  40 samples per report. */
+  QEI_REPORT_80          = 0x02UL,  /**<  80 samples per report. */
+  QEI_REPORT_120         = 0x03UL,  /**< 120 samples per report. */
+  QEI_REPORT_160         = 0x04UL,  /**< 160 samples per report. */
+  QEI_REPORT_200         = 0x05UL,  /**< 200 samples per report. */
+  QEI_REPORT_240         = 0x06UL,  /**< 240 samples per report. */
+  QEI_REPORT_280         = 0x07UL,  /**< 280 samples per report. */
 } qeireport_t;
 
+
+// XXX: to be moved in hal_qei
 /**
  * @brief   Handling of counter overflow/underflow.
  */
 typedef enum {
-  QEI_OVERFLOW_WRAP    = 0, /**< Counter value will wrap around.        */
-  QEI_OVERFLOW_DISCARD = 1, /**< Counter doesn't change.                */
-  QEI_OVERFLOW_MINMAX  = 2, /**< Counter will be updated to min or max. */
+  QEI_OVERFLOW_WRAP    = 0,     /**< Counter value will wrap around.        */
+#if HAL_QEI_SUPPORT_OVERFLOW_DISCARD == TRUE
+  QEI_OVERFLOW_DISCARD = 1,     /**< Counter doesn't change.                */
+#endif
+#if HAL_QEI_SUPPORT_OVERFLOW_MINMAX == TRUE
+  QEI_OVERFLOW_MINMAX  = 2,     /**< Counter will be updated to min or max. */
+#endif
 } qeioverflow_t;
-
-
 
 /**
  * @brief   QEI direction inversion.
@@ -191,7 +196,7 @@ typedef struct {
   /**
    * @brief   Handling of counter overflow/underflow
    *
-   * @details When overflow accours, the counter value is updated
+   * @details When overflow occurs, the counter value is updated
    *          according to:
    *            - QEI_OVERFLOW_DISCARD:
    *                discard the update value, counter doesn't change

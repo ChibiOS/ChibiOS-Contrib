@@ -47,14 +47,18 @@ bool qei_adjust_count(qeicnt_t *count, qeidelta_t *delta,
       *delta = 0;
       *count = (min + (_count - (max - _delta))) - 1;
       break;
+#if HAL_QEI_SUPPORT_OVERFLOW_DISCARD == TRUE
     case QEI_OVERFLOW_DISCARD:
       *delta = _delta;
       *count = _count;
       break;
+#endif
+#if HAL_QEI_SUPPORT_OVERFLOW_MINMAX == TRUE
     case QEI_OVERFLOW_MINMAX:
       *delta = _count - (max - _delta);
       *count = max;
       break;
+#endif
     }
     return true;
     
@@ -65,14 +69,18 @@ bool qei_adjust_count(qeicnt_t *count, qeidelta_t *delta,
       *delta = 0;
       *count = (max + (_count - (min - _delta))) + 1;
     break;
+#if HAL_QEI_SUPPORT_OVERFLOW_DISCARD == TRUE
     case QEI_OVERFLOW_DISCARD:
       *delta = _delta;
       *count = _count;
       break;
+#endif
+#if HAL_QEI_SUPPORT_OVERFLOW_MINMAX == TRUE
     case QEI_OVERFLOW_MINMAX:
       *delta = _count - (min - _delta);
       *count = min;
       break;
+#endif
     }
     return true;
 
@@ -249,7 +257,6 @@ void qei_lld_start(QEIDriver *qeip) {
 #else
     qdec->INTENSET = QDEC_INTENSET_REPORTRDY_Msk;
 #endif
-    
 #if NRF51_QEI_USE_QDEC0 == TRUE
     if (&QEID1 == qeip) {
       nvicEnableVector(QDEC_IRQn, NRF51_QEI_QDEC0_IRQ_PRIORITY);
@@ -309,12 +316,13 @@ void qei_lld_stop(QEIDriver *qeip) {
   if (qeip->state == QEI_READY) {
     qdec->TASKS_STOP = 1;
     qdec->ENABLE     = 0;
+
+    // Unset interrupt masks and disable interrupt
 #if NRF51_QEI_USE_QDEC0 == TRUE
     if (&QEID1 == qeip) {
       nvicDisableVector(QDEC_IRQn);
     }
 #endif
-
 #if NRF51_QEI_USE_ACC_OVERFLOW_CB == TRUE
     qdec->INTENCLR = QDEC_INTENCLR_REPORTRDY_Msk |
 	             QDEC_INTENCLR_ACCOF_Msk;
@@ -362,7 +370,6 @@ void qei_lld_disable(QEIDriver *qeip) {
   qeip->qdec->TASKS_STOP = 1;
 }
 
-
 /**
  * @brief   Adjust counter
  *
@@ -399,8 +406,6 @@ qeidelta_t qei_lld_adjust_count(QEIDriver *qeip, qeidelta_t delta) {
   // Remaining delta
   return delta;
 }
-  
-
 
 #endif /* HAL_USE_QEI */
 
