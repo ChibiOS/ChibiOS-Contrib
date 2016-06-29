@@ -31,6 +31,130 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+static inline
+bool qei_adjust_count(qeicnt_t *count, qeidelta_t *delta,
+		      qeicnt_t min, qeicnt_t max, qeioverflow_t mode) {
+  // See: https://www.securecoding.cert.org/confluence/display/c/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow
+
+  // Get values
+  const qeicnt_t   _count = *count;
+  const qeidelta_t _delta = *delta;
+
+  // Overflow operation
+  if ((_delta > 0) && (_count > (max - _delta))) {
+    switch(mode) {
+    case QEI_OVERFLOW_WRAP:
+      *delta = 0;
+      *count = (min + (_count - (max - _delta))) - 1;
+      break;
+    case QEI_OVERFLOW_DISCARD:
+      *delta = _delta;
+      *count = _count;
+      break;
+    case QEI_OVERFLOW_MINMAX:
+      *delta = _count - (max - _delta);
+      *count = max;
+      break;
+    }
+    return true;
+    
+  // Underflow operation
+  } else if ((_delta < 0) && (_count < (min - _delta))) {
+    switch(mode) {
+    case QEI_OVERFLOW_WRAP:
+      *delta = 0;
+      *count = (max + (_count - (min - _delta))) + 1;
+    break;
+    case QEI_OVERFLOW_DISCARD:
+      *delta = _delta;
+      *count = _count;
+      break;
+    case QEI_OVERFLOW_MINMAX:
+      *delta = _count - (min - _delta);
+      *count = min;
+      break;
+    }
+    return true;
+
+  // Normal operation
+  } else {
+    *delta = 0;
+    *count = _count + _delta;
+    return false;
+  }
+}
+
+qeidelta_t qei_lld_adjust_count(QEIDriver *qeip, qeidelta_t delta) {
+  // Get boundaries
+  qeicnt_t min = QEI_COUNT_MIN;
+  qeicnt_t max = QEI_COUNT_MAX;
+  if (qeip->config->min != qeip->config->max) {
+    min = qeip->config->min;
+    max = qeip->config->max;
+  }
+
+  // Snapshot counter for later comparison
+  qeicnt_t count = qeip->count;
+
+  // Adjust counter value
+  bool overflowed = qei_adjust_count(&qeip->count, &delta,
+				     min, max, qeip->config->overflow);
+
+  // Notify for value change
+  if ((qeip->count != count) && qeip->config->notify_cb)
+    qeip->config->notify_cb(qeip);
+
+  // Notify for overflow (passing the remaining delta)
+  if (overflowed && qeip->config->overflow_cb)
+    qeip->config->overflow_cb(qeip, delta);
+
+  // Remaining delta
+  return delta;
+}
+  
+
+/**
+ * @brief   Adjust the counter by delta.
+ *
+ * @param[in] qeip      pointer to the @p QEIDriver object
+ * @param[in] delta     the adjustement value
+ * @return              The remaining delta (can occur during overflow)
+ *
+ * @api
+ */
+qeidelta_t qeiAdjust(QEIDriver *qeip, qeidelta_t delta) {
+  osalDbgCheck(qeip != NULL);
+  osalDbgAssert((qeip->state == QEI_ACTIVE), "invalid state");
+
+  osalSysLock();
+  delta = qei_lld_adjust_count(qeip, delta);
+  osalSysUnlock();
+
+  return delta;
+}
+
+/**
+ * @brief   Set counter value
+ *
+ * @param[in] qeip      pointer to the @p QEIDriver object
+ * @param[in] value     the counter value
+ *
+ * @api
+ */
+void qeiSetCount(QEIDriver *qeip, qeicnt_t value) {
+  osalDbgCheck(qeip != NULL);
+  osalDbgAssert((qeip->state == QEI_READY) || (qeip->state == QEI_ACTIVE),
+		"invalid state");
+
+  osalSysLock();
+  qei_lld_set_count(qeip, value);
+  osalSysUnlock();
+}
+
+
+
+
+
 /**
  * @brief   Common IRQ handler.
  *
@@ -42,88 +166,28 @@ static void serve_interrupt(QEIDriver *qeip) {
   /* Accumulator overflowed
    */
   if (qdec->EVENTS_ACCOF) {
-      qdec->EVENTS_ACCOF = 0;
+    qdec->EVENTS_ACCOF = 0;
 
-      qeip->overflowed++;
-      if (qeip->config->overflowed_cb)
-	  qeip->config->overflowed_cb(qeip);
+    qeip->overflowed++;
+    if (qeip->config->overflowed_cb)
+      qeip->config->overflowed_cb(qeip);
   }
 
   /* Report ready
    */
   if (qdec->EVENTS_REPORTRDY) {
-      qdec->EVENTS_REPORTRDY = 0;
+    qdec->EVENTS_REPORTRDY = 0;
 
-      // Read and clear counters (due to shortcut)
-      int16_t  acc    = ( int16_t)qdec->ACCREAD;
-      uint16_t accdbl = (uint16_t)qdec->ACCDBLREAD;
+    // Read (and clear counters due to shortcut)
+    int16_t  acc    = ( int16_t)qdec->ACCREAD;
+    uint16_t accdbl = (uint16_t)qdec->ACCDBLREAD;
 
-      // Inverse direction if requested
-      if (qeip->config->dirinv)
-	  acc = -acc; // acc is [-1024..+1023], its okay on int16_t
+    // Inverse direction if requested
+    if (qeip->config->dirinv)
+      acc = -acc; // acc is [-1024..+1023], its okay on int16_t
 
-      // Get boundaries
-      qeicnt_t min = QEI_COUNT_MIN;
-      qeicnt_t max = QEI_COUNT_MAX;
-      if (qeip->config->min != qeip->config->max) {
-	  min = qeip->config->min;
-	  max = qeip->config->max;
-      }
-
-      // Compute new value
-      qeidelta_t delta      = 0;
-      qeicnt_t   count      = qeip->count + acc;
-      bool       overflowed = false;
-      
-      // See: https://www.securecoding.cert.org/confluence/display/c/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow
-      
-      // Overflow
-      if ((acc > 0) && (qeip->count > (max - acc))) {
-	  overflowed = true;
-	  switch(qeip->config->overflow) {
-	  case QEI_OVERFLOW_WRAP:
-	      delta = 0;
-	      count = (min + (qeip->count - (max - acc))) - 1;
-	      break;
-	  case QEI_OVERFLOW_DISCARD:
-	      delta = acc;
-	      count = qeip->count;
-	      break;
-	  case QEI_OVERFLOW_MINMAX:
-	      delta = qeip->count - (max - acc);
-	      count = max;
-	      break;
-	  }
-
-      // Underflow
-      } else if ((acc < 0) && (qeip->count < (min - acc))) {
-	  overflowed = true;
-	  switch(qeip->config->overflow) {
-	  case QEI_OVERFLOW_WRAP:
-	      delta = 0;
-	      count = (max + (qeip->count - (min - acc))) + 1;
-	      break;
-	  case QEI_OVERFLOW_DISCARD:
-	      delta = acc;
-	      count = qeip->count;
-	      break;
-	  case QEI_OVERFLOW_MINMAX:
-	      delta = qeip->count - (min - acc);
-	      count = min;
-	      break;
-	  }
-      }
-
-      // Set value and notify
-      if (qeip->count != count) {
-	  qeip->count = count;
-	  if (qeip->config->notify_cb)
-	      qeip->config->notify_cb(qeip);
-      }
-
-      // Notify for overflow (passing the remaining delta)
-      if (overflowed && qeip->config->overflow_cb)
-	  qeip->config->overflow_cb(qeip, delta);
+    // Adjust counter
+    qei_lld_adjust_count(qeip, acc);
   }
 }
 

@@ -31,7 +31,6 @@
 
 #if (HAL_USE_QEI == TRUE) || defined(__DOXYGEN__)
 
-
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -71,7 +70,7 @@
 #endif
 
 /**
- * @brief   QEID interrupt priority level setting.
+ * @brief   QEID interrupt priority level setting for QDEC0.
  */
 #if !defined(NRF51_QEI_QDEC0_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define NRF51_QEI_QDEC0_IRQ_PRIORITY              2
@@ -296,12 +295,12 @@ struct QEIDriver {
   /**
    * @brief Counter
    */
-  qeicnt_t                   count;
+  qeicnt_t                  count;
   /**
    * @brief Number of time the MCU discarded updates due to
    *        accumulator overflow
    */
-  uint32_t                   overflowed;
+  uint32_t                  overflowed;
   /**
    * @brief Pointer to the QDECx registers block.
    */
@@ -332,8 +331,10 @@ struct QEIDriver {
  * @notapi
  */
 #define qei_lld_set_count(qeip, value)		\
-    do {					\
-	(qeip)->count = value;			\
+    if ((qeip)->count != ((qeicnt_t)value)) {	\
+      (qeip)->count = value;			\
+      if ((qeip)->config->notify_cb)		\
+        (qeip)->config->notify_cb(qeip);	\
     } while(0)
 
 
@@ -356,6 +357,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+void qeiSetCount(QEIDriver *qeip, qeicnt_t value);
+qeidelta_t qeiAdjust(QEIDriver *qeip, qeidelta_t delta);
 
 #endif /* HAL_USE_QEI */
 
