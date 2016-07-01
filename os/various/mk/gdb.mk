@@ -1,4 +1,4 @@
-GDB               ?= arm-none-eabi-gdb
+GDB               ?= $(TRGT)gdb
 GDB_PROGRAM       ?= $(BUILDDIR)/$(PROJECT).elf
 GDB_PORT          ?= 2331
 GDB_START_ADDRESS ?= 0

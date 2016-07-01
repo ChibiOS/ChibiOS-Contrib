@@ -13,7 +13,7 @@ jlink-flash:
 
 ifneq ($(SOFTDEVICE),)
 jlink-flash-softdevice:
-	printf "w4 4001e504 1\nloadbin $(NRF51SDK)/components/softdevice/$(SOFTDEVICE)/hex/$(SOFTDEVICE)_nrf51_$(SOFTDEVICE_RELEASE)_softdevice.hex 0\nr\ng\nexit\n" > $(BUILDDIR)/flash.softdevice.jlink
+	printf "$(JLINK_PRE_FLASH)\nloadbin $(NRF51SDK)/components/softdevice/$(SOFTDEVICE)/hex/$(SOFTDEVICE)_nrf51_$(SOFTDEVICE_RELEASE)_softdevice.hex 0\nr\ng\nexit\n" > $(BUILDDIR)/flash.softdevice.jlink
 	$(JLINK) $(JLINK_COMMON_OPTS) $(BUILDDIR)/flash.softdevice.jlink
 endif
 
