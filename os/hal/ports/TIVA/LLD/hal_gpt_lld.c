@@ -462,6 +462,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_GPT0
     if (&GPTD1 == gptp) {
       SYSCTL->RCGCTIMER |= (1 << 0);
+
+      while (!(SYSCTL->PRTIMER & (1 << 0)))
+        ;
+
       nvicEnableVector(TIVA_GPT0A_NUMBER, TIVA_GPT_GPT0A_IRQ_PRIORITY);
     }
 #endif
@@ -469,6 +473,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_GPT1
     if (&GPTD2 == gptp) {
       SYSCTL->RCGCTIMER |= (1 << 1);
+
+      while (!(SYSCTL->PRTIMER & (1 << 1)))
+        ;
+
       nvicEnableVector(TIVA_GPT1A_NUMBER, TIVA_GPT_GPT1A_IRQ_PRIORITY);
     }
 #endif
@@ -476,6 +484,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_GPT2
     if (&GPTD3 == gptp) {
       SYSCTL->RCGCTIMER |= (1 << 2);
+
+      while (!(SYSCTL->PRTIMER & (1 << 2)))
+        ;
+
       nvicEnableVector(TIVA_GPT2A_NUMBER, TIVA_GPT_GPT2A_IRQ_PRIORITY);
     }
 #endif
@@ -483,6 +495,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_GPT3
     if (&GPTD4 == gptp) {
       SYSCTL->RCGCTIMER |= (1 << 3);
+
+      while (!(SYSCTL->PRTIMER & (1 << 3)))
+        ;
+
       nvicEnableVector(TIVA_GPT3A_NUMBER, TIVA_GPT_GPT3A_IRQ_PRIORITY);
     }
 #endif
@@ -490,6 +506,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_GPT4
     if (&GPTD5 == gptp) {
       SYSCTL->RCGCTIMER |= (1 << 4);
+
+      while (!(SYSCTL->PRTIMER & (1 << 4)))
+        ;
+
       nvicEnableVector(TIVA_GPT4A_NUMBER, TIVA_GPT_GPT4A_IRQ_PRIORITY);
     }
 #endif
@@ -497,6 +517,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_GPT5
     if (&GPTD6 == gptp) {
       SYSCTL->RCGCTIMER |= (1 << 5);
+
+      while (!(SYSCTL->PRTIMER & (1 << 5)))
+        ;
+
       nvicEnableVector(TIVA_GPT5A_NUMBER, TIVA_GPT_GPT5A_IRQ_PRIORITY);
     }
 #endif
@@ -504,6 +528,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_WGPT0
     if (&GPTD7 == gptp) {
       SYSCTL->RCGCWTIMER |= (1 << 0);
+
+      while (!(SYSCTL->PRWTIMER & (1 << 0)))
+        ;
+
       nvicEnableVector(TIVA_WGPT0A_NUMBER, TIVA_GPT_WGPT0A_IRQ_PRIORITY);
     }
 #endif
@@ -511,6 +539,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_WGPT1
     if (&GPTD8 == gptp) {
       SYSCTL->RCGCWTIMER |= (1 << 1);
+
+      while (!(SYSCTL->PRWTIMER & (1 << 1)))
+        ;
+
       nvicEnableVector(TIVA_WGPT1A_NUMBER, TIVA_GPT_WGPT1A_IRQ_PRIORITY);
     }
 #endif
@@ -518,6 +550,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_WGPT2
     if (&GPTD9 == gptp) {
       SYSCTL->RCGCWTIMER |= (1 << 2);
+
+      while (!(SYSCTL->PRWTIMER & (1 << 2)))
+        ;
+
       nvicEnableVector(TIVA_WGPT2A_NUMBER, TIVA_GPT_WGPT2A_IRQ_PRIORITY);
     }
 #endif
@@ -525,6 +561,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_WGPT3
     if (&GPTD10 == gptp) {
       SYSCTL->RCGCWTIMER |= (1 << 3);
+
+      while (!(SYSCTL->PRWTIMER & (1 << 3)))
+        ;
+
       nvicEnableVector(TIVA_WGPT3A_NUMBER, TIVA_GPT_WGPT3A_IRQ_PRIORITY);
     }
 #endif
@@ -532,6 +572,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_WGPT4
     if (&GPTD11 == gptp) {
       SYSCTL->RCGCWTIMER |= (1 << 4);
+
+      while (!(SYSCTL->PRWTIMER & (1 << 4)))
+        ;
+
       nvicEnableVector(TIVA_WGPT4A_NUMBER, TIVA_GPT_WGPT4A_IRQ_PRIORITY);
     }
 #endif
@@ -539,6 +583,10 @@ void gpt_lld_start(GPTDriver *gptp)
 #if TIVA_GPT_USE_WGPT5
     if (&GPTD12 == gptp) {
       SYSCTL->RCGCWTIMER |= (1 << 5);
+
+      while (!(SYSCTL->PRWTIMER & (1 << 5)))
+        ;
+
       nvicEnableVector(TIVA_WGPT5A_NUMBER, TIVA_GPT_WGPT5A_IRQ_PRIORITY);
     }
 #endif
