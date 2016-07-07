@@ -35,14 +35,26 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
+/**
+ * @brief For LED active on LOW
+ */
 #define QEI_LED_POLARITY_LOW   0
+
+/**
+ * @brief For LED active on HIGH
+ */
 #define QEI_LED_POLARITY_HIGH  1
 
+/**
+ * @brief Mininum usable value for defining counter underflow
+ */
 #define QEI_COUNT_MIN (-2147483648)
-#define QEI_COUNT_MAX (2147483647)
 
-#define HAL_QEI_SUPPORT_OVERFLOW_MINMAX  TRUE
-#define HAM_QEI_SUPPORT_OVERFLOW_DISCARD TRUE
+/**
+ * @brief Maximum usable value for defining counter overflow
+ */
+#define QEI_COUNT_MAX ( 2147483647)
+
 
 
 /*===========================================================================*/
@@ -69,8 +81,8 @@
  *          is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(NRF51_QEI_USE_ACC_OVERFLOW_CB) || defined(__DOXYGEN__)
-#define NRF51_QEI_USE_ACC_OVERFLOW_CB       FALSE
+#if !defined(NRF51_QEI_USE_ACC_OVERFLOWED_CB) || defined(__DOXYGEN__)
+#define NRF51_QEI_USE_ACC_OVERFLOWED_CB       FALSE
 #endif
 
 /**
@@ -142,21 +154,6 @@ typedef enum {
   QEI_REPORT_240         = 0x06UL,  /**< 240 samples per report. */
   QEI_REPORT_280         = 0x07UL,  /**< 280 samples per report. */
 } qeireport_t;
-
-
-// XXX: to be moved in hal_qei
-/**
- * @brief   Handling of counter overflow/underflow.
- */
-typedef enum {
-  QEI_OVERFLOW_WRAP    = 0,     /**< Counter value will wrap around.        */
-#if HAL_QEI_SUPPORT_OVERFLOW_DISCARD == TRUE
-  QEI_OVERFLOW_DISCARD = 1,     /**< Counter doesn't change.                */
-#endif
-#if HAL_QEI_SUPPORT_OVERFLOW_MINMAX == TRUE
-  QEI_OVERFLOW_MINMAX  = 2,     /**< Counter will be updated to min or max. */
-#endif
-} qeioverflow_t;
 
 /**
  * @brief   QEI direction inversion.
@@ -252,7 +249,8 @@ typedef struct {
   /**
    * @brief   Period in µs the LED is switched on prior to sampling.
    *
-   * @details LED warming is between 0 and 511 (including boundaries)
+   * @details LED warming is expressed in micro-seconds and value
+   *          is [0..511]
    *
    * @note    31µs is the recommanded default.
    *
@@ -273,16 +271,16 @@ typedef struct {
     */
   bool                      debouncing;
    /**
-    * @brief  Number of sample per report
+    * @brief  Number of samples per report
     *
     * @details Default to QEI_REPORT_10
     */
   qeireport_t 		    report;
-#if NRF51_QEI_USE_ACC_OVERFLOW_CB == TRUE
+#if NRF51_QEI_USE_ACC_OVERFLOWED_CB == TRUE
    /**
     * @brief  Notify of internal accumulator overflowed
+    *         (ie: MCU discarding samples)
     * 
-    * @note   MCU has discarded some of the samples.
     * @note   Called from ISR context.
     */
   qeicallback_t             overflowed_cb;
@@ -313,7 +311,7 @@ struct QEIDriver {
    * @brief Counter
    */
   qeicnt_t                  count;
-#if NRF51_QEI_USE_ACC_OVERFLOW_CB == TRUE
+#if NRF51_QEI_USE_ACC_OVERFLOWED_CB == TRUE
   /**
    * @brief Number of time the MCU discarded updates due to
    *        accumulator overflow
