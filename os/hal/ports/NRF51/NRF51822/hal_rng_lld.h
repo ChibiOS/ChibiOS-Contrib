@@ -134,6 +134,10 @@ struct RNGDriver {
    * @brief Pointer to the RNGx registers block.
    */
   NRF_RNG_Type             *rng;
+  /**
+   * @brief IRQ number
+   */
+  uint32_t                  irq;
 };
 
 /*===========================================================================*/
