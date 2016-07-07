@@ -81,10 +81,8 @@ endif
 PROJECT = ch
 
 # Imported source files and paths
-CHIBIOS         = /home/sdalu/ChibiOS/ChibiOS
-CHIBIOS_CONTRIB = /home/sdalu/ChibiOS/ChibiOS-Contrib
-#CHIBIOS = ../../../../../ChibiOS-RT
-#CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
+CHIBIOS = ../../../../../ChibiOS-RT
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 
 # Startup files.
 include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_nrf51.mk
