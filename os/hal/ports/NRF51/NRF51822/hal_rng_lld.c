@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    NRF51/RNGv1/rng_lld.c
+ * @file    NRF51/NRF518221/rng_lld.c
  * @brief   NRF51 RNG subsystem low level driver source.
  *
  * @addtogroup RNG
@@ -70,6 +70,7 @@ RNGDriver RNGD1;
 void rng_lld_init(void) {
   rngObjectInit(&RNGD1);
   RNGD1.rng    = NRF_RNG;
+  RNGD1.irq    = RNG_IRQn;
 }
 
 /**
@@ -80,19 +81,29 @@ void rng_lld_init(void) {
  * @notapi
  */
 void rng_lld_start(RNGDriver *rngp) {
+  NRF_RNG_Type *rng = rngp->rng;
+
+  /* If not specified, set default configuration */
   if (rngp->config == NULL)
     rngp->config = &default_config;
 
-  rngp->rng->POWER         = 1;
+  /* Power on peripheric */
+  rng->POWER         = 1;
 
+  /* Configure digital error correction */
   if (rngp->config->digital_error_correction) 
-    rngp->rng->CONFIG |=  RNG_CONFIG_DERCEN_Msk;
+    rng->CONFIG |=  RNG_CONFIG_DERCEN_Msk;
   else
-    rngp->rng->CONFIG &= ~RNG_CONFIG_DERCEN_Msk;
+    rng->CONFIG &= ~RNG_CONFIG_DERCEN_Msk;
 
-  rngp->rng->EVENTS_VALRDY = 0;
-  rngp->rng->INTENSET      = RNG_INTENSET_VALRDY_Msk;
-  rngp->rng->TASKS_START   = 1;
+  /* Clear pending events */
+  rng->EVENTS_VALRDY = 0;
+
+  /* Set interrupt mask */
+  rng->INTENSET      = RNG_INTENSET_VALRDY_Msk;
+
+  /* Start */
+  rng->TASKS_START   = 1;
 }
 
 
@@ -104,8 +115,11 @@ void rng_lld_start(RNGDriver *rngp) {
  * @notapi
  */
 void rng_lld_stop(RNGDriver *rngp) {
-  rngp->rng->TASKS_STOP = 1;
-  rngp->rng->POWER      = 0;
+  NRF_RNG_Type *rng = rngp->rng;
+
+  /* Stop and power off peripheric */
+  rng->TASKS_STOP = 1;
+  rng->POWER      = 0;
 }
 
 
@@ -120,6 +134,7 @@ void rng_lld_stop(RNGDriver *rngp) {
  */
 msg_t rng_lld_write(RNGDriver *rngp, uint8_t *buf, size_t n,
                     systime_t timeout) {
+  NRF_RNG_Type *rng = rngp->rng;
   size_t i;
 
   for (i = 0 ; i < n ; i++) {
@@ -127,7 +142,7 @@ msg_t rng_lld_write(RNGDriver *rngp, uint8_t *buf, size_t n,
      * It take about 677µs to generate a new byte, not sure if
      * forcing a context switch will be a benefit
      */
-    while (NRF_RNG->EVENTS_VALRDY == 0) {
+    while (rng->EVENTS_VALRDY == 0) {
       /* Sleep and wakeup on ARM event (interrupt) */
       SCB->SCR |= SCB_SCR_SEVONPEND_Msk;
       __SEV();
@@ -136,13 +151,13 @@ msg_t rng_lld_write(RNGDriver *rngp, uint8_t *buf, size_t n,
     }
 
     /* Read byte */
-    buf[i] = (char)NRF_RNG->VALUE;
+    buf[i] = (char)rng->VALUE;
 
     /* Mark as read */
-    NRF_RNG->EVENTS_VALRDY = 0;
+    rng->EVENTS_VALRDY = 0;
 
     /* Clear interrupt so we can wake up again */
-    nvicClearPending(RNG_IRQn);
+    nvicClearPending(rngp->irq);
   }
   return MSG_OK;
 }
