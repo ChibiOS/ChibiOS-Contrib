@@ -37,6 +37,9 @@ endif
 ifneq ($(findstring HAL_USE_PWM TRUE,$(HALCONF)),)
 PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/hal_pwm_lld.c
 endif
+ifneq ($(findstring HAL_USE_QEI TRUE,$(HALCONF)),)
+PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/hal_qei_lld.c
+endif
 else
 PLATFORMSRC  = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/hal_lld.c \
@@ -51,7 +54,8 @@ PLATFORMSRC  = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/hal_gpt_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/hal_wdg_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/hal_rng_lld.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/hal_pwm_lld.c
+               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/hal_pwm_lld.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF51/NRF51822/hal_qei_lld.c
 endif
 
 # Required include directories
