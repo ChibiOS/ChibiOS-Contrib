@@ -33,6 +33,16 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
+/**
+ * @brief Mininum usable value for defining counter underflow
+ */
+#define QEI_COUNT_MIN (0)
+
+/**
+ * @brief Maximum usable value for defining counter overflow
+ */
+#define QEI_COUNT_MAX (65535)
+
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -202,6 +212,14 @@
 #error "Invalid IRQ priority assigned to TIM8"
 #endif
 
+#if QEI_USE_OVERFLOW_DISCARD
+#error "QEI_USE_OVERFLOW_DISCARD not supported by this driver"
+#endif
+
+#if QEI_USE_OVERFLOW_MINMAX
+#error "QEI_USE_OVERFLOW_MINMAX not supported by this driver"
+#endif
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
@@ -257,6 +275,45 @@ typedef struct {
    * @brief   Direction inversion.
    */
   qeidirinv_t               dirinv;
+  /**
+   * @brief   Handling of counter overflow/underflow
+   *
+   * @details When overflow occurs, the counter value is updated
+   *          according to:
+   *            - QEI_OVERFLOW_DISCARD:
+   *                discard the update value, counter doesn't change
+   */
+  qeioverflow_t             overflow;
+  /**
+   * @brief   Min count value.
+   * 
+   * @note    If min == max, then QEI_COUNT_MIN is used.
+   *
+   * @note    Only min set to 0 / QEI_COUNT_MIN is supported.
+   */
+  qeicnt_t                  min;
+  /**
+   * @brief   Max count value.
+   * 
+   * @note    If min == max, then QEI_COUNT_MAX is used.
+   *
+   * @note    Only max set to 0 / QEI_COUNT_MAX is supported.
+   */
+  qeicnt_t                  max;
+  /**
+    * @brief  Notify of value change
+    *
+    * @note   Called from ISR context.
+    */
+  qeicallback_t             notify_cb;
+  /**
+   * @brief   Notify of overflow
+   *
+   * @note    Overflow notification is performed after 
+   *          value changed notification.
+   * @note    Called from ISR context.
+   */
+  void (*overflow_cb)(QEIDriver *qeip, qeidelta_t delta);
   /* End of the mandatory fields.*/
 } QEIConfig;
 
@@ -299,6 +356,16 @@ struct QEIDriver {
  * @notapi
  */
 #define qei_lld_get_count(qeip) ((qeip)->tim->CNT)
+
+/**
+ * @brief   Set the counter value.
+ *
+ * @param[in] qeip      pointer to the @p QEIDriver object
+ * @param[in] qeip      counter value
+ *
+ * @notapi
+ */
+#define qei_lld_set_count(qeip, value) 
 
 /*===========================================================================*/
 /* External declarations.                                                    */

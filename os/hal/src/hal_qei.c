@@ -42,10 +42,6 @@
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-/*===========================================================================*/
-/* Driver exported functions.                                                */
-/*===========================================================================*/
-
 /**
  * @brief   Helper for correclty handling overflow/underflow
  *
@@ -66,6 +62,7 @@
  *                was due to occur
  *
  */
+static inline
 bool qei_adjust_count(qeicnt_t *count, qeidelta_t *delta,
 		      qeicnt_t min, qeicnt_t max, qeioverflow_t mode) {
   /* For information on signed integer overflow see:
@@ -130,6 +127,10 @@ bool qei_adjust_count(qeicnt_t *count, qeidelta_t *delta,
     return false;
   }
 }
+
+/*===========================================================================*/
+/* Driver exported functions.                                                */
+/*===========================================================================*/
 
 /**
  * @brief   QEI Driver initialization.
@@ -284,11 +285,48 @@ qeidelta_t qeiAdjust(QEIDriver *qeip, qeidelta_t delta) {
   osalDbgAssert((qeip->state == QEI_ACTIVE), "invalid state");
 
   osalSysLock();
-  delta = qei_lld_adjust_count(qeip, delta);
+  delta = qeiAdjustI(qeip, delta);
   osalSysUnlock();
 
   return delta;
 }
+
+/**
+ * @brief   Adjust the counter by delta.
+ *
+ * @param[in] qeip      pointer to the @p QEIDriver object.
+ * @param[in] delta     the adjustement value.
+ * @return              the remaining delta (can occur during overflow).
+ *
+ * @api
+ */
+qeidelta_t qeiAdjustI(QEIDriver *qeip, qeidelta_t delta) {
+  /* Get boundaries */
+  qeicnt_t min = QEI_COUNT_MIN;
+  qeicnt_t max = QEI_COUNT_MAX;
+  if (qeip->config->min != qeip->config->max) {
+    min = qeip->config->min;
+    max = qeip->config->max;
+  }
+
+  /* Get counter */
+  qeicnt_t count = qei_lld_get_count(qeip);
+  
+  /* Adjust counter value */
+  bool overflowed = qei_adjust_count(&count, &delta,
+				     min, max, qeip->config->overflow);
+
+  /* Notify for value change */
+  qei_lld_set_count(qeip, count);
+
+  /* Notify for overflow (passing the remaining delta) */
+  if (overflowed && qeip->config->overflow_cb)
+    qeip->config->overflow_cb(qeip, delta);
+
+  /* Remaining delta */
+  return delta;
+}
+
 
 /**
  * @brief   Returns the counter delta from last reading.

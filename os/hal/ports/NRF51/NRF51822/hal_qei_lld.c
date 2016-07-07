@@ -85,7 +85,7 @@ static void serve_interrupt(QEIDriver *qeip) {
       acc = -acc; // acc is [-1024..+1023], its okay on int16_t
 
     /* Adjust counter */
-    qei_lld_adjust_count(qeip, acc);
+    qeiAdjustI(qeip, acc);
   }
 }
 
@@ -266,42 +266,6 @@ void qei_lld_disable(QEIDriver *qeip) {
   qeip->qdec->TASKS_STOP = 1;
 }
 
-/**
- * @brief   Adjust counter
- *
- * @param[in] qeip      pointer to the @p QEIDriver object
- * @param[in] delta     value to use for adjustement
- * @return              remaining adjustement that were not applied
- *
- * @notapi
- */
-qeidelta_t qei_lld_adjust_count(QEIDriver *qeip, qeidelta_t delta) {
-  /* Get boundaries */
-  qeicnt_t min = QEI_COUNT_MIN;
-  qeicnt_t max = QEI_COUNT_MAX;
-  if (qeip->config->min != qeip->config->max) {
-    min = qeip->config->min;
-    max = qeip->config->max;
-  }
-
-  /* Snapshot counter for later comparison */
-  qeicnt_t count = qeip->count;
-
-  /* Adjust counter value */
-  bool overflowed = qei_adjust_count(&qeip->count, &delta,
-				     min, max, qeip->config->overflow);
-
-  /* Notify for value change */
-  if ((qeip->count != count) && qeip->config->notify_cb)
-    qeip->config->notify_cb(qeip);
-
-  /* Notify for overflow (passing the remaining delta) */
-  if (overflowed && qeip->config->overflow_cb)
-    qeip->config->overflow_cb(qeip, delta);
-
-  /* Remaining delta */
-  return delta;
-}
 
 #endif /* HAL_USE_QEI */
 
