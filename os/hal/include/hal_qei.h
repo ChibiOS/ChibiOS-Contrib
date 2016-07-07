@@ -147,8 +147,7 @@ extern "C" {
   qeicnt_t qeiGetCount(QEIDriver *qeip);
   qeidelta_t qeiUpdate(QEIDriver *qeip);
   qeidelta_t qeiUpdateI(QEIDriver *qeip);
-  bool qei_adjust_count(qeicnt_t *count, qeidelta_t *delta,
-			qeicnt_t min, qeicnt_t max, qeioverflow_t mode);
+  qeidelta_t qeiAdjustI(QEIDriver *qeip, qeidelta_t delta);
 #ifdef __cplusplus
 }
 #endif

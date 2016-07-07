@@ -150,6 +150,8 @@ void qei_lld_init(void) {
  * @notapi
  */
 void qei_lld_start(QEIDriver *qeip) {
+  osalDbgAssert((qeip->config->min == 0) || (qeip->config->max == 0),
+		"only min/max set to 0 is supported");
 
   if (qeip->state == QEI_STOP) {
     /* Clock activation and timer reset.*/

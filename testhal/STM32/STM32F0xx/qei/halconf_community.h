@@ -100,6 +100,24 @@
  */
 #define ONEWIRE_USE_SEARCH_ROM      FALSE
 
+/*===========================================================================*/
+/* QEI driver related settings.                                              */
+/*===========================================================================*/
+
+/**
+ * @brief   Enables discard of overlow
+ */
+#if !defined(QEI_USE_OVERFLOW_DISCARD) || defined(__DOXYGEN__)
+#define QEI_USE_OVERFLOW_DISCARD    FALSE
+#endif
+
+/**
+ * @brief   Enables min max of overlow
+ */
+#if !defined(QEI_USE_OVERFLOW_MINMAX) || defined(__DOXYGEN__)
+#define QEI_USE_OVERFLOW_MINMAX     FALSE
+#endif
+
 #endif /* HALCONF_COMMUNITY_H */
 
 /** @} */
