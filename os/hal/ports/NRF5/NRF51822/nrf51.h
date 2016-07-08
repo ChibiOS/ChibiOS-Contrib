@@ -6,28 +6,28 @@
  *           nrf51 from Nordic Semiconductor.
  *
  * @version  V522
- * @date     26. January 2015
+ * @date     23. February 2016
  *
  * @note     Generated with SVDConv V2.81d 
- *           from CMSIS SVD File 'nrf51.xml' Version 522,
+ *           from CMSIS SVD File 'nrf51.svd' Version 522,
  *
  * @par      Copyright (c) 2013, Nordic Semiconductor ASA
  *           All rights reserved.
- *
+ *           
  *           Redistribution and use in source and binary forms, with or without
  *           modification, are permitted provided that the following conditions are met:
- *
+ *           
  *           * Redistributions of source code must retain the above copyright notice, this
  *           list of conditions and the following disclaimer.
- *
+ *           
  *           * Redistributions in binary form must reproduce the above copyright notice,
  *           this list of conditions and the following disclaimer in the documentation
  *           and/or other materials provided with the distribution.
- *
+ *           
  *           * Neither the name of Nordic Semiconductor ASA nor the names of its
  *           contributors may be used to endorse or promote products derived from
  *           this software without specific prior written permission.
- *
+ *           
  *           THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  *           AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  *           IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -38,7 +38,7 @@
  *           CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  *           OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *           OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
+ *           
  *
  *******************************************************************************************************/
 
@@ -294,27 +294,6 @@ typedef struct {                                    /*!< MPU Structure          
 
 
 /* ================================================================================ */
-/* ================                       PU                       ================ */
-/* ================================================================================ */
-
-
-/**
-  * @brief Patch unit. (PU)
-  */
-
-typedef struct {                                    /*!< PU Structure                                                          */
-  __I  uint32_t  RESERVED0[448];
-  __IO uint32_t  REPLACEADDR[8];                    /*!< Address of first instruction to replace.                              */
-  __I  uint32_t  RESERVED1[24];
-  __IO uint32_t  PATCHADDR[8];                      /*!< Relative address of patch instructions.                               */
-  __I  uint32_t  RESERVED2[24];
-  __IO uint32_t  PATCHEN;                           /*!< Patch enable register.                                                */
-  __IO uint32_t  PATCHENSET;                        /*!< Patch enable register.                                                */
-  __IO uint32_t  PATCHENCLR;                        /*!< Patch disable register.                                               */
-} NRF_PU_Type;
-
-
-/* ================================================================================ */
 /* ================                      AMLI                      ================ */
 /* ================================================================================ */
 
@@ -367,11 +346,11 @@ typedef struct {                                    /*!< RADIO Structure        
   __IO uint32_t  INTENCLR;                          /*!< Interrupt enable clear register.                                      */
   __I  uint32_t  RESERVED4[61];
   __I  uint32_t  CRCSTATUS;                         /*!< CRC status of received packet.                                        */
-  __I  uint32_t  CD;                                /*!< Carrier detect.                                                       */
+  __I  uint32_t  RESERVED5;
   __I  uint32_t  RXMATCH;                           /*!< Received address.                                                     */
   __I  uint32_t  RXCRC;                             /*!< Received CRC.                                                         */
   __I  uint32_t  DAI;                               /*!< Device address match index.                                           */
-  __I  uint32_t  RESERVED5[60];
+  __I  uint32_t  RESERVED6[60];
   __IO uint32_t  PACKETPTR;                         /*!< Packet pointer. Decision point: START task.                           */
   __IO uint32_t  FREQUENCY;                         /*!< Frequency.                                                            */
   __IO uint32_t  TXPOWER;                           /*!< Output power.                                                         */
@@ -390,22 +369,22 @@ typedef struct {                                    /*!< RADIO Structure        
   __IO uint32_t  TEST;                              /*!< Test features enable register.                                        */
   __IO uint32_t  TIFS;                              /*!< Inter Frame Spacing in microseconds.                                  */
   __I  uint32_t  RSSISAMPLE;                        /*!< RSSI sample.                                                          */
-  __I  uint32_t  RESERVED6;
+  __I  uint32_t  RESERVED7;
   __I  uint32_t  STATE;                             /*!< Current radio state.                                                  */
   __IO uint32_t  DATAWHITEIV;                       /*!< Data whitening initial value.                                         */
-  __I  uint32_t  RESERVED7[2];
+  __I  uint32_t  RESERVED8[2];
   __IO uint32_t  BCC;                               /*!< Bit counter compare.                                                  */
-  __I  uint32_t  RESERVED8[39];
+  __I  uint32_t  RESERVED9[39];
   __IO uint32_t  DAB[8];                            /*!< Device address base segment.                                          */
   __IO uint32_t  DAP[8];                            /*!< Device address prefix.                                                */
   __IO uint32_t  DACNF;                             /*!< Device address match configuration.                                   */
-  __I  uint32_t  RESERVED9[56];
+  __I  uint32_t  RESERVED10[56];
   __IO uint32_t  OVERRIDE0;                         /*!< Trim value override register 0.                                       */
   __IO uint32_t  OVERRIDE1;                         /*!< Trim value override register 1.                                       */
   __IO uint32_t  OVERRIDE2;                         /*!< Trim value override register 2.                                       */
   __IO uint32_t  OVERRIDE3;                         /*!< Trim value override register 3.                                       */
   __IO uint32_t  OVERRIDE4;                         /*!< Trim value override register 4.                                       */
-  __I  uint32_t  RESERVED10[561];
+  __I  uint32_t  RESERVED11[561];
   __IO uint32_t  POWER;                             /*!< Peripheral power control.                                             */
 } NRF_RADIO_Type;
 
@@ -564,39 +543,41 @@ typedef struct {                                    /*!< SPIS Structure         
   __O  uint32_t  TASKS_RELEASE;                     /*!< Release SPI semaphore.                                                */
   __I  uint32_t  RESERVED1[54];
   __IO uint32_t  EVENTS_END;                        /*!< Granted transaction completed.                                        */
-  __I  uint32_t  RESERVED2[8];
+  __I  uint32_t  RESERVED2[2];
+  __IO uint32_t  EVENTS_ENDRX;                      /*!< End of RXD buffer reached                                             */
+  __I  uint32_t  RESERVED3[5];
   __IO uint32_t  EVENTS_ACQUIRED;                   /*!< Semaphore acquired.                                                   */
-  __I  uint32_t  RESERVED3[53];
+  __I  uint32_t  RESERVED4[53];
   __IO uint32_t  SHORTS;                            /*!< Shortcuts for SPIS.                                                   */
-  __I  uint32_t  RESERVED4[64];
+  __I  uint32_t  RESERVED5[64];
   __IO uint32_t  INTENSET;                          /*!< Interrupt enable set register.                                        */
   __IO uint32_t  INTENCLR;                          /*!< Interrupt enable clear register.                                      */
-  __I  uint32_t  RESERVED5[61];
+  __I  uint32_t  RESERVED6[61];
   __I  uint32_t  SEMSTAT;                           /*!< Semaphore status.                                                     */
-  __I  uint32_t  RESERVED6[15];
+  __I  uint32_t  RESERVED7[15];
   __IO uint32_t  STATUS;                            /*!< Status from last transaction.                                         */
-  __I  uint32_t  RESERVED7[47];
+  __I  uint32_t  RESERVED8[47];
   __IO uint32_t  ENABLE;                            /*!< Enable SPIS.                                                          */
-  __I  uint32_t  RESERVED8;
+  __I  uint32_t  RESERVED9;
   __IO uint32_t  PSELSCK;                           /*!< Pin select for SCK.                                                   */
   __IO uint32_t  PSELMISO;                          /*!< Pin select for MISO.                                                  */
   __IO uint32_t  PSELMOSI;                          /*!< Pin select for MOSI.                                                  */
   __IO uint32_t  PSELCSN;                           /*!< Pin select for CSN.                                                   */
-  __I  uint32_t  RESERVED9[7];
+  __I  uint32_t  RESERVED10[7];
   __IO uint32_t  RXDPTR;                            /*!< RX data pointer.                                                      */
   __IO uint32_t  MAXRX;                             /*!< Maximum number of bytes in the receive buffer.                        */
   __I  uint32_t  AMOUNTRX;                          /*!< Number of bytes received in last granted transaction.                 */
-  __I  uint32_t  RESERVED10;
+  __I  uint32_t  RESERVED11;
   __IO uint32_t  TXDPTR;                            /*!< TX data pointer.                                                      */
   __IO uint32_t  MAXTX;                             /*!< Maximum number of bytes in the transmit buffer.                       */
   __I  uint32_t  AMOUNTTX;                          /*!< Number of bytes transmitted in last granted transaction.              */
-  __I  uint32_t  RESERVED11;
-  __IO uint32_t  CONFIG;                            /*!< Configuration register.                                               */
   __I  uint32_t  RESERVED12;
+  __IO uint32_t  CONFIG;                            /*!< Configuration register.                                               */
+  __I  uint32_t  RESERVED13;
   __IO uint32_t  DEF;                               /*!< Default character.                                                    */
-  __I  uint32_t  RESERVED13[24];
+  __I  uint32_t  RESERVED14[24];
   __IO uint32_t  ORC;                               /*!< Over-read character.                                                  */
-  __I  uint32_t  RESERVED14[654];
+  __I  uint32_t  RESERVED15[654];
   __IO uint32_t  POWER;                             /*!< Peripheral power control.                                             */
 } NRF_SPIS_Type;
 
@@ -621,32 +602,28 @@ typedef struct {                                    /*!< SPIM Structure         
   __IO uint32_t  EVENTS_STOPPED;                    /*!< SPI transaction has stopped.                                          */
   __I  uint32_t  RESERVED3[2];
   __IO uint32_t  EVENTS_ENDRX;                      /*!< End of RXD buffer reached.                                            */
-  __I  uint32_t  RESERVED4;
-  __IO uint32_t  EVENTS_END;                        /*!< End of RXD buffer and TXD buffer reached.                             */
-  __I  uint32_t  RESERVED5;
+  __I  uint32_t  RESERVED4[3];
   __IO uint32_t  EVENTS_ENDTX;                      /*!< End of TXD buffer reached.                                            */
-  __I  uint32_t  RESERVED6[10];
+  __I  uint32_t  RESERVED5[10];
   __IO uint32_t  EVENTS_STARTED;                    /*!< Transaction started.                                                  */
-  __I  uint32_t  RESERVED7[44];
-  __IO uint32_t  SHORTS;                            /*!< Shortcuts for SPIM.                                                   */
-  __I  uint32_t  RESERVED8[64];
+  __I  uint32_t  RESERVED6[109];
   __IO uint32_t  INTENSET;                          /*!< Interrupt enable set register.                                        */
   __IO uint32_t  INTENCLR;                          /*!< Interrupt enable clear register.                                      */
-  __I  uint32_t  RESERVED9[125];
+  __I  uint32_t  RESERVED7[125];
   __IO uint32_t  ENABLE;                            /*!< Enable SPIM.                                                          */
-  __I  uint32_t  RESERVED10;
+  __I  uint32_t  RESERVED8;
   SPIM_PSEL_Type PSEL;                              /*!< Pin select configuration.                                             */
-  __I  uint32_t  RESERVED11[4];
+  __I  uint32_t  RESERVED9[4];
   __IO uint32_t  FREQUENCY;                         /*!< SPI frequency.                                                        */
-  __I  uint32_t  RESERVED12[3];
+  __I  uint32_t  RESERVED10[3];
   SPIM_RXD_Type RXD;                                /*!< RXD EasyDMA configuration and status.                                 */
-  __I  uint32_t  RESERVED13;
+  __I  uint32_t  RESERVED11;
   SPIM_TXD_Type TXD;                                /*!< TXD EasyDMA configuration and status.                                 */
-  __I  uint32_t  RESERVED14;
+  __I  uint32_t  RESERVED12;
   __IO uint32_t  CONFIG;                            /*!< Configuration register.                                               */
-  __I  uint32_t  RESERVED15[26];
+  __I  uint32_t  RESERVED13[26];
   __IO uint32_t  ORC;                               /*!< Over-read character.                                                  */
-  __I  uint32_t  RESERVED16[654];
+  __I  uint32_t  RESERVED14[654];
   __IO uint32_t  POWER;                             /*!< Peripheral power control.                                             */
 } NRF_SPIM_Type;
 
@@ -889,8 +866,8 @@ typedef struct {                                    /*!< AAR Structure          
   __IO uint32_t  IRKPTR;                            /*!< Pointer to the IRK data structure.                                    */
   __I  uint32_t  RESERVED5;
   __IO uint32_t  ADDRPTR;                           /*!< Pointer to the resolvable address (6 bytes).                          */
-  __IO uint32_t  SCRATCHPTR;                        /*!< Pointer to a "scratch" data area used for temporary storage
-                                                         during resolution. A minimum of 3 bytes must be reserved.             */
+  __IO uint32_t  SCRATCHPTR;                        /*!< Pointer to a scratch data area used for temporary storage during
+                                                         resolution. A minimum of 3 bytes must be reserved.                    */
   __I  uint32_t  RESERVED6[697];
   __IO uint32_t  POWER;                             /*!< Peripheral power control.                                             */
 } NRF_AAR_Type;
@@ -928,8 +905,8 @@ typedef struct {                                    /*!< CCM Structure          
   __IO uint32_t  CNFPTR;                            /*!< Pointer to a data structure holding AES key and NONCE vector.         */
   __IO uint32_t  INPTR;                             /*!< Pointer to the input packet.                                          */
   __IO uint32_t  OUTPTR;                            /*!< Pointer to the output packet.                                         */
-  __IO uint32_t  SCRATCHPTR;                        /*!< Pointer to a "scratch" data area used for temporary storage
-                                                         during resolution. A minimum of 43 bytes must be reserved.            */
+  __IO uint32_t  SCRATCHPTR;                        /*!< Pointer to a scratch data area used for temporary storage during
+                                                         resolution. A minimum of 43 bytes must be reserved.                   */
   __I  uint32_t  RESERVED5[697];
   __IO uint32_t  POWER;                             /*!< Peripheral power control.                                             */
 } NRF_CCM_Type;
@@ -1083,11 +1060,7 @@ typedef struct {                                    /*!< NVMC Structure         
     __IO uint32_t  ERASEPAGE;                       /*!< Register for erasing a non-protected non-volatile memory page.        */
   };
   __IO uint32_t  ERASEALL;                          /*!< Register for erasing all non-volatile user memory.                    */
-  
-  union {
-    __IO uint32_t  ERASEPCR0;                       /*!< Register for erasing a protected non-volatile memory page.            */
-    __IO uint32_t  ERASEPROTECTEDPAGE;              /*!< Register for erasing a protected non-volatile memory page.            */
-  };
+  __IO uint32_t  ERASEPCR0;                         /*!< Register for erasing a protected non-volatile memory page.            */
   __IO uint32_t  ERASEUICR;                         /*!< Register for start erasing User Information Congfiguration Registers. */
 } NRF_NVMC_Type;
 
@@ -1229,7 +1202,6 @@ typedef struct {                                    /*!< GPIO Structure         
 #define NRF_POWER_BASE                  0x40000000UL
 #define NRF_CLOCK_BASE                  0x40000000UL
 #define NRF_MPU_BASE                    0x40000000UL
-#define NRF_PU_BASE                     0x40000000UL
 #define NRF_AMLI_BASE                   0x40000000UL
 #define NRF_RADIO_BASE                  0x40001000UL
 #define NRF_UART0_BASE                  0x40002000UL
@@ -1269,7 +1241,6 @@ typedef struct {                                    /*!< GPIO Structure         
 #define NRF_POWER                       ((NRF_POWER_Type          *) NRF_POWER_BASE)
 #define NRF_CLOCK                       ((NRF_CLOCK_Type          *) NRF_CLOCK_BASE)
 #define NRF_MPU                         ((NRF_MPU_Type            *) NRF_MPU_BASE)
-#define NRF_PU                          ((NRF_PU_Type             *) NRF_PU_BASE)
 #define NRF_AMLI                        ((NRF_AMLI_Type           *) NRF_AMLI_BASE)
 #define NRF_RADIO                       ((NRF_RADIO_Type          *) NRF_RADIO_BASE)
 #define NRF_UART0                       ((NRF_UART_Type           *) NRF_UART0_BASE)

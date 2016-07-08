@@ -4596,186 +4596,6 @@
 #define PPI_CHG_CH0_Included (1UL) /*!< Channel included. */
 
 
-/* Peripheral: PU */
-/* Description: Patch unit. */
-
-/* Register: PU_PATCHADDR */
-/* Description: Relative address of patch instructions. */
-
-/* Bits 24..0 : Relative address of patch instructions. */
-#define PU_PATCHADDR_PATCHADDR_Pos (0UL) /*!< Position of PATCHADDR field. */
-#define PU_PATCHADDR_PATCHADDR_Msk (0x1FFFFFFUL << PU_PATCHADDR_PATCHADDR_Pos) /*!< Bit mask of PATCHADDR field. */
-
-/* Register: PU_PATCHEN */
-/* Description: Patch enable register. */
-
-/* Bit 7 : Patch 7 enabled. */
-#define PU_PATCHEN_PATCH7_Pos (7UL) /*!< Position of PATCH7 field. */
-#define PU_PATCHEN_PATCH7_Msk (0x1UL << PU_PATCHEN_PATCH7_Pos) /*!< Bit mask of PATCH7 field. */
-#define PU_PATCHEN_PATCH7_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHEN_PATCH7_Enabled (1UL) /*!< Patch enabled. */
-
-/* Bit 6 : Patch 6 enabled. */
-#define PU_PATCHEN_PATCH6_Pos (6UL) /*!< Position of PATCH6 field. */
-#define PU_PATCHEN_PATCH6_Msk (0x1UL << PU_PATCHEN_PATCH6_Pos) /*!< Bit mask of PATCH6 field. */
-#define PU_PATCHEN_PATCH6_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHEN_PATCH6_Enabled (1UL) /*!< Patch enabled. */
-
-/* Bit 5 : Patch 5 enabled. */
-#define PU_PATCHEN_PATCH5_Pos (5UL) /*!< Position of PATCH5 field. */
-#define PU_PATCHEN_PATCH5_Msk (0x1UL << PU_PATCHEN_PATCH5_Pos) /*!< Bit mask of PATCH5 field. */
-#define PU_PATCHEN_PATCH5_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHEN_PATCH5_Enabled (1UL) /*!< Patch enabled. */
-
-/* Bit 4 : Patch 4 enabled. */
-#define PU_PATCHEN_PATCH4_Pos (4UL) /*!< Position of PATCH4 field. */
-#define PU_PATCHEN_PATCH4_Msk (0x1UL << PU_PATCHEN_PATCH4_Pos) /*!< Bit mask of PATCH4 field. */
-#define PU_PATCHEN_PATCH4_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHEN_PATCH4_Enabled (1UL) /*!< Patch enabled. */
-
-/* Bit 3 : Patch 3 enabled. */
-#define PU_PATCHEN_PATCH3_Pos (3UL) /*!< Position of PATCH3 field. */
-#define PU_PATCHEN_PATCH3_Msk (0x1UL << PU_PATCHEN_PATCH3_Pos) /*!< Bit mask of PATCH3 field. */
-#define PU_PATCHEN_PATCH3_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHEN_PATCH3_Enabled (1UL) /*!< Patch enabled. */
-
-/* Bit 2 : Patch 2 enabled. */
-#define PU_PATCHEN_PATCH2_Pos (2UL) /*!< Position of PATCH2 field. */
-#define PU_PATCHEN_PATCH2_Msk (0x1UL << PU_PATCHEN_PATCH2_Pos) /*!< Bit mask of PATCH2 field. */
-#define PU_PATCHEN_PATCH2_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHEN_PATCH2_Enabled (1UL) /*!< Patch enabled. */
-
-/* Bit 1 : Patch 1 enabled. */
-#define PU_PATCHEN_PATCH1_Pos (1UL) /*!< Position of PATCH1 field. */
-#define PU_PATCHEN_PATCH1_Msk (0x1UL << PU_PATCHEN_PATCH1_Pos) /*!< Bit mask of PATCH1 field. */
-#define PU_PATCHEN_PATCH1_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHEN_PATCH1_Enabled (1UL) /*!< Patch enabled. */
-
-/* Bit 0 : Patch 0 enabled. */
-#define PU_PATCHEN_PATCH0_Pos (0UL) /*!< Position of PATCH0 field. */
-#define PU_PATCHEN_PATCH0_Msk (0x1UL << PU_PATCHEN_PATCH0_Pos) /*!< Bit mask of PATCH0 field. */
-#define PU_PATCHEN_PATCH0_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHEN_PATCH0_Enabled (1UL) /*!< Patch enabled. */
-
-/* Register: PU_PATCHENSET */
-/* Description: Patch enable register. */
-
-/* Bit 7 : Patch 7 enabled. */
-#define PU_PATCHENSET_PATCH7_Pos (7UL) /*!< Position of PATCH7 field. */
-#define PU_PATCHENSET_PATCH7_Msk (0x1UL << PU_PATCHENSET_PATCH7_Pos) /*!< Bit mask of PATCH7 field. */
-#define PU_PATCHENSET_PATCH7_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENSET_PATCH7_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENSET_PATCH7_Set (1UL) /*!< Enable patch on write. */
-
-/* Bit 6 : Patch 6 enabled. */
-#define PU_PATCHENSET_PATCH6_Pos (6UL) /*!< Position of PATCH6 field. */
-#define PU_PATCHENSET_PATCH6_Msk (0x1UL << PU_PATCHENSET_PATCH6_Pos) /*!< Bit mask of PATCH6 field. */
-#define PU_PATCHENSET_PATCH6_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENSET_PATCH6_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENSET_PATCH6_Set (1UL) /*!< Enable patch on write. */
-
-/* Bit 5 : Patch 5 enabled. */
-#define PU_PATCHENSET_PATCH5_Pos (5UL) /*!< Position of PATCH5 field. */
-#define PU_PATCHENSET_PATCH5_Msk (0x1UL << PU_PATCHENSET_PATCH5_Pos) /*!< Bit mask of PATCH5 field. */
-#define PU_PATCHENSET_PATCH5_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENSET_PATCH5_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENSET_PATCH5_Set (1UL) /*!< Enable patch on write. */
-
-/* Bit 4 : Patch 4 enabled. */
-#define PU_PATCHENSET_PATCH4_Pos (4UL) /*!< Position of PATCH4 field. */
-#define PU_PATCHENSET_PATCH4_Msk (0x1UL << PU_PATCHENSET_PATCH4_Pos) /*!< Bit mask of PATCH4 field. */
-#define PU_PATCHENSET_PATCH4_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENSET_PATCH4_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENSET_PATCH4_Set (1UL) /*!< Enable patch on write. */
-
-/* Bit 3 : Patch 3 enabled. */
-#define PU_PATCHENSET_PATCH3_Pos (3UL) /*!< Position of PATCH3 field. */
-#define PU_PATCHENSET_PATCH3_Msk (0x1UL << PU_PATCHENSET_PATCH3_Pos) /*!< Bit mask of PATCH3 field. */
-#define PU_PATCHENSET_PATCH3_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENSET_PATCH3_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENSET_PATCH3_Set (1UL) /*!< Enable patch on write. */
-
-/* Bit 2 : Patch 2 enabled. */
-#define PU_PATCHENSET_PATCH2_Pos (2UL) /*!< Position of PATCH2 field. */
-#define PU_PATCHENSET_PATCH2_Msk (0x1UL << PU_PATCHENSET_PATCH2_Pos) /*!< Bit mask of PATCH2 field. */
-#define PU_PATCHENSET_PATCH2_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENSET_PATCH2_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENSET_PATCH2_Set (1UL) /*!< Enable patch on write. */
-
-/* Bit 1 : Patch 1 enabled. */
-#define PU_PATCHENSET_PATCH1_Pos (1UL) /*!< Position of PATCH1 field. */
-#define PU_PATCHENSET_PATCH1_Msk (0x1UL << PU_PATCHENSET_PATCH1_Pos) /*!< Bit mask of PATCH1 field. */
-#define PU_PATCHENSET_PATCH1_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENSET_PATCH1_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENSET_PATCH1_Set (1UL) /*!< Enable patch on write. */
-
-/* Bit 0 : Patch 0 enabled. */
-#define PU_PATCHENSET_PATCH0_Pos (0UL) /*!< Position of PATCH0 field. */
-#define PU_PATCHENSET_PATCH0_Msk (0x1UL << PU_PATCHENSET_PATCH0_Pos) /*!< Bit mask of PATCH0 field. */
-#define PU_PATCHENSET_PATCH0_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENSET_PATCH0_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENSET_PATCH0_Set (1UL) /*!< Enable patch on write. */
-
-/* Register: PU_PATCHENCLR */
-/* Description: Patch disable register. */
-
-/* Bit 7 : Patch 7 enabled. */
-#define PU_PATCHENCLR_PATCH7_Pos (7UL) /*!< Position of PATCH7 field. */
-#define PU_PATCHENCLR_PATCH7_Msk (0x1UL << PU_PATCHENCLR_PATCH7_Pos) /*!< Bit mask of PATCH7 field. */
-#define PU_PATCHENCLR_PATCH7_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENCLR_PATCH7_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENCLR_PATCH7_Clear (1UL) /*!< Disable patch on write. */
-
-/* Bit 6 : Patch 6 enabled. */
-#define PU_PATCHENCLR_PATCH6_Pos (6UL) /*!< Position of PATCH6 field. */
-#define PU_PATCHENCLR_PATCH6_Msk (0x1UL << PU_PATCHENCLR_PATCH6_Pos) /*!< Bit mask of PATCH6 field. */
-#define PU_PATCHENCLR_PATCH6_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENCLR_PATCH6_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENCLR_PATCH6_Clear (1UL) /*!< Disable patch on write. */
-
-/* Bit 5 : Patch 5 enabled. */
-#define PU_PATCHENCLR_PATCH5_Pos (5UL) /*!< Position of PATCH5 field. */
-#define PU_PATCHENCLR_PATCH5_Msk (0x1UL << PU_PATCHENCLR_PATCH5_Pos) /*!< Bit mask of PATCH5 field. */
-#define PU_PATCHENCLR_PATCH5_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENCLR_PATCH5_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENCLR_PATCH5_Clear (1UL) /*!< Disable patch on write. */
-
-/* Bit 4 : Patch 4 enabled. */
-#define PU_PATCHENCLR_PATCH4_Pos (4UL) /*!< Position of PATCH4 field. */
-#define PU_PATCHENCLR_PATCH4_Msk (0x1UL << PU_PATCHENCLR_PATCH4_Pos) /*!< Bit mask of PATCH4 field. */
-#define PU_PATCHENCLR_PATCH4_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENCLR_PATCH4_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENCLR_PATCH4_Clear (1UL) /*!< Disable patch on write. */
-
-/* Bit 3 : Patch 3 enabled. */
-#define PU_PATCHENCLR_PATCH3_Pos (3UL) /*!< Position of PATCH3 field. */
-#define PU_PATCHENCLR_PATCH3_Msk (0x1UL << PU_PATCHENCLR_PATCH3_Pos) /*!< Bit mask of PATCH3 field. */
-#define PU_PATCHENCLR_PATCH3_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENCLR_PATCH3_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENCLR_PATCH3_Clear (1UL) /*!< Disable patch on write. */
-
-/* Bit 2 : Patch 2 enabled. */
-#define PU_PATCHENCLR_PATCH2_Pos (2UL) /*!< Position of PATCH2 field. */
-#define PU_PATCHENCLR_PATCH2_Msk (0x1UL << PU_PATCHENCLR_PATCH2_Pos) /*!< Bit mask of PATCH2 field. */
-#define PU_PATCHENCLR_PATCH2_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENCLR_PATCH2_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENCLR_PATCH2_Clear (1UL) /*!< Disable patch on write. */
-
-/* Bit 1 : Patch 1 enabled. */
-#define PU_PATCHENCLR_PATCH1_Pos (1UL) /*!< Position of PATCH1 field. */
-#define PU_PATCHENCLR_PATCH1_Msk (0x1UL << PU_PATCHENCLR_PATCH1_Pos) /*!< Bit mask of PATCH1 field. */
-#define PU_PATCHENCLR_PATCH1_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENCLR_PATCH1_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENCLR_PATCH1_Clear (1UL) /*!< Disable patch on write. */
-
-/* Bit 0 : Patch 0 enabled. */
-#define PU_PATCHENCLR_PATCH0_Pos (0UL) /*!< Position of PATCH0 field. */
-#define PU_PATCHENCLR_PATCH0_Msk (0x1UL << PU_PATCHENCLR_PATCH0_Pos) /*!< Bit mask of PATCH0 field. */
-#define PU_PATCHENCLR_PATCH0_Disabled (0UL) /*!< Patch disabled. */
-#define PU_PATCHENCLR_PATCH0_Enabled (1UL) /*!< Patch enabled. */
-#define PU_PATCHENCLR_PATCH0_Clear (1UL) /*!< Disable patch on write. */
-
-
 /* Peripheral: QDEC */
 /* Description: Rotary decoder. */
 
@@ -5131,13 +4951,6 @@
 #define RADIO_CRCSTATUS_CRCSTATUS_Msk (0x1UL << RADIO_CRCSTATUS_CRCSTATUS_Pos) /*!< Bit mask of CRCSTATUS field. */
 #define RADIO_CRCSTATUS_CRCSTATUS_CRCError (0UL) /*!< Packet received with CRC error. */
 #define RADIO_CRCSTATUS_CRCSTATUS_CRCOk (1UL) /*!< Packet received with CRC ok. */
-
-/* Register: RADIO_CD */
-/* Description: Carrier detect. */
-
-/* Bit 0 : Carrier detect. */
-#define RADIO_CD_CD_Pos (0UL) /*!< Position of CD field. */
-#define RADIO_CD_CD_Msk (0x1UL << RADIO_CD_CD_Pos) /*!< Bit mask of CD field. */
 
 /* Register: RADIO_RXMATCH */
 /* Description: Received address. */
@@ -5960,15 +5773,6 @@
 /* Peripheral: SPIM */
 /* Description: SPI master with easyDMA 1. */
 
-/* Register: SPIM_SHORTS */
-/* Description: Shortcuts for SPIM. */
-
-/* Bit 17 : Shortcut between END event and START task. */
-#define SPIM_SHORTS_END_START_Pos (17UL) /*!< Position of END_START field. */
-#define SPIM_SHORTS_END_START_Msk (0x1UL << SPIM_SHORTS_END_START_Pos) /*!< Bit mask of END_START field. */
-#define SPIM_SHORTS_END_START_Disabled (0UL) /*!< Shortcut disabled. */
-#define SPIM_SHORTS_END_START_Enabled (1UL) /*!< Shortcut enabled. */
-
 /* Register: SPIM_INTENSET */
 /* Description: Interrupt enable set register. */
 
@@ -5985,13 +5789,6 @@
 #define SPIM_INTENSET_ENDTX_Disabled (0UL) /*!< Interrupt disabled. */
 #define SPIM_INTENSET_ENDTX_Enabled (1UL) /*!< Interrupt enabled. */
 #define SPIM_INTENSET_ENDTX_Set (1UL) /*!< Enable interrupt on write. */
-
-/* Bit 6 : Enable interrupt on END event. */
-#define SPIM_INTENSET_END_Pos (6UL) /*!< Position of END field. */
-#define SPIM_INTENSET_END_Msk (0x1UL << SPIM_INTENSET_END_Pos) /*!< Bit mask of END field. */
-#define SPIM_INTENSET_END_Disabled (0UL) /*!< Interrupt disabled. */
-#define SPIM_INTENSET_END_Enabled (1UL) /*!< Interrupt enabled. */
-#define SPIM_INTENSET_END_Set (1UL) /*!< Enable interrupt on write. */
 
 /* Bit 4 : Enable interrupt on ENDRX event. */
 #define SPIM_INTENSET_ENDRX_Pos (4UL) /*!< Position of ENDRX field. */
@@ -6023,13 +5820,6 @@
 #define SPIM_INTENCLR_ENDTX_Disabled (0UL) /*!< Interrupt disabled. */
 #define SPIM_INTENCLR_ENDTX_Enabled (1UL) /*!< Interrupt enabled. */
 #define SPIM_INTENCLR_ENDTX_Clear (1UL) /*!< Disable interrupt on write. */
-
-/* Bit 6 : Disable interrupt on END event. */
-#define SPIM_INTENCLR_END_Pos (6UL) /*!< Position of END field. */
-#define SPIM_INTENCLR_END_Msk (0x1UL << SPIM_INTENCLR_END_Pos) /*!< Bit mask of END field. */
-#define SPIM_INTENCLR_END_Disabled (0UL) /*!< Interrupt disabled. */
-#define SPIM_INTENCLR_END_Enabled (1UL) /*!< Interrupt enabled. */
-#define SPIM_INTENCLR_END_Clear (1UL) /*!< Disable interrupt on write. */
 
 /* Bit 4 : Disable interrupt on ENDRX event. */
 #define SPIM_INTENCLR_ENDRX_Pos (4UL) /*!< Position of ENDRX field. */
@@ -6170,6 +5960,13 @@
 #define SPIS_INTENSET_ACQUIRED_Enabled (1UL) /*!< Interrupt enabled. */
 #define SPIS_INTENSET_ACQUIRED_Set (1UL) /*!< Enable interrupt on write. */
 
+/* Bit 4 : enable interrupt on ENDRX event. */
+#define SPIS_INTENSET_ENDRX_Pos (4UL) /*!< Position of ENDRX field. */
+#define SPIS_INTENSET_ENDRX_Msk (0x1UL << SPIS_INTENSET_ENDRX_Pos) /*!< Bit mask of ENDRX field. */
+#define SPIS_INTENSET_ENDRX_Disabled (0UL) /*!< Interrupt disabled. */
+#define SPIS_INTENSET_ENDRX_Enabled (1UL) /*!< Interrupt enabled. */
+#define SPIS_INTENSET_ENDRX_Set (1UL) /*!< Enable interrupt on write. */
+
 /* Bit 1 : Enable interrupt on END event. */
 #define SPIS_INTENSET_END_Pos (1UL) /*!< Position of END field. */
 #define SPIS_INTENSET_END_Msk (0x1UL << SPIS_INTENSET_END_Pos) /*!< Bit mask of END field. */
@@ -6186,6 +5983,13 @@
 #define SPIS_INTENCLR_ACQUIRED_Disabled (0UL) /*!< Interrupt disabled. */
 #define SPIS_INTENCLR_ACQUIRED_Enabled (1UL) /*!< Interrupt enabled. */
 #define SPIS_INTENCLR_ACQUIRED_Clear (1UL) /*!< Disable interrupt on write. */
+
+/* Bit 4 : Disable interrupt on ENDRX event. */
+#define SPIS_INTENCLR_ENDRX_Pos (4UL) /*!< Position of ENDRX field. */
+#define SPIS_INTENCLR_ENDRX_Msk (0x1UL << SPIS_INTENCLR_ENDRX_Pos) /*!< Bit mask of ENDRX field. */
+#define SPIS_INTENCLR_ENDRX_Disabled (0UL) /*!< Interrupt disabled. */
+#define SPIS_INTENCLR_ENDRX_Enabled (1UL) /*!< Interrupt enabled. */
+#define SPIS_INTENCLR_ENDRX_Clear (1UL) /*!< Disable interrupt on write. */
 
 /* Bit 1 : Disable interrupt on END event. */
 #define SPIS_INTENCLR_END_Pos (1UL) /*!< Position of END field. */
@@ -6678,13 +6482,13 @@
 /* Register: UART_SHORTS */
 /* Description: Shortcuts for UART. */
 
-/* Bit 4 : Shortcut between NCTS event and the STOPRX task. */
+/* Bit 4 : Shortcut between NCTS event and STOPRX task. */
 #define UART_SHORTS_NCTS_STOPRX_Pos (4UL) /*!< Position of NCTS_STOPRX field. */
 #define UART_SHORTS_NCTS_STOPRX_Msk (0x1UL << UART_SHORTS_NCTS_STOPRX_Pos) /*!< Bit mask of NCTS_STOPRX field. */
 #define UART_SHORTS_NCTS_STOPRX_Disabled (0UL) /*!< Shortcut disabled. */
 #define UART_SHORTS_NCTS_STOPRX_Enabled (1UL) /*!< Shortcut enabled. */
 
-/* Bit 3 : Shortcut between CTS event and the STARTRX task. */
+/* Bit 3 : Shortcut between CTS event and STARTRX task. */
 #define UART_SHORTS_CTS_STARTRX_Pos (3UL) /*!< Position of CTS_STARTRX field. */
 #define UART_SHORTS_CTS_STARTRX_Msk (0x1UL << UART_SHORTS_CTS_STARTRX_Pos) /*!< Bit mask of CTS_STARTRX field. */
 #define UART_SHORTS_CTS_STARTRX_Disabled (0UL) /*!< Shortcut disabled. */
