@@ -26,11 +26,17 @@
 
 #if (HAL_USE_SERIAL == TRUE) || defined(__DOXYGEN__)
 
+#if   NRF_SERIE == 51
 #include "nrf51.h"
+#elif NRF_SERIE == 52
+#include "nrf52.h"
+#define UART0_IRQn UARTE0_UART0_IRQn
+#endif
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
+
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -142,8 +148,9 @@ static void configure_uart(const SerialConfig *config)
   /* Enable UART and clear events */
   NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Enabled;
   NRF_UART0->EVENTS_RXDRDY = 0;
+  (void)NRF_UART0->EVENTS_RXDRDY;
   NRF_UART0->EVENTS_TXDRDY = 0;
-
+  (void)NRF_UART0->EVENTS_TXDRDY;
 
   if (config->rx_pad != NRF51_SERIAL_PAD_DISCONNECTED) {
     while (NRF_UART0->EVENTS_RXDRDY != 0) {
@@ -197,6 +204,7 @@ OSAL_IRQ_HANDLER(Vector48) {
   if ((NRF_UART0->EVENTS_RXDRDY != 0) && (isr & UART_INTENSET_RXDRDY_Msk)) {
     // Clear UART RX event flag
     NRF_UART0->EVENTS_RXDRDY = 0;
+    (void)NRF_UART0->EVENTS_RXDRDY;
 
     osalSysLockFromISR();
     if (iqIsEmptyI(&sdp->iqueue))
@@ -211,6 +219,7 @@ OSAL_IRQ_HANDLER(Vector48) {
 
     // Clear UART TX event flag.
     NRF_UART0->EVENTS_TXDRDY = 0;
+    (void)NRF_UART0->EVENTS_TXDRDY;
 
     osalSysLockFromISR();
     b = oqGetI(&sdp->oqueue);
@@ -232,6 +241,7 @@ OSAL_IRQ_HANDLER(Vector48) {
   if ((NRF_UART0->EVENTS_ERROR != 0) && (isr & UART_INTENSET_ERROR_Msk)) {
     // Clear UART ERROR event flag.
     NRF_UART0->EVENTS_ERROR = 0;
+    (void)NRF_UART0->EVENTS_ERROR;
   }
 
 

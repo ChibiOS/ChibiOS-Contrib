@@ -1,0 +1,28 @@
+ifeq ($(USE_SMART_BUILD),yes)
+HALCONF := $(strip $(shell cat halconf.h halconf_community.h 2>/dev/null | egrep -e "define"))
+
+# List of all the NRF51x platform files.
+PLATFORMSRC  = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF52832/hal_lld.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_st_lld.c
+
+ifneq ($(findstring HAL_USE_PAL TRUE,$(HALCONF)),)
+PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_pal_lld.c
+endif
+ifneq ($(findstring HAL_USE_SERIAL TRUE,$(HALCONF)),)
+PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_serial_lld.c
+endif
+else
+PLATFORMSRC  = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF52832/hal_lld.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_pal_lld.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_serial_lld.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_st_lld.c 
+endif
+
+# Required include directories
+PLATFORMINC = ${CHIBIOS}/os/hal/ports/common/ARMCMx \
+              ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD \
+              ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF52832
+
+

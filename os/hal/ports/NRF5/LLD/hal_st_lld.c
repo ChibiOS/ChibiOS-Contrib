@@ -65,6 +65,7 @@ OSAL_IRQ_HANDLER(Vector6C) {
   OSAL_IRQ_PROLOGUE();
 
   NRF_RTC0->EVENTS_TICK = 0;
+  (void)NRF_RTC0->EVENTS_TICK;
 
   osalSysLockFromISR();
   osalOsTimerHandlerI();
@@ -87,6 +88,7 @@ OSAL_IRQ_HANDLER(Vector84) {
   OSAL_IRQ_PROLOGUE();
 
   NRF_RTC1->EVENTS_TICK = 0;
+  (void)NRF_RTC1->EVENTS_TICK;
 
   osalSysLockFromISR();
   osalOsTimerHandlerI();
@@ -109,12 +111,14 @@ OSAL_IRQ_HANDLER(Vector60) {
   OSAL_IRQ_PROLOGUE();
 
   /* Clear timer compare event */
-  if (NRF_TIMER0->EVENTS_COMPARE[0] != 0)
+  if (NRF_TIMER0->EVENTS_COMPARE[0] != 0) {
     NRF_TIMER0->EVENTS_COMPARE[0] = 0;
+    (void)NRF_TIMER0->EVENTS_COMPARE[0];
 
-  osalSysLockFromISR();
-  osalOsTimerHandlerI();
-  osalSysUnlockFromISR();
+    osalSysLockFromISR();
+    osalOsTimerHandlerI();
+    osalSysUnlockFromISR();
+  }
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -136,6 +140,7 @@ OSAL_IRQ_HANDLER(Vector6C) {
 
   if (NRF_RTC0->EVENTS_COMPARE[0]) {
     NRF_RTC0->EVENTS_COMPARE[0] = 0;
+    (void)NRF_RTC0->EVENTS_COMPARE[0];
 
     osalSysLockFromISR();
     osalOsTimerHandlerI();
@@ -145,6 +150,7 @@ OSAL_IRQ_HANDLER(Vector6C) {
 #if OSAL_ST_RESOLUTION == 16
   if (NRF_RTC0->EVENTS_COMPARE[1]) {
     NRF_RTC0->EVENTS_COMPARE[1] = 0;
+    (void)NRF_RTC0->EVENTS_COMPARE[1];
     NRF_RTC0->TASKS_CLEAR = 1;
   }
 #endif
@@ -167,6 +173,7 @@ OSAL_IRQ_HANDLER(Vector84) {
 
   if (NRF_RTC1->EVENTS_COMPARE[0]) {
     NRF_RTC1->EVENTS_COMPARE[0] = 0;
+    (void)NRF_RTC1->EVENTS_COMPARE[0];
 
     osalSysLockFromISR();
     osalOsTimerHandlerI();
@@ -176,6 +183,7 @@ OSAL_IRQ_HANDLER(Vector84) {
 #if OSAL_ST_RESOLUTION == 16
   if (NRF_RTC1->EVENTS_COMPARE[1]) {
     NRF_RTC1->EVENTS_COMPARE[1] = 0;
+    (void)NRF_RTC1->EVENTS_COMPARE[1];
     NRF_RTC1->TASKS_CLEAR = 1;
   }
 #endif

@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51/NRF51822/hal_lld.h
- * @brief   NRF51822 HAL subsystem low level driver header.
+ * @file    NRF5/NRF52832/hal_lld.h
+ * @brief   NRF52832 HAL subsystem low level driver header.
  *
  * @addtogroup HAL
  * @{
@@ -32,13 +32,13 @@
 /**
  * @name    Chip serie
  */
-#define NRF_SERIE 51
+#define NRF_SERIE 52
 
 /**
  * @name    Platform identification
  * @{
  */
-#define PLATFORM_NAME           "Nordic Semiconductor nRF51822"
+#define PLATFORM_NAME           "Nordic Semiconductor nRF52832"
 
 /**
  * @}

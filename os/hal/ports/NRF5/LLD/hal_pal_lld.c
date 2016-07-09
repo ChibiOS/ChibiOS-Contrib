@@ -16,7 +16,7 @@
 
 /**
  * @file    pal_lld.c
- * @brief   NRF51822 PAL subsystem low level driver source.
+ * @brief   NRF5 PAL subsystem low level driver source.
  *
  * @addtogroup PAL
  * @{
@@ -51,7 +51,7 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
   switch (mode) {
   case PAL_MODE_RESET:
   case PAL_MODE_UNCONNECTED:
-    NRF_GPIO->PIN_CNF[pad] =
+    IOPORT1->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
       (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) |
@@ -60,7 +60,7 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
     break;
   case PAL_MODE_INPUT:
   case PAL_MODE_INPUT_ANALOG:
-    NRF_GPIO->PIN_CNF[pad] =
+    IOPORT1->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
       (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) |
@@ -68,7 +68,7 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
       (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_INPUT_PULLUP:
-    NRF_GPIO->PIN_CNF[pad] =
+    IOPORT1->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
       (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos) |
@@ -76,7 +76,7 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
       (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_INPUT_PULLDOWN:
-    NRF_GPIO->PIN_CNF[pad] =
+    IOPORT1->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
       (GPIO_PIN_CNF_PULL_Pulldown << GPIO_PIN_CNF_PULL_Pos) |
@@ -84,7 +84,7 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
       (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_OUTPUT_PUSHPULL:
-    NRF_GPIO->PIN_CNF[pad] =
+    IOPORT1->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos) |
       (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) |
@@ -92,7 +92,7 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
       (GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos);
     break;
   case PAL_MODE_OUTPUT_OPENDRAIN:
-    NRF_GPIO->PIN_CNF[pad] =
+    IOPORT1->PIN_CNF[pad] =
       (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) |
       (GPIO_PIN_CNF_DRIVE_S0D1 << GPIO_PIN_CNF_DRIVE_Pos) |
       (GPIO_PIN_CNF_PULL_Disabled << GPIO_PIN_CNF_PULL_Pos) |
@@ -114,9 +114,9 @@ void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
 /*===========================================================================*/
 
 /**
- * @brief   NRF51 I/O ports configuration.
+ * @brief   NRF5 I/O ports configuration.
  *
- * @param[in] config    the NRF51 ports configuration
+ * @param[in] config    the NRF5 ports configuration
  *
  * @notapi
  */

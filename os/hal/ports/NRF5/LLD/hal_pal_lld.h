@@ -16,7 +16,7 @@
 
 /**
  * @file    pal_lld.h
- * @brief   NRF51822 PAL subsystem low level driver header.
+ * @brief   NRF5 PAL subsystem low level driver header.
  *
  * @addtogroup PAL
  * @{
@@ -128,7 +128,11 @@ typedef NRF_GPIO_Type *ioportid_t;
  * @details Low level drivers can define multiple ports, it is suggested to
  *          use this naming convention.
  */
+#if   NRF_SERIE == 51
 #define IOPORT1         NRF_GPIO
+#elif NRF_SERIE == 52
+#define IOPORT1         NRF_P0
+#endif
 
 /*===========================================================================*/
 /* Implementation, some of the following macros could be implemented as      */
@@ -152,7 +156,7 @@ typedef NRF_GPIO_Type *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_readport(port) (NRF_GPIO->IN)
+#define pal_lld_readport(port) (IOPORT1->IN)
 
 /**
  * @brief   Reads the output latch.
@@ -164,7 +168,7 @@ typedef NRF_GPIO_Type *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_readlatch(port) (NRF_GPIO->OUT)
+#define pal_lld_readlatch(port) (IOPORT1->OUT)
 
 /**
  * @brief   Writes a bits mask on a I/O port.
@@ -174,7 +178,7 @@ typedef NRF_GPIO_Type *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_writeport(port, bits) (NRF_GPIO->OUT = (bits))
+#define pal_lld_writeport(port, bits) (IOPORT1->OUT = (bits))
 
 /**
  * @brief   Sets a bits mask on a I/O port.
@@ -187,7 +191,7 @@ typedef NRF_GPIO_Type *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_setport(port, bits) (NRF_GPIO->OUTSET = (bits))
+#define pal_lld_setport(port, bits) (IOPORT1->OUTSET = (bits))
 
 
 /**
@@ -201,7 +205,7 @@ typedef NRF_GPIO_Type *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_clearport(port, bits) (NRF_GPIO->OUTCLR = (bits))
+#define pal_lld_clearport(port, bits) (IOPORT1->OUTCLR = (bits))
 
 /**
  * @brief   Pads group mode setup.
@@ -234,7 +238,7 @@ typedef NRF_GPIO_Type *ioportid_t;
  * @notapi
  */
 #define pal_lld_readpad(port, pad)                                          \
-  ((NRF_GPIO->IN & ((uint32_t) 1 << pad)) ? PAL_HIGH : PAL_LOW)
+  ((IOPORT1->IN & ((uint32_t) 1 << pad)) ? PAL_HIGH : PAL_LOW)
 
 /**
  * @brief   Writes a logical state on an output pad.
@@ -255,9 +259,9 @@ typedef NRF_GPIO_Type *ioportid_t;
   do {                                                                      \
     (void)port;                                                             \
     if (bit == PAL_HIGH)                                                    \
-      NRF_GPIO->OUTSET = ((uint32_t) 1 << pad);                             \
+      IOPORT1->OUTSET = ((uint32_t) 1 << pad);                              \
     else                                                                    \
-      NRF_GPIO->OUTCLR = ((uint32_t) 1 << pad);                             \
+      IOPORT1->OUTCLR = ((uint32_t) 1 << pad);                              \
   } while (false)
 
 /**
@@ -271,7 +275,7 @@ typedef NRF_GPIO_Type *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_setpad(port, pad) (NRF_GPIO->OUTSET = (uint32_t) 1 << (pad))
+#define pal_lld_setpad(port, pad) (IOPORT1->OUTSET = (uint32_t) 1 << (pad))
 
 /**
  * @brief   Clears a pad logical state to @p PAL_LOW.
@@ -284,7 +288,7 @@ typedef NRF_GPIO_Type *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_clearpad(port, pad) (NRF_GPIO->OUTCLR = (uint32_t) 1 << (pad))
+#define pal_lld_clearpad(port, pad) (IOPORT1->OUTCLR = (uint32_t) 1 << (pad))
 
 /**
  * @brief   Toggles a pad logical state.
@@ -299,11 +303,11 @@ typedef NRF_GPIO_Type *ioportid_t;
  */
 #define pal_lld_togglepad(port, pad)                                        \
   do {                                                                      \
-    uint8_t bit = (NRF_GPIO->IN >> (pad)) & 1;                              \
+    uint8_t bit = (IOPORT1->IN >> (pad)) & 1;                               \
     if (bit)                                                                \
-      NRF_GPIO->OUTCLR = 1 << (pad);                                        \
+      IOPORT1->OUTCLR = 1 << (pad);                                         \
     else                                                                    \
-      NRF_GPIO->OUTSET = 1 << (pad);                                        \
+      IOPORT1->OUTSET = 1 << (pad);                                         \
   } while (0)
 
 /**

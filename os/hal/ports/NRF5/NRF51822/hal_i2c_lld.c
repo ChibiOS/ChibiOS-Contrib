@@ -24,7 +24,7 @@
 
 #include "osal.h"
 #include "hal.h"
-#include "nrf51_delay.h"
+#include "nrf_delay.h"
 
 #if HAL_USE_I2C || defined(__DOXYGEN__)
 

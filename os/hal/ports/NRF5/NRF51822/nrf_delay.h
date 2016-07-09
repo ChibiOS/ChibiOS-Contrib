@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/nrf51_delay.h
- * @brief   NRF51822 Delay routines
+ * @file    NRF5/NRF51822/nrf_delay.h
+ * @brief   NRF5 Delay routines
  *
  * @{
  */

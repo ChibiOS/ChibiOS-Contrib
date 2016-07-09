@@ -71,7 +71,7 @@
  */
 #if !defined(NRF51_ST_PRIORITY) || defined(__DOXYGEN__)
 #if !defined(SOFTDEVICE_PRESENT)
-#define NRF51_ST_PRIORITY        1
+#define NRF51_ST_PRIORITY        CORTEX_MAX_KERNEL_PRIORITY
 #else
 #define NRF51_ST_PRIORITY        1
 #endif
