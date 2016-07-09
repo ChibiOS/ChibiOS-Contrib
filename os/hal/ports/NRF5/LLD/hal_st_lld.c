@@ -278,7 +278,7 @@ void st_lld_init(void) {
    * Using 32-bit mode with prescaler 16 configures this
    * timer with a 1MHz clock.
    */
-  NRF_TIMER0->BITMODE = 3;
+  NRF_TIMER0->BITMODE = TIMER_BITMODE_BITMODE_32Bit;
   NRF_TIMER0->PRESCALER = 4;
 
   /*
@@ -287,7 +287,7 @@ void st_lld_init(void) {
    */
   NRF_TIMER0->CC[0] = (1000000 / OSAL_ST_FREQUENCY) - 1;
   NRF_TIMER0->SHORTS = 1;
-  NRF_TIMER0->INTENSET = 0x10000;
+  NRF_TIMER0->INTENSET = TIMER_INTENSET_COMPARE0_Msk;
 
   /* Start timer */
   nvicEnableVector(TIMER0_IRQn, NRF51_ST_PRIORITY);
