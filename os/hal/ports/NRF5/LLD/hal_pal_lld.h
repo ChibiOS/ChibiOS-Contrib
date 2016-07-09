@@ -128,9 +128,9 @@ typedef NRF_GPIO_Type *ioportid_t;
  * @details Low level drivers can define multiple ports, it is suggested to
  *          use this naming convention.
  */
-#if   NRF_SERIE == 51
+#if   NRF_SERIES == 51
 #define IOPORT1         NRF_GPIO
-#elif NRF_SERIE == 52
+#elif NRF_SERIES == 52
 #define IOPORT1         NRF_P0
 #endif
 

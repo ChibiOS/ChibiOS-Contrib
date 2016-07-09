@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51/NRF51822/hal_lld.c
- * @brief   NRF51822 HAL Driver subsystem low level driver source.
+ * @file    NRF5/NRF52832/hal_lld.c
+ * @brief   NRF52832 HAL Driver subsystem low level driver source.
  *
  * @addtogroup HAL
  * @{

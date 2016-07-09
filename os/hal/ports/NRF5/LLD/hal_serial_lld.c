@@ -26,9 +26,9 @@
 
 #if (HAL_USE_SERIAL == TRUE) || defined(__DOXYGEN__)
 
-#if   NRF_SERIE == 51
+#if   NRF_SERIES == 51
 #include "nrf51.h"
-#elif NRF_SERIE == 52
+#elif NRF_SERIES == 52
 #include "nrf52.h"
 #define UART0_IRQn UARTE0_UART0_IRQn
 #endif

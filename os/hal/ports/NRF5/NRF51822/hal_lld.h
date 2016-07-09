@@ -30,9 +30,9 @@
 /*===========================================================================*/
 
 /**
- * @name    Chip serie
+ * @name    Chip series
  */
-#define NRF_SERIE 51
+#define NRF_SERIES 51
 
 /**
  * @name    Platform identification

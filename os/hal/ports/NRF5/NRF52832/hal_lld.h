@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2015 Fabio Utzig
+    Copyright (C) 2016 Stephane D'Alu
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@
 /*===========================================================================*/
 
 /**
- * @name    Chip serie
+ * @name    Chip series
  */
-#define NRF_SERIE 52
+#define NRF_SERIES 52
 
 /**
  * @name    Platform identification
