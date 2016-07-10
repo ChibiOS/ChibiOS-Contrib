@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51/NRF51822/rng_lld.h
- * @brief   NRF51 RNG subsystem low level driver header.
+ * @file    NRF5/LLD/hal_rng_lld.h
+ * @brief   NRF5 RNG subsystem low level driver header.
  *
  * @addtogroup RNG
  * @{
@@ -40,28 +40,19 @@
  * @{
  */
 /**
- * @brief   RNG1 driver enable switch.
- * @details If set to @p TRUE the support for RNG1 is included.
+ * @brief   RNGD1 driver enable switch.
+ * @details If set to @p TRUE the support for RNGD1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(NRF5_RNG_USE_RNG1) || defined(__DOXYGEN__)
-#define NRF5_RNG_USE_RNG1                  FALSE
+#if !defined(NRF5_RNG_USE_RNG0) || defined(__DOXYGEN__)
+#define NRF5_RNG_USE_RNG0                  FALSE
 #endif
 
 /**
- * @brief   RNG1 driver enable switch.
- * @details If set to @p TRUE the support for RNG1 is included.
- * @note    The default is @p FALSE.
+ * @brief   RNG interrupt priority level setting for RNG0.
  */
-#if !defined(NRF5_RNG_USE_RNG1) || defined(__DOXYGEN__)
-#define NRF5_RNG_USE_POWER_ON_WRITE        FALSE
-#endif
-
-/**
- * @brief   RNG1 interrupt priority level setting.
- */
-#if !defined(NRF5_RNG_RNG1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF5_RNG_RNG1_IRQ_PRIORITY         3
+#if !defined(NRF5_RNG_RNG0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_RNG_RNG0_IRQ_PRIORITY         3
 #endif
 
 
@@ -69,9 +60,13 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if NRF5_RNG_USE_RNG1 &&					\
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_RNG_RNG1_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to RNG1"
+#if NRF5_RNG_USE_RNG0 == FALSE
+#error "Requesting RNG driver, but no RNG peripheric attached"
+#endif
+
+#if NRF5_RNG_USE_RNG0 &&					\
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_RNG_RNG0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to RNG0"
 #endif
 
 /*===========================================================================*/
@@ -96,9 +91,9 @@ typedef struct {
    *          speed advantage, but may result in a statistical distribution
    *          that is not perfectly uniform.
    *
-   * @note    On average, it take 167µs to get a byte without digitial
-   *          error correction and 677µs with, but no garantee is made
-   *          on the necessary time to generate one byte.
+   * @note    For nRF51, on average, it take 167µs to get a byte without
+   *          digitial error correction and 677µs with, but no garantee 
+   *          is made on the necessary time to generate one byte.
    */
   uint8_t digital_error_correction:1;
   /**
@@ -148,9 +143,9 @@ struct RNGDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if NRF5_RNG_USE_RNG1 && !defined(__DOXYGEN__)
+#if NRF5_RNG_USE_RNG0 && !defined(__DOXYGEN__)
 extern RNGDriver RNGD1;
-#endif /* NRF5_RNG_USE_RNG1 */
+#endif /* NRF5_RNG_USE_RNG0 */
 
 #ifdef __cplusplus
 extern "C" {

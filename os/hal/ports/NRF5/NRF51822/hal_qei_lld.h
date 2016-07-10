@@ -106,13 +106,13 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if NRF5_QEI_USE_QDEC0 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_QEI_QDEC0_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to QDEC0"
-#endif
-
 #if NRF5_QEI_USE_QDEC0 == FALSE
 #error "Requesting QEI driver, but no QDEC peripheric attached"
+#endif
+
+#if NRF5_QEI_USE_QDEC0 &&					\
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_QEI_QDEC0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to QDEC0"
 #endif
 
 

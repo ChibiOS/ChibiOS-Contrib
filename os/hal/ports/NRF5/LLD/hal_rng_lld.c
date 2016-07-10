@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51/NRF518221/rng_lld.c
- * @brief   NRF51 RNG subsystem low level driver source.
+ * @file    NRF5/LLD/hal_rng_lld.c
+ * @brief   NRF5 RNG subsystem low level driver source.
  *
  * @addtogroup RNG
  * @{
@@ -41,8 +41,8 @@ static const RNGConfig default_config = {
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-/** @brief RNG1 driver identifier.*/
-#if NRF5_RNG_USE_RNG1 || defined(__DOXYGEN__)
+/** @brief RNGD1 driver identifier.*/
+#if NRF5_RNG_USE_RNG0 || defined(__DOXYGEN__)
 RNGDriver RNGD1;
 #endif
 
@@ -87,9 +87,6 @@ void rng_lld_start(RNGDriver *rngp) {
   if (rngp->config == NULL)
     rngp->config = &default_config;
 
-  /* Power on peripheric */
-  rng->POWER         = 1;
-
   /* Configure digital error correction */
   if (rngp->config->digital_error_correction) 
     rng->CONFIG |=  RNG_CONFIG_DERCEN_Msk;
@@ -117,9 +114,8 @@ void rng_lld_start(RNGDriver *rngp) {
 void rng_lld_stop(RNGDriver *rngp) {
   NRF_RNG_Type *rng = rngp->rng;
 
-  /* Stop and power off peripheric */
+  /* Stop peripheric */
   rng->TASKS_STOP = 1;
-  rng->POWER      = 0;
 }
 
 

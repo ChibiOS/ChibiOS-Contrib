@@ -9,9 +9,50 @@
 
 #define LED_EXT 14
 
+
+
+/*
+ * Command Random
+ */
+#define RANDOM_BUFFER_SIZE 1024
+static uint8_t random_buffer[RANDOM_BUFFER_SIZE];
+
+static void cmd_random(BaseSequentialStream *chp, int argc, char *argv[]) {
+    uint16_t size = 16;
+    uint16_t i    = 0;
+    uint8_t  nl   = 0;
+    
+    if (argc > 0) {
+	size = atoi(argv[0]);
+    }
+
+    if (size > RANDOM_BUFFER_SIZE) {
+	chprintf(chp, "random: maximum size is %d.\r\n", RANDOM_BUFFER_SIZE);
+	return;
+    }
+    
+    chprintf(chp, "Fetching %d random byte(s):\r\n", size);
+
+    rngStart(&RNGD1, NULL);
+    rngWrite(&RNGD1, random_buffer, size, TIME_INFINITE);
+    rngStop(&RNGD1);
+
+    for (i = 0 ; i < size ; i++) {
+	chprintf(chp, "%02x ", random_buffer[i]);
+	if ((nl = (((i+1) % 20)) == 0))
+	    chprintf(chp, "\r\n");
+    }
+    if (!nl)
+	chprintf(chp, "\r\n");
+    
+}
+
+
+
 static THD_WORKING_AREA(shell_wa, 1024);
 
 static const ShellCommand commands[] = {
+  {"random", cmd_random}, 
   {NULL, NULL}
 };
 

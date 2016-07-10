@@ -275,8 +275,8 @@ void st_lld_init(void) {
   NRF_TIMER0->TASKS_CLEAR = 1;
 
   /*
-   * Using 32-bit mode with prescaler 16 configures this
-   * timer with a 1MHz clock.
+   * Using 32-bit mode with prescaler 1/16 configures this
+   * timer with a 1MHz clock, reducing power consumption.
    */
   NRF_TIMER0->BITMODE = TIMER_BITMODE_BITMODE_32Bit;
   NRF_TIMER0->PRESCALER = 4;

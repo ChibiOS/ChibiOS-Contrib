@@ -32,7 +32,7 @@ ifneq ($(findstring HAL_USE_WDG TRUE,$(HALCONF)),)
 PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/hal_wdg_lld.c
 endif
 ifneq ($(findstring HAL_USE_RNG TRUE,$(HALCONF)),)
-PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/hal_rng_lld.c
+PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_rng_lld.c
 endif
 ifneq ($(findstring HAL_USE_PWM TRUE,$(HALCONF)),)
 PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/hal_pwm_lld.c
@@ -53,7 +53,7 @@ PLATFORMSRC  = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/hal_adc_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/hal_gpt_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/hal_wdg_lld.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/hal_rng_lld.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_rng_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/hal_pwm_lld.c \
                ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/hal_qei_lld.c
 endif
