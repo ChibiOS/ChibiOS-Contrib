@@ -101,6 +101,10 @@ void wdg_lld_init(void) {
  * @notapi
  */
 void wdg_lld_start(WDGDriver *wdgp) {
+  osalDbgAssert((wdgp->state == WDG_STOP),
+		"This WDG driver cannot be restarted once activated");
+
+  /* Generate interrupt on timeout */
 #if WDG_USE_TIMEOUT_CALLBACK == TRUE
   wdgp->wdt->INTENSET = WDT_INTENSET_TIMEOUT_Msk;
 #endif
@@ -134,7 +138,7 @@ void wdg_lld_start(WDGDriver *wdgp) {
  */
 void wdg_lld_stop(WDGDriver *wdgp) {
   (void)wdgp;
-  osalDbgAssert(false, "WDG cannot be stopped once activated");
+  osalDbgAssert(false, "This WDG driver cannot be stopped once activated");
 }
 
 /**
