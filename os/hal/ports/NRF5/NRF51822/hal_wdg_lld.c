@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/wdg_lld.c
- * @brief   WDG Driver subsystem low level driver source template.
+ * @file    NRF5/LLD/hal_wdg_lld.c
+ * @brief   NRF5 Watchdog Driver subsystem low level driver source template.
  *
  * @addtogroup WDG
  * @{
@@ -106,13 +106,16 @@ void wdg_lld_start(WDGDriver *wdgp) {
 #endif
 
   /* When to pause? (halt, sleep) */
-  wdgp->wdt->CONFIG      =
-      (wdgp->config->flags.pause_on_sleep * WDT_CONFIG_SLEEP_Msk) |
-      (wdgp->config->flags.pause_on_halt  * WDT_CONFIG_HALT_Msk );
+  uint32_t config = 0;
+  if (!wdgp->config->flags.pause_on_sleep)
+      config |= WDT_CONFIG_SLEEP_Msk;
+  if (!wdgp->config->flags.pause_on_halt)
+      config |= WDT_CONFIG_HALT_Msk;
+  wdgp->wdt->CONFIG = config;
 
   /* Timeout in milli-seconds */
   uint64_t tout = (NRF5_LFCLK_FREQUENCY * wdgp->config->timeout_ms / 1000) - 1;
-  osalDbgAssert(tout <= 0xFFFFFFFF, "watchdog timout value exceeded");  
+  osalDbgAssert(tout <= 0xFFFFFFFF, "watchdog timout value exceeded");
   wdgp->wdt->CRV         = (uint32_t)tout;
 
   /* Reload request (using RR0) */
