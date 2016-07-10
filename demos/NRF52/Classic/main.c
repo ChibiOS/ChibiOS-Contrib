@@ -66,27 +66,44 @@ static void cmd_random(BaseSequentialStream *chp, int argc, char *argv[]) {
 
 
 static void cmd_watchdog(BaseSequentialStream *chp, int argc, char *argv[]) {
-    if ((argc == 0) || (strcmp(argv[0], "start"))) {
-	chprintf(chp, "Usage: watchdog start\r\n");
+    if ((argc != 2) || (strcmp(argv[0], "start"))) {
+    usage:
+	chprintf(chp, "Usage: watchdog start <timeout>\r\n"
+		      "  <timeout> = 0..%d seconds\r\n",
+		      WDG_MAX_TIMEOUT_MS/1000);
 	return;
     }
+    int timeout = atoi(argv[1]);
+    if ((timeout < 0) || (timeout > (WDG_MAX_TIMEOUT_MS/1000)))
+	goto usage;
+
+    if (watchdog_started) {
+	chprintf(chp, "Watchdog already started."
+		      " Can't be modified once activated.\r\n");
+	return;
+    }
+    
     chprintf(chp,
 	     "Watchdog started\r\n"
-	     "You need to push BTN1 every 5 seconds\r\n");
+	     "You need to push BTN1 every %d second(s)\r\n", timeout);
 
-    watchdog_started = true;
+    WDG_config.timeout_ms = timeout * 1000;
     wdgStart(&WDGD1, &WDG_config);
+    watchdog_started = true;
 }
 
 
 
 
-
+static void cmd_info(BaseSequentialStream *chp, int argc, char *argv[]) {
+    chprintf(chp, "Watchdog max = %d ms\r\n", WDG_MAX_TIMEOUT_MS);
+}
 
 
 static THD_WORKING_AREA(shell_wa, 1024);
 
 static const ShellCommand commands[] = {
+  {"info",     cmd_info     },
   {"random",   cmd_random   },
   {"watchdog", cmd_watchdog },
   {NULL, NULL}
@@ -179,6 +196,7 @@ int main(void)
 	    (palReadPad(IOPORT1, BTN1) == 0)) {
 	    palTogglePad(IOPORT1, LED1);
 	    wdgReset(&WDGD1);
+	    printf("Watchdog reseted\r\n");
 	}
 	chThdSleepMilliseconds(250);
     }
