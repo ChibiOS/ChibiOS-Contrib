@@ -160,19 +160,31 @@ void qei_lld_start(QEIDriver *qeip) {
 #endif
 
     /* Select pin for Phase A and Phase B */
+#if   NRF_SERIES == 51
     qdec->PSELA      = PAL_PAD(cfg->phase_a);
     qdec->PSELB      = PAL_PAD(cfg->phase_b);
-
+#else
+    qdec->PSEL.A     = PAL_PAD(cfg->phase_a);
+    qdec->PSEL.B     = PAL_PAD(cfg->phase_b);
+#endif
     /* Select (optional) pin for LED, and configure it */
 #if NRF5_QEI_USE_LED == TRUE
+#if   NRF_SERIES == 51
     qdec->PSELLED    = PAL_PAD(cfg->led);
+#else
+    qdec->PSEL.LED   = PAL_PAD(cfg->led);
+#endif
     qdec->LEDPOL     = ((cfg->led_polarity == QEI_LED_POLARITY_LOW)
                          ? QDEC_LEDPOL_LEDPOL_ActiveLow 
 		         : QDEC_LEDPOL_LEDPOL_ActiveHigh)
                        << QDEC_LEDPOL_LEDPOL_Pos; 
     qdec->LEDPRE     = cfg->led_warming;
 #else
+#if   NRF_SERIES == 51
     qdec->PSELLED    = (uint32_t)-1;
+#else
+    qdec->PSEL.LED   = (uint32_t)-1;
+#endif
 #endif
     
     /* Set sampling resolution and debouncing */

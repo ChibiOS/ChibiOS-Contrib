@@ -4,3 +4,4 @@
    https://devzone.nordicsemi.com/question/86564/nrf52-write-buffer/
 * implement pin-reset, swo trace, trace pin configuration
 * implement errata (see system_nrf52.c)
+* check GPIO DETECTMODE and LATCH

@@ -130,10 +130,8 @@ typedef NRF_GPIO_Type *ioportid_t;
  */
 #if   NRF_SERIES == 51
 #define IOPORT1         NRF_GPIO
-#elif NRF_SERIES == 52
-#define IOPORT1         NRF_P0
 #else
-#error "Unknown NRF_SERIES"
+#define IOPORT1         NRF_P0
 #endif
 
 /*===========================================================================*/
