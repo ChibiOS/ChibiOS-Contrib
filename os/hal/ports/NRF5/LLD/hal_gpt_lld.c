@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51x22/gpt_lld.c
- * @brief   NRF51x22 GPT subsystem low level driver source.
+ * @file    NRF5/LLD/hal_gpt_lld.c
+ * @brief   NRF5 GPT subsystem low level driver source.
  *
  * @addtogroup GPT
  * @{
@@ -102,6 +102,7 @@ static uint8_t prescaler(uint16_t freq)
 static void gpt_lld_serve_interrupt(GPTDriver *gptp) {
 
   gptp->tim->EVENTS_COMPARE[gptp->cc_int] = 0;
+  (void)gptp->tim->EVENTS_COMPARE[gptp->cc_int];
   if (gptp->state == GPT_ONESHOT)
     gptp->state = GPT_READY;                 /* Back in GPT_READY state.     */
   gptp->config->callback(gptp);

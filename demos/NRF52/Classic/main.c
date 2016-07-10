@@ -26,6 +26,22 @@ WDGConfig WDG_config = {
 };
 
 
+void gpt_callback(GPTDriver *gptp) {
+  palTogglePad(IOPORT1, LED2);
+}
+
+/*
+ * GPT configuration
+ * Frequency: 31250Hz (32us period)
+ * Resolution: 16 bits
+ */
+static const GPTConfig gpt_config = {
+    .frequency  = 31250,
+    .callback   = gpt_callback,
+    .resolution = 16,
+};
+
+
 /*
  * Command Random
  */
@@ -140,9 +156,7 @@ static THD_FUNCTION(Thread1, arg) {
 
     
     while (1) {
-	palSetPad(IOPORT1, led);
-	chThdSleepMilliseconds(100);
-	palClearPad(IOPORT1, led);
+	palTogglePad(IOPORT1, led);
 	chThdSleepMilliseconds(100);
     }
 }
@@ -166,12 +180,14 @@ int main(void)
     sdStart(&SD1, &serial_config);
 
     palSetPad(IOPORT1, LED1);
-    palSetPad(IOPORT1, LED2);
-    palSetPad(IOPORT1, LED3);
+    palClearPad(IOPORT1, LED2);
+    palClearPad(IOPORT1, LED3);
     palSetPad(IOPORT1, LED4);
 
+    gptStart(&GPTD1, &gpt_config);
+    gptStartContinuous(&GPTD1, 31250);
     
-    
+
     chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO+1,
 		      Thread1, NULL);
 
@@ -179,6 +195,7 @@ int main(void)
     
     chThdCreateStatic(shell_wa, sizeof(shell_wa), NORMALPRIO+1,
 		      shellThread, (void *)&shell_cfg1);
+
 
 
     
@@ -189,7 +206,9 @@ int main(void)
 
     printf("Priority levels %d\r\n", CORTEX_PRIORITY_LEVELS);
     
-    test_execute((BaseSequentialStream *)&SD1);
+    //test_execute((BaseSequentialStream *)&SD1);
+
+    NRF_P0->DETECTMODE = 0;
     
     while (true) {
 	if (watchdog_started &&
