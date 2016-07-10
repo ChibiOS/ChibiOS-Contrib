@@ -99,7 +99,6 @@
 extern "C" {
 #endif
   void hal_lld_init(void);
-  void nrf51_clock_init(void);
 #ifdef __cplusplus
 }
 #endif
