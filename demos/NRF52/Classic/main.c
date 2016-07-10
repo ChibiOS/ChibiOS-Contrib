@@ -10,6 +10,21 @@
 #define LED_EXT 14
 
 
+bool watchdog_started = false;
+
+void watchdog_callback(void) {
+  palTogglePad(IOPORT1, LED2);
+  palTogglePad(IOPORT1, LED3);
+  palTogglePad(IOPORT1, LED4);
+}
+
+WDGConfig WDG_config = {
+    .pause_on_sleep = 0,
+    .pause_on_halt  = 0,
+    .timeout_ms     = 5000,
+    .callback       = watchdog_callback,
+};
+
 
 /*
  * Command Random
@@ -49,10 +64,31 @@ static void cmd_random(BaseSequentialStream *chp, int argc, char *argv[]) {
 
 
 
+
+static void cmd_watchdog(BaseSequentialStream *chp, int argc, char *argv[]) {
+    if ((argc == 0) || (strcmp(argv[0], "start"))) {
+	chprintf(chp, "Usage: watchdog start\r\n");
+	return;
+    }
+    chprintf(chp,
+	     "Watchdog started\r\n"
+	     "You need to push BTN1 every 5 seconds\r\n");
+
+    watchdog_started = true;
+    wdgStart(&WDGD1, &WDG_config);
+}
+
+
+
+
+
+
+
 static THD_WORKING_AREA(shell_wa, 1024);
 
 static const ShellCommand commands[] = {
-  {"random", cmd_random}, 
+  {"random",   cmd_random   },
+  {"watchdog", cmd_watchdog },
   {NULL, NULL}
 };
 
@@ -70,6 +106,10 @@ static SerialConfig serial_config = {
     .cts_pad = UART_CTS,
 #endif
 };
+
+
+
+
 
 
 
@@ -135,11 +175,13 @@ int main(void)
     test_execute((BaseSequentialStream *)&SD1);
     
     while (true) {
-	chThdSleepMilliseconds(100);
-
+	if (watchdog_started &&
+	    (palReadPad(IOPORT1, BTN1) == 0)) {
+	    palTogglePad(IOPORT1, LED1);
+	    wdgReset(&WDGD1);
+	}
+	chThdSleepMilliseconds(250);
     }
-
-
 
 }
 

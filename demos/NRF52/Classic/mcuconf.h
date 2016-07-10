@@ -46,4 +46,7 @@
 #define NRF5_RNG_USE_RNG0 		   TRUE
 
 
+#define WDG_USE_TIMEOUT_CALLBACK    TRUE
+
+
 #endif /* _MCUCONF_H_ */
