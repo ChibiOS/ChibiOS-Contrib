@@ -41,22 +41,14 @@
  * @brief   Use RTC0 to generates system ticks
  */
 #if !defined(NRF5_ST_USE_RTC0) || defined(__DOXYGEN__)
-#if !defined(SOFTDEVICE_PRESENT)
-#define NRF5_ST_USE_RTC0        TRUE
-#else
 #define NRF5_ST_USE_RTC0        FALSE
-#endif
 #endif
 
 /**
  * @brief   Use RTC1 to generates system ticks
  */
 #if !defined(NRF5_ST_USE_RTC1) || defined(__DOXYGEN__)
-#if !defined(SOFTDEVICE_PRESENT)
-#define NRF5_ST_USE_RTC1        FALSE
-#else
 #define NRF5_ST_USE_RTC1        TRUE
-#endif
 #endif
 
 /**
