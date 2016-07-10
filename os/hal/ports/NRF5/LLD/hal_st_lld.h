@@ -39,6 +39,9 @@
 
 /**
  * @brief   Use RTC0 to generates system ticks
+ *
+ * @note    Avoid using RTC0, as PPI has pre-programmed channels on it
+ *          that can be used to control RADIO or TIMER0
  */
 #if !defined(NRF5_ST_USE_RTC0) || defined(__DOXYGEN__)
 #define NRF5_ST_USE_RTC0        FALSE
@@ -53,6 +56,8 @@
 
 /**
  * @brief   Use TIMER0 to generates system ticks
+ *
+ * @note    Avoid using TIMER0 as it will draw more current
  */
 #if !defined(NRF5_ST_USE_TIMER0) || defined(__DOXYGEN__)
 #define NRF5_ST_USE_TIMER0      FALSE
