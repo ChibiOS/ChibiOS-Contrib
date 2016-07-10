@@ -96,13 +96,6 @@ typedef struct {
    *          is made on the necessary time to generate one byte.
    */
   uint8_t digital_error_correction:1;
-  /**
-   * @brief   Only power the RNG device when requeting random bytes
-   *
-   * @details Device will not be powered when started/stopped 
-   *          but only when writint bytes.
-   */
-  uint8_t power_on_write:1;
 } RNGConfig;
 
 
