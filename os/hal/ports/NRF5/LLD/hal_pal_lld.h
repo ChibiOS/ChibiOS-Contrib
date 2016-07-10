@@ -305,7 +305,7 @@ typedef NRF_GPIO_Type *ioportid_t;
  */
 #define pal_lld_togglepad(port, pad)                                        \
   do {                                                                      \
-    uint8_t bit = (IOPORT1->IN >> (pad)) & 1;                               \
+    uint8_t bit = (IOPORT1->OUT >> (pad)) & 1;                              \
     if (bit)                                                                \
       IOPORT1->OUTCLR = 1 << (pad);                                         \
     else                                                                    \
