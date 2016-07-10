@@ -24,7 +24,7 @@ static SerialConfig serial_config = {
     .speed   = 115200,
     .tx_pad  = UART_TX,
     .rx_pad  = UART_RX,
-#if NRF51_SERIAL_USE_HWFLOWCTRL	== TRUE
+#if NRF5_SERIAL_USE_HWFLOWCTRL	== TRUE
     .rts_pad = UART_RTS,
     .cts_pad = UART_CTS,
 #endif

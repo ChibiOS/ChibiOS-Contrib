@@ -32,7 +32,7 @@
 /*===========================================================================*/
 
 #define WDG_MAX_TIMEOUT_MS \
-    ((uint32_t)(0xFFFFFFFFu * 1000 / NRF51_LFCLK_FREQUENCY))
+    ((uint32_t)(0xFFFFFFFFu * 1000 / NRF5_LFCLK_FREQUENCY))
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */

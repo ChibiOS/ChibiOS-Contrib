@@ -38,7 +38,7 @@
 /**
  * @brief   QEID1 driver identifier.
  */
-#if NRF51_QEI_USE_QDEC0 || defined(__DOXYGEN__)
+#if NRF5_QEI_USE_QDEC0 || defined(__DOXYGEN__)
 QEIDriver QEID1;
 #endif
 
@@ -59,7 +59,7 @@ QEIDriver QEID1;
 static void serve_interrupt(QEIDriver *qeip) {
   NRF_QDEC_Type *qdec = qeip->qdec;
 
-#if NRF51_QEI_USE_ACC_OVERFLOWED_CB == TRUE
+#if NRF5_QEI_USE_ACC_OVERFLOWED_CB == TRUE
   /* Accumulator overflowed
    */
   if (qdec->EVENTS_ACCOF) {
@@ -93,7 +93,7 @@ static void serve_interrupt(QEIDriver *qeip) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if NRF51_QEI_USE_QDEC0 == TRUE
+#if NRF5_QEI_USE_QDEC0 == TRUE
 /**
  * @brief   Quadrature decoder vector (QDEC)
  *
@@ -118,7 +118,7 @@ OSAL_IRQ_HANDLER(Vector88) {
  */
 void qei_lld_init(void) {
 
-#if NRF51_QEI_USE_QDEC0 == TRUE
+#if NRF5_QEI_USE_QDEC0 == TRUE
   /* Driver initialization.*/
   qeiObjectInit(&QEID1);
   QEID1.qdec = NRF_QDEC; 
@@ -140,22 +140,22 @@ void qei_lld_start(QEIDriver *qeip) {
     /* Set Pins */
     palSetLineMode(cfg->phase_a, PAL_MODE_INPUT);
     palSetLineMode(cfg->phase_b, PAL_MODE_INPUT);
-#if NRF51_QEI_USE_LED == TRUE
+#if NRF5_QEI_USE_LED == TRUE
     if (cfg->led != PAL_NOLINE) {
       palSetLineMode(cfg->led, PAL_MODE_INPUT);
     }
 #endif
       
     /* Set interrupt masks and enable interrupt */
-#if NRF51_QEI_USE_ACC_OVERFLOWED_CB == TRUE
+#if NRF5_QEI_USE_ACC_OVERFLOWED_CB == TRUE
     qdec->INTENSET = QDEC_INTENSET_REPORTRDY_Msk |
 	             QDEC_INTENSET_ACCOF_Msk;
 #else
     qdec->INTENSET = QDEC_INTENSET_REPORTRDY_Msk;
 #endif
-#if NRF51_QEI_USE_QDEC0 == TRUE
+#if NRF5_QEI_USE_QDEC0 == TRUE
     if (&QEID1 == qeip) {
-      nvicEnableVector(QDEC_IRQn, NRF51_QEI_QDEC0_IRQ_PRIORITY);
+      nvicEnableVector(QDEC_IRQn, NRF5_QEI_QDEC0_IRQ_PRIORITY);
     }
 #endif
 
@@ -164,7 +164,7 @@ void qei_lld_start(QEIDriver *qeip) {
     qdec->PSELB      = PAL_PAD(cfg->phase_b);
 
     /* Select (optional) pin for LED, and configure it */
-#if NRF51_QEI_USE_LED == TRUE
+#if NRF5_QEI_USE_LED == TRUE
     qdec->PSELLED    = PAL_PAD(cfg->led);
     qdec->LEDPOL     = ((cfg->led_polarity == QEI_LED_POLARITY_LOW)
                          ? QDEC_LEDPOL_LEDPOL_ActiveLow 
@@ -214,12 +214,12 @@ void qei_lld_stop(QEIDriver *qeip) {
     qdec->ENABLE     = 0;
 
     /* Unset interrupt masks and disable interrupt */
-#if NRF51_QEI_USE_QDEC0 == TRUE
+#if NRF5_QEI_USE_QDEC0 == TRUE
     if (&QEID1 == qeip) {
       nvicDisableVector(QDEC_IRQn);
     }
 #endif
-#if NRF51_QEI_USE_ACC_OVERFLOWED_CB == TRUE
+#if NRF5_QEI_USE_ACC_OVERFLOWED_CB == TRUE
     qdec->INTENCLR = QDEC_INTENCLR_REPORTRDY_Msk |
 	             QDEC_INTENCLR_ACCOF_Msk;
 #else
@@ -229,7 +229,7 @@ void qei_lld_stop(QEIDriver *qeip) {
     /* Return pins to reset state */
     palSetLineMode(cfg->phase_a, PAL_MODE_RESET);
     palSetLineMode(cfg->phase_b, PAL_MODE_RESET);
-#if NRF51_QEI_USE_LED == TRUE
+#if NRF5_QEI_USE_LED == TRUE
     if (cfg->led != PAL_NOLINE) {
       palSetLineMode(cfg->led, PAL_MODE_RESET);
     }
@@ -245,7 +245,7 @@ void qei_lld_stop(QEIDriver *qeip) {
  * @notapi
  */
 void qei_lld_enable(QEIDriver *qeip) {
-#if NRF51_QEI_USE_ACC_OVERFLOWED_CB == TRUE
+#if NRF5_QEI_USE_ACC_OVERFLOWED_CB == TRUE
   qeip->overflowed = 0;
 #endif
   

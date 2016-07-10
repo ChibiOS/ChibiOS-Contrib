@@ -30,8 +30,8 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define NRF51_TIMER_PRESCALER_NUM 10
-#define NRF51_TIMER_COMPARE_NUM   4
+#define NRF5_TIMER_PRESCALER_NUM 10
+#define NRF5_TIMER_COMPARE_NUM   4
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -41,7 +41,7 @@
  * @brief   GPTD1 driver identifier.
  * @note    The driver GPTD1 allocates the complex timer TIM1 when enabled.
  */
-#if NRF51_GPT_USE_TIMER0 || defined(__DOXYGEN__)
+#if NRF5_GPT_USE_TIMER0 || defined(__DOXYGEN__)
 GPTDriver GPTD1;
 #endif
 
@@ -49,7 +49,7 @@ GPTDriver GPTD1;
  * @brief   GPTD2 driver identifier.
  * @note    The driver GPTD2 allocates the timer TIM2 when enabled.
  */
-#if NRF51_GPT_USE_TIMER1 || defined(__DOXYGEN__)
+#if NRF5_GPT_USE_TIMER1 || defined(__DOXYGEN__)
 GPTDriver GPTD2;
 #endif
 
@@ -57,7 +57,7 @@ GPTDriver GPTD2;
  * @brief   GPTD3 driver identifier.
  * @note    The driver GPTD3 allocates the timer TIM3 when enabled.
  */
-#if NRF51_GPT_USE_TIMER2 || defined(__DOXYGEN__)
+#if NRF5_GPT_USE_TIMER2 || defined(__DOXYGEN__)
 GPTDriver GPTD3;
 #endif
 
@@ -73,19 +73,19 @@ static uint8_t prescaler(uint16_t freq)
 {
   uint8_t i;
   static const gptfreq_t frequencies[] = {
-    NRF51_GPT_FREQ_16MHZ,
-    NRF51_GPT_FREQ_8MHZ,
-    NRF51_GPT_FREQ_4MHZ,
-    NRF51_GPT_FREQ_2MHZ,
-    NRF51_GPT_FREQ_1MHZ,
-    NRF51_GPT_FREQ_500KHZ,
-    NRF51_GPT_FREQ_250KHZ,
-    NRF51_GPT_FREQ_125KHZ,
-    NRF51_GPT_FREQ_62500HZ,
-    NRF51_GPT_FREQ_31250HZ,
+    NRF5_GPT_FREQ_16MHZ,
+    NRF5_GPT_FREQ_8MHZ,
+    NRF5_GPT_FREQ_4MHZ,
+    NRF5_GPT_FREQ_2MHZ,
+    NRF5_GPT_FREQ_1MHZ,
+    NRF5_GPT_FREQ_500KHZ,
+    NRF5_GPT_FREQ_250KHZ,
+    NRF5_GPT_FREQ_125KHZ,
+    NRF5_GPT_FREQ_62500HZ,
+    NRF5_GPT_FREQ_31250HZ,
   };
 
-  for (i = 0; i < NRF51_TIMER_PRESCALER_NUM; i++)
+  for (i = 0; i < NRF5_TIMER_PRESCALER_NUM; i++)
     if (freq == frequencies[i])
       return i;
 
@@ -111,7 +111,7 @@ static void gpt_lld_serve_interrupt(GPTDriver *gptp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if NRF51_GPT_USE_TIMER0
+#if NRF5_GPT_USE_TIMER0
 /**
  * @brief   TIMER0 interrupt handler.
  *
@@ -125,9 +125,9 @@ OSAL_IRQ_HANDLER(Vector60) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* NRF51_GPT_USE_TIMER0 */
+#endif /* NRF5_GPT_USE_TIMER0 */
 
-#if NRF51_GPT_USE_TIMER1
+#if NRF5_GPT_USE_TIMER1
 /**
  * @brief   TIMER1 interrupt handler.
  *
@@ -141,9 +141,9 @@ OSAL_IRQ_HANDLER(Vector64) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* NRF51_GPT_USE_TIMER1 */
+#endif /* NRF5_GPT_USE_TIMER1 */
 
-#if NRF51_GPT_USE_TIMER2
+#if NRF5_GPT_USE_TIMER2
 /**
  * @brief   TIMER2 interrupt handler.
  *
@@ -157,7 +157,7 @@ OSAL_IRQ_HANDLER(Vector68) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* NRF51_GPT_USE_TIMER2 */
+#endif /* NRF5_GPT_USE_TIMER2 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -170,19 +170,19 @@ OSAL_IRQ_HANDLER(Vector68) {
  */
 void gpt_lld_init(void) {
 
-#if NRF51_GPT_USE_TIMER0
+#if NRF5_GPT_USE_TIMER0
   /* Driver initialization.*/
   GPTD1.tim = NRF_TIMER0;
   gptObjectInit(&GPTD1);
 #endif
 
-#if NRF51_GPT_USE_TIMER1
+#if NRF5_GPT_USE_TIMER1
   /* Driver initialization.*/
   GPTD2.tim = NRF_TIMER1;
   gptObjectInit(&GPTD2);
 #endif
 
-#if NRF51_GPT_USE_TIMER2
+#if NRF5_GPT_USE_TIMER2
   /* Driver initialization.*/
   GPTD3.tim = NRF_TIMER2;
   gptObjectInit(&GPTD3);
@@ -201,21 +201,21 @@ void gpt_lld_start(GPTDriver *gptp) {
   NRF_TIMER_Type *tim = gptp->tim;
 
   if (gptp->state == GPT_STOP) {
-    osalDbgAssert(gptp->cc_int < NRF51_TIMER_COMPARE_NUM,
+    osalDbgAssert(gptp->cc_int < NRF5_TIMER_COMPARE_NUM,
         "invalid capture/compare index");
 
     tim->INTENSET = TIMER_INTENSET_COMPARE0_Msk << gptp->cc_int;
-#if NRF51_GPT_USE_TIMER0
+#if NRF5_GPT_USE_TIMER0
     if (&GPTD1 == gptp)
-      nvicEnableVector(TIMER0_IRQn, NRF51_GPT_TIMER0_IRQ_PRIORITY);
+      nvicEnableVector(TIMER0_IRQn, NRF5_GPT_TIMER0_IRQ_PRIORITY);
 #endif
-#if NRF51_GPT_USE_TIMER1
+#if NRF5_GPT_USE_TIMER1
     if (&GPTD2 == gptp)
-      nvicEnableVector(TIMER1_IRQn, NRF51_GPT_TIMER1_IRQ_PRIORITY);
+      nvicEnableVector(TIMER1_IRQn, NRF5_GPT_TIMER1_IRQ_PRIORITY);
 #endif
-#if NRF51_GPT_USE_TIMER2
+#if NRF5_GPT_USE_TIMER2
     if (&GPTD3 == gptp)
-      nvicEnableVector(TIMER2_IRQn, NRF51_GPT_TIMER2_IRQ_PRIORITY);
+      nvicEnableVector(TIMER2_IRQn, NRF5_GPT_TIMER2_IRQ_PRIORITY);
 #endif
   }
 
@@ -235,7 +235,7 @@ void gpt_lld_start(GPTDriver *gptp) {
       tim->BITMODE = TIMER_BITMODE_BITMODE_16Bit << TIMER_BITMODE_BITMODE_Pos;
       break;
 
-#if NRF51_GPT_USE_TIMER0
+#if NRF5_GPT_USE_TIMER0
     case 24:
       tim->BITMODE = TIMER_BITMODE_BITMODE_24Bit << TIMER_BITMODE_BITMODE_Pos;
       break;
@@ -263,15 +263,15 @@ void gpt_lld_stop(GPTDriver *gptp) {
   if (gptp->state == GPT_READY) {
     gptp->tim->TASKS_SHUTDOWN = 1;
 
-#if NRF51_GPT_USE_TIMER0
+#if NRF5_GPT_USE_TIMER0
     if (&GPTD1 == gptp)
       nvicDisableVector(TIMER0_IRQn);
 #endif
-#if NRF51_GPT_USE_TIMER1
+#if NRF5_GPT_USE_TIMER1
     if (&GPTD2 == gptp)
       nvicDisableVector(TIMER1_IRQn);
 #endif
-#if NRF51_GPT_USE_TIMER2
+#if NRF5_GPT_USE_TIMER2
     if (&GPTD3 == gptp)
       nvicDisableVector(TIMER2_IRQn);
 #endif

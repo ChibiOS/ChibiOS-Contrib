@@ -60,50 +60,50 @@
 /**
  * @brief   TIMER0 as driver implementation
  */
-#if !defined(NRF51_PWM_USE_TIMER0)
-#define NRF51_PWM_USE_TIMER0 FALSE
+#if !defined(NRF5_PWM_USE_TIMER0)
+#define NRF5_PWM_USE_TIMER0 FALSE
 #endif
 
 /**
  * @brief   TIMER1 as driver implementation
  */
-#if !defined(NRF51_PWM_USE_TIMER1)
-#define NRF51_PWM_USE_TIMER1 FALSE
+#if !defined(NRF5_PWM_USE_TIMER1)
+#define NRF5_PWM_USE_TIMER1 FALSE
 #endif
 
 /**
  * @brief   TIMER2 as driver implementation
  */
-#if !defined(NRF51_PWM_USE_TIMER2)
-#define NRF51_PWM_USE_TIMER2 FALSE
+#if !defined(NRF5_PWM_USE_TIMER2)
+#define NRF5_PWM_USE_TIMER2 FALSE
 #endif
 
 /**
  * @brief   TIMER0 interrupt priority level setting.
  */
-#if !defined(NRF51_PWM_TIMER0_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_PWM_TIMER0_PRIORITY        3
+#if !defined(NRF5_PWM_TIMER0_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_PWM_TIMER0_PRIORITY        3
 #endif
 
 /**
  * @brief   TIMER1 interrupt priority level setting.
  */
-#if !defined(NRF51_PWM_TIMER1_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_PWM_TIMER1_PRIORITY        3
+#if !defined(NRF5_PWM_TIMER1_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_PWM_TIMER1_PRIORITY        3
 #endif
 
 /**
  * @brief   TIMER2 interrupt priority level setting.
  */
-#if !defined(NRF51_PWM_TIMER2_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_PWM_TIMER2_PRIORITY        3
+#if !defined(NRF5_PWM_TIMER2_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_PWM_TIMER2_PRIORITY        3
 #endif
 
 /**
  * @brief   Allow driver to use GPIOTE/PPI to control PAL line
  */
-#if !defined(NRF51_PWM_USE_GPIOTE_PPI)
-#define NRF51_PWM_USE_GPIOTE_PPI FALSE
+#if !defined(NRF5_PWM_USE_GPIOTE_PPI)
+#define NRF5_PWM_USE_GPIOTE_PPI FALSE
 #endif
 
 /** @} */
@@ -112,26 +112,26 @@
 /* Configuration checks.                                                     */
 /*===========================================================================*/
 
-#if !NRF51_PWM_USE_TIMER0 && !NRF51_PWM_USE_TIMER1 && !NRF51_PWM_USE_TIMER2
+#if !NRF5_PWM_USE_TIMER0 && !NRF5_PWM_USE_TIMER1 && !NRF5_PWM_USE_TIMER2
 #error "PWM driver activated but no TIMER peripheral assigned"
 #endif
 
-#if (NRF51_ST_USE_TIMER0 == TRUE) && (NRF51_PWM_USE_TIMER0 == TRUE)
+#if (NRF5_ST_USE_TIMER0 == TRUE) && (NRF5_PWM_USE_TIMER0 == TRUE)
 #error "TIMER0 used for ST and PWM"
 #endif
 
-#if NRF51_PWM_USE_TIMER0 &&						    \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_PWM_TIMER0_PRIORITY)
+#if NRF5_PWM_USE_TIMER0 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_PWM_TIMER0_PRIORITY)
 #error "Invalid IRQ priority assigned to TIMER0"
 #endif
 
-#if NRF51_PWM_USE_TIMER1 &&						    \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_PWM_TIMER1_PRIORITY)
+#if NRF5_PWM_USE_TIMER1 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_PWM_TIMER1_PRIORITY)
 #error "Invalid IRQ priority assigned to TIMER1"
 #endif
 
-#if NRF51_PWM_USE_TIMER2 &&						    \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_PWM_TIMER2_PRIORITY)
+#if NRF5_PWM_USE_TIMER2 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_PWM_TIMER2_PRIORITY)
 #error "Invalid IRQ priority assigned to TIMER2"
 #endif
 
@@ -180,13 +180,13 @@ typedef struct {
   /**
    * @brief PAL line to toggle.
    * @note  Only used if mode is PWM_OUTPUT_HIGH or PWM_OUTPUT_LOW.
-   * @note  When NRF51_PWM_USE_GPIOTE_PPI is used and channel enabled,
+   * @note  When NRF5_PWM_USE_GPIOTE_PPI is used and channel enabled,
    *        it wont be possible to access this PAL line using the PAL
    *        driver.
    */
   ioline_t ioline;
 
-#if NRF51_PWM_USE_GPIOTE_PPI || defined(__DOXYGEN__)
+#if NRF5_PWM_USE_GPIOTE_PPI || defined(__DOXYGEN__)
   /**
    * @brief Unique GPIOTE channel to use. (1 channel)
    * @note  Only used if mode is PWM_OUTPUT_HIGH or PWM_OUTPUT_LOW.
@@ -296,13 +296,13 @@ struct PWMDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if NRF51_PWM_USE_TIMER0 || defined(__DOXYGEN__)
+#if NRF5_PWM_USE_TIMER0 || defined(__DOXYGEN__)
 extern PWMDriver PWMD1;
 #endif
-#if NRF51_PWM_USE_TIMER1 || defined(__DOXYGEN__)
+#if NRF5_PWM_USE_TIMER1 || defined(__DOXYGEN__)
 extern PWMDriver PWMD2;
 #endif
-#if NRF51_PWM_USE_TIMER2 || defined(__DOXYGEN__)
+#if NRF5_PWM_USE_TIMER2 || defined(__DOXYGEN__)
 extern PWMDriver PWMD3;
 #endif
 

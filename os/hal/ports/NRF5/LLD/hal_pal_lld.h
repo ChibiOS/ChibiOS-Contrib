@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    pal_lld.h
+ * @file    NRF5/LLD/hal_pal_lld.h
  * @brief   NRF5 PAL subsystem low level driver header.
  *
  * @addtogroup PAL
@@ -132,6 +132,8 @@ typedef NRF_GPIO_Type *ioportid_t;
 #define IOPORT1         NRF_GPIO
 #elif NRF_SERIES == 52
 #define IOPORT1         NRF_P0
+#else
+#error "Unknown NRF_SERIES"
 #endif
 
 /*===========================================================================*/

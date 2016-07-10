@@ -44,8 +44,8 @@
  * @details If set to @p TRUE the support for RNG1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(NRF51_RNG_USE_RNG1) || defined(__DOXYGEN__)
-#define NRF51_RNG_USE_RNG1                  FALSE
+#if !defined(NRF5_RNG_USE_RNG1) || defined(__DOXYGEN__)
+#define NRF5_RNG_USE_RNG1                  FALSE
 #endif
 
 /**
@@ -53,15 +53,15 @@
  * @details If set to @p TRUE the support for RNG1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(NRF51_RNG_USE_RNG1) || defined(__DOXYGEN__)
-#define NRF51_RNG_USE_POWER_ON_WRITE        FALSE
+#if !defined(NRF5_RNG_USE_RNG1) || defined(__DOXYGEN__)
+#define NRF5_RNG_USE_POWER_ON_WRITE        FALSE
 #endif
 
 /**
  * @brief   RNG1 interrupt priority level setting.
  */
-#if !defined(NRF51_RNG_RNG1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_RNG_RNG1_IRQ_PRIORITY         3
+#if !defined(NRF5_RNG_RNG1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_RNG_RNG1_IRQ_PRIORITY         3
 #endif
 
 
@@ -69,8 +69,8 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if NRF51_RNG_USE_RNG1 &&					\
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_RNG_RNG1_IRQ_PRIORITY)
+#if NRF5_RNG_USE_RNG1 &&					\
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_RNG_RNG1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to RNG1"
 #endif
 
@@ -148,9 +148,9 @@ struct RNGDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if NRF51_RNG_USE_RNG1 && !defined(__DOXYGEN__)
+#if NRF5_RNG_USE_RNG1 && !defined(__DOXYGEN__)
 extern RNGDriver RNGD1;
-#endif /* NRF51_RNG_USE_RNG1 */
+#endif /* NRF5_RNG_USE_RNG1 */
 
 #ifdef __cplusplus
 extern "C" {

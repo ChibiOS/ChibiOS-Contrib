@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    NRF51/NRF51822/hal_lld.h
+ * @file    NRF5/NRF51822/hal_lld.h
  * @brief   NRF51822 HAL subsystem low level driver header.
  *
  * @addtogroup HAL
@@ -30,24 +30,31 @@
 /*===========================================================================*/
 
 /**
- * @name    Chip series
- */
-#define NRF_SERIES 51
-
-/**
  * @name    Platform identification
  * @{
  */
 #define PLATFORM_NAME           "Nordic Semiconductor nRF51822"
 
 /**
+ * @name    Chip series
+ */
+#define NRF_SERIES 51
+
+/**
+ * @brief  Frequency value for the Low Frequency Clock
+ */
+#define NRF5_LFCLK_FREQUENCY       32768
+
+/**
+ * @brief  Frequency value for the High Frequency Clock
+ */
+#define NRF5_HFCLK_FREQUENCY       16000000
+
+/**
  * @}
  */
 
-/**
- * @brief  Frequency valuefor the Low Frequency Clock
- */
-#define NRF51_LFCLK_FREQUENCY  32768
+
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -62,16 +69,16 @@
  *          When cristal is not available it's preferable to use the
  *          internal RC oscillator that synthezing the clock.
  */
-#if !defined(NRF51_LFCLK_SOURCE) || defined(__DOXYGEN__)
-#define NRF51_LFCLK_SOURCE             0
+#if !defined(NRF5_LFCLK_SOURCE) || defined(__DOXYGEN__)
+#define NRF5_LFCLK_SOURCE             0
 #endif
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if (NRF51_LFCLK_SOURCE < 0) || (NRF51_LFCLK_SOURCE > 2)
-#error "Possible value for NRF51_LFCLK_SOURCE are 0=RC, 1=XTAL, 2=Synth"
+#if (NRF5_LFCLK_SOURCE < 0) || (NRF5_LFCLK_SOURCE > 2)
+#error "Possible value for NRF5_LFCLK_SOURCE are 0=RC, 1=XTAL, 2=Synth"
 #endif
 
 /*===========================================================================*/
@@ -88,8 +95,6 @@
 
 #include "nvic.h"
 
-#define NRF51_LFCLK_FREQUENCY       32768
-#define NRF51_HFCLK_FREQUENCY       16000000
 
 #ifdef __cplusplus
 extern "C" {

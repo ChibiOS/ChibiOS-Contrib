@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    pal_lld.c
+ * @file    NRF5/LLD/hal_pal_lld.c
  * @brief   NRF5 PAL subsystem low level driver source.
  *
  * @addtogroup PAL
@@ -46,7 +46,7 @@
 void _pal_lld_setpadmode(ioportid_t port, uint8_t pad, iomode_t mode)
 {
   (void)port;
-  osalDbgAssert(pad <= 31, "pal_lld_setpadmode() - invalid pad");
+  osalDbgAssert(pad < PAL_IOPORTS_WIDTH, "pal_lld_setpadmode() - invalid pad");
 
   switch (mode) {
   case PAL_MODE_RESET:

@@ -52,12 +52,12 @@
       | (GPIO_PIN_CNF_INPUT_Connect  << GPIO_PIN_CNF_INPUT_Pos) \
       | (GPIO_PIN_CNF_DIR_Output     << GPIO_PIN_CNF_DIR_Pos))
 
-#if NRF51_I2C_USE_I2C0
+#if NRF5_I2C_USE_I2C0
 #define I2C_IRQ_NUM     SPI0_TWI0_IRQn
-#define I2C_IRQ_PRI     NRF51_I2C_I2C0_IRQ_PRIORITY
-#elif NRF51_I2C_USE_I2C1
+#define I2C_IRQ_PRI     NRF5_I2C_I2C0_IRQ_PRIORITY
+#elif NRF5_I2C_USE_I2C1
 #define I2C_IRQ_NUM     SPI1_TWI1_IRQn
-#define I2C_IRQ_PRI     NRF51_I2C_I2C1_IRQ_PRIORITY
+#define I2C_IRQ_PRI     NRF5_I2C_I2C1_IRQ_PRIORITY
 #endif
 
 /*===========================================================================*/
@@ -67,14 +67,14 @@
 /**
  * @brief   I2C0 driver identifier.
  */
-#if NRF51_I2C_USE_I2C0 || defined(__DOXYGEN__)
+#if NRF5_I2C_USE_I2C0 || defined(__DOXYGEN__)
 I2CDriver I2CD1;
 #endif
 
 /**
  * @brief   I2C1 driver identifier.
  */
-#if NRF51_I2C_USE_I2C1 || defined(__DOXYGEN__)
+#if NRF5_I2C_USE_I2C1 || defined(__DOXYGEN__)
 I2CDriver I2CD2;
 #endif
 
@@ -214,7 +214,7 @@ static void serve_interrupt(I2CDriver *i2cp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if NRF51_I2C_USE_I2C0 || defined(__DOXYGEN__)
+#if NRF5_I2C_USE_I2C0 || defined(__DOXYGEN__)
 
 OSAL_IRQ_HANDLER(Vector4C) {
 
@@ -225,7 +225,7 @@ OSAL_IRQ_HANDLER(Vector4C) {
 
 #endif
 
-#if NRF51_I2C_USE_I2C1 || defined(__DOXYGEN__)
+#if NRF5_I2C_USE_I2C1 || defined(__DOXYGEN__)
 
 OSAL_IRQ_HANDLER(Vector50) {
 
@@ -247,13 +247,13 @@ OSAL_IRQ_HANDLER(Vector50) {
  */
 void i2c_lld_init(void) {
 
-#if NRF51_I2C_USE_I2C0
+#if NRF5_I2C_USE_I2C0
   i2cObjectInit(&I2CD1);
   I2CD1.thread = NULL;
   I2CD1.i2c = NRF_TWI0;
 #endif
 
-#if NRF51_I2C_USE_I2C1
+#if NRF5_I2C_USE_I2C1
   i2cObjectInit(&I2CD2);
   I2CD2.thread = NULL;
   I2CD2.i2c = NRF_TWI1;

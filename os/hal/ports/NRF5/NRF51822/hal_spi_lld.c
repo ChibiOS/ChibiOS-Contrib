@@ -30,12 +30,12 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-#if NRF51_SPI_USE_SPI0 || defined(__DOXYGEN__)
+#if NRF5_SPI_USE_SPI0 || defined(__DOXYGEN__)
 /** @brief SPI1 driver identifier.*/
 SPIDriver SPID1;
 #endif
 
-#if NRF51_SPI_USE_SPI1 || defined(__DOXYGEN__)
+#if NRF5_SPI_USE_SPI1 || defined(__DOXYGEN__)
 /** @brief SPI2 driver identifier.*/
 SPIDriver SPID2;
 #endif
@@ -107,7 +107,7 @@ static void serve_interrupt(SPIDriver *spip) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if NRF51_SPI_USE_SPI0 || defined(__DOXYGEN__)
+#if NRF5_SPI_USE_SPI0 || defined(__DOXYGEN__)
 /**
  * @brief   SPI0 interrupt handler.
  *
@@ -120,7 +120,7 @@ CH_IRQ_HANDLER(Vector4C) {
   CH_IRQ_EPILOGUE();
 }
 #endif
-#if NRF51_SPI_USE_SPI1 || defined(__DOXYGEN__)
+#if NRF5_SPI_USE_SPI1 || defined(__DOXYGEN__)
 /**
  * @brief   SPI1 interrupt handler.
  *
@@ -145,11 +145,11 @@ CH_IRQ_HANDLER(Vector50) {
  */
 void spi_lld_init(void) {
 
-#if NRF51_SPI_USE_SPI0
+#if NRF5_SPI_USE_SPI0
   spiObjectInit(&SPID1);
   SPID1.port = NRF_SPI0;
 #endif
-#if NRF51_SPI_USE_SPI1
+#if NRF5_SPI_USE_SPI1
   spiObjectInit(&SPID2);
   SPID2.port = NRF_SPI1;
 #endif
@@ -166,13 +166,13 @@ void spi_lld_start(SPIDriver *spip) {
   uint32_t config;
 
   if (spip->state == SPI_STOP) {
-#if NRF51_SPI_USE_SPI0
+#if NRF5_SPI_USE_SPI0
     if (&SPID1 == spip)
-      nvicEnableVector(SPI0_TWI0_IRQn, NRF51_SPI_SPI0_IRQ_PRIORITY);
+      nvicEnableVector(SPI0_TWI0_IRQn, NRF5_SPI_SPI0_IRQ_PRIORITY);
 #endif
-#if NRF51_SPI_USE_SPI1
+#if NRF5_SPI_USE_SPI1
     if (&SPID2 == spip)
-      nvicEnableVector(SPI1_TWI1_IRQn, NRF51_SPI_SPI1_IRQ_PRIORITY);
+      nvicEnableVector(SPI1_TWI1_IRQn, NRF5_SPI_SPI1_IRQ_PRIORITY);
 #endif
   }
 
@@ -223,11 +223,11 @@ void spi_lld_stop(SPIDriver *spip) {
   if (spip->state != SPI_STOP) {
     spip->port->ENABLE  = (SPI_ENABLE_ENABLE_Disabled << SPI_ENABLE_ENABLE_Pos);
     spip->port->INTENCLR = (SPI_INTENCLR_READY_Clear << SPI_INTENCLR_READY_Pos);
-#if NRF51_SPI_USE_SPI0
+#if NRF5_SPI_USE_SPI0
     if (&SPID1 == spip)
       nvicDisableVector(SPI0_TWI0_IRQn);
 #endif
-#if NRF51_SPI_USE_SPI1
+#if NRF5_SPI_USE_SPI1
     if (&SPID2 == spip)
       nvicDisableVector(SPI1_TWI1_IRQn);
 #endif

@@ -92,7 +92,7 @@ OSAL_IRQ_HANDLER(Vector58) {
  */
 void ext_lld_exti_irq_enable(void) {
 
-  nvicEnableVector(GPIOTE_IRQn, NRF51_EXT_GPIOTE_IRQ_PRIORITY);
+  nvicEnableVector(GPIOTE_IRQn, NRF5_EXT_GPIOTE_IRQ_PRIORITY);
 }
 
 /**

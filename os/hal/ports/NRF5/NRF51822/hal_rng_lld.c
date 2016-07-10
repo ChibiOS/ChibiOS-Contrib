@@ -42,7 +42,7 @@ static const RNGConfig default_config = {
 /*===========================================================================*/
 
 /** @brief RNG1 driver identifier.*/
-#if NRF51_RNG_USE_RNG1 || defined(__DOXYGEN__)
+#if NRF5_RNG_USE_RNG1 || defined(__DOXYGEN__)
 RNGDriver RNGD1;
 #endif
 

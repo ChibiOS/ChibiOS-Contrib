@@ -42,8 +42,8 @@
 /**
  * @brief   GPIOTE interrupt priority level setting.
  */
-#if !defined(NRF51_EXT_GPIOTE_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_EXT_GPIOTE_IRQ_PRIORITY      3
+#if !defined(NRF5_EXT_GPIOTE_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_EXT_GPIOTE_IRQ_PRIORITY      3
 #endif
 /** @} */
 

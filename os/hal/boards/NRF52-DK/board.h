@@ -22,8 +22,8 @@
 #define BOARD_NAME              "nRF52 DK"
 
 /* Board oscillators-related settings. */
-#define NRF52_XTAL_VALUE        64000000
-#define NRF52_LFCLK_SOURCE      1
+#define NRF5_XTAL_VALUE        32000000
+#define NRF5_LFCLK_SOURCE      1
 
 /*
  * GPIO pins. 

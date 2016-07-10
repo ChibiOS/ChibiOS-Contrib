@@ -55,7 +55,7 @@ WDGDriver WDGD1;
  * @brief   Watchdog vector.
  * @details This interrupt is used when watchdog timeout.
  *
- * @note    Only 2 cycles at NRF51_LFCLK_FREQUENCY are available
+ * @note    Only 2 cycles at NRF5_LFCLK_FREQUENCY are available
  *          to they good bye.
  *
  * @isr
@@ -111,7 +111,7 @@ void wdg_lld_start(WDGDriver *wdgp) {
       (wdgp->config->flags.pause_on_halt  * WDT_CONFIG_HALT_Msk );
 
   /* Timeout in milli-seconds */
-  uint64_t tout = (NRF51_LFCLK_FREQUENCY * wdgp->config->timeout_ms / 1000) - 1;
+  uint64_t tout = (NRF5_LFCLK_FREQUENCY * wdgp->config->timeout_ms / 1000) - 1;
   osalDbgAssert(tout <= 0xFFFFFFFF, "watchdog timout value exceeded");  
   wdgp->wdt->CRV         = (uint32_t)tout;
 

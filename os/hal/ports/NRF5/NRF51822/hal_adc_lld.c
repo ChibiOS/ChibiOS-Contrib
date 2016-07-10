@@ -36,7 +36,7 @@
 /*===========================================================================*/
 
 /** @brief ADC1 driver identifier.*/
-#if NRF51_ADC_USE_ADC1 || defined(__DOXYGEN__)
+#if NRF5_ADC_USE_ADC1 || defined(__DOXYGEN__)
 ADCDriver ADCD1;
 #endif
 
@@ -68,7 +68,7 @@ static void adc_lld_config_next_channel(ADCDriver *adcp, uint32_t config) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if NRF51_ADC_USE_ADC1 || defined(__DOXYGEN__)
+#if NRF5_ADC_USE_ADC1 || defined(__DOXYGEN__)
 /**
  * @brief   ADC interrupt handler.
  *
@@ -130,7 +130,7 @@ OSAL_IRQ_HANDLER(Vector5C) {
  */
 void adc_lld_init(void) {
 
-#if NRF51_ADC_USE_ADC1
+#if NRF5_ADC_USE_ADC1
   /* Driver initialization.*/
   adcObjectInit(&ADCD1);
   ADCD1.adc = NRF_ADC;
@@ -148,13 +148,13 @@ void adc_lld_start(ADCDriver *adcp) {
 
   /* If in stopped state then configures and enables the ADC. */
   if (adcp->state == ADC_STOP) {
-#if NRF51_ADC_USE_ADC1
+#if NRF5_ADC_USE_ADC1
     if (&ADCD1 == adcp) {
 
       adcp->adc->INTENSET = ADC_INTENSET_END_Enabled << ADC_INTENSET_END_Pos;
-      nvicEnableVector(ADC_IRQn, NRF51_ADC_IRQ_PRIORITY);
+      nvicEnableVector(ADC_IRQn, NRF5_ADC_IRQ_PRIORITY);
     }
-#endif /* NRF51_ADC_USE_ADC1 */
+#endif /* NRF5_ADC_USE_ADC1 */
   }
 }
 
@@ -170,7 +170,7 @@ void adc_lld_stop(ADCDriver *adcp) {
   /* If in ready state then disables the ADC clock and analog part.*/
   if (adcp->state == ADC_READY) {
 
-#if NRF51_ADC_USE_ADC1
+#if NRF5_ADC_USE_ADC1
     if (&ADCD1 == adcp) {
 
       nvicDisableVector(ADC_IRQn);
