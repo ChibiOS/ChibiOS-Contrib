@@ -102,7 +102,9 @@ static uint8_t prescaler(uint16_t freq)
 static void gpt_lld_serve_interrupt(GPTDriver *gptp) {
 
   gptp->tim->EVENTS_COMPARE[gptp->cc_int] = 0;
+#if CORTEX_MODEL >= 4
   (void)gptp->tim->EVENTS_COMPARE[gptp->cc_int];
+#endif
   if (gptp->state == GPT_ONESHOT)
     gptp->state = GPT_READY;                 /* Back in GPT_READY state.     */
   gptp->config->callback(gptp);

@@ -95,7 +95,10 @@ void rng_lld_start(RNGDriver *rngp) {
 
   /* Clear pending events */
   rng->EVENTS_VALRDY = 0;
-
+#if CORTEX_MODEL >= 4
+    (void)rng->EVENTS_VALRDY;
+#endif
+    
   /* Set interrupt mask */
   rng->INTENSET      = RNG_INTENSET_VALRDY_Msk;
 
@@ -151,7 +154,10 @@ msg_t rng_lld_write(RNGDriver *rngp, uint8_t *buf, size_t n,
 
     /* Mark as read */
     rng->EVENTS_VALRDY = 0;
-
+#if CORTEX_MODEL >= 4
+    (void)rng->EVENTS_VALRDY;
+#endif
+    
     /* Clear interrupt so we can wake up again */
     nvicClearPending(rngp->irq);
   }

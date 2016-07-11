@@ -64,7 +64,10 @@ static void serve_interrupt(QEIDriver *qeip) {
    */
   if (qdec->EVENTS_ACCOF) {
     qdec->EVENTS_ACCOF = 0;
-
+#if CORTEX_MODEL >= 4
+    (void)qdec->EVENTS_ACCOF;
+#endif
+    
     qeip->overflowed++;
     if (qeip->config->overflowed_cb)
       qeip->config->overflowed_cb(qeip);
@@ -75,7 +78,10 @@ static void serve_interrupt(QEIDriver *qeip) {
    */
   if (qdec->EVENTS_REPORTRDY) {
     qdec->EVENTS_REPORTRDY = 0;
-
+#if CORTEX_MODEL >= 4
+    (void)qdec->EVENTS_REPORTRDY;
+#endif
+    
     /* Read (and clear counters due to shortcut) */
     int16_t  acc    = ( int16_t)qdec->ACCREAD;
     uint16_t accdbl = (uint16_t)qdec->ACCDBLREAD;
@@ -207,6 +213,11 @@ void qei_lld_start(QEIDriver *qeip) {
   qdec->EVENTS_SAMPLERDY = 0;
   qdec->EVENTS_REPORTRDY = 0;
   qdec->EVENTS_ACCOF     = 0;
+#if CORTEX_MODEL >= 4
+  (void)qdec->EVENTS_SAMPLERDY;
+  (void)qdec->EVENTS_REPORTRDY;
+  (void)qdec->EVENTS_ACCOF;
+#endif
 }
 
 /**
@@ -264,6 +275,11 @@ void qei_lld_enable(QEIDriver *qeip) {
   qeip->qdec->EVENTS_SAMPLERDY = 0;
   qeip->qdec->EVENTS_REPORTRDY = 0;
   qeip->qdec->EVENTS_ACCOF = 0;
+#if CORTEX_MODEL >= 4
+  (void)qeip->qdec->EVENTS_SAMPLERDY;
+  (void)qeip->qdec->EVENTS_REPORTRDY;
+  (void)qeip->qdec->EVENTS_ACCOF;
+#endif
   qeip->qdec->TASKS_START = 1;
 }
 

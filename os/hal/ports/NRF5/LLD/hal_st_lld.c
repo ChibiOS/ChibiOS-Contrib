@@ -65,8 +65,10 @@ OSAL_IRQ_HANDLER(Vector6C) {
   OSAL_IRQ_PROLOGUE();
 
   NRF_RTC0->EVENTS_TICK = 0;
+#if CORTEX_MODEL >= 4
   (void)NRF_RTC0->EVENTS_TICK;
-
+#endif
+  
   osalSysLockFromISR();
   osalOsTimerHandlerI();
   osalSysUnlockFromISR();
@@ -88,8 +90,10 @@ OSAL_IRQ_HANDLER(Vector84) {
   OSAL_IRQ_PROLOGUE();
 
   NRF_RTC1->EVENTS_TICK = 0;
+#if CORTEX_MODEL >= 4
   (void)NRF_RTC1->EVENTS_TICK;
-
+#endif
+  
   osalSysLockFromISR();
   osalOsTimerHandlerI();
   osalSysUnlockFromISR();
@@ -113,8 +117,10 @@ OSAL_IRQ_HANDLER(Vector60) {
   /* Clear timer compare event */
   if (NRF_TIMER0->EVENTS_COMPARE[0] != 0) {
     NRF_TIMER0->EVENTS_COMPARE[0] = 0;
+#if CORTEX_MODEL >= 4
     (void)NRF_TIMER0->EVENTS_COMPARE[0];
-
+#endif
+    
     osalSysLockFromISR();
     osalOsTimerHandlerI();
     osalSysUnlockFromISR();
@@ -140,8 +146,10 @@ OSAL_IRQ_HANDLER(Vector6C) {
 
   if (NRF_RTC0->EVENTS_COMPARE[0]) {
     NRF_RTC0->EVENTS_COMPARE[0] = 0;
+#if CORTEX_MODEL >= 4
     (void)NRF_RTC0->EVENTS_COMPARE[0];
-
+#endif
+    
     osalSysLockFromISR();
     osalOsTimerHandlerI();
     osalSysUnlockFromISR();
@@ -150,7 +158,9 @@ OSAL_IRQ_HANDLER(Vector6C) {
 #if OSAL_ST_RESOLUTION == 16
   if (NRF_RTC0->EVENTS_COMPARE[1]) {
     NRF_RTC0->EVENTS_COMPARE[1] = 0;
+#if CORTEX_MODEL >= 4
     (void)NRF_RTC0->EVENTS_COMPARE[1];
+#endif
     NRF_RTC0->TASKS_CLEAR = 1;
   }
 #endif
@@ -173,8 +183,10 @@ OSAL_IRQ_HANDLER(Vector84) {
 
   if (NRF_RTC1->EVENTS_COMPARE[0]) {
     NRF_RTC1->EVENTS_COMPARE[0] = 0;
+#if CORTEX_MODEL >= 4
     (void)NRF_RTC1->EVENTS_COMPARE[0];
-
+#endif
+    
     osalSysLockFromISR();
     osalOsTimerHandlerI();
     osalSysUnlockFromISR();
@@ -183,7 +195,9 @@ OSAL_IRQ_HANDLER(Vector84) {
 #if OSAL_ST_RESOLUTION == 16
   if (NRF_RTC1->EVENTS_COMPARE[1]) {
     NRF_RTC1->EVENTS_COMPARE[1] = 0;
+#if CORTEX_MODEL >= 4
     (void)NRF_RTC1->EVENTS_COMPARE[1];
+#endif
     NRF_RTC1->TASKS_CLEAR = 1;
   }
 #endif
@@ -211,10 +225,16 @@ void st_lld_init(void) {
   NRF_RTC0->PRESCALER   = (NRF5_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
   NRF_RTC0->EVTENCLR    = RTC_EVTENSET_COMPARE0_Msk;
   NRF_RTC0->EVENTS_COMPARE[0] = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC0->EVENTS_COMPARE[0];
+#endif
   NRF_RTC0->INTENSET    = RTC_INTENSET_COMPARE0_Msk;
 #if OSAL_ST_RESOLUTION == 16
   NRF_RTC0->CC[1]       = 0x10000; /* 2^16 */
   NRF_RTC0->EVENTS_COMPARE[1] = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC0->EVENTS_COMPARE[1];
+#endif
   NRF_RTC0->EVTENSET    = RTC_EVTENSET_COMPARE0_Msk;
   NRF_RTC0->INTENSET    = RTC_INTENSET_COMPARE1_Msk;
 #endif
@@ -231,10 +251,16 @@ void st_lld_init(void) {
   NRF_RTC1->PRESCALER   = (NRF5_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
   NRF_RTC1->EVTENCLR    = RTC_EVTENSET_COMPARE0_Msk;
   NRF_RTC1->EVENTS_COMPARE[0] = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC1->EVENTS_COMPARE[0];
+#endif
   NRF_RTC1->INTENSET    = RTC_INTENSET_COMPARE0_Msk;
 #if OSAL_ST_RESOLUTION == 16
   NRF_RTC1->CC[1]       = 0x10000; /* 2^16 */
   NRF_RTC1->EVENTS_COMPARE[1] = 0;
+#if CORTEX_MODEL >= 4
+  NRF_RTC1->EVENTS_COMPARE[1];
+#endif
   NRF_RTC1->EVTENSET    = RTC_EVTENSET_COMPARE0_Msk;
   NRF_RTC1->INTENSET    = RTC_INTENSET_COMPARE1_Msk;
 #endif

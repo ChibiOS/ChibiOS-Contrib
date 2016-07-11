@@ -181,11 +181,17 @@ static inline void st_lld_start_alarm(systime_t abstime) {
 #if NRF5_ST_USE_RTC0 == TRUE
   NRF_RTC0->CC[0]               = abstime;
   NRF_RTC0->EVENTS_COMPARE[0]   = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC0->EVENTS_COMPARE[0];
+#endif
   NRF_RTC0->EVTENSET            = RTC_EVTENSET_COMPARE0_Msk;
 #endif
 #if NRF5_ST_USE_RTC1 == TRUE
   NRF_RTC1->CC[0]               = abstime;
   NRF_RTC1->EVENTS_COMPARE[0]   = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC1->EVENTS_COMPARE[0];
+#endif
   NRF_RTC1->EVTENSET            = RTC_EVTENSET_COMPARE0_Msk;
 #endif
 #if NRF5_ST_USE_TIMER0 == TRUE
@@ -202,10 +208,16 @@ static inline void st_lld_stop_alarm(void) {
 #if NRF5_ST_USE_RTC0 == TRUE
   NRF_RTC0->EVTENCLR            = RTC_EVTENCLR_COMPARE0_Msk;
   NRF_RTC0->EVENTS_COMPARE[0]   = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC0->EVENTS_COMPARE[0];
+#endif
 #endif
 #if NRF5_ST_USE_RTC1 == TRUE
   NRF_RTC1->EVTENCLR            = RTC_EVTENCLR_COMPARE0_Msk;
   NRF_RTC1->EVENTS_COMPARE[0]   = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC1->EVENTS_COMPARE[0];
+#endif
 #endif
 }
 

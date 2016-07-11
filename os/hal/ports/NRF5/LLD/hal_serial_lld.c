@@ -148,10 +148,12 @@ static void configure_uart(const SerialConfig *config)
   /* Enable UART and clear events */
   NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Enabled;
   NRF_UART0->EVENTS_RXDRDY = 0;
-  (void)NRF_UART0->EVENTS_RXDRDY;
   NRF_UART0->EVENTS_TXDRDY = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_UART0->EVENTS_RXDRDY;
   (void)NRF_UART0->EVENTS_TXDRDY;
-
+#endif
+  
   if (config->rx_pad != NRF5_SERIAL_PAD_DISCONNECTED) {
     while (NRF_UART0->EVENTS_RXDRDY != 0) {
       (void)NRF_UART0->RXD;
@@ -204,8 +206,10 @@ OSAL_IRQ_HANDLER(Vector48) {
   if ((NRF_UART0->EVENTS_RXDRDY != 0) && (isr & UART_INTENSET_RXDRDY_Msk)) {
     // Clear UART RX event flag
     NRF_UART0->EVENTS_RXDRDY = 0;
+#if CORTEX_MODEL >= 4
     (void)NRF_UART0->EVENTS_RXDRDY;
-
+#endif
+    
     osalSysLockFromISR();
     if (iqIsEmptyI(&sdp->iqueue))
       chnAddFlagsI(sdp, CHN_INPUT_AVAILABLE);
@@ -219,8 +223,10 @@ OSAL_IRQ_HANDLER(Vector48) {
 
     // Clear UART TX event flag.
     NRF_UART0->EVENTS_TXDRDY = 0;
+#if CORTEX_MODEL >= 4
     (void)NRF_UART0->EVENTS_TXDRDY;
-
+#endif
+    
     osalSysLockFromISR();
     b = oqGetI(&sdp->oqueue);
     osalSysUnlockFromISR();
@@ -241,7 +247,9 @@ OSAL_IRQ_HANDLER(Vector48) {
   if ((NRF_UART0->EVENTS_ERROR != 0) && (isr & UART_INTENSET_ERROR_Msk)) {
     // Clear UART ERROR event flag.
     NRF_UART0->EVENTS_ERROR = 0;
+#if CORTEX_MODEL >= 4
     (void)NRF_UART0->EVENTS_ERROR;
+#endif
   }
 
 
