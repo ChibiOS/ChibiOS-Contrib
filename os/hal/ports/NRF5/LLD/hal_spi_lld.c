@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/spi_lld.c
- * @brief   NRF51822 low level SPI driver code.
+ * @file    NRF5/LLD/hal_spi_lld.c
+ * @brief   NRF5 low level SPI driver code.
  *
  * @addtogroup SPI
  * @{
@@ -76,7 +76,10 @@ static void serve_interrupt(SPIDriver *spip) {
 
   // Clear SPI READY event flag
   port->EVENTS_READY = 0;
-
+#if CORTEX_MODEL >= 4
+  (void)port->EVENTS_READY;
+#endif
+  
   if (spip->rxptr != NULL) {
     *(uint8_t *)spip->rxptr++ = port->RXD;
   }
@@ -209,6 +212,9 @@ void spi_lld_start(SPIDriver *spip) {
 
   /* clear events flag */
   spip->port->EVENTS_READY = 0;
+#if CORTEX_MODEL >= 4
+  (void)spip->port->EVENTS_READY;
+#endif
 }
 
 /**
@@ -366,6 +372,9 @@ uint16_t spi_lld_polled_exchange(SPIDriver *spip, uint16_t frame) {
   while (spip->port->EVENTS_READY == 0)
     ;
   spip->port->EVENTS_READY = 0;
+#if CORTEX_MODEL >= 4
+  (void)spip->port->EVENTS_READY;
+#endif
   return spip->port->RXD;
 }
 

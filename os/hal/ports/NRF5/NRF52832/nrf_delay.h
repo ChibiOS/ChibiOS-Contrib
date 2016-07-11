@@ -27,7 +27,7 @@
 inline static void nrf_delay_us(uint32_t volatile number_of_us) __attribute__((always_inline));
 inline static void nrf_delay_us(uint32_t volatile number_of_us)
 {
-register uint32_t delay asm ("r0") = number_of_us;
+register uint32_t delay __asm ("r0") = number_of_us;
 __asm volatile (
 ".syntax unified\n"
     "1:\n"

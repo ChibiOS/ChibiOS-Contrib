@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/spi_lld.h
- * @brief   NRF51822 low level SPI driver header.
+ * @file    NRF/LLD/hal_spi_lld.h
+ * @brief   NRF5 low level SPI driver header.
  *
  * @addtogroup SPI
  * @{
