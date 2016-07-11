@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/i2c_lld.h
- * @brief   NRF51822 I2C subsystem low level driver header.
+ * @file    NRF5/LLD/hal_i2c_lld.h
+ * @brief   NRF5 I2C subsystem low level driver header.
  *
  * @addtogroup I2C
  * @{
