@@ -204,9 +204,15 @@ void spi_lld_start(SPIDriver *spip) {
 
   /* Configuration.*/
   spip->port->CONFIG = config;
+#if NRF_SERIES == 51
   spip->port->PSELSCK = spip->config->sckpad;
   spip->port->PSELMOSI = spip->config->mosipad;
   spip->port->PSELMISO = spip->config->misopad;
+#else
+  spip->port->PSEL.SCK = spip->config->sckpad;
+  spip->port->PSEL.MOSI = spip->config->mosipad;
+  spip->port->PSEL.MISO = spip->config->misopad;
+#endif
   spip->port->FREQUENCY = spip->config->freq;
   spip->port->ENABLE = (SPI_ENABLE_ENABLE_Enabled << SPI_ENABLE_ENABLE_Pos);
 
