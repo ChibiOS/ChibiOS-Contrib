@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2015 Fabio Utzig
+    Copyright (C) 2016 Stephane D'Alu
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF5/NRF51822/hal_lld.h
- * @brief   NRF51822 HAL subsystem low level driver header.
+ * @file    NRF5/NRF52832/hal_lld.h
+ * @brief   NRF52832 HAL subsystem low level driver header.
  *
  * @addtogroup HAL
  * @{
@@ -33,27 +33,26 @@
  * @name    Platform identification
  * @{
  */
-#define PLATFORM_NAME           "Nordic Semiconductor nRF51822"
+#define PLATFORM_NAME           "Nordic Semiconductor nRF52832"
 
 /**
  * @name    Chip series
  */
-#define NRF_SERIES 51
+#define NRF_SERIES              52
 
 /**
  * @brief  Frequency value for the Low Frequency Clock
  */
-#define NRF5_LFCLK_FREQUENCY       32768
+#define NRF5_LFCLK_FREQUENCY    32768
 
 /**
  * @brief  Frequency value for the High Frequency Clock
  */
-#define NRF5_HFCLK_FREQUENCY       16000000
+#define NRF5_HFCLK_FREQUENCY    64000000
 
 /**
  * @}
  */
-
 
 
 /*===========================================================================*/

@@ -44,15 +44,15 @@
  * @details If set to @p TRUE the support for ADC1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(NRF51_ADC_USE_ADC1) || defined(__DOXYGEN__)
-#define NRF51_ADC_USE_ADC1                  FALSE
+#if !defined(NRF5_ADC_USE_ADC1) || defined(__DOXYGEN__)
+#define NRF5_ADC_USE_ADC1                  FALSE
 #endif
 
 /**
  * @brief   ADC interrupt priority level setting.
  */
-#if !defined(NRF51_ADC_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_ADC_IRQ_PRIORITY              2
+#if !defined(NRF5_ADC_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_ADC_IRQ_PRIORITY              2
 #endif
 
 /** @} */
@@ -61,12 +61,12 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if !NRF51_ADC_USE_ADC1
+#if !NRF5_ADC_USE_ADC1
 #error "ADC driver activated but no ADC peripheral assigned"
 #endif
 
-#if NRF51_ADC_USE_ADC1 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_ADC_IRQ_PRIORITY)
+#if NRF5_ADC_USE_ADC1 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_ADC_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to ADC1"
 #endif
 
@@ -206,7 +206,7 @@ struct ADCDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if NRF51_ADC_USE_ADC1 && !defined(__DOXYGEN__)
+#if NRF5_ADC_USE_ADC1 && !defined(__DOXYGEN__)
 extern ADCDriver ADCD1;
 #endif
 

@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/wdg_lld.h
- * @brief   WDG Driver subsystem low level driver header template.
+ * @file    NRF5/LLD/hal_wdg_lld.h
+ * @brief   NRF5 Watchdog Driver subsystem low level driver header template.
  *
  * @addtogroup WDG
  * @{
@@ -32,7 +32,7 @@
 /*===========================================================================*/
 
 #define WDG_MAX_TIMEOUT_MS \
-    ((uint32_t)(0xFFFFFFFFu * 1000 / NRF51_LFCLK_FREQUENCY))
+    ((uint32_t)(0xFFFFFFFFu * 1000 / NRF5_LFCLK_FREQUENCY))
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -72,11 +72,27 @@ typedef struct WDGDriver WDGDriver;
  */
 typedef struct {
   struct {
-  uint8_t pause_on_sleep : 1;
-  uint8_t pause_on_halt  : 1;
-  } flags;
+    /**
+     * @brief Pause watchdog while the CPU is sleeping
+     */
+    uint8_t pause_on_sleep : 1;
+    /**
+     * @brief Pause watchdog while the CPU is halted by the debugger
+     */
+    uint8_t pause_on_halt  : 1;
+  };
+  /**
+   *
+   */
   uint32_t timeout_ms;
 #if WDG_USE_TIMEOUT_CALLBACK == TRUE
+  /**
+   * @brief  Notification callback when watchdog timedout
+   *
+   * @note   About 2 cycles at NRF5_LFCLK_FREQUENCY are available
+   *         before automatic reboot.
+   *
+   */
   void (*callback)(void);
 #endif
 } WDGConfig;

@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/spi_lld.h
- * @brief   NRF51822 low level SPI driver header.
+ * @file    NRF/LLD/hal_spi_lld.h
+ * @brief   NRF5 low level SPI driver header.
  *
  * @addtogroup SPI
  * @{
@@ -38,40 +38,40 @@
 /**
  * @brief   SPI0 interrupt priority level setting.
  */
-#if !defined(NRF51_SPI_SPI0_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_SPI_SPI0_IRQ_PRIORITY    3
+#if !defined(NRF5_SPI_SPI0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_SPI_SPI0_IRQ_PRIORITY    3
 #endif
 
 /**
  * @brief   SPI1 interrupt priority level setting.
  */
-#if !defined(NRF51_SPI_SPI1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_SPI_SPI1_IRQ_PRIORITY    3
+#if !defined(NRF5_SPI_SPI1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_SPI_SPI1_IRQ_PRIORITY    3
 #endif
 
 /**
  * @brief   Overflow error hook.
  * @details The default action is to stop the system.
  */
-#if !defined(NRF51_SPI_SPI_ERROR_HOOK) || defined(__DOXYGEN__)
-#define NRF51_SPI_SPI_ERROR_HOOK()    chSysHalt()
+#if !defined(NRF5_SPI_SPI_ERROR_HOOK) || defined(__DOXYGEN__)
+#define NRF5_SPI_SPI_ERROR_HOOK()    chSysHalt()
 #endif
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if !NRF51_SPI_USE_SPI0 && !NRF51_SPI_USE_SPI1
+#if !NRF5_SPI_USE_SPI0 && !NRF5_SPI_USE_SPI1
 #error "SPI driver activated but no SPI peripheral assigned"
 #endif
 
-#if NRF51_SPI_USE_SPI0 &&						    \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_SPI_SPI0_IRQ_PRIORITY)
+#if NRF5_SPI_USE_SPI0 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_SPI_SPI0_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SPI0"
 #endif
 
-#if NRF51_SPI_USE_SPI1 &&						    \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_SPI_SPI1_IRQ_PRIORITY)
+#if NRF5_SPI_USE_SPI1 &&						    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_SPI_SPI1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SPI1"
 #endif
 
@@ -96,13 +96,13 @@ typedef void (*spicallback_t)(SPIDriver *spip);
  * @brief   SPI frequency
  */
 typedef enum {
-  NRF51_SPI_FREQ_125KBPS = (SPI_FREQUENCY_FREQUENCY_K125 << SPI_FREQUENCY_FREQUENCY_Pos),
-  NRF51_SPI_FREQ_250KBPS = (SPI_FREQUENCY_FREQUENCY_K250 << SPI_FREQUENCY_FREQUENCY_Pos),
-  NRF51_SPI_FREQ_500KBPS = (SPI_FREQUENCY_FREQUENCY_K500 << SPI_FREQUENCY_FREQUENCY_Pos),
-  NRF51_SPI_FREQ_1MBPS = (SPI_FREQUENCY_FREQUENCY_M1 << SPI_FREQUENCY_FREQUENCY_Pos),
-  NRF51_SPI_FREQ_2MBPS = (SPI_FREQUENCY_FREQUENCY_M2 << SPI_FREQUENCY_FREQUENCY_Pos),
-  NRF51_SPI_FREQ_4MBPS = (SPI_FREQUENCY_FREQUENCY_M4 << SPI_FREQUENCY_FREQUENCY_Pos),
-  NRF51_SPI_FREQ_8MBPS = (SPI_FREQUENCY_FREQUENCY_M8 << SPI_FREQUENCY_FREQUENCY_Pos),
+  NRF5_SPI_FREQ_125KBPS = (SPI_FREQUENCY_FREQUENCY_K125 << SPI_FREQUENCY_FREQUENCY_Pos),
+  NRF5_SPI_FREQ_250KBPS = (SPI_FREQUENCY_FREQUENCY_K250 << SPI_FREQUENCY_FREQUENCY_Pos),
+  NRF5_SPI_FREQ_500KBPS = (SPI_FREQUENCY_FREQUENCY_K500 << SPI_FREQUENCY_FREQUENCY_Pos),
+  NRF5_SPI_FREQ_1MBPS = (SPI_FREQUENCY_FREQUENCY_M1 << SPI_FREQUENCY_FREQUENCY_Pos),
+  NRF5_SPI_FREQ_2MBPS = (SPI_FREQUENCY_FREQUENCY_M2 << SPI_FREQUENCY_FREQUENCY_Pos),
+  NRF5_SPI_FREQ_4MBPS = (SPI_FREQUENCY_FREQUENCY_M4 << SPI_FREQUENCY_FREQUENCY_Pos),
+  NRF5_SPI_FREQ_8MBPS = (SPI_FREQUENCY_FREQUENCY_M8 << SPI_FREQUENCY_FREQUENCY_Pos),
 } spifreq_t;
 
 /**
@@ -206,10 +206,10 @@ struct SPIDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if NRF51_SPI_USE_SPI0 && !defined(__DOXYGEN__)
+#if NRF5_SPI_USE_SPI0 && !defined(__DOXYGEN__)
 extern SPIDriver SPID1;
 #endif
-#if NRF51_SPI_USE_SPI1 && !defined(__DOXYGEN__)
+#if NRF5_SPI_USE_SPI1 && !defined(__DOXYGEN__)
 extern SPIDriver SPID2;
 #endif
 

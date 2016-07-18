@@ -39,7 +39,7 @@
  * @brief   PWMD1 driver identifier.
  * @note    The driver PWMD1 allocates the timer TIMER0 when enabled.
  */
-#if NRF51_PWM_USE_TIMER0 || defined(__DOXYGEN__)
+#if NRF5_PWM_USE_TIMER0 || defined(__DOXYGEN__)
 PWMDriver PWMD1;
 #endif
 
@@ -47,7 +47,7 @@ PWMDriver PWMD1;
  * @brief   PWMD2 driver identifier.
  * @note    The driver PWMD2 allocates the timer TIMER1 when enabled.
  */
-#if NRF51_PWM_USE_TIMER1 || defined(__DOXYGEN__)
+#if NRF5_PWM_USE_TIMER1 || defined(__DOXYGEN__)
 PWMDriver PWMD2;
 #endif
 
@@ -55,7 +55,7 @@ PWMDriver PWMD2;
  * @brief   PWMD3 driver identifier.
  * @note    The driver PWMD3 allocates the timer TIMER2 when enabled.
  */
-#if NRF51_PWM_USE_TIMER2 || defined(__DOXYGEN__)
+#if NRF5_PWM_USE_TIMER2 || defined(__DOXYGEN__)
 PWMDriver PWMD3;
 #endif
 
@@ -95,7 +95,7 @@ static void pwm_lld_serve_interrupt(PWMDriver *pwmp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if NRF51_PWM_USE_TIMER0
+#if NRF5_PWM_USE_TIMER0
 /**
  * @brief   TIMER0 interrupt handler.
  *
@@ -106,9 +106,9 @@ OSAL_IRQ_HANDLER(Vector60) {
   pwm_lld_serve_interrupt(&PWMD1);
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* NRF51_PWM_USE_TIMER0 */
+#endif /* NRF5_PWM_USE_TIMER0 */
 
-#if NRF51_PWM_USE_TIMER1
+#if NRF5_PWM_USE_TIMER1
 /**
  * @brief   TIMER1 interrupt handler.
  *
@@ -119,9 +119,9 @@ OSAL_IRQ_HANDLER(Vector64) {
   pwm_lld_serve_interrupt(&PWMD2);
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* NRF51_PWM_USE_TIMER1 */
+#endif /* NRF5_PWM_USE_TIMER1 */
 
-#if NRF51_PWM_USE_TIMER2
+#if NRF5_PWM_USE_TIMER2
 /**
  * @brief   TIMER2 interrupt handler.
  *
@@ -132,7 +132,7 @@ OSAL_IRQ_HANDLER(Vector68) {
   pwm_lld_serve_interrupt(&PWMD3);
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* NRF51_PWM_USE_TIMER2 */
+#endif /* NRF5_PWM_USE_TIMER2 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -145,19 +145,19 @@ OSAL_IRQ_HANDLER(Vector68) {
  */
 void pwm_lld_init(void) {
 
-#if NRF51_PWM_USE_TIMER0
+#if NRF5_PWM_USE_TIMER0
   pwmObjectInit(&PWMD1);
   PWMD1.channels = PWM_CHANNELS;
   PWMD1.timer = NRF_TIMER0;
 #endif
 
-#if NRF51_PWM_USE_TIMER1
+#if NRF5_PWM_USE_TIMER1
   pwmObjectInit(&PWMD2);
   PWMD2.channels = PWM_CHANNELS;
   PWMD2.timer = NRF_TIMER1;
 #endif
 
-#if NRF51_PWM_USE_TIMER2
+#if NRF5_PWM_USE_TIMER2
   pwmObjectInit(&PWMD3);
   PWMD3.channels = PWM_CHANNELS;
   PWMD3.timer = NRF_TIMER2;
@@ -175,7 +175,7 @@ void pwm_lld_init(void) {
  */
 void pwm_lld_start(PWMDriver *pwmp) {
   // Prescaler value calculation: ftimer = 16MHz / 2^PRESCALER
-  uint16_t psc_ratio = NRF51_HFCLK_FREQUENCY / pwmp->config->frequency;
+  uint16_t psc_ratio = NRF5_HFCLK_FREQUENCY / pwmp->config->frequency;
   // Prescaler ratio must be between 1 and 512, and a power of two.
   osalDbgAssert(psc_ratio <= 512 && !(psc_ratio & (psc_ratio - 1)),
 		"invalid frequency");
@@ -215,21 +215,21 @@ void pwm_lld_start(PWMDriver *pwmp) {
 
 
   // Enable interrupt
-#if NRF51_PWM_USE_TIMER0
+#if NRF5_PWM_USE_TIMER0
   if (&PWMD1 == pwmp) {
-    nvicEnableVector(TIMER0_IRQn, NRF51_PWM_TIMER0_PRIORITY);
+    nvicEnableVector(TIMER0_IRQn, NRF5_PWM_TIMER0_PRIORITY);
   }
 #endif
 
-#if NRF51_PWM_USE_TIMER1
+#if NRF5_PWM_USE_TIMER1
   if (&PWMD2 == pwmp) {
-    nvicEnableVector(TIMER1_IRQn, NRF51_PWM_TIMER1_PRIORITY);
+    nvicEnableVector(TIMER1_IRQn, NRF5_PWM_TIMER1_PRIORITY);
   }
 #endif
 
-#if NRF51_PWM_USE_TIMER2
+#if NRF5_PWM_USE_TIMER2
   if (&PWMD3 == pwmp) {
-    nvicEnableVector(TIMER2_IRQn, NRF51_PWM_TIMER2_PRIORITY);
+    nvicEnableVector(TIMER2_IRQn, NRF5_PWM_TIMER2_PRIORITY);
   }
 #endif
 
@@ -247,19 +247,19 @@ void pwm_lld_start(PWMDriver *pwmp) {
 void pwm_lld_stop(PWMDriver *pwmp) {
   pwmp->timer->TASKS_STOP = 1;
 
-#if NRF51_PWM_USE_TIMER0
+#if NRF5_PWM_USE_TIMER0
   if (&PWMD1 == pwmp) {
     nvicDisableVector(TIMER0_IRQn);
   }
 #endif
 
-#if NRF51_PWM_USE_TIMER1
+#if NRF5_PWM_USE_TIMER1
   if (&PWMD2 == pwmp) {
     nvicDisableVector(TIMER1_IRQn);
   }
 #endif
 
-#if NRF51_PWM_USE_TIMER2
+#if NRF5_PWM_USE_TIMER2
   if (&PWMD3 == pwmp) {
     nvicDisableVector(TIMER2_IRQn);
   }
@@ -282,7 +282,7 @@ void pwm_lld_stop(PWMDriver *pwmp) {
 void pwm_lld_enable_channel(PWMDriver *pwmp,
                             pwmchannel_t channel,
                             pwmcnt_t width) {
-#if NRF51_PWM_USE_GPIOTE_PPI
+#if NRF5_PWM_USE_GPIOTE_PPI
   const PWMChannelConfig *cfg_channel = &pwmp->config->channels[channel];
 
   uint32_t outinit;
@@ -340,7 +340,7 @@ void pwm_lld_enable_channel(PWMDriver *pwmp,
  */
 void pwm_lld_disable_channel(PWMDriver *pwmp, pwmchannel_t channel) {
   pwmp->timer->CC[channel] = 0;
-#if NRF51_PWM_USE_GPIOTE_PPI
+#if NRF5_PWM_USE_GPIOTE_PPI
   const PWMChannelConfig *cfg_channel = &pwmp->config->channels[channel];
   switch(cfg_channel->mode & PWM_OUTPUT_MASK) {
   case PWM_OUTPUT_ACTIVE_LOW:

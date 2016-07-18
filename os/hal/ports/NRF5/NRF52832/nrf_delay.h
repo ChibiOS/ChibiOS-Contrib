@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/nrf51_delay.h
- * @brief   NRF51822 Delay routines
+ * @file    NRF5/NRF52832/nrf_delay.h
+ * @brief   NRF5 Delay routines
  *
  * @{
  */
@@ -27,11 +27,57 @@
 inline static void nrf_delay_us(uint32_t volatile number_of_us) __attribute__((always_inline));
 inline static void nrf_delay_us(uint32_t volatile number_of_us)
 {
-register uint32_t delay asm ("r0") = number_of_us;
+register uint32_t delay __asm ("r0") = number_of_us;
 __asm volatile (
 ".syntax unified\n"
     "1:\n"
     " SUBS %0, %0, #1\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
     " NOP\n"
     " NOP\n"
     " NOP\n"

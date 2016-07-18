@@ -71,8 +71,8 @@
  *          is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(NRF51_QEI_USE_LED) || defined(__DOXYGEN__)
-#define NRF51_QEI_USE_LED                   FALSE
+#if !defined(NRF5_QEI_USE_LED) || defined(__DOXYGEN__)
+#define NRF5_QEI_USE_LED                   FALSE
 #endif
 
 /**
@@ -81,8 +81,8 @@
  *          is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(NRF51_QEI_USE_ACC_OVERFLOWED_CB) || defined(__DOXYGEN__)
-#define NRF51_QEI_USE_ACC_OVERFLOWED_CB       FALSE
+#if !defined(NRF5_QEI_USE_ACC_OVERFLOWED_CB) || defined(__DOXYGEN__)
+#define NRF5_QEI_USE_ACC_OVERFLOWED_CB       FALSE
 #endif
 
 /**
@@ -90,15 +90,15 @@
  * @details If set to @p TRUE the support for QEID1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(NRF51_QEI_USE_QDEC0) || defined(__DOXYGEN__)
-#define NRF51_QEI_USE_QDEC0                 FALSE
+#if !defined(NRF5_QEI_USE_QDEC0) || defined(__DOXYGEN__)
+#define NRF5_QEI_USE_QDEC0                 FALSE
 #endif
 
 /**
  * @brief   QEID interrupt priority level setting for QDEC0.
  */
-#if !defined(NRF51_QEI_QDEC0_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_QEI_QDEC0_IRQ_PRIORITY              2
+#if !defined(NRF5_QEI_QDEC0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_QEI_QDEC0_IRQ_PRIORITY              2
 #endif
 /** @} */
 
@@ -106,13 +106,13 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if NRF51_QEI_USE_QDEC0 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_QEI_QDEC0_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to QDEC0"
+#if NRF5_QEI_USE_QDEC0 == FALSE
+#error "Requesting QEI driver, but no QDEC peripheric attached"
 #endif
 
-#if NRF51_QEI_USE_QDEC0 == FALSE
-#error "Requesting QEI driver, but no QDEC peripheric attached"
+#if NRF5_QEI_USE_QDEC0 &&					\
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_QEI_QDEC0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to QDEC0"
 #endif
 
 
@@ -238,7 +238,7 @@ typedef struct {
    * @brief   Line for reading Phase B
    */
   ioline_t                  phase_b;
-#if (NRF51_QEI_USE_LED == TRUE) || defined(__DOXYGEN__)
+#if (NRF5_QEI_USE_LED == TRUE) || defined(__DOXYGEN__)
   /**
    * @brief   Line used to control LED
    *
@@ -276,7 +276,7 @@ typedef struct {
     * @details Default to QEI_REPORT_10
     */
   qeireport_t 		    report;
-#if NRF51_QEI_USE_ACC_OVERFLOWED_CB == TRUE
+#if NRF5_QEI_USE_ACC_OVERFLOWED_CB == TRUE
    /**
     * @brief  Notify of internal accumulator overflowed
     *         (ie: MCU discarding samples)
@@ -311,7 +311,7 @@ struct QEIDriver {
    * @brief Counter
    */
   qeicnt_t                  count;
-#if NRF51_QEI_USE_ACC_OVERFLOWED_CB == TRUE
+#if NRF5_QEI_USE_ACC_OVERFLOWED_CB == TRUE
   /**
    * @brief Number of time the MCU discarded updates due to
    *        accumulator overflow
@@ -359,7 +359,7 @@ struct QEIDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if NRF51_QEI_USE_QDEC0 && !defined(__DOXYGEN__)
+#if NRF5_QEI_USE_QDEC0 && !defined(__DOXYGEN__)
 extern QEIDriver QEID1;
 #endif
 

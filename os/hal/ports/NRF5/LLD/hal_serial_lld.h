@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    serial_lld.h
- * @brief   NRF51822 serial subsystem low level driver header.
+ * @file    NRF5/LLD/hal_serial_lld.h
+ * @brief   NRF5 serial subsystem low level driver header.
  *
  * @addtogroup SERIAL
  * @{
@@ -45,8 +45,8 @@
  *          is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(NRF51_SERIAL_USE_HWFLOWCTRL) || defined(__DOXYGEN__)
-#define NRF51_SERIAL_USE_HWFLOWCTRL        FALSE
+#if !defined(NRF5_SERIAL_USE_HWFLOWCTRL) || defined(__DOXYGEN__)
+#define NRF5_SERIAL_USE_HWFLOWCTRL        FALSE
 #endif
 
 /**
@@ -54,20 +54,20 @@
  * @details If set to @p TRUE the support for SD1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(NRF51_SERIAL_USE_UART0) || defined(__DOXYGEN__)
-#define NRF51_SERIAL_USE_UART0             FALSE
+#if !defined(NRF5_SERIAL_USE_UART0) || defined(__DOXYGEN__)
+#define NRF5_SERIAL_USE_UART0             FALSE
 #endif
 
 /**
  * @brief   UART0 interrupt priority level setting.
  */
-#if !defined(NRF51_SERIAL_UART0_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_SERIAL_UART0_PRIORITY        3
+#if !defined(NRF5_SERIAL_UART0_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_SERIAL_UART0_PRIORITY        3
 #endif
 
 /* Value indicating that no pad is connected to this UART register. */
-#define  NRF51_SERIAL_PAD_DISCONNECTED 0xFFFFFFFFU
-#define  NRF51_SERIAL_INVALID_BAUDRATE 0xFFFFFFFFU
+#define  NRF5_SERIAL_PAD_DISCONNECTED 0xFFFFFFFFU
+#define  NRF5_SERIAL_INVALID_BAUDRATE 0xFFFFFFFFU
 
 /** @} */
 
@@ -75,8 +75,8 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if NRF51_SERIAL_USE_UART0 &&					\
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_SERIAL_UART0_PRIORITY)
+#if NRF5_SERIAL_USE_UART0 &&					\
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_SERIAL_UART0_PRIORITY)
 #error "Invalid IRQ priority assigned to UART0"
 #endif
 
@@ -100,7 +100,7 @@ typedef struct {
   /* End of the mandatory fields.*/
   uint32_t                  tx_pad;
   uint32_t                  rx_pad;
-#if (NRF51_SERIAL_USE_HWFLOWCTRL == TRUE)
+#if (NRF5_SERIAL_USE_HWFLOWCTRL == TRUE)
   uint32_t                  rts_pad;
   uint32_t                  cts_pad;
 #endif
@@ -134,7 +134,7 @@ typedef struct {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if (NRF51_SERIAL_USE_UART0 == TRUE) && !defined(__DOXYGEN__)
+#if (NRF5_SERIAL_USE_UART0 == TRUE) && !defined(__DOXYGEN__)
 extern SerialDriver SD1;
 #endif
 

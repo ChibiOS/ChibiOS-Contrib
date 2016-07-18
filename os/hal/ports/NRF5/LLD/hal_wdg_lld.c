@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/wdg_lld.c
- * @brief   WDG Driver subsystem low level driver source template.
+ * @file    NRF5/LLD/hal_wdg_lld.c
+ * @brief   NRF5 Watchdog Driver subsystem low level driver source template.
  *
  * @addtogroup WDG
  * @{
@@ -55,12 +55,12 @@ WDGDriver WDGD1;
  * @brief   Watchdog vector.
  * @details This interrupt is used when watchdog timeout.
  *
- * @note    Only 2 cycles at NRF51_LFCLK_FREQUENCY are available
+ * @note    Only 2 cycles at NRF5_LFCLK_FREQUENCY are available
  *          to they good bye.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(Vector84) {
+OSAL_IRQ_HANDLER(Vector80) {
 
   OSAL_IRQ_PROLOGUE();
   osalSysLockFromISR();
@@ -101,18 +101,25 @@ void wdg_lld_init(void) {
  * @notapi
  */
 void wdg_lld_start(WDGDriver *wdgp) {
+  osalDbgAssert((wdgp->state == WDG_STOP),
+		"This WDG driver cannot be restarted once activated");
+
+  /* Generate interrupt on timeout */
 #if WDG_USE_TIMEOUT_CALLBACK == TRUE
   wdgp->wdt->INTENSET = WDT_INTENSET_TIMEOUT_Msk;
 #endif
 
   /* When to pause? (halt, sleep) */
-  wdgp->wdt->CONFIG      =
-      (wdgp->config->flags.pause_on_sleep * WDT_CONFIG_SLEEP_Msk) |
-      (wdgp->config->flags.pause_on_halt  * WDT_CONFIG_HALT_Msk );
+  uint32_t config = 0;
+  if (!wdgp->config->pause_on_sleep)
+      config |= WDT_CONFIG_SLEEP_Msk;
+  if (!wdgp->config->pause_on_halt)
+      config |= WDT_CONFIG_HALT_Msk;
+  wdgp->wdt->CONFIG = config;
 
   /* Timeout in milli-seconds */
-  uint64_t tout = (NRF51_LFCLK_FREQUENCY * wdgp->config->timeout_ms / 1000) - 1;
-  osalDbgAssert(tout <= 0xFFFFFFFF, "watchdog timout value exceeded");  
+  uint64_t tout = (NRF5_LFCLK_FREQUENCY * wdgp->config->timeout_ms / 1000) - 1;
+  osalDbgAssert(tout <= 0xFFFFFFFF, "watchdog timout value exceeded");
   wdgp->wdt->CRV         = (uint32_t)tout;
 
   /* Reload request (using RR0) */
@@ -131,7 +138,7 @@ void wdg_lld_start(WDGDriver *wdgp) {
  */
 void wdg_lld_stop(WDGDriver *wdgp) {
   (void)wdgp;
-  osalDbgAssert(false, "WDG cannot be stopped once activated");
+  osalDbgAssert(false, "This WDG driver cannot be stopped once activated");
 }
 
 /**

@@ -16,8 +16,8 @@
 */
 
 /**
- * @file    st_lld.c
- * @brief   NRF51822 ST subsystem low level driver source.
+ * @file    NRF5/LLD/hal_st_lld.c
+ * @brief   NRF5 ST subsystem low level driver source.
  *
  * @addtogroup ST
  * @{
@@ -52,11 +52,11 @@
 /*===========================================================================*/
 
 #if (OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC) || defined(__DOXYGEN__)
-#if NRF51_ST_USE_RTC0 == TRUE
+#if NRF5_ST_USE_RTC0 == TRUE
 /**
  * @brief   System Timer vector (RTC0)
  * @details This interrupt is used for system tick in periodic mode
- *          if selected with NRF51_ST_USE_RTC0
+ *          if selected with NRF5_ST_USE_RTC0
  *
  * @isr
  */
@@ -65,7 +65,10 @@ OSAL_IRQ_HANDLER(Vector6C) {
   OSAL_IRQ_PROLOGUE();
 
   NRF_RTC0->EVENTS_TICK = 0;
-
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC0->EVENTS_TICK;
+#endif
+  
   osalSysLockFromISR();
   osalOsTimerHandlerI();
   osalSysUnlockFromISR();
@@ -74,11 +77,11 @@ OSAL_IRQ_HANDLER(Vector6C) {
 }
 #endif
 
-#if NRF51_ST_USE_RTC1 == TRUE
+#if NRF5_ST_USE_RTC1 == TRUE
 /**
  * @brief   System Timer vector (RTC1)
  * @details This interrupt is used for system tick in periodic mode
- *          if selected with NRF51_ST_USE_RTC1
+ *          if selected with NRF5_ST_USE_RTC1
  *
  * @isr
  */
@@ -87,7 +90,10 @@ OSAL_IRQ_HANDLER(Vector84) {
   OSAL_IRQ_PROLOGUE();
 
   NRF_RTC1->EVENTS_TICK = 0;
-
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC1->EVENTS_TICK;
+#endif
+  
   osalSysLockFromISR();
   osalOsTimerHandlerI();
   osalSysUnlockFromISR();
@@ -96,11 +102,11 @@ OSAL_IRQ_HANDLER(Vector84) {
 }
 #endif
 
-#if NRF51_ST_USE_TIMER0 == TRUE
+#if NRF5_ST_USE_TIMER0 == TRUE
 /**
  * @brief   System Timer vector. (TIMER0)
  * @details This interrupt is used for system tick in periodic mode
- *          if selected with NRF51_ST_USE_TIMER0
+ *          if selected with NRF5_ST_USE_TIMER0
  *
  * @isr
  */
@@ -109,12 +115,16 @@ OSAL_IRQ_HANDLER(Vector60) {
   OSAL_IRQ_PROLOGUE();
 
   /* Clear timer compare event */
-  if (NRF_TIMER0->EVENTS_COMPARE[0] != 0)
+  if (NRF_TIMER0->EVENTS_COMPARE[0] != 0) {
     NRF_TIMER0->EVENTS_COMPARE[0] = 0;
-
-  osalSysLockFromISR();
-  osalOsTimerHandlerI();
-  osalSysUnlockFromISR();
+#if CORTEX_MODEL >= 4
+    (void)NRF_TIMER0->EVENTS_COMPARE[0];
+#endif
+    
+    osalSysLockFromISR();
+    osalOsTimerHandlerI();
+    osalSysUnlockFromISR();
+  }
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -122,11 +132,11 @@ OSAL_IRQ_HANDLER(Vector60) {
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC */
 
 #if (OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING) || defined(__DOXYGEN__)
-#if NRF51_ST_USE_RTC0 == TRUE
+#if NRF5_ST_USE_RTC0 == TRUE
 /**
  * @brief   System Timer vector (RTC0)
  * @details This interrupt is used for freerunning mode (tick-less)
- *          if selected with NRF51_ST_USE_RTC0 
+ *          if selected with NRF5_ST_USE_RTC0 
  *
  * @isr
  */
@@ -136,7 +146,10 @@ OSAL_IRQ_HANDLER(Vector6C) {
 
   if (NRF_RTC0->EVENTS_COMPARE[0]) {
     NRF_RTC0->EVENTS_COMPARE[0] = 0;
-
+#if CORTEX_MODEL >= 4
+    (void)NRF_RTC0->EVENTS_COMPARE[0];
+#endif
+    
     osalSysLockFromISR();
     osalOsTimerHandlerI();
     osalSysUnlockFromISR();
@@ -145,6 +158,9 @@ OSAL_IRQ_HANDLER(Vector6C) {
 #if OSAL_ST_RESOLUTION == 16
   if (NRF_RTC0->EVENTS_COMPARE[1]) {
     NRF_RTC0->EVENTS_COMPARE[1] = 0;
+#if CORTEX_MODEL >= 4
+    (void)NRF_RTC0->EVENTS_COMPARE[1];
+#endif
     NRF_RTC0->TASKS_CLEAR = 1;
   }
 #endif
@@ -153,11 +169,11 @@ OSAL_IRQ_HANDLER(Vector6C) {
 }
 #endif
 
-#if NRF51_ST_USE_RTC1 == TRUE
+#if NRF5_ST_USE_RTC1 == TRUE
 /**
  * @brief   System Timer vector (RTC1)
  * @details This interrupt is used for freerunning mode (tick-less)
- *          if selected with NRF51_ST_USE_RTC1
+ *          if selected with NRF5_ST_USE_RTC1
  *
  * @isr
  */
@@ -167,7 +183,10 @@ OSAL_IRQ_HANDLER(Vector84) {
 
   if (NRF_RTC1->EVENTS_COMPARE[0]) {
     NRF_RTC1->EVENTS_COMPARE[0] = 0;
-
+#if CORTEX_MODEL >= 4
+    (void)NRF_RTC1->EVENTS_COMPARE[0];
+#endif
+    
     osalSysLockFromISR();
     osalOsTimerHandlerI();
     osalSysUnlockFromISR();
@@ -176,6 +195,9 @@ OSAL_IRQ_HANDLER(Vector84) {
 #if OSAL_ST_RESOLUTION == 16
   if (NRF_RTC1->EVENTS_COMPARE[1]) {
     NRF_RTC1->EVENTS_COMPARE[1] = 0;
+#if CORTEX_MODEL >= 4
+    (void)NRF_RTC1->EVENTS_COMPARE[1];
+#endif
     NRF_RTC1->TASKS_CLEAR = 1;
   }
 #endif
@@ -197,80 +219,92 @@ OSAL_IRQ_HANDLER(Vector84) {
 void st_lld_init(void) {
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
 
-#if NRF51_ST_USE_RTC0 == TRUE
+#if NRF5_ST_USE_RTC0 == TRUE
   /* Using RTC with prescaler */
   NRF_RTC0->TASKS_STOP  = 1;
-  NRF_RTC0->PRESCALER   = (NRF51_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
+  NRF_RTC0->PRESCALER   = (NRF5_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
   NRF_RTC0->EVTENCLR    = RTC_EVTENSET_COMPARE0_Msk;
   NRF_RTC0->EVENTS_COMPARE[0] = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC0->EVENTS_COMPARE[0];
+#endif
   NRF_RTC0->INTENSET    = RTC_INTENSET_COMPARE0_Msk;
 #if OSAL_ST_RESOLUTION == 16
   NRF_RTC0->CC[1]       = 0x10000; /* 2^16 */
   NRF_RTC0->EVENTS_COMPARE[1] = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC0->EVENTS_COMPARE[1];
+#endif
   NRF_RTC0->EVTENSET    = RTC_EVTENSET_COMPARE0_Msk;
   NRF_RTC0->INTENSET    = RTC_INTENSET_COMPARE1_Msk;
 #endif
   NRF_RTC0->TASKS_CLEAR  = 1;
 
     /* Start timer */
-  nvicEnableVector(RTC0_IRQn, NRF51_ST_PRIORITY);
+  nvicEnableVector(RTC0_IRQn, NRF5_ST_PRIORITY);
   NRF_RTC0->TASKS_START = 1;
-#endif /* NRF51_ST_USE_RTC0 == TRUE */
+#endif /* NRF5_ST_USE_RTC0 == TRUE */
 
-#if NRF51_ST_USE_RTC1 == TRUE
+#if NRF5_ST_USE_RTC1 == TRUE
   /* Using RTC with prescaler */
   NRF_RTC1->TASKS_STOP  = 1;
-  NRF_RTC1->PRESCALER   = (NRF51_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
+  NRF_RTC1->PRESCALER   = (NRF5_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
   NRF_RTC1->EVTENCLR    = RTC_EVTENSET_COMPARE0_Msk;
   NRF_RTC1->EVENTS_COMPARE[0] = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC1->EVENTS_COMPARE[0];
+#endif
   NRF_RTC1->INTENSET    = RTC_INTENSET_COMPARE0_Msk;
 #if OSAL_ST_RESOLUTION == 16
   NRF_RTC1->CC[1]       = 0x10000; /* 2^16 */
   NRF_RTC1->EVENTS_COMPARE[1] = 0;
+#if CORTEX_MODEL >= 4
+  NRF_RTC1->EVENTS_COMPARE[1];
+#endif
   NRF_RTC1->EVTENSET    = RTC_EVTENSET_COMPARE0_Msk;
   NRF_RTC1->INTENSET    = RTC_INTENSET_COMPARE1_Msk;
 #endif
   NRF_RTC1->TASKS_CLEAR  = 1;
 
   /* Start timer */
-  nvicEnableVector(RTC1_IRQn, NRF51_ST_PRIORITY);
+  nvicEnableVector(RTC1_IRQn, NRF5_ST_PRIORITY);
   NRF_RTC1->TASKS_START = 1;
-#endif /* NRF51_ST_USE_RTC1 == TRUE */
+#endif /* NRF5_ST_USE_RTC1 == TRUE */
 
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */
 
 #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
 
-#if NRF51_ST_USE_RTC0 == TRUE
+#if NRF5_ST_USE_RTC0 == TRUE
   /* Using RTC with prescaler */
   NRF_RTC0->TASKS_STOP  = 1;
-  NRF_RTC0->PRESCALER   = (NRF51_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
+  NRF_RTC0->PRESCALER   = (NRF5_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
   NRF_RTC0->INTENSET    = RTC_INTENSET_TICK_Msk;
 
   /* Start timer */
-  nvicEnableVector(RTC0_IRQn, NRF51_ST_PRIORITY);
+  nvicEnableVector(RTC0_IRQn, NRF5_ST_PRIORITY);
   NRF_RTC0->TASKS_START = 1;
-#endif /* NRF51_ST_USE_RTC0 == TRUE */
+#endif /* NRF5_ST_USE_RTC0 == TRUE */
 
-#if NRF51_ST_USE_RTC1 == TRUE
+#if NRF5_ST_USE_RTC1 == TRUE
   /* Using RTC with prescaler */
   NRF_RTC1->TASKS_STOP  = 1;
-  NRF_RTC1->PRESCALER   = (NRF51_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
+  NRF_RTC1->PRESCALER   = (NRF5_LFCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1; 
   NRF_RTC1->INTENSET    = RTC_INTENSET_TICK_Msk;
 
   /* Start timer */
-  nvicEnableVector(RTC1_IRQn, NRF51_ST_PRIORITY);
+  nvicEnableVector(RTC1_IRQn, NRF5_ST_PRIORITY);
   NRF_RTC1->TASKS_START = 1;
-#endif /* NRF51_ST_USE_RTC1 == TRUE */
+#endif /* NRF5_ST_USE_RTC1 == TRUE */
 
-#if NRF51_ST_USE_TIMER0 == TRUE
+#if NRF5_ST_USE_TIMER0 == TRUE
   NRF_TIMER0->TASKS_CLEAR = 1;
 
   /*
-   * Using 32-bit mode with prescaler 16 configures this
-   * timer with a 1MHz clock.
+   * Using 32-bit mode with prescaler 1/16 configures this
+   * timer with a 1MHz clock, reducing power consumption.
    */
-  NRF_TIMER0->BITMODE = 3;
+  NRF_TIMER0->BITMODE = TIMER_BITMODE_BITMODE_32Bit;
   NRF_TIMER0->PRESCALER = 4;
 
   /*
@@ -279,12 +313,12 @@ void st_lld_init(void) {
    */
   NRF_TIMER0->CC[0] = (1000000 / OSAL_ST_FREQUENCY) - 1;
   NRF_TIMER0->SHORTS = 1;
-  NRF_TIMER0->INTENSET = 0x10000;
+  NRF_TIMER0->INTENSET = TIMER_INTENSET_COMPARE0_Msk;
 
   /* Start timer */
-  nvicEnableVector(TIMER0_IRQn, NRF51_ST_PRIORITY);
+  nvicEnableVector(TIMER0_IRQn, NRF5_ST_PRIORITY);
   NRF_TIMER0->TASKS_START = 1;
-#endif /* NRF51_ST_USE_TIMER0 == TRUE */
+#endif /* NRF5_ST_USE_TIMER0 == TRUE */
 
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC */
 }

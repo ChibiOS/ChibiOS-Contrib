@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/spi_lld.c
- * @brief   NRF51822 low level SPI driver code.
+ * @file    NRF5/LLD/hal_spi_lld.c
+ * @brief   NRF5 low level SPI driver code.
  *
  * @addtogroup SPI
  * @{
@@ -30,12 +30,12 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-#if NRF51_SPI_USE_SPI0 || defined(__DOXYGEN__)
+#if NRF5_SPI_USE_SPI0 || defined(__DOXYGEN__)
 /** @brief SPI1 driver identifier.*/
 SPIDriver SPID1;
 #endif
 
-#if NRF51_SPI_USE_SPI1 || defined(__DOXYGEN__)
+#if NRF5_SPI_USE_SPI1 || defined(__DOXYGEN__)
 /** @brief SPI2 driver identifier.*/
 SPIDriver SPID2;
 #endif
@@ -76,7 +76,10 @@ static void serve_interrupt(SPIDriver *spip) {
 
   // Clear SPI READY event flag
   port->EVENTS_READY = 0;
-
+#if CORTEX_MODEL >= 4
+  (void)port->EVENTS_READY;
+#endif
+  
   if (spip->rxptr != NULL) {
     *(uint8_t *)spip->rxptr++ = port->RXD;
   }
@@ -107,7 +110,7 @@ static void serve_interrupt(SPIDriver *spip) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if NRF51_SPI_USE_SPI0 || defined(__DOXYGEN__)
+#if NRF5_SPI_USE_SPI0 || defined(__DOXYGEN__)
 /**
  * @brief   SPI0 interrupt handler.
  *
@@ -120,7 +123,7 @@ CH_IRQ_HANDLER(Vector4C) {
   CH_IRQ_EPILOGUE();
 }
 #endif
-#if NRF51_SPI_USE_SPI1 || defined(__DOXYGEN__)
+#if NRF5_SPI_USE_SPI1 || defined(__DOXYGEN__)
 /**
  * @brief   SPI1 interrupt handler.
  *
@@ -145,11 +148,11 @@ CH_IRQ_HANDLER(Vector50) {
  */
 void spi_lld_init(void) {
 
-#if NRF51_SPI_USE_SPI0
+#if NRF5_SPI_USE_SPI0
   spiObjectInit(&SPID1);
   SPID1.port = NRF_SPI0;
 #endif
-#if NRF51_SPI_USE_SPI1
+#if NRF5_SPI_USE_SPI1
   spiObjectInit(&SPID2);
   SPID2.port = NRF_SPI1;
 #endif
@@ -166,13 +169,13 @@ void spi_lld_start(SPIDriver *spip) {
   uint32_t config;
 
   if (spip->state == SPI_STOP) {
-#if NRF51_SPI_USE_SPI0
+#if NRF5_SPI_USE_SPI0
     if (&SPID1 == spip)
-      nvicEnableVector(SPI0_TWI0_IRQn, NRF51_SPI_SPI0_IRQ_PRIORITY);
+      nvicEnableVector(SPI0_TWI0_IRQn, NRF5_SPI_SPI0_IRQ_PRIORITY);
 #endif
-#if NRF51_SPI_USE_SPI1
+#if NRF5_SPI_USE_SPI1
     if (&SPID2 == spip)
-      nvicEnableVector(SPI1_TWI1_IRQn, NRF51_SPI_SPI1_IRQ_PRIORITY);
+      nvicEnableVector(SPI1_TWI1_IRQn, NRF5_SPI_SPI1_IRQ_PRIORITY);
 #endif
   }
 
@@ -201,14 +204,23 @@ void spi_lld_start(SPIDriver *spip) {
 
   /* Configuration.*/
   spip->port->CONFIG = config;
+#if NRF_SERIES == 51
   spip->port->PSELSCK = spip->config->sckpad;
   spip->port->PSELMOSI = spip->config->mosipad;
   spip->port->PSELMISO = spip->config->misopad;
+#else
+  spip->port->PSEL.SCK = spip->config->sckpad;
+  spip->port->PSEL.MOSI = spip->config->mosipad;
+  spip->port->PSEL.MISO = spip->config->misopad;
+#endif
   spip->port->FREQUENCY = spip->config->freq;
   spip->port->ENABLE = (SPI_ENABLE_ENABLE_Enabled << SPI_ENABLE_ENABLE_Pos);
 
   /* clear events flag */
   spip->port->EVENTS_READY = 0;
+#if CORTEX_MODEL >= 4
+  (void)spip->port->EVENTS_READY;
+#endif
 }
 
 /**
@@ -223,11 +235,11 @@ void spi_lld_stop(SPIDriver *spip) {
   if (spip->state != SPI_STOP) {
     spip->port->ENABLE  = (SPI_ENABLE_ENABLE_Disabled << SPI_ENABLE_ENABLE_Pos);
     spip->port->INTENCLR = (SPI_INTENCLR_READY_Clear << SPI_INTENCLR_READY_Pos);
-#if NRF51_SPI_USE_SPI0
+#if NRF5_SPI_USE_SPI0
     if (&SPID1 == spip)
       nvicDisableVector(SPI0_TWI0_IRQn);
 #endif
-#if NRF51_SPI_USE_SPI1
+#if NRF5_SPI_USE_SPI1
     if (&SPID2 == spip)
       nvicDisableVector(SPI1_TWI1_IRQn);
 #endif
@@ -366,6 +378,9 @@ uint16_t spi_lld_polled_exchange(SPIDriver *spip, uint16_t frame) {
   while (spip->port->EVENTS_READY == 0)
     ;
   spip->port->EVENTS_READY = 0;
+#if CORTEX_MODEL >= 4
+  (void)spip->port->EVENTS_READY;
+#endif
   return spip->port->RXD;
 }
 

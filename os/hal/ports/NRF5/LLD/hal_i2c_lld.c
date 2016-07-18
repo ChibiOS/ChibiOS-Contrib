@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/i2c_lld.c
- * @brief   NRF51822 I2C subsystem low level driver source.
+ * @file    NRF5/LLD/hal_i2c_lld.c
+ * @brief   NRF5 I2C subsystem low level driver source.
  *
  * @addtogroup I2C
  * @{
@@ -24,7 +24,7 @@
 
 #include "osal.h"
 #include "hal.h"
-#include "nrf51_delay.h"
+#include "nrf_delay.h"
 
 #if HAL_USE_I2C || defined(__DOXYGEN__)
 
@@ -33,10 +33,10 @@
 /*===========================================================================*/
 
 /* These macros are needed to see if the slave is stuck and we as master send dummy clock cycles to end its wait */
-#define I2C_HIGH(p)   do { NRF_GPIO->OUTSET = (1UL << (p)); } while(0)   /*!< Pulls I2C line high */
-#define I2C_LOW(p)    do { NRF_GPIO->OUTCLR = (1UL << (p)); } while(0)   /*!< Pulls I2C line low  */
-#define I2C_INPUT(p)  do { NRF_GPIO->DIRCLR = (1UL << (p)); } while(0)   /*!< Configures I2C pin as input  */
-#define I2C_OUTPUT(p) do { NRF_GPIO->DIRSET = (1UL << (p)); } while(0)   /*!< Configures I2C pin as output */
+#define I2C_HIGH(p)   do { IOPORT1->OUTSET = (1UL << (p)); } while(0)   /*!< Pulls I2C line high */
+#define I2C_LOW(p)    do { IOPORT1->OUTCLR = (1UL << (p)); } while(0)   /*!< Pulls I2C line low  */
+#define I2C_INPUT(p)  do { IOPORT1->DIRCLR = (1UL << (p)); } while(0)   /*!< Configures I2C pin as input  */
+#define I2C_OUTPUT(p) do { IOPORT1->DIRSET = (1UL << (p)); } while(0)   /*!< Configures I2C pin as output */
 
 #define I2C_PIN_CNF \
       ((GPIO_PIN_CNF_SENSE_Disabled  << GPIO_PIN_CNF_SENSE_Pos) \
@@ -52,12 +52,12 @@
       | (GPIO_PIN_CNF_INPUT_Connect  << GPIO_PIN_CNF_INPUT_Pos) \
       | (GPIO_PIN_CNF_DIR_Output     << GPIO_PIN_CNF_DIR_Pos))
 
-#if NRF51_I2C_USE_I2C0
+#if NRF5_I2C_USE_I2C0
 #define I2C_IRQ_NUM     SPI0_TWI0_IRQn
-#define I2C_IRQ_PRI     NRF51_I2C_I2C0_IRQ_PRIORITY
-#elif NRF51_I2C_USE_I2C1
+#define I2C_IRQ_PRI     NRF5_I2C_I2C0_IRQ_PRIORITY
+#elif NRF5_I2C_USE_I2C1
 #define I2C_IRQ_NUM     SPI1_TWI1_IRQn
-#define I2C_IRQ_PRI     NRF51_I2C_I2C1_IRQ_PRIORITY
+#define I2C_IRQ_PRI     NRF5_I2C_I2C1_IRQ_PRIORITY
 #endif
 
 /*===========================================================================*/
@@ -67,14 +67,14 @@
 /**
  * @brief   I2C0 driver identifier.
  */
-#if NRF51_I2C_USE_I2C0 || defined(__DOXYGEN__)
+#if NRF5_I2C_USE_I2C0 || defined(__DOXYGEN__)
 I2CDriver I2CD1;
 #endif
 
 /**
  * @brief   I2C1 driver identifier.
  */
-#if NRF51_I2C_USE_I2C1 || defined(__DOXYGEN__)
+#if NRF5_I2C_USE_I2C1 || defined(__DOXYGEN__)
 I2CDriver I2CD2;
 #endif
 
@@ -102,14 +102,14 @@ static void i2c_clear_bus(I2CDriver *i2cp)
   const I2CConfig *cfg = i2cp->config;
   int i;
 
-  NRF_GPIO->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF;
-  NRF_GPIO->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF;
+  IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF;
+  IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF;
 
   I2C_HIGH(cfg->sda_pad);
   I2C_HIGH(cfg->scl_pad);
 
-  NRF_GPIO->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF_CLR;
-  NRF_GPIO->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF_CLR;
+  IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF_CLR;
+  IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF_CLR;
 
   nrf_delay_us(4);
 
@@ -165,7 +165,10 @@ static void serve_interrupt(I2CDriver *i2cp) {
   if(i2c->EVENTS_TXDSENT) {
 
     i2c->EVENTS_TXDSENT = 0;
-
+#if CORTEX_MODEL >= 4
+    (void)i2c->EVENTS_TXDSENT;
+#endif
+    
     if(--i2cp->txbytes) {
 
       i2c->TXD = *i2cp->txptr++;
@@ -182,6 +185,10 @@ static void serve_interrupt(I2CDriver *i2cp) {
   if(i2c->EVENTS_RXDREADY) {
 
     i2c->EVENTS_RXDREADY = 0;
+#if CORTEX_MODEL >= 4
+    (void)i2c->EVENTS_RXDREADY;
+#endif
+    
     *i2cp->rxptr++ = i2c->RXD;
 
     if(--i2cp->rxbytes) {
@@ -194,7 +201,9 @@ static void serve_interrupt(I2CDriver *i2cp) {
 
     uint32_t err = i2c->ERRORSRC;
     i2c->EVENTS_ERROR = 0;
-
+#if CORTEX_MODEL >= 4
+    (void)i2c->EVENTS_ERROR;
+#endif
     if (err & TWI_ERRORSRC_OVERRUN_Msk)
       i2cp->errors |= I2C_OVERRUN;
     if (err & (TWI_ERRORSRC_ANACK_Msk | TWI_ERRORSRC_DNACK_Msk))
@@ -206,6 +215,9 @@ static void serve_interrupt(I2CDriver *i2cp) {
 
     stop_count++;
     i2c->EVENTS_STOPPED = 0;
+#if CORTEX_MODEL >= 4
+    (void)i2c->EVENTS_STOPPED;
+#endif
     _i2c_wakeup_isr(i2cp);
   }
 }
@@ -214,7 +226,7 @@ static void serve_interrupt(I2CDriver *i2cp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if NRF51_I2C_USE_I2C0 || defined(__DOXYGEN__)
+#if NRF5_I2C_USE_I2C0 || defined(__DOXYGEN__)
 
 OSAL_IRQ_HANDLER(Vector4C) {
 
@@ -225,7 +237,7 @@ OSAL_IRQ_HANDLER(Vector4C) {
 
 #endif
 
-#if NRF51_I2C_USE_I2C1 || defined(__DOXYGEN__)
+#if NRF5_I2C_USE_I2C1 || defined(__DOXYGEN__)
 
 OSAL_IRQ_HANDLER(Vector50) {
 
@@ -247,13 +259,13 @@ OSAL_IRQ_HANDLER(Vector50) {
  */
 void i2c_lld_init(void) {
 
-#if NRF51_I2C_USE_I2C0
+#if NRF5_I2C_USE_I2C0
   i2cObjectInit(&I2CD1);
   I2CD1.thread = NULL;
   I2CD1.i2c = NRF_TWI0;
 #endif
 
-#if NRF51_I2C_USE_I2C1
+#if NRF5_I2C_USE_I2C1
   i2cObjectInit(&I2CD2);
   I2CD2.thread = NULL;
   I2CD2.i2c = NRF_TWI1;
@@ -278,14 +290,23 @@ void i2c_lld_start(I2CDriver *i2cp) {
 
   i2c_clear_bus(i2cp);
 
-  NRF_GPIO->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF;
-  NRF_GPIO->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF;
+  IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF;
+  IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF;
 
   i2c->EVENTS_RXDREADY = 0;
   i2c->EVENTS_TXDSENT = 0;
+#if CORTEX_MODEL >= 4
+  (void)i2c->EVENTS_RXDREADY;
+  (void)i2c->EVENTS_TXDSENT;
+#endif
+#if NRF_SERIES == 51
   i2c->PSELSCL = cfg->scl_pad;
   i2c->PSELSDA = cfg->sda_pad;
-
+#else
+  i2c->PSEL.SCL = cfg->scl_pad;
+  i2c->PSEL.SDA = cfg->sda_pad;
+#endif
+  
   switch (cfg->clock) {
     case 100000:
       i2c->FREQUENCY = TWI_FREQUENCY_FREQUENCY_K100 << TWI_FREQUENCY_FREQUENCY_Pos;
@@ -330,8 +351,8 @@ void i2c_lld_stop(I2CDriver *i2cp) {
 
     nvicDisableVector(I2C_IRQ_NUM);
 
-    NRF_GPIO->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF_CLR;
-    NRF_GPIO->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF_CLR;
+    IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF_CLR;
+    IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF_CLR;
   }
 }
 

@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    st_lld.h
- * @brief   NRF51822 ST subsystem low level driver header.
+ * @file    NRF5/LLD/st_lld.h
+ * @brief   NRF5 ST subsystem low level driver header.
  * @details This header is designed to be include-able without having to
  *          include other files from the HAL.
  *
@@ -39,41 +39,38 @@
 
 /**
  * @brief   Use RTC0 to generates system ticks
+ *
+ * @note    Avoid using RTC0, as PPI has pre-programmed channels on it
+ *          that can be used to control RADIO or TIMER0
  */
-#if !defined(NRF51_ST_USE_RTC0) || defined(__DOXYGEN__)
-#if !defined(SOFTDEVICE_PRESENT)
-#define NRF51_ST_USE_RTC0        TRUE
-#else
-#define NRF51_ST_USE_RTC0        FALSE
-#endif
+#if !defined(NRF5_ST_USE_RTC0) || defined(__DOXYGEN__)
+#define NRF5_ST_USE_RTC0        FALSE
 #endif
 
 /**
  * @brief   Use RTC1 to generates system ticks
  */
-#if !defined(NRF51_ST_USE_RTC1) || defined(__DOXYGEN__)
-#if !defined(SOFTDEVICE_PRESENT)
-#define NRF51_ST_USE_RTC1        FALSE
-#else
-#define NRF51_ST_USE_RTC1        TRUE
-#endif
+#if !defined(NRF5_ST_USE_RTC1) || defined(__DOXYGEN__)
+#define NRF5_ST_USE_RTC1        TRUE
 #endif
 
 /**
  * @brief   Use TIMER0 to generates system ticks
+ *
+ * @note    Avoid using TIMER0 as it will draw more current
  */
-#if !defined(NRF51_ST_USE_TIMER0) || defined(__DOXYGEN__)
-#define NRF51_ST_USE_TIMER0      FALSE
+#if !defined(NRF5_ST_USE_TIMER0) || defined(__DOXYGEN__)
+#define NRF5_ST_USE_TIMER0      FALSE
 #endif
 
 /**
  * @brief   ST interrupt priority level setting.
  */
-#if !defined(NRF51_ST_PRIORITY) || defined(__DOXYGEN__)
+#if !defined(NRF5_ST_PRIORITY) || defined(__DOXYGEN__)
 #if !defined(SOFTDEVICE_PRESENT)
-#define NRF51_ST_PRIORITY        1
+#define NRF5_ST_PRIORITY        CORTEX_MAX_KERNEL_PRIORITY
 #else
-#define NRF51_ST_PRIORITY        1
+#define NRF5_ST_PRIORITY        1
 #endif
 #endif
 
@@ -82,32 +79,32 @@
 /*===========================================================================*/
 
 #if OSAL_ST_MODE != OSAL_ST_MODE_NONE
-#if (NRF51_ST_USE_TIMER0 == TRUE) && (NRF51_GPT_USE_TIMER0 == TRUE)
+#if (NRF5_ST_USE_TIMER0 == TRUE) && (NRF5_GPT_USE_TIMER0 == TRUE)
 #error "TIMER0 already used by GPT driver"
 #endif
 
-#if (NRF51_ST_USE_RTC0   == FALSE) && \
-    (NRF51_ST_USE_RTC1   == FALSE) && \
-    (NRF51_ST_USE_TIMER0 == FALSE)
+#if (NRF5_ST_USE_RTC0   == FALSE) && \
+    (NRF5_ST_USE_RTC1   == FALSE) && \
+    (NRF5_ST_USE_TIMER0 == FALSE)
 #error "One clock source is needed, enable one (RTC0, RTC1, or TIMER0)"
 #endif
 
-#if ((NRF51_ST_USE_RTC0   == TRUE ? 1 : 0) + \
-     (NRF51_ST_USE_RTC1   == TRUE ? 1 : 0) + \
-     (NRF51_ST_USE_TIMER0 == TRUE ? 1 : 0)) > 1
+#if ((NRF5_ST_USE_RTC0   == TRUE ? 1 : 0) + \
+     (NRF5_ST_USE_RTC1   == TRUE ? 1 : 0) + \
+     (NRF5_ST_USE_TIMER0 == TRUE ? 1 : 0)) > 1
 #error "Only one clock source can be used (RTC0, RTC1, or TIMER0)"
 #endif
 
 #if defined(SOFTDEVICE_PRESENT)
-#if NRF51_ST_USE_RTC0 == TRUE
+#if NRF5_ST_USE_RTC0 == TRUE
 #error "RTC0 cannot be used for system ticks when SOFTDEVICE present"
 #endif
 
-#if NRF51_ST_USE_TIMER0 == TRUE
+#if NRF5_ST_USE_TIMER0 == TRUE
 #error "TIMER0 cannot be used for system ticks when SOFTDEVICE present"
 #endif
 
-#if NRF51_ST_PRIORITY != 1
+#if NRF5_ST_PRIORITY != 1
 #error "ST priority must be 1 when SOFTDEVICE present"
 #endif
 
@@ -118,14 +115,15 @@
 #if defined(CH_CFG_ST_TIMEDELTA) && (CH_CFG_ST_TIMEDELTA < 5)
 #error "CH_CFG_ST_TIMEDELTA is too low"
 #endif
-#if NRF51_ST_USE_TIMER0 == TRUE
+#if NRF5_ST_USE_TIMER0 == TRUE
 #error "Freeruning (tick-less) mode not supported with TIMER, use RTC"
 #endif
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */
 
-#if !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_ST_PRIORITY)
+#if !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_ST_PRIORITY)
 #error "Invalid IRQ priority assigned to ST driver"
 #endif
+
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
@@ -159,13 +157,13 @@ extern "C" {
  * @notapi
  */
 static inline systime_t st_lld_get_counter(void) {
-#if NRF51_ST_USE_RTC0 == TRUE
+#if NRF5_ST_USE_RTC0 == TRUE
   return (systime_t)NRF_RTC0->COUNTER;
 #endif
-#if NRF51_ST_USE_RTC1 == TRUE
+#if NRF5_ST_USE_RTC1 == TRUE
   return (systime_t)NRF_RTC1->COUNTER;
 #endif
-#if NRF51_ST_USE_TIMER0 == TRUE
+#if NRF5_ST_USE_TIMER0 == TRUE
   return (systime_t)0;
 #endif
 }
@@ -180,17 +178,23 @@ static inline systime_t st_lld_get_counter(void) {
  * @notapi
  */
 static inline void st_lld_start_alarm(systime_t abstime) {
-#if NRF51_ST_USE_RTC0 == TRUE
+#if NRF5_ST_USE_RTC0 == TRUE
   NRF_RTC0->CC[0]               = abstime;
   NRF_RTC0->EVENTS_COMPARE[0]   = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC0->EVENTS_COMPARE[0];
+#endif
   NRF_RTC0->EVTENSET            = RTC_EVTENSET_COMPARE0_Msk;
 #endif
-#if NRF51_ST_USE_RTC1 == TRUE
+#if NRF5_ST_USE_RTC1 == TRUE
   NRF_RTC1->CC[0]               = abstime;
   NRF_RTC1->EVENTS_COMPARE[0]   = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC1->EVENTS_COMPARE[0];
+#endif
   NRF_RTC1->EVTENSET            = RTC_EVTENSET_COMPARE0_Msk;
 #endif
-#if NRF51_ST_USE_TIMER0 == TRUE
+#if NRF5_ST_USE_TIMER0 == TRUE
   (void)abstime;
 #endif
 }
@@ -201,13 +205,19 @@ static inline void st_lld_start_alarm(systime_t abstime) {
  * @notapi
  */
 static inline void st_lld_stop_alarm(void) {
-#if NRF51_ST_USE_RTC0 == TRUE
+#if NRF5_ST_USE_RTC0 == TRUE
   NRF_RTC0->EVTENCLR            = RTC_EVTENCLR_COMPARE0_Msk;
   NRF_RTC0->EVENTS_COMPARE[0]   = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC0->EVENTS_COMPARE[0];
 #endif
-#if NRF51_ST_USE_RTC1 == TRUE
+#endif
+#if NRF5_ST_USE_RTC1 == TRUE
   NRF_RTC1->EVTENCLR            = RTC_EVTENCLR_COMPARE0_Msk;
   NRF_RTC1->EVENTS_COMPARE[0]   = 0;
+#if CORTEX_MODEL >= 4
+  (void)NRF_RTC1->EVENTS_COMPARE[0];
+#endif
 #endif
 }
 
@@ -219,13 +229,13 @@ static inline void st_lld_stop_alarm(void) {
  * @notapi
  */
 static inline void st_lld_set_alarm(systime_t abstime) {
-#if NRF51_ST_USE_RTC0 == TRUE
+#if NRF5_ST_USE_RTC0 == TRUE
     NRF_RTC0->CC[0]             = abstime;
 #endif
-#if NRF51_ST_USE_RTC1 == TRUE
+#if NRF5_ST_USE_RTC1 == TRUE
     NRF_RTC1->CC[0]             = abstime;
 #endif
-#if NRF51_ST_USE_TIMER0 == TRUE
+#if NRF5_ST_USE_TIMER0 == TRUE
   (void)abstime;
 #endif
 }
@@ -238,13 +248,13 @@ static inline void st_lld_set_alarm(systime_t abstime) {
  * @notapi
  */
 static inline systime_t st_lld_get_alarm(void) {
-#if NRF51_ST_USE_RTC0 == TRUE
+#if NRF5_ST_USE_RTC0 == TRUE
   return (systime_t)NRF_RTC0->CC[0];
 #endif
-#if NRF51_ST_USE_RTC1 == TRUE
+#if NRF5_ST_USE_RTC1 == TRUE
   return (systime_t)NRF_RTC1->CC[0];
 #endif
-#if NRF51_ST_USE_TIMER0 == TRUE
+#if NRF5_ST_USE_TIMER0 == TRUE
   return (systime_t)0;
 #endif
 }
@@ -259,13 +269,13 @@ static inline systime_t st_lld_get_alarm(void) {
  * @notapi
  */
 static inline bool st_lld_is_alarm_active(void) {
-#if NRF51_ST_USE_RTC0 == TRUE
+#if NRF5_ST_USE_RTC0 == TRUE
   return NRF_RTC0->EVTEN & RTC_EVTEN_COMPARE0_Msk;
 #endif
-#if NRF51_ST_USE_RTC1 == TRUE
+#if NRF5_ST_USE_RTC1 == TRUE
   return NRF_RTC1->EVTEN & RTC_EVTEN_COMPARE0_Msk;
 #endif
-#if NRF51_ST_USE_TIMER0 == TRUE
+#if NRF5_ST_USE_TIMER0 == TRUE
   return false;
 #endif
 }

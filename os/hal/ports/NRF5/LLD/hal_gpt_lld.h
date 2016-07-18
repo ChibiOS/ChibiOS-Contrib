@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51x22/gpt_lld.h
- * @brief   NRF51x22 GPT subsystem low level driver header.
+ * @file    NRF5/LLD/gpt_lld.h
+ * @brief   NRF5 GPT subsystem low level driver header.
  *
  * @addtogroup GPT
  * @{
@@ -44,8 +44,8 @@
  * @details If set to @p TRUE the support for GPTD1 is included.
  * @note    The default is @p TRUE.
  */
-#if !defined(NRF51_GPT_USE_TIMER0) || defined(__DOXYGEN__)
-#define NRF51_GPT_USE_TIMER0                  FALSE
+#if !defined(NRF5_GPT_USE_TIMER0) || defined(__DOXYGEN__)
+#define NRF5_GPT_USE_TIMER0                  FALSE
 #endif
 
 /**
@@ -53,8 +53,8 @@
  * @details If set to @p TRUE the support for GPTD2 is included.
  * @note    The default is @p TRUE.
  */
-#if !defined(NRF51_GPT_USE_TIMER1) || defined(__DOXYGEN__)
-#define NRF51_GPT_USE_TIMER1                  FALSE
+#if !defined(NRF5_GPT_USE_TIMER1) || defined(__DOXYGEN__)
+#define NRF5_GPT_USE_TIMER1                  FALSE
 #endif
 
 /**
@@ -62,29 +62,29 @@
  * @details If set to @p TRUE the support for GPTD3 is included.
  * @note    The default is @p TRUE.
  */
-#if !defined(NRF51_GPT_USE_TIMER2) || defined(__DOXYGEN__)
-#define NRF51_GPT_USE_TIMER2                  FALSE
+#if !defined(NRF5_GPT_USE_TIMER2) || defined(__DOXYGEN__)
+#define NRF5_GPT_USE_TIMER2                  FALSE
 #endif
 
 /**
  * @brief   GPTD1 interrupt priority level setting.
  */
-#if !defined(NRF51_GPT_TIMER0_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_GPT_TIMER0_IRQ_PRIORITY         3
+#if !defined(NRF5_GPT_TIMER0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_GPT_TIMER0_IRQ_PRIORITY         3
 #endif
 
 /**
  * @brief   GPTD2 interrupt priority level setting.
  */
-#if !defined(NRF51_GPT_TIMER1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_GPT_TIMER1_IRQ_PRIORITY         3
+#if !defined(NRF5_GPT_TIMER1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_GPT_TIMER1_IRQ_PRIORITY         3
 #endif
 
 /**
  * @brief   GPTD3 interrupt priority level setting.
  */
-#if !defined(NRF51_GPT_TIMER2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF51_GPT_TIMER2_IRQ_PRIORITY         3
+#if !defined(NRF5_GPT_TIMER2_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_GPT_TIMER2_IRQ_PRIORITY         3
 #endif
 /** @} */
 
@@ -92,23 +92,23 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if !NRF51_GPT_USE_TIMER0 && !NRF51_GPT_USE_TIMER1 &&                         \
-    !NRF51_GPT_USE_TIMER2
+#if !NRF5_GPT_USE_TIMER0 && !NRF5_GPT_USE_TIMER1 &&                         \
+    !NRF5_GPT_USE_TIMER2
 #error "GPT driver activated but no TIMER peripheral assigned"
 #endif
 
-#if NRF51_GPT_USE_TIMER0 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_GPT_TIMER0_IRQ_PRIORITY)
+#if NRF5_GPT_USE_TIMER0 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_GPT_TIMER0_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIMER0"
 #endif
 
-#if NRF51_GPT_USE_TIMER1 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_GPT_TIMER1_IRQ_PRIORITY)
+#if NRF5_GPT_USE_TIMER1 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_GPT_TIMER1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIMER1"
 #endif
 
-#if NRF51_GPT_USE_TIMER2 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(NRF51_GPT_TIMER2_IRQ_PRIORITY)
+#if NRF5_GPT_USE_TIMER2 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_GPT_TIMER2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIMER2"
 #endif
 
@@ -120,16 +120,16 @@
  * @brief   GPT frequency type.
  */
 typedef enum {
-  NRF51_GPT_FREQ_31250HZ = 31250,
-  NRF51_GPT_FREQ_62500HZ = 62500,
-  NRF51_GPT_FREQ_125KHZ = 125000,
-  NRF51_GPT_FREQ_250KHZ = 250000,
-  NRF51_GPT_FREQ_500KHZ = 500000,
-  NRF51_GPT_FREQ_1MHZ = 1000000,
-  NRF51_GPT_FREQ_2MHZ = 2000000,
-  NRF51_GPT_FREQ_4MHZ = 4000000,
-  NRF51_GPT_FREQ_8MHZ = 8000000,
-  NRF51_GPT_FREQ_16MHZ = 16000000,
+  NRF5_GPT_FREQ_31250HZ = 31250,
+  NRF5_GPT_FREQ_62500HZ = 62500,
+  NRF5_GPT_FREQ_125KHZ = 125000,
+  NRF5_GPT_FREQ_250KHZ = 250000,
+  NRF5_GPT_FREQ_500KHZ = 500000,
+  NRF5_GPT_FREQ_1MHZ = 1000000,
+  NRF5_GPT_FREQ_2MHZ = 2000000,
+  NRF5_GPT_FREQ_4MHZ = 4000000,
+  NRF5_GPT_FREQ_8MHZ = 8000000,
+  NRF5_GPT_FREQ_16MHZ = 16000000,
 } gptfreq_t;
 
 /**
@@ -231,15 +231,15 @@ struct GPTDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if NRF51_GPT_USE_TIMER0 && !defined(__DOXYGEN__)
+#if NRF5_GPT_USE_TIMER0 && !defined(__DOXYGEN__)
 extern GPTDriver GPTD1;
 #endif
 
-#if NRF51_GPT_USE_TIMER1 && !defined(__DOXYGEN__)
+#if NRF5_GPT_USE_TIMER1 && !defined(__DOXYGEN__)
 extern GPTDriver GPTD2;
 #endif
 
-#if NRF51_GPT_USE_TIMER2 && !defined(__DOXYGEN__)
+#if NRF5_GPT_USE_TIMER2 && !defined(__DOXYGEN__)
 extern GPTDriver GPTD3;
 #endif
 

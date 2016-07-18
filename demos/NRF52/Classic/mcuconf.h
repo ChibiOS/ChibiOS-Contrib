@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2015 Fabio Utzig
+    Copyright (C) 2016 Stephane D'Alu
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,15 +17,36 @@
 #ifndef _MCUCONF_H_
 #define _MCUCONF_H_
 
-/* Possible value for NRF5_LFCLK_SOURCE are 0=RC, 1=XTAL, 2=Synth */
-#define NRF5_LFCLK_SOURCE 0
+/*
+ * Board setting
+ */
+
+
+#define NRF5_SOFTDEVICE_THREAD_WA_SIZE 128
+
+#define SHELL_CMD_TEST_ENABLED FALSE
+#define SHELL_CMD_ECHO_ENABLED FALSE
+#define SHELL_CMD_INFO_ENABLED FALSE
+
+
+
+
+#define NRF5_SOFTDEVICE_LFCLK_SOURCE   NRF_CLOCK_LF_SRC_XTAL
+#define NRF5_SOFTDEVICE_LFCLK_ACCURACY NRF_CLOCK_LF_XTAL_ACCURACY_20_PPM
+
 
 /*
  * HAL driver system settings.
  */
 #define NRF5_SERIAL_USE_UART0             TRUE
-#define NRF5_ST_USE_RTC0                  TRUE
-#define NRF5_ST_USE_RTC1                  FALSE
-#define NRF5_ST_USE_TIMER0                FALSE
+#define NRF5_SERIAL_USE_HWFLOWCTRL	   TRUE
+#define NRF5_RNG_USE_RNG0 		   TRUE
+#define NRF5_GPT_USE_TIMER0 		   TRUE
+
+#define NRF5_QEI_USE_QDEC0 TRUE
+#define NRF5_QEI_USE_LED   FALSE
+
+#define WDG_USE_TIMEOUT_CALLBACK    TRUE
+
 
 #endif /* _MCUCONF_H_ */

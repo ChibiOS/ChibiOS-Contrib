@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    pal_lld.h
- * @brief   NRF51822 PAL subsystem low level driver header.
+ * @file    NRF5/LLD/hal_pal_lld.h
+ * @brief   NRF5 PAL subsystem low level driver header.
  *
  * @addtogroup PAL
  * @{
@@ -128,7 +128,11 @@ typedef NRF_GPIO_Type *ioportid_t;
  * @details Low level drivers can define multiple ports, it is suggested to
  *          use this naming convention.
  */
+#if   NRF_SERIES == 51
 #define IOPORT1         NRF_GPIO
+#else
+#define IOPORT1         NRF_P0
+#endif
 
 /*===========================================================================*/
 /* Implementation, some of the following macros could be implemented as      */
@@ -299,7 +303,7 @@ typedef NRF_GPIO_Type *ioportid_t;
  */
 #define pal_lld_togglepad(port, pad)                                        \
   do {                                                                      \
-    uint8_t bit = (IOPORT1->IN >> (pad)) & 1;                               \
+    uint8_t bit = (IOPORT1->OUT >> (pad)) & 1;                              \
     if (bit)                                                                \
       IOPORT1->OUTCLR = 1 << (pad);                                         \
     else                                                                    \
