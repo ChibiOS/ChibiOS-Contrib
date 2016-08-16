@@ -117,13 +117,10 @@ static uint32_t calc_eccps(NANDDriver *nandp) {
  * @notapi
  */
 static void nand_ready_isr_enable(NANDDriver *nandp) {
-#if STM32_NAND_USE_EXT_INT
-  nandp->config->ext_nand_isr_enable();
-#else
+
   nandp->nand->SR &= ~(FSMC_SR_IRS | FSMC_SR_ILS | FSMC_SR_IFS |
-                                          FSMC_SR_ILEN | FSMC_SR_IFEN);
+                                    FSMC_SR_ILEN | FSMC_SR_IFEN);
   nandp->nand->SR |= FSMC_SR_IREN;
-#endif
 }
 
 /**
@@ -134,11 +131,8 @@ static void nand_ready_isr_enable(NANDDriver *nandp) {
  * @notapi
  */
 static void nand_ready_isr_disable(NANDDriver *nandp) {
-#if STM32_NAND_USE_EXT_INT
-  nandp->config->ext_nand_isr_disable();
-#else
+
   nandp->nand->SR &= ~FSMC_SR_IREN;
-#endif
 }
 
 /**
@@ -152,10 +146,8 @@ static void nand_isr_handler (NANDDriver *nandp) {
 
   osalSysLockFromISR();
 
-#if !STM32_NAND_USE_EXT_INT
   osalDbgCheck(nandp->nand->SR & FSMC_SR_IRS); /* spurious interrupt happened */
   nandp->nand->SR &= ~FSMC_SR_IRS;
-#endif
 
   switch (nandp->state){
   case NAND_READ:

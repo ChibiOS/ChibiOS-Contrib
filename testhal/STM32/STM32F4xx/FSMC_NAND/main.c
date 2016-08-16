@@ -56,8 +56,6 @@
  ******************************************************************************
  */
 
-#define USE_BAD_MAP               TRUE
-
 #define USE_KILL_BLOCK_TEST       FALSE
 
 #define FSMCNAND_TIME_SET         ((uint32_t) 2) //(8nS)
@@ -74,7 +72,7 @@
 #define NAND_COL_WRITE_CYCLES     2
 
 #define NAND_TEST_START_BLOCK     1200
-#define NAND_TEST_END_BLOCK       1220
+#define NAND_TEST_END_BLOCK       1300
 
 #if USE_KILL_BLOCK_TEST
 #define NAND_TEST_KILL_BLOCK      8000
@@ -88,6 +86,8 @@
 #error "You should enable at least one NAND interface"
 #endif
 
+#define BAD_MAP_LEN     (NAND_BLOCKS_COUNT / (sizeof(bitmap_word_t) * 8))
+
 /*
  ******************************************************************************
  * EXTERNS
@@ -99,11 +99,6 @@
  * PROTOTYPES
  ******************************************************************************
  */
-#if STM32_NAND_USE_EXT_INT
-static void ready_isr_enable(void);
-static void ready_isr_disable(void);
-static void nand_ready_cb(EXTDriver *extp, expchannel_t channel);
-#endif
 
 /*
  ******************************************************************************
@@ -126,14 +121,14 @@ static time_measurement_t tmu_read_data;
 static time_measurement_t tmu_read_spare;
 static time_measurement_t tmu_driver_start;
 
-#if USE_BAD_MAP
-#define BAD_MAP_LEN     (NAND_BLOCKS_COUNT / (sizeof(bitmap_word_t) * 8))
+/*
+ *
+ */
 static bitmap_word_t    badblock_map_array[BAD_MAP_LEN];
 static bitmap_t badblock_map = {
     badblock_map_array,
     BAD_MAP_LEN
 };
-#endif
 
 /*
  *
@@ -147,47 +142,11 @@ static const NANDConfig nandcfg = {
     NAND_COL_WRITE_CYCLES,
     /* stm32 specific fields */
     ((FSMCNAND_TIME_HIZ << 24) | (FSMCNAND_TIME_HOLD << 16) | \
-                                 (FSMCNAND_TIME_WAIT << 8) | FSMCNAND_TIME_SET),
-#if STM32_NAND_USE_EXT_INT
-    ready_isr_enable,
-    ready_isr_disable
-#endif
+                                 (FSMCNAND_TIME_WAIT << 8) | FSMCNAND_TIME_SET)
 };
-
-/**
- *
- */
-#if STM32_NAND_USE_EXT_INT
-static const EXTConfig extcfg = {
-  {
-    {EXT_CH_MODE_DISABLED, NULL},     //0
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},     //4
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOD, nand_ready_cb},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},     //8
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},     //12
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},     //16
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},     //20
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-  }
-};
-#endif /* STM32_NAND_USE_EXT_INT */
 
 static volatile uint32_t BackgroundThdCnt = 0;
+static thread_reference_t background_thd_ptr = NULL;
 
 #if USE_KILL_BLOCK_TEST
 static uint32_t KillCycle = 0;
@@ -202,25 +161,10 @@ static uint32_t KillCycle = 0;
  */
 static void nand_wp_assert(void)   {palClearPad(GPIOB, GPIOB_NAND_WP);}
 static void nand_wp_release(void)  {palSetPad(GPIOB, GPIOB_NAND_WP);}
-static void red_led_on(void)       {palSetPad(GPIOI, GPIOI_LED_R);}
+//static void red_led_on(void)       {palSetPad(GPIOI, GPIOI_LED_R);}
 static void red_led_off(void)      {palClearPad(GPIOI, GPIOI_LED_R);}
-
-#if STM32_NAND_USE_EXT_INT
-static void nand_ready_cb(EXTDriver *extp, expchannel_t channel){
-  (void)extp;
-  (void)channel;
-
-  NAND.isr_handler(&NAND);
-}
-
-static void ready_isr_enable(void) {
-  extChannelEnable(&EXTD1, GPIOD_NAND_RB_NWAIT);
-}
-
-static void ready_isr_disable(void) {
-  extChannelDisable(&EXTD1, GPIOD_NAND_RB_NWAIT);
-}
-#endif /* STM32_NAND_USE_EXT_INT */
+static void red_led_toggle(void)   {palTogglePad(GPIOI, GPIOI_LED_R);}
+static void green_led_toggle(void) {palTogglePad(GPIOI, GPIOI_LED_G);}
 
 /**
  *
@@ -467,8 +411,6 @@ static void general_test (NANDDriver *nandp, size_t first,
   uint8_t op_status;
   uint32_t recc, wecc;
 
-  red_led_on();
-
   /* initialize time measurement units */
   chTMObjectInit(&tmu_erase);
   chTMObjectInit(&tmu_write_data);
@@ -478,6 +420,7 @@ static void general_test (NANDDriver *nandp, size_t first,
 
   /* perform basic checks */
   for (block=first; block<last; block++){
+    red_led_toggle();
     if (!nandIsBad(nandp, block)){
       if (!is_erased(nandp, block)){
         op_status = nandErase(nandp, block);
@@ -488,6 +431,7 @@ static void general_test (NANDDriver *nandp, size_t first,
 
   /* write block with pattern, read it back and compare */
   for (block=first; block<last; block++){
+    red_led_toggle();
     if (!nandIsBad(nandp, block)){
       for (page=0; page<nandp->config->pages_per_block; page++){
         pattern_fill();
@@ -538,17 +482,10 @@ static void general_test (NANDDriver *nandp, size_t first,
   red_led_off();
 }
 
-
 /*
- ******************************************************************************
- * EXPORTED FUNCTIONS
- ******************************************************************************
+ *
  */
-
-/*
- * Application entry point.
- */
-int main(void) {
+static void nand_test(bool use_badblock_map) {
 
   /* performance counters */
   int32_t adc_ints = 0;
@@ -560,40 +497,26 @@ int main(void) {
   uint32_t background_cnt = 0;
   systime_t T = 0;
 
-  /*
-   * System initializations.
-   * - HAL initialization, this also initializes the configured device drivers
-   *   and performs the board-specific initializations.
-   * - Kernel initialization, the main() function becomes a thread and the
-   *   RTOS is active.
-   */
-  halInit();
-  chSysInit();
-
-#if STM32_NAND_USE_EXT_INT
-  extStart(&EXTD1, &extcfg);
-#endif
   chTMObjectInit(&tmu_driver_start);
   chTMStartMeasurementX(&tmu_driver_start);
-#if USE_BAD_MAP
-  nandStart(&NAND, &nandcfg, &badblock_map);
-#else
-  nandStart(&NAND, &nandcfg, NULL);
-#endif
+  if (use_badblock_map) {
+    nandStart(&NAND, &nandcfg, &badblock_map);
+  }
+  else {
+    nandStart(&NAND, &nandcfg, NULL);
+  }
   chTMStopMeasurementX(&tmu_driver_start);
 
   chThdSleepMilliseconds(4000);
 
-  chThdCreateStatic(BackgroundThreadWA,
-        sizeof(BackgroundThreadWA),
-        NORMALPRIO - 20,
-        BackgroundThread,
-        NULL);
-
-  nand_wp_release();
+  BackgroundThdCnt = 0;
+  if (NULL != background_thd_ptr) {
+    background_thd_ptr = chThdCreateStatic(BackgroundThreadWA,
+        sizeof(BackgroundThreadWA), NORMALPRIO - 10, BackgroundThread, NULL);
+  }
 
   /*
-   * run NAND test in parallel with DMA load and background thread
+   * run NAND test in parallel with DMA loads and background thread
    */
   dma_storm_adc_start();
   dma_storm_uart_start();
@@ -601,9 +524,9 @@ int main(void) {
   T = chVTGetSystemTimeX();
   general_test(&NAND, NAND_TEST_START_BLOCK, NAND_TEST_END_BLOCK, 1);
   T = chVTGetSystemTimeX() - T;
-  adc_ints = dma_storm_adc_stop();
+  adc_ints  = dma_storm_adc_stop();
   uart_ints = dma_storm_uart_stop();
-  spi_ints = dma_storm_spi_stop();
+  spi_ints  = dma_storm_spi_stop();
   chSysLock();
   background_cnt = BackgroundThdCnt;
   BackgroundThdCnt = 0;
@@ -632,6 +555,35 @@ int main(void) {
    * perform ECC calculation test
    */
   ecc_test(&NAND, NAND_TEST_END_BLOCK);
+}
+
+/*
+ ******************************************************************************
+ * EXPORTED FUNCTIONS
+ ******************************************************************************
+ */
+
+/*
+ * Application entry point.
+ */
+int main(void) {
+
+
+
+  /*
+   * System initializations.
+   * - HAL initialization, this also initializes the configured device drivers
+   *   and performs the board-specific initializations.
+   * - Kernel initialization, the main() function becomes a thread and the
+   *   RTOS is active.
+   */
+  halInit();
+  chSysInit();
+
+  nand_wp_release();
+
+  nand_test(true);
+  nand_test(false);
 
 #if USE_KILL_BLOCK_TEST
   kill_block(&NAND, NAND_TEST_KILL_BLOCK);
@@ -642,7 +594,9 @@ int main(void) {
   /*
    * Normal main() thread activity, in this demo it does nothing.
    */
+  red_led_off();
   while (true) {
+    green_led_toggle();
     chThdSleepMilliseconds(500);
   }
 }

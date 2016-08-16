@@ -53,6 +53,7 @@ static const SPIConfig spicfg = {
     GPIOA,
     GPIOA_SPI1_NSS,
     0, //SPI_CR1_BR_1 | SPI_CR1_BR_0
+    0
 };
 
 static uint32_t ints;

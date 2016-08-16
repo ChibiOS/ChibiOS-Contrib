@@ -247,15 +247,6 @@ typedef struct {
 #define STM32_FSMC_USE_FSMC1             FALSE
 #endif
 
-/**
- * @brief   Internal FSMC interrupt enable switch
- * @details MCUs in 100-pin package has no dedicated interrupt pin for FSMC.
- *          You have to use EXTI module instead to workaround this issue.
- */
-#if !defined(STM32_NAND_USE_EXT_INT) || defined(__DOXYGEN__)
-#define STM32_NAND_USE_EXT_INT          FALSE
-#endif
-
 /** @} */
 
 /*===========================================================================*/
