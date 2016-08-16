@@ -133,11 +133,6 @@
 /*===========================================================================*/
 
 /**
- * @brief   NAND driver condition flags type.
- */
-typedef uint32_t nandflags_t;
-
-/**
  * @brief   Type of a structure representing an NAND driver.
  */
 typedef struct NANDDriver NANDDriver;
@@ -159,10 +154,6 @@ typedef void (*nandisrswitch_t)(void);
  * @note    It could be empty on some architectures.
  */
 typedef struct {
-  /**
-   * @brief   Pointer to lower level driver.
-   */
-  //const FSMCDriver                *fsmcp;
   /**
    * @brief   Number of erase blocks in NAND device.
    */
