@@ -124,7 +124,7 @@ static time_measurement_t tmu_driver_start;
 /*
  *
  */
-static bitmap_word_t    badblock_map_array[BAD_MAP_LEN];
+static bitmap_word_t badblock_map_array[BAD_MAP_LEN];
 static bitmap_t badblock_map = {
     badblock_map_array,
     BAD_MAP_LEN
@@ -426,6 +426,26 @@ static void general_test (NANDDriver *nandp, size_t first,
         op_status = nandErase(nandp, block);
         osalDbgCheck(0 == (op_status & 1)); /* operation failed */
       }
+    }
+  }
+
+  /* check fail status */
+  for (block=first; block<last; block++){
+    if (!nandIsBad(nandp, block)){
+      if (!is_erased(nandp, block)){
+        op_status = nandErase(nandp, block);
+        osalDbgCheck(0 == (op_status & 1)); /* operation failed */
+      }
+      pattern_fill();
+      op_status = nandWritePageData(nandp, block, 0,
+                    nand_buf, nandp->config->page_data_size, &wecc);
+      osalDbgCheck(0 == (op_status & 1));
+
+      pattern_fill();
+      op_status = nandWritePageData(nandp, block, 0,
+                    nand_buf, nandp->config->page_data_size, &wecc);
+      /* operation must failed here because of write in unerased space */
+      osalDbgCheck(1 == (op_status & 1));
     }
   }
 
