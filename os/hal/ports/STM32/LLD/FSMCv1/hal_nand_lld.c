@@ -493,12 +493,13 @@ void nand_lld_write_cmd(NANDDriver *nandp, uint8_t cmd) {
  */
 uint8_t nand_lld_read_status(NANDDriver *nandp) {
 
-  uint8_t status[1] = {0x01}; /* presume worse */
+  uint8_t status;
+  status = 1; /* presume worse */
 
   nand_lld_write_cmd(nandp, NAND_CMD_STATUS);
-  nand_lld_polled_read_data(nandp, status, 1);
+  nand_lld_polled_read_data(nandp, &status, 1);
 
-  return status[0];
+  return status;
 }
 
 #endif /* HAL_USE_NAND */
