@@ -246,12 +246,6 @@ void Vector46(void) {
   while (1) {
   }
 }
-__attribute__((interrupt(47)))
-void Vector47(void) {
-
-  while (1) {
-  }
-}
 __attribute__((interrupt(48)))
 void Vector48(void) {
 
