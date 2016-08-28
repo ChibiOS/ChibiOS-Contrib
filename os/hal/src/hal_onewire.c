@@ -251,7 +251,6 @@ static void ow_write_bit_I(onewireDriver *owp, ioline_t bit) {
 static void ow_reset_cb(PWMDriver *pwmp, onewireDriver *owp) {
 
   owp->reg.slave_present = (PAL_LOW == ow_read_bit(owp));
-
   osalSysLockFromISR();
   pwmDisableChannelI(pwmp, owp->config->sample_channel);
   osalThreadResumeI(&owp->thread, MSG_OK);
@@ -661,7 +660,7 @@ bool onewireReset(onewireDriver *owp) {
   pwmcfg->channels[mch].callback = NULL;
   pwmcfg->channels[mch].mode = owp->config->pwmmode;
   pwmcfg->channels[sch].callback = pwm_reset_cb;
-  pwmcfg->channels[sch].mode = PWM_OUTPUT_ACTIVE_LOW;
+  pwmcfg->channels[sch].mode = PWM_OUTPUT_DISABLED;
 
   ow_bus_active(owp);
 
@@ -714,7 +713,7 @@ void onewireRead(onewireDriver *owp, uint8_t *rxbuf, size_t rxbytes) {
   pwmcfg->channels[mch].callback = NULL;
   pwmcfg->channels[mch].mode = owp->config->pwmmode;
   pwmcfg->channels[sch].callback = pwm_read_bit_cb;
-  pwmcfg->channels[sch].mode = PWM_OUTPUT_ACTIVE_LOW;
+  pwmcfg->channels[sch].mode = PWM_OUTPUT_DISABLED;
 
   ow_bus_active(owp);
   osalSysLock();
@@ -848,7 +847,7 @@ size_t onewireSearchRom(onewireDriver *owp, uint8_t *result,
     pwmcfg->channels[mch].callback = NULL;
     pwmcfg->channels[mch].mode = owp->config->pwmmode;
     pwmcfg->channels[sch].callback = pwm_search_rom_cb;
-    pwmcfg->channels[sch].mode = PWM_OUTPUT_ACTIVE_LOW;
+    pwmcfg->channels[sch].mode = PWM_OUTPUT_DISABLED;
 
     ow_bus_active(owp);
     osalSysLock();
