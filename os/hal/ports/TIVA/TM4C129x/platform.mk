@@ -34,7 +34,7 @@ ifneq ($(findstring HAL_USE_WDG TRUE,$(HALCONF)),)
 PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/WDT/hal_wdg_lld.c
 endif
 else
-PLATFORMSRC = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
+PLATFORMSRC := ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/TM4C129x/hal_lld.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/GPIO/hal_ext_lld.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/GPIO/hal_pal_lld.c \
@@ -47,9 +47,10 @@ PLATFORMSRC = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/UART/hal_serial_lld.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/uDMA/tiva_udma.c \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/WDT/hal_wdg_lld.c
+endif
 
 # Required include directories
-PLATFORMINC = ${CHIBIOS}/os/hal/ports/common/ARMCMx \
+PLATFORMINC := ${CHIBIOS}/os/hal/ports/common/ARMCMx \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/TM4C129x \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/GPIO \
               ${CHIBIOS_CONTRIB}/os/hal/ports/TIVA/LLD/GPTM \
