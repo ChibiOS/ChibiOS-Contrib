@@ -230,6 +230,9 @@ typedef struct {
      defined(STM32F7))
 #define  FSMC_BCR_CCLKEN          ((uint32_t)1 << 20)
 #endif
+#if (defined(STM32F7))
+#define FSMC_BCR_WFDIS            ((uint32_t)1 << 21)
+#endif
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
