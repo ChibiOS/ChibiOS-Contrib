@@ -15,6 +15,7 @@
     limitations under the License.
 */
 
+#include <string.h>
 #include "hal.h"
 #include "hal_usbh.h"
 #include "usbh/internal.h"
