@@ -364,7 +364,7 @@ qeidelta_t qeiUpdateI(QEIDriver *qeip) {
                 "invalid state");
 
   cnt = qei_lld_get_count(qeip);
-  delta = cnt - qeip->last;
+  delta = (qeicnt_t)(cnt - qeip->last);
   qeip->last = cnt;
 
   return delta;

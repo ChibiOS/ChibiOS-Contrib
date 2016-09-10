@@ -251,7 +251,7 @@ typedef enum {
 /**
  * @brief   QEI counter type.
  */
-typedef uint16_t qeicnt_t;
+typedef int16_t qeicnt_t;
 
 /**
  * @brief   QEI delta type.
