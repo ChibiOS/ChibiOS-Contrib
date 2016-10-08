@@ -388,22 +388,32 @@
  * @brief   Tiva Serial Driver configuration structure.
  * @details An instance of this structure must be passed to @p sdStart()
  *          in order to configure and start a serial driver operations.
+ * @note    This structure content is architecture dependent, each driver
+ *          implementation defines its own version and the custom static
+ *          initializers.
  */
 typedef struct {
   /**
    * @brief Bit rate.
    */
-  uint32_t                  sc_speed;
+  uint32_t                  speed;
   /* End of the mandatory fields. */
   /**
-   * @brief Initialization value for the LCRH (Line Control) register.
+   * @brief Initialization value for the CTL register.
    */
-  uint32_t                  sc_lcrh;
+  uint16_t                  ctl;
   /**
-   * @brief Initialization value for the IFLS (Interrupt FIFO Level Select)
-   * register.
+   * @brief Initialization value for the LCRH register.
    */
-  uint32_t                  sc_ifls;
+  uint8_t                   lcrh;
+  /**
+   * @brief Initialization value for the IFLS register.
+   */
+  uint8_t                   ifls;
+  /**
+   * @brief Initialization value for the CC register.
+   */
+  uint8_t                   cc;
 } SerialConfig;
 
 /**
