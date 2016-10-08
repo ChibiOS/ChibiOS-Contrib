@@ -142,10 +142,10 @@
 #define DES_BASE                0x44038000  // Data Encryption Standard
                                             // Accelerator (DES)
 #define LCD0_BASE               0x44050000  // LCD Controller
-#define ITM_BASE                0xE0000000  // Instrumentation Trace Macrocell
-#define DWT_BASE                0xE0001000  // Data Watchpoint and Trace
-#define FPB_BASE                0xE0002000  // FLASH Patch and Breakpoint
-#define NVIC_BASE               0xE000E000  // Nested Vectored Interrupt Ctrl
-#define TPIU_BASE               0xE0040000  // Trace Port Interface Unit
+// #define ITM_BASE                0xE0000000  // Instrumentation Trace Macrocell
+// #define DWT_BASE                0xE0001000  // Data Watchpoint and Trace
+// #define FPB_BASE                0xE0002000  // FLASH Patch and Breakpoint
+// #define NVIC_BASE               0xE000E000  // Nested Vectored Interrupt Ctrl
+// #define TPIU_BASE               0xE0040000  // Trace Port Interface Unit
 
 #endif // __HW_MEMMAP_H__
