@@ -202,7 +202,11 @@ extern "C" {
  */
 static inline systime_t st_lld_get_counter(void)
 {
+#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   return (systime_t) (((systime_t) 0xffffffff) - TIVA_ST_TIM->TAR);
+#else
+  return 0;
+#endif
 }
 
 /**
@@ -216,9 +220,11 @@ static inline systime_t st_lld_get_counter(void)
  */
 static inline void st_lld_start_alarm(systime_t time)
 {
+#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   TIVA_ST_TIM->TAMATCHR = (systime_t) (((systime_t) 0xffffffff) - time);
   TIVA_ST_TIM->ICR = TIVA_ST_TIM->MIS;
   TIVA_ST_TIM->IMR = GPTM_IMR_TAMIM;
+#endif
 }
 
 /**
@@ -228,7 +234,9 @@ static inline void st_lld_start_alarm(systime_t time)
  */
 static inline void st_lld_stop_alarm(void)
 {
+#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   TIVA_ST_TIM->IMR = 0;
+#endif
 }
 
 /**
@@ -240,7 +248,9 @@ static inline void st_lld_stop_alarm(void)
  */
 static inline void st_lld_set_alarm(systime_t time)
 {
+#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   TIVA_ST_TIM->TAMATCHR = (systime_t) (((systime_t) 0xffffffff) - time);
+#endif
 }
 
 /**
@@ -252,7 +262,11 @@ static inline void st_lld_set_alarm(systime_t time)
  */
 static inline systime_t st_lld_get_alarm(void)
 {
+#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   return (systime_t) (((systime_t)0xffffffff) - TIVA_ST_TIM->TAMATCHR);
+#else
+  return 0;
+#endif
 }
 
 /**
@@ -266,7 +280,11 @@ static inline systime_t st_lld_get_alarm(void)
  */
 static inline bool st_lld_is_alarm_active(void)
 {
+#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   return (bool) ((TIVA_ST_TIM->IMR & GPTM_IMR_TAMIM) !=0);
+#else
+  return false;
+#endif
 }
 
 #endif /* HAL_ST_LLD_H */
