@@ -440,7 +440,7 @@ struct I2CDriver {
   /**
    * @brief     Pointer to the I2Cx registers block.
    */
-  I2C_TypeDef               *i2c;
+  uint32_t                  i2c;
 };
 
 /*===========================================================================*/
