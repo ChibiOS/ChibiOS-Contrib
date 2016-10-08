@@ -82,31 +82,31 @@
 #if !TIVA_HAS_WGPT0
 #error "WGPT0 not present"
 #endif
-#define TIVA_ST_TIM                         WGPT0
+#define TIVA_ST_TIM                         WTIMER0_BASE
 
 #elif TIVA_ST_TIMER_NUMBER == 1
 #if !TIVA_HAS_WGPT1
 #error "WGPT1 not present"
 #endif
-#define TIVA_ST_TIM                         WGPT1
+#define TIVA_ST_TIM                         WTIMER1_BASE
 
 #elif TIVA_ST_TIMER_NUMBER == 2
 #if !TIVA_HAS_WGPT2
 #error "WGPT2 not present"
 #endif
-#define TIVA_ST_TIM                         WGPT2
+#define TIVA_ST_TIM                         WTIMER2_BASE
 
 #elif TIVA_ST_TIMER_NUMBER == 3
 #if !TIVA_HAS_WGPT3
 #error "WGPT3 not present"
 #endif
-#define TIVA_ST_TIM                         WGPT3
+#define TIVA_ST_TIM                         WTIMER3_BASE
 
 #elif TIVA_ST_TIMER_NUMBER == 4
 #if !TIVA_HAS_WGPT4
 #error "WGPT4 not present"
 #endif
-#define TIVA_ST_TIM                         WGPT4
+#define TIVA_ST_TIM                         WTIMER4_BASE
 
 #elif TIVA_ST_TIMER_NUMBER == 5
 #if !TIVA_HAS_WGPT5
@@ -124,37 +124,37 @@
 #if !TIVA_HAS_GPT0
 #error "GPT0 not present"
 #endif
-#define TIVA_ST_TIM                         GPT0
+#define TIVA_ST_TIM                         TIMER0_BASE
 
 #elif TIVA_ST_TIMER_NUMBER == 1
 #if !TIVA_HAS_GPT1
 #error "GPT1 not present"
 #endif
-#define TIVA_ST_TIM                         GPT1
+#define TIVA_ST_TIM                         TIMER1_BASE
 
 #elif TIVA_ST_TIMER_NUMBER == 2
 #if !TIVA_HAS_GPT2
 #error "GPT2 not present"
 #endif
-#define TIVA_ST_TIM                         GPT2
+#define TIVA_ST_TIM                         TIMER2_BASE
 
 #elif TIVA_ST_TIMER_NUMBER == 3
 #if !TIVA_HAS_GPT3
 #error "GPT3 not present"
 #endif
-#define TIVA_ST_TIM                         GPT3
+#define TIVA_ST_TIM                         TIMER3_BASE
 
 #elif TIVA_ST_TIMER_NUMBER == 4
 #if !TIVA_HAS_GPT4
 #error "GPT4 not present"
 #endif
-#define TIVA_ST_TIM                         GPT4
+#define TIVA_ST_TIM                         TIMER4_BASE
 
 #elif TIVA_ST_TIMER_NUMBER == 5
 #if !TIVA_HAS_GPT5
 #error "GPT5 not present"
 #endif
-#define TIVA_ST_TIM                         GPT5
+#define TIVA_ST_TIM                         TIMER5_BASE
 
 #else
 #error "TIVA_ST_TIMER_NUMBER specifies an unsupported timer"
@@ -163,11 +163,6 @@
 #else
 #error "wrong value defined for TIVA_ST_USE_WIDE_TIMER"
 #endif
-
-//#if OSAL_ST_MODE != OSAL_ST_MODE_NONE && \
-//    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_ST_IRQ_PRIORITY)
-//#error "Invalid IRQ priority assigned to ST"
-//#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
@@ -202,11 +197,7 @@ extern "C" {
  */
 static inline systime_t st_lld_get_counter(void)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   return (systime_t) (((systime_t) 0xffffffff) - HWREG(TIVA_ST_TIM + TIMER_O_TAV));
-#else
-  return 0;
-#endif
 }
 
 /**
@@ -220,11 +211,9 @@ static inline systime_t st_lld_get_counter(void)
  */
 static inline void st_lld_start_alarm(systime_t time)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   HWREG(TIVA_ST_TIM + TIMER_O_TAMATCHR) = (systime_t) (((systime_t) 0xffffffff) - time);
   HWREG(TIVA_ST_TIM + TIMER_O_ICR) = HWREG(TIVA_ST_TIM + TIMER_O_MIS);
   HWREG(TIVA_ST_TIM + TIMER_O_IMR) = GPTM_IMR_TAMIM;
-#endif
 }
 
 /**
@@ -234,9 +223,7 @@ static inline void st_lld_start_alarm(systime_t time)
  */
 static inline void st_lld_stop_alarm(void)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   HWREG(TIVA_ST_TIM + TIMER_O_IMR) = 0;
-#endif
 }
 
 /**
@@ -248,9 +235,7 @@ static inline void st_lld_stop_alarm(void)
  */
 static inline void st_lld_set_alarm(systime_t time)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   HWREG(TIVA_ST_TIM + TIMER_O_TAMATCHR) = (systime_t) (((systime_t) 0xffffffff) - time);
-#endif
 }
 
 /**
@@ -262,11 +247,7 @@ static inline void st_lld_set_alarm(systime_t time)
  */
 static inline systime_t st_lld_get_alarm(void)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   return (systime_t) (((systime_t)0xffffffff) - HWREG(TIVA_ST_TIM + TIMER_O_TAMATCHR));
-#else
-  return 0;
-#endif
 }
 
 /**
@@ -280,11 +261,7 @@ static inline systime_t st_lld_get_alarm(void)
  */
 static inline bool st_lld_is_alarm_active(void)
 {
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   return (bool) ((HWREG(TIVA_ST_TIM + TIMER_O_IMR) & GPTM_IMR_TAMIM) !=0);
-#else
-  return false;
-#endif
 }
 
 #endif /* HAL_ST_LLD_H */
