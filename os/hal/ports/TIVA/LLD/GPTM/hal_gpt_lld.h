@@ -405,7 +405,7 @@ struct GPTDriver {
   /**
    * @brief Pointer to the GPT registers block.
    */
-  GPT_TypeDef               *gpt;
+  uint32_t                   gpt;
 };
 
 /*===========================================================================*/
@@ -426,7 +426,7 @@ struct GPTDriver {
  * @notapi
  */
 #define gpt_lld_change_interval(gptp, interval) {                           \
-  gptp->gpt->TAILR = interval - 1;                                          \
+  HWREG(gptp->gpt + TIMER_O_TAILR) = interval - 1;                                          \
 }
 
 /*===========================================================================*/
