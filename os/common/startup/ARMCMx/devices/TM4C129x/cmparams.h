@@ -93,6 +93,7 @@ typedef int IRQn_Type;
 #include "inc/hw_gpio.h"
 #include "inc/hw_uart.h"
 #include "inc/hw_timer.h"
+#include "inc/hw_emac.h"
 
 #if CORTEX_NUM_VECTORS != ((((NUM_INTERRUPTS - 16) + 7) / 8) * 8)
 #error "TivaWare NUM_INTERRUPTS mismatch"

@@ -89,10 +89,10 @@ static uint32_t tb[TIVA_MAC_TRANSMIT_BUFFERS][BUFFER_SIZE];
  */
 static void mii_write(MACDriver *macp, uint32_t reg, uint32_t value)
 {
-  ETH->MIIDATA = value;
-  ETH->MIIADDR = macp->phyaddr | (reg << 6) | MACMIIADDR_CR | EMAC_MIIADDR_MIIW | EMAC_MIIADDR_MIIB;
+  HWREG(EMAC_O_MIIDATA) = value;
+  HWREG(EMAC_O_MIIADDR) = macp->phyaddr | (reg << 6) | MACMIIADDR_CR | EMAC_MIIADDR_MIIW | EMAC_MIIADDR_MIIB;
 
-  while ((ETH->MIIADDR & EMAC_MIIADDR_MIIB) != 0)
+  while ((HWREG(EMAC_O_MIIADDR) & EMAC_MIIADDR_MIIB) != 0)
     ;
 }
 
@@ -126,12 +126,12 @@ static void mii_write_extended(MACDriver *macp, uint32_t reg, uint32_t value)
  */
 static uint32_t mii_read(MACDriver *macp, uint32_t reg)
 {
-  ETH->MIIADDR = macp->phyaddr | (reg << 6) | MACMIIADDR_CR | EMAC_MIIADDR_MIIB;
+  HWREG(EMAC_O_MIIADDR) = macp->phyaddr | (reg << 6) | MACMIIADDR_CR | EMAC_MIIADDR_MIIB;
 
-  while ((ETH->MIIADDR & EMAC_MIIADDR_MIIB) != 0)
+  while ((HWREG(EMAC_O_MIIADDR) & EMAC_MIIADDR_MIIB) != 0)
     ;
 
-  return ETH->MIIDATA;
+  return HWREG(EMAC_O_MIIDATA);
 }
 
 /**
@@ -171,7 +171,7 @@ static void mii_find_phy(MACDriver *macp)
 #endif
     for (i = 0; i < 31; i++) {
       macp->phyaddr = i << 11;
-      ETH->MIIDATA = (i << 6) | MACMIIADDR_CR;
+      HWREG(EMAC_O_MIIDATA) = (i << 6) | MACMIIADDR_CR;
       if ((mii_read(macp, TIVA_ID1) == (BOARD_PHY_ID >> 16)) &&
           ((mii_read(macp, TIVA_ID2) & 0xFFF0) == (BOARD_PHY_ID & 0xFFF0))) {
         return;
@@ -196,20 +196,20 @@ static void mac_lld_set_address(const uint8_t *p)
 {
   /* MAC address configuration, only a single address comparator is used,
      hash table not used.*/
-  ETH->ADDR0H   = ((uint32_t)p[5] << 8) |
+  HWREG(EMAC_O_ADDR0H)   = ((uint32_t)p[5] << 8) |
                   ((uint32_t)p[4] << 0);
-  ETH->ADDR0L   = ((uint32_t)p[3] << 24) |
+  HWREG(EMAC_O_ADDR0L)   = ((uint32_t)p[3] << 24) |
                   ((uint32_t)p[2] << 16) |
                   ((uint32_t)p[1] << 8) |
                   ((uint32_t)p[0] << 0);
-  ETH->ADDR1H   = 0x0000FFFF;
-  ETH->ADDR1L   = 0xFFFFFFFF;
-  ETH->ADDR2H   = 0x0000FFFF;
-  ETH->ADDR2L   = 0xFFFFFFFF;
-  ETH->ADDR3H   = 0x0000FFFF;
-  ETH->ADDR3L   = 0xFFFFFFFF;
-  ETH->HASHTBLH = 0;
-  ETH->HASHTBLL = 0;
+  HWREG(EMAC_O_ADDR1H)   = 0x0000FFFF;
+  HWREG(EMAC_O_ADDR1L)   = 0xFFFFFFFF;
+  HWREG(EMAC_O_ADDR2H)   = 0x0000FFFF;
+  HWREG(EMAC_O_ADDR2L)   = 0xFFFFFFFF;
+  HWREG(EMAC_O_ADDR3H)   = 0x0000FFFF;
+  HWREG(EMAC_O_ADDR3L)   = 0xFFFFFFFF;
+  HWREG(EMAC_O_HASHTBLH) = 0;
+  HWREG(EMAC_O_HASHTBLL) = 0;
 }
 
 /*===========================================================================*/
@@ -222,8 +222,8 @@ CH_IRQ_HANDLER(TIVA_MAC_HANDLER)
 
   CH_IRQ_PROLOGUE();
 
-  dmaris = ETH->DMARIS;
-  ETH->DMARIS = dmaris & 0x0001FFFF; /* Clear status bits.*/
+  dmaris = HWREG(EMAC_O_DMARIS);
+  HWREG(EMAC_O_DMARIS) = dmaris & 0x0001FFFF; /* Clear status bits.*/
 
   if (dmaris & (1 << 6)) {
     /* Data Received.*/
@@ -275,26 +275,26 @@ void mac_lld_init(void)
   }
 
   /* Enable MAC clock */
-  SYSCTL->RCGCEMAC = 1;
-  while (SYSCTL->PREMAC != 0x01)
+  HWREG(SYSCTL_RCGCEMAC) = 1;
+  while (HWREG(SYSCTL_PREMAC) != 0x01)
     ;
 
   /* Set PHYHOLD bit */
-  ETH->PC |= 1;
+  HWREG(EMAC_O_PC) |= 1;
 
   /* Enable PHY clock */
-  SYSCTL->RCGCEPHY = 1;
-  while (SYSCTL->PREPHY != 0x01)
+  HWREG(SYSCTL_RCGCEPHY) = 1;
+  while (HWREG(SYSCTL_PREPHY) != 0x01)
     ;
 
   /* Enable power to PHY */
-  SYSCTL->PCEPHY |= 1;
-  while (SYSCTL->PREPHY != 0x01)
+  HWREG(SYSCTL_PCEPHY) |= 1;
+  while (HWREG(SYSCTL_PREPHY) != 0x01)
     ;
 #if BOARD_PHY_RMII
-  ETH->PC = EMAC_PHY_CONFIG | (0x04 << 28);
+  HWREG(EMAC_O_PC) = EMAC_PHY_CONFIG | (0x04 << 28);
 #else
-  ETH->PC = EMAC_PHY_CONFIG;
+  HWREG(EMAC_O_PC) = EMAC_PHY_CONFIG;
 #endif
 
   /*
@@ -310,12 +310,12 @@ void mac_lld_init(void)
   /* Set done bit after writing EMACPC register */
   mii_write(&ETHD1, TIVA_CFG1, (1 << 15) | mii_read(&ETHD1, TIVA_CFG1));
 
-  while(ETH->DMABUSMOD & 1)
+  while(HWREG(EMAC_O_DMABUSMOD) & 1)
     ;
 
   /* Reset MAC */
-  ETH->DMABUSMOD |= 1;
-  while (ETH->DMABUSMOD & 1)
+  HWREG(EMAC_O_DMABUSMOD) |= 1;
+  while (HWREG(EMAC_O_DMABUSMOD) & 1)
     ;
 
   /* PHY address setup.*/
@@ -344,10 +344,10 @@ void mac_lld_init(void)
 #endif
 
   /* Disable MAC clock */
-  SYSCTL->RCGCEMAC = 0;
+  HWREG(SYSCTL_RCGCEMAC) = 0;
 
   /* Disable PHY clock */
-  SYSCTL->RCGCEPHY = 0;
+  HWREG(SYSCTL_RCGCEPHY) = 0;
 }
 
 /**
@@ -374,13 +374,13 @@ void mac_lld_start(MACDriver *macp)
   macp->txptr = (tiva_eth_tx_descriptor_t *)td;
 
   /* Enable MAC clock */
-  SYSCTL->RCGCEMAC = 1;
-  while (SYSCTL->PREMAC != 0x01)
+  HWREG(SYSCTL_RCGCEMAC) = 1;
+  while (HWREG(SYSCTL_PREMAC) != 0x01)
     ;
 
   /* Enable PHY clock */
-  SYSCTL->RCGCEPHY = 1;
-  while (!SYSCTL->PREPHY)
+  HWREG(SYSCTL_RCGCEPHY) = 1;
+  while (!HWREG(SYSCTL_PREPHY))
     ;
 
   /* ISR vector enabled.*/
@@ -392,9 +392,9 @@ void mac_lld_start(MACDriver *macp)
 #endif
 
   /* MAC configuration.*/
-  ETH->FRAMEFLTR = 0;
-  ETH->FLOWCTL = 0;
-  ETH->VLANTG = 0;
+  HWREG(EMAC_O_FRAMEFLTR) = 0;
+  HWREG(EMAC_O_FLOWCTL) = 0;
+  HWREG(EMAC_O_VLANTG) = 0;
 
   /* MAC address setup.*/
   if (macp->config->mac_address == NULL)
@@ -406,30 +406,30 @@ void mac_lld_start(MACDriver *macp)
      Note that the complete setup of the MAC is performed when the link
      status is detected.*/
 #if TIVA_MAC_IP_CHECKSUM_OFFLOAD
-  ETH->CFG = (1 << 10) | (1 << 3) | (1 << 2);
+  HWREG(EMAC_O_CFG) = (1 << 10) | (1 << 3) | (1 << 2);
 #else
-  ETH->CFG =             (1 << 3) | (1 << 2);
+  HWREG(EMAC_O_CFG) =             (1 << 3) | (1 << 2);
 #endif
 
   /* DMA configuration:
      Descriptor chains pointers.*/
-  ETH->RXDLADDR = (uint32_t)rd;
-  ETH->TXDLADDR = (uint32_t)td;
+  HWREG(EMAC_O_RXDLADDR) = (uint32_t)rd;
+  HWREG(EMAC_O_TXDLADDR) = (uint32_t)td;
 
   /* Enabling required interrupt sources.*/
-  ETH->DMARIS &= 0xFFFF;
-  ETH->DMAIM = (1 << 16) | (1 << 6) | (1 << 0);
+  HWREG(EMAC_O_DMARIS) &= 0xFFFF;
+  HWREG(EMAC_O_DMAIM) = (1 << 16) | (1 << 6) | (1 << 0);
 
   /* DMA general settings.*/
-  ETH->DMABUSMOD = (1 << 25) | (1 << 17) | (1 << 8);
+  HWREG(EMAC_O_DMABUSMOD) = (1 << 25) | (1 << 17) | (1 << 8);
 
   /* Transmit FIFO flush.*/
-  ETH->DMAOPMODE = (1 << 20);
-  while (ETH->DMAOPMODE & (1 << 20))
+  HWREG(EMAC_O_DMAOPMODE) = (1 << 20);
+  while (HWREG(EMAC_O_DMAOPMODE) & (1 << 20))
     ;
 
   /* DMA final configuration and start.*/
-  ETH->DMAOPMODE = (1 << 26) | (1 << 25) | (1 << 21) |
+  HWREG(EMAC_O_DMAOPMODE) = (1 << 26) | (1 << 25) | (1 << 21) |
                         (1 << 13) | (1 << 1);
 }
 
@@ -449,16 +449,16 @@ void mac_lld_stop(MACDriver *macp)
 #endif
 
     /* MAC and DMA stopped.*/
-    ETH->CFG = 0;
-    ETH->DMAOPMODE = 0;
-    ETH->DMAIM = 0;
-    ETH->DMARIS &= 0xFFFF;
+    HWREG(EMAC_O_CFG) = 0;
+    HWREG(EMAC_O_DMAOPMODE) = 0;
+    HWREG(EMAC_O_DMAIM) = 0;
+    HWREG(EMAC_O_DMARIS) &= 0xFFFF;
 
     /* MAC clocks stopped.*/
-    SYSCTL->RCGCEMAC = 0;
+    HWREG(SYSCTL_RCGCEMAC) = 0;
 
     /* PHY clock stopped.*/
-    SYSCTL->RCGCEPHY = 0;
+    HWREG(SYSCTL_RCGCEPHY) = 0;
 
     /* ISR vector disabled.*/
     nvicDisableVector(TIVA_MAC_NUMBER);
@@ -537,9 +537,9 @@ void mac_lld_release_transmit_descriptor(MACTransmitDescriptor *tdp)
   tdp->physdesc->locked = 0;
 
   /* If the DMA engine is stalled then a restart request is issued.*/
-  if ((ETH->DMARIS & (0x7 << 20)) == (6 << 20)) {
-    ETH->DMARIS   = (1 << 2);
-    ETH->TXPOLLD = 1; /* Any value is OK.*/
+  if ((HWREG(EMAC_O_DMARIS) & (0x7 << 20)) == (6 << 20)) {
+    HWREG(EMAC_O_DMARIS)   = (1 << 2);
+    HWREG(EMAC_O_TXPOLLD) = 1; /* Any value is OK.*/
   }
 
   osalSysUnlock();
@@ -616,9 +616,9 @@ void mac_lld_release_receive_descriptor(MACReceiveDescriptor *rdp)
   rdp->physdesc->rdes0 = TIVA_RDES0_OWN;
 
   /* If the DMA engine is stalled then a restart request is issued.*/
-  if ((ETH->STATUS & (0xf << 17)) == (4 << 17)) {
-    ETH->DMARIS   = (1 << 7);
-    ETH->TXPOLLD = 1; /* Any value is OK.*/
+  if ((HWREG(EMAC_O_STATUS) & (0xf << 17)) == (4 << 17)) {
+    HWREG(EMAC_O_DMARIS)   = (1 << 7);
+    HWREG(EMAC_O_TXPOLLD) = 1; /* Any value is OK.*/
   }
 
   osalSysUnlock();
@@ -638,7 +638,7 @@ bool mac_lld_poll_link_status(MACDriver *macp)
 {
   uint32_t maccfg, bmsr, bmcr;
 
-  maccfg = ETH->CFG;
+  maccfg = HWREG(EMAC_O_CFG);
 
   /* PHY CR and SR registers read.*/
   (void)mii_read(macp, MII_BMSR);
@@ -688,7 +688,7 @@ bool mac_lld_poll_link_status(MACDriver *macp)
   }
 
   /* Changes the mode in the MAC.*/
-  ETH->CFG = maccfg;
+  HWREG(EMAC_O_CFG) = maccfg;
 
   /* Returns the link status.*/
   return macp->link_up = true;
