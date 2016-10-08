@@ -60,14 +60,14 @@ static void serve_interrupt(WDGDriver *wdgp)
 {
   uint32_t mis;
 
-  mis = wdgp->wdt->MIS;
+  mis = HWREG(wdgp->wdt + WDT_O_MIS);
 
   if (mis & MIS_WDTMIS) {
     /* Invoke callback, if any */
     if (wdgp->config->callback) {
       if (wdgp->config->callback(wdgp)) {
         /* Clear interrupt */
-        wdgp->wdt->ICR = 0;
+        HWREG(wdgp->wdt + WDT_O_ICR) = 0;
         wdgTivaSyncWrite(wdgp);
       }
     }
@@ -113,12 +113,12 @@ void wdg_lld_init(void)
 {
 #if TIVA_WDG_USE_WDT0
   WDGD1.state = WDG_STOP;
-  WDGD1.wdt = WDT0;
+  WDGD1.wdt = WATCHDOG0_BASE;
 #endif /* TIVA_WDG_USE_WDT0 */
 
 #if TIVA_WDG_USE_WDT1
   WDGD2.state = WDG_STOP;
-  WDGD2.wdt = WDT1;
+  WDGD2.wdt = WATCHDOG1_BASE;
 #endif /* TIVA_WDG_USE_WDT1 */
 
   /* The shared vector is initialized on driver initialization and never
@@ -137,32 +137,32 @@ void wdg_lld_start(WDGDriver *wdgp)
 {
 #if TIVA_WDG_USE_WDT0
   if (&WDGD1 == wdgp) {
-    SYSCTL->RCGCWD |= (1 << 0);
+    HWREG(SYSCTL_RCGCWD) |= (1 << 0);
 
-    while (!(SYSCTL->PRWD & (1 << 0)))
+    while (!(HWREG(SYSCTL_PRWD) & (1 << 0)))
       ;
   }
 #endif /* TIVA_WDG_USE_WDT0 */
 
 #if TIVA_WDG_USE_WDT1
   if (&WDGD2 == wdgp) {
-    SYSCTL->RCGCWD |= (1 << 1);
+    HWREG(SYSCTL_RCGCWD) |= (1 << 1);
 
-    while (!(SYSCTL->PRWD & (1 << 1)))
+    while (!(HWREG(SYSCTL_PRWD) & (1 << 1)))
       ;
   }
 #endif /* TIVA_WDG_USE_WDT1 */
 
-  wdgp->wdt->LOAD = wdgp->config->load;
+  HWREG(wdgp->wdt + WDT_O_LOAD) = wdgp->config->load;
   wdgTivaSyncWrite(wdgp);
 
-  wdgp->wdt->TEST = wdgp->config->test;
+  HWREG(wdgp->wdt + WDT_O_TEST) = wdgp->config->test;
   wdgTivaSyncWrite(wdgp);
 
-  wdgp->wdt->CTL |= CTL_RESEN;
+  HWREG(wdgp->wdt + WDT_O_CTL) |= CTL_RESEN;
   wdgTivaSyncWrite(wdgp);
 
-  wdgp->wdt->CTL |= CTL_INTEN;
+  HWREG(wdgp->wdt + WDT_O_CTL) |= CTL_INTEN;
   wdgTivaSyncWrite(wdgp);
 }
 
@@ -177,15 +177,15 @@ void wdg_lld_stop(WDGDriver *wdgp)
 {
 #if TIVA_WDG_USE_WDT0
   if (&WDGD1 == wdgp) {
-    SYSCTL->SRWD |= (1 << 0);
-    SYSCTL->SRWD &= ~(1 << 0);
+    HWREG(SYSCTL_SRWD) |= (1 << 0);
+    HWREG(SYSCTL_SRWD) &= ~(1 << 0);
   }
 #endif /* TIVA_WDG_USE_WDT0 */
 
 #if TIVA_WDG_USE_WDT1
   if (&WDGD2 == wdgp) {
-    SYSCTL->SRWD |= (1 << 1);
-    SYSCTL->SRWD &= ~(1 << 1);
+    HWREG(SYSCTL_SRWD) |= (1 << 1);
+    HWREG(SYSCTL_SRWD) &= ~(1 << 1);
   }
 #endif /* TIVA_WDG_USE_WDT1 */
 }
@@ -219,7 +219,7 @@ void wdg_lld_reset(WDGDriver *wdgp)
 
 #endif /* defined(TM4C123_USE_REVISION_6_FIX) ||
           defined(TM4C123_USE_REVISION_7_FIX) */
-  wdgp->wdt->LOAD = wdgp->config->load;
+  HWREG(wdgp->wdt + WDT_O_LOAD) = wdgp->config->load;
   wdgTivaSyncWrite(wdgp);
 }
 
@@ -234,7 +234,7 @@ void wdg_lld_reset(WDGDriver *wdgp)
 void wdgTivaSyncWrite(WDGDriver *wdgp)
 {
   if (&WDGD2 == wdgp) {
-    while (!(wdgp->wdt->CTL & CTL_WRC)) {
+    while (!(HWREG(wdgp->wdt + WDT_O_CTL) & CTL_WRC)) {
       ;
     }
   }

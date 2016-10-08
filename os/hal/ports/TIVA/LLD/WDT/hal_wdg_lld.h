@@ -146,7 +146,7 @@ struct WDGDriver
   /**
    * @brief   Pointer to the WDT registers block.
    */
-  WDT_TypeDef               *wdt;
+  uint32_t                  wdt;
 };
 
 /*===========================================================================*/

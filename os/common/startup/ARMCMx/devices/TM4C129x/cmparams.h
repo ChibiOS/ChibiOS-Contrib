@@ -95,6 +95,7 @@ typedef int IRQn_Type;
 #include "inc/hw_timer.h"
 #include "inc/hw_emac.h"
 #include "inc/hw_i2c.h"
+#include "inc/hw_watchdog.h"
 
 #if CORTEX_NUM_VECTORS != ((((NUM_INTERRUPTS - 16) + 7) / 8) * 8)
 #error "TivaWare NUM_INTERRUPTS mismatch"
