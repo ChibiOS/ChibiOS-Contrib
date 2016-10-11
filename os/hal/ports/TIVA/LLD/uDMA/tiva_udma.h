@@ -137,43 +137,43 @@ typedef struct __attribute__((packed, aligned(1024)))
 /*===========================================================================*/
 
 #define dmaChannelEnable(dmach) {\
-  UDMA->ENASET = (1 << dmach);\
+  HWREG(UDMA_ENASET) = (1 << dmach);\
 }
 
 #define dmaChannelDisable(dmach) { \
-  UDMA->ENACLR = (1 << dmach); \
+  HWREG(UDMA_ENACLR) = (1 << dmach); \
 }
 
 #define dmaChannelPrimary(dmach) {\
-  UDMA->ALTCLR = (1 << dmach); \
+  HWREG(UDMA_ALTCLR) = (1 << dmach); \
 }
 
 #define dmaChannelAlternate(dmach) { \
-  UDMA->ALTSET = (1 << dmach); \
+  HWREG(UDMA_ALTSET) = (1 << dmach); \
 }
 
 #define dmaChannelSingleBurst(dmach) { \
-  UDMA->USEBURSTCLR = (1 << dmach); \
+  HWREG(UDMA_USEBURSTCLR) = (1 << dmach); \
 }
 
 #define dmaChannelBurstOnly(dmach) { \
-  UDMA->USEBURSTSET = (1 << dmach); \
+  HWREG(UDMA_USEBURSTSET) = (1 << dmach); \
 }
 
 #define dmaChannelPriorityHigh(dmach) { \
-  UDMA->PRIOSET = (1 << dmach); \
+  HWREG(UDMA_PRIOSET) = (1 << dmach); \
 }
 
 #define dmaChannelPriorityDefault(dmach) { \
-  UDMA->PRIOCLR = (1 << dmach); \
+  HWREG(UDMA_PRIOCLR) = (1 << dmach); \
 }
 
 #define dmaChannelEnableRequest(dmach) {\
-  UDMA->REQMASKCLR = (1 << dmach); \
+  HWREG(UDMA_REQMASKCLR) = (1 << dmach); \
 }
 
 #define dmaChannelDisableRequest(dmach) {\
-  UDMA->REQMASKSET = (1 << dmach); \
+  HWREG(UDMA_REQMASKSET) = (1 << dmach); \
 }
 
 /*===========================================================================*/

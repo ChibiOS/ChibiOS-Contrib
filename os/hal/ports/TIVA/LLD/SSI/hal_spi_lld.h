@@ -320,7 +320,7 @@ struct SPIDriver {
   /**
    * @brief Pointer to the SSI registers block.
    */
-  SSI_TypeDef           *ssi;
+  uint32_t              ssi;
   /**
    * @brief Receive DMA channel number.
    */

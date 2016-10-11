@@ -77,9 +77,9 @@ static uint16_t dummyrx;
  */
 static void spi_serve_interrupt(SPIDriver *spip)
 {
-  SSI_TypeDef *ssi = spip->ssi;
-  uint32_t mis = ssi->MIS;
-  uint32_t dmachis = UDMA->CHIS;
+  uint32_t ssi = spip->ssi;
+  uint32_t mis = HWREG(ssi + SSI_O_MIS);
+  uint32_t dmachis = HWREG(UDMA_CHIS);
 
   /* SPI error handling.*/
   if ((mis & (TIVA_MIS_RORMIS | TIVA_MIS_RTMIS)) != 0) {
@@ -89,7 +89,7 @@ static void spi_serve_interrupt(SPIDriver *spip)
   if ( (dmachis & ( (1 << spip->dmarxnr) | (1 << spip->dmatxnr) ) ) ==
       ( (1 << spip->dmarxnr) | (1 << spip->dmatxnr) ) ) {
     /* Clear DMA Channel interrupts.*/
-    UDMA->CHIS = (1 << spip->dmarxnr) | (1 << spip->dmatxnr);
+    HWREG(UDMA_CHIS) = (1 << spip->dmarxnr) | (1 << spip->dmatxnr);
 
     /* Portable SPI ISR code defined in the high level driver, note, it is a
        macro.*/
@@ -180,7 +180,7 @@ void spi_lld_init(void)
 
 #if TIVA_SPI_USE_SSI0
   spiObjectInit(&SPID1);
-  SPID1.ssi = SSI0;
+  SPID1.ssi = SSI0_BASE;
   SPID1.dmarxnr = TIVA_SPI_SSI0_RX_UDMA_CHANNEL;
   SPID1.dmatxnr = TIVA_SPI_SSI0_TX_UDMA_CHANNEL;
   SPID1.rxchnmap = TIVA_SPI_SSI0_RX_UDMA_MAPPING;
@@ -189,7 +189,7 @@ void spi_lld_init(void)
 
 #if TIVA_SPI_USE_SSI1
   spiObjectInit(&SPID2);
-  SPID2.ssi = SSI1;
+  SPID2.ssi = SSI1_BASE;
   SPID2.dmarxnr = TIVA_SPI_SSI1_RX_UDMA_CHANNEL;
   SPID2.dmatxnr = TIVA_SPI_SSI1_TX_UDMA_CHANNEL;
   SPID2.rxchnmap = TIVA_SPI_SSI1_RX_UDMA_MAPPING;
@@ -198,7 +198,7 @@ void spi_lld_init(void)
 
 #if TIVA_SPI_USE_SSI2
   spiObjectInit(&SPID3);
-  SPID3.ssi = SSI2;
+  SPID3.ssi = SSI2_BASE;
   SPID3.dmarxnr = TIVA_SPI_SSI2_RX_UDMA_CHANNEL;
   SPID3.dmatxnr = TIVA_SPI_SSI2_TX_UDMA_CHANNEL;
   SPID3.rxchnmap = TIVA_SPI_SSI2_RX_UDMA_MAPPING;
@@ -207,7 +207,7 @@ void spi_lld_init(void)
 
 #if TIVA_SPI_USE_SSI3
   spiObjectInit(&SPID4);
-  SPID4.ssi = SSI3;
+  SPID4.ssi = SSI3_BASE;
   SPID4.dmarxnr = TIVA_SPI_SSI3_RX_UDMA_CHANNEL;
   SPID4.dmatxnr = TIVA_SPI_SSI3_TX_UDMA_CHANNEL;
   SPID4.rxchnmap = TIVA_SPI_SSI3_RX_UDMA_MAPPING;
@@ -235,8 +235,8 @@ void spi_lld_start(SPIDriver *spip)
       osalDbgAssert(!b, "channel already allocated");
 
       /* Enable SSI0 module.*/
-      SYSCTL->RCGCSSI |= (1 << 0);
-      while (!(SYSCTL->PRSSI & (1 << 0)))
+      HWREG(SYSCTL_RCGCSSI) |= (1 << 0);
+      while (!(HWREG(SYSCTL_PRSSI) & (1 << 0)))
         ;
 
       nvicEnableVector(TIVA_SSI0_NUMBER, TIVA_SPI_SSI0_IRQ_PRIORITY);
@@ -251,8 +251,8 @@ void spi_lld_start(SPIDriver *spip)
       osalDbgAssert(!b, "channel already allocated");
 
       /* Enable SSI0 module.*/
-      SYSCTL->RCGCSSI |= (1 << 1);
-      while (!(SYSCTL->PRSSI & (1 << 1)))
+      HWREG(SYSCTL_RCGCSSI) |= (1 << 1);
+      while (!(HWREG(SYSCTL_PRSSI) & (1 << 1)))
         ;
 
       nvicEnableVector(TIVA_SSI1_NUMBER, TIVA_SPI_SSI1_IRQ_PRIORITY);
@@ -267,8 +267,8 @@ void spi_lld_start(SPIDriver *spip)
       osalDbgAssert(!b, "channel already allocated");
 
       /* Enable SSI0 module.*/
-      SYSCTL->RCGCSSI |= (1 << 2);
-      while (!(SYSCTL->PRSSI & (1 << 2)))
+      HWREG(SYSCTL_RCGCSSI) |= (1 << 2);
+      while (!(HWREG(SYSCTL_PRSSI) & (1 << 2)))
         ;
 
       nvicEnableVector(TIVA_SSI2_NUMBER, TIVA_SPI_SSI2_IRQ_PRIORITY);
@@ -283,40 +283,40 @@ void spi_lld_start(SPIDriver *spip)
       osalDbgAssert(!b, "channel already allocated");
 
       /* Enable SSI0 module.*/
-      SYSCTL->RCGCSSI |= (1 << 3);
-      while (!(SYSCTL->PRSSI & (1 << 3)))
+      HWREG(SYSCTL_RCGCSSI) |= (1 << 3);
+      while (!(HWREG(SYSCTL_PRSSI) & (1 << 3)))
         ;
 
       nvicEnableVector(TIVA_SSI3_NUMBER, TIVA_SPI_SSI3_IRQ_PRIORITY);
     }
 #endif
 
-    UDMA->CHMAP[spip->dmarxnr / 8] |= (spip->rxchnmap << (spip->dmarxnr % 8));
-    UDMA->CHMAP[spip->dmatxnr / 8] |= (spip->txchnmap << (spip->dmatxnr % 8));
+    HWREG(UDMA_CHMAP0 + (spip->dmarxnr / 8) * 4) |= (spip->rxchnmap << (spip->dmarxnr % 8));
+    HWREG(UDMA_CHMAP0 + (spip->dmatxnr / 8) * 4) |= (spip->txchnmap << (spip->dmatxnr % 8));
   }
   /* Set master operation mode.*/
-  spip->ssi->CR1 = 0;
+  HWREG(spip->ssi + SSI_O_CR1) = 0;
 
   /* Clock configuration - System Clock.*/
-  spip->ssi->CC = 0;
+  HWREG(spip->ssi + SSI_O_CC) = 0;
 
   /* Clear pending interrupts.*/
-  spip->ssi->ICR = TIVA_ICR_RTIC | TIVA_ICR_RORIC;
+  HWREG(spip->ssi + SSI_O_ICR) = TIVA_ICR_RTIC | TIVA_ICR_RORIC;
 
   /* Enable Receive Time-Out and Receive Overrun Interrupts.*/
-  spip->ssi->IM = TIVA_IM_RTIM | TIVA_IM_RORIM;
+  HWREG(spip->ssi + SSI_O_IM) = TIVA_IM_RTIM | TIVA_IM_RORIM;
 
   /* Configure the clock prescale divisor.*/
-  spip->ssi->CPSR = spip->config->cpsr;
+  HWREG(spip->ssi + SSI_O_CPSR) = spip->config->cpsr;
 
   /* Serial clock rate, phase/polarity, data size, fixed SPI frame format.*/
-  spip->ssi->CR0 = (spip->config->cr0 & ~TIVA_CR0_FRF_MASK) | TIVA_CR0_FRF(0);
+  HWREG(spip->ssi + SSI_O_CR0) = (spip->config->cr0 & ~TIVA_CR0_FRF_MASK) | TIVA_CR0_FRF(0);
 
   /* Enable SSI.*/
-  spip->ssi->CR1 |= TIVA_CR1_SSE;
+  HWREG(spip->ssi + SSI_O_CR1) |= TIVA_CR1_SSE;
 
   /* Enable RX and TX DMA channels.*/
-  spip->ssi->DMACTL = (TIVA_DMACTL_TXDMAE | TIVA_DMACTL_RXDMAE);
+  HWREG(spip->ssi + SSI_O_DMACTL) = (TIVA_DMACTL_TXDMAE | TIVA_DMACTL_RXDMAE);
 }
 
 /**
@@ -329,9 +329,9 @@ void spi_lld_start(SPIDriver *spip)
 void spi_lld_stop(SPIDriver *spip)
 {
   if (spip->state != SPI_STOP) {
-    spip->ssi->CR1 = 0;
-    spip->ssi->CR0 = 0;
-    spip->ssi->CPSR = 0;
+    HWREG(spip->ssi + SSI_O_CR1) = 0;
+    HWREG(spip->ssi + SSI_O_CR0) = 0;
+    HWREG(spip->ssi + SSI_O_CPSR) = 0;
 
     udmaChannelRelease(spip->dmarxnr);
     udmaChannelRelease(spip->dmatxnr);
@@ -402,14 +402,14 @@ void spi_lld_ignore(SPIDriver *spip, size_t n)
   if ((spip->config->cr0 & TIVA_CR0_DSS_MASK) < 8) {
     /* Configure for 8-bit transfers.*/
     primary[spip->dmatxnr].srcendp = (volatile void *)&dummytx;
-    primary[spip->dmatxnr].dstendp = &spip->ssi->DR;
+    primary[spip->dmatxnr].dstendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmatxnr].chctl = UDMA_CHCTL_DSTSIZE_8 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_8 | UDMA_CHCTL_SRCINC_0 |
                                    UDMA_CHCTL_ARBSIZE_4 |
                                    UDMA_CHCTL_XFERSIZE(n) |
                                    UDMA_CHCTL_XFERMODE_BASIC;
 
-    primary[spip->dmarxnr].srcendp = &spip->ssi->DR;
+    primary[spip->dmarxnr].srcendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmarxnr].dstendp = &dummyrx;
     primary[spip->dmarxnr].chctl = UDMA_CHCTL_DSTSIZE_8 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_8 | UDMA_CHCTL_SRCINC_0 |
@@ -420,14 +420,14 @@ void spi_lld_ignore(SPIDriver *spip, size_t n)
   else {
     /* Configure for 16-bit transfers.*/
     primary[spip->dmatxnr].srcendp = (volatile void *)&dummytx;
-    primary[spip->dmatxnr].dstendp = &spip->ssi->DR;
+    primary[spip->dmatxnr].dstendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmatxnr].chctl = UDMA_CHCTL_DSTSIZE_16 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_16 | UDMA_CHCTL_SRCINC_0 |
                                    UDMA_CHCTL_ARBSIZE_4 |
                                    UDMA_CHCTL_XFERSIZE(n) |
                                    UDMA_CHCTL_XFERMODE_BASIC;
 
-    primary[spip->dmarxnr].srcendp = &spip->ssi->DR;
+    primary[spip->dmarxnr].srcendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmarxnr].dstendp = &dummyrx;
     primary[spip->dmarxnr].chctl = UDMA_CHCTL_DSTSIZE_16 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_16 | UDMA_CHCTL_SRCINC_0 |
@@ -473,14 +473,14 @@ void spi_lld_exchange(SPIDriver *spip, size_t n, const void *txbuf, void *rxbuf)
   if ((spip->config->cr0 & TIVA_CR0_DSS_MASK) < 8) {
     /* Configure for 8-bit transfers.*/
     primary[spip->dmatxnr].srcendp = (volatile void *)txbuf+n-1;
-    primary[spip->dmatxnr].dstendp = &spip->ssi->DR;
+    primary[spip->dmatxnr].dstendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmatxnr].chctl = UDMA_CHCTL_DSTSIZE_8 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_8 | UDMA_CHCTL_SRCINC_8 |
                                    UDMA_CHCTL_ARBSIZE_4 |
                                    UDMA_CHCTL_XFERSIZE(n) |
                                    UDMA_CHCTL_XFERMODE_BASIC;
 
-    primary[spip->dmarxnr].srcendp = &spip->ssi->DR;
+    primary[spip->dmarxnr].srcendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmarxnr].dstendp = rxbuf+n-1;
     primary[spip->dmarxnr].chctl = UDMA_CHCTL_DSTSIZE_8 | UDMA_CHCTL_DSTINC_8 |
                                    UDMA_CHCTL_SRCSIZE_8 | UDMA_CHCTL_SRCINC_0 |
@@ -491,14 +491,14 @@ void spi_lld_exchange(SPIDriver *spip, size_t n, const void *txbuf, void *rxbuf)
   else {
     /* Configure for 16-bit transfers.*/
     primary[spip->dmatxnr].srcendp = (volatile void *)txbuf+(n*2)-1;
-    primary[spip->dmatxnr].dstendp = &spip->ssi->DR;
+    primary[spip->dmatxnr].dstendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmatxnr].chctl = UDMA_CHCTL_DSTSIZE_16 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_16 | UDMA_CHCTL_SRCINC_16 |
                                    UDMA_CHCTL_ARBSIZE_4 |
                                    UDMA_CHCTL_XFERSIZE(n) |
                                    UDMA_CHCTL_XFERMODE_BASIC;
 
-    primary[spip->dmarxnr].srcendp = &spip->ssi->DR;
+    primary[spip->dmarxnr].srcendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmarxnr].dstendp = rxbuf+(n*2)-1;
     primary[spip->dmarxnr].chctl = UDMA_CHCTL_DSTSIZE_16 | UDMA_CHCTL_DSTINC_16 |
                                    UDMA_CHCTL_SRCSIZE_16 | UDMA_CHCTL_SRCINC_0 |
@@ -542,14 +542,14 @@ void spi_lld_send(SPIDriver *spip, size_t n, const void *txbuf)
   if ((spip->config->cr0 & TIVA_CR0_DSS_MASK) < 8) {
     /* Configure for 8-bit transfers.*/
     primary[spip->dmatxnr].srcendp = (volatile void *)txbuf+n-1;
-    primary[spip->dmatxnr].dstendp = &spip->ssi->DR;
+    primary[spip->dmatxnr].dstendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmatxnr].chctl = UDMA_CHCTL_DSTSIZE_8 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_8 | UDMA_CHCTL_SRCINC_8 |
                                    UDMA_CHCTL_ARBSIZE_4 |
                                    UDMA_CHCTL_XFERSIZE(n) |
                                    UDMA_CHCTL_XFERMODE_BASIC;
 
-    primary[spip->dmarxnr].dstendp = &spip->ssi->DR;
+    primary[spip->dmarxnr].dstendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmarxnr].srcendp = &dummyrx;
     primary[spip->dmarxnr].chctl = UDMA_CHCTL_DSTSIZE_8 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_8 | UDMA_CHCTL_SRCINC_0 |
@@ -560,14 +560,14 @@ void spi_lld_send(SPIDriver *spip, size_t n, const void *txbuf)
   else {
     /* Configure for 16-bit transfers.*/
     primary[spip->dmatxnr].srcendp = (volatile void *)txbuf+(n*2)-1;
-    primary[spip->dmatxnr].dstendp = &spip->ssi->DR;
+    primary[spip->dmatxnr].dstendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmatxnr].chctl = UDMA_CHCTL_DSTSIZE_16 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_16 | UDMA_CHCTL_SRCINC_16 |
                                    UDMA_CHCTL_ARBSIZE_4 |
                                    UDMA_CHCTL_XFERSIZE(n) |
                                    UDMA_CHCTL_XFERMODE_BASIC;
 
-    primary[spip->dmarxnr].dstendp = &spip->ssi->DR;
+    primary[spip->dmarxnr].dstendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmarxnr].srcendp = &dummyrx;
     primary[spip->dmarxnr].chctl = UDMA_CHCTL_DSTSIZE_16 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_16 | UDMA_CHCTL_SRCINC_0 |
@@ -611,14 +611,14 @@ void spi_lld_receive(SPIDriver *spip, size_t n, void *rxbuf)
   if ((spip->config->cr0 & TIVA_CR0_DSS_MASK) < 8) {
     /* Configure for 8-bit transfers.*/
     primary[spip->dmatxnr].srcendp = (volatile void *)&dummytx;
-    primary[spip->dmatxnr].dstendp = &spip->ssi->DR;
+    primary[spip->dmatxnr].dstendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmatxnr].chctl = UDMA_CHCTL_DSTSIZE_8 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_8 | UDMA_CHCTL_SRCINC_0 |
                                    UDMA_CHCTL_ARBSIZE_4 |
                                    UDMA_CHCTL_XFERSIZE(n) |
                                    UDMA_CHCTL_XFERMODE_BASIC;
 
-    primary[spip->dmarxnr].srcendp = &spip->ssi->DR;
+    primary[spip->dmarxnr].srcendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmarxnr].dstendp = rxbuf+n-1;
     primary[spip->dmarxnr].chctl = UDMA_CHCTL_DSTSIZE_8 | UDMA_CHCTL_DSTINC_8 |
                                    UDMA_CHCTL_SRCSIZE_8 | UDMA_CHCTL_SRCINC_0 |
@@ -629,14 +629,14 @@ void spi_lld_receive(SPIDriver *spip, size_t n, void *rxbuf)
   else {
     /* Configure for 16-bit transfers.*/
     primary[spip->dmatxnr].srcendp = (volatile void *)&dummytx;
-    primary[spip->dmatxnr].dstendp = &spip->ssi->DR;
+    primary[spip->dmatxnr].dstendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmatxnr].chctl = UDMA_CHCTL_DSTSIZE_16 | UDMA_CHCTL_DSTINC_0 |
                                    UDMA_CHCTL_SRCSIZE_16 | UDMA_CHCTL_SRCINC_0 |
                                    UDMA_CHCTL_ARBSIZE_4 |
                                    UDMA_CHCTL_XFERSIZE(n) |
                                    UDMA_CHCTL_XFERMODE_BASIC;
 
-    primary[spip->dmarxnr].srcendp = &spip->ssi->DR;
+    primary[spip->dmarxnr].srcendp = (void *)(spip->ssi + SSI_O_DR);
     primary[spip->dmarxnr].dstendp = rxbuf+(n*2)-1;
     primary[spip->dmarxnr].chctl = UDMA_CHCTL_DSTSIZE_16 | UDMA_CHCTL_DSTINC_16 |
                                    UDMA_CHCTL_SRCSIZE_16 | UDMA_CHCTL_SRCINC_0 |
@@ -674,10 +674,10 @@ void spi_lld_receive(SPIDriver *spip, size_t n, void *rxbuf)
  */
 uint16_t spi_lld_polled_exchange(SPIDriver *spip, uint16_t frame)
 {
-  spip->ssi->DR = (uint32_t)frame;
-  while ((spip->ssi->SR & TIVA_SR_RNE) == 0)
+  HWREG(spip->ssi + SSI_O_DR) = (uint32_t)frame;
+  while ((HWREG(spip->ssi + SSI_O_SR) & TIVA_SR_RNE) == 0)
     ;
-  return (uint16_t)spip->ssi->DR;
+  return (uint16_t)HWREG(spip->ssi + SSI_O_DR);
 }
 
 #endif /* HAL_USE_SPI */
