@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    fsmc_sram.c
+ * @file    hal_fsmc_sram.c
  * @brief   SRAM Driver subsystem low level driver source.
  *
  * @addtogroup SRAM

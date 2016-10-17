@@ -15,15 +15,15 @@
 */
 
 /**
- * @file    fsmc.h
+ * @file    hal_fsmc.h
  * @brief   FSMC Driver subsystem low level driver header.
  *
  * @addtogroup FSMC
  * @{
  */
 
-#ifndef _FSMC_H_
-#define _FSMC_H_
+#ifndef HAL_FSMC_H_
+#define HAL_FSMC_H_
 
 #if (HAL_USE_FSMC == TRUE) || defined(__DOXYGEN__)
 
@@ -335,6 +335,6 @@ extern "C" {
 
 #endif /* HAL_USE_FSMC */
 
-#endif /* _FSMC_H_ */
+#endif /* HAL_FSMC_H_ */
 
 /** @} */

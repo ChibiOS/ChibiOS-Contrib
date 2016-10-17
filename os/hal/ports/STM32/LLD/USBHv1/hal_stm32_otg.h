@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    stm32_otg.h
+ * @file    hal_stm32_otg.h
  * @brief   STM32 OTG registers layout header.
  *
  * @addtogroup USB
@@ -23,8 +23,8 @@
  */
 
 
-#ifndef _STM32_OTG_H_
-#define _STM32_OTG_H_
+#ifndef HAL_STM32_OTG_H_
+#define HAL_STM32_OTG_H_
 
 /**
  * @brief   Number of the implemented endpoints in OTG_FS.

@@ -18,15 +18,15 @@
  */
 
 /**
- * @file    fsmc_sdram.h
+ * @file    hal_fsmc_sdram.h
  * @brief   SDRAM Driver subsystem low level driver header.
  *
  * @addtogroup SDRAM
  * @{
  */
 
-#ifndef _FMC_SDRAM_H_
-#define _FMC_SDRAM_H_
+#ifndef HAL_FMC_SDRAM_H_
+#define HAL_FMC_SDRAM_H_
 
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx))
@@ -166,6 +166,6 @@ extern "C" {
 
 #endif /* STM32F427xx / STM32F429xx / STM32F437xx / STM32F439xx */
 
-#endif /* _FMC_SDRAM_H_ */
+#endif /* HAL_FMC_SDRAM_H_ */
 
 /** @} */

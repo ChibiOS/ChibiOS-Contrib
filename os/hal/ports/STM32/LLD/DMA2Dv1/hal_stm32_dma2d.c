@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    stm32_dma2d.c
+ * @file    hal_stm32_dma2d.c
  * @brief   DMA2D/Chrom-ART driver.
  */
 

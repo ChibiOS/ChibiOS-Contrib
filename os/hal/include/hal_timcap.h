@@ -19,15 +19,15 @@
 */
 
 /**
- * @file    timcap.h
+ * @file    hal_timcap.h
  * @brief   TIMCAP Driver macros and structures.
  *
  * @addtogroup TIMCAP
  * @{
  */
 
-#ifndef _TIMCAP_H_
-#define _TIMCAP_H_
+#ifndef HAL_TIMCAP_H_
+#define HAL_TIMCAP_H_
 
 #include "ch.h"
 #include "hal.h"
@@ -201,6 +201,6 @@ extern "C" {
 
 #endif /* HAL_USE_TIMCAP */
 
-#endif /* _TIMCAP_H_ */
+#endif /* HAL_TIMCAP_H_ */
 
 /** @} */

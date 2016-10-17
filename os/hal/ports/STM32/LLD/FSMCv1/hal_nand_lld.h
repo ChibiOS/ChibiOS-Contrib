@@ -15,15 +15,15 @@
 */
 
 /**
- * @file    nand_lld.h
+ * @file    hal_nand_lld.h
  * @brief   NAND Driver subsystem low level driver header.
  *
  * @addtogroup NAND
  * @{
  */
 
-#ifndef _NAND_LLD_H_
-#define _NAND_LLD_H_
+#ifndef HAL_NAND_LLD_H_
+#define HAL_NAND_LLD_H_
 
 #include "hal_fsmc.h"
 #include "bitmap.h"
@@ -289,6 +289,6 @@ extern "C" {
 
 #endif /* HAL_USE_NAND */
 
-#endif /* _NAND_LLD_H_ */
+#endif /* HAL_NAND_LLD_H_ */
 
 /** @} */

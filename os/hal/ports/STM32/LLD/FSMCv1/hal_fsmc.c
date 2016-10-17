@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    fsmc.c
+ * @file    hal_fsmc.c
  * @brief   FSMC Driver subsystem low level driver source template.
  *
  * @addtogroup FSMC

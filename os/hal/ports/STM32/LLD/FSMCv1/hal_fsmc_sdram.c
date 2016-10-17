@@ -18,7 +18,7 @@
  */
 
 /**
- * @file    fsmc_sdram.c
+ * @file    hal_fsmc_sdram.c
  * @brief   SDRAM Driver subsystem low level driver source.
  *
  * @addtogroup SDRAM

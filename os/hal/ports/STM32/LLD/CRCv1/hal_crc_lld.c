@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    STM32/CRCv1/crc_lld.c
+ * @file    STM32/CRCv1/hal_crc_lld.c
  * @brief   STM32 CRC subsystem low level driver source.
  *
  * @addtogroup CRC

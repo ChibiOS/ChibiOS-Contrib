@@ -15,8 +15,8 @@
     limitations under the License.
 */
 
-#ifndef USBH_LLD_H_
-#define USBH_LLD_H_
+#ifndef HAL_USBH_LLD_H_
+#define HAL_USBH_LLD_H_
 
 #include "hal.h"
 
@@ -150,4 +150,4 @@ uint8_t usbh_lld_roothub_get_statuschange_bitmap(USBHDriver *usbh);
 
 #endif
 
-#endif /* USBH_LLD_H_ */
+#endif /* HAL_USBH_LLD_H_ */

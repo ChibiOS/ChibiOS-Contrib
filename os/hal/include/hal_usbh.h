@@ -15,8 +15,8 @@
     limitations under the License.
 */
 
-#ifndef USBH_H_
-#define USBH_H_
+#ifndef HAL_USBH_H_
+#define HAL_USBH_H_
 
 #include "hal.h"
 
@@ -433,4 +433,4 @@ struct usbh_baseclassdriver {
 
 #endif
 
-#endif /* USBH_H_ */
+#endif /* HAL_USBH_H_ */

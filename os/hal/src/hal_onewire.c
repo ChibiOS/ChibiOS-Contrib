@@ -46,7 +46,7 @@ on every timer overflow event.
  */
 
 /**
- * @file    onewire.c
+ * @file    hal_onewire.c
  * @brief   1-wire Driver code.
  *
  * @addtogroup onewire

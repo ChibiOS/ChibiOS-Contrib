@@ -15,15 +15,15 @@
 */
 
 /**
- * @file    onewire.h
+ * @file    hal_onewire.h
  * @brief   1-wire Driver macros and structures.
  *
  * @addtogroup onewire
  * @{
  */
 
-#ifndef _ONEWIRE_H_
-#define _ONEWIRE_H_
+#ifndef HAL_ONEWIRE_H_
+#define HAL_ONEWIRE_H_
 
 #if (HAL_USE_ONEWIRE == TRUE) || defined(__DOXYGEN__)
 
@@ -351,7 +351,7 @@ extern "C" {
 
 #endif /* HAL_USE_ONEWIRE */
 
-#endif /* _ONEWIRE_H_ */
+#endif /* HAL_ONEWIRE_H_ */
 
 /** @} */
 

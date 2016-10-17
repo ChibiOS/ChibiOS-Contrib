@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    nand_lld.c
+ * @file    hal_nand_lld.c
  * @brief   NAND Driver subsystem low level driver source.
  *
  * @addtogroup NAND

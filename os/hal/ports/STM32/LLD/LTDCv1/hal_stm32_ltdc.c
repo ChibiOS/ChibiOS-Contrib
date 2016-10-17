@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    stm32_ltdc.c
+ * @file    hal_stm32_ltdc.c
  * @brief   LCD-TFT Controller Driver.
  */
 

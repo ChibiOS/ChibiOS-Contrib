@@ -15,15 +15,15 @@
 */
 
 /**
- * @file    nand.h
+ * @file    hal_nand.h
  * @brief   NAND Driver macros and structures.
  *
  * @addtogroup NAND
  * @{
  */
 
-#ifndef _NAND_H_
-#define _NAND_H_
+#ifndef HAL_NAND_H_
+#define HAL_NAND_H_
 
 #if (HAL_USE_NAND == TRUE) || defined(__DOXYGEN__)
 
