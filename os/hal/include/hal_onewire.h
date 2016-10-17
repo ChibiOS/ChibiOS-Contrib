@@ -328,7 +328,6 @@ extern onewireDriver OWD1;
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void onewireInit(void);
   void onewireObjectInit(onewireDriver *owp);
   void onewireStart(onewireDriver *owp, const onewireConfig *config);
   void onewireStop(onewireDriver *owp);
