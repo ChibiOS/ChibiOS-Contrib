@@ -89,9 +89,6 @@ static const scsi_inquiry_response_t default_scsi_inquiry_response = {
 /*===========================================================================*/
 
 /**
-
- */
-/**
  * @brief   Checks validity of CBW content.
  * @details The device shall consider the CBW valid when:
  *          • The CBW was received after the device had sent a CSW or after a reset,
