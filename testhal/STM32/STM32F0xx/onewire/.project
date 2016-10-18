@@ -25,6 +25,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>hw_abstracted</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/hw_abstracted</locationURI>
+		</link>
+		<link>
 			<name>os-community</name>
 			<type>2</type>
 			<locationURI>PARENT-4-PROJECT_LOC/os</locationURI>

@@ -881,7 +881,7 @@ size_t onewireSearchRom(onewireDriver *owp, uint8_t *result,
  * Include test code (if enabled).
  */
 #if ONEWIRE_SYNTH_SEARCH_TEST
-#include "search_rom_synth.c"
+#include "synth_searchrom.c"
 #endif
 
 #endif /* HAL_USE_ONEWIRE */

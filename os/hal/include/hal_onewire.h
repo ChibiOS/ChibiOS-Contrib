@@ -59,11 +59,13 @@
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
+#if ONEWIRE_SYNTH_SEARCH_TEST && !ONEWIRE_USE_SEARCH_ROM
+#error "Synthetic search rom test needs ONEWIRE_USE_SEARCH_ROM"
+#endif
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
-
 #if !HAL_USE_PWM
 #error "1-wire Driver requires HAL_USE_PWM"
 #endif

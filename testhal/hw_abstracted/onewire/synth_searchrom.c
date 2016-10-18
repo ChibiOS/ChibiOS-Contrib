@@ -23,7 +23,7 @@
  */
 
 /* do not set it more than 64 because of some fill_pattern functions
- * will be broken.*/
+   will be broken.*/
 #define SYNTH_DEVICES_MAX     64
 
 /*
@@ -83,7 +83,7 @@ static uint64_t detected_devices[SYNTH_DEVICES_MAX];
  ******************************************************************************
  */
 
-/**
+/*
  *
  */
 void _synth_ow_write_bit(onewireDriver *owp, ioline_t bit) {
@@ -98,7 +98,7 @@ void _synth_ow_write_bit(onewireDriver *owp, ioline_t bit) {
   synth_bus.rom_bit++;
 }
 
-/**
+/*
  *
  */
 ioline_t _synth_ow_read_bit(void) {
@@ -122,7 +122,7 @@ ioline_t _synth_ow_read_bit(void) {
   return ret;
 }
 
-/**
+/*
  *
  */
 static void synth_reset_pulse(void){
@@ -133,7 +133,7 @@ static void synth_reset_pulse(void){
   }
 }
 
-/**
+/*
  *
  */
 static size_t synth_search_rom(onewireDriver *owp, uint8_t *result, size_t max_rom_cnt) {
@@ -175,7 +175,7 @@ static size_t synth_search_rom(onewireDriver *owp, uint8_t *result, size_t max_r
     return owp->search_rom.reg.devices_found;
 }
 
-/**
+/*
  *
  */
 static void fill_pattern_real_devices(void) {
@@ -194,7 +194,7 @@ static void fill_pattern_real_devices(void) {
   synth_bus.devices[2].id = 0x0f000005677d8328;
 }
 
-/**
+/*
  *
  */
 static void fill_pattern_00(size_t devices, size_t start) {
@@ -209,7 +209,7 @@ static void fill_pattern_00(size_t devices, size_t start) {
   }
 }
 
-/**
+/*
  *
  */
 static void fill_pattern_01(size_t devices) {
@@ -224,7 +224,7 @@ static void fill_pattern_01(size_t devices) {
   }
 }
 
-/**
+/*
  *
  */
 static void fill_pattern_02(size_t devices) {
@@ -239,7 +239,7 @@ static void fill_pattern_02(size_t devices) {
   }
 }
 
-/**
+/*
  *
  */
 static void fill_pattern_03(size_t devices) {
@@ -254,8 +254,8 @@ static void fill_pattern_03(size_t devices) {
   }
 }
 
-/**
- * @brief   random pattern helper
+/*
+ * Random pattern helper
  */
 static bool is_id_uniq(const OWSynthDevice *dev, size_t n, uint64_t id) {
   size_t i;
@@ -267,7 +267,7 @@ static bool is_id_uniq(const OWSynthDevice *dev, size_t n, uint64_t id) {
   return true;
 }
 
-/**
+/*
  *
  */
 static void fill_pattern_rand(size_t devices) {
@@ -290,7 +290,7 @@ static void fill_pattern_rand(size_t devices) {
   }
 }
 
-/**
+/*
  *
  */
 static bool check_result(size_t detected) {
@@ -312,7 +312,7 @@ static bool check_result(size_t detected) {
   return OSAL_SUCCESS;
 }
 
-/**
+/*
  *
  */
 void synthSearchRomTest(onewireDriver *owp) {

@@ -1,5 +1,5 @@
 /*
-    ChibiOS/RT - Copyright (C) 2014 Uladzimir Pylinsky aka barthess
+    ChibiOS/RT - Copyright (C) 2016 Uladzimir Pylinsky aka barthess
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
     limitations under the License.
 */
 
-#ifndef ONEWIRE_TEST_H_
-#define ONEWIRE_TEST_H_
+#ifndef BOARDDEF_H_
+#define BOARDDEF_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-  void onewireTest(void);
-#ifdef __cplusplus
-}
-#endif
+#define ONEWIRE_PORT                  GPIOB
+#define ONEWIRE_PIN                   0
+#define ONEWIRE_PAD_MODE_IDLE         PAL_MODE_INPUT
+#define ONEWIRE_PAD_MODE_ACTIVE       PAL_MODE_STM32_ALTERNATE_OPENDRAIN
+#define search_led_on()               (palClearPad(GPIOC, GPIOC_LED))
+#define search_led_off()              (palSetPad(GPIOC, GPIOC_LED))
+#define ONEWIRE_MASTER_CHANNEL        2
+#define ONEWIRE_SAMPLE_CHANNEL        3
 
-#endif /* ONEWIRE_TEST_H_ */
+#endif /* BOARDDEF_H_ */

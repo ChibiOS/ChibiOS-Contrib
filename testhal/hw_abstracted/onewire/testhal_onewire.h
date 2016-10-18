@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef ONEWIRE_TEST_H_
-#define ONEWIRE_TEST_H_
+#ifndef TESTHAL_ONEWIRE_H_
+#define TESTHAL_ONEWIRE_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,4 +25,4 @@ extern "C" {
 }
 #endif
 
-#endif /* ONEWIRE_TEST_H_ */
+#endif /* TESTHAL_ONEWIRE_H_ */

@@ -17,10 +17,11 @@
 #include <string.h>
 
 #include "hal.h"
+#include "boarddef.h"
 
 /*
  ******************************************************************************
- * DEFINES
+ * ERROR CHECKS
  ******************************************************************************
  */
 
@@ -32,41 +33,11 @@
   #endif
 #endif
 
-#if defined(BOARD_ST_STM32F0308_DISCOVERY)
-  #define ONEWIRE_PORT                  GPIOB
-  #define ONEWIRE_PIN                   GPIOB_PIN0
-  #define ONEWIRE_PAD_MODE_ACTIVE       (PAL_MODE_ALTERNATE(1) | PAL_STM32_OTYPE_OPENDRAIN)
-  #define search_led_off()              (palClearPad(GPIOC, GPIOC_LED4))
-  #define search_led_on()               (palSetPad(GPIOC, GPIOC_LED4))
-  #define ONEWIRE_MASTER_CHANNEL        2
-  #define ONEWIRE_SAMPLE_CHANNEL        3
-#elif defined(BOARD_ST_STM32F4_DISCOVERY)
-  #define ONEWIRE_PORT                  GPIOB
-  #define ONEWIRE_PIN                   GPIOB_PIN0
-  #define ONEWIRE_PAD_MODE_ACTIVE       (PAL_MODE_ALTERNATE(2) | PAL_STM32_OTYPE_OPENDRAIN)
-  #define search_led_off()              (palClearPad(GPIOD, GPIOD_LED4))
-  #define search_led_on()               (palSetPad(GPIOD, GPIOD_LED4))
-  #define ONEWIRE_MASTER_CHANNEL        2
-  #define ONEWIRE_SAMPLE_CHANNEL        3
-#elif defined(BOARD_OLIMEX_STM32_103STK)
-  #define ONEWIRE_PORT                  GPIOB
-  #define ONEWIRE_PIN                   0
-  #define ONEWIRE_PAD_MODE_IDLE         PAL_MODE_INPUT
-  #define ONEWIRE_PAD_MODE_ACTIVE       PAL_MODE_STM32_ALTERNATE_OPENDRAIN
-  #define search_led_on()               (palClearPad(GPIOC, GPIOC_LED))
-  #define search_led_off()              (palSetPad(GPIOC, GPIOC_LED))
-  #define ONEWIRE_MASTER_CHANNEL        2
-  #define ONEWIRE_SAMPLE_CHANNEL        3
-#else
-  #define ONEWIRE_PORT                  GPIOB
-  #define ONEWIRE_PIN                   GPIOB_TACHOMETER
-  #include "pads.h"
-  #define ONEWIRE_PAD_MODE_ACTIVE       (PAL_MODE_ALTERNATE(2) | PAL_STM32_OTYPE_OPENDRAIN)
-  #define search_led_on                 red_led_on
-  #define search_led_off                red_led_off
-  #define ONEWIRE_MASTER_CHANNEL        2
-  #define ONEWIRE_SAMPLE_CHANNEL        3
-#endif
+/*
+ ******************************************************************************
+ * DEFINES
+ ******************************************************************************
+ */
 
 /*
  ******************************************************************************
@@ -99,7 +70,7 @@ static uint8_t testbuf[12];
 static int32_t temperature[3];
 
 /*
- * Config for underlied PWM driver.
+ * Config for underlying PWM driver.
  * Note! It is NOT constant because 1-wire driver needs to change them
  * during functioning.
  */
@@ -171,7 +142,7 @@ static void strong_pullup_release(void) {
  ******************************************************************************
  */
 
-/**
+/*
  *
  */
 void onewireTest(void) {
