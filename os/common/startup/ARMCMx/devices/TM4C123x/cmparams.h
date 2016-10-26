@@ -113,6 +113,7 @@ typedef int IRQn_Type;
 #include "inc/hw_watchdog.h"
 #include "inc/hw_ssi.h"
 #include "inc/hw_udma.h"
+#include "inc/hw_pwm.h"
 
 #if CORTEX_NUM_VECTORS != ((((NUM_INTERRUPTS - 16) + 7) / 8) * 8)
 #error "TivaWare NUM_INTERRUPTS mismatch"

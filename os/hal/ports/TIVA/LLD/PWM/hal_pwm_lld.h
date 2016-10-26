@@ -304,7 +304,7 @@ struct PWMDriver {
   /**
    * @brief Pointer to the PWMx registers block.
    */
-  PWM_TypeDef               *pwm;
+  uint32_t                  pwm;
 };
 
 /*===========================================================================*/
@@ -328,10 +328,10 @@ struct PWMDriver {
  * @notapi
  */
 #define pwm_lld_change_period(pwmp, period)                                  \
-  ((pwmp)->pwm->PWM[0].LOAD = (uint16_t)((period) - 1));                     \
-  ((pwmp)->pwm->PWM[1].LOAD = (uint16_t)((period) - 1));                     \
-  ((pwmp)->pwm->PWM[2].LOAD = (uint16_t)((period) - 1));                     \
-  ((pwmp)->pwm->PWM[3].LOAD = (uint16_t)((period) - 1))
+  HWREG((pwmp)->pwm + PWM_O_0_LOAD) = (uint16_t)((period) - 1);             \
+  HWREG((pwmp)->pwm + PWM_O_1_LOAD) = (uint16_t)((period) - 1);             \
+  HWREG((pwmp)->pwm + PWM_O_2_LOAD) = (uint16_t)((period) - 1);             \
+  HWREG((pwmp)->pwm + PWM_O_3_LOAD) = (uint16_t)((period) - 1)
 
 /*===========================================================================*/
 /* External declarations.                                                    */
