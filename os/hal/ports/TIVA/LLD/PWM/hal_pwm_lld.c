@@ -30,13 +30,6 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define PWM_INT_CMPBD       (1 << 5)
-#define PWM_INT_CMPBU       (1 << 4)
-#define PWM_INT_CMPAD       (1 << 3)
-#define PWM_INT_CMPAU       (1 << 2)
-#define PWM_INT_CNTLOAD     (1 << 1)
-#define PWM_INT_CNTZERO     (1 << 0)
-
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -82,31 +75,31 @@ static void pwm_lld_serve_generator_interrupt (PWMDriver *pwmp, uint8_t i)
   isc = HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_ISC);
   HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_ISC) = isc;
 
-  if (((isc & PWM_INT_CMPAD) != 0) &&
+  if (((isc & PWM_X_ISC_INTCMPAD) != 0) &&
       (pwmp->config->channels[i * 2 + 0].callback != NULL)) {
     pwmp->config->channels[i * 2 + 0].callback(pwmp);
   }
 
-  if (((isc & PWM_INT_CMPAU) != 0) &&
+  if (((isc & PWM_X_ISC_INTCMPAU) != 0) &&
       (pwmp->config->channels[i * 2 + 0].callback != NULL)) {
     pwmp->config->channels[i * 2 + 0].callback(pwmp);
   }
 
-  if (((isc & PWM_INT_CMPBD) != 0) &&
+  if (((isc & PWM_X_ISC_INTCMPBD) != 0) &&
       (pwmp->config->channels[i * 2 + 1].callback != NULL)) {
     pwmp->config->channels[i * 2 + 1].callback(pwmp);
   }
 
-  if (((isc & PWM_INT_CMPBU) != 0) &&
+  if (((isc & PWM_X_ISC_INTCMPBU) != 0) &&
       (pwmp->config->channels[i * 2 + 1].callback != NULL)) {
     pwmp->config->channels[i * 2 + 1].callback(pwmp);
   }
 
-  if (((isc & PWM_INT_CNTLOAD) != 0) && (pwmp->config->callback != NULL)) {
+  if (((isc & PWM_X_ISC_INTCNTLOAD) != 0) && (pwmp->config->callback != NULL)) {
     pwmp->config->callback(pwmp);
   }
 
-  if (((isc & PWM_INT_CNTZERO) != 0) && (pwmp->config->callback != NULL)) {
+  if (((isc & PWM_X_ISC_INTCNTZERO) != 0) && (pwmp->config->callback != NULL)) {
     pwmp->config->callback(pwmp);
   }
 }

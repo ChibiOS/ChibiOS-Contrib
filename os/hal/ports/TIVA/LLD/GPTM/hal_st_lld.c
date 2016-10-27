@@ -187,7 +187,7 @@ OSAL_IRQ_HANDLER(ST_HANDLER)
   mis = HWREG(TIVA_ST_TIM + TIMER_O_MIS);
   HWREG(TIVA_ST_TIM + TIMER_O_ICR) = mis;
 
-  if (mis & GPTM_IMR_TAMIM) {
+  if (mis & TIMER_IMR_TAMIM) {
     osalSysLockFromISR();
     osalOsTimerHandlerI();
     osalSysUnlockFromISR();
@@ -219,14 +219,16 @@ void st_lld_init(void)
 
   /* Initializing the counter in free running down mode.*/
   HWREG(TIVA_ST_TIM + TIMER_O_CTL)  = 0;
-  HWREG(TIVA_ST_TIM + TIMER_O_CFG)  = GPTM_CFG_CFG_SPLIT;       /* Timer split mode */
-  HWREG(TIVA_ST_TIM + TIMER_O_TAMR) = (GPTM_TAMR_TAMR_PERIODIC |/* Periodic mode */
-                       GPTM_TAMR_TAMIE |        /* Match interrupt enable */
-                       GPTM_TAMR_TASNAPS);      /* Snapshot mode */
+  HWREG(TIVA_ST_TIM + TIMER_O_CFG)  = TIMER_CFG_16_BIT; /* Timer split mode */
+  HWREG(TIVA_ST_TIM + TIMER_O_TAMR) = (
+      TIMER_TAMR_TAMR_PERIOD |  /* Periodic mode */
+      TIMER_TAMR_TAMIE |        /* Match interrupt enable */
+      TIMER_TAMR_TASNAPS);      /* Snapshot mode */
 
   HWREG(TIVA_ST_TIM + TIMER_O_TAPR) = (TIVA_SYSCLK / OSAL_ST_FREQUENCY) - 1;
-  HWREG(TIVA_ST_TIM + TIMER_O_CTL)  = (GPTM_CTL_TAEN |          /* Timer A enable */
-                       GPTM_CTL_TASTALL);       /* Timer A stall when paused */
+  HWREG(TIVA_ST_TIM + TIMER_O_CTL)  = (
+      TIMER_CTL_TAEN |          /* Timer A enable */
+      TIMER_CTL_TASTALL);       /* Timer A stall when paused */
 
   /* IRQ enabled.*/
   nvicEnableVector(ST_NUMBER, TIVA_ST_IRQ_PRIORITY);

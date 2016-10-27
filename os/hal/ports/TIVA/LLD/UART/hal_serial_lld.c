@@ -143,7 +143,7 @@ static void uart_init(SerialDriver *sdp, const SerialConfig *config)
   HWREG(u + UART_O_CTL)  = config->ctl | UART_CTL_RXE | UART_CTL_TXE | UART_CTL_UARTEN;
 
   /* Enable interrupts.*/
-  HWREG(u + UART_O_IM)   = TIVA_IM_RXIM | TIVA_IM_TXIM | TIVA_IM_RTIM;
+  HWREG(u + UART_O_IM)   = UART_IM_RXIM | UART_IM_TXIM | UART_IM_RTIM;
 }
 
 /**
@@ -153,7 +153,7 @@ static void uart_init(SerialDriver *sdp, const SerialConfig *config)
  */
 static void uart_deinit(uint32_t u)
 {
-  HWREG(u + UART_O_CTL) &= ~TIVA_CTL_UARTEN;
+  HWREG(u + UART_O_CTL) &= ~UART_CTL_UARTEN;
 }
 
 /**
@@ -166,13 +166,13 @@ static void set_error(SerialDriver *sdp, uint16_t err)
 {
   eventflags_t sts = 0;
   
-  if (err & TIVA_MIS_FEMIS)
+  if (err & UART_MIS_FEMIS)
     sts |= SD_FRAMING_ERROR;
-  if (err & TIVA_MIS_PEMIS)
+  if (err & UART_MIS_PEMIS)
     sts |= SD_PARITY_ERROR;
-  if (err & TIVA_MIS_BEMIS)
+  if (err & UART_MIS_BEMIS)
     sts |= SD_BREAK_DETECTED;
-  if (err & TIVA_MIS_OEMIS)
+  if (err & UART_MIS_OEMIS)
     sts |= SD_OVERRUN_ERROR;
   osalSysLockFromISR();
   chnAddFlagsI(sdp, sts);
@@ -195,17 +195,17 @@ static void serial_serve_interrupt(SerialDriver *sdp)
   
   HWREG(u + UART_O_ICR) = mis;		/* clear interrupts */
 
-  if (mis & (TIVA_MIS_FEMIS | TIVA_MIS_PEMIS | TIVA_MIS_BEMIS | TIVA_MIS_OEMIS)) {
+  if (mis & (UART_MIS_FEMIS | UART_MIS_PEMIS | UART_MIS_BEMIS | UART_MIS_OEMIS)) {
     set_error(sdp, mis);
   }
 
-  if ((mis & TIVA_MIS_RXMIS) || (mis &  TIVA_MIS_RTMIS)) {
+  if ((mis & UART_MIS_RXMIS) || (mis &  UART_MIS_RTMIS)) {
     osalSysLockFromISR();
     if (iqIsEmptyI(&sdp->iqueue)) {
       chnAddFlagsI(sdp, CHN_INPUT_AVAILABLE);
     }
     osalSysUnlockFromISR();
-    while ((HWREG(u + UART_O_FR) & TIVA_FR_RXFE) == 0) {
+    while ((HWREG(u + UART_O_FR) & UART_FR_RXFE) == 0) {
       osalSysLockFromISR();
       if (iqPutI(&sdp->iqueue, HWREG(u + UART_O_DR)) < Q_OK) {
         chnAddFlagsI(sdp, SD_OVERRUN_ERROR);
@@ -214,14 +214,14 @@ static void serial_serve_interrupt(SerialDriver *sdp)
     }
   }
 
-  if (mis & TIVA_MIS_TXMIS) {
-    while ((HWREG(u + UART_O_FR) & TIVA_FR_TXFF) == 0) {
+  if (mis & UART_MIS_TXMIS) {
+    while ((HWREG(u + UART_O_FR) & UART_FR_TXFF) == 0) {
       msg_t b;
       osalSysLockFromISR();
       b = oqGetI(&sdp->oqueue);
       osalSysUnlockFromISR();
       if (b < Q_OK) {
-        HWREG(u + UART_O_IM) &= ~TIVA_IM_TXIM;
+        HWREG(u + UART_O_IM) &= ~UART_IM_TXIM;
         osalSysLockFromISR();
         chnAddFlagsI(sdp, CHN_OUTPUT_EMPTY);
         osalSysUnlockFromISR();
@@ -239,7 +239,7 @@ static void fifo_load(SerialDriver *sdp)
 {
   uint32_t u = sdp->uart;
 
-  while ((HWREG(u + UART_O_FR) & TIVA_FR_TXFF) == 0) {
+  while ((HWREG(u + UART_O_FR) & UART_FR_TXFF) == 0) {
     msg_t b = oqGetI(&sdp->oqueue);
     if (b < Q_OK) {
       chnAddFlagsI(sdp, CHN_OUTPUT_EMPTY);
@@ -248,7 +248,7 @@ static void fifo_load(SerialDriver *sdp)
     HWREG(u + UART_O_DR) = b;
   }
 
-  HWREG(u + UART_O_IM) |= TIVA_IM_TXIM;   /* transmit interrupt enable */
+  HWREG(u + UART_O_IM) |= UART_IM_TXIM;   /* transmit interrupt enable */
 }
 
 /**

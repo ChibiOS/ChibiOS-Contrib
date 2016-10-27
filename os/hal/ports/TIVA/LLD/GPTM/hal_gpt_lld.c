@@ -594,7 +594,7 @@ void gpt_lld_start(GPTDriver *gptp)
 
   /* Timer configuration.*/
   HWREG(gptp->gpt + TIMER_O_CTL) = 0;
-  HWREG(gptp->gpt + TIMER_O_CFG) = GPTM_CFG_CFG_SPLIT;
+  HWREG(gptp->gpt + TIMER_O_CFG) = TIMER_CFG_16_BIT;
   HWREG(gptp->gpt + TIMER_O_TAPR) = ((TIVA_SYSCLK / gptp->config->frequency) - 1);
 }
 
@@ -710,9 +710,9 @@ void gpt_lld_start_timer(GPTDriver *gptp, gptcnt_t interval)
 {
   HWREG(gptp->gpt + TIMER_O_TAILR) = interval - 1;
   HWREG(gptp->gpt + TIMER_O_ICR) = 0xfffffff;
-  HWREG(gptp->gpt + TIMER_O_IMR) = GPTM_IMR_TATOIM;
-  HWREG(gptp->gpt + TIMER_O_TAMR) = GPTM_TAMR_TAMR_PERIODIC | GPTM_TAMR_TAILD | GPTM_TAMR_TASNAPS;
-  HWREG(gptp->gpt + TIMER_O_CTL) = GPTM_CTL_TAEN | GPTM_CTL_TASTALL;
+  HWREG(gptp->gpt + TIMER_O_IMR) = TIMER_IMR_TATOIM;
+  HWREG(gptp->gpt + TIMER_O_TAMR) = TIMER_TAMR_TAMR_PERIOD | TIMER_TAMR_TAILD | TIMER_TAMR_TASNAPS;
+  HWREG(gptp->gpt + TIMER_O_CTL) = TIMER_CTL_TAEN | TIMER_CTL_TASTALL;
 }
 
 /**
@@ -726,7 +726,7 @@ void gpt_lld_stop_timer(GPTDriver *gptp)
 {
   HWREG(gptp->gpt + TIMER_O_IMR) = 0;
   HWREG(gptp->gpt + TIMER_O_TAILR) = 0;
-  HWREG(gptp->gpt + TIMER_O_CTL) &= ~GPTM_CTL_TAEN;
+  HWREG(gptp->gpt + TIMER_O_CTL) &= ~TIMER_CTL_TAEN;
 }
 
 /**
@@ -742,11 +742,11 @@ void gpt_lld_stop_timer(GPTDriver *gptp)
  */
 void gpt_lld_polled_delay(GPTDriver *gptp, gptcnt_t interval)
 {
-  HWREG(gptp->gpt + TIMER_O_TAMR) = GPTM_TAMR_TAMR_ONESHOT | GPTM_TAMR_TAILD | GPTM_TAMR_TASNAPS;
+  HWREG(gptp->gpt + TIMER_O_TAMR) = TIMER_TAMR_TAMR_1_SHOT | TIMER_TAMR_TAILD | TIMER_TAMR_TASNAPS;
   HWREG(gptp->gpt + TIMER_O_TAILR) = interval - 1;
   HWREG(gptp->gpt + TIMER_O_ICR) = 0xffffffff;
-  HWREG(gptp->gpt + TIMER_O_CTL) = GPTM_CTL_TAEN | GPTM_CTL_TASTALL;
-  while (!(HWREG(gptp->gpt + TIMER_O_RIS) & GPTM_IMR_TATOIM))
+  HWREG(gptp->gpt + TIMER_O_CTL) = TIMER_CTL_TAEN | TIMER_CTL_TASTALL;
+  while (!(HWREG(gptp->gpt + TIMER_O_RIS) & TIMER_IMR_TATOIM))
     ;
   HWREG(gptp->gpt + TIMER_O_ICR) = 0xffffffff;
 }

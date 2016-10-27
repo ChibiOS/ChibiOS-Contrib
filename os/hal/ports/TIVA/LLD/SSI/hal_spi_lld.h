@@ -32,89 +32,9 @@
 /*===========================================================================*/
 
 /**
- * @name    Control 0
- * @{
+ * @brief   CR0 Serial Clock Rate helper.
  */
-#define TIVA_CR0_DSS_MASK       0x0F
-#define TIVA_CR0_DSS(n)         ((n-1) << 0)
-
-#define TIVA_CR0_FRF_MASK       (3 << 4)
-#define TIVA_CR0_FRF(n)         ((n) << 4)
-
-#define TIVA_CR0_SPO            (1 << 6)
-#define TIVA_CR0_SPH            (1 << 7)
-
-#define TIVA_CR0_SRC_MASK       (0xFF << 8)
-#define TIVA_CR0_SRC(n)         ((n) << 8)
-/** @} */
-
-/**
- * @name    Control 1
- * @{
- */
-#define TIVA_CR1_LBM            (1 << 0)
-#define TIVA_CR1_SSE            (1 << 1)
-#define TIVA_CR1_MS             (1 << 2)
-#define TIVA_CR1_SOD            (1 << 3)
-#define TIVA_CR1_EOT            (1 << 4)
-/** @} */
-
-/**
- * @name    Status
- * @{
- */
-#define TIVA_SR_TFE             (1 << 0)
-#define TIVA_SR_TNF             (1 << 1)
-#define TIVA_SR_RNE             (1 << 2)
-#define TIVA_SR_RFF             (1 << 3)
-#define TIVA_SR_BSY             (1 << 4)
-/** @} */
-
-/**
- * @name    Interrupt Mask
- * @{
- */
-#define TIVA_IM_RORIM           (1 << 0)
-#define TIVA_IM_RTIM            (1 << 1)
-#define TIVA_IM_RXIM            (1 << 2)
-#define TIVA_IM_TXIM            (1 << 3)
-/** @} */
-
-/**
- * @name    Interrupt Status
- * @{
- */
-#define TIVA_IS_RORIS           (1 << 0)
-#define TIVA_IS_RTIS            (1 << 1)
-#define TIVA_IS_RXIS            (1 << 2)
-#define TIVA_IS_TXIS            (1 << 3)
-/** @} */
-
-/**
- * @name    Masked Interrupt Status
- * @{
- */
-#define TIVA_MIS_RORMIS         (1 << 0)
-#define TIVA_MIS_RTMIS          (1 << 1)
-#define TIVA_MIS_RXMIS          (1 << 2)
-#define TIVA_MIS_TXMIS          (1 << 3)
-/** @} */
-
-/**
- * @name    Interrupt Clear
- * @{
- */
-#define TIVA_ICR_RORIC          (1 << 0)
-#define TIVA_ICR_RTIC           (1 << 1)
-/** @} */
-
-/**
- * @name    DMA Control
- * @{
- */
-#define TIVA_DMACTL_RXDMAE      (1 << 0)
-#define TIVA_DMACTL_TXDMAE      (1 << 1)
-/** @} */
+#define SSI_CR0_SCR(n)         ((n) << 8)
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */

@@ -29,7 +29,6 @@
 
 #include "mcuconf.h"
 #include "tiva_registry.h"
-#include "tiva_gpt.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -213,7 +212,7 @@ static inline void st_lld_start_alarm(systime_t time)
 {
   HWREG(TIVA_ST_TIM + TIMER_O_TAMATCHR) = (systime_t) (((systime_t) 0xffffffff) - time);
   HWREG(TIVA_ST_TIM + TIMER_O_ICR) = HWREG(TIVA_ST_TIM + TIMER_O_MIS);
-  HWREG(TIVA_ST_TIM + TIMER_O_IMR) = GPTM_IMR_TAMIM;
+  HWREG(TIVA_ST_TIM + TIMER_O_IMR) = TIMER_IMR_TAMIM;
 }
 
 /**
@@ -261,7 +260,7 @@ static inline systime_t st_lld_get_alarm(void)
  */
 static inline bool st_lld_is_alarm_active(void)
 {
-  return (bool) ((HWREG(TIVA_ST_TIM + TIMER_O_IMR) & GPTM_IMR_TAMIM) !=0);
+  return (bool) ((HWREG(TIVA_ST_TIM + TIMER_O_IMR) & TIMER_IMR_TAMIM) !=0);
 }
 
 #endif /* HAL_ST_LLD_H */

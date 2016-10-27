@@ -104,7 +104,7 @@ void udmaInit(void)
   nvicEnableVector(TIVA_UDMA_SW_NUMBER, TIVA_UDMA_SW_IRQ_PRIORITY);
 
   /* Enable UDMA controller.*/
-  HWREG(UDMA_CFG) = 1;
+  HWREG(UDMA_CFG) = UDMA_CFG_MASTEN;
 
   /* Set address of control table.*/
   HWREG(UDMA_CTLBASE) = (uint32_t)udmaControlTable.primary;

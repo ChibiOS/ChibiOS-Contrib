@@ -62,7 +62,7 @@ static void serve_interrupt(WDGDriver *wdgp)
 
   mis = HWREG(wdgp->wdt + WDT_O_MIS);
 
-  if (mis & MIS_WDTMIS) {
+  if (mis & WDT_MIS_WDTMIS) {
     /* Invoke callback, if any */
     if (wdgp->config->callback) {
       if (wdgp->config->callback(wdgp)) {
@@ -159,10 +159,10 @@ void wdg_lld_start(WDGDriver *wdgp)
   HWREG(wdgp->wdt + WDT_O_TEST) = wdgp->config->test;
   wdgTivaSyncWrite(wdgp);
 
-  HWREG(wdgp->wdt + WDT_O_CTL) |= CTL_RESEN;
+  HWREG(wdgp->wdt + WDT_O_CTL) |= WDT_CTL_RESEN;
   wdgTivaSyncWrite(wdgp);
 
-  HWREG(wdgp->wdt + WDT_O_CTL) |= CTL_INTEN;
+  HWREG(wdgp->wdt + WDT_O_CTL) |= WDT_CTL_INTEN;
   wdgTivaSyncWrite(wdgp);
 }
 

@@ -30,6 +30,33 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+// interrupt states
+#define STATE_IDLE          0
+#define STATE_WRITE_NEXT    1
+#define STATE_WRITE_FINAL   2
+#define STATE_WAIT_ACK      3
+#define STATE_SEND_ACK      4
+#define STATE_READ_ONE      5
+#define STATE_READ_FIRST    6
+#define STATE_READ_NEXT     7
+#define STATE_READ_FINAL    8
+#define STATE_READ_WAIT     9
+
+#define TIVA_I2C_SIGNLE_SEND                (I2C_MCS_RUN | I2C_MCS_START | I2C_MCS_STOP)
+#define TIVA_I2C_BURST_SEND_START           (I2C_MCS_RUN | I2C_MCS_START)
+#define TIVA_I2C_BURST_SEND_CONTINUE        (I2C_MCS_RUN)
+#define TIVA_I2C_BURST_SEND_FINISH          (I2C_MCS_RUN | I2C_MCS_STOP)
+#define TIVA_I2C_BURST_SEND_STOP            (I2C_MCS_STOP)
+#define TIVA_I2C_BURST_SEND_ERROR_STOP      (I2C_MCS_STOP)
+
+#define TIVA_I2C_SINGLE_RECEIVE             (I2C_MCS_RUN | I2C_MCS_START | I2C_MCS_STOP)
+#define TIVA_I2C_BURST_RECEIVE_START        (I2C_MCS_RUN | I2C_MCS_START | I2C_MCS_ACK)
+#define TIVA_I2C_BURST_RECEIVE_CONTINUE     (I2C_MCS_RUN | I2C_MCS_ACK)
+#define TIVA_I2C_BURST_RECEIVE_FINISH       (I2C_MCS_RUN | I2C_MCS_STOP)
+#define TIVA_I2C_BURST_RECEIVE_ERROR_STOP   (I2C_MCS_STOP)
+
+#define MTPR_VALUE          ((TIVA_SYSCLK/(2*(6+4)*i2cp->config->clock_speed))-1)
+
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -134,10 +161,10 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp)
   // read interrupt status
   status = HWREG(i2c + I2C_O_MCS);
 
-  if (status & TIVA_MCS_ERROR) {
+  if (status & I2C_MCS_ERROR) {
     i2cp->errors |= I2C_BUS_ERROR;
   }
-  if (status & TIVA_MCS_ARBLST) {
+  if (status & I2C_MCS_ARBLST) {
     i2cp->errors |= I2C_ARBITRATION_LOST;
   }
 
@@ -760,7 +787,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
     /* If the bus is not busy then the operation can continue, note, the
        loop is exited in the locked state.*/
-    if ((HWREG(i2c + I2C_O_MCS) & TIVA_MCS_BUSY) == 0)
+    if ((HWREG(i2c + I2C_O_MCS) & I2C_MCS_BUSY) == 0)
       break;
 
     /* If the system time went outside the allowed window then a timeout
@@ -834,7 +861,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
     /* If the bus is not busy then the operation can continue, note, the
        loop is exited in the locked state.*/
-    if ((HWREG(i2c + I2C_O_MCS) & TIVA_MCS_BUSY) == 0)
+    if ((HWREG(i2c + I2C_O_MCS) & I2C_MCS_BUSY) == 0)
       break;
 
     /* If the system time went outside the allowed window then a timeout
@@ -852,7 +879,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   HWREG(i2c + I2C_O_MSA) = i2cp->addr;
 
   /* enable interrupts */
-  HWREG(i2c + I2C_O_MIMR) = TIVA_MIMR_IM;
+  HWREG(i2c + I2C_O_MIMR) = I2C_MIMR_IM;
 
   /* put data in register */
   HWREG(i2c + I2C_O_MDR) = *(i2cp->txbuf);
