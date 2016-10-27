@@ -115,7 +115,7 @@ void tiva_clock_init(void)
   /*
    * 7. Write the MEMTIM0 register to correspond to the new system clock setting.
    */
-  HWREG(SYSCTL_MEMTIM0) = (MEMTIM0_FBCHT_3_5 | MEMTIM0_FWS_5 | MEMTIM0_EBCHT_3_5 | MEMTIM0_EWS_5 | MEMTIM0_MB1);
+  HWREG(SYSCTL_MEMTIM0) = (SYSCTL_MEMTIM0_FBCHT_3_5 | (5 << SYSCTL_MEMTIM0_FWS_S) | SYSCTL_MEMTIM0_EBCHT_3_5 | (5 << SYSCTL_MEMTIM0_EWS_S) | SYSCTL_MEMTIM0_MB1);
 
   /*
    * Wait for the PLLSTAT register to indicate the PLL has reached lock at the new operating point
