@@ -36,7 +36,7 @@ static const WDGConfig wdgcfg =
 {
   TIVA_SYSCLK,
   watchdog_timeout,
-  TEST_STALL
+  WDT_TEST_STALL
 };
 
 /*
