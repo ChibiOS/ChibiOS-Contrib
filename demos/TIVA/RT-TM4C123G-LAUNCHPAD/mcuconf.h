@@ -30,7 +30,7 @@
 /*
  * HAL driver system settings.
  */
-#define TIVA_OSCSRC                         TIVA_RCC2_OSCSRC2_MOSC
+#define TIVA_OSCSRC                         SYSCTL_RCC2_OSCSRC2_MO
 #define TIVA_MOSC_ENABLE                    TRUE
 #define TIVA_DIV400_VALUE                   1
 #define TIVA_SYSDIV_VALUE                   2
