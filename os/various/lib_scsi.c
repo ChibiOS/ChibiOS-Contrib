@@ -25,9 +25,16 @@
 #include <string.h>
 
 #include "hal.h"
-//#include "chprintf.h"
 
 #include "lib_scsi.h"
+
+#define DEBUG_TRACE_PRINT     FALSE
+#define DEBUG_TRACE_WARNING   FALSE
+#define DEBUG_TRACE_ERROR     FALSE
+#include "dbgtrace.h"
+
+#define ARCH_LITTLE_ENDIAN
+#include "bswap.h"
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -51,25 +58,6 @@ typedef struct {
 /*===========================================================================*/
 
 /**
- * @brief   Byte swapping function.
- *
- * @notapi
- */
-static uint32_t swap_uint32(uint32_t val) {
-  val =  ((val << 8)  & 0xFF00FF00 ) | ((val >> 8)  & 0x00FF00FF);
-  return ((val << 16) & 0xFFFF0000)  | ((val >> 16) & 0x0000FFFF);
-}
-
-/**
- * @brief   Byte swapping function.
- *
- * @notapi
- */
-static uint16_t swap_uint16(uint16_t val) {
-  return ((val >> 8) & 0xff) | ((val & 0xff) << 8);
-}
-
-/**
  * @brief   Combines data request from byte array.
  *
  * @notapi
@@ -83,8 +71,8 @@ static data_request_t decode_data_request(const uint8_t *cmd) {
   memcpy(&lba, &cmd[2], sizeof(lba));
   memcpy(&blk, &cmd[7], sizeof(blk));
 
-  req.first_lba = swap_uint32(lba);
-  req.blk_cnt = swap_uint16(blk);
+  req.first_lba = be32_to_cpu(lba);
+  req.blk_cnt = be16_to_cpu(blk);
 
   return req;
 }
@@ -254,6 +242,51 @@ static bool mode_sense6(SCSITarget *scsip, const uint8_t *cmd) {
 }
 
 /**
+ * @brief   SCSI read format capacities command handler.
+ *
+ * @param[in] scsip   pointer to @p SCSITarget structure
+ * @param[in] cmd     pointer to SCSI command data
+ *
+ * @return            The operation status.
+ *
+ * @notapi
+ */
+static bool read_format_capacities(SCSITarget *scsip, const uint8_t *cmd) {
+
+  /* An Allocation Length of zero indicates that no data shall be transferred.
+     This condition shall not be considered as an error. The Logical Unit
+     shall terminate the data transfer when Allocation Length bytes have
+     been transferred or when all available data have been transferred to
+     the Initiator, whatever is less. */
+
+  uint16_t len = cmd[7] << 8 | cmd[8];
+
+  if (0 == len) {
+    return SCSI_SUCCESS;
+  }
+  else {
+    scsi_read_format_capacities_response_t ret;
+    BlockDeviceInfo bdi;
+    blkGetInfo(scsip->config->blkdev, &bdi);
+
+    uint32_t tmp = cpu_to_be32(bdi.blk_num);
+    memcpy(ret.blocknum, &tmp, 4);
+
+    uint8_t formatted_media = 0b10;
+    uint16_t blocklen = bdi.blk_size;
+    ret.blocklen[0] = formatted_media;
+    ret.blocklen[1] = 0;
+    ret.blocklen[2] = blocklen >> 8;
+    ret.blocklen[3] = blocklen & 0xFF;
+
+    ret.header[3] = 1 * 8;
+
+    return transmit_data(scsip, (uint8_t *)&ret,
+                         sizeof(scsi_read_format_capacities_response_t));
+  }
+}
+
+/**
  * @brief   SCSI read capacity (10) command handler.
  *
  * @param[in] scsip   pointer to @p SCSITarget structure
@@ -270,8 +303,8 @@ static bool read_capacity10(SCSITarget *scsip, const uint8_t *cmd) {
   BlockDeviceInfo bdi;
   blkGetInfo(scsip->config->blkdev, &bdi);
   scsi_read_capacity10_response_t ret;
-  ret.block_size      = swap_uint32(bdi.blk_size);
-  ret.last_block_addr = swap_uint32(bdi.blk_num - 1);
+  ret.block_size      = cpu_to_be32(bdi.blk_size);
+  ret.last_block_addr = cpu_to_be32(bdi.blk_num - 1);
 
   return transmit_data(scsip, (uint8_t *)&ret,
                         sizeof(scsi_read_capacity10_response_t));
@@ -370,39 +403,47 @@ bool scsiExecCmd(SCSITarget *scsip, const uint8_t *cmd) {
 
   switch (cmd[0]) {
   case SCSI_CMD_INQUIRY:
-    //chprintf(SDDBG, "SCSI_CMD_INQUIRY\r\n");
+    dbgprintf("SCSI_CMD_INQUIRY\r\n");
     return inquiry(scsip, cmd);
 
   case SCSI_CMD_REQUEST_SENSE:
-    //chprintf(SDDBG, "SCSI_CMD_REQUEST_SENSE\r\n");
+    dbgprintf("SCSI_CMD_REQUEST_SENSE\r\n");
     return request_sense(scsip, cmd);
 
   case SCSI_CMD_READ_CAPACITY_10:
-    //chprintf(SDDBG, "SCSI_CMD_READ_CAPACITY_10\r\n");
+    dbgprintf("SCSI_CMD_READ_CAPACITY_10\r\n");
     return read_capacity10(scsip, cmd);
 
   case SCSI_CMD_READ_10:
-    //chprintf(SDDBG, "SCSI_CMD_READ_10\r\n");
+    dbgprintf("SCSI_CMD_READ_10\r\n");
     return data_read_write10(scsip, cmd);
 
   case SCSI_CMD_WRITE_10:
-    //chprintf(SDDBG, "SCSI_CMD_WRITE_10\r\n");
+    dbgprintf("SCSI_CMD_WRITE_10\r\n");
     return data_read_write10(scsip, cmd);
 
   case SCSI_CMD_TEST_UNIT_READY:
-    //chprintf(SDDBG, "SCSI_CMD_TEST_UNIT_READY\r\n");
+    dbgprintf("SCSI_CMD_TEST_UNIT_READY\r\n");
     return cmd_ignored(scsip, cmd);
 
   case SCSI_CMD_PREVENT_ALLOW_MEDIUM_REMOVAL:
-    //chprintf(SDDBG, "SCSI_CMD_ALLOW_MEDIUM_REMOVAL\r\n");
+    dbgprintf("SCSI_CMD_ALLOW_MEDIUM_REMOVAL\r\n");
     return cmd_ignored(scsip, cmd);
 
   case SCSI_CMD_MODE_SENSE_6:
-    //chprintf(SDDBG, "SCSI_CMD_MODE_SENSE_6\r\n");
+    dbgprintf("SCSI_CMD_MODE_SENSE_6\r\n");
     return mode_sense6(scsip, cmd);
 
+  case SCSI_CMD_READ_FORMAT_CAPACITIES:
+    dbgprintf("SCSI_CMD_READ_FORMAT_CAPACITIES\r\n");
+    return read_format_capacities(scsip, cmd);
+
+  case SCSI_CMD_VERIFY_10:
+    dbgprintf("SCSI_CMD_VERIFY_10\r\n");
+    return cmd_ignored(scsip, cmd);
+
   default:
-    //(SDDBG, "SCSI unhandled command: %d\r\n", cmd[0]);
+    warnprintf("SCSI unhandled command: %X\r\n", cmd[0]);
     return cmd_unhandled(scsip, cmd);
   }
 }

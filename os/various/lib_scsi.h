@@ -37,6 +37,7 @@
 #define SCSI_CMD_SEND_DIAGNOSTIC                0x1D
 #define SCSI_CMD_PREVENT_ALLOW_MEDIUM_REMOVAL   0x1E
 #define SCSI_CMD_READ_CAPACITY_10               0x25
+#define SCSI_CMD_READ_FORMAT_CAPACITIES         0x23
 #define SCSI_CMD_READ_10                        0x28
 #define SCSI_CMD_WRITE_10                       0x2A
 #define SCSI_CMD_VERIFY_10                      0x2F
@@ -155,6 +156,16 @@ typedef struct PACKED_VAR {
   uint32_t last_block_addr;
   uint32_t block_size;
 } scsi_read_capacity10_response_t;
+
+/**
+ * @brief   Represents SCSI read format capacity response structure.
+ * @details See SCSI specification.
+ */
+typedef struct PACKED_VAR {
+  uint8_t header[4];
+  uint8_t blocknum[4];
+  uint8_t blocklen[4];
+} scsi_read_format_capacities_response_t;
 
 /**
  * @brief   Type of a SCSI transport transmit call.

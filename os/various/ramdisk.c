@@ -58,7 +58,7 @@ static bool is_inserted(void *instance) {
 
 static bool is_protected(void *instance) {
   RamDisk *rd = instance;
-  if (rd->state != BLK_READY) {
+  if (BLK_READY == rd->state) {
     return rd->readonly;
   }
   else {
@@ -68,7 +68,7 @@ static bool is_protected(void *instance) {
 
 static bool connect(void *instance) {
   RamDisk *rd = instance;
-  if (rd->state == BLK_STOP) {
+  if (BLK_STOP == rd->state) {
     rd->state = BLK_READY;
   }
   return HAL_SUCCESS;
@@ -76,7 +76,7 @@ static bool connect(void *instance) {
 
 static bool disconnect(void *instance) {
   RamDisk *rd = instance;
-  if (rd->state != BLK_STOP) {
+  if (BLK_STOP != rd->state) {
     rd->state = BLK_STOP;
   }
   return HAL_SUCCESS;
@@ -114,7 +114,7 @@ static bool write(void *instance, uint32_t startblk,
 static bool sync(void *instance) {
 
   RamDisk *rd = instance;
-  if (rd->state != BLK_READY) {
+  if (BLK_READY != rd->state) {
     return HAL_FAILED;
   }
   else {
@@ -125,7 +125,7 @@ static bool sync(void *instance) {
 static bool get_info(void *instance, BlockDeviceInfo *bdip) {
 
   RamDisk *rd = instance;
-  if (rd->state != BLK_READY) {
+  if (BLK_READY != rd->state) {
     return HAL_FAILED;
   }
   else {

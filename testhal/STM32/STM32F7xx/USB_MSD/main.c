@@ -52,6 +52,15 @@ RamDisk ramdisk;
 __attribute__((section("DATA_RAM"))) static uint8_t ramdisk_storage[RAMDISK_BLOCK_SIZE * RAMDISK_BLOCK_CNT];
 static uint8_t blkbuf[RAMDISK_BLOCK_SIZE];
 
+BaseSequentialStream *GlobalDebugChannel;
+
+static const SerialConfig sercfg = {
+    115200,
+    0,
+    0,
+    0
+};
+
 /*
  * Application entry point.
  */
@@ -67,6 +76,9 @@ int main(void) {
   halInit();
   chSysInit();
 
+  sdStart(&SD3, &sercfg);
+  GlobalDebugChannel = (BaseSequentialStream *)&SD3;
+
   /*
    * Activates the USB driver and then the USB bus pull-up on D+.
    * Note, a delay is inserted in order to not have to disconnect the cable
@@ -75,7 +87,6 @@ int main(void) {
   usbDisconnectBus(&USBD1);
   chThdSleepMilliseconds(1500);
   usbStart(&USBD1, &usbcfg);
-  usbConnectBus(&USBD1);
 
   /*
    * start RAM disk
@@ -92,6 +103,11 @@ int main(void) {
    */
   msdObjectInit(&USBMSD1);
   msdStart(&USBMSD1, &USBD1, (BaseBlockDevice *)&ramdisk, blkbuf, NULL);
+
+  /*
+   *
+   */
+  usbConnectBus(&USBD1);
 
   /*
    * Starting threads.
