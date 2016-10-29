@@ -37,8 +37,8 @@
 #define TIVA_USESYSDIV_ENABLE               FALSE
 #define TIVA_SYSDIV2LSB_ENABLE              FALSE
 #define TIVA_BYPASS_VALUE                   0
-#define TIVA_PWM_FIELDS                     (TIVA_RCC_USEPWMDIV |            \
-                                             TIVA_RCC_PWMDIV_8)
+#define TIVA_PWM_FIELDS                     (SYSCTL_RCC_USEPWMDIV |            \
+                                             SYSCTL_RCC_PWMDIV_8)
 
 /*
  * GPIO driver system settings.
