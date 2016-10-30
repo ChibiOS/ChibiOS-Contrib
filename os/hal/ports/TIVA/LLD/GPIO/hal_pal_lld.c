@@ -250,19 +250,19 @@
  */
 static void gpio_init(ioportid_t port, const tiva_gpio_setup_t *config)
 {
-  HWREG((port) + GPIO_O_DATA)  = config->data;
-  HWREG((port) + GPIO_O_DIR)   = config->dir;
-  HWREG((port) + GPIO_O_AFSEL) = config->afsel;
-  HWREG((port) + GPIO_O_DR2R)  = config->dr2r;
-  HWREG((port) + GPIO_O_DR4R)  = config->dr4r;
-  HWREG((port) + GPIO_O_DR8R)  = config->dr8r;
-  HWREG((port) + GPIO_O_ODR)   = config->odr;
-  HWREG((port) + GPIO_O_PUR)   = config->pur;
-  HWREG((port) + GPIO_O_PDR)   = config->pdr;
-  HWREG((port) + GPIO_O_SLR)   = config->slr;
-  HWREG((port) + GPIO_O_DEN)   = config->den;
-  HWREG((port) + GPIO_O_AMSEL) = config->amsel;
-  HWREG((port) + GPIO_O_PCTL)  = config->pctl;
+  HWREG(port + GPIO_O_DATA)  = config->data;
+  HWREG(port + GPIO_O_DIR)   = config->dir;
+  HWREG(port + GPIO_O_AFSEL) = config->afsel;
+  HWREG(port + GPIO_O_DR2R)  = config->dr2r;
+  HWREG(port + GPIO_O_DR4R)  = config->dr4r;
+  HWREG(port + GPIO_O_DR8R)  = config->dr8r;
+  HWREG(port + GPIO_O_ODR)   = config->odr;
+  HWREG(port + GPIO_O_PUR)   = config->pur;
+  HWREG(port + GPIO_O_PDR)   = config->pdr;
+  HWREG(port + GPIO_O_SLR)   = config->slr;
+  HWREG(port + GPIO_O_DEN)   = config->den;
+  HWREG(port + GPIO_O_AMSEL) = config->amsel;
+  HWREG(port + GPIO_O_PCTL)  = config->pctl;
 }
 
 /**
@@ -275,8 +275,8 @@ static void gpio_init(ioportid_t port, const tiva_gpio_setup_t *config)
 static void gpio_unlock(ioportid_t port, ioportmask_t mask)
 {
 
-  HWREG((port) + GPIO_O_LOCK) = TIVA_GPIO_LOCK_PWD;
-  HWREG((port) + GPIO_O_CR) = mask;
+  HWREG(port + GPIO_O_LOCK) = TIVA_GPIO_LOCK_PWD;
+  HWREG(port + GPIO_O_CR) = mask;
 }
 
 /*===========================================================================*/

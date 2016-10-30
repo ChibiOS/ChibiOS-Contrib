@@ -28,7 +28,7 @@
 #if HAL_USE_PAL || defined(__DOXYGEN__)
 
 /*===========================================================================*/
-/* Driver constants.                                                         */
+/* Unsupported modes and specific modes                                      */
 /*===========================================================================*/
 
 #undef PAL_MODE_RESET
@@ -98,9 +98,7 @@
  */
 #define PAL_MODE_ALTERNATE(n)       (PAL_TIVA_AFSEL_ALTERNATE |               \
                                      PAL_TIVA_PCTL(n))
-/**
- * @}
- */
+/** @} */
 
 /**
  * @name    Standard I/O mode flags
@@ -157,88 +155,16 @@
                                          PAL_TIVA_DR2R_ENABLE |               \
                                          PAL_TIVA_ODR_OPENDRAIN |             \
                                          PAL_TIVA_DEN_ENABLE)
+/** @} */
+
+/*===========================================================================*/
+/* I/O Ports Types and constants.                                            */
+/*===========================================================================*/
+
 /**
- * @}
+ * @name    Port related definitions
+ * @{
  */
-
-/** @brief   GPIOA port identifier.*/
-#define IOPORT1         GPIOA
-
-/** @brief   GPIOB port identifier.*/
-#define IOPORT2         GPIOB
-
-/** @brief   GPIOC port identifier.*/
-#define IOPORT3         GPIOC
-
-/** @brief   GPIOD port identifier.*/
-#define IOPORT4         GPIOD
-
-/** @brief   GPIOE port identifier.*/
-#define IOPORT5         GPIOE
-
-/** @brief   GPIOF port identifier.*/
-#define IOPORT6         GPIOF
-
-#if TIVA_HAS_GPIOG || defined(__DOXYGEN__)
-/** @brief Port G setup data.*/
-#define IOPORT7         GPIOG
-#endif /* TIVA_HAS_GPIOG.*/
-
-#if TIVA_HAS_GPIOH || defined(__DOXYGEN__)
-/** @brief Port H setup data.*/
-#define IOPORT8         GPIOH
-#endif /* TIVA_HAS_GPIOH.*/
-
-#if TIVA_HAS_GPIOJ || defined(__DOXYGEN__)
-/** @brief Port J setup data.*/
-#define IOPORT9         GPIOJ
-#endif /* TIVA_HAS_GPIOJ.*/
-
-#if TIVA_HAS_GPIOK || defined(__DOXYGEN__)
-/** @brief Port K setup data.*/
-#define IOPORT10        GPIOK
-#endif /* TIVA_HAS_GPIOK.*/
-
-#if TIVA_HAS_GPIOL || defined(__DOXYGEN__)
-/** @brief Port L setup data.*/
-#define IOPORT11        GPIOL
-#endif /* TIVA_HAS_GPIOL.*/
-
-#if TIVA_HAS_GPIOM || defined(__DOXYGEN__)
-/** @brief Port M setup data.*/
-#define IOPORT12        GPIOM
-#endif /* TIVA_HAS_GPIOM.*/
-
-#if TIVA_HAS_GPION || defined(__DOXYGEN__)
-/** @brief Port N setup data.*/
-#define IOPORT13        GPION
-#endif /* TIVA_HAS_GPION.*/
-
-#if TIVA_HAS_GPIOP || defined(__DOXYGEN__)
-/** @brief Port P setup data.*/
-#define IOPORT14        GPIOP
-#endif /* TIVA_HAS_GPIOP.*/
-
-#if TIVA_HAS_GPIOQ || defined(__DOXYGEN__)
-/** @brief Port Q setup data.*/
-#define IOPORT15        GPIOQ
-#endif /* TIVA_HAS_GPIOQ.*/
-
-#if TIVA_HAS_GPIOR || defined(__DOXYGEN__)
-/** @brief Port R setup data.*/
-#define IOPORT16        GPIOR
-#endif /* TIVA_HAS_GPIOR.*/
-
-#if TIVA_HAS_GPIOS || defined(__DOXYGEN__)
-/** @brief Port S setup data.*/
-#define IOPORT17        GPIOS
-#endif /* TIVA_HAS_GPIOS.*/
-
-#if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
-/** @brief Port T setup data.*/
-#define IOPORT18        GPIOT
-#endif /* TIVA_HAS_GPIOT.*/
-
 /**
  * @brief   Width, in bits, of an I/O port.
  */
@@ -249,6 +175,158 @@
  * @brief   This macro specifies all the valid bits into a port.
  */
 #define PAL_WHOLE_PORT ((ioportmask_t)0xFF)
+/** @} */
+
+/**
+ * @name    Line handling macros
+ * @{
+ */
+/**
+ * @brief   Forms a line identifier.
+ * @details A port/pad pair are encoded into an @p ioline_t type. The encoding
+ *          of this type is platform-dependent.
+ * @note    In this driver the pad number is encoded in the lower 4 bits of
+ *          the GPIO address which are guaranteed to be zero.
+ */
+#define PAL_LINE(port, pad)                                                 \
+  ((ioline_t)((uint32_t)(port)) | ((uint32_t)(pad)))
+
+/**
+ * @brief   Decodes a port identifier from a line identifier.
+ */
+#define PAL_PORT(line)                                                      \
+  ((stm32_gpio_t *)(((uint32_t)(line)) & 0xFFFFFFF0U))
+
+/**
+ * @brief   Decodes a pad identifier from a line identifier.
+ */
+#define PAL_PAD(line)                                                       \
+  ((uint32_t)((uint32_t)(line) & 0x0000000FU))
+
+/**
+ * @brief   Value identifying an invalid line.
+ */
+#define PAL_NOLINE                      0U
+/** @} */
+
+/**
+ * @brief   GPIO port setup info.
+ */
+typedef struct
+{
+  /** @brief Initial value for DATA register.*/
+  uint32_t data;
+  /** @brief Initial value for DIR register.*/
+  uint32_t dir;
+  /** @brief Initial value for AFSEL register.*/
+  uint32_t afsel;
+  /** @brief Initial value for DR2R register.*/
+  uint32_t dr2r;
+  /** @brief Initial value for DR4R register.*/
+  uint32_t dr4r;
+  /** @brief Initial value for DR8R register.*/
+  uint32_t dr8r;
+  /** @brief Initial value for ODR register.*/
+  uint32_t odr;
+  /** @brief Initial value for PUR register.*/
+  uint32_t pur;
+  /** @brief Initial value for PDR register.*/
+  uint32_t pdr;
+  /** @brief Initial value for SLR register.*/
+  uint32_t slr;
+  /** @brief Initial value for DEN register.*/
+  uint32_t den;
+  /** @brief Initial value for AMSEL register.*/
+  uint32_t amsel;
+  /** @brief Initial value for PCTL register.*/
+  uint32_t pctl;
+} tiva_gpio_setup_t;
+
+/**
+ * @brief   Tiva GPIO static initializer.
+ * @details An instance of this structure must be passed to @p palInit() at
+ *          system startup time in order to initialized the digital I/O
+ *          subsystem. This represents only the initial setup, specific pads
+ *          or whole ports can be reprogrammed at later time.
+ */
+typedef struct
+{
+  /** @brief GPIO port A setup data.*/
+  tiva_gpio_setup_t     PAData;
+  /** @brief GPIO port B setup data.*/
+  tiva_gpio_setup_t     PBData;
+  /** @brief GPIO port C setup data.*/
+  tiva_gpio_setup_t     PCData;
+  /** @brief GPIO port D setup data.*/
+  tiva_gpio_setup_t     PDData;
+  /** @brief GPIO port E setup data.*/
+  tiva_gpio_setup_t     PEData;
+  /** @brief GPIO port F setup data.*/
+  tiva_gpio_setup_t     PFData;
+#if TIVA_HAS_GPIOG || defined(__DOXYGEN__)
+  /** @brief GPIO port G setup data.*/
+  tiva_gpio_setup_t     PGData;
+#endif
+#if TIVA_HAS_GPIOH || defined(__DOXYGEN__)
+  /** @brief GPIO port H setup data.*/
+  tiva_gpio_setup_t     PHData;
+#endif
+#if TIVA_HAS_GPIOJ || defined(__DOXYGEN__)
+  /** @brief GPIO port J setup data.*/
+  tiva_gpio_setup_t     PJData;
+#endif
+#if TIVA_HAS_GPIOK || defined(__DOXYGEN__)
+  /** @brief GPIO port K setup data.*/
+  tiva_gpio_setup_t     PKData;
+#endif
+#if TIVA_HAS_GPIOL || defined(__DOXYGEN__)
+  /** @brief GPIO port L setup data.*/
+  tiva_gpio_setup_t     PLData;
+#endif
+#if TIVA_HAS_GPIOM || defined(__DOXYGEN__)
+  /** @brief GPIO port M setup data.*/
+  tiva_gpio_setup_t     PMData;
+#endif
+#if TIVA_HAS_GPION || defined(__DOXYGEN__)
+  /** @brief GPIO port N setup data.*/
+  tiva_gpio_setup_t     PNData;
+#endif
+#if TIVA_HAS_GPIOP || defined(__DOXYGEN__)
+  /** @brief GPIO port P setup data.*/
+  tiva_gpio_setup_t     PPData;
+#endif
+#if TIVA_HAS_GPIOQ || defined(__DOXYGEN__)
+  /** @brief GPIO port Q setup data.*/
+  tiva_gpio_setup_t     PQData;
+#endif
+#if TIVA_HAS_GPIOR || defined(__DOXYGEN__)
+  /** @brief GPIO port R setup data.*/
+  tiva_gpio_setup_t     PRData;
+#endif
+#if TIVA_HAS_GPIOS || defined(__DOXYGEN__)
+  /** @brief GPIO port S setup data.*/
+  tiva_gpio_setup_t     PSData;
+#endif
+#if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
+  /** @brief GPIO port T setup data.*/
+  tiva_gpio_setup_t     PTData;
+#endif
+} PALConfig;
+
+/**
+ * @brief   Digital I/O port sized unsigned type.
+ */
+typedef uint32_t ioportmask_t;
+
+/**
+ * @brief   Digital I/O modes.
+ */
+typedef uint32_t iomode_t;
+
+/**
+ * @brief   Port Identifier.
+ */
+typedef uint32_t ioportid_t;
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -260,7 +338,6 @@
  * @brief   GPIOA AHB enable switch.
  * @details When set to @p TRUE the AHB bus is used to access GPIOA. When set
  *          to @p FALSE the APB bus is used to access GPIOA.
- * @note    The default is TRUE.
  */
 #if !defined(TIVA_GPIO_GPIOA_USE_AHB) || defined(__DOXYGEN__)
 #define TIVA_GPIO_GPIOA_USE_AHB             TRUE
@@ -270,7 +347,6 @@
  * @brief   GPIOB AHB enable switch.
  * @details When set to @p TRUE the AHB bus is used to access GPIOB. When set
  *          to @p FALSE the APB bus is used to access GPIOB.
- * @note    The default is TRUE.
  */
 #if !defined(TIVA_GPIO_GPIOB_USE_AHB) || defined(__DOXYGEN__)
 #define TIVA_GPIO_GPIOB_USE_AHB             TRUE
@@ -280,7 +356,6 @@
  * @brief   GPIOC AHB enable switch.
  * @details When set to @p TRUE the AHB bus is used to access GPIOC. When set
  *          to @p FALSE the APB bus is used to access GPIOC.
- * @note    The default is TRUE.
  */
 #if !defined(TIVA_GPIO_GPIOC_USE_AHB) || defined(__DOXYGEN__)
 #define TIVA_GPIO_GPIOC_USE_AHB             TRUE
@@ -290,7 +365,6 @@
  * @brief   GPIOD AHB enable switch.
  * @details When set to @p TRUE the AHB bus is used to access GPIOD. When set
  *          to @p FALSE the APB bus is used to access GPIOD.
- * @note    The default is TRUE.
  */
 #if !defined(TIVA_GPIO_GPIOD_USE_AHB) || defined(__DOXYGEN__)
 #define TIVA_GPIO_GPIOD_USE_AHB             TRUE
@@ -300,7 +374,6 @@
  * @brief   GPIOE AHB enable switch.
  * @details When set to @p TRUE the AHB bus is used to access GPIOE. When set
  *          to @p FALSE the APB bus is used to access GPIOE.
- * @note    The default is TRUE.
  */
 #if !defined(TIVA_GPIO_GPIOE_USE_AHB) || defined(__DOXYGEN__)
 #define TIVA_GPIO_GPIOE_USE_AHB             TRUE
@@ -310,7 +383,6 @@
  * @brief   GPIOF AHB enable switch.
  * @details When set to @p TRUE the AHB bus is used to access GPIOF. When set
  *          to @p FALSE the APB bus is used to access GPIOF.
- * @note    The default is TRUE.
  */
 #if !defined(TIVA_GPIO_GPIOF_USE_AHB) || defined(__DOXYGEN__)
 #define TIVA_GPIO_GPIOF_USE_AHB             TRUE
@@ -320,7 +392,6 @@
  * @brief   GPIOG AHB enable switch.
  * @details When set to @p TRUE the AHB bus is used to access GPIOG. When set
  *          to @p FALSE the APB bus is used to access GPIOG.
- * @note    The default is TRUE.
  */
 #if !defined(TIVA_GPIO_GPIOG_USE_AHB) || defined(__DOXYGEN__)
 #define TIVA_GPIO_GPIOG_USE_AHB             TRUE
@@ -330,7 +401,6 @@
  * @brief   GPIOH AHB enable switch.
  * @details When set to @p TRUE the AHB bus is used to access GPIOH. When set
  *          to @p FALSE the APB bus is used to access GPIOH.
- * @note    The default is TRUE.
  */
 #if !defined(TIVA_GPIO_GPIOH_USE_AHB) || defined(__DOXYGEN__)
 #define TIVA_GPIO_GPIOH_USE_AHB             TRUE
@@ -340,7 +410,6 @@
  * @brief   GPIOJ AHB enable switch.
  * @details When set to @p TRUE the AHB bus is used to access GPIOJ. When set
  *          to @p FALSE the APB bus is used to access GPIOJ.
- * @note    The default is TRUE.
  */
 #if !defined(TIVA_GPIO_GPIOJ_USE_AHB) || defined(__DOXYGEN__)
 #define TIVA_GPIO_GPIOJ_USE_AHB             TRUE
@@ -351,8 +420,6 @@
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
-
-//#if defined(TM4C123x)
 
 #if TIVA_GPIO_GPIOA_USE_AHB
 #define GPIOA                               GPIO_PORTA_AHB_BASE
@@ -414,146 +481,131 @@
 #define GPION                               GPIO_PORTN_BASE
 #define GPIOP                               GPIO_PORTP_BASE
 #define GPIOQ                               GPIO_PORTQ_BASE
-
-//#endif
+#define GPIOR                               GPIO_PORTR_BASE
+#define GPIOS                               GPIO_PORTS_BASE
+#define GPIOT                               GPIO_PORTT_BASE
 
 /*===========================================================================*/
-/* Driver data structures and types.                                         */
+/* I/O Ports Identifiers.                                                    */
 /*===========================================================================*/
 
 /**
- * @brief   GPIO port setup info.
+ * @brief   GPIO port A identifier.
  */
-typedef struct 
-{
-  /** @brief Initial value for DATA register.*/
-  uint32_t data;
-  /** @brief Initial value for DIR register.*/
-  uint32_t dir;
-  /** @brief Initial value for AFSEL register.*/
-  uint32_t afsel;
-  /** @brief Initial value for DR2R register.*/
-  uint32_t dr2r;
-  /** @brief Initial value for DR4R register.*/
-  uint32_t dr4r;
-  /** @brief Initial value for DR8R register.*/
-  uint32_t dr8r;
-  /** @brief Initial value for ODR register.*/
-  uint32_t odr;
-  /** @brief Initial value for PUR register.*/
-  uint32_t pur;
-  /** @brief Initial value for PDR register.*/
-  uint32_t pdr;
-  /** @brief Initial value for SLR register.*/
-  uint32_t slr;
-  /** @brief Initial value for DEN register.*/
-  uint32_t den;
-  /** @brief Initial value for AMSEL register.*/
-  uint32_t amsel;
-  /** @brief Initial value for PCTL register.*/
-  uint32_t pctl;
-} tiva_gpio_setup_t;
+#define IOPORT1         GPIOA
 
 /**
- * @brief   Tiva GPIO static initializer.
- * @details An instance of this structure must be passed to @p palInit() at
- *          system startup time in order to initialized the digital I/O
- *          subsystem. This represents only the initial setup, specific pads
- *          or whole ports can be reprogrammed at later time.
+ * @brief   GPIO port B identifier.
  */
-typedef struct
-{
-  /** @brief Port A setup data.*/
-  tiva_gpio_setup_t     PAData;
-  /** @brief Port B setup data.*/
-  tiva_gpio_setup_t     PBData;
-  /** @brief Port C setup data.*/
-  tiva_gpio_setup_t     PCData;
-  /** @brief Port D setup data.*/
-  tiva_gpio_setup_t     PDData;
-  /** @brief Port E setup data.*/
-  tiva_gpio_setup_t     PEData;
-  /** @brief Port F setup data.*/
-  tiva_gpio_setup_t     PFData;
+#define IOPORT2         GPIOB
 
+/**
+ * @brief   GPIO port C identifier.
+ */
+#define IOPORT3         GPIOC
+
+/**
+ * @brief   GPIO port D identifier.
+ */
+#define IOPORT4         GPIOD
+
+/**
+ * @brief   GPIO port E identifier.
+ */
+#define IOPORT5         GPIOE
+
+/**
+ * @brief   GPIO port F identifier.
+ */
+#define IOPORT6         GPIOF
+
+/**
+ * @brief   GPIO port G identifier.
+ */
 #if TIVA_HAS_GPIOG || defined(__DOXYGEN__)
-  /** @brief Port G setup data.*/
-  tiva_gpio_setup_t     PGData;
-#endif /* TIVA_HAS_GPIOG.*/
+#define IOPORT7         GPIOG
+#endif
 
+/**
+ * @brief   GPIO port H identifier.
+ */
 #if TIVA_HAS_GPIOH || defined(__DOXYGEN__)
-  /** @brief Port H setup data.*/
-  tiva_gpio_setup_t     PHData;
-#endif /* TIVA_HAS_GPIOH.*/
+#define IOPORT8         GPIOH
+#endif
 
+/**
+ * @brief   GPIO port J identifier.
+ */
 #if TIVA_HAS_GPIOJ || defined(__DOXYGEN__)
-  /** @brief Port J setup data.*/
-  tiva_gpio_setup_t     PJData;
-#endif /* TIVA_HAS_GPIOJ.*/
+#define IOPORT9         GPIOJ
+#endif
 
+/**
+ * @brief   GPIO port K identifier.
+ */
 #if TIVA_HAS_GPIOK || defined(__DOXYGEN__)
-  /** @brief Port K setup data.*/
-  tiva_gpio_setup_t     PKData;
-#endif /* TIVA_HAS_GPIOK.*/
+#define IOPORT10        GPIOK
+#endif
 
+/**
+ * @brief   GPIO port L identifier.
+ */
 #if TIVA_HAS_GPIOL || defined(__DOXYGEN__)
-  /** @brief Port L setup data.*/
-  tiva_gpio_setup_t     PLData;
-#endif /* TIVA_HAS_GPIOL.*/
+#define IOPORT11        GPIOL
+#endif
 
+/**
+ * @brief   GPIO port M identifier.
+ */
 #if TIVA_HAS_GPIOM || defined(__DOXYGEN__)
-  /** @brief Port M setup data.*/
-  tiva_gpio_setup_t     PMData;
-#endif /* TIVA_HAS_GPIOM.*/
+#define IOPORT12        GPIOM
+#endif
 
+/**
+ * @brief   GPIO port N identifier.
+ */
 #if TIVA_HAS_GPION || defined(__DOXYGEN__)
-  /** @brief Port N setup data.*/
-  tiva_gpio_setup_t     PNData;
-#endif /* TIVA_HAS_GPION.*/
+#define IOPORT13        GPION
+#endif
 
+/**
+ * @brief   GPIO port P identifier.
+ */
 #if TIVA_HAS_GPIOP || defined(__DOXYGEN__)
-  /** @brief Port P setup data.*/
-  tiva_gpio_setup_t     PPData;
-#endif /* TIVA_HAS_GPIOP.*/
+#define IOPORT14        GPIOP
+#endif
 
+/**
+ * @brief   GPIO port Q identifier.
+ */
 #if TIVA_HAS_GPIOQ || defined(__DOXYGEN__)
-  /** @brief Port Q setup data.*/
-  tiva_gpio_setup_t     PQData;
-#endif /* TIVA_HAS_GPIOQ.*/
+#define IOPORT15        GPIOQ
+#endif
 
+/**
+ * @brief   GPIO port R identifier.
+ */
 #if TIVA_HAS_GPIOR || defined(__DOXYGEN__)
-  /** @brief Port R setup data.*/
-  tiva_gpio_setup_t     PRData;
-#endif /* TIVA_HAS_GPIOR.*/
+#define IOPORT16        GPIOR
+#endif
 
+/**
+ * @brief   GPIO port S identifier.
+ */
 #if TIVA_HAS_GPIOS || defined(__DOXYGEN__)
-  /** @brief Port S setup data.*/
-  tiva_gpio_setup_t     PSData;
-#endif /* TIVA_HAS_GPIOS.*/
+#define IOPORT17        GPIOS
+#endif
 
+/**
+ * @brief   GPIO port T identifier.
+ */
 #if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
-  /** @brief Port T setup data.*/
-  tiva_gpio_setup_t     PTData;
-#endif /* TIVA_HAS_GPIOT.*/
-} PALConfig;
-
-/**
- * @brief   Digital I/O port sized unsigned type.
- */
-typedef uint32_t ioportmask_t;
-
-/**
- * @brief   Digital I/O modes.
- */
-typedef uint32_t iomode_t;
-
-/**
- * @brief   Port Identifier.
- */
-typedef uint32_t ioportid_t;
+#define IOPORT18        GPIOT
+#endif
 
 /*===========================================================================*/
-/* Driver macros.                                                            */
+/* Implementation, some of the following macros could be implemented as      */
+/* functions, if so please put them in pal_lld.c.                            */
 /*===========================================================================*/
 
 /**
@@ -757,6 +809,4 @@ extern "C" {
 
 #endif /* HAL_PAL_LLD_H */
 
-/**
- * @}
- */
+/** @} */
