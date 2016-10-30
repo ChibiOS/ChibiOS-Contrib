@@ -34,11 +34,11 @@
  * @brief   Generic interrupt serving code for multiple pins per interrupt
  *          handler.
  */
-#define ext_lld_serve_port_interrupt(gpiop, start)                            \
+#define ext_lld_serve_port_interrupt(gpio, start)                            \
   do {                                                                        \
-    uint32_t mis = gpiop->MIS;                                                \
+    uint32_t mis = HWREG(gpio + GPIO_O_MIS);                                                \
                                                                               \
-    gpiop->ICR = mis;                                                         \
+    HWREG(gpio + GPIO_O_ICR) = mis;                                                         \
                                                                               \
     if (mis & (1 << 0)) {                                                     \
       EXTD1.config->channels[start + 0].cb(&EXTD1, start + 0);                \
@@ -89,7 +89,7 @@ EXTDriver EXTD1;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
-const ioportid_t gpio[] =
+const ioportid_t gpio_table[] =
 {
 #if TIVA_HAS_GPIOA
   GPIOA,
@@ -847,58 +847,58 @@ void ext_lld_stop(EXTDriver *extp)
   }
 
 #if TIVA_HAS_GPIOA
-  GPIOA->IM = 0;
+  HWREG(GPIOA + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOB
-  GPIOB->IM = 0;
+  HWREG(GPIOB + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOC
-  GPIOC->IM = 0;
+  HWREG(GPIOC + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOD
-  GPIOD->IM = 0;
+  HWREG(GPIOD + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOE
-  GPIOE->IM = 0;
+  HWREG(GPIOE + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOF
-  GPIOF->IM = 0;
+  HWREG(GPIOF + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOG
-  GPIOG->IM = 0;
+  HWREG(GPIOG + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOH
-  GPIOH->IM = 0;
+  HWREG(GPIOH + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOJ
-  GPIOJ->IM = 0;
+  HWREG(GPIOJ + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOK
-  GPIOK->IM = 0;
+  HWREG(GPIOK + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOL
-  GPIOL->IM = 0;
+  HWREG(GPIOL + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOM
-  GPIOM->IM = 0;
+  HWREG(GPIOM + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPION
-  GPION->IM = 0;
+  HWREG(GPION + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOP
-  GPIOP->IM = 0;
+  HWREG(GPIOP + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOQ
-  GPIOQ->IM = 0;
+  HWREG(GPIOQ + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOR
-  GPIOR->IM = 0;
+  HWREG(GPIOR + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOS
-  GPIOS->IM = 0;
+  HWREG(GPIOS + GPIO_O_IM) = 0;
 #endif
 #if TIVA_HAS_GPIOT
-  GPIOT->IM = 0;
+  HWREG(GPIOT + GPIO_O_IM) = 0;
 #endif
 }
 
@@ -912,34 +912,34 @@ void ext_lld_stop(EXTDriver *extp)
  */
 void ext_lld_channel_enable(EXTDriver *extp, expchannel_t channel)
 {
-  GPIO_TypeDef *gpiop;
+  uint32_t gpio;
   uint8_t pin;
   uint32_t im;
 
   pin = channel & 0x07;
-  gpiop = gpio[channel >> 3];
+  gpio = gpio_table[channel >> 3];
 
   /* Disable interrupts */
-  im = gpiop->IM;
-  gpiop->IM = 0;
+  im = HWREG(gpio + GPIO_O_IM);
+  HWREG(gpio + GPIO_O_IM) = 0;
 
   /* Configure pin to be edge-sensitive.*/
-  gpiop->IS &= ~(1 << pin);
+  HWREG(gpio + GPIO_O_IS) &= ~(1 << pin);
 
   /* Programming edge registers.*/
   if ((extp->config->channels[channel].mode & EXT_CH_MODE_EDGES_MASK) ==
       EXT_CH_MODE_BOTH_EDGES) {
-    gpiop->IBE |= (1 << pin);
+    HWREG(gpio + GPIO_O_IBE) |= (1 << pin);
   }
   else if ((extp->config->channels[channel].mode & EXT_CH_MODE_EDGES_MASK) ==
       EXT_CH_MODE_FALLING_EDGE) {
-    gpiop->IBE &= ~(1 << pin);
-    gpiop->IEV &= ~(1 << pin);
+    HWREG(gpio + GPIO_O_IBE) &= ~(1 << pin);
+    HWREG(gpio + GPIO_O_IEV) &= ~(1 << pin);
   }
   else if ((extp->config->channels[channel].mode & EXT_CH_MODE_EDGES_MASK) ==
       EXT_CH_MODE_RISING_EDGE) {
-    gpiop->IBE &= ~(1 << pin);
-    gpiop->IEV |= (1 << pin);
+    HWREG(gpio + GPIO_O_IBE) &= ~(1 << pin);
+    HWREG(gpio + GPIO_O_IEV) |= (1 << pin);
   }
 
   /* Programming interrupt and event registers.*/
@@ -953,7 +953,7 @@ void ext_lld_channel_enable(EXTDriver *extp, expchannel_t channel)
   }
 
   /* Restore interrupts */
-  gpiop->IM = im;
+  HWREG(gpio + GPIO_O_IM) = im;
 }
 
 /**
@@ -967,13 +967,13 @@ void ext_lld_channel_enable(EXTDriver *extp, expchannel_t channel)
 void ext_lld_channel_disable(EXTDriver *extp, expchannel_t channel)
 {
   (void)extp;
-  GPIO_TypeDef *gpiop;
+  uint32_t gpio;
   uint8_t pin;
 
   pin = channel & 0x07;
-  gpiop = gpio[channel >> 3];
+  gpio = gpio_table[channel >> 3];
 
-  gpiop->IM &= ~(1 << pin);
+  HWREG(gpio + GPIO_O_IM) &= ~(1 << pin);
 }
 
 #endif /* HAL_USE_EXT */

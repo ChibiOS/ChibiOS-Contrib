@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef _BOARD_H_
-#define _BOARD_H_
+#ifndef BOARD_H
+#define BOARD_H
 
 /*
  * Setup for Texas Instruments TM4C123G Launchpad Board.
@@ -28,59 +28,9 @@
 #define BOARD_NAME              "Texas Instruments TM4C123G Launchpad"
 
 /*
- * MCU type
+ * MCU type as defined in the TI header.
  */
-//#define TM4C1230C3PM
-//#define TM4C1230D5PM
-//#define TM4C1230E6PM
-//#define TM4C1230H6PM
-//#define TM4C1231C3PM
-//#define TM4C1231D5PM
-//#define TM4C1231D5PZ
-//#define TM4C1231E6PM
-//#define TM4C1231E6PZ
-//#define TM4C1231H6PGE
-//#define TM4C1231H6PM
-//#define TM4C1231H6PZ
-//#define TM4C1232C3PM
-//#define TM4C1232D5PM
-//#define TM4C1232E6PM
-//#define TM4C1232H6PM
-//#define TM4C1233C3PM
-//#define TM4C1233D5PM
-//#define TM4C1233D5PZ
-//#define TM4C1233E6PM
-//#define TM4C1233E6PZ
-//#define TM4C1233H6PGE
-//#define TM4C1233H6PM
-//#define TM4C1233H6PZ
-//#define TM4C1236D5PM
-//#define TM4C1236E6PM
-//#define TM4C1236H6PM
-//#define TM4C1237D5PM
-//#define TM4C1237D5PZ
-//#define TM4C1237E6PM
-//#define TM4C1237E6PZ
-//#define TM4C1237H6PGE
-//#define TM4C1237H6PM
-//#define TM4C1237H6PZ
-//#define TM4C123AE6PM
-//#define TM4C123AH6PM
-//#define TM4C123BE6PM
-//#define TM4C123BE6PZ
-//#define TM4C123BH6PGE
-//#define TM4C123BH6PM
-//#define TM4C123BH6PZ
-//#define TM4C123BH6ZRB
-//#define TM4C123FE6PM
-//#define TM4C123FH6PM
-//#define TM4C123GE6PM
-//#define TM4C123GE6PZ
-//#define TM4C123GH6PGE
-#define TM4C123GH6PM
-//#define TM4C123GH6PZ
-//#define TM4C123GH6ZRB
-//#define TM4C123GH5ZXR
+#define PART_TM4C123GH6PM
 
 /*
  * Board oscillators-related settings.
@@ -940,4 +890,4 @@ extern "C" {
 #endif
 #endif /* _FROM_ASM_ */
 
-#endif /* _BOARD_H_ */
+#endif /* BOARD_H */

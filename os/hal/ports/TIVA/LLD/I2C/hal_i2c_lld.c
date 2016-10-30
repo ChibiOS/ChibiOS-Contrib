@@ -30,6 +30,33 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+// interrupt states
+#define STATE_IDLE          0
+#define STATE_WRITE_NEXT    1
+#define STATE_WRITE_FINAL   2
+#define STATE_WAIT_ACK      3
+#define STATE_SEND_ACK      4
+#define STATE_READ_ONE      5
+#define STATE_READ_FIRST    6
+#define STATE_READ_NEXT     7
+#define STATE_READ_FINAL    8
+#define STATE_READ_WAIT     9
+
+#define TIVA_I2C_SIGNLE_SEND                (I2C_MCS_RUN | I2C_MCS_START | I2C_MCS_STOP)
+#define TIVA_I2C_BURST_SEND_START           (I2C_MCS_RUN | I2C_MCS_START)
+#define TIVA_I2C_BURST_SEND_CONTINUE        (I2C_MCS_RUN)
+#define TIVA_I2C_BURST_SEND_FINISH          (I2C_MCS_RUN | I2C_MCS_STOP)
+#define TIVA_I2C_BURST_SEND_STOP            (I2C_MCS_STOP)
+#define TIVA_I2C_BURST_SEND_ERROR_STOP      (I2C_MCS_STOP)
+
+#define TIVA_I2C_SINGLE_RECEIVE             (I2C_MCS_RUN | I2C_MCS_START | I2C_MCS_STOP)
+#define TIVA_I2C_BURST_RECEIVE_START        (I2C_MCS_RUN | I2C_MCS_START | I2C_MCS_ACK)
+#define TIVA_I2C_BURST_RECEIVE_CONTINUE     (I2C_MCS_RUN | I2C_MCS_ACK)
+#define TIVA_I2C_BURST_RECEIVE_FINISH       (I2C_MCS_RUN | I2C_MCS_STOP)
+#define TIVA_I2C_BURST_RECEIVE_ERROR_STOP   (I2C_MCS_STOP)
+
+#define MTPR_VALUE          ((TIVA_SYSCLK/(2*(6+4)*i2cp->config->clock_speed))-1)
+
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -125,19 +152,19 @@ I2CDriver I2CD10;
  */
 static void i2c_lld_serve_interrupt(I2CDriver *i2cp)
 {
-  I2C_TypeDef *dp = i2cp->i2c;
+  uint32_t i2c = i2cp->i2c;
   uint32_t status;
 
   // clear MIS bit in MICR by writing 1
-  dp->MICR = 1;
+  HWREG(i2c + I2C_O_MICR) = 1;
 
   // read interrupt status
-  status = dp->MCS;
+  status = HWREG(i2c + I2C_O_MCS);
 
-  if (status & TIVA_MCS_ERROR) {
+  if (status & I2C_MCS_ERROR) {
     i2cp->errors |= I2C_BUS_ERROR;
   }
-  if (status & TIVA_MCS_ARBLST) {
+  if (status & I2C_MCS_ARBLST) {
     i2cp->errors |= I2C_ARBITRATION_LOST;
   }
 
@@ -152,11 +179,11 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp)
         if (i2cp->txbytes == 1) {
           i2cp->intstate = STATE_WRITE_FINAL;
         }
-        dp->MDR = *(i2cp->txbuf);
+        HWREG(i2c + I2C_O_MDR) = *(i2cp->txbuf);
         i2cp->txbuf++;
         i2cp->txbytes--;
         // start transmission
-        dp->MCS = TIVA_I2C_BURST_SEND_CONTINUE;
+        HWREG(i2c + I2C_O_MCS) = TIVA_I2C_BURST_SEND_CONTINUE;
         break;
       }
       case STATE_WRITE_FINAL: {
@@ -169,12 +196,12 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp)
         else {
           i2cp->intstate = STATE_READ_FIRST;
         }
-        dp->MDR = *(i2cp->txbuf);
+        HWREG(i2c + I2C_O_MDR) = *(i2cp->txbuf);
         i2cp->txbuf++;
         // txbytes - 1
         i2cp->txbytes--;
         // start transmission
-        dp->MCS = TIVA_I2C_BURST_SEND_FINISH;
+        HWREG(i2c + I2C_O_MCS) = TIVA_I2C_BURST_SEND_FINISH;
         break;
       }
       case STATE_WAIT_ACK: {
@@ -189,10 +216,10 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp)
          i2cp->addr |= 1;
 
          // set slave address
-         dp->MSA = i2cp->addr;
-          i2cp->rxbytes--;
+         HWREG(i2c + I2C_O_MSA) = i2cp->addr;
+         i2cp->rxbytes--;
          //start receiving
-         dp->MCS = TIVA_I2C_SINGLE_RECEIVE;
+         HWREG(i2c + I2C_O_MCS) = TIVA_I2C_SINGLE_RECEIVE;
 
         break;
       }
@@ -208,10 +235,10 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp)
          i2cp->addr |= 1;
 
          // set slave address
-         dp->MSA = i2cp->addr;
-          i2cp->rxbytes--;
+         HWREG(i2c + I2C_O_MSA) = i2cp->addr;
+         i2cp->rxbytes--;
          //start receiving
-         dp->MCS = TIVA_I2C_BURST_RECEIVE_START;
+         HWREG(i2c + I2C_O_MCS) = TIVA_I2C_BURST_RECEIVE_START;
 
         break;
       }
@@ -219,27 +246,27 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp)
         if(i2cp->rxbytes == 2) {
           i2cp->intstate = STATE_READ_FINAL;
         }
-        *(i2cp->rxbuf) = dp->MDR;
+        *(i2cp->rxbuf) = HWREG(i2c + I2C_O_MDR);
         i2cp->rxbuf++;
         i2cp->rxbytes--;
         //start receiving
-        dp->MCS = TIVA_I2C_BURST_RECEIVE_CONTINUE;
+        HWREG(i2c + I2C_O_MCS) = TIVA_I2C_BURST_RECEIVE_CONTINUE;
 
         break;
       }
       case STATE_READ_FINAL: {
         i2cp->intstate = STATE_READ_WAIT;
-        *(i2cp->rxbuf) = dp->MDR;
+        *(i2cp->rxbuf) = HWREG(i2c + I2C_O_MDR);
         i2cp->rxbuf++;
-          i2cp->rxbytes--;
+        i2cp->rxbytes--;
         //start receiving
-        dp->MCS = TIVA_I2C_BURST_RECEIVE_FINISH;
+        HWREG(i2c + I2C_O_MCS) = TIVA_I2C_BURST_RECEIVE_FINISH;
 
         break;
       }
       case STATE_READ_WAIT: {
         i2cp->intstate = STATE_IDLE;
-        *(i2cp->rxbuf) = dp->MDR;
+        *(i2cp->rxbuf) = HWREG(i2c + I2C_O_MDR);
         i2cp->rxbuf++;
         _i2c_wakeup_isr(i2cp);
         break;
@@ -430,61 +457,61 @@ void i2c_lld_init(void) {
 #if TIVA_I2C_USE_I2C0
   i2cObjectInit(&I2CD1);
   I2CD1.thread = NULL;
-  I2CD1.i2c    = I2C0;
+  I2CD1.i2c    = I2C0_BASE;
 #endif /* TIVA_I2C_USE_I2C0 */
 
 #if TIVA_I2C_USE_I2C1
   i2cObjectInit(&I2CD2);
   I2CD2.thread = NULL;
-  I2CD2.i2c    = I2C1;
+  I2CD2.i2c    = I2C1_BASE;
 #endif /* TIVA_I2C_USE_I2C1 */
 
 #if TIVA_I2C_USE_I2C2
   i2cObjectInit(&I2CD3);
   I2CD3.thread = NULL;
-  I2CD3.i2c    = I2C2;
+  I2CD3.i2c    = I2C2_BASE;
 #endif /* TIVA_I2C_USE_I2C2 */
 
 #if TIVA_I2C_USE_I2C3
   i2cObjectInit(&I2CD4);
   I2CD4.thread = NULL;
-  I2CD4.i2c    = I2C3;
+  I2CD4.i2c    = I2C3_BASE;
 #endif /* TIVA_I2C_USE_I2C3 */
 
 #if TIVA_I2C_USE_I2C4
   i2cObjectInit(&I2CD5);
   I2CD5.thread = NULL;
-  I2CD5.i2c    = I2C4;
+  I2CD5.i2c    = I2C4_BASE;
 #endif /* TIVA_I2C_USE_I2C4 */
 
 #if TIVA_I2C_USE_I2C5
   i2cObjectInit(&I2CD6);
   I2CD6.thread = NULL;
-  I2CD6.i2c    = I2C5;
+  I2CD6.i2c    = I2C5_BASE;
 #endif /* TIVA_I2C_USE_I2C5 */
 
 #if TIVA_I2C_USE_I2C6
   i2cObjectInit(&I2CD7);
   I2CD7.thread = NULL;
-  I2CD7.i2c    = I2C6;
+  I2CD7.i2c    = I2C6_BASE;
 #endif /* TIVA_I2C_USE_I2C6 */
 
 #if TIVA_I2C_USE_I2C7
   i2cObjectInit(&I2CD8);
   I2CD8.thread = NULL;
-  I2CD8.i2c    = I2C7;
+  I2CD8.i2c    = I2C7_BASE;
 #endif /* TIVA_I2C_USE_I2C7 */
 
 #if TIVA_I2C_USE_I2C8
   i2cObjectInit(&I2CD9);
   I2CD9.thread = NULL;
-  I2CD9.i2c    = I2C8;
+  I2CD9.i2c    = I2C8_BASE;
 #endif /* TIVA_I2C_USE_I2C8 */
 
 #if TIVA_I2C_USE_I2C9
   i2cObjectInit(&I2CD10);
   I2CD10.thread = NULL;
-  I2CD10.i2c    = I2C9;
+  I2CD10.i2c    = I2C9_BASE;
 #endif /* TIVA_I2C_USE_I2C9 */
 }
 
@@ -497,15 +524,15 @@ void i2c_lld_init(void) {
  */
 void i2c_lld_start(I2CDriver *i2cp)
 {
-  I2C_TypeDef *dp = i2cp->i2c;
+  uint32_t i2c = i2cp->i2c;
 
   /* If in stopped state then enables the I2C clocks.*/
   if (i2cp->state == I2C_STOP) {
 #if TIVA_I2C_USE_I2C0
     if (&I2CD1 == i2cp) {
-      SYSCTL->RCGCI2C |= (1 << 0);
+      HWREG(SYSCTL_RCGCI2C) |= (1 << 0);
 
-      while (!(SYSCTL->PRI2C & (1 << 0)))
+      while (!(HWREG(SYSCTL_PRI2C) & (1 << 0)))
         ;
 
       nvicEnableVector(TIVA_I2C0_NUMBER, TIVA_I2C_I2C0_IRQ_PRIORITY);
@@ -514,9 +541,9 @@ void i2c_lld_start(I2CDriver *i2cp)
 
 #if TIVA_I2C_USE_I2C1
     if (&I2CD2 == i2cp) {
-      SYSCTL->RCGCI2C |= (1 << 1);
+      HWREG(SYSCTL_RCGCI2C) |= (1 << 1);
 
-      while (!(SYSCTL->PRI2C & (1 << 1)))
+      while (!(HWREG(SYSCTL_PRI2C) & (1 << 1)))
         ;
 
       nvicEnableVector(TIVA_I2C1_NUMBER, TIVA_I2C_I2C1_IRQ_PRIORITY);
@@ -525,9 +552,9 @@ void i2c_lld_start(I2CDriver *i2cp)
 
 #if TIVA_I2C_USE_I2C2
     if (&I2CD3 == i2cp) {
-      SYSCTL->RCGCI2C |= (1 << 2);
+      HWREG(SYSCTL_RCGCI2C) |= (1 << 2);
 
-      while (!(SYSCTL->PRI2C & (1 << 2)))
+      while (!(HWREG(SYSCTL_PRI2C) & (1 << 2)))
         ;
 
       nvicEnableVector(TIVA_I2C2_NUMBER, TIVA_I2C_I2C2_IRQ_PRIORITY);
@@ -536,9 +563,9 @@ void i2c_lld_start(I2CDriver *i2cp)
 
 #if TIVA_I2C_USE_I2C3
     if (&I2CD4 == i2cp) {
-      SYSCTL->RCGCI2C |= (1 << 3);
+      HWREG(SYSCTL_RCGCI2C) |= (1 << 3);
 
-      while (!(SYSCTL->PRI2C & (1 << 3)))
+      while (!(HWREG(SYSCTL_PRI2C) & (1 << 3)))
         ;
 
       nvicEnableVector(TIVA_I2C3_NUMBER, TIVA_I2C_I2C3_IRQ_PRIORITY);
@@ -547,9 +574,9 @@ void i2c_lld_start(I2CDriver *i2cp)
 
 #if TIVA_I2C_USE_I2C4
     if (&I2CD5 == i2cp) {
-      SYSCTL->RCGCI2C |= (1 << 4);
+      HWREG(SYSCTL_RCGCI2C) |= (1 << 4);
 
-      while (!(SYSCTL->PRI2C & (1 << 4)))
+      while (!(HWREG(SYSCTL_PRI2C) & (1 << 4)))
         ;
 
       nvicEnableVector(TIVA_I2C4_NUMBER, TIVA_I2C_I2C4_IRQ_PRIORITY);
@@ -558,9 +585,9 @@ void i2c_lld_start(I2CDriver *i2cp)
 
 #if TIVA_I2C_USE_I2C5
     if (&I2CD6 == i2cp) {
-      SYSCTL->RCGCI2C |= (1 << 5);
+      HWREG(SYSCTL_RCGCI2C) |= (1 << 5);
 
-      while (!(SYSCTL->PRI2C & (1 << 5)))
+      while (!(HWREG(SYSCTL_PRI2C) & (1 << 5)))
         ;
 
       nvicEnableVector(TIVA_I2C5_NUMBER, TIVA_I2C_I2C5_IRQ_PRIORITY);
@@ -569,9 +596,9 @@ void i2c_lld_start(I2CDriver *i2cp)
 
 #if TIVA_I2C_USE_I2C6
     if (&I2CD7 == i2cp) {
-      SYSCTL->RCGCI2C |= (1 << 6);
+      HWREG(SYSCTL_RCGCI2C) |= (1 << 6);
 
-      while (!(SYSCTL->PRI2C & (1 << 6)))
+      while (!(HWREG(SYSCTL_PRI2C) & (1 << 6)))
         ;
 
       nvicEnableVector(TIVA_I2C6_NUMBER, TIVA_I2C_I2C6_IRQ_PRIORITY);
@@ -580,9 +607,9 @@ void i2c_lld_start(I2CDriver *i2cp)
 
 #if TIVA_I2C_USE_I2C7
     if (&I2CD8 == i2cp) {
-      SYSCTL->RCGCI2C |= (1 << 7);
+      HWREG(SYSCTL_RCGCI2C) |= (1 << 7);
 
-      while (!(SYSCTL->PRI2C & (1 << 7)))
+      while (!(HWREG(SYSCTL_PRI2C) & (1 << 7)))
         ;
 
       nvicEnableVector(TIVA_I2C7_NUMBER, TIVA_I2C_I2C7_IRQ_PRIORITY);
@@ -591,9 +618,9 @@ void i2c_lld_start(I2CDriver *i2cp)
 
 #if TIVA_I2C_USE_I2C8
     if (&I2CD9 == i2cp) {
-      SYSCTL->RCGCI2C |= (1 << 8);
+      HWREG(SYSCTL_RCGCI2C) |= (1 << 8);
 
-      while (!(SYSCTL->PRI2C & (1 << 8)))
+      while (!(HWREG(SYSCTL_PRI2C) & (1 << 8)))
         ;
 
       nvicEnableVector(TIVA_I2C8_NUMBER, TIVA_I2C_I2C8_IRQ_PRIORITY);
@@ -602,9 +629,9 @@ void i2c_lld_start(I2CDriver *i2cp)
 
 #if TIVA_I2C_USE_I2C9
     if (&I2CD10 == i2cp) {
-      SYSCTL->RCGCI2C |= (1 << 9);
+      HWREG(SYSCTL_RCGCI2C) |= (1 << 9);
 
-      while (!(SYSCTL->PRI2C & (1 << 9)))
+      while (!(HWREG(SYSCTL_PRI2C) & (1 << 9)))
         ;
 
       nvicEnableVector(TIVA_I2C9_NUMBER, TIVA_I2C_I2C9_IRQ_PRIORITY);
@@ -612,8 +639,8 @@ void i2c_lld_start(I2CDriver *i2cp)
 #endif /* TIVA_I2C_USE_I2C7 */
   }
 
-  dp->MCR = 0x10;
-  dp->MTPR = MTPR_VALUE;
+  HWREG(i2c + I2C_O_MCR) = 0x10;
+  HWREG(i2c + I2C_O_MTPR) = MTPR_VALUE;
 }
 
 /**
@@ -625,7 +652,8 @@ void i2c_lld_start(I2CDriver *i2cp)
  */
 void i2c_lld_stop(I2CDriver *i2cp)
 {
-  I2C_TypeDef *dp = i2cp->i2c;
+  uint32_t i2c = i2cp->i2c;
+
   /* If not in stopped state then disables the I2C clock.*/
   if (i2cp->state != I2C_STOP) {
 
@@ -635,76 +663,76 @@ void i2c_lld_stop(I2CDriver *i2cp)
 
 #if TIVA_I2C_USE_I2C0
     if (&I2CD1 == i2cp) {
-      SYSCTL->RCGCI2C &= ~(1 << 0);
+      HWREG(SYSCTL_RCGCI2C) &= ~(1 << 0);
       nvicDisableVector(TIVA_I2C0_NUMBER);
     }
 #endif /* TIVA_I2C_USE_I2C0 */
 
 #if TIVA_I2C_USE_I2C1
     if (&I2CD2 == i2cp) {
-      SYSCTL->RCGCI2C &= ~(1 << 1);
+      HWREG(SYSCTL_RCGCI2C) &= ~(1 << 1);
       nvicDisableVector(TIVA_I2C1_NUMBER);
     }
 #endif /* TIVA_I2C_USE_I2C1 */
 
 #if TIVA_I2C_USE_I2C2
     if (&I2CD3 == i2cp) {
-      SYSCTL->RCGCI2C &= ~(1 << 2);
+      HWREG(SYSCTL_RCGCI2C) &= ~(1 << 2);
       nvicDisableVector(TIVA_I2C2_NUMBER);
     }
 #endif /* TIVA_I2C_USE_I2C2 */
 
 #if TIVA_I2C_USE_I2C3
     if (&I2CD4 == i2cp) {
-      SYSCTL->RCGCI2C &= ~(1 << 3);
+      HWREG(SYSCTL_RCGCI2C) &= ~(1 << 3);
       nvicDisableVector(TIVA_I2C3_NUMBER);
     }
 #endif /* TIVA_I2C_USE_I2C3 */
 
 #if TIVA_I2C_USE_I2C4
     if (&I2CD5 == i2cp) {
-      SYSCTL->RCGCI2C &= ~(1 << 4);
+      HWREG(SYSCTL_RCGCI2C) &= ~(1 << 4);
       nvicDisableVector(TIVA_I2C4_NUMBER);
     }
 #endif /* TIVA_I2C_USE_I2C4 */
 
 #if TIVA_I2C_USE_I2C5
     if (&I2CD6 == i2cp) {
-      SYSCTL->RCGCI2C &= ~(1 << 5);
+      HWREG(SYSCTL_RCGCI2C) &= ~(1 << 5);
       nvicDisableVector(TIVA_I2C5_NUMBER);
     }
 #endif /* TIVA_I2C_USE_I2C5 */
 
 #if TIVA_I2C_USE_I2C6
     if (&I2CD7 == i2cp) {
-      SYSCTL->RCGCI2C &= ~(1 << 6);
+      HWREG(SYSCTL_RCGCI2C) &= ~(1 << 6);
       nvicDisableVector(TIVA_I2C6_NUMBER);
     }
 #endif /* TIVA_I2C_USE_I2C6 */
 
 #if TIVA_I2C_USE_I2C7
     if (&I2CD8 == i2cp) {
-      SYSCTL->RCGCI2C &= ~(1 << 7);
+      HWREG(SYSCTL_RCGCI2C) &= ~(1 << 7);
       nvicDisableVector(TIVA_I2C7_NUMBER);
     }
 #endif /* TIVA_I2C_USE_I2C7 */
 
 #if TIVA_I2C_USE_I2C8
     if (&I2CD9 == i2cp) {
-      SYSCTL->RCGCI2C &= ~(1 << 8);
+      HWREG(SYSCTL_RCGCI2C) &= ~(1 << 8);
       nvicDisableVector(TIVA_I2C8_NUMBER);
     }
 #endif /* TIVA_I2C_USE_I2C8 */
 
 #if TIVA_I2C_USE_I2C9
     if (&I2CD10 == i2cp) {
-      SYSCTL->RCGCI2C &= ~(1 << 9);
+      HWREG(SYSCTL_RCGCI2C) &= ~(1 << 9);
       nvicDisableVector(TIVA_I2C9_NUMBER);
     }
 #endif /* TIVA_I2C_USE_I2C9 */
 
-  dp->MCR = 0;
-  dp->MTPR = 0;
+  HWREG(i2c + I2C_O_MCR) = 0;
+  HWREG(i2c + I2C_O_MTPR) = 0;
   }
 }
 
@@ -733,7 +761,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
                                      uint8_t *rxbuf, size_t rxbytes,
                                      systime_t timeout)
 {
-  I2C_TypeDef *dp = i2cp->i2c;
+  uint32_t i2c = i2cp->i2c;
   systime_t start, end;
 
   i2cp->rxbuf = rxbuf;
@@ -759,7 +787,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
     /* If the bus is not busy then the operation can continue, note, the
        loop is exited in the locked state.*/
-    if ((dp->MCS & TIVA_MCS_BUSY) == 0)
+    if ((HWREG(i2c + I2C_O_MCS) & I2C_MCS_BUSY) == 0)
       break;
 
     /* If the system time went outside the allowed window then a timeout
@@ -771,10 +799,10 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   }
 
   /* set slave address */
-  dp->MSA = addr;
+  HWREG(i2c + I2C_O_MSA) = addr;
 
   /* Starts the operation.*/
-  dp->MCS = TIVA_I2C_SINGLE_RECEIVE;
+  HWREG(i2c + I2C_O_MCS) = TIVA_I2C_SINGLE_RECEIVE;
 
   /* Waits for the operation completion or a timeout.*/
   return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
@@ -808,7 +836,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
                                       uint8_t *rxbuf, size_t rxbytes,
                                       systime_t timeout)
 {
-  I2C_TypeDef *dp = i2cp->i2c;
+  uint32_t i2c = i2cp->i2c;
   systime_t start, end;
 
   i2cp->rxbuf = rxbuf;
@@ -833,7 +861,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
     /* If the bus is not busy then the operation can continue, note, the
        loop is exited in the locked state.*/
-    if ((dp->MCS & TIVA_MCS_BUSY) == 0)
+    if ((HWREG(i2c + I2C_O_MCS) & I2C_MCS_BUSY) == 0)
       break;
 
     /* If the system time went outside the allowed window then a timeout
@@ -848,13 +876,13 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   i2cp->addr = addr << 1 | 0;
 
   /* set slave address */
-  dp->MSA = i2cp->addr;
+  HWREG(i2c + I2C_O_MSA) = i2cp->addr;
 
   /* enable interrupts */
-  dp->MIMR = TIVA_MIMR_IM;
+  HWREG(i2c + I2C_O_MIMR) = I2C_MIMR_IM;
 
   /* put data in register */
-  dp->MDR = *(i2cp->txbuf);
+  HWREG(i2c + I2C_O_MDR) = *(i2cp->txbuf);
 
   /* check if 1 or more bytes */
   if (i2cp->txbytes == 1) {
@@ -867,7 +895,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
       i2cp->intstate = STATE_READ_FIRST;
     }
     // single byte send
-    dp->MCS = TIVA_I2C_SIGNLE_SEND;
+    HWREG(i2c + I2C_O_MCS) = TIVA_I2C_SIGNLE_SEND;
   }
   else {
     if (i2cp->txbytes == 2) {
@@ -879,7 +907,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
       i2cp->intstate = STATE_WRITE_NEXT;
     }
     // multiple bytes start send
-    dp->MCS = TIVA_I2C_BURST_SEND_START;
+    HWREG(i2c + I2C_O_MCS) = TIVA_I2C_BURST_SEND_START;
   }
 
   i2cp->txbuf++;

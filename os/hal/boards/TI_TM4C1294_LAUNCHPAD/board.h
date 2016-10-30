@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef _BOARD_H_
-#define _BOARD_H_
+#ifndef BOARD_H
+#define BOARD_H
 
 /*
  * Setup for Texas Instruments TM4C1294 Launchpad Board.
@@ -36,28 +36,9 @@
 //#define BOARD_PHY_RMII
 
 /*
- * MCU type
+ * MCU type as defined in the TI header.
  */
-//#define TM4C1290NCPDT
-//#define TM4C1290NCZAD
-//#define TM4C1292NCPDT
-//#define TM4C1292NCZAD
-//#define TM4C1294KCPDT
-#define TM4C1294NCPDT
-//#define TM4C1294NCZAD
-//#define TM4C1297NCZAD
-//#define TM4C1299KCZAD
-//#define TM4C1299NCZAD
-//#define TM4C129CNCPDT
-//#define TM4C129CNCZAD
-//#define TM4C129DNCPDT
-//#define TM4C129DNCZAD
-//#define TM4C129EKCPDT
-//#define TM4C129ENCPDT
-//#define TM4C129ENCZAD
-//#define TM4C129LNCZAD
-//#define TM4C129XKCZAD
-//#define TM4C129XNCZAD
+#define PART_TM4C1294NCPDT
 
 /*
  * Board oscillators-related settings.
@@ -426,4 +407,4 @@ extern "C" {
 #endif
 #endif /* _FROM_ASM_ */
 
-#endif /* _BOARD_H_ */
+#endif /* BOARD_H */

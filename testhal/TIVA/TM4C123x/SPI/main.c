@@ -31,7 +31,7 @@ static const SPIConfig hs_spicfg =
   NULL,
   GPIOA,
   3,
-  TIVA_CR0_DSS(8) | /*TIVA_CR0_SPH | TIVA_CR_SPO |*/ TIVA_CR0_SRC(0),
+  SSI_CR0_DSS_8 | /*SSI_CR0_SPH | SSI_CR0_SPO |*/ SSI_CR0_SCR(0),
   16
 };
 
@@ -43,7 +43,7 @@ static const SPIConfig ls_spicfg =
   NULL,
   GPIOA,
   3,
-  TIVA_CR0_DSS(8) | /*TIVA_CR0_SPH | TIVA_CR_SPO |*/ TIVA_CR0_SRC(0),
+  SSI_CR0_DSS_8 | /*SSI_CR0_SPH | SSI_CR0_SPO |*/ SSI_CR0_SCR(0),
   80
 };
 

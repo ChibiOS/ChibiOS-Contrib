@@ -31,7 +31,7 @@
  * HAL driver system settings.
  */
 #define TIVA_MOSC_SINGLE_ENDED              FALSE
-#define TIVA_RSCLKCFG_OSCSRC                RSCLKCFG_OSCSRC_MOSC
+#define TIVA_RSCLKCFG_OSCSRC                SYSCTL_RSCLKCFG_OSCSRC_MOSC
 
 /*
  * GPT driver system settings.

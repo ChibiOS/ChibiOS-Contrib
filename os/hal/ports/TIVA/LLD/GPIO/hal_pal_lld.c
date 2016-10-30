@@ -250,19 +250,19 @@
  */
 static void gpio_init(ioportid_t port, const tiva_gpio_setup_t *config)
 {
-  port->DATA   = config->data;
-  port->DIR    = config->dir;
-  port->AFSEL  = config->afsel;
-  port->DR2R   = config->dr2r;
-  port->DR4R   = config->dr4r;
-  port->DR8R   = config->dr8r;
-  port->ODR    = config->odr;
-  port->PUR    = config->pur;
-  port->PDR    = config->pdr;
-  port->SLR    = config->slr;
-  port->DEN    = config->den;
-  port->AMSEL  = config->amsel;
-  port->PCTL   = config->pctl;
+  HWREG((port) + GPIO_O_DATA)  = config->data;
+  HWREG((port) + GPIO_O_DIR)   = config->dir;
+  HWREG((port) + GPIO_O_AFSEL) = config->afsel;
+  HWREG((port) + GPIO_O_DR2R)  = config->dr2r;
+  HWREG((port) + GPIO_O_DR4R)  = config->dr4r;
+  HWREG((port) + GPIO_O_DR8R)  = config->dr8r;
+  HWREG((port) + GPIO_O_ODR)   = config->odr;
+  HWREG((port) + GPIO_O_PUR)   = config->pur;
+  HWREG((port) + GPIO_O_PDR)   = config->pdr;
+  HWREG((port) + GPIO_O_SLR)   = config->slr;
+  HWREG((port) + GPIO_O_DEN)   = config->den;
+  HWREG((port) + GPIO_O_AMSEL) = config->amsel;
+  HWREG((port) + GPIO_O_PCTL)  = config->pctl;
 }
 
 /**
@@ -274,8 +274,9 @@ static void gpio_init(ioportid_t port, const tiva_gpio_setup_t *config)
  */
 static void gpio_unlock(ioportid_t port, ioportmask_t mask)
 {
-  port->LOCK = TIVA_GPIO_LOCK_PWD;
-  port->CR = mask;
+
+  HWREG((port) + GPIO_O_LOCK) = TIVA_GPIO_LOCK_PWD;
+  HWREG((port) + GPIO_O_CR) = mask;
 }
 
 /*===========================================================================*/
@@ -299,13 +300,13 @@ void _pal_lld_init(const PALConfig *config)
   /*
    * Enables all GPIO clocks.
    */
-  SYSCTL->RCGCGPIO = RCGCGPIO_MASK;
+  HWREG(SYSCTL_RCGCGPIO) = RCGCGPIO_MASK;
 #if defined(TM4C123x)
-  SYSCTL->GPIOHBCTL = GPIOHBCTL_MASK;
+  HWREG(SYSCTL_GPIOHBCTL) = GPIOHBCTL_MASK;
 #endif
 
   /* Wait until all GPIO modules are ready */
-  while (!((SYSCTL->PRGPIO & RCGCGPIO_MASK) == RCGCGPIO_MASK))
+  while (!((HWREG(SYSCTL_PRGPIO) & RCGCGPIO_MASK) == RCGCGPIO_MASK))
     ;
   
 #if TIVA_HAS_GPIOA
@@ -402,18 +403,18 @@ void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode)
     uint32_t bit_mask = (1 << bit);
 
     if ((mask & 1) != 0) {
-      port->DIR   = (port->DIR   & ~bit_mask)  | dir;
-      port->AFSEL = (port->AFSEL & ~bit_mask)  | afsel;
-      port->DR2R  = (port->DR2R  & ~bit_mask)  | dr2r;
-      port->DR4R  = (port->DR4R  & ~bit_mask)  | dr4r;
-      port->DR8R  = (port->DR8R  & ~bit_mask)  | dr8r;
-      port->ODR   = (port->ODR   & ~bit_mask)  | odr;
-      port->PUR   = (port->PUR   & ~bit_mask)  | pur;
-      port->PDR   = (port->PDR   & ~bit_mask)  | pdr;
-      port->SLR   = (port->SLR   & ~bit_mask)  | slr;
-      port->DEN   = (port->DEN   & ~bit_mask)  | den;
-      port->AMSEL = (port->AMSEL & ~bit_mask)  | amsel;
-      port->PCTL  = (port->PCTL  & ~pctl_mask) | pctl;
+      HWREG((port) + GPIO_O_DIR)   = (HWREG((port) + GPIO_O_DIR)   & ~bit_mask)  | dir;
+      HWREG((port) + GPIO_O_AFSEL) = (HWREG((port) + GPIO_O_AFSEL) & ~bit_mask)  | afsel;
+      HWREG((port) + GPIO_O_DR2R)  = (HWREG((port) + GPIO_O_DR2R)  & ~bit_mask)  | dr2r;
+      HWREG((port) + GPIO_O_DR4R)  = (HWREG((port) + GPIO_O_DR4R)  & ~bit_mask)  | dr4r;
+      HWREG((port) + GPIO_O_DR8R)  = (HWREG((port) + GPIO_O_DR8R)  & ~bit_mask)  | dr8r;
+      HWREG((port) + GPIO_O_ODR)   = (HWREG((port) + GPIO_O_ODR)   & ~bit_mask)  | odr;
+      HWREG((port) + GPIO_O_PUR)   = (HWREG((port) + GPIO_O_PUR)   & ~bit_mask)  | pur;
+      HWREG((port) + GPIO_O_PDR)   = (HWREG((port) + GPIO_O_PDR)   & ~bit_mask)  | pdr;
+      HWREG((port) + GPIO_O_SLR)   = (HWREG((port) + GPIO_O_SLR)   & ~bit_mask)  | slr;
+      HWREG((port) + GPIO_O_DEN)   = (HWREG((port) + GPIO_O_DEN)   & ~bit_mask)  | den;
+      HWREG((port) + GPIO_O_AMSEL) = (HWREG((port) + GPIO_O_AMSEL) & ~bit_mask)  | amsel;
+      HWREG((port) + GPIO_O_PCTL)  = (HWREG((port) + GPIO_O_PCTL)  & ~pctl_mask) | pctl;
     }
 
     mask >>= 1;

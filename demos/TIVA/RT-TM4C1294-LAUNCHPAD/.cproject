@@ -21,12 +21,159 @@
 							<builder autoBuildTarget="all" cleanBuildTarget="clean" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="org.eclipse.cdt.build.core.settings.default.builder.579570726" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="org.eclipse.cdt.build.core.settings.default.builder"/>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.libs.2143276802" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs"/>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1873650595" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1621908572" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/hal/osal/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/ext/TivaWare"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/oslib/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/various"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/hal/osal/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/hal/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/license"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/startup/ARMCMx/devices/TM4C129x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/UART"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/hal/ports/common/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/TM4C129x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/rt/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/GPTM"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/demos/TIVA/RT-TM4C1294-LAUNCHPAD"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/various"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/uDMA"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/ports/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/hal/ports/common/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/rt/ports/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/test/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/hal/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/test/lib"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/ports/ARMCMx/devices/TM4C129x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/WDT"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/test/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/GPIO"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/MAC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/I2C"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/test/rt/source/test"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/startup/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/PWM"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/rt/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/SSI"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/boards/TI_TM4C1294_LAUNCHPAD"/>
+								</option>
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.symbols.2102957886" name="Undefined Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.undef.symbols" valueType="undefDefinedSymbols">
+									<listOptionValue builtIn="false" value="THUMB_PRESENT"/>
+									<listOptionValue builtIn="false" value="CORTEX_USE_FPU"/>
+									<listOptionValue builtIn="false" value="THUMB_NO_INTERWORKING"/>
+								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1337802279" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1707090075" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1780344633" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/hal/osal/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/ext/TivaWare"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/oslib/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/various"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/hal/osal/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/hal/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/license"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/startup/ARMCMx/devices/TM4C129x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/UART"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/hal/ports/common/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/TM4C129x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/rt/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/GPTM"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/demos/TIVA/RT-TM4C1294-LAUNCHPAD"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/various"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/uDMA"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/ports/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/hal/ports/common/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/rt/ports/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/test/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/hal/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/test/lib"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/ports/ARMCMx/devices/TM4C129x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/WDT"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/test/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/GPIO"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/MAC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/I2C"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/test/rt/source/test"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/startup/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/PWM"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/rt/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/SSI"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/boards/TI_TM4C1294_LAUNCHPAD"/>
+								</option>
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.symbols.625344253" name="Undefined Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.undef.symbols" valueType="undefDefinedSymbols">
+									<listOptionValue builtIn="false" value="THUMB_PRESENT"/>
+									<listOptionValue builtIn="false" value="CORTEX_USE_FPU"/>
+									<listOptionValue builtIn="false" value="THUMB_NO_INTERWORKING"/>
+								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.338985256" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1165165914" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.289466379" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/hal/osal/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/ext/TivaWare"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/oslib/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/various"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/hal/osal/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/hal/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/license"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/startup/ARMCMx/devices/TM4C129x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/UART"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/hal/ports/common/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/TM4C129x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/rt/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/GPTM"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/demos/TIVA/RT-TM4C1294-LAUNCHPAD"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/various"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/uDMA"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/ports/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/hal/ports/common/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/rt/ports/ARMCMx"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/test/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/hal/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/test/lib"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/ports/ARMCMx/devices/TM4C129x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/WDT"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/test/rt"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/GPIO"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/MAC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/I2C"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/test/rt/source/test"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/common/startup/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/PWM"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios30/os/rt/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/ports/TIVA/LLD/SSI"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/hal/boards/TI_TM4C1294_LAUNCHPAD"/>
+								</option>
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.symbols.324974813" name="Undefined Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.undef.symbols" valueType="undefDefinedSymbols">
+									<listOptionValue builtIn="false" value="THUMB_PRESENT"/>
+									<listOptionValue builtIn="false" value="CORTEX_USE_FPU"/>
+									<listOptionValue builtIn="false" value="THUMB_NO_INTERWORKING"/>
+								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.714476670" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
 						</toolChain>
