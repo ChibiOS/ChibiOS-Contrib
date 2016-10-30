@@ -421,55 +421,55 @@ typedef uint32_t ioportid_t;
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if TIVA_GPIO_GPIOA_USE_AHB
+#if TIVA_GPIO_GPIOA_USE_AHB && defined(TM4C123x)
 #define GPIOA                               GPIO_PORTA_AHB_BASE
 #else
 #define GPIOA                               GPIO_PORTA_BASE
 #endif
 
-#if TIVA_GPIO_GPIOB_USE_AHB
+#if TIVA_GPIO_GPIOB_USE_AHB && defined(TM4C123x)
 #define GPIOB                               GPIO_PORTB_AHB_BASE
 #else
 #define GPIOB                               GPIO_PORTB_BASE
 #endif
 
-#if TIVA_GPIO_GPIOC_USE_AHB
+#if TIVA_GPIO_GPIOC_USE_AHB && defined(TM4C123x)
 #define GPIOC                               GPIO_PORTC_AHB_BASE
 #else
 #define GPIOC                               GPIO_PORTC_BASE
 #endif
 
-#if TIVA_GPIO_GPIOD_USE_AHB
+#if TIVA_GPIO_GPIOD_USE_AHB && defined(TM4C123x)
 #define GPIOD                               GPIO_PORTD_AHB_BASE
 #else
 #define GPIOD                               GPIO_PORTD_BASE
 #endif
 
-#if TIVA_GPIO_GPIOE_USE_AHB
+#if TIVA_GPIO_GPIOE_USE_AHB && defined(TM4C123x)
 #define GPIOE                               GPIO_PORTE_AHB_BASE
 #else
 #define GPIOE                               GPIO_PORTE_BASE
 #endif
 
-#if TIVA_GPIO_GPIOF_USE_AHB
+#if TIVA_GPIO_GPIOF_USE_AHB && defined(TM4C123x)
 #define GPIOF                               GPIO_PORTF_AHB_BASE
 #else
 #define GPIOF                               GPIO_PORTF_BASE
 #endif
 
-#if TIVA_GPIO_GPIOG_USE_AHB
+#if TIVA_GPIO_GPIOG_USE_AHB && defined(TM4C123x)
 #define GPIOG                               GPIO_PORTG_AHB_BASE
 #else
 #define GPIOG                               GPIO_PORTG_BASE
 #endif
 
-#if TIVA_GPIO_GPIOH_USE_AHB
+#if TIVA_GPIO_GPIOH_USE_AHB && defined(TM4C123x)
 #define GPIOH                               GPIO_PORTH_AHB_BASE
 #else
 #define GPIOH                               GPIO_PORTH_BASE
 #endif
 
-#if TIVA_GPIO_GPIOJ_USE_AHB
+#if TIVA_GPIO_GPIOJ_USE_AHB && defined(TM4C123x)
 #define GPIOJ                               GPIO_PORTJ_AHB_BASE
 #else
 #define GPIOJ                               GPIO_PORTJ_BASE
