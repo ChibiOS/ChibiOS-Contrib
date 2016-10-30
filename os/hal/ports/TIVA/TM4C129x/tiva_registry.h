@@ -25,6 +25,23 @@
 #ifndef _TIVA_REGISTRY_H_
 #define _TIVA_REGISTRY_H_
 
+#if !defined(PART_TM4C1290NCPDT) && !defined(PART_TM4C1290NCZAD) && !defined(PART_TM4C1292NCPDT)\
+  && !defined(PART_TM4C1292NCZAD) && !defined(PART_TM4C1294KCPDT) && !defined(PART_TM4C1294NCPDT)\
+  && !defined(PART_TM4C1294NCZAD) && !defined(PART_TM4C1297NCZAD) && !defined(PART_TM4C1299KCZAD)\
+  && !defined(PART_TM4C1299NCZAD) && !defined(PART_TM4C129CNCPDT) && !defined(PART_TM4C129CNCZAD)\
+  && !defined(PART_TM4C129DNCPDT) && !defined(PART_TM4C129DNCZAD) && !defined(PART_TM4C129EKCPDT)\
+  && !defined(PART_TM4C129ENCPDT) && !defined(PART_TM4C129ENCZAD) && !defined(PART_TM4C129LNCZAD)\
+  && !defined(PART_TM4C129XKCZAD) && !defined(PART_TM4C129XNCZAD)
+#error "No valid device defined."
+#endif
+
+/**
+ * @brief   Sub-family identifier.
+ */
+#if !defined(TM4C129x) || defined(__DOXYGEN__)
+#define TM4C129x
+#endif
+
 /*===========================================================================*/
 /* Platform capabilities.                                                    */
 /*===========================================================================*/
