@@ -184,6 +184,20 @@
 #define GPIOQ_PIN7              7
 
 /*
+ * IO lines assignments.
+ */
+#define LINE_UART0_RX           PAL_LINE(GPIOA, 0U)
+#define LINE_UART0_TX           PAL_LINE(GPIOA, 1U)
+
+#define LINE_LED0               PAL_LINE(GPIOF, 0U)
+#define LINE_LED1               PAL_LINE(GPIOF, 4U)
+
+#define LINE_LED2               PAL_LINE(GPION, 0U)
+#define LINE_LED3               PAL_LINE(GPION, 1U)
+
+#define LINE_SW1                PAL_LINE(GPIOJ, 0U)
+
+/*
  * I/O ports initial setup, this configuration is established soon after reset
  * in the initialization code.
  */
