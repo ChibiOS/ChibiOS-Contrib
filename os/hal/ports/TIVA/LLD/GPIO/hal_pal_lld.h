@@ -195,7 +195,7 @@
  * @brief   Decodes a port identifier from a line identifier.
  */
 #define PAL_PORT(line)                                                      \
-  ((stm32_gpio_t *)(((uint32_t)(line)) & 0xFFFFFFF0U))
+  ((ioportid_t)(((uint32_t)(line)) & 0xFFFFFFF0U))
 
 /**
  * @brief   Decodes a pad identifier from a line identifier.
@@ -322,6 +322,11 @@ typedef uint32_t ioportmask_t;
  * @brief   Digital I/O modes.
  */
 typedef uint32_t iomode_t;
+
+/**
+ * @brief   Type of an I/O line.
+ */
+typedef uint32_t ioline_t;
 
 /**
  * @brief   Port Identifier.
