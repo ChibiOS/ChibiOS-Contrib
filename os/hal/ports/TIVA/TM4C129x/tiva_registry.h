@@ -35,6 +35,10 @@
 #error "No valid device defined."
 #endif
 
+#if !defined(TARGET_IS_TM4C129_RA0)
+#error "No valid device revision defined."
+#endif
+
 /**
  * @brief   Sub-family identifier.
  */

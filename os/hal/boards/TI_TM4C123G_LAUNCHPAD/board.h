@@ -28,9 +28,10 @@
 #define BOARD_NAME              "Texas Instruments TM4C123G Launchpad"
 
 /*
- * MCU type as defined in the TI header.
+ * MCU type and revision as defined in the TI header.
  */
 #define PART_TM4C123GH6PM
+#define TARGET_IS_TM4C123_RB1
 
 /*
  * Board oscillators-related settings.

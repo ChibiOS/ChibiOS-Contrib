@@ -36,9 +36,10 @@
 //#define BOARD_PHY_RMII
 
 /*
- * MCU type as defined in the TI header.
+ * MCU type and revision as defined in the TI header.
  */
 #define PART_TM4C1294NCPDT
+#define TARGET_IS_TM4C129_RA0
 
 /*
  * Board oscillators-related settings.
