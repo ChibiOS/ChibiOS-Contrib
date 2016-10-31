@@ -133,7 +133,7 @@ GPTDriver GPTD12;
  */
 static void gpt_lld_serve_interrupt(GPTDriver *gptp)
 {
-  gptp->gpt->ICR = 0xffffffff;
+  HWREG(gptp->gpt + TIMER_O_ICR) = 0xffffffff;
 
   if (gptp->state == GPT_ONESHOT) {
     gptp->state = GPT_READY;
@@ -388,62 +388,62 @@ void gpt_lld_init(void)
 {
   /* Driver initialization.*/
 #if TIVA_GPT_USE_GPT0
-  GPTD1.gpt = GPT0;
+  GPTD1.gpt = TIMER0_BASE;
   gptObjectInit(&GPTD1);
 #endif
 
 #if TIVA_GPT_USE_GPT1
-  GPTD2.gpt = GPT1;
+  GPTD2.gpt = TIMER1_BASE;
   gptObjectInit(&GPTD2);
 #endif
 
 #if TIVA_GPT_USE_GPT2
-  GPTD3.gpt = GPT2;
+  GPTD3.gpt = TIMER2_BASE;
   gptObjectInit(&GPTD3);
 #endif
 
 #if TIVA_GPT_USE_GPT3
-  GPTD4.gpt = GPT3;
+  GPTD4.gpt = TIMER3_BASE;
   gptObjectInit(&GPTD4);
 #endif
 
 #if TIVA_GPT_USE_GPT4
-  GPTD5.gpt = GPT4;
+  GPTD5.gpt = TIMER4_BASE;
   gptObjectInit(&GPTD5);
 #endif
 
 #if TIVA_GPT_USE_GPT5
-  GPTD6.gpt = GPT5;
+  GPTD6.gpt = TIMER5_BASE;
   gptObjectInit(&GPTD6);
 #endif
 
 #if TIVA_GPT_USE_WGPT0
-  GPTD7.gpt = WGPT0;
+  GPTD7.gpt = WTIMER0_BASE;
   gptObjectInit(&GPTD7);
 #endif
 
 #if TIVA_GPT_USE_WGPT1
-  GPTD8.gpt = WGPT1;
+  GPTD8.gpt = WTIMER1_BASE;
   gptObjectInit(&GPTD8);
 #endif
 
 #if TIVA_GPT_USE_WGPT2
-  GPTD9.gpt = WGPT2;
+  GPTD9.gpt = WTIMER2_BASE;
   gptObjectInit(&GPTD9);
 #endif
 
 #if TIVA_GPT_USE_WGPT3
-  GPTD10.gpt = WGPT3;
+  GPTD10.gpt = WTIMER3_BASE;
   gptObjectInit(&GPTD10);
 #endif
 
 #if TIVA_GPT_USE_WGPT4
-  GPTD11.gpt = WGPT4;
+  GPTD11.gpt = WTIMER4_BASE;
   gptObjectInit(&GPTD11);
 #endif
 
 #if TIVA_GPT_USE_WGPT5
-  GPTD12.gpt = WGPT5;
+  GPTD12.gpt = WTIMER5_BASE;
   gptObjectInit(&GPTD12);
 #endif
 }
@@ -461,9 +461,9 @@ void gpt_lld_start(GPTDriver *gptp)
     /* Clock activation.*/
 #if TIVA_GPT_USE_GPT0
     if (&GPTD1 == gptp) {
-      SYSCTL->RCGCTIMER |= (1 << 0);
+      HWREG(SYSCTL_RCGCTIMER) |= (1 << 0);
 
-      while (!(SYSCTL->PRTIMER & (1 << 0)))
+      while (!(HWREG(SYSCTL_PRTIMER) & (1 << 0)))
         ;
 
       nvicEnableVector(TIVA_GPT0A_NUMBER, TIVA_GPT_GPT0A_IRQ_PRIORITY);
@@ -472,9 +472,9 @@ void gpt_lld_start(GPTDriver *gptp)
 
 #if TIVA_GPT_USE_GPT1
     if (&GPTD2 == gptp) {
-      SYSCTL->RCGCTIMER |= (1 << 1);
+      HWREG(SYSCTL_RCGCTIMER) |= (1 << 1);
 
-      while (!(SYSCTL->PRTIMER & (1 << 1)))
+      while (!(HWREG(SYSCTL_PRTIMER) & (1 << 1)))
         ;
 
       nvicEnableVector(TIVA_GPT1A_NUMBER, TIVA_GPT_GPT1A_IRQ_PRIORITY);
@@ -483,9 +483,9 @@ void gpt_lld_start(GPTDriver *gptp)
 
 #if TIVA_GPT_USE_GPT2
     if (&GPTD3 == gptp) {
-      SYSCTL->RCGCTIMER |= (1 << 2);
+      HWREG(SYSCTL_RCGCTIMER) |= (1 << 2);
 
-      while (!(SYSCTL->PRTIMER & (1 << 2)))
+      while (!(HWREG(SYSCTL_PRTIMER) & (1 << 2)))
         ;
 
       nvicEnableVector(TIVA_GPT2A_NUMBER, TIVA_GPT_GPT2A_IRQ_PRIORITY);
@@ -494,9 +494,9 @@ void gpt_lld_start(GPTDriver *gptp)
 
 #if TIVA_GPT_USE_GPT3
     if (&GPTD4 == gptp) {
-      SYSCTL->RCGCTIMER |= (1 << 3);
+      HWREG(SYSCTL_RCGCTIMER) |= (1 << 3);
 
-      while (!(SYSCTL->PRTIMER & (1 << 3)))
+      while (!(HWREG(SYSCTL_PRTIMER) & (1 << 3)))
         ;
 
       nvicEnableVector(TIVA_GPT3A_NUMBER, TIVA_GPT_GPT3A_IRQ_PRIORITY);
@@ -505,9 +505,9 @@ void gpt_lld_start(GPTDriver *gptp)
 
 #if TIVA_GPT_USE_GPT4
     if (&GPTD5 == gptp) {
-      SYSCTL->RCGCTIMER |= (1 << 4);
+      HWREG(SYSCTL_RCGCTIMER) |= (1 << 4);
 
-      while (!(SYSCTL->PRTIMER & (1 << 4)))
+      while (!(HWREG(SYSCTL_PRTIMER) & (1 << 4)))
         ;
 
       nvicEnableVector(TIVA_GPT4A_NUMBER, TIVA_GPT_GPT4A_IRQ_PRIORITY);
@@ -516,9 +516,9 @@ void gpt_lld_start(GPTDriver *gptp)
 
 #if TIVA_GPT_USE_GPT5
     if (&GPTD6 == gptp) {
-      SYSCTL->RCGCTIMER |= (1 << 5);
+      HWREG(SYSCTL_RCGCTIMER) |= (1 << 5);
 
-      while (!(SYSCTL->PRTIMER & (1 << 5)))
+      while (!(HWREG(SYSCTL_PRTIMER) & (1 << 5)))
         ;
 
       nvicEnableVector(TIVA_GPT5A_NUMBER, TIVA_GPT_GPT5A_IRQ_PRIORITY);
@@ -527,9 +527,9 @@ void gpt_lld_start(GPTDriver *gptp)
 
 #if TIVA_GPT_USE_WGPT0
     if (&GPTD7 == gptp) {
-      SYSCTL->RCGCWTIMER |= (1 << 0);
+      HWREG(SYSCTL_RCGCWTIMER) |= (1 << 0);
 
-      while (!(SYSCTL->PRWTIMER & (1 << 0)))
+      while (!(HWREG(SYSCTL_PRWTIMER) & (1 << 0)))
         ;
 
       nvicEnableVector(TIVA_WGPT0A_NUMBER, TIVA_GPT_WGPT0A_IRQ_PRIORITY);
@@ -538,9 +538,9 @@ void gpt_lld_start(GPTDriver *gptp)
 
 #if TIVA_GPT_USE_WGPT1
     if (&GPTD8 == gptp) {
-      SYSCTL->RCGCWTIMER |= (1 << 1);
+      HWREG(SYSCTL_RCGCWTIMER) |= (1 << 1);
 
-      while (!(SYSCTL->PRWTIMER & (1 << 1)))
+      while (!(HWREG(SYSCTL_PRWTIMER) & (1 << 1)))
         ;
 
       nvicEnableVector(TIVA_WGPT1A_NUMBER, TIVA_GPT_WGPT1A_IRQ_PRIORITY);
@@ -549,9 +549,9 @@ void gpt_lld_start(GPTDriver *gptp)
 
 #if TIVA_GPT_USE_WGPT2
     if (&GPTD9 == gptp) {
-      SYSCTL->RCGCWTIMER |= (1 << 2);
+      HWREG(SYSCTL_RCGCWTIMER) |= (1 << 2);
 
-      while (!(SYSCTL->PRWTIMER & (1 << 2)))
+      while (!(HWREG(SYSCTL_PRWTIMER) & (1 << 2)))
         ;
 
       nvicEnableVector(TIVA_WGPT2A_NUMBER, TIVA_GPT_WGPT2A_IRQ_PRIORITY);
@@ -560,9 +560,9 @@ void gpt_lld_start(GPTDriver *gptp)
 
 #if TIVA_GPT_USE_WGPT3
     if (&GPTD10 == gptp) {
-      SYSCTL->RCGCWTIMER |= (1 << 3);
+      HWREG(SYSCTL_RCGCWTIMER) |= (1 << 3);
 
-      while (!(SYSCTL->PRWTIMER & (1 << 3)))
+      while (!(HWREG(SYSCTL_PRWTIMER) & (1 << 3)))
         ;
 
       nvicEnableVector(TIVA_WGPT3A_NUMBER, TIVA_GPT_WGPT3A_IRQ_PRIORITY);
@@ -571,9 +571,9 @@ void gpt_lld_start(GPTDriver *gptp)
 
 #if TIVA_GPT_USE_WGPT4
     if (&GPTD11 == gptp) {
-      SYSCTL->RCGCWTIMER |= (1 << 4);
+      HWREG(SYSCTL_RCGCWTIMER) |= (1 << 4);
 
-      while (!(SYSCTL->PRWTIMER & (1 << 4)))
+      while (!(HWREG(SYSCTL_PRWTIMER) & (1 << 4)))
         ;
 
       nvicEnableVector(TIVA_WGPT4A_NUMBER, TIVA_GPT_WGPT4A_IRQ_PRIORITY);
@@ -582,9 +582,9 @@ void gpt_lld_start(GPTDriver *gptp)
 
 #if TIVA_GPT_USE_WGPT5
     if (&GPTD12 == gptp) {
-      SYSCTL->RCGCWTIMER |= (1 << 5);
+      HWREG(SYSCTL_RCGCWTIMER) |= (1 << 5);
 
-      while (!(SYSCTL->PRWTIMER & (1 << 5)))
+      while (!(HWREG(SYSCTL_PRWTIMER) & (1 << 5)))
         ;
 
       nvicEnableVector(TIVA_WGPT5A_NUMBER, TIVA_GPT_WGPT5A_IRQ_PRIORITY);
@@ -593,9 +593,9 @@ void gpt_lld_start(GPTDriver *gptp)
   }
 
   /* Timer configuration.*/
-  gptp->gpt->CTL = 0;
-  gptp->gpt->CFG = GPTM_CFG_CFG_SPLIT;
-  gptp->gpt->TAPR = ((TIVA_SYSCLK / gptp->config->frequency) - 1);
+  HWREG(gptp->gpt + TIMER_O_CTL) = 0;
+  HWREG(gptp->gpt + TIMER_O_CFG) = TIMER_CFG_16_BIT;
+  HWREG(gptp->gpt + TIMER_O_TAPR) = ((TIVA_SYSCLK / gptp->config->frequency) - 1);
 }
 
 /**
@@ -608,91 +608,91 @@ void gpt_lld_start(GPTDriver *gptp)
 void gpt_lld_stop(GPTDriver *gptp)
 {
   if (gptp->state == GPT_READY) {
-    gptp->gpt->IMR = 0;
-    gptp->gpt->TAILR = 0;
-    gptp->gpt->CTL = 0;
+    HWREG(gptp->gpt + TIMER_O_IMR) = 0;
+    HWREG(gptp->gpt + TIMER_O_TAILR) = 0;
+    HWREG(gptp->gpt + TIMER_O_CTL) = 0;
 
 #if TIVA_GPT_USE_GPT0
     if (&GPTD1 == gptp) {
       nvicDisableVector(TIVA_GPT0A_NUMBER);
-      SYSCTL->RCGCTIMER &= ~(1 << 0);
+      HWREG(SYSCTL_RCGCTIMER) &= ~(1 << 0);
     }
 #endif
 
 #if TIVA_GPT_USE_GPT1
     if (&GPTD2 == gptp) {
       nvicDisableVector(TIVA_GPT1A_NUMBER);
-      SYSCTL->RCGCTIMER &= ~(1 << 1);
+      HWREG(SYSCTL_RCGCTIMER) &= ~(1 << 1);
     }
 #endif
 
 #if TIVA_GPT_USE_GPT2
     if (&GPTD3 == gptp) {
       nvicDisableVector(TIVA_GPT2A_NUMBER);
-      SYSCTL->RCGCTIMER &= ~(1 << 2);
+      HWREG(SYSCTL_RCGCTIMER) &= ~(1 << 2);
     }
 #endif
 
 #if TIVA_GPT_USE_GPT3
     if (&GPTD4 == gptp) {
       nvicDisableVector(TIVA_GPT3A_NUMBER);
-      SYSCTL->RCGCTIMER &= ~(1 << 3);
+      HWREG(SYSCTL_RCGCTIMER) &= ~(1 << 3);
     }
 #endif
 
 #if TIVA_GPT_USE_GPT4
     if (&GPTD5 == gptp) {
       nvicDisableVector(TIVA_GPT4A_NUMBER);
-      SYSCTL->RCGCTIMER &= ~(1 << 4);
+      HWREG(SYSCTL_RCGCTIMER) &= ~(1 << 4);
     }
 #endif
 
 #if TIVA_GPT_USE_GPT5
     if (&GPTD6 == gptp) {
       nvicDisableVector(TIVA_GPT5A_NUMBER);
-      SYSCTL->RCGCTIMER &= ~(1 << 5);
+      HWREG(SYSCTL_RCGCTIMER) &= ~(1 << 5);
     }
 #endif
 
 #if TIVA_GPT_USE_WGPT0
     if (&GPTD7 == gptp) {
       nvicDisableVector(TIVA_WGPT0A_NUMBER);
-      SYSCTL->RCGCWTIMER &= ~(1 << 0);
+      HWREG(SYSCTL_RCGCWTIMER) &= ~(1 << 0);
     }
 #endif
 
 #if TIVA_GPT_USE_WGPT1
     if (&GPTD8 == gptp) {
       nvicDisableVector(TIVA_WGPT1A_NUMBER);
-      SYSCTL->RCGCWTIMER &= ~(1 << 1);
+      HWREG(SYSCTL_RCGCWTIMER) &= ~(1 << 1);
     }
 #endif
 
 #if TIVA_GPT_USE_WGPT2
     if (&GPTD9 == gptp) {
       nvicDisableVector(TIVA_WGPT2A_NUMBER);
-      SYSCTL->RCGCWTIMER &= ~(1 << 2);
+      HWREG(SYSCTL_RCGCWTIMER) &= ~(1 << 2);
     }
 #endif
 
 #if TIVA_GPT_USE_WGPT3
     if (&GPTD10 == gptp) {
       nvicDisableVector(TIVA_WGPT3A_NUMBER);
-      SYSCTL->RCGCWTIMER &= ~(1 << 3);
+      HWREG(SYSCTL_RCGCWTIMER) &= ~(1 << 3);
     }
 #endif
 
 #if TIVA_GPT_USE_WGPT4
     if (&GPTD11 == gptp) {
       nvicDisableVector(TIVA_WGPT4A_NUMBER);
-      SYSCTL->RCGCWTIMER &= ~(1 << 4);
+      HWREG(SYSCTL_RCGCWTIMER) &= ~(1 << 4);
     }
 #endif
 
 #if TIVA_GPT_USE_WGPT5
     if (&GPTD12 == gptp) {
       nvicDisableVector(TIVA_WGPT5A_NUMBER);
-      SYSCTL->RCGCWTIMER &= ~(1 << 5);
+      HWREG(SYSCTL_RCGCWTIMER) &= ~(1 << 5);
     }
 #endif
   }
@@ -708,11 +708,11 @@ void gpt_lld_stop(GPTDriver *gptp)
  */
 void gpt_lld_start_timer(GPTDriver *gptp, gptcnt_t interval)
 {
-  gptp->gpt->TAILR = interval - 1;
-  gptp->gpt->ICR = 0xfffffff;
-  gptp->gpt->IMR = GPTM_IMR_TATOIM;
-  gptp->gpt->TAMR = GPTM_TAMR_TAMR_PERIODIC | GPTM_TAMR_TAILD | GPTM_TAMR_TASNAPS;
-  gptp->gpt->CTL = GPTM_CTL_TAEN | GPTM_CTL_TASTALL;
+  HWREG(gptp->gpt + TIMER_O_TAILR) = interval - 1;
+  HWREG(gptp->gpt + TIMER_O_ICR) = 0xfffffff;
+  HWREG(gptp->gpt + TIMER_O_IMR) = TIMER_IMR_TATOIM;
+  HWREG(gptp->gpt + TIMER_O_TAMR) = TIMER_TAMR_TAMR_PERIOD | TIMER_TAMR_TAILD | TIMER_TAMR_TASNAPS;
+  HWREG(gptp->gpt + TIMER_O_CTL) = TIMER_CTL_TAEN | TIMER_CTL_TASTALL;
 }
 
 /**
@@ -724,9 +724,9 @@ void gpt_lld_start_timer(GPTDriver *gptp, gptcnt_t interval)
  */
 void gpt_lld_stop_timer(GPTDriver *gptp)
 {
-  gptp->gpt->IMR = 0;
-  gptp->gpt->TAILR = 0;
-  gptp->gpt->CTL &= ~GPTM_CTL_TAEN;
+  HWREG(gptp->gpt + TIMER_O_IMR) = 0;
+  HWREG(gptp->gpt + TIMER_O_TAILR) = 0;
+  HWREG(gptp->gpt + TIMER_O_CTL) &= ~TIMER_CTL_TAEN;
 }
 
 /**
@@ -742,13 +742,13 @@ void gpt_lld_stop_timer(GPTDriver *gptp)
  */
 void gpt_lld_polled_delay(GPTDriver *gptp, gptcnt_t interval)
 {
-  gptp->gpt->TAMR = GPTM_TAMR_TAMR_ONESHOT | GPTM_TAMR_TAILD | GPTM_TAMR_TASNAPS;
-  gptp->gpt->TAILR = interval - 1;
-  gptp->gpt->ICR = 0xffffffff;
-  gptp->gpt->CTL = GPTM_CTL_TAEN | GPTM_CTL_TASTALL;
-  while (!(gptp->gpt->RIS & GPTM_IMR_TATOIM))
+  HWREG(gptp->gpt + TIMER_O_TAMR) = TIMER_TAMR_TAMR_1_SHOT | TIMER_TAMR_TAILD | TIMER_TAMR_TASNAPS;
+  HWREG(gptp->gpt + TIMER_O_TAILR) = interval - 1;
+  HWREG(gptp->gpt + TIMER_O_ICR) = 0xffffffff;
+  HWREG(gptp->gpt + TIMER_O_CTL) = TIMER_CTL_TAEN | TIMER_CTL_TASTALL;
+  while (!(HWREG(gptp->gpt + TIMER_O_RIS) & TIMER_IMR_TATOIM))
     ;
-  gptp->gpt->ICR = 0xffffffff;
+  HWREG(gptp->gpt + TIMER_O_ICR) = 0xffffffff;
 }
 
 #endif /* HAL_USE_GPT */

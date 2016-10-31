@@ -352,70 +352,70 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if defined(TM4C123x)
+//#if defined(TM4C123x)
 
 #if TIVA_GPIO_GPIOA_USE_AHB
-#define GPIOA                               GPIOA_AHB
+#define GPIOA                               GPIO_PORTA_AHB_BASE
 #else
-#define GPIOA                               GPIOA_APB
+#define GPIOA                               GPIO_PORTA_BASE
 #endif
 
 #if TIVA_GPIO_GPIOB_USE_AHB
-#define GPIOB                               GPIOB_AHB
+#define GPIOB                               GPIO_PORTB_AHB_BASE
 #else
-#define GPIOB                               GPIOB_APB
+#define GPIOB                               GPIO_PORTB_BASE
 #endif
 
 #if TIVA_GPIO_GPIOC_USE_AHB
-#define GPIOC                               GPIOC_AHB
+#define GPIOC                               GPIO_PORTC_AHB_BASE
 #else
-#define GPIOC                               GPIOC_APB
+#define GPIOC                               GPIO_PORTC_BASE
 #endif
 
 #if TIVA_GPIO_GPIOD_USE_AHB
-#define GPIOD                               GPIOD_AHB
+#define GPIOD                               GPIO_PORTD_AHB_BASE
 #else
-#define GPIOD                               GPIOD_APB
+#define GPIOD                               GPIO_PORTD_BASE
 #endif
 
 #if TIVA_GPIO_GPIOE_USE_AHB
-#define GPIOE                               GPIOE_AHB
+#define GPIOE                               GPIO_PORTE_AHB_BASE
 #else
-#define GPIOE                               GPIOE_APB
+#define GPIOE                               GPIO_PORTE_BASE
 #endif
 
 #if TIVA_GPIO_GPIOF_USE_AHB
-#define GPIOF                               GPIOF_AHB
+#define GPIOF                               GPIO_PORTF_AHB_BASE
 #else
-#define GPIOF                               GPIOF_APB
+#define GPIOF                               GPIO_PORTF_BASE
 #endif
 
 #if TIVA_GPIO_GPIOG_USE_AHB
-#define GPIOG                               GPIOG_AHB
+#define GPIOG                               GPIO_PORTG_AHB_BASE
 #else
-#define GPIOG                               GPIOG_APB
+#define GPIOG                               GPIO_PORTG_BASE
 #endif
 
 #if TIVA_GPIO_GPIOH_USE_AHB
-#define GPIOH                               GPIOH_AHB
+#define GPIOH                               GPIO_PORTH_AHB_BASE
 #else
-#define GPIOH                               GPIOH_APB
+#define GPIOH                               GPIO_PORTH_BASE
 #endif
 
 #if TIVA_GPIO_GPIOJ_USE_AHB
-#define GPIOJ                               GPIOJ_AHB
+#define GPIOJ                               GPIO_PORTJ_AHB_BASE
 #else
-#define GPIOJ                               GPIOJ_APB
+#define GPIOJ                               GPIO_PORTJ_BASE
 #endif
 
-#define GPIOK                               GPIOK_AHB
-#define GPIOL                               GPIOL_AHB
-#define GPIOM                               GPIOM_AHB
-#define GPION                               GPION_AHB
-#define GPIOP                               GPIOP_AHB
-#define GPIOQ                               GPIOQ_AHB
+#define GPIOK                               GPIO_PORTK_BASE
+#define GPIOL                               GPIO_PORTL_BASE
+#define GPIOM                               GPIO_PORTM_BASE
+#define GPION                               GPIO_PORTN_BASE
+#define GPIOP                               GPIO_PORTP_BASE
+#define GPIOQ                               GPIO_PORTQ_BASE
 
-#endif
+//#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
@@ -550,7 +550,7 @@ typedef uint32_t iomode_t;
 /**
  * @brief   Port Identifier.
  */
-typedef GPIO_TypeDef *ioportid_t;
+typedef uint32_t ioportid_t;
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
@@ -573,7 +573,7 @@ typedef GPIO_TypeDef *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_readport(port)  ((port)->DATA)
+#define pal_lld_readport(port) (HWREG((port) + GPIO_O_DATA + (0xff << 2)))
 
 /**
  * @brief   Reads the output latch.
@@ -585,7 +585,7 @@ typedef GPIO_TypeDef *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_readlatch(port) ((port)->DATA)
+#define pal_lld_readlatch(port) pal_lld_readport(port)
 
 /**
  * @brief   Writes a bits mask on a I/O port.
@@ -595,7 +595,7 @@ typedef GPIO_TypeDef *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_writeport(port, bits)   ((port)->DATA = (bits))
+#define pal_lld_writeport(port, bits) (HWREG((port) + GPIO_O_DATA + (0xff << 2)) = (bits))
 
 /**
  * @brief   Sets a bits mask on a I/O port.
@@ -608,7 +608,7 @@ typedef GPIO_TypeDef *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_setport(port, bits) ((port)->MASKED_ACCESS[bits] = 0xFF)
+#define pal_lld_setport(port, bits) (HWREG((port) + (GPIO_O_DATA + (bits << 2))) = 0xFF)
 
 /**
  * @brief   Clears a bits mask on a I/O port.
@@ -621,7 +621,7 @@ typedef GPIO_TypeDef *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_clearport(port, bits)   ((port)->MASKED_ACCESS[bits] = 0)
+#define pal_lld_clearport(port, bits) (HWREG((port) + (GPIO_O_DATA + (bits << 2))) = 0)
 
 /**
  * @brief   Reads a group of bits.
@@ -637,7 +637,7 @@ typedef GPIO_TypeDef *ioportid_t;
  * @notapi
  */
 #define pal_lld_readgroup(port, mask, offset)   \
-  ((port)->MASKED_ACCESS[(mask) << (offset)])
+  (HWREG((port) + (GPIO_O_DATA + (((mask) << (offset)) << 2))))
 
 /**
  * @brief   Writes a group of bits.
@@ -654,7 +654,7 @@ typedef GPIO_TypeDef *ioportid_t;
  * @notapi
  */
 #define pal_lld_writegroup(port, mask, offset, bits)    \
-  ((port)->MASKED_ACCESS[(mask) << (offset)] = (bits))
+  (HWREG((port) + (GPIO_O_DATA + (((mask) << (offset)) << 2))) = (bits))
 
 /**
  * @brief   Pads group mode setup.
@@ -686,7 +686,7 @@ typedef GPIO_TypeDef *ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_readpad(port, pad) ((port)->MASKED_ACCESS[1 << (pad)])
+#define pal_lld_readpad(port, pad) (HWREG((port) + (GPIO_O_DATA + ((1 << (pad)) << 2))))
 
 /**
  * @brief   Writes a logical state on an output pad.
@@ -704,7 +704,7 @@ typedef GPIO_TypeDef *ioportid_t;
  * @notapi
  */
 #define pal_lld_writepad(port, pad, bit)    \
-  ((port)->MASKED_ACCESS[1 << (pad)] = (bit))
+  (HWREG((port) + (GPIO_O_DATA + ((1 << (pad)) << 2))) = (bit))
 
 /**
  * @brief   Sets a pad logical state to @p PAL_HIGH.
@@ -718,7 +718,7 @@ typedef GPIO_TypeDef *ioportid_t;
  * @notapi
  */
 #define pal_lld_setpad(port, pad)   \
-  ((port)->MASKED_ACCESS[1 << (pad)] = 1 << (pad))
+  (HWREG((port) + (GPIO_O_DATA + ((1 << (pad)) << 2))) = 1 << (pad))
 
 /**
  * @brief   Clears a pad logical state to @p PAL_LOW.
@@ -732,7 +732,7 @@ typedef GPIO_TypeDef *ioportid_t;
  * @notapi
  */
 #define pal_lld_clearpad(port, pad) \
-  ((port)->MASKED_ACCESS[1 << (pad)] = 0)
+  (HWREG((port) + (GPIO_O_DATA + ((1 << (pad)) << 2))) = 0)
 
 /*===========================================================================*/
 /* External declarations.                                                    */

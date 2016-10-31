@@ -75,8 +75,8 @@ OSAL_IRQ_HANDLER(TIVA_UDMA_ERR_HANDLER)
 
   /* TODO Do we need to halt the system on a DMA error?*/
 
-  if (UDMA->ERRCLR) {
-    UDMA->ERRCLR = 1;
+  if (HWREG(UDMA_ERRCLR)) {
+    HWREG(UDMA_ERRCLR) = 1;
   }
 
   OSAL_IRQ_EPILOGUE();
@@ -96,18 +96,18 @@ void udmaInit(void)
   udma_channel_mask = 0;
 
   /* Enable UDMA module.*/
-  SYSCTL->RCGCDMA = 1;
-  while (!(SYSCTL->PRDMA & (1 << 0)))
+  HWREG(SYSCTL_RCGCDMA) = 1;
+  while (!(HWREG(SYSCTL_PRDMA) & (1 << 0)))
     ;
 
   nvicEnableVector(TIVA_UDMA_ERR_NUMBER, TIVA_UDMA_ERR_IRQ_PRIORITY);
   nvicEnableVector(TIVA_UDMA_SW_NUMBER, TIVA_UDMA_SW_IRQ_PRIORITY);
 
   /* Enable UDMA controller.*/
-  UDMA->CFG = 1;
+  HWREG(UDMA_CFG) = UDMA_CFG_MASTEN;
 
   /* Set address of control table.*/
-  UDMA->CTLBASE = (uint32_t)udmaControlTable.primary;
+  HWREG(UDMA_CTLBASE) = (uint32_t)udmaControlTable.primary;
 }
 
 /**

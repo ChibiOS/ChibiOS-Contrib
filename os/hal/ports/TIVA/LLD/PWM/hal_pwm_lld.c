@@ -30,13 +30,6 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define PWM_INT_CMPBD       (1 << 5)
-#define PWM_INT_CMPBU       (1 << 4)
-#define PWM_INT_CMPAD       (1 << 3)
-#define PWM_INT_CMPAU       (1 << 2)
-#define PWM_INT_CNTLOAD     (1 << 1)
-#define PWM_INT_CNTZERO     (1 << 0)
-
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -59,6 +52,8 @@ PWMDriver PWMD2;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
+static uint32_t pwm_generator_offsets[] = { PWM_GEN_0_OFFSET, PWM_GEN_1_OFFSET, PWM_GEN_2_OFFSET, PWM_GEN_3_OFFSET};
+
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
@@ -75,35 +70,36 @@ PWMDriver PWMD2;
 static void pwm_lld_serve_generator_interrupt (PWMDriver *pwmp, uint8_t i)
 {
   uint32_t isc;
+  uint32_t pwm = pwmp->pwm;
 
-  isc = pwmp->pwm->PWM[i].ISC;
-  pwmp->pwm->PWM[i].ISC = isc;
+  isc = HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_ISC);
+  HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_ISC) = isc;
 
-  if (((isc & PWM_INT_CMPAD) != 0) &&
+  if (((isc & PWM_X_ISC_INTCMPAD) != 0) &&
       (pwmp->config->channels[i * 2 + 0].callback != NULL)) {
     pwmp->config->channels[i * 2 + 0].callback(pwmp);
   }
 
-  if (((isc & PWM_INT_CMPAU) != 0) &&
+  if (((isc & PWM_X_ISC_INTCMPAU) != 0) &&
       (pwmp->config->channels[i * 2 + 0].callback != NULL)) {
     pwmp->config->channels[i * 2 + 0].callback(pwmp);
   }
 
-  if (((isc & PWM_INT_CMPBD) != 0) &&
+  if (((isc & PWM_X_ISC_INTCMPBD) != 0) &&
       (pwmp->config->channels[i * 2 + 1].callback != NULL)) {
     pwmp->config->channels[i * 2 + 1].callback(pwmp);
   }
 
-  if (((isc & PWM_INT_CMPBU) != 0) &&
+  if (((isc & PWM_X_ISC_INTCMPBU) != 0) &&
       (pwmp->config->channels[i * 2 + 1].callback != NULL)) {
     pwmp->config->channels[i * 2 + 1].callback(pwmp);
   }
 
-  if (((isc & PWM_INT_CNTLOAD) != 0) && (pwmp->config->callback != NULL)) {
+  if (((isc & PWM_X_ISC_INTCNTLOAD) != 0) && (pwmp->config->callback != NULL)) {
     pwmp->config->callback(pwmp);
   }
 
-  if (((isc & PWM_INT_CNTZERO) != 0) && (pwmp->config->callback != NULL)) {
+  if (((isc & PWM_X_ISC_INTCNTZERO) != 0) && (pwmp->config->callback != NULL)) {
     pwmp->config->callback(pwmp);
   }
 }
@@ -311,13 +307,13 @@ void pwm_lld_init(void)
 #if TIVA_PWM_USE_PWM0
   pwmObjectInit(&PWMD1);
   PWMD1.channels = PWM_CHANNELS;
-  PWMD1.pwm = PWM0;
+  PWMD1.pwm = PWM0_BASE;
 #endif
 
 #if TIVA_PWM_USE_PWM1
   pwmObjectInit(&PWMD2);
   PWMD2.channels = PWM_CHANNELS;
-  PWMD2.pwm = PWM1;
+  PWMD2.pwm = PWM1_BASE;
 #endif
 }
 
@@ -335,14 +331,15 @@ void pwm_lld_start(PWMDriver *pwmp)
   uint8_t i;
   uint32_t invert = 0;
   uint32_t enable = 0;
+  uint32_t pwm = pwmp->pwm;
 
   if (pwmp->state == PWM_STOP) {
     /* Clock activation.*/
 #if TIVA_PWM_USE_PWM0
     if (&PWMD1 == pwmp) {
-      SYSCTL->RCGCPWM |= (1 << 0);
+      HWREG(SYSCTL_RCGCPWM) |= (1 << 0);
 
-      while (!(SYSCTL->PRPWM & (1 << 0)))
+      while (!(HWREG(SYSCTL_PRPWM) & (1 << 0)))
         ;
 
       nvicEnableVector(TIVA_PWM0FAULT_NUMBER,
@@ -356,9 +353,9 @@ void pwm_lld_start(PWMDriver *pwmp)
 
 #if TIVA_PWM_USE_PWM1
     if (&PWMD2 == pwmp) {
-      SYSCTL->RCGCPWM |= (1 << 1);
+      HWREG(SYSCTL_RCGCPWM) |= (1 << 1);
 
-      while (!(SYSCTL->PRPWM & (1 << 1)))
+      while (!(HWREG(SYSCTL_PRPWM) & (1 << 1)))
         ;
 
       nvicEnableVector(TIVA_PWM1FAULT_NUMBER,
@@ -372,20 +369,20 @@ void pwm_lld_start(PWMDriver *pwmp)
   }
   else {
     /* Driver re-configuration scenario, it must be stopped first.*/
-    pwmp->pwm->PWM[0].CTL = 0;
-    pwmp->pwm->PWM[1].CTL = 0;
-    pwmp->pwm->PWM[2].CTL = 0;
-    pwmp->pwm->PWM[3].CTL = 0;
+    HWREG(pwm + PWM_O_0_CTL) = 0;
+    HWREG(pwm + PWM_O_1_CTL) = 0;
+    HWREG(pwm + PWM_O_2_CTL) = 0;
+    HWREG(pwm + PWM_O_3_CTL) = 0;
   }
 
   /* Timer configuration.*/
   for (i = 0; i  < (PWM_CHANNELS >> 1); i++) {
-    pwmp->pwm->PWM[i].CTL = 0;
-    pwmp->pwm->PWM[i].GEN[0] = 0x08C;
-    pwmp->pwm->PWM[i].GEN[1] = 0x80C;
-    pwmp->pwm->PWM[i].LOAD = (uint16_t)(pwmp->config->frequency - 1);
-    pwmp->pwm->PWM[i].CMP[0] = (uint16_t)(pwmp->period - 1);
-    pwmp->pwm->PWM[i].CMP[1] = (uint16_t)(pwmp->period - 1);
+    HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_CTL) = 0;
+    HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_GENA) = 0x08C;
+    HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_GENB) = 0x80C;
+    HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_LOAD) = (uint16_t)(pwmp->config->frequency - 1);
+    HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_CMPA) = (uint16_t)(pwmp->period - 1);
+    HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_CMPB) = (uint16_t)(pwmp->period - 1);
   }
 
   /* Output enables and polarities setup.*/
@@ -407,9 +404,9 @@ void pwm_lld_start(PWMDriver *pwmp)
     }
   }
 
-  pwmp->pwm->INVERT = invert;
-  pwmp->pwm->ENABLE = enable;
-  pwmp->pwm->ISC = 0xFFFFFFFF;
+  HWREG(pwm + PWM_O_INVERT) = invert;
+  HWREG(pwm + PWM_O_ENABLE) = enable;
+  HWREG(pwm + PWM_O_ISC) = 0xFFFFFFFF;
 }
 
 /**
@@ -421,12 +418,14 @@ void pwm_lld_start(PWMDriver *pwmp)
  */
 void pwm_lld_stop(PWMDriver *pwmp)
 {
+  uint32_t pwm = pwmp->pwm;
+
   /* If in ready state then disables the PWM clock.*/
   if (pwmp->state == PWM_READY) {
-    pwmp->pwm->PWM[0].CTL = 0;
-    pwmp->pwm->PWM[1].CTL = 0;
-    pwmp->pwm->PWM[2].CTL = 0;
-    pwmp->pwm->PWM[3].CTL = 0;
+    HWREG(pwm + PWM_O_0_CTL) = 0;
+    HWREG(pwm + PWM_O_1_CTL) = 0;
+    HWREG(pwm + PWM_O_2_CTL) = 0;
+    HWREG(pwm + PWM_O_3_CTL) = 0;
 
 #if TIVA_PWM_USE_PWM0
     if (&PWMD1 == pwmp) {
@@ -435,7 +434,7 @@ void pwm_lld_stop(PWMDriver *pwmp)
       nvicDisableVector(TIVA_PWM0GEN1_NUMBER);
       nvicDisableVector(TIVA_PWM0GEN2_NUMBER);
       nvicDisableVector(TIVA_PWM0GEN3_NUMBER);
-      SYSCTL->RCGCPWM &= ~(1 << 0);
+      HWREG(SYSCTL_RCGCPWM) &= ~(1 << 0);
     }
 #endif
 
@@ -446,7 +445,7 @@ void pwm_lld_stop(PWMDriver *pwmp)
       nvicDisableVector(TIVA_PWM1GEN1_NUMBER);
       nvicDisableVector(TIVA_PWM1GEN2_NUMBER);
       nvicDisableVector(TIVA_PWM1GEN3_NUMBER);
-      SYSCTL->RCGCPWM &= ~(1 << 1);
+      HWREG(SYSCTL_RCGCPWM) &= ~(1 << 1);
     }
 #endif
   }
@@ -469,9 +468,16 @@ void pwm_lld_enable_channel(PWMDriver *pwmp,
                             pwmchannel_t channel,
                             pwmcnt_t width)
 {
+  uint32_t pwm = pwmp->pwm;
+
   /* Changing channel duty cycle on the fly.*/
-  pwmp->pwm->PWM[channel >> 1].CMP[channel & 1] = width;
-  pwmp->pwm->PWM[channel >> 1].CTL |= (1 << 0);
+  if (channel & 1)
+    HWREG(pwm + pwm_generator_offsets[channel >> 1] + PWM_O_X_CMPB) = width;
+  else
+    HWREG(pwm + pwm_generator_offsets[channel >> 1] + PWM_O_X_CMPA) = width;
+
+
+  HWREG(pwm + pwm_generator_offsets[channel >> 1] + PWM_O_X_CTL) = (1 << 0);
 }
 
 /**
@@ -488,8 +494,14 @@ void pwm_lld_enable_channel(PWMDriver *pwmp,
  */
 void pwm_lld_disable_channel(PWMDriver *pwmp, pwmchannel_t channel)
 {
-  pwmp->pwm->PWM[channel >> 1].CMP[channel & 1] = 0;
-  pwmp->pwm->PWM[channel >> 1].CTL &= ~(1 << 0);
+  uint32_t pwm = pwmp->pwm;
+
+  if (channel & 1)
+    HWREG(pwm + pwm_generator_offsets[channel >> 1] + PWM_O_X_CMPB) = 0;
+  else
+    HWREG(pwm + pwm_generator_offsets[channel >> 1] + PWM_O_X_CMPA) = 0;
+
+  HWREG(pwm + pwm_generator_offsets[channel >> 1] + PWM_O_X_CTL) = (1 << 0);
 }
 
 /**
@@ -505,18 +517,19 @@ void pwm_lld_enable_periodic_notification(PWMDriver *pwmp)
 {
   uint32_t inten;
   uint8_t i;
+  uint32_t pwm = pwmp->pwm;
 
   /* If the IRQ is not already enabled care must be taken to clear it,
      it is probably already pending because the timer is running.*/
   for(i = 0; i < (PWM_CHANNELS >> 1); i++) {
-    inten = pwmp->pwm->PWM[i].INTEN;
+    inten = HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_INTEN);
     if ((inten & 0x03) == 0) {
-      pwmp->pwm->PWM[i].INTEN |= 0x03;
-      pwmp->pwm->PWM[i].ISC = 0x03;
+      HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_INTEN) |= 0x03;
+      HWREG(pwm + pwm_generator_offsets[i] + PWM_O_X_ISC) = 0x03;
     }
   }
 
-  pwmp->pwm->INTEN = 0x3f;
+  HWREG(pwm + PWM_O_INTEN) = 0x3f;
 }
 
 /**
@@ -530,11 +543,14 @@ void pwm_lld_enable_periodic_notification(PWMDriver *pwmp)
  */
 void pwm_lld_disable_periodic_notification(PWMDriver *pwmp)
 {
-  pwmp->pwm->PWM[0].INTEN &= ~(0x03);
-  pwmp->pwm->PWM[1].INTEN &= ~(0x03);
-  pwmp->pwm->PWM[2].INTEN &= ~(0x03);
-  pwmp->pwm->PWM[3].INTEN &= ~(0x03);
-  pwmp->pwm->INTEN &= ~(0x3F);
+  uint32_t pwm = pwmp->pwm;
+
+  HWREG(pwm + PWM_O_0_INTEN) = ~(0x03);
+  HWREG(pwm + PWM_O_1_INTEN) = ~(0x03);
+  HWREG(pwm + PWM_O_2_INTEN) = ~(0x03);
+  HWREG(pwm + PWM_O_3_INTEN) = ~(0x03);
+
+  HWREG(pwm + PWM_O_INTEN) &= ~(0x3F);
 }
 
 /**
@@ -551,13 +567,14 @@ void pwm_lld_disable_periodic_notification(PWMDriver *pwmp)
 void pwm_lld_enable_channel_notification(PWMDriver *pwmp,
                                          pwmchannel_t channel)
 {
-  uint32_t inten = pwmp->pwm->PWM[channel >> 1].INTEN;
+  uint32_t pwm = pwmp->pwm;
+  uint32_t inten = HWREG(pwm + pwm_generator_offsets[channel >> 1] + PWM_O_X_ISC);
 
   /* If the IRQ is not already enabled care must be taken to clear it,
      it is probably already pending because the timer is running.*/
   if ((inten & (0x03 << (((channel & 1) * 2) + 2))) == 0) {
-    pwmp->pwm->PWM[channel >> 1].INTEN |= (0x03 << (((channel & 1) * 2) + 2));
-    pwmp->pwm->PWM[channel >> 1].ISC = (0x03 << (((channel & 1) * 2) + 2));
+    HWREG(pwm + pwm_generator_offsets[channel >> 1] + PWM_O_X_INTEN) |= (0x03 << (((channel & 1) * 2) + 2));
+    HWREG(pwm + pwm_generator_offsets[channel >> 1] + PWM_O_X_ISC) = (0x03 << (((channel & 1) * 2) + 2));
   }
 }
 
@@ -575,7 +592,9 @@ void pwm_lld_enable_channel_notification(PWMDriver *pwmp,
 void pwm_lld_disable_channel_notification(PWMDriver *pwmp,
                                           pwmchannel_t channel)
 {
-  pwmp->pwm->PWM[channel >> 1].INTEN &= ~(0x03 << (((channel & 1) * 2) + 2));
+  uint32_t pwm = pwmp->pwm;
+
+  HWREG(pwm + pwm_generator_offsets[channel >> 1] + PWM_O_X_INTEN) = ~(0x03 << (((channel & 1) * 2) + 2));
 }
 
 #endif /* HAL_USE_PWM */
