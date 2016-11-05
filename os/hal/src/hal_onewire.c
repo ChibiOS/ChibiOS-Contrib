@@ -679,7 +679,7 @@ bool onewireReset(onewireDriver *owp) {
 }
 
 /**
- * @brief     Read some bites from slave device.
+ * @brief     Read some bytes from slave device.
  *
  * @param[in] owp       pointer to the @p onewireDriver object
  * @param[out] rxbuf    pointer to the buffer for read data
@@ -727,7 +727,7 @@ void onewireRead(onewireDriver *owp, uint8_t *rxbuf, size_t rxbytes) {
 }
 
 /**
- * @brief     Read some bites from slave device.
+ * @brief     Write some bytes to slave device.
  *
  * @param[in] owp           pointer to the @p onewireDriver object
  * @param[in] txbuf         pointer to the buffer with data to be written
