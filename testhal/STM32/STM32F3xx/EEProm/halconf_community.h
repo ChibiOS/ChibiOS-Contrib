@@ -109,7 +109,7 @@
  * @note    Disabling this option saves both code and data space.
  */
 #define EEPROM_USE_EE24XX TRUE
- /**
+/**
  * @brief   Enables 25xx series SPI eeprom device driver.
  * @note    Disabling this option saves both code and data space.
  */
