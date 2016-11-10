@@ -111,7 +111,7 @@ static char *ftoa(char *p, double num, unsigned long precision, bool dot) {
 static inline void _put(char c) {
 	input_queue_t *iqp = &USBH_DEBUG_USBHD.iq;
 
-	if (chIQIsFullI(iqp))
+	if (iqIsFullI(iqp))
 		return;
 
 	iqp->q_counter++;
@@ -407,8 +407,8 @@ void usbDbgReset(void) {
 	const char *msg = "\r\n\r\n==== DEBUG OUTPUT RESET ====\r\n";
 
 	syssts_t sts = chSysGetStatusAndLockX();
-	chIQResetI(&USBH_DEBUG_USBHD.iq);
-	chOQResetI(&USBH_DEBUG_SD.oqueue);
+	iqResetI(&USBH_DEBUG_USBHD.iq);
+	oqResetI(&USBH_DEBUG_SD.oqueue);
 	while (*msg) {
 		*USBH_DEBUG_SD.oqueue.q_wrptr++ = *msg++;
 		USBH_DEBUG_SD.oqueue.q_counter--;
@@ -478,7 +478,7 @@ static void usb_debug_thread(void *p) {
 
 	chRegSetThreadName("USBH_DBG");
 	while (true) {
-		msg_t c = chIQGet(&host->iq);
+		msg_t c = iqGet(&host->iq);
 		if (c < 0) goto reset;
 
 		if (state == 0) {
@@ -491,16 +491,16 @@ static void usb_debug_thread(void *p) {
 			uint32_t hfnum;
 
 			hfir = c;
-			c = chIQGet(&host->iq); if (c < 0) goto reset;
+			c = iqGet(&host->iq); if (c < 0) goto reset;
 			hfir |= c << 8;
 
-			c = chIQGet(&host->iq); if (c < 0) goto reset;
+			c = iqGet(&host->iq); if (c < 0) goto reset;
 			hfnum = c;
-			c = chIQGet(&host->iq); if (c < 0) goto reset;
+			c = iqGet(&host->iq); if (c < 0) goto reset;
 			hfnum |= c << 8;
-			c = chIQGet(&host->iq); if (c < 0) goto reset;
+			c = iqGet(&host->iq); if (c < 0) goto reset;
 			hfnum |= c << 16;
-			c = chIQGet(&host->iq); if (c < 0) goto reset;
+			c = iqGet(&host->iq); if (c < 0) goto reset;
 			hfnum |= c << 24;
 
 			uint32_t f = hfnum & 0xffff;
@@ -508,7 +508,7 @@ static void usb_debug_thread(void *p) {
 			chprintf((BaseSequentialStream *)&USBH_DEBUG_SD, "%05d.%03d  ", f, p);
 
 			while (true) {
-				c = chIQGet(&host->iq); if (c < 0) goto reset;
+				c = iqGet(&host->iq); if (c < 0) goto reset;
 				if (!c) {
 					sdPut(&USBH_DEBUG_SD, '\r');
 					sdPut(&USBH_DEBUG_SD, '\n');
@@ -528,7 +528,7 @@ reset:
 void usbDbgInit(USBHDriver *host) {
 	if (host != &USBH_DEBUG_USBHD)
 		return;
-	chIQObjectInit(&USBH_DEBUG_USBHD.iq, USBH_DEBUG_USBHD.dbg_buff, sizeof(USBH_DEBUG_USBHD.dbg_buff), 0, 0);
+	iqObjectInit(&USBH_DEBUG_USBHD.iq, USBH_DEBUG_USBHD.dbg_buff, sizeof(USBH_DEBUG_USBHD.dbg_buff), 0, 0);
 	chThdCreateStatic(USBH_DEBUG_USBHD.waDebug, sizeof(USBH_DEBUG_USBHD.waDebug), NORMALPRIO, usb_debug_thread, &USBH_DEBUG_USBHD);
 }
 #endif

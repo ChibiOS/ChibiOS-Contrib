@@ -119,7 +119,7 @@ CSRC = $(STARTUPSRC) \
        $(STREAMSSRC) \
        $(SHELLSRC) \
        $(CHIBIOS_CONTRIB)/os/various/devices_lib/lcd/ili9341.c \
-       main.c \
+       main.c usbcfg.c \
        wolf3d_palette.c \
        res/wolf3d_vgagraph_chunk87.c
 

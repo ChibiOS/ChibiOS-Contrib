@@ -194,24 +194,24 @@ void qei_lld_start(QEIDriver *qeip) {
 #endif
   }
    /* Timer configuration.*/
-  qeip->tim->CR1  = 0;                      /* Initially stopped.           */
+  qeip->tim->CR1  = 0;                      /* Initially stopped. */
   qeip->tim->CR2  = 0;
   qeip->tim->PSC  = 0;
   qeip->tim->DIER = 0;
-  qeip->tim->ARR   = 0xFFFF;
+  qeip->tim->ARR  = 0xFFFF;
 
   /* Set Capture Compare 1 and Capture Compare 2 as input. */
    qeip->tim->CCMR1 |= TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0;
 
   if (qeip->config->mode == QEI_MODE_QUADRATURE) {
     if (qeip->config->resolution == QEI_BOTH_EDGES)
-      qeip->tim->SMCR  = TIM_SMCR_SMS_1 | TIM_SMCR_SMS_0;
+      qeip->tim->SMCR = TIM_SMCR_SMS_1 | TIM_SMCR_SMS_0;
     else
-      qeip->tim->SMCR  = TIM_SMCR_SMS_0;
+      qeip->tim->SMCR = TIM_SMCR_SMS_0;
   } else {
     /* Direction/Clock mode.
      * Direction input on TI1, Clock input on TI2. */
-    qeip->tim->SMCR  = TIM_SMCR_SMS_0;
+    qeip->tim->SMCR = TIM_SMCR_SMS_0;
   }
 
   if (qeip->config->dirinv == QEI_DIRINV_TRUE)
@@ -230,7 +230,7 @@ void qei_lld_start(QEIDriver *qeip) {
 void qei_lld_stop(QEIDriver *qeip) {
 
   if (qeip->state == QEI_READY) {
-    qeip->tim->CR1  = 0;                    /* Timer disabled.              */
+    qeip->tim->CR1 = 0;                    /* Timer disabled. */
 
     /* Clock deactivation.*/
 #if STM32_QEI_USE_TIM1
@@ -275,7 +275,7 @@ void qei_lld_stop(QEIDriver *qeip) {
  */
 void qei_lld_enable(QEIDriver *qeip) {
 
-  qeip->tim->CR1 = TIM_CR1_CEN;            /* Timer enabled.               */
+  qeip->tim->CR1 = TIM_CR1_CEN;            /* Timer enabled. */
 }
 
 /**
@@ -287,7 +287,7 @@ void qei_lld_enable(QEIDriver *qeip) {
  */
 void qei_lld_disable(QEIDriver *qeip) {
 
-  qeip->tim->CR1 = 0;                    /* Timer disabled.              */
+  qeip->tim->CR1 = 0;                    /* Timer disabled. */
 }
 
 #endif /* HAL_USE_QEI */

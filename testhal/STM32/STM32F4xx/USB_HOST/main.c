@@ -17,14 +17,12 @@
 #include "ch.h"
 #include "hal.h"
 #include "ff.h"
-#include "usbh.h"
 #include <string.h>
 
 
 
 #if HAL_USBH_USE_FTDI
 #include "usbh/dev/ftdi.h"
-#include "test.h"
 #include "shell.h"
 #include "chprintf.h"
 
@@ -51,56 +49,6 @@ static uint8_t buf[] =
     "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
     "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 
-static void cmd_mem(BaseSequentialStream *chp, int argc, char *argv[]) {
-  size_t n, size;
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: mem\r\n");
-    return;
-  }
-  n = chHeapStatus(NULL, &size);
-  chprintf(chp, "core free memory : %u bytes\r\n", chCoreGetStatusX());
-  chprintf(chp, "heap fragments   : %u\r\n", n);
-  chprintf(chp, "heap free total  : %u bytes\r\n", size);
-}
-
-static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
-  static const char *states[] = {CH_STATE_NAMES};
-  thread_t *tp;
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: threads\r\n");
-    return;
-  }
-  chprintf(chp, "    addr    stack prio refs     state\r\n");
-  tp = chRegFirstThread();
-  do {
-    chprintf(chp, "%08lx %08lx %4lu %4lu %9s\r\n",
-            (uint32_t)tp, (uint32_t)tp->p_ctx.r13,
-            (uint32_t)tp->p_prio, (uint32_t)(tp->p_refs - 1),
-            states[tp->p_state]);
-    tp = chRegNextThread(tp);
-  } while (tp != NULL);
-}
-
-static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
-  thread_t *tp;
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: test\r\n");
-    return;
-  }
-  tp = chThdCreateFromHeap(NULL, TEST_WA_SIZE, chThdGetPriorityX(),
-                           TestThread, chp);
-  if (tp == NULL) {
-    chprintf(chp, "out of memory\r\n");
-    return;
-  }
-  chThdWait(tp);
-}
 
 static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
 
@@ -115,15 +63,12 @@ static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
   }
 
   while (chnGetTimeout((BaseChannel *)chp, TIME_IMMEDIATE) == Q_TIMEOUT) {
-    chSequentialStreamWrite(&FTDIPD[0], buf, sizeof buf - 1);
+    streamWrite(&FTDIPD[0], buf, sizeof buf - 1);
   }
   chprintf(chp, "\r\n\nstopped\r\n");
 }
 
 static const ShellCommand commands[] = {
-	{"mem", cmd_mem},
-	{"threads", cmd_threads},
-	{"test", cmd_test},
 	{"write", cmd_write},
 	{NULL, NULL}
 };
@@ -159,12 +104,12 @@ start:
 	//loopback
 	if (0) {
 		for(;;) {
-			msg_t m = chSequentialStreamGet(ftdipp);
+			msg_t m = streamGet(ftdipp);
 			if (m < MSG_OK) {
 				usbDbgPuts("FTDI: Disconnected");
 				goto start;
 			}
-			chSequentialStreamPut(ftdipp, (uint8_t)m);
+			streamPut(ftdipp, (uint8_t)m);
 			if (m == 'q')
 				break;
 		}
@@ -177,7 +122,7 @@ start:
 			if (ftdipp->state != USBHFTDIP_STATE_READY)
 				goto start;
 			if (!shelltp) {
-				shelltp = shellCreate(&shell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
+				shelltp = chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO, shellThread, (void *) &shell_cfg1);
 			} else if (chThdTerminatedX(shelltp)) {
 				chThdRelease(shelltp);
 				if (ftdipp->state != USBHFTDIP_STATE_READY)
@@ -191,7 +136,7 @@ start:
 	//FTDI uart RX to debug TX bridge
 	if (0) {
 		for(;;) {
-			msg_t m = chSequentialStreamGet(ftdipp);
+			msg_t m = streamGet(ftdipp);
 			if (m < MSG_OK) {
 				usbDbgPuts("FTDI: Disconnected");
 				goto start;
@@ -215,14 +160,14 @@ start:
 			uint32_t times = bytes / 1024;
 			st = chVTGetSystemTimeX();
 			while (times--) {
-				if (chSequentialStreamWrite(ftdipp, buf, 1024) < 1024) {
+				if (streamWrite(ftdipp, buf, 1024) < 1024) {
 					usbDbgPuts("FTDI: Disconnected");
 					goto start;
 				}
 				bytes -= 1024;
 			}
 			if (bytes) {
-				if (chSequentialStreamWrite(ftdipp, buf, bytes) < bytes) {
+				if (streamWrite(ftdipp, buf, bytes) < bytes) {
 					usbDbgPuts("FTDI: Disconnected");
 					goto start;
 				}
@@ -235,7 +180,7 @@ start:
 	//single character write test (tests the timer)
 	if (0) {
 		for (;;) {
-			if (chSequentialStreamPut(ftdipp, 'A') != MSG_OK) {
+			if (streamPut(ftdipp, 'A') != MSG_OK) {
 				usbDbgPuts("FTDI: Disconnected");
 				goto start;
 			}
