@@ -59,7 +59,7 @@ static void otg_rxfifo_flush(USBHDriver *usbp);
 static void otg_txfifo_flush(USBHDriver *usbp, uint32_t fifo);
 
 /*===========================================================================*/
-/* Little helper functions.	    	                                 		 */
+/* Little helper functions.                                                  */
 /*===========================================================================*/
 static inline void _move_to_pending_queue(usbh_ep_t *ep) {
 	list_move_tail(&ep->node, ep->pending_list);
@@ -84,7 +84,7 @@ static inline void _transfer_completed(usbh_ep_t *ep, usbh_urb_t *urb, usbh_urbs
 #endif
 
 /*===========================================================================*/
-/* Functions called from many places.                                 		 */
+/* Functions called from many places.                                        */
 /*===========================================================================*/
 static void _transfer_completedI(usbh_ep_t *ep, usbh_urb_t *urb, usbh_urbstatus_t status) {
 	osalDbgCheckClassI();
@@ -487,7 +487,7 @@ static uint32_t _write_packet(struct list_head *list, uint32_t space_available) 
 
 
 /*===========================================================================*/
-/* API.					   	    	                                 		 */
+/* API.                                                                      */
 /*===========================================================================*/
 
 void usbh_lld_ep_object_init(usbh_ep_t *ep) {
@@ -614,7 +614,7 @@ bool usbh_lld_urb_abort(usbh_urb_t *urb, usbh_urbstatus_t status) {
 
 
 /*===========================================================================*/
-/* Channel Interrupts.   	    	                                 		 */
+/* Channel Interrupts.                                                       */
 /*===========================================================================*/
 
 //CTRL(IN)	CTRL(OUT)	INT(IN)		INT(OUT)	BULK(IN)	BULK(OUT)	ISO(IN)		ISO(OUT)
@@ -951,7 +951,7 @@ static inline void _hcint_int(USBHDriver *host) {
 
 
 /*===========================================================================*/
-/* Host interrupts.			   	                                     		 */
+/* Host interrupts.                                                          */
 /*===========================================================================*/
 static inline void _sof_int(USBHDriver *host) {
 	udbg("SOF");
@@ -1214,7 +1214,7 @@ static void usb_lld_serve_interrupt(USBHDriver *host) {
 
 
 /*===========================================================================*/
-/* Interrupt handlers.   	    	                                 		 */
+/* Interrupt handlers.                                                       */
 /*===========================================================================*/
 
 #if STM32_USBH_USE_OTG1
@@ -1239,7 +1239,7 @@ OSAL_IRQ_HANDLER(STM32_OTG2_HANDLER) {
 
 
 /*===========================================================================*/
-/* Initialization functions.   	                                     		 */
+/* Initialization functions.                                                 */
 /*===========================================================================*/
 static void otg_core_reset(USBHDriver *usbp) {
   stm32_otg_t *const otgp = usbp->otg;
@@ -1450,7 +1450,7 @@ void usbh_lld_start(USBHDriver *usbh) {
 }
 
 /*===========================================================================*/
-/* Root Hub request handler.   	                                     		 */
+/* Root Hub request handler.                                                 */
 /*===========================================================================*/
 usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestType, uint8_t bRequest,
 		uint16_t wvalue, uint16_t windex, uint16_t wlength, uint8_t *buf) {

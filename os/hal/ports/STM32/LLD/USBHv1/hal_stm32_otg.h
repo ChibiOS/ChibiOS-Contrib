@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2006..2016 Giovanni Di Sirio
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@
  */
 
 
-#ifndef HAL_STM32_OTG_H_
-#define HAL_STM32_OTG_H_
+#ifndef HAL_STM32_OTG_H
+#define HAL_STM32_OTG_H
 
 /**
  * @brief   Number of the implemented endpoints in OTG_FS.
@@ -571,7 +571,7 @@ typedef struct {
 #define HCCHAR_EPDIR            (1U<<15)    /**< Endpoint direction.        */
 #define HCCHAR_EPNUM_MASK       (15U<<11)   /**< Endpoint number mask.      */
 #define HCCHAR_EPNUM(n)         ((n)<<11)   /**< Endpoint number value.     */
-#define HCCHAR_MPS_MASK         (0x7FFU<<0)    /**< Maximum packet size mask.  */
+#define HCCHAR_MPS_MASK         (0x7FFU<<0) /**< Maximum packet size mask.  */
 #define HCCHAR_MPS(n)           ((n)<<0)    /**< Maximum packet size value. */
 /** @} */
 
@@ -590,6 +590,7 @@ typedef struct {
                                                  interrupt.                 */
 #define HCINT_STALL             (1U<<3)     /**< STALL response received
                                                  interrupt.                 */
+#define HCINT_AHBERR            (1U<<2)     /**< AHB error interrupt.       */
 #define HCINT_CHH               (1U<<1)     /**< Channel halted.            */
 #define HCINT_XFRC              (1U<<0)     /**< Transfer completed.        */
 /** @} */
@@ -611,7 +612,7 @@ typedef struct {
                                                  interrupt mask.            */
 #define HCINTMSK_STALLM         (1U<<3)     /**< STALL response received
                                                  interrupt mask.            */
-#define HCINTMSK_AHBERRM        (1U<<2)
+#define HCINTMSK_AHBERRM        (1U<<2)     /**< AHB error interrupt mask.  */
 #define HCINTMSK_CHHM           (1U<<1)     /**< Channel halted mask.       */
 #define HCINTMSK_XFRCM          (1U<<0)     /**< Transfer completed mask.   */
 /** @} */
@@ -924,6 +925,6 @@ typedef struct {
  */
 #define OTG_HS                      ((stm32_otg_t *)OTG_HS_ADDR)
 
-#endif /* _STM32_OTG_H_ */
+#endif /* STM32_OTG_H */
 
 /** @} */

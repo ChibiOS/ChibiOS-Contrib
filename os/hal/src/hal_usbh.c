@@ -69,7 +69,7 @@ static bool _classdriver_load(usbh_device_t *dev, uint8_t class,
 
 
 /*===========================================================================*/
-/* Checks.								                                     */
+/* Checks.                                                                   */
 /*===========================================================================*/
 
 static inline void _check_dev(usbh_device_t *dev) {
@@ -92,7 +92,7 @@ static inline void _check_urb(usbh_urb_t *urb) {
 }
 
 /*===========================================================================*/
-/* Main driver API.						                                     */
+/* Main driver API.                                                          */
 /*===========================================================================*/
 
 void usbhObjectInit(USBHDriver *usbh) {
@@ -143,7 +143,7 @@ void usbhResume(USBHDriver *usbh) {
 }
 
 /*===========================================================================*/
-/* Endpoint API.						                                     */
+/* Endpoint API.                                                             */
 /*===========================================================================*/
 
 void usbhEPObjectInit(usbh_ep_t *ep, usbh_device_t *dev, const usbh_endpoint_descriptor_t *desc) {
@@ -183,7 +183,7 @@ static void _ep0_object_init(usbh_device_t *dev, uint16_t wMaxPacketSize) {
 
 
 /*===========================================================================*/
-/* URB API.				    	                                     		 */
+/* URB API.                                                                  */
 /*===========================================================================*/
 
 void usbhURBObjectInit(usbh_urb_t *urb, usbh_ep_t *ep, usbh_completion_cb callback,
@@ -350,7 +350,7 @@ void _usbh_urb_completeI(usbh_urb_t *urb, usbh_urbstatus_t status) {
 }
 
 /*===========================================================================*/
-/* Synchronous API.		    	                                     		 */
+/* Synchronous API.                                                          */
 /*===========================================================================*/
 
 usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
@@ -419,7 +419,7 @@ usbh_urbstatus_t usbhControlRequest(usbh_device_t *dev,
 }
 
 /*===========================================================================*/
-/* Standard request helpers.   	                                     		 */
+/* Standard request helpers.                                                 */
 /*===========================================================================*/
 
 #define USBH_GET_DESCRIPTOR(type, value, index)	\
@@ -523,7 +523,7 @@ bool usbhStdReqGetInterface(usbh_device_t *dev,
 
 
 /*===========================================================================*/
-/* Device-related functions.   	                                     		 */
+/* Device-related functions.                                                 */
 /*===========================================================================*/
 
 static uint8_t _find_address(USBHDriver *host) {
@@ -846,7 +846,7 @@ bool usbhDeviceReadString(usbh_device_t *dev, char *dest, uint8_t size,
 
 
 /*===========================================================================*/
-/* Port processing functions.  	                                     		 */
+/* Port processing functions.                                                */
 /*===========================================================================*/
 
 static void _port_connected(usbh_port_t *port);
@@ -1078,7 +1078,7 @@ void _usbh_port_disconnected(usbh_port_t *port) {
 
 
 /*===========================================================================*/
-/* Hub processing functions.  	                                     		 */
+/* Hub processing functions.                                                 */
 /*===========================================================================*/
 
 #if HAL_USBH_USE_HUB
@@ -1176,7 +1176,7 @@ static void _hub_process(USBHDriver *host) {
 #endif
 
 /*===========================================================================*/
-/* Main processing loop (enumeration, loading/unloading drivers, etc). 		 */
+/* Main processing loop (enumeration, loading/unloading drivers, etc).       */
 /*===========================================================================*/
 void usbhMainLoop(USBHDriver *usbh) {
 
@@ -1200,7 +1200,7 @@ void usbhMainLoop(USBHDriver *usbh) {
 
 
 /*===========================================================================*/
-/* IAD class driver.											 		 	 */
+/* IAD class driver.                                                         */
 /*===========================================================================*/
 #if HAL_USBH_USE_IAD
 static usbh_baseclassdriver_t *iad_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
@@ -1258,7 +1258,7 @@ static void iad_unload(usbh_baseclassdriver_t *drv) {
 
 
 /*===========================================================================*/
-/* Class driver loader.											 		 	 */
+/* Class driver loader.                                                      */
 /*===========================================================================*/
 
 static const usbh_classdriverinfo_t *usbh_classdrivers_lookup[] = {
