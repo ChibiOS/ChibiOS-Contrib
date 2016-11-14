@@ -1386,12 +1386,20 @@ static void _usbh_start(USBHDriver *usbh) {
 	otgp->PCGCCTL = 0;
 
 	/* Internal FS PHY activation.*/
+#if STM32_OTG_STEPPING == 1
 #if defined(BOARD_OTG_NOVBUSSENS)
 	otgp->GCCFG = GCCFG_NOVBUSSENS | GCCFG_PWRDWN;
 #else
 	otgp->GCCFG = GCCFG_PWRDWN;
 #endif
+#elif STM32_OTG_STEPPING == 2
+#if defined(BOARD_OTG_NOVBUSSENS)
+	otgp->GCCFG = GCCFG_PWRDWN;
+#else
+	otgp->GCCFG = (GCCFG_VBDEN | GCCFG_PWRDWN);
+#endif
 
+#endif
 	/* 48MHz 1.1 PHY.*/
 	otgp->HCFG = HCFG_FSLSS | HCFG_FSLSPCS_48;
 
