@@ -71,6 +71,10 @@
 #define HAL_USE_USB_MSD                     FALSE
 #endif
 
+#if !defined(HAL_USE_RF)
+#define HAL_USE_RF                          FALSE
+#endif
+
 /* Abstract interfaces.*/
 
 /* Shared headers.*/
@@ -82,6 +86,7 @@
 #include "hal_usbh.h"
 #include "hal_timcap.h"
 #include "hal_qei.h"
+#include "hal_rf.h"
 
 /* Complex drivers.*/
 #include "hal_onewire.h"
