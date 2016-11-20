@@ -30,6 +30,7 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+#define PWM_GPIOTE_PPI_CC 3
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -63,19 +64,23 @@ PWMDriver PWMD3;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
+static const uint8_t pwm_margin_by_prescaler[] = {
+    80, 40, 20, 15, 10, 5, 2, 1, 1, 1
+};
+
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
 static void pwm_lld_serve_interrupt(PWMDriver *pwmp) {
-  // Deal with PWM channels     
-  uint8_t n;
-  for (n = 0 ; n < pwmp->channels ; n++) {
-    if (pwmp->timer->EVENTS_COMPARE[n]) {
-      pwmp->timer->EVENTS_COMPARE[n] = 0;
+  uint8_t channel;
+  // Deal with PWM channels       
+  for (channel = 0 ; channel < pwmp->channels ; channel++) {
+    if (pwmp->timer->EVENTS_COMPARE[channel]) {
+      pwmp->timer->EVENTS_COMPARE[channel] = 0;
 
-      if (pwmp->config->channels[n].callback != NULL) {
-	pwmp->config->channels[n].callback(pwmp);
+      if (pwmp->config->channels[channel].callback != NULL) {
+	pwmp->config->channels[channel].callback(pwmp);
       }
     }      
   }
@@ -88,7 +93,14 @@ static void pwm_lld_serve_interrupt(PWMDriver *pwmp) {
       pwmp->config->callback(pwmp);
     }
   }
+}
 
+static inline
+bool pwm_within_safe_margins(PWMDriver *pwmp, uint32_t timer, uint32_t width)  {
+    const uint32_t margin = pwm_margin_by_prescaler[pwmp->timer->PRESCALER];
+    return (width <= margin)
+	? ((width <= timer) && (timer < (pwmp->period + width - margin)))
+	: ((width <= timer) || (timer < (width - margin)));
 }
 
 /*===========================================================================*/
@@ -245,7 +257,7 @@ void pwm_lld_start(PWMDriver *pwmp) {
  * @notapi
  */
 void pwm_lld_stop(PWMDriver *pwmp) {
-  pwmp->timer->TASKS_STOP = 1;
+  pwmp->timer->TASKS_SHUTDOWN = 1;
 
 #if NRF5_PWM_USE_TIMER0
   if (&PWMD1 == pwmp) {
@@ -284,41 +296,81 @@ void pwm_lld_enable_channel(PWMDriver *pwmp,
                             pwmcnt_t width) {
 #if NRF5_PWM_USE_GPIOTE_PPI
   const PWMChannelConfig *cfg_channel = &pwmp->config->channels[channel];
-
-  uint32_t outinit;
-  switch(cfg_channel->mode & PWM_OUTPUT_MASK) {
-  case PWM_OUTPUT_ACTIVE_LOW:
-    outinit = GPIOTE_CONFIG_OUTINIT_Low;
-    break;
-  case PWM_OUTPUT_ACTIVE_HIGH:
-    outinit = GPIOTE_CONFIG_OUTINIT_High;
-    break;
-  case PWM_OUTPUT_DISABLED:
-  default:
-      goto no_output_config;
-  }
-
-  const uint32_t gpio_pin       = PAL_PAD(cfg_channel->ioline);
   const uint8_t  gpiote_channel = cfg_channel->gpiote_channel;
   const uint8_t *ppi_channel    = cfg_channel->ppi_channel;
-  const uint32_t polarity       = GPIOTE_CONFIG_POLARITY_Toggle;
+  
+  uint32_t outinit;
+  switch(cfg_channel->mode & PWM_OUTPUT_MASK) {
+  case PWM_OUTPUT_ACTIVE_LOW : outinit = GPIOTE_CONFIG_OUTINIT_Low;  break;
+  case PWM_OUTPUT_ACTIVE_HIGH: outinit = GPIOTE_CONFIG_OUTINIT_High; break;
+  case PWM_OUTPUT_DISABLED   : /* fall-through */
+  default                    : goto no_output_config;
+  }
 
-  // Create GPIO Task
-  NRF_GPIOTE->CONFIG[gpiote_channel] = GPIOTE_CONFIG_MODE_Task |
-      ((gpio_pin << GPIOTE_CONFIG_PSEL_Pos    ) & GPIOTE_CONFIG_PSEL_Msk) |
-      ((polarity << GPIOTE_CONFIG_POLARITY_Pos) & GPIOTE_CONFIG_POLARITY_Msk) |
-      ((outinit  << GPIOTE_CONFIG_OUTINIT_Pos ) & GPIOTE_CONFIG_OUTINIT_Msk);
+  // Deal with corner case: 0% and 100%
+  if ((width <= 0) || (width >= pwmp->period)) {
+    // Disable GPIOTE/PPI task
+    NRF_GPIOTE->CONFIG[gpiote_channel] = GPIOTE_CONFIG_MODE_Disabled;
+    NRF_PPI->CHENCLR = ((1 << ppi_channel[0]) | (1 << ppi_channel[1]));
+    // Set Line
+    palWriteLine(cfg_channel->ioline,
+	   ((width <= 0) ^
+	    ((cfg_channel->mode & PWM_OUTPUT_MASK) == PWM_OUTPUT_ACTIVE_HIGH)));
 
-  // Program tasks (one for duty cycle, one for periode)
-  NRF_PPI->CH[ppi_channel[0]].EEP =
-      (uint32_t)&pwmp->timer->EVENTS_COMPARE[channel];
-  NRF_PPI->CH[ppi_channel[0]].TEP =
-      (uint32_t)&NRF_GPIOTE->TASKS_OUT[gpiote_channel];
-  NRF_PPI->CH[ppi_channel[1]].EEP =
-      (uint32_t)&pwmp->timer->EVENTS_COMPARE[pwmp->channels];
-  NRF_PPI->CH[ppi_channel[1]].TEP =
-      (uint32_t)&NRF_GPIOTE->TASKS_OUT[gpiote_channel];
-  NRF_PPI->CHENSET = ((1 << ppi_channel[0]) | (1 << ppi_channel[1]));
+  // Really doing PWM
+  } else {
+    const uint32_t gpio_pin = PAL_PAD(cfg_channel->ioline);
+    const uint32_t polarity = GPIOTE_CONFIG_POLARITY_Toggle;
+
+    // Program tasks (one for duty cycle, one for periode)
+    NRF_PPI->CH[ppi_channel[0]].EEP =
+	  (uint32_t)&pwmp->timer->EVENTS_COMPARE[channel];
+    NRF_PPI->CH[ppi_channel[0]].TEP =
+	  (uint32_t)&NRF_GPIOTE->TASKS_OUT[gpiote_channel];
+    NRF_PPI->CH[ppi_channel[1]].EEP =
+	  (uint32_t)&pwmp->timer->EVENTS_COMPARE[pwmp->channels];
+    NRF_PPI->CH[ppi_channel[1]].TEP =
+	  (uint32_t)&NRF_GPIOTE->TASKS_OUT[gpiote_channel];
+    NRF_PPI->CHENSET = ((1 << ppi_channel[0]) | (1 << ppi_channel[1]));
+
+    // Something Old, something New
+    const uint32_t old_width = pwmp->timer->CC[channel];
+    const uint32_t new_width = width;
+
+    // Check GPIOTE state
+    const bool gpiote = (NRF_GPIOTE->CONFIG[gpiote_channel] &
+		   GPIOTE_CONFIG_MODE_Msk) != GPIOTE_CONFIG_MODE_Disabled;
+
+    // GPIOTE is currently running
+    if (gpiote) {
+      uint32_t current;
+      while (true) {
+	pwmp->timer->TASKS_CAPTURE[PWM_GPIOTE_PPI_CC] = 1;
+	current = pwmp->timer->CC[PWM_GPIOTE_PPI_CC];
+
+	if (pwm_within_safe_margins(pwmp, current, old_width) &&
+	  pwm_within_safe_margins(pwmp, current, new_width))
+	    break;
+      }
+      if (((old_width <= current) && (current < new_width)) ||
+	  ((new_width <= current) && (current < old_width))) {
+	NRF_GPIOTE->TASKS_OUT[gpiote_channel] = 1;
+      }
+
+    // GPIOTE need to be restarted
+    } else {
+      // Create GPIO Task
+      NRF_GPIOTE->CONFIG[gpiote_channel] =
+	(GPIOTE_CONFIG_MODE_Task << GPIOTE_CONFIG_MODE_Pos) |
+	((gpio_pin << GPIOTE_CONFIG_PSEL_Pos    ) & GPIOTE_CONFIG_PSEL_Msk    )|
+	((polarity << GPIOTE_CONFIG_POLARITY_Pos) & GPIOTE_CONFIG_POLARITY_Msk)|
+	((outinit  << GPIOTE_CONFIG_OUTINIT_Pos ) & GPIOTE_CONFIG_OUTINIT_Msk );
+
+      pwmp->timer->TASKS_CAPTURE[PWM_GPIOTE_PPI_CC] = 1;
+      if (pwmp->timer->CC[PWM_GPIOTE_PPI_CC] > width)
+	NRF_GPIOTE->TASKS_OUT[gpiote_channel] = 1;
+    }
+  }
 
  no_output_config:
 #endif
