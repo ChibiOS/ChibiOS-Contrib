@@ -67,9 +67,9 @@
 #define IOPORT1_LED_ROW_1      13U
 #define IOPORT1_LED_ROW_2      14U
 #define IOPORT1_LED_ROW_3      15U
-#define IOPORT1_PAD_1           1U
-#define IOPORT1_PAD_2           2U
-#define IOPORT1_PAD_3           3U
+#define IOPORT1_PAD_0             IOPORT1_P0
+#define IOPORT1_PAD_1             IOPORT1_P1
+#define IOPORT1_PAD_2             IOPORT1_P2
 #define IOPORT1_SPI_MOSI       21U
 #define IOPORT1_SPI_MISO       22U
 #define IOPORT1_SPI_SCK        23U
@@ -119,9 +119,9 @@
 #define LINE_LED_ROW_1         PAL_LINE(IOPORT1, IOPORT1_LED_ROW_1)
 #define LINE_LED_ROW_2         PAL_LINE(IOPORT1, IOPORT1_LED_ROW_2)
 #define LINE_LED_ROW_3         PAL_LINE(IOPORT1, IOPORT1_LED_ROW_3)
+#define LINE_PAD_0             PAL_LINE(IOPORT1, IOPORT1_PAD_0)
 #define LINE_PAD_1             PAL_LINE(IOPORT1, IOPORT1_PAD_1)
 #define LINE_PAD_2             PAL_LINE(IOPORT1, IOPORT1_PAD_2)
-#define LINE_PAD_3             PAL_LINE(IOPORT1, IOPORT1_PAD_3)
 #define LINE_SPI_MOSI          PAL_LINE(IOPORT1, IOPORT1_SPI_MOSI)
 #define LINE_SPI_MISO          PAL_LINE(IOPORT1, IOPORT1_SPI_MISO)
 #define LINE_SPI_SCK           PAL_LINE(IOPORT1, IOPORT1_SPI_SCK)
