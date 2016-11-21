@@ -20,7 +20,7 @@
 
 typedef struct led_config
 {
-  ioportid_t line;
+  ioline_t line;
   uint32_t sleep;
 } led_config_t;
 
