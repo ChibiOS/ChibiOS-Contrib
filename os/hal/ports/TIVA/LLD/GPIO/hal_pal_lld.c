@@ -223,9 +223,6 @@
                          GPION_AHB_BIT | GPIOP_AHB_BIT | GPIOQ_AHB_BIT |      \
                          GPIOR_AHB_BIT | GPIOS_AHB_BIT | GPIOT_AHB_BIT)
 
-/* GPIO lock password.*/
-#define TIVA_GPIO_LOCK_PWD                  0x4C4F434B
-
 #define GPIOC_JTAG_MASK     (0x0F)
 #define GPIOD_NMI_MASK      (0x80)
 #define GPIOF_NMI_MASK      (0x01)
@@ -250,19 +247,19 @@
  */
 static void gpio_init(ioportid_t port, const tiva_gpio_setup_t *config)
 {
-  HWREG((port) + GPIO_O_DATA)  = config->data;
-  HWREG((port) + GPIO_O_DIR)   = config->dir;
-  HWREG((port) + GPIO_O_AFSEL) = config->afsel;
-  HWREG((port) + GPIO_O_DR2R)  = config->dr2r;
-  HWREG((port) + GPIO_O_DR4R)  = config->dr4r;
-  HWREG((port) + GPIO_O_DR8R)  = config->dr8r;
-  HWREG((port) + GPIO_O_ODR)   = config->odr;
-  HWREG((port) + GPIO_O_PUR)   = config->pur;
-  HWREG((port) + GPIO_O_PDR)   = config->pdr;
-  HWREG((port) + GPIO_O_SLR)   = config->slr;
-  HWREG((port) + GPIO_O_DEN)   = config->den;
-  HWREG((port) + GPIO_O_AMSEL) = config->amsel;
-  HWREG((port) + GPIO_O_PCTL)  = config->pctl;
+  HWREG(port + GPIO_O_DATA)  = config->data;
+  HWREG(port + GPIO_O_DIR)   = config->dir;
+  HWREG(port + GPIO_O_AFSEL) = config->afsel;
+  HWREG(port + GPIO_O_DR2R)  = config->dr2r;
+  HWREG(port + GPIO_O_DR4R)  = config->dr4r;
+  HWREG(port + GPIO_O_DR8R)  = config->dr8r;
+  HWREG(port + GPIO_O_ODR)   = config->odr;
+  HWREG(port + GPIO_O_PUR)   = config->pur;
+  HWREG(port + GPIO_O_PDR)   = config->pdr;
+  HWREG(port + GPIO_O_SLR)   = config->slr;
+  HWREG(port + GPIO_O_DEN)   = config->den;
+  HWREG(port + GPIO_O_AMSEL) = config->amsel;
+  HWREG(port + GPIO_O_PCTL)  = config->pctl;
 }
 
 /**
@@ -275,8 +272,8 @@ static void gpio_init(ioportid_t port, const tiva_gpio_setup_t *config)
 static void gpio_unlock(ioportid_t port, ioportmask_t mask)
 {
 
-  HWREG((port) + GPIO_O_LOCK) = TIVA_GPIO_LOCK_PWD;
-  HWREG((port) + GPIO_O_CR) = mask;
+  HWREG(port + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+  HWREG(port + GPIO_O_CR) = mask;
 }
 
 /*===========================================================================*/
@@ -403,18 +400,18 @@ void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode)
     uint32_t bit_mask = (1 << bit);
 
     if ((mask & 1) != 0) {
-      HWREG((port) + GPIO_O_DIR)   = (HWREG((port) + GPIO_O_DIR)   & ~bit_mask)  | dir;
-      HWREG((port) + GPIO_O_AFSEL) = (HWREG((port) + GPIO_O_AFSEL) & ~bit_mask)  | afsel;
-      HWREG((port) + GPIO_O_DR2R)  = (HWREG((port) + GPIO_O_DR2R)  & ~bit_mask)  | dr2r;
-      HWREG((port) + GPIO_O_DR4R)  = (HWREG((port) + GPIO_O_DR4R)  & ~bit_mask)  | dr4r;
-      HWREG((port) + GPIO_O_DR8R)  = (HWREG((port) + GPIO_O_DR8R)  & ~bit_mask)  | dr8r;
-      HWREG((port) + GPIO_O_ODR)   = (HWREG((port) + GPIO_O_ODR)   & ~bit_mask)  | odr;
-      HWREG((port) + GPIO_O_PUR)   = (HWREG((port) + GPIO_O_PUR)   & ~bit_mask)  | pur;
-      HWREG((port) + GPIO_O_PDR)   = (HWREG((port) + GPIO_O_PDR)   & ~bit_mask)  | pdr;
-      HWREG((port) + GPIO_O_SLR)   = (HWREG((port) + GPIO_O_SLR)   & ~bit_mask)  | slr;
-      HWREG((port) + GPIO_O_DEN)   = (HWREG((port) + GPIO_O_DEN)   & ~bit_mask)  | den;
-      HWREG((port) + GPIO_O_AMSEL) = (HWREG((port) + GPIO_O_AMSEL) & ~bit_mask)  | amsel;
-      HWREG((port) + GPIO_O_PCTL)  = (HWREG((port) + GPIO_O_PCTL)  & ~pctl_mask) | pctl;
+      HWREG(port + GPIO_O_DIR)   = (HWREG(port + GPIO_O_DIR)   & ~bit_mask)  | dir;
+      HWREG(port + GPIO_O_AFSEL) = (HWREG(port + GPIO_O_AFSEL) & ~bit_mask)  | afsel;
+      HWREG(port + GPIO_O_DR2R)  = (HWREG(port + GPIO_O_DR2R)  & ~bit_mask)  | dr2r;
+      HWREG(port + GPIO_O_DR4R)  = (HWREG(port + GPIO_O_DR4R)  & ~bit_mask)  | dr4r;
+      HWREG(port + GPIO_O_DR8R)  = (HWREG(port + GPIO_O_DR8R)  & ~bit_mask)  | dr8r;
+      HWREG(port + GPIO_O_ODR)   = (HWREG(port + GPIO_O_ODR)   & ~bit_mask)  | odr;
+      HWREG(port + GPIO_O_PUR)   = (HWREG(port + GPIO_O_PUR)   & ~bit_mask)  | pur;
+      HWREG(port + GPIO_O_PDR)   = (HWREG(port + GPIO_O_PDR)   & ~bit_mask)  | pdr;
+      HWREG(port + GPIO_O_SLR)   = (HWREG(port + GPIO_O_SLR)   & ~bit_mask)  | slr;
+      HWREG(port + GPIO_O_DEN)   = (HWREG(port + GPIO_O_DEN)   & ~bit_mask)  | den;
+      HWREG(port + GPIO_O_AMSEL) = (HWREG(port + GPIO_O_AMSEL) & ~bit_mask)  | amsel;
+      HWREG(port + GPIO_O_PCTL)  = (HWREG(port + GPIO_O_PCTL)  & ~pctl_mask) | pctl;
     }
 
     mask >>= 1;

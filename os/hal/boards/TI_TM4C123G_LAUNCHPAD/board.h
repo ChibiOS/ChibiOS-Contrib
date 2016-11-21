@@ -28,9 +28,10 @@
 #define BOARD_NAME              "Texas Instruments TM4C123G Launchpad"
 
 /*
- * MCU type as defined in the TI header.
+ * MCU type and revision as defined in the TI header.
  */
 #define PART_TM4C123GH6PM
+#define TARGET_IS_TM4C123_RB1
 
 /*
  * Board oscillators-related settings.
@@ -93,6 +94,24 @@
 #define GPIOF_PIN5              5
 #define GPIOF_PIN6              6
 #define GPIOF_PIN7              7
+
+/*
+ * IO lines assignments.
+ */
+#define LINE_UART0_RX           PAL_LINE(GPIOA, 0U)
+#define LINE_UART0_TX           PAL_LINE(GPIOA, 1U)
+#define LINE_SSI0_CLK           PAL_LINE(GPIOA, 2U)
+#define LINE_SSI0_RX            PAL_LINE(GPIOA, 4U)
+#define LINE_SSI0_TX            PAL_LINE(GPIOA, 5U)
+
+#define LINE_I2C0_SCL           PAL_LINE(GPIOB, 2U)
+#define LINE_I2C0_SDA           PAL_LINE(GPIOB, 3U)
+
+#define LINE_SW2                PAL_LINE(GPIOF, 0U)
+#define LINE_LED_RED            PAL_LINE(GPIOF, 1U)
+#define LINE_LED_BLUE           PAL_LINE(GPIOF, 2U)
+#define LINE_LED_GREEN          PAL_LINE(GPIOF, 3U)
+#define LINE_SW1                PAL_LINE(GPIOF, 4U)
 
 /*
  * I/O ports initial setup, this configuration is established soon after reset

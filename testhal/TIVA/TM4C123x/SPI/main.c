@@ -104,15 +104,11 @@ int main(void)
   halInit();
   chSysInit();
 
-  palSetPadMode(GPIOA, GPIOA_SSI0_CLK,  PAL_MODE_OUTPUT_PUSHPULL |
-                                        PAL_MODE_ALTERNATE(2));
-  palSetPadMode(GPIOA, GPIOA_SSI0_RX,   PAL_MODE_OUTPUT_PUSHPULL |
-                                        PAL_MODE_ALTERNATE(2));
-  palSetPadMode(GPIOA, GPIOA_SSI0_TX,   PAL_MODE_OUTPUT_PUSHPULL |
-                                        PAL_MODE_ALTERNATE(2));
-  palSetPadMode(GPIOA, GPIOA_PIN3,      PAL_MODE_OUTPUT_PUSHPULL);
-
-  palSetPadMode(GPIOF, GPIOF_LED_GREEN, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetLineMode(LINE_SSI0_CLK, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(2));
+  palSetLineMode(LINE_SSI0_RX, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(2));
+  palSetLineMode(LINE_SSI0_TX, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(2));
+  palSetLineMode(LINE_LED_GREEN, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPadMode(GPIOA, GPIOA_PIN3, PAL_MODE_OUTPUT_PUSHPULL);
 
   /*
    * Prepare transmit pattern.
@@ -124,10 +120,16 @@ int main(void)
   /*
    * Starting the transmitter and receiver threads.
    */
-  chThdCreateStatic(spi_thread_1_wa, sizeof(spi_thread_1_wa),
-                    NORMALPRIO + 1, spi_thread_1, NULL);
-  chThdCreateStatic(spi_thread_2_wa, sizeof(spi_thread_2_wa),
-                    NORMALPRIO + 1, spi_thread_2, NULL);
+  chThdCreateStatic(spi_thread_1_wa,
+                    sizeof(spi_thread_1_wa),
+                    NORMALPRIO + 1,
+                    spi_thread_1,
+                    NULL);
+  chThdCreateStatic(spi_thread_2_wa,
+                    sizeof(spi_thread_2_wa),
+                    NORMALPRIO + 1,
+                    spi_thread_2,
+                    NULL);
 
   /*
    * Normal main() thread activity
