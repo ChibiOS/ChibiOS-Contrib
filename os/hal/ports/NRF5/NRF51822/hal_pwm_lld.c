@@ -71,16 +71,16 @@ PWMDriver PWMD3;
 /*===========================================================================*/
 
 static const uint8_t pwm_margin_by_prescaler[] = {
-    (PWM_GPIOTE_DECISION_TIME +   0) >> 0,
-    (PWM_GPIOTE_DECISION_TIME +   1) >> 1,
-    (PWM_GPIOTE_DECISION_TIME +   3) >> 2,
-    (PWM_GPIOTE_DECISION_TIME +   7) >> 3,
-    (PWM_GPIOTE_DECISION_TIME +  15) >> 4,
-    (PWM_GPIOTE_DECISION_TIME +  31) >> 5,
-    (PWM_GPIOTE_DECISION_TIME +  63) >> 6,
-    (PWM_GPIOTE_DECISION_TIME + 128) >> 7,
-    (PWM_GPIOTE_DECISION_TIME + 255) >> 8,
-    (PWM_GPIOTE_DECISION_TIME + 511) >> 9
+  (PWM_GPIOTE_DECISION_TIME +   0) >> 0,
+  (PWM_GPIOTE_DECISION_TIME +   1) >> 1,
+  (PWM_GPIOTE_DECISION_TIME +   3) >> 2,
+  (PWM_GPIOTE_DECISION_TIME +   7) >> 3,
+  (PWM_GPIOTE_DECISION_TIME +  15) >> 4,
+  (PWM_GPIOTE_DECISION_TIME +  31) >> 5,
+  (PWM_GPIOTE_DECISION_TIME +  63) >> 6,
+  (PWM_GPIOTE_DECISION_TIME + 127) >> 7,
+  (PWM_GPIOTE_DECISION_TIME + 255) >> 8,
+  (PWM_GPIOTE_DECISION_TIME + 511) >> 9
 };
 
 /*===========================================================================*/
@@ -89,18 +89,20 @@ static const uint8_t pwm_margin_by_prescaler[] = {
 
 static void pwm_lld_serve_interrupt(PWMDriver *pwmp) {
   uint8_t channel;
-  // Deal with PWM channels       
+  /* Deal with PWM channels
+   */
   for (channel = 0 ; channel < pwmp->channels ; channel++) {
     if (pwmp->timer->EVENTS_COMPARE[channel]) {
       pwmp->timer->EVENTS_COMPARE[channel] = 0;
 
       if (pwmp->config->channels[channel].callback != NULL) {
-	pwmp->config->channels[channel].callback(pwmp);
+        pwmp->config->channels[channel].callback(pwmp);
       }
     }      
   }
 
-  // Deal with PWM period
+  /* Deal with PWM period
+   */
   if (pwmp->timer->EVENTS_COMPARE[pwmp->channels]) {
     pwmp->timer->EVENTS_COMPARE[pwmp->channels] = 0;
 
@@ -112,10 +114,10 @@ static void pwm_lld_serve_interrupt(PWMDriver *pwmp) {
 
 static inline
 bool pwm_within_safe_margins(PWMDriver *pwmp, uint32_t timer, uint32_t width)  {
-    const uint32_t margin = pwm_margin_by_prescaler[pwmp->timer->PRESCALER];
-    return (width <= margin)
-	? ((width <= timer) && (timer < (pwmp->period + width - margin)))
-	: ((width <= timer) || (timer < (width - margin)));
+  const uint32_t margin = pwm_margin_by_prescaler[pwmp->timer->PRESCALER];
+  return (width <= margin)
+       ? ((width <= timer) && (timer < (pwmp->period + width - margin)))
+       : ((width <= timer) || (timer < (width - margin)));
 }
 
 /*===========================================================================*/
@@ -201,47 +203,45 @@ void pwm_lld_init(void) {
  * @notapi
  */
 void pwm_lld_start(PWMDriver *pwmp) {
-  // Prescaler value calculation: ftimer = 16MHz / 2^PRESCALER
+  /* Prescaler value calculation: ftimer = 16MHz / 2^PRESCALER */
   uint16_t psc_ratio = NRF5_HFCLK_FREQUENCY / pwmp->config->frequency;
-  // Prescaler ratio must be between 1 and 512, and a power of two.
+  /* Prescaler ratio must be between 1 and 512, and a power of two. */
   osalDbgAssert(psc_ratio <= 512 && !(psc_ratio & (psc_ratio - 1)),
-		"invalid frequency");
-  // Prescaler value as a power of 2, must be 0..9
+                "invalid frequency");
+  /* Prescaler value as a power of 2, must be 0..9 */
   uint32_t psc_value;
   for (psc_value = 0; psc_value < 10; psc_value++)
-      if (psc_ratio == (unsigned)(1 << psc_value))
-	  break;
+    if (psc_ratio == (unsigned)(1 << psc_value))
+      break;
 
-  
-  // Configure as 16bits timer (only TIMER0 support 32bits)
+  /* Configure as 16bits timer (only TIMER0 support 32bits) */
   pwmp->timer->BITMODE = TIMER_BITMODE_BITMODE_16Bit;
   pwmp->timer->MODE = TIMER_MODE_MODE_Timer;
 
-  // With clear shortcuts for period
+  /* With clear shortcuts for period */
   pwmp->timer->SHORTS =
-      0x1UL << (TIMER_SHORTS_COMPARE0_CLEAR_Pos + pwmp->channels);
+    0x1UL << (TIMER_SHORTS_COMPARE0_CLEAR_Pos + pwmp->channels);
 
-  // Disable and reset interrupts for compare events
+  /* Disable and reset interrupts for compare events */
   pwmp->timer->INTENCLR = (TIMER_INTENCLR_COMPARE0_Msk |
-			   TIMER_INTENCLR_COMPARE1_Msk |
-			   TIMER_INTENCLR_COMPARE2_Msk |
-			   TIMER_INTENCLR_COMPARE3_Msk );
+                           TIMER_INTENCLR_COMPARE1_Msk |
+                           TIMER_INTENCLR_COMPARE2_Msk |
+                           TIMER_INTENCLR_COMPARE3_Msk );
   pwmp->timer->EVENTS_COMPARE[0] = 0;
   pwmp->timer->EVENTS_COMPARE[1] = 0;
   pwmp->timer->EVENTS_COMPARE[2] = 0;
   pwmp->timer->EVENTS_COMPARE[3] = 0;
 
-  // Set prescaler
+  /* Set prescaler */
   pwmp->timer->PRESCALER = psc_value;
 
-  // Set period
+  /* Set period */
   pwmp->timer->CC[pwmp->channels] = pwmp->period; 
 
-  // Clear everything
+  /* Clear everything */
   pwmp->timer->TASKS_CLEAR = 1;
 
-
-  // Enable interrupt
+  /* Enable interrupt */
 #if NRF5_PWM_USE_TIMER0
   if (&PWMD1 == pwmp) {
     nvicEnableVector(TIMER0_IRQn, NRF5_PWM_TIMER0_PRIORITY);
@@ -260,7 +260,7 @@ void pwm_lld_start(PWMDriver *pwmp) {
   }
 #endif
 
-  // Start timer
+  /* Start timer */
   pwmp->timer->TASKS_START = 1;
 }
 
@@ -322,68 +322,68 @@ void pwm_lld_enable_channel(PWMDriver *pwmp,
   default                    : goto no_output_config;
   }
 
-  // Deal with corner case: 0% and 100%
+  /* Deal with corner case: 0% and 100% */
   if ((width <= 0) || (width >= pwmp->period)) {
-    // Disable GPIOTE/PPI task
+      /* Disable GPIOTE/PPI task */
     NRF_GPIOTE->CONFIG[gpiote_channel] = GPIOTE_CONFIG_MODE_Disabled;
     NRF_PPI->CHENCLR = ((1 << ppi_channel[0]) | (1 << ppi_channel[1]));
-    // Set Line
+    /* Set Line */
     palWriteLine(cfg_channel->ioline,
-	   ((width <= 0) ^
-	    ((cfg_channel->mode & PWM_OUTPUT_MASK) == PWM_OUTPUT_ACTIVE_HIGH)));
+           ((width <= 0) ^
+            ((cfg_channel->mode & PWM_OUTPUT_MASK) == PWM_OUTPUT_ACTIVE_HIGH)));
 
-  // Really doing PWM
+  /* Really doing PWM */
   } else {
     const uint32_t gpio_pin = PAL_PAD(cfg_channel->ioline);
     const uint32_t polarity = GPIOTE_CONFIG_POLARITY_Toggle;
 
-    // Program tasks (one for duty cycle, one for periode)
+    /* Program tasks (one for duty cycle, one for periode) */
     NRF_PPI->CH[ppi_channel[0]].EEP =
-	  (uint32_t)&pwmp->timer->EVENTS_COMPARE[channel];
+      (uint32_t)&pwmp->timer->EVENTS_COMPARE[channel];
     NRF_PPI->CH[ppi_channel[0]].TEP =
-	  (uint32_t)&NRF_GPIOTE->TASKS_OUT[gpiote_channel];
+      (uint32_t)&NRF_GPIOTE->TASKS_OUT[gpiote_channel];
     NRF_PPI->CH[ppi_channel[1]].EEP =
-	  (uint32_t)&pwmp->timer->EVENTS_COMPARE[pwmp->channels];
+      (uint32_t)&pwmp->timer->EVENTS_COMPARE[pwmp->channels];
     NRF_PPI->CH[ppi_channel[1]].TEP =
-	  (uint32_t)&NRF_GPIOTE->TASKS_OUT[gpiote_channel];
+      (uint32_t)&NRF_GPIOTE->TASKS_OUT[gpiote_channel];
     NRF_PPI->CHENSET = ((1 << ppi_channel[0]) | (1 << ppi_channel[1]));
 
-    // Something Old, something New
+    /* Something Old, something New */
     const uint32_t old_width = pwmp->timer->CC[channel];
     const uint32_t new_width = width;
 
-    // Check GPIOTE state
+    /* Check GPIOTE state */
     const bool gpiote = (NRF_GPIOTE->CONFIG[gpiote_channel] &
-		   GPIOTE_CONFIG_MODE_Msk) != GPIOTE_CONFIG_MODE_Disabled;
+                   GPIOTE_CONFIG_MODE_Msk) != GPIOTE_CONFIG_MODE_Disabled;
 
-    // GPIOTE is currently running
+    /* GPIOTE is currently running */
     if (gpiote) {
       uint32_t current;
       while (true) {
-	pwmp->timer->TASKS_CAPTURE[PWM_GPIOTE_PPI_CC] = 1;
-	current = pwmp->timer->CC[PWM_GPIOTE_PPI_CC];
+        pwmp->timer->TASKS_CAPTURE[PWM_GPIOTE_PPI_CC] = 1;
+        current = pwmp->timer->CC[PWM_GPIOTE_PPI_CC];
 
-	if (pwm_within_safe_margins(pwmp, current, old_width) &&
-	    pwm_within_safe_margins(pwmp, current, new_width))
-	    break;
+        if (pwm_within_safe_margins(pwmp, current, old_width) &&
+            pwm_within_safe_margins(pwmp, current, new_width))
+          break;
       }
       if (((old_width <= current) && (current < new_width)) ||
-	  ((new_width <= current) && (current < old_width))) {
-	NRF_GPIOTE->TASKS_OUT[gpiote_channel] = 1;
+          ((new_width <= current) && (current < old_width))) {
+        NRF_GPIOTE->TASKS_OUT[gpiote_channel] = 1;
       }
 
-    // GPIOTE need to be restarted
+    /* GPIOTE need to be restarted */
     } else {
-      // Create GPIO Task
+      /* Create GPIO Task */
       NRF_GPIOTE->CONFIG[gpiote_channel] =
-	(GPIOTE_CONFIG_MODE_Task << GPIOTE_CONFIG_MODE_Pos) |
-	((gpio_pin << GPIOTE_CONFIG_PSEL_Pos    ) & GPIOTE_CONFIG_PSEL_Msk    )|
-	((polarity << GPIOTE_CONFIG_POLARITY_Pos) & GPIOTE_CONFIG_POLARITY_Msk)|
-	((outinit  << GPIOTE_CONFIG_OUTINIT_Pos ) & GPIOTE_CONFIG_OUTINIT_Msk );
+        (GPIOTE_CONFIG_MODE_Task << GPIOTE_CONFIG_MODE_Pos) |
+        ((gpio_pin << GPIOTE_CONFIG_PSEL_Pos    ) & GPIOTE_CONFIG_PSEL_Msk    )|
+        ((polarity << GPIOTE_CONFIG_POLARITY_Pos) & GPIOTE_CONFIG_POLARITY_Msk)|
+        ((outinit  << GPIOTE_CONFIG_OUTINIT_Pos ) & GPIOTE_CONFIG_OUTINIT_Msk );
 
       pwmp->timer->TASKS_CAPTURE[PWM_GPIOTE_PPI_CC] = 1;
       if (pwmp->timer->CC[PWM_GPIOTE_PPI_CC] > width)
-	NRF_GPIOTE->TASKS_OUT[gpiote_channel] = 1;
+        NRF_GPIOTE->TASKS_OUT[gpiote_channel] = 1;
     }
   }
 
@@ -436,7 +436,7 @@ void pwm_lld_disable_channel(PWMDriver *pwmp, pwmchannel_t channel) {
  */
 void pwm_lld_enable_periodic_notification(PWMDriver *pwmp) {
   pwmp->timer->INTENSET =
-      0x1UL << (TIMER_INTENSET_COMPARE0_Pos + pwmp->channels);
+    0x1UL << (TIMER_INTENSET_COMPARE0_Pos + pwmp->channels);
 }
 
 /**
@@ -450,7 +450,7 @@ void pwm_lld_enable_periodic_notification(PWMDriver *pwmp) {
  */
 void pwm_lld_disable_periodic_notification(PWMDriver *pwmp) {
   pwmp->timer->INTENCLR =
-      0x1UL << (TIMER_INTENCLR_COMPARE0_Pos + pwmp->channels);
+    0x1UL << (TIMER_INTENCLR_COMPARE0_Pos + pwmp->channels);
 }
 
 /**
@@ -467,7 +467,7 @@ void pwm_lld_disable_periodic_notification(PWMDriver *pwmp) {
 void pwm_lld_enable_channel_notification(PWMDriver *pwmp,
                                          pwmchannel_t channel) {
   pwmp->timer->INTENSET =
-      0x1UL << (TIMER_INTENSET_COMPARE0_Pos + channel);
+    0x1UL << (TIMER_INTENSET_COMPARE0_Pos + channel);
 }
 
 /**
@@ -476,15 +476,15 @@ void pwm_lld_enable_channel_notification(PWMDriver *pwmp,
  * @pre     The channel must have been activated using @p pwmEnableChannel().
  * @note    If the notification is already disabled then the call has no effect.
  *
- * @param[in] pwmp      pointer to a @p PWMDriver object
- * @param[in] channel   PWM channel identifier (0...channels-1)
+ * @param[in] pwmp	pointer to a @p PWMDriver object
+ * @param[in] channel	PWM channel identifier (0...channels-1)
  *
  * @notapi
  */
 void pwm_lld_disable_channel_notification(PWMDriver *pwmp,
-                                          pwmchannel_t channel) {
+					  pwmchannel_t channel) {
   pwmp->timer->INTENCLR =
-      0x1UL << (TIMER_INTENCLR_COMPARE0_Pos + channel);
+    0x1UL << (TIMER_INTENCLR_COMPARE0_Pos + channel);
 }
 
 #endif /* HAL_USE_PWM */
