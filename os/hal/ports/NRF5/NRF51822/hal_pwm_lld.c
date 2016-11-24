@@ -71,6 +71,7 @@ PWMDriver PWMD3;
 /*===========================================================================*/
 
 static const uint8_t pwm_margin_by_prescaler[] = {
+<<<<<<< HEAD
   (PWM_GPIOTE_DECISION_TIME +   0) >> 0,
   (PWM_GPIOTE_DECISION_TIME +   1) >> 1,
   (PWM_GPIOTE_DECISION_TIME +   3) >> 2,
@@ -81,6 +82,18 @@ static const uint8_t pwm_margin_by_prescaler[] = {
   (PWM_GPIOTE_DECISION_TIME + 127) >> 7,
   (PWM_GPIOTE_DECISION_TIME + 255) >> 8,
   (PWM_GPIOTE_DECISION_TIME + 511) >> 9
+=======
+    (PWM_GPIOTE_DECISION_TIME +   0) >> 0,
+    (PWM_GPIOTE_DECISION_TIME +   1) >> 1,
+    (PWM_GPIOTE_DECISION_TIME +   3) >> 2,
+    (PWM_GPIOTE_DECISION_TIME +   7) >> 3,
+    (PWM_GPIOTE_DECISION_TIME +  15) >> 4,
+    (PWM_GPIOTE_DECISION_TIME +  31) >> 5,
+    (PWM_GPIOTE_DECISION_TIME +  63) >> 6,
+    (PWM_GPIOTE_DECISION_TIME + 127) >> 7,
+    (PWM_GPIOTE_DECISION_TIME + 255) >> 8,
+    (PWM_GPIOTE_DECISION_TIME + 511) >> 9
+>>>>>>> 0c9313ee3db5fd2eb75cbf1c9df9313e316d5123
 };
 
 /*===========================================================================*/
