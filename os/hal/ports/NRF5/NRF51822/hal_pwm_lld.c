@@ -18,6 +18,11 @@
  * @file    hal_pwm_lld.c
  * @brief   NRF51 PWM subsystem low level driver source.
  *
+ * @note    Using the method described in nrf51-pwm-library to correctly
+ *          handle toggling of the pin with GPIOTE when changing period.
+ *          It means it is generally unsafe to use GPIOTE with a period
+ *          less than (2 * PWM_GPIOTE_DECISION_TIME / 16MHz)
+ *
  * @addtogroup PWM
  * @{
  */
@@ -31,6 +36,7 @@
 /*===========================================================================*/
 
 #define PWM_GPIOTE_PPI_CC 3
+#define PWM_GPIOTE_DECISION_TIME 160
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -65,7 +71,16 @@ PWMDriver PWMD3;
 /*===========================================================================*/
 
 static const uint8_t pwm_margin_by_prescaler[] = {
-    80, 40, 20, 15, 10, 5, 2, 1, 1, 1
+    (PWM_GPIOTE_DECISION_TIME +   0) >> 0,
+    (PWM_GPIOTE_DECISION_TIME +   1) >> 1,
+    (PWM_GPIOTE_DECISION_TIME +   3) >> 2,
+    (PWM_GPIOTE_DECISION_TIME +   7) >> 3,
+    (PWM_GPIOTE_DECISION_TIME +  15) >> 4,
+    (PWM_GPIOTE_DECISION_TIME +  31) >> 5,
+    (PWM_GPIOTE_DECISION_TIME +  63) >> 6,
+    (PWM_GPIOTE_DECISION_TIME + 128) >> 7,
+    (PWM_GPIOTE_DECISION_TIME + 255) >> 8,
+    (PWM_GPIOTE_DECISION_TIME + 511) >> 9
 };
 
 /*===========================================================================*/
@@ -349,7 +364,7 @@ void pwm_lld_enable_channel(PWMDriver *pwmp,
 	current = pwmp->timer->CC[PWM_GPIOTE_PPI_CC];
 
 	if (pwm_within_safe_margins(pwmp, current, old_width) &&
-	  pwm_within_safe_margins(pwmp, current, new_width))
+	    pwm_within_safe_margins(pwmp, current, new_width))
 	    break;
       }
       if (((old_width <= current) && (current < new_width)) ||
