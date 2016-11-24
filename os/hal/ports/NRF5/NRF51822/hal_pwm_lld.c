@@ -78,7 +78,7 @@ static const uint8_t pwm_margin_by_prescaler[] = {
     (PWM_GPIOTE_DECISION_TIME +  15) >> 4,
     (PWM_GPIOTE_DECISION_TIME +  31) >> 5,
     (PWM_GPIOTE_DECISION_TIME +  63) >> 6,
-    (PWM_GPIOTE_DECISION_TIME + 128) >> 7,
+    (PWM_GPIOTE_DECISION_TIME + 127) >> 7,
     (PWM_GPIOTE_DECISION_TIME + 255) >> 8,
     (PWM_GPIOTE_DECISION_TIME + 511) >> 9
 };
