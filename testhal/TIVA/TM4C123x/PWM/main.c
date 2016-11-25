@@ -20,27 +20,27 @@
 static void pwmpcb(PWMDriver *pwmp)
 {
   (void)pwmp;
-  palClearPad(GPIOF, GPIOF_LED_RED);
-  palClearPad(GPIOF, GPIOF_LED_GREEN);
-  palClearPad(GPIOF, GPIOF_LED_BLUE);
+  palClearLine(LINE_LED_RED);
+  palClearLine(LINE_LED_GREEN);
+  palClearLine(LINE_LED_BLUE);
 }
 
 static void pwmc1cb0(PWMDriver *pwmp)
 {
   (void)pwmp;
-  palSetPad(GPIOF, GPIOF_LED_RED);
+  palSetLine(LINE_LED_RED);
 }
 
 static void pwmc1cb1(PWMDriver *pwmp)
 {
   (void)pwmp;
-  palSetPad(GPIOF, GPIOF_LED_GREEN);
+  palSetLine(LINE_LED_GREEN);
 }
 
 static void pwmc1cb2(PWMDriver *pwmp)
 {
   (void)pwmp;
-  palSetPad(GPIOF, GPIOF_LED_BLUE);
+  palSetLine(LINE_LED_BLUE);
 }
 
 static PWMConfig pwmcfg = {
@@ -74,9 +74,9 @@ int main(void)
   halInit();
   chSysInit();
 
-  palSetPadMode(GPIOF, GPIOF_LED_RED, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(GPIOF, GPIOF_LED_GREEN, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(GPIOF, GPIOF_LED_BLUE, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetLineMode(LINE_LED_RED, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetLineMode(LINE_LED_GREEN, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetLineMode(LINE_LED_BLUE, PAL_MODE_OUTPUT_PUSHPULL);
 
   /*
    * Start PWM driver

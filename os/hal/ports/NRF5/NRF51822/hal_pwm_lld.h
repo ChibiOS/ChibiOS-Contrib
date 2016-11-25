@@ -34,8 +34,11 @@
 /**
  * @brief   Number of PWM channels per PWM driver.
  */
+#if NRF5_PWM_USE_GPIOTE_PPI
+#define PWM_CHANNELS                            2
+#else
 #define PWM_CHANNELS                            3
-
+#endif
 
 #define PWM_FREQUENCY_16MHZ  16000000 /** @brief   16MHz */
 #define PWM_FREQUENCY_8MHZ    8000000 /** @brief    8MHz */
@@ -103,7 +106,7 @@
  * @brief   Allow driver to use GPIOTE/PPI to control PAL line
  */
 #if !defined(NRF5_PWM_USE_GPIOTE_PPI)
-#define NRF5_PWM_USE_GPIOTE_PPI FALSE
+#define NRF5_PWM_USE_GPIOTE_PPI TRUE
 #endif
 
 /** @} */
@@ -177,6 +180,7 @@ typedef struct {
   pwmcallback_t             callback;
   /* End of the mandatory fields.*/
 
+#if NRF5_PWM_USE_GPIOTE_PPI || defined(__DOXYGEN__)
   /**
    * @brief PAL line to toggle.
    * @note  Only used if mode is PWM_OUTPUT_HIGH or PWM_OUTPUT_LOW.
@@ -186,17 +190,14 @@ typedef struct {
    */
   ioline_t ioline;
 
-#if NRF5_PWM_USE_GPIOTE_PPI || defined(__DOXYGEN__)
   /**
    * @brief Unique GPIOTE channel to use. (1 channel)
-   * @note  Only used if mode is PWM_OUTPUT_HIGH or PWM_OUTPUT_LOW.
    * @note  Only 4 GPIOTE channels are available on nRF51.
    */
   uint8_t gpiote_channel;
 
   /**
    * @brief Unique PPI channels to use. (2 channels)
-   * @note  Only used if mode is PWM_OUTPUT_HIGH or PWM_OUTPUT_LOW.
    * @note  Only 16 PPI channels are available on nRF51
    *        (When Softdevice is enabled, only channels 0-7 are available)
    */

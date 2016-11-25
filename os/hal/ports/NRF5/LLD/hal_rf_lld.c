@@ -39,7 +39,7 @@
 #define RF_RADIO_STATLEN            0
 #define RF_RADIO_BALEN              4
 #define RF_RADIO_ENDIAN             RADIO_PCNF1_ENDIAN_Little
-#define RF_RADIO_WHITENING          RADIO_PCNF1_WHITEEN_Disabled
+#define RF_RADIO_WHITENING          RADIO_PCNF1_WHITEEN_Enabled
 #define RF_RADIO_CRC_CNF            2U
 #define RF_RADIO_CRC_POLY           0x11021
 #define RF_RADIO_CRC_INIT           0xF0F0F0
@@ -83,7 +83,6 @@ static void serve_interrupt(RFDriver *rfp) {
   }
   if (radio->EVENTS_DISABLED == 1) {
       radio->EVENTS_DISABLED = 0;
-      palSetLine(LINE_LED_ROW_3);
   }
 
   if (radio->EVENTS_END == 1) {
@@ -131,6 +130,11 @@ void rf_lld_stop_receive(RFDriver *rfp) {
   while (radio->EVENTS_DISABLED == 0) { /* busy-waiting */ }
 }
 
+
+void rf_lld_stop(RFDriver *rfp) {
+  NRF_CLOCK->TASKS_HFCLKSTOP = 1;
+  rfp->radio->POWER = 0;
+}
 
 void rf_lld_start(RFDriver *rfp) {
   const RFConfig       *cfg   = rfp->config;
@@ -221,9 +225,8 @@ void rf_lld_receive(RFDriver *rfp, size_t n, uint8_t *rxbuf) {
 
   /* Set pointer to receive buffer */
   radio->PACKETPTR = (uint32_t)&rfp->packet;
-  /* Set address */
-  radio->BASE0 &= ~(0xffff);
-  radio->BASE0 |= cfg->src_addr;
+  /* Set address (used as reception when RX) */
+  _set_address(rfp, cfg->src_addr);
   /* Start receiving */
   radio->TASKS_RXEN = 1;
 }
@@ -241,13 +244,13 @@ void rf_lld_send(RFDriver *rfp,
   const RFConfig       *cfg   = rfp->config;
         NRF_RADIO_Type *radio = rfp->radio;
 
-  rfp->packet.hdr.length   = sizeof(rf_packet_hdr_t) + n;
+  rfp->packet.hdr.length = n;
   memcpy(rfp->packet.payload, txbuf, n);
 
   /* Set packet pointer to TX buffer and write destination address */
   radio->PACKETPTR = (uint32_t)&rfp->packet;
-  radio->BASE0 &= ~(0xffff);
-  radio->BASE0 |= addr;
+  /* Set address (used as destination when TX) */
+  _set_address(rfp, addr);
 
   /* Start transmission */
   radio->TASKS_TXEN = 1;

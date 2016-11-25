@@ -106,6 +106,24 @@ void rfStart(RFDriver *rfp, const RFConfig *config) {
 
 
 /**
+ * @brief   Deactivates the RF peripheral.
+ *
+ * @param[in] rfp       pointer to the @p RFDriver object
+ *
+ * @api
+ */
+void rfStop(RFDriver *rfp) {
+
+  osalDbgCheck(rfp != NULL);
+
+  osalSysLock();
+  rf_lld_stop(rfp);
+  rfp->state = RF_STOP;
+  osalSysUnlock();
+}
+
+
+/**
  * @brief   Sends data over the air.
  *
  * @param[in] rfp       pointer to the @p RFDriver object

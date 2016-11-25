@@ -105,7 +105,7 @@
 /*===========================================================================*/
 
 /**
- * @brief Maximum size of packet (header + payload)
+ * @brief Maximum size of packet (S0 + LEN + S1 + PAYLOAD)
  */
 #define RF_PACKET_MAXLEN      (RF_PAYLOAD_MAXLEN + 1)
 
