@@ -65,36 +65,36 @@ RFDriver RFD1;
 /*===========================================================================*/
 static inline
 void _set_address(RFDriver *rfp, rf_addr_t addr) {
-    rfp->radio->BASE0 &= ~(0xffff);
-    rfp->radio->BASE0 |= addr;
+  rfp->radio->BASE0 &= ~(0xffff);
+  rfp->radio->BASE0 |= addr;
 }
 
 static void serve_interrupt(RFDriver *rfp) {
   NRF_RADIO_Type *radio = rfp->radio;
 
   if (radio->EVENTS_READY == 1) {
-      radio->EVENTS_READY = 0;
+    radio->EVENTS_READY = 0;
   }
   if (radio->EVENTS_ADDRESS == 1) {
-      radio->EVENTS_ADDRESS = 0;
+    radio->EVENTS_ADDRESS = 0;
   }
   if (radio->EVENTS_PAYLOAD == 1) {
-      radio->EVENTS_PAYLOAD = 0;
+    radio->EVENTS_PAYLOAD = 0;
   }
   if (radio->EVENTS_DISABLED == 1) {
-      radio->EVENTS_DISABLED = 0;
+    radio->EVENTS_DISABLED = 0;
   }
 
   if (radio->EVENTS_END == 1) {
-      radio->EVENTS_END = 0;
+    radio->EVENTS_END = 0;
       
-	rfp->error = RF_ERROR_NONE;
-	if (radio->CRCSTATUS != 1) {
-	    rfp->error = RF_ERROR_CRC;
-	}
-
-	_rf_isr_code(rfp);
+    rfp->error = RF_ERROR_NONE;
+    if (radio->CRCSTATUS != 1) {
+      rfp->error = RF_ERROR_CRC;
     }
+    
+    _rf_isr_code(rfp);
+  }
 }
 
 
@@ -232,11 +232,11 @@ void rf_lld_receive(RFDriver *rfp, size_t n, uint8_t *rxbuf) {
 }
 
 void rf_lld_received(RFDriver *rfp, size_t *np, uint8_t *rxbuf) {
-    size_t sz = *np;
-    *np = rfp->packet.hdr.length;
-    if (sz > *np)
-	sz = *np;
-    memcpy(rxbuf, &rfp->packet.payload, sz);
+  size_t sz = *np;
+  *np = rfp->packet.hdr.length;
+  if (sz > *np)
+    sz = *np;
+  memcpy(rxbuf, &rfp->packet.payload, sz);
 }
 
 void rf_lld_send(RFDriver *rfp,

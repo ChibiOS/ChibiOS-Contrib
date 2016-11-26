@@ -208,10 +208,10 @@ msg_t rfReceiveTimeout(RFDriver *rfp, size_t *np, void *rxbuf, systime_t timeout
   rfStartReceiveI(rfp, np, rxbuf);
   msg = osalThreadSuspendTimeoutS(&rfp->thread, timeout);
   if (msg == MSG_OK) {
-      if (rfp->error != RF_ERROR_NONE)
-	  msg = MSG_RESET;
+    if (rfp->error != RF_ERROR_NONE)
+      msg = MSG_RESET;
   } else {
-      rfStopReceiveI(rfp);
+    rfStopReceiveI(rfp);
   }
   rf_lld_received(rfp, np, rxbuf);
   osalSysUnlock();

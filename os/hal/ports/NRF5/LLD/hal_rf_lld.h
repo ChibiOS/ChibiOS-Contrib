@@ -197,15 +197,15 @@ typedef struct {
 
 
 typedef struct __attribute__((packed)) {
-    uint8_t  length;                  /**< packet length */
+  uint8_t  length;                  /**< packet length */
 } rf_packet_hdr_t;
 
 /**
  * @brief   In-memory structure of a rf radio packet
  */
 typedef struct __attribute__((packed)) {
-    rf_packet_hdr_t hdr;
-    uint8_t payload[RF_PAYLOAD_MAXLEN];  /**< actual payload */
+  rf_packet_hdr_t hdr;
+  uint8_t payload[RF_PAYLOAD_MAXLEN];  /**< actual payload */
 } rf_packet_t;
 
 
