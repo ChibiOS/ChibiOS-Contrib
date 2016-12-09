@@ -128,9 +128,9 @@ void fsmcSramStart(SRAMDriver *sramp, const SRAMConfig *cfgp) {
               "invalid state");
 
   if (sramp->state == SRAM_STOP) {
-    sramp->sram->BCR  = cfgp->bcr | FSMC_BCR_MBKEN;
     sramp->sram->BTR  = cfgp->btr;
     sramp->sram->BWTR = cfgp->bwtr;
+    sramp->sram->BCR  = cfgp->bcr | FSMC_BCR_MBKEN;
     sramp->state = SRAM_READY;
   }
 }
@@ -145,7 +145,13 @@ void fsmcSramStart(SRAMDriver *sramp, const SRAMConfig *cfgp) {
 void fsmcSramStop(SRAMDriver *sramp) {
 
   if (sramp->state == SRAM_READY) {
-    sramp->sram->BCR &= ~FSMC_BCR_MBKEN;
+    uint32_t mask = FSMC_BCR_MBKEN;
+#if (defined(STM32F427xx) || defined(STM32F437xx) || \
+     defined(STM32F429xx) || defined(STM32F439xx) || \
+     defined(STM32F7))
+    mask |= FSMC_BCR_CCLKEN;
+#endif
+    sramp->sram->BCR &= ~mask;
     sramp->state = SRAM_STOP;
   }
 }
