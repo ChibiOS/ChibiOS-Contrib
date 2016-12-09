@@ -36,9 +36,10 @@
 //#define BOARD_PHY_RMII
 
 /*
- * MCU type as defined in the TI header.
+ * MCU type and revision as defined in the TI header.
  */
 #define PART_TM4C1294NCPDT
+#define TARGET_IS_TM4C129_RA0
 
 /*
  * Board oscillators-related settings.
@@ -182,6 +183,20 @@
 #define GPIOQ_PIN5              5
 #define GPIOQ_PIN6              6
 #define GPIOQ_PIN7              7
+
+/*
+ * IO lines assignments.
+ */
+#define LINE_UART0_RX           PAL_LINE(GPIOA, 0U)
+#define LINE_UART0_TX           PAL_LINE(GPIOA, 1U)
+
+#define LINE_LED0               PAL_LINE(GPIOF, 0U)
+#define LINE_LED1               PAL_LINE(GPIOF, 4U)
+
+#define LINE_LED2               PAL_LINE(GPION, 0U)
+#define LINE_LED3               PAL_LINE(GPION, 1U)
+
+#define LINE_SW1                PAL_LINE(GPIOJ, 0U)
 
 /*
  * I/O ports initial setup, this configuration is established soon after reset

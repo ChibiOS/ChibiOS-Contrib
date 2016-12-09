@@ -22,7 +22,7 @@ static void extcb1(EXTDriver *extp, expchannel_t channel)
   (void)extp;
   (void)channel;
 
-  palTogglePad(GPIOF, GPIOF_LED_RED);
+  palToggleLine(LINE_LED_RED);
 }
 
 static void extcb2(EXTDriver *extp, expchannel_t channel)
@@ -30,7 +30,7 @@ static void extcb2(EXTDriver *extp, expchannel_t channel)
   (void)extp;
   (void)channel;
 
-  palTogglePad(GPIOF, GPIOF_LED_GREEN);
+  palToggleLine(LINE_LED_GREEN);
 }
 
 static const EXTConfig extcfg =
@@ -108,10 +108,10 @@ int main(void)
   halInit();
   chSysInit();
 
-  palSetPadMode(GPIOF, GPIOF_LED_RED, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(GPIOF, GPIOF_LED_GREEN, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPadMode(GPIOF, GPIOF_SW1, PAL_MODE_INPUT_PULLUP);
-  palSetPadMode(GPIOF, GPIOF_SW2, PAL_MODE_INPUT_PULLUP);
+  palSetLineMode(LINE_LED_RED, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetLineMode(LINE_LED_GREEN, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetLineMode(LINE_SW1, PAL_MODE_INPUT_PULLUP);
+  palSetLineMode(LINE_SW2, PAL_MODE_INPUT_PULLUP);
 
   extStart(&EXTD1, &extcfg);
 
