@@ -221,10 +221,10 @@ void hidObjectInit(USBHIDDriver *uhdp) {
   uhdp->vmt = &vmt;
   osalEventObjectInit(&uhdp->event);
   uhdp->state = HID_STOP;
-  ibqObjectInit(&uhdp->ibqueue, uhdp->ib,
+  ibqObjectInit(&uhdp->ibqueue, true, uhdp->ib,
                 USB_HID_BUFFERS_SIZE, USB_HID_BUFFERS_NUMBER,
                 ibnotify, uhdp);
-  obqObjectInit(&uhdp->obqueue, uhdp->ob,
+  obqObjectInit(&uhdp->obqueue, true, uhdp->ob,
                 USB_HID_BUFFERS_SIZE, USB_HID_BUFFERS_NUMBER,
                 obnotify, uhdp);
 }
