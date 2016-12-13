@@ -262,8 +262,6 @@ static void usb_event(USBDriver *usbp, usbevent_t event) {
   extern SerialUSBDriver SDU1;
 
   switch (event) {
-  case USB_EVENT_RESET:
-    return;
   case USB_EVENT_ADDRESS:
     return;
   case USB_EVENT_CONFIGURED:
@@ -280,6 +278,10 @@ static void usb_event(USBDriver *usbp, usbevent_t event) {
 
     chSysUnlockFromISR();
     return;
+  case USB_EVENT_RESET:
+    /* Falls into. */
+  case USB_EVENT_UNCONFIGURED:
+    /* Falls into. */
   case USB_EVENT_SUSPEND:
     chSysLockFromISR();
 
