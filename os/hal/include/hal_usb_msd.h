@@ -48,6 +48,10 @@
 #error "Mass storage Driver requires HAL_USE_USB"
 #endif
 
+#if !USB_USE_WAIT
+#error "Mass storage Driver requires USB_USE_WAIT"
+#endif
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
