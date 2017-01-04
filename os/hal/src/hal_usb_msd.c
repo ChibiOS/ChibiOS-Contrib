@@ -214,6 +214,7 @@ static void send_csw(USBMassStorageDriver *msdp, uint8_t status,
  */
 static THD_FUNCTION(usb_msd_worker, arg) {
   USBMassStorageDriver *msdp = arg;
+  chRegSetThreadName("usb_msd_worker");
 
   while(! chThdShouldTerminateX()) {
     const msg_t status = usbReceive(msdp->usbp, USB_MSD_DATA_EP,

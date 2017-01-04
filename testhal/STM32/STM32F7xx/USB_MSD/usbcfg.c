@@ -21,6 +21,11 @@
 #include "usbcfg.h"
 
 /*
+ * must be 64 for full speed and 512 for high speed
+ */
+#define USB_MSD_EP_SIZE                 64U
+
+/*
  * USB Device Descriptor.
  */
 static const uint8_t vcom_device_descriptor_data[18] = {
