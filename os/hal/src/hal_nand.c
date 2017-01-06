@@ -229,6 +229,7 @@ void nandStart(NANDDriver *nandp, const NANDConfig *config, bitmap_t *bb_map) {
   pagesize_check(nandp->config->page_data_size);
   nand_lld_start(nandp);
   nandp->state = NAND_READY;
+  nand_lld_reset(nandp);
 
   if (NULL != bb_map) {
     nandp->bb_map = bb_map;

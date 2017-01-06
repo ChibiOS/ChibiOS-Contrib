@@ -283,6 +283,7 @@ extern "C" {
   uint8_t nand_lld_write_data(NANDDriver *nandp, const uint8_t *data,
                 size_t datalen, uint8_t *addr, size_t addrlen, uint32_t *ecc);
   uint8_t nand_lld_read_status(NANDDriver *nandp);
+  void nand_lld_reset(NANDDriver *nandp);
 #ifdef __cplusplus
 }
 #endif

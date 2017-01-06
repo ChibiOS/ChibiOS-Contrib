@@ -82,6 +82,7 @@ typedef enum {
   NAND_READ = 6,                     /**< Reading from NAND.              */
   NAND_DMA_TX = 7,                   /**< DMA transmitting.               */
   NAND_DMA_RX = 8,                   /**< DMA receiving.                  */
+  NAND_RESET = 9,                    /**< Software reset in progress.     */
 } nandstate_t;
 
 /**

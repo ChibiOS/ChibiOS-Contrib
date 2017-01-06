@@ -157,14 +157,9 @@ static void nand_isr_handler (NANDDriver *nandp) {
     /* thread will be waked up from DMA ISR */
     break;
 
-  case NAND_ERASE:
-    /* NAND reports about erase finish */
-    nandp->state = NAND_READY;
-    wakeup_isr(nandp);
-    break;
-
-  case NAND_PROGRAM:
-    /* NAND reports about page programming finish */
+  case NAND_ERASE:      /* NAND reports about erase finish */
+  case NAND_PROGRAM:    /* NAND reports about page programming finish */
+  case NAND_RESET:      /* NAND reports about finished reset recover */
     nandp->state = NAND_READY;
     wakeup_isr(nandp);
     break;
@@ -408,6 +403,23 @@ uint8_t nand_lld_write_data(NANDDriver *nandp, const uint8_t *data,
   }
 
   return nand_lld_read_status(nandp);
+}
+
+/**
+ * @brief   Soft reset NAND device.
+ *
+ * @param[in] nandp         pointer to the @p NANDDriver object
+ *
+ * @notapi
+ */
+void nand_lld_reset(NANDDriver *nandp) {
+
+  nandp->state = NAND_RESET;
+
+  nand_lld_write_cmd (nandp, NAND_CMD_RESET);
+  osalSysLock();
+  nand_lld_suspend_thread(nandp);
+  osalSysUnlock();
 }
 
 /**
