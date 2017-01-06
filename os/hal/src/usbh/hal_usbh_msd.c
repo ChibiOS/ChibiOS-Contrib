@@ -68,7 +68,7 @@
 
 
 /*===========================================================================*/
-/* USB Class driver loader for MSD								 		 	 */
+/* USB Class driver loader for MSD                                           */
 /*===========================================================================*/
 
 USBHMassStorageDriver USBHMSD[HAL_USBHMSD_MAX_INSTANCES];
@@ -234,7 +234,7 @@ static void _msd_unload(usbh_baseclassdriver_t *drv) {
 
 
 /*===========================================================================*/
-/* MSD Class driver operations (Bulk-Only transport)			 		 	 */
+/* MSD Class driver operations (Bulk-Only transport)                         */
 /*===========================================================================*/
 
 
@@ -290,7 +290,7 @@ typedef struct {
 
 
 /* ----------------------------------------------------- */
-/* 			SCSI Commands 								*/
+/* SCSI Commands                                         */
 /* ----------------------------------------------------- */
 
 /* Read 10 and Write 10 */
@@ -584,7 +584,7 @@ static msd_result_t scsi_write10(USBHMassStorageLUNDriver *lunp, uint32_t lba, u
 
 
 /*===========================================================================*/
-/* Block driver data/functions								 		 	 	 */
+/* Block driver data/functions                                               */
 /*===========================================================================*/
 
 USBHMassStorageLUNDriver MSBLKD[HAL_USBHMSD_MAX_LUNS];
