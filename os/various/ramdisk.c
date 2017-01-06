@@ -167,7 +167,7 @@ static const struct BaseBlockDeviceVMT vmt = {
 void ramdiskObjectInit(RamDisk *rdp) {
 
   rdp->vmt = &vmt;
-  rdp->state = SD_STOP;
+  rdp->state = BLK_STOP;
 }
 
 /**
