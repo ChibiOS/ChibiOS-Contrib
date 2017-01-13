@@ -509,10 +509,8 @@ static void nand_test(bool use_badblock_map) {
 
   /* performance counters */
   int32_t adc_ints = 0;
-  int32_t spi_ints = 0;
   int32_t uart_ints = 0;
   int32_t adc_idle_ints = 0;
-  int32_t spi_idle_ints = 0;
   int32_t uart_idle_ints = 0;
   uint32_t background_cnt = 0;
   systime_t T = 0;
@@ -540,13 +538,11 @@ static void nand_test(bool use_badblock_map) {
    */
   dma_storm_adc_start();
   dma_storm_uart_start();
-  dma_storm_spi_start();
   T = chVTGetSystemTimeX();
   general_test(&NAND, NAND_TEST_START_BLOCK, NAND_TEST_END_BLOCK, 1);
   T = chVTGetSystemTimeX() - T;
   adc_ints  = dma_storm_adc_stop();
   uart_ints = dma_storm_uart_stop();
-  spi_ints  = dma_storm_spi_stop();
   chSysLock();
   background_cnt = BackgroundThdCnt;
   BackgroundThdCnt = 0;
@@ -557,11 +553,9 @@ static void nand_test(bool use_badblock_map) {
    */
   dma_storm_adc_start();
   dma_storm_uart_start();
-  dma_storm_spi_start();
   chThdSleep(T);
   adc_idle_ints = dma_storm_adc_stop();
   uart_idle_ints = dma_storm_uart_stop();
-  spi_idle_ints = dma_storm_spi_stop();
 
   /*
    * ensure that NAND code have negligible impact on other subsystems
@@ -569,7 +563,6 @@ static void nand_test(bool use_badblock_map) {
   osalDbgCheck(background_cnt > (BackgroundThdCnt / 4));
   osalDbgCheck(abs(adc_ints  - adc_idle_ints)  < (adc_idle_ints  / 20));
   osalDbgCheck(abs(uart_ints - uart_idle_ints) < (uart_idle_ints / 20));
-  osalDbgCheck(abs(spi_ints  - spi_idle_ints)  < (spi_idle_ints  / 10));
 
   /*
    * perform ECC calculation test

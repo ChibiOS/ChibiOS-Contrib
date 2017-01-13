@@ -29,6 +29,7 @@
 #define STM32_NAND_DMA_STREAM               STM32_DMA_STREAM_ID(2, 7)
 #define STM32_NAND_DMA_PRIORITY             0
 #define STM32_NAND_DMA_ERROR_HOOK(nandp)    osalSysHalt("DMA failure")
+#define STM32_NAND_BUS_WIDTH                8
 
 /*
  * FSMC SRAM driver system settings.

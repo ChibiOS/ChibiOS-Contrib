@@ -177,10 +177,15 @@ typedef struct {
 /**
  * @brief   PCR register
  */
-#define  FSMC_PCR_PWAITEN         ((uint32_t)0x00000002)
-#define  FSMC_PCR_PBKEN           ((uint32_t)0x00000004)
-#define  FSMC_PCR_PTYP            ((uint32_t)0x00000008)
-#define  FSMC_PCR_ECCEN           ((uint32_t)0x00000040)
+#define  FSMC_PCR_PWAITEN         ((uint32_t)1 << 1)
+#define  FSMC_PCR_PBKEN           ((uint32_t)1 << 2)
+#define  FSMC_PCR_PTYP            ((uint32_t)1 << 3)
+#define  FSMC_PCR_PWID_8          ((uint32_t)0 << 4)
+#define  FSMC_PCR_PWID_16         ((uint32_t)1 << 4)
+#define  FSMC_PCR_PWID_RESERVED1  ((uint32_t)2 << 4)
+#define  FSMC_PCR_PWID_RESERVED2  ((uint32_t)3 << 4)
+#define  FSMC_PCR_PWID_MASK       ((uint32_t)3 << 4)
+#define  FSMC_PCR_ECCEN           ((uint32_t)1 << 6)
 #define  FSMC_PCR_PTYP_PCCARD     0
 #define  FSMC_PCR_PTYP_NAND       FSMC_PCR_PTYP
 

@@ -134,7 +134,7 @@
 typedef struct NANDDriver NANDDriver;
 
 /**
- * @brief   Type of interrupt handler function
+ * @brief   Type of interrupt handler function.
  */
 typedef void (*nandisrhandler_t)(NANDDriver *nandp);
 
@@ -206,15 +206,15 @@ struct NANDDriver {
 #endif /* NAND_USE_MUTUAL_EXCLUSION */
   /* End of the mandatory fields.*/
   /**
-   * @brief   Function enabling interrupts from FSMC
+   * @brief   Function enabling interrupts from FSMC.
    */
   nandisrhandler_t          isr_handler;
   /**
-   * @brief   Pointer to current transaction buffer
+   * @brief   Pointer to current transaction buffer.
    */
-  uint8_t                   *rxdata;
+  void                      *rxdata;
   /**
-   * @brief   Current transaction length
+   * @brief   Current transaction length in bytes.
    */
   size_t                    datalen;
   /**
@@ -236,15 +236,15 @@ struct NANDDriver {
   /**
    * @brief     Memory mapping for data.
    */
-  uint8_t                   *map_data;
+  uint16_t                  *map_data;
   /**
    * @brief     Memory mapping for commands.
    */
-  uint8_t                   *map_cmd;
+  uint16_t                  *map_cmd;
   /**
    * @brief     Memory mapping for addresses.
    */
-  uint8_t                   *map_addr;
+  uint16_t                  *map_addr;
   /**
    * @brief   Pointer to bad block map.
    * @details One bit per block. All memory allocation is user's responsibility.
@@ -274,13 +274,12 @@ extern "C" {
   void nand_lld_init(void);
   void nand_lld_start(NANDDriver *nandp);
   void nand_lld_stop(NANDDriver *nandp);
-  void nand_lld_read_data(NANDDriver *nandp, uint8_t *data,
+  uint8_t nand_lld_erase(NANDDriver *nandp, uint8_t *addr, size_t addrlen);
+  void nand_lld_read_data(NANDDriver *nandp, uint16_t *data,
                 size_t datalen, uint8_t *addr, size_t addrlen, uint32_t *ecc);
-  void nand_lld_polled_read_data(NANDDriver *nandp, uint8_t *data, size_t len);
   void nand_lld_write_addr(NANDDriver *nandp, const uint8_t *addr, size_t len);
   void nand_lld_write_cmd(NANDDriver *nandp, uint8_t cmd);
-  uint8_t nand_lld_erase(NANDDriver *nandp, uint8_t *addr, size_t addrlen);
-  uint8_t nand_lld_write_data(NANDDriver *nandp, const uint8_t *data,
+  uint8_t nand_lld_write_data(NANDDriver *nandp, const uint16_t *data,
                 size_t datalen, uint8_t *addr, size_t addrlen, uint32_t *ecc);
   uint8_t nand_lld_read_status(NANDDriver *nandp);
   void nand_lld_reset(NANDDriver *nandp);
