@@ -348,6 +348,18 @@
   HID_ITEM_W(HID_REPORT_LOGICAL_MAXIMUM, x)
 
 /**
+ * @brief   HID Report ID item helper macro (Single byte).
+ */
+#define HID_REPORT_ID_B(x)                                               \
+  HID_ITEM_B(HID_REPORT_REPORT_ID, x)
+
+/**
+ * @brief   HID Report ID item helper macro (Double byte).
+ */
+#define HID_REPORT_ID_W(x)                                               \
+  HID_ITEM_W(HID_REPORT_REPORT_ID, x)
+  
+/**
  * @brief   HID Report Count item helper macro (Single byte).
  */
 #define HID_REPORT_COUNT_B(x)                                               \
