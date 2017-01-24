@@ -353,8 +353,7 @@ void nand_lld_start(NANDDriver *nandp) {
 
 #if STM32_NAND_BUS_WIDTH == 8
     pcr_bus_width = FSMC_PCR_PWID_8;
-#elif
-    STM32_NAND_BUS_WIDTH == 16
+#elif STM32_NAND_BUS_WIDTH == 16
     pcr_bus_width = FSMC_PCR_PWID_16;
 #else
 #error "Bus width must be 8 or 16 bits"
