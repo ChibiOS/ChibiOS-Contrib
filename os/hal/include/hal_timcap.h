@@ -29,7 +29,6 @@
 #ifndef HAL_TIMCAP_H_
 #define HAL_TIMCAP_H_
 
-#include "ch.h"
 #include "hal.h"
 
 #if (HAL_USE_TIMCAP == TRUE) || defined(__DOXYGEN__)

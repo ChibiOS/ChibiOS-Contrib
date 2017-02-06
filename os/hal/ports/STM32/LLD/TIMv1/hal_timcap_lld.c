@@ -31,7 +31,6 @@
  * @{
  */
 
-#include "ch.h"
 #include "hal.h"
 
 #if HAL_USE_TIMCAP || defined(__DOXYGEN__)

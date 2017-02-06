@@ -29,7 +29,6 @@
 #ifndef HAL_EEPROM_H_
 #define HAL_EEPROM_H_
 
-#include "ch.h"
 #include "hal.h"
 
 #ifndef EEPROM_USE_EE25XX

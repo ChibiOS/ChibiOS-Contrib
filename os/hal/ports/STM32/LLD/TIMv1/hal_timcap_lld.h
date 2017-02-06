@@ -25,7 +25,6 @@
 #ifndef HAL_TIMCAP_LLD_H_
 #define HAL_TIMCAP_LLD_H_
 
-#include "ch.h"
 #include "hal.h"
 #include "stm32_tim.h"
 
