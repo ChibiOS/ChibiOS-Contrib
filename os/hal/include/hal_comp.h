@@ -50,13 +50,12 @@ typedef enum {
 } compstate_t;
 
 /**
- * @brief   Type of a structure representing an TIMCAP driver.
+ * @brief   Type of a structure representing an COMP driver.
  */
 typedef struct COMPDriver COMPDriver;
 
-
 /**
- * @brief   TIMCAP notification callback type.
+ * @brief   COMP notification callback type.
  *
  * @param[in] comp      pointer to a @p COMPDriver object
  */
@@ -79,7 +78,7 @@ typedef void (*compcallback_t)(COMPDriver *comp);
  *
  * @iclass
  */
-#define timcapEnableI(comp) comp_lld_enable(comp)
+#define compEnableI(comp) comp_lld_enable(comp)
 
 /**
  * @brief   Disables the input capture.
@@ -88,7 +87,7 @@ typedef void (*compcallback_t)(COMPDriver *comp);
  *
  * @iclass
  */
-#define timcapDisableI(comp) comp_lld_disable(comp)
+#define compDisableI(comp) comp_lld_disable(comp)
 /** @} */
 
 

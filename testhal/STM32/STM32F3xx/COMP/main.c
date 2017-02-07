@@ -45,6 +45,18 @@ static const EXTConfig extcfg = {
   }
 };
 
+static const COMPConfig comp2_conf = {
+  COMP_OUTPUT_NORMAL,
+  NULL,
+  0
+};
+
+static const COMPConfig comp4_conf = {
+  COMP_OUTPUT_INVERTED,
+  NULL,
+  0
+};
+
 
 /*
  * Application entry point.
@@ -55,7 +67,8 @@ int main(void) {
   chSysInit();
 
   extStart(&EXTD1, &extcfg);
-  //compStart(&COMPD2, &comp2_conf);
+  compStart(&COMPD2, &comp2_conf);
+  compStart(&COMPD4, &comp4_conf);
 
   /*
    * Normal main() thread activity, it resets the watchdog.

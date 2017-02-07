@@ -238,7 +238,7 @@ typedef struct {
 } COMPConfig;
 
 /**
- * @brief   Structure representing an TIMCAP driver.
+ * @brief   Structure representing an COMP driver.
  */
 struct COMPDriver {
   /**
@@ -299,10 +299,10 @@ extern COMPDriver COMPD7;
 extern "C" {
 #endif
   void comp_lld_init(void);
-  void comp_lld_start(COMPDriver *timcapp);
-  void comp_lld_stop(COMPDriver *timcapp);
-  void comp_lld_enable(COMPDriver *timcapp);
-  void comp_lld_disable(COMPDriver *timcapp);
+  void comp_lld_start(COMPDriver *compp);
+  void comp_lld_stop(COMPDriver *compp);
+  void comp_lld_enable(COMPDriver *compp);
+  void comp_lld_disable(COMPDriver *compp);
 #ifdef __cplusplus
 }
 #endif
