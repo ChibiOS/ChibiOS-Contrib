@@ -34,6 +34,100 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
+
+#define STM32_COMP_InvertingInput_1_4VREFINT          ((uint32_t)0x00000000) /*!< 1/4 VREFINT connected to comparator inverting input */
+#define STM32_COMP_InvertingInput_1_2VREFINT          COMP_CSR_COMPxINSEL_0  /*!< 1/2 VREFINT connected to comparator inverting input */
+#define STM32_COMP_InvertingInput_3_4VREFINT          COMP_CSR_COMPxINSEL_1  /*!< 3/4 VREFINT connected to comparator inverting input */
+#define STM32_COMP_InvertingInput_VREFINT             ((uint32_t)0x00000030) /*!< VREFINT connected to comparator inverting input */
+#define STM32_COMP_InvertingInput_DAC1OUT1            COMP_CSR_COMPxINSEL_2  /*!< DAC1_OUT1 (PA4) connected to comparator inverting input */
+#define STM32_COMP_InvertingInput_DAC1OUT2            ((uint32_t)0x00000050) /*!< DAC1_OUT2 (PA5) connected to comparator inverting input */
+
+#define STM32_COMP_InvertingInput_IO1                 ((uint32_t)0x00000060) /*!< I/O1 (PA0 for COMP1, PA2 for COMP2, PD15 for COMP3,
+                                                                            PE8 for COMP4, PD13 for COMP5, PD10 for COMP6,
+                                                                            PC0 for COMP7) connected to comparator inverting input */
+
+#define STM32_COMP_InvertingInput_IO2                 COMP_CSR_COMPxINSEL    /*!< I/O2 (PB12 for COMP3, PB2 for COMP4, PB10 for COMP5,
+                                                                            PB15 for COMP6) connected to comparator inverting input.
+                                                                            It is valid only for STM32F303xC devices */
+
+#define STM32_COMP_InvertingInput_DAC2OUT1            COMP_CSR_COMPxINSEL_3  /*!< DAC2_OUT1 (PA6) connected to comparator inverting input */
+
+
+#define STM32_COMP_NonInvertingInput_IO1                 ((uint32_t)0x00000000) /*!< I/O1 (PA1 for COMP1, PA7 for COMP2, PB14 for COMP3,
+                                                                               PB0 for COMP4, PD12 for COMP5, PD11 for COMP6,
+                                                                               PA0 for COMP7) connected to comparator non inverting input */
+
+#define STM32_COMP_NonInvertingInput_IO2                 COMP_CSR_COMPxNONINSEL /*!< I/O2 (PA3 for COMP2, PD14 for COMP3, PE7 for COMP4, PB13 for COMP5,
+                                                                               PB11 for COMP6, PC1 for COMP7) connected to comparator non inverting input */
+
+
+#define STM32_COMP_Output_None                            ((uint32_t)0x00000000)   /*!< COMP output isn't connected to other peripherals */
+
+/* Output Redirection common for all comparators COMP1...COMP7 */
+#define STM32_COMP_Output_TIM1BKIN                        COMP_CSR_COMPxOUTSEL_0   /*!< COMP output connected to TIM1 Break Input (BKIN) */
+#define STM32_COMP_Output_TIM1BKIN2                       ((uint32_t)0x00000800)   /*!< COMP output connected to TIM1 Break Input 2 (BKIN2) */
+#define STM32_COMP_Output_TIM8BKIN                        ((uint32_t)0x00000C00)   /*!< COMP output connected to TIM8 Break Input (BKIN) */
+#define STM32_COMP_Output_TIM8BKIN2                       ((uint32_t)0x00001000)   /*!< COMP output connected to TIM8 Break Input 2 (BKIN2) */
+#define STM32_COMP_Output_TIM1BKIN2_TIM8BKIN2             ((uint32_t)0x00001400)   /*!< COMP output connected to TIM1 Break Input 2 and TIM8 Break Input 2 */
+#define STM32_COMP_Output_TIM20BKIN                       ((uint32_t)0x00003000)   /*!< COMP output connected to TIM20 Break Input (BKIN) */
+#define STM32_COMP_Output_TIM20BKIN2                      ((uint32_t)0x00003400)  /*!< COMP output connected to TIM20 Break Input 2 (BKIN2) */
+#define STM32_COMP_Output_TIM1BKIN2_TIM8BKIN2_TIM20BKIN2  ((uint32_t)0x00001400)   /*!< COMP output connected to TIM1 Break Input 2, TIM8 Break Input 2 and TIM20 Break Input2 */
+
+/* Output Redirection common for COMP1 and COMP2 */
+#define STM32_COMP_Output_TIM1OCREFCLR                    ((uint32_t)0x00001800)   /*!< COMP output connected to TIM1 OCREF Clear */
+#define STM32_COMP_Output_TIM1IC1                         ((uint32_t)0x00001C00)   /*!< COMP output connected to TIM1 Input Capture 1 */
+#define STM32_COMP_Output_TIM2IC4                         ((uint32_t)0x00002000)   /*!< COMP output connected to TIM2 Input Capture 4 */
+#define STM32_COMP_Output_TIM2OCREFCLR                    ((uint32_t)0x00002400)   /*!< COMP output connected to TIM2 OCREF Clear */
+#define STM32_COMP_Output_TIM3IC1                         ((uint32_t)0x00002800)   /*!< COMP output connected to TIM3 Input Capture 1 */
+#define STM32_COMP_Output_TIM3OCREFCLR                    ((uint32_t)0x00002C00)   /*!< COMP output connected to TIM3 OCREF Clear */
+
+/* Output Redirection specific to COMP2 */
+#define STM32_COMP_Output_HRTIM1_FLT6                     ((uint32_t)0x00003000)   /*!< COMP output connected to HRTIM1 FLT6 */
+#define STM32_COMP_Output_HRTIM1_EE1_2                    ((uint32_t)0x00003400)   /*!< COMP output connected to HRTIM1 EE1_2*/
+#define STM32_COMP_Output_HRTIM1_EE6_2                    ((uint32_t)0x00003800)   /*!< COMP output connected to HRTIM1 EE6_2 */
+#define STM32_COMP_Output_TIM20OCREFCLR                   ((uint32_t)0x00003C00)   /*!< COMP output connected to TIM20 OCREF Clear */
+
+/* Output Redirection specific to COMP3 */
+#define STM32_COMP_Output_TIM4IC1                         ((uint32_t)0x00001C00)   /*!< COMP output connected to TIM4 Input Capture 1 */
+#define STM32_COMP_Output_TIM3IC2                         ((uint32_t)0x00002000)   /*!< COMP output connected to TIM3 Input Capture 2 */
+#define STM32_COMP_Output_TIM15IC1                        ((uint32_t)0x00002800)   /*!< COMP output connected to TIM15 Input Capture 1 */
+#define STM32_COMP_Output_TIM15BKIN                       ((uint32_t)0x00002C00)   /*!< COMP output connected to TIM15 Break Input (BKIN) */
+
+/* Output Redirection specific to COMP4 */
+#define STM32_COMP_Output_TIM3IC3                         ((uint32_t)0x00001800)   /*!< COMP output connected to TIM3 Input Capture 3 */
+#define STM32_COMP_Output_TIM8OCREFCLR                    ((uint32_t)0x00001C00)   /*!< COMP output connected to TIM8 OCREF Clear */
+#define STM32_COMP_Output_TIM15IC2                        ((uint32_t)0x00002000)   /*!< COMP output connected to TIM15 Input Capture 2 */
+#define STM32_COMP_Output_TIM4IC2                         ((uint32_t)0x00002400)   /*!< COMP output connected to TIM4 Input Capture 2 */
+#define STM32_COMP_Output_TIM15OCREFCLR                   ((uint32_t)0x00002800)   /*!< COMP output connected to TIM15 OCREF Clear */
+
+#define STM32_COMP_Output_HRTIM1_FLT7                     ((uint32_t)0x00003000)   /*!< COMP output connected to HRTIM1 FLT7 */
+#define STM32_COMP_Output_HRTIM1_EE2_2                    ((uint32_t)0x00003400)   /*!< COMP output connected to HRTIM1 EE2_2*/
+#define STM32_COMP_Output_HRTIM1_EE7_2                    ((uint32_t)0x00003800)   /*!< COMP output connected to HRTIM1 EE7_2 */
+
+/* Output Redirection specific to COMP5 */
+#define STM32_COMP_Output_TIM2IC1                         ((uint32_t)0x00001800)   /*!< COMP output connected to TIM2 Input Capture 1 */
+#define STM32_COMP_Output_TIM17IC1                        ((uint32_t)0x00002000)   /*!< COMP output connected to TIM17 Input Capture 1 */
+#define STM32_COMP_Output_TIM4IC3                         ((uint32_t)0x00002400)   /*!< COMP output connected to TIM4 Input Capture 3 */
+#define STM32_COMP_Output_TIM16BKIN                       ((uint32_t)0x00002800)   /*!< COMP output connected to TIM16 Break Input (BKIN) */
+
+/* Output Redirection specific to COMP6 */
+#define STM32_COMP_Output_TIM2IC2                         ((uint32_t)0x00001800)   /*!< COMP output connected to TIM2 Input Capture 2 */
+#define STM32_COMP_Output_COMP6TIM2OCREFCLR               ((uint32_t)0x00002000)   /*!< COMP output connected to TIM2 OCREF Clear */
+#define STM32_COMP_Output_TIM16OCREFCLR                   ((uint32_t)0x00002400)   /*!< COMP output connected to TIM16 OCREF Clear */
+#define STM32_COMP_Output_TIM16IC1                        ((uint32_t)0x00002800)   /*!< COMP output connected to TIM16 Input Capture 1 */
+#define STM32_COMP_Output_TIM4IC4                         ((uint32_t)0x00002C00)   /*!< COMP output connected to TIM4 Input Capture 4 */
+
+#define STM32_COMP_Output_HRTIM1_FLT8                     ((uint32_t)0x00003000)   /*!< COMP output connected to HRTIM1 FLT8 */
+#define STM32_COMP_Output_HRTIM1_EE3_2                    ((uint32_t)0x00003400)   /*!< COMP output connected to HRTIM1 EE3_2*/
+#define STM32_COMP_Output_HRTIM1_EE8_2                    ((uint32_t)0x00003800)   /*!< COMP output connected to HRTIM1 EE8_2 */
+
+/* Output Redirection specific to COMP7 */
+#define STM32_COMP_Output_TIM2IC3                         ((uint32_t)0x00002000)   /*!< COMP output connected to TIM2 Input Capture 3 */
+#define STM32_COMP_Output_TIM1IC2                         ((uint32_t)0x00002400)   /*!< COMP output connected to TIM1 Input Capture 2 */
+#define STM32_COMP_Output_TIM17OCREFCLR                   ((uint32_t)0x00002800)   /*!< COMP output connected to TIM16 OCREF Clear */
+#define STM32_COMP_Output_TIM17BKIN                       ((uint32_t)0x00002C00)   /*!< COMP output connected to TIM16 Break Input (BKIN) */
+
+
 #if defined(STM32F301x8) || defined(STM32F302x8) || defined(STM32F303x8) \
 || defined(STM32F318xx) || defined(STM32F328xx) || defined(STM32F334x8)
 #define STM32_HAS_COMP1 FALSE

@@ -34,13 +34,13 @@ void comp4_cb(COMPDriver *comp) {
 static const COMPConfig comp2_conf = {
   COMP_OUTPUT_NORMAL,
   comp2_cb,
-  COMP_CSR_COMPxINSEL_0 | COMP_CSR_COMPxOUTSEL_0 // CSR
+  STM32_COMP_InvertingInput_VREFINT // CSR
 };
 
 static const COMPConfig comp4_conf = {
   COMP_OUTPUT_INVERTED,
   comp4_cb,
-  COMP_CSR_COMPxINSEL_0 | COMP_CSR_COMPxOUTSEL_1 // CSR
+  STM32_COMP_InvertingInput_1_2VREFINT | COMP_CSR_COMPxOUTSEL_1 // CSR
 };
 
 
