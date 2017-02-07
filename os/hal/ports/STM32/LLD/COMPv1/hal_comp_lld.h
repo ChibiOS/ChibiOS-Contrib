@@ -201,7 +201,9 @@
 #define STM32_HAS_COMP6 TRUE
 #define STM32_HAS_COMP7 TRUE
 
-#elif defined(STM32F373xx) || defined(STM32F378xx) || defined(STM32L0XX) || defined(STM32L1XX)
+#elif defined(STM32F373xx) || defined(STM32F378xx) || defined(STM32L0XX) || defined(STM32L1XX) \
+  || defined(STM32F051x8) || defined(STM32F048xx) || defined(STM32F058xx) || defined(STM32F078xx) \
+  || defined(STM32F072xb) || defined(STM32F071xb)
 #define STM32_HAS_COMP1 TRUE
 #define STM32_HAS_COMP2 TRUE
 #define STM32_HAS_COMP3 FALSE
@@ -307,6 +309,10 @@
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+#if STM32_COMP_USE_INTERRUPTS && defined(STM32F0XX)
+#error "Interrupts are shared with EXTI on F0s (lines 21-22)"
+#endif
 
 #if STM32_COMP_USE_INTERRUPTS
 #if !defined(STM32_DISABLE_EXTI21_22_29_HANDLER) || !defined(STM32_DISABLE_EXTI30_32_HANDLER) || !defined(STM32_DISABLE_EXTI33_HANDLER)
