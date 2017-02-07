@@ -34,39 +34,51 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#if defined(STM32F303x8)
-
+#if defined(STM32F301x8) || defined(STM32F302x8) || defined(STM32F303x8) \
+|| defined(STM32F318xx) || defined(STM32F328xx) || defined(STM32F334x8)
 #define STM32_HAS_COMP1 FALSE
 #define STM32_HAS_COMP2 TRUE
 #define STM32_HAS_COMP3 FALSE
 #define STM32_HAS_COMP4 TRUE
 #define STM32_HAS_COMP5 FALSE
+#define STM32_HAS_COMP6 TRUE
+#define STM32_HAS_COMP7 FALSE
+
+#elif defined(STM32F302xc) || defined(STM32F302xe)
+#define STM32_HAS_COMP1 TRUE
+#define STM32_HAS_COMP2 TRUE
+#define STM32_HAS_COMP3 FALSE
+#define STM32_HAS_COMP4 TRUE
+#define STM32_HAS_COMP5 FALSE
+#define STM32_HAS_COMP6 TRUE
+#define STM32_HAS_COMP7 FALSE
+
+#elif defined(STM32F303xC) || defined(STM32F303xE) || defined(STM32F358xx) || defined(STM32F398xx)
+#define STM32_HAS_COMP1 TRUE
+#define STM32_HAS_COMP2 TRUE
+#define STM32_HAS_COMP3 TRUE
+#define STM32_HAS_COMP4 TRUE
+#define STM32_HAS_COMP5 TRUE
+#define STM32_HAS_COMP6 TRUE
+#define STM32_HAS_COMP7 TRUE
+
+#elif defined(STM32F373xx) || defined(STM32F378xx) || defined(STM32L0XX) || defined(STM32L1XX)
+#define STM32_HAS_COMP1 TRUE
+#define STM32_HAS_COMP2 TRUE
+#define STM32_HAS_COMP3 FALSE
+#define STM32_HAS_COMP4 FALSE
+#define STM32_HAS_COMP5 FALSE
 #define STM32_HAS_COMP6 FALSE
 #define STM32_HAS_COMP7 FALSE
 
-#endif
-
-#if defined(STM32F303xC)
-
-#define STM32_HAS_COMP1 TRUE
-#define STM32_HAS_COMP2 TRUE
-#define STM32_HAS_COMP3 TRUE
-#define STM32_HAS_COMP4 TRUE
-#define STM32_HAS_COMP5 TRUE
-#define STM32_HAS_COMP6 TRUE
-#define STM32_HAS_COMP7 TRUE
-
-#endif
-
-#if defined(STM32F303xE)
-
-#define STM32_HAS_COMP1 TRUE
-#define STM32_HAS_COMP2 TRUE
-#define STM32_HAS_COMP3 TRUE
-#define STM32_HAS_COMP4 TRUE
-#define STM32_HAS_COMP5 TRUE
-#define STM32_HAS_COMP6 TRUE
-#define STM32_HAS_COMP7 TRUE
+#else
+#define STM32_HAS_COMP1 FALSE
+#define STM32_HAS_COMP2 FALSE
+#define STM32_HAS_COMP3 FALSE
+#define STM32_HAS_COMP4 FALSE
+#define STM32_HAS_COMP5 FALSE
+#define STM32_HAS_COMP6 FALSE
+#define STM32_HAS_COMP7 FALSE
 
 #endif
 
@@ -157,12 +169,10 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if STM32_COMP_USE_INTERRUPTS && !HAL_USE_EXT
-#error "COMP needs HAL_USE_EXT to use interrupts"
-#endif
-
 #if STM32_COMP_USE_INTERRUPTS
-#include "hal_ext_lld.h"
+#if !defined(STM32_DISABLE_EXTI21_22_29_HANDLER) || !defined(STM32_DISABLE_EXTI30_32_HANDLER) || !defined(STM32_DISABLE_EXTI33_HANDLER)
+#error "COMP needs these defines in mcuconf to use interrupts: STM32_DISABLE_EXTI21_22_29_HANDLER STM32_DISABLE_EXTI30_32_HANDLER STM32_DISABLE_EXTI33_HANDLER"
+#endif
 #endif
 
 #if STM32_COMP_USE_COMP1 && !STM32_HAS_COMP1
@@ -256,7 +266,7 @@ struct COMPDriver {
   /**
    * @brief Pointer to the COMPx registers block.
    */
-  COMP_TypeDef               *comp;
+  COMP_TypeDef               *reg;
 };
 
 /*===========================================================================*/

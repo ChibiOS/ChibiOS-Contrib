@@ -122,86 +122,156 @@ void comp_lld_init(void) {
 #if STM32_COMP_USE_COMP1
   /* Driver initialization.*/
   compObjectInit(&COMPD1);
-  COMPD1.comp = COMP;
+  COMPD1.reg = COMP;
+  COMPD1.reg->CSR = 0;
+#if STM32_COMP_USE_INTERRUPTS
+  nvicEnableVector(COMP1_2_3_IRQn, STM32_COMP_1_2_3_IRQ_PRIORITY);
+#endif
 #endif
 
 #if STM32_COMP_USE_COMP2
   /* Driver initialization.*/
   compObjectInit(&COMPD2);
-  COMPD2.comp = COMP2;
+  COMPD2.reg = COMP2;
+  COMPD2.reg->CSR = 0;
+#if STM32_COMP_USE_INTERRUPTS
+  nvicEnableVector(COMP1_2_3_IRQn, STM32_COMP_1_2_3_IRQ_PRIORITY);
+#endif
 #endif
 
 #if STM32_COMP_USE_COMP3
   /* Driver initialization.*/
   compObjectInit(&COMPD3);
-  COMPD3.comp = COMP3;
+  COMPD3.reg = COMP3;
+  COMPD3.reg->CSR = 0;
+#if STM32_COMP_USE_INTERRUPTS
+  nvicEnableVector(COMP1_2_3_IRQn, STM32_COMP_1_2_3_IRQ_PRIORITY);
+#endif
 #endif
 
 #if STM32_COMP_USE_COMP4
   /* Driver initialization.*/
   compObjectInit(&COMPD4);
-  COMPD4.comp = COMP4;
+  COMPD4.reg = COMP4;
+  COMPD4.reg->CSR = 0;
+#if STM32_COMP_USE_INTERRUPTS
+  nvicEnableVector(COMP4_5_6_IRQn, STM32_COMP_1_2_3_IRQ_PRIORITY);
+#endif
 #endif
 
 #if STM32_COMP_USE_COMP5
   /* Driver initialization.*/
   compObjectInit(&COMPD5);
-  COMPD8.comp = COMP5;
+  COMPD5.reg = COMP5;
+  COMPD5.reg->CSR = 0;
+#if STM32_COMP_USE_INTERRUPTS
+  nvicEnableVector(COMP4_5_6_IRQn, STM32_COMP_1_2_3_IRQ_PRIORITY);
+#endif
 #endif
 
 #if STM32_COMP_USE_COMP6
   /* Driver initialization.*/
   compObjectInit(&COMPD6);
-  COMPD6.comp = COMP6;
+  COMPD6.reg = COMP6;
+  COMPD6.reg->CSR = 0;
+#if STM32_COMP_USE_INTERRUPTS
+  nvicEnableVector(COMP4_5_6_IRQn, STM32_COMP_1_2_3_IRQ_PRIORITY);
+#endif
 #endif
 
 #if STM32_COMP_USE_COMP7
   /* Driver initialization.*/
   compObjectInit(&COMPD7);
-  COMPD7.comp = COMP7;
+  COMPD7.reg = COMP7;
+  COMPD7.reg->CSR = 0;
+#if STM32_COMP_USE_INTERRUPTS
+  nvicEnableVector(COMP7_IRQn, STM32_COMP_7_IRQ_PRIORITY);
+#endif
 #endif
 
 }
-#if STM32_COMP_USE_INTERRUPTS
-static void comp_lld_cb(EXTDriver *extp, expchannel_t channel) {
 
-  (void) extp;
-  switch (channel) {
+/**
+ * @brief  COMP1, COMP2, COMP3 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(Vector140) {
+  uint32_t pr;
 
+  OSAL_IRQ_PROLOGUE();
+
+  pr = EXTI->PR;
+  pr &= EXTI->IMR & ((1U << 21) | (1U << 22) | (1U << 29));
+  EXTI->PR = pr;
 #if STM32_COMP_USE_COMP1
-    case 21:
-      COMPD1.config->cb(&COMPD1);
+  if (pr & (1U << 21) && COMPD1.config->cb != NULL)
+    COMPD1.config->cb(&COMPD1);
 #endif
 #if STM32_COMP_USE_COMP2
-    case 22:
-      COMPD2.config->cb(&COMPD2);
+  if (pr & (1U << 22) && COMPD2.config->cb != NULL)
+    COMPD2.config->cb(&COMPD2);
 #endif
 #if STM32_COMP_USE_COMP3
-    case 29:
-      COMPD3.config->cb(&COMPD3);
+  if (pr & (1U << 29) && COMPD3.config->cb != NULL)
+    COMPD3.config->cb(&COMPD3);
 #endif
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   COMP4, COMP5, COMP6 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(Vector144) {
+  uint32_t pr;
+
+  OSAL_IRQ_PROLOGUE();
+
+  pr = EXTI->PR;
+  pr &= EXTI->IMR & ((1U << 30) | (1U << 31));
+  EXTI->PR = pr;
 #if STM32_COMP_USE_COMP4
-    case 30:
-      COMPD4.config->cb(&COMPD4);
+  if (pr & (1U << 30) && COMPD4.config->cb != NULL)
+    COMPD4.config->cb(&COMPD4);
 #endif
 #if STM32_COMP_USE_COMP5
-    case 31:
-      COMPD5.config->cb(&COMPD5);
+  if (pr & (1U << 31) && COMPD5.config->cb != NULL)
+    COMPD5.config->cb(&COMPD5);
 #endif
-#if STM32_COMP_USE_COMP6
-    case 32:
-      COMPD6.config->cb(&COMPD6);
-#endif
-#if STM32_COMP_USE_COMP7
-    case 33:
-      COMPD7.config->cb(&COMPD7);
-#endif
-    default:
-      return;
-    }
 
-}
+#if STM32_COMP_USE_COMP6
+  pr = EXTI->PR2 & EXTI->IMR2 & (1U << 0);
+  EXTI->PR2 = pr;
+  if (pr & (1U << 0) && COMPD6.config->cb != NULL)
+    COMPD6.config->cb(&COMPD6);
 #endif
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   COMP7 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(Vector148) {
+  uint32_t pr2;
+
+  OSAL_IRQ_PROLOGUE();
+
+  pr2 = EXTI->PR2;
+  pr2 = EXTI->IMR & (1U << 1);
+  EXTI->PR2 = pr2;
+#if STM32_COMP_USE_COMP7
+  if (pr2 & (1U << 1) && COMPD7.config->cb != NULL)
+    COMPD7.config->cb(&COMPD7);
+#endif
+
+  OSAL_IRQ_EPILOGUE();
+}
 
 /**
  * @brief   Configures and activates the COMP peripheral.
@@ -213,58 +283,11 @@ static void comp_lld_cb(EXTDriver *extp, expchannel_t channel) {
 void comp_lld_start(COMPDriver *compp) {
 
   // Apply CSR Execpt the enable bit.
-  compp->comp->CSR = compp->config->csr & ~COMP_CSR_COMPxEN;
+  compp->reg->CSR = compp->config->csr & ~COMP_CSR_COMPxEN;
 
   // Inverted output
   if (compp->config->mode == COMP_OUTPUT_INVERTED)
-    compp->comp->CSR |= COMP_CSR_COMPxPOL;
-
-  EXTChannelConfig chn_cfg = {EXT_CH_MODE_BOTH_EDGES, comp_lld_cb};
-  EXTConfig *cfg = (EXTConfig*)EXTD1.config;
-
-
-#if STM32_COMP_USE_COMP1 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD1 == compp) {
-      cfg->channels[21] = chn_cfg;
-      ext_lld_channel_enable(&EXTD1, 21);
-    }
-#endif
-#if STM32_COMP_USE_COMP2 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD2 == compp) {
-      cfg->channels[22] = chn_cfg;
-      ext_lld_channel_enable(&EXTD1, 22);
-    }
-#endif
-#if STM32_COMP_USE_COMP3 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD3 == compp) {
-      cfg->channels[29] = chn_cfg;
-      ext_lld_channel_enable(&EXTD1, 29);
-    }
-#endif
-#if STM32_COMP_USE_COMP4 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD4 == compp) {
-      cfg->channels[30] = chn_cfg;
-      ext_lld_channel_enable(&EXTD1, 30);
-    }
-#endif
-#if STM32_COMP_USE_COMP5 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD5 == compp) {
-      cfg->channels[31] = chn_cfg;
-      ext_lld_channel_enable(&EXTD1, 31);
-    }
-#endif
-#if STM32_COMP_USE_COMP6 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD6 == compp) {
-      cfg->channels[32] = chn_cfg;
-      ext_lld_channel_enable(&EXTD1, 32);
-    }
-#endif
-#if STM32_COMP_USE_COMP7 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD7 == compp) {
-      cfg->channels[33] = chn_cfg;
-      ext_lld_channel_enable(&EXTD1, 33);
-    }
-#endif
+    compp->reg->CSR |= COMP_CSR_COMPxPOL;
 
 }
 
@@ -279,42 +302,7 @@ void comp_lld_stop(COMPDriver *compp) {
 
   if (compp->state == COMP_READY) {
 
-
-#if STM32_COMP_USE_COMP1 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD1 == compp) {
-      ext_lld_channel_disable(&EXTD1, 21);
-    }
-#endif
-#if STM32_COMP_USE_COMP2 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD2 == compp) {
-      ext_lld_channel_disable(&EXTD1, 22);
-    }
-#endif
-#if STM32_COMP_USE_COMP3 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD3 == compp) {
-      ext_lld_channel_disable(&EXTD1, 29);
-    }
-#endif
-#if STM32_COMP_USE_COMP4 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD4 == compp) {
-      ext_lld_channel_disable(&EXTD1, 30);
-    }
-#endif
-#if STM32_COMP_USE_COMP5 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD5 == compp) {
-      ext_lld_channel_disable(&EXTD1, 31);
-    }
-#endif
-#if STM32_COMP_USE_COMP6 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD6 == compp) {
-      ext_lld_channel_disable(&EXTD1, 32);
-    }
-#endif
-#if STM32_COMP_USE_COMP7 && STM32_COMP_USE_INTERRUPTS
-    if (&COMPD7 == compp) {
-      ext_lld_channel_disable(&EXTD1, 33);
-    }
-#endif
+    compp->reg->CSR = 0;
   }
 }
 
@@ -327,8 +315,7 @@ void comp_lld_stop(COMPDriver *compp) {
  */
 void comp_lld_enable(COMPDriver *compp) {
 
-   compp->comp->CSR |= COMP_CSR_COMPxEN; /* Enable */
-
+   compp->reg->CSR |= COMP_CSR_COMPxEN; /* Enable */
 }
 
 /**
@@ -340,8 +327,7 @@ void comp_lld_enable(COMPDriver *compp) {
  */
 void comp_lld_disable(COMPDriver *compp) {
 
-  compp->comp->CSR &= ~COMP_CSR_COMPxEN; /* Disable */
-
+  compp->reg->CSR &= ~COMP_CSR_COMPxEN; /* Disable */
 }
 
 #endif /* HAL_USE_COMP */

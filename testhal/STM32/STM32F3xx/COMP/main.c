@@ -17,44 +17,30 @@
 #include "ch.h"
 #include "hal.h"
 
-static const EXTConfig extcfg = {
-  {
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL},
-    {EXT_CH_MODE_DISABLED, NULL}
+void comp2_cb(COMPDriver *comp) {
+
+  if (comp->reg->CSR & COMP_CSR_COMPxOUT) {
+
+
   }
-};
+
+}
+
+void comp4_cb(COMPDriver *comp) {
+  (void) comp;
+
+}
 
 static const COMPConfig comp2_conf = {
   COMP_OUTPUT_NORMAL,
-  NULL,
-  0
+  comp2_cb,
+  COMP_CSR_COMPxINSEL_0 | COMP_CSR_COMPxOUTSEL_0 // CSR
 };
 
 static const COMPConfig comp4_conf = {
   COMP_OUTPUT_INVERTED,
-  NULL,
-  0
+  comp4_cb,
+  COMP_CSR_COMPxINSEL_0 | COMP_CSR_COMPxOUTSEL_1 // CSR
 };
 
 
@@ -66,7 +52,6 @@ int main(void) {
   halInit();
   chSysInit();
 
-  extStart(&EXTD1, &extcfg);
   compStart(&COMPD2, &comp2_conf);
   compStart(&COMPD4, &comp4_conf);
 
@@ -74,7 +59,6 @@ int main(void) {
    * Normal main() thread activity, it resets the watchdog.
    */
   while (true) {
-    palToggleLine(LINE_LED4_BLUE);
     chThdSleepMilliseconds(500);
   }
   return 0;
