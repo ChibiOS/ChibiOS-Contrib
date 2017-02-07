@@ -127,6 +127,51 @@
 #define STM32_COMP_Output_TIM17OCREFCLR                   ((uint32_t)0x00002800)   /*!< COMP output connected to TIM16 OCREF Clear */
 #define STM32_COMP_Output_TIM17BKIN                       ((uint32_t)0x00002C00)   /*!< COMP output connected to TIM16 Break Input (BKIN) */
 
+/* No blanking source can be selected for all comparators */
+#define STM32_COMP_BlankingSrce_None                   ((uint32_t)0x00000000)    /*!< No blanking source */
+
+/* Blanking source common for COMP1, COMP2, COMP3 and COMP7 */
+#define STM32_COMP_BlankingSrce_TIM1OC5                COMP_CSR_COMPxBLANKING_0  /*!< TIM1 OC5 selected as blanking source for compartor */
+
+/* Blanking source common for COMP1 and COMP2 */
+#define STM32_COMP_BlankingSrce_TIM2OC3                COMP_CSR_COMPxBLANKING_1  /*!< TIM2 OC5 selected as blanking source for compartor */
+
+/* Blanking source common for COMP1, COMP2 and COMP5 */
+#define STM32_COMP_BlankingSrce_TIM3OC3                ((uint32_t)0x000C0000)    /*!< TIM2 OC3 selected as blanking source for compartor */
+
+/* Blanking source common for COMP3 and COMP6 */
+#define STM32_COMP_BlankingSrce_TIM2OC4                ((uint32_t)0x000C0000)  /*!< TIM2 OC4 selected as blanking source for compartor */
+
+/* Blanking source common for COMP4, COMP5, COMP6 and COMP7 */
+#define STM32_COMP_BlankingSrce_TIM8OC5                COMP_CSR_COMPxBLANKING_1  /*!< TIM8 OC5 selected as blanking source for compartor */
+
+/* Blanking source for COMP4 */
+#define STM32_COMP_BlankingSrce_TIM3OC4                COMP_CSR_COMPxBLANKING_0  /*!< TIM3 OC4 selected as blanking source for compartor */
+#define STM32_COMP_BlankingSrce_TIM15OC1               ((uint32_t)0x000C0000)    /*!< TIM15 OC1 selected as blanking source for compartor */
+
+/* Blanking source common for COMP6 and COMP7 */
+#define STM32_COMP_BlankingSrce_TIM15OC2               COMP_CSR_COMPxBLANKING_2    /*!< TIM15 OC2 selected as blanking source for compartor */
+
+#define STM32_COMP_OutputPol_NonInverted              ((uint32_t)0x00000000)  /*!< COMP output on GPIO isn't inverted */
+#define STM32_COMP_OutputPol_Inverted                 COMP_CSR_COMPxPOL       /*!< COMP output on GPIO is inverted */
+
+#define STM32_COMP_Hysteresis_No                      0x00000000           /*!< No hysteresis */
+#define STM32_COMP_Hysteresis_Low                     COMP_CSR_COMPxHYST_0 /*!< Hysteresis level low */
+#define STM32_COMP_Hysteresis_Medium                  COMP_CSR_COMPxHYST_1 /*!< Hysteresis level medium */
+#define STM32_COMP_Hysteresis_High                    COMP_CSR_COMPxHYST   /*!< Hysteresis level high */
+
+#define STM32_COMP_Mode_HighSpeed                     0x00000000            /*!< High Speed */
+#define STM32_COMP_Mode_MediumSpeed                   COMP_CSR_COMPxMODE_0  /*!< Medium Speed */
+#define STM32_COMP_Mode_LowPower                      COMP_CSR_COMPxMODE_1  /*!< Low power mode */
+#define STM32_COMP_Mode_UltraLowPower                 COMP_CSR_COMPxMODE    /*!< Ultra-low power mode */
+
+/* When output polarity is not inverted, comparator output is high when
+   the non-inverting input is at a higher voltage than the inverting input */
+#define STM32_COMP_OutputLevel_High                   COMP_CSR_COMPxOUT
+/* When output polarity is not inverted, comparator output is low when
+   the non-inverting input is at a lower voltage than the inverting input*/
+#define STM32_COMP_OutputLevel_Low                    ((uint32_t)0x00000000)
+
 
 #if defined(STM32F301x8) || defined(STM32F302x8) || defined(STM32F303x8) \
 || defined(STM32F318xx) || defined(STM32F328xx) || defined(STM32F334x8)

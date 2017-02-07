@@ -34,7 +34,7 @@ void comp4_cb(COMPDriver *comp) {
 static const COMPConfig comp2_conf = {
   COMP_OUTPUT_NORMAL,
   comp2_cb,
-  STM32_COMP_InvertingInput_VREFINT // CSR
+  STM32_COMP_InvertingInput_VREFINT || STM32_COMP_Hysteresis_High // CSR
 };
 
 static const COMPConfig comp4_conf = {
