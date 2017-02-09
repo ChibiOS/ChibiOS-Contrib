@@ -274,6 +274,102 @@ OSAL_IRQ_HANDLER(Vector148) {
 }
 
 /**
+ * @brief   Configures and activates an EXT channel (used by comp)
+ *
+ * @param[in] compp      pointer to the @p COMPDriver object
+ * @param[in] channel    EXT channel
+ *
+ * @notapi
+ */
+void comp_ext_lld_channel_enable(COMPDriver *compp, uint32_t channel) {
+  uint32_t cmask = (1 << (channel & 0x1F));
+
+  /* Don't touch other channels */
+  if (channel < 21 || channel > 33) {
+      return;
+  }
+
+#if STM32_EXTI_NUM_LINES > 32
+  if (channel < 32) {
+#endif
+    /* Masked out lines must not be touched by this driver.*/
+    if ((cmask & STM32_EXTI_IMR_MASK) != 0U) {
+      return;
+    }
+
+    /* Programming edge registers.*/
+    if (compp->config->irq_mode == COMP_IRQ_RISING || compp->config->irq_mode == COMP_IRQ_BOTH)
+      EXTI->RTSR |= cmask;
+    else
+      EXTI->RTSR &= ~cmask;
+    if (compp->config->irq_mode == COMP_IRQ_FALLING || compp->config->irq_mode == COMP_IRQ_BOTH)
+      EXTI->FTSR |= cmask;
+    else
+      EXTI->FTSR &= ~cmask;
+
+    /* Programming interrupt and event registers.*/
+    EXTI->IMR |= cmask;
+    EXTI->EMR &= ~cmask;
+
+#if STM32_EXTI_NUM_LINES > 32
+  }
+  else {
+    /* Masked out lines must not be touched by this driver.*/
+    if ((cmask & STM32_EXTI_IMR2_MASK) != 0U) {
+      return;
+    }
+
+    /* Programming edge registers.*/
+    if (compp->config->irq_mode == COMP_IRQ_RISING || compp->config->irq_mode == COMP_IRQ_BOTH)
+      EXTI->RTSR2 |= cmask;
+    else
+      EXTI->RTSR2 &= ~cmask;
+    if (compp->config->irq_mode == COMP_IRQ_FALLING || compp->config->irq_mode == COMP_IRQ_BOTH)
+      EXTI->FTSR2 |= cmask;
+    else
+      EXTI->FTSR2 &= ~cmask;
+
+    /* Programming interrupt and event registers.*/
+    EXTI->IMR2 |= cmask;
+    EXTI->EMR2 &= ~cmask;
+  }
+#endif
+}
+
+/**
+ * @brief   Deactivate an EXT channel (used by comp)
+ *
+ * @param[in] compp      pointer to the @p COMPDriver object
+ * @param[in] channel    EXT channel
+ *
+ * @notapi
+ */
+void comp_ext_lld_channel_disable(COMPDriver *compp, uint32_t channel) {
+
+  (void) compp;
+  uint32_t cmask = (1 << (channel & 0x1F));
+
+#if STM32_EXTI_NUM_LINES > 32
+  if (channel < 32) {
+#endif
+    EXTI->IMR  &= ~cmask;
+    EXTI->EMR  &= ~cmask;
+    EXTI->RTSR &= ~cmask;
+    EXTI->FTSR &= ~cmask;
+    EXTI->PR    =  cmask;
+#if STM32_EXTI_NUM_LINES > 32
+  }
+  else {
+    EXTI->IMR2  &= ~cmask;
+    EXTI->EMR2  &= ~cmask;
+    EXTI->RTSR2 &= ~cmask;
+    EXTI->FTSR2 &= ~cmask;
+    EXTI->PR2    =  cmask;
+  }
+#endif
+}
+
+/**
  * @brief   Configures and activates the COMP peripheral.
  *
  * @param[in] compp      pointer to the @p COMPDriver object
@@ -286,8 +382,52 @@ void comp_lld_start(COMPDriver *compp) {
   compp->reg->CSR = compp->config->csr & ~COMP_CSR_COMPxEN;
 
   // Inverted output
-  if (compp->config->mode == COMP_OUTPUT_INVERTED)
+  if (compp->config->output_mode == COMP_OUTPUT_INVERTED)
     compp->reg->CSR |= COMP_CSR_COMPxPOL;
+
+#if STM32_COMP_USE_INTERRUPTS
+#if STM32_COMP_USE_COMP1
+  if (compp == &COMPD1) {
+    comp_ext_lld_channel_enable(compp, 21);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP2
+  if (compp == &COMPD2) {
+    comp_ext_lld_channel_enable(compp, 22);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP3
+  if (compp == &COMPD3) {
+    comp_ext_lld_channel_enable(compp, 29);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP4
+  if (compp == &COMPD4) {
+    comp_ext_lld_channel_enable(compp, 30);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP5
+  if (compp == &COMPD5) {
+    comp_ext_lld_channel_enable(compp, 31);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP6
+  if (compp == &COMPD6) {
+    comp_ext_lld_channel_enable(compp, 32);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP7
+  if (compp == &COMPD7) {
+    comp_ext_lld_channel_enable(compp, 33);
+  }
+#endif
+#endif
 
 }
 
@@ -304,6 +444,51 @@ void comp_lld_stop(COMPDriver *compp) {
 
     compp->reg->CSR = 0;
   }
+
+#if STM32_COMP_USE_INTERRUPTS
+#if STM32_COMP_USE_COMP1
+  if (compp == &COMPD1) {
+    comp_ext_lld_channel_disable(compp, 21);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP2
+  if (compp == &COMPD2) {
+    comp_ext_lld_channel_disable(compp, 22);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP3
+  if (compp == &COMPD3) {
+    comp_ext_lld_channel_disable(compp, 29);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP4
+  if (compp == &COMPD4) {
+    comp_ext_lld_channel_disable(compp, 30);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP5
+  if (compp == &COMPD5) {
+    comp_ext_lld_channel_disable(compp, 31);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP6
+  if (compp == &COMPD6) {
+    comp_ext_lld_channel_disable(compp, 32);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP7
+  if (compp == &COMPD7) {
+    comp_ext_lld_channel_disable(compp, 33);
+  }
+#endif
+#endif
+
 }
 
 /**

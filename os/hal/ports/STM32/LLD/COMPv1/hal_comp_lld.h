@@ -367,6 +367,14 @@ typedef enum {
   COMP_OUTPUT_INVERTED = 1
 } comp_output_mode_t;
 
+/**
+ * @brief   COMP interrupt mode.
+ */
+typedef enum {
+  COMP_IRQ_RISING = 0,
+  COMP_IRQ_FALLING = 1,
+  COMP_IRQ_BOTH = 2
+} comp_irq_mode_t;
 
 /**
  * @brief   Driver configuration structure.
@@ -376,7 +384,12 @@ typedef struct {
   /**
    * @brief   Ouput mode.
    */
-  comp_output_mode_t           mode;
+  comp_output_mode_t        output_mode;
+
+  /**
+   * @brief   Ouput mode.
+   */
+  comp_irq_mode_t           irq_mode;
 
   /**
    * @brief   Callback.
