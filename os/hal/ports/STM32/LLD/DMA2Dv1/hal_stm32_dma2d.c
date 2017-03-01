@@ -19,7 +19,6 @@
  * @brief   DMA2D/Chrom-ART driver.
  */
 
-#include "ch.h"
 #include "hal.h"
 
 #include "hal_stm32_dma2d.h"
