@@ -89,7 +89,7 @@ include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_nrf
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
-include $(CHIBIOS_CONTRIB)/os/hal/ports/NRF51/NRF51822/platform.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/NRF5/NRF51822/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/NRF51-DK/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).
@@ -150,7 +150,8 @@ INCDIR = $(CHIBIOS)/os/license \
          $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
 	 $(SHELLINC) \
-         $(CHIBIOS)/os/hal/lib/streams $(CHIBIOS)/os/various
+         $(CHIBIOS)/os/hal/lib/streams \
+         $(CHIBIOS)/os/various
 
 #
 # Project, sources and paths
