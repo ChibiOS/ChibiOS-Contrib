@@ -208,7 +208,7 @@ static void serial_serve_interrupt(SerialDriver *sdp)
     while ((HWREG(u + UART_O_FR) & UART_FR_RXFE) == 0) {
       osalSysLockFromISR();
       if (iqPutI(&sdp->iqueue, HWREG(u + UART_O_DR)) < Q_OK) {
-        chnAddFlagsI(sdp, SD_OVERRUN_ERROR);
+        chnAddFlagsI(sdp, SD_QUEUE_FULL_ERROR);
       }
       osalSysUnlockFromISR();
     }
