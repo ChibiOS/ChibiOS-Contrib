@@ -299,7 +299,7 @@ static void serial_serve_interrupt(SerialDriver *sdp)
 }
 
 /**
- * @brief
+ * @brief   Fill the hardware FIFO of a UART.
  */
 static void fifo_load(SerialDriver *sdp)
 {
@@ -409,13 +409,15 @@ static void notify8(io_queue_t *qp)
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-/**
- * @brief   UART0 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART0 || defined(__DOXYGEN__)
 #if !defined(TIVA_UART0_HANDLER)
 #error "TIVA_UART0_HANDLER not defined"
 #endif
+/**
+ * @brief   UART0 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART0_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -426,10 +428,16 @@ CH_IRQ_HANDLER(TIVA_UART0_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART1 IRQ handler.
- */
+
 #if TIVA_SERIAL_USE_UART1 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART1_HANDLER)
+#error "TIVA_UART1_HANDLER not defined"
+#endif
+/**
+ * @brief   UART1 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART1_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -440,10 +448,15 @@ CH_IRQ_HANDLER(TIVA_UART1_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART2 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART2 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART2_HANDLER)
+#error "TIVA_UART2_HANDLER not defined"
+#endif
+/**
+ * @brief   UART2 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART2_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -454,10 +467,15 @@ CH_IRQ_HANDLER(TIVA_UART2_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART3 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART3 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART3_HANDLER)
+#error "TIVA_UART3_HANDLER not defined"
+#endif
+/**
+ * @brief   UART3 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART3_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -468,10 +486,15 @@ CH_IRQ_HANDLER(TIVA_UART3_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART4 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART4 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART4_HANDLER)
+#error "TIVA_UART4_HANDLER not defined"
+#endif
+/**
+ * @brief   UART4 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART4_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -482,10 +505,15 @@ CH_IRQ_HANDLER(TIVA_UART4_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART5 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART5 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART5_HANDLER)
+#error "TIVA_UART5_HANDLER not defined"
+#endif
+/**
+ * @brief   UART5 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART5_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -496,10 +524,15 @@ CH_IRQ_HANDLER(TIVA_UART5_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART6 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART6 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART6_HANDLER)
+#error "TIVA_UART6_HANDLER not defined"
+#endif
+/**
+ * @brief   UART6 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART6_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -510,10 +543,15 @@ CH_IRQ_HANDLER(TIVA_UART6_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART7 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART7 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART7_HANDLER)
+#error "TIVA_UART7_HANDLER not defined"
+#endif
+/**
+ * @brief   UART7 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART7_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -530,6 +568,8 @@ CH_IRQ_HANDLER(TIVA_UART7_HANDLER)
 
 /**
  * @brief   Low level serial driver initialization.
+ *
+ * @notapi
  */
 void sd_lld_init(void)
 {
@@ -597,6 +637,8 @@ void sd_lld_init(void)
  * @param[in] config    the architecture-dependent serial driver configuration.
  *                      If this parameter is set to @p NULL then a default
  *                      configuration is used.
+ *
+ * @notapi
  */
 void sd_lld_start(SerialDriver *sdp, const SerialConfig *config)
 {
@@ -694,6 +736,8 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config)
  *          interrupt vector.
  *
  * @param[in] sdp       pointer to a @p SerialDriver object
+ *
+ * @notapi
  */
 void sd_lld_stop(SerialDriver *sdp)
 {
