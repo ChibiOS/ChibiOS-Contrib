@@ -31,6 +31,15 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
+/**
+ * @brief   Advanced buffering support switch.
+ * @details This constants enables the advanced buffering support in the
+ *          low level driver, the queue buffer is no more part of the
+ *          @p SerialDriver structure, each driver can have a different
+ *          queue size.
+ */
+#define SERIAL_ADVANCED_BUFFERING_SUPPORT   TRUE
+
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -169,6 +178,118 @@
 #endif
 
 /**
+ * @brief   Input buffer size for UART0.
+ */
+#if !defined(TIVA_SERIAL_UART0_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART0_IN_BUF_SIZE   SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART0.
+ */
+#if !defined(TIVA_SERIAL_UART0_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART0_OUT_BUF_SIZE  SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for UART1.
+ */
+#if !defined(TIVA_SERIAL_UART1_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART1_IN_BUF_SIZE   SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART1.
+ */
+#if !defined(TIVA_SERIAL_UART1_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART1_OUT_BUF_SIZE  SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for UART2.
+ */
+#if !defined(TIVA_SERIAL_UART2_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART2_IN_BUF_SIZE   SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART2.
+ */
+#if !defined(TIVA_SERIAL_UART2_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART2_OUT_BUF_SIZE  SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for UART3.
+ */
+#if !defined(TIVA_SERIAL_UART3_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART3_IN_BUF_SIZE   SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART3.
+ */
+#if !defined(TIVA_SERIAL_UART3_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART3_OUT_BUF_SIZE  SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for UART4.
+ */
+#if !defined(TIVA_SERIAL_UART4_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART4_IN_BUF_SIZE   SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART4.
+ */
+#if !defined(TIVA_SERIAL_UART4_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART4_OUT_BUF_SIZE  SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for UART5.
+ */
+#if !defined(TIVA_SERIAL_UART5_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART5_IN_BUF_SIZE   SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART5.
+ */
+#if !defined(TIVA_SERIAL_UART5_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART5_OUT_BUF_SIZE  SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for UART6.
+ */
+#if !defined(TIVA_SERIAL_UART6_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART6_IN_BUF_SIZE   SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART6.
+ */
+#if !defined(TIVA_SERIAL_UART6_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART6_OUT_BUF_SIZE  SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for UART7.
+ */
+#if !defined(TIVA_SERIAL_UART7_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART7_IN_BUF_SIZE   SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART7.
+ */
+#if !defined(TIVA_SERIAL_UART7_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define TIVA_SERIAL_UART7_OUT_BUF_SIZE  SERIAL_BUFFERS_SIZE
+#endif
+
+/**
  * @}
  */
 
@@ -270,10 +391,6 @@ typedef struct {
   input_queue_t             iqueue;                                         \
   /* Output queue.*/                                                        \
   output_queue_t            oqueue;                                         \
-  /* Input circular buffer.*/                                               \
-  uint8_t                   ib[SERIAL_BUFFERS_SIZE];                        \
-  /* Output circular buffer.*/                                              \
-  uint8_t                   ob[SERIAL_BUFFERS_SIZE];                        \
   /* End of the mandatory fields.*/                                         \
   /* Pointer to the USART registers block.*/                                \
   uint32_t                  uart;
