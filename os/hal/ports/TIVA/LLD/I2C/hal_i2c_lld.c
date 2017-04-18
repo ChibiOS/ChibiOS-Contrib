@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIVA/LLD/i2c_lld.c
+ * @file    I2C/hal_i2c_lld.c
  * @brief   TM4C123x/TM4C129x I2C subsystem low level driver source.
  *
  * @addtogroup I2C

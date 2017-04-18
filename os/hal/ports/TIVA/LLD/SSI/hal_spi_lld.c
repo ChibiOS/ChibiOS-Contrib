@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIVA/LLD/spi_lld.c
+ * @file    SSI/hal_spi_lld.c
  * @brief   TM4C123x/TM4C129x SPI subsystem low level driver.
  *
  * @addtogroup SPI

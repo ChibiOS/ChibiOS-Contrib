@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIVA/gpt_lld.c
+ * @file    GPTM/hal_gpt_lld.c
  * @brief   TM4C123x/TM4C129x GPT subsystem low level driver source.
  *
  * @addtogroup GPT

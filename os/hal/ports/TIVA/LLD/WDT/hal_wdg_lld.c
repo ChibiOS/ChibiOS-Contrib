@@ -16,7 +16,7 @@
 
 
 /**
- * @file    TIVA/wdg_lld.c
+ * @file    WDT/hal_wdg_lld.c
  * @brief   WDG Driver subsystem low level driver source.
  *
  * @addtogroup WDG

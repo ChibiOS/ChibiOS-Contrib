@@ -14,6 +14,14 @@
     limitations under the License.
 */
 
+/**
+ * @file    uDMA/tiva_udma.c
+ * @brief   DMA helper driver code.
+ *
+ * @addtogroup TIVA_DMA
+ * @{
+ */
+
 #include "hal.h"
 
 /* The following macro is only defined if some driver requiring DMA services
@@ -139,3 +147,5 @@ void udmaChannelRelease(uint8_t dmach)
 }
 
 #endif
+
+/** @} */

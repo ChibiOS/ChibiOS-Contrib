@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIVA/LLD/pal_lld.h
+ * @file    GPIO/hal_pal_lld.h
  * @brief   TM4C123x/TM4C129x PAL subsystem low level driver header.
  *
  * @addtogroup PAL

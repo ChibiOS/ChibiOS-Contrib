@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIVA/mac_lld.c
+ * @file    MAC/hal_mac_lld.c
  * @brief   MAC Driver subsystem low level driver source.
  *
  * @addtogroup MAC

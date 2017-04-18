@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIVA/LLD/pwm_lld.c
+ * @file    PWM/hal_pwm_lld.c
  * @brief   TM4C123x/TM4C129x PWM subsystem low level driver header.
  *
  * @addtogroup PWM

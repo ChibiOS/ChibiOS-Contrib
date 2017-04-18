@@ -14,6 +14,14 @@
     limitations under the License.
 */
 
+/**
+ * @file    uDMA/tiva_udma.h
+ * @brief   DMA helper driver header.
+ *
+ * @addtogroup TIVA_DMA
+ * @{
+ */
+
 #ifndef TIVA_UDMA_H_
 #define TIVA_UDMA_H_
 
@@ -150,3 +158,5 @@ extern "C" {
 #endif
 
 #endif /* TIVA_UDMA_H_ */
+
+/** @} */

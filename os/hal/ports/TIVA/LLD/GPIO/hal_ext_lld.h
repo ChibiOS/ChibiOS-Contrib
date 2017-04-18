@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    Tiva/ext_lld.h
+ * @file    GPIO/hal_ext_lld.h
  * @brief   Tiva EXT subsystem low level driver header.
  *
  * @addtogroup EXT

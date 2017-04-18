@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIVA/LLD/serial_lld.c
+ * @file    UART/hal_serial_lld.c
  * @brief   Tiva low level serial driver code.
  *
  * @addtogroup SERIAL

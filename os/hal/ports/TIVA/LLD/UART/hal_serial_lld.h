@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIVA/LLD/serial_lld.h
+ * @file    UART/hal_serial_lld.h
  * @brief   Tiva low level serial driver header.
  *
  * @addtogroup SERIAL
@@ -48,7 +48,6 @@
  * @name    Configuration options
  * @{
  */
-
 /**
  * @brief   UART0 driver enable switch.
  * @details If set to @p TRUE the support for UART0 is included.
@@ -288,10 +287,7 @@
 #if !defined(TIVA_SERIAL_UART7_OUT_BUF_SIZE) || defined(__DOXYGEN__)
 #define TIVA_SERIAL_UART7_OUT_BUF_SIZE  SERIAL_BUFFERS_SIZE
 #endif
-
-/**
- * @}
- */
+/** @} */
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
