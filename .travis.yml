@@ -3,9 +3,9 @@ language: c
 sudo: required
 
 before_install:
-  - chmod +x before_install.sh
-  - ./before_install.sh
+  - chmod +x tools/travis/before_install.sh
+  - .tools/travis/before_install.sh
   
 script:
-  - chmod +x script.sh
-  - ./script.sh
+  - chmod +x tools/travis/script.sh
+  - .tools/travis/script.sh
