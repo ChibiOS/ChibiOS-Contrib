@@ -1,0 +1,11 @@
+language: c
+
+sudo: required
+
+before_install:
+  - chmod +x tools/travis/before_install.sh
+  - ./tools/travis/before_install.sh
+  
+script:
+  - chmod +x tools/travis/script.sh
+  - ./tools/travis/script.sh

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014..2016 Marco Veeneman
+    Copyright (C) 2014..2017 Marco Veeneman
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIVA/LLD/spi_lld.h
+ * @file    SSI/hal_spi_lld.h
  * @brief   TM4C123x/TM4C129x SPI subsystem low level driver.
  *
  * @addtogroup SPI

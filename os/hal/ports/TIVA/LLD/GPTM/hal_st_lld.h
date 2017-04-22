@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014..2016 Marco Veeneman
+    Copyright (C) 2014..2017 Marco Veeneman
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    Tiva/LLD/st_lld.h
+ * @file    GPTM/hal_st_lld.h
  * @brief   ST Driver subsystem low level driver header.
  * @details This header is designed to be include-able without having to
  *          include other files from the HAL.

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014..2016 Marco Veeneman
+    Copyright (C) 2014..2017 Marco Veeneman
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    Tiva/LLD/st_lld.c
+ * @file    GPTM/hal_st_lld.c
  * @brief   ST Driver subsystem low level driver code.
  *
  * @addtogroup ST

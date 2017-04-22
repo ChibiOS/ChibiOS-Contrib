@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014..2016 Marco Veeneman
+    Copyright (C) 2014..2017 Marco Veeneman
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIVA/gpt_lld.h
+ * @file    GPTM/hal_gpt_lld.h
  * @brief   TM4C123x/TM4C129x GPT subsystem low level driver header.
  *
  * @addtogroup GPT

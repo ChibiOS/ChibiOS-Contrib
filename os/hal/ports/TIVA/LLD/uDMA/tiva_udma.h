@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014..2016 Marco Veeneman
+    Copyright (C) 2014..2017 Marco Veeneman
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,6 +13,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+/**
+ * @file    uDMA/tiva_udma.h
+ * @brief   DMA helper driver header.
+ *
+ * @addtogroup TIVA_DMA
+ * @{
+ */
 
 #ifndef TIVA_UDMA_H_
 #define TIVA_UDMA_H_
@@ -150,3 +158,5 @@ extern "C" {
 #endif
 
 #endif /* TIVA_UDMA_H_ */
+
+/** @} */

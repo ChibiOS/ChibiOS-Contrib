@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014..2016 Marco Veeneman
+    Copyright (C) 2014..2017 Marco Veeneman
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,6 +13,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+/**
+ * @file    uDMA/tiva_udma.c
+ * @brief   DMA helper driver code.
+ *
+ * @addtogroup TIVA_DMA
+ * @{
+ */
 
 #include "hal.h"
 
@@ -139,3 +147,5 @@ void udmaChannelRelease(uint8_t dmach)
 }
 
 #endif
+
+/** @} */

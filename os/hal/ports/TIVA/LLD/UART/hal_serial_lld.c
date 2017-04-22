@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014..2016 Marco Veeneman
+    Copyright (C) 2014..2017 Marco Veeneman
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIVA/LLD/serial_lld.c
+ * @file    UART/hal_serial_lld.c
  * @brief   Tiva low level serial driver code.
  *
  * @addtogroup SERIAL
@@ -87,6 +87,70 @@ static const SerialConfig sd_default_config =
   UART_IFLS_TX4_8 | UART_IFLS_RX7_8,
   UART_CC_CS_SYSCLK
 };
+
+#if TIVA_SERIAL_USE_UART0 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD1.*/
+static uint8_t sd_in_buf1[TIVA_SERIAL_UART0_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD1.*/
+static uint8_t sd_out_buf1[TIVA_SERIAL_UART0_OUT_BUF_SIZE];
+#endif
+
+#if TIVA_SERIAL_USE_UART1 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD2.*/
+static uint8_t sd_in_buf2[TIVA_SERIAL_UART1_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD2.*/
+static uint8_t sd_out_buf2[TIVA_SERIAL_UART1_OUT_BUF_SIZE];
+#endif
+
+#if TIVA_SERIAL_USE_UART2 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD3.*/
+static uint8_t sd_in_buf3[TIVA_SERIAL_UART2_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD3.*/
+static uint8_t sd_out_buf3[TIVA_SERIAL_UART2_OUT_BUF_SIZE];
+#endif
+
+#if TIVA_SERIAL_USE_UART3 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD4.*/
+static uint8_t sd_in_buf4[TIVA_SERIAL_UART3_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD4.*/
+static uint8_t sd_out_buf4[TIVA_SERIAL_UART3_OUT_BUF_SIZE];
+#endif
+
+#if TIVA_SERIAL_USE_UART4 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD5.*/
+static uint8_t sd_in_buf5[TIVA_SERIAL_UART4_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD5.*/
+static uint8_t sd_out_buf5[TIVA_SERIAL_UART4_OUT_BUF_SIZE];
+#endif
+
+#if TIVA_SERIAL_USE_UART5 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD6.*/
+static uint8_t sd_in_buf6[TIVA_SERIAL_UART5_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD6.*/
+static uint8_t sd_out_buf6[TIVA_SERIAL_UART5_OUT_BUF_SIZE];
+#endif
+
+#if TIVA_SERIAL_USE_UART6 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD7.*/
+static uint8_t sd_in_buf7[TIVA_SERIAL_UART6_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD7.*/
+static uint8_t sd_out_buf7[TIVA_SERIAL_UART6_OUT_BUF_SIZE];
+#endif
+
+#if TIVA_SERIAL_USE_UART7 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD8.*/
+static uint8_t sd_in_buf8[TIVA_SERIAL_UART7_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD8.*/
+static uint8_t sd_out_buf8[TIVA_SERIAL_UART7_OUT_BUF_SIZE];
+#endif
 
 /*===========================================================================*/
 /* Driver local functions.                                                   */
@@ -208,7 +272,7 @@ static void serial_serve_interrupt(SerialDriver *sdp)
     while ((HWREG(u + UART_O_FR) & UART_FR_RXFE) == 0) {
       osalSysLockFromISR();
       if (iqPutI(&sdp->iqueue, HWREG(u + UART_O_DR)) < Q_OK) {
-        chnAddFlagsI(sdp, SD_OVERRUN_ERROR);
+        chnAddFlagsI(sdp, SD_QUEUE_FULL_ERROR);
       }
       osalSysUnlockFromISR();
     }
@@ -230,10 +294,12 @@ static void serial_serve_interrupt(SerialDriver *sdp)
       HWREG(u + UART_O_DR) = b;
     }
   }
+
+  /* TODO: Physical transmission end. */
 }
 
 /**
- * @brief
+ * @brief   Fill the hardware FIFO of a UART.
  */
 static void fifo_load(SerialDriver *sdp)
 {
@@ -343,13 +409,15 @@ static void notify8(io_queue_t *qp)
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-/**
- * @brief   UART0 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART0 || defined(__DOXYGEN__)
 #if !defined(TIVA_UART0_HANDLER)
 #error "TIVA_UART0_HANDLER not defined"
 #endif
+/**
+ * @brief   UART0 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART0_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -360,10 +428,16 @@ CH_IRQ_HANDLER(TIVA_UART0_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART1 IRQ handler.
- */
+
 #if TIVA_SERIAL_USE_UART1 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART1_HANDLER)
+#error "TIVA_UART1_HANDLER not defined"
+#endif
+/**
+ * @brief   UART1 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART1_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -374,10 +448,15 @@ CH_IRQ_HANDLER(TIVA_UART1_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART2 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART2 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART2_HANDLER)
+#error "TIVA_UART2_HANDLER not defined"
+#endif
+/**
+ * @brief   UART2 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART2_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -388,10 +467,15 @@ CH_IRQ_HANDLER(TIVA_UART2_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART3 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART3 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART3_HANDLER)
+#error "TIVA_UART3_HANDLER not defined"
+#endif
+/**
+ * @brief   UART3 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART3_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -402,10 +486,15 @@ CH_IRQ_HANDLER(TIVA_UART3_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART4 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART4 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART4_HANDLER)
+#error "TIVA_UART4_HANDLER not defined"
+#endif
+/**
+ * @brief   UART4 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART4_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -416,10 +505,15 @@ CH_IRQ_HANDLER(TIVA_UART4_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART5 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART5 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART5_HANDLER)
+#error "TIVA_UART5_HANDLER not defined"
+#endif
+/**
+ * @brief   UART5 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART5_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -430,10 +524,15 @@ CH_IRQ_HANDLER(TIVA_UART5_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART6 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART6 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART6_HANDLER)
+#error "TIVA_UART6_HANDLER not defined"
+#endif
+/**
+ * @brief   UART6 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART6_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -444,10 +543,15 @@ CH_IRQ_HANDLER(TIVA_UART6_HANDLER)
 }
 #endif
 
-/**
- * @brief   UART7 IRQ handler.
- */
 #if TIVA_SERIAL_USE_UART7 || defined(__DOXYGEN__)
+#if !defined(TIVA_UART7_HANDLER)
+#error "TIVA_UART7_HANDLER not defined"
+#endif
+/**
+ * @brief   UART7 interrupt handler.
+ *
+ * @isr
+ */
 CH_IRQ_HANDLER(TIVA_UART7_HANDLER)
 {
   CH_IRQ_PROLOGUE();
@@ -464,46 +568,64 @@ CH_IRQ_HANDLER(TIVA_UART7_HANDLER)
 
 /**
  * @brief   Low level serial driver initialization.
+ *
+ * @notapi
  */
 void sd_lld_init(void)
 {
 #if TIVA_SERIAL_USE_UART0
-  sdObjectInit(&SD1, NULL, notify1);
+  sdObjectInit(&SD1);
+  iqObjectInit(&SD1.iqueue, sd_in_buf1, sizeof sd_in_buf1, NULL, &SD1);
+  oqObjectInit(&SD1.oqueue, sd_out_buf1, sizeof sd_out_buf1, notify1, &SD1);
   SD1.uart = UART0_BASE;
 #endif
 
 #if TIVA_SERIAL_USE_UART1
-  sdObjectInit(&SD2, NULL, notify2);
+  sdObjectInit(&SD2);
+  iqObjectInit(&SD2.iqueue, sd_in_buf2, sizeof sd_in_buf2, NULL, &SD2);
+  oqObjectInit(&SD2.oqueue, sd_out_buf2, sizeof sd_out_buf2, notify2, &SD2);
   SD2.uart = UART1_BASE;
 #endif
 
 #if TIVA_SERIAL_USE_UART2
-  sdObjectInit(&SD3, NULL, notify3);
+  sdObjectInit(&SD3);
+  iqObjectInit(&SD3.iqueue, sd_in_buf3, sizeof sd_in_buf3, NULL, &SD3);
+  oqObjectInit(&SD3.oqueue, sd_out_buf3, sizeof sd_out_buf3, notify3, &SD3);
   SD3.uart = UART2_BASE;
 #endif
 
 #if TIVA_SERIAL_USE_UART3
-  sdObjectInit(&SD4, NULL, notify4);
+  sdObjectInit(&SD4);
+  iqObjectInit(&SD4.iqueue, sd_in_buf4, sizeof sd_in_buf4, NULL, &SD4);
+  oqObjectInit(&SD4.oqueue, sd_out_buf4, sizeof sd_out_buf4, notify4, &SD4);
   SD4.uart = UART3_BASE;
 #endif
 
 #if TIVA_SERIAL_USE_UART4
-  sdObjectInit(&SD5, NULL, notify5);
+  sdObjectInit(&SD5);
+  iqObjectInit(&SD5.iqueue, sd_in_buf5, sizeof sd_in_buf5, NULL, &SD5);
+  oqObjectInit(&SD5.oqueue, sd_out_buf5, sizeof sd_out_buf5, notify5, &SD5);
   SD5.uart = UART4_BASE;
 #endif
 
 #if TIVA_SERIAL_USE_UART5
-  sdObjectInit(&SD6, NULL, notify6);
+  sdObjectInit(&SD6);
+  iqObjectInit(&SD6.iqueue, sd_in_buf6, sizeof sd_in_buf6, NULL, &SD6);
+  oqObjectInit(&SD6.oqueue, sd_out_buf6, sizeof sd_out_buf6, notify6, &SD6);
   SD6.uart = UART5_BASE;
 #endif
 
 #if TIVA_SERIAL_USE_UART6
-  sdObjectInit(&SD7, NULL, notify7);
+  sdObjectInit(&SD7);
+  iqObjectInit(&SD7.iqueue, sd_in_buf7, sizeof sd_in_buf7, NULL, &SD7);
+  oqObjectInit(&SD7.oqueue, sd_out_buf7, sizeof sd_out_buf7, notify7, &SD7);
   SD7.uart = UART6_BASE;
 #endif
 
 #if TIVA_SERIAL_USE_UART7
-  sdObjectInit(&SD8, NULL, notify8);
+  sdObjectInit(&SD8);
+  iqObjectInit(&SD8.iqueue, sd_in_buf8, sizeof sd_in_buf8, NULL, &SD8);
+  oqObjectInit(&SD8.oqueue, sd_out_buf8, sizeof sd_out_buf8, notify8, &SD8);
   SD8.uart = UART7_BASE;
 #endif
 }
@@ -515,6 +637,8 @@ void sd_lld_init(void)
  * @param[in] config    the architecture-dependent serial driver configuration.
  *                      If this parameter is set to @p NULL then a default
  *                      configuration is used.
+ *
+ * @notapi
  */
 void sd_lld_start(SerialDriver *sdp, const SerialConfig *config)
 {
@@ -612,6 +736,8 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config)
  *          interrupt vector.
  *
  * @param[in] sdp       pointer to a @p SerialDriver object
+ *
+ * @notapi
  */
 void sd_lld_stop(SerialDriver *sdp)
 {
