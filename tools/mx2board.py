@@ -6,8 +6,9 @@ __version__ = '0.3'
 
 from xml.etree import ElementTree as etree
 from jinja2 import Template
-from os.path import expanduser, sep, dirname
+from os.path import expanduser, sep, dirname, abspath
 from argparse import ArgumentParser
+from traceback import print_exc
 import re
 import pprint
 
@@ -97,9 +98,6 @@ def get_gpio_file(proj_file, mx_path):
     path = None
     mcu_info = None
 
-    if not mx_path:
-        mx_path = '.'
-
     print('Opening ' + proj_file)
     with open(proj_file, 'r') as f:
         proj_data = f.readlines()
@@ -113,14 +111,19 @@ def get_gpio_file(proj_file, mx_path):
         print('Could not find MCU name in project file')
         exit(1)
 
+    if "STM32F1" in mcu_name:
+        print('STM32F1xx are not compatible with this script. (old GPIO)')
+        exit(1)
+
     found = False
     for p in (mx_path,
               '{0}{1}STM32CubeMX'.format(expanduser("~"), sep),
-              'C:{}STM32CubeMX'.format(sep)):
+              'C:{0}Program Files{0}STMicroelectronics{0}STM32Cube{0}STM32CubeMX'.format(sep)):
 
+        if not p:
+            continue
         try:
             path = '{1}{0}db{0}mcu{0}'.format(sep, p)
-            print('Trying ' + path)
             mcu_info = open_xml(path + mcu_name)
             found = True
             break
@@ -182,9 +185,9 @@ def read_gpio(filename):
                 af = int(''.join(af.split('_')[1])[2:])
                 gpio['ports'][port][num][s.attrib['Name']] = af
             except ValueError as e:
-                print(e)
+                print_exc(e)
             except AttributeError as e:
-                print(e)
+                print_exc(e)
 
     return gpio
 
@@ -317,6 +320,7 @@ def gen_ports(gpio, project):
 
 if __name__ == '__main__':
     args = parser.parse_args()
+    cur_path = dirname(abspath(__file__))
 
     if args.gpio:
         gpio = read_gpio(args.gpio)
@@ -328,7 +332,7 @@ if __name__ == '__main__':
     defines = gen_defines(proj)
     ports = gen_ports(gpio, proj)
 
-    with open(dirname(__file__) + '/board_gpio.tpl', 'r') as tpl_file:
+    with open(cur_path + '/board_gpio.tpl', 'r') as tpl_file:
         tpl = tpl_file.read()
     template = Template(tpl)
 
