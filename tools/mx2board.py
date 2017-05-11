@@ -6,7 +6,7 @@ __version__ = '0.3'
 
 from xml.etree import ElementTree as etree
 from jinja2 import Template
-from os.path import expanduser, sep
+from os.path import expanduser, sep, dirname
 from argparse import ArgumentParser
 import re
 import pprint
@@ -328,7 +328,7 @@ if __name__ == '__main__':
     defines = gen_defines(proj)
     ports = gen_ports(gpio, proj)
 
-    with open('board_gpio.tpl', 'r') as tpl_file:
+    with open(dirname(__file__) + '/board_gpio.tpl', 'r') as tpl_file:
         tpl = tpl_file.read()
     template = Template(tpl)
 
