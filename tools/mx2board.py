@@ -1,14 +1,16 @@
 #!/usr/bin/python
-
+# -*- coding: utf-8 -*-
 __author__ = 'Fabien Poussin'
-__version__ = '0.2'
+__version__ = '0.3'
 
 
-import re
 from xml.etree import ElementTree as etree
-import argparse
 from jinja2 import Template
+from os.path import expanduser, sep
+from argparse import ArgumentParser
+import re
 import pprint
+
 
 pretty_print = pprint.PrettyPrinter(indent=2)
 
@@ -67,10 +69,12 @@ PIN_PUPDR_TRANSLATE = {"GPIO_NOPULL": PIN_PUPDR_FLOATING,
                        "GPIO_PULLUP": PIN_PUPDR_PULLUP,
                        "GPIO_PULLDOWN": PIN_PUPDR_PULLDOWN}
 
-parser = argparse.ArgumentParser(description='Generate ChibiOS GPIO header file from STM32CubeMX file.')
-parser.add_argument('-g', '--gpio', required=True, type=str)
-parser.add_argument('-b', '--project', required=True, type=str)
-parser.add_argument('-o', '--output', default='board_gpio.h', type=str)
+parser = ArgumentParser(description='Generate ChibiOS GPIO header file from STM32CubeMX project files.')
+group = parser.add_mutually_exclusive_group(required=False)
+group.add_argument('-m', '--mx', default='', type=str, help='STM32CubeMX path. Invalid if -g is used.')
+group.add_argument('-g', '--gpio', default='', type=str, help='STM32CubeMX Gpio file, if you don\'t have STM32CubeMX installed. Invalid if -m is used.')
+parser.add_argument('-p', '--project', required=True, type=str, help="STM32CubeMX Project file")
+parser.add_argument('-o', '--output', default='board_gpio.h', type=str, help='Output file name')
 
 
 def open_xml(filename):
@@ -86,8 +90,62 @@ def char_range(c1, c2):
         yield chr(c)
 
 
+def get_gpio_file(proj_file, mx_path):
+
+    mcu_name = None
+    gpio_file = None
+    path = None
+    mcu_info = None
+
+    if not mx_path:
+        mx_path = '.'
+
+    print('Opening ' + proj_file)
+    with open(proj_file, 'r') as f:
+        proj_data = f.readlines()
+
+    for l in proj_data:
+        if l.startswith('Mcu.Name'):
+            print('MCU is ' + l.split('=')[-1].strip())
+            mcu_name = '{}.xml'.format(l.split('=')[-1].strip())
+
+    if not mcu_name:
+        print('Could not find MCU name in project file')
+        exit(1)
+
+    found = False
+    for p in (mx_path,
+              '{0}{1}STM32CubeMX'.format(expanduser("~"), sep),
+              'C:{}STM32CubeMX'.format(sep)):
+
+        try:
+            path = '{1}{0}db{0}mcu{0}'.format(sep, p)
+            print('Trying ' + path)
+            mcu_info = open_xml(path + mcu_name)
+            found = True
+            break
+        except IOError:
+            continue
+
+    if not found:
+        print('Could not find GPIO file')
+        exit(1)
+
+    print('Opened ' + path)
+
+    for ip in mcu_info.findall("IP"):
+        if ip.attrib['Name'] == 'GPIO':
+            gpio_file = '{0}{2}IP{2}GPIO-{1}_Modes.xml'.format(path,
+                                                               ip.attrib['Version'],
+                                                               sep)
+
+    return gpio_file
+
+
 def read_gpio(filename):
     gpio = {'ports': {}, 'defaults': {}, 'modes': {}}
+
+    print('Opening GPIO file ' + filename)
     root = open_xml(filename)
 
     gpio['defaults']['GPIO_Mode'] = 'GPIO_MODE_ANALOG'
@@ -133,6 +191,8 @@ def read_gpio(filename):
 
 # Extract signals from IOC
 def read_project(gpio, filename):
+
+    print('Opening project file ' + filename)
     with open(filename, 'r') as mx_file:
         tmp = mx_file.readlines()
     pads = {}
@@ -159,7 +219,9 @@ def read_project(gpio, filename):
                 if 'S_TIM' in prop_value:
                     prop_value = prop_value[2:]
 
-                if 'ADC' in prop_value or 'DAC' in prop_value or 'OSC' in prop_value:
+                if prop_value.startswith('ADC') \
+                        or 'DAC' in prop_value \
+                        or 'OSC' in prop_value:
                     pads[pad_port][pad_num]["MODER"] = PIN_MODE_ANALOG
                 elif 'GPIO_Output' == prop_value:
                     pads[pad_port][pad_num]["MODER"] = PIN_MODE_OUTPUT
@@ -255,7 +317,13 @@ def gen_ports(gpio, project):
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    gpio = read_gpio(args.gpio)
+
+    if args.gpio:
+        gpio = read_gpio(args.gpio)
+
+    else:
+        gpio_file = get_gpio_file(args.project, args.mx)
+        gpio = read_gpio(gpio_file)
     proj = read_project(gpio, args.project)
     defines = gen_defines(proj)
     ports = gen_ports(gpio, proj)
@@ -273,3 +341,5 @@ if __name__ == '__main__':
         ports_sorted.append((p, ports[p]))
 
     template.stream(defines=defines_sorted, ports=ports_sorted).dump(args.output)
+
+    print('File generated at ' + args.output)
