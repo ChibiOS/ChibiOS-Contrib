@@ -104,6 +104,7 @@ static usbh_baseclassdriver_t *_ftdi_load(usbh_device_t *dev, const uint8_t *des
 	case 0x6011:
 	case 0x6014:
 	case 0x6015:
+	case 0xE2E6:
 		break;
 	default:
 		uerr("FTDI: Unrecognized PID");
