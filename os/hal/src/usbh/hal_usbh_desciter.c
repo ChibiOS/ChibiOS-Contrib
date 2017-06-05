@@ -134,22 +134,18 @@ void cs_iter_next(generic_iterator_t *ics) {
 	if ((curr[0] < 2) || (rem < 2) || (rem < curr[0]))
 		return;
 
-	//for (;;) {
-		rem -= curr[0];
-		curr += curr[0];
+	rem -= curr[0];
+	curr += curr[0];
 
-		if ((curr[0] < 2) || (rem < 2) || (rem < curr[0]))
-			return;
+	if ((curr[0] < 2) || (rem < 2) || (rem < curr[0]))
+		return;
 
-		if ((curr[1] == USBH_DT_INTERFACE_ASSOCIATION)
-				|| (curr[1] == USBH_DT_INTERFACE)
-				|| (curr[1] == USBH_DT_CONFIG)
-				|| (curr[1] == USBH_DT_ENDPOINT)) {
-			return;
-		}
-
-	//	break;
-	//}
+	if ((curr[1] == USBH_DT_INTERFACE_ASSOCIATION)
+			|| (curr[1] == USBH_DT_INTERFACE)
+			|| (curr[1] == USBH_DT_CONFIG)
+			|| (curr[1] == USBH_DT_ENDPOINT)) {
+		return;
+	}
 
 	ics->valid = 1;
 	ics->rem = rem;

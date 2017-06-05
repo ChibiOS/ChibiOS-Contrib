@@ -19,9 +19,13 @@
 
 #if HAL_USE_USBH
 
-#include "usbh/dev/hub.h"
 #include "usbh/internal.h"
 #include <string.h>
+
+//devices
+#include "usbh/dev/hub.h"
+#include "usbh/dev/ftdi.h"
+#include "usbh/dev/msd.h"
 
 #if USBH_DEBUG_ENABLE_TRACE
 #define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
@@ -107,11 +111,14 @@ void usbhObjectInit(USBHDriver *usbh) {
 }
 
 void usbhInit(void) {
+#if HAL_USBH_USE_FTDI
+	usbhftdiInit();
+#endif
+#if HAL_USBH_USE_MSD
+	usbhmsdInit();
+#endif
 #if HAL_USBH_USE_HUB
-	uint8_t i;
-	for (i = 0; i < HAL_USBHHUB_MAX_INSTANCES; i++) {
-		usbhhubObjectInit(&USBHHUBD[i]);
-	}
+	usbhhubInit();
 #endif
 	usbh_lld_init();
 }
@@ -127,7 +134,6 @@ void usbhStart(USBHDriver *usbh) {
 	osalOsRescheduleS();
 	osalSysUnlock();
 }
-
 
 void usbhStop(USBHDriver *usbh) {
 	//TODO: implement
@@ -181,6 +187,22 @@ static void _ep0_object_init(usbh_device_t *dev, uint16_t wMaxPacketSize) {
 	usbhEPSetName(&dev->ctrl, "DEV[CTRL]");
 }
 
+bool usbhEPResetS(usbh_ep_t *ep) {
+	osalDbgCheckClassS();
+	osalDbgCheck(ep != NULL);
+	osalDbgAssert((ep->status == USBH_EPSTATUS_OPEN) || (ep->status == USBH_EPSTATUS_HALTED), "invalid state");
+	osalDbgAssert(ep->type != USBH_EPTYPE_CTRL, "don't need to reset control endpoint");
+
+	usbh_urbstatus_t ret = usbhControlRequest(ep->device,
+			USBH_STANDARDOUT(USBH_REQTYPE_ENDPOINT, USBH_REQ_CLEAR_FEATURE, 0, ep->address | (ep->in ? 0x80 : 0x00)),
+			0, 0);
+
+	/* TODO: GET_STATUS to see if endpoint is still halted */
+	if ((ret == USBH_URBSTATUS_OK) && usbh_lld_ep_reset(ep)) {
+		return HAL_SUCCESS;
+	}
+	return HAL_FAILED;
+}
 
 /*===========================================================================*/
 /* URB API.                                                                  */
@@ -258,7 +280,6 @@ bool _usbh_urb_abortI(usbh_urb_t *urb, usbh_urbstatus_t status) {
 		_usbh_urb_completeI(urb, status);
 		return TRUE;
 
-//	case USBH_URBSTATUS_QUEUED:
 	case USBH_URBSTATUS_PENDING:
 		return usbh_lld_urb_abort(urb, status);
 	}
@@ -271,11 +292,18 @@ void _usbh_urb_abort_and_waitS(usbh_urb_t *urb, usbh_urbstatus_t status) {
 	if (_usbh_urb_abortI(urb, status) == FALSE) {
 		uwarn("URB wasn't aborted immediately, suspend");
 		osalThreadSuspendS(&urb->abortingThread);
-		urb->abortingThread = 0;
-	} else {
+		osalDbgAssert(urb->abortingThread == 0, "maybe we should uncomment the line below");
+		//urb->abortingThread = 0;
+	}
+#if !(USBH_DEBUG_ENABLE && USBH_DEBUG_ENABLE_WARNINGS)
+	else {
 		osalOsRescheduleS();
 	}
+#else
 	uwarn("URB aborted");
+	osalOsRescheduleS();	/* debug printing functions call I-class functions inside
+	 	 	 	 	 	 	 which may cause a priority violation without this call */
+#endif
 }
 
 bool usbhURBCancelI(usbh_urb_t *urb) {
@@ -295,9 +323,9 @@ msg_t usbhURBWaitTimeoutS(usbh_urb_t *urb, systime_t timeout) {
 	switch (urb->status) {
 	case USBH_URBSTATUS_INITIALIZED:
 	case USBH_URBSTATUS_PENDING:
-//	case USBH_URBSTATUS_QUEUED:
 		ret = osalThreadSuspendTimeoutS(&urb->waitingThread, timeout);
-		urb->waitingThread = 0;
+		osalDbgAssert(urb->waitingThread == 0, "maybe we should uncomment the line below");
+		//urb->waitingThread = 0;
 		break;
 
 	case USBH_URBSTATUS_OK:
@@ -408,7 +436,7 @@ usbh_urbstatus_t usbhControlRequest(usbh_device_t *dev,
 		uint16_t wLength,
 		uint8_t *buff) {
 
-	const USBH_DEFINE_BUFFER(usbh_control_request_t, req) = {
+	USBH_DEFINE_BUFFER(const usbh_control_request_t req) = {
 			bmRequestType,
 			bRequest,
 			wValue,
@@ -511,7 +539,7 @@ bool usbhStdReqGetInterface(usbh_device_t *dev,
 		uint8_t bInterfaceNumber,
 		uint8_t *bAlternateSetting) {
 
-	USBH_DEFINE_BUFFER(uint8_t, alt);
+	USBH_DEFINE_BUFFER(uint8_t alt);
 
 	usbh_urbstatus_t ret = usbhControlRequest(dev, USBH_GET_INTERFACE(bInterfaceNumber), 1, &alt);
 	if (ret != USBH_URBSTATUS_OK)
@@ -720,7 +748,7 @@ static bool _device_enumerate(usbh_device_t *dev) {
 
 #if USBH_DEBUG_ENABLE && USBH_DEBUG_ENABLE_INFO
 void usbhDevicePrintInfo(usbh_device_t *dev) {
-	USBH_DEFINE_BUFFER(char, str[64]);
+	USBH_DEFINE_BUFFER(char str[64]);
 	usbh_device_descriptor_t *const desc = &dev->devDesc;
 
 	uinfo("----- Device info -----");
@@ -934,7 +962,7 @@ static void _port_connected(usbh_port_t *port) {
 	uint8_t i;
 	uint8_t retries;
 	usbh_devspeed_t speed;
-	USBH_DEFINE_BUFFER(usbh_string_descriptor_t, strdesc);
+	USBH_DEFINE_BUFFER(usbh_string_descriptor_t strdesc);
 
 	uinfof("Port %d connected, wait debounce...", port->number);
 
@@ -1313,9 +1341,11 @@ static bool _classdriver_load(usbh_device_t *dev, uint8_t class,
 
 success:
 	/* Link this driver to the device */
-	drv->next = dev->drivers;
-	dev->drivers = drv;
-	drv->dev = dev;
+	if (!drv->dev) {
+		drv->next = dev->drivers;
+		dev->drivers = drv;
+		drv->dev = dev;
+	}
 	return HAL_SUCCESS;
 }
 

@@ -65,7 +65,7 @@ struct USBHMassStorageLUNDriver {
 	USBHMassStorageLUNDriver *next;
 };
 
-typedef struct USBHMassStorageDriver {
+struct USBHMassStorageDriver {
 	/* inherited from abstract class driver */
 	_usbh_base_classdriver_data
 
@@ -81,7 +81,7 @@ typedef struct USBHMassStorageDriver {
 	uint32_t tag;
 
 	USBHMassStorageLUNDriver *luns;
-} USBHMassStorageDriver;
+};
 
 
 /*===========================================================================*/
@@ -116,6 +116,9 @@ extern "C" {
 	bool usbhmsdLUNGetInfo(USBHMassStorageLUNDriver *lunp, BlockDeviceInfo *bdip);
 	bool usbhmsdLUNIsInserted(USBHMassStorageLUNDriver *lunp);
 	bool usbhmsdLUNIsProtected(USBHMassStorageLUNDriver *lunp);
+
+	/* global initializer */
+	void usbhmsdInit(void);
 #ifdef __cplusplus
 }
 #endif

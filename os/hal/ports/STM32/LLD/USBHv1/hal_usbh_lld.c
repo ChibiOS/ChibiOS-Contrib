@@ -21,6 +21,53 @@
 #include "usbh/internal.h"
 #include <string.h>
 
+#if STM32_USBH_USE_OTG1
+#if !defined(STM32_OTG1_CHANNELS_NUMBER)
+#error "STM32_OTG1_CHANNELS_NUMBER must be defined"
+#endif
+#if !defined(STM32_OTG1_RXFIFO_SIZE)
+#define STM32_OTG1_RXFIFO_SIZE		1024
+#endif
+#if !defined(STM32_OTG1_PTXFIFO_SIZE)
+#define STM32_OTG1_PTXFIFO_SIZE		128
+#endif
+#if !defined(STM32_OTG1_NPTXFIFO_SIZE)
+#define STM32_OTG1_NPTXFIFO_SIZE	128
+#endif
+#if (STM32_OTG1_RXFIFO_SIZE + STM32_OTG1_PTXFIFO_SIZE + STM32_OTG1_NPTXFIFO_SIZE) > (STM32_OTG1_FIFO_MEM_SIZE * 4)
+#error "Not enough memory in OTG1 implementation"
+#elif (STM32_OTG1_RXFIFO_SIZE + STM32_OTG1_PTXFIFO_SIZE + STM32_OTG1_NPTXFIFO_SIZE) < (STM32_OTG1_FIFO_MEM_SIZE * 4)
+#warning "Spare memory in OTG1; could enlarge RX, PTX or NPTX FIFO sizes"
+#endif
+#if (STM32_OTG1_RXFIFO_SIZE % 4) || (STM32_OTG1_PTXFIFO_SIZE % 4) || (STM32_OTG1_NPTXFIFO_SIZE % 4)
+#error "FIFO sizes must be a multiple of 32-bit words"
+#endif
+#endif
+
+#if STM32_USBH_USE_OTG2
+#if !defined(STM32_OTG2_CHANNELS_NUMBER)
+#error "STM32_OTG2_CHANNELS_NUMBER must be defined"
+#endif
+#if !defined(STM32_OTG2_RXFIFO_SIZE)
+#define STM32_OTG2_RXFIFO_SIZE		2048
+#endif
+#if !defined(STM32_OTG2_PTXFIFO_SIZE)
+#define STM32_OTG2_PTXFIFO_SIZE		1024
+#endif
+#if !defined(STM32_OTG2_NPTXFIFO_SIZE)
+#define STM32_OTG2_NPTXFIFO_SIZE	1024
+#endif
+#if (STM32_OTG2_RXFIFO_SIZE + STM32_OTG2_PTXFIFO_SIZE + STM32_OTG2_NPTXFIFO_SIZE) > (STM32_OTG2_FIFO_MEM_SIZE * 4)
+#error "Not enough memory in OTG2 implementation"
+#elif (STM32_OTG2_RXFIFO_SIZE + STM32_OTG2_PTXFIFO_SIZE + STM32_OTG2_NPTXFIFO_SIZE) < (STM32_OTG2_FIFO_MEM_SIZE * 4)
+#warning "Spare memory in OTG2; could enlarge RX, PTX or NPTX FIFO sizes"
+#endif
+#if (STM32_OTG2_RXFIFO_SIZE % 4) || (STM32_OTG2_PTXFIFO_SIZE % 4) || (STM32_OTG2_NPTXFIFO_SIZE % 4)
+#error "FIFO sizes must be a multiple of 32-bit words"
+#endif
+#endif
+
+
 #if USBH_LLD_DEBUG_ENABLE_TRACE
 #define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
 #define udbg(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
@@ -492,7 +539,7 @@ static uint32_t _write_packet(struct list_head *list, uint32_t space_available) 
 
 void usbh_lld_ep_object_init(usbh_ep_t *ep) {
 /*			CTRL(IN)	CTRL(OUT)	INT(IN)		INT(OUT)	BULK(IN)	BULK(OUT)	ISO(IN)		ISO(OUT)
- * STALL		si		sólo DAT/STAT	si			si			si			si			no			no		ep->type != ISO && (ep->type != CTRL || ctrlphase != SETUP)
+ * STALL		si		solo DAT/STAT	si			si			si			si			no			no		ep->type != ISO && (ep->type != CTRL || ctrlphase != SETUP)
  * ACK			si			si			si			si			si			si			no			no		ep->type != ISO
  * NAK			si			si			si			si			si			si			no			no		ep->type != ISO
  * BBERR		si			no			si			no			si			no			si			no		ep->in
@@ -563,6 +610,11 @@ void usbh_lld_ep_close(usbh_ep_t *ep) {
 	osalOsRescheduleS();
 }
 
+bool usbh_lld_ep_reset(usbh_ep_t *ep) {
+	ep->dt_mask = HCTSIZ_DPID_DATA0;
+	return TRUE;
+}
+
 void usbh_lld_urb_submit(usbh_urb_t *urb) {
 	usbh_ep_t *const ep = urb->ep;
 
@@ -596,17 +648,20 @@ bool usbh_lld_urb_abort(usbh_urb_t *urb, usbh_urbstatus_t status) {
 
 		if (hcm->halt_reason == USBH_LLD_HALTREASON_NONE) {
 			/* The channel is not being halted */
+			uinfof("\t%s: usbh_lld_urb_abort: channel is not being halted", hcm->ep->name);
 			urb->status = status;
 			_halt_channel(ep->device->host, hcm, USBH_LLD_HALTREASON_ABORT);
 		} else {
 			/* The channel is being halted, so we can't re-halt it. The CHH interrupt will
 			 * be in charge of completing the transfer, but the URB will not have the specified status.
 			 */
+			uinfof("\t%s: usbh_lld_urb_abort: channel is being halted", hcm->ep->name);
 		}
 		return FALSE;
 	}
 
 	/* This URB is active, we can cancel it now */
+	uinfof("\t%s: usbh_lld_urb_abort: URB is not active", hcm->ep->name);
 	_transfer_completedI(ep, urb, status);
 
 	return TRUE;
@@ -855,8 +910,12 @@ static inline void _chh_int(USBHDriver *host, stm32_hc_management_t *hcm, stm32_
 			break;
 
 		case USBH_LLD_HALTREASON_STALL:
-			if ((ep->type == USBH_EPTYPE_CTRL) && (ep->xfer.u.ctrl_phase == USBH_LLD_CTRLPHASE_SETUP)) {
-				uerrf("\t%s: Faulty device: STALLed SETUP phase", ep->name);
+			if (ep->type == USBH_EPTYPE_CTRL) {
+				if (ep->xfer.u.ctrl_phase == USBH_LLD_CTRLPHASE_SETUP) {
+					uerrf("\t%s: Faulty device: STALLed SETUP phase", ep->name);
+				}
+			} else {
+				ep->status = USBH_EPSTATUS_HALTED;
 			}
 			_transfer_completed(ep, urb, USBH_URBSTATUS_STALL);
 			break;
@@ -926,10 +985,15 @@ static inline void _hcint_int(USBHDriver *host) {
 	haint = host->otg->HAINT;
 	haint &= host->otg->HAINTMSK;
 
+#if USBH_LLD_DEBUG_ENABLE_ERRORS
 	if (!haint) {
-		uerrf("HAINT=%08x, HAINTMSK=%08x", host->otg->HAINT, host->otg->HAINTMSK);
+		uint32_t a, b;
+		a = host->otg->HAINT;
+		b = host->otg->HAINTMSK;
+		uerrf("HAINT=%08x, HAINTMSK=%08x", a, b);
 		return;
 	}
+#endif
 
 #if 1	//channel lookup loop
 	uint8_t i;
@@ -1186,11 +1250,17 @@ static void usb_lld_serve_interrupt(USBHDriver *host) {
 	}
 
 	gintsts &= otg->GINTMSK;
+#if USBH_DEBUG_ENABLE_WARNINGS
 	if (!gintsts) {
-		uwarnf("GINTSTS=%08x, GINTMSK=%08x", otg->GINTSTS, otg->GINTMSK);
+		uint32_t a, b;
+		a = otg->GINTSTS;
+		b = otg->GINTMSK;
+		uwarnf("GINTSTS=%08x, GINTMSK=%08x", a, b);
 		return;
 	}
-//	otg->GINTMSK &= ~(GINTMSK_NPTXFEM | GINTMSK_PTXFEM);
+#endif
+
+	//	otg->GINTMSK &= ~(GINTMSK_NPTXFEM | GINTMSK_PTXFEM);
 	otg->GINTSTS = gintsts;
 
 	if (gintsts & GINTSTS_SOF)
@@ -1437,6 +1507,7 @@ static void _usbh_start(USBHDriver *usbh) {
 	}
 #endif
 #endif
+#undef HNPTXFSIZ
 
 	otg_txfifo_flush(usbh, 0x10);
 	otg_rxfifo_flush(usbh);
@@ -1478,18 +1549,18 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestTy
 		break;
 
 	case ClearPortFeature:
-		chDbgAssert(windex == 1, "invalid windex");
+		osalDbgAssert(windex == 1, "invalid windex");
 
 		osalSysLock();
 		switch (wvalue) {
 		case USBH_PORT_FEAT_ENABLE:
 		case USBH_PORT_FEAT_SUSPEND:
 		case USBH_PORT_FEAT_POWER:
-			chDbgAssert(0, "unimplemented");	/* TODO */
+			osalDbgAssert(0, "unimplemented");	/* TODO */
 			break;
 
 		case USBH_PORT_FEAT_INDICATOR:
-			chDbgAssert(0, "unsupported");
+			osalDbgAssert(0, "unsupported");
 			break;
 
 		case USBH_PORT_FEAT_C_CONNECTION:
@@ -1541,7 +1612,7 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestTy
 		break;
 
 	case GetPortStatus:
-		chDbgAssert(windex == 1, "invalid windex");
+		osalDbgAssert(windex == 1, "invalid windex");
 		osalDbgCheck(wlength >= 4);
 		osalSysLock();
 		*(uint32_t *)buf = usbh->rootport.lld_status | (usbh->rootport.lld_c_status << 16);
@@ -1550,17 +1621,17 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestTy
 		break;
 
 	case SetHubFeature:
-		chDbgAssert(0, "unsupported");
+		osalDbgAssert(0, "unsupported");
 		break;
 
 	case SetPortFeature:
-		chDbgAssert(windex == 1, "invalid windex");
+		osalDbgAssert(windex == 1, "invalid windex");
 
 		switch (wvalue) {
 		case USBH_PORT_FEAT_TEST:
 		case USBH_PORT_FEAT_SUSPEND:
 		case USBH_PORT_FEAT_POWER:
-			chDbgAssert(0, "unimplemented");	/* TODO */
+			osalDbgAssert(0, "unimplemented");	/* TODO */
 			break;
 
 		case USBH_PORT_FEAT_RESET: {
@@ -1580,7 +1651,7 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestTy
 		} 	break;
 
 		case USBH_PORT_FEAT_INDICATOR:
-			chDbgAssert(0, "unsupported");
+			osalDbgAssert(0, "unsupported");
 			break;
 
 		default:

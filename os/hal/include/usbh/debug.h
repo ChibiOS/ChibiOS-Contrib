@@ -23,8 +23,6 @@
 
 #if HAL_USE_USBH
 
-//TODO: Debug is only for USBHD1, make it generic.
-
 #if USBH_DEBUG_ENABLE
 	void usbDbgPrintf(const char *fmt, ...);
 	void usbDbgPuts(const char *s);

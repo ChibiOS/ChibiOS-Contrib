@@ -16,7 +16,6 @@
 */
 
 #include "hal.h"
-#include "hal_usbh.h"
 
 #if HAL_USBH_USE_FTDI
 
@@ -114,8 +113,7 @@ static usbh_baseclassdriver_t *_ftdi_load(usbh_device_t *dev, const uint8_t *des
 	if ((rem < descriptor[0]) || (descriptor[1] != USBH_DT_INTERFACE))
 		return NULL;
 
-	const usbh_interface_descriptor_t * const ifdesc = (const usbh_interface_descriptor_t * const)descriptor;
-	if (ifdesc->bInterfaceNumber != 0) {
+	if (((const usbh_interface_descriptor_t *)descriptor)->bInterfaceNumber != 0) {
 		uwarn("FTDI: Will allocate driver along with IF #0");
 	}
 
@@ -324,7 +322,7 @@ static usbh_urbstatus_t _ftdi_port_control(USBHFTDIPortDriver *ftdipp,
 	osalDbgCheck(bRequest < sizeof_array(bmRequestType));
 	osalDbgCheck(bRequest != 1);
 
-	const USBH_DEFINE_BUFFER(usbh_control_request_t, req) = {
+	USBH_DEFINE_BUFFER(const usbh_control_request_t req) = {
 			bmRequestType[bRequest],
 			bRequest,
 			wValue,
@@ -387,7 +385,7 @@ static usbh_urbstatus_t _set_baudrate(USBHFTDIPortDriver *ftdipp, uint32_t baudr
 	if (ftdipp->ftdip->dev->basicConfigDesc.bNumInterfaces > 1)
 		wIndex = (wIndex << 8) | (ftdipp->ifnum + 1);
 
-	const USBH_DEFINE_BUFFER(usbh_control_request_t, req) = {
+	USBH_DEFINE_BUFFER(const usbh_control_request_t req) = {
 		USBH_REQTYPE_VENDOR | USBH_REQTYPE_OUT | USBH_REQTYPE_DEVICE,
 		FTDI_COMMAND_SETBAUD,
 		wValue,
@@ -712,6 +710,16 @@ void usbhftdipObjectInit(USBHFTDIPortDriver *ftdipp) {
 	memset(ftdipp, 0, sizeof(*ftdipp));
 	ftdipp->vmt = &async_channel_vmt;
 	ftdipp->state = USBHFTDIP_STATE_STOP;
+}
+
+void usbhftdiInit(void) {
+	uint8_t i;
+	for (i = 0; i < HAL_USBHFTDI_MAX_INSTANCES; i++) {
+		usbhftdiObjectInit(&USBHFTDID[i]);
+	}
+	for (i = 0; i < HAL_USBHFTDI_MAX_PORTS; i++) {
+		usbhftdipObjectInit(&FTDIPD[i]);
+	}
 }
 
 #endif

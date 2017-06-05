@@ -23,7 +23,7 @@
 #if HAL_USE_USBH
 #if HAL_USBH_USE_HUB
 
-typedef struct USBHHubDriver {
+struct USBHHubDriver {
 	/* inherited from abstract class driver */
 	_usbh_base_classdriver_data
 
@@ -32,19 +32,19 @@ typedef struct USBHHubDriver {
 	usbh_ep_t epint;
 	usbh_urb_t urb;
 
-	USBH_DEFINE_BUFFER(uint8_t, scbuff[4]);
+	USBH_DECLARE_STRUCT_MEMBER(uint8_t scbuff[4]);
 	volatile uint32_t statuschange;
 	uint16_t status;
 	uint16_t c_status;
 
 	usbh_port_t *ports;
 
-	USBH_DEFINE_BUFFER(usbh_hub_descriptor_t, hubDesc);
+	USBH_DECLARE_STRUCT_MEMBER(usbh_hub_descriptor_t hubDesc);
 
 	/* Low level part */
 	_usbh_hub_ll_data
 
-} USBHHubDriver;
+};
 
 extern USBHHubDriver USBHHUBD[HAL_USBHHUB_MAX_INSTANCES];
 
@@ -89,6 +89,9 @@ static inline usbh_urbstatus_t usbhhubSetFeaturePort(usbh_port_t *port, uint8_t 
 }
 
 void usbhhubObjectInit(USBHHubDriver *hubdp);
+
+void usbhhubInit(void);
+
 #else
 
 static inline usbh_urbstatus_t usbhhubControlRequest(USBHDriver *host,

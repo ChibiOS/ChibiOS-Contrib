@@ -85,7 +85,7 @@ static void ThreadTestFTDI(void *p) {
 	shellInit();
 
 start:
-	while (ftdipp->state != USBHFTDIP_STATE_ACTIVE) {
+	while (usbhftdipGetState(ftdipp) != USBHFTDIP_STATE_ACTIVE) {
 		chThdSleepMilliseconds(100);
 	}
 
@@ -119,13 +119,13 @@ start:
 	if (1) {
 		thread_t *shelltp = NULL;
 		for(;;) {
-			if (ftdipp->state != USBHFTDIP_STATE_READY)
+			if (usbhftdipGetState(ftdipp) != USBHFTDIP_STATE_READY)
 				goto start;
 			if (!shelltp) {
-				shelltp = chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO, shellThread, (void *) &shell_cfg1);
+				shelltp = shellCreate(&shell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
 			} else if (chThdTerminatedX(shelltp)) {
 				chThdRelease(shelltp);
-				if (ftdipp->state != USBHFTDIP_STATE_READY)
+				if (usbhftdipGetState(ftdipp) != USBHFTDIP_STATE_READY)
 					goto start;
 				break;
 			}
@@ -247,7 +247,7 @@ static void ThreadTestMSD(void *p) {
 	(void)p;
 
 	FATFS *fsp;
-	uint32_t clusters;
+	DWORD clusters;
 	FRESULT res;
 	BaseSequentialStream * const chp = (BaseSequentialStream *)&USBH_DEBUG_SD;
 	blkstate_t state;
@@ -373,15 +373,9 @@ start:
 }
 #endif
 
-
-
-
-
-
 int main(void) {
 
 	halInit();
-	usbhInit();
 	chSysInit();
 
 	//PA2(TX) and PA3(RX) are routed to USART2
@@ -395,18 +389,14 @@ int main(void) {
 #endif
 
 #if STM32_USBH_USE_OTG2
-	//USB_HS
-	//TODO: Initialize Pads
+#error "TODO: Initialize USB_HS pads"
 #endif
 
 #if HAL_USBH_USE_MSD
-	usbhmsdObjectInit(&USBHMSD[0]);
-	usbhmsdLUNObjectInit(&MSBLKD[0]);
 	chThdCreateStatic(waTestMSD, sizeof(waTestMSD), NORMALPRIO, ThreadTestMSD, 0);
 #endif
+
 #if HAL_USBH_USE_FTDI
-	usbhftdiObjectInit(&USBHFTDID[0]);
-	usbhftdipObjectInit(&FTDIPD[0]);
 	chThdCreateStatic(waTestFTDI, sizeof(waTestFTDI), NORMALPRIO, ThreadTestFTDI, 0);
 #endif
 

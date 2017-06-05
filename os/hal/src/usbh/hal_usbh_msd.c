@@ -16,7 +16,6 @@
 */
 
 #include "hal.h"
-#include "hal_usbh.h"
 
 #if HAL_USBH_USE_MSD
 
@@ -91,8 +90,8 @@ const usbh_classdriverinfo_t usbhmsdClassDriverInfo = {
 static usbh_baseclassdriver_t *_msd_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem) {
 	int i;
 	USBHMassStorageDriver *msdp;
-	uint8_t luns; // should declare it here to eliminate 'control bypass initialization' warning
-	usbh_urbstatus_t stat;  // should declare it here to eliminate 'control bypass initialization' warning
+	uint8_t luns;
+	usbh_urbstatus_t stat;
 
 	if ((rem < descriptor[0]) || (descriptor[1] != USBH_DT_INTERFACE))
 		return NULL;
@@ -157,7 +156,7 @@ alloc_ok:
 
 	/* read the number of LUNs */
 	uinfo("Reading Max LUN:");
-	USBH_DEFINE_BUFFER(uint8_t, buff[4]);
+	USBH_DEFINE_BUFFER(uint8_t buff[4]);
 	stat = usbhControlRequest(dev,
 			USBH_CLASSIN(USBH_REQTYPE_INTERFACE, MSD_GET_MAX_LUN, 0, msdp->ifnum),
 			1, buff);
@@ -240,7 +239,7 @@ static void _msd_unload(usbh_baseclassdriver_t *drv) {
 
 
 /* USB Bulk Only Transport SCSI Command block wrapper */
-PACKED_STRUCT {
+typedef PACKED_STRUCT {
 	uint32_t dCBWSignature;
 	uint32_t dCBWTag;
 	uint32_t dCBWDataTransferLength;
@@ -253,9 +252,8 @@ PACKED_STRUCT {
 #define MSD_CBWFLAGS_D2H						0x80
 #define MSD_CBWFLAGS_H2D						0x00
 
-
 /* USB Bulk Only Transport SCSI Command status wrapper */
-PACKED_STRUCT {
+typedef PACKED_STRUCT {
 	uint32_t dCSWSignature;
 	uint32_t dCSWTag;
 	uint32_t dCSWDataResidue;
@@ -299,7 +297,7 @@ typedef struct {
 
 /* Request sense */
 #define SCSI_CMD_REQUEST_SENSE 					0x03
-PACKED_STRUCT {
+typedef PACKED_STRUCT {
 	uint8_t byte[18];
 } scsi_sense_response_t;
 
@@ -333,7 +331,7 @@ PACKED_STRUCT {
 
 /* Inquiry */
 #define SCSI_CMD_INQUIRY 						0x12
-PACKED_STRUCT {
+typedef PACKED_STRUCT {
 	uint8_t peripheral;
 	uint8_t removable;
 	uint8_t version;
@@ -349,14 +347,14 @@ PACKED_STRUCT {
 
 /* Read Capacity 10 */
 #define SCSI_CMD_READ_CAPACITY_10				0x25
-PACKED_STRUCT {
+typedef PACKED_STRUCT {
 	uint32_t last_block_addr;
 	uint32_t block_size;
 } scsi_readcapacity10_response_t;
 
 /* Start/Stop Unit */
 #define SCSI_CMD_START_STOP_UNIT				0x1B
-PACKED_STRUCT {
+typedef PACKED_STRUCT {
 	uint8_t op_code;
 	uint8_t lun_immed;
 	uint8_t res1;
@@ -682,7 +680,7 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 
     USBH_DEFINE_BUFFER(union {
     		scsi_inquiry_response_t inq;
-    		scsi_readcapacity10_response_t cap;	}, u);
+    		scsi_readcapacity10_response_t cap;	} u);
 
 	uinfo("INQUIRY...");
 	res = scsi_inquiry(lunp, &u.inq);
@@ -936,4 +934,13 @@ void usbhmsdObjectInit(USBHMassStorageDriver *msdp) {
 	osalMutexObjectInit(&msdp->mtx);
 }
 
+void usbhmsdInit(void) {
+	uint8_t i;
+	for (i = 0; i < HAL_USBHMSD_MAX_INSTANCES; i++) {
+		usbhmsdObjectInit(&USBHMSD[i]);
+	}
+	for (i = 0; i < HAL_USBHMSD_MAX_LUNS; i++) {
+		usbhmsdLUNObjectInit(&MSBLKD[i]);
+	}
+}
 #endif

@@ -17,14 +17,12 @@
 
 #include "hal.h"
 
-#if HAL_USE_USBH
+#if HAL_USE_USBH && USBH_DEBUG_ENABLE
 
 #include "ch.h"
 #include "usbh/debug.h"
 #include <stdarg.h>
 #include "chprintf.h"
-
-#if USBH_DEBUG_ENABLE
 
 #define MAX_FILLER 11
 #define FLOAT_PRECISION 9
@@ -472,8 +470,8 @@ void usbDbgSystemHalted(void) {
 	}
 }
 
-static void usb_debug_thread(void *p) {
-	USBHDriver *host = (USBHDriver *)p;
+static void usb_debug_thread(void *arg) {
+	USBHDriver *host = (USBHDriver *)arg;
 	uint8_t state = 0;
 
 	chRegSetThreadName("USBH_DBG");
@@ -531,6 +529,5 @@ void usbDbgInit(USBHDriver *host) {
 	iqObjectInit(&USBH_DEBUG_USBHD.iq, USBH_DEBUG_USBHD.dbg_buff, sizeof(USBH_DEBUG_USBHD.dbg_buff), 0, 0);
 	chThdCreateStatic(USBH_DEBUG_USBHD.waDebug, sizeof(USBH_DEBUG_USBHD.waDebug), NORMALPRIO, usb_debug_thread, &USBH_DEBUG_USBHD);
 }
-#endif
 
 #endif
