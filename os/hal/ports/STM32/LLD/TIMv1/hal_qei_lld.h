@@ -182,6 +182,56 @@
 #error "QEI driver activated but no TIM peripheral assigned"
 #endif
 
+/* Checks on allocation of TIMx units.*/
+#if STM32_QEI_USE_TIM1
+#if defined(STM32_TIM1_IS_USED)
+#error "QEID1 requires TIM1 but the timer is already used"
+#else
+#define STM32_TIM1_IS_USED
+#endif
+#endif
+
+#if STM32_QEI_USE_TIM2
+#if defined(STM32_TIM2_IS_USED)
+#error "QEID2 requires TIM2 but the timer is already used"
+#else
+#define STM32_TIM2_IS_USED
+#endif
+#endif
+
+#if STM32_QEI_USE_TIM3
+#if defined(STM32_TIM3_IS_USED)
+#error "QEID3 requires TIM3 but the timer is already used"
+#else
+#define STM32_TIM3_IS_USED
+#endif
+#endif
+
+#if STM32_QEI_USE_TIM4
+#if defined(STM32_TIM4_IS_USED)
+#error "QEID4 requires TIM4 but the timer is already used"
+#else
+#define STM32_TIM4_IS_USED
+#endif
+#endif
+
+#if STM32_QEI_USE_TIM5
+#if defined(STM32_TIM5_IS_USED)
+#error "QEID5 requires TIM5 but the timer is already used"
+#else
+#define STM32_TIM5_IS_USED
+#endif
+#endif
+
+#if STM32_QEI_USE_TIM8
+#if defined(STM32_TIM8_IS_USED)
+#error "QEID8 requires TIM8 but the timer is already used"
+#else
+#define STM32_TIM8_IS_USED
+#endif
+#endif
+
+/* IRQ priority checks.*/
 #if STM32_QEI_USE_TIM1 &&                                                   \
     !OSAL_IRQ_IS_VALID_PRIORITY(STM32_QEI_TIM1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM1"
@@ -286,7 +336,7 @@ typedef struct {
   qeioverflow_t             overflow;
   /**
    * @brief   Min count value.
-   * 
+   *
    * @note    If min == max, then QEI_COUNT_MIN is used.
    *
    * @note    Only min set to 0 / QEI_COUNT_MIN is supported.
@@ -294,7 +344,7 @@ typedef struct {
   qeicnt_t                  min;
   /**
    * @brief   Max count value.
-   * 
+   *
    * @note    If min == max, then QEI_COUNT_MAX is used.
    *
    * @note    Only max set to 0 / QEI_COUNT_MAX is supported.
@@ -309,7 +359,7 @@ typedef struct {
   /**
    * @brief   Notify of overflow
    *
-   * @note    Overflow notification is performed after 
+   * @note    Overflow notification is performed after
    *          value changed notification.
    * @note    Called from ISR context.
    */
@@ -365,7 +415,7 @@ struct QEIDriver {
  *
  * @notapi
  */
-#define qei_lld_set_count(qeip, value) 
+#define qei_lld_set_count(qeip, value)
 
 /*===========================================================================*/
 /* External declarations.                                                    */
