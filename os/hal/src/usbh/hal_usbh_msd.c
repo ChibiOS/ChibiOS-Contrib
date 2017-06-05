@@ -261,30 +261,168 @@ typedef PACKED_STRUCT {
 } msd_csw_t;
 #define MSD_CSW_SIGNATURE						0x53425355
 
-
-typedef union {
-	msd_cbw_t cbw;
-	msd_csw_t csw;
+typedef struct {
+	msd_cbw_t *cbw;
+	uint8_t csw_status;
+	uint32_t data_processed;
 } msd_transaction_t;
 
 typedef enum {
-	MSD_TRANSACTIONRESULT_OK,
-	MSD_TRANSACTIONRESULT_DISCONNECTED,
-	MSD_TRANSACTIONRESULT_STALL,
-	MSD_TRANSACTIONRESULT_BUS_ERROR,
-	MSD_TRANSACTIONRESULT_SYNC_ERROR
-} msd_transaction_result_t;
+	MSD_BOTRESULT_OK,
+	MSD_BOTRESULT_DISCONNECTED,
+	MSD_BOTRESULT_ERROR
+} msd_bot_result_t;
 
 typedef enum {
-	MSD_COMMANDRESULT_PASSED = 0,
-	MSD_COMMANDRESULT_FAILED = 1,
-	MSD_COMMANDRESULT_PHASE_ERROR = 2
-} msd_command_result_t;
-
-typedef struct {
-	msd_transaction_result_t tres;
-	msd_command_result_t cres;
+	MSD_RESULT_OK = MSD_BOTRESULT_OK,
+	MSD_RESULT_DISCONNECTED = MSD_BOTRESULT_DISCONNECTED,
+	MSD_RESULT_TRANSPORT_ERROR = MSD_BOTRESULT_ERROR,
+	MSD_RESULT_FAILED
 } msd_result_t;
+
+
+#define	CSW_STATUS_PASSED		0
+#define	CSW_STATUS_FAILED		1
+#define	CSW_STATUS_PHASE_ERROR	2
+
+static bool _msd_bot_reset(USBHMassStorageDriver *msdp) {
+
+	usbh_urbstatus_t res;
+	res = usbhControlRequest(msdp->dev, USBH_CLASSOUT(USBH_REQTYPE_CLASS, 0xFF, 0, msdp->ifnum), 0, NULL);
+	if (res != USBH_URBSTATUS_OK) {
+		return FALSE;
+	}
+
+	osalThreadSleepMilliseconds(100);
+
+	return usbhEPReset(&msdp->epin) && usbhEPReset(&msdp->epout);
+}
+
+static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassStorageLUNDriver *lunp, void *data) {
+
+	uint32_t data_actual_len, actual_len;
+	usbh_urbstatus_t status;
+	USBH_DEFINE_BUFFER(msd_csw_t csw);
+
+	tran->cbw->bCBWLUN = (uint8_t)(lunp - &lunp->msdp->luns[0]);
+	tran->cbw->dCBWSignature = MSD_CBW_SIGNATURE;
+	tran->cbw->dCBWTag = ++lunp->msdp->tag;
+	tran->data_processed = 0;
+
+	/* control phase */
+	status = usbhBulkTransfer(&lunp->msdp->epout, &tran->cbw,
+					sizeof(tran->cbw), &actual_len, MS2ST(1000));
+
+	if (status == USBH_URBSTATUS_CANCELLED) {
+		uerr("\tMSD: Control phase: USBH_URBSTATUS_CANCELLED");
+		return MSD_BOTRESULT_DISCONNECTED;
+	}
+
+	if ((status != USBH_URBSTATUS_OK) || (actual_len != sizeof(tran->cbw))) {
+		uerrf("\tMSD: Control phase: status = %d (!= OK), actual_len = %d (expected to send %d)",
+				status, actual_len, sizeof(tran->cbw));
+		_msd_bot_reset(lunp->msdp);
+		return MSD_BOTRESULT_ERROR;
+	}
+
+
+	/* data phase */
+	data_actual_len = 0;
+	if (tran->cbw->dCBWDataTransferLength) {
+		usbh_ep_t *const ep = tran->cbw->bmCBWFlags & MSD_CBWFLAGS_D2H ? &lunp->msdp->epin : &lunp->msdp->epout;
+		status = usbhBulkTransfer(
+				ep,
+				data,
+				tran->cbw->dCBWDataTransferLength,
+				&data_actual_len, MS2ST(20000));
+
+		if (status == USBH_URBSTATUS_CANCELLED) {
+			uerr("\tMSD: Data phase: USBH_URBSTATUS_CANCELLED");
+			return MSD_BOTRESULT_DISCONNECTED;
+		}
+
+		if (status == USBH_URBSTATUS_STALL) {
+			uerrf("\tMSD: Data phase: USBH_URBSTATUS_STALL, clear halt");
+			status = usbhEPReset(ep);
+		}
+
+		if (status != USBH_URBSTATUS_OK) {
+			uerrf("\tMSD: Data phase: status = %d (!= OK), resetting", status);
+			_msd_bot_reset(lunp->msdp);
+			return MSD_BOTRESULT_ERROR;
+		}
+	}
+
+
+	/* status phase */
+	status = usbhBulkTransfer(&lunp->msdp->epin, &csw,
+				sizeof(csw), &actual_len, MS2ST(1000));
+
+	if (status == USBH_URBSTATUS_STALL) {
+		uwarn("\tMSD: Status phase: USBH_URBSTATUS_STALL, clear halt and retry");
+
+		status = usbhEPReset(&lunp->msdp->epin);
+
+		if (status == USBH_URBSTATUS_OK) {
+			status = usbhBulkTransfer(&lunp->msdp->epin, &csw,
+						sizeof(csw), &actual_len, MS2ST(1000));
+		}
+	}
+
+	if (status == USBH_URBSTATUS_CANCELLED) {
+		uerr("\tMSD: Status phase: USBH_URBSTATUS_CANCELLED");
+		return MSD_BOTRESULT_DISCONNECTED;
+	}
+
+	if (status != USBH_URBSTATUS_OK) {
+		uerrf("\tMSD: Status phase: status = %d (!= OK), resetting", status);
+		_msd_bot_reset(lunp->msdp);
+		return MSD_BOTRESULT_ERROR;
+	}
+
+	/* validate CSW */
+	if ((actual_len != sizeof(csw))
+		|| (csw.dCSWSignature != MSD_CSW_SIGNATURE)
+		|| (csw.dCSWTag != lunp->msdp->tag)
+		|| (csw.bCSWStatus >= CSW_STATUS_PHASE_ERROR)) {
+		/* CSW is not valid */
+		uerrf("\tMSD: Status phase: Invalid CSW: len=%d, dCSWSignature=%x, dCSWTag=%x (expected %x), bCSWStatus=%d, resetting",
+				actual_len,
+				csw.dCSWSignature,
+				csw.dCSWTag,
+				lunp->msdp->tag,
+				csw.bCSWStatus);
+		_msd_bot_reset(lunp->msdp);
+		return MSD_BOTRESULT_ERROR;
+	}
+
+	/* check if CSW is meaningful */
+	if ((csw.bCSWStatus != CSW_STATUS_PHASE_ERROR)
+			&& (csw.dCSWDataResidue > tran->cbw->dCBWDataTransferLength)) {
+		/* CSW is not meaningful */
+		uerrf("\tMSD: Status phase: CSW not meaningful: bCSWStatus=%d, dCSWDataResidue=%u, dCBWDataTransferLength=%u, resetting",
+				csw.bCSWStatus,
+				csw.dCSWDataResidue,
+				tran->cbw->dCBWDataTransferLength);
+		_msd_bot_reset(lunp->msdp);
+		return MSD_BOTRESULT_ERROR;
+	}
+
+	if (csw.bCSWStatus == CSW_STATUS_PHASE_ERROR) {
+		uerr("\tMSD: Status phase: Phase error, resetting");
+		_msd_bot_reset(lunp->msdp);
+		return MSD_BOTRESULT_ERROR;
+	}
+
+	tran->data_processed = tran->cbw->dCBWDataTransferLength - csw.dCSWDataResidue;
+	if (data_actual_len < tran->data_processed) {
+		tran->data_processed = data_actual_len;
+	}
+
+	tran->csw_status = csw.bCSWStatus;
+
+	return MSD_BOTRESULT_OK;
+}
 
 
 /* ----------------------------------------------------- */
@@ -366,216 +504,175 @@ typedef PACKED_STRUCT {
 /* test unit ready */
 #define SCSI_CMD_TEST_UNIT_READY				0x00
 
-/* Other commands, TODO: use or remove them
-#define SCSI_CMD_PREVENT_ALLOW_MEDIUM_REMOVAL	0x1E
-#define SCSI_CMD_VERIFY_10						0x2F
-#define SCSI_CMD_SEND_DIAGNOSTIC				0x1D
-#define SCSI_CMD_MODE_SENSE_6                   0x1A
-*/
+static msd_result_t scsi_requestsense(USBHMassStorageLUNDriver *lunp, scsi_sense_response_t *resp);
 
-static inline void _prepare_cbw(msd_transaction_t *tran, USBHMassStorageLUNDriver *lunp) {
-	tran->cbw.bCBWLUN = (uint8_t)(lunp - &lunp->msdp->luns[0]);
-	memset(&tran->cbw.CBWCB, 0, sizeof(tran->cbw.CBWCB));
-}
+static msd_result_t _scsi_perform_transaction(USBHMassStorageLUNDriver *lunp,
+		msd_transaction_t *transaction, void *data) {
 
-static msd_transaction_result_t _msd_transaction(msd_transaction_t *tran, USBHMassStorageLUNDriver *lunp, void *data) {
-
-	uint32_t actual_len;
-	usbh_urbstatus_t status;
-
-	tran->cbw.dCBWSignature = MSD_CBW_SIGNATURE;
-	tran->cbw.dCBWTag = ++lunp->msdp->tag;
-
-	/* control phase */
-	status = usbhBulkTransfer(&lunp->msdp->epout, &tran->cbw,
-					sizeof(tran->cbw), &actual_len, MS2ST(1000));
-
-	if (status == USBH_URBSTATUS_CANCELLED) {
-		uerr("\tMSD: Control phase: USBH_URBSTATUS_CANCELLED");
-		return MSD_TRANSACTIONRESULT_DISCONNECTED;
-	} else if (status == USBH_URBSTATUS_STALL) {
-		uerr("\tMSD: Control phase: USBH_URBSTATUS_STALL");
-		return MSD_TRANSACTIONRESULT_STALL;
-	} else if (status != USBH_URBSTATUS_OK) {
-		uerrf("\tMSD: Control phase: status = %d, != OK", status);
-		return MSD_TRANSACTIONRESULT_BUS_ERROR;
-	} else if (actual_len != sizeof(tran->cbw)) {
-		uerrf("\tMSD: Control phase: wrong actual_len = %d", actual_len);
-		return MSD_TRANSACTIONRESULT_BUS_ERROR;
+	msd_bot_result_t res;
+	res = _msd_bot_transaction(transaction, lunp, data);
+	if (res != MSD_BOTRESULT_OK) {
+		return (msd_result_t)res;
 	}
 
-
-	/* data phase */
-	if (tran->cbw.dCBWDataTransferLength) {
-		status = usbhBulkTransfer(
-				tran->cbw.bmCBWFlags & MSD_CBWFLAGS_D2H ? &lunp->msdp->epin : &lunp->msdp->epout,
-				data,
-				tran->cbw.dCBWDataTransferLength,
-				&actual_len, MS2ST(20000));
-
-		if (status == USBH_URBSTATUS_CANCELLED) {
-			uerr("\tMSD: Data phase: USBH_URBSTATUS_CANCELLED");
-			return MSD_TRANSACTIONRESULT_DISCONNECTED;
-		} else if (status == USBH_URBSTATUS_STALL) {
-			uerr("\tMSD: Data phase: USBH_URBSTATUS_STALL");
-			return MSD_TRANSACTIONRESULT_STALL;
-		} else if (status != USBH_URBSTATUS_OK) {
-			uerrf("\tMSD: Data phase: status = %d, != OK", status);
-			return MSD_TRANSACTIONRESULT_BUS_ERROR;
-		} else if (actual_len != tran->cbw.dCBWDataTransferLength) {
-			uerrf("\tMSD: Data phase: wrong actual_len = %d", actual_len);
-			return MSD_TRANSACTIONRESULT_BUS_ERROR;
+	if (transaction->csw_status == CSW_STATUS_FAILED) {
+		if (transaction->cbw->CBWCB[0] != SCSI_CMD_REQUEST_SENSE) {
+			/* do auto-sense (except for SCSI_CMD_REQUEST_SENSE!) */
+			uwarn("\tMSD: Command failed, auto-sense");
+			USBH_DEFINE_BUFFER(scsi_sense_response_t sense);
+			if (scsi_requestsense(lunp, &sense) == MSD_RESULT_OK) {
+				uwarnf("\tMSD: REQUEST SENSE: Sense key=%x, ASC=%02x, ASCQ=%02x",
+						sense.byte[2] & 0xf, sense.byte[12], sense.byte[13]);
+			}
 		}
+		return MSD_RESULT_FAILED;
 	}
 
-
-	/* status phase */
-	status = usbhBulkTransfer(&lunp->msdp->epin, &tran->csw,
-			sizeof(tran->csw), &actual_len, MS2ST(1000));
-
-	if (status == USBH_URBSTATUS_CANCELLED) {
-		uerr("\tMSD: Status phase: USBH_URBSTATUS_CANCELLED");
-		return MSD_TRANSACTIONRESULT_DISCONNECTED;
-	} else if (status == USBH_URBSTATUS_STALL) {
-		uerr("\tMSD: Status phase: USBH_URBSTATUS_STALL");
-		return MSD_TRANSACTIONRESULT_STALL;
-	} else if (status != USBH_URBSTATUS_OK) {
-		uerrf("\tMSD: Status phase: status = %d, != OK", status);
-		return MSD_TRANSACTIONRESULT_BUS_ERROR;
-	} else if (actual_len != sizeof(tran->csw)) {
-		uerrf("\tMSD: Status phase: wrong actual_len = %d", actual_len);
-		return MSD_TRANSACTIONRESULT_BUS_ERROR;
-	} else if (tran->csw.dCSWSignature != MSD_CSW_SIGNATURE) {
-		uerr("\tMSD: Status phase: wrong signature");
-		return MSD_TRANSACTIONRESULT_BUS_ERROR;
-	} else if (tran->csw.dCSWTag != lunp->msdp->tag) {
-		uerrf("\tMSD: Status phase: wrong tag (expected %d, got %d)",
-				lunp->msdp->tag, tran->csw.dCSWTag);
-		return MSD_TRANSACTIONRESULT_SYNC_ERROR;
-	}
-
-	if (tran->csw.dCSWDataResidue) {
-		uwarnf("\tMSD: Residue=%d", tran->csw.dCSWDataResidue);
-	}
-
-	return MSD_TRANSACTIONRESULT_OK;
+	return MSD_RESULT_OK;
 }
-
 
 static msd_result_t scsi_inquiry(USBHMassStorageLUNDriver *lunp, scsi_inquiry_response_t *resp) {
+	USBH_DEFINE_BUFFER(msd_cbw_t cbw);
 	msd_transaction_t transaction;
 	msd_result_t res;
 
-	_prepare_cbw(&transaction, lunp);
-	transaction.cbw.dCBWDataTransferLength = sizeof(scsi_inquiry_response_t);
-	transaction.cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
-	transaction.cbw.bCBWCBLength = 6;
-	transaction.cbw.CBWCB[0] = SCSI_CMD_INQUIRY;
-	transaction.cbw.CBWCB[4] = sizeof(scsi_inquiry_response_t);
+	memset(cbw.CBWCB, 0, sizeof(cbw.CBWCB));
+	cbw.dCBWDataTransferLength = sizeof(scsi_inquiry_response_t);
+	cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
+	cbw.bCBWCBLength = 6;
+	cbw.CBWCB[0] = SCSI_CMD_INQUIRY;
+	cbw.CBWCB[4] = sizeof(scsi_inquiry_response_t);
+	transaction.cbw = &cbw;
 
-	res.tres = _msd_transaction(&transaction, lunp, resp);
-	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
+	res = _scsi_perform_transaction(lunp, &transaction, resp);
+	if (res == MSD_RESULT_OK) {
+		//transaction is OK; check length
+		if (transaction.data_processed < cbw.dCBWDataTransferLength) {
+			res = MSD_RESULT_TRANSPORT_ERROR;
+		}
 	}
+
 	return res;
 }
 
 static msd_result_t scsi_requestsense(USBHMassStorageLUNDriver *lunp, scsi_sense_response_t *resp) {
+	USBH_DEFINE_BUFFER(msd_cbw_t cbw);
 	msd_transaction_t transaction;
 	msd_result_t res;
 
-	_prepare_cbw(&transaction, lunp);
-	transaction.cbw.dCBWDataTransferLength = sizeof(scsi_sense_response_t);
-	transaction.cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
-	transaction.cbw.bCBWCBLength = 12;
-	transaction.cbw.CBWCB[0] = SCSI_CMD_REQUEST_SENSE;
-	transaction.cbw.CBWCB[4] = sizeof(scsi_sense_response_t);
+	memset(cbw.CBWCB, 0, sizeof(cbw.CBWCB));
+	cbw.dCBWDataTransferLength = sizeof(scsi_sense_response_t);
+	cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
+	cbw.bCBWCBLength = 12;
+	cbw.CBWCB[0] = SCSI_CMD_REQUEST_SENSE;
+	cbw.CBWCB[4] = sizeof(scsi_sense_response_t);
 
-	res.tres = _msd_transaction(&transaction, lunp, resp);
-	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
+	res = _scsi_perform_transaction(lunp, &transaction, resp);
+	if (res == MSD_RESULT_OK) {
+		//transaction is OK; check length
+		if (transaction.data_processed < cbw.dCBWDataTransferLength) {
+			res = MSD_RESULT_TRANSPORT_ERROR;
+		}
 	}
+
 	return res;
 }
 
 static msd_result_t scsi_testunitready(USBHMassStorageLUNDriver *lunp) {
+	USBH_DEFINE_BUFFER(msd_cbw_t cbw);
 	msd_transaction_t transaction;
-	msd_result_t res;
 
-	_prepare_cbw(&transaction, lunp);
-	transaction.cbw.dCBWDataTransferLength = 0;
-	transaction.cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
-	transaction.cbw.bCBWCBLength = 6;
-	transaction.cbw.CBWCB[0] = SCSI_CMD_TEST_UNIT_READY;
+	memset(cbw.CBWCB, 0, sizeof(cbw.CBWCB));
+	cbw.dCBWDataTransferLength = 0;
+	cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
+	cbw.bCBWCBLength = 6;
+	cbw.CBWCB[0] = SCSI_CMD_TEST_UNIT_READY;
 
-	res.tres = _msd_transaction(&transaction, lunp, NULL);
-	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
-	}
-	return res;
+	return _scsi_perform_transaction(lunp, &transaction, NULL);
 }
 
 static msd_result_t scsi_readcapacity10(USBHMassStorageLUNDriver *lunp, scsi_readcapacity10_response_t *resp) {
+	USBH_DEFINE_BUFFER(msd_cbw_t cbw);
 	msd_transaction_t transaction;
 	msd_result_t res;
 
-	_prepare_cbw(&transaction, lunp);
-	transaction.cbw.dCBWDataTransferLength = sizeof(scsi_readcapacity10_response_t);
-	transaction.cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
-	transaction.cbw.bCBWCBLength = 12;
-	transaction.cbw.CBWCB[0] = SCSI_CMD_READ_CAPACITY_10;
+	memset(cbw.CBWCB, 0, sizeof(cbw.CBWCB));
+	cbw.dCBWDataTransferLength = sizeof(scsi_readcapacity10_response_t);
+	cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
+	cbw.bCBWCBLength = 12;
+	cbw.CBWCB[0] = SCSI_CMD_READ_CAPACITY_10;
 
-	res.tres = _msd_transaction(&transaction, lunp, resp);
-	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
+	res = _scsi_perform_transaction(lunp, &transaction, resp);
+	if (res == MSD_RESULT_OK) {
+		//transaction is OK; check length
+		if (transaction.data_processed < cbw.dCBWDataTransferLength) {
+			res = MSD_RESULT_TRANSPORT_ERROR;
+		}
 	}
+
 	return res;
 }
 
 
-static msd_result_t scsi_read10(USBHMassStorageLUNDriver *lunp, uint32_t lba, uint16_t n, uint8_t *data) {
+static msd_result_t scsi_read10(USBHMassStorageLUNDriver *lunp, uint32_t lba, uint16_t n, uint8_t *data, uint32_t *actual_len) {
+	USBH_DEFINE_BUFFER(msd_cbw_t cbw);
 	msd_transaction_t transaction;
 	msd_result_t res;
 
-	_prepare_cbw(&transaction, lunp);
-	transaction.cbw.dCBWDataTransferLength = n * lunp->info.blk_size;
-	transaction.cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
-	transaction.cbw.bCBWCBLength = 10;
-	transaction.cbw.CBWCB[0] = SCSI_CMD_READ_10;
-	transaction.cbw.CBWCB[2] = (uint8_t)(lba >> 24);
-	transaction.cbw.CBWCB[3] = (uint8_t)(lba >> 16);
-	transaction.cbw.CBWCB[4] = (uint8_t)(lba >> 8);
-	transaction.cbw.CBWCB[5] = (uint8_t)(lba);
-	transaction.cbw.CBWCB[7] = (uint8_t)(n >> 8);
-	transaction.cbw.CBWCB[8] = (uint8_t)(n);
+	memset(cbw.CBWCB, 0, sizeof(cbw.CBWCB));
+	cbw.dCBWDataTransferLength = n * lunp->info.blk_size;
+	cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
+	cbw.bCBWCBLength = 10;
+	cbw.CBWCB[0] = SCSI_CMD_READ_10;
+	cbw.CBWCB[2] = (uint8_t)(lba >> 24);
+	cbw.CBWCB[3] = (uint8_t)(lba >> 16);
+	cbw.CBWCB[4] = (uint8_t)(lba >> 8);
+	cbw.CBWCB[5] = (uint8_t)(lba);
+	cbw.CBWCB[7] = (uint8_t)(n >> 8);
+	cbw.CBWCB[8] = (uint8_t)(n);
 
-	res.tres = _msd_transaction(&transaction, lunp, data);
-	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
+	res = _scsi_perform_transaction(lunp, &transaction, data);
+	if (actual_len) {
+		*actual_len = transaction.data_processed;
 	}
+	if (res == MSD_RESULT_OK) {
+		//transaction is OK; check length
+		if (transaction.data_processed < cbw.dCBWDataTransferLength) {
+			res = MSD_RESULT_TRANSPORT_ERROR;
+		}
+	}
+
 	return res;
 }
 
-static msd_result_t scsi_write10(USBHMassStorageLUNDriver *lunp, uint32_t lba, uint16_t n, const uint8_t *data) {
+static msd_result_t scsi_write10(USBHMassStorageLUNDriver *lunp, uint32_t lba, uint16_t n, const uint8_t *data, uint32_t *actual_len) {
+	USBH_DEFINE_BUFFER(msd_cbw_t cbw);
 	msd_transaction_t transaction;
 	msd_result_t res;
 
-	_prepare_cbw(&transaction, lunp);
-	transaction.cbw.dCBWDataTransferLength = n * lunp->info.blk_size;
-	transaction.cbw.bmCBWFlags = MSD_CBWFLAGS_H2D;
-	transaction.cbw.bCBWCBLength = 10;
-	transaction.cbw.CBWCB[0] = SCSI_CMD_WRITE_10;
-	transaction.cbw.CBWCB[2] = (uint8_t)(lba >> 24);
-	transaction.cbw.CBWCB[3] = (uint8_t)(lba >> 16);
-	transaction.cbw.CBWCB[4] = (uint8_t)(lba >> 8);
-	transaction.cbw.CBWCB[5] = (uint8_t)(lba);
-	transaction.cbw.CBWCB[7] = (uint8_t)(n >> 8);
-	transaction.cbw.CBWCB[8] = (uint8_t)(n);
+	memset(cbw.CBWCB, 0, sizeof(cbw.CBWCB));
+	cbw.dCBWDataTransferLength = n * lunp->info.blk_size;
+	cbw.bmCBWFlags = MSD_CBWFLAGS_H2D;
+	cbw.bCBWCBLength = 10;
+	cbw.CBWCB[0] = SCSI_CMD_WRITE_10;
+	cbw.CBWCB[2] = (uint8_t)(lba >> 24);
+	cbw.CBWCB[3] = (uint8_t)(lba >> 16);
+	cbw.CBWCB[4] = (uint8_t)(lba >> 8);
+	cbw.CBWCB[5] = (uint8_t)(lba);
+	cbw.CBWCB[7] = (uint8_t)(n >> 8);
+	cbw.CBWCB[8] = (uint8_t)(n);
 
-	res.tres = _msd_transaction(&transaction, lunp, (uint8_t *)data);
-	if (res.tres == MSD_TRANSACTIONRESULT_OK) {
-		res.cres = (msd_command_result_t) transaction.csw.bCSWStatus;
+	res = _scsi_perform_transaction(lunp, &transaction, (void *)data);
+	if (actual_len) {
+		*actual_len = transaction.data_processed;
 	}
+	if (res == MSD_RESULT_OK) {
+		//transaction is OK; check length
+		if (transaction.data_processed < cbw.dCBWDataTransferLength) {
+			res = MSD_RESULT_TRANSPORT_ERROR;
+		}
+	}
+
 	return res;
 }
 
@@ -597,34 +694,6 @@ static const struct USBHMassStorageDriverVMT blk_vmt = {
 	(bool (*)(void *))usbhmsdLUNSync,
 	(bool (*)(void *, BlockDeviceInfo *))usbhmsdLUNGetInfo
 };
-
-
-
-static uint32_t _requestsense(USBHMassStorageLUNDriver *lunp) {
-	scsi_sense_response_t sense;
-	msd_result_t res;
-
-	res = scsi_requestsense(lunp, &sense);
-	if (res.tres != MSD_TRANSACTIONRESULT_OK) {
-		uerr("\tREQUEST SENSE: Transaction error");
-		goto failed;
-	} else if (res.cres == MSD_COMMANDRESULT_FAILED) {
-		uerr("\tREQUEST SENSE: Command Failed");
-		goto failed;
-	} else if (res.cres == MSD_COMMANDRESULT_PHASE_ERROR) {
-		//TODO: Do reset, etc.
-		uerr("\tREQUEST SENSE: Command Phase Error");
-		goto failed;
-	}
-
-	uerrf("\tREQUEST SENSE: Sense key=%x, ASC=%02x, ASCQ=%02x",
-			sense.byte[2] & 0xf, sense.byte[12], sense.byte[13]);
-
-	return (sense.byte[2] & 0xf) | (sense.byte[12] << 8) | (sense.byte[13] << 16);
-
-failed:
-	return 0xffffffff;
-}
 
 void usbhmsdLUNObjectInit(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp != NULL);
@@ -678,29 +747,25 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 
     osalMutexLock(&msdp->mtx);
 
-    USBH_DEFINE_BUFFER(union {
-    		scsi_inquiry_response_t inq;
-    		scsi_readcapacity10_response_t cap;	} u);
+	{
+		USBH_DEFINE_BUFFER(scsi_inquiry_response_t inq);
+		uinfo("INQUIRY...");
+		res = scsi_inquiry(lunp, &inq);
+		if (res == MSD_RESULT_DISCONNECTED) {
+			goto failed;
+		} else if (res == MSD_RESULT_TRANSPORT_ERROR) {
+			//retry?
+			goto failed;
+		} else if (res == MSD_RESULT_FAILED) {
+			//retry?
+			goto failed;
+		}
 
-	uinfo("INQUIRY...");
-	res = scsi_inquiry(lunp, &u.inq);
-	if (res.tres != MSD_TRANSACTIONRESULT_OK) {
-		uerr("\tINQUIRY: Transaction error");
-		goto failed;
-	} else if (res.cres == MSD_COMMANDRESULT_FAILED) {
-		uerr("\tINQUIRY: Command Failed");
-		_requestsense(lunp);
-		goto failed;
-	} else if (res.cres == MSD_COMMANDRESULT_PHASE_ERROR) {
-		//TODO: Do reset, etc.
-		uerr("\tINQUIRY: Command Phase Error");
-		goto failed;
-	}
-
-	uinfof("\tPDT=%02x", u.inq.peripheral & 0x1f);
-	if (u.inq.peripheral != 0) {
-		uerr("\tUnsupported PDT");
-		goto failed;
+		uinfof("\tPDT=%02x", inq.peripheral & 0x1f);
+		if (inq.peripheral != 0) {
+			uerr("\tUnsupported PDT");
+			goto failed;
+		}
 	}
 
 	// Test if unit ready
@@ -708,41 +773,40 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 	for (i = 0; i < 10; i++) {
 		uinfo("TEST UNIT READY...");
 		res = scsi_testunitready(lunp);
-		if (res.tres != MSD_TRANSACTIONRESULT_OK) {
-			uerr("\tTEST UNIT READY: Transaction error");
+		if (res == MSD_RESULT_DISCONNECTED) {
 			goto failed;
-		} else if (res.cres == MSD_COMMANDRESULT_FAILED) {
-			uerr("\tTEST UNIT READY: Command Failed");
-			_requestsense(lunp);
+		} else if (res == MSD_RESULT_TRANSPORT_ERROR) {
+			//retry?
+			goto failed;
+		} else if (res == MSD_RESULT_FAILED) {
+			uinfo("\tTEST UNIT READY: Command Failed, retry");
+			osalThreadSleepMilliseconds(200);
 			continue;
-		} else if (res.cres == MSD_COMMANDRESULT_PHASE_ERROR) {
-			//TODO: Do reset, etc.
-			uerr("\tTEST UNIT READY: Command Phase Error");
-			goto failed;
 		}
 		uinfo("\tReady.");
 		break;
-		// osalThreadSleepMilliseconds(200); // will raise 'code is unreachable' warning
 	}
 	if (i == 10) goto failed;
 
-	// Read capacity
-	uinfo("READ CAPACITY(10)...");
-	res = scsi_readcapacity10(lunp, &u.cap);
-	if (res.tres != MSD_TRANSACTIONRESULT_OK) {
-		uerr("\tREAD CAPACITY(10): Transaction error");
-		goto failed;
-	} else if (res.cres == MSD_COMMANDRESULT_FAILED) {
-		uerr("\tREAD CAPACITY(10): Command Failed");
-		_requestsense(lunp);
-		goto failed;
-	} else if (res.cres == MSD_COMMANDRESULT_PHASE_ERROR) {
-		//TODO: Do reset, etc.
-		uerr("\tREAD CAPACITY(10): Command Phase Error");
-		goto failed;
+	{
+		USBH_DEFINE_BUFFER(scsi_readcapacity10_response_t cap);
+		// Read capacity
+		uinfo("READ CAPACITY(10)...");
+		res = scsi_readcapacity10(lunp, &cap);
+		if (res == MSD_RESULT_DISCONNECTED) {
+			goto failed;
+		} else if (res == MSD_RESULT_TRANSPORT_ERROR) {
+			//retry?
+			goto failed;
+		} else if (res == MSD_RESULT_FAILED) {
+			//retry?
+			goto failed;
+		}
+
+		lunp->info.blk_size = __REV(cap.block_size);
+		lunp->info.blk_num = __REV(cap.last_block_addr) + 1;
 	}
-	lunp->info.blk_size = __REV(u.cap.block_size);
-	lunp->info.blk_num = __REV(u.cap.last_block_addr) + 1;
+
 	uinfof("\tBlock size=%dbytes, blocks=%u (~%u MB)", lunp->info.blk_size, lunp->info.blk_num,
 		(uint32_t)(((uint64_t)lunp->info.blk_size * lunp->info.blk_num) / (1024UL * 1024UL)));
 
@@ -792,6 +856,7 @@ bool usbhmsdLUNRead(USBHMassStorageLUNDriver *lunp, uint32_t startblk,
 	bool ret = HAL_FAILED;
 	uint16_t blocks;
 	msd_result_t res;
+	uint32_t actual_len;
 
 	osalSysLock();
 	if (lunp->state != BLK_READY) {
@@ -808,18 +873,14 @@ bool usbhmsdLUNRead(USBHMassStorageLUNDriver *lunp, uint32_t startblk,
 		} else {
 			blocks = (uint16_t)n;
 		}
-		res = scsi_read10(lunp, startblk, blocks, buffer);
-		if (res.tres != MSD_TRANSACTIONRESULT_OK) {
-			uerr("\tREAD (10): Transaction error");
+		res = scsi_read10(lunp, startblk, blocks, buffer, &actual_len);
+		if (res == MSD_RESULT_DISCONNECTED) {
 			goto exit;
-		} else if (res.cres == MSD_COMMANDRESULT_FAILED) {
-			//TODO: request sense, and act appropriately
-			uerr("\tREAD (10): Command Failed");
-			_requestsense(lunp);
+		} else if (res == MSD_RESULT_TRANSPORT_ERROR) {
+			//retry?
 			goto exit;
-		} else if (res.cres == MSD_COMMANDRESULT_PHASE_ERROR) {
-			//TODO: Do reset, etc.
-			uerr("\tREAD (10): Command Phase Error");
+		} else if (res == MSD_RESULT_FAILED) {
+			//retry?
 			goto exit;
 		}
 		n -= blocks;
@@ -849,6 +910,7 @@ bool usbhmsdLUNWrite(USBHMassStorageLUNDriver *lunp, uint32_t startblk,
 	bool ret = HAL_FAILED;
 	uint16_t blocks;
 	msd_result_t res;
+	uint32_t actual_len;
 
 	osalSysLock();
 	if (lunp->state != BLK_READY) {
@@ -865,18 +927,14 @@ bool usbhmsdLUNWrite(USBHMassStorageLUNDriver *lunp, uint32_t startblk,
 		} else {
 			blocks = (uint16_t)n;
 		}
-		res = scsi_write10(lunp, startblk, blocks, buffer);
-		if (res.tres != MSD_TRANSACTIONRESULT_OK) {
-			uerr("\tWRITE (10): Transaction error");
+		res = scsi_write10(lunp, startblk, blocks, buffer, &actual_len);
+		if (res == MSD_RESULT_DISCONNECTED) {
 			goto exit;
-		} else if (res.cres == MSD_COMMANDRESULT_FAILED) {
-			//TODO: request sense, and act appropriately
-			uerr("\tWRITE (10): Command Failed");
-			_requestsense(lunp);
+		} else if (res == MSD_RESULT_TRANSPORT_ERROR) {
+			//retry?
 			goto exit;
-		} else if (res.cres == MSD_COMMANDRESULT_PHASE_ERROR) {
-			//TODO: Do reset, etc.
-			uerr("\tWRITE (10): Command Phase Error");
+		} else if (res == MSD_RESULT_FAILED) {
+			//retry?
 			goto exit;
 		}
 		n -= blocks;

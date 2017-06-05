@@ -25,7 +25,6 @@
 /* TODO:
  *
  * - Implement of conditional compilation of multiple-luns per instance.
- * - Implement error checking and recovery when commands fail.
  *
  */
 
