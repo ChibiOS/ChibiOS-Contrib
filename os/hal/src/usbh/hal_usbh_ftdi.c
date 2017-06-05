@@ -209,7 +209,7 @@ alloc_ok:
 
 }
 
-static void _stop(USBHFTDIPortDriver *ftdipp);
+static void _stopS(USBHFTDIPortDriver *ftdipp);
 static void _ftdi_unload(usbh_baseclassdriver_t *drv) {
 	osalDbgCheck(drv != NULL);
 	USBHFTDIDriver *const ftdip = (USBHFTDIDriver *)drv;
@@ -217,7 +217,10 @@ static void _ftdi_unload(usbh_baseclassdriver_t *drv) {
 
 	osalMutexLock(&ftdip->mtx);
 	while (ftdipp) {
-		_stop(ftdipp);
+		osalSysLock();
+		_stopS(ftdipp);
+		osalOsRescheduleS();
+		osalSysUnlock();
 		ftdipp = ftdipp->next;
 	}
 
@@ -624,29 +627,27 @@ static const struct FTDIPortDriverVMT async_channel_vmt = {
 };
 
 
-static void _stop(USBHFTDIPortDriver *ftdipp) {
-	osalSysLock();
+static void _stopS(USBHFTDIPortDriver *ftdipp) {
+	if (ftdipp->state != USBHFTDIP_STATE_READY)
+		return;
 	chVTResetI(&ftdipp->vt);
 	usbhEPCloseS(&ftdipp->epin);
 	usbhEPCloseS(&ftdipp->epout);
 	chThdDequeueAllI(&ftdipp->iq_waiting, Q_RESET);
 	chThdDequeueAllI(&ftdipp->oq_waiting, Q_RESET);
-	osalOsRescheduleS();
 	ftdipp->state = USBHFTDIP_STATE_ACTIVE;
-	osalSysUnlock();
 }
 
 void usbhftdipStop(USBHFTDIPortDriver *ftdipp) {
 	osalDbgCheck((ftdipp->state == USBHFTDIP_STATE_ACTIVE)
 			|| (ftdipp->state == USBHFTDIP_STATE_READY));
 
-	if (ftdipp->state == USBHFTDIP_STATE_ACTIVE) {
-		return;
-	}
-
-	osalMutexLock(&ftdipp->ftdip->mtx);
-	_stop(ftdipp);
-	osalMutexUnlock(&ftdipp->ftdip->mtx);
+	osalSysLock();
+	chMtxLockS(&ftdipp->ftdip->mtx);
+	_stopS(ftdipp);
+	chMtxUnlockS(&ftdipp->ftdip->mtx);
+	osalOsRescheduleS();
+	osalSysUnlock();
 }
 
 void usbhftdipStart(USBHFTDIPortDriver *ftdipp, const USBHFTDIPortConfig *config) {
