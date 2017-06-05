@@ -29,6 +29,9 @@
 #if HAL_USBH_USE_FTDI
 extern const usbh_classdriverinfo_t usbhftdiClassDriverInfo;
 #endif
+#if HAL_USBH_USE_AOA
+extern const usbh_classdriverinfo_t usbhaoaClassDriverInfo;
+#endif
 #if HAL_USBH_USE_MSD
 extern const usbh_classdriverinfo_t usbhmsdClassDriverInfo;
 #endif

@@ -24,6 +24,7 @@
 
 //devices
 #include "usbh/dev/hub.h"
+#include "usbh/dev/aoa.h"
 #include "usbh/dev/ftdi.h"
 #include "usbh/dev/msd.h"
 
@@ -113,6 +114,9 @@ void usbhObjectInit(USBHDriver *usbh) {
 void usbhInit(void) {
 #if HAL_USBH_USE_FTDI
 	usbhftdiInit();
+#endif
+#if HAL_USBH_USE_AOA
+	usbhaoaInit();
 #endif
 #if HAL_USBH_USE_MSD
 	usbhmsdInit();
@@ -1303,7 +1307,10 @@ static const usbh_classdriverinfo_t *usbh_classdrivers_lookup[] = {
 	&usbhmsdClassDriverInfo,
 #endif
 #if HAL_USBH_USE_HUB
-	&usbhhubClassDriverInfo
+	&usbhhubClassDriverInfo,
+#endif
+#if HAL_USBH_USE_AOA
+	&usbhaoaClassDriverInfo,	/* Leave always last */
 #endif
 };
 

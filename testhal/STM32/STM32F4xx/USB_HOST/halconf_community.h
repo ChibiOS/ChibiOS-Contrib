@@ -115,6 +115,20 @@
 #define HAL_USBHUVC_WORK_RAM_SIZE                     20000
 #define HAL_USBHUVC_STATUS_PACKETS_COUNT              10
 
+/* AOA */
+#define HAL_USBH_USE_AOA							  TRUE
+
+#define HAL_USBHAOA_MAX_INSTANCES					  1
+/* Uncomment this if you need a filter for AOA devices:
+ * #define HAL_USBHAOA_FILTER_CALLBACK			_try_aoa
+ */
+#define HAL_USBHAOA_DEFAULT_MANUFACTURER	          "Diego MFG & Co."
+#define HAL_USBHAOA_DEFAULT_MODEL			          "Diego's device"
+#define HAL_USBHAOA_DEFAULT_DESCRIPTION		          "Description of this device..."
+#define HAL_USBHAOA_DEFAULT_VERSION			          "1.0"
+#define HAL_USBHAOA_DEFAULT_URI				          NULL
+#define HAL_USBHAOA_DEFAULT_SERIAL			          NULL
+#define HAL_USBHAOA_DEFAULT_AUDIO_MODE		          USBHAOA_AUDIO_MODE_DISABLED
 
 /* HUB */
 #define HAL_USBH_USE_HUB                              TRUE
@@ -158,6 +172,11 @@
 #define USBHFTDI_DEBUG_ENABLE_INFO                    TRUE
 #define USBHFTDI_DEBUG_ENABLE_WARNINGS                TRUE
 #define USBHFTDI_DEBUG_ENABLE_ERRORS                  TRUE
+
+#define USBHAOA_DEBUG_ENABLE_TRACE                   FALSE
+#define USBHAOA_DEBUG_ENABLE_INFO                    TRUE
+#define USBHAOA_DEBUG_ENABLE_WARNINGS                TRUE
+#define USBHAOA_DEBUG_ENABLE_ERRORS                  TRUE
 
 /*===========================================================================*/
 /* FSMCNAND driver related settings.                                         */

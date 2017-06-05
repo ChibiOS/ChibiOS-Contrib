@@ -19,18 +19,7 @@
 #include "ff.h"
 #include <string.h>
 
-
-
-#if HAL_USBH_USE_FTDI
-#include "usbh/dev/ftdi.h"
-#include "shell.h"
-#include "chprintf.h"
-
-static THD_WORKING_AREA(waTestFTDI, 1024);
-
-#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(2048)
-#define TEST_WA_SIZE    THD_WORKING_AREA_SIZE(256)
-
+#if HAL_USBH_USE_FTDI || HAL_USBH_USE_AOA
 static uint8_t buf[] =
     "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
     "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
@@ -48,7 +37,17 @@ static uint8_t buf[] =
     "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
     "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
     "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+#endif
 
+#if HAL_USBH_USE_FTDI
+#include "usbh/dev/ftdi.h"
+#include "shell.h"
+#include "chprintf.h"
+
+static THD_WORKING_AREA(waTestFTDI, 1024);
+
+#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(2048)
+#define TEST_WA_SIZE    THD_WORKING_AREA_SIZE(256)
 
 static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
 
@@ -197,7 +196,92 @@ start:
 }
 #endif
 
+#if HAL_USBH_USE_AOA
+#include "usbh/dev/aoa.h"
+#include "chprintf.h"
 
+static THD_WORKING_AREA(waTestAOA, 1024);
+
+#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(2048)
+#define TEST_WA_SIZE    THD_WORKING_AREA_SIZE(256)
+
+static void ThreadTestAOA(void *p) {
+	(void)p;
+	USBHAOADriver *const aoap = &USBHAOAD[0];
+	USBHAOAChannel *const aoacp = &aoap->channel;
+
+start:
+	while (usbhaoaGetState(aoap) != USBHAOA_STATE_READY) {
+		chThdSleepMilliseconds(100);
+	}
+
+	usbDbgPuts("AOA: Connected");
+
+	if (usbhaoaGetChannelState(aoap) != USBHAOA_CHANNEL_STATE_READY) {
+		usbhaoaChannelStart(aoap);
+		usbDbgPuts("AOA: Channel started");
+	}
+
+	//loopback
+	if (1) {
+		for(;;) {
+			msg_t m = streamGet(aoacp);
+			if (m < MSG_OK) {
+				usbDbgPuts("AOA: Disconnected");
+				goto start;
+			}
+			streamPut(aoacp, (uint8_t)m);
+			if (m == 'q')
+				break;
+		}
+	}
+
+#define AOA_WRITE_SPEED_TEST_BYTES	3000000UL
+	//write speed test
+	if (1) {
+		systime_t st, et;
+		int i;
+		for (i = 0; i < 5; i++) {
+			uint32_t bytes = AOA_WRITE_SPEED_TEST_BYTES;
+			uint32_t times = bytes / 1024;
+			st = chVTGetSystemTimeX();
+			while (times--) {
+				if (streamWrite(aoacp, buf, 1024) < 1024) {
+					usbDbgPuts("AOA: Disconnected");
+					goto start;
+				}
+				bytes -= 1024;
+			}
+			if (bytes) {
+				if (streamWrite(aoacp, buf, bytes) < bytes) {
+					usbDbgPuts("AOA: Disconnected");
+					goto start;
+				}
+			}
+			et = chVTGetSystemTimeX();
+			usbDbgPrintf("\tRate=%uB/s", AOA_WRITE_SPEED_TEST_BYTES / (et - st) * 100);
+		}
+	}
+
+	//single character write test (tests the timer)
+	if (0) {
+		for (;;) {
+			if (streamPut(aoacp, 'A') != MSG_OK) {
+				usbDbgPuts("AOA: Disconnected");
+				goto start;
+			}
+			chThdSleepMilliseconds(100);
+		}
+	}
+
+	usbhaoaChannelStop(aoap);
+
+	usbDbgPuts("AOA: Tests done, restarting in 3s");
+	chThdSleepMilliseconds(3000);
+
+	goto start;
+}
+#endif
 
 #if HAL_USBH_USE_MSD
 #include "usbh/dev/msd.h"
@@ -398,6 +482,10 @@ int main(void) {
 
 #if HAL_USBH_USE_FTDI
 	chThdCreateStatic(waTestFTDI, sizeof(waTestFTDI), NORMALPRIO, ThreadTestFTDI, 0);
+#endif
+
+#if HAL_USBH_USE_AOA
+	chThdCreateStatic(waTestAOA, sizeof(waTestAOA), NORMALPRIO, ThreadTestAOA, 0);
 #endif
 
 	//turn on USB power
