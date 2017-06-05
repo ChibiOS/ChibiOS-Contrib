@@ -35,6 +35,9 @@ extern const usbh_classdriverinfo_t usbhaoaClassDriverInfo;
 #if HAL_USBH_USE_MSD
 extern const usbh_classdriverinfo_t usbhmsdClassDriverInfo;
 #endif
+#if HAL_USBH_USE_HID
+extern const usbh_classdriverinfo_t usbhhidClassDriverInfo;
+#endif
 #if HAL_USBH_USE_UVC
 extern const usbh_classdriverinfo_t usbhuvcClassDriverInfo;
 #endif

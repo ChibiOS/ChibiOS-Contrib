@@ -27,6 +27,7 @@
 #include "usbh/dev/aoa.h"
 #include "usbh/dev/ftdi.h"
 #include "usbh/dev/msd.h"
+#include "usbh/dev/hid.h"
 
 #if USBH_DEBUG_ENABLE_TRACE
 #define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
@@ -120,6 +121,9 @@ void usbhInit(void) {
 #endif
 #if HAL_USBH_USE_MSD
 	usbhmsdInit();
+#endif
+#if HAL_USBH_USE_HID
+	usbhhidInit();
 #endif
 #if HAL_USBH_USE_HUB
 	usbhhubInit();
@@ -1305,6 +1309,9 @@ static const usbh_classdriverinfo_t *usbh_classdrivers_lookup[] = {
 #endif
 #if HAL_USBH_USE_MSD
 	&usbhmsdClassDriverInfo,
+#endif
+#if HAL_USBH_USE_HID
+	&usbhhidClassDriverInfo,
 #endif
 #if HAL_USBH_USE_HUB
 	&usbhhubClassDriverInfo,

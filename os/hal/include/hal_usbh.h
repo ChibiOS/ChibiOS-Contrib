@@ -44,6 +44,10 @@
 #define HAL_USBH_USE_AOA FALSE
 #endif
 
+#ifndef HAL_USBH_USE_HID
+#define HAL_USBH_USE_HID FALSE
+#endif
+
 #define HAL_USBH_USE_IAD     HAL_USBH_USE_UVC
 
 #if (HAL_USE_USBH == TRUE) || defined(__DOXYGEN__)

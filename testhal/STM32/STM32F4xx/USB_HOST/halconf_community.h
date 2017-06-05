@@ -130,6 +130,12 @@
 #define HAL_USBHAOA_DEFAULT_SERIAL			          NULL
 #define HAL_USBHAOA_DEFAULT_AUDIO_MODE		          USBHAOA_AUDIO_MODE_DISABLED
 
+/* HID */
+#define HAL_USBH_USE_HID							  TRUE
+#define HAL_USBHHID_MAX_INSTANCES					  2
+#define HAL_USBHHID_USE_INTERRUPT_OUT					FALSE
+
+
 /* HUB */
 #define HAL_USBH_USE_HUB                              TRUE
 
@@ -177,6 +183,11 @@
 #define USBHAOA_DEBUG_ENABLE_INFO                    TRUE
 #define USBHAOA_DEBUG_ENABLE_WARNINGS                TRUE
 #define USBHAOA_DEBUG_ENABLE_ERRORS                  TRUE
+
+#define USBHHID_DEBUG_ENABLE_TRACE                   TRUE
+#define USBHHID_DEBUG_ENABLE_INFO                    TRUE
+#define USBHHID_DEBUG_ENABLE_WARNINGS                TRUE
+#define USBHHID_DEBUG_ENABLE_ERRORS                  TRUE
 
 /*===========================================================================*/
 /* FSMCNAND driver related settings.                                         */
