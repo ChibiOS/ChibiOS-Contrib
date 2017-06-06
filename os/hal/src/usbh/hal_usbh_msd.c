@@ -193,7 +193,9 @@ alloc_ok:
 			osalSysUnlock();
 
 			/* connect the LUN (TODO: review if it's best to leave the LUN disconnected) */
+			msdp->dev = dev;
 			usbhmsdLUNConnect(&MSBLKD[i]);
+			msdp->dev = NULL;
 			luns--;
 		}
 	}
@@ -310,17 +312,17 @@ static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassSt
 	tran->data_processed = 0;
 
 	/* control phase */
-	status = usbhBulkTransfer(&lunp->msdp->epout, &tran->cbw,
-					sizeof(tran->cbw), &actual_len, MS2ST(1000));
+	status = usbhBulkTransfer(&lunp->msdp->epout, tran->cbw,
+					sizeof(*tran->cbw), &actual_len, MS2ST(1000));
 
 	if (status == USBH_URBSTATUS_CANCELLED) {
 		uerr("\tMSD: Control phase: USBH_URBSTATUS_CANCELLED");
 		return MSD_BOTRESULT_DISCONNECTED;
 	}
 
-	if ((status != USBH_URBSTATUS_OK) || (actual_len != sizeof(tran->cbw))) {
+	if ((status != USBH_URBSTATUS_OK) || (actual_len != sizeof(*tran->cbw))) {
 		uerrf("\tMSD: Control phase: status = %d (!= OK), actual_len = %d (expected to send %d)",
-				status, actual_len, sizeof(tran->cbw));
+				status, actual_len, sizeof(*tran->cbw));
 		_msd_bot_reset(lunp->msdp);
 		return MSD_BOTRESULT_ERROR;
 	}
@@ -566,6 +568,7 @@ static msd_result_t scsi_requestsense(USBHMassStorageLUNDriver *lunp, scsi_sense
 	cbw.bCBWCBLength = 12;
 	cbw.CBWCB[0] = SCSI_CMD_REQUEST_SENSE;
 	cbw.CBWCB[4] = sizeof(scsi_sense_response_t);
+	transaction.cbw = &cbw;
 
 	res = _scsi_perform_transaction(lunp, &transaction, resp);
 	if (res == MSD_RESULT_OK) {
@@ -587,6 +590,7 @@ static msd_result_t scsi_testunitready(USBHMassStorageLUNDriver *lunp) {
 	cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
 	cbw.bCBWCBLength = 6;
 	cbw.CBWCB[0] = SCSI_CMD_TEST_UNIT_READY;
+	transaction.cbw = &cbw;
 
 	return _scsi_perform_transaction(lunp, &transaction, NULL);
 }
@@ -601,6 +605,7 @@ static msd_result_t scsi_readcapacity10(USBHMassStorageLUNDriver *lunp, scsi_rea
 	cbw.bmCBWFlags = MSD_CBWFLAGS_D2H;
 	cbw.bCBWCBLength = 12;
 	cbw.CBWCB[0] = SCSI_CMD_READ_CAPACITY_10;
+	transaction.cbw = &cbw;
 
 	res = _scsi_perform_transaction(lunp, &transaction, resp);
 	if (res == MSD_RESULT_OK) {
@@ -630,6 +635,7 @@ static msd_result_t scsi_read10(USBHMassStorageLUNDriver *lunp, uint32_t lba, ui
 	cbw.CBWCB[5] = (uint8_t)(lba);
 	cbw.CBWCB[7] = (uint8_t)(n >> 8);
 	cbw.CBWCB[8] = (uint8_t)(n);
+	transaction.cbw = &cbw;
 
 	res = _scsi_perform_transaction(lunp, &transaction, data);
 	if (actual_len) {
@@ -661,6 +667,7 @@ static msd_result_t scsi_write10(USBHMassStorageLUNDriver *lunp, uint32_t lba, u
 	cbw.CBWCB[5] = (uint8_t)(lba);
 	cbw.CBWCB[7] = (uint8_t)(n >> 8);
 	cbw.CBWCB[8] = (uint8_t)(n);
+	transaction.cbw = &cbw;
 
 	res = _scsi_perform_transaction(lunp, &transaction, (void *)data);
 	if (actual_len) {
@@ -747,7 +754,7 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 
     osalMutexLock(&msdp->mtx);
 
-	{
+    {
 		USBH_DEFINE_BUFFER(scsi_inquiry_response_t inq);
 		uinfo("INQUIRY...");
 		res = scsi_inquiry(lunp, &inq);
@@ -769,7 +776,7 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 	}
 
 	// Test if unit ready
-	uint8_t i;
+    uint8_t i;
 	for (i = 0; i < 10; i++) {
 		uinfo("TEST UNIT READY...");
 		res = scsi_testunitready(lunp);
