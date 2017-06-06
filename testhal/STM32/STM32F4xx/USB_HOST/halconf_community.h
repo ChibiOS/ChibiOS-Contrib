@@ -107,14 +107,6 @@
 #define HAL_USBHFTDI_DEFAULT_XON                      0x11
 #define HAL_USBHFTDI_DEFAULT_XOFF                     0x13
 
-/* UVC */
-#define HAL_USBH_USE_UVC                              FALSE
-
-#define HAL_USBHUVC_MAX_INSTANCES                     1
-#define HAL_USBHUVC_MAX_MAILBOX_SZ                    70
-#define HAL_USBHUVC_WORK_RAM_SIZE                     20000
-#define HAL_USBHUVC_STATUS_PACKETS_COUNT              10
-
 /* AOA */
 #define HAL_USBH_USE_AOA                              TRUE
 
@@ -130,18 +122,24 @@
 #define HAL_USBHAOA_DEFAULT_SERIAL                    NULL
 #define HAL_USBHAOA_DEFAULT_AUDIO_MODE                USBHAOA_AUDIO_MODE_DISABLED
 
+/* UVC */
+#define HAL_USBH_USE_UVC                              TRUE
+
+#define HAL_USBHUVC_MAX_INSTANCES                     1
+#define HAL_USBHUVC_MAX_MAILBOX_SZ                    70
+#define HAL_USBHUVC_WORK_RAM_SIZE                     20000
+#define HAL_USBHUVC_STATUS_PACKETS_COUNT              10
+
 /* HID */
 #define HAL_USBH_USE_HID                              TRUE
 #define HAL_USBHHID_MAX_INSTANCES                     2
 #define HAL_USBHHID_USE_INTERRUPT_OUT                 FALSE
-
 
 /* HUB */
 #define HAL_USBH_USE_HUB                              TRUE
 
 #define HAL_USBHHUB_MAX_INSTANCES                     1
 #define HAL_USBHHUB_MAX_PORTS                         6
-
 
 /* debug */
 #define USBH_DEBUG_ENABLE                             TRUE
@@ -184,7 +182,7 @@
 #define USBHAOA_DEBUG_ENABLE_WARNINGS                 TRUE
 #define USBHAOA_DEBUG_ENABLE_ERRORS                   TRUE
 
-#define USBHHID_DEBUG_ENABLE_TRACE                    TRUE
+#define USBHHID_DEBUG_ENABLE_TRACE                    FALSE
 #define USBHHID_DEBUG_ENABLE_INFO                     TRUE
 #define USBHHID_DEBUG_ENABLE_WARNINGS                 TRUE
 #define USBHHID_DEBUG_ENABLE_ERRORS                   TRUE

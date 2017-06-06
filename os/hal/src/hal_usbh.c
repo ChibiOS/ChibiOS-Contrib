@@ -28,6 +28,7 @@
 #include "usbh/dev/ftdi.h"
 #include "usbh/dev/msd.h"
 #include "usbh/dev/hid.h"
+#include "usbh/dev/uvc.h"
 
 #if USBH_DEBUG_ENABLE_TRACE
 #define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
@@ -124,6 +125,9 @@ void usbhInit(void) {
 #endif
 #if HAL_USBH_USE_HID
 	usbhhidInit();
+#endif
+#if HAL_USBH_USE_UVC
+	usbhuvcInit();
 #endif
 #if HAL_USBH_USE_HUB
 	usbhhubInit();
@@ -421,7 +425,8 @@ usbh_urbstatus_t usbhControlRequestExtended(usbh_device_t *dev,
 		uint32_t *actual_len,
 		systime_t timeout) {
 
-	_check_dev(dev);
+	if (!dev) return USBH_URBSTATUS_DISCONNECTED;
+
 	osalDbgCheck(req != NULL);
 
 	usbh_urb_t urb;
@@ -1310,6 +1315,9 @@ static const usbh_classdriverinfo_t *usbh_classdrivers_lookup[] = {
 #if HAL_USBH_USE_HID
 	&usbhhidClassDriverInfo,
 #endif
+#if HAL_USBH_USE_UVC
+	&usbhuvcClassDriverInfo,
+#endif
 #if HAL_USBH_USE_HUB
 	&usbhhubClassDriverInfo,
 #endif
@@ -1341,7 +1349,7 @@ static bool _classdriver_load(usbh_device_t *dev, uint8_t class,
 #if HAL_USBH_USE_IAD
 			/* special case: */
 			if (info == &usbhiadClassDriverInfo)
-				return HAL_SUCCESS;
+				goto success; //return HAL_SUCCESS;
 #endif
 
 			if (drv != NULL)

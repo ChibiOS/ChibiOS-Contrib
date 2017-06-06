@@ -19,6 +19,9 @@
 #include "ff.h"
 #include <string.h>
 
+#define UVC_TO_MSD_PHOTOS_CAPTURE	TRUE
+
+
 #if HAL_USBH_USE_FTDI || HAL_USBH_USE_AOA
 static uint8_t buf[] =
     "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
@@ -288,6 +291,8 @@ start:
 #include "ff.h"
 
 static FATFS MSDLUN0FS;
+
+#if !UVC_TO_MSD_PHOTOS_CAPTURE
 static uint8_t fbuff[10240];
 static FIL file;
 
@@ -326,6 +331,8 @@ static FRESULT scan_files(BaseSequentialStream *chp, char *path) {
   }
   return res;
 }
+#endif
+
 static THD_WORKING_AREA(waTestMSD, 1024);
 static void ThreadTestMSD(void *p) {
     (void)p;
@@ -333,10 +340,12 @@ static void ThreadTestMSD(void *p) {
     FATFS *fsp;
     DWORD clusters;
     FRESULT res;
-    BaseSequentialStream * const chp = (BaseSequentialStream *)&USBH_DEBUG_SD;
     blkstate_t state;
+#if !UVC_TO_MSD_PHOTOS_CAPTURE
+    BaseSequentialStream * const chp = (BaseSequentialStream *)&USBH_DEBUG_SD;
     systime_t st, et;
     uint32_t j;
+#endif
 
 start:
     for(;;) {
@@ -348,6 +357,7 @@ start:
         if (state != BLK_READY)
             continue;
 
+#if !UVC_TO_MSD_PHOTOS_CAPTURE
         //raw read test
         if (1) {
 #define RAW_READ_SZ_MB        1
@@ -367,6 +377,7 @@ start:
                     (RAW_READ_SZ_MB * 1024UL * 1000) / (et - st));
             chThdSetPriority(NORMALPRIO);
         }
+#endif
 
         usbDbgPuts("FS: Block driver ready, try mount...");
 
@@ -390,6 +401,7 @@ start:
         break;
     }
 
+#if !UVC_TO_MSD_PHOTOS_CAPTURE
     //FATFS test
     if (1) {
         UINT bw;
@@ -448,6 +460,7 @@ start:
             scan_files(chp, (char *)fbuff);
         }
     }
+#endif
 
     usbDbgPuts("FS: Tests done, restarting in 3s");
     chThdSleepMilliseconds(3000);
@@ -527,6 +540,332 @@ static void ThreadTestHID(void *p) {
 }
 #endif
 
+#if HAL_USBH_USE_UVC
+#include "usbh/dev/uvc.h"
+
+static THD_WORKING_AREA(waTestUVC, 1024);
+
+#if UVC_TO_MSD_PHOTOS_CAPTURE
+static const uint8_t jpeg_header_plus_dht[] = {
+    0xff, 0xd8,                     // SOI
+    0xff, 0xe0,                     // APP0
+    0x00, 0x10,                     // APP0 header size (including this field, but excluding preceding)
+    0x4a, 0x46, 0x49, 0x46, 0x00,   // ID string 'JFIF\0'
+    0x01, 0x01,                     // version
+    0x00,                           // bits per type
+    0x00, 0x00,                     // X density
+    0x00, 0x00,                     // Y density
+    0x00,                           // X thumbnail size
+    0x00,                           // Y thumbnail size
+    0xFF, 0xC4, 0x01, 0xA2, 0x00,
+    0, 1, 5, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 ,
+    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
+    0x0a, 0x0b, 0x01, 0x00, 0x03, 0x01, 0x01, 0x01, 0x01, 0x01,
+    0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+    0x10,
+    0, 2, 1, 3, 3, 2, 4, 3, 5, 5, 4, 4, 0, 0, 1, 0x7d,
+    0x01, 0x02, 0x03, 0x00, 0x04, 0x11, 0x05, 0x12,
+    0x21, 0x31, 0x41, 0x06, 0x13, 0x51, 0x61, 0x07,
+    0x22, 0x71, 0x14, 0x32, 0x81, 0x91, 0xa1, 0x08,
+    0x23, 0x42, 0xb1, 0xc1, 0x15, 0x52, 0xd1, 0xf0,
+    0x24, 0x33, 0x62, 0x72, 0x82, 0x09, 0x0a, 0x16,
+    0x17, 0x18, 0x19, 0x1a, 0x25, 0x26, 0x27, 0x28,
+    0x29, 0x2a, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
+    0x3a, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49,
+    0x4a, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59,
+    0x5a, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69,
+    0x6a, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79,
+    0x7a, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89,
+    0x8a, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98,
+    0x99, 0x9a, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7,
+    0xa8, 0xa9, 0xaa, 0xb2, 0xb3, 0xb4, 0xb5, 0xb6,
+    0xb7, 0xb8, 0xb9, 0xba, 0xc2, 0xc3, 0xc4, 0xc5,
+    0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xd2, 0xd3, 0xd4,
+    0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xe1, 0xe2,
+    0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9, 0xea,
+    0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8,
+    0xf9, 0xfa,
+    0x11,
+    0, 2, 1, 2, 4, 4, 3, 4, 7, 5, 4, 4, 0, 1, 2, 0x77,
+    0x00, 0x01, 0x02, 0x03, 0x11, 0x04, 0x05, 0x21,
+    0x31, 0x06, 0x12, 0x41, 0x51, 0x07, 0x61, 0x71,
+    0x13, 0x22, 0x32, 0x81, 0x08, 0x14, 0x42, 0x91,
+    0xa1, 0xb1, 0xc1, 0x09, 0x23, 0x33, 0x52, 0xf0,
+    0x15, 0x62, 0x72, 0xd1, 0x0a, 0x16, 0x24, 0x34,
+    0xe1, 0x25, 0xf1, 0x17, 0x18, 0x19, 0x1a, 0x26,
+    0x27, 0x28, 0x29, 0x2a, 0x35, 0x36, 0x37, 0x38,
+    0x39, 0x3a, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
+    0x49, 0x4a, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
+    0x59, 0x5a, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68,
+    0x69, 0x6a, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78,
+    0x79, 0x7a, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87,
+    0x88, 0x89, 0x8a, 0x92, 0x93, 0x94, 0x95, 0x96,
+    0x97, 0x98, 0x99, 0x9a, 0xa2, 0xa3, 0xa4, 0xa5,
+    0xa6, 0xa7, 0xa8, 0xa9, 0xaa, 0xb2, 0xb3, 0xb4,
+    0xb5, 0xb6, 0xb7, 0xb8, 0xb9, 0xba, 0xc2, 0xc3,
+    0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xd2,
+    0xd3, 0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda,
+    0xe2, 0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9,
+    0xea, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8,
+    0xf9, 0xfa
+};
+#endif
+
+static void ThreadTestUVC(void *p) {
+    (void)p;
+    USBHUVCDriver *const uvcdp = &USBHUVCD[0];
+
+    for(;;) {
+        chThdSleepMilliseconds(100);
+
+        //chSysLock();
+        //state = usbhuvcGetDriverState(&USBHUVCD[0]);
+        //chSysUnlock();
+        if (usbhuvcGetState(&USBHUVCD[0]) != USBHUVC_STATE_ACTIVE)
+            continue;
+
+        usbDbgPuts("UVC: Webcam connected");
+
+        /* ************************************ */
+        /*   Find best configuration            */
+        /* ************************************ */
+        usbDbgPuts("UVC: Find best configuration");
+
+        generic_iterator_t ics;
+        const usbh_uvc_format_mjpeg_t *format;
+
+        uint32_t max_frame_sz = 0;
+        uint16_t min_ep_sz;
+        uint8_t best_frame_interval_index;
+        const usbh_uvc_frame_mjpeg_t *best_frame = NULL;
+
+
+        //find format MJPEG
+        if (usbhuvcFindVSDescriptor(uvcdp, &ics, UVC_VS_FORMAT_MJPEG, TRUE) != HAL_SUCCESS)
+            goto failed;
+
+        format = (const usbh_uvc_format_mjpeg_t *)ics.curr;
+        usbDbgPrintf("\tSelect bFormatIndex=%d", format->bFormatIndex);
+
+        //find the most suitable frame (largest one within the bandwidth requirements)
+        if (usbhuvcFindVSDescriptor(uvcdp, &ics, UVC_VS_FRAME_MJPEG, TRUE) != HAL_SUCCESS)
+            goto failed;
+
+        do {
+            const usbh_uvc_frame_mjpeg_t *const frame = (usbh_uvc_frame_mjpeg_t *)ics.curr;
+            uint32_t frame_sz = frame->wWidth * frame->wHeight;
+
+            usbDbgPrintf("\t\tbFrameIndex=%d", frame->bFrameIndex);
+            usbDbgPrintf("\t\t\twWidth=%d, wHeight=%d", frame->wWidth, frame->wHeight);
+            usbDbgPrintf("\t\t\tdwMinBitRate=%u, dwMaxBitRate=%u", frame->dwMinBitRate, frame->dwMaxBitRate);
+            usbDbgPrintf("\t\t\tdwMaxVideoFrameBufferSize=%u", frame->dwMaxVideoFrameBufferSize);
+            usbDbgPrintf("\t\t\tdwDefaultFrameInterval=%u", frame->dwDefaultFrameInterval);
+
+            uint8_t j;
+            for (j = 0; j < frame->bFrameIntervalType; j++) {
+                uint32_t ep_sz =
+                        usbhuvcEstimateRequiredEPSize(uvcdp, (const uint8_t *)format, (const uint8_t *)frame, frame->dwFrameInterval[j]);
+
+                usbDbgPrintf("\t\t\tdwFrameInterval=%u, estimated EP size=%u", frame->dwFrameInterval[j], ep_sz);
+
+                if (ep_sz > 310)
+                    continue;
+
+                /* candidate found */
+
+                if (frame_sz >= max_frame_sz) {
+                    /* new best frame size */
+                    min_ep_sz = 0xffff;
+                    max_frame_sz = frame_sz;
+                } else {
+                    continue;
+                }
+
+                if (ep_sz < min_ep_sz) {
+                    /* new best bitrate */
+                    min_ep_sz = ep_sz;
+                    usbDbgPuts("\t\t\tNew best candidate found");
+                    best_frame_interval_index = j;
+                    best_frame = frame;
+                }
+            }
+        } while (usbhuvcFindVSDescriptor(uvcdp, &ics, UVC_VS_FRAME_MJPEG, FALSE) == HAL_SUCCESS);
+
+failed:
+        if (best_frame == NULL) {
+            usbDbgPuts("\t\t\tCouldn't find suitable format/frame");
+            continue;
+        }
+
+        /* ************************************ */
+        /*   NEGOTIATION                        */
+        /* ************************************ */
+        usbDbgPuts("UVC: Start negotiation");
+
+        usbhuvcResetPC(uvcdp);
+        usbh_uvc_ctrl_vs_probecommit_data_t *const pc = usbhuvcGetPC(uvcdp);
+
+        pc->bmHint = 0x0001;
+        pc->bFormatIndex = format->bFormatIndex;
+        pc->bFrameIndex = best_frame->bFrameIndex;
+        pc->dwFrameInterval = best_frame->dwFrameInterval[best_frame_interval_index];
+
+        usbDbgPrintf("\tFirst probe, selecting bFormatIndex=%d, bFrameIndex=%d, dwFrameInterval=%u",
+                pc->bFormatIndex, pc->bFrameIndex, pc->dwFrameInterval);
+
+        usbDbgPuts("SET_CUR (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc);
+        if (usbhuvcProbe(uvcdp) != HAL_SUCCESS) {
+            usbDbgPuts("\tFirst probe failed");
+            continue;
+        }
+        usbDbgPuts("GET_CUR (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc);
+        usbDbgPuts("GET_MIN (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc_min);
+        usbDbgPuts("GET_MAX (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc_max);
+
+        pc->bmHint = 0x0001;
+        pc->wCompQuality = uvcdp->pc_min.wCompQuality;
+
+        usbDbgPuts("SET_CUR (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc);
+        usbDbgPrintf("\tSecond probe, selecting wCompQuality=%d", pc->wCompQuality);
+        if (usbhuvcProbe(uvcdp) != HAL_SUCCESS) {
+            usbDbgPuts("\tSecond probe failed");
+            continue;
+        }
+        usbDbgPuts("GET_CUR (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc);
+        usbDbgPuts("GET_MIN (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc_min);
+        usbDbgPuts("GET_MAX (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc_max);
+
+        /* ************************************ */
+        /*   Commit negotiated parameters        */
+        /* ************************************ */
+        usbDbgPuts("UVC: Commit negotiated parameters");
+        usbDbgPuts("SET_CUR (COMMIT):"); usbhuvcPrintProbeCommit(&uvcdp->pc);
+        if (usbhuvcCommit(uvcdp) != HAL_SUCCESS) {
+            usbDbgPuts("\tCommit failed");
+            continue;
+        }
+
+        usbDbgPuts("UVC: Ready to start streaming");
+
+        uint32_t npackets = 0;
+        uint32_t payload = 0;
+        uint32_t total = 0;
+        uint32_t frame = 0;
+        systime_t last = 0;
+        usbhuvcStreamStart(uvcdp, 310);
+
+        uint8_t state = 0;
+        static FIL fp;
+
+        for (;;) {
+            msg_t msg, ret;
+            ret = usbhuvcLockAndFetch(uvcdp, &msg, TIME_INFINITE);
+            if (ret == MSG_RESET) {
+                usbDbgPuts("UVC: Driver is unloading");
+                break;
+            } else if (ret == MSG_TIMEOUT) {
+                continue;
+            }
+
+            if (((usbhuvc_message_base_t *)msg)->type == USBHUVC_MESSAGETYPE_DATA) {
+                usbhuvc_message_data_t *const data = (usbhuvc_message_data_t *)msg;
+
+                if (data->length < data->data[0]) {
+                    usbDbgPrintf("UVC: Length error!");
+                    goto free_data;
+                }
+
+                uint32_t message_payload = data->length - data->data[0];
+
+                total += data->length;
+                payload += message_payload;
+                npackets++;
+
+#if UVC_TO_MSD_PHOTOS_CAPTURE
+                char fn[20];
+                UINT bw;
+                bool with_dht = true;
+                uint8_t *message_data = data->data + data->data[0];
+                if (frame & 7) goto check_eof;
+
+                if (state == 1) {
+                    if (message_payload < 12) goto check_eof;
+                    if (strncmp("AVI1", (const char *)message_data + 6, 4)) {
+                        with_dht = false;
+                    } else {
+                        uint16_t skip = (message_data[4] << 8) + message_data[5] + 4;
+                        if (skip > message_payload) goto check_eof;
+                        message_data += skip;
+                        message_payload -= skip;
+                    }
+
+                    chsnprintf(fn, sizeof(fn), "/img%d.jpg", frame);
+                    if (f_open(&fp, fn, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK) {
+                        if (with_dht && f_write(&fp, jpeg_header_plus_dht, sizeof(jpeg_header_plus_dht), &bw) != FR_OK) {
+                            usbDbgPuts("UVC->MSD: File write error");
+                            f_close(&fp);
+                            state = 0;
+                        }
+                        state = 2;
+                    } else {
+                        usbDbgPuts("UVC->MSD: File open error");
+                        state = 0;
+                    }
+                }
+
+                if (state == 2) {
+                    if (f_write(&fp, message_data, message_payload, &bw) != FR_OK) {
+                        usbDbgPuts("UVC->MSD: File write error");
+                        f_close(&fp);
+                        state = 0;
+                    }
+                }
+
+check_eof:
+#endif
+                if (data->data[1] & UVC_HDR_EOF) {
+                    usbDbgPrintf("UVC: FRAME #%d, delta=%03dticks, #packets=%d, useful_payload=%dbytes, total=%dbytes",
+                            frame, data->timestamp - last , npackets, payload, total);
+                    last = data->timestamp;
+                    npackets = 0;
+                    payload = 0;
+                    total = 0;
+                    frame++;
+                    if (state == 2) {
+                        f_close(&fp);
+                    }
+                    state = 1;
+                }
+free_data:
+                usbhuvcFreeDataMessage(uvcdp, data);
+            } else {
+                usbhuvc_message_status_t *const status = (usbhuvc_message_status_t *)msg;
+                const uint8_t *const stat = status->data;
+                switch (stat[0] & 0x0f) {
+                case 1:
+                    usbDbgPrintf("UVC: STATUS Control event, "
+                            "bOriginator=%d, bEvent=%d, bSelector=%d, bAttribute=%d",
+                            stat[1], stat[2], stat[3], stat[4]);
+                    break;
+                case 2:
+                    usbDbgPrintf("UVC: STATUS Streaming event, "
+                            "bOriginator=%d, bEvent=%d, bValue=%d",
+                            stat[1], stat[2], stat[3]);
+                    break;
+                default:
+                    usbDbgPrintf("UVC: STATUS unknown status report = %d", stat[0]);
+                    break;
+                }
+                usbhuvcFreeStatusMessage(uvcdp, status);
+            }
+            usbhuvcUnlock(uvcdp);
+        }
+
+    }
+
+}
+#endif
 
 int main(void) {
 
@@ -564,6 +903,10 @@ int main(void) {
 
 #if HAL_USBH_USE_HID
     chThdCreateStatic(waTestHID, sizeof(waTestHID), NORMALPRIO, ThreadTestHID, 0);
+#endif
+
+#if HAL_USBH_USE_UVC
+    chThdCreateStatic(waTestUVC, sizeof(waTestUVC), NORMALPRIO + 1, ThreadTestUVC, 0);
 #endif
 
     //turn on USB power
