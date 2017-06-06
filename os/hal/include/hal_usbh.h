@@ -373,14 +373,7 @@ extern "C" {
 		usbhEPCloseS(ep);
 		osalSysUnlock();
 	}
-	bool usbhEPResetS(usbh_ep_t *ep);
-	static inline bool usbhEPReset(usbh_ep_t *ep) {
-		bool ret;
-		osalSysLock();
-		ret = usbhEPResetS(ep);
-		osalSysUnlock();
-		return ret;
-	}
+	bool usbhEPReset(usbh_ep_t *ep);
 	static inline bool usbhEPIsPeriodic(usbh_ep_t *ep) {
 		osalDbgCheck(ep != NULL);
 		return (ep->type & 1) != 0;

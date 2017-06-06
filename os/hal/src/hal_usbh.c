@@ -195,8 +195,7 @@ static void _ep0_object_init(usbh_device_t *dev, uint16_t wMaxPacketSize) {
 	usbhEPSetName(&dev->ctrl, "DEV[CTRL]");
 }
 
-bool usbhEPResetS(usbh_ep_t *ep) {
-	osalDbgCheckClassS();
+bool usbhEPReset(usbh_ep_t *ep) {
 	osalDbgCheck(ep != NULL);
 	osalDbgAssert((ep->status == USBH_EPSTATUS_OPEN) || (ep->status == USBH_EPSTATUS_HALTED), "invalid state");
 	osalDbgAssert(ep->type != USBH_EPTYPE_CTRL, "don't need to reset control endpoint");
@@ -206,9 +205,12 @@ bool usbhEPResetS(usbh_ep_t *ep) {
 			0, 0);
 
 	/* TODO: GET_STATUS to see if endpoint is still halted */
+	osalSysLock();
 	if ((ret == USBH_URBSTATUS_OK) && usbh_lld_ep_reset(ep)) {
+		osalSysUnlock();
 		return HAL_SUCCESS;
 	}
+	osalSysUnlock();
 	return HAL_FAILED;
 }
 
