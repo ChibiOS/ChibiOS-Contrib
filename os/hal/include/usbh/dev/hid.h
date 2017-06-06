@@ -62,14 +62,21 @@ typedef enum {
 	USBHHID_REPORTTYPE_FEATURE = 3,
 } usbhhid_reporttype_t;
 
+typedef enum {
+	USBHHID_PROTOCOL_BOOT = 0,
+	USBHHID_PROTOCOL_REPORT = 1,
+} usbhhid_protocol_t;
+
 typedef struct USBHHIDDriver USBHHIDDriver;
 typedef struct USBHHIDConfig USBHHIDConfig;
 
-typedef void (*usbhhid_report_callback)(USBHHIDDriver *hidp);
+typedef void (*usbhhid_report_callback)(USBHHIDDriver *hidp, uint16_t len);
 
 struct USBHHIDConfig {
 	usbhhid_report_callback cb_report;
 	void *report_buffer;
+	uint16_t report_len;
+	usbhhid_protocol_t protocol;
 };
 
 struct USBHHIDDriver {
@@ -94,14 +101,13 @@ struct USBHHIDDriver {
 /*===========================================================================*/
 /* Driver macros.                                                            */
 /*===========================================================================*/
-#define usbhhidGetState(hidp) ((hidp)->state)
 
 
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-extern USBHHIDDriver USBHHID[HAL_USBHHID_MAX_INSTANCES];
+extern USBHHIDDriver USBHHIDD[HAL_USBHHID_MAX_INSTANCES];
 
 #ifdef __cplusplus
 extern "C" {
@@ -124,6 +130,12 @@ extern "C" {
 	static inline uint8_t usbhhidGetType(USBHHIDDriver *hidp) {
 		return hidp->type;
 	}
+
+	static inline usbhhid_state_t usbhhidGetState(USBHHIDDriver *hidp) {
+		return hidp->state;
+	}
+
+	void usbhhidStart(USBHHIDDriver *hidp, const USBHHIDConfig *cfg);
 
 	/* global initializer */
 	void usbhhidInit(void);

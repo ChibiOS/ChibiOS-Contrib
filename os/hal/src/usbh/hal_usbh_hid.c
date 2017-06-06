@@ -72,7 +72,7 @@
 /* USB Class driver loader for MSD								 		 	 */
 /*===========================================================================*/
 
-USBHHIDDriver USBHHID[HAL_USBHHID_MAX_INSTANCES];
+USBHHIDDriver USBHHIDD[HAL_USBHHID_MAX_INSTANCES];
 
 static usbh_baseclassdriver_t *_hid_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
 static void _hid_unload(usbh_baseclassdriver_t *drv);
@@ -103,8 +103,8 @@ static usbh_baseclassdriver_t *_hid_load(usbh_device_t *dev, const uint8_t *desc
 
 	/* alloc driver */
 	for (i = 0; i < HAL_USBHHID_MAX_INSTANCES; i++) {
-		if (USBHHID[i].dev == NULL) {
-			hidp = &USBHHID[i];
+		if (USBHHIDD[i].dev == NULL) {
+			hidp = &USBHHIDD[i];
 			goto alloc_ok;
 		}
 	}
@@ -153,9 +153,10 @@ alloc_ok:
 
 	if (ifdesc->bInterfaceSubClass != 0x01) {
 		hidp->type = USBHHID_DEVTYPE_GENERIC;
-		uinfof("HID: bInterfaceSubClass=%02x, generic HID");
+		uinfof("HID: bInterfaceSubClass=%02x, generic HID", ifdesc->bInterfaceSubClass);
 		if (ifdesc->bInterfaceSubClass != 0x00) {
-			uinfof("HID: bInterfaceSubClass=%02x is an invalid bInterfaceSubClass value");
+			uinfof("HID: bInterfaceSubClass=%02x is an invalid bInterfaceSubClass value",
+					ifdesc->bInterfaceSubClass);
 		}
 	} else if (ifdesc->bInterfaceProtocol == 0x01) {
 		hidp->type = USBHHID_DEVTYPE_BOOT_KEYBOARD;
@@ -164,7 +165,8 @@ alloc_ok:
 		hidp->type = USBHHID_DEVTYPE_BOOT_MOUSE;
 		uinfo("HID: BOOT protocol mouse found");
 	} else {
-		uerrf("HID: bInterfaceProtocol=%02x is an invalid boot protocol, abort");
+		uerrf("HID: bInterfaceProtocol=%02x is an invalid boot protocol, abort",
+				ifdesc->bInterfaceProtocol);
 		goto deinit;
 	}
 
@@ -185,12 +187,17 @@ static void _in_cb(usbh_urb_t *urb) {
 	USBHHIDDriver *const hidp = (USBHHIDDriver *)urb->userData;
 	switch (urb->status) {
 	case USBH_URBSTATUS_OK:
-
+		if (hidp->config->cb_report) {
+			hidp->config->cb_report(hidp, urb->actualLength);
+		}
 		break;
 	case USBH_URBSTATUS_DISCONNECTED:
 		uwarn("HID: URB IN disconnected");
 
 		return;
+	case USBH_URBSTATUS_TIMEOUT:
+		//no data
+		break;
 	default:
 		uerrf("HID: URB IN status unexpected = %d", urb->status);
 		break;
@@ -200,7 +207,8 @@ static void _in_cb(usbh_urb_t *urb) {
 }
 
 void usbhhidStart(USBHHIDDriver *hidp, const USBHHIDConfig *cfg) {
-	osalDbgCheck(hidp && cfg && cfg->report_buffer);
+	osalDbgCheck(hidp && cfg);
+	osalDbgCheck(cfg->report_buffer && (cfg->protocol <= USBHHID_PROTOCOL_REPORT));
 	osalDbgCheck((hidp->state == USBHHID_STATE_ACTIVE)
 			|| (hidp->state == USBHHID_STATE_READY));
 
@@ -210,7 +218,8 @@ void usbhhidStart(USBHHIDDriver *hidp, const USBHHIDConfig *cfg) {
 	hidp->config = cfg;
 
 	/* init the URBs */
-	usbhURBObjectInit(&hidp->in_urb, &hidp->epin, _in_cb, hidp, hidp->config->report_buffer, 64);
+	usbhURBObjectInit(&hidp->in_urb, &hidp->epin, _in_cb, hidp,
+			cfg->report_buffer, cfg->report_len);
 
 	/* open the int IN/OUT endpoints */
 	usbhEPOpen(&hidp->epin);
@@ -219,6 +228,8 @@ void usbhhidStart(USBHHIDDriver *hidp, const USBHHIDConfig *cfg) {
 		usbhEPOpen(&hidp->epout);
 	}
 #endif
+
+	usbhhidSetProtocol(hidp, cfg->protocol);
 
 	osalSysLock();
 	usbhURBSubmitI(&hidp->in_urb);
@@ -251,7 +262,8 @@ usbh_urbstatus_t usbhhidGetReport(USBHHIDDriver *hidp,
 	osalDbgCheck(hidp);
 	osalDbgAssert((uint8_t)report_type <= USBHHID_REPORTTYPE_FEATURE, "wrong report type");
 	return usbhControlRequest(hidp->dev,
-			USBH_CLASSIN(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_GET_REPORT, ((uint8_t)report_type << 8) | report_id, hidp->ifnum),
+			USBH_CLASSIN(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_GET_REPORT,
+					((uint8_t)report_type << 8) | report_id, hidp->ifnum),
 			len, data);
 }
 
@@ -261,7 +273,8 @@ usbh_urbstatus_t usbhhidSetReport(USBHHIDDriver *hidp,
 	osalDbgCheck(hidp);
 	osalDbgAssert((uint8_t)report_type <= USBHHID_REPORTTYPE_FEATURE, "wrong report type");
 	return usbhControlRequest(hidp->dev,
-			USBH_CLASSOUT(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_SET_REPORT, ((uint8_t)report_type << 8) | report_id, hidp->ifnum),
+			USBH_CLASSOUT(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_SET_REPORT,
+					((uint8_t)report_type << 8) | report_id, hidp->ifnum),
 			len, (void *)data);
 }
 
@@ -275,8 +288,8 @@ usbh_urbstatus_t usbhhidGetIdle(USBHHIDDriver *hidp, uint8_t report_id, uint8_t 
 usbh_urbstatus_t usbhhidSetIdle(USBHHIDDriver *hidp, uint8_t report_id, uint8_t duration) {
 	osalDbgCheck(hidp);
 	return usbhControlRequest(hidp->dev,
-			USBH_CLASSOUT(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_SET_IDLE, (duration << 8) | report_id, hidp->ifnum),
-			0, NULL);
+			USBH_CLASSOUT(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_SET_IDLE,
+			(duration << 8) | report_id, hidp->ifnum), 0, NULL);
 }
 
 usbh_urbstatus_t usbhhidGetProtocol(USBHHIDDriver *hidp, uint8_t *protocol) {
@@ -290,8 +303,8 @@ usbh_urbstatus_t usbhhidSetProtocol(USBHHIDDriver *hidp, uint8_t protocol) {
 	osalDbgCheck(hidp);
 	osalDbgAssert(protocol <= 1, "invalid protocol");
 	return usbhControlRequest(hidp->dev,
-			USBH_CLASSOUT(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_SET_PROTOCOL, protocol, hidp->ifnum),
-			0, NULL);
+			USBH_CLASSOUT(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_SET_PROTOCOL,
+			protocol, hidp->ifnum), 0, NULL);
 }
 
 void usbhhidObjectInit(USBHHIDDriver *hidp) {
@@ -304,7 +317,7 @@ void usbhhidObjectInit(USBHHIDDriver *hidp) {
 void usbhhidInit(void) {
 	uint8_t i;
 	for (i = 0; i < HAL_USBHHID_MAX_INSTANCES; i++) {
-		usbhhidObjectInit(&USBHHID[i]);
+		usbhhidObjectInit(&USBHHIDD[i]);
 	}
 }
 
