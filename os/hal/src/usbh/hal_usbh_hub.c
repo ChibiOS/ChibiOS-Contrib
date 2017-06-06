@@ -198,7 +198,7 @@ alloc_ok:
 	/* read Hub descriptor */
 	uinfo("Read Hub descriptor");
 	if (usbhhubControlRequest(dev->host, hubdp,
-			USBH_REQTYPE_IN | USBH_REQTYPE_CLASS | USBH_REQTYPE_DEVICE,
+			USBH_REQTYPE_DIR_IN | USBH_REQTYPE_TYPE_CLASS | USBH_REQTYPE_RECIP_DEVICE,
 			USBH_REQ_GET_DESCRIPTOR,
 			(USBH_DT_HUB << 8), 0, sizeof(hubdp->hubDesc),
 			(uint8_t *)&hubdp->hubDesc) != USBH_URBSTATUS_OK) {

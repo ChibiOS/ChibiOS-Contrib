@@ -60,7 +60,7 @@ usbh_urbstatus_t usbhhubControlRequest(USBHDriver *host, USBHHubDriver *hub,
 
 static inline usbh_urbstatus_t usbhhubClearFeaturePort(usbh_port_t *port, uint8_t feature) {
 	return usbhhubControlRequest(port->device.host, port->hub,
-				USBH_REQTYPE_OUT | USBH_REQTYPE_CLASS | USBH_REQTYPE_OTHER,
+				USBH_REQTYPE_DIR_OUT | USBH_REQTYPE_TYPE_CLASS | USBH_REQTYPE_RECIP_OTHER,
 				USBH_REQ_CLEAR_FEATURE,
 				feature,
 				port->number,
@@ -70,7 +70,7 @@ static inline usbh_urbstatus_t usbhhubClearFeaturePort(usbh_port_t *port, uint8_
 
 static inline usbh_urbstatus_t usbhhubClearFeatureHub(USBHDriver *host, USBHHubDriver *hub, uint8_t feature) {
 	return usbhhubControlRequest(host, hub,
-				USBH_REQTYPE_OUT | USBH_REQTYPE_CLASS | USBH_REQTYPE_DEVICE,
+				USBH_REQTYPE_DIR_OUT | USBH_REQTYPE_TYPE_CLASS | USBH_REQTYPE_RECIP_DEVICE,
 				USBH_REQ_CLEAR_FEATURE,
 				feature,
 				0,
@@ -80,7 +80,7 @@ static inline usbh_urbstatus_t usbhhubClearFeatureHub(USBHDriver *host, USBHHubD
 
 static inline usbh_urbstatus_t usbhhubSetFeaturePort(usbh_port_t *port, uint8_t feature) {
 	return usbhhubControlRequest(port->device.host, port->hub,
-				USBH_REQTYPE_OUT | USBH_REQTYPE_CLASS | USBH_REQTYPE_OTHER,
+				USBH_REQTYPE_DIR_OUT | USBH_REQTYPE_TYPE_CLASS | USBH_REQTYPE_RECIP_OTHER,
 				USBH_REQ_SET_FEATURE,
 				feature,
 				port->number,

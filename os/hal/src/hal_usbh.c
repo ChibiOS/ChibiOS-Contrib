@@ -1119,7 +1119,7 @@ static void _hub_update_status(USBHDriver *host, USBHHubDriver *hub) {
 	uint32_t stat;
 	if (usbhhubControlRequest(host,
 			hub,
-			USBH_REQTYPE_IN | USBH_REQTYPE_CLASS | USBH_REQTYPE_DEVICE,
+			USBH_REQTYPE_DIR_IN | USBH_REQTYPE_TYPE_CLASS | USBH_REQTYPE_RECIP_DEVICE,
 			USBH_REQ_GET_STATUS,
 			0,
 			0,
