@@ -594,7 +594,7 @@ static bool _get_protocol(usbh_device_t *dev, uint16_t *protocol) {
 	USBH_DEFINE_BUFFER(uint16_t proto);
 
 	usbh_urbstatus_t ret = usbhControlRequest(dev,
-			USBH_REQTYPE_IN | USBH_REQTYPE_VENDOR | USBH_REQTYPE_DEVICE,
+			USBH_REQTYPE_DIR_IN | USBH_REQTYPE_TYPE_VENDOR | USBH_REQTYPE_RECIP_DEVICE,
 			AOA_ACCESSORY_GET_PROTOCOL,
 			0,
 			0,
@@ -610,7 +610,7 @@ static bool _get_protocol(usbh_device_t *dev, uint16_t *protocol) {
 
 static bool _accessory_start(usbh_device_t *dev) {
 	usbh_urbstatus_t ret = usbhControlRequest(dev,
-			USBH_REQTYPE_OUT | USBH_REQTYPE_VENDOR | USBH_REQTYPE_DEVICE,
+			USBH_REQTYPE_DIR_OUT | USBH_REQTYPE_TYPE_VENDOR | USBH_REQTYPE_RECIP_DEVICE,
 			AOA_ACCESSORY_START,
 			0,
 			0,
@@ -625,7 +625,7 @@ static bool _accessory_start(usbh_device_t *dev) {
 
 static bool _set_audio_mode(usbh_device_t *dev, uint16_t mode) {
 	usbh_urbstatus_t ret = usbhControlRequest(dev,
-			USBH_REQTYPE_OUT | USBH_REQTYPE_VENDOR | USBH_REQTYPE_DEVICE,
+			USBH_REQTYPE_DIR_OUT | USBH_REQTYPE_TYPE_VENDOR | USBH_REQTYPE_RECIP_DEVICE,
 			AOA_SET_AUDIO_MODE,
 			mode,
 			0,
@@ -645,7 +645,7 @@ static bool _send_string(usbh_device_t *dev, uint8_t index, const char *string)
 		string = nullstr;
 
 	usbh_urbstatus_t ret = usbhControlRequest(dev,
-			USBH_REQTYPE_OUT | USBH_REQTYPE_VENDOR | USBH_REQTYPE_DEVICE,
+			USBH_REQTYPE_DIR_OUT | USBH_REQTYPE_TYPE_VENDOR | USBH_REQTYPE_RECIP_DEVICE,
 			AOA_ACCESSORY_SEND_STRING,
 			0,
 			index,

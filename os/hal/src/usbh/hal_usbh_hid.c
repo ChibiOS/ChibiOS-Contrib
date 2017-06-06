@@ -262,9 +262,8 @@ usbh_urbstatus_t usbhhidGetReport(USBHHIDDriver *hidp,
 	osalDbgCheck(hidp);
 	osalDbgAssert((uint8_t)report_type <= USBHHID_REPORTTYPE_FEATURE, "wrong report type");
 	return usbhControlRequest(hidp->dev,
-			USBH_CLASSIN(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_GET_REPORT,
-					((uint8_t)report_type << 8) | report_id, hidp->ifnum),
-			len, data);
+			USBH_REQTYPE_CLASSIN(USBH_REQTYPE_RECIP_INTERFACE), USBH_HID_REQ_GET_REPORT,
+			((uint8_t)report_type << 8) | report_id, hidp->ifnum, len, data);
 }
 
 usbh_urbstatus_t usbhhidSetReport(USBHHIDDriver *hidp,
@@ -273,38 +272,37 @@ usbh_urbstatus_t usbhhidSetReport(USBHHIDDriver *hidp,
 	osalDbgCheck(hidp);
 	osalDbgAssert((uint8_t)report_type <= USBHHID_REPORTTYPE_FEATURE, "wrong report type");
 	return usbhControlRequest(hidp->dev,
-			USBH_CLASSOUT(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_SET_REPORT,
-					((uint8_t)report_type << 8) | report_id, hidp->ifnum),
-			len, (void *)data);
+			USBH_REQTYPE_CLASSOUT(USBH_REQTYPE_RECIP_INTERFACE), USBH_HID_REQ_SET_REPORT,
+			((uint8_t)report_type << 8) | report_id, hidp->ifnum, len, (void *)data);
 }
 
 usbh_urbstatus_t usbhhidGetIdle(USBHHIDDriver *hidp, uint8_t report_id, uint8_t *duration) {
 	osalDbgCheck(hidp);
 	return usbhControlRequest(hidp->dev,
-			USBH_CLASSIN(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_GET_IDLE, report_id, hidp->ifnum),
-			1, duration);
+			USBH_REQTYPE_CLASSIN(USBH_REQTYPE_RECIP_INTERFACE), USBH_HID_REQ_GET_IDLE,
+			report_id, hidp->ifnum, 1, duration);
 }
 
 usbh_urbstatus_t usbhhidSetIdle(USBHHIDDriver *hidp, uint8_t report_id, uint8_t duration) {
 	osalDbgCheck(hidp);
 	return usbhControlRequest(hidp->dev,
-			USBH_CLASSOUT(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_SET_IDLE,
-			(duration << 8) | report_id, hidp->ifnum), 0, NULL);
+			USBH_REQTYPE_CLASSOUT(USBH_REQTYPE_RECIP_INTERFACE), USBH_HID_REQ_SET_IDLE,
+			(duration << 8) | report_id, hidp->ifnum, 0, NULL);
 }
 
 usbh_urbstatus_t usbhhidGetProtocol(USBHHIDDriver *hidp, uint8_t *protocol) {
 	osalDbgCheck(hidp);
 	return usbhControlRequest(hidp->dev,
-			USBH_CLASSIN(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_GET_PROTOCOL, 0, hidp->ifnum),
-			1, protocol);
+			USBH_REQTYPE_CLASSIN(USBH_REQTYPE_RECIP_INTERFACE), USBH_HID_REQ_GET_PROTOCOL,
+			0, hidp->ifnum, 1, protocol);
 }
 
 usbh_urbstatus_t usbhhidSetProtocol(USBHHIDDriver *hidp, uint8_t protocol) {
 	osalDbgCheck(hidp);
 	osalDbgAssert(protocol <= 1, "invalid protocol");
 	return usbhControlRequest(hidp->dev,
-			USBH_CLASSOUT(USBH_REQTYPE_INTERFACE, USBH_HID_REQ_SET_PROTOCOL,
-			protocol, hidp->ifnum), 0, NULL);
+			USBH_REQTYPE_CLASSOUT(USBH_REQTYPE_RECIP_INTERFACE), USBH_HID_REQ_SET_PROTOCOL,
+			protocol, hidp->ifnum, 0, NULL);
 }
 
 void usbhhidObjectInit(USBHHIDDriver *hidp) {

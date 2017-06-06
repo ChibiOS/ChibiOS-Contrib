@@ -158,8 +158,8 @@ alloc_ok:
 	uinfo("Reading Max LUN:");
 	USBH_DEFINE_BUFFER(uint8_t buff[4]);
 	stat = usbhControlRequest(dev,
-			USBH_CLASSIN(USBH_REQTYPE_INTERFACE, MSD_GET_MAX_LUN, 0, msdp->ifnum),
-			1, buff);
+			USBH_REQTYPE_CLASSIN(USBH_REQTYPE_RECIP_INTERFACE),
+			MSD_GET_MAX_LUN, 0, msdp->ifnum, 1, buff);
 	if (stat == USBH_URBSTATUS_OK) {
 		msdp->max_lun = buff[0] + 1;
 		uinfof("\tmax_lun = %d", msdp->max_lun);
@@ -290,7 +290,9 @@ typedef enum {
 static bool _msd_bot_reset(USBHMassStorageDriver *msdp) {
 
 	usbh_urbstatus_t res;
-	res = usbhControlRequest(msdp->dev, USBH_CLASSOUT(USBH_REQTYPE_CLASS, 0xFF, 0, msdp->ifnum), 0, NULL);
+	res = usbhControlRequest(msdp->dev,
+			USBH_REQTYPE_CLASSOUT(USBH_REQTYPE_RECIP_INTERFACE),
+			0xFF, 0, msdp->ifnum, 0, NULL);
 	if (res != USBH_URBSTATUS_OK) {
 		return FALSE;
 	}

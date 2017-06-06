@@ -201,8 +201,9 @@ bool usbhEPReset(usbh_ep_t *ep) {
 	osalDbgAssert(ep->type != USBH_EPTYPE_CTRL, "don't need to reset control endpoint");
 
 	usbh_urbstatus_t ret = usbhControlRequest(ep->device,
-			USBH_STANDARDOUT(USBH_REQTYPE_ENDPOINT, USBH_REQ_CLEAR_FEATURE, 0, ep->address | (ep->in ? 0x80 : 0x00)),
-			0, 0);
+			USBH_REQTYPE_STANDARDOUT(USBH_REQTYPE_RECIP_ENDPOINT),
+			USBH_REQ_CLEAR_FEATURE,
+			0, ep->address | (ep->in ? 0x80 : 0x00), 0, 0);
 
 	/* TODO: GET_STATUS to see if endpoint is still halted */
 	osalSysLock();
@@ -460,27 +461,19 @@ usbh_urbstatus_t usbhControlRequest(usbh_device_t *dev,
 /* Standard request helpers.                                                 */
 /*===========================================================================*/
 
-#define USBH_GET_DESCRIPTOR(type, value, index)	\
-	USBH_STANDARDIN(type, \
-	USBH_REQ_GET_DESCRIPTOR, \
-	value, \
-	index) \
-
-#define USBH_GETDEVICEDESCRIPTOR \
-	USBH_GET_DESCRIPTOR(USBH_REQTYPE_DEVICE, (USBH_DT_DEVICE << 8) | 0, 0)
-
-#define USBH_GETCONFIGURATIONDESCRIPTOR(index) \
-	USBH_GET_DESCRIPTOR(USBH_REQTYPE_DEVICE, (USBH_DT_CONFIG << 8) | index, 0)
-
-#define USBH_GETSTRINGDESCRIPTOR(index, langID) \
-	USBH_GET_DESCRIPTOR(USBH_REQTYPE_DEVICE, (USBH_DT_STRING << 8) | index, langID)
-
 bool usbhStdReqGetDeviceDescriptor(usbh_device_t *dev,
 		uint16_t wLength,
 		uint8_t *buf) {
 	usbh_device_descriptor_t *desc;
-	usbh_urbstatus_t ret = usbhControlRequest(dev, USBH_GETDEVICEDESCRIPTOR, wLength, buf);
+
+	usbh_urbstatus_t ret = usbhControlRequest(dev,
+			USBH_REQTYPE_STANDARDIN(USBH_REQTYPE_RECIP_DEVICE),
+			USBH_REQ_GET_DESCRIPTOR,
+			(USBH_DT_DEVICE << 8) | 0, 0,
+			wLength, buf);
+
 	desc = (usbh_device_descriptor_t *)buf;
+
 	if ((ret != USBH_URBSTATUS_OK)
 			|| (desc->bLength != USBH_DT_DEVICE_SIZE)
 			|| (desc->bDescriptorType != USBH_DT_DEVICE)) {
@@ -493,8 +486,15 @@ bool usbhStdReqGetConfigurationDescriptor(usbh_device_t *dev,
 		uint8_t index,
 		uint16_t wLength,
 		uint8_t *buf) {
-	usbh_urbstatus_t ret = usbhControlRequest(dev, USBH_GETCONFIGURATIONDESCRIPTOR(index), wLength, buf);
+
+	usbh_urbstatus_t ret = usbhControlRequest(dev,
+			USBH_REQTYPE_STANDARDIN(USBH_REQTYPE_RECIP_DEVICE),
+			USBH_REQ_GET_DESCRIPTOR,
+			(USBH_DT_CONFIG << 8) | index, 0,
+			wLength, buf);
+
 	usbh_config_descriptor_t *const desc = (usbh_config_descriptor_t *)buf;
+
 	if ((ret != USBH_URBSTATUS_OK)
 			|| (desc->bLength < USBH_DT_CONFIG_SIZE)
 			|| (desc->bDescriptorType != USBH_DT_CONFIG)) {
@@ -511,7 +511,13 @@ bool usbhStdReqGetStringDescriptor(usbh_device_t *dev,
 
 	osalDbgAssert(wLength >= USBH_DT_STRING_SIZE, "wrong size");
 	usbh_string_descriptor_t *desc = (usbh_string_descriptor_t *)buf;
-	usbh_urbstatus_t ret = usbhControlRequest(dev, USBH_GETSTRINGDESCRIPTOR(index, langID), wLength, buf);
+
+	usbh_urbstatus_t ret = usbhControlRequest(dev,
+			USBH_REQTYPE_STANDARDIN(USBH_REQTYPE_RECIP_DEVICE),
+			USBH_REQ_GET_DESCRIPTOR,
+			(USBH_DT_STRING << 8) | index, langID,
+			wLength, buf);
+
 	if ((ret != USBH_URBSTATUS_OK)
 			|| (desc->bLength < USBH_DT_STRING_SIZE)
 			|| (desc->bDescriptorType != USBH_DT_STRING)) {
@@ -520,25 +526,17 @@ bool usbhStdReqGetStringDescriptor(usbh_device_t *dev,
 	return HAL_SUCCESS;
 }
 
-
-
-#define USBH_SET_INTERFACE(interface, alt)	\
-	USBH_STANDARDOUT(USBH_REQTYPE_INTERFACE, \
-	USBH_REQ_SET_INTERFACE, \
-	alt, \
-	interface) \
-
-#define USBH_GET_INTERFACE(interface)	\
-	USBH_STANDARDIN(USBH_REQTYPE_INTERFACE, \
-	USBH_REQ_GET_INTERFACE, \
-	0, \
-	interface) \
-
 bool usbhStdReqSetInterface(usbh_device_t *dev,
 		uint8_t bInterfaceNumber,
 		uint8_t bAlternateSetting) {
 
-	usbh_urbstatus_t ret = usbhControlRequest(dev, USBH_SET_INTERFACE(bInterfaceNumber, bAlternateSetting), 0, NULL);
+	usbh_urbstatus_t ret = usbhControlRequest(dev,
+			USBH_REQTYPE_STANDARDOUT(USBH_REQTYPE_RECIP_INTERFACE),
+			USBH_REQ_SET_INTERFACE,
+			bAlternateSetting,
+			bInterfaceNumber,
+			0, NULL);
+
 	if (ret != USBH_URBSTATUS_OK)
 		return HAL_FAILED;
 
@@ -551,7 +549,13 @@ bool usbhStdReqGetInterface(usbh_device_t *dev,
 
 	USBH_DEFINE_BUFFER(uint8_t alt);
 
-	usbh_urbstatus_t ret = usbhControlRequest(dev, USBH_GET_INTERFACE(bInterfaceNumber), 1, &alt);
+	usbh_urbstatus_t ret = usbhControlRequest(dev,
+			USBH_REQTYPE_STANDARDIN(USBH_REQTYPE_RECIP_INTERFACE),
+			USBH_REQ_GET_INTERFACE,
+			0,
+			bInterfaceNumber,
+			1, &alt);
+
 	if (ret != USBH_URBSTATUS_OK)
 		return HAL_FAILED;
 
@@ -596,7 +600,8 @@ static void _device_initialize(usbh_device_t *dev, usbh_devspeed_t speed) {
 
 static bool _device_setaddress(usbh_device_t *dev, uint8_t address) {
 	usbh_urbstatus_t ret = usbhControlRequest(dev,
-			USBH_STANDARDOUT(USBH_REQTYPE_DEVICE, USBH_REQ_SET_ADDRESS, address, 0),
+			USBH_REQTYPE_STANDARDOUT(USBH_REQTYPE_RECIP_DEVICE),
+			USBH_REQ_SET_ADDRESS, address, 0,
 			0,
 			0);
 	if (ret != USBH_URBSTATUS_OK)
@@ -649,22 +654,12 @@ static void _device_free_full_cfgdesc(usbh_device_t *dev) {
 	}
 }
 
-
-#define USBH_SET_CONFIGURATION(type, value, index)	\
-	USBH_STANDARDOUT(type, \
-	USBH_REQ_SET_CONFIGURATION, \
-	value, \
-	index) \
-
-#define USBH_SETDEVICECONFIGURATION(index) \
-	USBH_SET_CONFIGURATION(USBH_REQTYPE_DEVICE, index, 0)
-
-
 static bool _device_set_configuration(usbh_device_t *dev, uint8_t configuration) {
 	usbh_urbstatus_t ret = usbhControlRequest(dev,
-			USBH_SETDEVICECONFIGURATION(configuration),
-			0,
-			0);
+			USBH_REQTYPE_STANDARDOUT(USBH_REQTYPE_RECIP_DEVICE),
+			USBH_REQ_SET_CONFIGURATION,
+			configuration,
+			0, 0, 0);
 	if (ret != USBH_URBSTATUS_OK)
 		return HAL_FAILED;
 	return HAL_SUCCESS;
@@ -894,7 +889,7 @@ static void _port_reset(usbh_port_t *port) {
 #if HAL_USBH_USE_HUB
 			port->hub,
 #endif
-			USBH_REQTYPE_OUT | USBH_REQTYPE_CLASS | USBH_REQTYPE_OTHER,
+			USBH_REQTYPE_DIR_OUT | USBH_REQTYPE_TYPE_CLASS | USBH_REQTYPE_RECIP_OTHER,
 			USBH_REQ_SET_FEATURE,
 			USBH_PORT_FEAT_RESET,
 			port->number,
@@ -908,7 +903,7 @@ static void _port_update_status(usbh_port_t *port) {
 #if HAL_USBH_USE_HUB
 			port->hub,
 #endif
-			USBH_REQTYPE_IN | USBH_REQTYPE_CLASS | USBH_REQTYPE_OTHER,
+			USBH_REQTYPE_DIR_IN | USBH_REQTYPE_TYPE_CLASS | USBH_REQTYPE_RECIP_OTHER,
 			USBH_REQ_GET_STATUS,
 			0,
 			port->number,
