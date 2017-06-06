@@ -457,7 +457,81 @@ start:
 }
 #endif
 
+#if HAL_USBH_USE_HID
+#include "usbh/dev/hid.h"
+#include "chprintf.h"
+
+static THD_WORKING_AREA(waTestHID, 1024);
+
+static void _hid_report_callback(USBHHIDDriver *hidp, uint16_t len) {
+	uint8_t *report = (uint8_t *)hidp->config->report_buffer;
+
+	if (hidp->type == USBHHID_DEVTYPE_BOOT_MOUSE) {
+		usbDbgPrintf("Mouse report: buttons=%02x, Dx=%d, Dy=%d",
+				report[0],
+				(int8_t)report[1],
+				(int8_t)report[2]);
+	} else if (hidp->type == USBHHID_DEVTYPE_BOOT_KEYBOARD) {
+		usbDbgPrintf("Keyboard report: modifier=%02x, keys=%02x %02x %02x %02x %02x %02x",
+				report[0],
+				report[2],
+				report[3],
+				report[4],
+				report[5],
+				report[6],
+				report[7]);
+	} else {
+		usbDbgPrintf("Generic report, %d bytes", len);
+	}
+}
+
+static USBH_DEFINE_BUFFER(uint8_t report[HAL_USBHHID_MAX_INSTANCES][8]);
+static USBHHIDConfig hidcfg[HAL_USBHHID_MAX_INSTANCES];
+
+static void ThreadTestHID(void *p) {
+	(void)p;
+	uint8_t i;
+	static uint8_t kbd_led_states[HAL_USBHHID_MAX_INSTANCES];
+
+	for (i = 0; i < HAL_USBHHID_MAX_INSTANCES; i++) {
+		hidcfg[i].cb_report = _hid_report_callback;
+		hidcfg[i].protocol = USBHHID_PROTOCOL_BOOT;
+		hidcfg[i].report_buffer = report[i];
+		hidcfg[i].report_len = 8;
+	}
+
+	for (;;) {
+		for (i = 0; i < HAL_USBHHID_MAX_INSTANCES; i++) {
+			if (usbhhidGetState(&USBHHIDD[i]) == USBHHID_STATE_ACTIVE) {
+				usbDbgPrintf("HID: Connected, HID%d", i);
+				usbhhidStart(&USBHHIDD[i], &hidcfg[i]);
+				if (usbhhidGetType(&USBHHIDD[i]) != USBHHID_DEVTYPE_GENERIC) {
+					usbhhidSetIdle(&USBHHIDD[i], 0, 0);
+				}
+				kbd_led_states[i] = 1;
+			} else if (usbhhidGetState(&USBHHIDD[i]) == USBHHID_STATE_READY) {
+				if (usbhhidGetType(&USBHHIDD[i]) == USBHHID_DEVTYPE_BOOT_KEYBOARD) {
+					USBH_DEFINE_BUFFER(uint8_t val);
+					val = kbd_led_states[i] << 1;
+					if (val == 0x08) {
+						val = 1;
+					}
+					usbhhidSetReport(&USBHHIDD[i], 0, USBHHID_REPORTTYPE_OUTPUT, &val, 1);
+					kbd_led_states[i] = val;
+				}
+			}
+		}
+		chThdSleepMilliseconds(200);
+	}
+
+}
+#endif
+
+
 int main(void) {
+
+	IWDG->KR = 0x5555;
+	IWDG->PR = 7;
 
 	halInit();
 	chSysInit();
@@ -488,6 +562,10 @@ int main(void) {
 	chThdCreateStatic(waTestAOA, sizeof(waTestAOA), NORMALPRIO, ThreadTestAOA, 0);
 #endif
 
+#if HAL_USBH_USE_HID
+	chThdCreateStatic(waTestHID, sizeof(waTestHID), NORMALPRIO, ThreadTestHID, 0);
+#endif
+
 	//turn on USB power
 	palClearPad(GPIOC, GPIOC_OTG_FS_POWER_ON);
 
@@ -507,5 +585,7 @@ int main(void) {
 		usbhMainLoop(&USBHD2);
 #endif
 		chThdSleepMilliseconds(100);
+
+		IWDG->KR = 0xAAAA;
 	}
 }
