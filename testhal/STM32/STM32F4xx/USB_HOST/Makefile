@@ -102,7 +102,7 @@ include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 include $(CHIBIOS)/test/rt/test.mk
 include $(CHIBIOS_CONTRIB)/os/various/fatfs_bindings/fatfs.mk
 
-STREAMSSRC = $(CHIBIOS)/os/hal/lib/streams/chprintf.c
+STREAMSSRC = $(CHIBIOS)/os/hal/lib/streams/chprintf.c $(CHIBIOS)/os/hal/lib/streams/memstreams.c
 STREAMSINC = $(CHIBIOS)/os/hal/lib/streams/
 SHELLSRC = $(CHIBIOS)/os/various/shell.c
 SHELLINC = $(CHIBIOS)/os/various/
