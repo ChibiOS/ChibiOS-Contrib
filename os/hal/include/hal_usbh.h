@@ -1,6 +1,6 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
-              Copyright (C) 2015 Diego Ismirlian, TISA, (dismirlian (at) google's mail)
+    ChibiOS - Copyright (C) 2006..2017 Giovanni Di Sirio
+              Copyright (C) 2015..2017 Diego Ismirlian, (dismirlian (at) google's mail)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,6 +20,9 @@
 
 #include "hal.h"
 
+#ifndef HAL_USE_USBH
+#define HAL_USE_USBH FALSE
+#endif
 
 #ifndef HAL_USBH_USE_FTDI
 #define HAL_USBH_USE_FTDI FALSE
@@ -36,6 +39,16 @@
 #ifndef HAL_USBH_USE_UVC
 #define HAL_USBH_USE_UVC FALSE
 #endif
+
+#ifndef HAL_USBH_USE_AOA
+#define HAL_USBH_USE_AOA FALSE
+#endif
+
+#ifndef HAL_USBH_USE_HID
+#define HAL_USBH_USE_HID FALSE
+#endif
+
+#define HAL_USBH_USE_IAD     HAL_USBH_USE_UVC
 
 #if (HAL_USE_USBH == TRUE) || defined(__DOXYGEN__)
 
@@ -104,13 +117,11 @@ enum usbh_urbstatus {
 	USBH_URBSTATUS_UNINITIALIZED = 0,
 	USBH_URBSTATUS_INITIALIZED,
 	USBH_URBSTATUS_PENDING,
-//	USBH_URBSTATUS_QUEUED,
 	USBH_URBSTATUS_ERROR,
 	USBH_URBSTATUS_TIMEOUT,
 	USBH_URBSTATUS_CANCELLED,
 	USBH_URBSTATUS_STALL,
 	USBH_URBSTATUS_DISCONNECTED,
-//	USBH_URBSTATUS_EPCLOSED,
 	USBH_URBSTATUS_OK,
 };
 
@@ -145,7 +156,8 @@ typedef void (*usbh_completion_cb)(usbh_urb_t *);
 /* include the low level driver; the required definitions are above */
 #include "hal_usbh_lld.h"
 
-#define USBH_DEFINE_BUFFER(type, name)	USBH_LLD_DEFINE_BUFFER(type, name)
+#define USBH_DEFINE_BUFFER(var)	USBH_LLD_DEFINE_BUFFER(var)
+#define USBH_DECLARE_STRUCT_MEMBER(member) USBH_LLD_DECLARE_STRUCT_MEMBER(member)
 
 struct usbh_urb {
 	usbh_ep_t *ep;
@@ -198,9 +210,8 @@ struct usbh_device {
 	usbh_devstatus_t status;
 	usbh_devspeed_t speed;
 
-	USBH_DEFINE_BUFFER(usbh_device_descriptor_t, devDesc);
-	unsigned char align_bytes[2];
-	USBH_DEFINE_BUFFER(usbh_config_descriptor_t, basicConfigDesc);
+	USBH_DECLARE_STRUCT_MEMBER(usbh_device_descriptor_t devDesc);
+	USBH_DECLARE_STRUCT_MEMBER(usbh_config_descriptor_t basicConfigDesc);
 
 	uint8_t *fullConfigurationDescriptor;
 	uint8_t keepFullCfgDesc;
@@ -362,11 +373,7 @@ extern "C" {
 		usbhEPCloseS(ep);
 		osalSysUnlock();
 	}
-	static inline void usbhEPResetI(usbh_ep_t *ep) {
-		osalDbgCheckClassI();
-		osalDbgCheck(ep != NULL);
-		usbh_lld_epreset(ep);
-	}
+	bool usbhEPReset(usbh_ep_t *ep);
 	static inline bool usbhEPIsPeriodic(usbh_ep_t *ep) {
 		osalDbgCheck(ep != NULL);
 		return (ep->type & 1) != 0;

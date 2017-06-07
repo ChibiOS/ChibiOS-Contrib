@@ -12,6 +12,8 @@ HALSRC += ${CHIBIOS_CONTRIB}/os/hal/src/hal_community.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_hub.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_msd.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_ftdi.c \
+          ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_aoa.c \
+          ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_hid.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_uvc.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/hal_ee24xx.c \
           ${CHIBIOS_CONTRIB}/os/hal/src/hal_ee25xx.c \

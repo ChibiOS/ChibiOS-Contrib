@@ -1,6 +1,6 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
-              Copyright (C) 2015 Diego Ismirlian, TISA, (dismirlian (at) google's mail)
+    ChibiOS - Copyright (C) 2006..2017 Giovanni Di Sirio
+              Copyright (C) 2015..2017 Diego Ismirlian, (dismirlian (at) google's mail)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -127,25 +127,26 @@ typedef struct stm32_hc_management {
 				"use USBH_DEFINE_BUFFER() to declare the IO buffers"); 	\
 		} while (0)
 
-
-
 void usbh_lld_init(void);
 void usbh_lld_start(USBHDriver *usbh);
 void usbh_lld_ep_object_init(usbh_ep_t *ep);
 void usbh_lld_ep_open(usbh_ep_t *ep);
 void usbh_lld_ep_close(usbh_ep_t *ep);
+bool usbh_lld_ep_reset(usbh_ep_t *ep);
 void usbh_lld_urb_submit(usbh_urb_t *urb);
 bool usbh_lld_urb_abort(usbh_urb_t *urb, usbh_urbstatus_t status);
 usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestType, uint8_t bRequest,
 		uint16_t wvalue, uint16_t windex, uint16_t wlength, uint8_t *buf);
 uint8_t usbh_lld_roothub_get_statuschange_bitmap(USBHDriver *usbh);
 
-#define usbh_lld_epreset(ep) do {(ep)->dt_mask = HCTSIZ_DPID_DATA0;} while (0);
-
 #ifdef __IAR_SYSTEMS_ICC__
-#define USBH_LLD_DEFINE_BUFFER(type, name) type name
+#define USBH_LLD_DEFINE_BUFFER(var) _Pragma("data_alignment=4") var
+#define USBH_LLD_DECLARE_STRUCT_MEMBER_H1(x, y) x ## y
+#define USBH_LLD_DECLARE_STRUCT_MEMBER_H2(x, y) USBH_LLD_DECLARE_STRUCT_MEMBER_H1(x, y)
+#define USBH_LLD_DECLARE_STRUCT_MEMBER(member)  unsigned int USBH_LLD_DECLARE_STRUCT_MEMBER_H2(dummy_align_, __COUNTER__); member
 #else
-#define USBH_LLD_DEFINE_BUFFER(type, name) type name __attribute__((aligned(4)))
+#define USBH_LLD_DEFINE_BUFFER(var) var __attribute__((aligned(4)))
+#define USBH_LLD_DECLARE_STRUCT_MEMBER(member) member __attribute__((aligned(4)))
 #endif
 
 #endif

@@ -5,7 +5,7 @@
 
 # Compiler options here.
 ifeq ($(USE_OPT),)
-  USE_OPT = -Os -ggdb -fomit-frame-pointer -falign-functions=16
+  USE_OPT = -Og -ggdb3 -fomit-frame-pointer -falign-functions=16
 endif
 
 # C specific options here (added to USE_OPT).
@@ -30,7 +30,7 @@ endif
 
 # Enable this if you want link time optimizations (LTO)
 ifeq ($(USE_LTO),)
-  USE_LTO = yes
+  USE_LTO = no
 endif
 
 # If enabled, this option allows to compile the application in THUMB mode.
@@ -89,7 +89,7 @@ PROJECT = ch
 CHIBIOS = ../../../../../ChibiOS-RT
 CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 # Startup files.
-include $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_stm32f4xx.mk
+include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_stm32f4xx.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/STM32/STM32F4xx/platform.mk
@@ -97,12 +97,15 @@ include $(CHIBIOS)/os/hal/boards/ST_STM32F4_DISCOVERY/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
-include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
+include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 # Other files (optional).
 include $(CHIBIOS)/test/rt/test.mk
-include $(CHIBIOS)/os/hal/lib/streams/streams.mk
-include $(CHIBIOS)/os/various/shell/shell.mk
-include $(CHIBIOS)/os/various/fatfs_bindings/fatfs.mk
+include $(CHIBIOS_CONTRIB)/os/various/fatfs_bindings/fatfs.mk
+
+STREAMSSRC = $(CHIBIOS)/os/hal/lib/streams/chprintf.c $(CHIBIOS)/os/hal/lib/streams/memstreams.c
+STREAMSINC = $(CHIBIOS)/os/hal/lib/streams/
+SHELLSRC = $(CHIBIOS)/os/various/shell.c
+SHELLINC = $(CHIBIOS)/os/various/
 
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD)/STM32F407xG.ld
@@ -147,8 +150,7 @@ TCSRC =
 TCPPSRC =
 
 # List ASM source files here
-ASMSRC =
-ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
+ASMSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 
 INCDIR = $(CHIBIOS)/os/license \
          $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
@@ -222,5 +224,5 @@ ULIBS =
 # End of user defines
 ##############################################################################
 
-RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC
+RULESPATH = $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC
 include $(RULESPATH)/rules.mk

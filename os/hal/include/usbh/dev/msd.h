@@ -1,6 +1,6 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
-              Copyright (C) 2015 Diego Ismirlian, TISA, (dismirlian (at) google's mail)
+    ChibiOS - Copyright (C) 2006..2017 Giovanni Di Sirio
+              Copyright (C) 2015..2017 Diego Ismirlian, (dismirlian (at) google's mail)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@
 /* TODO:
  *
  * - Implement of conditional compilation of multiple-luns per instance.
- * - Implement error checking and recovery when commands fail.
  *
  */
 
@@ -65,7 +64,7 @@ struct USBHMassStorageLUNDriver {
 	USBHMassStorageLUNDriver *next;
 };
 
-typedef struct USBHMassStorageDriver {
+struct USBHMassStorageDriver {
 	/* inherited from abstract class driver */
 	_usbh_base_classdriver_data
 
@@ -81,7 +80,7 @@ typedef struct USBHMassStorageDriver {
 	uint32_t tag;
 
 	USBHMassStorageLUNDriver *luns;
-} USBHMassStorageDriver;
+};
 
 
 /*===========================================================================*/
@@ -116,6 +115,9 @@ extern "C" {
 	bool usbhmsdLUNGetInfo(USBHMassStorageLUNDriver *lunp, BlockDeviceInfo *bdip);
 	bool usbhmsdLUNIsInserted(USBHMassStorageLUNDriver *lunp);
 	bool usbhmsdLUNIsProtected(USBHMassStorageLUNDriver *lunp);
+
+	/* global initializer */
+	void usbhmsdInit(void);
 #ifdef __cplusplus
 }
 #endif

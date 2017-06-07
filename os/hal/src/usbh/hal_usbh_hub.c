@@ -1,6 +1,6 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
-              Copyright (C) 2015 Diego Ismirlian, TISA, (dismirlian (at) google's mail)
+    ChibiOS - Copyright (C) 2006..2017 Giovanni Di Sirio
+              Copyright (C) 2015..2017 Diego Ismirlian, (dismirlian (at) google's mail)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,10 +15,7 @@
     limitations under the License.
 */
 
-#include <string.h>
 #include "hal.h"
-#include "hal_usbh.h"
-#include "usbh/internal.h"
 
 #if HAL_USBH_USE_HUB
 
@@ -28,6 +25,7 @@
 
 #include <string.h>
 #include "usbh/dev/hub.h"
+#include "usbh/internal.h"
 
 #if USBHHUB_DEBUG_ENABLE_TRACE
 #define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
@@ -63,7 +61,7 @@
 
 
 USBHHubDriver USBHHUBD[HAL_USBHHUB_MAX_INSTANCES];
-usbh_port_t USBHPorts[HAL_USBHHUB_MAX_PORTS];
+static usbh_port_t USBHPorts[HAL_USBHHUB_MAX_PORTS];
 
 static usbh_baseclassdriver_t *hub_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
 static void hub_unload(usbh_baseclassdriver_t *drv);
@@ -200,7 +198,7 @@ alloc_ok:
 	/* read Hub descriptor */
 	uinfo("Read Hub descriptor");
 	if (usbhhubControlRequest(dev->host, hubdp,
-			USBH_REQTYPE_IN | USBH_REQTYPE_CLASS | USBH_REQTYPE_DEVICE,
+			USBH_REQTYPE_DIR_IN | USBH_REQTYPE_TYPE_CLASS | USBH_REQTYPE_RECIP_DEVICE,
 			USBH_REQ_GET_DESCRIPTOR,
 			(USBH_DT_HUB << 8), 0, sizeof(hubdp->hubDesc),
 			(uint8_t *)&hubdp->hubDesc) != USBH_URBSTATUS_OK) {
@@ -290,9 +288,18 @@ void usbhhubObjectInit(USBHHubDriver *hubdp) {
 	memset(hubdp, 0, sizeof(*hubdp));
 	hubdp->info = &usbhhubClassDriverInfo;
 }
+
+void usbhhubInit(void) {
+	uint8_t i;
+	for (i = 0; i < HAL_USBHHUB_MAX_INSTANCES; i++) {
+		usbhhubObjectInit(&USBHHUBD[i]);
+	}
+}
+
 #else
 
 #if HAL_USE_USBH
+#include <string.h>
 void _usbhub_port_object_init(usbh_port_t *port, USBHDriver *usbh, uint8_t number) {
 	memset(port, 0, sizeof(*port));
 	port->number = number;
