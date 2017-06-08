@@ -198,7 +198,7 @@ void usbhuvcPrintProbeCommit(const usbh_uvc_ctrl_vs_probecommit_data_t *pc) {
 #endif
 
 static void _post(USBHUVCDriver *uvcdp, usbh_urb_t *urb, memory_pool_t *mp, uint16_t type) {
-	usbhuvc_message_base_t *const msg = (usbhuvc_message_base_t *)urb->buff - 1;
+	usbhuvc_message_base_t *const msg = (usbhuvc_message_base_t *)((uint8_t *)urb->buff - offsetof(usbhuvc_message_data_t, data));
 	msg->timestamp = osalOsGetSystemTimeX();
 
 	usbhuvc_message_base_t *const new_msg = (usbhuvc_message_base_t *)chPoolAllocI(mp);
@@ -210,7 +210,7 @@ static void _post(USBHUVCDriver *uvcdp, usbh_urb_t *urb, memory_pool_t *mp, uint
 			msg->length = urb->actualLength;
 
 			/* change the URB's buffer to the newly allocated one */
-			urb->buff = (uint8_t *)(new_msg + 1);
+			urb->buff = ((usbhuvc_message_data_t *)new_msg)->data;
 		} else {
 			/* couldn't post the message, free the newly allocated buffer */
 			uerr("UVC: error, mailbox overrun");
@@ -298,6 +298,7 @@ static void _cb_iso(usbh_urb_t *urb) {
 
 bool usbhuvcStreamStart(USBHUVCDriver *uvcdp, uint16_t min_ep_sz) {
 	bool ret = HAL_FAILED;
+
 	osalSysLock();
 	osalDbgCheck(uvcdp && (uvcdp->state != USBHUVC_STATE_UNINITIALIZED) &&
 					(uvcdp->state != USBHUVC_STATE_BUSY));
@@ -312,21 +313,24 @@ bool usbhuvcStreamStart(USBHUVCDriver *uvcdp, uint16_t min_ep_sz) {
 	uvcdp->state = USBHUVC_STATE_BUSY;
 	osalSysUnlock();
 
+	uint32_t workramsz;
+	const uint8_t *elem;
+	uint32_t datapackets;
+	uint32_t data_sz;
+
 	//set the alternate setting
 	if (_set_vs_alternate(uvcdp, min_ep_sz) != HAL_SUCCESS)
 		goto exit;
 
 	//reserve working RAM
-	uint32_t datapackets;
-	uint32_t data_sz = (uvcdp->ep_iso.wMaxPacketSize + sizeof(usbhuvc_message_data_t) + 3) & ~3;
-
+	data_sz = (uvcdp->ep_iso.wMaxPacketSize + sizeof(usbhuvc_message_data_t) + 3) & ~3;
 	datapackets = HAL_USBHUVC_WORK_RAM_SIZE / data_sz;
 	if (datapackets == 0) {
 		uerr("Not enough work RAM");
 		goto failed;
 	}
 
-	uint32_t workramsz = datapackets * data_sz;
+	workramsz = datapackets * data_sz;
 	uinfof("Reserving %u bytes of RAM (%d data packets of %d bytes)", workramsz, datapackets, data_sz);
 	if (datapackets > (HAL_USBHUVC_MAX_MAILBOX_SZ - HAL_USBHUVC_STATUS_PACKETS_COUNT)) {
 		uwarn("Mailbox may overflow, use a larger HAL_USBHUVC_MAX_MAILBOX_SZ. UVC will under-utilize the assigned work RAM.");
@@ -340,8 +344,8 @@ bool usbhuvcStreamStart(USBHUVCDriver *uvcdp, uint16_t min_ep_sz) {
 	}
 
 	//initialize the mempool
-	const uint8_t *elem = (const uint8_t *)uvcdp->mp_data_buffer;
 	chPoolObjectInit(&uvcdp->mp_data, data_sz, NULL);
+	elem = (const uint8_t *)uvcdp->mp_data_buffer;
 	while (datapackets--) {
 		chPoolFree(&uvcdp->mp_data, (void *)elem);
 		elem += data_sz;
@@ -351,9 +355,11 @@ bool usbhuvcStreamStart(USBHUVCDriver *uvcdp, uint16_t min_ep_sz) {
 	usbhEPOpen(&uvcdp->ep_iso);
 
 	//allocate 1 buffer and submit the first transfer
-	usbhuvc_message_data_t *const msg = (usbhuvc_message_data_t *)chPoolAlloc(&uvcdp->mp_data);
-	osalDbgCheck(msg);
-	usbhURBObjectInit(&uvcdp->urb_iso, &uvcdp->ep_iso, _cb_iso, uvcdp, msg->data, uvcdp->ep_iso.wMaxPacketSize);
+	{
+		usbhuvc_message_data_t *const msg = (usbhuvc_message_data_t *)chPoolAlloc(&uvcdp->mp_data);
+		osalDbgCheck(msg);
+		usbhURBObjectInit(&uvcdp->urb_iso, &uvcdp->ep_iso, _cb_iso, uvcdp, msg->data, uvcdp->ep_iso.wMaxPacketSize);
+	}
 	osalSysLock();
 	usbhURBSubmitI(&uvcdp->urb_iso);
 	osalOsRescheduleS();
