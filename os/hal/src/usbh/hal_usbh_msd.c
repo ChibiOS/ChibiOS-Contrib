@@ -347,7 +347,7 @@ static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassSt
 
 		if (status == USBH_URBSTATUS_STALL) {
 			uerrf("\tMSD: Data phase: USBH_URBSTATUS_STALL, clear halt");
-			status = usbhEPReset(ep);
+			status = (usbhEPReset(ep) == HAL_SUCCESS) ? USBH_URBSTATUS_OK : USBH_URBSTATUS_ERROR;
 		}
 
 		if (status != USBH_URBSTATUS_OK) {
@@ -365,7 +365,7 @@ static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassSt
 	if (status == USBH_URBSTATUS_STALL) {
 		uwarn("\tMSD: Status phase: USBH_URBSTATUS_STALL, clear halt and retry");
 
-		status = usbhEPReset(&lunp->msdp->epin);
+		status = (usbhEPReset(&lunp->msdp->epin) == HAL_SUCCESS) ? USBH_URBSTATUS_OK : USBH_URBSTATUS_ERROR;
 
 		if (status == USBH_URBSTATUS_OK) {
 			status = usbhBulkTransfer(&lunp->msdp->epin, &csw,
