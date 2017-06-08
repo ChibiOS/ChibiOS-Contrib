@@ -387,7 +387,7 @@ static bool _update_urb(usbh_ep_t *ep, uint32_t hctsiz, usbh_urb_t *urb, bool co
 		osalDbgCheck(len == ep->xfer.partial);	//TODO: if len == ep->xfer.partial, use this instead of the above code
 	}
 
-#if 1
+#if 0
 	osalDbgAssert(urb->actualLength + len <= urb->requestedLength, "what happened?");
 #else
 	if (urb->actualLength + len > urb->requestedLength) {
