@@ -269,14 +269,6 @@ struct USBHDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_USBH_USE_OTG1
-extern USBHDriver USBHD1;
-#endif
-
-#if STM32_USBH_USE_OTG2
-extern USBHDriver USBHD2;
-#endif
-
 
 /*===========================================================================*/
 /* Main driver API.		                                                     */
