@@ -182,7 +182,7 @@ typedef enum {
 } usbh_uvc_ctrl_vs_interface_controls_t;
 
 
-typedef struct {
+typedef PACKED_STRUCT {
 	uint8_t bLength;
 	uint8_t bDescriptorType;
 	uint8_t bDescriptorSubType;
@@ -194,9 +194,9 @@ typedef struct {
 	uint8_t bAspectRatioY;
 	uint8_t bmInterfaceFlags;
 	uint8_t bCopyProtect;
-} __attribute__((__packed__)) usbh_uvc_format_mjpeg_t;
+} usbh_uvc_format_mjpeg_t;
 
-typedef struct {
+typedef PACKED_STRUCT {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint8_t  bDescriptorSubType;
@@ -210,10 +210,10 @@ typedef struct {
 	uint32_t dwDefaultFrameInterval;
 	uint8_t bFrameIntervalType;
 	uint32_t dwFrameInterval[0];
-} __attribute__((__packed__)) usbh_uvc_frame_mjpeg_t;
+} usbh_uvc_frame_mjpeg_t;
 
 
-typedef struct {
+typedef PACKED_STRUCT {
 	uint8_t bLength;
 	uint8_t bDescriptorType;
 	uint8_t bDescriptorSubType;
@@ -227,9 +227,9 @@ typedef struct {
 	uint32_t dwDefaultFrameInterval;
 	uint8_t bFrameIntervalType;
 	uint32_t dwFrameInterval[0];
-} __attribute__((__packed__)) usbh_uvc_frame_uncompressed_t;
+} usbh_uvc_frame_uncompressed_t;
 
-typedef struct {
+typedef PACKED_STRUCT {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint8_t  bDescriptorSubType;
@@ -242,9 +242,9 @@ typedef struct {
 	uint8_t  bAspectRatioY;
 	uint8_t  bmInterfaceFlags;
 	uint8_t  bCopyProtect;
-} __attribute__((__packed__)) usbh_uvc_format_uncompressed;
+} usbh_uvc_format_uncompressed;
 
-typedef struct {
+typedef PACKED_STRUCT {
     uint16_t bmHint;
     uint8_t bFormatIndex;
     uint8_t bFrameIndex;
@@ -261,7 +261,7 @@ typedef struct {
 //    uint8_t bPreferedVersion;
 //    uint8_t bMinVersion;
 //    uint8_t bMaxVersion;
-} __attribute__((__packed__)) usbh_uvc_ctrl_vs_probecommit_data_t;
+} usbh_uvc_ctrl_vs_probecommit_data_t;
 
 
 
