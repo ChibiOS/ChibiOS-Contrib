@@ -32,7 +32,7 @@
 /**
  * @brief   CHCTL XFERSIZE helper.
  */
-#define UDMA_CHCTL_XFERSIZE(n)          ((n-1) << 4)
+#define UDMA_CHCTL_XFERSIZE(n)          (((n)-1) << 4)
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
