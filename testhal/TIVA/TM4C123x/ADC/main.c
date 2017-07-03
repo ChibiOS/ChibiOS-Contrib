@@ -77,7 +77,7 @@ static void adcerrorcallback(ADCDriver *adcp, adcerror_t err) {
 
 /*
  * ADC conversion group.
- * Mode:        Linear buffer, 8 samples of 2 channels, SW triggered.
+ * Mode:        Linear buffer, 8 samples of 2 channels, Always triggered.
  * Channels:    TS, TS.
  */
 static const ADCConversionGroup adcgrpcfg1 = {
@@ -85,15 +85,15 @@ static const ADCConversionGroup adcgrpcfg1 = {
   ADC_GRP1_NUM_CHANNELS,
   NULL,
   adcerrorcallback,
-  0xF,                    /* EMUX */ /* Continuous trigger */
+  0xF,                    /* EMUX */ /* Always trigger */
   0,                      /* SSMUX */
   (1 << 7) | (1 << 5) |
-  (1 << 3)                /* SSCTL */ /* 2 times TS, 2nd has end+int bit set */
+  (1 << 3)                /* SSCTL */ /* 2 times TS, 2nd has end bit set */
 };
 
 /*
  * ADC conversion group.
- * Mode:        Continuous, 16 samples of 8 channels, SW triggered.
+ * Mode:        Continuous, 16 samples of 8 channels, Always triggered.
  * Channels:    TS, TS, TS, TS, TS, TS, TS, TS.
  */
 static const ADCConversionGroup adcgrpcfg2 = {
@@ -101,8 +101,8 @@ static const ADCConversionGroup adcgrpcfg2 = {
   ADC_GRP2_NUM_CHANNELS,
   adccallback,
   adcerrorcallback,
-  0xF, /* EMUX */
-  0, /* SSMUX */
+  0xF,                    /* EMUX */ /* Always trigger */
+  0,                      /* SSMUX */
   (1 << 31) | (1 << 29) |
   (1 << 27) |
   (1 << 23) |
@@ -110,7 +110,7 @@ static const ADCConversionGroup adcgrpcfg2 = {
   (1 << 15) |
   (1 << 11) |
   (1 << 7) |
-  (1 << 3)  /* SSCTL */
+  (1 << 3)                /* SSCTL */ /* 8 times TS, 8th has end bit set */
 };
 
 /*

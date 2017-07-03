@@ -59,34 +59,28 @@ ADCDriver ADCD2;
  */
 static void serve_interrupt(ADCDriver *adcp)
 {
-  uint32_t dmachis = HWREG(UDMA_CHIS);
+  tiva_udma_table_entry_t *pri = &udmaControlTable.primary[adcp->dmanr];
+  tiva_udma_table_entry_t *alt = &udmaControlTable.alternate[adcp->dmanr];
 
-  if (dmachis & (1 << adcp->dmanr)) {
+  if ((pri->chctl & UDMA_CHCTL_XFERMODE_M) == UDMA_CHCTL_XFERMODE_STOP) {
+    /* Primary is used only for circular transfers */
     if (adcp->grpp->circular) {
-      tiva_udma_table_entry_t *pri = &udmaControlTable.primary[adcp->dmanr];
-      tiva_udma_table_entry_t *alt = &udmaControlTable.alternate[adcp->dmanr];
-
-      if ((pri->chctl & UDMA_CHCTL_XFERMODE_M) == UDMA_CHCTL_XFERMODE_STOP) {
-        if (adcp->depth > 1) {
-          _adc_isr_half_code(adcp);
-        }
-        else {
-          _adc_isr_full_code(adcp);
-        }
-
-        /* Reconfigure DMA for new (lower half) transfer */
-        pri->chctl = adcp->prictl;
+      if (adcp->depth > 1) {
+        _adc_isr_half_code(adcp);
       }
-      else if ((alt->chctl & UDMA_CHCTL_XFERMODE_M) == UDMA_CHCTL_XFERMODE_STOP) {
-        _adc_isr_full_code(adcp);
 
-        /* Reconfigure DMA for new upper half transfer */
-        alt->chctl = adcp->altctl;
-      }
+      /* Reconfigure DMA for new lower half transfer */
+      pri->chctl = adcp->prictl;
     }
-    else {
-      /* Transfer complete processing.*/
-      _adc_isr_full_code(adcp);
+  }
+
+  if ((alt->chctl & UDMA_CHCTL_XFERMODE_M) == UDMA_CHCTL_XFERMODE_STOP) {
+    /* Alternate is used for both linear and circular transfers */
+    _adc_isr_full_code(adcp);
+
+    if (adcp->grpp->circular) {
+      /* Reconfigure DMA for new upper half transfer */
+      alt->chctl = adcp->altctl;
     }
   }
 }
@@ -214,16 +208,18 @@ void adc_lld_stop(ADCDriver *adcp)
   if (adcp->state == ADC_READY) {
     /* Resets the peripheral.*/
 
+    udmaChannelRelease(adcp->dmanr);
+
     /* Disables the peripheral.*/
 #if TIVA_ADC_USE_ADC0
     if (&ADCD1 == adcp) {
-
+      nvicDisableVector(TIVA_ADC0_SEQ0_NUMBER);
     }
 #endif
 
 #if TIVA_ADC_USE_ADC1
     if (&ADCD2 == adcp) {
-
+      nvicDisableVector(TIVA_ADC1_SEQ0_NUMBER);
     }
 #endif
   }
@@ -260,8 +256,8 @@ void adc_lld_start_conversion(ADCDriver *adcp)
   /* Configure the sample control bits */
   HWREG(adc + ADC_O_SSCTL0) = adcp->grpp->ssctl | 0x44444444; /* Enforce IEn bits */
 
-  /* Primary source endpoint is the same for all transfers */
-  primary->srcendp = (void *)(adcp->adc + ADC_O_SSFIFO0);
+  /* Alternate source endpoint is the same for all transfers */
+  alternate->srcendp = (void *)(adcp->adc + ADC_O_SSFIFO0);
 
   /* Configure DMA */
   if ((adcp->grpp->circular) && (adcp->depth > 1)) {
@@ -271,8 +267,8 @@ void adc_lld_start_conversion(ADCDriver *adcp)
 
     uint32_t ctl;
 
-    /* configure the alternate source endpoint */
-    alternate->srcendp = (void *)(adcp->adc + ADC_O_SSFIFO0);
+    /* configure the primary source endpoint */
+    primary->srcendp = (void *)(adcp->adc + ADC_O_SSFIFO0);
 
     /* sample buffer is split in half, the upper half is used here */
     primary->dstendp = (void *)(adcp->samples +
@@ -289,19 +285,23 @@ void adc_lld_start_conversion(ADCDriver *adcp)
 
     adcp->prictl = ctl;
     adcp->altctl = ctl;
+
+    dmaChannelPrimary(adcp->dmanr);
   }
   else {
     /* Configure the DMA in basic mode.
        This is used for both circular buffers with a depth of 1 and linear
        buffers.*/
-    primary->dstendp = (void *)(adcp->samples +
-                               (adcp->grpp->num_channels * adcp->depth) - 1);
-    adcp->prictl = UDMA_CHCTL_DSTSIZE_32 | UDMA_CHCTL_DSTINC_32 |
+    alternate->dstendp = (void *)(adcp->samples +
+                                 (adcp->grpp->num_channels * adcp->depth) - 1);
+    adcp->prictl = UDMA_CHCTL_XFERMODE_STOP;
+    adcp->altctl = UDMA_CHCTL_DSTSIZE_32 | UDMA_CHCTL_DSTINC_32 |
                    UDMA_CHCTL_SRCSIZE_32 | UDMA_CHCTL_SRCINC_NONE |
                    UDMA_CHCTL_ARBSIZE_1 |
                    UDMA_CHCTL_XFERSIZE(adcp->grpp->num_channels * adcp->depth) |
                    UDMA_CHCTL_XFERMODE_BASIC;
-    adcp->altctl = UDMA_CHCTL_XFERMODE_STOP;
+
+    dmaChannelAlternate(adcp->dmanr);
   }
 
   /* Configure primary and alternate channel control fields */
@@ -309,7 +309,6 @@ void adc_lld_start_conversion(ADCDriver *adcp)
   alternate->chctl = adcp->altctl;
 
   /* Configure DMA channel */
-  dmaChannelPrimary(adcp->dmanr);
   dmaChannelBurstOnly(adcp->dmanr);
   dmaChannelPriorityDefault(adcp->dmanr);
   dmaChannelEnableRequest(adcp->dmanr);
