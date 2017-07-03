@@ -128,6 +128,10 @@ int main(void)
   halInit();
   chSysInit();
 
+  /* Configure RX and TX pins for UART0.*/
+  palSetLineMode(LINE_UART0_RX, PAL_MODE_INPUT | PAL_MODE_ALTERNATE(1));
+  palSetLineMode(LINE_UART0_TX, PAL_MODE_INPUT | PAL_MODE_ALTERNATE(1));
+
   sdStart(&SD1, NULL);
 
   chprintf((BaseSequentialStream *)&SD1, "Starting ADC0...");
@@ -154,7 +158,7 @@ int main(void)
   while (TRUE) {
     chThdSleepMilliseconds(500);
 
-    chprintf((BaseSequentialStream *)&SD1, "A:%d\tB:%d\r\n", nx, ny);
+    chprintf((BaseSequentialStream *)&SD1, "A:%d\tB:%d\ttmp:%d\r\n", nx, ny, temp);
   }
   
   return 0;
