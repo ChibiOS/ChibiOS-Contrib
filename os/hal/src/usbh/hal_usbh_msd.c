@@ -62,9 +62,7 @@
 #define uerr(f, ...)   do {} while(0)
 #endif
 
-
-
-
+static void usbhmsdLUNObjectDeinit(USBHMassStorageLUNDriver *lunp);
 
 /*===========================================================================*/
 /* USB Class driver loader for MSD                                           */
@@ -187,15 +185,7 @@ alloc_ok:
 			MSBLKD[i].next = msdp->luns;
 			msdp->luns = &MSBLKD[i];
 			MSBLKD[i].msdp = msdp;
-
-			osalSysLock();
 			MSBLKD[i].state = BLK_ACTIVE;	/* transition directly to active, instead of BLK_STOP */
-			osalSysUnlock();
-
-			/* connect the LUN (TODO: review if it's best to leave the LUN disconnected) */
-			msdp->dev = dev;
-			usbhmsdLUNConnect(&MSBLKD[i]);
-			msdp->dev = NULL;
 			luns--;
 		}
 	}
@@ -212,33 +202,21 @@ static void _msd_unload(usbh_baseclassdriver_t *drv) {
 	USBHMassStorageDriver *const msdp = (USBHMassStorageDriver *)drv;
 	USBHMassStorageLUNDriver *lunp = msdp->luns;
 
-	osalMutexLock(&msdp->mtx);
-	osalSysLock();
-	usbhEPCloseS(&msdp->epin);
-	usbhEPCloseS(&msdp->epout);
+	/* disconnect all LUNs */
 	while (lunp) {
-		lunp->state = BLK_STOP;
+		usbhmsdLUNDisconnect(lunp);
+		usbhmsdLUNObjectDeinit(lunp);
 		lunp = lunp->next;
 	}
-	osalSysUnlock();
-	osalMutexUnlock(&msdp->mtx);
 
-	/* now that the LUNs are idle, deinit them */
-	lunp = msdp->luns;
-	osalSysLock();
-	while (lunp) {
-		usbhmsdLUNObjectInit(lunp);
-		lunp = lunp->next;
-	}
-	osalSysUnlock();
+	usbhEPClose(&msdp->epin);
+	usbhEPClose(&msdp->epout);
 }
 
 
 /*===========================================================================*/
 /* MSD Class driver operations (Bulk-Only transport)                         */
 /*===========================================================================*/
-
-
 
 /* USB Bulk Only Transport SCSI Command block wrapper */
 typedef PACKED_STRUCT {
@@ -704,11 +682,23 @@ static const struct USBHMassStorageDriverVMT blk_vmt = {
 	(bool (*)(void *, BlockDeviceInfo *))usbhmsdLUNGetInfo
 };
 
-void usbhmsdLUNObjectInit(USBHMassStorageLUNDriver *lunp) {
+static void usbhmsdLUNObjectDeinit(USBHMassStorageLUNDriver *lunp) {
+	osalDbgCheck(lunp != NULL);
+	osalMutexLock(&lunp->mtx);
+	lunp->msdp = NULL;
+	lunp->next = NULL;
+	memset(&lunp->info, 0, sizeof(lunp->info));
+	lunp->state = BLK_STOP;
+	osalMutexUnlock(&lunp->mtx);
+}
+
+static void usbhmsdLUNObjectInit(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp != NULL);
 	memset(lunp, 0, sizeof(*lunp));
 	lunp->vmt = &blk_vmt;
 	lunp->state = BLK_STOP;
+	osalMutexObjectInit(&lunp->mtx);
+
 	/* Unnecessary because of the memset:
 		lunp->msdp = NULL;
 		lunp->next = NULL;
@@ -737,24 +727,19 @@ void usbhmsdLUNStop(USBHMassStorageLUNDriver *lunp) {
 }
 
 bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
-	USBHMassStorageDriver *const msdp = lunp->msdp;
+	osalDbgCheck(lunp != NULL);
+	osalDbgCheck(lunp->msdp != NULL);
 	msd_result_t res;
 
-	osalDbgCheck(msdp != NULL);
-	osalSysLock();
-	//osalDbgAssert((lunp->state == BLK_ACTIVE) || (lunp->state == BLK_READY),
-    //            "invalid state");
+	osalMutexLock(&lunp->mtx);
 	if (lunp->state == BLK_READY) {
-	    osalSysUnlock();
+    	osalMutexUnlock(&lunp->mtx);
 		return HAL_SUCCESS;
 	} else if (lunp->state != BLK_ACTIVE) {
-		osalSysUnlock();
+    	osalMutexUnlock(&lunp->mtx);
 		return HAL_FAILED;
 	}
 	lunp->state = BLK_CONNECTING;
-    osalSysUnlock();
-
-    osalMutexLock(&msdp->mtx);
 
     {
 		USBH_DEFINE_BUFFER(scsi_inquiry_response_t inq);
@@ -821,40 +806,36 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 
 	uinfo("MSD Connected.");
 
-	osalMutexUnlock(&msdp->mtx);
-	osalSysLock();
 	lunp->state = BLK_READY;
-    osalSysUnlock();
-
+	osalMutexUnlock(&lunp->mtx);
 	return HAL_SUCCESS;
 
   /* Connection failed, state reset to BLK_ACTIVE.*/
 failed:
-	osalMutexUnlock(&msdp->mtx);
-	osalSysLock();
 	lunp->state = BLK_ACTIVE;
-    osalSysUnlock();
+	osalMutexUnlock(&lunp->mtx);
 	return HAL_FAILED;
 }
 
 
 bool usbhmsdLUNDisconnect(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp != NULL);
-	osalSysLock();
+
+	osalMutexLock(&lunp->mtx);
 	osalDbgAssert((lunp->state == BLK_ACTIVE) || (lunp->state == BLK_READY),
 				"invalid state");
+
 	if (lunp->state == BLK_ACTIVE) {
-		osalSysUnlock();
+		osalMutexUnlock(&lunp->mtx);
 		return HAL_SUCCESS;
 	}
 	lunp->state = BLK_DISCONNECTING;
-	osalSysUnlock();
 
 	//TODO: complete
 
-	osalSysLock();
 	lunp->state = BLK_ACTIVE;
-	osalSysUnlock();
+	osalMutexUnlock(&lunp->mtx);
+
 	return HAL_SUCCESS;
 }
 
@@ -867,15 +848,13 @@ bool usbhmsdLUNRead(USBHMassStorageLUNDriver *lunp, uint32_t startblk,
 	msd_result_t res;
 	uint32_t actual_len;
 
-	osalSysLock();
+	osalMutexLock(&lunp->mtx);
 	if (lunp->state != BLK_READY) {
-		osalSysUnlock();
+		osalMutexUnlock(&lunp->mtx);
 		return ret;
 	}
 	lunp->state = BLK_READING;
-    osalSysUnlock();
 
-	osalMutexLock(&lunp->msdp->mtx);
 	while (n) {
 		if (n > 0xffff) {
 			blocks = 0xffff;
@@ -900,15 +879,8 @@ bool usbhmsdLUNRead(USBHMassStorageLUNDriver *lunp, uint32_t startblk,
 	ret = HAL_SUCCESS;
 
 exit:
-	osalMutexUnlock(&lunp->msdp->mtx);
-	osalSysLock();
-	if (lunp->state == BLK_READING) {
-		lunp->state = BLK_READY;
-	} else {
-		osalDbgCheck(lunp->state == BLK_STOP);
-		uwarn("MSD: State = BLK_STOP");
-	}
-    osalSysUnlock();
+	lunp->state = BLK_READY;
+	osalMutexUnlock(&lunp->mtx);
 	return ret;
 }
 
@@ -921,15 +893,13 @@ bool usbhmsdLUNWrite(USBHMassStorageLUNDriver *lunp, uint32_t startblk,
 	msd_result_t res;
 	uint32_t actual_len;
 
-	osalSysLock();
+	osalMutexLock(&lunp->mtx);
 	if (lunp->state != BLK_READY) {
-		osalSysUnlock();
+		osalMutexUnlock(&lunp->mtx);
 		return ret;
 	}
 	lunp->state = BLK_WRITING;
-    osalSysUnlock();
 
-	osalMutexLock(&lunp->msdp->mtx);
 	while (n) {
 		if (n > 0xffff) {
 			blocks = 0xffff;
@@ -954,15 +924,8 @@ bool usbhmsdLUNWrite(USBHMassStorageLUNDriver *lunp, uint32_t startblk,
 	ret = HAL_SUCCESS;
 
 exit:
-	osalMutexUnlock(&lunp->msdp->mtx);
-	osalSysLock();
-	if (lunp->state == BLK_WRITING) {
-		lunp->state = BLK_READY;
-	} else {
-		osalDbgCheck(lunp->state == BLK_STOP);
-		uwarn("MSD: State = BLK_STOP");
-	}
-	osalSysUnlock();
+	lunp->state = BLK_READY;
+	osalMutexUnlock(&lunp->mtx);
 	return ret;
 }
 
@@ -982,23 +945,19 @@ bool usbhmsdLUNGetInfo(USBHMassStorageLUNDriver *lunp, BlockDeviceInfo *bdip) {
 
 bool usbhmsdLUNIsInserted(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp != NULL);
-	blkstate_t state;
-	osalSysLock();
-	state = lunp->state;
-	osalSysUnlock();
-	return (state >= BLK_ACTIVE);
+	return (lunp->state >= BLK_ACTIVE);
 }
 
 bool usbhmsdLUNIsProtected(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp != NULL);
+	//TODO: Implement
 	return FALSE;
 }
 
-void usbhmsdObjectInit(USBHMassStorageDriver *msdp) {
+static void usbhmsdObjectInit(USBHMassStorageDriver *msdp) {
 	osalDbgCheck(msdp != NULL);
 	memset(msdp, 0, sizeof(*msdp));
 	msdp->info = &usbhmsdClassDriverInfo;
-	osalMutexObjectInit(&msdp->mtx);
 }
 
 void usbhmsdInit(void) {

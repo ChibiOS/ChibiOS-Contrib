@@ -19,7 +19,7 @@
 #include "ff.h"
 #include <string.h>
 
-#define UVC_TO_MSD_PHOTOS_CAPTURE	TRUE
+#define UVC_TO_MSD_PHOTOS_CAPTURE	FALSE
 
 
 #if HAL_USBH_USE_FTDI || HAL_USBH_USE_AOA
@@ -340,7 +340,7 @@ static void ThreadTestMSD(void *p) {
     FATFS *fsp;
     DWORD clusters;
     FRESULT res;
-    blkstate_t state;
+
 #if !UVC_TO_MSD_PHOTOS_CAPTURE
     BaseSequentialStream * const chp = (BaseSequentialStream *)&USBH_DEBUG_SD;
     systime_t st, et;
@@ -351,11 +351,15 @@ start:
     for(;;) {
         chThdSleepMilliseconds(100);
 
-        chSysLock();
-        state = blkGetDriverState(&MSBLKD[0]);
-        chSysUnlock();
-        if (state != BLK_READY)
+        if (blkGetDriverState(&MSBLKD[0]) == BLK_ACTIVE) {
+        	usbDbgPuts("BLK: Active, connect....");
+        	usbhmsdLUNConnect(&MSBLKD[0]);
+        }
+        if (blkGetDriverState(&MSBLKD[0]) != BLK_READY) {
             continue;
+    	}
+
+    	usbDbgPuts("BLK: Ready.");
 
 #if !UVC_TO_MSD_PHOTOS_CAPTURE
         //raw read test

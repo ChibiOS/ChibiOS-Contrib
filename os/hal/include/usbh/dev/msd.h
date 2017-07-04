@@ -58,6 +58,9 @@ struct USBHMassStorageLUNDriver {
 	const struct USBHMassStorageDriverVMT *vmt;
 	_base_block_device_data
 
+	/* for serializing access to the LUN driver */
+	mutex_t mtx;
+
 	BlockDeviceInfo info;
 	USBHMassStorageDriver *msdp;
 
@@ -67,11 +70,6 @@ struct USBHMassStorageLUNDriver {
 struct USBHMassStorageDriver {
 	/* inherited from abstract class driver */
 	_usbh_base_classdriver_data
-
-	/* for LUN request serialization, can be removed
-	 * if the driver is configured to support only one LUN
-	 * per USBHMassStorageDriver instance */
-	mutex_t mtx;
 
 	usbh_ep_t epin;
 	usbh_ep_t epout;
@@ -98,11 +96,7 @@ extern USBHMassStorageDriver USBHMSD[HAL_USBHMSD_MAX_INSTANCES];
 #ifdef __cplusplus
 extern "C" {
 #endif
-	/* Mass Storage Driver */
-	void usbhmsdObjectInit(USBHMassStorageDriver *msdp);
-
 	/* Mass Storage LUN Driver (block driver) */
-	void usbhmsdLUNObjectInit(USBHMassStorageLUNDriver *lunp);
 	void usbhmsdLUNStart(USBHMassStorageLUNDriver *lunp);
 	void usbhmsdLUNStop(USBHMassStorageLUNDriver *lunp);
 	bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp);
