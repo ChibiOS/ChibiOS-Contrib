@@ -62,14 +62,6 @@
 #define uerr(f, ...)   do {} while(0)
 #endif
 
-#if STM32_USBH_USE_OTG1
-USBHDriver USBHD1;
-#endif
-#if STM32_USBH_USE_OTG2
-USBHDriver USBHD2;
-#endif
-
-
 static void _classdriver_process_device(usbh_device_t *dev);
 static bool _classdriver_load(usbh_device_t *dev, uint8_t class,
 		uint8_t subclass, uint8_t protocol, uint8_t *descbuff, uint16_t rem);

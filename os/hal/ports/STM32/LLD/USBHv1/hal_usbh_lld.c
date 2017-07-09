@@ -105,6 +105,13 @@ static void _try_commit_np(USBHDriver *host);
 static void otg_rxfifo_flush(USBHDriver *usbp);
 static void otg_txfifo_flush(USBHDriver *usbp, uint32_t fifo);
 
+#if STM32_USBH_USE_OTG1
+USBHDriver USBHD1;
+#endif
+#if STM32_USBH_USE_OTG2
+USBHDriver USBHD2;
+#endif
+
 /*===========================================================================*/
 /* Little helper functions.                                                  */
 /*===========================================================================*/
