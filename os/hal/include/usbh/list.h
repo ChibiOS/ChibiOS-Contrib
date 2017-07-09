@@ -42,17 +42,17 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
  * the prev/next entries already!
  */
 #ifndef CONFIG_DEBUG_LIST
-static inline void __list_add(struct list_head *new,
+static inline void __list_add(struct list_head *_new,
                               struct list_head *prev,
                               struct list_head *next)
 {
-        next->prev = new;
-        new->next = next;
-        new->prev = prev;
-        prev->next = new;
+        next->prev = _new;
+        _new->next = next;
+        _new->prev = prev;
+        prev->next = _new;
 }
 #else
-extern void __list_add(struct list_head *new,
+extern void __list_add(struct list_head *_new,
                               struct list_head *prev,
                               struct list_head *next);
 #endif
@@ -65,9 +65,9 @@ extern void __list_add(struct list_head *new,
  * Insert a new entry after the specified head.
  * This is good for implementing stacks.
  */
-static inline void list_add(struct list_head *new, struct list_head *head)
+static inline void list_add(struct list_head *_new, struct list_head *head)
 {
-        __list_add(new, head, head->next);
+        __list_add(_new, head, head->next);
 }
 
 
@@ -79,9 +79,9 @@ static inline void list_add(struct list_head *new, struct list_head *head)
  * Insert a new entry before the specified head.
  * This is useful for implementing queues.
  */
-static inline void list_add_tail(struct list_head *new, struct list_head *head)
+static inline void list_add_tail(struct list_head *_new, struct list_head *head)
 {
-        __list_add(new, head->prev, head);
+        __list_add(_new, head->prev, head);
 }
 
 /*
@@ -452,18 +452,18 @@ static inline void list_splice_tail_init(struct list_head *list,
  * If @old was empty, it will be overwritten.
  */
 static inline void list_replace(struct list_head *old,
-                                struct list_head *new)
+                                struct list_head *_new)
 {
-        new->next = old->next;
-        new->next->prev = new;
-        new->prev = old->prev;
-        new->prev->next = new;
+        _new->next = old->next;
+        _new->next->prev = _new;
+        _new->prev = old->prev;
+        _new->prev->next = _new;
 }
 
 static inline void list_replace_init(struct list_head *old,
-                                        struct list_head *new)
+                                        struct list_head *_new)
 {
-        list_replace(old, new);
+        list_replace(old, _new);
         INIT_LIST_HEAD(old);
 }
 
