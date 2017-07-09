@@ -20,8 +20,7 @@
 
 #include "hal_usbh.h"
 
-#if HAL_USE_USBH
-
+#if HAL_USE_USBH && HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -72,8 +71,6 @@ extern "C" {
 #endif
 	/* API goes here */
 
-	/* global initializer */
-	void usbhCustomInit(void);
 #ifdef __cplusplus
 }
 #endif

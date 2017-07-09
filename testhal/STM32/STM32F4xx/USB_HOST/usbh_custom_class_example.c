@@ -16,6 +16,8 @@
 */
 
 #include "hal.h"
+
+#if HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS
 #include "usbh/internal.h"
 #include "usbh_custom_class_example.h"
 #include <string.h>
@@ -138,3 +140,4 @@ static void _init(void) {
 	}
 }
 
+#endif
