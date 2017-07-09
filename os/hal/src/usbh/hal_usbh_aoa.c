@@ -124,8 +124,10 @@ USBHAOADriver USBHAOAD[HAL_USBHAOA_MAX_INSTANCES];
 
 static usbh_baseclassdriver_t *_aoa_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
 static void _aoa_unload(usbh_baseclassdriver_t *drv);
+static void _aoa_init(void);
 
 static const usbh_classdriver_vmt_t class_driver_vmt = {
+	_aoa_init,
 	_aoa_load,
 	_aoa_unload
 };
@@ -658,7 +660,7 @@ static bool _send_string(usbh_device_t *dev, uint8_t index, const char *string)
 	return HAL_SUCCESS;
 }
 
-void usbhaoaObjectInit(USBHAOADriver *aoap) {
+static void _object_init(USBHAOADriver *aoap) {
 	osalDbgCheck(aoap != NULL);
 	memset(aoap, 0, sizeof(*aoap));
 	aoap->info = &usbhaoaClassDriverInfo;
@@ -668,10 +670,10 @@ void usbhaoaObjectInit(USBHAOADriver *aoap) {
 	aoap->channel.state = USBHAOA_CHANNEL_STATE_STOP;
 }
 
-void usbhaoaInit(void) {
+static void _aoa_init(void) {
 	uint8_t i;
 	for (i = 0; i < HAL_USBHAOA_MAX_INSTANCES; i++) {
-		usbhaoaObjectInit(&USBHAOAD[i]);
+		_object_init(&USBHAOAD[i]);
 	}
 }
 

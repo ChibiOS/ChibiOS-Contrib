@@ -394,9 +394,6 @@ extern USBHUVCDriver USBHUVCD[HAL_USBHUVC_MAX_INSTANCES];
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-	void usbhuvcObjectInit(USBHUVCDriver *uvcd);
-
 	static inline usbhuvc_state_t usbhuvcGetState(USBHUVCDriver *uvcd) {
 		return uvcd->state;
 	}
@@ -457,11 +454,6 @@ extern "C" {
 	static inline void usbhuvcFreeStatusMessage(USBHUVCDriver *uvcdp, usbhuvc_message_status_t *msg) {
 		chPoolFree(&uvcdp->mp_status, msg);
 	}
-
-
-	/* global initializer */
-	void usbhuvcInit(void);
-
 #ifdef __cplusplus
 }
 #endif

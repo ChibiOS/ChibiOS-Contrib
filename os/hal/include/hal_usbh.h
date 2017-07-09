@@ -48,6 +48,10 @@
 #define HAL_USBH_USE_HID FALSE
 #endif
 
+#ifndef HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS
+#define HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS	FALSE
+#endif
+
 #define HAL_USBH_USE_IAD     HAL_USBH_USE_UVC
 
 #if (HAL_USE_USBH == TRUE) || defined(__DOXYGEN__)
@@ -402,8 +406,10 @@ extern "C" {
 
 typedef struct usbh_classdriver_vmt usbh_classdriver_vmt_t;
 struct usbh_classdriver_vmt {
+	void (*init)(void);
 	usbh_baseclassdriver_t *(*load)(usbh_device_t *dev,	const uint8_t *descriptor, uint16_t rem);
 	void (*unload)(usbh_baseclassdriver_t *drv);
+	/* TODO: add power control, suspend, etc */
 };
 
 struct usbh_classdriverinfo {

@@ -62,16 +62,19 @@
 #define uerr(f, ...)   do {} while(0)
 #endif
 
+static void _ftdip_object_init(USBHFTDIPortDriver *ftdipp);
 
 /*===========================================================================*/
 /* USB Class driver loader for FTDI								 		 	 */
 /*===========================================================================*/
 USBHFTDIDriver USBHFTDID[HAL_USBHFTDI_MAX_INSTANCES];
 
+static void _ftdi_init(void);
 static usbh_baseclassdriver_t *_ftdi_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
 static void _ftdi_unload(usbh_baseclassdriver_t *drv);
 
 static const usbh_classdriver_vmt_t class_driver_vmt = {
+	_ftdi_init,
 	_ftdi_load,
 	_ftdi_unload
 };
@@ -229,7 +232,7 @@ static void _ftdi_unload(usbh_baseclassdriver_t *drv) {
 	osalSysLock();
 	while (ftdipp) {
 		USBHFTDIPortDriver *next = ftdipp->next;
-		usbhftdipObjectInit(ftdipp);
+		_ftdip_object_init(ftdipp);
 		ftdipp = next;
 	}
 	osalSysUnlock();
@@ -700,27 +703,27 @@ void usbhftdipStart(USBHFTDIPortDriver *ftdipp, const USBHFTDIPortConfig *config
 	osalMutexUnlock(&ftdipp->ftdip->mtx);
 }
 
-void usbhftdiObjectInit(USBHFTDIDriver *ftdip) {
+static void _ftdi_object_init(USBHFTDIDriver *ftdip) {
 	osalDbgCheck(ftdip != NULL);
 	memset(ftdip, 0, sizeof(*ftdip));
 	ftdip->info = &usbhftdiClassDriverInfo;
 	osalMutexObjectInit(&ftdip->mtx);
 }
 
-void usbhftdipObjectInit(USBHFTDIPortDriver *ftdipp) {
+static void _ftdip_object_init(USBHFTDIPortDriver *ftdipp) {
 	osalDbgCheck(ftdipp != NULL);
 	memset(ftdipp, 0, sizeof(*ftdipp));
 	ftdipp->vmt = &async_channel_vmt;
 	ftdipp->state = USBHFTDIP_STATE_STOP;
 }
 
-void usbhftdiInit(void) {
+static void _ftdi_init(void) {
 	uint8_t i;
 	for (i = 0; i < HAL_USBHFTDI_MAX_INSTANCES; i++) {
-		usbhftdiObjectInit(&USBHFTDID[i]);
+		_ftdi_object_init(&USBHFTDID[i]);
 	}
 	for (i = 0; i < HAL_USBHFTDI_MAX_PORTS; i++) {
-		usbhftdipObjectInit(&FTDIPD[i]);
+		_ftdip_object_init(&FTDIPD[i]);
 	}
 }
 

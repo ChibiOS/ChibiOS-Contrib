@@ -66,14 +66,15 @@
 
 USBHUVCDriver USBHUVCD[HAL_USBHUVC_MAX_INSTANCES];
 
-
-static usbh_baseclassdriver_t *uvc_load(usbh_device_t *dev,
+static void _uvc_init(void);
+static usbh_baseclassdriver_t *_uvc_load(usbh_device_t *dev,
 		const uint8_t *descriptor, uint16_t rem);
-static void uvc_unload(usbh_baseclassdriver_t *drv);
+static void _uvc_unload(usbh_baseclassdriver_t *drv);
 
 static const usbh_classdriver_vmt_t class_driver_vmt = {
-	uvc_load,
-	uvc_unload
+	_uvc_init,
+	_uvc_load,
+	_uvc_unload
 };
 const usbh_classdriverinfo_t usbhuvcClassDriverInfo = {
 	0x0e, 0x03, 0x00, "UVC", &class_driver_vmt
@@ -512,17 +513,7 @@ uint32_t usbhuvcEstimateRequiredEPSize(USBHUVCDriver *uvcdp, const uint8_t *form
 	return (sz * mul) / div + 12;
 }
 
-void usbhuvcObjectInit(USBHUVCDriver *uvcdp) {
-	osalDbgCheck(uvcdp != NULL);
-	memset(uvcdp, 0, sizeof(*uvcdp));
-	uvcdp->info = &usbhuvcClassDriverInfo;
-	chMBObjectInit(&uvcdp->mb, uvcdp->mb_buff, HAL_USBHUVC_MAX_MAILBOX_SZ);
-	chMtxObjectInit(&uvcdp->mtx);
-	uvcdp->state = USBHUVC_STATE_STOP;
-}
-
-
-static usbh_baseclassdriver_t *uvc_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem) {
+static usbh_baseclassdriver_t *_uvc_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem) {
 
 	USBHUVCDriver *uvcdp;
 	uint8_t i;
@@ -710,7 +701,7 @@ alloc_ok:
 	return (usbh_baseclassdriver_t *)uvcdp;
 }
 
-static void uvc_unload(usbh_baseclassdriver_t *drv) {
+static void _uvc_unload(usbh_baseclassdriver_t *drv) {
 	USBHUVCDriver *const uvcdp = (USBHUVCDriver *)drv;
 
 	usbhuvcStreamStop(uvcdp);
@@ -727,10 +718,19 @@ static void uvc_unload(usbh_baseclassdriver_t *drv) {
 	osalSysUnlock();
 }
 
-void usbhuvcInit(void) {
+static void _object_init(USBHUVCDriver *uvcdp) {
+	osalDbgCheck(uvcdp != NULL);
+	memset(uvcdp, 0, sizeof(*uvcdp));
+	uvcdp->info = &usbhuvcClassDriverInfo;
+	chMBObjectInit(&uvcdp->mb, uvcdp->mb_buff, HAL_USBHUVC_MAX_MAILBOX_SZ);
+	chMtxObjectInit(&uvcdp->mtx);
+	uvcdp->state = USBHUVC_STATE_STOP;
+}
+
+static void _uvc_init(void) {
 	uint8_t i;
 	for (i = 0; i < HAL_USBHUVC_MAX_INSTANCES; i++) {
-		usbhuvcObjectInit(&USBHUVCD[i]);
+		_object_init(&USBHUVCD[i]);
 	}
 }
 

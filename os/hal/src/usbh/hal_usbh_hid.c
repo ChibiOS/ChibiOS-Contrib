@@ -74,10 +74,12 @@
 
 USBHHIDDriver USBHHIDD[HAL_USBHHID_MAX_INSTANCES];
 
+static void _hid_init(void);
 static usbh_baseclassdriver_t *_hid_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
 static void _hid_unload(usbh_baseclassdriver_t *drv);
 
 static const usbh_classdriver_vmt_t class_driver_vmt = {
+	_hid_init,
 	_hid_load,
 	_hid_unload
 };
@@ -305,17 +307,17 @@ usbh_urbstatus_t usbhhidSetProtocol(USBHHIDDriver *hidp, uint8_t protocol) {
 			protocol, hidp->ifnum, 0, NULL);
 }
 
-void usbhhidObjectInit(USBHHIDDriver *hidp) {
+static void _hid_object_init(USBHHIDDriver *hidp) {
 	osalDbgCheck(hidp != NULL);
 	memset(hidp, 0, sizeof(*hidp));
 	hidp->info = &usbhhidClassDriverInfo;
 	hidp->state = USBHHID_STATE_STOP;
 }
 
-void usbhhidInit(void) {
+static void _hid_init(void) {
 	uint8_t i;
 	for (i = 0; i < HAL_USBHHID_MAX_INSTANCES; i++) {
-		usbhhidObjectInit(&USBHHIDD[i]);
+		_hid_object_init(&USBHHIDD[i]);
 	}
 }
 

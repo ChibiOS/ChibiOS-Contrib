@@ -112,9 +112,6 @@ extern USBHHIDDriver USBHHIDD[HAL_USBHHID_MAX_INSTANCES];
 #ifdef __cplusplus
 extern "C" {
 #endif
-	/* HID Driver */
-	void usbhHIDObjectInit(USBHHIDDriver *hidp);
-
 	/* HID Common API */
 	usbh_urbstatus_t usbhhidGetReport(USBHHIDDriver *hidp,
 			uint8_t report_id, usbhhid_reporttype_t report_type,
@@ -136,9 +133,6 @@ extern "C" {
 	}
 
 	void usbhhidStart(USBHHIDDriver *hidp, const USBHHIDConfig *cfg);
-
-	/* global initializer */
-	void usbhhidInit(void);
 #ifdef __cplusplus
 }
 #endif

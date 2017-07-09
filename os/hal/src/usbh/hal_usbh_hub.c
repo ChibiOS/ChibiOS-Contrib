@@ -63,12 +63,15 @@
 USBHHubDriver USBHHUBD[HAL_USBHHUB_MAX_INSTANCES];
 static usbh_port_t USBHPorts[HAL_USBHHUB_MAX_PORTS];
 
-static usbh_baseclassdriver_t *hub_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
-static void hub_unload(usbh_baseclassdriver_t *drv);
+static void _hub_init(void);
+static usbh_baseclassdriver_t *_hub_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
+static void _hub_unload(usbh_baseclassdriver_t *drv);
 static const usbh_classdriver_vmt_t usbhhubClassDriverVMT = {
-	hub_load,
-	hub_unload
+	_hub_init,
+	_hub_load,
+	_hub_unload
 };
+
 const usbh_classdriverinfo_t usbhhubClassDriverInfo = {
 	0x09, 0x00, -1, "HUB", &usbhhubClassDriverVMT
 };
@@ -137,7 +140,7 @@ static void _urb_complete(usbh_urb_t *urb) {
 	usbhURBSubmitI(urb);
 }
 
-static usbh_baseclassdriver_t *hub_load(usbh_device_t *dev,
+static usbh_baseclassdriver_t *_hub_load(usbh_device_t *dev,
 		const uint8_t *descriptor, uint16_t rem) {
 	int i;
 
@@ -261,7 +264,7 @@ alloc_ok:
 	return (usbh_baseclassdriver_t *)hubdp;
 }
 
-static void hub_unload(usbh_baseclassdriver_t *drv) {
+static void _hub_unload(usbh_baseclassdriver_t *drv) {
 	osalDbgCheck(drv != NULL);
 	USBHHubDriver *const hubdp = (USBHHubDriver *)drv;
 
@@ -283,16 +286,16 @@ static void hub_unload(usbh_baseclassdriver_t *drv) {
 
 }
 
-void usbhhubObjectInit(USBHHubDriver *hubdp) {
+static void _object_init(USBHHubDriver *hubdp) {
 	osalDbgCheck(hubdp != NULL);
 	memset(hubdp, 0, sizeof(*hubdp));
 	hubdp->info = &usbhhubClassDriverInfo;
 }
 
-void usbhhubInit(void) {
+static void _hub_init(void) {
 	uint8_t i;
 	for (i = 0; i < HAL_USBHHUB_MAX_INSTANCES; i++) {
-		usbhhubObjectInit(&USBHHUBD[i]);
+		_object_init(&USBHHUBD[i]);
 	}
 }
 

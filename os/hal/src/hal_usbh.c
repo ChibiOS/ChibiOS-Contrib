@@ -66,6 +66,12 @@ static void _classdriver_process_device(usbh_device_t *dev);
 static bool _classdriver_load(usbh_device_t *dev, uint8_t class,
 		uint8_t subclass, uint8_t protocol, uint8_t *descbuff, uint16_t rem);
 
+#if HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS
+#include "usbh_additional_class_drivers.h"
+#ifndef HAL_USBH_ADDITIONAL_CLASS_DRIVERS
+#error "Must define HAL_USBH_ADDITIONAL_CLASS_DRIVERS"
+#endif
+#endif
 
 /*===========================================================================*/
 /* Checks.                                                                   */
@@ -103,28 +109,6 @@ void usbhObjectInit(USBHDriver *usbh) {
 #else
 	_usbhub_port_object_init(&usbh->rootport, usbh, 1);
 #endif
-}
-
-void usbhInit(void) {
-#if HAL_USBH_USE_FTDI
-	usbhftdiInit();
-#endif
-#if HAL_USBH_USE_AOA
-	usbhaoaInit();
-#endif
-#if HAL_USBH_USE_MSD
-	usbhmsdInit();
-#endif
-#if HAL_USBH_USE_HID
-	usbhhidInit();
-#endif
-#if HAL_USBH_USE_UVC
-	usbhuvcInit();
-#endif
-#if HAL_USBH_USE_HUB
-	usbhhubInit();
-#endif
-	usbh_lld_init();
 }
 
 void usbhStart(USBHDriver *usbh) {
@@ -1236,6 +1220,7 @@ void usbhMainLoop(USBHDriver *usbh) {
 static usbh_baseclassdriver_t *iad_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
 static void iad_unload(usbh_baseclassdriver_t *drv);
 static const usbh_classdriver_vmt_t usbhiadClassDriverVMT = {
+	NULL,
 	iad_load,
 	iad_unload
 };
@@ -1290,8 +1275,11 @@ static void iad_unload(usbh_baseclassdriver_t *drv) {
 /*===========================================================================*/
 /* Class driver loader.                                                      */
 /*===========================================================================*/
-
 static const usbh_classdriverinfo_t *usbh_classdrivers_lookup[] = {
+#if HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS
+	/* user-defined out of tree class drivers */
+	HAL_USBH_ADDITIONAL_CLASS_DRIVERS
+#endif
 #if HAL_USBH_USE_FTDI
 	&usbhftdiClassDriverInfo,
 #endif
@@ -1431,6 +1419,14 @@ exit:
 	}
 }
 
+void usbhInit(void) {
+	uint8_t i;
+	for (i = 0; i < sizeof_array(usbh_classdrivers_lookup); i++) {
+		if (usbh_classdrivers_lookup[i]->vmt->init) {
+			usbh_classdrivers_lookup[i]->vmt->init();
+		}
+	}
+}
 
 #endif
 

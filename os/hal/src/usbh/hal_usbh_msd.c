@@ -62,7 +62,7 @@
 #define uerr(f, ...)   do {} while(0)
 #endif
 
-static void usbhmsdLUNObjectDeinit(USBHMassStorageLUNDriver *lunp);
+static void _lun_object_deinit(USBHMassStorageLUNDriver *lunp);
 
 /*===========================================================================*/
 /* USB Class driver loader for MSD                                           */
@@ -70,10 +70,12 @@ static void usbhmsdLUNObjectDeinit(USBHMassStorageLUNDriver *lunp);
 
 USBHMassStorageDriver USBHMSD[HAL_USBHMSD_MAX_INSTANCES];
 
+static void _msd_init(void);
 static usbh_baseclassdriver_t *_msd_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
 static void _msd_unload(usbh_baseclassdriver_t *drv);
 
 static const usbh_classdriver_vmt_t class_driver_vmt = {
+	_msd_init,
 	_msd_load,
 	_msd_unload
 };
@@ -205,7 +207,7 @@ static void _msd_unload(usbh_baseclassdriver_t *drv) {
 	/* disconnect all LUNs */
 	while (lunp) {
 		usbhmsdLUNDisconnect(lunp);
-		usbhmsdLUNObjectDeinit(lunp);
+		_lun_object_deinit(lunp);
 		lunp = lunp->next;
 	}
 
@@ -682,7 +684,7 @@ static const struct USBHMassStorageDriverVMT blk_vmt = {
 	(bool (*)(void *, BlockDeviceInfo *))usbhmsdLUNGetInfo
 };
 
-static void usbhmsdLUNObjectDeinit(USBHMassStorageLUNDriver *lunp) {
+static void _lun_object_deinit(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp != NULL);
 	osalMutexLock(&lunp->mtx);
 	lunp->msdp = NULL;
@@ -692,7 +694,7 @@ static void usbhmsdLUNObjectDeinit(USBHMassStorageLUNDriver *lunp) {
 	osalMutexUnlock(&lunp->mtx);
 }
 
-static void usbhmsdLUNObjectInit(USBHMassStorageLUNDriver *lunp) {
+static void _lun_object_init(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp != NULL);
 	memset(lunp, 0, sizeof(*lunp));
 	lunp->vmt = &blk_vmt;
@@ -954,19 +956,19 @@ bool usbhmsdLUNIsProtected(USBHMassStorageLUNDriver *lunp) {
 	return FALSE;
 }
 
-static void usbhmsdObjectInit(USBHMassStorageDriver *msdp) {
+static void _msd_object_init(USBHMassStorageDriver *msdp) {
 	osalDbgCheck(msdp != NULL);
 	memset(msdp, 0, sizeof(*msdp));
 	msdp->info = &usbhmsdClassDriverInfo;
 }
 
-void usbhmsdInit(void) {
+static void _msd_init(void) {
 	uint8_t i;
 	for (i = 0; i < HAL_USBHMSD_MAX_INSTANCES; i++) {
-		usbhmsdObjectInit(&USBHMSD[i]);
+		_msd_object_init(&USBHMSD[i]);
 	}
 	for (i = 0; i < HAL_USBHMSD_MAX_LUNS; i++) {
-		usbhmsdLUNObjectInit(&MSBLKD[i]);
+		_lun_object_init(&MSBLKD[i]);
 	}
 }
 #endif

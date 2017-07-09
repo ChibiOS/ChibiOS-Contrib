@@ -109,9 +109,6 @@ extern "C" {
 	bool usbhmsdLUNGetInfo(USBHMassStorageLUNDriver *lunp, BlockDeviceInfo *bdip);
 	bool usbhmsdLUNIsInserted(USBHMassStorageLUNDriver *lunp);
 	bool usbhmsdLUNIsProtected(USBHMassStorageLUNDriver *lunp);
-
-	/* global initializer */
-	void usbhmsdInit(void);
 #ifdef __cplusplus
 }
 #endif
