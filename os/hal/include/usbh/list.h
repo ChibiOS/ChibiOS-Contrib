@@ -41,7 +41,6 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
  * This is only for internal list manipulation where we know
  * the prev/next entries already!
  */
-#ifndef CONFIG_DEBUG_LIST
 static inline void __list_add(struct list_head *_new,
                               struct list_head *prev,
                               struct list_head *next)
@@ -51,11 +50,6 @@ static inline void __list_add(struct list_head *_new,
         _new->prev = prev;
         prev->next = _new;
 }
-#else
-extern void __list_add(struct list_head *_new,
-                              struct list_head *prev,
-                              struct list_head *next);
-#endif
 
 /**
  * list_add - add a new entry
