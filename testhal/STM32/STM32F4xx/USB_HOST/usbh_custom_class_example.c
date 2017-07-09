@@ -18,9 +18,10 @@
 #include "hal.h"
 
 #if HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS
-#include "usbh/internal.h"
-#include "usbh_custom_class_example.h"
+
 #include <string.h>
+#include "usbh_custom_class_example.h"
+#include "usbh/internal.h"
 
 #if USBH_DEBUG_ENABLE_TRACE
 #define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)

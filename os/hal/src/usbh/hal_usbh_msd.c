@@ -27,9 +27,6 @@
 #include "usbh/dev/msd.h"
 #include "usbh/internal.h"
 
-//#pragma GCC optimize("Og")
-
-
 #if USBHMSD_DEBUG_ENABLE_TRACE
 #define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
 #define udbg(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)

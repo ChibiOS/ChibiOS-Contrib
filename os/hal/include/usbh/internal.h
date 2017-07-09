@@ -137,6 +137,9 @@ void _usbh_urb_abort_and_waitS(usbh_urb_t *urb, usbh_urbstatus_t status);
 
 #define sizeof_array(x) 	(sizeof(x)/sizeof(*(x)))
 
+#include "usbh/desciter.h"	/* descriptor iterators */
+#include "usbh/debug.h"
+
 #endif
 
 #endif /* USBH_INTERNAL_H_ */

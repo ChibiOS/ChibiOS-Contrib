@@ -429,13 +429,6 @@ struct usbh_baseclassdriver {
 	_usbh_base_classdriver_data
 };
 
-
-/*===========================================================================*/
-/* Helper functions.				                                         */
-/*===========================================================================*/
-#include <usbh/desciter.h>	/* descriptor iterators */
-#include <usbh/debug.h>		/* debug */
-
 #endif
 
 #endif /* HAL_USBH_H_ */

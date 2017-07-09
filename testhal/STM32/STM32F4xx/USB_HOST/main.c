@@ -18,6 +18,8 @@
 #include "hal.h"
 #include "ff.h"
 #include <string.h>
+#include "usbh/debug.h"		/* for usbDbgPuts/usbDbgPrintf */
+
 
 #define UVC_TO_MSD_PHOTOS_CAPTURE	FALSE
 

@@ -27,9 +27,9 @@
 #error "USBHUVC needs HAL_USBH_USE_IAD"
 #endif
 
+#include <string.h>
 #include "usbh/dev/uvc.h"
 #include "usbh/internal.h"
-#include <string.h>
 
 #if USBHUVC_DEBUG_ENABLE_TRACE
 #define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
