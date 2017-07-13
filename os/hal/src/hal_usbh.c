@@ -56,8 +56,7 @@
 #endif
 
 static void _classdriver_process_device(usbh_device_t *dev);
-static bool _classdriver_load(usbh_device_t *dev, uint8_t class,
-		uint8_t subclass, uint8_t protocol, uint8_t *descbuff, uint16_t rem);
+static bool _classdriver_load(usbh_device_t *dev, uint8_t *descbuff, uint16_t rem);
 
 #if HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS
 #include "usbh_additional_class_drivers.h"
@@ -1205,69 +1204,68 @@ void usbhMainLoop(USBHDriver *usbh) {
 #endif
 }
 
-
-/*===========================================================================*/
-/* IAD class driver.                                                         */
-/*===========================================================================*/
-#if HAL_USBH_USE_IAD
-static usbh_baseclassdriver_t *iad_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
-static void iad_unload(usbh_baseclassdriver_t *drv);
-static const usbh_classdriver_vmt_t usbhiadClassDriverVMT = {
-	NULL,
-	iad_load,
-	iad_unload
-};
-static const usbh_classdriverinfo_t usbhiadClassDriverInfo = {
-	0xef, 0x02, 0x01, "IAD", &usbhiadClassDriverVMT
-};
-
-static usbh_baseclassdriver_t *iad_load(usbh_device_t *dev,
-		const uint8_t *descriptor, uint16_t rem) {
-	(void)rem;
-
-	if (descriptor[1] != USBH_DT_DEVICE)
-		return 0;
-
-	uinfo("Load a driver for each IF collection.");
-
-	generic_iterator_t icfg;
-	if_iterator_t iif;
-	const usbh_ia_descriptor_t *last_iad = 0;
-
-	cfg_iter_init(&icfg, dev->fullConfigurationDescriptor,
-			dev->basicConfigDesc.wTotalLength);
-	if (!icfg.valid) {
-		uerr("Invalid configuration descriptor.");
-		return 0;
-	}
-
-	for (if_iter_init(&iif, &icfg); iif.valid; if_iter_next(&iif)) {
-		if (iif.iad && (iif.iad != last_iad)) {
-			last_iad = iif.iad;
-			if (_classdriver_load(dev, iif.iad->bFunctionClass,
-					iif.iad->bFunctionSubClass,
-					iif.iad->bFunctionProtocol,
-					(uint8_t *)iif.iad,
-					(uint8_t *)iif.curr - (uint8_t *)iif.iad + iif.rem) != HAL_SUCCESS) {
-				uwarnf("No drivers found for IF collection #%d:%d",
-						iif.iad->bFirstInterface,
-						iif.iad->bFirstInterface + iif.iad->bInterfaceCount - 1);
-			}
-		}
-	}
-
-	return 0;
-}
-
-static void iad_unload(usbh_baseclassdriver_t *drv) {
-	(void)drv;
-}
-#endif
-
-
 /*===========================================================================*/
 /* Class driver loader.                                                      */
 /*===========================================================================*/
+
+bool _usbh_match_vid_pid(usbh_device_t *dev, int32_t vid, int32_t pid) {
+	if (((vid < 0) || (dev->devDesc.idVendor == vid))
+		&& ((pid < 0) || (dev->devDesc.idProduct == pid)))
+		return HAL_SUCCESS;
+
+	return HAL_FAILED;
+}
+
+bool _usbh_match_descriptor(const uint8_t *descriptor, uint16_t rem,
+		int16_t type, int16_t _class, int16_t subclass, int16_t protocol) {
+
+	int16_t dclass, dsubclass, dprotocol;
+
+	if ((rem < descriptor[0]) || (rem < 2))
+		return HAL_FAILED;
+
+	uint8_t dtype = descriptor[1];
+
+	if ((type >= 0) && (type != dtype))
+		return HAL_FAILED;
+
+	switch (dtype) {
+	case USBH_DT_DEVICE: {
+		if (rem < USBH_DT_DEVICE_SIZE)
+			return HAL_FAILED;
+		const usbh_device_descriptor_t *const desc = (const usbh_device_descriptor_t *)descriptor;
+		dclass = desc->bDeviceClass;
+		dsubclass = desc->bDeviceSubClass;
+		dprotocol = desc->bDeviceProtocol;
+	}	break;
+	case USBH_DT_INTERFACE: {
+		if (rem < USBH_DT_INTERFACE_SIZE)
+			return HAL_FAILED;
+		const usbh_interface_descriptor_t *const desc = (const usbh_interface_descriptor_t *)descriptor;
+		dclass = desc->bInterfaceClass;
+		dsubclass = desc->bInterfaceSubClass;
+		dprotocol = desc->bInterfaceProtocol;
+	}	break;
+	case USBH_DT_INTERFACE_ASSOCIATION: {
+		if (rem < USBH_DT_INTERFACE_ASSOCIATION_SIZE)
+			return HAL_FAILED;
+		const usbh_ia_descriptor_t *const desc = (const usbh_ia_descriptor_t *)descriptor;
+		dclass = desc->bFunctionClass;
+		dsubclass = desc->bFunctionSubClass;
+		dprotocol = desc->bFunctionProtocol;
+	}	break;
+	default:
+		return HAL_FAILED;
+	}
+
+	if (((_class < 0) || (_class == dclass))
+		&& ((subclass < 0) || (subclass == dsubclass))
+		&& ((protocol < 0) || (protocol == dprotocol)))
+		return HAL_SUCCESS;
+
+	return HAL_FAILED;
+}
+
 static const usbh_classdriverinfo_t *usbh_classdrivers_lookup[] = {
 #if HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS
 	/* user-defined out of tree class drivers */
@@ -1276,8 +1274,8 @@ static const usbh_classdriverinfo_t *usbh_classdrivers_lookup[] = {
 #if HAL_USBH_USE_FTDI
 	&usbhftdiClassDriverInfo,
 #endif
-#if HAL_USBH_USE_IAD
-	&usbhiadClassDriverInfo,
+#if HAL_USBH_USE_HUB
+	&usbhhubClassDriverInfo,
 #endif
 #if HAL_USBH_USE_UVC
 	&usbhuvcClassDriverInfo,
@@ -1291,44 +1289,24 @@ static const usbh_classdriverinfo_t *usbh_classdrivers_lookup[] = {
 #if HAL_USBH_USE_UVC
 	&usbhuvcClassDriverInfo,
 #endif
-#if HAL_USBH_USE_HUB
-	&usbhhubClassDriverInfo,
-#endif
 #if HAL_USBH_USE_AOA
 	&usbhaoaClassDriverInfo,	/* Leave always last */
 #endif
 };
 
-static bool _classdriver_load(usbh_device_t *dev, uint8_t class,
-		uint8_t subclass, uint8_t protocol, uint8_t *descbuff, uint16_t rem) {
+static bool _classdriver_load(usbh_device_t *dev, uint8_t *descbuff, uint16_t rem) {
 	uint8_t i;
 	usbh_baseclassdriver_t *drv = NULL;
 	for (i = 0; i < sizeof_array(usbh_classdrivers_lookup); i++) {
 		const usbh_classdriverinfo_t *const info = usbh_classdrivers_lookup[i];
-		if (class == 0xff) {
-			/* vendor specific */
-			if (info->class == 0xff) {
-				uinfof("Try load vendor-specific driver %s", info->name);
-				drv = info->vmt->load(dev, descbuff, rem);
-				if (drv != NULL)
-					goto success;
-			}
-		} else if ((info->class < 0) || ((info->class == class)
-			&& ((info->subclass < 0) || ((info->subclass == subclass)
-			&& ((info->protocol < 0) || (info->protocol == protocol)))))) {
-			uinfof("Try load driver %s", info->name);
-			drv = info->vmt->load(dev, descbuff, rem);
 
-#if HAL_USBH_USE_IAD
-			/* special case: */
-			if (info == &usbhiadClassDriverInfo)
-				goto success; //return HAL_SUCCESS;
-#endif
+		uinfof("Try load driver %s", info->name);
+		drv = info->vmt->load(dev, descbuff, rem);
 
-			if (drv != NULL)
-				goto success;
-		}
+		if (drv != NULL)
+			goto success;
 	}
+
 	return HAL_FAILED;
 
 success:
@@ -1369,13 +1347,16 @@ static void _classdriver_process_device(usbh_device_t *dev) {
 	usbhDevicePrintConfiguration(dev->fullConfigurationDescriptor,
 			dev->basicConfigDesc.wTotalLength);
 
-	if (devdesc->bDeviceClass == 0) {
-		/* each interface defines its own device class/subclass/protocol */
-		uinfo("Load a driver for each IF.");
+#if HAL_USBH_USE_IAD
+	if (dev->devDesc.bDeviceClass == 0xef
+			&& dev->devDesc.bDeviceSubClass == 0x02
+			&& dev->devDesc.bDeviceProtocol == 0x01) {
+
+		uinfo("Load a driver for each IF collection.");
 
 		generic_iterator_t icfg;
 		if_iterator_t iif;
-		uint8_t last_if = 0xff;
+		const usbh_ia_descriptor_t *last_iad = 0;
 
 		cfg_iter_init(&icfg, dev->fullConfigurationDescriptor,
 				dev->basicConfigDesc.wTotalLength);
@@ -1385,24 +1366,49 @@ static void _classdriver_process_device(usbh_device_t *dev) {
 		}
 
 		for (if_iter_init(&iif, &icfg); iif.valid; if_iter_next(&iif)) {
-			const usbh_interface_descriptor_t *const ifdesc = if_get(&iif);
-			if (ifdesc->bInterfaceNumber != last_if) {
-				last_if = ifdesc->bInterfaceNumber;
-				if (_classdriver_load(dev, ifdesc->bInterfaceClass,
-						ifdesc->bInterfaceSubClass,
-						ifdesc->bInterfaceProtocol,
-						(uint8_t *)ifdesc, iif.rem) != HAL_SUCCESS) {
-					uwarnf("No drivers found for IF #%d", ifdesc->bInterfaceNumber);
+			if (iif.iad && (iif.iad != last_iad)) {
+				last_iad = iif.iad;
+				if (_classdriver_load(dev,
+						(uint8_t *)iif.iad,
+						(uint8_t *)iif.curr - (uint8_t *)iif.iad + iif.rem) != HAL_SUCCESS) {
+					uwarnf("No drivers found for IF collection #%d:%d",
+							iif.iad->bFirstInterface,
+							iif.iad->bFirstInterface + iif.iad->bInterfaceCount - 1);
 				}
 			}
 		}
 
-	} else {
-		if (_classdriver_load(dev, devdesc->bDeviceClass,
-				devdesc->bDeviceSubClass,
-				devdesc->bDeviceProtocol,
-				(uint8_t *)devdesc, USBH_DT_DEVICE_SIZE) != HAL_SUCCESS) {
-			uwarn("No drivers found.");
+	} else
+#endif
+	if (_classdriver_load(dev, (uint8_t *)devdesc, USBH_DT_DEVICE_SIZE) != HAL_SUCCESS) {
+		uinfo("No drivers found for device.");
+
+		if (devdesc->bDeviceClass == 0) {
+			/* each interface defines its own device class/subclass/protocol */
+			uinfo("Try load a driver for each IF.");
+
+			generic_iterator_t icfg;
+			if_iterator_t iif;
+			uint8_t last_if = 0xff;
+
+			cfg_iter_init(&icfg, dev->fullConfigurationDescriptor,
+					dev->basicConfigDesc.wTotalLength);
+			if (!icfg.valid) {
+				uerr("Invalid configuration descriptor.");
+				goto exit;
+			}
+
+			for (if_iter_init(&iif, &icfg); iif.valid; if_iter_next(&iif)) {
+				const usbh_interface_descriptor_t *const ifdesc = if_get(&iif);
+				if (ifdesc->bInterfaceNumber != last_if) {
+					last_if = ifdesc->bInterfaceNumber;
+					if (_classdriver_load(dev, (uint8_t *)ifdesc, iif.rem) != HAL_SUCCESS) {
+						uwarnf("No drivers found for IF #%d", ifdesc->bInterfaceNumber);
+					}
+				}
+			}
+		} else {
+			uwarn("Unable to load driver.");
 		}
 	}
 
@@ -1419,6 +1425,7 @@ void usbhInit(void) {
 			usbh_classdrivers_lookup[i]->vmt->init();
 		}
 	}
+	usbh_lld_init();
 }
 
 #endif

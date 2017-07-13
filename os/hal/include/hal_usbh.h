@@ -413,9 +413,6 @@ struct usbh_classdriver_vmt {
 };
 
 struct usbh_classdriverinfo {
-	int16_t class;
-	int16_t subclass;
-	int16_t protocol;
 	const char *name;
 	const usbh_classdriver_vmt_t *vmt;
 };

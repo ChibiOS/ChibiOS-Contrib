@@ -91,7 +91,7 @@ static const usbh_classdriver_vmt_t class_driver_vmt = {
 };
 
 const usbh_classdriverinfo_t usbhmsdClassDriverInfo = {
-	0x08, 0x06, 0x50, "MSD", &class_driver_vmt
+	"MSD", &class_driver_vmt
 };
 
 #define MSD_REQ_RESET							0xFF
@@ -103,15 +103,14 @@ static usbh_baseclassdriver_t *_msd_load(usbh_device_t *dev, const uint8_t *desc
 	uint8_t luns;
 	usbh_urbstatus_t stat;
 
-	if ((rem < descriptor[0]) || (descriptor[1] != USBH_DT_INTERFACE))
+	if (_usbh_match_descriptor(descriptor, rem, USBH_DT_INTERFACE,
+			0x08, 0x06, 0x50) != HAL_SUCCESS)
 		return NULL;
 
 	const usbh_interface_descriptor_t * const ifdesc = (const usbh_interface_descriptor_t *)descriptor;
 
 	if ((ifdesc->bAlternateSetting != 0)
-			|| (ifdesc->bNumEndpoints < 2)
-			|| (ifdesc->bInterfaceSubClass != 0x06)
-			|| (ifdesc->bInterfaceProtocol != 0x50)) {
+			|| (ifdesc->bNumEndpoints < 2)) {
 		return NULL;
 	}
 

@@ -72,7 +72,7 @@ static const usbh_classdriver_vmt_t class_driver_vmt = {
 };
 
 const usbh_classdriverinfo_t usbhCustomClassDriverInfo = {
-	0x54, -1, -1, "CUSTOM", &class_driver_vmt
+	"CUSTOM", &class_driver_vmt
 };
 
 static usbh_baseclassdriver_t *_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem) {
@@ -80,7 +80,7 @@ static usbh_baseclassdriver_t *_load(usbh_device_t *dev, const uint8_t *descript
 	USBHCustomDriver *custp;
 	(void)dev;
 
-	if ((rem < descriptor[0]) || (descriptor[1] != USBH_DT_INTERFACE))
+	if (_usbh_match_vid_pid(dev, 0xABCD, 0x0123) != HAL_SUCCESS)
 		return NULL;
 
 	const usbh_interface_descriptor_t * const ifdesc = (const usbh_interface_descriptor_t *)descriptor;

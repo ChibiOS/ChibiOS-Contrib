@@ -77,7 +77,7 @@ static const usbh_classdriver_vmt_t class_driver_vmt = {
 };
 
 const usbh_classdriverinfo_t usbhftdiClassDriverInfo = {
-	0xff, 0xff, 0xff, "FTDI", &class_driver_vmt
+	"FTDI", &class_driver_vmt
 };
 
 static USBHFTDIPortDriver *_find_port(void) {
@@ -93,10 +93,8 @@ static usbh_baseclassdriver_t *_ftdi_load(usbh_device_t *dev, const uint8_t *des
 	int i;
 	USBHFTDIDriver *ftdip;
 
-	if (dev->devDesc.idVendor != 0x0403) {
-		uerr("FTDI: Unrecognized VID");
+	if (_usbh_match_vid_pid(dev, 0x0403, -1) != HAL_SUCCESS)
 		return NULL;
-	}
 
 	switch (dev->devDesc.idProduct) {
 	case 0x6001:
@@ -111,7 +109,8 @@ static usbh_baseclassdriver_t *_ftdi_load(usbh_device_t *dev, const uint8_t *des
 		return NULL;
 	}
 
-	if ((rem < descriptor[0]) || (descriptor[1] != USBH_DT_INTERFACE))
+	if (_usbh_match_descriptor(descriptor, rem, USBH_DT_INTERFACE,
+			0xff, 0xff, 0xff) != HAL_SUCCESS)
 		return NULL;
 
 	if (((const usbh_interface_descriptor_t *)descriptor)->bInterfaceNumber != 0) {

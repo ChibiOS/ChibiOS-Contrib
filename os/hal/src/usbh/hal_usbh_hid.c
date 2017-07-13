@@ -85,14 +85,15 @@ static const usbh_classdriver_vmt_t class_driver_vmt = {
 };
 
 const usbh_classdriverinfo_t usbhhidClassDriverInfo = {
-	0x03, -1, -1, "HID", &class_driver_vmt
+	"HID", &class_driver_vmt
 };
 
 static usbh_baseclassdriver_t *_hid_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem) {
 	int i;
 	USBHHIDDriver *hidp;
 
-	if ((rem < descriptor[0]) || (descriptor[1] != USBH_DT_INTERFACE))
+	if (_usbh_match_descriptor(descriptor, rem, USBH_DT_INTERFACE,
+			0x03, -1, -1) != HAL_SUCCESS)
 		return NULL;
 
 	const usbh_interface_descriptor_t * const ifdesc = (const usbh_interface_descriptor_t *)descriptor;
@@ -183,7 +184,7 @@ deinit:
 
 static void _hid_unload(usbh_baseclassdriver_t *drv) {
 	USBHHIDDriver *const hidp = (USBHHIDDriver *)drv;
-
+	(void)hidp;
 }
 
 static void _in_cb(usbh_urb_t *urb) {

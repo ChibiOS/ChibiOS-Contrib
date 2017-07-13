@@ -133,7 +133,7 @@ static const usbh_classdriver_vmt_t class_driver_vmt = {
 };
 
 const usbh_classdriverinfo_t usbhaoaClassDriverInfo = {
-	0xff, 0xff, 0xff, "AOA", &class_driver_vmt
+	"AOA", &class_driver_vmt
 };
 
 #if defined(HAL_USBHAOA_FILTER_CALLBACK)
@@ -146,7 +146,7 @@ static usbh_baseclassdriver_t *_aoa_load(usbh_device_t *dev, const uint8_t *desc
 
 	if (dev->devDesc.idVendor != AOA_GOOGLE_VID) {
 		uint16_t protocol;
-		static const USBHAOAConfig config = {
+		static USBHAOAConfig config = {
 			{
 				HAL_USBHAOA_DEFAULT_MANUFACTURER,
 				HAL_USBHAOA_DEFAULT_MODEL,
@@ -223,15 +223,9 @@ static usbh_baseclassdriver_t *_aoa_load(usbh_device_t *dev, const uint8_t *desc
 		return NULL;
 	}
 
-	if ((rem < descriptor[0]) || (descriptor[1] != USBH_DT_INTERFACE))
-		return NULL;
-
 	const usbh_interface_descriptor_t * const ifdesc = (const usbh_interface_descriptor_t *)descriptor;
-
-	if ((ifdesc->bInterfaceClass != 0xff)
-		|| (ifdesc->bInterfaceSubClass != 0xff)
-		|| (ifdesc->bInterfaceProtocol != 0x00)
-		|| (ifdesc->bNumEndpoints < 2)) {
+	if ((_usbh_match_descriptor(descriptor, rem, USBH_DT_INTERFACE, 0xFF, 0xFF, 0x00) != HAL_SUCCESS)
+			|| (ifdesc->bNumEndpoints < 2)) {
 		uerr("AOA: This IF is not the Accessory IF");
 		return NULL;
 	}

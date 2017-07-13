@@ -77,7 +77,7 @@ static const usbh_classdriver_vmt_t class_driver_vmt = {
 	_uvc_unload
 };
 const usbh_classdriverinfo_t usbhuvcClassDriverInfo = {
-	0x0e, 0x03, 0x00, "UVC", &class_driver_vmt
+	"UVC", &class_driver_vmt
 };
 
 static bool _request(USBHUVCDriver *uvcdp,
@@ -518,7 +518,8 @@ static usbh_baseclassdriver_t *_uvc_load(usbh_device_t *dev, const uint8_t *desc
 	USBHUVCDriver *uvcdp;
 	uint8_t i;
 
-	if (descriptor[1] != USBH_DT_INTERFACE_ASSOCIATION)
+	if (_usbh_match_descriptor(descriptor, rem, USBH_DT_INTERFACE_ASSOCIATION,
+			0x0e, 0x03, 0x00) != HAL_SUCCESS)
 		return NULL;
 
 	/* alloc driver */

@@ -73,7 +73,7 @@ static const usbh_classdriver_vmt_t usbhhubClassDriverVMT = {
 };
 
 const usbh_classdriverinfo_t usbhhubClassDriverInfo = {
-	0x09, 0x00, -1, "HUB", &usbhhubClassDriverVMT
+	"HUB", &usbhhubClassDriverVMT
 };
 
 
@@ -146,10 +146,8 @@ static usbh_baseclassdriver_t *_hub_load(usbh_device_t *dev,
 
 	USBHHubDriver *hubdp;
 
-	if ((rem < descriptor[0]) || (descriptor[1] != USBH_DT_DEVICE))
-		return NULL;
-
-	if (dev->devDesc.bDeviceProtocol != 0)
+	if (_usbh_match_descriptor(descriptor, rem, USBH_DT_DEVICE,
+			0x09, 0x00, 0x00) != HAL_SUCCESS)
 		return NULL;
 
 	generic_iterator_t iep, icfg;
@@ -161,12 +159,10 @@ static usbh_baseclassdriver_t *_hub_load(usbh_device_t *dev,
 	if_iter_init(&iif, &icfg);
 	if (!iif.valid)
 		return NULL;
-	const usbh_interface_descriptor_t *const ifdesc = if_get(&iif);
-	if ((ifdesc->bInterfaceClass != 0x09)
-		|| (ifdesc->bInterfaceSubClass != 0x00)
-		|| (ifdesc->bInterfaceProtocol != 0x00)) {
+
+	if (_usbh_match_descriptor(iif.curr, iif.rem, USBH_DT_INTERFACE,
+			0x09, 0x00, 0x00) != HAL_SUCCESS)
 		return NULL;
-	}
 
 	ep_iter_init(&iep, &iif);
 	if (!iep.valid)
@@ -261,6 +257,7 @@ alloc_ok:
 	osalOsRescheduleS();
 	osalSysUnlock();
 
+	hubdp->dev = NULL;
 	return (usbh_baseclassdriver_t *)hubdp;
 }
 
