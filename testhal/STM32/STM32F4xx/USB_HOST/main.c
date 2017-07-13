@@ -917,6 +917,7 @@ int main(void) {
 
     //turn on USB power
     palClearPad(GPIOC, GPIOC_OTG_FS_POWER_ON);
+    chThdSleepMilliseconds(100);
 
     //start
 #if STM32_USBH_USE_OTG1
