@@ -20,15 +20,8 @@
 #if HAL_USE_USBH
 
 #include "usbh/internal.h"
-#include <string.h>
-
-//devices
 #include "usbh/dev/hub.h"
-#include "usbh/dev/aoa.h"
-#include "usbh/dev/ftdi.h"
-#include "usbh/dev/msd.h"
-#include "usbh/dev/hid.h"
-#include "usbh/dev/uvc.h"
+#include <string.h>
 
 #if USBH_DEBUG_ENABLE_TRACE
 #define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)

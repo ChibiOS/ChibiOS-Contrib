@@ -182,7 +182,8 @@ deinit:
 }
 
 static void _hid_unload(usbh_baseclassdriver_t *drv) {
-	(void)drv;
+	USBHHIDDriver *const hidp = (USBHHIDDriver *)drv;
+
 }
 
 static void _in_cb(usbh_urb_t *urb) {

@@ -67,19 +67,6 @@ struct USBHMassStorageLUNDriver {
 	USBHMassStorageLUNDriver *next;
 };
 
-struct USBHMassStorageDriver {
-	/* inherited from abstract class driver */
-	_usbh_base_classdriver_data
-
-	usbh_ep_t epin;
-	usbh_ep_t epout;
-	uint8_t ifnum;
-	uint8_t max_lun;
-	uint32_t tag;
-
-	USBHMassStorageLUNDriver *luns;
-};
-
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
@@ -91,14 +78,13 @@ struct USBHMassStorageDriver {
 /*===========================================================================*/
 
 extern USBHMassStorageLUNDriver MSBLKD[HAL_USBHMSD_MAX_LUNS];
-extern USBHMassStorageDriver USBHMSD[HAL_USBHMSD_MAX_INSTANCES];
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 	/* Mass Storage LUN Driver (block driver) */
-	void usbhmsdLUNStart(USBHMassStorageLUNDriver *lunp);
-	void usbhmsdLUNStop(USBHMassStorageLUNDriver *lunp);
+//	void usbhmsdLUNStart(USBHMassStorageLUNDriver *lunp);
+//	void usbhmsdLUNStop(USBHMassStorageLUNDriver *lunp);
 	bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp);
 	bool usbhmsdLUNDisconnect(USBHMassStorageLUNDriver *lunp);
 	bool usbhmsdLUNRead(USBHMassStorageLUNDriver *lunp, uint32_t startblk,

@@ -65,7 +65,20 @@ static void _lun_object_deinit(USBHMassStorageLUNDriver *lunp);
 /* USB Class driver loader for MSD                                           */
 /*===========================================================================*/
 
-USBHMassStorageDriver USBHMSD[HAL_USBHMSD_MAX_INSTANCES];
+struct USBHMassStorageDriver {
+	/* inherited from abstract class driver */
+	_usbh_base_classdriver_data
+
+	usbh_ep_t epin;
+	usbh_ep_t epout;
+	uint8_t ifnum;
+	uint8_t max_lun;
+	uint32_t tag;
+
+	USBHMassStorageLUNDriver *luns;
+};
+
+static USBHMassStorageDriver USBHMSD[HAL_USBHMSD_MAX_INSTANCES];
 
 static void _msd_init(void);
 static usbh_baseclassdriver_t *_msd_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
@@ -184,7 +197,7 @@ alloc_ok:
 			MSBLKD[i].next = msdp->luns;
 			msdp->luns = &MSBLKD[i];
 			MSBLKD[i].msdp = msdp;
-			MSBLKD[i].state = BLK_ACTIVE;	/* transition directly to active, instead of BLK_STOP */
+			MSBLKD[i].state = BLK_ACTIVE;
 			luns--;
 		}
 	}
@@ -705,6 +718,7 @@ static void _lun_object_init(USBHMassStorageLUNDriver *lunp) {
 	*/
 }
 
+/*
 void usbhmsdLUNStart(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp != NULL);
 	osalSysLock();
@@ -724,6 +738,7 @@ void usbhmsdLUNStop(USBHMassStorageLUNDriver *lunp) {
 	//lunp->state = BLK_STOP;
 	osalSysUnlock();
 }
+*/
 
 bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp != NULL);
