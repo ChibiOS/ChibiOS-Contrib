@@ -59,7 +59,7 @@ struct USBHMassStorageLUNDriver {
 	_base_block_device_data
 
 	/* for serializing access to the LUN driver */
-	mutex_t mtx;
+	semaphore_t sem;
 
 	BlockDeviceInfo info;
 	USBHMassStorageDriver *msdp;
