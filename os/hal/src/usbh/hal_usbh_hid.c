@@ -222,8 +222,11 @@ void usbhhidStart(USBHHIDDriver *hidp, const USBHHIDConfig *cfg) {
 	hidp->config = cfg;
 
 	/* init the URBs */
+	uint32_t report_len = hidp->epin.wMaxPacketSize;
+	if (report_len > cfg->report_len)
+		report_len = cfg->report_len;
 	usbhURBObjectInit(&hidp->in_urb, &hidp->epin, _in_cb, hidp,
-			cfg->report_buffer, cfg->report_len);
+			cfg->report_buffer, report_len);
 
 	/* open the int IN/OUT endpoints */
 	usbhEPOpen(&hidp->epin);
