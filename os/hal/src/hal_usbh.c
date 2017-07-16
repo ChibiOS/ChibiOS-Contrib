@@ -111,7 +111,6 @@ void usbhStart(USBHDriver *usbh) {
 				"invalid state");
 	usbh_lld_start(usbh);
 	usbh->status = USBH_STATUS_STARTED;
-	osalOsRescheduleS();
 	osalSysUnlock();
 }
 
@@ -224,6 +223,7 @@ void usbhURBObjectResetI(usbh_urb_t *urb) {
 	usbh_lld_urb_object_reset(urb);
 }
 
+/* usbhURBSubmitI may require a reschedule if called from a S-locked state */
 void usbhURBSubmitI(usbh_urb_t *urb) {
 	osalDbgCheckClassI();
 	_check_urb(urb);
@@ -245,6 +245,7 @@ void usbhURBSubmitI(usbh_urb_t *urb) {
 	usbh_lld_urb_submit(urb);
 }
 
+/* _usbh_urb_abortI may require a reschedule if called from a S-locked state */
 bool _usbh_urb_abortI(usbh_urb_t *urb, usbh_urbstatus_t status) {
 	osalDbgCheckClassI();
 	_check_urb(urb);
@@ -280,15 +281,18 @@ void _usbh_urb_abort_and_waitS(usbh_urb_t *urb, usbh_urbstatus_t status) {
 	}
 #if !(USBH_DEBUG_ENABLE && USBH_DEBUG_ENABLE_WARNINGS)
 	else {
+		/* This call is necessary because _usbh_urb_abortI may require a reschedule */
 		osalOsRescheduleS();
 	}
 #else
 	uwarn("URB aborted");
 	osalOsRescheduleS();	/* debug printing functions call I-class functions inside
-	 	 	 	 	 	 	 which may cause a priority violation without this call */
+	 	 	 	 	 	 	 which may cause a priority violation without this call
+							Also, _usbh_urb_abortI may require a reschedule */
 #endif
 }
 
+/* usbhURBCancelI may require a reschedule if called from a S-locked state */
 bool usbhURBCancelI(usbh_urb_t *urb) {
 	return _usbh_urb_abortI(urb, USBH_URBSTATUS_CANCELLED);
 }
@@ -313,7 +317,6 @@ msg_t usbhURBWaitTimeoutS(usbh_urb_t *urb, systime_t timeout) {
 
 	case USBH_URBSTATUS_OK:
 		ret = MSG_OK;
-		osalOsRescheduleS();
 		break;
 
 /*	case USBH_URBSTATUS_UNINITIALIZED:
@@ -324,7 +327,6 @@ msg_t usbhURBWaitTimeoutS(usbh_urb_t *urb, systime_t timeout) {
  *	case USBH_URBSTATUS_DISCONNECTED: */
 	default:
 		ret = MSG_RESET;
-		osalOsRescheduleS();
 		break;
 	}
 	return ret;
@@ -350,6 +352,7 @@ static inline msg_t _wakeup_message(usbh_urbstatus_t status) {
 	return MSG_RESET;
 }
 
+/* _usbh_urb_completeI may require a reschedule if called from a S-locked state */
 void _usbh_urb_completeI(usbh_urb_t *urb, usbh_urbstatus_t status) {
 	osalDbgCheckClassI();
 	_check_urb(urb);
@@ -1128,7 +1131,6 @@ static uint32_t _hub_get_status_change_bitmap(USBHDriver *host, USBHHubDriver *h
 		osalSysLock();
 		uint32_t ret = hub->statuschange;
 		hub->statuschange = 0;
-		osalOsRescheduleS();
 		osalSysUnlock();
 		return ret;
 	}

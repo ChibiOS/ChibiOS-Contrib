@@ -361,10 +361,8 @@ bool usbhuvcStreamStart(USBHUVCDriver *uvcdp, uint16_t min_ep_sz) {
 		osalDbgCheck(msg);
 		usbhURBObjectInit(&uvcdp->urb_iso, &uvcdp->ep_iso, _cb_iso, uvcdp, msg->data, uvcdp->ep_iso.wMaxPacketSize);
 	}
-	osalSysLock();
-	usbhURBSubmitI(&uvcdp->urb_iso);
-	osalOsRescheduleS();
-	osalSysUnlock();
+
+	usbhURBSubmit(&uvcdp->urb_iso);
 
 	ret = HAL_SUCCESS;
 	goto exit;
@@ -695,7 +693,7 @@ alloc_ok:
 	osalSysLock();
 	usbhURBSubmitI(&uvcdp->urb_int);
 	uvcdp->state = USBHUVC_STATE_ACTIVE;
-	osalOsRescheduleS();
+	osalOsRescheduleS();	/* because of usbhURBSubmitI */
 	osalSysUnlock();
 
 	dev->keepFullCfgDesc++;

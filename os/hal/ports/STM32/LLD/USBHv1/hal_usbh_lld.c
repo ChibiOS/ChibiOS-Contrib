@@ -602,7 +602,6 @@ void usbh_lld_ep_object_init(usbh_ep_t *ep) {
 void usbh_lld_ep_open(usbh_ep_t *ep) {
 	uinfof("\t%s: Open EP", ep->name);
 	ep->status = USBH_EPSTATUS_OPEN;
-	osalOsRescheduleS();
 }
 
 void usbh_lld_ep_close(usbh_ep_t *ep) {
@@ -614,7 +613,6 @@ void usbh_lld_ep_close(usbh_ep_t *ep) {
 	}
 	uinfof("\t%s: Closed", ep->name);
 	ep->status = USBH_EPSTATUS_CLOSED;
-	osalOsRescheduleS();
 }
 
 bool usbh_lld_ep_reset(usbh_ep_t *ep) {
@@ -643,6 +641,7 @@ void usbh_lld_urb_submit(usbh_urb_t *urb) {
 	}
 }
 
+/* usbh_lld_urb_abort may require a reschedule if called from a S-locked state */
 bool usbh_lld_urb_abort(usbh_urb_t *urb, usbh_urbstatus_t status) {
 	osalDbgCheck(usbhURBIsBusy(urb));
 
@@ -1594,7 +1593,6 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestTy
 			osalDbgAssert(0, "invalid wvalue");
 			break;
 		}
-		osalOsRescheduleS();
 		osalSysUnlock();
 		break;
 
@@ -1623,7 +1621,6 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestTy
 		osalDbgCheck(wlength >= 4);
 		osalSysLock();
 		*(uint32_t *)buf = usbh->rootport.lld_status | (usbh->rootport.lld_c_status << 16);
-		osalOsRescheduleS();
 		osalSysUnlock();
 		break;
 
@@ -1653,7 +1650,6 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestTy
 			osalThreadSleepS(MS2ST(60));
 			otg->HPRT = hprt;
 			usbh->rootport.lld_c_status |= USBH_PORTSTATUS_C_RESET;
-			osalOsRescheduleS();
 			osalSysUnlock();
 		} 	break;
 
@@ -1678,11 +1674,9 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestTy
 uint8_t usbh_lld_roothub_get_statuschange_bitmap(USBHDriver *usbh) {
 	osalSysLock();
 	if (usbh->rootport.lld_c_status) {
-		osalOsRescheduleS();
 		osalSysUnlock();
 		return 1 << 1;
 	}
-	osalOsRescheduleS();
 	osalSysUnlock();
 	return 0;
 }

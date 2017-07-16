@@ -295,7 +295,6 @@ static void _aoa_unload(usbh_baseclassdriver_t *drv) {
 	_stop_channelS(&aoap->channel);
 	aoap->channel.state = USBHAOA_CHANNEL_STATE_STOP;
 	aoap->state = USBHAOA_STATE_STOP;
-	osalOsRescheduleS();
 	osalSysUnlock();
 }
 
@@ -521,6 +520,7 @@ static void _stop_channelS(USBHAOAChannel *aoacp) {
 	chThdDequeueAllI(&aoacp->oq_waiting, Q_RESET);
 	chnAddFlagsI(aoacp, CHN_DISCONNECTED);
 	aoacp->state = USBHAOA_CHANNEL_STATE_ACTIVE;
+	osalOsRescheduleS();
 }
 
 static void _vt(void *p) {
@@ -562,9 +562,7 @@ void usbhaoaChannelStart(USBHAOADriver *aoap) {
 	aoacp->iq_counter = 0;
 	aoacp->iq_ptr = aoacp->iq_buff;
 	usbhEPOpen(&aoacp->epin);
-	osalSysLock();
-	usbhURBSubmitI(&aoacp->iq_urb);
-	osalSysUnlock();
+	usbhURBSubmit(&aoacp->iq_urb);
 
 	chVTObjectInit(&aoacp->vt);
 	chVTSet(&aoacp->vt, MS2ST(16), _vt, aoacp);
@@ -579,7 +577,6 @@ void usbhaoaChannelStop(USBHAOADriver *aoap) {
 			|| (aoap->channel.state == USBHAOA_CHANNEL_STATE_READY));
 	osalSysLock();
 	_stop_channelS(&aoap->channel);
-	osalOsRescheduleS();
 	osalSysUnlock();
 }
 

@@ -252,10 +252,7 @@ alloc_ok:
 			_urb_complete, hubdp, hubdp->scbuff,
 			(hubdesc->bNbrPorts + 8) / 8);
 
-	osalSysLock();
-	usbhURBSubmitI(&hubdp->urb);
-	osalOsRescheduleS();
-	osalSysUnlock();
+	usbhURBSubmit(&hubdp->urb);
 
 	hubdp->dev = NULL;
 	return (usbh_baseclassdriver_t *)hubdp;

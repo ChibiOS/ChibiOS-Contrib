@@ -219,7 +219,6 @@ static void _ftdi_unload(usbh_baseclassdriver_t *drv) {
 	while (ftdipp) {
 		osalSysLock();
 		_stopS(ftdipp);
-		osalOsRescheduleS();
 		osalSysUnlock();
 		ftdipp = ftdipp->next;
 	}
@@ -636,6 +635,7 @@ static void _stopS(USBHFTDIPortDriver *ftdipp) {
 	chThdDequeueAllI(&ftdipp->iq_waiting, Q_RESET);
 	chThdDequeueAllI(&ftdipp->oq_waiting, Q_RESET);
 	ftdipp->state = USBHFTDIP_STATE_ACTIVE;
+	osalOsRescheduleS();
 }
 
 void usbhftdipStop(USBHFTDIPortDriver *ftdipp) {
@@ -646,7 +646,6 @@ void usbhftdipStop(USBHFTDIPortDriver *ftdipp) {
 	chMtxLockS(&ftdipp->ftdip->mtx);
 	_stopS(ftdipp);
 	chMtxUnlockS(&ftdipp->ftdip->mtx);
-	osalOsRescheduleS();
 	osalSysUnlock();
 }
 
@@ -688,9 +687,7 @@ void usbhftdipStart(USBHFTDIPortDriver *ftdipp, const USBHFTDIPortConfig *config
 	ftdipp->iq_counter = 0;
 	ftdipp->iq_ptr = ftdipp->iq_buff;
 	usbhEPOpen(&ftdipp->epin);
-	osalSysLock();
-	usbhURBSubmitI(&ftdipp->iq_urb);
-	osalSysUnlock();
+	usbhURBSubmit(&ftdipp->iq_urb);
 
 	chVTObjectInit(&ftdipp->vt);
 	chVTSet(&ftdipp->vt, MS2ST(16), _vt, ftdipp);

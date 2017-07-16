@@ -17,5 +17,5 @@ Enhancements:
 - Linked list for drivers for dynamic registration
 - A way to automate matching (similar to linux)
 - Hooks to override driver loading and to inform the user of problems
-
+- for STM32 LLD: think of a way to prevent Bulk IN NAK interrupt flood.
 

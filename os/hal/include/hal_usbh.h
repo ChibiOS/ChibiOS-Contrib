@@ -358,10 +358,8 @@ extern "C" {
 		osalDbgCheck(ep != 0);
 		osalDbgCheckClassS();
 		osalDbgAssert(ep->status != USBH_EPSTATUS_UNINITIALIZED, "invalid state");
-		if (ep->status == USBH_EPSTATUS_CLOSED) {
-			osalOsRescheduleS();
+		if (ep->status == USBH_EPSTATUS_CLOSED)
 			return;
-		}
 		usbh_lld_ep_close(ep);
 	}
 	static inline void usbhEPClose(usbh_ep_t *ep) {
@@ -391,6 +389,22 @@ extern "C" {
 	msg_t usbhURBSubmitAndWaitS(usbh_urb_t *urb, systime_t timeout);
 	void usbhURBCancelAndWaitS(usbh_urb_t *urb);
 	msg_t usbhURBWaitTimeoutS(usbh_urb_t *urb, systime_t timeout);
+
+	static inline void usbhURBSubmit(usbh_urb_t *urb) {
+		osalSysLock();
+		usbhURBSubmitI(urb);
+		osalOsRescheduleS();
+		osalSysUnlock();
+	}
+
+	static inline bool usbhURBCancel(usbh_urb_t *urb) {
+		bool ret;
+		osalSysLock();
+		ret = usbhURBCancelI(urb);
+		osalOsRescheduleS();
+		osalSysUnlock();
+		return ret;
+	}
 
 	/* Main loop */
 	void usbhMainLoop(USBHDriver *usbh);

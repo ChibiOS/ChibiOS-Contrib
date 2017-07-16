@@ -244,9 +244,7 @@ void usbhhidStart(USBHHIDDriver *hidp, const USBHHIDConfig *cfg) {
 
 	usbhhidSetProtocol(hidp, cfg->protocol);
 
-	osalSysLock();
-	usbhURBSubmitI(&hidp->in_urb);
-	osalSysUnlock();
+	usbhURBSubmit(&hidp->in_urb);
 
 	hidp->state = USBHHID_STATE_READY;
 	chSemSignal(&hidp->sem);
