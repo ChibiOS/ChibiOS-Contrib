@@ -107,7 +107,7 @@ static void _urb_complete(usbh_urb_t *urb) {
 	case USBH_URBSTATUS_TIMEOUT:
 		/* the device NAKed */
 		udbg("HUB: no info");
-		hubdp->statuschange = 0;
+		//hubdp->statuschange = 0;
 		break;
 	case USBH_URBSTATUS_OK: {
 		uint8_t len = hubdp->hubDesc.bNbrPorts / 8 + 1;
@@ -266,9 +266,7 @@ static void _hub_unload(usbh_baseclassdriver_t *drv) {
 	USBHHubDriver *const hubdp = (USBHHubDriver *)drv;
 
 	/* close the status change endpoint (this cancels ongoing URBs) */
-	osalSysLock();
-	usbhEPCloseS(&hubdp->epint);
-	osalSysUnlock();
+	usbhEPClose(&hubdp->epint);
 
 	/* de-alloc ports and unload drivers */
 	usbh_port_t *port = hubdp->ports;
