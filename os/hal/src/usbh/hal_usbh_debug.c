@@ -106,17 +106,18 @@ static char *ftoa(char *p, double num, unsigned long precision, bool dot) {
 }
 #endif
 
-static inline void _put(char c) {
-	input_queue_t *iqp = &USBH_DEBUG_USBHD.iq;
-
-	if (iqIsFullI(iqp))
-		return;
-
-	iqp->q_counter++;
+static inline void _wr(input_queue_t *iqp, char c) {
 	*iqp->q_wrptr++ = c;
 	if (iqp->q_wrptr >= iqp->q_top)
 		iqp->q_wrptr = iqp->q_buffer;
+}
 
+static inline void _put(char c) {
+	input_queue_t *iqp = &USBH_DEBUG_USBHD.iq;
+	if (sizeof(USBH_DEBUG_USBHD.dbg_buff) - iqp->q_counter <= 1)
+		return;
+	iqp->q_counter++;
+	_wr(iqp, c);
 }
 
 int _dbg_printf(const char *fmt, va_list ap) {
@@ -361,10 +362,15 @@ void usbDbgPrintf(const char *fmt, ...)
 	va_list ap;
 	va_start(ap, fmt);
 	syssts_t sts = chSysGetStatusAndLockX();
-	_print_hdr();
-	_dbg_printf(fmt, ap);
-	_put(0);
-	chThdDequeueNextI(&USBH_DEBUG_USBHD.iq.q_waiting, Q_OK);
+	input_queue_t *iqp = &USBH_DEBUG_USBHD.iq;
+	int rem = sizeof(USBH_DEBUG_USBHD.dbg_buff) - iqp->q_counter;
+	if (rem >= 9) {
+		_print_hdr();
+		_dbg_printf(fmt, ap);
+		iqp->q_counter++;
+		_wr(iqp, 0);
+		chThdDequeueNextI(&USBH_DEBUG_USBHD.iq.q_waiting, Q_OK);
+	}
 	chSysRestoreStatusX(sts);
 	va_end(ap);
 }
@@ -382,22 +388,21 @@ void usbDbgPuts(const char *s)
 	syssts_t sts = chSysGetStatusAndLockX();
 	input_queue_t *iqp = &USBH_DEBUG_USBHD.iq;
 	int rem = sizeof(USBH_DEBUG_USBHD.dbg_buff) - iqp->q_counter;
-	while (rem) {
-		*iqp->q_wrptr++ = *p;
-		if (iqp->q_wrptr >= iqp->q_top)
-			iqp->q_wrptr = iqp->q_buffer;
-		rem--;
-		if (++p == top) break;
+	if (rem >= 9) {
+		while (rem) {
+			_wr(iqp, *p);
+			if (++p == top) break;
+		}
+		rem -= 9;
+		while (rem && *s) {
+			_wr(iqp, *s);
+			rem--;
+			s++;
+		}
+		_wr(iqp, 0);
+		iqp->q_counter = sizeof(USBH_DEBUG_USBHD.dbg_buff) - rem;
+		chThdDequeueNextI(&USBH_DEBUG_USBHD.iq.q_waiting, Q_OK);
 	}
-	while (rem) {
-		*iqp->q_wrptr++ = *s;
-		if (iqp->q_wrptr >= iqp->q_top)
-			iqp->q_wrptr = iqp->q_buffer;
-		rem--;
-		if (!*s++) break;
-	}
-	iqp->q_counter = sizeof(USBH_DEBUG_USBHD.dbg_buff) - rem;
-	chThdDequeueNextI(&USBH_DEBUG_USBHD.iq.q_waiting, Q_OK);
 	chSysRestoreStatusX(sts);
 }
 
@@ -429,8 +434,8 @@ void usbDbgSystemHalted(void) {
 		if (!((bool)((USBH_DEBUG_SD.oqueue.q_wrptr == USBH_DEBUG_SD.oqueue.q_rdptr) && (USBH_DEBUG_SD.oqueue.q_counter != 0U))))
 			break;
 		USBH_DEBUG_SD.oqueue.q_counter++;
-		while (!(USART1->SR & USART_SR_TXE));
-		USART1->DR = *USBH_DEBUG_SD.oqueue.q_rdptr++;
+		while (!(USBH_DEBUG_SD.usart->SR & USART_SR_TXE));
+		USBH_DEBUG_SD.usart->DR = *USBH_DEBUG_SD.oqueue.q_rdptr++;
 		if (USBH_DEBUG_SD.oqueue.q_rdptr >= USBH_DEBUG_SD.oqueue.q_top) {
 			USBH_DEBUG_SD.oqueue.q_rdptr = USBH_DEBUG_SD.oqueue.q_buffer;
 		}
@@ -456,15 +461,15 @@ void usbDbgSystemHalted(void) {
 			while (true) {
 				c = _get(); if (c < 0) return;
 				if (!c) {
-					while (!(USART1->SR & USART_SR_TXE));
-					USART1->DR = '\r';
-					while (!(USART1->SR & USART_SR_TXE));
-					USART1->DR = '\n';
+					while (!(USBH_DEBUG_SD.usart->SR & USART_SR_TXE));
+					USBH_DEBUG_SD.usart->DR = '\r';
+					while (!(USBH_DEBUG_SD.usart->SR & USART_SR_TXE));
+					USBH_DEBUG_SD.usart->DR = '\n';
 					state = 0;
 					break;
 				}
-				while (!(USART1->SR & USART_SR_TXE));
-				USART1->DR = c;
+				while (!(USBH_DEBUG_SD.usart->SR & USART_SR_TXE));
+				USBH_DEBUG_SD.usart->DR = c;
 			}
 		}
 	}
