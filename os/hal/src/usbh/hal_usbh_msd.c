@@ -721,15 +721,13 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp->msdp != NULL);
 	msd_result_t res;
 
-	osalSysLock();
+	chSemWait(&lunp->sem);
+	osalDbgAssert((lunp->state == BLK_READY) || (lunp->state == BLK_ACTIVE), "invalid state");
 	if (lunp->state == BLK_READY) {
-		osalSysUnlock();
+		chSemSignal(&lunp->sem);
 		return HAL_SUCCESS;
 	}
-	chSemWaitS(&lunp->sem);
-	osalDbgAssert((lunp->state == BLK_ACTIVE), "invalid state");
 	lunp->state = BLK_CONNECTING;
-	osalSysUnlock();
 
     {
 		USBH_DEFINE_BUFFER(scsi_inquiry_response_t inq);
@@ -795,31 +793,28 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 		(uint32_t)(((uint64_t)lunp->info.blk_size * lunp->info.blk_num) / (1024UL * 1024UL)));
 
 	uinfo("MSD Connected.");
-
 	lunp->state = BLK_READY;
 	chSemSignal(&lunp->sem);
 	return HAL_SUCCESS;
 
   /* Connection failed, state reset to BLK_ACTIVE.*/
 failed:
+	uinfo("MSD Connect failed.");
 	lunp->state = BLK_ACTIVE;
 	chSemSignal(&lunp->sem);
 	return HAL_FAILED;
 }
 
-
 bool usbhmsdLUNDisconnect(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp != NULL);
 
-	osalSysLock();
+	chSemWait(&lunp->sem);
+	osalDbgAssert((lunp->state == BLK_READY) || (lunp->state == BLK_ACTIVE), "invalid state");
 	if (lunp->state == BLK_ACTIVE) {
-		osalSysUnlock();
+		chSemSignal(&lunp->sem);
 		return HAL_SUCCESS;
 	}
-	chSemWaitS(&lunp->sem);
-	osalDbgAssert((lunp->state == BLK_READY), "invalid state");
 	lunp->state = BLK_DISCONNECTING;
-	osalSysUnlock();
 
 	//TODO: complete: sync, etc.
 
