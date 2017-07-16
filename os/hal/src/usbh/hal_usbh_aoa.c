@@ -336,15 +336,15 @@ static size_t _write_timeout(USBHAOAChannel *aoacp, const uint8_t *bp,
 	chDbgCheck(n > 0U);
 
 	size_t w = 0;
-	chSysLock();
+	osalSysLock();
 	while (true) {
 		if (aoacp->state != USBHAOA_CHANNEL_STATE_READY) {
-			chSysUnlock();
+			osalSysUnlock();
 			return w;
 		}
 		while (usbhURBIsBusy(&aoacp->oq_urb)) {
 			if (chThdEnqueueTimeoutS(&aoacp->oq_waiting, timeout) != Q_OK) {
-				chSysUnlock();
+				osalSysUnlock();
 				return w;
 			}
 		}
@@ -352,30 +352,30 @@ static size_t _write_timeout(USBHAOAChannel *aoacp, const uint8_t *bp,
 		*aoacp->oq_ptr++ = *bp++;
 		if (--aoacp->oq_counter == 0) {
 			_submitOutI(aoacp, 64);
-			chSchRescheduleS();
+			osalOsRescheduleS();
 		}
-		chSysUnlock(); /* Gives a preemption chance in a controlled point.*/
+		osalSysUnlock(); /* Gives a preemption chance in a controlled point.*/
 
 		w++;
 		if (--n == 0U)
 			return w;
 
-		chSysLock();
+		osalSysLock();
 	}
 }
 
 static msg_t _put_timeout(USBHAOAChannel *aoacp, uint8_t b, systime_t timeout) {
 
-	chSysLock();
+	osalSysLock();
 	if (aoacp->state != USBHAOA_CHANNEL_STATE_READY) {
-		chSysUnlock();
+		osalSysUnlock();
 		return Q_RESET;
 	}
 
 	while (usbhURBIsBusy(&aoacp->oq_urb)) {
 		msg_t msg = chThdEnqueueTimeoutS(&aoacp->oq_waiting, timeout);
 		if (msg < Q_OK) {
-			chSysUnlock();
+			osalSysUnlock();
 			return msg;
 		}
 	}
@@ -383,9 +383,9 @@ static msg_t _put_timeout(USBHAOAChannel *aoacp, uint8_t b, systime_t timeout) {
 	*aoacp->oq_ptr++ = b;
 	if (--aoacp->oq_counter == 0) {
 		_submitOutI(aoacp, 64);
-		chSchRescheduleS();
+		osalOsRescheduleS();
 	}
-	chSysUnlock();
+	osalSysUnlock();
 	return Q_OK;
 }
 
@@ -434,41 +434,41 @@ static size_t _read_timeout(USBHAOAChannel *aoacp, uint8_t *bp,
 
 	chDbgCheck(n > 0U);
 
-	chSysLock();
+	osalSysLock();
 	while (true) {
 		if (aoacp->state != USBHAOA_CHANNEL_STATE_READY) {
-			chSysUnlock();
+			osalSysUnlock();
 			return r;
 		}
 		while (aoacp->iq_counter == 0) {
 			if (!usbhURBIsBusy(&aoacp->iq_urb))
 				_submitInI(aoacp);
 			if (chThdEnqueueTimeoutS(&aoacp->iq_waiting, timeout) != Q_OK) {
-				chSysUnlock();
+				osalSysUnlock();
 				return r;
 			}
 		}
 		*bp++ = *aoacp->iq_ptr++;
 		if (--aoacp->iq_counter == 0) {
 			_submitInI(aoacp);
-			chSchRescheduleS();
+			osalOsRescheduleS();
 		}
-		chSysUnlock();
+		osalSysUnlock();
 
 		r++;
 		if (--n == 0U)
 			return r;
 
-		chSysLock();
+		osalSysLock();
 	}
 }
 
 static msg_t _get_timeout(USBHAOAChannel *aoacp, systime_t timeout) {
 	uint8_t b;
 
-	chSysLock();
+	osalSysLock();
 	if (aoacp->state != USBHAOA_CHANNEL_STATE_READY) {
-		chSysUnlock();
+		osalSysUnlock();
 		return Q_RESET;
 	}
 	while (aoacp->iq_counter == 0) {
@@ -476,16 +476,16 @@ static msg_t _get_timeout(USBHAOAChannel *aoacp, systime_t timeout) {
 			_submitInI(aoacp);
 		msg_t msg = chThdEnqueueTimeoutS(&aoacp->iq_waiting, timeout);
 		if (msg < Q_OK) {
-			chSysUnlock();
+			osalSysUnlock();
 			return msg;
 		}
 	}
 	b = *aoacp->iq_ptr++;
 	if (--aoacp->iq_counter == 0) {
 		_submitInI(aoacp);
-		chSchRescheduleS();
+		osalOsRescheduleS();
 	}
-	chSysUnlock();
+	osalSysUnlock();
 
 	return (msg_t)b;
 }
@@ -525,7 +525,7 @@ static void _stop_channelS(USBHAOAChannel *aoacp) {
 
 static void _vt(void *p) {
 	USBHAOAChannel *const aoacp = (USBHAOAChannel *)p;
-	chSysLockFromISR();
+	osalSysLockFromISR();
 	uint32_t len = aoacp->oq_ptr - aoacp->oq_buff;
 	if (len && !usbhURBIsBusy(&aoacp->oq_urb)) {
 		_submitOutI(aoacp, len);
@@ -534,7 +534,7 @@ static void _vt(void *p) {
 		_submitInI(aoacp);
 	}
 	chVTSetI(&aoacp->vt, MS2ST(16), _vt, aoacp);
-	chSysUnlockFromISR();
+	osalSysUnlockFromISR();
 }
 
 void usbhaoaChannelStart(USBHAOADriver *aoap) {
