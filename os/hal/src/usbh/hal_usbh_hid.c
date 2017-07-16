@@ -69,7 +69,7 @@
 #define USBH_HID_REQ_SET_PROTOCOL	0x0B
 
 /*===========================================================================*/
-/* USB Class driver loader for MSD								 		 	 */
+/* USB Class driver loader for HID								 		 	 */
 /*===========================================================================*/
 
 USBHHIDDriver USBHHIDD[HAL_USBHHID_MAX_INSTANCES];
@@ -77,6 +77,7 @@ USBHHIDDriver USBHHIDD[HAL_USBHHID_MAX_INSTANCES];
 static void _hid_init(void);
 static usbh_baseclassdriver_t *_hid_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
 static void _hid_unload(usbh_baseclassdriver_t *drv);
+static void _stop_locked(USBHHIDDriver *hidp);
 
 static const usbh_classdriver_vmt_t class_driver_vmt = {
 	_hid_init,
@@ -184,7 +185,10 @@ deinit:
 
 static void _hid_unload(usbh_baseclassdriver_t *drv) {
 	USBHHIDDriver *const hidp = (USBHHIDDriver *)drv;
-	(void)hidp;
+	chSemWait(&hidp->sem);
+	_stop_locked(hidp);
+	hidp->state = USBHHID_STATE_STOP;
+	chSemSignal(&hidp->sem);
 }
 
 static void _in_cb(usbh_urb_t *urb) {
@@ -213,11 +217,13 @@ static void _in_cb(usbh_urb_t *urb) {
 void usbhhidStart(USBHHIDDriver *hidp, const USBHHIDConfig *cfg) {
 	osalDbgCheck(hidp && cfg);
 	osalDbgCheck(cfg->report_buffer && (cfg->protocol <= USBHHID_PROTOCOL_REPORT));
-	osalDbgCheck((hidp->state == USBHHID_STATE_ACTIVE)
-			|| (hidp->state == USBHHID_STATE_READY));
 
-	if (hidp->state == USBHHID_STATE_READY)
+	chSemWait(&hidp->sem);
+	if (hidp->state == USBHHID_STATE_READY) {
+		chSemSignal(&hidp->sem);
 		return;
+	}
+	osalDbgCheck(hidp->state == USBHHID_STATE_ACTIVE);
 
 	hidp->config = cfg;
 
@@ -243,24 +249,28 @@ void usbhhidStart(USBHHIDDriver *hidp, const USBHHIDConfig *cfg) {
 	osalSysUnlock();
 
 	hidp->state = USBHHID_STATE_READY;
+	chSemSignal(&hidp->sem);
 }
 
-void usbhhidStop(USBHHIDDriver *hidp) {
-	osalDbgCheck((hidp->state == USBHHID_STATE_ACTIVE)
-			|| (hidp->state == USBHHID_STATE_READY));
-
-	if (hidp->state != USBHHID_STATE_READY)
+static void _stop_locked(USBHHIDDriver *hidp) {
+	if (hidp->state == USBHHID_STATE_ACTIVE)
 		return;
 
-	osalSysLock();
-	usbhEPCloseS(&hidp->epin);
+	osalDbgCheck(hidp->state == USBHHID_STATE_READY);
+
+	usbhEPClose(&hidp->epin);
 #if HAL_USBHHID_USE_INTERRUPT_OUT
 	if (hidp->epout.status != USBH_EPSTATUS_UNINITIALIZED) {
-		usbhEPCloseS(&hidp->epout);
+		usbhEPClose(&hidp->epout);
 	}
 #endif
 	hidp->state = USBHHID_STATE_ACTIVE;
-	osalSysUnlock();
+}
+
+void usbhhidStop(USBHHIDDriver *hidp) {
+	chSemWait(&hidp->sem);
+	_stop_locked(hidp);
+	chSemSignal(&hidp->sem);
 }
 
 usbh_urbstatus_t usbhhidGetReport(USBHHIDDriver *hidp,
@@ -317,6 +327,7 @@ static void _hid_object_init(USBHHIDDriver *hidp) {
 	memset(hidp, 0, sizeof(*hidp));
 	hidp->info = &usbhhidClassDriverInfo;
 	hidp->state = USBHHID_STATE_STOP;
+	chSemObjectInit(&hidp->sem, 1);
 }
 
 static void _hid_init(void) {

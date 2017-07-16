@@ -95,6 +95,8 @@ struct USBHHIDDriver {
 	usbh_urb_t in_urb;
 
 	const USBHHIDConfig *config;
+
+	semaphore_t sem;
 };
 
 

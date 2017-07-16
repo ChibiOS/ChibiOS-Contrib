@@ -2,6 +2,13 @@ In decreasing order of priority:
 
 Bugs:
 - Synchronization on driver unload between usbhMainLoop and driver APIs
+    - MSD: ok
+    - AOA: not done
+    - HUB: ok
+    - FTDI: not done
+    - HID: ok
+    - UVC: not done
+
 
 Enhancements:
 - Way to return error from the load() functions in order to stop the enumeration process
