@@ -668,7 +668,7 @@ bool usbh_lld_urb_abort(usbh_urb_t *urb, usbh_urbstatus_t status) {
 	}
 
 	/* This URB is active, we can cancel it now */
-	uinfof("\t%s: usbh_lld_urb_abort: URB is not active", hcm->ep->name);
+	uinfof("\t%s: usbh_lld_urb_abort: URB is not active", ep->name);
 	_transfer_completedI(ep, urb, status);
 
 	return TRUE;
