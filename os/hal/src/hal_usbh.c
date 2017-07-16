@@ -427,7 +427,7 @@ usbh_urbstatus_t usbhControlRequest(usbh_device_t *dev,
 			wIndex,
 			wLength
 	};
-	return usbhControlRequestExtended(dev, &req, buff, NULL, MS2ST(1000));
+	return usbhControlRequestExtended(dev, &req, buff, NULL, TIME_INFINITE);
 }
 
 /*===========================================================================*/
