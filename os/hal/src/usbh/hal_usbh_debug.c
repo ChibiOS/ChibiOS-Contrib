@@ -342,19 +342,39 @@ unsigned_common:
 
 }
 
-static void _print_hdr(void)
-{
+static systime_t first, last;
+static bool ena;
+static uint32_t hdr[2];
+
+static void _build_hdr(void) {
 	uint32_t hfnum = USBH_DEBUG_USBHD.otg->HFNUM;
 	uint16_t hfir = USBH_DEBUG_USBHD.otg->HFIR;
+	last = osalOsGetSystemTimeX();
+	if (ena) {
+		first = last;
+	}
 
-	_put(0xff);
-	_put(0xff);
-	_put(hfir & 0xff);
-	_put(hfir >> 8);
-	_put(hfnum & 0xff);
-	_put((hfnum >> 8) & 0xff);
-	_put((hfnum >> 16) & 0xff);
-	_put((hfnum >> 24) & 0xff);
+	if (((hfnum & 0x3fff) == 0x3fff) && (hfir == (hfnum >> 16))) {
+		hdr[0] = 0xfeff;
+		hdr[1] = last - first;
+		ena = FALSE;
+	} else {
+		hdr[0] = 0xffff | (hfir << 16);
+		hdr[1] = hfnum;
+		ena = TRUE;
+	}
+}
+
+static void _print_hdr(void)
+{
+	_put(hdr[0] & 0xff);
+	_put((hdr[0] >> 8) & 0xff);
+	_put((hdr[0] >> 16) & 0xff);
+	_put((hdr[0] >> 24) & 0xff);
+	_put(hdr[1] & 0xff);
+	_put((hdr[1] >> 8) & 0xff);
+	_put((hdr[1] >> 16) & 0xff);
+	_put((hdr[1] >> 24) & 0xff);
 }
 
 void usbDbgPrintf(const char *fmt, ...)
@@ -365,6 +385,7 @@ void usbDbgPrintf(const char *fmt, ...)
 	input_queue_t *iqp = &USBH_DEBUG_USBHD.iq;
 	int rem = sizeof(USBH_DEBUG_USBHD.dbg_buff) - iqp->q_counter;
 	if (rem >= 9) {
+		_build_hdr();
 		_print_hdr();
 		_dbg_printf(fmt, ap);
 		iqp->q_counter++;
@@ -378,11 +399,8 @@ void usbDbgPrintf(const char *fmt, ...)
 
 void usbDbgPuts(const char *s)
 {
-	uint32_t buff[2] = {
-		0xffff | (USBH_DEBUG_USBHD.otg->HFIR << 16),
-		USBH_DEBUG_USBHD.otg->HFNUM
-	};
-	uint8_t *p = (uint8_t *)buff;
+	_build_hdr();
+	uint8_t *p = (uint8_t *)hdr;
 	uint8_t *top = p + 8;
 
 	syssts_t sts = chSysGetStatusAndLockX();
@@ -488,8 +506,9 @@ static void usb_debug_thread(void *arg) {
 			if (c == 0xff) state = 1;
 		} else if (state == 1) {
 			if (c == 0xff) state = 2;
+			else if (c == 0xfe) state = 3;
 			else (state = 0);
-		} else {
+		} else if (state == 2) {
 			uint16_t hfir;
 			uint32_t hfnum;
 
@@ -508,10 +527,26 @@ static void usb_debug_thread(void *arg) {
 
 			uint32_t f = hfnum & 0xffff;
 			uint32_t p = 1000 - ((hfnum >> 16) / (hfir / 1000));
-			chprintf((BaseSequentialStream *)&USBH_DEBUG_SD, "%05d.%03d  ", f, p);
+			chprintf((BaseSequentialStream *)&USBH_DEBUG_SD, "%05d.%03d ", f, p);
+			state = 4;
+		} else if (state == 3) {
+			uint32_t t;
 
+			c = iqGet(&host->iq); if (c < 0) goto reset;
+			c = iqGet(&host->iq); if (c < 0) goto reset;
+
+			t = c;
+			c = iqGet(&host->iq); if (c < 0) goto reset;
+			t |= c << 8;
+			c = iqGet(&host->iq); if (c < 0) goto reset;
+			t |= c << 16;
+			c = iqGet(&host->iq); if (c < 0) goto reset;
+			t |= c << 24;
+
+			chprintf((BaseSequentialStream *)&USBH_DEBUG_SD, "+%08d ", t);
+			state = 4;
+		} else {
 			while (true) {
-				c = iqGet(&host->iq); if (c < 0) goto reset;
 				if (!c) {
 					sdPut(&USBH_DEBUG_SD, '\r');
 					sdPut(&USBH_DEBUG_SD, '\n');
@@ -519,6 +554,7 @@ static void usb_debug_thread(void *arg) {
 					break;
 				}
 				sdPut(&USBH_DEBUG_SD, (uint8_t)c);
+				c = iqGet(&host->iq); if (c < 0) goto reset;
 			}
 		}
 

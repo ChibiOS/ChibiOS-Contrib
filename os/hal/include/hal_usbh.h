@@ -60,13 +60,6 @@
 #include "usbh/list.h"
 #include "usbh/defs.h"
 
-/* TODO:
- *
- * - Integrate VBUS power switching functionality to the API.
- *
- */
-
-
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
@@ -83,6 +76,7 @@ enum usbh_status {
 	USBH_STATUS_SUSPENDED,
 };
 
+/* These correspond to the USB spec */
 enum usbh_devstatus {
 	USBH_DEVSTATUS_DISCONNECTED = 0,
 	USBH_DEVSTATUS_ATTACHED,
