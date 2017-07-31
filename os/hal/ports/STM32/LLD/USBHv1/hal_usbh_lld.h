@@ -63,6 +63,8 @@ typedef struct stm32_hc_management {
 
 #define _usbhdriver_ll_data											\
 	stm32_otg_t *otg;												\
+	/* low-speed port reset bug */									\
+	bool check_ls_activity;											\
 	/* channels */													\
 	uint8_t channels_number;										\
 	stm32_hc_management_t channels[STM32_OTG2_CHANNELS_NUMBER];		\
