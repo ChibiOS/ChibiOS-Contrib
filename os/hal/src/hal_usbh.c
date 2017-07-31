@@ -249,24 +249,17 @@ void usbhURBSubmitI(usbh_urb_t *urb) {
 bool _usbh_urb_abortI(usbh_urb_t *urb, usbh_urbstatus_t status) {
 	osalDbgCheckClassI();
 	_check_urb(urb);
+	osalDbgCheck(urb->status != USBH_URBSTATUS_UNINITIALIZED);
 
-	switch (urb->status) {
-/*	case USBH_URBSTATUS_UNINITIALIZED:
- * 	case USBH_URBSTATUS_INITIALIZED:
- *	case USBH_URBSTATUS_ERROR:
- *	case USBH_URBSTATUS_TIMEOUT:
- *	case USBH_URBSTATUS_CANCELLED:
- *	case USBH_URBSTATUS_STALL:
- *	case USBH_URBSTATUS_DISCONNECTED:
- *	case USBH_URBSTATUS_OK: */
-	default:
-		/* already finished */
-		_usbh_urb_completeI(urb, status);
-		return TRUE;
-
-	case USBH_URBSTATUS_PENDING:
+	if (urb->status == USBH_URBSTATUS_PENDING) {
 		return usbh_lld_urb_abort(urb, status);
 	}
+
+	/* already finished or never submitted:
+	 * USBH_URBSTATUS_INITIALIZED, USBH_URBSTATUS_ERROR, USBH_URBSTATUS_TIMEOUT,
+	 * USBH_URBSTATUS_CANCELLED, USBH_URBSTATUS_STALL, USBH_URBSTATUS_DISCONNECTED
+	 * USBH_URBSTATUS_OK */
+	return TRUE;
 }
 
 void _usbh_urb_abort_and_waitS(usbh_urb_t *urb, usbh_urbstatus_t status) {
@@ -430,7 +423,7 @@ usbh_urbstatus_t usbhControlRequest(usbh_device_t *dev,
 			wIndex,
 			wLength
 	};
-	return usbhControlRequestExtended(dev, &req, buff, NULL, TIME_INFINITE);
+	return usbhControlRequestExtended(dev, &req, buff, NULL, HAL_USBH_CONTROL_REQUEST_DEFAULT_TIMEOUT);
 }
 
 /*===========================================================================*/
@@ -896,45 +889,47 @@ static void _port_process_status_change(usbh_port_t *port) {
 	_port_update_status(port);
 
 	if (port->c_status & USBH_PORTSTATUS_C_CONNECTION) {
-		/* port connected status changed */
 		port->c_status &= ~USBH_PORTSTATUS_C_CONNECTION;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_CONNECTION);
-		if ((port->status & (USBH_PORTSTATUS_CONNECTION | USBH_PORTSTATUS_ENABLE))
-				== USBH_PORTSTATUS_CONNECTION) {
-			if (port->device.status != USBH_DEVSTATUS_DISCONNECTED) {
+
+		if (port->device.status != USBH_DEVSTATUS_DISCONNECTED) {
+			if (!(port->status & USBH_PORTSTATUS_CONNECTION)) {
 				_usbh_port_disconnected(port);
 			}
+		}
+	}
 
-			/* connected, disabled */
+	if (port->device.status == USBH_DEVSTATUS_DISCONNECTED) {
+		if (port->status & USBH_PORTSTATUS_CONNECTION) {
 			_port_connected(port);
-		} else {
-			/* disconnected */
-			_usbh_port_disconnected(port);
 		}
 	}
 
 	if (port->c_status & USBH_PORTSTATUS_C_RESET) {
 		port->c_status &= ~USBH_PORTSTATUS_C_RESET;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_RESET);
+		uinfof("Port %d: reset=%d", port->number, port->status & USBH_PORTSTATUS_RESET ? 1 : 0);
 	}
 
 	if (port->c_status & USBH_PORTSTATUS_C_ENABLE) {
 		port->c_status &= ~USBH_PORTSTATUS_C_ENABLE;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_ENABLE);
+		uinfof("Port %d: enable=%d", port->number, port->status & USBH_PORTSTATUS_ENABLE ? 1 : 0);
 	}
 
 	if (port->c_status & USBH_PORTSTATUS_C_OVERCURRENT) {
 		port->c_status &= ~USBH_PORTSTATUS_C_OVERCURRENT;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_OVERCURRENT);
+		uwarnf("Port %d: overcurrent=%d", port->number, port->status & USBH_PORTSTATUS_OVERCURRENT ? 1 : 0);
 	}
 
 	if (port->c_status & USBH_PORTSTATUS_C_SUSPEND) {
 		port->c_status &= ~USBH_PORTSTATUS_C_SUSPEND;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_SUSPEND);
+		uinfof("Port %d: suspend=%d", port->number, port->status & USBH_PORTSTATUS_SUSPEND ? 1 : 0);
 	}
 
 }
-
 
 static void _port_connected(usbh_port_t *port) {
 	/* connected */
@@ -945,9 +940,8 @@ static void _port_connected(usbh_port_t *port) {
 	usbh_devspeed_t speed;
 	USBH_DEFINE_BUFFER(usbh_string_descriptor_t strdesc);
 
-	uinfof("Port %d connected, wait debounce...", port->number);
-
 	port->device.status = USBH_DEVSTATUS_ATTACHED;
+	uinfof("Port %d: attached, wait debounce...", port->number);
 
 	/* wait for attach de-bounce */
 	osalThreadSleepMilliseconds(HAL_USBH_PORT_DEBOUNCE_TIME);
@@ -955,16 +949,26 @@ static void _port_connected(usbh_port_t *port) {
 	/* check disconnection */
 	_port_update_status(port);
 	if (port->c_status & USBH_PORTSTATUS_C_CONNECTION) {
-		/* connection state changed; abort */
+		port->c_status &= ~USBH_PORTSTATUS_C_CONNECTION;
+		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_CONNECTION);
+		uwarnf("Port %d: connection state changed; abort #1", port->number);
 		goto abort;
 	}
 
+	/* make sure that the device is still connected */
+	if ((port->status & USBH_PORTSTATUS_CONNECTION) == 0) {
+		uwarnf("Port %d: device is disconnected", port->number);
+		goto abort;
+	}
+
+	uinfof("Port %d: connected", port->number);
 	port->device.status = USBH_DEVSTATUS_CONNECTED;
 	retries = 3;
 
 reset:
 	for (i = 0; i < 3; i++) {
-		uinfo("Try reset...");
+		uinfof("Port %d: Try reset...", port->number);
+		/* TODO: check that port is actually disabled */
 		port->c_status &= ~(USBH_PORTSTATUS_C_RESET | USBH_PORTSTATUS_C_ENABLE);
 		_port_reset(port);
 		osalThreadSleepMilliseconds(20);	/* give it some time to reset (min. 10ms) */
@@ -973,8 +977,12 @@ reset:
 			_port_update_status(port);
 
 			/* check for disconnection */
-			if (port->c_status & USBH_PORTSTATUS_C_CONNECTION)
+			if (port->c_status & USBH_PORTSTATUS_C_CONNECTION) {
+				port->c_status &= ~USBH_PORTSTATUS_C_CONNECTION;
+				usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_CONNECTION);
+				uwarnf("Port %d: connection state changed; abort #2", port->number);
 				goto abort;
+			}
 
 			/* check for reset completion */
 			if (port->c_status & USBH_PORTSTATUS_C_RESET) {
@@ -988,7 +996,10 @@ reset:
 			}
 
 			/* check for timeout */
-			if (osalOsGetSystemTimeX() - start > HAL_USBH_PORT_RESET_TIMEOUT) break;
+			if (osalOsGetSystemTimeX() - start > HAL_USBH_PORT_RESET_TIMEOUT) {
+				uwarnf("Port %d: reset timeout", port->number);
+				break;
+			}
 		}
 	}
 
@@ -996,8 +1007,7 @@ reset:
 	goto abort;
 
 reset_success:
-
-	uinfo("Reset OK, recovery...");
+	uinfof("Port %d: Reset OK, recovery...", port->number);
 
 	/* reset recovery */
 	osalThreadSleepMilliseconds(100);
@@ -1014,19 +1024,22 @@ reset_success:
 	usbhEPOpen(&port->device.ctrl);
 
 	/* device with default address (0), try enumeration */
-	if (_device_enumerate(&port->device)) {
+	if (_device_enumerate(&port->device) != HAL_SUCCESS) {
 		/* enumeration failed */
 		usbhEPClose(&port->device.ctrl);
 
-		if (!--retries)
+		if (!--retries) {
+			uwarnf("Port %d: enumeration failed; abort", port->number);
 			goto abort;
+		}
 
 		/* retry reset & enumeration */
+		uwarnf("Port %d: enumeration failed; retry reset & enumeration", port->number);
 		goto reset;
 	}
 
 	/* load the default language ID */
-	uinfo("Loading langID0...");
+	uinfof("Port %d: Loading langID0...", port->number);
 	if (!usbhStdReqGetStringDescriptor(&port->device, 0, 0,
 			USBH_DT_STRING_SIZE, (uint8_t *)&strdesc)
 		&& (strdesc.bLength >= 4)
@@ -1034,12 +1047,12 @@ reset_success:
 			4, (uint8_t *)&strdesc)) {
 
 		port->device.langID0 = strdesc.wData[0];
-		uinfof("langID0=%04x", port->device.langID0);
+		uinfof("Port %d: langID0=%04x", port->number, port->device.langID0);
 	}
 
 	/* check if the device has only one configuration */
 	if (port->device.devDesc.bNumConfigurations == 1) {
-		uinfo("Device has only one configuration");
+		uinfof("Port %d: device has only one configuration", port->number);
 		_device_configure(&port->device, 0);
 	}
 
@@ -1047,7 +1060,7 @@ reset_success:
 	return;
 
 abort:
-	uerr("Abort");
+	uerrf("Port %d: abort", port->number);
 	port->device.status = USBH_DEVSTATUS_DISCONNECTED;
 }
 
@@ -1055,14 +1068,14 @@ void _usbh_port_disconnected(usbh_port_t *port) {
 	if (port->device.status == USBH_DEVSTATUS_DISCONNECTED)
 		return;
 
-	uinfo("Port disconnected");
+	uinfof("Port %d: disconnected", port->number);
 
 	/* unload drivers */
 	while (port->device.drivers) {
 		usbh_baseclassdriver_t *drv = port->device.drivers;
 
 		/* unload */
-		uinfof("Unload driver %s", drv->info->name);
+		uinfof("Port %d: unload driver %s", port->number, drv->info->name);
 		drv->info->vmt->unload(drv);
 
 		/* unlink */
@@ -1071,9 +1084,7 @@ void _usbh_port_disconnected(usbh_port_t *port) {
 	}
 
 	/* close control endpoint */
-	osalSysLock();
-	usbhEPCloseS(&port->device.ctrl);
-	osalSysUnlock();
+	usbhEPClose(&port->device.ctrl);
 
 	/* free address */
 	if (port->device.address)
@@ -1113,7 +1124,7 @@ static void _hub_process_status_change(USBHDriver *host, USBHHubDriver *hub) {
 	uinfo("Hub status change. GET_STATUS.");
 	_hub_update_status(host, hub);
 
-	if (hub->c_status & USBH_HUBSTATUS_C_HUB_LOCAL_POWER) {
+		if (hub->c_status & USBH_HUBSTATUS_C_HUB_LOCAL_POWER) {
 		hub->c_status &= ~USBH_HUBSTATUS_C_HUB_LOCAL_POWER;
 		uinfo("Clear USBH_HUB_FEAT_C_HUB_LOCAL_POWER");
 		usbhhubClearFeatureHub(host, hub, USBH_HUB_FEAT_C_HUB_LOCAL_POWER);
@@ -1196,8 +1207,8 @@ void usbhMainLoop(USBHDriver *usbh) {
 	_hub_process(usbh, NULL);
 
 	/* process connected hubs */
-	USBHHubDriver *hub;
-    list_for_each_entry(hub, USBHHubDriver, &usbh->hubs, node) {
+	USBHHubDriver *hub, *temp;
+    list_for_each_entry_safe(hub, USBHHubDriver, temp, &usbh->hubs, node) {
 		_hub_process(usbh, hub);
 	}
 #else
