@@ -374,7 +374,8 @@ start:
             usbDbgPrintf("BLK: Raw read test (%dMB, %dB blocks)", RAW_READ_SZ_MB, sizeof(fbuff));
             st = chVTGetSystemTime();
             for (j = 0; j < NITERATIONS; j++) {
-                blkRead(&MSBLKD[0], start, fbuff, NBLOCKS);
+                if (blkRead(&MSBLKD[0], start, fbuff, NBLOCKS) != HAL_SUCCESS)
+                    goto start;
                 start += NBLOCKS;
             }
             et = chVTGetSystemTime();
