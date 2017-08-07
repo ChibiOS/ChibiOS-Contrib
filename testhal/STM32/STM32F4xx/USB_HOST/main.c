@@ -86,6 +86,8 @@ static void ThreadTestFTDI(void *p) {
     (void)p;
     USBHFTDIPortDriver *const ftdipp = &FTDIPD[0];
 
+    chRegSetThreadName("FTDI");
+
     shellInit();
 
 start:
@@ -129,7 +131,6 @@ start:
                 shelltp = chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
                                               "shell", NORMALPRIO,
                                               shellThread, (void *)&shell_cfg1);
-
             } else if (chThdTerminatedX(shelltp)) {
                 chThdRelease(shelltp);
                 if (usbhftdipGetState(ftdipp) != USBHFTDIP_STATE_READY)
@@ -218,6 +219,8 @@ static void ThreadTestAOA(void *p) {
     USBHAOADriver *const aoap = &USBHAOAD[0];
     USBHAOAChannel *const aoacp = &aoap->channel;
 
+    chRegSetThreadName("AOA");
+
 start:
     while (usbhaoaGetState(aoap) != USBHAOA_STATE_READY) {
         chThdSleepMilliseconds(100);
@@ -303,34 +306,26 @@ static FIL file;
 
 static FRESULT scan_files(BaseSequentialStream *chp, char *path) {
   FRESULT res;
-  FILINFO fno;
   DIR dir;
-  int i;
-  char *fn;
+  UINT i;
+  static FILINFO fno;
 
-#if _USE_LFN
-  fno.lfname = 0;
-  fno.lfsize = 0;
-#endif
   res = f_opendir(&dir, path);
   if (res == FR_OK) {
-    i = strlen(path);
     for (;;) {
       res = f_readdir(&dir, &fno);
       if (res != FR_OK || fno.fname[0] == 0)
         break;
-      if (fno.fname[0] == '.')
-        continue;
-      fn = fno.fname;
       if (fno.fattrib & AM_DIR) {
+		i = strlen(path);
         path[i++] = '/';
-        strcpy(&path[i], fn);
+        strcpy(&path[i], fno.fname);
         res = scan_files(chp, path);
         if (res != FR_OK)
           break;
         path[--i] = 0;
       } else {
-          usbDbgPrintf("FS: %s/%s", path, fn);
+          usbDbgPrintf("FS: %s/%s", path, fno.fname);
       }
     }
   }
@@ -338,13 +333,15 @@ static FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 }
 #endif
 
-static THD_WORKING_AREA(waTestMSD, 1024);
+static THD_WORKING_AREA(waTestMSD, 1300);
 static void ThreadTestMSD(void *p) {
     (void)p;
 
     FATFS *fsp;
     DWORD clusters;
     FRESULT res;
+
+    chRegSetThreadName("MSD");
 
 #if !UVC_TO_MSD_PHOTOS_CAPTURE
     BaseSequentialStream * const chp = (BaseSequentialStream *)&USBH_DEBUG_SD;
@@ -516,6 +513,8 @@ static void ThreadTestHID(void *p) {
     uint8_t i;
     static uint8_t kbd_led_states[HAL_USBHHID_MAX_INSTANCES];
 
+    chRegSetThreadName("HID");
+
     for (i = 0; i < HAL_USBHHID_MAX_INSTANCES; i++) {
         hidcfg[i].cb_report = _hid_report_callback;
         hidcfg[i].protocol = USBHHID_PROTOCOL_BOOT;
@@ -625,6 +624,8 @@ static const uint8_t jpeg_header_plus_dht[] = {
 static void ThreadTestUVC(void *p) {
     (void)p;
     USBHUVCDriver *const uvcdp = &USBHUVCD[0];
+
+    chRegSetThreadName("UVC");
 
     for(;;) {
         chThdSleepMilliseconds(100);

@@ -180,7 +180,6 @@ DRESULT disk_read (
 /*-----------------------------------------------------------------------*/
 /* Write Sector(s)                                                       */
 
-#if _USE_WRITE
 DRESULT disk_write (
     BYTE pdrv,            /* Physical drive nmuber (0..) */
     const BYTE *buff,    /* Data to be written */
@@ -226,14 +225,12 @@ DRESULT disk_write (
   }
   return RES_PARERR;
 }
-#endif /* _USE_WRITE */
 
 
 
 /*-----------------------------------------------------------------------*/
 /* Miscellaneous Functions                                               */
 
-#if _USE_IOCTL
 DRESULT disk_ioctl (
     BYTE pdrv,        /* Physical drive nmuber (0..) */
     BYTE cmd,        /* Control code */
@@ -246,11 +243,13 @@ DRESULT disk_ioctl (
     switch (cmd) {
     case CTRL_SYNC:
         return RES_OK;
+#if _MAX_SS > _MIN_SS
     case GET_SECTOR_SIZE:
         *((WORD *)buff) = MMCSD_BLOCK_SIZE;
         return RES_OK;
-#if _USE_ERASE
-    case CTRL_ERASE_SECTOR:
+#endif
+#if _USE_TRIM
+    case CTRL_TRIM:
         mmcErase(&MMCD1, *((DWORD *)buff), *((DWORD *)buff + 1));
         return RES_OK;
 #endif
@@ -265,14 +264,16 @@ DRESULT disk_ioctl (
     case GET_SECTOR_COUNT:
         *((DWORD *)buff) = mmcsdGetCardCapacity(&SDCD1);
         return RES_OK;
+#if _MAX_SS > _MIN_SS
     case GET_SECTOR_SIZE:
         *((WORD *)buff) = MMCSD_BLOCK_SIZE;
         return RES_OK;
+#endif
     case GET_BLOCK_SIZE:
         *((DWORD *)buff) = 256; /* 512b blocks in one erase block */
         return RES_OK;
-#if _USE_ERASE
-    case CTRL_ERASE_SECTOR:
+#if _USE_TRIM
+    case CTRL_TRIM:
         sdcErase(&SDCD1, *((DWORD *)buff), *((DWORD *)buff + 1));
         return RES_OK;
 #endif
@@ -288,12 +289,14 @@ DRESULT disk_ioctl (
       case GET_SECTOR_COUNT:
           *((DWORD *)buff) = MSBLKD[0].info.blk_num;
           return RES_OK;
+#if _MAX_SS > _MIN_SS
       case GET_SECTOR_SIZE:
           *((WORD *)buff) = MSBLKD[0].info.blk_size;
           return RES_OK;
-#if _USE_ERASE
+#endif
+#if _USE_TRIM
 #error "unimplemented yet!"
-//    case CTRL_ERASE_SECTOR:
+//    case CTRL_TRIM:
 //      ....
 //      return RES_OK;
 #endif
@@ -304,7 +307,6 @@ DRESULT disk_ioctl (
   }
   return RES_PARERR;
 }
-#endif /* _USE_IOCTL */
 
 DWORD get_fattime(void) {
 #if HAL_USE_RTC
@@ -316,5 +318,3 @@ DWORD get_fattime(void) {
     return ((uint32_t)0 | (1 << 16)) | (1 << 21); /* wrong but valid time */
 #endif
 }
-
-
