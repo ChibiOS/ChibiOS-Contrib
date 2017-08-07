@@ -415,7 +415,7 @@ static void _out_cb(usbh_urb_t *urb) {
 		return;
 	case USBH_URBSTATUS_DISCONNECTED:
 		uwarn("FTDI: URB OUT disconnected");
-		chThdDequeueNextI(&ftdipp->oq_waiting, Q_RESET);
+		chThdDequeueAllI(&ftdipp->oq_waiting, Q_RESET);
 		return;
 	default:
 		uerrf("FTDI: URB OUT status unexpected = %d", urb->status);
@@ -516,12 +516,12 @@ static void _in_cb(usbh_urb_t *urb) {
 			udbgf("FTDI: URB IN no data, status=%02x %02x",
 					((uint8_t *)urb->buff)[0],
 					((uint8_t *)urb->buff)[1]);
-			return;
+		//	return;
 		}
 		break;
 	case USBH_URBSTATUS_DISCONNECTED:
 		uwarn("FTDI: URB IN disconnected");
-		chThdDequeueNextI(&ftdipp->iq_waiting, Q_RESET);
+		chThdDequeueAllI(&ftdipp->iq_waiting, Q_RESET);
 		return;
 	default:
 		uerrf("FTDI: URB IN status unexpected = %d", urb->status);
