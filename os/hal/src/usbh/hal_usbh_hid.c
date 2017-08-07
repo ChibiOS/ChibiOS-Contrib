@@ -69,28 +69,32 @@
 #define USBH_HID_REQ_SET_PROTOCOL	0x0B
 
 /*===========================================================================*/
-/* USB Class driver loader for MSD								 		 	 */
+/* USB Class driver loader for HID								 		 	 */
 /*===========================================================================*/
 
 USBHHIDDriver USBHHIDD[HAL_USBHHID_MAX_INSTANCES];
 
+static void _hid_init(void);
 static usbh_baseclassdriver_t *_hid_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
 static void _hid_unload(usbh_baseclassdriver_t *drv);
+static void _stop_locked(USBHHIDDriver *hidp);
 
 static const usbh_classdriver_vmt_t class_driver_vmt = {
+	_hid_init,
 	_hid_load,
 	_hid_unload
 };
 
 const usbh_classdriverinfo_t usbhhidClassDriverInfo = {
-	0x03, -1, -1, "HID", &class_driver_vmt
+	"HID", &class_driver_vmt
 };
 
 static usbh_baseclassdriver_t *_hid_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem) {
 	int i;
 	USBHHIDDriver *hidp;
 
-	if ((rem < descriptor[0]) || (descriptor[1] != USBH_DT_INTERFACE))
+	if (_usbh_match_descriptor(descriptor, rem, USBH_DT_INTERFACE,
+			0x03, -1, -1) != HAL_SUCCESS)
 		return NULL;
 
 	const usbh_interface_descriptor_t * const ifdesc = (const usbh_interface_descriptor_t *)descriptor;
@@ -180,7 +184,11 @@ deinit:
 }
 
 static void _hid_unload(usbh_baseclassdriver_t *drv) {
-	(void)drv;
+	USBHHIDDriver *const hidp = (USBHHIDDriver *)drv;
+	chSemWait(&hidp->sem);
+	_stop_locked(hidp);
+	hidp->state = USBHHID_STATE_STOP;
+	chSemSignal(&hidp->sem);
 }
 
 static void _in_cb(usbh_urb_t *urb) {
@@ -209,17 +217,22 @@ static void _in_cb(usbh_urb_t *urb) {
 void usbhhidStart(USBHHIDDriver *hidp, const USBHHIDConfig *cfg) {
 	osalDbgCheck(hidp && cfg);
 	osalDbgCheck(cfg->report_buffer && (cfg->protocol <= USBHHID_PROTOCOL_REPORT));
-	osalDbgCheck((hidp->state == USBHHID_STATE_ACTIVE)
-			|| (hidp->state == USBHHID_STATE_READY));
 
-	if (hidp->state == USBHHID_STATE_READY)
+	chSemWait(&hidp->sem);
+	if (hidp->state == USBHHID_STATE_READY) {
+		chSemSignal(&hidp->sem);
 		return;
+	}
+	osalDbgCheck(hidp->state == USBHHID_STATE_ACTIVE);
 
 	hidp->config = cfg;
 
 	/* init the URBs */
+	uint32_t report_len = hidp->epin.wMaxPacketSize;
+	if (report_len > cfg->report_len)
+		report_len = cfg->report_len;
 	usbhURBObjectInit(&hidp->in_urb, &hidp->epin, _in_cb, hidp,
-			cfg->report_buffer, cfg->report_len);
+			cfg->report_buffer, report_len);
 
 	/* open the int IN/OUT endpoints */
 	usbhEPOpen(&hidp->epin);
@@ -231,29 +244,31 @@ void usbhhidStart(USBHHIDDriver *hidp, const USBHHIDConfig *cfg) {
 
 	usbhhidSetProtocol(hidp, cfg->protocol);
 
-	osalSysLock();
-	usbhURBSubmitI(&hidp->in_urb);
-	osalSysUnlock();
+	usbhURBSubmit(&hidp->in_urb);
 
 	hidp->state = USBHHID_STATE_READY;
+	chSemSignal(&hidp->sem);
 }
 
-void usbhhidStop(USBHHIDDriver *hidp) {
-	osalDbgCheck((hidp->state == USBHHID_STATE_ACTIVE)
-			|| (hidp->state == USBHHID_STATE_READY));
-
-	if (hidp->state != USBHHID_STATE_READY)
+static void _stop_locked(USBHHIDDriver *hidp) {
+	if (hidp->state == USBHHID_STATE_ACTIVE)
 		return;
 
-	osalSysLock();
-	usbhEPCloseS(&hidp->epin);
+	osalDbgCheck(hidp->state == USBHHID_STATE_READY);
+
+	usbhEPClose(&hidp->epin);
 #if HAL_USBHHID_USE_INTERRUPT_OUT
 	if (hidp->epout.status != USBH_EPSTATUS_UNINITIALIZED) {
-		usbhEPCloseS(&hidp->epout);
+		usbhEPClose(&hidp->epout);
 	}
 #endif
 	hidp->state = USBHHID_STATE_ACTIVE;
-	osalSysUnlock();
+}
+
+void usbhhidStop(USBHHIDDriver *hidp) {
+	chSemWait(&hidp->sem);
+	_stop_locked(hidp);
+	chSemSignal(&hidp->sem);
 }
 
 usbh_urbstatus_t usbhhidGetReport(USBHHIDDriver *hidp,
@@ -305,17 +320,18 @@ usbh_urbstatus_t usbhhidSetProtocol(USBHHIDDriver *hidp, uint8_t protocol) {
 			protocol, hidp->ifnum, 0, NULL);
 }
 
-void usbhhidObjectInit(USBHHIDDriver *hidp) {
+static void _hid_object_init(USBHHIDDriver *hidp) {
 	osalDbgCheck(hidp != NULL);
 	memset(hidp, 0, sizeof(*hidp));
 	hidp->info = &usbhhidClassDriverInfo;
 	hidp->state = USBHHID_STATE_STOP;
+	chSemObjectInit(&hidp->sem, 1);
 }
 
-void usbhhidInit(void) {
+static void _hid_init(void) {
 	uint8_t i;
 	for (i = 0; i < HAL_USBHHID_MAX_INSTANCES; i++) {
-		usbhhidObjectInit(&USBHHIDD[i]);
+		_hid_object_init(&USBHHIDD[i]);
 	}
 }
 

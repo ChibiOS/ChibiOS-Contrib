@@ -140,12 +140,8 @@ extern USBHAOADriver USBHAOAD[HAL_USBHAOA_MAX_INSTANCES];
 extern "C" {
 #endif
 	/* AOA device driver */
-	void usbhaoaObjectInit(USBHAOADriver *aoap);
 	void usbhaoaChannelStart(USBHAOADriver *aoap);
 	void usbhaoaChannelStop(USBHAOADriver *aoap);
-
-	/* global initializer */
-	void usbhaoaInit(void);
 #ifdef __cplusplus
 }
 #endif

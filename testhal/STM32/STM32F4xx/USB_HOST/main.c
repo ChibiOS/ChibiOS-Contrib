@@ -18,8 +18,10 @@
 #include "hal.h"
 #include "ff.h"
 #include <string.h>
+#include "usbh/debug.h"		/* for usbDbgPuts/usbDbgPrintf */
 
-#define UVC_TO_MSD_PHOTOS_CAPTURE	TRUE
+
+#define UVC_TO_MSD_PHOTOS_CAPTURE	FALSE
 
 
 #if HAL_USBH_USE_FTDI || HAL_USBH_USE_AOA
@@ -343,7 +345,7 @@ static void ThreadTestMSD(void *p) {
     FATFS *fsp;
     DWORD clusters;
     FRESULT res;
-    blkstate_t state;
+
 #if !UVC_TO_MSD_PHOTOS_CAPTURE
     BaseSequentialStream * const chp = (BaseSequentialStream *)&USBH_DEBUG_SD;
     systime_t st, et;
@@ -354,11 +356,15 @@ start:
     for(;;) {
         chThdSleepMilliseconds(100);
 
-        chSysLock();
-        state = blkGetDriverState(&MSBLKD[0]);
-        chSysUnlock();
-        if (state != BLK_READY)
+        if (blkGetDriverState(&MSBLKD[0]) == BLK_ACTIVE) {
+        	usbDbgPuts("BLK: Active, connect....");
+        	usbhmsdLUNConnect(&MSBLKD[0]);
+        }
+        if (blkGetDriverState(&MSBLKD[0]) != BLK_READY) {
             continue;
+    	}
+
+    	usbDbgPuts("BLK: Ready.");
 
 #if !UVC_TO_MSD_PHOTOS_CAPTURE
         //raw read test
@@ -371,7 +377,8 @@ start:
             usbDbgPrintf("BLK: Raw read test (%dMB, %dB blocks)", RAW_READ_SZ_MB, sizeof(fbuff));
             st = chVTGetSystemTime();
             for (j = 0; j < NITERATIONS; j++) {
-                blkRead(&MSBLKD[0], start, fbuff, NBLOCKS);
+                if (blkRead(&MSBLKD[0], start, fbuff, NBLOCKS) != HAL_SUCCESS)
+                    goto start;
                 start += NBLOCKS;
             }
             et = chVTGetSystemTime();
@@ -914,6 +921,7 @@ int main(void) {
 
     //turn on USB power
     palClearPad(GPIOC, GPIOC_OTG_FS_POWER_ON);
+    chThdSleepMilliseconds(100);
 
     //start
 #if STM32_USBH_USE_OTG1

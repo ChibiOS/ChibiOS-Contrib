@@ -138,16 +138,9 @@ extern USBHFTDIPortDriver FTDIPD[HAL_USBHFTDI_MAX_PORTS];
 #ifdef __cplusplus
 extern "C" {
 #endif
-	/* FTDI device driver */
-	void usbhftdiObjectInit(USBHFTDIDriver *ftdip);
-
 	/* FTDI port driver */
-	void usbhftdipObjectInit(USBHFTDIPortDriver *ftdipp);
 	void usbhftdipStart(USBHFTDIPortDriver *ftdipp, const USBHFTDIPortConfig *config);
 	void usbhftdipStop(USBHFTDIPortDriver *ftdipp);
-
-	/* global initializer */
-	void usbhftdiInit(void);
 #ifdef __cplusplus
 }
 #endif

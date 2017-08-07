@@ -54,6 +54,9 @@ void _usbh_urb_completeI(usbh_urb_t *urb, usbh_urbstatus_t status);
 bool _usbh_urb_abortI(usbh_urb_t *urb, usbh_urbstatus_t status);
 void _usbh_urb_abort_and_waitS(usbh_urb_t *urb, usbh_urbstatus_t status);
 
+bool _usbh_match_vid_pid(usbh_device_t *dev, int32_t vid, int32_t pid);
+bool _usbh_match_descriptor(const uint8_t *descriptor, uint16_t rem,
+		int16_t type, int16_t _class, int16_t subclass, int16_t protocol);
 
 #define USBH_REQTYPE_CLASSIN(type)	\
 	(USBH_REQTYPE_DIR_IN | type | USBH_REQTYPE_TYPE_CLASS)
@@ -136,6 +139,9 @@ void _usbh_urb_abort_and_waitS(usbh_urb_t *urb, usbh_urbstatus_t status);
 #define USBH_PORT_FEAT_INDICATOR         22
 
 #define sizeof_array(x) 	(sizeof(x)/sizeof(*(x)))
+
+#include "usbh/desciter.h"	/* descriptor iterators */
+#include "usbh/debug.h"
 
 #endif
 

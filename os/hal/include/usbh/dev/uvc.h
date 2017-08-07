@@ -22,11 +22,7 @@
 
 #if HAL_USE_USBH && HAL_USBH_USE_UVC
 
-/* TODO:
- *
- *
- */
-
+#include "usbh/desciter.h"
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -394,9 +390,6 @@ extern USBHUVCDriver USBHUVCD[HAL_USBHUVC_MAX_INSTANCES];
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-	void usbhuvcObjectInit(USBHUVCDriver *uvcd);
-
 	static inline usbhuvc_state_t usbhuvcGetState(USBHUVCDriver *uvcd) {
 		return uvcd->state;
 	}
@@ -457,11 +450,6 @@ extern "C" {
 	static inline void usbhuvcFreeStatusMessage(USBHUVCDriver *uvcdp, usbhuvc_message_status_t *msg) {
 		chPoolFree(&uvcdp->mp_status, msg);
 	}
-
-
-	/* global initializer */
-	void usbhuvcInit(void);
-
 #ifdef __cplusplus
 }
 #endif

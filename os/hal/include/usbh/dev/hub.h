@@ -88,10 +88,6 @@ static inline usbh_urbstatus_t usbhhubSetFeaturePort(usbh_port_t *port, uint8_t 
 				0);
 }
 
-void usbhhubObjectInit(USBHHubDriver *hubdp);
-
-void usbhhubInit(void);
-
 #else
 
 static inline usbh_urbstatus_t usbhhubControlRequest(USBHDriver *host,

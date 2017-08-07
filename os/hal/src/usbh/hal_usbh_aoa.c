@@ -124,14 +124,16 @@ USBHAOADriver USBHAOAD[HAL_USBHAOA_MAX_INSTANCES];
 
 static usbh_baseclassdriver_t *_aoa_load(usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
 static void _aoa_unload(usbh_baseclassdriver_t *drv);
+static void _aoa_init(void);
 
 static const usbh_classdriver_vmt_t class_driver_vmt = {
+	_aoa_init,
 	_aoa_load,
 	_aoa_unload
 };
 
 const usbh_classdriverinfo_t usbhaoaClassDriverInfo = {
-	0xff, 0xff, 0xff, "AOA", &class_driver_vmt
+	"AOA", &class_driver_vmt
 };
 
 #if defined(HAL_USBHAOA_FILTER_CALLBACK)
@@ -144,7 +146,7 @@ static usbh_baseclassdriver_t *_aoa_load(usbh_device_t *dev, const uint8_t *desc
 
 	if (dev->devDesc.idVendor != AOA_GOOGLE_VID) {
 		uint16_t protocol;
-		static const USBHAOAConfig config = {
+		static USBHAOAConfig config = {
 			{
 				HAL_USBHAOA_DEFAULT_MANUFACTURER,
 				HAL_USBHAOA_DEFAULT_MODEL,
@@ -221,15 +223,9 @@ static usbh_baseclassdriver_t *_aoa_load(usbh_device_t *dev, const uint8_t *desc
 		return NULL;
 	}
 
-	if ((rem < descriptor[0]) || (descriptor[1] != USBH_DT_INTERFACE))
-		return NULL;
-
 	const usbh_interface_descriptor_t * const ifdesc = (const usbh_interface_descriptor_t *)descriptor;
-
-	if ((ifdesc->bInterfaceClass != 0xff)
-		|| (ifdesc->bInterfaceSubClass != 0xff)
-		|| (ifdesc->bInterfaceProtocol != 0x00)
-		|| (ifdesc->bNumEndpoints < 2)) {
+	if ((_usbh_match_descriptor(descriptor, rem, USBH_DT_INTERFACE, 0xFF, 0xFF, 0x00) != HAL_SUCCESS)
+			|| (ifdesc->bNumEndpoints < 2)) {
 		uerr("AOA: This IF is not the Accessory IF");
 		return NULL;
 	}
@@ -299,7 +295,6 @@ static void _aoa_unload(usbh_baseclassdriver_t *drv) {
 	_stop_channelS(&aoap->channel);
 	aoap->channel.state = USBHAOA_CHANNEL_STATE_STOP;
 	aoap->state = USBHAOA_STATE_STOP;
-	osalOsRescheduleS();
 	osalSysUnlock();
 }
 
@@ -341,15 +336,15 @@ static size_t _write_timeout(USBHAOAChannel *aoacp, const uint8_t *bp,
 	chDbgCheck(n > 0U);
 
 	size_t w = 0;
-	chSysLock();
+	osalSysLock();
 	while (true) {
 		if (aoacp->state != USBHAOA_CHANNEL_STATE_READY) {
-			chSysUnlock();
+			osalSysUnlock();
 			return w;
 		}
 		while (usbhURBIsBusy(&aoacp->oq_urb)) {
 			if (chThdEnqueueTimeoutS(&aoacp->oq_waiting, timeout) != Q_OK) {
-				chSysUnlock();
+				osalSysUnlock();
 				return w;
 			}
 		}
@@ -357,30 +352,30 @@ static size_t _write_timeout(USBHAOAChannel *aoacp, const uint8_t *bp,
 		*aoacp->oq_ptr++ = *bp++;
 		if (--aoacp->oq_counter == 0) {
 			_submitOutI(aoacp, 64);
-			chSchRescheduleS();
+			osalOsRescheduleS();
 		}
-		chSysUnlock(); /* Gives a preemption chance in a controlled point.*/
+		osalSysUnlock(); /* Gives a preemption chance in a controlled point.*/
 
 		w++;
 		if (--n == 0U)
 			return w;
 
-		chSysLock();
+		osalSysLock();
 	}
 }
 
 static msg_t _put_timeout(USBHAOAChannel *aoacp, uint8_t b, systime_t timeout) {
 
-	chSysLock();
+	osalSysLock();
 	if (aoacp->state != USBHAOA_CHANNEL_STATE_READY) {
-		chSysUnlock();
+		osalSysUnlock();
 		return Q_RESET;
 	}
 
 	while (usbhURBIsBusy(&aoacp->oq_urb)) {
 		msg_t msg = chThdEnqueueTimeoutS(&aoacp->oq_waiting, timeout);
 		if (msg < Q_OK) {
-			chSysUnlock();
+			osalSysUnlock();
 			return msg;
 		}
 	}
@@ -388,9 +383,9 @@ static msg_t _put_timeout(USBHAOAChannel *aoacp, uint8_t b, systime_t timeout) {
 	*aoacp->oq_ptr++ = b;
 	if (--aoacp->oq_counter == 0) {
 		_submitOutI(aoacp, 64);
-		chSchRescheduleS();
+		osalOsRescheduleS();
 	}
-	chSysUnlock();
+	osalSysUnlock();
 	return Q_OK;
 }
 
@@ -439,41 +434,41 @@ static size_t _read_timeout(USBHAOAChannel *aoacp, uint8_t *bp,
 
 	chDbgCheck(n > 0U);
 
-	chSysLock();
+	osalSysLock();
 	while (true) {
 		if (aoacp->state != USBHAOA_CHANNEL_STATE_READY) {
-			chSysUnlock();
+			osalSysUnlock();
 			return r;
 		}
 		while (aoacp->iq_counter == 0) {
 			if (!usbhURBIsBusy(&aoacp->iq_urb))
 				_submitInI(aoacp);
 			if (chThdEnqueueTimeoutS(&aoacp->iq_waiting, timeout) != Q_OK) {
-				chSysUnlock();
+				osalSysUnlock();
 				return r;
 			}
 		}
 		*bp++ = *aoacp->iq_ptr++;
 		if (--aoacp->iq_counter == 0) {
 			_submitInI(aoacp);
-			chSchRescheduleS();
+			osalOsRescheduleS();
 		}
-		chSysUnlock();
+		osalSysUnlock();
 
 		r++;
 		if (--n == 0U)
 			return r;
 
-		chSysLock();
+		osalSysLock();
 	}
 }
 
 static msg_t _get_timeout(USBHAOAChannel *aoacp, systime_t timeout) {
 	uint8_t b;
 
-	chSysLock();
+	osalSysLock();
 	if (aoacp->state != USBHAOA_CHANNEL_STATE_READY) {
-		chSysUnlock();
+		osalSysUnlock();
 		return Q_RESET;
 	}
 	while (aoacp->iq_counter == 0) {
@@ -481,16 +476,16 @@ static msg_t _get_timeout(USBHAOAChannel *aoacp, systime_t timeout) {
 			_submitInI(aoacp);
 		msg_t msg = chThdEnqueueTimeoutS(&aoacp->iq_waiting, timeout);
 		if (msg < Q_OK) {
-			chSysUnlock();
+			osalSysUnlock();
 			return msg;
 		}
 	}
 	b = *aoacp->iq_ptr++;
 	if (--aoacp->iq_counter == 0) {
 		_submitInI(aoacp);
-		chSchRescheduleS();
+		osalOsRescheduleS();
 	}
-	chSysUnlock();
+	osalSysUnlock();
 
 	return (msg_t)b;
 }
@@ -525,11 +520,12 @@ static void _stop_channelS(USBHAOAChannel *aoacp) {
 	chThdDequeueAllI(&aoacp->oq_waiting, Q_RESET);
 	chnAddFlagsI(aoacp, CHN_DISCONNECTED);
 	aoacp->state = USBHAOA_CHANNEL_STATE_ACTIVE;
+	osalOsRescheduleS();
 }
 
 static void _vt(void *p) {
 	USBHAOAChannel *const aoacp = (USBHAOAChannel *)p;
-	chSysLockFromISR();
+	osalSysLockFromISR();
 	uint32_t len = aoacp->oq_ptr - aoacp->oq_buff;
 	if (len && !usbhURBIsBusy(&aoacp->oq_urb)) {
 		_submitOutI(aoacp, len);
@@ -538,7 +534,7 @@ static void _vt(void *p) {
 		_submitInI(aoacp);
 	}
 	chVTSetI(&aoacp->vt, MS2ST(16), _vt, aoacp);
-	chSysUnlockFromISR();
+	osalSysUnlockFromISR();
 }
 
 void usbhaoaChannelStart(USBHAOADriver *aoap) {
@@ -566,9 +562,7 @@ void usbhaoaChannelStart(USBHAOADriver *aoap) {
 	aoacp->iq_counter = 0;
 	aoacp->iq_ptr = aoacp->iq_buff;
 	usbhEPOpen(&aoacp->epin);
-	osalSysLock();
-	usbhURBSubmitI(&aoacp->iq_urb);
-	osalSysUnlock();
+	usbhURBSubmit(&aoacp->iq_urb);
 
 	chVTObjectInit(&aoacp->vt);
 	chVTSet(&aoacp->vt, MS2ST(16), _vt, aoacp);
@@ -583,7 +577,6 @@ void usbhaoaChannelStop(USBHAOADriver *aoap) {
 			|| (aoap->channel.state == USBHAOA_CHANNEL_STATE_READY));
 	osalSysLock();
 	_stop_channelS(&aoap->channel);
-	osalOsRescheduleS();
 	osalSysUnlock();
 }
 
@@ -658,7 +651,7 @@ static bool _send_string(usbh_device_t *dev, uint8_t index, const char *string)
 	return HAL_SUCCESS;
 }
 
-void usbhaoaObjectInit(USBHAOADriver *aoap) {
+static void _object_init(USBHAOADriver *aoap) {
 	osalDbgCheck(aoap != NULL);
 	memset(aoap, 0, sizeof(*aoap));
 	aoap->info = &usbhaoaClassDriverInfo;
@@ -668,10 +661,10 @@ void usbhaoaObjectInit(USBHAOADriver *aoap) {
 	aoap->channel.state = USBHAOA_CHANNEL_STATE_STOP;
 }
 
-void usbhaoaInit(void) {
+static void _aoa_init(void) {
 	uint8_t i;
 	for (i = 0; i < HAL_USBHAOA_MAX_INSTANCES; i++) {
-		usbhaoaObjectInit(&USBHAOAD[i]);
+		_object_init(&USBHAOAD[i]);
 	}
 }
 
