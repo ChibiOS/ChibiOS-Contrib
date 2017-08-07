@@ -126,7 +126,10 @@ start:
             if (usbhftdipGetState(ftdipp) != USBHFTDIP_STATE_READY)
                 goto start;
             if (!shelltp) {
-                shelltp = shellCreate(&shell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
+                shelltp = chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
+                                              "shell", NORMALPRIO,
+                                              shellThread, (void *)&shell_cfg1);
+
             } else if (chThdTerminatedX(shelltp)) {
                 chThdRelease(shelltp);
                 if (usbhftdipGetState(ftdipp) != USBHFTDIP_STATE_READY)
