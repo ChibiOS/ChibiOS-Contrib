@@ -244,7 +244,6 @@ static bool _activate_ep(USBHDriver *host, usbh_ep_t *ep) {
 			ep->xfer.buf = urb->buff;
 		}
 		ep->xfer.error_count = 0;
-		//urb->status = USBH_URBSTATUS_QUEUED;
 	} else {
 		osalDbgCheck(urb->requestedLength >= urb->actualLength);
 
@@ -1026,25 +1025,36 @@ static inline void _sof_int(USBHDriver *host) {
 #undef HPRT_PLSTS_MASK
 #define HPRT_PLSTS_MASK (3U<<10)
 	if (host->check_ls_activity) {
-		uint16_t remaining = host->otg->HFNUM >> 16;
+		stm32_otg_t *const otg = host->otg;
+		uint16_t remaining = otg->HFNUM >> 16;
 		if (remaining < 5975) {
 			uwarnf("LS: ISR called too late (time=%d)", 6000 - remaining);
 			return;
 		}
-		/* 15us loop */
+		/* 15us loop during which we check if the core generates an actual keep-alive
+		 * (or activity other than idle) on the DP/DM lines. After 15us, we abort
+		 * the loop and wait for the next SOF. If no activity is detected, the upper
+		 * layer will time-out waiting for the reset to happen, and the port will remain
+		 * enabled (though in a dumb state). This will be detected on the next port reset
+		 * request and the OTG core will be reset. */
 		for (;;) {
-			uint32_t line_status = host->otg->HPRT & HPRT_PLSTS_MASK;
-			remaining = host->otg->HFNUM >> 16;
+			uint32_t line_status = otg->HPRT & HPRT_PLSTS_MASK;
+			remaining = otg->HFNUM >> 16;
+			if (!(otg->HPRT & HPRT_PENA)) {
+				uwarn("LS: Port disabled");
+				return;
+			}
 			if (line_status != HPRT_PLSTS_DM) {
+				/* success; report that the port is enabled */
 				uinfof("LS: activity detected, line=%d, time=%d", line_status >> 10,  6000 - remaining);
 				host->check_ls_activity = FALSE;
-				host->otg->GINTMSK = (host->otg->GINTMSK & ~GINTMSK_SOFM) | (GINTMSK_HCM | GINTMSK_RXFLVLM);
+				otg->GINTMSK = (otg->GINTMSK & ~GINTMSK_SOFM) | (GINTMSK_HCM | GINTMSK_RXFLVLM);
 				host->rootport.lld_status |= USBH_PORTSTATUS_ENABLE;
 				host->rootport.lld_c_status |= USBH_PORTSTATUS_C_ENABLE;
 				return;
 			}
 			if (remaining < 5910) {
-				uwarn("LS: No activity detected");
+				udbg("LS: No activity detected");
 				return;
 			}
 		}
@@ -1155,9 +1165,6 @@ static inline void _nptxfe_int(USBHDriver *host) {
 
 	rem += _write_packet(&host->ep_active_lists[USBH_EPTYPE_BULK],
 			otg->HNPTXSTS & HPTXSTS_PTXFSAVL_MASK);
-
-//	if (rem)
-//		otg->GINTMSK |= GINTMSK_NPTXFEM;
 
 	if (!rem)
 		otg->GINTMSK &= ~GINTMSK_NPTXFEM;
@@ -1655,7 +1662,7 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestTy
 			hprt = otg->HPRT;
 			if (hprt & HPRT_PENA) {
 				/* This can occur when the OTG core doesn't generate traffic
-				 * despite reporting a successful por enable  */
+				 * despite reporting a successful por enable. */
 				uerr("Detected enabled port; resetting OTG core");
 				otg->GAHBCFG = 0;
 				osalThreadSleepS(MS2ST(20));
