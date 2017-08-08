@@ -11,6 +11,7 @@ HALCONF := $(strip $(shell cat halconf.h | egrep -e "\#define"))
 endif
 
 # Drivers compatible with the platform.
+include $(CHIBIOS_CONTRIB)/os/hal/ports/TIVA/LLD/ADC/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/TIVA/LLD/GPIO/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/TIVA/LLD/GPTM/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/TIVA/LLD/I2C/driver.mk
