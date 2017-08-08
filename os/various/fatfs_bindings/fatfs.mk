@@ -4,4 +4,4 @@ FATFSSRC = ${CHIBIOS_CONTRIB}/os/various/fatfs_bindings/fatfs_diskio.c \
            ${CHIBIOS}/ext/fatfs/src/ff.c \
            ${CHIBIOS}/ext/fatfs/src/option/unicode.c
 
-FATFSINC = ${CHIBIOS}/ext/fatfs/src
+FATFSINC = ${CHIBIOS}/ext/fatfs/src ${CHIBIOS_CONTRIB}/os/various/fatfs_bindings
