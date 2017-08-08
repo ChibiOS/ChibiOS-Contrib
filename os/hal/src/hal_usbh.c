@@ -233,11 +233,8 @@ void usbhURBSubmitI(usbh_urb_t *urb) {
 		_usbh_urb_completeI(urb, USBH_URBSTATUS_STALL);
 		return;
 	}
-	if (ep->status != USBH_EPSTATUS_OPEN) {
-		_usbh_urb_completeI(urb, USBH_URBSTATUS_DISCONNECTED);
-		return;
-	}
-	if (!(usbhDeviceGetPort(ep->device)->status & USBH_PORTSTATUS_ENABLE)) {
+	if ((ep->status != USBH_EPSTATUS_OPEN)
+		|| !(usbhDeviceGetPort(ep->device)->status & USBH_PORTSTATUS_ENABLE)) {
 		_usbh_urb_completeI(urb, USBH_URBSTATUS_DISCONNECTED);
 		return;
 	}
@@ -271,18 +268,11 @@ void _usbh_urb_abort_and_waitS(usbh_urb_t *urb, usbh_urbstatus_t status) {
 		osalThreadSuspendS(&urb->abortingThread);
 		osalDbgAssert(urb->abortingThread == 0, "maybe we should uncomment the line below");
 		//urb->abortingThread = 0;
-	}
-#if !(USBH_DEBUG_ENABLE && USBH_DEBUG_ENABLE_WARNINGS)
-	else {
+	} else {
 		/* This call is necessary because _usbh_urb_abortI may require a reschedule */
 		osalOsRescheduleS();
 	}
-#else
 	uwarn("URB aborted");
-	osalOsRescheduleS();	/* debug printing functions call I-class functions inside
-	 	 	 	 	 	 	 which may cause a priority violation without this call
-							Also, _usbh_urb_abortI may require a reschedule */
-#endif
 }
 
 /* usbhURBCancelI may require a reschedule if called from a S-locked state */
@@ -295,34 +285,14 @@ void usbhURBCancelAndWaitS(usbh_urb_t *urb) {
 }
 
 msg_t usbhURBWaitTimeoutS(usbh_urb_t *urb, systime_t timeout) {
-	msg_t ret;
-
 	osalDbgCheckClassS();
 	_check_urb(urb);
-
-	switch (urb->status) {
-	case USBH_URBSTATUS_INITIALIZED:
-	case USBH_URBSTATUS_PENDING:
-		ret = osalThreadSuspendTimeoutS(&urb->waitingThread, timeout);
-		osalDbgAssert(urb->waitingThread == 0, "maybe we should uncomment the line below");
-		//urb->waitingThread = 0;
-		break;
-
-	case USBH_URBSTATUS_OK:
-		ret = MSG_OK;
-		break;
-
-/*	case USBH_URBSTATUS_UNINITIALIZED:
- *	case USBH_URBSTATUS_ERROR:
- *	case USBH_URBSTATUS_TIMEOUT:
- *	case USBH_URBSTATUS_CANCELLED:
- *	case USBH_URBSTATUS_STALL:
- *	case USBH_URBSTATUS_DISCONNECTED: */
-	default:
-		ret = MSG_RESET;
-		break;
+	if (urb->status == USBH_URBSTATUS_OK) {
+		return MSG_OK;
+	} else if (urb->status != USBH_URBSTATUS_PENDING) {
+		return MSG_RESET;
 	}
-	return ret;
+	return osalThreadSuspendTimeoutS(&urb->waitingThread, timeout);
 }
 
 msg_t usbhURBSubmitAndWaitS(usbh_urb_t *urb, systime_t timeout) {
@@ -844,9 +814,6 @@ bool usbhDeviceReadString(usbh_device_t *dev, char *dest, uint8_t size,
 	return HAL_SUCCESS;
 }
 
-
-
-
 /*===========================================================================*/
 /* Port processing functions.                                                */
 /*===========================================================================*/
@@ -908,13 +875,13 @@ static void _port_process_status_change(usbh_port_t *port) {
 	if (port->c_status & USBH_PORTSTATUS_C_RESET) {
 		port->c_status &= ~USBH_PORTSTATUS_C_RESET;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_RESET);
-		uinfof("Port %d: reset=%d", port->number, port->status & USBH_PORTSTATUS_RESET ? 1 : 0);
+		udbgf("Port %d: reset=%d", port->number, port->status & USBH_PORTSTATUS_RESET ? 1 : 0);
 	}
 
 	if (port->c_status & USBH_PORTSTATUS_C_ENABLE) {
 		port->c_status &= ~USBH_PORTSTATUS_C_ENABLE;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_ENABLE);
-		uinfof("Port %d: enable=%d", port->number, port->status & USBH_PORTSTATUS_ENABLE ? 1 : 0);
+		udbgf("Port %d: enable=%d", port->number, port->status & USBH_PORTSTATUS_ENABLE ? 1 : 0);
 	}
 
 	if (port->c_status & USBH_PORTSTATUS_C_OVERCURRENT) {
@@ -1094,7 +1061,6 @@ void _usbh_port_disconnected(usbh_port_t *port) {
 
 	port->device.status = USBH_DEVSTATUS_DISCONNECTED;
 }
-
 
 
 /*===========================================================================*/
