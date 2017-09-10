@@ -165,6 +165,10 @@
 #define TIVA_UDMA_REQUIRED
 #endif
 
+#if SPI_SELECT_MODE == SPI_SELECT_MODE_LLD
+#error "SPI_SELECT_MODE_LLD not supported by this driver"
+#endif
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
@@ -189,16 +193,34 @@ typedef struct {
   /**
    * @brief Operation complete callback or @p NULL.
    */
-  spicallback_t         end_cb;
+  spicallback_t             end_cb;
+#if (SPI_SELECT_MODE == SPI_SELECT_MODE_LINE) || defined(__DOXYGEN__)
+  /**
+   * @brief The chip select line.
+   */
+  ioline_t                  ssline;
+#endif
+#if (SPI_SELECT_MODE == SPI_SELECT_MODE_PORT) || defined(__DOXYGEN__)
+  /**
+   * @brief The chip select port.
+   */
+  ioportid_t                ssport;
+  /**
+   * @brief The chip select port mask.
+   */
+  uint8fast_t               ssmask;
+#endif
+#if (SPI_SELECT_MODE == SPI_SELECT_MODE_PAD) || defined(__DOXYGEN__)
+  /**
+   * @brief The chip select port.
+   */
+  ioportid_t                ssport;
+  /**
+   * @brief The chip select pad number.
+   */
+  uint_fast8_t              sspad;
+#endif
   /* End of the mandatory fields.*/
-  /**
-   * @brief The chip select line port.
-   */
-  ioportid_t            ssport;
-  /**
-   * @brief The chip select line pad number.
-   */
-  uint16_t              sspad;
   /**
    * @brief SSI CR0 initialization data.
    */
@@ -289,8 +311,10 @@ extern "C" {
   void spi_lld_init(void);
   void spi_lld_start(SPIDriver *spip);
   void spi_lld_stop(SPIDriver *spip);
+#if (SPI_SELECT_MODE == SPI_SELECT_MODE_LLD) || defined(__DOXYGEN__)
   void spi_lld_select(SPIDriver *spip);
   void spi_lld_unselect(SPIDriver *spip);
+#endif
   void spi_lld_ignore(SPIDriver *spip, size_t n);
   void spi_lld_exchange(SPIDriver *spip, size_t n,
                         const void *txbuf, void *rxbuf);
