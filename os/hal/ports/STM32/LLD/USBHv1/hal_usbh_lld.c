@@ -1172,9 +1172,21 @@ static inline void _nptxfe_int(USBHDriver *host) {
 }
 
 static inline void _ptxfe_int(USBHDriver *host) {
-	//TODO: implement
-	(void)host;
-	uinfo("PTXFE");
+	// //TODO: implement
+	// (void)host;
+	// uinfo("PTXFE");
+
+	uint32_t rem;
+	stm32_otg_t *const otg = host->otg;
+
+	rem = _write_packet(&host->ep_active_lists[USBH_EPTYPE_CTRL],
+			otg->HNPTXSTS & HPTXSTS_PTXFSAVL_MASK);
+
+	rem += _write_packet(&host->ep_active_lists[USBH_EPTYPE_INT],
+			otg->HNPTXSTS & HPTXSTS_PTXFSAVL_MASK);
+
+	if (!rem)
+		otg->GINTMSK &= ~GINTMSK_PTXFEM;
 }
 
 static void _disable(USBHDriver *host) {

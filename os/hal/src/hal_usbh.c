@@ -338,7 +338,7 @@ usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
 
 	osalDbgCheck(ep != NULL);
 	osalDbgCheck((data != NULL) || (len == 0));
-	osalDbgAssert(ep->type == USBH_EPTYPE_BULK, "wrong ep");
+	// osalDbgAssert(ep->type == USBH_EPTYPE_BULK, "wrong ep");
 
 	usbh_urb_t urb;
 	usbhURBObjectInit(&urb, ep, 0, 0, data, len);
