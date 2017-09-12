@@ -52,7 +52,9 @@
 #define HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS	FALSE
 #endif
 
+#ifndef HAL_USBH_USE_IAD
 #define HAL_USBH_USE_IAD     HAL_USBH_USE_UVC
+#endif
 
 #if (HAL_USE_USBH == TRUE) || defined(__DOXYGEN__)
 
