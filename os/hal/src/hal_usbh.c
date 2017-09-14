@@ -337,10 +337,10 @@ usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
 		systime_t timeout) {
 	osalDbgAssert(ep->type == USBH_EPTYPE_BULK, "wrong ep");
 
-	return usbhSyncrhonousTransfer(ep,data,len,actual_len,timeout);
+	return usbhSynchronousTransfer(ep,data,len,actual_len,timeout);
 }
 
-usbh_urbstatus_t usbhSyncrhonousTransfer(usbh_ep_t *ep,
+usbh_urbstatus_t usbhSynchronousTransfer(usbh_ep_t *ep,
 		void *data,
 		uint32_t len,
 		uint32_t *actual_len,
