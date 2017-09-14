@@ -301,6 +301,12 @@ extern "C" {
 	}
 
 	/* Synchronous API */
+	usbh_urbstatus_t usbhSyncrhonousTransfer(usbh_ep_t *ep,
+			void *data,
+			uint32_t len,
+			uint32_t *actual_len,
+			systime_t timeout);
+
 	usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
 			void *data,
 			uint32_t len,

@@ -335,10 +335,19 @@ usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
 		uint32_t len,
 		uint32_t *actual_len,
 		systime_t timeout) {
+	osalDbgAssert(ep->type == USBH_EPTYPE_BULK, "wrong ep");
+
+	return usbhSyncrhonousTransfer(ep,data,len,actual_len,timeout);
+}
+
+usbh_urbstatus_t usbhSyncrhonousTransfer(usbh_ep_t *ep,
+		void *data,
+		uint32_t len,
+		uint32_t *actual_len,
+		systime_t timeout) {
 
 	osalDbgCheck(ep != NULL);
 	osalDbgCheck((data != NULL) || (len == 0));
-	// osalDbgAssert(ep->type == USBH_EPTYPE_BULK, "wrong ep");
 
 	usbh_urb_t urb;
 	usbhURBObjectInit(&urb, ep, 0, 0, data, len);
