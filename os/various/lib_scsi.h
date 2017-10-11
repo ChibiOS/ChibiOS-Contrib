@@ -133,6 +133,17 @@ typedef struct PACKED_VAR {
 } scsi_inquiry_response_t;
 
 /**
+ * @brief   Represents SCSI unit serial number inquiry response structure.
+ * @details See SCSI specification.
+ */
+typedef struct PACKED_VAR {
+  uint8_t peripheral;
+  uint8_t page_code;
+  uint8_t reserved;
+  uint8_t page_length;
+  uint8_t serianNumber[8];
+} scsi_unit_serial_number_inquiry_response_t;
+/**
  * @brief   Represents SCSI mode sense (6) request structure.
  * @details See SCSI specification.
  */
@@ -225,6 +236,10 @@ typedef struct {
    * @brief   Pointer to SCSI inquiry response object.
    */
   const scsi_inquiry_response_t *inquiry_response;
+  /**
+   * @brief   Pointer to SCSI unit serial number inquiry response object.
+   */
+  const scsi_unit_serial_number_inquiry_response_t *unit_serial_number_inquiry_response;
 } SCSITargetConfig;
 
 /**
