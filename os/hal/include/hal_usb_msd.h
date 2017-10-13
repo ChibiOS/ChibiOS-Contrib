@@ -172,7 +172,8 @@ extern "C" {
   void msdObjectInit(USBMassStorageDriver *msdp);
   void msdStart(USBMassStorageDriver *msdp, USBDriver *usbp,
                 BaseBlockDevice *blkdev, uint8_t *blkbuf,
-                const scsi_inquiry_response_t *scsi_inquiry_response);
+                const scsi_inquiry_response_t *scsi_inquiry_response,
+                const scsi_unit_serial_number_inquiry_response_t *serialInquiry);
   void msdStop(USBMassStorageDriver *msdp);
   bool msd_request_hook(USBDriver *usbp);
 #ifdef __cplusplus

@@ -175,7 +175,12 @@ static bool cmd_ignored(SCSITarget *scsip, const uint8_t *cmd) {
  */
 static bool inquiry(SCSITarget *scsip, const uint8_t *cmd) {
 
-  if ((cmd[1] & 0b11) || cmd[2] != 0) {
+  if ((cmd[1] & 0b1) && cmd[2] == 0x80) {
+    /* Unit serial number page */
+    return transmit_data(scsip, (const uint8_t *)scsip->config->unit_serial_number_inquiry_response,
+                                sizeof(scsi_unit_serial_number_inquiry_response_t));
+  }
+  else if ((cmd[1] & 0b11) || cmd[2] != 0) {
     set_sense(scsip, SCSI_SENSE_KEY_ILLEGAL_REQUEST,
                      SCSI_ASENSE_INVALID_FIELD_IN_CDB,
                      SCSI_ASENSEQ_NO_QUALIFIER);
