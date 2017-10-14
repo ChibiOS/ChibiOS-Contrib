@@ -102,7 +102,7 @@ int main(void) {
    * start mass storage
    */
   msdObjectInit(&USBMSD1);
-  msdStart(&USBMSD1, &USBD1, (BaseBlockDevice *)&ramdisk, blkbuf, NULL);
+  msdStart(&USBMSD1, &USBD1, (BaseBlockDevice *)&ramdisk, blkbuf, NULL, NULL);
 
   /*
    *
