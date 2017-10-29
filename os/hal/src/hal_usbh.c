@@ -330,16 +330,6 @@ void _usbh_urb_completeI(usbh_urb_t *urb, usbh_urbstatus_t status) {
 /* Synchronous API.                                                          */
 /*===========================================================================*/
 
-usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
-		void *data,
-		uint32_t len,
-		uint32_t *actual_len,
-		systime_t timeout) {
-	osalDbgAssert(ep->type == USBH_EPTYPE_BULK, "wrong ep");
-
-	return usbhSynchronousTransfer(ep,data,len,actual_len,timeout);
-}
-
 usbh_urbstatus_t usbhSynchronousTransfer(usbh_ep_t *ep,
 		void *data,
 		uint32_t len,

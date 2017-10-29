@@ -307,11 +307,16 @@ extern "C" {
 			uint32_t *actual_len,
 			systime_t timeout);
 
-	usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
+	static inline usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
 			void *data,
 			uint32_t len,
 			uint32_t *actual_len,
-			systime_t timeout);
+			systime_t timeout) {
+		osalDbgAssert(ep->type == USBH_EPTYPE_BULK, "wrong ep");
+
+		return usbhSynchronousTransfer(ep, data, len, actual_len, timeout);
+	}
+
 	usbh_urbstatus_t usbhControlRequest(usbh_device_t *dev,
 			uint8_t bmRequestType,
 			uint8_t bRequest,
