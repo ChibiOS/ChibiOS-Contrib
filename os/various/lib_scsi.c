@@ -159,7 +159,6 @@ static bool cmd_ignored(SCSITarget *scsip, const uint8_t *cmd) {
   (void)scsip;
   (void)cmd;
 
-  set_sense_ok(scsip);
   return SCSI_SUCCESS;
 }
 
@@ -175,7 +174,12 @@ static bool cmd_ignored(SCSITarget *scsip, const uint8_t *cmd) {
  */
 static bool inquiry(SCSITarget *scsip, const uint8_t *cmd) {
 
-  if ((cmd[1] & 0b11) || cmd[2] != 0) {
+  if ((cmd[1] & 0b1) && cmd[2] == 0x80) {
+    /* Unit serial number page */
+    return transmit_data(scsip, (const uint8_t *)scsip->config->unit_serial_number_inquiry_response,
+                                sizeof(scsi_unit_serial_number_inquiry_response_t));
+  }
+  else if ((cmd[1] & 0b11) || cmd[2] != 0) {
     set_sense(scsip, SCSI_SENSE_KEY_ILLEGAL_REQUEST,
                      SCSI_ASENSE_INVALID_FIELD_IN_CDB,
                      SCSI_ASENSEQ_NO_QUALIFIER);
@@ -199,10 +203,7 @@ static bool inquiry(SCSITarget *scsip, const uint8_t *cmd) {
  */
 static bool request_sense(SCSITarget *scsip, const uint8_t *cmd) {
 
-  uint32_t tmp;
-  memcpy(&tmp, &cmd[1], 3);
-
-  if ((tmp != 0) || (cmd[4] != sizeof(scsi_sense_response_t))) {
+  if (((cmd[1] & 0x01) != 0) || (cmd[4] != sizeof(scsi_sense_response_t))) {
     set_sense(scsip, SCSI_SENSE_KEY_ILLEGAL_REQUEST,
                      SCSI_ASENSE_INVALID_FIELD_IN_CDB,
                      SCSI_ASENSEQ_NO_QUALIFIER);
@@ -378,6 +379,30 @@ static bool data_read_write10(SCSITarget *scsip, const uint8_t *cmd) {
   }
   return SCSI_SUCCESS;
 }
+
+/**
+ * @brief   SCSI test unit ready command handler
+ * @details If block device is inserted, sets sense data in 'all OK' condition
+ *          and returns success status.
+ *          If block device is not inserted, sets sense data to 'Medium not present' considion,
+ *          and returns check condition status.
+ */
+static bool test_unit_ready(SCSITarget *scsip, const uint8_t *cmd) {
+  (void)cmd;
+
+  if (blkIsInserted(scsip->config->blkdev)) {
+    return SCSI_SUCCESS;
+  }
+  else {
+    warnprintf("SCSI Medium is not inserted.\r\n");
+    set_sense(scsip, SCSI_SENSE_KEY_NOT_READY,
+                     SCSI_ASENSE_MEDIUM_NOT_PRESENT,
+                     SCSI_ASENSEQ_NO_QUALIFIER);
+    return SCSI_FAILED;
+  }
+
+}
+
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
@@ -398,54 +423,69 @@ static bool data_read_write10(SCSITarget *scsip, const uint8_t *cmd) {
  */
 bool scsiExecCmd(SCSITarget *scsip, const uint8_t *cmd) {
 
-  /* status will be overwritten later in case of error */
-  set_sense_ok(scsip);
+  bool ret = SCSI_SUCCESS;
 
   switch (cmd[0]) {
   case SCSI_CMD_INQUIRY:
     dbgprintf("SCSI_CMD_INQUIRY\r\n");
-    return inquiry(scsip, cmd);
+    ret = inquiry(scsip, cmd);
+    break;
 
   case SCSI_CMD_REQUEST_SENSE:
     dbgprintf("SCSI_CMD_REQUEST_SENSE\r\n");
-    return request_sense(scsip, cmd);
+    ret = request_sense(scsip, cmd);
+    break;
 
   case SCSI_CMD_READ_CAPACITY_10:
     dbgprintf("SCSI_CMD_READ_CAPACITY_10\r\n");
-    return read_capacity10(scsip, cmd);
+    ret = read_capacity10(scsip, cmd);
+    break;
 
   case SCSI_CMD_READ_10:
     dbgprintf("SCSI_CMD_READ_10\r\n");
-    return data_read_write10(scsip, cmd);
+    ret = data_read_write10(scsip, cmd);
+    break;
 
   case SCSI_CMD_WRITE_10:
     dbgprintf("SCSI_CMD_WRITE_10\r\n");
-    return data_read_write10(scsip, cmd);
+    ret = data_read_write10(scsip, cmd);
+    break;
 
   case SCSI_CMD_TEST_UNIT_READY:
     dbgprintf("SCSI_CMD_TEST_UNIT_READY\r\n");
-    return cmd_ignored(scsip, cmd);
+    ret = test_unit_ready(scsip, cmd);
+    break;
 
   case SCSI_CMD_PREVENT_ALLOW_MEDIUM_REMOVAL:
     dbgprintf("SCSI_CMD_ALLOW_MEDIUM_REMOVAL\r\n");
-    return cmd_ignored(scsip, cmd);
+    ret = cmd_ignored(scsip, cmd);
+    break;
 
   case SCSI_CMD_MODE_SENSE_6:
     dbgprintf("SCSI_CMD_MODE_SENSE_6\r\n");
-    return mode_sense6(scsip, cmd);
+    ret = mode_sense6(scsip, cmd);
+    break;
 
   case SCSI_CMD_READ_FORMAT_CAPACITIES:
     dbgprintf("SCSI_CMD_READ_FORMAT_CAPACITIES\r\n");
-    return read_format_capacities(scsip, cmd);
+    ret = read_format_capacities(scsip, cmd);
+    break;
 
   case SCSI_CMD_VERIFY_10:
     dbgprintf("SCSI_CMD_VERIFY_10\r\n");
-    return cmd_ignored(scsip, cmd);
+    ret = cmd_ignored(scsip, cmd);
+    break;
 
   default:
     warnprintf("SCSI unhandled command: %X\r\n", cmd[0]);
-    return cmd_unhandled(scsip, cmd);
+    ret = cmd_unhandled(scsip, cmd);
+    break;
   }
+
+  if (ret == SCSI_SUCCESS)
+    set_sense_ok(scsip);
+
+  return ret;
 }
 
 /**
