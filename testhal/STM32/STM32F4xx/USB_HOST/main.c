@@ -464,7 +464,7 @@ start:
         //scan files test
         if (1) {
             usbDbgPuts("FS: Scan files test");
-            strcpy(fbuff, FATFSDEV_MSDLUN0_DRIVE);
+            strcpy((char *)fbuff, FATFSDEV_MSDLUN0_DRIVE);
             scan_files(chp, (char *)fbuff);
         }
     }
