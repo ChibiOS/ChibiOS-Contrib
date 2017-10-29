@@ -206,6 +206,7 @@ DRESULT disk_ioctl (
     void *buff        /* Buffer to send/receive control data */
 )
 {
+  (void)buff;
   switch (pdrv) {
 #if HAL_USE_MMC_SPI
   case FATFSDEV_MMC:
