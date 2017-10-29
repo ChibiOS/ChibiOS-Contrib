@@ -52,7 +52,9 @@
 #define HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS	FALSE
 #endif
 
+#ifndef HAL_USBH_USE_IAD
 #define HAL_USBH_USE_IAD     HAL_USBH_USE_UVC
+#endif
 
 #if (HAL_USE_USBH == TRUE) || defined(__DOXYGEN__)
 
@@ -299,6 +301,12 @@ extern "C" {
 	}
 
 	/* Synchronous API */
+	usbh_urbstatus_t usbhSynchronousTransfer(usbh_ep_t *ep,
+			void *data,
+			uint32_t len,
+			uint32_t *actual_len,
+			systime_t timeout);
+
 	usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
 			void *data,
 			uint32_t len,
