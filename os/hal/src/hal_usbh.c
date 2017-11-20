@@ -302,6 +302,7 @@ msg_t usbhURBSubmitAndWaitS(usbh_urb_t *urb, systime_t timeout) {
 	_check_urb(urb);
 
 	usbhURBSubmitI(urb);
+	osalOsRescheduleS();	/* This call is necessary because usbhURBSubmitI may require a reschedule */
 	ret = usbhURBWaitTimeoutS(urb, timeout);
 	if (ret == MSG_TIMEOUT)
 		_usbh_urb_abort_and_waitS(urb, USBH_URBSTATUS_TIMEOUT);
@@ -859,9 +860,7 @@ static void _port_process_status_change(usbh_port_t *port) {
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_CONNECTION);
 
 		if (port->device.status != USBH_DEVSTATUS_DISCONNECTED) {
-			if (!(port->status & USBH_PORTSTATUS_CONNECTION)) {
-				_usbh_port_disconnected(port);
-			}
+			_usbh_port_disconnected(port);
 		}
 	}
 
