@@ -57,7 +57,7 @@ static const I2CConfig i2cfg =
 int main(void)
 {
   msg_t status = MSG_OK;
-  systime_t tmo = MS2ST(100);
+  systime_t tmo = OSAL_MS2I(100);
 
   /*
    * System initializations.
