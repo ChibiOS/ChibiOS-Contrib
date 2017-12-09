@@ -60,6 +60,27 @@
 #if !defined(KINETIS_SERIAL_USE_UART2) || defined(__DOXYGEN__)
 #define KINETIS_SERIAL_USE_UART2             FALSE
 #endif
+/**
+ * @brief   SD4 driver enable switch.
+ * @details If set to @p TRUE the support for SD4 is included.
+ */
+#if !defined(KINETIS_SERIAL_USE_UART3) || defined(__DOXYGEN__)
+#define KINETIS_SERIAL_USE_UART3             FALSE
+#endif
+/**
+ * @brief   SD5 driver enable switch.
+ * @details If set to @p TRUE the support for SD5 is included.
+ */
+#if !defined(KINETIS_SERIAL_USE_UART4) || defined(__DOXYGEN__)
+#define KINETIS_SERIAL_USE_UART4             FALSE
+#endif
+/**
+ * @brief   SD6 driver enable switch.
+ * @details If set to @p TRUE the support for SD6 is included.
+ */
+#if !defined(KINETIS_SERIAL_USE_UART5) || defined(__DOXYGEN__)
+#define KINETIS_SERIAL_USE_UART5             FALSE
+#endif
 
 /**
  * @brief   UART0 interrupt priority level setting.
@@ -80,6 +101,27 @@
  */
 #if !defined(KINETIS_SERIAL_UART2_PRIORITY) || defined(__DOXYGEN__)
 #define KINETIS_SERIAL_UART2_PRIORITY        12
+#endif
+
+/**
+ * @brief   UART3 interrupt priority level setting.
+ */
+#if !defined(KINETIS_SERIAL_UART3_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_SERIAL_UART3_PRIORITY        12
+#endif
+
+/**
+ * @brief   UART4 interrupt priority level setting.
+ */
+#if !defined(KINETIS_SERIAL_UART4_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_SERIAL_UART4_PRIORITY        12
+#endif
+
+/**
+ * @brief   UART5 interrupt priority level setting.
+ */
+#if !defined(KINETIS_SERIAL_UART5_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_SERIAL_UART5_PRIORITY        12
 #endif
 
 /**
@@ -115,8 +157,21 @@
 #error "UART2 not present in the selected device"
 #endif
 
+#if KINETIS_SERIAL_USE_UART3 && !KINETIS_HAS_SERIAL3
+#error "UART3 not present in the selected device"
+#endif
+
+#if KINETIS_SERIAL_USE_UART4 && !KINETIS_HAS_SERIAL4
+#error "UART4 not present in the selected device"
+#endif
+
+#if KINETIS_SERIAL_USE_UART5 && !KINETIS_HAS_SERIAL5
+#error "UART5 not present in the selected device"
+#endif
+
 #if !(KINETIS_SERIAL_USE_UART0 || KINETIS_SERIAL_USE_UART1 || \
-      KINETIS_SERIAL_USE_UART2)
+      KINETIS_SERIAL_USE_UART2 || KINETIS_SERIAL_USE_UART3 || \
+      KINETIS_SERIAL_USE_UART4 || KINETIS_SERIAL_USE_UART5)
 #error "Serial driver activated but no UART peripheral assigned"
 #endif
 
@@ -201,6 +256,18 @@ extern SerialDriver SD2;
 
 #if KINETIS_SERIAL_USE_UART2 && !defined(__DOXYGEN__)
 extern SerialDriver SD3;
+#endif
+
+#if KINETIS_SERIAL_USE_UART3 && !defined(__DOXYGEN__)
+extern SerialDriver SD4;
+#endif
+
+#if KINETIS_SERIAL_USE_UART4 && !defined(__DOXYGEN__)
+extern SerialDriver SD5;
+#endif
+
+#if KINETIS_SERIAL_USE_UART5 && !defined(__DOXYGEN__)
+extern SerialDriver SD6;
 #endif
 
 #ifdef __cplusplus
