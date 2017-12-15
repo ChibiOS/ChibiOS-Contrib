@@ -29,7 +29,8 @@
 #define HAL_FMC_SDRAM_H_
 
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
-     defined(STM32F429xx) || defined(STM32F439xx))
+     defined(STM32F429xx) || defined(STM32F439xx) || \
+     defined(STM32F769xx))
 
 #include "hal_fsmc.h"
 

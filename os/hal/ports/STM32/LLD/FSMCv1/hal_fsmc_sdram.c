@@ -28,7 +28,8 @@
 #include "hal.h"
 
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
-     defined(STM32F429xx) || defined(STM32F439xx))
+     defined(STM32F429xx) || defined(STM32F439xx) || \
+     defined(STM32F769xx))
 
 #if (STM32_USE_FSMC_SDRAM == TRUE) || defined(__DOXYGEN__)
 
