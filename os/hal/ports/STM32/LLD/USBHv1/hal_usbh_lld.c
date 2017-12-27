@@ -594,9 +594,10 @@ void usbh_lld_ep_open(usbh_ep_t *ep) {
 }
 
 void usbh_lld_ep_close(usbh_ep_t *ep) {
-	usbh_urb_t *urb, *tmp;
+	usbh_urb_t *urb;
 	uinfof("\t%s: Closing EP...", ep->name);
-	list_for_each_entry_safe(urb, usbh_urb_t, tmp, &ep->urb_list, node) {
+	while (!list_empty(&ep->urb_list)) {
+		urb = list_first_entry(&ep->urb_list, usbh_urb_t, node);
 		uinfof("\t%s: Abort URB, USBH_URBSTATUS_DISCONNECTED", ep->name);
 		_usbh_urb_abort_and_waitS(urb, USBH_URBSTATUS_DISCONNECTED);
 	}
