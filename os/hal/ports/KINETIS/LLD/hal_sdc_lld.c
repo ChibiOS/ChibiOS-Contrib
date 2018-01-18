@@ -19,6 +19,18 @@
  * @file    hal_sdc_lld.c
  * @brief   Kinetis SDC subsystem low level driver.
  *
+ * This driver provides a single SDC driver based on the Kinetis
+ * "Secured Digital Host Controller (SDHC)" peripheral.
+ *
+ * In order to use this driver, other peripherals must also be configured:
+ *
+ * The MPU must either be disabled (CESR=0), or it must be configured
+ * to allow the SDHC peripheral DMA access to any data buffers (read
+ * or write).
+ *
+ * The SDHC signals must be routed to the desired pins, and pullups/pulldowns
+ * configured.
+ *
  * @addtogroup SDC
  * @{
  */
@@ -56,10 +68,33 @@
 #define DTOCV_700ms_25MHz    11  /* 11 -> 2^24 -> 671 msec */
 #define DTOCV_700ms_50MHz    12  /* 12 -> 2^25 -> 671 msec */
 
+#if 0
 #define TRACE(t, val)   chDbgWriteTrace ((void *)t, (void *)(uintptr_t)(val))
 #define TRACEI(t, val)  chDbgWriteTraceI((void *)t, (void *)(uintptr_t)(val))
+#else
+#define TRACE(t, val)
+#define TRACEI(t, val)
+#endif
 
 #define DIV_RND_UP(a, b) ( ((a)+(b)-1) / (b) )
+
+/* Error bits from the SD / MMC Card Status response word. */
+/* TODO: These really belong in a HLD, not here. */
+#define MMC_ERR_OUT_OF_RANGE            (1U << 31)
+#define MMC_ERR_ADDRESS                 (1U << 30)
+#define MMC_ERR_BLOCK_LEN               (1U << 29)
+#define MMC_ERR_ERASE_SEQ               (1U << 28)
+#define MMC_ERR_ERASE_PARAM             (1U << 27)
+#define MMC_ERR_WP                      (1U << 26)
+#define MMC_ERR_CARD_IS_LOCKED          (1U << 25)
+#define MMC_ERR_LOCK_UNLOCK_FAILED      (1U << 24)
+#define MMC_ERR_COM_CRC_ERROR           (1U << 23)
+#define MMC_ERR_ILLEGAL_COMMAND         (1U << 22)
+#define MMC_ERR_CARD_ECC_FAILED         (1U << 21)
+#define MMC_ERR_CARD_CONTROLLER         (1U << 20)
+#define MMC_ERR_ERROR                   (1U << 19)
+#define MMC_ERR_CSD_OVERWRITE           (1U << 16)
+#define MMC_ERR_AKE_SEQ                 (1U << 3)
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -96,7 +131,7 @@ static bool sdc_lld_transfer(SDCDriver *, uint32_t, uintptr_t, uint32_t, uint32_
  * you're compiling with optimizations turned off.
  *
  * However if someone compiles with a KINETIS_SDHC_PERIPHERAL_FREQUENCY
- * that is not a compile-tie constant, this function would get emitted.
+ * that is not a compile-time constant, this function would get emitted.
  */
 static uint32_t divisor_settings(unsigned divisor)
 {
@@ -184,6 +219,26 @@ static sdcflags_t translate_cmd_error(uint32_t status) {
   return errors;
 }
 
+static sdcflags_t translate_mmcsd_error(uint32_t cardstatus) {
+  sdcflags_t errors = 0;
+
+  cardstatus &= MMCSD_R1_ERROR_MASK;
+
+  if (cardstatus & MMC_ERR_COM_CRC_ERROR)
+    errors |= SDC_CMD_CRC_ERROR;
+
+  if (cardstatus & MMC_ERR_CARD_ECC_FAILED)
+    errors |= SDC_DATA_CRC_ERROR;
+
+  /* TODO: Extend the HLD error codes at least enough to distinguish
+     between invalid command/parameter errors (card is OK, but
+     retrying w/o change won't help) and other errors */
+  if (cardstatus & ~(MMC_ERR_COM_CRC_ERROR|MMC_ERR_CARD_ECC_FAILED))
+    errors |= SDC_UNHANDLED_ERROR;
+
+  return errors;
+}
+
 /**
  * @brief Perform one CMD transaction on the SD bus.
  */
@@ -194,6 +249,8 @@ static bool send_and_wait_cmd(SDCDriver *sdcp, uint32_t cmd) {
   osalDbgAssert((SDHC->PRSSTAT & (SDHC_PRSSTAT_SDSTB|SDHC_PRSSTAT_CIHB)) == SDHC_PRSSTAT_SDSTB, "Not in expected state");
   osalDbgAssert(SDHC->SYSCTL & SDHC_SYSCTL_SDCLKEN, "Clock disabled");
   osalDbgCheck((cmd & SDHC_XFERTYP_DPSEL) == 0);
+  osalDbgCheck((SDHC->IRQSTAT & (SDHC_IRQSTAT_CIE | SDHC_IRQSTAT_CEBE | SDHC_IRQSTAT_CCE |
+                                 SDHC_IRQSTAT_CTOE | SDHC_IRQSTAT_CC)) == 0);
 
   /* This initiates the CMD transaction */
   TRACE(1, cmd);
@@ -305,8 +362,7 @@ static bool send_and_wait_transfer(SDCDriver *sdcp, uint32_t cmd) {
   uint32_t cmdresp = SDHC->CMDRSP[0];
   if (cmdresp & MMCSD_R1_ERROR_MASK) {
     /* The command was sent, and the card responded with an error indication */
-    /* TODO: See which errors can be translated into HAL errors? */
-    sdcp->errors |= SDC_UNHANDLED_ERROR;
+    sdcp->errors |= translate_mmcsd_error(cmdresp);
     return HAL_FAILED;
   }
 
@@ -358,8 +414,9 @@ static bool send_and_wait_transfer(SDCDriver *sdcp, uint32_t cmd) {
       }
     }
 
-    if (should_cancel)
+    if (should_cancel) {
       recover_after_botched_transfer(sdcp);
+    }
 
     return HAL_FAILED;
   }
@@ -402,8 +459,25 @@ static msg_t wait_interrupt(SDCDriver *sdcp, uint32_t mask) {
 
 static void recover_after_botched_transfer(SDCDriver *sdcp) {
 
-  /* Send a CMD12 to make sure the card isn't still transferring anything */
-  send_and_wait_cmd(sdcp, MMCSD_CMD_STOP_TRANSMISSION);
+  /* Query the card state */
+  uint32_t cardstatus;
+  if (sdc_lld_send_cmd_short_crc(sdcp,
+                                 MMCSD_CMD_SEND_STATUS,
+                                 sdcp->rca, &cardstatus) == HAL_SUCCESS) {
+    sdcp->errors |= translate_mmcsd_error(cardstatus);
+    uint32_t state = MMCSD_R1_STS(cardstatus);
+    if (state == MMCSD_STS_DATA) {
+
+      /* Send a CMD12 to make sure the card isn't still transferring anything */
+      SDHC->CMDARG = 0;
+      send_and_wait_cmd(sdcp,
+                        SDHC_XFERTYP_CMDINX(MMCSD_CMD_STOP_TRANSMISSION) |
+                        SDHC_XFERTYP_CMDTYP_ABORT |
+                        /* TODO: Should we set CICEN and CCCEN here? */
+                        SDHC_XFERTYP_CICEN | SDHC_XFERTYP_CCCEN |
+                        SDHC_XFERTYP_RSPTYP_48b);
+    }
+  }
 
   /* And reset the data block of the SDHC peripheral */
   SDHC->SYSCTL |= SDHC_SYSCTL_RSTD;
@@ -446,9 +520,16 @@ static bool sdc_lld_transfer(SDCDriver *sdcp, uint32_t startblk,
      DTDSEL -> 1 for a read (card-to-host) transfer
      MSBSEL, BCEN -> multiple block transfer using BLKATTR_BLKCNT
      AC12EN -> Automatically issue MMCSD_CMD_STOP_TRANSMISSION at end of transfer
+
+     Setting BLKCOUNT to 1 seems to be necessary even if MSBSEL+BCEN
+     is not set, despite the datasheet suggesting otherwise. I'm not
+     sure if this is a silicon bug or if I'm misunderstanding the
+     datasheet.
   */
+  SDHC->BLKATTR =
+    SDHC_BLKATTR_BLKCNT(n) |
+    SDHC_BLKATTR_BLKSIZE(MMCSD_BLOCK_SIZE);
   if (n == 1) {
-    SDHC->BLKATTR = SDHC_BLKATTR_BLKSIZE(MMCSD_BLOCK_SIZE);
     xfer =
       cmdx |
       SDHC_XFERTYP_CMDTYP_NORMAL |
@@ -456,9 +537,6 @@ static bool sdc_lld_transfer(SDCDriver *sdcp, uint32_t startblk,
       SDHC_XFERTYP_RSPTYP_48b |
       SDHC_XFERTYP_DPSEL | SDHC_XFERTYP_DMAEN;
   } else {
-    SDHC->BLKATTR =
-      SDHC_BLKATTR_BLKCNT(n) |
-      SDHC_BLKATTR_BLKSIZE(MMCSD_BLOCK_SIZE);
     xfer =
       cmdx |
       SDHC_XFERTYP_CMDTYP_NORMAL |
