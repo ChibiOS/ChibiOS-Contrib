@@ -1,6 +1,6 @@
 /*
     ChibiOS - Copyright (C) 2006..2016 Giovanni Di Sirio
-              Copyright (C) 2017 Wim Lewis
+              Copyright (C) 2017..2018 Wim Lewis
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -219,6 +219,12 @@ static sdcflags_t translate_cmd_error(uint32_t status) {
   return errors;
 }
 
+/**
+ * Translate error bits from a card's R1 response word into the HAL's
+ * error flag set.
+ *
+ * This function should probably be in the HLD, not here.
+ */
 static sdcflags_t translate_mmcsd_error(uint32_t cardstatus) {
   sdcflags_t errors = 0;
 
@@ -256,29 +262,11 @@ static bool send_and_wait_cmd(SDCDriver *sdcp, uint32_t cmd) {
   TRACE(1, cmd);
   SDHC->XFERTYP = cmd;
 
-  /* TODO: Wait on the completion interrupt instead of spin-polling. Are we in a sys-locked state at this point or not? */
-
-  int spincount = 0;
-  uint32_t status;
   uint32_t events =
     SDHC_IRQSTAT_CIE | SDHC_IRQSTAT_CEBE | SDHC_IRQSTAT_CCE |
     SDHC_IRQSTAT_CTOE | /* SDHC_IRQSTAT_CRM | */ SDHC_IRQSTAT_CC;
-  for(;;) {
-    status = SDHC->IRQSTAT & events;
-    if (status & (SDHC_IRQSTAT_CTOE | SDHC_IRQSTAT_CC))
-      break;
-    osalThreadSleepMilliseconds(1);
-    spincount ++;
-    if (spincount > 1000) {
-      /* Shouldn't happen: the SDHC controller has its own timeout
-	 mechanism and should eventually set CTOE, unless we've done
-	 something like accidentally gate off the clock to the SDHC
-	 module */
-      break;
-    }
-  }
-
-  TRACE(2, status);
+  wait_interrupt(sdcp, SDHC_IRQSTAT_CTOE | SDHC_IRQSTAT_CC);
+  uint32_t status = SDHC->IRQSTAT & events;
 
   /* These bits are write-1-to-clear (w1c) */
   SDHC->IRQSTAT = status;
@@ -290,6 +278,8 @@ static bool send_and_wait_cmd(SDCDriver *sdcp, uint32_t cmd) {
 
   /* Translate the failure into the flags understood by the top half */
   sdcp->errors |= translate_cmd_error(status);
+
+  TRACE(9, SDHC->PRSSTAT);
 
   /* Issue a reset to the CMD portion of the SDHC peripheral to clear the
      error bits and enable subsequent commands */
@@ -360,6 +350,7 @@ static bool send_and_wait_transfer(SDCDriver *sdcp, uint32_t cmd) {
   }
 
   uint32_t cmdresp = SDHC->CMDRSP[0];
+  TRACE(11, cmdresp);
   if (cmdresp & MMCSD_R1_ERROR_MASK) {
     /* The command was sent, and the card responded with an error indication */
     sdcp->errors |= translate_mmcsd_error(cmdresp);
@@ -670,6 +661,8 @@ void sdc_lld_start_clk(SDCDriver *sdcp) {
      insertion or power-on, but the abridged SDHC specifications I
      have don't seem to mention it) */
   SDHC->SYSCTL |= SDHC_SYSCTL_INITA;
+
+  TRACE(9, SDHC->PRSSTAT);
 }
 
 /**
@@ -827,6 +820,7 @@ bool sdc_lld_send_cmd_short_crc(SDCDriver *sdcp, uint8_t cmd, uint32_t arg,
   bool waited = send_and_wait_cmd(sdcp, xfer);
 
   *resp = SDHC->CMDRSP[0];
+  TRACE(11, *resp);
 
   return waited;
 }
