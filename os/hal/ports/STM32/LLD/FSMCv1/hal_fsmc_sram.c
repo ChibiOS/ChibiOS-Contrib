@@ -148,7 +148,10 @@ void fsmcSramStop(SRAMDriver *sramp) {
     uint32_t mask = FSMC_BCR_MBKEN;
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
-     defined(STM32F7))
+     defined(STM32F745xx) || defined(STM32F746xx) || \
+     defined(STM32F756xx) || defined(STM32F767xx) || \
+     defined(STM32F769xx) || defined(STM32F777xx) || \
+     defined(STM32F779xx))
     mask |= FSMC_BCR_CCLKEN;
 #endif
     sramp->sram->BCR &= ~mask;
