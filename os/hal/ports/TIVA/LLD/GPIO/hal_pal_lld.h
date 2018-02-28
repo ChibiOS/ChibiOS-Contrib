@@ -337,149 +337,19 @@ typedef uint32_t ioportid_t;
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
-#if defined(TM4C123x)
-
-/**
- * @brief   GPIOA AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOA. When set
- *          to @p FALSE the APB bus is used to access GPIOA.
- */
-#if !defined(TIVA_GPIO_GPIOA_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOA_USE_AHB             TRUE
-#endif
-
-/**
- * @brief   GPIOB AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOB. When set
- *          to @p FALSE the APB bus is used to access GPIOB.
- */
-#if !defined(TIVA_GPIO_GPIOB_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOB_USE_AHB             TRUE
-#endif
-
-/**
- * @brief   GPIOC AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOC. When set
- *          to @p FALSE the APB bus is used to access GPIOC.
- */
-#if !defined(TIVA_GPIO_GPIOC_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOC_USE_AHB             TRUE
-#endif
-
-/**
- * @brief   GPIOD AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOD. When set
- *          to @p FALSE the APB bus is used to access GPIOD.
- */
-#if !defined(TIVA_GPIO_GPIOD_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOD_USE_AHB             TRUE
-#endif
-
-/**
- * @brief   GPIOE AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOE. When set
- *          to @p FALSE the APB bus is used to access GPIOE.
- */
-#if !defined(TIVA_GPIO_GPIOE_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOE_USE_AHB             TRUE
-#endif
-
-/**
- * @brief   GPIOF AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOF. When set
- *          to @p FALSE the APB bus is used to access GPIOF.
- */
-#if !defined(TIVA_GPIO_GPIOF_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOF_USE_AHB             TRUE
-#endif
-
-/**
- * @brief   GPIOG AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOG. When set
- *          to @p FALSE the APB bus is used to access GPIOG.
- */
-#if !defined(TIVA_GPIO_GPIOG_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOG_USE_AHB             TRUE
-#endif
-
-/**
- * @brief   GPIOH AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOH. When set
- *          to @p FALSE the APB bus is used to access GPIOH.
- */
-#if !defined(TIVA_GPIO_GPIOH_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOH_USE_AHB             TRUE
-#endif
-
-/**
- * @brief   GPIOJ AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOJ. When set
- *          to @p FALSE the APB bus is used to access GPIOJ.
- */
-#if !defined(TIVA_GPIO_GPIOJ_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOJ_USE_AHB             TRUE
-#endif
-
-#endif
-
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if TIVA_GPIO_GPIOA_USE_AHB && defined(TM4C123x)
 #define GPIOA                               GPIO_PORTA_AHB_BASE
-#else
-#define GPIOA                               GPIO_PORTA_BASE
-#endif
-
-#if TIVA_GPIO_GPIOB_USE_AHB && defined(TM4C123x)
 #define GPIOB                               GPIO_PORTB_AHB_BASE
-#else
-#define GPIOB                               GPIO_PORTB_BASE
-#endif
-
-#if TIVA_GPIO_GPIOC_USE_AHB && defined(TM4C123x)
 #define GPIOC                               GPIO_PORTC_AHB_BASE
-#else
-#define GPIOC                               GPIO_PORTC_BASE
-#endif
-
-#if TIVA_GPIO_GPIOD_USE_AHB && defined(TM4C123x)
 #define GPIOD                               GPIO_PORTD_AHB_BASE
-#else
-#define GPIOD                               GPIO_PORTD_BASE
-#endif
-
-#if TIVA_GPIO_GPIOE_USE_AHB && defined(TM4C123x)
 #define GPIOE                               GPIO_PORTE_AHB_BASE
-#else
-#define GPIOE                               GPIO_PORTE_BASE
-#endif
-
-#if TIVA_GPIO_GPIOF_USE_AHB && defined(TM4C123x)
 #define GPIOF                               GPIO_PORTF_AHB_BASE
-#else
-#define GPIOF                               GPIO_PORTF_BASE
-#endif
-
-#if TIVA_GPIO_GPIOG_USE_AHB && defined(TM4C123x)
 #define GPIOG                               GPIO_PORTG_AHB_BASE
-#else
-#define GPIOG                               GPIO_PORTG_BASE
-#endif
-
-#if TIVA_GPIO_GPIOH_USE_AHB && defined(TM4C123x)
 #define GPIOH                               GPIO_PORTH_AHB_BASE
-#else
-#define GPIOH                               GPIO_PORTH_BASE
-#endif
-
-#if TIVA_GPIO_GPIOJ_USE_AHB && defined(TM4C123x)
 #define GPIOJ                               GPIO_PORTJ_AHB_BASE
-#else
-#define GPIOJ                               GPIO_PORTJ_BASE
-#endif
-
 #define GPIOK                               GPIO_PORTK_BASE
 #define GPIOL                               GPIO_PORTL_BASE
 #define GPIOM                               GPIO_PORTM_BASE
