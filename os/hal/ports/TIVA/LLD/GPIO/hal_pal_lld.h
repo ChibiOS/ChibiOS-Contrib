@@ -631,7 +631,7 @@ typedef uint32_t ioportid_t;
  * @notapi
  */
 #define pal_lld_writepad(port, pad, bit)    \
-  (HWREG((port) + (GPIO_O_DATA + ((1 << (pad)) << 2))) = (bit))
+  (HWREG((port) + (GPIO_O_DATA + ((1 << (pad)) << 2))) = 1 << (bit))
 
 /**
  * @brief   Sets a pad logical state to @p PAL_HIGH.
