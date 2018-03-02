@@ -19,10 +19,6 @@ make -C demos/TIVA/RT-TM4C1294-LAUNCHPAD
 
 git checkout -- .
 git clean -xfd
-make -C testhal/TIVA/TM4C123x/EXT/
-
-git checkout -- .
-git clean -xfd
 make -C testhal/TIVA/TM4C123x/GPT
 
 git checkout -- .
