@@ -36,3 +36,7 @@ make -C testhal/TIVA/TM4C123x/SPI
 git checkout -- .
 git clean -xfd
 make -C testhal/TIVA/TM4C123x/WDG
+
+git checkout -- .
+git clean -xfd
+make -C testhal/TIVA/multi/PAL
