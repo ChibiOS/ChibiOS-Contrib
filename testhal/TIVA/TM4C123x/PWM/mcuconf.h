@@ -41,14 +41,14 @@
                                              SYSCTL_RCC_PWMDIV_8)
 
 /*
- * GPIO driver system settings.
+ * PAL driver system settings.
  */
-#define TIVA_GPIO_GPIOA_USE_AHB             TRUE
-#define TIVA_GPIO_GPIOB_USE_AHB             TRUE
-#define TIVA_GPIO_GPIOC_USE_AHB             TRUE
-#define TIVA_GPIO_GPIOD_USE_AHB             TRUE
-#define TIVA_GPIO_GPIOE_USE_AHB             TRUE
-#define TIVA_GPIO_GPIOF_USE_AHB             TRUE
+#define TIVA_PAL_GPIOA_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOB_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOC_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOD_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOE_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOF_IRQ_PRIORITY         3
 
 /*
  * GPT driver system settings.
