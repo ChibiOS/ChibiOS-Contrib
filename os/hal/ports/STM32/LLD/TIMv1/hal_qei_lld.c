@@ -157,38 +157,38 @@ void qei_lld_start(QEIDriver *qeip) {
     /* Clock activation and timer reset.*/
 #if STM32_QEI_USE_TIM1
     if (&QEID1 == qeip) {
-      rccEnableTIM1(FALSE);
+      rccEnableTIM1();
       rccResetTIM1();
     }
 #endif
 #if STM32_QEI_USE_TIM2
     if (&QEID2 == qeip) {
-      rccEnableTIM2(FALSE);
+      rccEnableTIM2();
       rccResetTIM2();
     }
 #endif
 #if STM32_QEI_USE_TIM3
     if (&QEID3 == qeip) {
-      rccEnableTIM3(FALSE);
+      rccEnableTIM3();
       rccResetTIM3();
     }
 #endif
 #if STM32_QEI_USE_TIM4
     if (&QEID4 == qeip) {
-      rccEnableTIM4(FALSE);
+      rccEnableTIM4();
       rccResetTIM4();
     }
 #endif
 
 #if STM32_QEI_USE_TIM5
     if (&QEID5 == qeip) {
-      rccEnableTIM5(FALSE);
+      rccEnableTIM5();
       rccResetTIM5();
     }
 #endif
 #if STM32_QEI_USE_TIM8
     if (&QEID8 == qeip) {
-      rccEnableTIM8(FALSE);
+      rccEnableTIM8();
       rccResetTIM8();
     }
 #endif
@@ -235,33 +235,33 @@ void qei_lld_stop(QEIDriver *qeip) {
     /* Clock deactivation.*/
 #if STM32_QEI_USE_TIM1
     if (&QEID1 == qeip) {
-      rccDisableTIM1(FALSE);
+      rccDisableTIM1();
     }
 #endif
 #if STM32_QEI_USE_TIM2
     if (&QEID2 == qeip) {
-      rccDisableTIM2(FALSE);
+      rccDisableTIM2();
     }
 #endif
 #if STM32_QEI_USE_TIM3
     if (&QEID3 == qeip) {
-      rccDisableTIM3(FALSE);
+      rccDisableTIM3();
     }
 #endif
 #if STM32_QEI_USE_TIM4
     if (&QEID4 == qeip) {
-      rccDisableTIM4(FALSE);
+      rccDisableTIM4();
     }
 #endif
 #if STM32_QEI_USE_TIM5
     if (&QEID5 == qeip) {
-      rccDisableTIM5(FALSE);
+      rccDisableTIM5();
     }
 #endif
   }
 #if STM32_QEI_USE_TIM8
     if (&QEID8 == qeip) {
-      rccDisableTIM8(FALSE);
+      rccDisableTIM8();
     }
 #endif
 }
