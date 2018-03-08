@@ -76,6 +76,13 @@
   #define KINETIS_USB_ENDPOINTS USB_MAX_ENDPOINTS+1
 #endif
 
+/**
+ * @brief   Host wake-up procedure duration.
+ */
+#if !defined(USB_HOST_WAKEUP_DURATION) || defined(__DOXYGEN__)
+#define USB_HOST_WAKEUP_DURATION            2
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
@@ -95,6 +102,10 @@
 
 #if !defined(KINETIS_USB_IRQ_VECTOR)
 #error "KINETIS_USB_IRQ_VECTOR not defined"
+#endif
+
+#if (USB_HOST_WAKEUP_DURATION < 2) || (USB_HOST_WAKEUP_DURATION > 15)
+#error "invalid USB_HOST_WAKEUP_DURATION setting, it must be between 2 and 15"
 #endif
 
 /*===========================================================================*/
@@ -393,6 +404,18 @@ struct USBDriver {
 #define usb_lld_disconnect_bus(usbp) if(SIM->SCGC4 & SIM_SCGC4_USBFS) {USB0->CONTROL &= ~USBx_CONTROL_DPPULLUPNONOTG;} else {}
 #endif /* KINETIS_USB0_IS_USBOTG */
 #endif
+
+/**
+ * @brief   Start of host wake-up procedure.
+ *
+ * @notapi
+ */
+#define usb_lld_wakeup_host(usbp)                                     \
+  do{                                                                 \
+    USB0->CTL |= USBx_CTL_RESUME;                                     \
+    osalThreadSleepMilliseconds(USB_HOST_WAKEUP_DURATION);            \
+    USB0->CTL &= ~USBx_CTL_RESUME;                                    \
+  } while (false)
 
 /*===========================================================================*/
 /* External declarations.                                                    */
