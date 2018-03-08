@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014..2016 Marco Veeneman
+    Copyright (C) 2014..2017 Marco Veeneman
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -39,18 +39,6 @@
 #define TIVA_BYPASS_VALUE                   0
 #define TIVA_PWM_FIELDS                     (SYSCTL_RCC_USEPWMDIV |            \
                                              SYSCTL_RCC_PWMDIV_8)
-
-/*
- * ADC driver system settings.
- */
-#define TIVA_ADC_USE_ADC0                   TRUE
-#define TIVA_ADC_USE_ADC1                   TRUE
-#define TIVA_ADC_ADC0_SS0_UDMA_CHANNEL      14
-#define TIVA_ADC_ADC1_SS0_UDMA_CHANNEL      24
-#define TIVA_ADC_ADC0_SS0_UDMA_MAPPING      0
-#define TIVA_ADC_ADC1_SS0_UDMA_MAPPING      1
-#define TIVA_ADC0_SEQ0_PRIORITY             4
-#define TIVA_ADC1_SEQ0_PRIORITY             4
 
 /*
  * PAL driver system settings.
@@ -130,7 +118,7 @@
 /*
  * SERIAL driver system settings.
  */
-#define TIVA_SERIAL_USE_UART0               TRUE
+#define TIVA_SERIAL_USE_UART0               FALSE
 #define TIVA_SERIAL_USE_UART1               FALSE
 #define TIVA_SERIAL_USE_UART2               FALSE
 #define TIVA_SERIAL_USE_UART3               FALSE
@@ -150,7 +138,7 @@
 /*
  * SPI driver system settings.
  */
-#define TIVA_SPI_USE_SSI0                   TRUE
+#define TIVA_SPI_USE_SSI0                   FALSE
 #define TIVA_SPI_USE_SSI1                   FALSE
 #define TIVA_SPI_USE_SSI2                   FALSE
 #define TIVA_SPI_USE_SSI3                   FALSE

@@ -15,7 +15,7 @@
 */
 
 /*
- * TM4C123x drivers configuration.
+ * TM4C129x drivers configuration.
  * The following settings override the default settings present in
  * the various device driver implementation headers.
  * Note that the settings for each driver only have effect if the whole
@@ -25,30 +25,49 @@
  * 7...0       Lowest...Highest.
  */
 
-#define TM4C123x_MCUCONF
+#define TM4C129x_MCUCONF
 
 /*
  * HAL driver system settings.
  */
-#define TIVA_OSCSRC                         SYSCTL_RCC2_OSCSRC2_MO
-#define TIVA_MOSC_ENABLE                    TRUE
-#define TIVA_DIV400_VALUE                   1
-#define TIVA_SYSDIV_VALUE                   2
-#define TIVA_USESYSDIV_ENABLE               FALSE
-#define TIVA_SYSDIV2LSB_ENABLE              FALSE
-#define TIVA_BYPASS_VALUE                   0
-#define TIVA_PWM_FIELDS                     (SYSCTL_RCC_USEPWMDIV |            \
-                                             SYSCTL_RCC_PWMDIV_8)
+#define TIVA_MOSC_SINGLE_ENDED              FALSE
+#define TIVA_RSCLKCFG_OSCSRC                SYSCTL_RSCLKCFG_OSCSRC_MOSC
 
 /*
- * GPIO driver system settings.
+ * PAL driver system settings.
  */
-#define TIVA_GPIO_GPIOA_USE_AHB             TRUE
-#define TIVA_GPIO_GPIOB_USE_AHB             TRUE
-#define TIVA_GPIO_GPIOC_USE_AHB             TRUE
-#define TIVA_GPIO_GPIOD_USE_AHB             TRUE
-#define TIVA_GPIO_GPIOE_USE_AHB             TRUE
-#define TIVA_GPIO_GPIOF_USE_AHB             TRUE
+#define TIVA_PAL_GPIOA_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOB_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOC_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOD_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOE_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOF_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOG_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOH_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOJ_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOK_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOL_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOM_IRQ_PRIORITY         3
+#define TIVA_PAL_GPION_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOP0_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOP1_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOP2_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOP3_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOP4_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOP5_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOP6_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOP7_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOQ0_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOQ1_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOQ2_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOQ3_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOQ4_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOQ5_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOQ6_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOQ7_IRQ_PRIORITY        3
+#define TIVA_PAL_GPIOR_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOS_IRQ_PRIORITY         3
+#define TIVA_PAL_GPIOT_IRQ_PRIORITY         3
 
 /*
  * GPT driver system settings.
@@ -59,25 +78,16 @@
 #define TIVA_GPT_USE_GPT3                   FALSE
 #define TIVA_GPT_USE_GPT4                   FALSE
 #define TIVA_GPT_USE_GPT5                   FALSE
-#define TIVA_GPT_USE_WGPT0                  FALSE
-#define TIVA_GPT_USE_WGPT1                  FALSE
-#define TIVA_GPT_USE_WGPT2                  FALSE
-#define TIVA_GPT_USE_WGPT3                  FALSE
-#define TIVA_GPT_USE_WGPT4                  FALSE
-#define TIVA_GPT_USE_WGPT5                  FALSE
-
+#define TIVA_GPT_USE_GPT6                   FALSE
+#define TIVA_GPT_USE_GPT7                   FALSE
 #define TIVA_GPT_GPT0A_IRQ_PRIORITY         7
 #define TIVA_GPT_GPT1A_IRQ_PRIORITY         7
 #define TIVA_GPT_GPT2A_IRQ_PRIORITY         7
 #define TIVA_GPT_GPT3A_IRQ_PRIORITY         7
 #define TIVA_GPT_GPT4A_IRQ_PRIORITY         7
 #define TIVA_GPT_GPT5A_IRQ_PRIORITY         7
-#define TIVA_GPT_WGPT0A_IRQ_PRIORITY        7
-#define TIVA_GPT_WGPT1A_IRQ_PRIORITY        7
-#define TIVA_GPT_WGPT2A_IRQ_PRIORITY        7
-#define TIVA_GPT_WGPT3A_IRQ_PRIORITY        7
-#define TIVA_GPT_WGPT4A_IRQ_PRIORITY        7
-#define TIVA_GPT_WGPT5A_IRQ_PRIORITY        7
+#define TIVA_GPT_GPT6A_IRQ_PRIORITY         7
+#define TIVA_GPT_GPT7A_IRQ_PRIORITY         7
 
 /*
  * I2C driver system settings.
@@ -90,6 +100,8 @@
 #define TIVA_I2C_USE_I2C5                   FALSE
 #define TIVA_I2C_USE_I2C6                   FALSE
 #define TIVA_I2C_USE_I2C7                   FALSE
+#define TIVA_I2C_USE_I2C8                   FALSE
+#define TIVA_I2C_USE_I2C9                   FALSE
 #define TIVA_I2C_I2C0_IRQ_PRIORITY          4
 #define TIVA_I2C_I2C1_IRQ_PRIORITY          4
 #define TIVA_I2C_I2C2_IRQ_PRIORITY          4
@@ -98,22 +110,18 @@
 #define TIVA_I2C_I2C5_IRQ_PRIORITY          4
 #define TIVA_I2C_I2C6_IRQ_PRIORITY          4
 #define TIVA_I2C_I2C7_IRQ_PRIORITY          4
+#define TIVA_I2C_I2C8_IRQ_PRIORITY          4
+#define TIVA_I2C_I2C9_IRQ_PRIORITY          4
 
 /*
  * PWM driver system settings.
  */
 #define TIVA_PWM_USE_PWM0                   FALSE
-#define TIVA_PWM_USE_PWM1                   FALSE
 #define TIVA_PWM_PWM0_FAULT_IRQ_PRIORITY    4
 #define TIVA_PWM_PWM0_0_IRQ_PRIORITY        4
 #define TIVA_PWM_PWM0_1_IRQ_PRIORITY        4
 #define TIVA_PWM_PWM0_2_IRQ_PRIORITY        4
 #define TIVA_PWM_PWM0_3_IRQ_PRIORITY        4
-#define TIVA_PWM_PWM1_FAULT_IRQ_PRIORITY    4
-#define TIVA_PWM_PWM1_0_IRQ_PRIORITY        4
-#define TIVA_PWM_PWM1_1_IRQ_PRIORITY        4
-#define TIVA_PWM_PWM1_2_IRQ_PRIORITY        4
-#define TIVA_PWM_PWM1_3_IRQ_PRIORITY        4
 
 /*
  * SERIAL driver system settings.
@@ -136,33 +144,9 @@
 #define TIVA_SERIAL_UART7_PRIORITY          5
 
 /*
- * SPI driver system settings.
- */
-#define TIVA_SPI_USE_SSI0                   TRUE
-#define TIVA_SPI_USE_SSI1                   FALSE
-#define TIVA_SPI_USE_SSI2                   FALSE
-#define TIVA_SPI_USE_SSI3                   FALSE
-#define TIVA_SPI_SSI0_RX_UDMA_CHANNEL       10
-#define TIVA_SPI_SSI1_RX_UDMA_CHANNEL       24
-#define TIVA_SPI_SSI2_RX_UDMA_CHANNEL       12
-#define TIVA_SPI_SSI3_RX_UDMA_CHANNEL       14
-#define TIVA_SPI_SSI0_TX_UDMA_CHANNEL       11
-#define TIVA_SPI_SSI1_TX_UDMA_CHANNEL       25
-#define TIVA_SPI_SSI2_TX_UDMA_CHANNEL       13
-#define TIVA_SPI_SSI3_TX_UDMA_CHANNEL       15
-#define TIVA_SPI_SSI0_RX_UDMA_MAPPING       0
-#define TIVA_SPI_SSI1_RX_UDMA_MAPPING       0
-#define TIVA_SPI_SSI2_RX_UDMA_MAPPING       2
-#define TIVA_SPI_SSI3_RX_UDMA_MAPPING       2
-#define TIVA_SPI_SSI0_TX_UDMA_MAPPING       0
-#define TIVA_SPI_SSI1_TX_UDMA_MAPPING       0
-#define TIVA_SPI_SSI2_TX_UDMA_MAPPING       2
-#define TIVA_SPI_SSI3_TX_UDMA_MAPPING       2
-
-/*
  * ST driver system settings.
  */
 #define TIVA_ST_IRQ_PRIORITY                2
-#define TIVA_ST_USE_WIDE_TIMER              TRUE
+#define TIVA_ST_USE_WIDE_TIMER              FALSE
 #define TIVA_ST_TIMER_NUMBER                5
 #define TIVA_ST_TIMER_LETTER                A

@@ -32,196 +32,121 @@
 
 #if TIVA_HAS_GPIOA || defined(__DOXYGEN__)
 #define GPIOA_BIT       (1 << 0)
-#if TIVA_GPIO_GPIOA_USE_AHB && defined(TM4C123x)
-#define GPIOA_AHB_BIT   (1 << 0)
-#else
-#define GPIOA_AHB_BIT   0
-#endif
 #else
 #define GPIOA_BIT       0
-#define GPIOA_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOB || defined(__DOXYGEN__)
 #define GPIOB_BIT       (1 << 1)
-#if TIVA_GPIO_GPIOB_USE_AHB && defined(TM4C123x)
-#define GPIOB_AHB_BIT   (1 << 1)
-#else
-#define GPIOB_AHB_BIT   0
-#endif
 #else
 #define GPIOB_BIT       0
-#define GPIOB_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOC || defined(__DOXYGEN__)
 #define GPIOC_BIT       (1 << 2)
-#if TIVA_GPIO_GPIOC_USE_AHB && defined(TM4C123x)
-#define GPIOC_AHB_BIT   (1 << 2)
-#else
-#define GPIOC_AHB_BIT   0
-#endif
 #else
 #define GPIOC_BIT       0
-#define GPIOC_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOD || defined(__DOXYGEN__)
 #define GPIOD_BIT       (1 << 3)
-#if TIVA_GPIO_GPIOD_USE_AHB && defined(TM4C123x)
-#define GPIOD_AHB_BIT   (1 << 3)
-#else
-#define GPIOD_AHB_BIT   0
-#endif
 #else
 #define GPIOD_BIT       0
-#define GPIOD_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOE || defined(__DOXYGEN__)
 #define GPIOE_BIT       (1 << 4)
-#if TIVA_GPIO_GPIOE_USE_AHB && defined(TM4C123x)
-#define GPIOE_AHB_BIT   (1 << 4)
-#else
-#define GPIOE_AHB_BIT   0
-#endif
 #else
 #define GPIOE_BIT       0
-#define GPIOE_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOF || defined(__DOXYGEN__)
 #define GPIOF_BIT       (1 << 5)
-#if TIVA_GPIO_GPIOF_USE_AHB && defined(TM4C123x)
-#define GPIOF_AHB_BIT   (1 << 5)
-#else
-#define GPIOF_AHB_BIT   0
-#endif
 #else
 #define GPIOF_BIT       0
-#define GPIOF_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOG || defined(__DOXYGEN__)
 #define GPIOG_BIT       (1 << 6)
-#if TIVA_GPIO_GPIOG_USE_AHB && defined(TM4C123x)
-#define GPIOG_AHB_BIT   (1 << 6)
-#else
-#define GPIOG_AHB_BIT   0
-#endif
 #else
 #define GPIOG_BIT       0
-#define GPIOG_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOH || defined(__DOXYGEN__)
 #define GPIOH_BIT       (1 << 7)
-#if TIVA_GPIO_GPIOH_USE_AHB && defined(TM4C123x)
-#define GPIOH_AHB_BIT   (1 << 7)
-#else
-#define GPIOH_AHB_BIT   0
-#endif
 #else
 #define GPIOH_BIT       0
-#define GPIOH_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOJ || defined(__DOXYGEN__)
 #define GPIOJ_BIT       (1 << 8)
-#if TIVA_GPIO_GPIOJ_USE_AHB && defined(TM4C123x)
-#define GPIOJ_AHB_BIT   (1 << 8)
-#else
-#define GPIOJ_AHB_BIT   0
-#endif
 #else
 #define GPIOJ_BIT       0
-#define GPIOJ_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOK || defined(__DOXYGEN__)
 #define GPIOK_BIT       (1 << 9)
-#define GPIOK_AHB_BIT   (1 << 9)
 #else
 #define GPIOK_BIT       0
-#define GPIOK_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOL || defined(__DOXYGEN__)
 #define GPIOL_BIT       (1 << 10)
-#define GPIOL_AHB_BIT   (1 << 10)
 #else
 #define GPIOL_BIT       0
-#define GPIOL_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOM || defined(__DOXYGEN__)
 #define GPIOM_BIT       (1 << 11)
-#define GPIOM_AHB_BIT   (1 << 11)
 #else
 #define GPIOM_BIT       0
-#define GPIOM_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPION || defined(__DOXYGEN__)
 #define GPION_BIT       (1 << 12)
-#define GPION_AHB_BIT   (1 << 12)
 #else
 #define GPION_BIT       0
-#define GPION_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOP || defined(__DOXYGEN__)
 #define GPIOP_BIT       (1 << 13)
-#define GPIOP_AHB_BIT   (1 << 13)
 #else
 #define GPIOP_BIT       0
-#define GPIOP_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOQ || defined(__DOXYGEN__)
 #define GPIOQ_BIT       (1 << 14)
-#define GPIOQ_AHB_BIT   (1 << 14)
 #else
 #define GPIOQ_BIT       0
-#define GPIOQ_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOR || defined(__DOXYGEN__)
 #define GPIOR_BIT       (1 << 15)
-#define GPIOR_AHB_BIT   (1 << 15)
 #else
 #define GPIOR_BIT       0
-#define GPIOR_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOS || defined(__DOXYGEN__)
 #define GPIOS_BIT       (1 << 16)
-#define GPIOS_AHB_BIT   (1 << 16)
 #else
 #define GPIOS_BIT       0
-#define GPIOS_AHB_BIT   0
 #endif
 
 #if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
 #define GPIOT_BIT       (1 << 17)
-#define GPIOT_AHB_BIT   (1 << 17)
 #else
 #define GPIOT_BIT       0
-#define GPIOT_AHB_BIT   0
 #endif
 
 #define RCGCGPIO_MASK   (GPIOA_BIT | GPIOB_BIT | GPIOC_BIT | GPIOD_BIT |      \
                          GPIOE_BIT | GPIOF_BIT | GPIOG_BIT | GPIOH_BIT |      \
                          GPIOJ_BIT | GPIOK_BIT | GPIOL_BIT | GPIOM_BIT |      \
                          GPION_BIT | GPIOP_BIT | GPIOQ_BIT | GPIOR_BIT |      \
-                         GPIOS_BIT | GPIOR_BIT)
+                         GPIOS_BIT | GPIOT_BIT)
 
-#define GPIOHBCTL_MASK  (GPIOA_AHB_BIT | GPIOB_AHB_BIT | GPIOC_AHB_BIT |      \
-                         GPIOD_AHB_BIT | GPIOE_AHB_BIT | GPIOF_AHB_BIT |      \
-                         GPIOG_AHB_BIT | GPIOH_AHB_BIT | GPIOJ_AHB_BIT |      \
-                         GPIOK_AHB_BIT | GPIOL_AHB_BIT | GPIOM_AHB_BIT |      \
-                         GPION_AHB_BIT | GPIOP_AHB_BIT | GPIOQ_AHB_BIT |      \
-                         GPIOR_AHB_BIT | GPIOS_AHB_BIT | GPIOT_AHB_BIT)
+#define GPIOHBCTL_MASK  (GPIOA_BIT | GPIOB_BIT | GPIOC_BIT | GPIOD_BIT |      \
+                         GPIOE_BIT | GPIOF_BIT | GPIOG_BIT | GPIOH_BIT |      \
+                         GPIOJ_BIT)
 
 #define GPIOC_JTAG_MASK     (0x0F)
 #define GPIOD_NMI_MASK      (0x80)
@@ -230,6 +155,11 @@
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
+
+/**
+ * @brief   Event records for all GPIO channels.
+ */
+palevent_t _pal_events[TIVA_GPIO_PINS];
 
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
@@ -276,9 +206,607 @@ static void gpio_unlock(ioportid_t port, ioportmask_t mask)
   HWREG(port + GPIO_O_CR) = mask;
 }
 
+#if PAL_USE_CALLBACKS || PAL_USE_WAIT
+/**
+ * @brief   Enables GPIO IRQ sources.
+ */
+static void gpio_irq_enable(void)
+{
+#if TIVA_HAS_GPIOA
+  nvicEnableVector(TIVA_GPIOA_NUMBER, TIVA_PAL_GPIOA_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOB
+  nvicEnableVector(TIVA_GPIOB_NUMBER, TIVA_PAL_GPIOB_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOC
+  nvicEnableVector(TIVA_GPIOC_NUMBER, TIVA_PAL_GPIOC_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOD
+  nvicEnableVector(TIVA_GPIOD_NUMBER, TIVA_PAL_GPIOD_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOE
+  nvicEnableVector(TIVA_GPIOE_NUMBER, TIVA_PAL_GPIOE_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOF
+  nvicEnableVector(TIVA_GPIOF_NUMBER, TIVA_PAL_GPIOF_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOG
+  nvicEnableVector(TIVA_GPIOG_NUMBER, TIVA_PAL_GPIOG_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOH
+  nvicEnableVector(TIVA_GPIOH_NUMBER, TIVA_PAL_GPIOH_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOJ
+  nvicEnableVector(TIVA_GPIOJ_NUMBER, TIVA_PAL_GPIOJ_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOK
+  nvicEnableVector(TIVA_GPIOK_NUMBER, TIVA_PAL_GPIOK_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOL
+  nvicEnableVector(TIVA_GPIOL_NUMBER, TIVA_PAL_GPIOL_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOM
+  nvicEnableVector(TIVA_GPIOM_NUMBER, TIVA_PAL_GPIOM_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPION
+  nvicEnableVector(TIVA_GPION_NUMBER, TIVA_PAL_GPION_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOP
+  nvicEnableVector(TIVA_GPIOP0_NUMBER, TIVA_PAL_GPIOP0_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOP1_NUMBER, TIVA_PAL_GPIOP1_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOP2_NUMBER, TIVA_PAL_GPIOP2_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOP3_NUMBER, TIVA_PAL_GPIOP3_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOP4_NUMBER, TIVA_PAL_GPIOP4_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOP5_NUMBER, TIVA_PAL_GPIOP5_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOP6_NUMBER, TIVA_PAL_GPIOP6_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOP7_NUMBER, TIVA_PAL_GPIOP7_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOQ
+  nvicEnableVector(TIVA_GPIOQ0_NUMBER, TIVA_PAL_GPIOQ0_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOQ1_NUMBER, TIVA_PAL_GPIOQ1_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOQ2_NUMBER, TIVA_PAL_GPIOQ2_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOQ3_NUMBER, TIVA_PAL_GPIOQ3_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOQ4_NUMBER, TIVA_PAL_GPIOQ4_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOQ5_NUMBER, TIVA_PAL_GPIOQ5_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOQ6_NUMBER, TIVA_PAL_GPIOQ6_IRQ_PRIORITY);
+  nvicEnableVector(TIVA_GPIOQ7_NUMBER, TIVA_PAL_GPIOQ7_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOR
+  nvicEnableVector(TIVA_GPIOR_NUMBER, TIVA_PAL_GPIOR_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOS
+  nvicEnableVector(TIVA_GPIOS_NUMBER, TIVA_PAL_GPIOS_IRQ_PRIORITY);
+#endif
+#if TIVA_HAS_GPIOT
+  nvicEnableVector(TIVA_GPIOT_NUMBER, TIVA_PAL_GPIOT_IRQ_PRIORITY);
+#endif
+}
+#endif
+
+#define gpio_serve_irq(mask, pin, channel) {                                \
+                                                                            \
+  if ((mask) & (1U << (pin))) {                                         \
+    _pal_isr_code(channel);                                                 \
+  }                                                                         \
+}
+
+/**
+ * @brief   Generic interrupt serving code for multiple pins per interrupt
+ *          handler.
+ */
+#define ext_lld_serve_port_interrupt(gpio, start)                             \
+  do {                                                                        \
+    uint32_t mis = HWREG(gpio + GPIO_O_MIS);                                  \
+                                                                              \
+    HWREG(gpio + GPIO_O_ICR) = mis;                                           \
+                                                                              \
+    gpio_serve_irq(mis, 0, start + 0);                                        \
+    gpio_serve_irq(mis, 1, start + 1);                                        \
+    gpio_serve_irq(mis, 2, start + 2);                                        \
+    gpio_serve_irq(mis, 3, start + 3);                                        \
+    gpio_serve_irq(mis, 4, start + 4);                                        \
+    gpio_serve_irq(mis, 5, start + 5);                                        \
+    gpio_serve_irq(mis, 6, start + 6);                                        \
+    gpio_serve_irq(mis, 7, start + 7);                                        \
+  } while (0);
+
+/**
+ * @brief   Generic interrupt serving code for single pin per interrupt
+ *          handler.
+ */
+#define ext_lld_serve_pin_interrupt(gpio, start, pin)                         \
+  do {                                                                        \
+    HWREG(gpio + GPIO_O_ICR) = (1 << pin);                                    \
+    gpio_serve_irq((1 << pin), pin, start)                                    \
+  } while (0);
+
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
+
+#if TIVA_HAS_GPIOA || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOA interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOA_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOA, 0);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOB || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOB interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOB_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOB, 8);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOC || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOC interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOC_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOC, 16);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOD || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOD interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOD_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOD, 24);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOE || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOE interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOE_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOE, 32);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOF || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOF interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOF_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOF, 40);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOG || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOG interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOG_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOG, 48);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOH || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOH interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOH_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOH, 56);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOJ || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOJ interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOJ_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOJ, 64);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOK || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOK interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOK_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOK, 72);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOL || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOL interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOL_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOL, 80);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOM || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOM interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOM_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOM, 88);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPION || defined(__DOXYGEN__)
+/**
+ * @brief   GPION interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPION_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPION, 96);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOP || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOP0 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOP0_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOP, 104, 0);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOP1 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOP1_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOP, 105, 1);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOP2 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOP2_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOP, 106, 2);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOP3 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOP3_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOP, 107, 3);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOP4 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOP4_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOP, 108, 4);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOP5 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOP5_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOP, 109, 5);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOP6 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOP6_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOP, 110, 6);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOP7 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOP7_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOP, 111, 7);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOQ || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOQ0 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOQ0_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOQ, 112, 0);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOQ1 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOQ1_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOQ, 113, 1);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOQ2 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOQ2_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOQ, 114, 2);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOQ3 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOQ3_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOQ, 115, 3);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOQ4 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOQ4_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOQ, 116, 4);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOQ5 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOQ5_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOQ, 117, 5);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOQ6 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOQ6_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOQ, 118, 6);
+
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   GPIOQ7 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOQ7_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_pin_interrupt(GPIOQ, 119, 7);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOR || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOR interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOR_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOR, 120);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOS || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOS interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOS_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOS, 128);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
+/**
+ * @brief   GPIOT interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(TIVA_GPIOT_HANDLER)
+{
+  OSAL_IRQ_PROLOGUE();
+
+  ext_lld_serve_port_interrupt(GPIOT, 132);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -294,6 +822,14 @@ static void gpio_unlock(ioportid_t port, ioportmask_t mask)
  */
 void _pal_lld_init(const PALConfig *config)
 {
+#if PAL_USE_CALLBACKS || PAL_USE_WAIT || defined(__DOXYGEN__)
+  unsigned i;
+
+  for (i = 0; i < TIVA_GPIO_PINS; i++) {
+    _pal_init_event(i);
+  }
+#endif
+
   /*
    * Enables all GPIO clocks.
    */
@@ -366,6 +902,9 @@ void _pal_lld_init(const PALConfig *config)
 #if TIVA_HAS_GPIOT || defined(__DOXYGEN__)
   gpio_init(GPIOT, &config->PTData);
 #endif
+#if PAL_USE_CALLBACKS || PAL_USE_WAIT
+  gpio_irq_enable();
+#endif
 }
 
 /**
@@ -435,6 +974,159 @@ void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode)
     bit++;
   }
 }
+
+#if PAL_USE_CALLBACKS || PAL_USE_WAIT || defined(__DOXYGEN__)
+/**
+ * @brief   Pad event enable.
+ * @note    Programming an unknown or unsupported mode is silently ignored.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ * @param[in] mode      pad event mode
+ *
+ * @notapi
+ */
+void _pal_lld_enablepadevent(ioportid_t port,
+                             iopadid_t pad,
+                             ioeventmode_t mode)
+{
+  //uint8_t portidx;
+  uint32_t padmask;
+
+  //portidx = (((uint32_t)port - (uint32_t)GPIOA) >> 12) & 0x1FU;
+  padmask = (1 << pad);
+
+  /* Disable interrupt before changing edge configuration.*/
+  HWREG(port + GPIO_O_IM) &= ~padmask;
+
+  /* Configure pin to be edge-sensitive.*/
+  HWREG(port + GPIO_O_IS) &= ~(1 << pad);
+
+  /* Configure edges */
+  switch(mode & PAL_EVENT_MODE_EDGES_MASK) {
+  case PAL_EVENT_MODE_BOTH_EDGES:
+    HWREG(port + GPIO_O_IBE) |= padmask;
+    break;
+  case PAL_EVENT_MODE_RISING_EDGE:
+    HWREG(port + GPIO_O_IBE) &= ~padmask;
+    HWREG(port + GPIO_O_IEV) &= ~padmask;
+    break;
+  case PAL_EVENT_MODE_FALLING_EDGE:
+    HWREG(port + GPIO_O_IBE) &= ~padmask;
+    HWREG(port + GPIO_O_IEV) |= padmask;
+    break;
+  default:
+    /* Interrupt is already disabled */
+    break;
+  }
+
+  if (mode & PAL_EVENT_MODE_EDGES_MASK) {
+    /* Enable interrupt for this pad */
+    HWREG(port + GPIO_O_IM) |= padmask;
+  }
+}
+
+/**
+ * @brief   Pad event disable.
+ * @details This function disables previously programmed event callbacks.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ *
+ * @notapi
+ */
+void _pal_lld_disablepadevent(ioportid_t port, iopadid_t pad)
+{
+  uint8_t portidx;
+  uint8_t eventidx;
+
+  portidx = (((uint32_t)port - (uint32_t)GPIOA) >> 12) & 0x1FU;
+
+  eventidx = portidx * 8 + pad;
+
+  HWREG(port + GPIO_O_IM) &= ~(1 << pad);
+
+#if PAL_USE_CALLBACKS || PAL_USE_WAIT
+  /* Callback cleared and/or thread reset.*/
+  _pal_clear_event(eventidx);
+#endif
+}
+
+/**
+ * @brief   Disables GPIO IRQ sources.
+ */
+void pal_lld_disable_irqs(void)
+{
+#if TIVA_HAS_GPIOA
+  nvicDisableVector(TIVA_GPIOA_NUMBER);
+#endif
+#if TIVA_HAS_GPIOB
+  nvicDisableVector(TIVA_GPIOB_NUMBER);
+#endif
+#if TIVA_HAS_GPIOC
+  nvicDisableVector(TIVA_GPIOC_NUMBER);
+#endif
+#if TIVA_HAS_GPIOD
+  nvicDisableVector(TIVA_GPIOD_NUMBER);
+#endif
+#if TIVA_HAS_GPIOE
+  nvicDisableVector(TIVA_GPIOE_NUMBER);
+#endif
+#if TIVA_HAS_GPIOF
+  nvicDisableVector(TIVA_GPIOF_NUMBER);
+#endif
+#if TIVA_HAS_GPIOG
+  nvicDisableVector(TIVA_GPIOG_NUMBER);
+#endif
+#if TIVA_HAS_GPIOH
+  nvicDisableVector(TIVA_GPIOH_NUMBER);
+#endif
+#if TIVA_HAS_GPIOJ
+  nvicDisableVector(TIVA_GPIOJ_NUMBER);
+#endif
+#if TIVA_HAS_GPIOK
+  nvicDisableVector(TIVA_GPIOK_NUMBER);
+#endif
+#if TIVA_HAS_GPIOL
+  nvicDisableVector(TIVA_GPIOL_NUMBER);
+#endif
+#if TIVA_HAS_GPIOM
+  nvicDisableVector(TIVA_GPIOM_NUMBER);
+#endif
+#if TIVA_HAS_GPION
+  nvicDisableVector(TIVA_GPION_NUMBER);
+#endif
+#if TIVA_HAS_GPIOP
+  nvicDisableVector(TIVA_GPIOP0_NUMBER);
+  nvicDisableVector(TIVA_GPIOP1_NUMBER);
+  nvicDisableVector(TIVA_GPIOP2_NUMBER);
+  nvicDisableVector(TIVA_GPIOP3_NUMBER);
+  nvicDisableVector(TIVA_GPIOP4_NUMBER);
+  nvicDisableVector(TIVA_GPIOP5_NUMBER);
+  nvicDisableVector(TIVA_GPIOP6_NUMBER);
+  nvicDisableVector(TIVA_GPIOP7_NUMBER);
+#endif
+#if TIVA_HAS_GPIOQ
+  nvicDisableVector(TIVA_GPIOQ0_NUMBER);
+  nvicDisableVector(TIVA_GPIOQ1_NUMBER);
+  nvicDisableVector(TIVA_GPIOQ2_NUMBER);
+  nvicDisableVector(TIVA_GPIOQ3_NUMBER);
+  nvicDisableVector(TIVA_GPIOQ4_NUMBER);
+  nvicDisableVector(TIVA_GPIOQ5_NUMBER);
+  nvicDisableVector(TIVA_GPIOQ6_NUMBER);
+  nvicDisableVector(TIVA_GPIOQ7_NUMBER);
+#endif
+#if TIVA_HAS_GPIOR
+  nvicDisableVector(TIVA_GPIOR_NUMBER);
+#endif
+#if TIVA_HAS_GPIOS
+  nvicDisableVector(TIVA_GPIOS_NUMBER);
+#endif
+#if TIVA_HAS_GPIOT
+  nvicDisableVector(TIVA_GPIOT_NUMBER);
+#endif
+}
+#endif /* PAL_USE_CALLBACKS || PAL_USE_WAIT */
 
 #endif /* HAL_USE_PAL */
 

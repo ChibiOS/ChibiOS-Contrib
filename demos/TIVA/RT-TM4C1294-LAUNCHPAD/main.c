@@ -16,7 +16,8 @@
 
 #include "ch.h"
 #include "hal.h"
-#include "ch_test.h"
+#include "rt_test_root.h"
+#include "oslib_test_root.h"
 
 typedef struct led_config
 {
@@ -70,7 +71,8 @@ int main(void)
   sdStart(&SD1, NULL);
 
   if (!palReadLine(LINE_SW1)) {
-    test_execute((BaseSequentialStream *)&SD1);
+    test_execute((BaseSequentialStream *)&SD1, &rt_test_suite);
+    test_execute((BaseSequentialStream *)&SD1, &oslib_test_suite);
   }
 
   led1.line  = LINE_LED0;

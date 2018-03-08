@@ -53,7 +53,7 @@ static void txend2(UARTDriver *uartp) {
   palClearLine(LINE_LED_RED);
   chSysLockFromISR();
   chVTResetI(&vt1);
-  chVTSetI(&vt1, MS2ST(5000), restart, NULL);
+  chVTSetI(&vt1, OSAL_MS2I(5000), restart, NULL);
   chSysUnlockFromISR();
 }
 
@@ -79,7 +79,7 @@ static void rxchar(UARTDriver *uartp, uint16_t c) {
   palSetLine(LINE_LED_RED);
   chSysLockFromISR();
   chVTResetI(&vt2);
-  chVTSetI(&vt2, MS2ST(200), ledoff, NULL);
+  chVTSetI(&vt2, OSAL_MS2I(200), ledoff, NULL);
   chSysUnlockFromISR();
 }
 
