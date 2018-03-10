@@ -13,6 +13,6 @@ STARTUPINC = $(CHIBIOS)/os/common/portability/GCC \
 STARTUPLD  = $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/ld
 
 # Shared variables
-ALLASM  += $(STARTUPASM)
-ALLCSRC += $(STARTUPSRC)
-ALLINC  += $(STARTUPINC)
+ALLXASMSRC += $(STARTUPASM)
+ALLCSRC    += $(STARTUPSRC)
+ALLINC     += $(STARTUPINC)
