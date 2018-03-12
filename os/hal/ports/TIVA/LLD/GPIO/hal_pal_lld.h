@@ -665,82 +665,82 @@ typedef uint32_t iopadid_t;
 #error "Invalid IRQ priority assigned to GPION"
 #endif
 
-#if TIVA_HAS_GPIOP0 &&                                                         \
+#if TIVA_HAS_GPIOP &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP0_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOP0"
 #endif
 
-#if TIVA_HAS_GPIOP1 &&                                                         \
+#if TIVA_HAS_GPIOP &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOP1"
 #endif
 
-#if TIVA_HAS_GPIOP2 &&                                                         \
+#if TIVA_HAS_GPIOP &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOP2"
 #endif
 
-#if TIVA_HAS_GPIOP3 &&                                                         \
+#if TIVA_HAS_GPIOP &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOP3"
 #endif
 
-#if TIVA_HAS_GPIOP4 &&                                                         \
+#if TIVA_HAS_GPIOP &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP4_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOP4"
 #endif
 
-#if TIVA_HAS_GPIOP5 &&                                                         \
+#if TIVA_HAS_GPIOP &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP5_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOP5"
 #endif
 
-#if TIVA_HAS_GPIOP6 &&                                                         \
+#if TIVA_HAS_GPIOP &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP6_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOP6"
 #endif
 
-#if TIVA_HAS_GPIOP7 &&                                                         \
+#if TIVA_HAS_GPIOP &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP7_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOP7"
 #endif
 
-#if TIVA_HAS_GPIOQ0 &&                                                         \
+#if TIVA_HAS_GPIOQ &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ0_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOQ0"
 #endif
 
-#if TIVA_HAS_GPIOQ1 &&                                                         \
+#if TIVA_HAS_GPIOQ &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOQ1"
 #endif
 
-#if TIVA_HAS_GPIOQ2 &&                                                         \
+#if TIVA_HAS_GPIOQ &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOQ2"
 #endif
 
-#if TIVA_HAS_GPIOQ3 &&                                                         \
+#if TIVA_HAS_GPIOQ &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOQ3"
 #endif
 
-#if TIVA_HAS_GPIOQ4 &&                                                         \
+#if TIVA_HAS_GPIOQ &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ4_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOQ4"
 #endif
 
-#if TIVA_HAS_GPIOQ5 &&                                                         \
+#if TIVA_HAS_GPIOQ &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ5_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOQ5"
 #endif
 
-#if TIVA_HAS_GPIOQ6 &&                                                         \
+#if TIVA_HAS_GPIOQ &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ6_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOQ6"
 #endif
 
-#if TIVA_HAS_GPIOQ7 &&                                                         \
+#if TIVA_HAS_GPIOQ &&                                                         \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ7_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to GPIOQ7"
 #endif
