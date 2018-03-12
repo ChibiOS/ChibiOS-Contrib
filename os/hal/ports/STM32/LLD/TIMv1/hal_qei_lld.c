@@ -157,38 +157,38 @@ void qei_lld_start(QEIDriver *qeip) {
     /* Clock activation and timer reset.*/
 #if STM32_QEI_USE_TIM1
     if (&QEID1 == qeip) {
-      rccEnableTIM1();
+      rccEnableTIM1(FALSE);
       rccResetTIM1();
     }
 #endif
 #if STM32_QEI_USE_TIM2
     if (&QEID2 == qeip) {
-      rccEnableTIM2();
+      rccEnableTIM2(FALSE);
       rccResetTIM2();
     }
 #endif
 #if STM32_QEI_USE_TIM3
     if (&QEID3 == qeip) {
-      rccEnableTIM3();
+      rccEnableTIM3(FALSE);
       rccResetTIM3();
     }
 #endif
 #if STM32_QEI_USE_TIM4
     if (&QEID4 == qeip) {
-      rccEnableTIM4();
+      rccEnableTIM4(FALSE);
       rccResetTIM4();
     }
 #endif
 
 #if STM32_QEI_USE_TIM5
     if (&QEID5 == qeip) {
-      rccEnableTIM5();
+      rccEnableTIM5(FALSE);
       rccResetTIM5();
     }
 #endif
 #if STM32_QEI_USE_TIM8
     if (&QEID8 == qeip) {
-      rccEnableTIM8();
+      rccEnableTIM8(FALSE);
       rccResetTIM8();
     }
 #endif
