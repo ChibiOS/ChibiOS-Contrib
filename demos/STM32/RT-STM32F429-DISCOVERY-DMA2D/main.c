@@ -284,6 +284,7 @@ static const LTDCConfig ltdc_cfg = {
 extern LTDCDriver LTDCD1;
 
 const SPIConfig spi_cfg5 = {
+  false,
   NULL,
   GPIOC,
   GPIOC_SPI5_LCD_CS,
