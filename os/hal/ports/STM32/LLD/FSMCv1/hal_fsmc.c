@@ -159,7 +159,7 @@ void fsmc_stop(FSMCDriver *fsmcp) {
 #if HAL_USE_NAND
       nvicDisableVector(STM32_FSMC_NUMBER);
 #endif
-      rccDisableFSMC(FALSE);
+      rccDisableFSMC();
     }
 #endif /* STM32_FSMC_USE_FSMC1 */
 
