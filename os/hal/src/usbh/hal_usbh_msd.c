@@ -304,7 +304,7 @@ static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassSt
 
 	/* control phase */
 	status = usbhBulkTransfer(&lunp->msdp->epout, tran->cbw,
-					sizeof(*tran->cbw), &actual_len, MS2ST(1000));
+					sizeof(*tran->cbw), &actual_len, OSAL_MS2I(1000));
 
 	if (status == USBH_URBSTATUS_CANCELLED) {
 		uerr("\tMSD: Control phase: USBH_URBSTATUS_CANCELLED");
@@ -327,7 +327,7 @@ static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassSt
 				ep,
 				data,
 				tran->cbw->dCBWDataTransferLength,
-				&data_actual_len, MS2ST(20000));
+				&data_actual_len, OSAL_MS2I(20000));
 
 		if (status == USBH_URBSTATUS_CANCELLED) {
 			uerr("\tMSD: Data phase: USBH_URBSTATUS_CANCELLED");
@@ -349,7 +349,7 @@ static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassSt
 
 	/* status phase */
 	status = usbhBulkTransfer(&lunp->msdp->epin, &csw,
-				sizeof(csw), &actual_len, MS2ST(1000));
+				sizeof(csw), &actual_len, OSAL_MS2I(1000));
 
 	if (status == USBH_URBSTATUS_STALL) {
 		uwarn("\tMSD: Status phase: USBH_URBSTATUS_STALL, clear halt and retry");
@@ -358,7 +358,7 @@ static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassSt
 
 		if (status == USBH_URBSTATUS_OK) {
 			status = usbhBulkTransfer(&lunp->msdp->epin, &csw,
-						sizeof(csw), &actual_len, MS2ST(1000));
+						sizeof(csw), &actual_len, OSAL_MS2I(1000));
 		}
 	}
 

@@ -533,7 +533,7 @@ static void _vt(void *p) {
 	if ((aoacp->iq_counter == 0) && !usbhURBIsBusy(&aoacp->iq_urb)) {
 		_submitInI(aoacp);
 	}
-	chVTSetI(&aoacp->vt, MS2ST(16), _vt, aoacp);
+	chVTSetI(&aoacp->vt, OSAL_MS2I(16), _vt, aoacp);
 	osalSysUnlockFromISR();
 }
 
@@ -565,7 +565,7 @@ void usbhaoaChannelStart(USBHAOADriver *aoap) {
 	usbhURBSubmit(&aoacp->iq_urb);
 
 	chVTObjectInit(&aoacp->vt);
-	chVTSet(&aoacp->vt, MS2ST(16), _vt, aoacp);
+	chVTSet(&aoacp->vt, OSAL_MS2I(16), _vt, aoacp);
 
 	aoacp->state = USBHAOA_CHANNEL_STATE_READY;
 

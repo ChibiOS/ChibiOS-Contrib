@@ -1665,9 +1665,9 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestTy
 				 * despite reporting a successful por enable. */
 				uerr("Detected enabled port; resetting OTG core");
 				otg->GAHBCFG = 0;
-				osalThreadSleepS(MS2ST(20));
+				osalThreadSleepS(OSAL_MS2I(20));
 				_usbh_start(usbh);				/* this effectively resets the core */
-				osalThreadSleepS(MS2ST(100));	/* during this delay, the core generates connect ISR */
+				osalThreadSleepS(OSAL_MS2I(100));	/* during this delay, the core generates connect ISR */
 				uinfo("OTG reset ended");
 				if (otg->HPRT & HPRT_PCSTS) {
 					/* if the device is still connected, don't report a C_CONNECTION flag, which would cause
@@ -1680,9 +1680,9 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *usbh, uint8_t bmRequestTy
 			hprt &= ~(HPRT_PSUSP | HPRT_PENA | HPRT_PCDET | HPRT_PENCHNG | HPRT_POCCHNG);
 			while ((otg->GRSTCTL & GRSTCTL_AHBIDL) == 0);
 			otg->HPRT = hprt | HPRT_PRST;
-			osalThreadSleepS(MS2ST(15));
+			osalThreadSleepS(OSAL_MS2I(15));
 			otg->HPRT = hprt;
-			osalThreadSleepS(MS2ST(10));
+			osalThreadSleepS(OSAL_MS2I(10));
 			usbh->rootport.lld_c_status |= USBH_PORTSTATUS_C_RESET;
 			osalSysUnlock();
 		} 	break;
