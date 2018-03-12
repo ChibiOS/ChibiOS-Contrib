@@ -89,7 +89,7 @@ DSTATUS disk_initialize (
 /* Return Disk Status                                                    */
 
 DSTATUS disk_status (
-    BYTE pdrv        /* Physical drive nmuber (0..) */
+    BYTE pdrv         /* Physical drive number (0..) */
 )
 {
   DSTATUS stat;
@@ -132,9 +132,9 @@ DSTATUS disk_status (
 /* Read Sector(s)                                                        */
 
 DRESULT disk_read (
-    BYTE pdrv,        /* Physical drive nmuber (0..) */
-    BYTE *buff,        /* Data buffer to store read data */
-    DWORD sector,    /* Sector address (LBA) */
+    BYTE pdrv,        /* Physical drive number (0..) */
+    BYTE *buff,       /* Data buffer to store read data */
+    DWORD sector,     /* Sector address (LBA) */
     UINT count        /* Number of sectors to read (1..255) */
 )
 {
@@ -181,10 +181,10 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 
 DRESULT disk_write (
-    BYTE pdrv,            /* Physical drive nmuber (0..) */
-    const BYTE *buff,    /* Data to be written */
-    DWORD sector,        /* Sector address (LBA) */
-    UINT count            /* Number of sectors to write (1..255) */
+    BYTE pdrv,        /* Physical drive number (0..) */
+    const BYTE *buff, /* Data to be written */
+    DWORD sector,     /* Sector address (LBA) */
+    UINT count        /* Number of sectors to write (1..255) */
 )
 {
   switch (pdrv) {
@@ -232,8 +232,8 @@ DRESULT disk_write (
 /* Miscellaneous Functions                                               */
 
 DRESULT disk_ioctl (
-    BYTE pdrv,        /* Physical drive nmuber (0..) */
-    BYTE cmd,        /* Control code */
+    BYTE pdrv,        /* Physical drive number (0..) */
+    BYTE cmd,         /* Control code */
     void *buff        /* Buffer to send/receive control data */
 )
 {
