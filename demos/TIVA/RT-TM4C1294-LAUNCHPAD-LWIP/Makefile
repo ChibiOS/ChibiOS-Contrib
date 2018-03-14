@@ -110,7 +110,6 @@ LDSCRIPT= $(STARTUPLD)/TM4C129xNC.ld
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
 CSRC = $(ALLCSRC) \
-       $(LWSRC) \
        $(CHIBIOS)/os/various/evtimer.c \
        main.c \
        web/web.c \
@@ -143,7 +142,7 @@ TCPPSRC =
 ASMSRC = $(ALLASMSRC)
 ASMXSRC = $(ALLXASMSRC)
 
-INCDIR = $(ALLINC) $(LWINC) $(CHIBIOS)/os/various
+INCDIR = $(ALLINC) $(CHIBIOS)/os/various
 
 #
 # Project, sources and paths
