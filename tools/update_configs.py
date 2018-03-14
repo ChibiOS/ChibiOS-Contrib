@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 __author__ = 'Fabien Poussin'
 __version__ = '0.1'
@@ -15,7 +15,6 @@ parser.add_argument('-d', '--dst', default='..', type=str, help='ChibiOS-Contrib
 
 
 def makefile(lines):
-
 
     for l in range(len(lines)):
 
@@ -56,45 +55,50 @@ if __name__ == '__main__':
     args = parser.parse_args()
     sources = {}
 
-    for family in os.scandir(args.src + '/testhal/STM32/'):
-        if not family.name[0].isupper() or not family.is_dir():
-            continue
+    for folder in ['testhal']:
 
-        for test in os.scandir(family.path):
-            try:
-                sources[family.name] = {'makefile': None, 'halconf': None, 'mcuconf': None}
-
-                with open(test.path + '/Makefile', 'r') as file:
-                    sources[family.name]['makefile'] = makefile(file.readlines())
-
-                with open(test.path + '/halconf.h', 'r') as file:
-                    sources[family.name]['halconf'] = halconf(file.readlines())
-
-                with open(test.path + '/mcuconf.h', 'r') as file:
-                    sources[family.name]['mcuconf'] = mcuconf(file.readlines())
-
-            except Exception as e:
-                print(test.path, e)
-                del sources[family.name]
+        for family in os.scandir(args.src + '/{}/STM32/'.format(folder)):
+            if not family.name[0].isupper() or not family.is_dir():
                 continue
 
-            break
+            for test in os.scandir(family.path):
+                try:
+                    sources[family.name] = {'makefile': None, 'halconf': None, 'mcuconf': None}
 
-    print(sources.keys())
+                    with open(test.path + '/Makefile', 'r') as file:
+                        sources[family.name]['makefile'] = makefile(file.readlines())
 
-    for family in os.scandir(args.dst + '/testhal/STM32/'):
-        if not family.name[0].isupper() or not family.is_dir():
-            continue
+                    with open(test.path + '/halconf.h', 'r') as file:
+                        sources[family.name]['halconf'] = halconf(file.readlines())
 
-        for test in os.scandir(family.path):
-            copy('templates/halconf_community.h', test.path)
-            copy('templates/mcuconf_community.h', test.path)
+                    with open(test.path + '/mcuconf.h', 'r') as file:
+                        sources[family.name]['mcuconf'] = mcuconf(file.readlines())
 
-            with open(test.path + '/Makefile', 'w') as file:
-                file.write(sources[family.name]['makefile'])
+                except Exception as e:
+                    print(test.path, e)
+                    del sources[family.name]
+                    continue
 
-            with open(test.path + '/halconf.h', 'w') as file:
-                file.write(sources[family.name]['halconf'])
+                break
 
-            with open(test.path + '/mcuconf.h', 'w') as file:
-                file.write(sources[family.name]['mcuconf'])
+        for family in os.scandir(args.dst + '/{}/STM32/'.format(folder)):
+            if not family.name[0].isupper() or not family.is_dir():
+                continue
+
+            for test in os.scandir(family.path):
+                copy('templates/halconf_community.h', test.path)
+                copy('templates/mcuconf_community.h', test.path)
+
+                try:
+                    with open(test.path + '/Makefile', 'w') as file:
+                        file.write(sources[family.name]['makefile'])
+
+                    with open(test.path + '/halconf.h', 'w') as file:
+                        file.write(sources[family.name]['halconf'])
+
+                    with open(test.path + '/mcuconf.h', 'w') as file:
+                        file.write(sources[family.name]['mcuconf'])
+
+                    print('updated', test.path)
+                except KeyError as e:
+                    print('Missing family data', e)
