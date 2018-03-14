@@ -5,7 +5,7 @@ set -ex
 export PATH=/tmp/gcc-arm-none-eabi-4_9-2015q3/bin:$PATH
 
 cd ../ChibiOS-RT/ext
-7z e lwip-2.0.3-patched.7z
+7z x lwip-2.0.3-patched.7z
 cd -
 
 git checkout -- .
