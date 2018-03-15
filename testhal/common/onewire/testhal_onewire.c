@@ -191,7 +191,7 @@ void onewireTest(void) {
       testbuf[1] = ONEWIRE_CMD_CONVERT_TEMP;
 
 #if ONEWIRE_USE_STRONG_PULLUP
-      onewireWrite(&OWD1, testbuf, 2, MS2ST(750));
+      onewireWrite(&OWD1, testbuf, 2, TIME_MS2I(750));
 #else
       onewireWrite(&OWD1, testbuf, 2, 0);
       /* poll bus waiting ready signal from all connected devices */

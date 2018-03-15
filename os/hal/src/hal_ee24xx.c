@@ -105,7 +105,7 @@ static systime_t calc_timeout(I2CDriver *i2cp, size_t txbytes, size_t rxbytes) {
   tmo = ((txbytes + rxbytes + 1) * bitsinbyte * 1000);
   tmo /= EEPROM_I2C_CLOCK;
   tmo += 10; /* some additional milliseconds to be safer */
-  return MS2ST(tmo);
+  return TIME_MS2I(tmo);
 }
 
 /**

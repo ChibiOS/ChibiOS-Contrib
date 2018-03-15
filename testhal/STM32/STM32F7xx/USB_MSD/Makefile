@@ -30,7 +30,7 @@ endif
 
 # Enable this if you want link time optimizations (LTO)
 ifeq ($(USE_LTO),)
-  USE_LTO = no
+  USE_LTO = yes
 endif
 
 # If enabled, this option allows to compile the application in THUMB mode.
@@ -93,13 +93,12 @@ PROJECT = ch
 # Imported source files and paths
 CHIBIOS = ../../../../../ChibiOS
 CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
-
 # Startup files.
 include $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_stm32f7xx.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
-include $(CHIBIOS)/os/hal/ports/STM32/STM32F7xx/platform.mk
-include $(CHIBIOS)/os/hal/boards/ST_NUCLEO144_F767ZI/board.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/STM32/STM32F7xx/platform.mk
+include $(CHIBIOS)/os/hal/boards/ST_STM32F746G_DISCOVERY/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
@@ -112,7 +111,7 @@ include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 include $(CHIBIOS)/os/various/shell/shell.mk
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD)/STM32F76xxI.ld
+LDSCRIPT= $(STARTUPLD)/STM32F746xG.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.

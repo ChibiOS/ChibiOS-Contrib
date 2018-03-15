@@ -82,9 +82,11 @@
  * GPT driver system settings.
  */
 #define STM32_GPT_USE_TIM1                  FALSE
+#define STM32_GPT_USE_TIM2                  FALSE
 #define STM32_GPT_USE_TIM3                  FALSE
 #define STM32_GPT_USE_TIM14                 FALSE
 #define STM32_GPT_TIM1_IRQ_PRIORITY         2
+#define STM32_GPT_TIM2_IRQ_PRIORITY         2
 #define STM32_GPT_TIM3_IRQ_PRIORITY         2
 #define STM32_GPT_TIM14_IRQ_PRIORITY        2
 
@@ -128,17 +130,21 @@
  * ICU driver system settings.
  */
 #define STM32_ICU_USE_TIM1                  FALSE
+#define STM32_ICU_USE_TIM2                  FALSE
 #define STM32_ICU_USE_TIM3                  FALSE
 #define STM32_ICU_TIM1_IRQ_PRIORITY         3
+#define STM32_ICU_TIM2_IRQ_PRIORITY         3
 #define STM32_ICU_TIM3_IRQ_PRIORITY         3
 
 /*
  * PWM driver system settings.
  */
 #define STM32_PWM_USE_ADVANCED              FALSE
-#define STM32_PWM_USE_TIM1                  FALSE
+#define STM32_PWM_USE_TIM1                  TRUE
+#define STM32_PWM_USE_TIM2                  FALSE
 #define STM32_PWM_USE_TIM3                  TRUE
 #define STM32_PWM_TIM1_IRQ_PRIORITY         3
+#define STM32_PWM_TIM2_IRQ_PRIORITY         3
 #define STM32_PWM_TIM3_IRQ_PRIORITY         3
 
 /*
@@ -167,8 +173,8 @@
 /*
  * ST driver system settings.
  */
-#define STM32_ST_IRQ_PRIORITY               3
-#define STM32_ST_USE_TIMER                  3
+#define STM32_ST_IRQ_PRIORITY               2
+#define STM32_ST_USE_TIMER                  2
 
 /*
  * UART driver system settings.
@@ -190,9 +196,6 @@
  */
 #define STM32_WDG_USE_IWDG                  FALSE
 
-/*
- * header for community drivers.
- */
 #include "mcuconf_community.h"
 
 #endif /* MCUCONF_H */

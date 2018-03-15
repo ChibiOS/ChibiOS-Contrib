@@ -203,7 +203,7 @@
 #error "Invalid value for TIVA_BYPASS_VALUE defined"
 #endif
 
-#if (TIVA_OSCSRC == TIVA_RCC_OSCSRC_MOSC) && (TIVA_MOSC_ENABLE == FALSE)
+#if (TIVA_OSCSRC == SYSCTL_RCC2_OSCSRC2_MO) && (TIVA_MOSC_ENABLE == FALSE)
 #error "Main Oscillator selected but not enabled"
 #endif
 

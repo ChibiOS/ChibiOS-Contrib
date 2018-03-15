@@ -41,7 +41,7 @@
  * @brief   Enables the ADC subsystem.
  */
 #if !defined(HAL_USE_ADC) || defined(__DOXYGEN__)
-#define HAL_USE_ADC                 FALSE
+#define HAL_USE_ADC                 TRUE
 #endif
 
 /**
@@ -411,10 +411,6 @@
 #if !defined(USB_USE_WAIT) || defined(__DOXYGEN__)
 #define USB_USE_WAIT                FALSE
 #endif
-
-/*===========================================================================*/
-/* Community drivers's includes                                              */
-/*===========================================================================*/
 
 #include "halconf_community.h"
 

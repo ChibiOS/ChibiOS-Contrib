@@ -52,7 +52,7 @@ static void extcb1(EXTDriver *extp, expchannel_t channel)
   if (!debouncing1 && (pad1 == PAL_LOW)) {
     debouncing1 = true;
     chSysLockFromISR();
-    chVTSetI(&vt1, MS2ST(DEBOUNCE_TIME), led1toggle, NULL);
+    chVTSetI(&vt1, TIME_MS2I(DEBOUNCE_TIME), led1toggle, NULL);
     chSysUnlockFromISR();
   } else if (debouncing1 && (pad1 == PAL_HIGH)) {
     chSysLockFromISR();
@@ -73,7 +73,7 @@ static void extcb2(EXTDriver *extp, expchannel_t channel)
   if (!debouncing2 && (pad2 == PAL_LOW)) {
     debouncing2 = true;
     chSysLockFromISR();
-    chVTSetI(&vt2, MS2ST(DEBOUNCE_TIME), led2toggle, NULL);
+    chVTSetI(&vt2, TIME_MS2I(DEBOUNCE_TIME), led2toggle, NULL);
     chSysUnlockFromISR();
   } else if (debouncing2 && (pad2 == PAL_HIGH)) {
     chSysLockFromISR();

@@ -27,3 +27,7 @@ include $(CHIBIOS_CONTRIB)/os/hal/ports/TIVA/LLD/SSI/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/TIVA/LLD/UART/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/TIVA/LLD/uDMA/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/TIVA/LLD/WDT/driver.mk
+
+# Shared variables
+ALLCSRC += $(PLATFORMSRC)
+ALLINC  += $(PLATFORMINC)

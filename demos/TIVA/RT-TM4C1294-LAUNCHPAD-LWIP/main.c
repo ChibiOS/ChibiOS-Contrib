@@ -17,7 +17,7 @@
 #include "ch.h"
 #include "hal.h"
 #include "lwipthread.h"
-#include "web/web.h"
+#include "lwip/apps/httpd.h"
 
 /*
  * Application entry point.
@@ -43,10 +43,9 @@ int main(void)
   sdStart(&SD1, NULL);
 
   /*
-   * Creates the HTTP thread (it changes priority internally).
+   * Creates the LwIP HTTP server.
    */
-  chThdCreateStatic(wa_http_server, sizeof(wa_http_server), NORMALPRIO + 1,
-                    http_server, NULL);
+  httpd_init();
 
   while (1) {
     osalThreadSleepMilliseconds(500);
