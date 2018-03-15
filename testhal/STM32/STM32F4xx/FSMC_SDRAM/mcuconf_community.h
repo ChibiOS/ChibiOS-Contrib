@@ -17,8 +17,9 @@
 /*
  * FSMC driver system settings.
  */
-#define STM32_FSMC_USE_FSMC1                FALSE
+#define STM32_FSMC_USE_FSMC1                TRUE
 #define STM32_FSMC_FSMC1_IRQ_PRIORITY       10
+#define STM32_FSMC_DMA_CHN                  0x03010201
 
 /*
  * FSMC NAND driver system settings.
@@ -42,7 +43,9 @@
 /*
  * FSMC SDRAM driver system settings.
  */
-#define STM32_USE_FSMC_SDRAM                FALSE
+#define STM32_USE_FSMC_SDRAM                TRUE
+#define STM32_SDRAM_USE_FSMC_SDRAM1         FALSE
+#define STM32_SDRAM_USE_FSMC_SDRAM2         TRUE
 
 /*
  * TIMCAP driver system settings.

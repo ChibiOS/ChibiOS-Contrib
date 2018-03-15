@@ -28,7 +28,7 @@
  * @brief   Enables the FSMC subsystem.
  */
 #if !defined(HAL_USE_FSMC) || defined(__DOXYGEN__)
-#define HAL_USE_FSMC                FALSE
+#define HAL_USE_FSMC                TRUE
 #endif
 
 /**
