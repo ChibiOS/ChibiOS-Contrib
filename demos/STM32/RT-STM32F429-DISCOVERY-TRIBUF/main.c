@@ -28,8 +28,6 @@
 #include <stdlib.h>
 
 #if (HAL_USE_SERIAL_USB == TRUE)
-/* Virtual serial port over USB.*/
-SerialUSBDriver SDU1;
 static BaseSequentialStream *const chout = (BaseSequentialStream *)&SDU1;
 #else
 static BaseSequentialStream *const chout = (BaseSequentialStream *)&SD1;

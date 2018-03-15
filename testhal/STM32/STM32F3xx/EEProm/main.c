@@ -24,6 +24,7 @@
 #define EEPROM_SPIDCONFIG spi1cfg
 
 static const SPIConfig EEPROM_SPIDCONFIG = {
+  false,
   NULL,
   GPIOA,
   12,

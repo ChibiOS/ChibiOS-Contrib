@@ -153,7 +153,7 @@
  *
  * @note    The default is @p TRUE.
  */
-#define CH_CFG_USE_TM                       FALSE
+#define CH_CFG_USE_TM                       TRUE
 
 /**
  * @brief   Threads registry APIs.
