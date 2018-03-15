@@ -11,3 +11,8 @@ STARTUPINC = $(CHIBIOS)/os/common/portability/GCC \
              $(CHIBIOS_CONTRIB)/os/common/ext/TivaWare
 
 STARTUPLD  = $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/ld
+
+# Shared variables
+ALLXASMSRC += $(STARTUPASM)
+ALLCSRC    += $(STARTUPSRC)
+ALLINC     += $(STARTUPINC)

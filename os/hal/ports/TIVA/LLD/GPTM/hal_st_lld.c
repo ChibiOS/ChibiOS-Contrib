@@ -74,7 +74,7 @@
 #error "TIVA_ST_USE_TIMER specifies an unsupported timer"
 #endif
 
-#if (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1 > 0xFFFF
+#if (TIVA_SYSCLK / OSAL_ST_FREQUENCY) - 1 > 0xFFFF
 #error "the selected ST frequency is not obtainable because TIM timer prescaler limits"
 #endif
 
