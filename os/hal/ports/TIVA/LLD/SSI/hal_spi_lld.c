@@ -258,7 +258,7 @@ void spi_lld_start(SPIDriver *spip)
       nvicEnableVector(TIVA_SSI1_NUMBER, TIVA_SPI_SSI1_IRQ_PRIORITY);
     }
 #endif
-#if TIVASPI_USE_SSI2
+#if TIVA_SPI_USE_SSI2
     if (&SPID2 == spip) {
       bool b;
       b = udmaChannelAllocate(spip->dmarxnr);
