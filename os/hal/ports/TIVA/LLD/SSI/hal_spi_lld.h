@@ -156,7 +156,7 @@
 #error "Invalid IRQ priority assigned to SSI2"
 #endif
 
-#if TM4C123x_SPI_USE_SSI3 && \
+#if TIVA_SPI_USE_SSI3 && \
     !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_SPI_SSI3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SSI3"
 #endif

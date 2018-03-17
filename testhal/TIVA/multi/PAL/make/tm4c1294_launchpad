@@ -88,9 +88,9 @@ PROJECT = ch
 # Imported source files and paths
 CHIBIOS = ../../../../../ChibiOS-RT
 CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
-CONFDIR  := ./cfg-tm4c1294_launchpad
-BUILDDIR := ./build-tm4c1294_launchpad
-DEPDIR   := ./.dep-tm4c1294_launchpad
+CONFDIR  := ./cfg/tm4c1294_launchpad
+BUILDDIR := ./build/tm4c1294_launchpad
+DEPDIR   := ./.dep/tm4c1294_launchpad
 
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
