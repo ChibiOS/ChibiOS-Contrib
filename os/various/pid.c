@@ -16,22 +16,23 @@
 *    reliable defaults, so we need to have the user set them.
 ***************************************************************************/
 void pid_create(pid_t* p, float* Input, float* Output, float* Setpoint,
-        float Kp, float Ki, float Kd, int POn, int ControllerDirection)
+        float Kp, float Ki, float Kd, int POn, int Direction)
 {
-    p->myOutput = Output;
-    p->myInput = Input;
-    p->mySetpoint = Setpoint;
+    p->output = Output;
+    p->input = Input;
+    p->setPoint = Setpoint;
     p->inAuto = false;
 
     pid_setOutputLimits(p, 0, 255); // default output limit corresponds to
                                     // the arduino pwm limits
 
-    p->SampleTime = 100; // default Controller Sample Time is 100ms
+    p->sampleTime = 100; // default Controller Sample Time is 100ms
 
-    pid_setControllerDirection(p, ControllerDirection);
+    pid_setDirection(p, Direction);
     pid_setTunings(p, Kp, Ki, Kd, POn);
+    pid_initialize(p);
 
-    p->lastTime = TIME_MS - p->SampleTime;
+    p->lastTime = TIME_MS - p->sampleTime;
 }
 
 
@@ -46,11 +47,11 @@ bool pid_compute(pid_t* p)
     if(!p->inAuto) return false;
     unsigned long now = TIME_MS;
     unsigned long timeChange = (now - p->lastTime);
-    if(timeChange >= p->SampleTime)
+    if(timeChange >= p->sampleTime)
     {
         /* Compute all the working error variables */
-        float input = *p->myInput;
-        float error = *p->mySetpoint - input;
+        float input = *p->input;
+        float error = *p->setPoint - input;
         float dInput = (input - p->lastInput);
         p->outputSum += (p->ki * error);
 
@@ -70,7 +71,7 @@ bool pid_compute(pid_t* p)
 
         if(output > p->outMax) output = p->outMax;
         else if(output < p->outMin) output = p->outMin;
-            *p->myOutput = output;
+            *p->output = output;
 
         /* Remember some variables for next time */
         p->lastInput = input;
@@ -87,19 +88,21 @@ bool pid_compute(pid_t* p)
 ******************************************************************************/
 void pid_setTunings(pid_t* p, float Kp, float Ki, float Kd, int POn)
 {
-    if (Kp<0 || Ki<0 || Kd<0) return;
+    if (Kp < 0 || Ki < 0 || Kd < 0) return;
 
     p->pOn = POn;
     p->pOnE = POn == PID_P_ON_E;
 
-    p->dispKp = Kp; p->dispKi = Ki; p->dispKd = Kd;
+    p->dispKp = Kp;
+    p->dispKi = Ki;
+    p->dispKd = Kd;
 
-    float SampleTimeInSec = ((float)p->SampleTime)/1000;
+    float SampleTimeInSec = ((float)p->sampleTime) / 1000.0;
     p->kp = Kp;
     p->ki = Ki * SampleTimeInSec;
     p->kd = Kd / SampleTimeInSec;
 
-    if(p->controllerDirection == PID_REVERSE)
+    if(p->direction == PID_REVERSE)
     {
         p->kp = (0 - p->kp);
         p->ki = (0 - p->ki);
@@ -114,10 +117,10 @@ void pid_setSampleTime(pid_t* p, int NewSampleTime)
 {
     if (NewSampleTime > 0)
     {
-        float ratio  = (float)NewSampleTime / (float)p->SampleTime;
+        float ratio  = (float)NewSampleTime / (float)p->sampleTime;
         p->ki *= ratio;
         p->kd /= ratio;
-        p->SampleTime = (unsigned long)NewSampleTime;
+        p->sampleTime = (unsigned long)NewSampleTime;
     }
 }
 
@@ -137,8 +140,8 @@ void pid_setOutputLimits(pid_t* p, float Min, float Max)
 
     if(p->inAuto)
     {
-        if(*p->myOutput > p->outMax) *p->myOutput = p->outMax;
-        else if(*p->myOutput < p->outMin) *p->myOutput = p->outMin;
+        if(*p->output > p->outMax) *p->output = p->outMax;
+        else if(*p->output < p->outMin) *p->output = p->outMin;
 
         if(p->outputSum > p->outMax) p->outputSum = p->outMax;
         else if(p->outputSum < p->outMin) p->outputSum = p->outMin;
@@ -166,8 +169,8 @@ void pid_setMode(pid_t* p, int Mode)
 ******************************************************************************/
 void pid_initialize(pid_t* p)
 {
-    p->outputSum = *p->myOutput;
-    p->lastInput = *p->myInput;
+    p->outputSum = *p->output;
+    p->lastInput = *p->input;
     if(p->outputSum > p->outMax) p->outputSum = p->outMax;
     else if(p->outputSum < p->outMin) p->outputSum = p->outMin;
 }
@@ -178,14 +181,14 @@ void pid_initialize(pid_t* p)
 * know which one, because otherwise we may increase the output when we should
 * be decreasing.  This is called from the constructor.
 ******************************************************************************/
-void pid_setControllerDirection(pid_t* p, int Direction)
+void pid_setDirection(pid_t* p, int Direction)
 {
-    if(p->inAuto && Direction != p->controllerDirection)
+    if(p->inAuto && Direction != p->direction)
     {
         p->kp = (0 - p->kp);
         p->ki = (0 - p->ki);
         p->kd = (0 - p->kd);
     }
-    p->controllerDirection = Direction;
+    p->direction = Direction;
 }
 
