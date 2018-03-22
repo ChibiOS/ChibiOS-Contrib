@@ -8,8 +8,8 @@
 #define PID_MANUAL 0
 #define PID_DIRECT 0
 #define PID_REVERSE 1
-#define PID_P_ON_M 0
-#define PID_P_ON_E 1
+#define PID_ON_M 0
+#define PID_ON_E 1
 
 
 typedef struct {
@@ -48,7 +48,7 @@ void pid_create(pid_t* p, float* Input, float* Output, float* Setpoint,  // * co
                 float Kp, float Ki, float Kd, int POn, int Direction);   //   Setpoint.  Initial tuning parameters are also set here.
                                                                          //   (overload for specifying proportional mode)
 
-void pid_setmode(pid_t* p, int mode);                 // * sets PID to either Manual (0) or Auto (non-0)
+void pid_setMode(pid_t* p, int mode);                 // * sets PID to either Manual (0) or Auto (non-0)
 
 bool pid_compute(pid_t* p);               // * performs the PID calculation.  it should be
                                           //   called every time loop() cycles. ON/OFF and

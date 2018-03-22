@@ -55,7 +55,7 @@ bool pid_compute(pid_t* p)
         float dInput = (input - p->lastInput);
         p->outputSum += (p->ki * error);
 
-        /* Add Proportional on Measurement, if P_ON_M is specified */
+        /* Add Proportional on Measurement, if PID_ON_M is specified */
         if(!p->pOnE) p->outputSum -= p->kp * dInput;
 
         if(p->outputSum > p->outMax) p->outputSum = p->outMax;
@@ -91,7 +91,7 @@ void pid_setTunings(pid_t* p, float Kp, float Ki, float Kd, int POn)
     if (Kp < 0 || Ki < 0 || Kd < 0) return;
 
     p->pOn = POn;
-    p->pOnE = POn == PID_P_ON_E;
+    p->pOnE = POn == PID_ON_E;
 
     p->dispKp = Kp;
     p->dispKi = Ki;
