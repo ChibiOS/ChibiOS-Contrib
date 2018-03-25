@@ -9,13 +9,13 @@
 #include "pid.h"
 #include "osal.h"
 
-#define TIME_MS (osalOsGetSystemTimeX() / (OSAL_ST_FREQUENCY / 1000))
+#define TIME_MS ((osalOsGetSystemTimeX() * 1000) / OSAL_ST_FREQUENCY )
 
 /*Constructor (...)*********************************************************
 *    The parameters specified here are those for for which we can't set up
 *    reliable defaults, so we need to have the user set them.
 ***************************************************************************/
-void pid_create(pid_t* p, float* Input, float* Output, float* Setpoint,
+void pid_create(pidc_t* p, float* Input, float* Output, float* Setpoint,
         float Kp, float Ki, float Kd, int POn, int Direction)
 {
     p->output = Output;
@@ -23,8 +23,8 @@ void pid_create(pid_t* p, float* Input, float* Output, float* Setpoint,
     p->setPoint = Setpoint;
     p->inAuto = false;
 
-    pid_setOutputLimits(p, 0, 255); // default output limit corresponds to
-                                    // the arduino pwm limits
+    pid_setOutputLimits(p, 0, 4095); // default output limit corresponds to
+                                     // the 12 bit dac limit
 
     p->sampleTime = 100; // default Controller Sample Time is 100ms
 
@@ -42,7 +42,7 @@ void pid_create(pid_t* p, float* Input, float* Output, float* Setpoint,
 *   pid Output needs to be computed.  returns true when the output is computed,
 *   false when nothing has been done.
 **********************************************************************************/
-bool pid_compute(pid_t* p)
+bool pid_compute(pidc_t* p)
 {
     if(!p->inAuto) return false;
     unsigned long now = TIME_MS;
@@ -86,7 +86,7 @@ bool pid_compute(pid_t* p)
 * it's called automatically from the constructor, but tunings can also
 * be adjusted on the fly during normal operation
 ******************************************************************************/
-void pid_setTunings(pid_t* p, float Kp, float Ki, float Kd, int POn)
+void pid_setTunings(pidc_t* p, float Kp, float Ki, float Kd, int POn)
 {
     if (Kp < 0 || Ki < 0 || Kd < 0) return;
 
@@ -113,7 +113,7 @@ void pid_setTunings(pid_t* p, float Kp, float Ki, float Kd, int POn)
 /* SetSampleTime(...) *********************************************************
 * sets the period, in Milliseconds, at which the calculation is performed
 ******************************************************************************/
-void pid_setSampleTime(pid_t* p, int NewSampleTime)
+void pid_setSampleTime(pidc_t* p, int NewSampleTime)
 {
     if (NewSampleTime > 0)
     {
@@ -132,7 +132,7 @@ void pid_setSampleTime(pid_t* p, int NewSampleTime)
 *  want to clamp it from 0-125.  who knows.  at any rate, that can all be done
 *  here.
 **************************************************************************/
-void pid_setOutputLimits(pid_t* p, float Min, float Max)
+void pid_setOutputLimits(pidc_t* p, float Min, float Max)
 {
     if(Min >= Max) return;
     p->outMin = Min;
@@ -153,7 +153,7 @@ void pid_setOutputLimits(pid_t* p, float Min, float Max)
 * when the transition from manual to auto occurs, the controller is
 * automatically initialized
 ******************************************************************************/
-void pid_setMode(pid_t* p, int Mode)
+void pid_setMode(pidc_t* p, int Mode)
 {
     bool newAuto = (Mode == PID_AUTOMATIC);
     if(newAuto && !p->inAuto)
@@ -167,7 +167,7 @@ void pid_setMode(pid_t* p, int Mode)
 *	does all the things that need to happen to ensure a bumpless transfer
 *  from manual to automatic mode.
 ******************************************************************************/
-void pid_initialize(pid_t* p)
+void pid_initialize(pidc_t* p)
 {
     p->outputSum = *p->output;
     p->lastInput = *p->input;
@@ -181,7 +181,7 @@ void pid_initialize(pid_t* p)
 * know which one, because otherwise we may increase the output when we should
 * be decreasing.  This is called from the constructor.
 ******************************************************************************/
-void pid_setDirection(pid_t* p, int Direction)
+void pid_setDirection(pidc_t* p, int Direction)
 {
     if(p->inAuto && Direction != p->direction)
     {
