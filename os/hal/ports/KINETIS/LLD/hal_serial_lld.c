@@ -50,6 +50,18 @@ SerialDriver SD2;
 SerialDriver SD3;
 #endif
 
+#if KINETIS_SERIAL_USE_UART3 || defined(__DOXYGEN__)
+SerialDriver SD4;
+#endif
+
+#if KINETIS_SERIAL_USE_UART4 || defined(__DOXYGEN__)
+SerialDriver SD5;
+#endif
+
+#if KINETIS_SERIAL_USE_UART5 || defined(__DOXYGEN__)
+SerialDriver SD6;
+#endif
+
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
