@@ -398,14 +398,20 @@ void usb_lld_init(void) {
 
 #if KINETIS_USB_USE_USB0
 
+  /* Set USB clock source to MCGPLLCLK, MCGFLLCLK, USB1 PFD, or IRC48M */
   SIM->SOPT2 |= SIM_SOPT2_USBSRC;
 
-#if defined(K20x5) || defined(K20x7)
+#if defined(K20x5) || defined(K20x7) || defined(MK66F18)
 
 #if KINETIS_MCG_MODE == KINETIS_MCG_MODE_FEI
 
   /* MCGOUTCLK is the SYSCLK frequency, so don't divide for USB clock */
   SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
+
+#if defined(MK66F18)
+  /* Switch from default MCGPLLCLK to IRC48M for USB */
+  SIM->SOPT2 |= SIM_SOPT2_PLLFLLSEL_SET(3);
+#endif
 
 #elif KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE
 
