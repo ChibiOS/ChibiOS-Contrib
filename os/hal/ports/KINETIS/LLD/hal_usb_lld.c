@@ -461,9 +461,15 @@ void usb_lld_start(USBDriver *usbp) {
         _bdt[i].addr=0;
       }
 
+#if defined(MK66F18)
+      /* Disable the USB current limiter */
+      SIM->USBPHYCTL |= SIM_USBPHYCTL_USBDISILIM;
+#endif
+
       /* Enable Clock */
 #if KINETIS_USB0_IS_USBOTG
       SIM->SCGC4 |= SIM_SCGC4_USBOTG;
+
 #else /* KINETIS_USB0_IS_USBOTG */
       SIM->SCGC4 |= SIM_SCGC4_USBFS;
 #endif /* KINETIS_USB0_IS_USBOTG */

@@ -12032,7 +12032,8 @@ typedef struct {
 #define SIM_SOPT1_USBSSTBY(x)                    (((uint32_t)(((uint32_t)(x)) << SIM_SOPT1_USBSSTBY_SHIFT)) & SIM_SOPT1_USBSSTBY_MASK)
 #define SIM_SOPT1_USBREGEN_MASK                  (0x80000000U)
 #define SIM_SOPT1_USBREGEN_SHIFT                 (31U)
-#define SIM_SOPT1_USBREGEN(x)                    (((uint32_t)(((uint32_t)(x)) << SIM_SOPT1_USBREGEN_SHIFT)) & SIM_SOPT1_USBREGEN_MASK)
+#define SIM_SOPT1_USBREGEN_SET(x)                (((uint32_t)(((uint32_t)(x)) << SIM_SOPT1_USBREGEN_SHIFT)) & SIM_SOPT1_USBREGEN_MASK)
+#define SIM_SOPT1_USBREGEN                       SIM_SOPT1_USBREGEN_SET(1)
 
 /*! @name SOPT1CFG - SOPT1 Configuration Register */
 #define SIM_SOPT1CFG_URWE_MASK                   (0x1000000U)
@@ -12057,7 +12058,8 @@ typedef struct {
 #define SIM_USBPHYCTL_USB3VOUTTRG(x)             (((uint32_t)(((uint32_t)(x)) << SIM_USBPHYCTL_USB3VOUTTRG_SHIFT)) & SIM_USBPHYCTL_USB3VOUTTRG_MASK)
 #define SIM_USBPHYCTL_USBDISILIM_MASK            (0x800000U)
 #define SIM_USBPHYCTL_USBDISILIM_SHIFT           (23U)
-#define SIM_USBPHYCTL_USBDISILIM(x)              (((uint32_t)(((uint32_t)(x)) << SIM_USBPHYCTL_USBDISILIM_SHIFT)) & SIM_USBPHYCTL_USBDISILIM_MASK)
+#define SIM_USBPHYCTL_USBDISILIM_SET(x)          (((uint32_t)(((uint32_t)(x)) << SIM_USBPHYCTL_USBDISILIM_SHIFT)) & SIM_USBPHYCTL_USBDISILIM_MASK)
+#define SIM_USBPHYCTL_USBDISILIM                 SIM_USBPHYCTL_USBDISILIM_SET(1)
 
 /*! @name SOPT2 - System Options Register 2 */
 #define SIM_SOPT2_USBSLSRC_MASK                  (0x1U)
@@ -12065,7 +12067,8 @@ typedef struct {
 #define SIM_SOPT2_USBSLSRC(x)                    (((uint32_t)(((uint32_t)(x)) << SIM_SOPT2_USBSLSRC_SHIFT)) & SIM_SOPT2_USBSLSRC_MASK)
 #define SIM_SOPT2_USBREGEN_MASK                  (0x2U)
 #define SIM_SOPT2_USBREGEN_SHIFT                 (1U)
-#define SIM_SOPT2_USBREGEN(x)                    (((uint32_t)(((uint32_t)(x)) << SIM_SOPT2_USBREGEN_SHIFT)) & SIM_SOPT2_USBREGEN_MASK)
+#define SIM_SOPT2_USBREGEN_SET(x)                (((uint32_t)(((uint32_t)(x)) << SIM_SOPT2_USBREGEN_SHIFT)) & SIM_SOPT2_USBREGEN_MASK)
+#define SIM_SOPT2_USBREGEN                       SIM_SOPT2_USBREGEN_SET(1)
 #define SIM_SOPT2_RTCCLKOUTSEL_MASK              (0x10U)
 #define SIM_SOPT2_RTCCLKOUTSEL_SHIFT             (4U)
 #define SIM_SOPT2_RTCCLKOUTSEL(x)                (((uint32_t)(((uint32_t)(x)) << SIM_SOPT2_RTCCLKOUTSEL_SHIFT)) & SIM_SOPT2_RTCCLKOUTSEL_MASK)
