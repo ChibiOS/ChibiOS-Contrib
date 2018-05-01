@@ -20,6 +20,6 @@
 /*
  * HAL driver system settings.
  */
-#define NRF51_I2C_USE_I2C0                 TRUE
+#define NRF5_I2C_USE_I2C0                 TRUE
 
 #endif /* _MCUCONF_H_ */

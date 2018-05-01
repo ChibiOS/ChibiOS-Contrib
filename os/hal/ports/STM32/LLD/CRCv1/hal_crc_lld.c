@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    STM32/CRCv1/crc_lld.c
+ * @file    STM32/CRCv1/hal_crc_lld.c
  * @brief   STM32 CRC subsystem low level driver source.
  *
  * @addtogroup CRC
@@ -155,7 +155,7 @@ void crc_lld_start(CRCDriver *crcp) {
   if (crcp->config == NULL)
     crcp->config = &default_config;
 
-  rccEnableCRC(FALSE);
+  rccEnableCRC();
 
 #if STM32_CRC_PROGRAMMABLE == TRUE
   crcp->crc->INIT = crcp->config->initial_val;
@@ -185,15 +185,15 @@ void crc_lld_start(CRCDriver *crcp) {
     crcp->crc->CR |= CRC_CR_REV_OUT;
   }
 #else
-  osalDbgAssert(crcp->config->initial_val != default_config.initial_val,
+  osalDbgAssert(crcp->config->initial_val == default_config.initial_val,
       "hardware doesn't support programmable initial value");
-  osalDbgAssert(crcp->config->poly_size != default_config.poly_size,
+  osalDbgAssert(crcp->config->poly_size == default_config.poly_size,
       "hardware doesn't support programmable polynomial size");
-  osalDbgAssert(crcp->config->poly != default_config.poly,
+  osalDbgAssert(crcp->config->poly == default_config.poly,
       "hardware doesn't support programmable polynomial");
-  osalDbgAssert(crcp->config->reflect_data != default_config.reflect_data,
+  osalDbgAssert(crcp->config->reflect_data == default_config.reflect_data,
       "hardware doesn't support reflect of input data");
-  osalDbgAssert(crcp->config->reflect_remainder != default_config.reflect_remainder,
+  osalDbgAssert(crcp->config->reflect_remainder == default_config.reflect_remainder,
       "hardware doesn't support reflect of output remainder");
 #endif
 
@@ -234,7 +234,7 @@ void crc_lld_stop(CRCDriver *crcp) {
 #else
   (void)crcp;
 #endif
-  rccDisableCRC(FALSE);
+  rccDisableCRC();
 }
 
 /**
@@ -299,7 +299,7 @@ uint32_t crc_lld_calc(CRCDriver *crcp, size_t n, const void *buf) {
     n--;
   }
 #else
-  osalDbgAssert(n != 0, "STM32 CRC Unit only supports WORD accesses");
+  osalDbgAssert(n == 0, "STM32 CRC Unit only supports WORD accesses");
 #endif
 
 #endif
