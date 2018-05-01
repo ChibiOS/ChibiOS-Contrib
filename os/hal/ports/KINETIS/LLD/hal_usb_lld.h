@@ -326,6 +326,10 @@ struct USBDriver {
    * @brief   Current USB device configuration.
    */
   uint8_t                       configuration;
+  /**
+   * @brief   State of the driver when a suspend happened.
+   */
+  usbstate_t                    saved_state;
 #if defined(USB_DRIVER_EXT_FIELDS)
   USB_DRIVER_EXT_FIELDS
 #endif
@@ -339,6 +343,25 @@ struct USBDriver {
 /*===========================================================================*/
 /* Driver macros.                                                            */
 /*===========================================================================*/
+
+/**
+ * @brief   Host wake-up procedure duration.
+ */
+#if !defined(USB_HOST_WAKEUP_DURATION) || defined(__DOXYGEN__)
+#define USB_HOST_WAKEUP_DURATION            2
+#endif
+
+/**
+ * @brief   Start of host wake-up procedure.
+ *
+ * @notapi
+ */
+#define usb_lld_wakeup_host(usbp)                                           \
+  do{                                                                       \
+    USB0->CTL |= USBx_CTL_RESUME;                                     \
+    osalThreadSleepMilliseconds(USB_HOST_WAKEUP_DURATION);                  \
+    USB0->CTL &= ~USBx_CTL_RESUME;                                    \
+  } while (false)
 
 /**
  * @brief   Returns the current frame number.
