@@ -83,6 +83,11 @@ typedef uint32_t ioline_t;
 typedef GPIO_TypeDef *ioportid_t;
 
 /**
+ * @brief   Type of an pad identifier.
+ */
+typedef uint32_t iopadid_t;
+
+/**
  * @brief   Port Configuration.
  * @details This structure stores the configuration parameters of all pads
  *          belonging to a port.
