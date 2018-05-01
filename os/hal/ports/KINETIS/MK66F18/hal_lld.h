@@ -128,6 +128,9 @@
 #if !defined(KINETIS_CLKDIV1_OUTDIV3) || defined(__DOXYGEN__)
   #if defined(KINETIS_FLEXBUSCLK_FREQUENCY) && KINETIS_FLEXBUSCLK_FREQUENCY > 0
     #define KINETIS_CLKDIV1_OUTDIV3     (KINETIS_PLLCLK_FREQUENCY/KINETIS_FLEXBUSCLK_FREQUENCY)
+  #else
+    /* If no FlexBus frequency provided, use bus speed divider */
+    #define KINETIS_CLKDIV1_OUTDIV3     KINETIS_CLKDIV1_OUTDIV2
   #endif
 #endif
 
