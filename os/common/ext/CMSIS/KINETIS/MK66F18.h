@@ -279,7 +279,7 @@ typedef enum IRQn {
  * @{
  */
 
-#define __MPU_PRESENT                  0         /**< Defines if an MPU is present or not */
+#define __MPU_PRESENT                  1         /**< Defines if an MPU is present or not */
 #define __NVIC_PRIO_BITS               4         /**< Number of priority bits implemented in the NVIC */
 #define __Vendor_SysTickConfig         0         /**< Vendor specific implementation of SysTickConfig is defined */
 #define __FPU_PRESENT                  1         /**< Defines if an FPU is present or not */
@@ -12340,7 +12340,8 @@ typedef struct {
 #define SIM_SCGC3_USBHS(x)                       (((uint32_t)(((uint32_t)(x)) << SIM_SCGC3_USBHS_SHIFT)) & SIM_SCGC3_USBHS_MASK)
 #define SIM_SCGC3_USBHSPHY_MASK                  (0x4U)
 #define SIM_SCGC3_USBHSPHY_SHIFT                 (2U)
-#define SIM_SCGC3_USBHSPHY(x)                    (((uint32_t)(((uint32_t)(x)) << SIM_SCGC3_USBHSPHY_SHIFT)) & SIM_SCGC3_USBHSPHY_MASK)
+#define SIM_SCGC3_USBHSPHY_SET(x)                (((uint32_t)(((uint32_t)(x)) << SIM_SCGC3_USBHSPHY_SHIFT)) & SIM_SCGC3_USBHSPHY_MASK)
+#define SIM_SCGC3_USBHSPHY                       SIM_SCGC3_USBHSPHY_SET(1)
 #define SIM_SCGC3_USBHSDCD_MASK                  (0x8U)
 #define SIM_SCGC3_USBHSDCD_SHIFT                 (3U)
 #define SIM_SCGC3_USBHSDCD(x)                    (((uint32_t)(((uint32_t)(x)) << SIM_SCGC3_USBHSDCD_SHIFT)) & SIM_SCGC3_USBHSDCD_MASK)
@@ -14465,7 +14466,8 @@ typedef struct {
 #define USBx_CTL_RESUME                           USBx_CTL_RESUME_SET(1)
 #define USBx_CTL_HOSTMODEEN_MASK                  (0x8U)
 #define USBx_CTL_HOSTMODEEN_SHIFT                 (3U)
-#define USBx_CTL_HOSTMODEEN(x)                    (((uint8_t)(((uint8_t)(x)) << USBx_CTL_HOSTMODEEN_SHIFT)) & USBx_CTL_HOSTMODEEN_MASK)
+#define USBx_CTL_HOSTMODEEN_SET(x)                (((uint8_t)(((uint8_t)(x)) << USBx_CTL_HOSTMODEEN_SHIFT)) & USBx_CTL_HOSTMODEEN_MASK)
+#define USBx_CTL_HOSTMODEEN                       USBx_CTL_HOSTMODEEN_SET(1) 
 #define USBx_CTL_RESET_MASK                       (0x10U)
 #define USBx_CTL_RESET_SHIFT                      (4U)
 #define USBx_CTL_RESET(x)                         (((uint8_t)(((uint8_t)(x)) << USBx_CTL_RESET_SHIFT)) & USBx_CTL_RESET_MASK)

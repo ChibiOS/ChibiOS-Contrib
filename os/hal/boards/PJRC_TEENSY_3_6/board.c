@@ -166,6 +166,13 @@ const PALConfig pal_default_config =
             /*
              * PORTE setup.
              *
+             * PTE0 - SDHC
+             * PTE1 - SDHC
+             * PTE2 - SDHC
+             * PTE3 - SDHC
+             * PTE4 - SDHC
+             * PTE5 - SDHC
+             * PTE6 - USB OTG power switch
              * PTE10 - PIN56
              * PTE11 - PIN57
              * PTE24 - PIN33
@@ -174,9 +181,9 @@ const PALConfig pal_default_config =
              */
             .port = IOPORT5,
             .pads = {
-                PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
-                PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
-                PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
+                PAL_MODE_ALTERNATIVE_4,     PAL_MODE_ALTERNATIVE_4,     PAL_MODE_ALTERNATIVE_4,
+                PAL_MODE_ALTERNATIVE_4,     PAL_MODE_ALTERNATIVE_4,     PAL_MODE_ALTERNATIVE_4,
+                PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_OUTPUT_PUSHPULL,   PAL_MODE_OUTPUT_PUSHPULL,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
                 PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,       PAL_MODE_UNCONNECTED,
