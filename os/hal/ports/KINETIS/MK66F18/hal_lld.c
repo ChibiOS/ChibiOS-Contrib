@@ -81,6 +81,11 @@ const uint8_t _cfm[0x10] = {
  */
 void hal_lld_init(void) {
 
+#if defined(MK66F18)
+  /* Disable the MPU by default */
+  SYSMPU->CESR &= ~SYSMPU_CESR_VLD_MASK;
+#endif
+
 }
 
 /**
