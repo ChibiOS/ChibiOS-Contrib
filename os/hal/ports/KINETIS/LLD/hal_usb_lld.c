@@ -407,6 +407,8 @@ void usb_lld_init(void) {
 
 #elif KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE
 
+#if !defined(MK66F18)
+  /* Note:  We don't need this for MK66F18, we can use IRC48M clock for USB */
   #define KINETIS_USBCLK_FREQUENCY 48000000UL
   uint32_t i,j;
   for(i=0; i < 2; i++) {
@@ -419,6 +421,7 @@ void usb_lld_init(void) {
   }
   usbfrac_match_found:
   osalDbgAssert(i<2 && j <8,"USB Init error");
+#endif
 
 #else /* KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE */
 #error USB clock setting not implemented for this KINETIS_MCG_MODE
