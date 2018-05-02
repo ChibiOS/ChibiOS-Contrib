@@ -405,11 +405,6 @@ void usb_lld_init(void) {
   /* MCGOUTCLK is the SYSCLK frequency, so don't divide for USB clock */
   SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
 
-#if defined(MK66F18)
-  /* Switch from default MCGPLLCLK to IRC48M for USB */
-  SIM->SOPT2 |= SIM_SOPT2_PLLFLLSEL_SET(3);
-#endif
-
 #elif KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE
 
   #define KINETIS_USBCLK_FREQUENCY 48000000UL
@@ -428,6 +423,12 @@ void usb_lld_init(void) {
 #else /* KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE */
 #error USB clock setting not implemented for this KINETIS_MCG_MODE
 #endif /* KINETIS_MCG_MODE == ... */
+
+#if defined(MK66F18)
+  /* Switch from default MCGPLLCLK to IRC48M for USB */
+  SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
+  SIM->SOPT2 |= SIM_SOPT2_PLLFLLSEL_SET(3);
+#endif
 
 #elif defined(KL25) || defined (KL26) || defined(KL27)
 
