@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>STM32F1xx-onewire</name>
+	<name>STM32F1xx-1-Wire</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -80,12 +80,18 @@
 		<link>
 			<name>os-community</name>
 			<type>2</type>
-			<locationURI>PARENT-4-PROJECT_LOC/os</locationURI>
+			<locationURI>CHIBIOS_CONTRIB/os</locationURI>
 		</link>
 		<link>
 			<name>os-git</name>
 			<type>2</type>
-			<locationURI>PARENT-5-PROJECT_LOC/ChibiOS-RT/os</locationURI>
+			<locationURI>copy_PARENT/ChibiOS-RT/os</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-1-CHIBIOS%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

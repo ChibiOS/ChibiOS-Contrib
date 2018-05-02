@@ -79,22 +79,17 @@
 		<link>
 			<name>board</name>
 			<type>2</type>
-			<locationURI>CHIBIOS3/community/os/hal/boards/TI_TM4C123G_LAUNCHPAD</locationURI>
+			<locationURI>PARENT-1-CHIBIOS/ChibiOS-Contrib/os/hal/boards/TI_TM4C123G_LAUNCHPAD</locationURI>
 		</link>
 		<link>
 			<name>community_os</name>
 			<type>2</type>
-			<locationURI>CHIBIOS3/community/os</locationURI>
+			<locationURI>PARENT-1-CHIBIOS/ChibiOS-Contrib/os</locationURI>
 		</link>
 		<link>
 			<name>os</name>
 			<type>2</type>
-			<locationURI>CHIBIOS3/os</locationURI>
-		</link>
-		<link>
-			<name>test</name>
-			<type>2</type>
-			<locationURI>CHIBIOS3/test</locationURI>
+			<locationURI>CHIBIOS/os</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>

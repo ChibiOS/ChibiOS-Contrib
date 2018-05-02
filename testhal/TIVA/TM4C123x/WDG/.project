@@ -79,7 +79,7 @@
 		<link>
 			<name>board</name>
 			<type>2</type>
-			<locationURI>CHIBIOS/community/os/hal/boards/TI_TM4C123G_LAUNCHPAD</locationURI>
+			<locationURI>PARENT-1-CHIBIOS/ChibiOS-Contrib/os/hal/boards/TI_TM4C123G_LAUNCHPAD</locationURI>
 		</link>
 		<link>
 			<name>community_os</name>
