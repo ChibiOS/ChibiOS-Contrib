@@ -86,16 +86,14 @@ endif
 PROJECT = ch
 
 # Imported source files and paths
-CHIBIOS = ../../../../ChibiOS-RT
+CHIBIOS = ../../../../../ChibiOS-RT
 CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
-CHIBIOS         = /home/sdalu/ChibiOS/ChibiOS
-CHIBIOS_CONTRIB = /home/sdalu/ChibiOS/ChibiOS-Contrib
 
 # Startup files.
 include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_nrf51.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS_CONTRIB)/os/hal/ports/NRF51/NRF51822/platform.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/NRF5/NRF51822/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/WVSHARE_BLE400/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).
@@ -149,7 +147,7 @@ ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 INCDIR = $(CHIBIOS)/os/license \
 	 $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) \
-         $(CHIBIOS)/os/various
+         $(CHIBIOS)/os/various $(CHIBIOS)/os/license
 
 #
 # Project, sources and paths

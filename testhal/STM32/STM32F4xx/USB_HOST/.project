@@ -24,4 +24,16 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>ChibiOS-Contrib-os</name>
+			<type>2</type>
+			<locationURI>$%7BPARENT-5-PROJECT_LOC%7D/ChibiOS-contrib/os</locationURI>
+		</link>
+		<link>
+			<name>ChibiOS-RT-os</name>
+			<type>2</type>
+			<locationURI>$%7BPARENT-5-PROJECT_LOC%7D/ChibiOS-RT/os</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?fileVersion 4.0.0?>
-<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="0.114656749">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="0.114656749" moduleId="org.eclipse.cdt.core.settings" name="Default">
@@ -22,12 +21,30 @@
 							<builder autoBuildTarget="all" cleanBuildTarget="clean" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="org.eclipse.cdt.build.core.settings.default.builder.579570726" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="org.eclipse.cdt.build.core.settings.default.builder"/>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.libs.2143276802" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs"/>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1873650595" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.271183475" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/ports/ARMCMx/devices/TM4C123x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx"/>
+								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1337802279" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1707090075" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.777410947" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/ports/ARMCMx/devices/TM4C123x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx"/>
+								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.338985256" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1165165914" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
+								<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1093029639" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/ChibiOS-Contrib/os/common/ports/ARMCMx/devices/TM4C123x"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/ext/CMSIS/include"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx/compilers/GCC"/>
+									<listOptionValue builtIn="false" value="C:/ChibiStudio/chibios161/os/rt/ports/ARMCMx"/>
+								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.714476670" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
 						</toolChain>
