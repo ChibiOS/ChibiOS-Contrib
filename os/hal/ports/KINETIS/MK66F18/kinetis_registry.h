@@ -158,6 +158,9 @@
 #define KINETIS_USB0_IS_USBOTG      TRUE
 #define KINETIS_HAS_USB_CLOCK_RECOVERY TRUE
 
+/* LPTMR attributes.*/
+#define KINETIS_LPTMR0_IRQ_VECTOR   Vector128
+
 /** @} */
 
 #endif /* KINETIS_REGISTRY_H_ */

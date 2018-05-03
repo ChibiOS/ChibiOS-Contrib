@@ -6738,12 +6738,15 @@ typedef struct {
 #define FTFE_FSTAT_FPVIOL_MASK                   (0x10U)
 #define FTFE_FSTAT_FPVIOL_SHIFT                  (4U)
 #define FTFE_FSTAT_FPVIOL(x)                     (((uint8_t)(((uint8_t)(x)) << FTFE_FSTAT_FPVIOL_SHIFT)) & FTFE_FSTAT_FPVIOL_MASK)
+#define FTFL_FSTAT_FPVIOL                        FTFE_FSTAT_FPVIOL(1)
 #define FTFE_FSTAT_ACCERR_MASK                   (0x20U)
 #define FTFE_FSTAT_ACCERR_SHIFT                  (5U)
 #define FTFE_FSTAT_ACCERR(x)                     (((uint8_t)(((uint8_t)(x)) << FTFE_FSTAT_ACCERR_SHIFT)) & FTFE_FSTAT_ACCERR_MASK)
+#define FTFL_FSTAT_ACCERR                        FTFE_FSTAT_ACCERR(1)
 #define FTFE_FSTAT_RDCOLERR_MASK                 (0x40U)
 #define FTFE_FSTAT_RDCOLERR_SHIFT                (6U)
 #define FTFE_FSTAT_RDCOLERR(x)                   (((uint8_t)(((uint8_t)(x)) << FTFE_FSTAT_RDCOLERR_SHIFT)) & FTFE_FSTAT_RDCOLERR_MASK)
+#define FTFL_FSTAT_RDCOLERR                      FTFE_FSTAT_RDCOLERR(1)
 #define FTFE_FSTAT_CCIF_MASK                     (0x80U)
 #define FTFE_FSTAT_CCIF_SHIFT                    (7U)
 #define FTFE_FSTAT_CCIF(x)                       (((uint8_t)(((uint8_t)(x)) << FTFE_FSTAT_CCIF_SHIFT)) & FTFE_FSTAT_CCIF_MASK)
@@ -6752,9 +6755,11 @@ typedef struct {
 #define FTFE_FCNFG_EEERDY_MASK                   (0x1U)
 #define FTFE_FCNFG_EEERDY_SHIFT                  (0U)
 #define FTFE_FCNFG_EEERDY(x)                     (((uint8_t)(((uint8_t)(x)) << FTFE_FCNFG_EEERDY_SHIFT)) & FTFE_FCNFG_EEERDY_MASK)
+#define FTFL_FCNFG_EEERDY                        FTFE_FCNFG_EEERDY(1)
 #define FTFE_FCNFG_RAMRDY_MASK                   (0x2U)
 #define FTFE_FCNFG_RAMRDY_SHIFT                  (1U)
 #define FTFE_FCNFG_RAMRDY(x)                     (((uint8_t)(((uint8_t)(x)) << FTFE_FCNFG_RAMRDY_SHIFT)) & FTFE_FCNFG_RAMRDY_MASK)
+#define FTFL_FCNFG_RAMRDY                        FTFE_FCNFG_RAMRDY(1)
 #define FTFE_FCNFG_PFLSH_MASK                    (0x4U)
 #define FTFE_FCNFG_PFLSH_SHIFT                   (2U)
 #define FTFE_FCNFG_PFLSH(x)                      (((uint8_t)(((uint8_t)(x)) << FTFE_FCNFG_PFLSH_SHIFT)) & FTFE_FCNFG_PFLSH_MASK)
@@ -6984,6 +6989,7 @@ typedef struct {
 #define FTFE_BASE                                (0x40020000u)
 /** Peripheral FTFE base pointer */
 #define FTFE                                     ((FTFE_Type *)FTFE_BASE)
+#define FTFL                                     ((FTFE_Type *)FTFE_BASE)
 /** Array initializer of FTFE peripheral base addresses */
 #define FTFE_BASE_ADDRS                          { FTFE_BASE }
 /** Array initializer of FTFE peripheral base pointers */
@@ -8995,48 +9001,51 @@ typedef struct {
  */
 
 /*! @name CSR - Low Power Timer Control Status Register */
-#define LPTMR_CSR_TEN_MASK                       (0x1U)
-#define LPTMR_CSR_TEN_SHIFT                      (0U)
-#define LPTMR_CSR_TEN(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMR_CSR_TEN_SHIFT)) & LPTMR_CSR_TEN_MASK)
-#define LPTMR_CSR_TMS_MASK                       (0x2U)
-#define LPTMR_CSR_TMS_SHIFT                      (1U)
-#define LPTMR_CSR_TMS(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMR_CSR_TMS_SHIFT)) & LPTMR_CSR_TMS_MASK)
-#define LPTMR_CSR_TFC_MASK                       (0x4U)
-#define LPTMR_CSR_TFC_SHIFT                      (2U)
-#define LPTMR_CSR_TFC(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMR_CSR_TFC_SHIFT)) & LPTMR_CSR_TFC_MASK)
-#define LPTMR_CSR_TPP_MASK                       (0x8U)
-#define LPTMR_CSR_TPP_SHIFT                      (3U)
-#define LPTMR_CSR_TPP(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMR_CSR_TPP_SHIFT)) & LPTMR_CSR_TPP_MASK)
-#define LPTMR_CSR_TPS_MASK                       (0x30U)
-#define LPTMR_CSR_TPS_SHIFT                      (4U)
-#define LPTMR_CSR_TPS(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMR_CSR_TPS_SHIFT)) & LPTMR_CSR_TPS_MASK)
-#define LPTMR_CSR_TIE_MASK                       (0x40U)
-#define LPTMR_CSR_TIE_SHIFT                      (6U)
-#define LPTMR_CSR_TIE(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMR_CSR_TIE_SHIFT)) & LPTMR_CSR_TIE_MASK)
-#define LPTMR_CSR_TCF_MASK                       (0x80U)
-#define LPTMR_CSR_TCF_SHIFT                      (7U)
-#define LPTMR_CSR_TCF(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMR_CSR_TCF_SHIFT)) & LPTMR_CSR_TCF_MASK)
+#define LPTMRx_CSR_TEN_MASK                       (0x1U)
+#define LPTMRx_CSR_TEN_SHIFT                      (0U)
+#define LPTMRx_CSR_TEN_SET(x)                     (((uint32_t)(((uint32_t)(x)) << LPTMRx_CSR_TEN_SHIFT)) & LPTMRx_CSR_TEN_MASK)
+#define LPTMRx_CSR_TEN                            LPTMRx_CSR_TEN_SET(1)
+#define LPTMRx_CSR_TMS_MASK                       (0x2U)
+#define LPTMRx_CSR_TMS_SHIFT                      (1U)
+#define LPTMRx_CSR_TMS(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMRx_CSR_TMS_SHIFT)) & LPTMRx_CSR_TMS_MASK)
+#define LPTMRx_CSR_TFC_MASK                       (0x4U)
+#define LPTMRx_CSR_TFC_SHIFT                      (2U)
+#define LPTMRx_CSR_TFC(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMRx_CSR_TFC_SHIFT)) & LPTMRx_CSR_TFC_MASK)
+#define LPTMRx_CSR_TPP_MASK                       (0x8U)
+#define LPTMRx_CSR_TPP_SHIFT                      (3U)
+#define LPTMRx_CSR_TPP(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMRx_CSR_TPP_SHIFT)) & LPTMRx_CSR_TPP_MASK)
+#define LPTMRx_CSR_TPS_MASK                       (0x30U)
+#define LPTMRx_CSR_TPS_SHIFT                      (4U)
+#define LPTMRx_CSR_TPS(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMRx_CSR_TPS_SHIFT)) & LPTMRx_CSR_TPS_MASK)
+#define LPTMRx_CSR_TIE_MASK                       (0x40U)
+#define LPTMRx_CSR_TIE_SHIFT                      (6U)
+#define LPTMRx_CSR_TIE_SET(x)                     (((uint32_t)(((uint32_t)(x)) << LPTMRx_CSR_TIE_SHIFT)) & LPTMRx_CSR_TIE_MASK)
+#define LPTMRx_CSR_TIE                            LPTMRx_CSR_TIE_SET(1)
+#define LPTMRx_CSR_TCF_MASK                       (0x80U)
+#define LPTMRx_CSR_TCF_SHIFT                      (7U)
+#define LPTMRx_CSR_TCF_SET(x)                     (((uint32_t)(((uint32_t)(x)) << LPTMRx_CSR_TCF_SHIFT)) & LPTMRx_CSR_TCF_MASK)
+#define LPTMRx_CSR_TCF                            LPTMRx_CSR_TCF_SET(1)
 
 /*! @name PSR - Low Power Timer Prescale Register */
-#define LPTMR_PSR_PCS_MASK                       (0x3U)
-#define LPTMR_PSR_PCS_SHIFT                      (0U)
-#define LPTMR_PSR_PCS(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMR_PSR_PCS_SHIFT)) & LPTMR_PSR_PCS_MASK)
-#define LPTMR_PSR_PBYP_MASK                      (0x4U)
-#define LPTMR_PSR_PBYP_SHIFT                     (2U)
-#define LPTMR_PSR_PBYP(x)                        (((uint32_t)(((uint32_t)(x)) << LPTMR_PSR_PBYP_SHIFT)) & LPTMR_PSR_PBYP_MASK)
-#define LPTMR_PSR_PRESCALE_MASK                  (0x78U)
-#define LPTMR_PSR_PRESCALE_SHIFT                 (3U)
-#define LPTMR_PSR_PRESCALE(x)                    (((uint32_t)(((uint32_t)(x)) << LPTMR_PSR_PRESCALE_SHIFT)) & LPTMR_PSR_PRESCALE_MASK)
+#define LPTMRx_PSR_PCS_MASK                       (0x3U)
+#define LPTMRx_PSR_PCS_SHIFT                      (0U)
+#define LPTMRx_PSR_PCS(x)                         (((uint32_t)(((uint32_t)(x)) << LPTMRx_PSR_PCS_SHIFT)) & LPTMRx_PSR_PCS_MASK)
+#define LPTMRx_PSR_PBYP_MASK                      (0x4U)
+#define LPTMRx_PSR_PBYP_SHIFT                     (2U)
+#define LPTMRx_PSR_PBYP(x)                        (((uint32_t)(((uint32_t)(x)) << LPTMRx_PSR_PBYP_SHIFT)) & LPTMRx_PSR_PBYP_MASK)
+#define LPTMRx_PSR_PRESCALE_MASK                  (0x78U)
+ #define LPTMRx_PSR_PRESCALE_SHIFT                 (3U)
+#define LPTMRx_PSR_PRESCALE(x)                    (((uint32_t)(((uint32_t)(x)) << LPTMRx_PSR_PRESCALE_SHIFT)) & LPTMRx_PSR_PRESCALE_MASK)
 
 /*! @name CMR - Low Power Timer Compare Register */
-#define LPTMR_CMR_COMPARE_MASK                   (0xFFFFU)
-#define LPTMR_CMR_COMPARE_SHIFT                  (0U)
-#define LPTMR_CMR_COMPARE(x)                     (((uint32_t)(((uint32_t)(x)) << LPTMR_CMR_COMPARE_SHIFT)) & LPTMR_CMR_COMPARE_MASK)
+#define LPTMRx_CMR_COMPARE_MASK                   (0xFFFFU)
+#define LPTMRx_CMR_COMPARE_SHIFT                  (0U)
+#define LPTMRx_CMR_COMPARE(x)                     (((uint32_t)(((uint32_t)(x)) << LPTMR_CMR_COMPARE_SHIFT)) & LPTMR_CMR_COMPARE_MASK)
 
 /*! @name CNR - Low Power Timer Counter Register */
-#define LPTMR_CNR_COUNTER_MASK                   (0xFFFFU)
-#define LPTMR_CNR_COUNTER_SHIFT                  (0U)
-#define LPTMR_CNR_COUNTER(x)                     (((uint32_t)(((uint32_t)(x)) << LPTMR_CNR_COUNTER_SHIFT)) & LPTMR_CNR_COUNTER_MASK)
+#define LPTMRx_CNR_COUNTER_MASK                   (0xFFFFU)
+#define LPTMRx_CNR_COUNTER_SHIFT                  (0U)
+#define LPTMRx_CNR_COUNTER(x)                     (((uint32_t)(((uint32_t)(x)) << LPTMR_CNR_COUNTER_SHIFT)) & LPTMR_CNR_COUNTER_MASK)
 
 
 /*!
@@ -9050,11 +9059,11 @@ typedef struct {
 /** Peripheral LPTMR0 base pointer */
 #define LPTMR0                                   ((LPTMR_Type *)LPTMR0_BASE)
 /** Array initializer of LPTMR peripheral base addresses */
-#define LPTMR_BASE_ADDRS                         { LPTMR0_BASE }
+#define LPTMRx_BASE_ADDRS                         { LPTMR0_BASE }
 /** Array initializer of LPTMR peripheral base pointers */
-#define LPTMR_BASE_PTRS                          { LPTMR0 }
+#define LPTMRx_BASE_PTRS                          { LPTMR0 }
 /** Interrupt vectors for the LPTMR peripheral type */
-#define LPTMR_IRQS                               { LPTMR0_IRQn }
+#define LPTMRx_IRQS                               { LPTMR0_IRQn }
 
 /*!
  * @}
@@ -9421,7 +9430,8 @@ typedef struct {
 #define MCG_C1_IREFSTEN(x)                       (((uint8_t)(((uint8_t)(x)) << MCG_C1_IREFSTEN_SHIFT)) & MCG_C1_IREFSTEN_MASK)
 #define MCG_C1_IRCLKEN_MASK                      (0x2U)
 #define MCG_C1_IRCLKEN_SHIFT                     (1U)
-#define MCG_C1_IRCLKEN(x)                        (((uint8_t)(((uint8_t)(x)) << MCG_C1_IRCLKEN_SHIFT)) & MCG_C1_IRCLKEN_MASK)
+#define MCG_C1_IRCLKEN_SET(x)                    (((uint8_t)(((uint8_t)(x)) << MCG_C1_IRCLKEN_SHIFT)) & MCG_C1_IRCLKEN_MASK)
+#define MCG_C1_IRCLKEN                           MCG_C1_IRCLKEN_SET(1)
 #define MCG_C1_IREFS_MASK                        (0x4U)
 #define MCG_C1_IREFS_SHIFT                       (2U)
 #define MCG_C1_IREFS(x)                          (((uint8_t)(((uint8_t)(x)) << MCG_C1_IREFS_SHIFT)) & MCG_C1_IREFS_MASK)
@@ -9435,7 +9445,8 @@ typedef struct {
 /*! @name C2 - MCG Control 2 Register */
 #define MCG_C2_IRCS_MASK                         (0x1U)
 #define MCG_C2_IRCS_SHIFT                        (0U)
-#define MCG_C2_IRCS(x)                           (((uint8_t)(((uint8_t)(x)) << MCG_C2_IRCS_SHIFT)) & MCG_C2_IRCS_MASK)
+#define MCG_C2_IRCS_SET(x)                       (((uint8_t)(((uint8_t)(x)) << MCG_C2_IRCS_SHIFT)) & MCG_C2_IRCS_MASK)
+#define MCG_C2_IRCS                              MCG_C2_IRCS_SET(1)
 #define MCG_C2_LP_MASK                           (0x2U)
 #define MCG_C2_LP_SHIFT                          (1U)
 #define MCG_C2_LP(x)                             (((uint8_t)(((uint8_t)(x)) << MCG_C2_LP_SHIFT)) & MCG_C2_LP_MASK)
@@ -12403,7 +12414,8 @@ typedef struct {
 /*! @name SCGC5 - System Clock Gating Control Register 5 */
 #define SIM_SCGC5_LPTMR_MASK                     (0x1U)
 #define SIM_SCGC5_LPTMR_SHIFT                    (0U)
-#define SIM_SCGC5_LPTMR(x)                       (((uint32_t)(((uint32_t)(x)) << SIM_SCGC5_LPTMR_SHIFT)) & SIM_SCGC5_LPTMR_MASK)
+#define SIM_SCGC5_LPTMR_SET(x)                   (((uint32_t)(((uint32_t)(x)) << SIM_SCGC5_LPTMR_SHIFT)) & SIM_SCGC5_LPTMR_MASK)
+#define SIM_SCGC5_LPTMR                          SIM_SCGC5_LPTMR_SET(1)
 #define SIM_SCGC5_TSI_MASK                       (0x20U)
 #define SIM_SCGC5_TSI_SHIFT                      (5U)
 #define SIM_SCGC5_TSI(x)                         (((uint32_t)(((uint32_t)(x)) << SIM_SCGC5_TSI_SHIFT)) & SIM_SCGC5_TSI_MASK)
