@@ -442,7 +442,13 @@ static inline msg_t _i2c_txrx_timeout(I2CDriver *i2cp, i2caddr_t addr,
     /* wait until the bus is released */
     /* Calculating the time window for the timeout on the busy bus condition.*/
     start = osalOsGetSystemTimeX();
+#if defined(OSAL_TIME_MS2I)
     end = start + OSAL_TIME_MS2I(KINETIS_I2C_BUSY_TIMEOUT);
+#elif defined(OSAL_TIME_MS2ST)
+    end = start + OSAL_TIME_MS2ST(KINETIS_I2C_BUSY_TIMEOUT);
+#else
+    end = start + OSAL_MS2ST(KINETIS_I2C_BUSY_TIMEOUT);
+#endif
 
     while(true) {
       osalSysLock();

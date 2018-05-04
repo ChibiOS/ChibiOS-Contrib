@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    templates/hal_lld.c
- * @brief   HAL Driver subsystem low level driver source template.
+ * @file    MK66F18/hal_lld.c
+ * @brief   Kinetis MK66F18 HAL Driver subsystem low level driver source template.
  *
  * @addtogroup HAL
  * @{
