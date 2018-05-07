@@ -395,9 +395,10 @@ void usb_lld_init(void) {
 
 #if KINETIS_USB_USE_USB0
 
+  /* Set USB clock source to MCGPLLCLK, MCGFLLCLK, USB1 PFD, or IRC48M */
   SIM->SOPT2 |= SIM_SOPT2_USBSRC;
 
-#if defined(K20x5) || defined(K20x7)
+#if defined(K20x5) || defined(K20x7) || defined(MK66F18)
 
 #if KINETIS_MCG_MODE == KINETIS_MCG_MODE_FEI
 
@@ -406,6 +407,8 @@ void usb_lld_init(void) {
 
 #elif KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE
 
+#if !defined(MK66F18)
+  /* Note:  We don't need this for MK66F18, we can use IRC48M clock for USB */
   #define KINETIS_USBCLK_FREQUENCY 48000000UL
   uint32_t i,j;
   for(i=0; i < 2; i++) {
@@ -418,10 +421,17 @@ void usb_lld_init(void) {
   }
   usbfrac_match_found:
   osalDbgAssert(i<2 && j <8,"USB Init error");
+#endif
 
 #else /* KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE */
 #error USB clock setting not implemented for this KINETIS_MCG_MODE
 #endif /* KINETIS_MCG_MODE == ... */
+
+#if defined(MK66F18)
+  /* Switch from default MCGPLLCLK to IRC48M for USB */
+  SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
+  SIM->SOPT2 |= SIM_SOPT2_PLLFLLSEL_SET(3);
+#endif
 
 #elif defined(KL25) || defined (KL26) || defined(KL27)
 
@@ -452,9 +462,15 @@ void usb_lld_start(USBDriver *usbp) {
         _bdt[i].addr=0;
       }
 
+#if defined(MK66F18)
+      /* Disable the USB current limiter */
+      SIM->USBPHYCTL |= SIM_USBPHYCTL_USBDISILIM;
+#endif
+
       /* Enable Clock */
 #if KINETIS_USB0_IS_USBOTG
       SIM->SCGC4 |= SIM_SCGC4_USBOTG;
+
 #else /* KINETIS_USB0_IS_USBOTG */
       SIM->SCGC4 |= SIM_SCGC4_USBFS;
 #endif /* KINETIS_USB0_IS_USBOTG */

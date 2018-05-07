@@ -262,7 +262,7 @@ static void configure_uart(SerialDriver *sdp, const SerialConfig *config) {
   }
 #endif /* KINETIS_SERIAL_USE_UART0 */
 
-#elif defined(K20x) || defined(K60x) /* KL2x */
+#elif defined(K20x) || defined(K60x) || defined(MK66F18) /* KL2x */
 
   /* UARTs 0 and 1 are clocked from SYSCLK, others from BUSCLK on K20x and K60x. */
 #if KINETIS_SERIAL_USE_UART0

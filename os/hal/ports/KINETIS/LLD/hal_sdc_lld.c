@@ -45,8 +45,13 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+#if defined(MK66F18)
+/* Configure SDHC block to use the IRC48M clock */
+#define KINETIS_SDHC_PERIPHERAL_FREQUENCY 48000000UL
+#else
 /* We configure the SDHC block to use the system clock */
 #define KINETIS_SDHC_PERIPHERAL_FREQUENCY KINETIS_SYSCLK_FREQUENCY
+#endif
 
 #ifndef KINETIS_SDHC_PRIORITY
 #define KINETIS_SDHC_PRIORITY 12 /* TODO? Default IRQ priority for SDHC */
@@ -189,6 +194,11 @@ static void enable_clock_when_stable(uint32_t new_sysctl)
 
   /* Restart the clock */
   SDHC->SYSCTL = new_sysctl | SDHC_SYSCTL_SDCLKEN;
+
+  /* Wait for clock to stabilize again */
+  while(!(SDHC->PRSSTAT & SDHC_PRSSTAT_SDSTB)) {
+    osalThreadSleepMilliseconds(1);
+  }
 }
 
 /**
@@ -589,9 +599,15 @@ void sdc_lld_init(void) {
 void sdc_lld_start(SDCDriver *sdcp) {
 
   if (sdcp->state == BLK_STOP) {
+#if defined(MK66F18)
+    /* Use IRC48M clock for SDHC */
+    SIM->SOPT2 |= SIM_SOPT2_SDHCSRC(1);
+    SIM->SOPT2 |= SIM_SOPT2_PLLFLLSEL_SET(3);
+#else
     SIM->SOPT2 =
       (SIM->SOPT2 & ~SIM_SOPT2_SDHCSRC_MASK) |
       SIM_SOPT2_SDHCSRC(0);  /* SDHC clock source 0: Core/system clock. */
+#endif
     SIM->SCGC3 |= SIM_SCGC3_SDHC; /* Enable clock to SDHC peripheral */
 
     /* Reset the SDHC block */
