@@ -161,6 +161,10 @@
 /* LPTMR attributes.*/
 #define KINETIS_LPTMR0_IRQ_VECTOR   Vector128
 
+/* SDHC (SDC, MMC, SDIO) attributes */
+#define KINETIS_HAS_SDHC            TRUE
+#define KINETIS_SDHC_IRQ_VECTOR     Vector184
+
 /** @} */
 
 #endif /* KINETIS_REGISTRY_H_ */
