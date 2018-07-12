@@ -203,6 +203,12 @@ struct CRCDriver {
    */
   thread_reference_t        thread;
   /**
+   * @brief   Remaining data size.
+   * @note    The DMA can handle only 65535 bytes per transfer because
+   *            it's data count register is only 16 bits wide.
+   */
+  size_t rem_data_size;
+  /**
    * @brief CRC DMA stream
    */
   const stm32_dma_stream_t  *dma;
