@@ -150,6 +150,7 @@ alloc_ok:
 	case 0x900:		//232H;
 		uinfo("FTDI: Type H chip");
 		ftdip->type = USBHFTDI_TYPE_H;
+		break;
 	default:
 		uerr("FTDI: Unrecognized chip type");
 		return NULL;
@@ -615,6 +616,7 @@ static void _vt(void *p) {
 }
 
 static const struct FTDIPortDriverVMT async_channel_vmt = {
+	(size_t) 0,
 	(size_t (*)(void *, const uint8_t *, size_t))_write,
 	(size_t (*)(void *, uint8_t *, size_t))_read,
 	(msg_t (*)(void *, uint8_t))_put,
@@ -622,7 +624,8 @@ static const struct FTDIPortDriverVMT async_channel_vmt = {
 	(msg_t (*)(void *, uint8_t, systime_t))_put_timeout,
 	(msg_t (*)(void *, systime_t))_get_timeout,
 	(size_t (*)(void *, const uint8_t *, size_t, systime_t))_write_timeout,
-	(size_t (*)(void *, uint8_t *, size_t, systime_t))_read_timeout
+	(size_t (*)(void *, uint8_t *, size_t, systime_t))_read_timeout, 
+	(void*) 0 // FIXME: Implement CTL
 };
 
 
