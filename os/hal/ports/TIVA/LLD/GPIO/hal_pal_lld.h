@@ -329,157 +329,267 @@ typedef uint32_t iomode_t;
 typedef uint32_t ioline_t;
 
 /**
+ * @brief   Type of an event mode.
+ */
+typedef uint32_t ioeventmode_t;
+
+/**
  * @brief   Port Identifier.
  */
 typedef uint32_t ioportid_t;
+
+/**
+ * @brief   Type of an pad identifier.
+ */
+typedef uint32_t iopadid_t;
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
-#if defined(TM4C123x)
-
 /**
- * @brief   GPIOA AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOA. When set
- *          to @p FALSE the APB bus is used to access GPIOA.
+ * @name    Configuration options
+ * @{
  */
-#if !defined(TIVA_GPIO_GPIOA_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOA_USE_AHB             TRUE
-#endif
-
 /**
- * @brief   GPIOB AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOB. When set
- *          to @p FALSE the APB bus is used to access GPIOB.
+ * @brief   GPIOA interrupt priority level setting.
  */
-#if !defined(TIVA_GPIO_GPIOB_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOB_USE_AHB             TRUE
+#if !defined(TIVA_PAL_GPIOA_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOA_IRQ_PRIORITY         3
 #endif
 
 /**
- * @brief   GPIOC AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOC. When set
- *          to @p FALSE the APB bus is used to access GPIOC.
+ * @brief   GPIOB interrupt priority level setting.
  */
-#if !defined(TIVA_GPIO_GPIOC_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOC_USE_AHB             TRUE
+#if !defined(TIVA_PAL_GPIOB_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOB_IRQ_PRIORITY         3
 #endif
 
 /**
- * @brief   GPIOD AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOD. When set
- *          to @p FALSE the APB bus is used to access GPIOD.
+ * @brief   GPIOC interrupt priority level setting.
  */
-#if !defined(TIVA_GPIO_GPIOD_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOD_USE_AHB             TRUE
+#if !defined(TIVA_PAL_GPIOC_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOC_IRQ_PRIORITY         3
 #endif
 
 /**
- * @brief   GPIOE AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOE. When set
- *          to @p FALSE the APB bus is used to access GPIOE.
+ * @brief   GPIOD interrupt priority level setting.
  */
-#if !defined(TIVA_GPIO_GPIOE_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOE_USE_AHB             TRUE
+#if !defined(TIVA_PAL_GPIOD_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOD_IRQ_PRIORITY         3
 #endif
 
 /**
- * @brief   GPIOF AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOF. When set
- *          to @p FALSE the APB bus is used to access GPIOF.
+ * @brief   GPIOE interrupt priority level setting.
  */
-#if !defined(TIVA_GPIO_GPIOF_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOF_USE_AHB             TRUE
+#if !defined(TIVA_PAL_GPIOE_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOE_IRQ_PRIORITY         3
 #endif
 
 /**
- * @brief   GPIOG AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOG. When set
- *          to @p FALSE the APB bus is used to access GPIOG.
+ * @brief   GPIOF interrupt priority level setting.
  */
-#if !defined(TIVA_GPIO_GPIOG_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOG_USE_AHB             TRUE
+#if !defined(TIVA_PAL_GPIOF_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOF_IRQ_PRIORITY         3
 #endif
 
 /**
- * @brief   GPIOH AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOH. When set
- *          to @p FALSE the APB bus is used to access GPIOH.
+ * @brief   GPIOG interrupt priority level setting.
  */
-#if !defined(TIVA_GPIO_GPIOH_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOH_USE_AHB             TRUE
+#if !defined(TIVA_PAL_GPIOG_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOG_IRQ_PRIORITY         3
 #endif
 
 /**
- * @brief   GPIOJ AHB enable switch.
- * @details When set to @p TRUE the AHB bus is used to access GPIOJ. When set
- *          to @p FALSE the APB bus is used to access GPIOJ.
+ * @brief   GPIOH interrupt priority level setting.
  */
-#if !defined(TIVA_GPIO_GPIOJ_USE_AHB) || defined(__DOXYGEN__)
-#define TIVA_GPIO_GPIOJ_USE_AHB             TRUE
+#if !defined(TIVA_PAL_GPIOH_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOH_IRQ_PRIORITY         3
 #endif
 
+/**
+ * @brief   GPIOJ interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOJ_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOJ_IRQ_PRIORITY         3
 #endif
+
+/**
+ * @brief   GPIOK interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOK_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOK_IRQ_PRIORITY         3
+#endif
+
+/**
+ * @brief   GPIOL interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOL_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOL_IRQ_PRIORITY         3
+#endif
+
+/**
+ * @brief   GPIOM interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOM_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOM_IRQ_PRIORITY         3
+#endif
+
+/**
+ * @brief   GPION interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPION_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPION_IRQ_PRIORITY         3
+#endif
+
+/**
+ * @brief   GPIOP0 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOP0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOP0_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOP1 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOP1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOP1_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOP2 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOP2_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOP2_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOP3 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOP3_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOP3_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOP4 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOP4_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOP4_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOP5 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOP5_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOP5_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOP6 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOP6_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOP6_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOP7 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOP7_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOP7_IRQ_PRIORITY        3
+#endif
+/** @} */
+
+/**
+ * @brief   GPIOQ0 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOQ0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOQ0_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOQ1 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOQ1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOQ1_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOQ2 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOQ2_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOQ2_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOQ3 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOQ3_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOQ3_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOQ4 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOQ4_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOQ4_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOQ5 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOQ5_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOQ5_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOQ6 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOQ6_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOQ6_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOQ7 interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOQ7_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOQ7_IRQ_PRIORITY        3
+#endif
+
+/**
+ * @brief   GPIOR interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOR_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOR_IRQ_PRIORITY         3
+#endif
+
+/**
+ * @brief   GPIOS interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOS_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOS_IRQ_PRIORITY         3
+#endif
+
+/**
+ * @brief   GPIOT interrupt priority level setting.
+ */
+#if !defined(TIVA_PAL_GPIOT_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define TIVA_PAL_GPIOT_IRQ_PRIORITY         3
+#endif
+/** @} */
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if TIVA_GPIO_GPIOA_USE_AHB && defined(TM4C123x)
 #define GPIOA                               GPIO_PORTA_AHB_BASE
-#else
-#define GPIOA                               GPIO_PORTA_BASE
-#endif
-
-#if TIVA_GPIO_GPIOB_USE_AHB && defined(TM4C123x)
 #define GPIOB                               GPIO_PORTB_AHB_BASE
-#else
-#define GPIOB                               GPIO_PORTB_BASE
-#endif
-
-#if TIVA_GPIO_GPIOC_USE_AHB && defined(TM4C123x)
 #define GPIOC                               GPIO_PORTC_AHB_BASE
-#else
-#define GPIOC                               GPIO_PORTC_BASE
-#endif
-
-#if TIVA_GPIO_GPIOD_USE_AHB && defined(TM4C123x)
 #define GPIOD                               GPIO_PORTD_AHB_BASE
-#else
-#define GPIOD                               GPIO_PORTD_BASE
-#endif
-
-#if TIVA_GPIO_GPIOE_USE_AHB && defined(TM4C123x)
 #define GPIOE                               GPIO_PORTE_AHB_BASE
-#else
-#define GPIOE                               GPIO_PORTE_BASE
-#endif
-
-#if TIVA_GPIO_GPIOF_USE_AHB && defined(TM4C123x)
 #define GPIOF                               GPIO_PORTF_AHB_BASE
-#else
-#define GPIOF                               GPIO_PORTF_BASE
-#endif
-
-#if TIVA_GPIO_GPIOG_USE_AHB && defined(TM4C123x)
 #define GPIOG                               GPIO_PORTG_AHB_BASE
-#else
-#define GPIOG                               GPIO_PORTG_BASE
-#endif
-
-#if TIVA_GPIO_GPIOH_USE_AHB && defined(TM4C123x)
 #define GPIOH                               GPIO_PORTH_AHB_BASE
-#else
-#define GPIOH                               GPIO_PORTH_BASE
-#endif
-
-#if TIVA_GPIO_GPIOJ_USE_AHB && defined(TM4C123x)
 #define GPIOJ                               GPIO_PORTJ_AHB_BASE
-#else
-#define GPIOJ                               GPIO_PORTJ_BASE
-#endif
-
 #define GPIOK                               GPIO_PORTK_BASE
 #define GPIOL                               GPIO_PORTL_BASE
 #define GPIOM                               GPIO_PORTM_BASE
@@ -489,6 +599,166 @@ typedef uint32_t ioportid_t;
 #define GPIOR                               GPIO_PORTR_BASE
 #define GPIOS                               GPIO_PORTS_BASE
 #define GPIOT                               GPIO_PORTT_BASE
+
+#if TIVA_HAS_GPIOA &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOA_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOA"
+#endif
+
+#if TIVA_HAS_GPIOB &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOB_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOB"
+#endif
+
+#if TIVA_HAS_GPIOC &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOC_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOC"
+#endif
+
+#if TIVA_HAS_GPIOD &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOD_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOD"
+#endif
+
+#if TIVA_HAS_GPIOE &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOE_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOE"
+#endif
+
+#if TIVA_HAS_GPIOF &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOF_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOF"
+#endif
+
+#if TIVA_HAS_GPIOG &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOG_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOG"
+#endif
+
+#if TIVA_HAS_GPIOH &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOH_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOH"
+#endif
+
+#if TIVA_HAS_GPIOJ &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOJ_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOJ"
+#endif
+
+#if TIVA_HAS_GPIOK &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOK_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOK"
+#endif
+
+#if TIVA_HAS_GPIOL &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOL_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOL"
+#endif
+
+#if TIVA_HAS_GPIOM &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOM_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOM"
+#endif
+
+#if TIVA_HAS_GPION &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPION_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPION"
+#endif
+
+#if TIVA_HAS_GPIOP &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOP0"
+#endif
+
+#if TIVA_HAS_GPIOP &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP1_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOP1"
+#endif
+
+#if TIVA_HAS_GPIOP &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP2_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOP2"
+#endif
+
+#if TIVA_HAS_GPIOP &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP3_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOP3"
+#endif
+
+#if TIVA_HAS_GPIOP &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP4_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOP4"
+#endif
+
+#if TIVA_HAS_GPIOP &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP5_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOP5"
+#endif
+
+#if TIVA_HAS_GPIOP &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP6_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOP6"
+#endif
+
+#if TIVA_HAS_GPIOP &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOP7_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOP7"
+#endif
+
+#if TIVA_HAS_GPIOQ &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOQ0"
+#endif
+
+#if TIVA_HAS_GPIOQ &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ1_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOQ1"
+#endif
+
+#if TIVA_HAS_GPIOQ &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ2_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOQ2"
+#endif
+
+#if TIVA_HAS_GPIOQ &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ3_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOQ3"
+#endif
+
+#if TIVA_HAS_GPIOQ &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ4_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOQ4"
+#endif
+
+#if TIVA_HAS_GPIOQ &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ5_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOQ5"
+#endif
+
+#if TIVA_HAS_GPIOQ &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ6_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOQ6"
+#endif
+
+#if TIVA_HAS_GPIOQ &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOQ7_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOQ7"
+#endif
+
+#if TIVA_HAS_GPIOR &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOR_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOR"
+#endif
+
+#if TIVA_HAS_GPIOS &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOS_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOS"
+#endif
+
+#if TIVA_HAS_GPIOT &&                                                         \
+    !OSAL_IRQ_IS_VALID_PRIORITY(TIVA_PAL_GPIOT_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to GPIOT"
+#endif
 
 /*===========================================================================*/
 /* I/O Ports Identifiers.                                                    */
@@ -761,7 +1031,7 @@ typedef uint32_t ioportid_t;
  * @notapi
  */
 #define pal_lld_writepad(port, pad, bit)    \
-  (HWREG((port) + (GPIO_O_DATA + ((1 << (pad)) << 2))) = (bit))
+  (HWREG((port) + (GPIO_O_DATA + ((1 << (pad)) << 2))) = 1 << (bit))
 
 /**
  * @brief   Sets a pad logical state to @p PAL_HIGH.
@@ -791,12 +1061,59 @@ typedef uint32_t ioportid_t;
 #define pal_lld_clearpad(port, pad) \
   (HWREG((port) + (GPIO_O_DATA + ((1 << (pad)) << 2))) = 0)
 
+/**
+ * @brief   Pad event enable.
+ * @note    Programming an unknown or unsupported mode is silently ignored.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ * @param[in] mode      pad event mode
+ *
+ * @notapi
+ */
+#define pal_lld_enablepadevent(port, pad, mode)                             \
+  _pal_lld_enablepadevent(port, pad, mode)
+
+/**
+ * @brief   Pad event disable.
+ * @details This function disables previously programmed event callbacks.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ *
+ * @notapi
+ */
+#define pal_lld_disablepadevent(port, pad)                                  \
+  _pal_lld_disablepadevent(port, pad)
+
+/**
+ * @brief   Returns a PAL event structure associated to a pad.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ *
+ * @notapi
+ */
+#define pal_lld_get_pad_event(port, pad)                                    \
+  &_pal_events[((((((uint32_t)port - (uint32_t)GPIOA) >> 12) & 0x1FU) * 8) + pad)];
+
+/**
+ * @brief   Returns a PAL event structure associated to a line.
+ *
+ * @param[in] line      line identifier
+ *
+ * @notapi
+ */
+#define pal_lld_get_line_event(line)                                        \
+  &_pal_events[((((((uint32_t)PAL_PORT(line) - (uint32_t)GPIOA) >> 12) & 0x1FU) * 8) + PAL_PAD(line))]
+
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
 
 #if !defined(__DOXYGEN__)
 extern const PALConfig pal_default_config;
+extern palevent_t _pal_events[TIVA_GPIO_PINS];
 #endif
 
 #ifdef __cplusplus
@@ -806,6 +1123,13 @@ extern "C" {
   void _pal_lld_setgroupmode(ioportid_t port,
                              ioportmask_t mask,
                              iomode_t mode);
+#if PAL_USE_CALLBACKS || PAL_USE_WAIT
+  void _pal_lld_enablepadevent(ioportid_t port,
+                               iopadid_t pad,
+                               ioeventmode_t mode);
+  void _pal_lld_disablepadevent(ioportid_t port, iopadid_t pad);
+  void pal_lld_disable_irqs(void);
+#endif
 #ifdef __cplusplus
 }
 #endif

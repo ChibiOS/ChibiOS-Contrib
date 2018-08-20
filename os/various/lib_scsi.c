@@ -364,7 +364,8 @@ static bool data_read_write10(SCSITarget *scsip, const uint8_t *cmd) {
     size_t bs = bdi.blk_size;
     uint8_t *buf = scsip->config->blkbuf;
 
-    for (size_t i=0; i<req.blk_cnt; i++) {
+    size_t i = 0;
+    for (i=0; i<req.blk_cnt; i++) {
       if (cmd[0] == SCSI_CMD_READ_10) {
         // TODO: block error handling
         blkRead(blkdev, req.first_lba + i, buf, 1);

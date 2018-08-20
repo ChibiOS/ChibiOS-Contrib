@@ -67,6 +67,13 @@
 #endif
 
 /**
+ * @brief   Enables the EEPROM subsystem.
+ */
+#if !defined(HAL_USE_EEPROM) || defined(__DOXYGEN__)
+#define HAL_USE_EEPROM              FALSE
+#endif
+
+/**
  * @brief   Enables the TIMCAP subsystem.
  */
 #if !defined(HAL_USE_TIMCAP) || defined(__DOXYGEN__)
@@ -74,12 +81,92 @@
 #endif
 
 /**
+ * @brief   Enables the TIMCAP subsystem.
+ */
+#if !defined(HAL_USE_COMP) || defined(__DOXYGEN__)
+#define HAL_USE_COMP                FALSE
+#endif
+
+/**
+ * @brief   Enables the QEI subsystem.
+ */
+#if !defined(HAL_USE_QEI) || defined(__DOXYGEN__)
+#define HAL_USE_QEI                 FALSE
+#endif
+
+/**
  * @brief   Enables the USBH subsystem.
  */
 #if !defined(HAL_USE_USBH) || defined(__DOXYGEN__)
-#define HAL_USE_USBH                 TRUE
+#define HAL_USE_USBH                TRUE
 #endif
 
+/**
+ * @brief   Enables the USB_MSD subsystem.
+ */
+#if !defined(HAL_USE_USB_MSD) || defined(__DOXYGEN__)
+#define HAL_USE_USB_MSD             FALSE
+#endif
+
+/*===========================================================================*/
+/* FSMCNAND driver related settings.                                         */
+/*===========================================================================*/
+
+/**
+ * @brief   Enables the @p nandAcquireBus() and @p nanReleaseBus() APIs.
+ * @note    Disabling this option saves both code and data space.
+ */
+#if !defined(NAND_USE_MUTUAL_EXCLUSION) || defined(__DOXYGEN__)
+#define NAND_USE_MUTUAL_EXCLUSION   TRUE
+#endif
+
+/*===========================================================================*/
+/* 1-wire driver related settings.                                           */
+/*===========================================================================*/
+/**
+ * @brief   Enables strong pull up feature.
+ * @note    Disabling this option saves both code and data space.
+ */
+#define ONEWIRE_USE_STRONG_PULLUP   FALSE
+
+/**
+ * @brief   Enables search ROM feature.
+ * @note    Disabling this option saves both code and data space.
+ */
+#define ONEWIRE_USE_SEARCH_ROM      TRUE
+
+/*===========================================================================*/
+/* QEI driver related settings.                                              */
+/*===========================================================================*/
+
+/**
+ * @brief   Enables discard of overlow
+ */
+#if !defined(QEI_USE_OVERFLOW_DISCARD) || defined(__DOXYGEN__)
+#define QEI_USE_OVERFLOW_DISCARD    FALSE
+#endif
+
+/**
+ * @brief   Enables min max of overlow
+ */
+#if !defined(QEI_USE_OVERFLOW_MINMAX) || defined(__DOXYGEN__)
+#define QEI_USE_OVERFLOW_MINMAX     FALSE
+#endif
+
+/*===========================================================================*/
+/* EEProm driver related settings.                                           */
+/*===========================================================================*/
+
+/**
+ * @brief   Enables 24xx series I2C eeprom device driver.
+ * @note    Disabling this option saves both code and data space.
+ */
+#define EEPROM_USE_EE24XX FALSE
+ /**
+ * @brief   Enables 25xx series SPI eeprom device driver.
+ * @note    Disabling this option saves both code and data space.
+ */
+#define EEPROM_USE_EE25XX FALSE
 
 /*===========================================================================*/
 /* USBH driver related settings.                                             */
@@ -89,7 +176,7 @@
 #define HAL_USBH_PORT_DEBOUNCE_TIME                   200
 #define HAL_USBH_PORT_RESET_TIMEOUT                   500
 #define HAL_USBH_DEVICE_ADDRESS_STABILIZATION         20
-#define HAL_USBH_CONTROL_REQUEST_DEFAULT_TIMEOUT	  MS2ST(1000)
+#define HAL_USBH_CONTROL_REQUEST_DEFAULT_TIMEOUT	    OSAL_MS2I(1000)
 
 /* MSD */
 #define HAL_USBH_USE_MSD                              TRUE
@@ -189,33 +276,6 @@
 #define USBHHID_DEBUG_ENABLE_INFO                     TRUE
 #define USBHHID_DEBUG_ENABLE_WARNINGS                 TRUE
 #define USBHHID_DEBUG_ENABLE_ERRORS                   TRUE
-
-/*===========================================================================*/
-/* FSMCNAND driver related settings.                                         */
-/*===========================================================================*/
-
-/**
- * @brief   Enables the @p nandAcquireBus() and @p nanReleaseBus() APIs.
- * @note    Disabling this option saves both code and data space.
- */
-#if !defined(NAND_USE_MUTUAL_EXCLUSION) || defined(__DOXYGEN__)
-#define NAND_USE_MUTUAL_EXCLUSION   TRUE
-#endif
-
-/*===========================================================================*/
-/* 1-wire driver related settings.                                           */
-/*===========================================================================*/
-/**
- * @brief   Enables strong pull up feature.
- * @note    Disabling this option saves both code and data space.
- */
-#define ONEWIRE_USE_STRONG_PULLUP   FALSE
-
-/**
- * @brief   Enables search ROM feature.
- * @note    Disabling this option saves both code and data space.
- */
-#define ONEWIRE_USE_SEARCH_ROM      TRUE
 
 #endif /* HALCONF_COMMUNITY_H */
 

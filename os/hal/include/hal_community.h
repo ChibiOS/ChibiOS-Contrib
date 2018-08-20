@@ -48,7 +48,7 @@
 #endif
 
 #if !defined(HAL_USE_QEI)
-#define HAL_USE_QEI                        FALSE
+#define HAL_USE_QEI                         FALSE
 #endif
 
 #if !defined(HAL_USE_RNG)

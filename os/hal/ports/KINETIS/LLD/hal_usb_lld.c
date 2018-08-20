@@ -158,7 +158,7 @@ void usb_packet_transmit(USBDriver *usbp, usbep_t ep, size_t n)
   USBInEndpointState *isp = epc->in_state;
 
   bd_t *bd = (bd_t *)&_bdt[BDT_INDEX(ep, TX, isp->odd_even)];
-  
+
   if (n > (size_t)epc->in_maxsize)
     n = (size_t)epc->in_maxsize;
 
@@ -244,19 +244,16 @@ OSAL_IRQ_HANDLER(KINETIS_USB_IRQ_VECTOR) {
     {
       case BDT_PID_SETUP:                                              // SETUP
       {
-        /* Clear any pending IN stuff */
-        _bdt[BDT_INDEX(ep, TX, EVEN)].desc = 0;
-        _bdt[BDT_INDEX(ep, TX,  ODD)].desc = 0;
-        /* Also in the chibios state machine */
+        /* Clear receiving in the chibios state machine */
         (usbp)->receiving &= ~1;
-        /* After a SETUP, IN is always DATA1 */
-        usbp->epc[ep]->in_state->data_bank = DATA1;
-
-        /* Call SETUP function (ChibiOS core), which sends back stuff */
+        /* Call SETUP function (ChibiOS core), which prepares
+         * for send or receive and releases the buffer
+         */
         _usb_isr_invoke_setup_cb(usbp, ep);
-        /* Buffer is released by the above callback. */
-        /* from Paul: "unfreeze the USB, now that we're ready" */
-        USB0->CTL = USBx_CTL_USBENSOFEN;
+        /* When a setup packet is received, tx is suspended,
+         * so it needs to be resumed here.
+         */
+        USB0->CTL &= ~USBx_CTL_TXSUSPENDTOKENBUSY;
       } break;
       case BDT_PID_IN:                                                 // IN
       {
@@ -398,9 +395,10 @@ void usb_lld_init(void) {
 
 #if KINETIS_USB_USE_USB0
 
+  /* Set USB clock source to MCGPLLCLK, MCGFLLCLK, USB1 PFD, or IRC48M */
   SIM->SOPT2 |= SIM_SOPT2_USBSRC;
 
-#if defined(K20x5) || defined(K20x7)
+#if defined(K20x5) || defined(K20x7) || defined(MK66F18)
 
 #if KINETIS_MCG_MODE == KINETIS_MCG_MODE_FEI
 
@@ -409,6 +407,8 @@ void usb_lld_init(void) {
 
 #elif KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE
 
+#if !defined(MK66F18)
+  /* Note:  We don't need this for MK66F18, we can use IRC48M clock for USB */
   #define KINETIS_USBCLK_FREQUENCY 48000000UL
   uint32_t i,j;
   for(i=0; i < 2; i++) {
@@ -421,10 +421,17 @@ void usb_lld_init(void) {
   }
   usbfrac_match_found:
   osalDbgAssert(i<2 && j <8,"USB Init error");
+#endif
 
 #else /* KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE */
 #error USB clock setting not implemented for this KINETIS_MCG_MODE
 #endif /* KINETIS_MCG_MODE == ... */
+
+#if defined(MK66F18)
+  /* Switch from default MCGPLLCLK to IRC48M for USB */
+  SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
+  SIM->SOPT2 |= SIM_SOPT2_PLLFLLSEL_SET(3);
+#endif
 
 #elif defined(KL25) || defined (KL26) || defined(KL27)
 
@@ -455,9 +462,15 @@ void usb_lld_start(USBDriver *usbp) {
         _bdt[i].addr=0;
       }
 
+#if defined(MK66F18)
+      /* Disable the USB current limiter */
+      SIM->USBPHYCTL |= SIM_USBPHYCTL_USBDISILIM;
+#endif
+
       /* Enable Clock */
 #if KINETIS_USB0_IS_USBOTG
       SIM->SCGC4 |= SIM_SCGC4_USBOTG;
+
 #else /* KINETIS_USB0_IS_USBOTG */
       SIM->SCGC4 |= SIM_SCGC4_USBFS;
 #endif /* KINETIS_USB0_IS_USBOTG */
@@ -728,9 +741,23 @@ void usb_lld_read_setup(USBDriver *usbp, usbep_t ep, uint8_t *buf) {
   }
   /* Release the buffer
    * Setup packet is always DATA0
-   * Initialize buffers so current expects DATA0 & opposite DATA1 */
+   * Release the current DATA0 buffer
+   */
   bd->desc = BDT_DESC(usbp->epc[ep]->out_maxsize,DATA0);
-  _bdt[BDT_INDEX(ep, RX, os->odd_even^ODD)].desc = BDT_DESC(usbp->epc[ep]->out_maxsize,DATA1);
+  /* If DATA1 was expected, then the states are out of sync.
+   * So reset the other buffer too, and set it as DATA1.
+   * This should not happen in normal cases, but is possible in
+   * error situations. NOTE: it's possible that this is too late
+   * and the next packet has already been received and dropped, but
+   * there's nothing that we can do about that anymore at this point.
+   */
+  if (os->data_bank == DATA1)
+  {
+    bd_t *bd_next = (bd_t*)&_bdt[BDT_INDEX(ep, RX, os->odd_even^ODD)];
+    bd_next->desc = BDT_DESC(usbp->epc[ep]->out_maxsize,DATA1);
+  }
+  /* After a SETUP, both in and out are always DATA1 */
+  usbp->epc[ep]->in_state->data_bank = DATA1;
   os->data_bank = DATA1;
 }
 
@@ -762,8 +789,22 @@ void usb_lld_start_out(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 void usb_lld_start_in(USBDriver *usbp, usbep_t ep) {
-  (void)usbp;
-  (void)ep;
+  if (ep == 0 && usbp->ep0state == USB_EP0_IN_SENDING_STS) {
+    /* When a status packet is about to be sent on endpoint 0 the
+     * next packet will be a setup packet, which means that the
+     * buffer we expect after this should be DATA0, and the following
+     * DATA1. Since no out packets should be in flight at this time
+     * it's safe to initialize the buffers according to the expectations
+     * here.
+     */
+    const USBEndpointConfig* epc = usbp->epc[ep];
+    bd_t * bd = (bd_t*)&_bdt[BDT_INDEX(ep, RX, epc->out_state->odd_even)];
+    bd_t *bd_next = (bd_t*)&_bdt[BDT_INDEX(ep, RX, epc->out_state->odd_even^ODD)];
+
+    bd->desc = BDT_DESC(usbp->epc[ep]->out_maxsize,DATA1);
+    bd_next->desc = BDT_DESC(usbp->epc[ep]->out_maxsize,DATA0);
+    epc->out_state->data_bank = DATA0;
+  }
   usb_packet_transmit(usbp,ep,usbp->epc[ep]->in_state->txsize);
 }
 

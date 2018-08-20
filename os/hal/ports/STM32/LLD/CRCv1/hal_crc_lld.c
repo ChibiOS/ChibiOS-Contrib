@@ -121,9 +121,14 @@ static void crc_lld_serve_interrupt(CRCDriver *crcp, uint32_t flags) {
   /* Stop everything.*/
   dmaStreamDisable(crcp->dma);
 
-  /* Portable CRC ISR code defined in the high level driver, note, it is
-     a macro.*/
-  _crc_isr_code(crcp, crcp->crc->DR ^ crcp->config->final_val);
+  if (crcp->rem_data_size) {
+    /* Start DMA follow up transfer for next data chunk */
+    crc_lld_start_calc(crcp, crcp->rem_data_size,
+      (const void *)crcp->dma->channel->CPAR+0xffff);
+  } else {
+    /* Portable CRC ISR code defined in the high level driver, note, it is a macro.*/
+    _crc_isr_code(crcp, crcp->crc->DR ^ crcp->config->final_val);
+  }
 }
 #endif
 
@@ -155,7 +160,7 @@ void crc_lld_start(CRCDriver *crcp) {
   if (crcp->config == NULL)
     crcp->config = &default_config;
 
-  rccEnableCRC(FALSE);
+  rccEnableCRC();
 
 #if STM32_CRC_PROGRAMMABLE == TRUE
   crcp->crc->INIT = crcp->config->initial_val;
@@ -234,7 +239,7 @@ void crc_lld_stop(CRCDriver *crcp) {
 #else
   (void)crcp;
 #endif
-  rccDisableCRC(FALSE);
+  rccDisableCRC();
 }
 
 /**
@@ -308,12 +313,17 @@ uint32_t crc_lld_calc(CRCDriver *crcp, size_t n, const void *buf) {
 
 #if CRC_USE_DMA == TRUE
 void crc_lld_start_calc(CRCDriver *crcp, size_t n, const void *buf) {
+  /* The STM32 DMA can only handle max 65535 bytes per transfer
+   * because it's data count register has only 16 bit. */
+  size_t sz = (n > 0xffff) ? 0xffff : n;
+  crcp->rem_data_size = n-sz;
+
   dmaStreamSetPeripheral(crcp->dma, buf);
   dmaStreamSetMemory0(crcp->dma, &crcp->crc->DR);
 #if STM32_CRC_PROGRAMMABLE == TRUE
-  dmaStreamSetTransactionSize(crcp->dma, n);
+  dmaStreamSetTransactionSize(crcp->dma, sz);
 #else
-  dmaStreamSetTransactionSize(crcp->dma, (n / 4));
+  dmaStreamSetTransactionSize(crcp->dma, (sz / 4));
 #endif
   dmaStreamSetMode(crcp->dma, crcp->dmamode);
 

@@ -235,33 +235,33 @@ void qei_lld_stop(QEIDriver *qeip) {
     /* Clock deactivation.*/
 #if STM32_QEI_USE_TIM1
     if (&QEID1 == qeip) {
-      rccDisableTIM1(FALSE);
+      rccDisableTIM1();
     }
 #endif
 #if STM32_QEI_USE_TIM2
     if (&QEID2 == qeip) {
-      rccDisableTIM2(FALSE);
+      rccDisableTIM2();
     }
 #endif
 #if STM32_QEI_USE_TIM3
     if (&QEID3 == qeip) {
-      rccDisableTIM3(FALSE);
+      rccDisableTIM3();
     }
 #endif
 #if STM32_QEI_USE_TIM4
     if (&QEID4 == qeip) {
-      rccDisableTIM4(FALSE);
+      rccDisableTIM4();
     }
 #endif
 #if STM32_QEI_USE_TIM5
     if (&QEID5 == qeip) {
-      rccDisableTIM5(FALSE);
+      rccDisableTIM5();
     }
 #endif
   }
 #if STM32_QEI_USE_TIM8
     if (&QEID8 == qeip) {
-      rccDisableTIM8(FALSE);
+      rccDisableTIM8();
     }
 #endif
 }

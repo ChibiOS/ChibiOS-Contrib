@@ -37,32 +37,32 @@
 #if TIVA_ST_TIMER_NUMBER == 0
 #define ST_HANDLER                          TIVA_WGPT0A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT0A_NUMBER
-#define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 0))
-#define ST_WAIT_CLOCK()                     while (!(SYSCTL->PRWTIMER & (1 << 0)))
+#define ST_ENABLE_CLOCK()                   (HWREG(SYSCTL_RCGCWTIMER) |= (1 << 0))
+#define ST_WAIT_CLOCK()                     while (!(HWREG(SYSCTL_PRWTIMER) & (1 << 0)))
 
 #elif TIVA_ST_TIMER_NUMBER == 1
 #define ST_HANDLER                          TIVA_WGPT1A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT1A_NUMBER
-#define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 1))
-#define ST_WAIT_CLOCK()                     while (!(SYSCTL->PRWTIMER & (1 << 1)))
+#define ST_ENABLE_CLOCK()                   (HWREG(SYSCTL_RCGCWTIMER) |= (1 << 1))
+#define ST_WAIT_CLOCK()                     while (!(HWREG(SYSCTL_PRWTIMER) & (1 << 1)))
 
 #elif TIVA_ST_TIMER_NUMBER == 2
 #define ST_HANDLER                          TIVA_WGPT2A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT2A_NUMBER
-#define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 2))
-#define ST_WAIT_CLOCK()                     while (!(SYSCTL->PRWTIMER & (1 << 2)))
+#define ST_ENABLE_CLOCK()                   (HWREG(SYSCTL_RCGCWTIMER) |= (1 << 2))
+#define ST_WAIT_CLOCK()                     while (!(HWREG(SYSCTL_PRWTIMER) & (1 << 2)))
 
 #elif TIVA_ST_TIMER_NUMBER == 3
 #define ST_HANDLER                          TIVA_WGPT3A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT3A_NUMBER
-#define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 3))
-#define ST_WAIT_CLOCK()                     while (!(SYSCTL->PRWTIMER & (1 << 3)))
+#define ST_ENABLE_CLOCK()                   (HWREG(SYSCTL_RCGCWTIMER) |= (1 << 3))
+#define ST_WAIT_CLOCK()                     while (!(HWREG(SYSCTL_PRWTIMER) & (1 << 3)))
 
 #elif TIVA_ST_TIMER_NUMBER == 4
 #define ST_HANDLER                          TIVA_WGPT4A_HANDLER
 #define ST_NUMBER                           TIVA_WGPT4A_NUMBER
-#define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCWTIMER |= (1 << 4))
-#define ST_WAIT_CLOCK()                     while (!(SYSCTL->PRWTIMER & (1 << 4)))
+#define ST_ENABLE_CLOCK()                   (HWREG(SYSCTL_RCGCWTIMER) |= (1 << 4))
+#define ST_WAIT_CLOCK()                     while (!(HWREG(SYSCTL_PRWTIMER) & (1 << 4)))
 
 #elif TIVA_ST_TIMER_NUMBER == 5
 #define ST_HANDLER                          TIVA_WGPT5A_HANDLER
@@ -74,7 +74,7 @@
 #error "TIVA_ST_USE_TIMER specifies an unsupported timer"
 #endif
 
-#if (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1 > 0xFFFF
+#if (TIVA_SYSCLK / OSAL_ST_FREQUENCY) - 1 > 0xFFFF
 #error "the selected ST frequency is not obtainable because TIM timer prescaler limits"
 #endif
 
@@ -83,38 +83,38 @@
 #if TIVA_ST_TIMER_NUMBER == 0
 #define ST_HANDLER                          TIVA_GPT0A_HANDLER
 #define ST_NUMBER                           TIVA_GPT0A_NUMBER
-#define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 0))
-#define ST_WAIT_CLOCK()                     while (!(SYSCTL->PRTIMER & (1 << 0)))
+#define ST_ENABLE_CLOCK()                   (HWREG(SYSCTL_RCGCTIMER) |= (1 << 0))
+#define ST_WAIT_CLOCK()                     while (!(HWREG(SYSCTL_PRTIMER) & (1 << 0)))
 
 #elif TIVA_ST_TIMER_NUMBER == 1
 #define ST_HANDLER                          TIVA_GPT1A_HANDLER
 #define ST_NUMBER                           TIVA_GPT1A_NUMBER
-#define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 1))
-#define ST_WAIT_CLOCK()                     while (!(SYSCTL->PRTIMER & (1 << 1)))
+#define ST_ENABLE_CLOCK()                   (HWREG(SYSCTL_RCGCTIMER) |= (1 << 1))
+#define ST_WAIT_CLOCK()                     while (!(HWREG(SYSCTL_PRTIMER) & (1 << 1)))
 
 #elif TIVA_ST_TIMER_NUMBER == 2
 #define ST_HANDLER                          TIVA_GPT2A_HANDLER
 #define ST_NUMBER                           TIVA_GPT2A_NUMBER
-#define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 2))
-#define ST_WAIT_CLOCK()                     while (!(SYSCTL->PRTIMER & (1 << 2)))
+#define ST_ENABLE_CLOCK()                   (HWREG(SYSCTL_RCGCTIMER) |= (1 << 2))
+#define ST_WAIT_CLOCK()                     while (!(HWREG(SYSCTL_PRTIMER) & (1 << 2)))
 
 #elif TIVA_ST_TIMER_NUMBER == 3
 #define ST_HANDLER                          TIVA_GPT3A_HANDLER
 #define ST_NUMBER                           TIVA_GPT3A_NUMBER
-#define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 3))
-#define ST_WAIT_CLOCK()                     while (!(SYSCTL->PRTIMER & (1 << 3)))
+#define ST_ENABLE_CLOCK()                   (HWREG(SYSCTL_RCGCTIMER) |= (1 << 3))
+#define ST_WAIT_CLOCK()                     while (!(HWREG(SYSCTL_PRTIMER) & (1 << 3)))
 
 #elif TIVA_ST_TIMER_NUMBER == 4
 #define ST_HANDLER                          TIVA_GPT4A_HANDLER
 #define ST_NUMBER                           TIVA_GPT4A_NUMBER
-#define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 4))
-#define ST_WAIT_CLOCK()                     while (!(SYSCTL->PRTIMER & (1 << 4)))
+#define ST_ENABLE_CLOCK()                   (HWREG(SYSCTL_RCGCTIMER) |= (1 << 4))
+#define ST_WAIT_CLOCK()                     while (!(HWREG(SYSCTL_PRTIMER) & (1 << 4)))
 
 #elif TIVA_ST_TIMER_NUMBER == 5
 #define ST_HANDLER                          TIVA_GPT5A_HANDLER
 #define ST_NUMBER                           TIVA_GPT5A_NUMBER
-#define ST_ENABLE_CLOCK()                   (SYSCTL->RCGCTIMER |= (1 << 5))
-#define ST_WAIT_CLOCK()                     while (!(SYSCTL->PRTIMER & (1 << 5)))
+#define ST_ENABLE_CLOCK()                   (HWREG(SYSCTL_RCGCTIMER) |= (1 << 5))
+#define ST_WAIT_CLOCK()                     while (!(HWREG(SYSCTL_PRTIMER) & (1 << 5)))
 
 #else
 #error "TIVA_ST_USE_TIMER specifies an unsupported timer"

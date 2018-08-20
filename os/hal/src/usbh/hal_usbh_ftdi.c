@@ -332,7 +332,7 @@ static usbh_urbstatus_t _ftdi_port_control(USBHFTDIPortDriver *ftdipp,
 			wLength
 	};
 
-	return usbhControlRequestExtended(ftdipp->ftdip->dev, &req, buff, NULL, MS2ST(1000));
+	return usbhControlRequestExtended(ftdipp->ftdip->dev, &req, buff, NULL, OSAL_MS2I(1000));
 }
 
 static uint32_t _get_divisor(uint32_t baud, usbhftdi_type_t type) {
@@ -394,7 +394,7 @@ static usbh_urbstatus_t _set_baudrate(USBHFTDIPortDriver *ftdipp, uint32_t baudr
 		wIndex,
 		0
 	};
-	return usbhControlRequestExtended(ftdipp->ftdip->dev, &req, NULL, NULL, MS2ST(1000));
+	return usbhControlRequestExtended(ftdipp->ftdip->dev, &req, NULL, NULL, OSAL_MS2I(1000));
 }
 
 
@@ -610,7 +610,7 @@ static void _vt(void *p) {
 	if ((ftdipp->iq_counter == 0) && !usbhURBIsBusy(&ftdipp->iq_urb)) {
 		_submitInI(ftdipp);
 	}
-	chVTSetI(&ftdipp->vt, MS2ST(16), _vt, ftdipp);
+	chVTSetI(&ftdipp->vt, OSAL_MS2I(16), _vt, ftdipp);
 	osalSysUnlockFromISR();
 }
 
@@ -690,7 +690,7 @@ void usbhftdipStart(USBHFTDIPortDriver *ftdipp, const USBHFTDIPortConfig *config
 	usbhURBSubmit(&ftdipp->iq_urb);
 
 	chVTObjectInit(&ftdipp->vt);
-	chVTSet(&ftdipp->vt, MS2ST(16), _vt, ftdipp);
+	chVTSet(&ftdipp->vt, OSAL_MS2I(16), _vt, ftdipp);
 
 	ftdipp->state = USBHFTDIP_STATE_READY;
 	osalMutexUnlock(&ftdipp->ftdip->mtx);

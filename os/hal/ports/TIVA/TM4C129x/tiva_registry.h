@@ -77,6 +77,7 @@
 #define TIVA_HAS_GPIOR                      FALSE
 #define TIVA_HAS_GPIOS                      FALSE
 #define TIVA_HAS_GPIOT                      FALSE
+#define TIVA_GPIO_PINS                      120
 #endif
 #if defined(PART_TM4C1290NCZAD) || defined(PART_TM4C1292NCZAD) || defined(PART_TM4C1294NCZAD)\
   || defined(PART_TM4C1297NCZAD) || defined(PART_TM4C1299KCZAD) || defined(PART_TM4C1299NCZAD)\
@@ -100,6 +101,7 @@
 #define TIVA_HAS_GPIOR                      TRUE
 #define TIVA_HAS_GPIOS                      TRUE
 #define TIVA_HAS_GPIOT                      TRUE
+#define TIVA_GPIO_PINS                      144
 #endif
 
 /* EPI attributes.*/

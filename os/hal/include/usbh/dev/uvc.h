@@ -430,7 +430,7 @@ extern "C" {
 
 	static inline msg_t usbhuvcLockAndFetchS(USBHUVCDriver *uvcdp, msg_t *msg, systime_t timeout) {
 		chMtxLockS(&uvcdp->mtx);
-		msg_t ret = chMBFetchS(&uvcdp->mb, msg, timeout);
+		msg_t ret = chMBFetchTimeoutS(&uvcdp->mb, msg, timeout);
 		if (ret != MSG_OK)
 			chMtxUnlockS(&uvcdp->mtx);
 		return ret;

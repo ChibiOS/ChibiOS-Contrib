@@ -332,7 +332,7 @@ if __name__ == '__main__':
     defines = gen_defines(proj)
     ports = gen_ports(gpio, proj)
 
-    with open(cur_path + '/board_gpio.tpl', 'r') as tpl_file:
+    with open(cur_path + '/templates/board_gpio.tpl', 'r') as tpl_file:
         tpl = tpl_file.read()
     template = Template(tpl)
 

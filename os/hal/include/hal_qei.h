@@ -83,10 +83,10 @@ typedef void (*qeicallback_t)(QEIDriver *qeip);
  */
 typedef enum {
   QEI_OVERFLOW_WRAP    = 0,     /**< Counter value will wrap around.        */
-#if QEI_USE_OVERFLOW_DISCARD == TRUE
+#if defined(QEI_USE_OVERFLOW_DISCARD) && QEI_USE_OVERFLOW_DISCARD == TRUE
   QEI_OVERFLOW_DISCARD = 1,     /**< Counter doesn't change.                */
 #endif
-#if QEI_USE_OVERFLOW_MINMAX == TRUE
+#if defined(QEI_USE_OVERFLOW_MINMAX) && QEI_USE_OVERFLOW_MINMAX == TRUE
   QEI_OVERFLOW_MINMAX  = 2,     /**< Counter will be updated upto min or max.*/
 #endif
 } qeioverflow_t;

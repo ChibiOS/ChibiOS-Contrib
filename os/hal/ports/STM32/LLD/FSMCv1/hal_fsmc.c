@@ -97,7 +97,10 @@ void fsmc_init(void) {
 
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
-     defined(STM32F7))
+     defined(STM32F745xx) || defined(STM32F746xx) || \
+     defined(STM32F756xx) || defined(STM32F767xx) || \
+     defined(STM32F769xx) || defined(STM32F777xx) || \
+     defined(STM32F779xx))
   #if STM32_USE_FSMC_SDRAM
     FSMCD1.sdram = (FSMC_SDRAM_TypeDef *)FSMC_Bank5_6_R_BASE;
   #endif
@@ -156,7 +159,7 @@ void fsmc_stop(FSMCDriver *fsmcp) {
 #if HAL_USE_NAND
       nvicDisableVector(STM32_FSMC_NUMBER);
 #endif
-      rccDisableFSMC(FALSE);
+      rccDisableFSMC();
     }
 #endif /* STM32_FSMC_USE_FSMC1 */
 
