@@ -683,6 +683,7 @@ static msd_result_t scsi_write10(USBHMassStorageLUNDriver *lunp, uint32_t lba, u
 USBHMassStorageLUNDriver MSBLKD[HAL_USBHMSD_MAX_LUNS];
 
 static const struct USBHMassStorageDriverVMT blk_vmt = {
+	(size_t)0,
 	(bool (*)(void *))usbhmsdLUNIsInserted,
 	(bool (*)(void *))usbhmsdLUNIsProtected,
 	(bool (*)(void *))usbhmsdLUNConnect,

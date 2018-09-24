@@ -600,6 +600,13 @@ static size_t _read(USBHFTDIPortDriver *ftdipp, uint8_t *bp, size_t n) {
 	return _read_timeout(ftdipp, bp, n, TIME_INFINITE);
 }
 
+static msg_t _ctl(USBHFTDIPortDriver *ftdipp, unsigned int operation, void *arg) {
+	(void)ftdipp;
+	(void)operation;
+	(void)arg;
+	return MSG_OK;
+}
+
 static void _vt(void *p) {
 	USBHFTDIPortDriver *const ftdipp = (USBHFTDIPortDriver *)p;
 	osalSysLockFromISR();
@@ -615,6 +622,7 @@ static void _vt(void *p) {
 }
 
 static const struct FTDIPortDriverVMT async_channel_vmt = {
+	(size_t)0,
 	(size_t (*)(void *, const uint8_t *, size_t))_write,
 	(size_t (*)(void *, uint8_t *, size_t))_read,
 	(msg_t (*)(void *, uint8_t))_put,
@@ -622,7 +630,8 @@ static const struct FTDIPortDriverVMT async_channel_vmt = {
 	(msg_t (*)(void *, uint8_t, systime_t))_put_timeout,
 	(msg_t (*)(void *, systime_t))_get_timeout,
 	(size_t (*)(void *, const uint8_t *, size_t, systime_t))_write_timeout,
-	(size_t (*)(void *, uint8_t *, size_t, systime_t))_read_timeout
+	(size_t (*)(void *, uint8_t *, size_t, systime_t))_read_timeout,
+	(msg_t (*)(void *, unsigned int, void *))_ctl
 };
 
 
