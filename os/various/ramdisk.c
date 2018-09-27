@@ -139,6 +139,7 @@ static bool get_info(void *instance, BlockDeviceInfo *bdip) {
  *
  */
 static const struct BaseBlockDeviceVMT vmt = {
+    (size_t)0,
     is_inserted,
     is_protected,
     connect,
