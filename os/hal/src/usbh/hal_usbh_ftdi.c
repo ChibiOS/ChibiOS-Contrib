@@ -150,6 +150,7 @@ alloc_ok:
 	case 0x900:		//232H;
 		uinfo("FTDI: Type H chip");
 		ftdip->type = USBHFTDI_TYPE_H;
+		break;
 	default:
 		uerr("FTDI: Unrecognized chip type");
 		return NULL;

@@ -30,7 +30,7 @@ endif
 
 # Enable this if you want link time optimizations (LTO)
 ifeq ($(USE_LTO),)
-  USE_LTO = yes
+  USE_LTO = no
 endif
 
 # If enabled, this option allows to compile the application in THUMB mode.
@@ -88,6 +88,7 @@ PROJECT = ch
 # Imported source files and paths
 CHIBIOS = ../../../../../ChibiOS-RT
 CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
+
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
 # Startup files.
@@ -100,6 +101,8 @@ include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
+# Auto-build files in ./source recursively.
+include $(CHIBIOS)/tools/mk/autobuild.mk
 # Other files (optional).
 include $(CHIBIOS)/test/lib/test.mk
 include $(CHIBIOS)/test/rt/rt_test.mk
@@ -115,6 +118,7 @@ LDSCRIPT= $(STARTUPLD)/STM32F407xG.ld
 # setting.
 CSRC = $(ALLCSRC) \
        $(TESTSRC) \
+       $(FATFSSRC) \
        main.c usbh_custom_class_example.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
@@ -142,10 +146,12 @@ TCSRC =
 TCPPSRC =
 
 # List ASM source files here
+
 ASMSRC = $(ALLASMSRC)
 ASMXSRC = $(ALLXASMSRC)
 
-INCDIR = $(ALLINC) $(TESTINC)
+INCDIR = $(ALLINC) $(TESTINC) $(FATFSINC) \
+         $(CHIBIOS_CONTRIB)/os/various
 
 #
 # Project, sources and paths
@@ -213,5 +219,6 @@ ULIBS =
 # End of user defines
 ##############################################################################
 
-RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC
+RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk
+include $(RULESPATH)/arm-none-eabi.mk
 include $(RULESPATH)/rules.mk
