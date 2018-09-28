@@ -267,6 +267,8 @@ def gen_defines(project):
 
             defines['PORT_'+label] = 'GPIO' + port_key
             defines['PAD_'+label] = pad_key
+            defines['LINE_'+label] = 'PAL_LINE(GPIO' + port_key
+            defines['LINE_'+label] += ', ' + str(pad_key) + 'U)'
 
             if re.search(r"TIM\d+_CH\d$", signal, re.M):
                 timer = signal.replace('S_TIM', '').replace('_CH', '')[:-1]
