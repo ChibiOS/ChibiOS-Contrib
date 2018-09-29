@@ -119,6 +119,11 @@ typedef uint32_t ioline_t;
  */
 typedef NRF_GPIO_Type *ioportid_t;
 
+/**
+ * @brief   Type of an pad identifier.
+ */
+typedef uint32_t iopadid_t;
+
 /*===========================================================================*/
 /* I/O Ports Identifiers.                                                    */
 /*===========================================================================*/

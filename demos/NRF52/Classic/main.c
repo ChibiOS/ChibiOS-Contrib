@@ -5,7 +5,8 @@
 #include "hal.h"
 #include "chprintf.h"
 #include "shell.h"
-#include "ch_test.h"
+#include "rt_test_root.h"
+#include "oslib_test_root.h"
 
 #define LED_EXT 14
 
