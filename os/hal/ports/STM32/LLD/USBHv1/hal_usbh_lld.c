@@ -594,9 +594,10 @@ void usbh_lld_ep_open(usbh_ep_t *ep) {
 }
 
 void usbh_lld_ep_close(usbh_ep_t *ep) {
-	usbh_urb_t *urb, *tmp;
+	usbh_urb_t *urb;
 	uinfof("\t%s: Closing EP...", ep->name);
-	list_for_each_entry_safe(urb, usbh_urb_t, tmp, &ep->urb_list, node) {
+	while (!list_empty(&ep->urb_list)) {
+		urb = list_first_entry(&ep->urb_list, usbh_urb_t, node);
 		uinfof("\t%s: Abort URB, USBH_URBSTATUS_DISCONNECTED", ep->name);
 		_usbh_urb_abort_and_waitS(urb, USBH_URBSTATUS_DISCONNECTED);
 	}
@@ -987,7 +988,7 @@ static inline void _hcint_int(USBHDriver *host) {
 	haint = host->otg->HAINT;
 	haint &= host->otg->HAINTMSK;
 
-#if USBH_LLD_DEBUG_ENABLE_ERRORS
+#if USBH_DEBUG_ENABLE && USBH_LLD_DEBUG_ENABLE_ERRORS
 	if (!haint) {
 		uint32_t a, b;
 		a = host->otg->HAINT;
@@ -1172,9 +1173,17 @@ static inline void _nptxfe_int(USBHDriver *host) {
 }
 
 static inline void _ptxfe_int(USBHDriver *host) {
-	//TODO: implement
-	(void)host;
-	uinfo("PTXFE");
+	uint32_t rem;
+	stm32_otg_t *const otg = host->otg;
+
+	rem = _write_packet(&host->ep_active_lists[USBH_EPTYPE_ISO],
+			otg->HPTXSTS & HPTXSTS_PTXFSAVL_MASK);
+
+	rem += _write_packet(&host->ep_active_lists[USBH_EPTYPE_INT],
+			otg->HPTXSTS & HPTXSTS_PTXFSAVL_MASK);
+
+	if (!rem)
+		otg->GINTMSK &= ~GINTMSK_PTXFEM;
 }
 
 static void _disable(USBHDriver *host) {
@@ -1319,7 +1328,7 @@ static void usb_lld_serve_interrupt(USBHDriver *host) {
 
 	gintsts &= otg->GINTMSK;
 	if (!gintsts) {
-#if USBH_DEBUG_ENABLE_WARNINGS
+#if USBH_DEBUG_ENABLE && USBH_DEBUG_ENABLE_WARNINGS
 		uint32_t a, b;
 		a = otg->GINTSTS;
 		b = otg->GINTMSK;
