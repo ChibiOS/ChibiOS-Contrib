@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    KINETIS/LLD/ext_lld.c
+ * @file    PORTv1/hal_ext_lld.c
  * @brief   KINETIS EXT subsystem low level driver source.
  *
  * @addtogroup EXT

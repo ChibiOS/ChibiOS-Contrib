@@ -16,7 +16,7 @@
 */
 
 /**
- * @file    hal_sdc_lld.h
+ * @file    SDHCv1/hal_sdc_lld.h
  * @brief   PLATFORM SDC subsystem low level driver header.
  *
  * @addtogroup SDC

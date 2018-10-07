@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    KL2x/serial_lld.h
+ * @file    UARTv1/hal_serial_lld.h
  * @brief   Kinetis KL2x Serial Driver subsystem low level driver header.
  *
  * @addtogroup SERIAL

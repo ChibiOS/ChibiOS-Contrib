@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    KINETIS/gpt_lld.c
+ * @file    PITv1/hal_gpt_lld.c
  * @brief   KINETIS GPT subsystem low level driver source.
  *
  * @addtogroup GPT

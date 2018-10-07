@@ -16,7 +16,7 @@
 */
 
 /**
- * @file    KINETIS/LLD/usb_lld.h
+ * @file    USBHSv1/hal_usb_lld.h
  * @brief   KINETIS USB subsystem low level driver header.
  *
  * @addtogroup USB

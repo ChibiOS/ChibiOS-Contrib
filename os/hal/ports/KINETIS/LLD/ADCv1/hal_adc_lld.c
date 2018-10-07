@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    KINETIS/LLD/adc_lld.c
+ * @file    ADCv1/hal_adc_lld.c
  * @brief   KINETIS ADC subsystem low level driver source.
  *
  * @addtogroup ADC

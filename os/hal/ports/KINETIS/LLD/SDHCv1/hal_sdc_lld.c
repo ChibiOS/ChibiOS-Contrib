@@ -16,7 +16,7 @@
 */
 
 /**
- * @file    hal_sdc_lld.c
+ * @file    SDHCv1/hal_sdc_lld.h
  * @brief   Kinetis SDC subsystem low level driver.
  *
  * This driver provides a single SDC driver based on the Kinetis

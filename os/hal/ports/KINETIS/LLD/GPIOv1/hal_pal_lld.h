@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    KINETIS/LLD/pal_lld.h
+ * @file    GPIOv1/hal_pal_lld.h
  * @brief   PAL subsystem low level driver header.
  *
  * @addtogroup PAL
