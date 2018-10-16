@@ -415,7 +415,7 @@ struct QEIDriver {
  *
  * @notapi
  */
-#define qei_lld_set_count(qeip, value)
+#define qei_lld_set_count(qeip, value) ((qeip)->tim->CNT = (value))
 
 /*===========================================================================*/
 /* External declarations.                                                    */
