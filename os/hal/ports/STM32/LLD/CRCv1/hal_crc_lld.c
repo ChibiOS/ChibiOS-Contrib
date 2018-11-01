@@ -160,7 +160,7 @@ void crc_lld_start(CRCDriver *crcp) {
   if (crcp->config == NULL)
     crcp->config = &default_config;
 
-  rccEnableCRC();
+  rccEnableCRC( FALSE );
 
 #if STM32_CRC_PROGRAMMABLE == TRUE
   crcp->crc->INIT = crcp->config->initial_val;
