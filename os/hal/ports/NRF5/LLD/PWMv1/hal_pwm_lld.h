@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    hal_pwm_lld.h
+ * @file    PWMv1/hal_pwm_lld.h
  * @brief   NRF51 PWM subsystem low level driver header.
  *
  * @addtogroup PWM

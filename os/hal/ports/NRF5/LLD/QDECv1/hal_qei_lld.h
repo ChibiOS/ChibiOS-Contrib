@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51/hal_qei_lld.h
- * @brief   NRF51 QEI subsystem low level driver header.
+ * @file    QDECv1/hal_qei_lld.h
+ * @brief   NRF5 QEI subsystem low level driver header.
  *
  * @note    Not tested with LED pin
  *

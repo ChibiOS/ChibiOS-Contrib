@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    NRF5/LLD/hal_wdg_lld.c
+ * @file    WDTv1/hal_wdg_lld.c
  * @brief   NRF5 Watchdog Driver subsystem low level driver source template.
  *
  * @addtogroup WDG

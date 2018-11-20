@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    NRF5/LLD/hal_gpt_lld.c
+ * @file    TIMERv1/hal_gpt_lld.c
  * @brief   NRF5 GPT subsystem low level driver source.
  *
  * @addtogroup GPT

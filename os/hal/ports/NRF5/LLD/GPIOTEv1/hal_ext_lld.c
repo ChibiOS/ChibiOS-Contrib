@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51822/ext_lld.c
- * @brief   NRF51822 EXT subsystem low level driver source.
+ * @file    GPIOTEv1/ext_lld.c
+ * @brief   NRF51 EXT subsystem low level driver source.
  *
  * @addtogroup EXT
  * @{

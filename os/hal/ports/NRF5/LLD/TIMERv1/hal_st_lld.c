@@ -16,7 +16,7 @@
 */
 
 /**
- * @file    NRF5/LLD/hal_st_lld.c
+ * @file    TIMERv1/hal_st_lld.c
  * @brief   NRF5 ST subsystem low level driver source.
  *
  * @addtogroup ST

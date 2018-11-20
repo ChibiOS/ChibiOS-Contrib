@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    hal_pwm_lld.c
+ * @file    PWMv1/hal_pwm_lld.c
  * @brief   NRF51 PWM subsystem low level driver source.
  *
  * @note    Using the method described in nrf51-pwm-library to correctly

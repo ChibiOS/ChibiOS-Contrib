@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    NRF5/LLD/st_lld.h
+ * @file    TIMERv1/st_lld.h
  * @brief   NRF5 ST subsystem low level driver header.
  * @details This header is designed to be include-able without having to
  *          include other files from the HAL.

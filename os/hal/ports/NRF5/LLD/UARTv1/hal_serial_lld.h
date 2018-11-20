@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    NRF5/LLD/hal_serial_lld.h
+ * @file    UARTv1/hal_serial_lld.h
  * @brief   NRF5 serial subsystem low level driver header.
  *
  * @addtogroup SERIAL

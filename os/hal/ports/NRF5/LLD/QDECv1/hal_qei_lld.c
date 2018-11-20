@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51/hal_qei_lld.c
- * @brief   NRF51 QEI subsystem low level driver.
+ * @file    QDECv1/hal_qei_lld.c
+ * @brief   NRF5 QEI subsystem low level driver.
  *
  * @addtogroup QEI
  * @{

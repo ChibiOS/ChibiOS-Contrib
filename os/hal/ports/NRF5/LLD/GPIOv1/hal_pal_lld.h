@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    NRF5/LLD/hal_pal_lld.h
+ * @file    GPIOv1/hal_pal_lld.h
  * @brief   NRF5 PAL subsystem low level driver header.
  *
  * @addtogroup PAL

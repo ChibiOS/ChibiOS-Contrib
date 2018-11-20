@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    NRF5/LLD/hal_rng_lld.h
+ * @file    RNGv1/hal_rng_lld.h
  * @brief   NRF5 RNG subsystem low level driver header.
  *
  * @addtogroup RNG

@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NRF51x22/adc_lld.h
- * @brief   NRF51x22 ADC subsystem low level driver header.
+ * @file    ADCv1/adc_lld.h
+ * @brief   NRF51 ADC subsystem low level driver header.
  *
  * @addtogroup ADC
  * @{

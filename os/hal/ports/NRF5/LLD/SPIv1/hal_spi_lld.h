@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    NRF/LLD/hal_spi_lld.h
+ * @file    SPIv1/hal_spi_lld.h
  * @brief   NRF5 low level SPI driver header.
  *
  * @addtogroup SPI
