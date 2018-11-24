@@ -1,4 +1,5 @@
 /*
+    Copyright (C) 2018 Konstantin Oblaukhov
     Copyright (C) 2015 Stephen Caudle
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,65 +16,81 @@
 */
 
 /**
- * @file    NRF51x22/ext_lld_isr.h
- * @brief   NRF51x22 EXT subsystem low level driver ISR header.
+ * @file    NRF51822/nrf51_isr.c
+ * @brief   NRF51822 ISR handler code.
  *
- * @addtogroup EXT
+ * @addtogroup NRF51822_ISR
  * @{
  */
 
-#ifndef HAL_EXT_LLD_ISR_H
-#define HAL_EXT_LLD_ISR_H
-
-#if HAL_USE_EXT || defined(__DOXYGEN__)
+#include "hal.h"
 
 /*===========================================================================*/
-/* Driver constants.                                                         */
+/* Driver local definitions.                                                 */
 /*===========================================================================*/
 
 /*===========================================================================*/
-/* Driver pre-compile time settings.                                         */
+/* Driver exported variables.                                                */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver local variables.                                                   */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver local functions.                                                   */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
 /**
- * @name    Configuration options
- * @{
+ * @brief   GPIOTE interrupt handler.
+ *
+ * @isr
  */
-/**
- * @brief   GPIOTE interrupt priority level setting.
- */
-#if !defined(NRF5_EXT_GPIOTE_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NRF5_EXT_GPIOTE_IRQ_PRIORITY      3
-#endif
-/** @} */
+OSAL_IRQ_HANDLER(Vector58) {
 
-/*===========================================================================*/
-/* Derived constants and error checks.                                       */
-/*===========================================================================*/
+  OSAL_IRQ_PROLOGUE();
+  
+  for (int ch = 0; ch < NRF5_GPIOTE_NUM_CHANNELS; ch++)
+  {
+    if (NRF_GPIOTE->EVENTS_IN[ch])
+    {
+        NRF_GPIOTE->EVENTS_IN[ch] = 0;
+        _pal_isr_code(ch);
+    }
+  }
 
-/*===========================================================================*/
-/* Driver data structures and types.                                         */
-/*===========================================================================*/
-
-/*===========================================================================*/
-/* Driver macros.                                                            */
-/*===========================================================================*/
-
-/*===========================================================================*/
-/* External declarations.                                                    */
-/*===========================================================================*/
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-  void ext_lld_exti_irq_enable(void);
-  void ext_lld_exti_irq_disable(void);
-#ifdef __cplusplus
+  OSAL_IRQ_EPILOGUE();
 }
+
+/*===========================================================================*/
+/* Driver exported functions.                                                */
+/*===========================================================================*/
+/**
+ * @brief   Enables IRQ sources.
+ *
+ * @notapi
+ */
+void irqInit(void) {
+
+#if HAL_USE_PAL
+  nvicEnableVector(GPIOTE_IRQn, NRF5_IRQ_GPIOTE_PRIORITY);
 #endif
+}
 
-#endif /* HAL_USE_EXT */
+/**
+ * @brief   Disables IRQ sources.
+ *
+ * @notapi
+ */
+void irqDeinit(void) {
 
-#endif /* HAL_EXT_LLD_ISR_H */
+#if HAL_USE_PAL
+  nvicDisableVector(GPIOTE_IRQn);
+#endif
+}
 
 /** @} */

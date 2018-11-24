@@ -115,6 +115,7 @@
 #endif
 
 #include "nvic.h"
+#include "nrf52_isr.h"
 
 
 #ifdef __cplusplus

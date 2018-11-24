@@ -1,4 +1,5 @@
 /*
+    Copyright (C) 2018 Konstantin Oblaukhov
     Copyright (C) 2015 Stephen Caudle
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +16,14 @@
 */
 
 /**
- * @file    NRF51x22/ext_lld_isr.h
- * @brief   NRF51x22 EXT subsystem low level driver ISR code.
+ * @file    NRF52832/nrf52_isr.c
+ * @brief   NRF52832 ISR handler code.
  *
- * @addtogroup EXT
+ * @addtogroup NRF52832_ISR
  * @{
  */
 
 #include "hal.h"
-
-#if HAL_USE_EXT || defined(__DOXYGEN__)
-
-#include "hal_ext_lld_isr.h"
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -49,33 +46,21 @@
 /*===========================================================================*/
 
 /**
- * @brief   EXTI[0]...EXTI[1] interrupt handler.
+ * @brief   GPIOTE interrupt handler.
  *
  * @isr
  */
 OSAL_IRQ_HANDLER(Vector58) {
 
   OSAL_IRQ_PROLOGUE();
-
-  if (NRF_GPIOTE->EVENTS_IN[0])
+  
+  for (int ch = 0; ch < NRF5_GPIOTE_NUM_CHANNELS; ch++)
   {
-    NRF_GPIOTE->EVENTS_IN[0] = 0;
-    EXTD1.config->channels[0].cb(&EXTD1, 0);
-  }
-  if (NRF_GPIOTE->EVENTS_IN[1])
-  {
-    NRF_GPIOTE->EVENTS_IN[1] = 0;
-    EXTD1.config->channels[1].cb(&EXTD1, 1);
-  }
-  if (NRF_GPIOTE->EVENTS_IN[2])
-  {
-    NRF_GPIOTE->EVENTS_IN[2] = 0;
-    EXTD1.config->channels[2].cb(&EXTD1, 2);
-  }
-  if (NRF_GPIOTE->EVENTS_IN[3])
-  {
-    NRF_GPIOTE->EVENTS_IN[3] = 0;
-    EXTD1.config->channels[3].cb(&EXTD1, 3);
+    if (NRF_GPIOTE->EVENTS_IN[ch])
+    {
+        NRF_GPIOTE->EVENTS_IN[ch] = 0;
+        _pal_isr_code(ch);
+    }
   }
 
   OSAL_IRQ_EPILOGUE();
@@ -84,27 +69,28 @@ OSAL_IRQ_HANDLER(Vector58) {
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
-
 /**
- * @brief   Enables EXTI IRQ sources.
+ * @brief   Enables IRQ sources.
  *
  * @notapi
  */
-void ext_lld_exti_irq_enable(void) {
+void irqInit(void) {
 
-  nvicEnableVector(GPIOTE_IRQn, NRF5_EXT_GPIOTE_IRQ_PRIORITY);
+#if HAL_USE_PAL
+  nvicEnableVector(GPIOTE_IRQn, NRF5_IRQ_GPIOTE_PRIORITY);
+#endif
 }
 
 /**
- * @brief   Disables EXTI IRQ sources.
+ * @brief   Disables IRQ sources.
  *
  * @notapi
  */
-void ext_lld_exti_irq_disable(void) {
+void irqDeinit(void) {
 
+#if HAL_USE_PAL
   nvicDisableVector(GPIOTE_IRQn);
+#endif
 }
-
-#endif /* HAL_USE_EXT */
 
 /** @} */
