@@ -15,10 +15,14 @@ Feel free to send pull request there.
 ```
 Note: this repos cloned in the same directory side by side (not inside).
 
+#### Contributing
+
+When you submit a pull request, make sure all impacted platform tests compile using the tools/build.sh script.  
+Feel free to update authors.txt with your name.  
+
+
 #### Useful links
 
-https://help.github.com/
-
-http://git-scm.com/
-
+https://help.github.com/  
+http://git-scm.com/  
 http://chibios.org/dokuwiki/doku.php?id=chibios:guides:style_guide
