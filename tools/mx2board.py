@@ -171,7 +171,11 @@ def read_gpio(filename):
     for pin in root.findall('GPIO_Pin'):
         try:
             port = pin.attrib['Name'][1]
-            num = int(pin.attrib['Name'][2:])
+            num = pin.attrib['Name'][2:]
+            # remove notes from pin name (e.g. PH0 - OSC_IN)
+            num = num.split('-')[0].strip()
+            num = int(num)
+
             if port not in gpio['ports']:
                 gpio['ports'][port] = {}
             if num not in gpio['ports'][port]:
