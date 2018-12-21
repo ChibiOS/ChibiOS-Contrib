@@ -275,7 +275,7 @@ def gen_defines(project):
             defines['LINE_'+label] += ', ' + str(pad_key) + 'U)'
 
             if re.search(r"TIM\d+_CH\d$", signal, re.M):
-                timer = signal.replace('S_TIM', '').replace('_CH', '')[:-1]
+                timer = signal.replace('TIM', '').replace('_CH', '')[:-1]
                 ch_num = int(signal[-1:])
 
                 defines['TIM_' + label] = timer
