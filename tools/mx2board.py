@@ -310,7 +310,7 @@ def gen_defines(project):
                 defines['I2C_' + label] = match.group(1)
                 continue
 
-            match = re.search(r"CAN(\d)_[RT]X", signal)
+            match = re.search(r"CAN(\d*)_[RT]X", signal)
             if match:
                 can = match.group(1)
                 if len(can) == 0:
