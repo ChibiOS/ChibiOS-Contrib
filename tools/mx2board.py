@@ -230,6 +230,7 @@ def read_project(gpio, filename):
                         or 'DAC' in prop_value \
                         or 'OSC' in prop_value:
                     pads[pad_port][pad_num]["MODER"] = PIN_MODE_ANALOG
+                    pads[pad_port][pad_num]["SIGNAL"] = prop_value
                 elif 'GPIO_Output' == prop_value:
                     pads[pad_port][pad_num]["MODER"] = PIN_MODE_OUTPUT
                 elif 'GPIO_Input' == prop_value:
@@ -274,15 +275,48 @@ def gen_defines(project):
             defines['LINE_'+label] = 'PAL_LINE(GPIO' + port_key
             defines['LINE_'+label] += ', ' + str(pad_key) + 'U)'
 
-            if re.search(r"TIM\d+_CH\d$", signal, re.M):
-                timer = signal.replace('S_TIM', '').replace('_CH', '')[:-1]
-                ch_num = int(signal[-1:])
-
+            match = re.search(r"TIM(\d+)_CH(\d)$", signal)
+            if match:
+                timer = match.group(1)
+                ch_num = int(match.group(2))
                 defines['TIM_' + label] = timer
                 defines['CCR_' + label] = 'CCR' + timer[-1]
                 defines['PWMD_' + label] = 'PWMD' + timer[-1]
                 defines['ICUD_' + label] = 'ICUD' + timer[-1]
                 defines['CHN_' + label] = ch_num - 1
+                continue
+
+            match = re.search(r"ADC(\d*)_IN(\d+)$", signal)
+            if match:
+                adc = match.group(1)
+                if len(adc) == 0:
+                    adc = 1
+                defines['ADC_' + label] = adc
+                defines['CHN_' + label] = match.group(2)
+                continue
+
+            match = re.search(r"USART(\d+)_[RT]X$", signal)
+            if match:
+                defines['USART_' + label] = match.group(1)
+                continue
+
+            match = re.search(r"COMP_DAC(\d+)_group", signal)
+            if match:
+                defines['DAC_' + label] = match.group(1)
+                continue
+
+            match = re.search(r"I2C(\d)_S(CL|DA)", signal)
+            if match:
+                defines['I2C_' + label] = match.group(1)
+                continue
+
+            match = re.search(r"CAN(\d*)_[RT]X", signal)
+            if match:
+                can = match.group(1)
+                if len(can) == 0:
+                    can = 1
+                defines['CAN_' + label] = can
+                continue
 
     return defines
 
