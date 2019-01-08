@@ -78,8 +78,15 @@ static const GPTConfig gpt6cfg1 = {
   .dier         = 0U
 };
 
+/*
+ * OpAmp configuration.
+ * We will double the input voltage
+ */
 static const OPAMPConfig opamp1_conf = {
-  0
+  STM32_OPAMP_NonInvertingInput_IO4 | // INP connectd to PA1
+  STM32_OPAMP_InvertingInput_PGA | // INM connected to PGA
+  STM32_OPAMP_PGAGain_2 | // Gain of 2x
+  STM32_OPAMP_PGAConnect_No // PGA connected to ground
 };
 
 /*
