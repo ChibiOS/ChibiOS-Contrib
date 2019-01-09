@@ -72,6 +72,9 @@ endif
 ifneq ($(findstring HAL_USE_COMP TRUE,$(HALCONF)),)
 HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/hal_comp.c
 endif
+ifneq ($(findstring HAL_USE_OPAMP TRUE,$(HALCONF)),)
+HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/hal_opamp.c
+endif
 else
 HALSRC_CONTRIB := ${CHIBIOS_CONTRIB}/os/hal/src/hal_community.c \
                   ${CHIBIOS_CONTRIB}/os/hal/src/hal_nand.c \

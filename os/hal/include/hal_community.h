@@ -75,6 +75,10 @@
 #define HAL_USE_COMP                        FALSE
 #endif
 
+#if !defined(HAL_USE_OPAMP)
+#define HAL_USE_OPAMP                        FALSE
+#endif
+
 /* Abstract interfaces.*/
 
 /* Shared headers.*/
@@ -87,6 +91,7 @@
 #include "hal_timcap.h"
 #include "hal_qei.h"
 #include "hal_comp.h"
+#include "hal_opamp.h"
 
 /* Complex drivers.*/
 #include "hal_onewire.h"
