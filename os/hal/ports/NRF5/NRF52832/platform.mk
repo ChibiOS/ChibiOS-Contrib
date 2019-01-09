@@ -20,7 +20,8 @@ endif
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/GPIOv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/UARTv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/SPIv1/driver.mk
-include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/TWIv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/TWIMv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/PWMv2/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/TIMERv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/WDTv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/RNGv1/driver.mk
