@@ -98,7 +98,8 @@ HALSRC_CONTRIB := ${CHIBIOS_CONTRIB}/os/hal/src/hal_community.c \
                   ${CHIBIOS_CONTRIB}/os/hal/src/hal_qei.c \
                   ${CHIBIOS_CONTRIB}/os/hal/src/hal_usb_hid.c \
                   ${CHIBIOS_CONTRIB}/os/hal/src/hal_usb_msd.c \
-                  ${CHIBIOS_CONTRIB}/os/hal/src/hal_comp.c
+                  ${CHIBIOS_CONTRIB}/os/hal/src/hal_comp.c \
+                  ${CHIBIOS_CONTRIB}/os/hal/src/hal_opamp.c
 endif
 
 HALINC_CONTRIB := ${CHIBIOS_CONTRIB}/os/hal/include
