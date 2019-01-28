@@ -48,7 +48,7 @@ DEFAULT_PAD = {"SIGNAL": "UNUSED",
                "OTYPER": PIN_OTYPE_PUSHPULL,
                "OSPEEDR": PIN_OSPEED_VERYLOW,
                "PUPDR": PIN_PUPDR_FLOATING,
-               "ODR": PIN_ODR_HIGH}
+               "ODR": PIN_ODR_LOW}
 
 PIN_MODE_TRANSLATE = {"GPIO_MODE_AF_PP": PIN_MODE_ALTERNATE,
                       "GPIO_MODE_ANALOG": PIN_MODE_ANALOG,
@@ -69,6 +69,9 @@ PIN_OSPEED_TRANSLATE = {"GPIO_SPEED_FREQ_LOW": PIN_OSPEED_VERYLOW,
 PIN_PUPDR_TRANSLATE = {"GPIO_NOPULL": PIN_PUPDR_FLOATING,
                        "GPIO_PULLUP": PIN_PUPDR_PULLUP,
                        "GPIO_PULLDOWN": PIN_PUPDR_PULLDOWN}
+
+PIN_ODR_TRANSLATE = {"GPIO_PIN_SET": PIN_ODR_HIGH,
+                     "GPIO_PIN_CLEAR": PIN_ODR_LOW}
 
 parser = ArgumentParser(description='Generate ChibiOS GPIO header file from STM32CubeMX project files.')
 group = parser.add_mutually_exclusive_group(required=False)
@@ -222,6 +225,7 @@ def read_project(gpio, filename):
             pad_prop = split[0].split(".")[-1]
             prop_value = split[-1].rstrip('\r\n')
 
+
             if pad_prop == "Signal":
                 if 'S_TIM' in prop_value:
                     prop_value = prop_value[2:]
@@ -250,6 +254,8 @@ def read_project(gpio, filename):
                 pads[pad_port][pad_num]["MODER"] = PIN_MODE_OUTPUT
             elif pad_prop == "GPIO_Speed":
                 pads[pad_port][pad_num]["OSPEEDR"] = PIN_OSPEED_TRANSLATE[prop_value]
+            elif pad_prop == "PinState":
+                pads[pad_port][pad_num]["ODR"] = PIN_ODR_TRANSLATE[prop_value]
 
     return pads
 
