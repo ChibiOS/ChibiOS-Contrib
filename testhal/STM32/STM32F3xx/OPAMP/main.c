@@ -83,10 +83,10 @@ static const GPTConfig gpt6cfg1 = {
  * We will double the input voltage
  */
 static const OPAMPConfig opamp1_conf = {
-  STM32_OPAMP_NonInvertingInput_IO4 | // INP connectd to PA1
-  STM32_OPAMP_InvertingInput_PGA | // INM connected to PGA
-  STM32_OPAMP_PGAGain_2 | // Gain of 2x
-  STM32_OPAMP_PGAConnect_No // PGA connected to ground
+  OPAMP1_CSR_VPSEL_PA01 |  // INP connectd to PA1
+  OPAMP1_CSR_VMSEL_PGA  |  // INM connected to PGA
+  OPAMPx_CSR_PGAGAIN_x2 |  // Gain of 2x
+  OPAMPx_CSR_PGACONNECT_GROUND // PGA connected to ground
 };
 
 /*
@@ -118,6 +118,7 @@ int main(void) {
   gptStartContinuous(&GPTD6, 2U);
 
   opampEnable(&OPAMPD1);
+  opampCalibrate();
 
   /*
    * Normal main() thread activity.

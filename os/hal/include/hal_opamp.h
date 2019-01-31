@@ -26,6 +26,9 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
+#define OPAMP_P_BELOW_M (0U)
+#define OPAMP_M_BELOW_P (1U)
+
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -44,8 +47,8 @@
 typedef enum {
   OPAMP_UNINIT = 0,                   /**< Not initialized.                   */
   OPAMP_STOP = 1,                     /**< Stopped.                           */
-  OPAMP_READY = 2,                    /**< Ready.                             */
-  OPAMP_ACTIVE = 3,                   /**< Active cycle phase.                */
+  OPAMP_ACTIVE = 2,                   /**< Active.                            */
+  OPAMP_CALIBRATING = 3,              /**< Calibration in progress.           */
 } opampstate_t;
 
 /**
@@ -60,28 +63,12 @@ typedef struct OPAMPDriver OPAMPDriver;
 /*===========================================================================*/
 
 /**
- * @name    Macro Functions
- * @{
- */
-/**
- * @brief   Enables the input capture.
- *
- * @param[in] opamp      pointer to the @p OPAMPDriver object
- *
+ * @brief   Calibrate opamps
+ * *
  * @iclass
  */
-#define opampEnableI(opamp) opamp_lld_enable(opamp)
-
-/**
- * @brief   Disables the input capture.
- *
- * @param[in] opamp      pointer to the @p OPAMPDriver object
- *
- * @iclass
- */
-#define opampDisableI(opamp) opamp_lld_disable(opamp)
+#define opampCalibrate() opamp_lld_calibrate()
 /** @} */
-
 
 /**
  * @name    Low Level driver helper macros

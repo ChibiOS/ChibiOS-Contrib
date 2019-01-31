@@ -34,47 +34,29 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
+#define OPAMPx_CSR_PGAGAIN_x2                    ((uint32_t)0x00000000)
+#define OPAMPx_CSR_PGAGAIN_x4                    OPAMP_CSR_PGGAIN_0
+#define OPAMPx_CSR_PGAGAIN_x8                    OPAMP_CSR_PGGAIN_1
+#define OPAMPx_CSR_PGAGAIN_x16                   ((uint32_t)0x0000C000)
+#define OPAMPx_CSR_PGAGAIN_LESS_IFB_VM0          (0b10 << 16)
+#define OPAMPx_CSR_PGAGAIN_LESS_IFB_VM1          (0b11 << 16)
 
-#define STM32_OPAMP_InvertingInput_IO1          ((uint32_t)0x00000000) /*!< IO1 (PC5 for OPAMP1 and OPAMP2, PB10 for OPAMP3 and OPAMP4)
-                                                                       connected to OPAMPx inverting input */
-#define STM32_OPAMP_InvertingInput_IO2          OPAMP_CSR_VMSEL_0      /*!< IO2 (PA3 for OPAMP1, PA5 for OPAMP2, PB2 for OPAMP3, PD8 for OPAMP4)
-                                                                       connected to OPAMPx inverting input */
-#define STM32_OPAMP_InvertingInput_PGA          OPAMP_CSR_VMSEL_1      /*!< Resistor feedback output connected to OPAMPx inverting input (PGA mode) */
-#define STM32_OPAMP_InvertingInput_Vout         OPAMP_CSR_VMSEL        /*!< Vout connected to OPAMPx inverting input (follower mode) */
+#define OPAMPx_CSR_PGACONNECT_GROUND             ((uint32_t)0x00000000)
+#define OPAMPx_CSR_PGACONNECT_IO1                OPAMP_CSR_PGGAIN_3
+#define OPAMPx_CSR_PGACONNECT_IO2                ((uint32_t)0x00030000)
 
+#define OPAMPx_CSR_CALSEL_3P3                    ((uint32_t)0x00000000)
+#define OPAMPx_CSR_CALSEL_10P                    OPAMP_CSR_CALSEL_0
+#define OPAMPx_CSR_CALSEL_50P                    OPAMP_CSR_CALSEL_1
+#define OPAMPx_CSR_CALSEL_90P                    OPAMP_CSR_CALSEL
 
-#define STM32_OPAMP_NonInvertingInput_IO1       ((uint32_t)0x00000000) /*!< IO1 (PA7 for OPAMP1, PD14 for OPAMP2, PB13 for OPAMP3, PD11 for OPAMP4)
-                                                                       connected to OPAMPx non inverting input */
-#define STM32_OPAMP_NonInvertingInput_IO2       OPAMP_CSR_VPSEL_0      /*!< IO2 (PA5 for OPAMP1, PB14 for OPAMP2, PA5 for OPAMP3, PB11 for OPAMP4)
-                                                                       connected to OPAMPx non inverting input */
-#define STM32_OPAMP_NonInvertingInput_IO3       OPAMP_CSR_VPSEL_1      /*!< IO3 (PA3 for OPAMP1, PB0 for OPAMP2, PA1 for OPAMP3, PA4 for OPAMP4)
-                                                                       connected to OPAMPx non inverting input */
-#define STM32_OPAMP_NonInvertingInput_IO4       OPAMP_CSR_VPSEL        /*!< IO4 (PA1 for OPAMP1, PA7 for OPAMP2, PB0 for OPAMP3, PB13 for OPAMP4)
-                                                                       connected to OPAMPx non inverting input */
+#define OPAMPx_CSR_TRIM_FACTORY                  ((uint32_t)0x00000000)
+#define OPAMPx_CSR_TRIM_USER                     OPAMP_CSR_USERTRIM     /*!< User trimming */
 
+#define OPAMPx_CSR_OUTPUT_NORMAL                 ((uint32_t)0x00000000)
+#define OPAMPx_CSR_OUTPUT_INVERTED               OPAMP_CSR_OUTCAL
 
-#define STM32_OPAMP_PGAGain_2                   ((uint32_t)0x00000000)
-#define STM32_OPAMP_PGAGain_4                   OPAMP_CSR_PGGAIN_0
-#define STM32_OPAMP_PGAGain_8                   OPAMP_CSR_PGGAIN_1
-#define STM32_OPAMP_PGAGain_16                  ((uint32_t)0x0000C000)
-
-#define STM32_OPAMP_PGAConnect_No               ((uint32_t)0x00000000)
-#define STM32_OPAMP_PGAConnect_IO1              OPAMP_CSR_PGGAIN_3
-#define STM32_OPAMP_PGAConnect_IO2              ((uint32_t)0x00030000)
-
-#define STM32_OPAMP_Input_Inverting             ((uint32_t)0x00000018) /*!< Inverting input */
-#define STM32_OPAMP_Input_NonInverting          ((uint32_t)0x00000013) /*!< Non inverting input */
-
-#define STM32_OPAMP_Vref_3VDDA                  ((uint32_t)0x00000000) /*!< OPMAP Vref = 3.3% VDDA */
-#define STM32_OPAMP_Vref_10VDDA                 OPAMP_CSR_CALSEL_0     /*!< OPMAP Vref = 10% VDDA  */
-#define STM32_OPAMP_Vref_50VDDA                 OPAMP_CSR_CALSEL_1     /*!< OPMAP Vref = 50% VDDA  */
-#define STM32_OPAMP_Vref_90VDDA                 OPAMP_CSR_CALSEL       /*!< OPMAP Vref = 90% VDDA  */
-
-#define STM32_OPAMP_Trimming_Factory            ((uint32_t)0x00000000) /*!< Factory trimming */
-#define STM32_OPAMP_Trimming_User               OPAMP_CSR_USERTRIM     /*!< User trimming */
-
-#define STM32_OPAMP_OutputLevel_High            OPAMP_CSR_OUTCAL
-#define STM32_OPAMP_OutputLevel_Low             ((uint32_t)0x00000000)
+#define OPAMPx_CSR_LOCK                          OPAMP_CSR_LOCK
 
 
 #if defined(STM32F302xB) || defined(STM32F302xC) || defined(STM32F302xD) \
@@ -97,7 +79,87 @@
 #define STM32_HAS_OPAMP2 FALSE
 #define STM32_HAS_OPAMP3 FALSE
 #define STM32_HAS_OPAMP4 FALSE
+#endif
 
+
+#if STM32_HAS_OPAMP1
+#define OPAMP1_CSR_VPSEL_PA07       	((uint32_t)0x00000000)
+#define OPAMP1_CSR_VPSEL_PA05     		OPAMP_CSR_VPSEL_0
+#define OPAMP1_CSR_VPSEL_PA03     		OPAMP_CSR_VPSEL_1
+#define OPAMP1_CSR_VPSEL_PA01     		OPAMP_CSR_VPSEL
+
+#define OPAMP1_CSR_VMSEL_PC05         ((uint32_t)0x00000000)
+#define OPAMP1_CSR_VMSEL_PA03     		OPAMP_CSR_VMSEL_0
+#define OPAMP1_CSR_VMSEL_PGA  				OPAMP_CSR_VMSEL_1
+#define OPAMP1_CSR_VMSEL_FOLWR				OPAMP_CSR_VMSEL
+
+#define OPAMP1_CSR_VMSSEL_PC05				((uint32_t)0x00000000)
+#define OPAMP1_CSR_VMSSEL_PA03				OPAMP_CSR_VMSSEL
+
+#define OPAMP1_CSR_VPSSEL_PA07				((uint32_t)0x00000000)
+#define OPAMP1_CSR_VPSSEL_PA05				OPAMP_CSR_VPSSEL_0
+#define OPAMP1_CSR_VPSSEL_PA03				OPAMP_CSR_VPSSEL_1
+#define OPAMP1_CSR_VPSSEL_PA01				OPAMP_CSR_VPSSEL
+#endif
+
+#if STM32_HAS_OPAMP2
+#define OPAMP2_CSR_VPSEL_PD14       	((uint32_t)0x00000000)
+#define OPAMP2_CSR_VPSEL_PB14   			OPAMP_CSR_VPSEL_0
+#define OPAMP2_CSR_VPSEL_PB00       	OPAMP_CSR_VPSEL_1
+#define OPAMP2_CSR_VPSEL_PA07     		OPAMP_CSR_VPSEL
+
+#define OPAMP2_CSR_VMSEL_PC05     		((uint32_t)0x00000000)
+#define OPAMP2_CSR_VMSEL_PA05     		OPAMP_CSR_VMSEL_0
+#define OPAMP2_CSR_VMSEL_PGA		  		OPAMP_CSR_VMSEL_1
+#define OPAMP2_CSR_VMSEL_FOLWR				OPAMP_CSR_VMSEL
+
+#define OPAMP2_CSR_VMSSEL_PC05				((uint32_t)0x00000000)
+#define OPAMP2_CSR_VMSSEL_PA05				OPAMP_CSR_VMSSEL
+
+#define OPAMP2_CSR_VPSSEL_PD14				((uint32_t)0x00000000)
+#define OPAMP2_CSR_VPSSEL_PB14				OPAMP_CSR_VPSSEL_0
+#define OPAMP2_CSR_VPSSEL_PB00				OPAMP_CSR_VPSSEL_1
+#define OPAMP2_CSR_VPSSEL_PA07				OPAMP_CSR_VPSSEL
+#endif
+
+#if STM32_HAS_OPAMP3
+#define OPAMP3_CSR_VPSEL_PB13       	((uint32_t)0x00000000)
+#define OPAMP3_CSR_VPSEL_PA05       	OPAMP_CSR_VPSEL_0
+#define OPAMP3_CSR_VPSEL_PA01     		OPAMP_CSR_VPSEL_1
+#define OPAMP3_CSR_VPSEL_PB00       	OPAMP_CSR_VPSEL
+
+#define OPAMP3_CSR_VMSEL_PB10         ((uint32_t)0x00000000)
+#define OPAMP3_CSR_VMSEL_PB02       	OPAMP_CSR_VMSEL_0
+#define OPAMP3_CSR_VMSEL_PGA		  		OPAMP_CSR_VMSEL_1
+#define OPAMP3_CSR_VMSEL_FOLWR				OPAMP_CSR_VMSEL
+
+#define OPAMP3_CSR_VMSSEL_PB10				((uint32_t)0x00000000)
+#define OPAMP3_CSR_VMSSEL_PB02				OPAMP_CSR_VMSSEL
+
+#define OPAMP3_CSR_VPSSEL_PB13				((uint32_t)0x00000000)
+#define OPAMP3_CSR_VPSSEL_PA05				OPAMP_CSR_VPSSEL_0
+#define OPAMP3_CSR_VPSSEL_PA01				OPAMP_CSR_VPSSEL_1
+#define OPAMP3_CSR_VPSSEL_PB00				OPAMP_CSR_VPSSEL
+#endif
+
+#if STM32_HAS_OPAMP4
+#define OPAMP4_CSR_VPSEL_PD11         ((uint32_t)0x00000000)
+#define OPAMP4_CSR_VPSEL_PB11         OPAMP_CSR_VPSEL_0
+#define OPAMP4_CSR_VPSEL_PA04       	OPAMP_CSR_VPSEL_1
+#define OPAMP4_CSR_VPSEL_PB13       	OPAMP_CSR_VPSEL
+
+#define OPAMP4_CSR_VMSEL_PB10       	((uint32_t)0x00000000)
+#define OPAMP4_CSR_VMSEL_PD08       	OPAMP_CSR_VMSEL_0
+#define OPAMP4_CSR_VMSEL_PGA	  			OPAMP_CSR_VMSEL_1
+#define OPAMP4_CSR_VMSEL_FOLWR				OPAMP_CSR_VMSEL
+
+#define OPAMP4_CSRVMSSEL_PB10				((uint32_t)0x00000000)
+#define OPAMP4_CSR_VMSSEL_PD08				OPAMP_CSR_VMSSEL
+
+#define OPAMP4_CSR_VPSSEL_PD11				((uint32_t)0x00000000)
+#define OPAMP4_CSR_VPSSEL_PB11				OPAMP_CSR_VPSSEL_0
+#define OPAMP4_CSR_VPSSEL_PA04				OPAMP_CSR_VPSSEL_1
+#define OPAMP4_CSR_VPSSEL_PB13				OPAMP_CSR_VPSSEL
 #endif
 
 
@@ -144,6 +206,15 @@
  */
 #if !defined(STM32_OPAMP_USE_OPAMP4) || defined(__DOXYGEN__)
 #define STM32_OPAMP_USE_OPAMP4                  FALSE
+#endif
+
+/**
+ * @brief   OPAMPD TRIM and CALIBRATION enable switch.
+ * @details If set to @p TRUE the support for USER_TRIM is included and calibration is done @init
+ * @note    The default is @p TRUE.
+ */
+#if !defined(STM32_OPAMP_USER_TRIM_ENABLED) || defined(__DOXYGEN__)
+#define STM32_OPAMP_USER_TRIM_ENABLED		TRUE
 #endif
 
 
@@ -210,7 +281,12 @@ struct OPAMPDriver {
   /**
    * @brief Pointer to the OPAMPx registers block.
    */
-  OPAMP_TypeDef               *reg;
+  OPAMP_TypeDef               *opamp;
+
+#if STM32_OPAMP_USER_TRIM_ENABLED
+  uint16_t			trim_p;
+  uint16_t			trim_n;
+#endif
 };
 
 /*===========================================================================*/
@@ -246,6 +322,9 @@ extern "C" {
   void opamp_lld_stop(OPAMPDriver *compp);
   void opamp_lld_enable(OPAMPDriver *compp);
   void opamp_lld_disable(OPAMPDriver *compp);
+#if STM32_OPAMP_USER_TRIM_ENABLED
+  void opamp_lld_calibrate(void);
+#endif
 #ifdef __cplusplus
 }
 #endif
