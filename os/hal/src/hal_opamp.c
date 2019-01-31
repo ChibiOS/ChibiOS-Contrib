@@ -86,11 +86,11 @@ void opampStart(OPAMPDriver *opampp, const OPAMPConfig *config) {
   osalDbgCheck((opampp != NULL) && (config != NULL));
 
   osalSysLock();
-  osalDbgAssert((opampp->state == OPAMP_STOP) || (opampp->state == OPAMP_READY),
+  osalDbgAssert((opampp->state == OPAMP_STOP) || (opampp->state == OPAMP_ACTIVE),
               "invalid state");
   opampp->config = config;
   opamp_lld_start(opampp);
-  opampp->state = OPAMP_READY;
+  opampp->state = OPAMP_ACTIVE;
   osalSysUnlock();
 }
 
@@ -106,7 +106,7 @@ void opampStop(OPAMPDriver *opampp) {
   osalDbgCheck(opampp != NULL);
 
   osalSysLock();
-  osalDbgAssert((opampp->state == OPAMP_STOP) || (opampp->state == OPAMP_READY),
+  osalDbgAssert((opampp->state == OPAMP_STOP) || (opampp->state == OPAMP_ACTIVE),
               "invalid state");
   opamp_lld_stop(opampp);
   opampp->state = OPAMP_STOP;
@@ -125,7 +125,7 @@ void opampEnable(OPAMPDriver *opampp) {
   osalDbgCheck(opampp != NULL);
 
   osalSysLock();
-  osalDbgAssert(opampp->state == OPAMP_READY, "invalid state");
+  osalDbgAssert(opampp->state == OPAMP_ACTIVE, "invalid state");
   opamp_lld_enable(opampp);
   opampp->state = OPAMP_ACTIVE;
   osalSysUnlock();
@@ -143,10 +143,10 @@ void opampDisable(OPAMPDriver *opampp) {
   osalDbgCheck(opampp != NULL);
 
   osalSysLock();
-  osalDbgAssert((opampp->state == OPAMP_READY) || (opampp->state == OPAMP_ACTIVE),
+  osalDbgAssert((opampp->state == OPAMP_ACTIVE),
              "invalid state");
   opamp_lld_disable(opampp);
-  opampp->state = OPAMP_READY;
+  opampp->state = OPAMP_ACTIVE;
   osalSysUnlock();
 }
 

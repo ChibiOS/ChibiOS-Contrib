@@ -92,6 +92,7 @@
 #define STM32_OPAMP_USE_OPAMP2                  TRUE
 #define STM32_OPAMP_USE_OPAMP3                  TRUE
 #define STM32_OPAMP_USE_OPAMP4                  TRUE
+#define STM32_OPAMP_USER_TRIM_ENABLED           TRUE
 
 /*
  * USBH driver system settings.
