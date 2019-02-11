@@ -240,6 +240,11 @@ def read_project(gpio, filename):
                 elif 'GPIO_Input' == prop_value:
                     pads[pad_port][pad_num]["MODER"] = PIN_MODE_INPUT
                 else:
+                    # workaround for different names in project and gpio defs
+                    if "FSMC" in prop_value:
+                        prop_value = re.sub(r"FSMC_D([0-9]+)_DA[0-9]+",
+                                r"FSMC_D\1", prop_value)
+
                     pads[pad_port][pad_num]["SIGNAL"] = prop_value
                     pads[pad_port][pad_num]["MODER"] = PIN_MODE_ALTERNATE
                     pads[pad_port][pad_num]["OSPEEDR"] = PIN_OSPEED_MEDIUM
@@ -314,6 +319,11 @@ def gen_defines(project):
             match = re.search(r"I2C(\d)_S(CL|DA)", signal)
             if match:
                 defines['I2C_' + label] = match.group(1)
+                continue
+
+            match = re.search(r"SPI(\d)_(MOSI|MISO|SCK|NSS)", signal)
+            if match:
+                defines['SPI_' + label] = match.group(1)
                 continue
 
             match = re.search(r"CAN(\d*)_[RT]X", signal)
