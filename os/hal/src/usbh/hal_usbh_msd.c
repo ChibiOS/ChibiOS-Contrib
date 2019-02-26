@@ -516,6 +516,8 @@ static msd_result_t _scsi_perform_transaction(USBHMassStorageLUNDriver *lunp,
 			if (scsi_requestsense(lunp, &sense) == MSD_RESULT_OK) {
 				uwarnf("\tMSD: REQUEST SENSE: Sense key=%x, ASC=%02x, ASCQ=%02x",
 						sense.byte[2] & 0xf, sense.byte[12], sense.byte[13]);
+
+				return MSD_RESULT_OK;
 			}
 		}
 		return MSD_RESULT_FAILED;
