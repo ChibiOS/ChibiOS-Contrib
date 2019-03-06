@@ -25,7 +25,7 @@ pipeline {
 cp -r $WORKSPACE/* $WORKSPACE/.git /tmp/contrib_$EXECUTOR_NUMBER
 
 cp -r /tmp/contrib_$EXECUTOR_NUMBER $WORKSPACE/'''
-        sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/ChibiOS-RT
+        sh '''git -C $WORKSPACE/ChibiOS-RT pull || git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/ChibiOS-RT
 cd $WORKSPACE/contrib
 bash ./tools/chbuild.sh ./testhal/STM32/'''
       }
