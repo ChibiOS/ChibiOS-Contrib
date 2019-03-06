@@ -9,8 +9,9 @@ pipeline {
 
       }
       steps {
-        sh '''mkdir -p $WORKSPACE/contrib
-mv -v $WORKSPACE/* $WORKSPACE/.* contrib/'''
+        sh '''rm -rf $WORKSPACE/contrib
+mkdir -p $WORKSPACE/contrib
+mv -v $WORKSPACE/* $WORKSPACE/.git $WORKSPACE/contrib/'''
       }
     }
     stage('Build STM32') {
