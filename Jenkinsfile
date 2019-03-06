@@ -21,7 +21,7 @@ pipeline {
       }
       steps {
         sh '''mkdir /tmp/contrib
-cp -r $WORKSPACE/* $WORKSPACE/*.git /tmp/contrib/
+cp -r $WORKSPACE/* $WORKSPACE/.git /tmp/contrib/
 
 
 mv -v /tmp/contrib $WORKSPACE/'''
