@@ -9,7 +9,10 @@ pipeline {
 
       }
       steps {
-        sh 'exit 0'
+        ws(dir: 'workspace/Contrib') {
+          sh 'exit 0'
+        }
+
       }
     }
     stage('Build STM32') {
