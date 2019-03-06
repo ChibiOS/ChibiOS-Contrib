@@ -71,7 +71,8 @@ PIN_PUPDR_TRANSLATE = {"GPIO_NOPULL": PIN_PUPDR_FLOATING,
                        "GPIO_PULLDOWN": PIN_PUPDR_PULLDOWN}
 
 PIN_ODR_TRANSLATE = {"GPIO_PIN_SET": PIN_ODR_HIGH,
-                     "GPIO_PIN_CLEAR": PIN_ODR_LOW}
+                     "GPIO_PIN_CLEAR": PIN_ODR_LOW,
+                     "GPIO_PIN_RESET": PIN_ODR_LOW }
 
 parser = ArgumentParser(description='Generate ChibiOS GPIO header file from STM32CubeMX project files.')
 group = parser.add_mutually_exclusive_group(required=False)
