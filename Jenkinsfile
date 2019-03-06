@@ -9,89 +9,24 @@ pipeline {
 
       }
       steps {
-        ws(dir: 'workspace/Contrib') {
-          sh 'exit 0'
-        }
-
+        sh 'exit 0'
       }
     }
     stage('Build STM32') {
-      parallel {
-        stage('Build STM32') {
-          agent {
-            docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-arm'
-            }
-
-          }
-          steps {
-            ws(dir: 'workspace/Contrib') {
-              sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/../ChibiOS-RT
-bash $WORKSPACE/tools/chbuild.sh $WORKSPACE/testhal/STM32/'''
-            }
-
-          }
+      agent {
+        docker {
+          image 'fpoussin/jenkins:ubuntu-18.04-arm'
         }
-        stage('Build NRF51') {
-          agent {
-            docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-arm'
-            }
 
-          }
-          steps {
-            ws(dir: 'workspace/Contrib') {
-              sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/../ChibiOS-RT
-bash $WORKSPACE/tools/chbuild.sh $WORKSPACE/testhal/NRF51/'''
-            }
+      }
+      steps {
+        sh '''mkdir /tmp/contrib
+cp -r $WORKSPACE/* $WORKSPACE/*.git /tmp/contrib/
 
-          }
-        }
-        stage('Build NRF52') {
-          agent {
-            docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-arm'
-            }
 
-          }
-          steps {
-            ws(dir: 'workspace/Contrib') {
-              sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/../ChibiOS-RT
-bash $WORKSPACE/tools/chbuild.sh $WORKSPACE/testhal/NRF52/'''
-            }
-
-          }
-        }
-        stage('Build TIVA') {
-          agent {
-            docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-arm'
-            }
-
-          }
-          steps {
-            ws(dir: 'workspace/Contrib') {
-              sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/../ChibiOS-RT
-bash $WORKSPACE/tools/chbuild.sh $WORKSPACE/testhal/TIVA/'''
-            }
-
-          }
-        }
-        stage('Build Kinetis') {
-          agent {
-            docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-arm'
-            }
-
-          }
-          steps {
-            ws(dir: 'workspace/Contrib') {
-              sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/../ChibiOS-RT
-bash $WORKSPACE/tools/chbuild.sh $WORKSPACE/testhal/KINETIS/'''
-            }
-
-          }
-        }
+mv -v /tmp/contrib $WORKSPACE/'''
+        sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/ChibiOS-RT
+bash $WORKSPACE/contrib/tools/chbuild.sh $WORKSPACE/contrib/testhal/STM32/'''
       }
     }
   }
