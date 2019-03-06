@@ -9,9 +9,7 @@ pipeline {
 
       }
       steps {
-        sh '''rm -rf $WORKSPACE/contrib
-mkdir -p $WORKSPACE/contrib
-mv -fv $WORKSPACE/* $WORKSPACE/.git $WORKSPACE/contrib/'''
+        sh 'exit 0'
       }
     }
     stage('Build STM32') {
@@ -24,8 +22,11 @@ mv -fv $WORKSPACE/* $WORKSPACE/.git $WORKSPACE/contrib/'''
 
           }
           steps {
-            sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/ChibiOS-RT
-bash $WORKSPACE/contrib/tools/chbuild.sh $WORKSPACE/contrib/testhal/STM32/'''
+            ws(dir: '$HOME/workspaces/ChibiOS/Contrib') {
+              sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/../ChibiOS-RT
+bash $WORKSPACE/tools/chbuild.sh $WORKSPACE/testhal/STM32/'''
+            }
+
           }
         }
         stage('Build NRF51') {
@@ -36,8 +37,11 @@ bash $WORKSPACE/contrib/tools/chbuild.sh $WORKSPACE/contrib/testhal/STM32/'''
 
           }
           steps {
-            sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/ChibiOS-RT
-bash $WORKSPACE/contrib/tools/chbuild.sh $WORKSPACE/contrib/testhal/NRF51/'''
+            ws(dir: '$HOME/workspaces/ChibiOS/Contrib') {
+              sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/../ChibiOS-RT
+bash $WORKSPACE/tools/chbuild.sh $WORKSPACE/testhal/NRF51/'''
+            }
+
           }
         }
         stage('Build NRF52') {
@@ -48,8 +52,11 @@ bash $WORKSPACE/contrib/tools/chbuild.sh $WORKSPACE/contrib/testhal/NRF51/'''
 
           }
           steps {
-            sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/ChibiOS-RT
-bash $WORKSPACE/contrib/tools/chbuild.sh $WORKSPACE/contrib/testhal/NRF52/'''
+            ws(dir: '$HOME/workspaces/ChibiOS/Contrib') {
+              sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/../ChibiOS-RT
+bash $WORKSPACE/tools/chbuild.sh $WORKSPACE/testhal/NRF52/'''
+            }
+
           }
         }
         stage('Build TIVA') {
@@ -60,8 +67,11 @@ bash $WORKSPACE/contrib/tools/chbuild.sh $WORKSPACE/contrib/testhal/NRF52/'''
 
           }
           steps {
-            sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/ChibiOS-RT
-bash $WORKSPACE/contrib/tools/chbuild.sh $WORKSPACE/contrib/testhal/TIVA/'''
+            ws(dir: '$HOME/workspaces/ChibiOS/Contrib') {
+              sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/../ChibiOS-RT
+bash $WORKSPACE/tools/chbuild.sh $WORKSPACE/testhal/TIVA/'''
+            }
+
           }
         }
         stage('Build Kinetis') {
@@ -72,8 +82,11 @@ bash $WORKSPACE/contrib/tools/chbuild.sh $WORKSPACE/contrib/testhal/TIVA/'''
 
           }
           steps {
-            sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/ChibiOS-RT
-bash $WORKSPACE/contrib/tools/chbuild.sh $WORKSPACE/contrib/testhal/KINETIS/'''
+            ws(dir: '$HOME/workspaces/ChibiOS/Contrib') {
+              sh '''git clone -b stable_19.1.x --single-branch https://github.com/ChibiOS/ChibiOS.git $WORKSPACE/../ChibiOS-RT
+bash $WORKSPACE/tools/chbuild.sh $WORKSPACE/testhal/KINETIS/'''
+            }
+
           }
         }
       }
