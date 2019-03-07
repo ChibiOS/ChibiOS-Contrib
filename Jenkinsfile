@@ -27,7 +27,7 @@ rm -rf $CH_PATH
 git clone -b $BRANCH --single-branch https://github.com/ChibiOS/ChibiOS.git $CH_PATH
 
 cd $CH_PATH/ext
-7z x -y *.7z'''
+for i in *.7z; do 7z x -y $i; done'''
         sh 'CH_PATH=$WORKSPACE/ChibiOS CHC_PATH=$WORKSPACE ./tools/chbuild.sh ./testhal/STM32/'
         sh 'CH_PATH=$WORKSPACE/ChibiOS CHC_PATH=$WORKSPACE ./tools/chbuild.sh ./demos/STM32/'
       }
