@@ -11,7 +11,9 @@ pipeline {
       steps {
         sh '''echo $CH_BRANCH
 echo $CH_PATH
-echo $CHC_PATH'''
+echo $CHC_PATH
+
+exit 0'''
       }
     }
     stage('Build STM32') {
@@ -29,14 +31,19 @@ git clone -b $CH_BRANCH --single-branch https://github.com/ChibiOS/ChibiOS.git $
 
 cd $CH_PATH/ext
 for i in *.7z; do 7z x -y $i; done'''
-        sh './tools/chbuild.sh ./testhal/STM32/'
-        sh './tools/chbuild.sh ./demos/STM32/'
+        sh '''export CH_PATH=$WORKSPACE/ChibiOS
+export CHC_PATH=$WORKSPACE
+
+./tools/chbuild.sh ./testhal/STM32/'''
+        sh '''export CH_PATH=$WORKSPACE/ChibiOS
+export CHC_PATH=$WORKSPACE
+
+./tools/chbuild.sh ./demos/STM32/'''
       }
     }
   }
   environment {
     CH_BRANCH = 'stable_18.2.x'
-    CH_PATH = '$PWD/ChibiOS'
-    CHC_PATH = '$PWD'
+    CH_PATH = 'ChibiOS'
   }
 }
