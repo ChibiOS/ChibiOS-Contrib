@@ -21,9 +21,12 @@ pipeline {
       }
       steps {
         sh '''BRANCH=stable_18.2.x
+CH_PATH=$WORKSPACE/ChibiOS
 
-git -C $WORKSPACE/ChibiOS checkout $BRANCH && git -C $WORKSPACE/ChibiOS pull || rm -rf $WORKSPACE/ChibiOS && git clone -b $BRANCH --single-branch https://github.com/ChibiOS/ChibiOS.git
-cd $WORKSPACE/ChibiOS/ext
+rm -rf $CH_PATH
+git clone -b $BRANCH --single-branch https://github.com/ChibiOS/ChibiOS.git $CH_PATH
+
+cd $CH_PATH/ext
 z7 x -y *.7z'''
         sh 'CH_PATH=$WORKSPACE/ChibiOS CHC_PATH=$WORKSPACE ./tools/chbuild.sh ./testhal/STM32/'
         sh 'CH_PATH=$WORKSPACE/ChibiOS CHC_PATH=$WORKSPACE ./tools/chbuild.sh ./demos/STM32/'
