@@ -9,7 +9,9 @@ pipeline {
 
       }
       steps {
-        sh 'exit 0'
+        sh '''echo $CH_BRANCH
+echo $CH_PATH
+echo $CHC_PATH'''
       }
     }
     stage('Build STM32') {
