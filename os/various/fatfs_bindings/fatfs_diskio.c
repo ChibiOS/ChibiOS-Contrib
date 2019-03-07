@@ -206,6 +206,9 @@ DRESULT disk_write (
     UINT count        /* Number of sectors to write (1..255) */
 )
 {
+  // invalidate cache on buffer
+  cacheBufferFlush(buff, count * MMCSD_BLOCK_SIZE);
+
   switch (pdrv) {
 #if HAL_USE_MMC_SPI
   case MMC:
