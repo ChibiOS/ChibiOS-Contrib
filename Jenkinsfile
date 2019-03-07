@@ -21,10 +21,6 @@ echo $CHC_PATH'''
         }
 
       }
-      environment {
-        CH_PATH = '$WORKSPACE/ChibiOS'
-        CHC_PATH = '$WORKSPACE'
-      }
       steps {
         sh '''arm-none-eabi-gcc -v
 
@@ -40,5 +36,7 @@ for i in *.7z; do 7z x -y $i; done'''
   }
   environment {
     CH_BRANCH = 'stable_18.2.x'
+    CH_PATH = './ChibiOS'
+    CHC_PATH = './'
   }
 }
