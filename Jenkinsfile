@@ -36,7 +36,7 @@ for i in *.7z; do 7z x -y $i; done'''
   }
   environment {
     CH_BRANCH = 'stable_18.2.x'
-    CH_PATH = './ChibiOS'
-    CHC_PATH = './'
+    CH_PATH = '$PWD/ChibiOS'
+    CHC_PATH = '$PWD'
   }
 }
