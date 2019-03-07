@@ -41,10 +41,10 @@ function chbuild {
     fi
     pushd $t > /dev/null
     printf "BUILDING: ${t}\n"
-    if [ -z "$CH_PATH" ]; then
+    if [ -z "$CH_PATH" && -z "$CHC_PATH" ]; then
         make --quiet -j $JOBS > /dev/null
     else
-        make CHIBIOS=$CH_PATH --quiet -j $JOBS > /dev/null
+        make CHIBIOS=$CH_PATH CHIBIOS_CONTRIB=$CHC_PATH --quiet -j $JOBS > /dev/null
     fi
     if [ $? -ne 0 ]; then
       ((NOK++))
