@@ -20,19 +20,21 @@ pipeline {
 
       }
       steps {
-        sh '''BRANCH=stable_18.2.x
-CH_PATH=$WORKSPACE/ChibiOS
-
-arm-none-eabi-gcc -v
+        sh '''arm-none-eabi-gcc -v
 
 rm -rf $CH_PATH
-git clone -b $BRANCH --single-branch https://github.com/ChibiOS/ChibiOS.git $CH_PATH
+git clone -b $CH_BRANCH --single-branch https://github.com/ChibiOS/ChibiOS.git $CH_PATH
 
 cd $CH_PATH/ext
 for i in *.7z; do 7z x -y $i; done'''
-        sh 'CH_PATH=$WORKSPACE/ChibiOS CHC_PATH=$WORKSPACE ./tools/chbuild.sh ./testhal/STM32/'
-        sh 'CH_PATH=$WORKSPACE/ChibiOS CHC_PATH=$WORKSPACE ./tools/chbuild.sh ./demos/STM32/'
+        sh './tools/chbuild.sh ./testhal/STM32/'
+        sh './tools/chbuild.sh ./demos/STM32/'
       }
     }
+  }
+  environment {
+    CH_BRANCH = 'stable_18.2.x'
+    CH_PATH = '$WORKSPACE/ChibiOS'
+    CHC_PATH = '$WORKSPACE'
   }
 }
