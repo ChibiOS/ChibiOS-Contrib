@@ -23,6 +23,8 @@ pipeline {
         sh '''BRANCH=stable_18.2.x
 CH_PATH=$WORKSPACE/ChibiOS
 
+arm-none-eabi-gcc -v
+
 rm -rf $CH_PATH
 git clone -b $BRANCH --single-branch https://github.com/ChibiOS/ChibiOS.git $CH_PATH
 
