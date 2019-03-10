@@ -206,8 +206,6 @@ DRESULT disk_write (
     UINT count        /* Number of sectors to write (1..255) */
 )
 {
-  // invalidate cache on buffer
-  cacheBufferFlush(buff, count * MMCSD_BLOCK_SIZE);
 
   switch (pdrv) {
 #if HAL_USE_MMC_SPI
@@ -218,11 +216,15 @@ DRESULT disk_write (
         return RES_WRPRT;
     if (mmcStartSequentialWrite(&FATFS_HAL_DEVICE, sector))
         return RES_ERROR;
+
     while (count > 0) {
-        if (mmcSequentialWrite(&FATFS_HAL_DEVICE, buff))
-            return RES_ERROR;
-        buff += MMCSD_BLOCK_SIZE;
-        count--;
+      // invalidate cache on buffer
+      cacheBufferFlush(buff, MMCSD_BLOCK_SIZE);
+
+      if (mmcSequentialWrite(&FATFS_HAL_DEVICE, buff))
+          return RES_ERROR;
+      buff += MMCSD_BLOCK_SIZE;
+      count--;
     }
     if (mmcStopSequentialWrite(&FATFS_HAL_DEVICE))
         return RES_ERROR;
@@ -231,8 +233,13 @@ DRESULT disk_write (
   case SDC:
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
       return RES_NOTRDY;
+
+    // invalidate cache on buffer
+    cacheBufferFlush(buff, count * MMCSD_BLOCK_SIZE);
+
     if (sdcWrite(&FATFS_HAL_DEVICE, sector, buff, count))
       return RES_ERROR;
+
     return RES_OK;
 #endif
 #if HAL_USBH_USE_MSD
@@ -240,6 +247,10 @@ DRESULT disk_write (
 	/* It is initialized externally, just reads the status.*/
 	if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
 		return RES_NOTRDY;
+
+  // invalidate cache on buffer
+  cacheBufferFlush(buff, count * MSBLKD[0].info.blk_size);
+
 	if (usbhmsdLUNWrite(&MSBLKD[0], sector, buff, count))
 		return RES_ERROR;
 	return RES_OK;
