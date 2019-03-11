@@ -21,7 +21,7 @@ exit 0'''
         stage('Build STM32') {
           agent {
             docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-arm'
+              image 'fpoussin/jenkins:ubuntu-18.04-chibios'
             }
 
           }
@@ -29,9 +29,13 @@ exit 0'''
             sh '''arm-none-eabi-gcc -v
 
 rm -rf $CH_PATH
-git clone -b $CH_BRANCH --single-branch https://github.com/ChibiOS/ChibiOS.git $CH_PATH
+git clone /var/lib/git/ChibiOS $CH_PATH
+cd $CH_PATH
+git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
+git pull --rebase
+git checkout -b $CH_BRANCH
 
-cd $CH_PATH/ext
+cd ext
 for i in *.7z; do 7z x -y $i; done'''
             sh '''export CH_PATH=$WORKSPACE/ChibiOS
 export CHC_PATH=$WORKSPACE
@@ -43,7 +47,7 @@ export CHC_PATH=$WORKSPACE
         stage('Build NRF51') {
           agent {
             docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-arm'
+              image 'fpoussin/jenkins:ubuntu-18.04-chibios'
             }
 
           }
@@ -51,11 +55,14 @@ export CHC_PATH=$WORKSPACE
             sh '''arm-none-eabi-gcc -v
 
 rm -rf $CH_PATH
-git clone -b $CH_BRANCH --single-branch https://github.com/ChibiOS/ChibiOS.git $CH_PATH
+git clone /var/lib/git/ChibiOS $CH_PATH
+cd $CH_PATH
+git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
+git pull --rebase
+git checkout -b $CH_BRANCH
 
-cd $CH_PATH/ext
-for i in *.7z; do 7z x -y $i; done
-'''
+cd ext
+for i in *.7z; do 7z x -y $i; done'''
             sh '''export CH_PATH=$WORKSPACE/ChibiOS
 export CHC_PATH=$WORKSPACE
 
@@ -67,7 +74,7 @@ export CHC_PATH=$WORKSPACE
         stage('Build NRF52') {
           agent {
             docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-arm'
+              image 'fpoussin/jenkins:ubuntu-18.04-chibios'
             }
 
           }
@@ -75,11 +82,14 @@ export CHC_PATH=$WORKSPACE
             sh '''arm-none-eabi-gcc -v
 
 rm -rf $CH_PATH
-git clone -b $CH_BRANCH --single-branch https://github.com/ChibiOS/ChibiOS.git $CH_PATH
+git clone /var/lib/git/ChibiOS $CH_PATH
+cd $CH_PATH
+git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
+git pull --rebase
+git checkout -b $CH_BRANCH
 
-cd $CH_PATH/ext
-for i in *.7z; do 7z x -y $i; done
-'''
+cd ext
+for i in *.7z; do 7z x -y $i; done'''
             sh '''export CH_PATH=$WORKSPACE/ChibiOS
 export CHC_PATH=$WORKSPACE
 
@@ -91,7 +101,7 @@ export CHC_PATH=$WORKSPACE
         stage('Build Kinetis') {
           agent {
             docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-arm'
+              image 'fpoussin/jenkins:ubuntu-18.04-chibios'
             }
 
           }
@@ -99,9 +109,13 @@ export CHC_PATH=$WORKSPACE
             sh '''arm-none-eabi-gcc -v
 
 rm -rf $CH_PATH
-git clone -b $CH_BRANCH --single-branch https://github.com/ChibiOS/ChibiOS.git $CH_PATH
+git clone /var/lib/git/ChibiOS $CH_PATH
+cd $CH_PATH
+git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
+git pull --rebase
+git checkout -b $CH_BRANCH
 
-cd $CH_PATH/ext
+cd ext
 for i in *.7z; do 7z x -y $i; done'''
             sh '''export CH_PATH=$WORKSPACE/ChibiOS
 export CHC_PATH=$WORKSPACE
