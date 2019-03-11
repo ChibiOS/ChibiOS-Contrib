@@ -16,7 +16,7 @@ echo $CHC_PATH
 exit 0'''
       }
     }
-    stage('Build STM32') {
+    stage('Build Platforms') {
       parallel {
         stage('Build STM32') {
           agent {
