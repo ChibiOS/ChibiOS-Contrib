@@ -34,7 +34,7 @@ cd $CH_PATH
 git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
 git pull --rebase
 git checkout -b $CH_BRANCH
-git pull --rebase
+git pull --rebase origin $CH_BRANCH
 
 cd ext
 for i in *.7z; do 7z x -y $i; done'''
@@ -61,7 +61,7 @@ cd $CH_PATH
 git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
 git pull --rebase
 git checkout -b $CH_BRANCH
-git pull --rebase
+git pull --rebase origin $CH_BRANCH
 
 cd ext
 for i in *.7z; do 7z x -y $i; done'''
@@ -89,7 +89,7 @@ cd $CH_PATH
 git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
 git pull --rebase
 git checkout -b $CH_BRANCH
-git pull --rebase
+git pull --rebase origin $CH_BRANCH
 
 cd ext
 for i in *.7z; do 7z x -y $i; done'''
@@ -117,7 +117,7 @@ cd $CH_PATH
 git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
 git pull --rebase
 git checkout -b $CH_BRANCH
-git pull --rebase
+git pull --rebase origin $CH_BRANCH
 
 cd ext
 for i in *.7z; do 7z x -y $i; done'''
