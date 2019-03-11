@@ -32,8 +32,8 @@ rm -rf $CH_PATH
 git clone /var/lib/git/ChibiOS $CH_PATH
 cd $CH_PATH
 git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
-git pull --rebase
-git checkout -b $CH_BRANCH
+git fetch --all
+git checkout -b $CH_BRANCH origin/$CH_BRANCH
 git pull --rebase origin $CH_BRANCH
 
 cd ext
@@ -59,8 +59,8 @@ rm -rf $CH_PATH
 git clone /var/lib/git/ChibiOS $CH_PATH
 cd $CH_PATH
 git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
-git pull --rebase
-git checkout -b $CH_BRANCH
+git fetch --all
+git checkout -b $CH_BRANCH origin/$CH_BRANCH
 git pull --rebase origin $CH_BRANCH
 
 cd ext
@@ -87,8 +87,8 @@ rm -rf $CH_PATH
 git clone /var/lib/git/ChibiOS $CH_PATH
 cd $CH_PATH
 git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
-git pull --rebase
-git checkout -b $CH_BRANCH
+git fetch --all
+git checkout -b $CH_BRANCH origin/$CH_BRANCH
 git pull --rebase origin $CH_BRANCH
 
 cd ext
@@ -115,8 +115,8 @@ rm -rf $CH_PATH
 git clone /var/lib/git/ChibiOS $CH_PATH
 cd $CH_PATH
 git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
-git pull --rebase
-git checkout -b $CH_BRANCH
+git fetch --all
+git checkout -b $CH_BRANCH origin/$CH_BRANCH
 git pull --rebase origin $CH_BRANCH
 
 cd ext
