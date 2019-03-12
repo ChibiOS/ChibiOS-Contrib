@@ -56,7 +56,7 @@ UDEFS =
 UADEFS =
 
 # Imported source files
-CHIBIOS = ../../../../ChibiOS-RT
+CHIBIOS = ../../../../ChibiOS
 CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 include $(CHIBIOS)/os/hal/boards/simulator/board.mk
 include $(CHIBIOS)/os/hal/hal.mk
