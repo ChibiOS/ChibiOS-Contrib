@@ -262,6 +262,10 @@ def read_project(gpio, filename):
                 pads[pad_port][pad_num]["OSPEEDR"] = PIN_OSPEED_TRANSLATE[prop_value]
             elif pad_prop == "PinState":
                 pads[pad_port][pad_num]["ODR"] = PIN_ODR_TRANSLATE[prop_value]
+            elif pad_prop == "Mode":
+                if "I2C" in prop_value:
+                    pads[pad_port][pad_num]["OTYPER"] = PIN_OTYPE_OPENDRAIN
+
 
     return pads
 
