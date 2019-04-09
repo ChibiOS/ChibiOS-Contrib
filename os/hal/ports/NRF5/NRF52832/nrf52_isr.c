@@ -41,6 +41,10 @@
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
+#if (HAL_USE_ICU && NRF5_ICU_USE_GPIOTE_PPI)
+extern void icu_lld_serve_gpiote_interrupt(ICUDriver *icup);
+#endif
+
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
@@ -53,15 +57,21 @@
 OSAL_IRQ_HANDLER(Vector58) {
 
   OSAL_IRQ_PROLOGUE();
-  
+
+#if (HAL_USE_ICU && NRF5_ICU_USE_GPIOTE_PPI)
+  icu_lld_serve_gpiote_interrupt(&ICUD1);
+#endif
+
+#if (HAL_USE_PAL && (PAL_USE_WAIT || PAL_USE_CALLBACKS))
   for (int ch = 0; ch < NRF5_GPIOTE_NUM_CHANNELS; ch++)
   {
     if (NRF_GPIOTE->EVENTS_IN[ch])
     {
-        NRF_GPIOTE->EVENTS_IN[ch] = 0;
-        _pal_isr_code(ch);
+      NRF_GPIOTE->EVENTS_IN[ch] = 0;
+      _pal_isr_code(ch);
     }
   }
+#endif
 
   OSAL_IRQ_EPILOGUE();
 }

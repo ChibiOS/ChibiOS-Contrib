@@ -301,25 +301,6 @@ static void start_channels(ICUDriver *icup) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if NRF5_ICU_USE_GPIOTE_PPI
-/**
- * @brief   GPIOTE events interrupt handler.
- * @note    It is assumed that the various sources are only activated if the
- *          associated callback pointer is not equal to @p NULL in order to not
- *          perform an extra check in a potentially critical interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(Vector58) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  icu_lld_serve_gpiote_interrupt(&ICUD1);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif /* NRF5_ICU_USE_GPIOTE_PPI */
-
 #if NRF5_ICU_USE_TIMER0
 /**
  * @brief   TIMER0 compare interrupt handler.
