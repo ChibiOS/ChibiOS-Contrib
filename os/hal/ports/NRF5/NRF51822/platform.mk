@@ -1,6 +1,6 @@
 PLATFORMSRC_CONTRIB := ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
                        ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/hal_lld.c \
-                       ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/hal_ext_lld_isr.c \
+                       ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF51822/nrf51_isr.c \
                        ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/TIMERv1/hal_st_lld.c
                        
 PLATFORMINC_CONTRIB := ${CHIBIOS}/os/hal/ports/common/ARMCMx \
@@ -21,7 +21,6 @@ endif
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/GPIOv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/UARTv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/SPIv1/driver.mk
-include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/GPIOTEv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/TWIv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/ADCv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/TIMERv1/driver.mk

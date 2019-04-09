@@ -87,6 +87,8 @@ void hal_lld_init(void)
   NRF_CLOCK->TASKS_LFCLKSTART = 1;
   while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0);
 #endif
+  
+  irqInit();
 }
 
 /**

@@ -1,4 +1,5 @@
 /*
+    Copyright (C) 2018 Konstantin Oblaukhov
     Copyright (C) 2015 Fabio Utzig
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -112,6 +113,11 @@ typedef uint8_t iomode_t;
 typedef uint32_t ioline_t;
 
 /**
+ * @brief   Type of an event mode.
+ */
+typedef uint32_t ioeventmode_t;
+
+/**
  * @brief   Port Identifier.
  * @details This type can be a scalar or some kind of pointer, do not make
  *          any assumption about it, use the provided macros when populating
@@ -137,6 +143,24 @@ typedef uint32_t iopadid_t;
 #define IOPORT1         NRF_GPIO
 #else
 #define IOPORT1         NRF_P0
+#endif
+
+/**
+ * @brief   Number of PAL events.
+ * @details Maximum number of GPIO events supported by GPIOTE peripheral
+ */
+#if NRF_SERIES == 51
+#define NRF5_GPIOTE_NUM_CHANNELS (4)
+#else
+#define NRF5_GPIOTE_NUM_CHANNELS (8)
+#endif
+
+/**
+ * @brief   Pad to event number
+ * @details Converts pad to GPIOTE peripheral pad event number
+ */
+#if !defined(NRF5_PAL_PAD_TO_EVENT) || defined(__DOXYGEN__)
+#define NRF5_PAL_PAD_TO_EVENT(pad) ((pad) % NRF5_GPIOTE_NUM_CHANNELS)
 #endif
 
 /*===========================================================================*/
@@ -331,8 +355,55 @@ typedef uint32_t iopadid_t;
  */
 #define pal_lld_setpadmode(port, pad, mode) _pal_lld_setpadmode(port, pad, mode)
 
+/**
+ * @brief   Pad event enable.
+ * @note    Programming an unknown or unsupported mode is silently ignored.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ * @param[in] mode      pad event mode
+ *
+ * @notapi
+ */
+#define pal_lld_enablepadevent(port, pad, mode)                             \
+  _pal_lld_enablepadevent(port, pad, mode)
+
+/**
+ * @brief   Pad event disable.
+ * @details This function disables previously programmed event callbacks.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ *
+ * @notapi
+ */
+#define pal_lld_disablepadevent(port, pad)                                  \
+  _pal_lld_disablepadevent(port, pad)
+
+/**
+ * @brief   Returns a PAL event structure associated to a pad.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ *
+ * @notapi
+ */
+#define pal_lld_get_pad_event(port, pad)                                    \
+  &_pal_events[NRF5_PAL_PAD_TO_EVENT(pad)]; (void)(port)
+
+/**
+ * @brief   Returns a PAL event structure associated to a line.
+ *
+ * @param[in] line      line identifier
+ *
+ * @notapi
+ */
+#define pal_lld_get_line_event(line)                                        \
+  &_pal_events[NRF5_PAL_PAD_TO_EVENT(PAL_PAD(line))]
+
 #if !defined(__DOXYGEN__)
 extern const PALConfig pal_default_config;
+extern palevent_t _pal_events[NRF5_GPIOTE_NUM_CHANNELS];
 #endif
 
 #ifdef __cplusplus
@@ -345,6 +416,12 @@ extern "C" {
   void _pal_lld_setpadmode(ioportid_t port,
                            uint8_t pad,
                            iomode_t mode);
+#if PAL_USE_CALLBACKS || PAL_USE_WAIT
+  void _pal_lld_enablepadevent(ioportid_t port,
+                               iopadid_t pad,
+                               ioeventmode_t mode);
+  void _pal_lld_disablepadevent(ioportid_t port, iopadid_t pad);
+#endif
 #ifdef __cplusplus
 }
 #endif

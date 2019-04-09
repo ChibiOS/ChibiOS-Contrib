@@ -1,5 +1,6 @@
 PLATFORMSRC_CONTRIB := ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
                        ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF52832/hal_lld.c \
+                       ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF52832/nrf52_isr.c \
                        ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/TIMERv1/hal_st_lld.c
                        
 PLATFORMINC_CONTRIB := ${CHIBIOS}/os/hal/ports/common/ARMCMx \
