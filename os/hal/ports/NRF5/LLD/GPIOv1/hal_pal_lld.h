@@ -155,6 +155,14 @@ typedef uint32_t iopadid_t;
 #define NRF5_GPIOTE_NUM_CHANNELS (8)
 #endif
 
+/**
+ * @brief   Pad to event number
+ * @details Converts pad to GPIOTE peripheral pad event number
+ */
+#if !defined(NRF5_PAL_PAD_TO_EVENT) || defined(__DOXYGEN__)
+#define NRF5_PAL_PAD_TO_EVENT(pad) ((pad) % NRF5_GPIOTE_NUM_CHANNELS)
+#endif
+
 /*===========================================================================*/
 /* Implementation, some of the following macros could be implemented as      */
 /* functions, if so please put them in pal_lld.c.                            */

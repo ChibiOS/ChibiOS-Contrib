@@ -42,11 +42,9 @@ static void led2toggle(void *arg) {
   debouncing2 = false;
 }
 
-static void extcb1(EXTDriver *extp, expchannel_t channel)
+static void extcb1(void *arg)
 {
-  (void)extp;
-  (void)channel;
-
+  (void)arg;
   uint8_t pad1 = palReadPad(IOPORT1, KEY1);
 
   if (!debouncing1 && (pad1 == PAL_LOW)) {
@@ -63,11 +61,9 @@ static void extcb1(EXTDriver *extp, expchannel_t channel)
   }
 }
 
-static void extcb2(EXTDriver *extp, expchannel_t channel)
+static void extcb2(void *arg)
 {
-  (void)extp;
-  (void)channel;
-
+  (void)arg;
   uint8_t pad2 = palReadPad(IOPORT1, KEY2);
 
   if (!debouncing2 && (pad2 == PAL_LOW)) {
@@ -84,14 +80,6 @@ static void extcb2(EXTDriver *extp, expchannel_t channel)
   }
 }
 
-static const EXTConfig extcfg =
-{
-  {
-    {EXT_CH_MODE_FALLING_EDGE | EXT_CH_MODE_AUTOSTART | (KEY1 << EXT_MODE_GPIO_OFFSET), extcb1},
-    {EXT_CH_MODE_RISING_EDGE | EXT_CH_MODE_AUTOSTART | (KEY2 << EXT_MODE_GPIO_OFFSET), extcb2},
-  }
-};
-
 /*
  * Application entry point.
  */
@@ -106,8 +94,9 @@ int main(void)
    */
   halInit();
   chSysInit();
-
-  extStart(&EXTD1, &extcfg);
+  
+  palSetPadCallback(IOPORT1, KEY1, extcb1, NULL);
+  palSetPadCallback(IOPORT1, KEY2, extcb2, NULL);
 
   /*
    * Normal main() thread activity, in this demo it enables and disables the
@@ -116,12 +105,12 @@ int main(void)
   while (TRUE) {
     palSetPad(IOPORT1, LED0);
     chThdSleepMilliseconds(5000);
-    extChannelDisable(&EXTD1, 0);
-    extChannelDisable(&EXTD1, 1);
+    palDisablePadEvent(IOPORT1, KEY1);
+    palDisablePadEvent(IOPORT1, KEY2);
     palClearPad(IOPORT1, LED0);
     chThdSleepMilliseconds(5000);
-    extChannelEnable(&EXTD1, 0);
-    extChannelEnable(&EXTD1, 1);
+    palEnablePadEvent(IOPORT1, KEY1, PAL_EVENT_MODE_FALLING_EDGE);
+    palEnablePadEvent(IOPORT1, KEY2, PAL_EVENT_MODE_RISING_EDGE);
   }
 
   return 0;
