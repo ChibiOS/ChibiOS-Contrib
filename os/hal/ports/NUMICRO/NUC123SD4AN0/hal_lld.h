@@ -308,7 +308,7 @@
 #define NUC123_PREDIV_VALUE                  1
 #endif
 
-/**
+/** 
  * @brief   PLL multiplier value.
  * @note    The allowed range is 2...16.
  * @note    The default value is calculated for a 72MHz system clock from
@@ -635,64 +635,6 @@
 #error "invalid NUC123_PLLNODIV value specified"
 #endif
 
-/**
- * @brief   MCO clock before divider.
- */
-// #if (NUC123_MCOSEL == NUC123_MCOSEL_NOCLOCK) || defined(__DOXYGEN__)
-// #define NUC123_MCODIVCLK             0
-// #elif NUC123_MCOSEL == NUC123_MCOSEL_HSI14
-// #define NUC123_MCODIVCLK             NUC123_HSI14CLK
-// #elif NUC123_MCOSEL == NUC123_MCOSEL_LSI
-// #define NUC123_MCODIVCLK             NUC123_LSICLK
-// #elif NUC123_MCOSEL == NUC123_MCOSEL_LSE
-// #define NUC123_MCODIVCLK             NUC123_LSECLK
-// #elif NUC123_MCOSEL == NUC123_MCOSEL_SYSCLK
-// #define NUC123_MCODIVCLK             NUC123_SYSCLK
-// #elif NUC123_MCOSEL == NUC123_MCOSEL_HSI
-// #define NUC123_MCODIVCLK             NUC123_HSICLK
-// #elif NUC123_MCOSEL == NUC123_MCOSEL_HSE
-// #define NUC123_MCODIVCLK             NUC123_HSECLK
-// #elif NUC123_MCOSEL == NUC123_MCOSEL_PLLDIV2
-// #if NUC123_PLLNODIV == NUC123_PLLNODIV_DIV2
-// #define NUC123_MCODIVCLK             (NUC123_PLLCLKOUT / 2)
-// #else
-// #define NUC123_MCODIVCLK             (NUC123_PLLCLKOUT / 1)
-// #endif
-// #elif NUC123_MCOSEL == NUC123_MCOSEL_HSI48
-// #define NUC123_MCODIVCLK             NUC123_HSI48CLK
-// #else
-// #error "invalid NUC123_MCOSEL value specified"
-// #endif
-
-/**
- * @brief   MCO output pin clock.
- */
-// #if (NUC123_MCOPRE == NUC123_MCOPRE_DIV1) || defined(__DOXYGEN__)
-// #define NUC123_MCOCLK                NUC123_MCODIVCLK
-// #elif (NUC123_MCOPRE == NUC123_MCOPRE_DIV2) && NUC123_HAS_MCO_PREDIV
-// #define NUC123_MCOCLK                (NUC123_MCODIVCLK / 2)
-// #elif (NUC123_MCOPRE == NUC123_MCOPRE_DIV4) && NUC123_HAS_MCO_PREDIV
-// #define NUC123_MCOCLK                (NUC123_MCODIVCLK / 4)
-// #elif (NUC123_MCOPRE == NUC123_MCOPRE_DIV8) && NUC123_HAS_MCO_PREDIV
-// #define NUC123_MCOCLK                (NUC123_MCODIVCLK / 8)
-// #elif (NUC123_MCOPRE == NUC123_MCOPRE_DIV16) && NUC123_HAS_MCO_PREDIV
-// #define NUC123_MCOCLK                (NUC123_MCODIVCLK / 16)
-// #elif !NUC123_HAS_MCO_PREDIV
-// #error "MCO_PREDIV not available on this platform. Select NUC123_MCODIVCLK."
-// #else
-// #error "invalid NUC123_MCOPRE value specified"
-// #endif
-
-/**
- * @brief   USB frequency.
- */
-// #if (NUC123_USBSW == NUC123_USBSW_HSI48) || defined(__DOXYGEN__)
-// #define NUC123_USBCLK                NUC123_HSI48CLK
-// #elif NUC123_USBSW == NUC123_USBSW_PCLK
-// #define NUC123_USBCLK                NUC123_PLLCLKOUT
-// #else
-// #error "invalid source selected for USB clock"
-// #endif
 
 /**
  * @brief   CEC frequency.
@@ -733,30 +675,30 @@
 #error "invalid source selected for USART1 clock"
 #endif
 
-/**
- * @brief   USART2 frequency.
- */
-#define NUC123_USART2CLK             NUC123_PCLK
+// /**
+//  * @brief   USART2 frequency.
+//  */
+// #define NUC123_USART2CLK             NUC123_PCLK
 
-/**
- * @brief   USART3 frequency.
- */
-#define NUC123_USART3CLK             NUC123_PCLK
+// /**
+//  * @brief   USART3 frequency.
+//  */
+// #define NUC123_USART3CLK             NUC123_PCLK
 
-/**
- * @brief   USART4 frequency.
- */
-#define NUC123_UART4CLK              NUC123_PCLK
+// /**
+//  * @brief   USART4 frequency.
+//  */
+// #define NUC123_UART4CLK              NUC123_PCLK
 
-/**
- * @brief   USART5 frequency.
- */
-#define NUC123_UART5CLK              NUC123_PCLK
+// /**
+//  * @brief   USART5 frequency.
+//  */
+// #define NUC123_UART5CLK              NUC123_PCLK
 
-/**
- * @brief   USART6 frequency.
- */
-#define NUC123_USART6CLK             NUC123_PCLK
+// /**
+//  * @brief   USART6 frequency.
+//  */
+// #define NUC123_USART6CLK             NUC123_PCLK
 
 /**
  * @brief   Timers clock.
@@ -800,6 +742,8 @@
 #include "nvic.h"
 #include "nuc123_isr.h"
 //#include "nuc123_dma.h"
+#include "hal_clks_lld.h"
+#include "hal_pwm_lld.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -28,7 +28,6 @@
 #define HAL_ST_LLD_H
 
 #include "mcuconf.h"
-//#include "nuc123_tim.h"
 
 /*
  * Registry definitions.
@@ -38,6 +37,16 @@
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
+
+#define CLK_CLKSEL0_STCLK_S_HXT              (0x0ul<<CLK_CLKSEL0_STCLK_S_Pos)         /*!< Set HXT as STCLK clock source */
+#define CLK_CLKSEL0_STCLK_S_HXT_DIV2         (0x2ul<<CLK_CLKSEL0_STCLK_S_Pos)         /*!< Set HXT/2 as STCLK clock source */
+#define CLK_CLKSEL0_STCLK_S_HCLK_DIV2        (0x3ul<<CLK_CLKSEL0_STCLK_S_Pos)         /*!< Set HCLK/2 as STCLK clock source */
+#define CLK_CLKSEL0_STCLK_S_HIRC_DIV2        (0x7ul<<CLK_CLKSEL0_STCLK_S_Pos)         /*!< Set HIRC/2 as STCLK clock source */
+#define CLK_CLKSEL0_STCLK_S_HCLK             (0x1ul<<SysTick_CTRL_CLKSOURCE_Pos)      /*!< Set HCLK as STCLK clock source */
+
+#define TIMER_MODE_PERIODIC                  (0x01ul << TIMER_TCSR_MODE_Pos)
+#define TIMER_MODE_CONTINUOUS                (0x03ul << TIMER_TCSR_MODE_Pos)
+
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -51,7 +60,7 @@
  * @brief   SysTick timer IRQ priority.
  */
 #if !defined(NUC123_ST_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NUC123_ST_IRQ_PRIORITY               8
+#define NUC123_ST_IRQ_PRIORITY                     8
 #endif
 
 /**
@@ -61,7 +70,7 @@
  * @note    Timers 2, 3 and 4 are supported.
  */
 #if !defined(NUC123_ST_USE_TIMER) || defined(__DOXYGEN__)
-#define NUC123_ST_USE_TIMER                  2
+#define NUC123_ST_USE_TIMER                        2
 #endif
 /** @} */
 
@@ -106,7 +115,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void st_lld_init(void);
+    void st_lld_init(void);
+    uint32_t st_lld_timer_getmoduleclock(TIMER_T *timer);
+    uint32_t st_lld_timer_open(TIMER_T *timer, uint32_t tmrMode, uint32_t tmrFreq);
+    void st_lld_timer_close(TIMER_T *timer);
 #ifdef __cplusplus
 }
 #endif
@@ -124,7 +136,34 @@ extern "C" {
  */
 static inline systime_t st_lld_get_counter(void) {
 
-  return (systime_t)NUC123_ST_TIM->TDR;
+    return (systime_t)NUC123_ST_TIM->TDR;
+}
+
+/**
+ * @brief   Sets the alarm time.
+ *
+ * @param[in] time      the time to be set for the next alarm
+ *
+ * @notapi
+ */
+static inline void st_lld_set_alarm(systime_t time) {
+
+    // TIMER_SET_CMP_VALUE(NUC123_ST_TIM, (uint32_t)time);
+
+    NUC123_ST_TIM->TCMPR = (uint32_t)time;
+
+}
+
+/**
+ * @brief   Returns the current alarm time.
+ *
+ * @return              The currently set alarm time.
+ *
+ * @notapi
+ */
+static inline systime_t st_lld_get_alarm(void) {
+
+    return (systime_t)NUC123_ST_TIM->TCMPR;
 }
 
 /**
@@ -138,13 +177,22 @@ static inline systime_t st_lld_get_counter(void) {
  */
 static inline void st_lld_start_alarm(systime_t time) {
 
-  //NUC123_ST_TIM->TCMP = (uint32_t)time;
-  //NUC123_ST_TIM->SR     = 0;
-  //NUC123_ST_TIM->DIER   = NUC123_TIM_DIER_CC1IE;
-  TIMER_Open(NUC123_ST_TIM, TIMER_CONTINUOUS_MODE | TIMER_TCSR_TDR_EN_Msk, TIMER_GetModuleClock(NUC123_ST_TIM));
-  TIMER_SET_CMP_VALUE(NUC123_ST_TIM, (uint32_t)time);
-  TIMER_SET_PRESCALE_VALUE(NUC123_ST_TIM, 0);
-  TIMER_Start(NUC123_ST_TIM);
+    // NUC123_ST_TIM->TCMP = (uint32_t)time;
+    // NUC123_ST_TIM->SR     = 0;
+    // NUC123_ST_TIM->DIER   = NUC123_TIM_DIER_CC1IE;
+  
+    st_lld_timer_open(NUC123_ST_TIM, TIMER_MODE_CONTINUOUS | TIMER_TCSR_TDR_EN_Msk, st_lld_timer_getmoduleclock(NUC123_ST_TIM));
+  
+    //TIMER_SET_CMP_VALUE(NUC123_ST_TIM, (uint32_t)time);
+  
+    // NUC123_ST_TIM->TCMPR = (uint32_t)time;
+    st_lld_set_alarm(time);
+
+    // TIMER_SET_PRESCALE_VALUE(NUC123_ST_TIM, 0);
+    NUC123_ST_TIM->TCSR = (NUC123_ST_TIM->TCSR & ~TIMER_TCSR_PRESCALE_Msk) | 0;
+
+    // TIMER_Start(NUC123_ST_TIM);
+    NUC123_ST_TIM->TCSR |= TIMER_TCSR_CEN_Msk;
 }
 
 /**
@@ -154,31 +202,8 @@ static inline void st_lld_start_alarm(systime_t time) {
  */
 static inline void st_lld_stop_alarm(void) {
 
-  TIMER_DisableInt(NUC123_ST_TIM);
-}
-
-/**
- * @brief   Sets the alarm time.
- *
- * @param[in] time      the time to be set for the next alarm
- *
- * @notapi
- */
-static inline void st_lld_set_alarm(systime_t time) {
-
-  TIMER_SET_CMP_VALUE(NUC123_ST_TIM, (uint32_t)time);
-}
-
-/**
- * @brief   Returns the current alarm time.
- *
- * @return              The currently set alarm time.
- *
- * @notapi
- */
-static inline systime_t st_lld_get_alarm(void) {
-
-  return (systime_t)NUC123_ST_TIM->TCMPR;
+    // TIMER_DisableInt(NUC123_ST_TIM);
+    NUC123_ST_TIM->TCSR &= ~TIMER_TCSR_IE_Msk;
 }
 
 /**
@@ -192,7 +217,7 @@ static inline systime_t st_lld_get_alarm(void) {
  */
 static inline bool st_lld_is_alarm_active(void) {
 
-  return (bool)((TIMER_GetIntFlag(NUC123_ST_TIM) & TIMER_IS_ACTIVE(NUC123_ST_TIM)) != 0);
+    return (bool)(((NUC123_ST_TIM->TISR & TIMER_TISR_TIF_Msk) & (NUC123_ST_TIM->TCSR & TIMER_TCSR_CACT_Msk)) != 0);
 }
 
 #endif /* HAL_ST_LLD_H */

@@ -143,7 +143,7 @@ void _pal_lld_init(const PALConfig *config) {
   GPIOF->DOUT = config->PFData.DOUT;
 
   /* Set DeBounce conditions */
-  GPIO->DBNCECON = 0x04u;
+  GPIO_DBNCE->DBNCECON = 0x04u;
 
   /* Enable External Crystal Oscillator pins */
   SYS->GPF_MFP |= SYS_GPF_MFP_PF0_XT1_OUT | SYS_GPF_MFP_PF1_XT1_IN;
@@ -170,9 +170,7 @@ void _pal_lld_setgroupmode(ioportid_t port,
                            ioportmask_t mask,
                            iomode_t mode) {
 
-  uint32_t nucMode;
-
-  nucMode = 0;
+  uint32_t nucMode = 0;
 
   if (mode == PAL_MODE_INPUT || mode == PAL_MODE_INPUT_PULLUP)
       nucMode = GPIO_PMD_INPUT;
@@ -183,7 +181,14 @@ void _pal_lld_setgroupmode(ioportid_t port,
   else
       nucMode = GPIO_PMD_QUASI;
 
-  GPIO_SetMode(port, mask, nucMode);
+  // GPIO_SetMode(port, mask, nucMode);
+  for (uint32_t i = 0; i < PAL_IOPORTS_WIDTH; i++) {
+  // for(uint32_t i = 0; i < GPIO_PINSPERPORT_MAX; i++) {
+    if(mask & (1 << i)) {
+      port->PMD = (port->PMD & ~(0x03ul << (i << 1))) | (nucMode << (i << 1));
+    }
+  }
+
 }
 
 #endif /* HAL_USE_PAL == TRUE */

@@ -124,19 +124,6 @@ OSAL_IRQ_HANDLER(SysTick_Handler) {
   osalOsTimerHandlerI();
   osalSysUnlockFromISR();
 
-  /* DEBUG Output to pin PB8 */
-  //GPIO_TOGGLE(PB8);
-  //GPIO_TOGGLE(PD10);
-  //GPIO_TOGGLE(PB14);
-  //uint16_t quickChange = PB14;
-
-  //pal_lld_writepad(GPIOB, 14, ~quickChange);
-  // if (PB14 == 0)
-  //   palSetLine(B14);
-  // else
-  //   palClearLine(B14);
-  //palToggleLine(B14);
-  
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC */
@@ -155,17 +142,15 @@ OSAL_IRQ_HANDLER(ST_HANDLER) {
   /* Note, under rare circumstances an interrupt can remain latched even if
      the timer SR register has been cleared, in those cases the interrupt
      is simply ignored.*/
-  if (TIMER_GetIntFlag(NUC123_ST_TIM)) {
-    TIMER_ClearIntFlag(NUC123_ST_TIM);
+  if (NUC123_ST_TIM->TISR & TIMER_TISR_TIF_Msk) {
+
+    // TIMER_ClearIntFlag(NUC123_ST_TIM);
+    NUC123_ST_TIM->TISR = TIMER_TISR_TIF_Msk;
 
     osalSysLockFromISR();
     osalOsTimerHandlerI();
     osalSysUnlockFromISR();
   }
-
-  /* DEBUG Output to pin PC13 */
-  //GPIO_TOGGLE(PB8);
-  //GPIO_TOGGLE(PD11);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -267,18 +252,12 @@ OSAL_IRQ_HANDLER(NUC123_PDMA_HANDLER){
  */
 void st_lld_init(void) {
 
-  //GPIO_SetMode(PB, BIT6, GPIO_PMD_OUTPUT);
-  //PB6 = 1;
-
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   /* Free running counter mode.*/
 
   /* Enabling timer clock.*/
-  //ST_ENABLE_CLOCK();
-  //GPIO_SetMode(PB, BIT7, GPIO_PMD_OUTPUT);
-  //PB7 = 1;
   
-  TIMER_Open(ST_USE_TIMER, TIMER_CONTINUOUS_MODE, OSAL_ST_FREQUENCY);
+  st_lld_timer_open(ST_USE_TIMER, TIMER_MODE_CONTINUOUS, OSAL_ST_FREQUENCY);
 
   /* Initializing the counter in free running mode.*/
 /*  NUC123_ST_TIM->PSC    = (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1;
@@ -293,18 +272,18 @@ void st_lld_init(void) {
   /* IRQ enabled.*/
   nvicEnableVector(ST_NUMBER, NUC123_ST_IRQ_PRIORITY);
 
-  TIMER_EnableInt(ST_USE_TIMER);
+  // TIMER_EnableInt(ST_USE_TIMER);
+  ST_USE_TIMER->TCSR |= TIMER_TCSR_IE_Msk;
 
   /* Start the Timer! */
-  TIMER_Start(ST_USE_TIMER);
+  // TIMER_Start(ST_USE_TIMER);
+  ST_USE_TIMER->TCSR |= TIMER_TCSR_CEN_Msk;
+
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */
 
 #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
   /* Periodic systick mode, the Cortex-Mx internal systick timer is used
      in this mode.*/
-
-//  GPIO_SetMode(PB, BIT8, GPIO_PMD_OUTPUT);
-//  PB8 = 1;
 
  // CLK_EnableSysTick(CLK_CLKSEL0_STCLK_S_HCLK, (NUC123_HCLK / OSAL_ST_FREQUENCY) - 1);
   SysTick->LOAD = (NUC123_HCLK / OSAL_ST_FREQUENCY) - 1;
@@ -317,35 +296,81 @@ void st_lld_init(void) {
   
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC */
 
-/* DEBUG */
-
-//  TIMER_Open(TIMER3, TIMER_CONTINUOUS_MODE, OSAL_ST_FREQUENCY);
-
-//  nvicEnableVector(NUC123_TIM3_NUMBER, 0);
-
-//  TIMER_EnableInt(TIMER3);
-//  TIMER_Start(TIMER3);
-
-//      /* Enable peripheral clock */
-//    CLK_EnableModuleClock(UART0_MODULE);
-//     CLK_EnableModuleClock(USBD_MODULE);
-//     CLK_EnableModuleClock(TMR0_MODULE);
-//     CLK_EnableModuleClock(TMR1_MODULE);
-//     CLK_EnableModuleClock(TMR2_MODULE);
-//     CLK_EnableModuleClock(TMR3_MODULE);
-// //
-//     /* Peripheral clock source */
-// //    CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART_S_PLL, CLK_CLKDIV_UART(1));
-//     CLK_SetModuleClock(TMR0_MODULE, CLK_CLKSEL1_TMR0_S_HXT, 0);
-//     CLK_SetModuleClock(TMR1_MODULE, CLK_CLKSEL1_TMR1_S_HIRC, 0);
-//     CLK_SetModuleClock(TMR2_MODULE, CLK_CLKSEL1_TMR2_S_HCLK, 0);
-//     CLK_SetModuleClock(TMR3_MODULE, CLK_CLKSEL1_TMR3_S_LIRC, 0);
-
 }
 
 #else /* OSAL_ST_MODE == OSAL_ST_MODE_NONE!!! */
   #error "We can't proceed without an OSAL_ST clock!"
 
 #endif /* OSAL_ST_MODE != OSAL_ST_MODE_NONE */
+
+
+
+uint32_t st_lld_timer_getmoduleclock(TIMER_T *timer) {
+    uint32_t clkSource;
+
+    if (timer == TIMER0) {
+        clkSource = (CLK->CLKSEL1 & CLK_CLKSEL1_TMR0_S_Msk) >> CLK_CLKSEL1_TMR0_S_Pos;
+    } else if (timer == TIMER1) {
+        clkSource = (CLK->CLKSEL1 & CLK_CLKSEL1_TMR1_S_Msk) >> CLK_CLKSEL1_TMR1_S_Pos;
+    } else if (timer == TIMER2) {
+        clkSource = (CLK->CLKSEL1 & CLK_CLKSEL1_TMR2_S_Msk) >> CLK_CLKSEL1_TMR2_S_Pos;
+    } else {
+        clkSource = (CLK->CLKSEL1 & CLK_CLKSEL1_TMR3_S_Msk) >> CLK_CLKSEL1_TMR3_S_Pos;
+    }
+
+    if (clkSource == 2) {
+        return(SystemCoreClock);
+    }
+
+    switch (clkSource) {
+      case 0: // Clock source is HXT
+        return __HXT;
+        break;
+      case 5: // Clock source is LIRC
+        return __LIRC;
+        break;
+      case 7: // Clock source is HIRC
+        return __HIRC;
+        break;
+      default: // All other clock sources return 0
+        return 0;
+    }
+}
+
+
+uint32_t st_lld_timer_open(TIMER_T *timer, uint32_t tmrMode, uint32_t tmrFreq) {
+    uint32_t tmrClk = st_lld_timer_getmoduleclock(timer);
+    uint32_t cmpr = 0;
+    uint32_t prescale = 0;
+
+    // Fastest possible timer working freq is (tmrClk / 2). While cmpr = 2, pre-scale = 0.
+    if (tmrFreq > (tmrClk / 2)) {
+        cmpr = 2;
+    } else {
+        if (tmrClk >= 0x4000000) {
+            prescale = 7;       // prescaler value - 1
+            tmrClk >>= 3;
+        } else if (tmrClk >= 0x2000000) {
+            prescale = 3;       // prescaler value - 1
+            tmrClk >>= 2;       // Divide Clock by 4 in preparation
+        } else if (tmrClk >= 0x1000000) {
+            prescale = 1;       // prescaler value - 1
+            tmrClk >>= 1;       // Divide Clock by 2 in preparation
+        }
+
+        cmpr = tmrClk / tmrFreq;
+    }
+
+    timer->TCSR = tmrMode | prescale;
+    timer->TCMPR = cmpr;
+
+    return (tmrClk / (cmpr * (prescale + 1)));
+}
+
+
+void st_lld_timer_close(TIMER_T *timer) {
+    timer->TCSR = 0;
+    timer->TEXCON = 0;
+}
 
 /** @} */

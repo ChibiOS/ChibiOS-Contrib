@@ -203,7 +203,7 @@ void hal_lld_init(void) {
  * @special
  */
 void NUC123_clock_init(void) {
-    SYS_UnlockReg();
+    SystemUnlockReg();
 
     /* Enable XT1_OUT (PF.0) and XT1_IN (PF.1) */
     SYS->GPF_MFP |= SYS_GPF_MFP_PF0_XT1_OUT | SYS_GPF_MFP_PF1_XT1_IN;
@@ -213,35 +213,32 @@ void NUC123_clock_init(void) {
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Enable Internal RC 22.1184 MHz clock */
-    CLK_EnableXtalRC(CLK_PWRCON_OSC22M_EN_Msk);
-
+    CLK->PWRCON |= CLK_PWRCON_OSC22M_EN_Msk;
+    
     /* Waiting for Internal RC clock ready */
-    CLK_WaitClockReady(CLK_CLKSTATUS_OSC22M_STB_Msk);
+    clks_lld_wait_for_clock_ready(CLK_CLKSTATUS_OSC22M_STB_Msk);
 
     /* Switch HCLK clock source to Internal RC and HCLK source divide 1 */
-    CLK_SetHCLK(CLK_CLKSEL0_HCLK_S_HIRC, CLK_CLKDIV_HCLK(1));
+    clks_lld_set_HCLK(CLK_CLKSEL0_HCLK_S_HIRC, CLK_CLKDIV_HCLK(1));
 
     /* Enable external XTAL 12 MHz clock */
-    CLK_EnableXtalRC(CLK_PWRCON_XTL12M_EN_Msk);
+    CLK->PWRCON |= CLK_PWRCON_XTL12M_EN_Msk;
 
     /* Waiting for external XTAL clock ready */
-    CLK_WaitClockReady(CLK_CLKSTATUS_XTL12M_STB_Msk);
+    clks_lld_wait_for_clock_ready(CLK_CLKSTATUS_XTL12M_STB_Msk);
 
     /* Set core clock */
-    CLK_SetCoreClock(FREQ_72MHZ);
+    clks_lld_set_core_clock(FREQ_72MHZ);
 
     SystemCoreClock = NUC123_HCLK;
 
-    //CLK_SetSysTickClockSrc(CLK_CLKSEL0_STCLK_S_HCLK_DIV2);
+    clks_lld_enable_SysTick(CLK_CLKSEL0_STCLK_S_HCLK_DIV2, (NUC123_HCLK / OSAL_ST_FREQUENCY) - 1);
 
-    CLK_EnableSysTick(CLK_CLKSEL0_STCLK_S_HCLK_DIV2, (NUC123_HCLK / OSAL_ST_FREQUENCY) - 1);
     /* Enable module clock */
-    //CLK_EnableModuleClock(UART0_MODULE);
-    CLK_EnableModuleClock(USBD_MODULE);
+    clks_lld_enable_module_clock(USBD_ModuleNum);
 
     /* Select module clock source */
-    //CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART_S_HXT, CLK_CLKDIV_UART(1));
-    CLK_SetModuleClock(USBD_MODULE, 0, CLK_CLKDIV_USB(3));
+    clks_lld_set_module_clock(USBD_ModuleNum, 0, CLK_CLKDIV_USB(3));
 
     /* TEMPORARY!!! */
     /* Set GPB multi-function pins for UART0 RXD and TXD */
@@ -251,7 +248,9 @@ void NUC123_clock_init(void) {
     //SYS->ALT_MFP = SYS_ALT_MFP_PC13_CLKO;
 
     /* Enable CLKO (PC.13) for monitor HCLK. CLKO = HCLK/8 Hz*/
-    //CLK_EnableCKO(CLK_CLKSEL2_FRQDIV_S_HCLK, 2, 0);
+    // clks_lld_enable_ck0(CLK_CLKSEL2_FRQDIV_S_HCLK, 2, 0);
+
+    LOCKREG();
 }
 
 /** @} */

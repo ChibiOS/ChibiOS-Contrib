@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2016 Giovanni Di Sirio
+    Copyright (C) 2019 /u/KeepItUnder
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -64,7 +64,8 @@
 /* Including the device CMSIS header. Note, we are not using the definitions
    from this header because we need this file to be usable also from
    assembler source files. We verify that the info matches instead.*/
-#include "NUC123.h"
+// #include "NUC123.h"
+#include "NUC123SD4AN0.h"
 
 /*lint -save -e9029 [10.4] Signedness comes from external files, it is
   unpredictable but gives no problems.*/

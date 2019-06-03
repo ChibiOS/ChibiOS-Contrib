@@ -1,6 +1,6 @@
 /*
     ChibiOS - Copyright (C) 2017 Frank Zschockelt
-	ChibiOS - Copyright (C) 2019 /u/KeepItUnder
+    ChibiOS - Copyright (C) 2019 /u/KeepItUnder
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
