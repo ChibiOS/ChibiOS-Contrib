@@ -26,6 +26,11 @@
 
 #if HAL_USE_SPI || defined(__DOXYGEN__)
 
+#if NRF_SERIES == 52
+#define SPI0_TWI0_IRQn SPIM0_SPIS0_TWIM0_TWIS0_SPI0_TWI0_IRQn
+#define SPI1_TWI1_IRQn SPIM1_SPIS1_TWIM1_TWIS1_SPI1_TWI1_IRQn
+#endif
+
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
