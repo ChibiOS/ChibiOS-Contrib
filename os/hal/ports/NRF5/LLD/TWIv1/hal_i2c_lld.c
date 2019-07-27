@@ -38,17 +38,17 @@
 #define I2C_INPUT(p)  do { IOPORT1->DIRCLR = (1UL << (p)); } while(0)   /*!< Configures I2C pin as input  */
 #define I2C_OUTPUT(p) do { IOPORT1->DIRSET = (1UL << (p)); } while(0)   /*!< Configures I2C pin as output */
 
-#define I2C_PIN_CNF \
+#define I2C_PIN_CNF(internal_pullup) \
       ((GPIO_PIN_CNF_SENSE_Disabled  << GPIO_PIN_CNF_SENSE_Pos) \
       | (GPIO_PIN_CNF_DRIVE_S0D1     << GPIO_PIN_CNF_DRIVE_Pos) \
-      | (GPIO_PIN_CNF_PULL_Disabled  << GPIO_PIN_CNF_PULL_Pos)  \
+      | (((internal_pullup) ? GPIO_PIN_CNF_PULL_Pullup : GPIO_PIN_CNF_PULL_Disabled)  << GPIO_PIN_CNF_PULL_Pos)  \
       | (GPIO_PIN_CNF_INPUT_Connect  << GPIO_PIN_CNF_INPUT_Pos) \
       | (GPIO_PIN_CNF_DIR_Input      << GPIO_PIN_CNF_DIR_Pos))
 
-#define I2C_PIN_CNF_CLR \
+#define I2C_PIN_CNF_CLR(internal_pullup) \
       ((GPIO_PIN_CNF_SENSE_Disabled  << GPIO_PIN_CNF_SENSE_Pos) \
       | (GPIO_PIN_CNF_DRIVE_S0D1     << GPIO_PIN_CNF_DRIVE_Pos) \
-      | (GPIO_PIN_CNF_PULL_Disabled  << GPIO_PIN_CNF_PULL_Pos)  \
+      | (((internal_pullup) ? GPIO_PIN_CNF_PULL_Pullup : GPIO_PIN_CNF_PULL_Disabled)  << GPIO_PIN_CNF_PULL_Pos)  \
       | (GPIO_PIN_CNF_INPUT_Connect  << GPIO_PIN_CNF_INPUT_Pos) \
       | (GPIO_PIN_CNF_DIR_Output     << GPIO_PIN_CNF_DIR_Pos))
 
@@ -102,14 +102,14 @@ static void i2c_clear_bus(I2CDriver *i2cp)
   const I2CConfig *cfg = i2cp->config;
   int i;
 
-  IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF;
-  IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF;
+  IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF(cfg->scl_pullup);
+  IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF(cfg->sda_pullup);
 
   I2C_HIGH(cfg->sda_pad);
   I2C_HIGH(cfg->scl_pad);
 
-  IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF_CLR;
-  IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF_CLR;
+  IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF_CLR(cfg->scl_pullup);
+  IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF_CLR(cfg->sda_pullup);
 
   nrf_delay_us(4);
 
@@ -290,8 +290,8 @@ void i2c_lld_start(I2CDriver *i2cp) {
 
   i2c_clear_bus(i2cp);
 
-  IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF;
-  IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF;
+  IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF(cfg->scl_pullup);
+  IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF(cfg->sda_pullup);
 
   i2c->EVENTS_RXDREADY = 0;
   i2c->EVENTS_TXDSENT = 0;
@@ -351,8 +351,8 @@ void i2c_lld_stop(I2CDriver *i2cp) {
 
     nvicDisableVector(I2C_IRQ_NUM);
 
-    IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF_CLR;
-    IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF_CLR;
+    IOPORT1->PIN_CNF[cfg->scl_pad] = I2C_PIN_CNF_CLR(cfg->scl_pullup);
+    IOPORT1->PIN_CNF[cfg->sda_pad] = I2C_PIN_CNF_CLR(cfg->sda_pullup);
   }
 }
 

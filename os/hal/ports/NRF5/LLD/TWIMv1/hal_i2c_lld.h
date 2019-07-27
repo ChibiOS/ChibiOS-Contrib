@@ -113,6 +113,10 @@ typedef struct {
   uint8_t              scl_pad;
   /* @brief Pad number for SDA */
   uint8_t              sda_pad;
+  /* @brief Whether to use the internal pull-up for SCL */
+  bool                 scl_pullup;
+  /* @brief Whether to use the internal pull-up for SDA */
+  bool                 sda_pullup;
 
 } I2CConfig;
 
