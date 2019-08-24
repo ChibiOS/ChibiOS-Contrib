@@ -128,15 +128,23 @@ static size_t readt(void *ip, uint8_t *bp, size_t n, systime_t timeout) {
   return ibqReadTimeout(&((USBHIDDriver *)ip)->ibqueue, bp, n, timeout);
 }
 
+static msg_t ctl(void *ip, unsigned int operation, void *arg) {
+  (void)ip;
+  (void)operation;
+  (void)arg;
+  return MSG_OK;
+}
+
 static void flush(void *ip) {
 
   obqFlush(&((USBHIDDriver *)ip)->obqueue);
 }
 
 static const struct USBHIDDriverVMT vmt = {
+  (size_t)0,
   write, read, put, get,
   putt, gett, writet, readt,
-  flush
+  ctl, flush
 };
 
 /**

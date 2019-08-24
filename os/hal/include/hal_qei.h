@@ -145,6 +145,7 @@ extern "C" {
   void qeiEnable(QEIDriver *qeip);
   void qeiDisable(QEIDriver *qeip);
   qeicnt_t qeiGetCount(QEIDriver *qeip);
+  void qeiSetCount(QEIDriver *qeip, qeicnt_t value);
   qeidelta_t qeiUpdate(QEIDriver *qeip);
   qeidelta_t qeiUpdateI(QEIDriver *qeip);
   qeidelta_t qeiAdjustI(QEIDriver *qeip, qeidelta_t delta);

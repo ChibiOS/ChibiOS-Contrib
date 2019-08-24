@@ -383,6 +383,7 @@ static size_t read(void *ip, uint8_t *bp, size_t n) {
 }
 
 static const struct EepromFileStreamVMT vmt = {
+  (size_t)0,
   write,
   read,
   eepfs_put,

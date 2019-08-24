@@ -1,35 +1,170 @@
-/*
-    Copyright (C) 2015 Stephen Caudle
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-*/
-
-/**
- * @file    NRF5/NRF52832/nrf_delay.h
- * @brief   NRF5 Delay routines
- *
- * @{
- */
-
 #ifndef _NRF_DELAY_H
 #define _NRF_DELAY_H
+
+/**
+ * @brief Function for delaying execution for number of microseconds.
+ *
+ * @note NRF52 has instruction cache and because of that delay is not precise.
+ *
+ * @param number_of_ms
+ */
+/*lint --e{438, 522} "Variable not used" "Function lacks side-effects" */
+#if defined ( __CC_ARM   )
+
+static __ASM void __INLINE nrf_delay_us(uint32_t volatile number_of_us)
+{
+loop
+        SUBS    R0, R0, #1
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+#ifdef NRF52
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+#endif
+        BNE    loop
+        BX     LR
+}
+
+#elif defined ( __ICCARM__ )
+
+static void __INLINE nrf_delay_us(uint32_t volatile number_of_us)
+{
+__ASM (
+"loop:\n\t"
+       " SUBS R0, R0, #1\n\t"
+       " NOP\n\t"
+       " NOP\n\t"
+       " NOP\n\t"
+       " NOP\n\t"
+       " NOP\n\t"
+       " NOP\n\t"
+       " NOP\n\t"
+       " NOP\n\t"
+       " NOP\n\t"
+       " NOP\n\t"
+       " NOP\n\t"
+       " NOP\n\t"
+#ifdef NRF52
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+        " NOP\n\t"
+#endif
+       " BNE.n loop\n\t");
+}
+
+#elif defined ( _WIN32 ) || defined ( __unix ) || defined( __APPLE__ )
+
+__STATIC_INLINE void nrf_delay_us(uint32_t volatile number_of_us);
+
+#ifndef CUSTOM_NRF_DELAY_US
+__STATIC_INLINE void nrf_delay_us(uint32_t volatile number_of_us)
+{}
+#endif
+
+#elif defined ( __GNUC__ )
 
 inline static void nrf_delay_us(uint32_t volatile number_of_us) __attribute__((always_inline));
 inline static void nrf_delay_us(uint32_t volatile number_of_us)
 {
-register uint32_t delay __asm ("r0") = number_of_us;
-__asm volatile (
-".syntax unified\n"
+register uint32_t delay __ASM ("r0") = number_of_us;
+__ASM volatile (
+#ifdef NRF51
+        ".syntax unified\n"
+#endif
     "1:\n"
     " SUBS %0, %0, #1\n"
     " NOP\n"
@@ -37,6 +172,14 @@ __asm volatile (
     " NOP\n"
     " NOP\n"
     " NOP\n"
+    " NOP\n"   
+    " NOP\n"  
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+    " NOP\n"
+#ifdef NRF52
     " NOP\n"
     " NOP\n"
     " NOP\n"
@@ -83,15 +226,13 @@ __asm volatile (
     " NOP\n"
     " NOP\n"
     " NOP\n"
-    " NOP\n"
-    " NOP\n"
-    " NOP\n"
-    " NOP\n"
-    " NOP\n"
-    " NOP\n"
-    " NOP\n"
+#endif
     " BNE 1b\n"
+#ifdef NRF51
     ".syntax divided\n"
+#endif
     : "+r" (delay));
 }
-#endif //__NRF_DELAY_H
+#endif
+
+#endif

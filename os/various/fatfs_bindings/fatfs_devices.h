@@ -20,39 +20,21 @@
 
 #include "hal.h"
 
-#if HAL_USE_MMC_SPI && HAL_USE_SDC
-#error "cannot specify both MMC_SPI and SDC drivers"
-#endif
-
-#if HAL_USE_MMC_SPI
-extern MMCDriver MMCD1;
-#elif HAL_USE_SDC
-extern SDCDriver SDCD1;
-#elif HAL_USBH_USE_MSD
-
-#else
-#error "MMC_SPI, SDC or USBH_MSD driver must be specified"
-#endif
-
 /*-----------------------------------------------------------------------*/
 /* Correspondence between physical drive number and physical drive.      */
-#if HAL_USE_MMC_SPI
+#if HAL_USE_MMC_SPI || HAL_USE_SDC
 #define FATFSDEV_MMC         0
 #define FATFSDEV_MMC_DRIVE   "0:"
 #endif
 
-#if HAL_USE_SDC
-#define FATFSDEV_SDC         0
-#define FATFSDEV_SDC_DRIVE   "0:"
-#endif
 
 #if HAL_USBH_USE_MSD
-#if defined(FATFSDEV_MMC) || defined(FATFSDEV_SDC)
-#define FATFSDEV_MSDLUN0         1
-#define FATFSDEV_MSDLUN0_DRIVE   "1:"
+#if defined(FATFSDEV_MMC)
+#define FATFSDEV_MSD         1
+#define FATFSDEV_MSD_DRIVE   "1:"
 #else
-#define FATFSDEV_MSDLUN0         0
-#define FATFSDEV_MSDLUN0_DRIVE   "0:"
+#define FATFSDEV_MSD         0
+#define FATFSDEV_MSD_DRIVE   "0:"
 #endif
 #endif
 

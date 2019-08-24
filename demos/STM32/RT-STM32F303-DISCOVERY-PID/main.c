@@ -23,7 +23,7 @@
 #define ADC_GRP1_NUM_CHANNELS   1
 #define ADC_GRP1_BUF_DEPTH      8
 
-static pid_t pid;
+static pidc_t pid;
 static float input = 0, output = 0, target = 0;
 static adcsample_t samples[ADC_GRP1_NUM_CHANNELS * ADC_GRP1_BUF_DEPTH];
 

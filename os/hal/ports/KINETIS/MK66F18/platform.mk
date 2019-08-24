@@ -1,19 +1,33 @@
-# List of all platform files.
-PLATFORMSRC = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/MK66F18/hal_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/hal_pal_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/hal_serial_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/MK66F18/hal_spi_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/hal_i2c_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/hal_ext_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/hal_adc_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/hal_gpt_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/hal_sdc_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/MK66F18/hal_pwm_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/hal_st_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/hal_usb_lld.c
+PLATFORMSRC_CONTRIB := ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
+                       ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/MK66F18/hal_lld.c \
+                       ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/PITv1/hal_st_lld.c
+                       
+PLATFORMINC_CONTRIB := ${CHIBIOS}/os/hal/ports/common/ARMCMx \
+                       ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD \
+                       ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/MK66F18
+                       
+ifeq ($(USE_SMART_BUILD),yes)
 
-# Required include directories
-PLATFORMINC = ${CHIBIOS}/os/hal/ports/common/ARMCMx \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/MK66F18 \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD
+# Configuration files directory
+ifeq ($(CONFDIR),)
+  CONFDIR = .
+endif
+
+HALCONF := $(strip $(shell cat $(CONFDIR)/halconf.h $(CONFDIR)/halconf_community.h | egrep -e "\#define"))
+
+endif
+
+include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/GPIOv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/UARTv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/SPIv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/I2Cv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/PORTv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/ADCv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/PITv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/SDHCv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/FTMv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/USBHSv1/driver.mk
+
+# Shared variables
+ALLCSRC += $(PLATFORMSRC_CONTRIB)
+ALLINC  += $(PLATFORMINC_CONTRIB)

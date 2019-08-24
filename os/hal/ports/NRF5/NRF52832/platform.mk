@@ -1,52 +1,33 @@
+PLATFORMSRC_CONTRIB := ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
+                       ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF52832/hal_lld.c \
+                       ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF52832/nrf52_isr.c \
+                       ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/TIMERv1/hal_st_lld.c
+                       
+PLATFORMINC_CONTRIB := ${CHIBIOS}/os/hal/ports/common/ARMCMx \
+                       ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD \
+                       ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF52832
+                       
 ifeq ($(USE_SMART_BUILD),yes)
-HALCONF := $(strip $(shell cat halconf.h halconf_community.h 2>/dev/null | egrep -e "define"))
 
-# List of all the NRF51x platform files.
-PLATFORMSRC  = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF52832/hal_lld.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_st_lld.c
-
-ifneq ($(findstring HAL_USE_PAL TRUE,$(HALCONF)),)
-PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_pal_lld.c
-endif
-ifneq ($(findstring HAL_USE_SERIAL TRUE,$(HALCONF)),)
-PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_serial_lld.c
-endif
-ifneq ($(findstring HAL_USE_SPI TRUE,$(HALCONF)),)
-PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_spi_lld.c
-endif
-ifneq ($(findstring HAL_USE_I2C TRUE,$(HALCONF)),)
-PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_i2c_lld.c
-endif
-ifneq ($(findstring HAL_USE_GPT TRUE,$(HALCONF)),)
-PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_gpt_lld.c
-endif
-ifneq ($(findstring HAL_USE_WDG TRUE,$(HALCONF)),)
-PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_wdg_lld.c
-endif
-ifneq ($(findstring HAL_USE_RNG TRUE,$(HALCONF)),)
-PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_rng_lld.c
-endif
-ifneq ($(findstring HAL_USE_QEI TRUE,$(HALCONF)),)
-PLATFORMSRC += ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_qei_lld.c
-endif
-else
-PLATFORMSRC  = ${CHIBIOS}/os/hal/ports/common/ARMCMx/nvic.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF52832/hal_lld.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_pal_lld.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_serial_lld.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_spi_lld.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_i2c_lld.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_st_lld.c \
-	       ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_gpt_lld.c \
-	       ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_wdg_lld.c \
-	       ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_rng_lld.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/hal_qei_lld.c
+# Configuration files directory
+ifeq ($(CONFDIR),)
+  CONFDIR = .
 endif
 
-# Required include directories
-PLATFORMINC = ${CHIBIOS}/os/hal/ports/common/ARMCMx \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/NRF52832
+HALCONF := $(strip $(shell cat $(CONFDIR)/halconf.h $(CONFDIR)/halconf_community.h | egrep -e "\#define"))
 
+endif
 
+include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/GPIOv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/UARTv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/SPIv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/TWIMv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/PWMv2/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/TIMERv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/WDTv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/RNGv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/NRF5/LLD/QDECv1/driver.mk
+
+# Shared variables
+ALLCSRC += $(PLATFORMSRC_CONTRIB)
+ALLINC  += $(PLATFORMINC_CONTRIB)

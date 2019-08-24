@@ -509,8 +509,15 @@ static size_t _read(USBHAOAChannel *aoacp, uint8_t *bp, size_t n) {
 	return _read_timeout(aoacp, bp, n, TIME_INFINITE);
 }
 
+static msg_t _ctl(USBHAOAChannel *ftdipp, unsigned int operation, void *arg) {
+	(void)ftdipp;
+	(void)operation;
+	(void)arg;
+	return MSG_OK;
+}
+
 static const struct AOADriverVMT async_channel_vmt = {
-	(size_t) 0,
+	(size_t)0,
 	(size_t (*)(void *, const uint8_t *, size_t))_write,
 	(size_t (*)(void *, uint8_t *, size_t))_read,
 	(msg_t (*)(void *, uint8_t))_put,
@@ -519,7 +526,7 @@ static const struct AOADriverVMT async_channel_vmt = {
 	(msg_t (*)(void *, systime_t))_get_timeout,
 	(size_t (*)(void *, const uint8_t *, size_t, systime_t))_write_timeout,
 	(size_t (*)(void *, uint8_t *, size_t, systime_t))_read_timeout,
-	(void*) 0 // FIXME: Implement CTL
+	(msg_t (*)(void *, unsigned int, void *))_ctl
 };
 
 static void _stop_channelS(USBHAOAChannel *aoacp) {

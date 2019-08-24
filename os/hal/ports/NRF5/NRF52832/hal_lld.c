@@ -55,24 +55,40 @@
  */
 void hal_lld_init(void)
 {
-  /* High frequency clock initialisation
+  /* High frequency clock initialization
    */
   NRF_CLOCK->TASKS_HFCLKSTOP = 1;
+
 #if !defined(NRF5_XTAL_VALUE) && (NRF5_XTAL_VALUE != 32000000)
 #error "A 32Mhz crystal is mandatory on nRF52 boards."
 #endif
 
-  
-  /* Low frequency clock initialisation
-   * Clock is only started if st driver requires it
-   */
-  NRF_CLOCK->TASKS_LFCLKSTOP = 1;
-  NRF_CLOCK->LFCLKSRC = NRF5_LFCLK_SOURCE;
-  
-#if (OSAL_ST_MODE != OSAL_ST_MODE_NONE) &&			\
-    (NRF5_SYSTEM_TICKS == NRF5_SYSTEM_TICKS_AS_RTC)
-  NRF_CLOCK->TASKS_LFCLKSTART = 1;
+#if (NRF5_HFCLK_SOURCE == NRF5_HFCLK_HFXO)
+  NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
+  NRF_CLOCK->TASKS_HFCLKSTART = 1;
+  while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0);
 #endif
+  
+  /* Low frequency clock initialization
+   */
+#if (OSAL_ST_MODE != OSAL_ST_MODE_NONE)
+#if (NRF5_ST_USE_RTC0 || NRF5_ST_USE_RTC1) && \
+	(NRF5_LFCLK_SOURCE == NRF5_LFCLK_RC)
+#error "A NRF5_SYSTEM_TICKS_AS_RTC requires LFCLK clock to be started."
+#endif
+#endif
+
+  NRF_CLOCK->TASKS_LFCLKSTOP = 1;
+
+#if (NRF5_LFCLK_SOURCE != NRF5_LFCLK_RC)
+  NRF_CLOCK->LFCLKSRC = NRF5_LFCLK_SOURCE;
+
+  NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
+  NRF_CLOCK->TASKS_LFCLKSTART = 1;
+  while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0);
+#endif
+  
+  irqInit();
 }
 
 /**

@@ -48,7 +48,7 @@ DEFAULT_PAD = {"SIGNAL": "UNUSED",
                "OTYPER": PIN_OTYPE_PUSHPULL,
                "OSPEEDR": PIN_OSPEED_VERYLOW,
                "PUPDR": PIN_PUPDR_FLOATING,
-               "ODR": PIN_ODR_HIGH}
+               "ODR": PIN_ODR_LOW}
 
 PIN_MODE_TRANSLATE = {"GPIO_MODE_AF_PP": PIN_MODE_ALTERNATE,
                       "GPIO_MODE_ANALOG": PIN_MODE_ANALOG,
@@ -69,6 +69,10 @@ PIN_OSPEED_TRANSLATE = {"GPIO_SPEED_FREQ_LOW": PIN_OSPEED_VERYLOW,
 PIN_PUPDR_TRANSLATE = {"GPIO_NOPULL": PIN_PUPDR_FLOATING,
                        "GPIO_PULLUP": PIN_PUPDR_PULLUP,
                        "GPIO_PULLDOWN": PIN_PUPDR_PULLDOWN}
+
+PIN_ODR_TRANSLATE = {"GPIO_PIN_SET": PIN_ODR_HIGH,
+                     "GPIO_PIN_CLEAR": PIN_ODR_LOW,
+                     "GPIO_PIN_RESET": PIN_ODR_LOW }
 
 parser = ArgumentParser(description='Generate ChibiOS GPIO header file from STM32CubeMX project files.')
 group = parser.add_mutually_exclusive_group(required=False)
@@ -171,7 +175,11 @@ def read_gpio(filename):
     for pin in root.findall('GPIO_Pin'):
         try:
             port = pin.attrib['Name'][1]
-            num = int(pin.attrib['Name'][2:])
+            num = pin.attrib['Name'][2:]
+            # remove notes from pin name (e.g. PH0 - OSC_IN)
+            num = num.split('-')[0].strip()
+            num = int(num)
+
             if port not in gpio['ports']:
                 gpio['ports'][port] = {}
             if num not in gpio['ports'][port]:
@@ -218,6 +226,7 @@ def read_project(gpio, filename):
             pad_prop = split[0].split(".")[-1]
             prop_value = split[-1].rstrip('\r\n')
 
+
             if pad_prop == "Signal":
                 if 'S_TIM' in prop_value:
                     prop_value = prop_value[2:]
@@ -226,11 +235,17 @@ def read_project(gpio, filename):
                         or 'DAC' in prop_value \
                         or 'OSC' in prop_value:
                     pads[pad_port][pad_num]["MODER"] = PIN_MODE_ANALOG
+                    pads[pad_port][pad_num]["SIGNAL"] = prop_value
                 elif 'GPIO_Output' == prop_value:
                     pads[pad_port][pad_num]["MODER"] = PIN_MODE_OUTPUT
                 elif 'GPIO_Input' == prop_value:
                     pads[pad_port][pad_num]["MODER"] = PIN_MODE_INPUT
                 else:
+                    # workaround for different names in project and gpio defs
+                    if "FSMC" in prop_value:
+                        prop_value = re.sub(r"FSMC_D([0-9]+)_DA[0-9]+",
+                                r"FSMC_D\1", prop_value)
+
                     pads[pad_port][pad_num]["SIGNAL"] = prop_value
                     pads[pad_port][pad_num]["MODER"] = PIN_MODE_ALTERNATE
                     pads[pad_port][pad_num]["OSPEEDR"] = PIN_OSPEED_MEDIUM
@@ -245,6 +260,12 @@ def read_project(gpio, filename):
                 pads[pad_port][pad_num]["MODER"] = PIN_MODE_OUTPUT
             elif pad_prop == "GPIO_Speed":
                 pads[pad_port][pad_num]["OSPEEDR"] = PIN_OSPEED_TRANSLATE[prop_value]
+            elif pad_prop == "PinState":
+                pads[pad_port][pad_num]["ODR"] = PIN_ODR_TRANSLATE[prop_value]
+            elif pad_prop == "Mode":
+                if "I2C" in prop_value:
+                    pads[pad_port][pad_num]["OTYPER"] = PIN_OTYPE_OPENDRAIN
+
 
     return pads
 
@@ -267,16 +288,56 @@ def gen_defines(project):
 
             defines['PORT_'+label] = 'GPIO' + port_key
             defines['PAD_'+label] = pad_key
+            defines['LINE_'+label] = 'PAL_LINE(GPIO' + port_key
+            defines['LINE_'+label] += ', ' + str(pad_key) + 'U)'
 
-            if re.search(r"TIM\d+_CH\d$", signal, re.M):
-                timer = signal.replace('S_TIM', '').replace('_CH', '')[:-1]
-                ch_num = int(signal[-1:])
-
+            match = re.search(r"TIM(\d+)_CH(\d)$", signal)
+            if match:
+                timer = match.group(1)
+                ch_num = int(match.group(2))
                 defines['TIM_' + label] = timer
                 defines['CCR_' + label] = 'CCR' + timer[-1]
                 defines['PWMD_' + label] = 'PWMD' + timer[-1]
                 defines['ICUD_' + label] = 'ICUD' + timer[-1]
                 defines['CHN_' + label] = ch_num - 1
+                continue
+
+            match = re.search(r"ADC(\d*)_IN(\d+)$", signal)
+            if match:
+                adc = match.group(1)
+                if len(adc) == 0:
+                    adc = 1
+                defines['ADC_' + label] = adc
+                defines['CHN_' + label] = match.group(2)
+                continue
+
+            match = re.search(r"USART(\d+)_[RT]X$", signal)
+            if match:
+                defines['USART_' + label] = match.group(1)
+                continue
+
+            match = re.search(r"COMP_DAC(\d+)_group", signal)
+            if match:
+                defines['DAC_' + label] = match.group(1)
+                continue
+
+            match = re.search(r"I2C(\d)_S(CL|DA)", signal)
+            if match:
+                defines['I2C_' + label] = match.group(1)
+                continue
+
+            match = re.search(r"SPI(\d)_(MOSI|MISO|SCK|NSS)", signal)
+            if match:
+                defines['SPI_' + label] = match.group(1)
+                continue
+
+            match = re.search(r"CAN(\d*)_[RT]X", signal)
+            if match:
+                can = match.group(1)
+                if len(can) == 0:
+                    can = 1
+                defines['CAN_' + label] = can
+                continue
 
     return defines
 

@@ -80,6 +80,8 @@ void hal_lld_init(void)
     (NRF5_SYSTEM_TICKS == NRF5_SYSTEM_TICKS_AS_RTC)
   NRF_CLOCK->TASKS_LFCLKSTART = 1;
 #endif
+  
+  irqInit();
 }
 
 /**
