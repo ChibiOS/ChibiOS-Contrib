@@ -122,7 +122,7 @@ void comp_lld_init(void) {
 #if STM32_COMP_USE_COMP1
   /* Driver initialization.*/
   compObjectInit(&COMPD1);
-  COMPD1.reg = COMP;
+  COMPD1.reg = COMP1;
   COMPD1.reg->CSR = 0;
 #if STM32_COMP_USE_INTERRUPTS
   nvicEnableVector(COMP1_2_3_IRQn, STM32_COMP_1_2_3_IRQ_PRIORITY);
