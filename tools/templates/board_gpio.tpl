@@ -50,6 +50,19 @@
     {{ i }} | \
     {%- endfor %}
     0)
+{% if ascr_lockr %}
+#define VAL_GPIO{{p}}_ASCR ( \
+    {%- for i in v.ASCR %}
+    {{ i }} | \
+    {%- endfor %}
+    0)
+
+#define VAL_GPIO{{p}}_LOCKR ( \
+    {%- for i in v.LOCKR %}
+    {{ i }} | \
+    {%- endfor %}
+    0)
+{% endif %}
 {% endfor %}
 
 #endif
