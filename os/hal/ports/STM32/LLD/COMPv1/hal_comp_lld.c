@@ -34,6 +34,14 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+#ifndef COMP_CSR_EN
+#define COMP_CSR_EN COMP_CSR_COMPxEN
+#endif
+
+#ifndef COMP_CSR_POLARITY
+#define COMP_CSR_POLARITY COMP_CSR_COMPxPOL
+#endif
+
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -122,7 +130,7 @@ void comp_lld_init(void) {
 #if STM32_COMP_USE_COMP1
   /* Driver initialization.*/
   compObjectInit(&COMPD1);
-  COMPD1.reg = COMP;
+  COMPD1.reg = COMP1;
   COMPD1.reg->CSR = 0;
 #if STM32_COMP_USE_INTERRUPTS
   nvicEnableVector(COMP1_2_3_IRQn, STM32_COMP_1_2_3_IRQ_PRIORITY);
@@ -190,6 +198,8 @@ void comp_lld_init(void) {
 #endif
 
 }
+
+#if STM32_COMP_USE_INTERRUPTS
 
 /**
  * @brief  COMP1, COMP2, COMP3 interrupt handler.
@@ -369,6 +379,8 @@ void comp_ext_lld_channel_disable(COMPDriver *compp, uint32_t channel) {
 #endif
 }
 
+#endif
+
 /**
  * @brief   Configures and activates the COMP peripheral.
  *
@@ -379,11 +391,11 @@ void comp_ext_lld_channel_disable(COMPDriver *compp, uint32_t channel) {
 void comp_lld_start(COMPDriver *compp) {
 
   // Apply CSR Execpt the enable bit.
-  compp->reg->CSR = compp->config->csr & ~COMP_CSR_COMPxEN;
+  compp->reg->CSR = compp->config->csr & ~COMP_CSR_EN;
 
   // Inverted output
   if (compp->config->output_mode == COMP_OUTPUT_INVERTED)
-    compp->reg->CSR |= COMP_CSR_COMPxPOL;
+    compp->reg->CSR |= COMP_CSR_POLARITY;
 
 #if STM32_COMP_USE_INTERRUPTS
 #if STM32_COMP_USE_COMP1
@@ -500,7 +512,7 @@ void comp_lld_stop(COMPDriver *compp) {
  */
 void comp_lld_enable(COMPDriver *compp) {
 
-   compp->reg->CSR |= COMP_CSR_COMPxEN; /* Enable */
+   compp->reg->CSR |= COMP_CSR_EN; /* Enable */
 }
 
 /**
@@ -512,7 +524,7 @@ void comp_lld_enable(COMPDriver *compp) {
  */
 void comp_lld_disable(COMPDriver *compp) {
 
-  compp->reg->CSR &= ~COMP_CSR_COMPxEN; /* Disable */
+  compp->reg->CSR &= ~COMP_CSR_EN; /* Disable */
 }
 
 #endif /* HAL_USE_COMP */

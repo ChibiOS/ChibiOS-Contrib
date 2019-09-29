@@ -198,7 +198,7 @@ static size_t __clamp_size(void *ip, size_t n) {
 /**
  * @brief   Write data that can be fitted in one page boundary
  */
-static void __fitted_write(void *ip, const uint8_t *data, size_t len, uint32_t *written) {
+static msg_t __fitted_write(void *ip, const uint8_t *data, size_t len, uint32_t *written) {
 
   msg_t status = MSG_RESET;
 
@@ -210,6 +210,8 @@ static void __fitted_write(void *ip, const uint8_t *data, size_t len, uint32_t *
     *written += len;
     eepfs_lseek(ip, eepfs_getposition(ip) + len);
   }
+
+  return status;
 }
 
 /**

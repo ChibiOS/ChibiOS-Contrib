@@ -68,7 +68,7 @@
   uint16_t        pagesize;                                                 \
   /* Time needed by IC for single byte/page writing. */                     \
   systime_t       write_time;
-  
+
 typedef uint32_t fileoffset_t;
 
 typedef struct {

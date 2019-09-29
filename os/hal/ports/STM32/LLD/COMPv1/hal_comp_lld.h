@@ -201,9 +201,9 @@
 #define STM32_HAS_COMP6 TRUE
 #define STM32_HAS_COMP7 TRUE
 
-#elif defined(STM32F373xx) || defined(STM32F378xx) || defined(STM32L0XX) || defined(STM32L1XX) \
-  || defined(STM32F051x8) || defined(STM32F048xx) || defined(STM32F058xx) || defined(STM32F078xx) \
-  || defined(STM32F072xb) || defined(STM32F071xb)
+#elif defined(STM32F373xx) || defined(STM32F378xx) || defined(STM32L0XX)   || defined(STM32L1XX) \
+   || defined(STM32F051x8) || defined(STM32F048xx) || defined(STM32F058xx) || defined(STM32F078xx) \
+   || defined(STM32F072xb) || defined(STM32F071xb) || defined(STM32L4XX)
 #define STM32_HAS_COMP1 TRUE
 #define STM32_HAS_COMP2 TRUE
 #define STM32_HAS_COMP3 FALSE
