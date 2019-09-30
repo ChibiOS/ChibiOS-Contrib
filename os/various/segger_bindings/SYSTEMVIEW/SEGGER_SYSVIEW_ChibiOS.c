@@ -22,13 +22,54 @@
 static systime_t start;
 static const char *isr_desc;
 
+thread_t *chRegFirstThreadI(void) {
+  thread_t *tp;
+
+  chDbgCheckClassI();
+
+  tp = ch.rlist.newer;
+#if CH_CFG_USE_DYNAMIC == TRUE
+  tp->refs++;
+#endif
+
+  return tp;
+}
+
+thread_t *chRegNextThreadI(thread_t *tp) {
+  thread_t *ntp;
+
+  chDbgCheckClassI();
+
+  ntp = tp->newer;
+  /*lint -save -e9087 -e740 [11.3, 1.3] Cast required by list handling.*/
+  if (ntp == (thread_t *)&ch.rlist) {
+  /*lint -restore*/
+    ntp = NULL;
+  }
+#if CH_CFG_USE_DYNAMIC == TRUE
+  else {
+    chDbgAssert(ntp->refs < (trefs_t)255, "too many references");
+    ntp->refs++;
+  }
+#endif
+
+#if CH_CFG_USE_DYNAMIC == TRUE
+  chDbgAssert(tp->refs > (trefs_t)0, "not referenced");
+  tp->refs--;
+#endif
+
+  return ntp;
+}
+
 static void _cbSendTaskList(void) {
   thread_t *tp;
-  tp = chRegFirstThread();
+  syssts_t sts = chSysGetStatusAndLockX();
+  tp = chRegFirstThreadI();
   do {
     SYSVIEW_ChibiOS_SendTaskInfo(tp);
-    tp = chRegNextThread(tp);
+    tp = chRegNextThreadI(tp);
   } while (tp != NULL);
+  chSysRestoreStatusX(sts);
 }
 
 static U64 _cbGetTime(void) {
