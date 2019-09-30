@@ -31,38 +31,12 @@
 #include "usbh/dev/uvc.h"
 #include "usbh/internal.h"
 
-#if USBHUVC_DEBUG_ENABLE_TRACE
-#define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define udbg(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define udbgf(f, ...)  do {} while(0)
-#define udbg(f, ...)   do {} while(0)
-#endif
-
-#if USBHUVC_DEBUG_ENABLE_INFO
-#define uinfof(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uinfo(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uinfof(f, ...)  do {} while(0)
-#define uinfo(f, ...)   do {} while(0)
-#endif
-
-#if USBHUVC_DEBUG_ENABLE_WARNINGS
-#define uwarnf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uwarn(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uwarnf(f, ...)  do {} while(0)
-#define uwarn(f, ...)   do {} while(0)
-#endif
-
-#if USBHUVC_DEBUG_ENABLE_ERRORS
-#define uerrf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uerr(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uerrf(f, ...)  do {} while(0)
-#define uerr(f, ...)   do {} while(0)
-#endif
-
+#define _USBH_DEBUG_HELPER_CLASS_DRIVER		uvcdp
+#define _USBH_DEBUG_HELPER_ENABLE_TRACE		USBHUVC_DEBUG_ENABLE_TRACE
+#define _USBH_DEBUG_HELPER_ENABLE_INFO		USBHUVC_DEBUG_ENABLE_INFO
+#define _USBH_DEBUG_HELPER_ENABLE_WARNINGS	USBHUVC_DEBUG_ENABLE_WARNINGS
+#define _USBH_DEBUG_HELPER_ENABLE_ERRORS	USBHUVC_DEBUG_ENABLE_ERRORS
+#include "usbh/debug_helpers.h"
 
 USBHUVCDriver USBHUVCD[HAL_USBHUVC_MAX_INSTANCES];
 
@@ -124,7 +98,7 @@ bool usbhuvcVSRequest(USBHUVCDriver *uvcdp,
 static bool _set_vs_alternate(USBHUVCDriver *uvcdp, uint16_t min_ep_size) {
 
 	if (min_ep_size == 0) {
-		uinfo("Selecting Alternate setting 0");
+		uclassdrvinfo("Selecting Alternate setting 0");
 		return usbhStdReqSetInterface(uvcdp->dev, if_get(&uvcdp->ivs)->bInterfaceNumber, 0);
 	}
 
@@ -134,7 +108,7 @@ static bool _set_vs_alternate(USBHUVCDriver *uvcdp, uint16_t min_ep_size) {
 	uint8_t alt = 0;
 	uint16_t sz = 0xffff;
 
-	uinfof("Searching alternate setting with min_ep_size=%d", min_ep_size);
+	uclassdrvinfof("Searching alternate setting with min_ep_size=%d", min_ep_size);
 
 	for (; iif.valid; if_iter_next(&iif)) {
 		const usbh_interface_descriptor_t *const ifdesc = if_get(&iif);
@@ -143,7 +117,7 @@ static bool _set_vs_alternate(USBHUVCDriver *uvcdp, uint16_t min_ep_size) {
 				|| (ifdesc->bInterfaceSubClass != UVC_SC_VIDEOSTREAMING))
 			continue;
 
-		uinfof("\tScanning alternate setting=%d", ifdesc->bAlternateSetting);
+		uclassdrvinfof("\tScanning alternate setting=%d", ifdesc->bAlternateSetting);
 
 		if (ifdesc->bNumEndpoints == 0)
 			continue;
@@ -153,11 +127,11 @@ static bool _set_vs_alternate(USBHUVCDriver *uvcdp, uint16_t min_ep_size) {
 			if (((epdesc->bmAttributes & 0x03) == USBH_EPTYPE_ISO)
 					&& ((epdesc->bEndpointAddress & 0x80) ==  USBH_EPDIR_IN)) {
 
-				uinfof("\t  Endpoint wMaxPacketSize = %d", epdesc->wMaxPacketSize);
+				uclassdrvinfof("\t  Endpoint wMaxPacketSize = %d", epdesc->wMaxPacketSize);
 
 				if (epdesc->wMaxPacketSize >= min_ep_size) {
 					if (epdesc->wMaxPacketSize < sz) {
-						uinfo("\t    Found new optimal alternate setting");
+						uclassdrvinfo("\t    Found new optimal alternate setting");
 						sz = epdesc->wMaxPacketSize;
 						alt = ifdesc->bAlternateSetting;
 						ep = epdesc;
@@ -168,7 +142,7 @@ static bool _set_vs_alternate(USBHUVCDriver *uvcdp, uint16_t min_ep_size) {
 	}
 
 	if (ep && alt) {
-		uinfof("\tSelecting Alternate setting %d", alt);
+		uclassdrvinfof("\tSelecting Alternate setting %d", alt);
 		if (usbhStdReqSetInterface(uvcdp->dev, if_get(&uvcdp->ivs)->bInterfaceNumber, alt) == HAL_SUCCESS) {
 			usbhEPObjectInit(&uvcdp->ep_iso, uvcdp->dev, ep);
 			usbhEPSetName(&uvcdp->ep_iso, "UVC[ISO ]");
@@ -180,20 +154,22 @@ static bool _set_vs_alternate(USBHUVCDriver *uvcdp, uint16_t min_ep_size) {
 }
 
 #if	USBH_DEBUG_ENABLE && USBHUVC_DEBUG_ENABLE_INFO
-void usbhuvcPrintProbeCommit(const usbh_uvc_ctrl_vs_probecommit_data_t *pc) {
+void usbhuvcPrintProbeCommit(USBHUVCDriver *uvcdp,
+		const usbh_uvc_ctrl_vs_probecommit_data_t *pc) {
+	(void)uvcdp;
 
 	//uinfof("UVC: probe/commit data:");
-	uinfof("\tbmHint=%04x", pc->bmHint);
-	uinfof("\tbFormatIndex=%d, bFrameIndex=%d, dwFrameInterval=%u",
+	uclassdrvinfof("\tbmHint=%04x", pc->bmHint);
+	uclassdrvinfof("\tbFormatIndex=%d, bFrameIndex=%d, dwFrameInterval=%u",
 			pc->bFormatIndex, pc->bFrameIndex, pc->dwFrameInterval);
-	uinfof("\twKeyFrameRate=%d, wPFrameRate=%d, wCompQuality=%u, wCompWindowSize=%u",
+	uclassdrvinfof("\twKeyFrameRate=%d, wPFrameRate=%d, wCompQuality=%u, wCompWindowSize=%u",
 			pc->wKeyFrameRate, pc->wPFrameRate, pc->wCompQuality, pc->wCompWindowSize);
-	uinfof("\twDelay=%d", pc->wDelay);
-	uinfof("\tdwMaxVideoFrameSize=%u", pc->dwMaxVideoFrameSize);
-	uinfof("\tdwMaxPayloadTransferSize=%u", pc->dwMaxPayloadTransferSize);
-/*	uinfof("\tdwClockFrequency=%u", pc->dwClockFrequency);
-	uinfof("\tbmFramingInfo=%02x", pc->bmFramingInfo);
-	uinfof("\tbPreferedVersion=%d, bMinVersion=%d, bMaxVersion=%d",
+	uclassdrvinfof("\twDelay=%d", pc->wDelay);
+	uclassdrvinfof("\tdwMaxVideoFrameSize=%u", pc->dwMaxVideoFrameSize);
+	uclassdrvinfof("\tdwMaxPayloadTransferSize=%u", pc->dwMaxPayloadTransferSize);
+/*	uclassdrvinfof("\tdwClockFrequency=%u", pc->dwClockFrequency);
+	uclassdrvinfof("\tbmFramingInfo=%02x", pc->bmFramingInfo);
+	uclassdrvinfof("\tbPreferedVersion=%d, bMinVersion=%d, bMaxVersion=%d",
 			pc->bPreferedVersion, pc->bMinVersion, pc->bMaxVersion); */
 }
 #endif
@@ -214,11 +190,11 @@ static void _post(USBHUVCDriver *uvcdp, usbh_urb_t *urb, memory_pool_t *mp, uint
 			urb->buff = ((usbhuvc_message_data_t *)new_msg)->data;
 		} else {
 			/* couldn't post the message, free the newly allocated buffer */
-			uerr("UVC: error, mailbox overrun");
+			uurberr("UVC: error, mailbox overrun");
 			chPoolFreeI(&uvcdp->mp_status, new_msg);
 		}
 	} else {
-		uerrf("UVC: error, %s pool overrun", mp == &uvcdp->mp_data ? "data" : "status");
+		uurberrf("UVC: error, %s pool overrun", mp == &uvcdp->mp_data ? "data" : "status");
 	}
 }
 
@@ -230,18 +206,18 @@ static void _cb_int(usbh_urb_t *urb) {
 		if (urb->actualLength >= 2) {
 			_post(uvcdp, urb, &uvcdp->mp_status, USBHUVC_MESSAGETYPE_STATUS);
 		} else {
-			uerrf("UVC: INT IN, actualLength=%d", urb->actualLength);
+			uurberrf("UVC: INT IN, actualLength=%d", urb->actualLength);
 		}
 		break;
 	case USBH_URBSTATUS_TIMEOUT:	/* the device NAKed */
-		udbg("UVC: INT IN no info");
+		uurbdbg("UVC: INT IN no info");
 		break;
 	case USBH_URBSTATUS_DISCONNECTED:
 	case USBH_URBSTATUS_CANCELLED:
-		uwarn("UVC: INT IN status = DISCONNECTED/CANCELLED, aborting");
+		uurbwarn("UVC: INT IN status = DISCONNECTED/CANCELLED, aborting");
 		return;
 	default:
-		uerrf("UVC: INT IN error, unexpected status = %d", urb->status);
+		uurberrf("UVC: INT IN error, unexpected status = %d", urb->status);
 		break;
 	}
 
@@ -254,20 +230,20 @@ static void _cb_iso(usbh_urb_t *urb) {
 
 	if ((urb->status == USBH_URBSTATUS_DISCONNECTED)
 			|| (urb->status == USBH_URBSTATUS_CANCELLED)) {
-		uwarn("UVC: ISO IN status = DISCONNECTED/CANCELLED, aborting");
+		uurbwarn("UVC: ISO IN status = DISCONNECTED/CANCELLED, aborting");
 		return;
 	}
 
 	if (urb->status != USBH_URBSTATUS_OK) {
-		uerrf("UVC: ISO IN error, unexpected status = %d", urb->status);
+		uurberrf("UVC: ISO IN error, unexpected status = %d", urb->status);
 	} else if (urb->actualLength >= 2) {
 		const uint8_t *const buff = (const uint8_t *)urb->buff;
 		if (buff[0] < 2) {
-			uerrf("UVC: ISO IN, bHeaderLength=%d", buff[0]);
+			uurberrf("UVC: ISO IN, bHeaderLength=%d", buff[0]);
 		} else if (buff[0] > urb->actualLength) {
-			uerrf("UVC: ISO IN, bHeaderLength=%d > actualLength=%d", buff[0], urb->actualLength);
+			uurberrf("UVC: ISO IN, bHeaderLength=%d > actualLength=%d", buff[0], urb->actualLength);
 		} else {
-			udbgf("UVC: ISO IN len=%d, hdr=%d, FID=%d, EOF=%d, ERR=%d, EOH=%d",
+			uurbdbgf("UVC: ISO IN len=%d, hdr=%d, FID=%d, EOF=%d, ERR=%d, EOH=%d",
 						urb->actualLength,
 						buff[0],
 						buff[1] & UVC_HDR_FID,
@@ -279,7 +255,7 @@ static void _cb_iso(usbh_urb_t *urb) {
 					|| (buff[1] & (UVC_HDR_EOF | UVC_HDR_ERR))) {
 				_post(uvcdp, urb, &uvcdp->mp_data, USBHUVC_MESSAGETYPE_DATA);
 			} else {
-				udbgf("UVC: ISO IN skip: len=%d, hdr=%d, FID=%d, EOF=%d, ERR=%d, EOH=%d",
+				uurbdbgf("UVC: ISO IN skip: len=%d, hdr=%d, FID=%d, EOF=%d, ERR=%d, EOH=%d",
 						urb->actualLength,
 						buff[0],
 						buff[1] & UVC_HDR_FID,
@@ -289,7 +265,7 @@ static void _cb_iso(usbh_urb_t *urb) {
 			}
 		}
 	} else if (urb->actualLength > 0) {
-		uerrf("UVC: ISO IN, actualLength=%d", urb->actualLength);
+		uurberrf("UVC: ISO IN, actualLength=%d", urb->actualLength);
 	}
 
 	usbhURBObjectResetI(urb);
@@ -327,20 +303,20 @@ bool usbhuvcStreamStart(USBHUVCDriver *uvcdp, uint16_t min_ep_sz) {
 	data_sz = (uvcdp->ep_iso.wMaxPacketSize + sizeof(usbhuvc_message_data_t) + 3) & ~3;
 	datapackets = HAL_USBHUVC_WORK_RAM_SIZE / data_sz;
 	if (datapackets == 0) {
-		uerr("Not enough work RAM");
+		uclassdrverr("Not enough work RAM");
 		goto failed;
 	}
 
 	workramsz = datapackets * data_sz;
-	uinfof("Reserving %u bytes of RAM (%d data packets of %d bytes)", workramsz, datapackets, data_sz);
+	uclassdrvinfof("Reserving %u bytes of RAM (%d data packets of %d bytes)", workramsz, datapackets, data_sz);
 	if (datapackets > (HAL_USBHUVC_MAX_MAILBOX_SZ - HAL_USBHUVC_STATUS_PACKETS_COUNT)) {
-		uwarn("Mailbox may overflow, use a larger HAL_USBHUVC_MAX_MAILBOX_SZ. UVC will under-utilize the assigned work RAM.");
+		uclassdrvwarn("Mailbox may overflow, use a larger HAL_USBHUVC_MAX_MAILBOX_SZ. UVC will under-utilize the assigned work RAM.");
 	}
 	chMBResumeX(&uvcdp->mb);
 
 	uvcdp->mp_data_buffer = chHeapAlloc(NULL, workramsz);
 	if (uvcdp->mp_data_buffer == NULL) {
-		uerr("Couldn't reserve RAM");
+		uclassdrverr("Couldn't reserve RAM");
 		goto failed;
 	}
 
@@ -497,7 +473,7 @@ uint32_t usbhuvcEstimateRequiredEPSize(USBHUVCDriver *uvcdp, const uint8_t *form
 		mul = div = 1;
 	}	break;
 	default:
-		uwarn("Unsupported format");
+		uclassdrvwarn("Unsupported format");
 		return 0xffffffff;
 	}
 
@@ -528,7 +504,7 @@ static usbh_baseclassdriver_t *_uvc_load(usbh_device_t *dev, const uint8_t *desc
 		}
 	}
 
-	uwarn("Can't alloc UVC driver");
+	udevwarn("Can't alloc UVC driver");
 
 	/* can't alloc */
 	return NULL;
@@ -553,12 +529,12 @@ alloc_ok:
 
 		const usbh_interface_descriptor_t *const ifdesc = if_get(&iif);
 		if (ifdesc->bInterfaceClass != UVC_CC_VIDEO) {
-			uwarnf("Skipping Interface %d (class != UVC_CC_VIDEO)",
+			udevwarnf("Skipping Interface %d (class != UVC_CC_VIDEO)",
 					ifdesc->bInterfaceNumber);
 			continue;
 		}
 
-		uinfof("Interface %d, Alt=%d, Class=UVC_CC_VIDEO, Subclass=%02x",
+		udevinfof("Interface %d, Alt=%d, Class=UVC_CC_VIDEO, Subclass=%02x",
 				ifdesc->bInterfaceNumber,
 				ifdesc->bAlternateSetting,
 				ifdesc->bInterfaceSubClass);
@@ -570,24 +546,24 @@ alloc_ok:
 			}
 			for (cs_iter_init(&ics, (generic_iterator_t *)&iif); ics.valid; cs_iter_next(&ics)) {
 				if (ics.curr[1] != UVC_CS_INTERFACE) {
-					uwarnf("Unknown descriptor=%02X", ics.curr[1]);
+					udevwarnf("Unknown descriptor=%02X", ics.curr[1]);
 					continue;
 				}
 				switch (ics.curr[2]) {
 				case UVC_VC_HEADER:
-					uinfo("  VC_HEADER"); break;
+					udevinfo("  VC_HEADER"); break;
 				case UVC_VC_INPUT_TERMINAL:
-					uinfof("    VC_INPUT_TERMINAL, ID=%d", ics.curr[3]); break;
+					udevinfof("    VC_INPUT_TERMINAL, ID=%d", ics.curr[3]); break;
 				case UVC_VC_OUTPUT_TERMINAL:
-					uinfof("    VC_OUTPUT_TERMINAL, ID=%d", ics.curr[3]); break;
+					udevinfof("    VC_OUTPUT_TERMINAL, ID=%d", ics.curr[3]); break;
 				case UVC_VC_SELECTOR_UNIT:
-					uinfof("    VC_SELECTOR_UNIT, ID=%d", ics.curr[3]); break;
+					udevinfof("    VC_SELECTOR_UNIT, ID=%d", ics.curr[3]); break;
 				case UVC_VC_PROCESSING_UNIT:
-					uinfof("    VC_PROCESSING_UNIT, ID=%d", ics.curr[3]); break;
+					udevinfof("    VC_PROCESSING_UNIT, ID=%d", ics.curr[3]); break;
 				case UVC_VC_EXTENSION_UNIT:
-					uinfof("    VC_EXTENSION_UNIT, ID=%d", ics.curr[3]); break;
+					udevinfof("    VC_EXTENSION_UNIT, ID=%d", ics.curr[3]); break;
 				default:
-					uwarnf("Unknown video bDescriptorSubtype=%02x", ics.curr[2]);
+					udevwarnf("Unknown video bDescriptorSubtype=%02x", ics.curr[2]);
 					break;
 				}
 			}
@@ -598,47 +574,47 @@ alloc_ok:
 			}
 			for (cs_iter_init(&ics, (generic_iterator_t *)&iif); ics.valid; cs_iter_next(&ics)) {
 				if (ics.curr[1] != UVC_CS_INTERFACE) {
-					uwarnf("Unknown descriptor=%02X", ics.curr[1]);
+					udevwarnf("Unknown descriptor=%02X", ics.curr[1]);
 					continue;
 				}
 				switch (ics.curr[2]) {
 				case UVC_VS_INPUT_HEADER:
-					uinfo("  VS_INPUT_HEADER"); break;
+					udevinfo("  VS_INPUT_HEADER"); break;
 				case UVC_VS_OUTPUT_HEADER:
-					uinfo("  VS_OUTPUT_HEADER"); break;
+					udevinfo("  VS_OUTPUT_HEADER"); break;
 				case UVC_VS_STILL_IMAGE_FRAME:
-					uinfo("    VS_STILL_IMAGE_FRAME"); break;
+					udevinfo("    VS_STILL_IMAGE_FRAME"); break;
 
 				case UVC_VS_FORMAT_UNCOMPRESSED:
-					uinfof("    VS_FORMAT_UNCOMPRESSED, bFormatIndex=%d", ics.curr[3]); break;
+					udevinfof("    VS_FORMAT_UNCOMPRESSED, bFormatIndex=%d", ics.curr[3]); break;
 				case UVC_VS_FORMAT_MPEG2TS:
-					uinfof("    VS_FORMAT_MPEG2TS, bFormatIndex=%d", ics.curr[3]); break;
+					udevinfof("    VS_FORMAT_MPEG2TS, bFormatIndex=%d", ics.curr[3]); break;
 				case UVC_VS_FORMAT_DV:
-					uinfof("    VS_FORMAT_DV, bFormatIndex=%d", ics.curr[3]); break;
+					udevinfof("    VS_FORMAT_DV, bFormatIndex=%d", ics.curr[3]); break;
 				case UVC_VS_FORMAT_MJPEG:
-					uinfof("    VS_FORMAT_MJPEG, bFormatIndex=%d", ics.curr[3]); break;
+					udevinfof("    VS_FORMAT_MJPEG, bFormatIndex=%d", ics.curr[3]); break;
 				case UVC_VS_FORMAT_FRAME_BASED:
-					uinfof("    VS_FORMAT_FRAME_BASED, bFormatIndex=%d", ics.curr[3]); break;
+					udevinfof("    VS_FORMAT_FRAME_BASED, bFormatIndex=%d", ics.curr[3]); break;
 				case UVC_VS_FORMAT_STREAM_BASED:
-					uinfof("    VS_FORMAT_STREAM_BASED, bFormatIndex=%d", ics.curr[3]); break;
+					udevinfof("    VS_FORMAT_STREAM_BASED, bFormatIndex=%d", ics.curr[3]); break;
 
 				case UVC_VS_FRAME_UNCOMPRESSED:
-					uinfof("      VS_FRAME_UNCOMPRESSED, bFrameIndex=%d", ics.curr[3]); break;
+					udevinfof("      VS_FRAME_UNCOMPRESSED, bFrameIndex=%d", ics.curr[3]); break;
 				case UVC_VS_FRAME_MJPEG:
-					uinfof("      VS_FRAME_MJPEG, bFrameIndex=%d", ics.curr[3]); break;
+					udevinfof("      VS_FRAME_MJPEG, bFrameIndex=%d", ics.curr[3]); break;
 				case UVC_VS_FRAME_FRAME_BASED:
-					uinfof("      VS_FRAME_FRAME_BASED, bFrameIndex=%d", ics.curr[3]); break;
+					udevinfof("      VS_FRAME_FRAME_BASED, bFrameIndex=%d", ics.curr[3]); break;
 
 				case UVC_VS_COLOR_FORMAT:
-					uinfo("      VS_COLOR_FORMAT"); break;
+					udevinfo("      VS_COLOR_FORMAT"); break;
 				default:
-					uwarnf("Unknown video bDescriptorSubtype=%02x", ics.curr[2]);
+					udevwarnf("Unknown video bDescriptorSubtype=%02x", ics.curr[2]);
 					break;
 				}
 			}
 			break;
 		default:
-			uwarnf("Unknown video bInterfaceSubClass=%02x", ifdesc->bInterfaceSubClass);
+			udevwarnf("Unknown video bInterfaceSubClass=%02x", ifdesc->bInterfaceSubClass);
 			break;
 		}
 
@@ -649,7 +625,7 @@ alloc_ok:
 					&& ((epdesc->bmAttributes & 0x03) == USBH_EPTYPE_INT)
 					&& ((epdesc->bEndpointAddress & 0x80) ==  USBH_EPDIR_IN)) {
 				/* found VC interrupt endpoint */
-				uinfof("  VC Interrupt endpoint; %02x, bInterval=%d",
+				udevinfof("  VC Interrupt endpoint; %02x, bInterval=%d",
 						epdesc->bEndpointAddress, epdesc->bInterval);
 				usbhEPObjectInit(&uvcdp->ep_int, dev, epdesc);
 				usbhEPSetName(&uvcdp->ep_int, "UVC[INT ]");
@@ -657,16 +633,16 @@ alloc_ok:
 					&& ((epdesc->bmAttributes & 0x03) == USBH_EPTYPE_ISO)
 					&& ((epdesc->bEndpointAddress & 0x80) ==  USBH_EPDIR_IN)) {
 				/* found VS isochronous endpoint */
-				uinfof("  VS Isochronous endpoint; %02x, bInterval=%d, bmAttributes=%02x",
+				udevinfof("  VS Isochronous endpoint; %02x, bInterval=%d, bmAttributes=%02x",
 						epdesc->bEndpointAddress, epdesc->bInterval, epdesc->bmAttributes);
 			} else {
 				/* unknown EP */
-				uwarnf("  <unknown endpoint>, bEndpointAddress=%02x, bmAttributes=%02x",
+				udevwarnf("  <unknown endpoint>, bEndpointAddress=%02x, bmAttributes=%02x",
 									epdesc->bEndpointAddress, epdesc->bmAttributes);
 			}
 
 			for (cs_iter_init(&ics, &iep); ics.valid; cs_iter_next(&ics)) {
-				uinfof("    CS_ENDPOINT bLength=%d, bDescriptorType=%02X",
+				udevinfof("    CS_ENDPOINT bLength=%d, bDescriptorType=%02X",
 						ics.curr[0], ics.curr[1]);
 			}
 		}

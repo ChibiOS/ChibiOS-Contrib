@@ -83,6 +83,7 @@ typedef struct stm32_hc_management {
 		uint32_t 			hcintmsk;													\
 		uint32_t			hcchar;														\
 		uint32_t 			dt_mask;			/* data-toggle mask */					\
+		int32_t				trace_level;		/* enable tracing */					\
 		/* current transfer */															\
 		struct {																		\
 			stm32_hc_management_t *hcm;				/* assigned channel */				\
