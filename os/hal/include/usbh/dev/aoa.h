@@ -130,6 +130,7 @@ typedef bool (*usbhaoa_filter_callback_t)(usbh_device_t *dev, const uint8_t *des
 #define usbhaoaGetState(aoap) ((aoap)->state)
 
 #define usbhaoaGetChannelState(aoap) ((aoap)->channel.state)
+#define usbhaoaGetHost(aoap) ((aoap)->dev->host)
 
 /*===========================================================================*/
 /* External declarations.                                                    */
