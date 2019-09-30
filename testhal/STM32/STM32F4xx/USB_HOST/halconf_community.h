@@ -177,7 +177,7 @@
 #define HAL_USBH_PORT_DEBOUNCE_TIME                   200
 #define HAL_USBH_PORT_RESET_TIMEOUT                   500
 #define HAL_USBH_DEVICE_ADDRESS_STABILIZATION         20
-#define HAL_USBH_CONTROL_REQUEST_DEFAULT_TIMEOUT           OSAL_MS2I(1000)
+#define HAL_USBH_CONTROL_REQUEST_DEFAULT_TIMEOUT	  OSAL_MS2I(1000)
 
 /* MSD */
 #define HAL_USBH_USE_MSD                              TRUE
@@ -202,7 +202,7 @@
 
 #define HAL_USBHAOA_MAX_INSTANCES                     1
 /* Uncomment this if you need a filter for AOA devices:
- * #define HAL_USBHAOA_FILTER_CALLBACK            _try_aoa
+ * #define HAL_USBHAOA_FILTER_CALLBACK                _try_aoa
  */
 #define HAL_USBHAOA_DEFAULT_MANUFACTURER              "Diego MFG & Co."
 #define HAL_USBHAOA_DEFAULT_MODEL                     "Diego's device"
@@ -235,9 +235,10 @@
 
 /* debug */
 #define USBH_DEBUG_ENABLE                             TRUE
-#define USBH_DEBUG_USBHD                              USBHD1
-#define USBH_DEBUG_SD                                 SD2
+#define USBH_DEBUG_MULTI_HOST                         FALSE
+#define USBH_DEBUG_SINGLE_HOST_SELECTION			  USBHD1
 #define USBH_DEBUG_BUFFER                             25000
+#define USBH_DEBUG_OUTPUT_CALLBACK                    usbh_debug_output
 
 #define USBH_DEBUG_ENABLE_TRACE                       FALSE
 #define USBH_DEBUG_ENABLE_INFO                        TRUE
