@@ -28,10 +28,8 @@ endif
 ifneq ($(findstring HAL_USE_USBH TRUE,$(HALCONF)),)
 HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/hal_usbh.c \
                   ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_debug.c \
-                  ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_desciter.c
-endif
-ifneq ($(findstring HAL_USBH_USE_HUB TRUE,$(HALCONF)),)
-HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_hub.c
+                  ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_desciter.c \
+                  ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_hub.c
 endif
 ifneq ($(findstring HAL_USBH_USE_MSD TRUE,$(HALCONF)),)
 HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/usbh/hal_usbh_msd.c
