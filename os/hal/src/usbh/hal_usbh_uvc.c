@@ -181,7 +181,8 @@ static void _post(USBHUVCDriver *uvcdp, usbh_urb_t *urb, memory_pool_t *mp, uint
 	usbhuvc_message_base_t *const new_msg = (usbhuvc_message_base_t *)chPoolAllocI(mp);
 	if (new_msg != NULL) {
 		/* allocated the new buffer, now try to post the message to the mailbox */
-		if (chMBPostI(&uvcdp->mb, (msg_t)msg) == MSG_OK) {
+		msg_t r = chMBPostI(&uvcdp->mb, (msg_t)msg);
+		if (r == MSG_OK) {
 			/* everything OK, complete the missing fields */
 			msg->type = type;
 			msg->length = urb->actualLength;
@@ -189,8 +190,12 @@ static void _post(USBHUVCDriver *uvcdp, usbh_urb_t *urb, memory_pool_t *mp, uint
 			/* change the URB's buffer to the newly allocated one */
 			urb->buff = ((usbhuvc_message_data_t *)new_msg)->data;
 		} else {
+			if (r == MSG_RESET) {
+				uurbwarn("UVC: error, mailbox reset");
+			} else {
+				uurberr("UVC: error, mailbox overrun");
+			}
 			/* couldn't post the message, free the newly allocated buffer */
-			uurberr("UVC: error, mailbox overrun");
 			chPoolFreeI(&uvcdp->mp_status, new_msg);
 		}
 	} else {
