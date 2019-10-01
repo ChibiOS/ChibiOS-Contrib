@@ -133,7 +133,7 @@ export CHC_PATH=$WORKSPACE
     }
   }
   environment {
-    CH_BRANCH = 'stable_18.2.x'
+    CH_BRANCH = 'stable_19.1.x'
     CH_PATH = 'ChibiOS'
   }
 }
