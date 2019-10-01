@@ -94,7 +94,7 @@ include $(CHIBIOS)/os/license/license.mk
 # Startup files.
 include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_k20x5.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/os/hal/hal.mk
+include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/KINETIS/K20x/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/FREESCALE_FREEDOM_K20D50M/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
@@ -104,7 +104,7 @@ include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 # Other files (optional).
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD)/MK20DX128.ld
+LDSCRIPT= $(STARTUPLD_CONTRIB)/MK20DX128.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
