@@ -5,12 +5,13 @@ STARTUPASM = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/crt0_v7m.S \
              $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/vectors.S
 
 STARTUPINC = $(CHIBIOS)/os/common/portability/GCC \
-             $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC \
+             $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/ld \
              $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/devices/TM4C129x \
              $(CHIBIOS)/os/common/ext/ARM/CMSIS/Core/Include \
              $(CHIBIOS_CONTRIB)/os/common/ext/TivaWare
 
-STARTUPLD  = $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/ld
+STARTUPLD  = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/ld
+STARTUPLD_CONTRIB  = $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/ld
 
 # Shared variables
 ALLXASMSRC += $(STARTUPASM)
