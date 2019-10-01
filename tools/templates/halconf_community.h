@@ -81,10 +81,17 @@
 #endif
 
 /**
- * @brief   Enables the TIMCAP subsystem.
+ * @brief   Enables the COMP subsystem.
  */
 #if !defined(HAL_USE_COMP) || defined(__DOXYGEN__)
 #define HAL_USE_COMP                FALSE
+#endif
+
+/**
+ * @brief   Enables the OPAMP subsystem.
+ */
+#if !defined(HAL_USE_OPAMP) || defined(__DOXYGEN__)
+#define HAL_USE_OPAMP               FALSE
 #endif
 
 /**
