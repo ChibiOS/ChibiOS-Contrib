@@ -68,7 +68,7 @@ void memcpy_dma_start(void) {
   bool b;
 
   engine.dma = STM32_DMA_STREAM(STM32_MEMCPY_DMA_STREAM);
-  b = dmaStreamAllocate(engine.dma, STM32_MEMCPY_DMA_PRIORITY, NULL, NULL);
+  b = dmaStreamAlloc(engine.dma, STM32_MEMCPY_DMA_PRIORITY, NULL, NULL);
   osalDbgAssert(!b, "stream already allocated");
 }
 
@@ -76,7 +76,7 @@ void memcpy_dma_start(void) {
  *
  */
 void memcpy_dma_stop(void) {
-  dmaStreamRelease(engine.dma);
+  dmaStreamFree(engine.dma);
 }
 
 /*
