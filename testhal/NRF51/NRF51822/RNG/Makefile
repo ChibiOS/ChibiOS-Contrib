@@ -105,7 +105,7 @@ include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD)/NRF51822.ld
+LDSCRIPT= $(STARTUPLD_CONTRIB)/NRF51822.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -209,7 +209,7 @@ ULIBS =
 # End of user defines
 ##############################################################################
 
-RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/
+RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/
 include $(RULESPATH)/rules.mk
 
 

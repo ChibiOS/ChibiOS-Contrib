@@ -80,19 +80,6 @@
 /*===========================================================================*/
 
 /**
- * @brief   Type of a structure representing an SPI driver.
- */
-typedef struct SPIDriver SPIDriver;
-
-/**
- * @brief   SPI notification callback type.
- *
- * @param[in] spip      pointer to the @p SPIDriver object triggering the
- *                      callback
- */
-typedef void (*spicallback_t)(SPIDriver *spip);
-
-/**
  * @brief   SPI frequency
  */
 typedef enum {
@@ -106,97 +93,36 @@ typedef enum {
 } spifreq_t;
 
 /**
- * @brief   Driver configuration structure.
+ * @brief   Low level fields of the SPI configuration structure.
  */
-typedef struct {
-  /**
-   * @brief Operation complete callback or @p NULL.
-   */
-  spicallback_t         end_cb;
-  /**
-   * @brief The frequency of the SPI peripheral
-   */
-  spifreq_t             freq;
-  /**
-   * @brief The SCK pad
-   */
-  uint16_t              sckpad;
-  /**
-   * @brief The MOSI pad
-   */
-  uint16_t              mosipad;
-  /**
-   * @brief The MOSI pad
-   */
-  uint16_t              misopad;
-  /* End of the mandatory fields.*/
-  /**
-   * @brief The chip select line pad number.
-   */
-  uint16_t              sspad;
-  /**
-   * @brief Shift out least significant bit first
-   */
-  uint8_t               lsbfirst;
-  /**
-   * @brief SPI mode
-   */
-  uint8_t               mode;
-} SPIConfig;
+#define spi_lld_config_fields                                               \
+  /* @brief The frequency of the SPI peripheral */                          \
+  spifreq_t             freq;                                               \
+  /* @brief The SCK pad */                                                  \
+  uint16_t              sckpad;                                             \
+  /* @brief The MOSI pad */                                                 \
+  uint16_t              mosipad;                                            \
+  /* @brief The MOSI pad */                                                 \
+  uint16_t              misopad;                                            \
+  /* @brief Shift out least significant bit first */                        \
+  uint8_t               lsbfirst;                                           \
+  /* @brief SPI mode */                                                     \
+  uint8_t               mode;                                               \
 
 /**
- * @brief   Structure representing a SPI driver.
+ * @brief   Low level fields of the SPI driver structure.
  */
-struct SPIDriver {
-  /**
-   * @brief Driver state.
-   */
-  spistate_t            state;
-  /**
-   * @brief Current configuration data.
-   */
-  const SPIConfig       *config;
-#if SPI_USE_WAIT || defined(__DOXYGEN__)
-  /**
-   * @brief Waiting thread.
-   */
-  thread_reference_t    thread;
-#endif /* SPI_USE_WAIT */
-#if SPI_USE_MUTUAL_EXCLUSION || defined(__DOXYGEN__)
-#if CH_CFG_USE_MUTEXES || defined(__DOXYGEN__)
-  /**
-   * @brief Mutex protecting the bus.
-   */
-  mutex_t               mutex;
-#elif CH_CFG_USE_SEMAPHORES
-  semaphore_t           semaphore;
-#endif
-#endif /* SPI_USE_MUTUAL_EXCLUSION */
-#if defined(SPI_DRIVER_EXT_FIELDS)
-  SPI_DRIVER_EXT_FIELDS
-#endif
-  /* End of the mandatory fields.*/
-  /**
-   * @brief Pointer to the SPI port.
-   */
-  NRF_SPI_Type          *port;
-  /**
-   * @brief Number of bytes yet to be received.
-   */
-  uint32_t              rxcnt;
-  /**
-   * @brief Receive pointer or @p NULL.
-   */
-  void                  *rxptr;
-  /**
-   * @brief Number of bytes yet to be transmitted.
-   */
-  uint32_t              txcnt;
-  /**
-   * @brief Transmit pointer or @p NULL.
-   */
+#define spi_lld_driver_fields                                               \
+  /* @brief Pointer to the SPI port. */                                     \
+  NRF_SPI_Type          *port;                                              \
+  /* @brief Number of bytes yet to be received. */                          \
+  uint32_t              rxcnt;                                              \
+  /* @brief Receive pointer or @p NULL. */                                  \
+  void                  *rxptr;                                             \
+  /* @brief Number of bytes yet to be transmitted. */                       \
+  uint32_t              txcnt;                                              \
+  /* @brief Transmit pointer or @p NULL. */                                 \
   const void            *txptr;
-};
 
 /*===========================================================================*/
 /* Driver macros.                                                            */

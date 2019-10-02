@@ -57,7 +57,7 @@ static THD_FUNCTION(ThreadEE, arg)
   {
 
     eeFS = SPIEepromFileOpen(&eeFile, &eeCfg, EepromFindDevice(EEPROM_DEV_25XX));
-    fileStreamSeek(eeFS, 0);
+    fileStreamSetPosition(eeFS, 0);
 
     fileStreamWrite(eeFS, buffer, len);
     fileStreamRead(eeFS, buffer, len);

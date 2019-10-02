@@ -108,7 +108,7 @@ include $(CHIBIOS)/test/oslib/oslib_test.mk
 include $(CHIBIOS)/os/various/shell/shell.mk
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD)/NRF52832.ld
+LDSCRIPT= $(STARTUPLD_CONTRIB)/NRF52832.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -213,7 +213,7 @@ ULIBS =
 # End of user defines
 ##############################################################################
 
-RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/
+RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/
 include $(RULESPATH)/rules.mk
 
 OHEX = $(BUILDDIR)/$(PROJECT).hex

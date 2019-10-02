@@ -1,6 +1,3 @@
-/* CHIBIOS FIX */
-#include "ch.h"
-
 /*---------------------------------------------------------------------------/
 /  FatFs - Configuration file
 /---------------------------------------------------------------------------*/
@@ -71,7 +68,7 @@
 / Locale and Namespace Configurations
 /---------------------------------------------------------------------------*/
 
-#define FF_CODE_PAGE      850
+#define FF_CODE_PAGE	932
 /* This option specifies the OEM code page to be used on the target system.
 /  Incorrect code page setting can cause a file open failure.
 /
@@ -100,8 +97,8 @@
 */
 
 
-#define    FF_USE_LFN    3
-#define    FF_MAX_LFN    255
+#define FF_USE_LFN		0
+#define FF_MAX_LFN		255
 /* The FF_USE_LFN switches the support for LFN (long file name).
 /
 /   0: Disable LFN. FF_MAX_LFN has no effect.
@@ -213,13 +210,13 @@
 /  buffer in the filesystem object (FATFS) is used for the file data transfer. */
 
 
-#define FF_FS_EXFAT       1
+#define FF_FS_EXFAT		0
 /* This option switches support for exFAT filesystem. (0:Disable or 1:Enable)
 /  When enable exFAT, also LFN needs to be enabled.
 /  Note that enabling exFAT discards ANSI C (C89) compatibility. */
 
 
-#define FF_FS_NORTC       1
+#define FF_FS_NORTC		0
 #define FF_NORTC_MON	5
 #define FF_NORTC_MDAY	1
 #define FF_NORTC_YEAR	2017
@@ -245,9 +242,9 @@
 /      lock control is independent of re-entrancy. */
 
 
-#define FF_FS_REENTRANT   0
-#define FF_FS_TIMEOUT     MS2ST(1000)
-#define FF_SYNC_t         semaphore_t*
+#define FF_FS_REENTRANT	0
+#define FF_FS_TIMEOUT	1000
+#define FF_SYNC_t		HANDLE
 /* The option FF_FS_REENTRANT switches the re-entrancy (thread safe) of the FatFs
 /  module itself. Note that regardless of this option, file access to different
 /  volume is always re-entrant and volume control functions, f_mount(), f_mkfs()
