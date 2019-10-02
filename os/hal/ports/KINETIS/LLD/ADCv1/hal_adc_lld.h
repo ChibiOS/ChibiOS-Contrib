@@ -201,132 +201,47 @@ typedef enum {
 /**
  * @brief   Type of a structure representing an ADC driver.
  */
-typedef struct ADCDriver ADCDriver;
+typedef struct hal_adc_driver ADCDriver;
 
 /**
- * @brief   ADC notification callback type.
- *
- * @param[in] adcp      pointer to the @p ADCDriver object triggering the
- *                      callback
- * @param[in] buffer    pointer to the most recent samples data
- * @param[in] n         number of buffer rows available starting from @p buffer
+ * @brief   Low level fields of the ADC configuration structure.
  */
-typedef void (*adccallback_t)(ADCDriver *adcp, adcsample_t *buffer, size_t n);
-
-/**
- * @brief   ADC error callback type.
- *
- * @param[in] adcp      pointer to the @p ADCDriver object triggering the
- *                      callback
- * @param[in] err       ADC error code
- */
-typedef void (*adcerrorcallback_t)(ADCDriver *adcp, adcerror_t err);
-
-/**
- * @brief   Conversion group configuration structure.
- * @details This implementation-dependent structure describes a conversion
- *          operation.
- */
-typedef struct {
-  /**
-   * @brief   Enables the circular buffer mode for the group.
-   */
-  bool                      circular;
-  /**
-   * @brief   Number of the analog channels belonging to the conversion group.
-   */
-  adc_channels_num_t        num_channels;
-  /**
-   * @brief   Callback function associated to the group or @p NULL.
-   */
-  adccallback_t             end_cb;
-  /**
-   * @brief   Error callback or @p NULL.
-   */
-  adcerrorcallback_t        error_cb;
-  /* End of the mandatory fields.*/
-  /**
-   * @brief   Bitmask of channels for ADC conversion.
-   */
-  uint32_t                  channel_mask;
-  /**
-   * @brief   ADC CFG1 register initialization data.
-   * @note    All the required bits must be defined into this field.
-   */
-  uint32_t                  cfg1;
-  /**
-   * @brief   ADC SC3 register initialization data.
-   * @note    All the required bits must be defined into this field.
-   */
+#define adc_lld_configuration_group_fields                                  \
+ /**                                                                        \
+   * @brief   Bitmask of channels for ADC conversion.                       \
+   */                                                                       \
+  uint32_t                  channel_mask;                                   \
+  /**                                                                       \
+   * @brief   ADC CFG1 register initialization data.                        \
+   * @note    All the required bits must be defined into this field.        \
+   */                                                                       \
+  uint32_t                  cfg1;                                           \
+  /**                                                                       \
+   * @brief   ADC SC3 register initialization data.                         \
+   * @note    All the required bits must be defined into this field.        \
+   */                                                                       \
   uint32_t                  sc3;
-} ADCConversionGroup;
+
 
 /**
- * @brief   Driver configuration structure.
- * @note    It could be empty on some architectures.
+ * @brief   Low level fields of the ADC configuration structure.
  */
-typedef struct {
-  /* Perform first time calibration */
+#define adc_lld_config_fields                                               \
+  /* Perform first time calibration */                                      \
   bool                      calibrate;
-} ADCConfig;
 
 /**
- * @brief   Structure representing an ADC driver.
+ * @brief   Low level fields of the ADC driver structure.
  */
-struct ADCDriver {
-  /**
-   * @brief Driver state.
-   */
-  adcstate_t                state;
-  /**
-   * @brief Current configuration data.
-   */
-  const ADCConfig           *config;
-  /**
-   * @brief Current samples buffer pointer or @p NULL.
-   */
-  adcsample_t               *samples;
-  /**
-   * @brief Current samples buffer depth or @p 0.
-   */
-  size_t                    depth;
-  /**
-   * @brief Current conversion group pointer or @p NULL.
-   */
-  const ADCConversionGroup  *grpp;
-#if ADC_USE_WAIT || defined(__DOXYGEN__)
-  /**
-   * @brief Waiting thread.
-   */
-  thread_reference_t        thread;
-#endif
-#if ADC_USE_MUTUAL_EXCLUSION || defined(__DOXYGEN__)
-  /**
-   * @brief Mutex protecting the peripheral.
-   */
-  mutex_t                   mutex;
-#endif /* ADC_USE_MUTUAL_EXCLUSION */
-#if defined(ADC_DRIVER_EXT_FIELDS)
-  ADC_DRIVER_EXT_FIELDS
-#endif
-  /* End of the mandatory fields.*/
-  /**
-   * @brief Pointer to the ADCx registers block.
-   */
-  ADC_TypeDef               *adc;
-  /**
-   * @brief Number of samples expected.
-   */
-  size_t                    number_of_samples;
-  /**
-   * @brief Current position in the buffer.
-   */
-  size_t                    current_index;
-  /**
-   * @brief Current channel index into group channel_mask.
-   */
-  size_t                    current_channel;
-};
+#define adc_lld_driver_fields                                               \
+  /* Pointer to the ADCx registers block.*/                                 \
+  ADC_TypeDef               *adc;                                           \
+  /* @brief Number of samples expected. */                                  \
+  size_t                    number_of_samples;                              \
+  /* @brief Current position in the buffer. */                              \
+  size_t                    current_index;                                  \
+  /* @brief Current channel index into group channel_mask. */               \
+  size_t                    current_channel;                                \
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
