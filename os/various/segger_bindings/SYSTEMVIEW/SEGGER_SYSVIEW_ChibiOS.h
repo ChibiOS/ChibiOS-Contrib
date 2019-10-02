@@ -266,11 +266,14 @@ void SYSVIEW_ChibiOS_Start(U32 SysFreq, U32 CPUFreq, const char *isr_description
 
 #define CH_CFG_IRQ_EPILOGUE_HOOK() {                      \
   _CH_CFG_IRQ_EPILOGUE_HOOK();                            \
+  port_lock_from_isr();                                   \
+  _dbg_enter_lock();                                      \
   if (_isr_is_tail() && chSchIsPreemptionRequired()) {    \
     SEGGER_SYSVIEW_RecordExitISRToScheduler();            \
   } else {                                                \
     SEGGER_SYSVIEW_RecordExitISR();                       \
   }                                                       \
+  _dbg_leave_lock();                                      \
 }
 
 #define CH_CFG_SYSTEM_HALT_HOOK(reason) {                 \
