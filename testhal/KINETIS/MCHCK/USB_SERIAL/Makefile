@@ -93,7 +93,7 @@ include $(CHIBIOS)/os/license/license.mk
 # Startup files.
 include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_k20x5.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/os/hal/hal.mk
+include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/KINETIS/K20x/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/MCHCK_K20/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
