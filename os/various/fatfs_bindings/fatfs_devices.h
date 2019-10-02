@@ -15,24 +15,27 @@
     limitations under the License.
 */
 
-#ifndef USBH_ADDITIONAL_H_
-#define USBH_ADDITIONAL_H_
+#ifndef FATFS_DEVICES_H_
+#define FATFS_DEVICES_H_
 
-#include "hal_usbh.h"
+#include "hal.h"
 
-#if HAL_USE_USBH && HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS
-
-/* Declarations */
-extern const usbh_classdriverinfo_t usbhCustomClassDriverInfo;
-
-
-
-/* Comma separated list of additional class drivers */
-#define HAL_USBH_ADDITIONAL_CLASS_DRIVERS	\
-	&usbhCustomClassDriverInfo,
-
-
-
+/*-----------------------------------------------------------------------*/
+/* Correspondence between physical drive number and physical drive.      */
+#if HAL_USE_MMC_SPI || HAL_USE_SDC
+#define FATFSDEV_MMC         0
+#define FATFSDEV_MMC_DRIVE   "0:"
 #endif
 
-#endif /* USBH_ADDITIONAL_H_ */
+
+#if HAL_USBH_USE_MSD
+#if defined(FATFSDEV_MMC)
+#define FATFSDEV_MSD         1
+#define FATFSDEV_MSD_DRIVE   "1:"
+#else
+#define FATFSDEV_MSD         0
+#define FATFSDEV_MSD_DRIVE   "0:"
+#endif
+#endif
+
+#endif /* FATFS_DEVICES_H_ */

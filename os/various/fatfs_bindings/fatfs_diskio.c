@@ -7,17 +7,19 @@
 
 #include "hal.h"
 #include "ffconf.h"
+#include "ff.h"
 #include "diskio.h"
 #include "usbh/dev/msd.h"
+#include "fatfs_devices.h"
 
 #if HAL_USE_MMC_SPI && HAL_USE_SDC
-#error "cannot specify both MMC_SPI and SDC drivers"
+#error "cannot specify both MMC_SPI and FATFSDEV_MMC drivers"
 #endif
 
 // sanity check for no FAT option selected
 // why is the FAT sources being pulled into the build?
 #if !HAL_USE_MMC_SPI && !HAL_USE_SDC & !HAL_USBH_USE_MSD
-#error "MMC_SPI, SDC or USBH_MSD driver must be specified. None was."
+#error "MMC_SPI, FATFSDEV_MMC or USBH_MSD driver must be specified. None was."
 #endif
 
 #if !defined(FATFS_HAL_DEVICE)
@@ -41,24 +43,6 @@ extern SDCDriver FATFS_HAL_DEVICE;
 extern RTCDriver RTCD1;
 #endif
 
-/*-----------------------------------------------------------------------*/
-/* Correspondence between physical drive number and physical drive.      */
-#if HAL_USE_MMC_SPI
-#define MMC         0
-#endif
-
-#if HAL_USE_SDC
-#define SDC         0
-#endif
-
-#if HAL_USBH_USE_MSD
-#if defined(MMC) || defined(SDC)
-#define MSDLUN0     1
-#else
-#define MSDLUN0     0
-#endif
-#endif
-
 
 /*-----------------------------------------------------------------------*/
 /* Inidialize a Drive                                                    */
@@ -71,7 +55,7 @@ DSTATUS disk_initialize (
 
   switch (pdrv) {
 #if HAL_USE_MMC_SPI
-  case MMC:
+  case FATFSDEV_MMC:
     stat = 0;
     /* It is initialized externally, just reads the status.*/
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
@@ -80,7 +64,7 @@ DSTATUS disk_initialize (
       stat |=  STA_PROTECT;
     return stat;
 #elif HAL_USE_SDC
-  case SDC:
+  case FATFSDEV_MMC:
     stat = 0;
     /* It is initialized externally, just reads the status.*/
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
@@ -90,7 +74,7 @@ DSTATUS disk_initialize (
     return stat;
 #endif
 #if HAL_USBH_USE_MSD
-  case MSDLUN0:
+  case FATFSDEV_MSD:
 	stat = 0;
 	/* It is initialized externally, just reads the status.*/
 	if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
@@ -114,7 +98,7 @@ DSTATUS disk_status (
 
   switch (pdrv) {
 #if HAL_USE_MMC_SPI
-  case MMC:
+  case FATFSDEV_MMC:
     stat = 0;
     /* It is initialized externally, just reads the status.*/
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
@@ -123,7 +107,7 @@ DSTATUS disk_status (
       stat |= STA_PROTECT;
     return stat;
 #elif HAL_USE_SDC
-  case SDC:
+  case FATFSDEV_MMC:
     stat = 0;
     /* It is initialized externally, just reads the status.*/
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
@@ -133,7 +117,7 @@ DSTATUS disk_status (
     return stat;
 #endif
 #if HAL_USBH_USE_MSD
-  case MSDLUN0:
+  case FATFSDEV_MSD:
     stat = 0;
     /* It is initialized externally, just reads the status.*/
     if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
@@ -158,7 +142,7 @@ DRESULT disk_read (
 {
   switch (pdrv) {
 #if HAL_USE_MMC_SPI
-  case MMC:
+  case FATFSDEV_MMC:
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
       return RES_NOTRDY;
     if (mmcStartSequentialRead(&FATFS_HAL_DEVICE, sector))
@@ -173,7 +157,7 @@ DRESULT disk_read (
         return RES_ERROR;
     return RES_OK;
 #elif HAL_USE_SDC
-  case SDC:
+  case FATFSDEV_MMC:
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
       return RES_NOTRDY;
     if (sdcRead(&FATFS_HAL_DEVICE, sector, buff, count))
@@ -181,7 +165,7 @@ DRESULT disk_read (
     return RES_OK;
 #endif
 #if HAL_USBH_USE_MSD
-  case MSDLUN0:
+  case FATFSDEV_MSD:
 	/* It is initialized externally, just reads the status.*/
 	if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
 		return RES_NOTRDY;
@@ -209,7 +193,7 @@ DRESULT disk_write (
 
   switch (pdrv) {
 #if HAL_USE_MMC_SPI
-  case MMC:
+  case FATFSDEV_MMC:
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
         return RES_NOTRDY;
     if (mmcIsWriteProtected(&FATFS_HAL_DEVICE))
@@ -218,19 +202,19 @@ DRESULT disk_write (
         return RES_ERROR;
 
     while (count > 0) {
-      // invalidate cache on buffer
-      cacheBufferFlush(buff, MMCSD_BLOCK_SIZE);
+        // invalidate cache on buffer
+        cacheBufferFlush(buff, MMCSD_BLOCK_SIZE);
 
-      if (mmcSequentialWrite(&FATFS_HAL_DEVICE, buff))
-          return RES_ERROR;
-      buff += MMCSD_BLOCK_SIZE;
-      count--;
+        if (mmcSequentialWrite(&FATFS_HAL_DEVICE, buff))
+            return RES_ERROR;
+        buff += MMCSD_BLOCK_SIZE;
+        count--;
     }
     if (mmcStopSequentialWrite(&FATFS_HAL_DEVICE))
         return RES_ERROR;
     return RES_OK;
 #elif HAL_USE_SDC
-  case SDC:
+  case FATFSDEV_MMC:
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
       return RES_NOTRDY;
 
@@ -238,18 +222,18 @@ DRESULT disk_write (
     cacheBufferFlush(buff, count * MMCSD_BLOCK_SIZE);
 
     if (sdcWrite(&FATFS_HAL_DEVICE, sector, buff, count))
-      return RES_ERROR;
+        return RES_ERROR;
 
     return RES_OK;
 #endif
 #if HAL_USBH_USE_MSD
-  case MSDLUN0:
+  case FATFSDEV_MSD:
 	/* It is initialized externally, just reads the status.*/
 	if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
 		return RES_NOTRDY;
 
-  // invalidate cache on buffer
-  cacheBufferFlush(buff, count * MSBLKD[0].info.blk_size);
+    // invalidate cache on buffer
+    cacheBufferFlush(buff, count * MSBLKD[0].info.blk_size);
 
 	if (usbhmsdLUNWrite(&MSBLKD[0], sector, buff, count))
 		return RES_ERROR;
@@ -275,7 +259,7 @@ DRESULT disk_ioctl (
 
   switch (pdrv) {
 #if HAL_USE_MMC_SPI
-  case MMC:
+  case FATFSDEV_MMC:
     switch (cmd) {
     case CTRL_SYNC:
         return RES_OK;
@@ -293,7 +277,7 @@ DRESULT disk_ioctl (
         return RES_PARERR;
     }
 #elif HAL_USE_SDC
-  case SDC:
+  case FATFSDEV_MMC:
     switch (cmd) {
     case CTRL_SYNC:
         return RES_OK;
@@ -318,7 +302,7 @@ DRESULT disk_ioctl (
     }
 #endif
 #if HAL_USBH_USE_MSD
-    case MSDLUN0:
+    case FATFSDEV_MSD:
       switch (cmd) {
       case CTRL_SYNC:
           return RES_OK;

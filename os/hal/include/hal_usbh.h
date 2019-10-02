@@ -1,6 +1,6 @@
 /*
     ChibiOS - Copyright (C) 2006..2017 Giovanni Di Sirio
-              Copyright (C) 2015..2017 Diego Ismirlian, (dismirlian (at) google's mail)
+              Copyright (C) 2015..2019 Diego Ismirlian, (dismirlian(at)google's mail)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -52,7 +52,9 @@
 #define HAL_USBH_USE_ADDITIONAL_CLASS_DRIVERS	FALSE
 #endif
 
+#ifndef HAL_USBH_USE_IAD
 #define HAL_USBH_USE_IAD     HAL_USBH_USE_UVC
+#endif
 
 #if (HAL_USE_USBH == TRUE) || defined(__DOXYGEN__)
 
@@ -299,11 +301,22 @@ extern "C" {
 	}
 
 	/* Synchronous API */
-	usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
+	usbh_urbstatus_t usbhSynchronousTransfer(usbh_ep_t *ep,
 			void *data,
 			uint32_t len,
 			uint32_t *actual_len,
 			systime_t timeout);
+
+	static inline usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
+			void *data,
+			uint32_t len,
+			uint32_t *actual_len,
+			systime_t timeout) {
+		osalDbgAssert(ep->type == USBH_EPTYPE_BULK, "wrong ep");
+
+		return usbhSynchronousTransfer(ep, data, len, actual_len, timeout);
+	}
+
 	usbh_urbstatus_t usbhControlRequest(usbh_device_t *dev,
 			uint8_t bmRequestType,
 			uint8_t bRequest,

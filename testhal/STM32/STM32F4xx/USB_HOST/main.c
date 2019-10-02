@@ -297,6 +297,7 @@ start:
 #if HAL_USBH_USE_MSD
 #include "usbh/dev/msd.h"
 #include "ff.h"
+#include "fatfs_devices.h"
 
 static FATFS MSDLUN0FS;
 
@@ -388,14 +389,14 @@ start:
 
         usbDbgPuts("FS: Block driver ready, try mount...");
 
-        res = f_mount(&MSDLUN0FS, "0:", 1);
+        res = f_mount(&MSDLUN0FS, FATFSDEV_MSD_DRIVE, 1);
         if (res != FR_OK) {
             usbDbgPuts("FS: Can't mount. Check file system.");
             continue;
         }
         usbDbgPuts("FS: Mounted.");
 
-        res = f_getfree("0:", &clusters, &fsp);
+        res = f_getfree(FATFSDEV_MSD_DRIVE, &clusters, &fsp);
         if (res != FR_OK) {
             usbDbgPuts("FS: f_getfree() failed");
             continue;
@@ -419,7 +420,7 @@ start:
         //write test
         if (1) {
             usbDbgPuts("FS: Write test (create file /test.dat, 1MB)");
-            f_open(&file, "/test.dat", FA_CREATE_ALWAYS | FA_WRITE);
+            f_open(&file, FATFSDEV_MSD_DRIVE "/test.dat", FA_CREATE_ALWAYS | FA_WRITE);
             src = start;
             st = chVTGetSystemTime();
             for (j = 0; j < 2048; j++) {
@@ -439,7 +440,7 @@ start:
         //read test
         if (1) {
             usbDbgPuts("FS: Read test (read file /test.dat, 1MB, compare)");
-            f_open(&file, "/test.dat", FA_READ);
+            f_open(&file, FATFSDEV_MSD_DRIVE "/test.dat", FA_READ);
             src = start;
             st = chVTGetSystemTime();
             for (j = 0; j < 2048; j++) {
@@ -463,7 +464,7 @@ start:
         //scan files test
         if (1) {
             usbDbgPuts("FS: Scan files test");
-            fbuff[0] = 0;
+            strcpy((char *)fbuff, FATFSDEV_MSD_DRIVE);
             scan_files(chp, (char *)fbuff);
         }
     }

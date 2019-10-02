@@ -1,6 +1,6 @@
 /*
     ChibiOS - Copyright (C) 2006..2017 Giovanni Di Sirio
-              Copyright (C) 2015..2017 Diego Ismirlian, (dismirlian (at) google's mail)
+              Copyright (C) 2015..2019 Diego Ismirlian, (dismirlian(at)google's mail)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -22,7 +22,13 @@
 #include "ch.h"
 #include "usbh/debug.h"
 #include <stdarg.h>
+#if 0
+#include "debug.h"
+#else
 #include "chprintf.h"
+#define dbg_lock()
+#define dbg_unlock()
+#endif
 
 #define MAX_FILLER 11
 #define FLOAT_PRECISION 9
@@ -393,6 +399,9 @@ void usbDbgPrintf(const char *fmt, ...)
 		chThdDequeueNextI(&USBH_DEBUG_USBHD.iq.q_waiting, Q_OK);
 	}
 	chSysRestoreStatusX(sts);
+	if (!port_is_isr_context() && chSchIsPreemptionRequired()) {
+		chSchRescheduleS();
+	}
 	va_end(ap);
 }
 
@@ -422,6 +431,9 @@ void usbDbgPuts(const char *s)
 		chThdDequeueNextI(&USBH_DEBUG_USBHD.iq.q_waiting, Q_OK);
 	}
 	chSysRestoreStatusX(sts);
+	if (!port_is_isr_context() && chSchIsPreemptionRequired()) {
+		chSchRescheduleS();
+	}
 }
 
 void usbDbgReset(void) {
@@ -435,6 +447,9 @@ void usbDbgReset(void) {
 		USBH_DEBUG_SD.oqueue.q_counter--;
 	}
 	chSysRestoreStatusX(sts);
+	if (!port_is_isr_context() && chSchIsPreemptionRequired()) {
+		chSchRescheduleS();
+	}
 }
 
 static int _get(void) {
@@ -527,6 +542,7 @@ static void usb_debug_thread(void *arg) {
 
 			uint32_t f = hfnum & 0xffff;
 			uint32_t p = 1000 - ((hfnum >> 16) / (hfir / 1000));
+			dbg_lock();
 			chprintf((BaseSequentialStream *)&USBH_DEBUG_SD, "%05d.%03d ", f, p);
 			state = 4;
 		} else if (state == 3) {
@@ -543,6 +559,7 @@ static void usb_debug_thread(void *arg) {
 			c = iqGet(&host->iq); if (c < 0) goto reset;
 			t |= c << 24;
 
+			dbg_lock();
 			chprintf((BaseSequentialStream *)&USBH_DEBUG_SD, "+%08d ", t);
 			state = 4;
 		} else {
@@ -550,8 +567,7 @@ static void usb_debug_thread(void *arg) {
 				if (!c) {
 					sdPut(&USBH_DEBUG_SD, '\r');
 					sdPut(&USBH_DEBUG_SD, '\n');
-					state = 0;
-					break;
+					goto reset;
 				}
 				sdPut(&USBH_DEBUG_SD, (uint8_t)c);
 				c = iqGet(&host->iq); if (c < 0) goto reset;
@@ -560,6 +576,9 @@ static void usb_debug_thread(void *arg) {
 
 		continue;
 reset:
+		if (state == 4) {
+			dbg_unlock();
+		}
 		state = 0;
 	}
 }

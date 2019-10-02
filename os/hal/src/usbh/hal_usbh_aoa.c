@@ -1,6 +1,6 @@
 /*
     ChibiOS - Copyright (C) 2006..2017 Giovanni Di Sirio
-              Copyright (C) 2015..2017 Diego Ismirlian, (dismirlian (at) google's mail)
+              Copyright (C) 2015..2019 Diego Ismirlian, (dismirlian(at)google's mail)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -161,6 +161,11 @@ static usbh_baseclassdriver_t *_aoa_load(usbh_device_t *dev, const uint8_t *desc
 			}
 		};
 
+		if (descriptor[1] != USBH_DT_DEVICE) {
+			uinfo("AOA: Won't try to detect Android device at interface level");
+			return NULL;
+		}
+
 		uinfo("AOA: Unrecognized VID");
 
 #if defined(HAL_USBHAOA_FILTER_CALLBACK)
@@ -171,6 +176,7 @@ static usbh_baseclassdriver_t *_aoa_load(usbh_device_t *dev, const uint8_t *desc
 
 		uinfo("AOA: Try if it's an Android device");
 		if (_get_protocol(dev, &protocol) != HAL_SUCCESS) {
+			uinfo("AOA: not an Android device");
 			return NULL;
 		}
 		uinfof("AOA: Possible Android device found (protocol=%d)", protocol);
@@ -196,6 +202,8 @@ static usbh_baseclassdriver_t *_aoa_load(usbh_device_t *dev, const uint8_t *desc
 
 		if (_accessory_start(dev) != HAL_SUCCESS) {
 			uerr("AOA: Can't start accessory; abort channel start");
+		} else {
+			uinfo("AOA: Accessory started");
 		}
 
 		return NULL;
@@ -320,7 +328,7 @@ static void _out_cb(usbh_urb_t *urb) {
 		return;
 	case USBH_URBSTATUS_DISCONNECTED:
 		uwarn("AOA: URB OUT disconnected");
-		chThdDequeueNextI(&aoacp->oq_waiting, Q_RESET);
+		chThdDequeueAllI(&aoacp->oq_waiting, Q_RESET);
 		chnAddFlagsI(aoacp, CHN_OUTPUT_EMPTY);
 		return;
 	default:
@@ -419,7 +427,10 @@ static void _in_cb(usbh_urb_t *urb) {
 		break;
 	case USBH_URBSTATUS_DISCONNECTED:
 		uwarn("AOA: URB IN disconnected");
-		chThdDequeueNextI(&aoacp->iq_waiting, Q_RESET);
+		chThdDequeueAllI(&aoacp->iq_waiting, Q_RESET);
+		chnAddFlagsI(aoacp, CHN_DISCONNECTED);
+		aoacp->state = USBHAOA_CHANNEL_STATE_ACTIVE;
+		container_of(aoacp, USBHAOADriver, channel)->state = USBHAOA_STATE_ACTIVE;
 		break;
 	default:
 		uerrf("AOA: URB IN status unexpected = %d", urb->status);
@@ -535,14 +546,16 @@ static void _stop_channelS(USBHAOAChannel *aoacp) {
 static void _vt(void *p) {
 	USBHAOAChannel *const aoacp = (USBHAOAChannel *)p;
 	osalSysLockFromISR();
-	uint32_t len = aoacp->oq_ptr - aoacp->oq_buff;
-	if (len && !usbhURBIsBusy(&aoacp->oq_urb)) {
-		_submitOutI(aoacp, len);
+	if (aoacp->state == USBHAOA_CHANNEL_STATE_READY) {
+		uint32_t len = aoacp->oq_ptr - aoacp->oq_buff;
+		if (len && !usbhURBIsBusy(&aoacp->oq_urb)) {
+			_submitOutI(aoacp, len);
+		}
+		if ((aoacp->iq_counter == 0) && !usbhURBIsBusy(&aoacp->iq_urb)) {
+			_submitInI(aoacp);
+		}
+		chVTSetI(&aoacp->vt, OSAL_MS2I(16), _vt, aoacp);
 	}
-	if ((aoacp->iq_counter == 0) && !usbhURBIsBusy(&aoacp->iq_urb)) {
-		_submitInI(aoacp);
-	}
-	chVTSetI(&aoacp->vt, OSAL_MS2I(16), _vt, aoacp);
 	osalSysUnlockFromISR();
 }
 

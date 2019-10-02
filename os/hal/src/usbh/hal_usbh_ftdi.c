@@ -1,6 +1,6 @@
 /*
     ChibiOS - Copyright (C) 2006..2017 Giovanni Di Sirio
-              Copyright (C) 2015..2017 Diego Ismirlian, (dismirlian (at) google's mail)
+              Copyright (C) 2015..2019 Diego Ismirlian, (dismirlian(at)google's mail)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -150,6 +150,7 @@ alloc_ok:
 	case 0x900:		//232H;
 		uinfo("FTDI: Type H chip");
 		ftdip->type = USBHFTDI_TYPE_H;
+		break;
 	default:
 		uerr("FTDI: Unrecognized chip type");
 		return NULL;

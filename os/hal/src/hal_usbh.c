@@ -1,6 +1,6 @@
 /*
     ChibiOS - Copyright (C) 2006..2017 Giovanni Di Sirio
-              Copyright (C) 2015..2017 Diego Ismirlian, (dismirlian (at) google's mail)
+              Copyright (C) 2015..2019 Diego Ismirlian, (dismirlian(at)google's mail)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -302,6 +302,7 @@ msg_t usbhURBSubmitAndWaitS(usbh_urb_t *urb, systime_t timeout) {
 	_check_urb(urb);
 
 	usbhURBSubmitI(urb);
+	osalOsRescheduleS();	/* This call is necessary because usbhURBSubmitI may require a reschedule */
 	ret = usbhURBWaitTimeoutS(urb, timeout);
 	if (ret == MSG_TIMEOUT)
 		_usbh_urb_abort_and_waitS(urb, USBH_URBSTATUS_TIMEOUT);
@@ -330,7 +331,7 @@ void _usbh_urb_completeI(usbh_urb_t *urb, usbh_urbstatus_t status) {
 /* Synchronous API.                                                          */
 /*===========================================================================*/
 
-usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
+usbh_urbstatus_t usbhSynchronousTransfer(usbh_ep_t *ep,
 		void *data,
 		uint32_t len,
 		uint32_t *actual_len,
@@ -338,7 +339,6 @@ usbh_urbstatus_t usbhBulkTransfer(usbh_ep_t *ep,
 
 	osalDbgCheck(ep != NULL);
 	osalDbgCheck((data != NULL) || (len == 0));
-	osalDbgAssert(ep->type == USBH_EPTYPE_BULK, "wrong ep");
 
 	usbh_urb_t urb;
 	usbhURBObjectInit(&urb, ep, 0, 0, data, len);
@@ -860,9 +860,7 @@ static void _port_process_status_change(usbh_port_t *port) {
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_CONNECTION);
 
 		if (port->device.status != USBH_DEVSTATUS_DISCONNECTED) {
-			if (!(port->status & USBH_PORTSTATUS_CONNECTION)) {
-				_usbh_port_disconnected(port);
-			}
+			_usbh_port_disconnected(port);
 		}
 	}
 
