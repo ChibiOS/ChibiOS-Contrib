@@ -156,7 +156,7 @@
  * @brief   Enables the SPI subsystem.
  */
 #if !defined(HAL_USE_SPI) || defined(__DOXYGEN__)
-#define HAL_USE_SPI                         TRUE../../../../os/hal/ports/NRF5/LLD/SPIv1/hal_spi_lld.h
+#define HAL_USE_SPI                         TRUE
 #endif
 
 /**
