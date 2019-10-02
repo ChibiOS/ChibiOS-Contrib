@@ -104,7 +104,7 @@ include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 
 # Define linker script file here
 # Use BLDR4 for a 4k bootloader, BLDR3 for a 3k bootloader
-LDSCRIPT= $(STARTUPLD)/MK20DX128BLDR4.ld
+LDSCRIPT= $(STARTUPLD_CONTRIB)/MK20DX128BLDR4.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.

@@ -103,7 +103,7 @@ include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v6m.mk
 # Other files (optional).
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD)/MKL2xZ128.ld
+LDSCRIPT= $(STARTUPLD_CONTRIB)/MKL2xZ128.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
