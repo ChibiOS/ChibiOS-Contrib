@@ -131,10 +131,7 @@ static void _init_fault_info(void) {
 }
 
 static void _save_fault_info(void) {
-	memset(&fault_info.decoded_fault_registers, 0, sizeof(fault_info.decoded_fault_registers));
-#ifndef FAULT_NO_PRINT
-	memset(&fault_info.decoded_info_string, 0, sizeof(fault_info.decoded_info_string));
-#endif
+	memset(&fault_info, 0, sizeof(fault_info));
 
 	if (ch.rlist.current) {
 		fault_printf("Thread: 0x%08x, %s",
