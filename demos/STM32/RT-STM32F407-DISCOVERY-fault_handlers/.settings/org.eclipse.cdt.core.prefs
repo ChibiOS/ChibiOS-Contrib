@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/0.114656749/PATH/delimiter=;
+environment/project/0.114656749/PATH/operation=replace
+environment/project/0.114656749/PATH/value=${PATH};D\:\\toolchains\\gcc-arm-none-eabi-8-2018-q4-major-win32\\bin;${PATH};D\:\\toolchains\\gcc-arm-none-eabi-4_9-2014q4-20141203-win32\\bin;D\:\\toolchains\\msys64\\usr\\bin
+environment/project/0.114656749/append=true
+environment/project/0.114656749/appendContributed=true
