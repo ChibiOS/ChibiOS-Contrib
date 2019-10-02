@@ -14,6 +14,8 @@
     limitations under the License.
 */
 
+#define STM32_USE_DMA
+
 /*
  * FSMC driver system settings.
  */

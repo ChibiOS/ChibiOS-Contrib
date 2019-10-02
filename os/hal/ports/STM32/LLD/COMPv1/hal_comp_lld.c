@@ -303,7 +303,7 @@ void comp_ext_lld_channel_enable(COMPDriver *compp, uint32_t channel) {
   if (channel < 32) {
 #endif
     /* Masked out lines must not be touched by this driver.*/
-    if ((cmask & STM32_EXTI_IMR_MASK) != 0U) {
+    if ((cmask & STM32_EXTI_IMR1_MASK) != 0U) {
       return;
     }
 

@@ -106,11 +106,6 @@
 /*===========================================================================*/
 
 /**
- * @brief   Type of a structure representing an SPI driver.
- */
-typedef struct SPIDriver SPIDriver;
-
-/**
  * @brief   SPI notification callback type.
  *
  * @param[in] spip      pointer to the @p SPIDriver object triggering the
@@ -119,77 +114,23 @@ typedef struct SPIDriver SPIDriver;
 typedef void (*spicallback_t)(SPIDriver *spip);
 
 /**
- * @brief   Driver configuration structure.
+ * @brief   Low level fields of the SPI configuration structure.
  */
-typedef struct {
-  /**
-   * @brief Operation complete callback or @p NULL.
-   */
-  spicallback_t             end_cb;
-  /* End of the mandatory fields.*/
-  /**
-   * @brief The chip select line port - when not using pcs.
-   */
-  ioportid_t                ssport;
-  /**
-   * @brief The chip select line pad number - when not using pcs.
-   */
-  uint16_t                  sspad;
-  /**
-   * @brief SPI initialization data.
-   */
+#define spi_lld_config_fields                                               \
+  /* @brief SPI initialization data. */                                     \
   uint32_t                  tar0;
-} SPIConfig;
 
-/**
- * @brief   Structure representing a SPI driver.
- */
-struct SPIDriver {
-  /**
-   * @brief Driver state.
-   */
-  spistate_t                state;
-  /**
-   * @brief Current configuration data.
-   */
-  const SPIConfig           *config;
-#if SPI_USE_WAIT || defined(__DOXYGEN__)
-  /**
-   * @brief Waiting thread.
-   */
-  thread_reference_t        thread;
-#endif /* SPI_USE_WAIT */
-#if SPI_USE_MUTUAL_EXCLUSION || defined(__DOXYGEN__)
-  /**
-   * @brief Mutex protecting the bus.
-   */
-  mutex_t                   mutex;
-#endif /* SPI_USE_MUTUAL_EXCLUSION */
-#if defined(SPI_DRIVER_EXT_FIELDS)
-  SPI_DRIVER_EXT_FIELDS
-#endif
-  /* End of the mandatory fields.*/
-  /**
-   * @brief Pointer to the SPIx registers block.
-   */
-  SPI_TypeDef               *spi;
-  /**
-   * @brief   Number of bytes/words of data to transfer.
-   */
-  size_t                    count;
-  /**
-   * @brief   Word size in bytes.
-   */
-  size_t                    word_size;
-  /**
-   * @brief   Pointer to the buffer with data to send.
-   */
-  const uint8_t             *txbuf;
-  /**
-   * @brief   Pointer to the buffer to put received data.
-   */
+#define spi_lld_driver_fields                                               \
+  /* @brief Pointer to the SPIx registers block. */                         \
+  SPI_TypeDef               *spi;                                           \
+  /* @brief   Number of bytes/words of data to transfer. */                 \
+  size_t                    count;                                          \
+  /* @brief   Word size in bytes. */                                        \
+  size_t                    word_size;                                      \
+  /* @brief   Pointer to the buffer with data to send. */                   \
+  const uint8_t             *txbuf;                                         \
+  /* @brief   Pointer to the buffer to put received data. */                \
   uint8_t                   *rxbuf;
-};
 
 /*===========================================================================*/
 /* Driver macros.                                                            */

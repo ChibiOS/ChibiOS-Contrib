@@ -235,7 +235,7 @@ void crc_lld_start(CRCDriver *crcp) {
  */
 void crc_lld_stop(CRCDriver *crcp) {
 #if CRC_USE_DMA == TRUE
-  dmaStreamRelease(crcp->dma);
+  dmaStreamFree(crcp->dma);
 #else
   (void)crcp;
 #endif

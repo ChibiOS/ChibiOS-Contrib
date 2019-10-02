@@ -63,11 +63,6 @@
 #define STM32_PVD_ENABLE                    FALSE
 #define STM32_PLS                           STM32_PLS_LEV0
 #define STM32_BKPRAM_ENABLE                 FALSE
-#define STM32_SAISRC                        STM32_SAISRC_PLL
-#define STM32_PLLSAIN_VALUE                 192
-#define STM32_PLLSAIQ_VALUE                 7
-#define STM32_PLLSAIR_VALUE                 4
-#define STM32_PLLSAIR_POST                  STM32_SAIR_DIV4
 
 /*
  * IRQ system settings.
@@ -363,22 +358,6 @@
  */
 #define STM32_WDG_USE_IWDG                  FALSE
 
-/*
- * LTDC driver system settings.
- */
-#define STM32_LTDC_USE_LTDC                 TRUE
-#define STM32_LTDC_EV_IRQ_PRIORITY          11
-#define STM32_LTDC_ER_IRQ_PRIORITY          11
-
-/*
- * DMA2D driver system settings.
- */
-#define STM32_DMA2D_USE_DMA2D               TRUE
-#define STM32_DMA2D_IRQ_PRIORITY            11
-
-/*
- * Header for community drivers.
- */
 #include "mcuconf_community.h"
 
 #endif /* MCUCONF_H */

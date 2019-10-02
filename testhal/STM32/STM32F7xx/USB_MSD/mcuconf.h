@@ -32,6 +32,11 @@
  */
 
 #define STM32F7xx_MCUCONF
+#define STM32F765_MCUCONF
+#define STM32F767_MCUCONF
+#define STM32F777_MCUCONF
+#define STM32F769_MCUCONF
+#define STM32F779_MCUCONF
 
 /*
  * HAL driver system settings.
@@ -91,6 +96,7 @@
 #define STM32_CECSEL                        STM32_CECSEL_LSE
 #define STM32_CK48MSEL                      STM32_CK48MSEL_PLL
 #define STM32_SDMMC1SEL                     STM32_SDMMC1SEL_PLL48CLK
+#define STM32_SDMMC2SEL                     STM32_SDMMC2SEL_PLL48CLK
 #define STM32_SRAM2_NOCACHE                 FALSE
 
 /*
@@ -158,7 +164,7 @@
 #define STM32_GPT_USE_TIM1                  FALSE
 #define STM32_GPT_USE_TIM2                  FALSE
 #define STM32_GPT_USE_TIM3                  FALSE
-#define STM32_GPT_USE_TIM4                  TRUE
+#define STM32_GPT_USE_TIM4                  FALSE
 #define STM32_GPT_USE_TIM5                  FALSE
 #define STM32_GPT_USE_TIM6                  FALSE
 #define STM32_GPT_USE_TIM7                  FALSE
@@ -189,13 +195,13 @@
 #define STM32_I2C_USE_I2C4                  FALSE
 #define STM32_I2C_BUSY_TIMEOUT              50
 #define STM32_I2C_I2C1_RX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 0)
-#define STM32_I2C_I2C1_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 6)
+#define STM32_I2C_I2C1_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 7)
 #define STM32_I2C_I2C2_RX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 2)
 #define STM32_I2C_I2C2_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 7)
 #define STM32_I2C_I2C3_RX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 2)
 #define STM32_I2C_I2C3_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 4)
 #define STM32_I2C_I2C4_RX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 2)
-#define STM32_I2C_I2C4_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 5)
+#define STM32_I2C_I2C4_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 6)
 #define STM32_I2C_I2C1_IRQ_PRIORITY         5
 #define STM32_I2C_I2C2_IRQ_PRIORITY         5
 #define STM32_I2C_I2C3_IRQ_PRIORITY         5
@@ -255,21 +261,33 @@
 #define STM32_PWM_TIM9_IRQ_PRIORITY         7
 
 /*
+ * RTC driver system settings.
+ */
+#define STM32_RTC_PRESA_VALUE               32
+#define STM32_RTC_PRESS_VALUE               1024
+#define STM32_RTC_CR_INIT                   0
+#define STM32_RTC_TAMPCR_INIT               0
+
+/*
  * SDC driver system settings.
  */
 #define STM32_SDC_USE_SDMMC1                FALSE
+#define STM32_SDC_USE_SDMMC2                FALSE
 #define STM32_SDC_SDMMC_UNALIGNED_SUPPORT   TRUE
 #define STM32_SDC_SDMMC_WRITE_TIMEOUT       1000
 #define STM32_SDC_SDMMC_READ_TIMEOUT        1000
 #define STM32_SDC_SDMMC_CLOCK_DELAY         10
 #define STM32_SDC_SDMMC1_DMA_STREAM         STM32_DMA_STREAM_ID(2, 3)
+#define STM32_SDC_SDMMC2_DMA_STREAM         STM32_DMA_STREAM_ID(2, 0)
 #define STM32_SDC_SDMMC1_DMA_PRIORITY       3
+#define STM32_SDC_SDMMC2_DMA_PRIORITY       3
 #define STM32_SDC_SDMMC1_IRQ_PRIORITY       9
+#define STM32_SDC_SDMMC2_IRQ_PRIORITY       9
 
 /*
  * SERIAL driver system settings.
  */
-#define STM32_SERIAL_USE_USART1             FALSE
+#define STM32_SERIAL_USE_USART1             TRUE
 #define STM32_SERIAL_USE_USART2             FALSE
 #define STM32_SERIAL_USE_USART3             TRUE
 #define STM32_SERIAL_USE_UART4              FALSE
@@ -360,6 +378,8 @@
 #define STM32_UART_UART4_IRQ_PRIORITY       12
 #define STM32_UART_UART5_IRQ_PRIORITY       12
 #define STM32_UART_USART6_IRQ_PRIORITY      12
+#define STM32_UART_UART7_IRQ_PRIORITY       12
+#define STM32_UART_UART8_IRQ_PRIORITY       12
 #define STM32_UART_USART1_DMA_PRIORITY      0
 #define STM32_UART_USART2_DMA_PRIORITY      0
 #define STM32_UART_USART3_DMA_PRIORITY      0
@@ -379,15 +399,16 @@
 #define STM32_USB_OTG2_IRQ_PRIORITY         14
 #define STM32_USB_OTG1_RX_FIFO_SIZE         512
 #define STM32_USB_OTG2_RX_FIFO_SIZE         1024
-#define STM32_USB_OTG_THREAD_PRIO           LOWPRIO
-#define STM32_USB_OTG_THREAD_STACK_SIZE     128
-#define STM32_USB_OTGFIFO_FILL_BASEPRI      0
 
 /*
  * WDG driver system settings.
  */
 #define STM32_WDG_USE_IWDG                  FALSE
 
-#include "mcuconf_community.h"
+/*
+ * WSPI driver system settings.
+ */
+#define STM32_WSPI_USE_QUADSPI1             FALSE
+#define STM32_WSPI_QUADSPI1_DMA_STREAM      STM32_DMA_STREAM_ID(2, 7)
 
 #endif /* MCUCONF_H */

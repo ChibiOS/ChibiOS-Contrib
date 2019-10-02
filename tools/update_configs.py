@@ -9,22 +9,22 @@ from argparse import ArgumentParser
 from traceback import print_exc
 from shutil import copy
 
-parser = ArgumentParser(description='Generate ChibiOS-Contrib config and make files from ChibiOS')
-parser.add_argument('-s', '--src', default='../../ChibiOS-RT', type=str, help="ChibiOS folder")
+parser = ArgumentParser(description='Generate ChibiOS-Contrib config and Makefiles from ChibiOS')
+parser.add_argument('-s', '--src', default='../../ChibiOS', type=str, help="ChibiOS folder")
 parser.add_argument('-d', '--dst', default='..', type=str, help='ChibiOS-Contrib folder')
 
+FOLDERS = ['testhal']
 
 def makefile(lines):
 
     for l in range(len(lines)):
 
         if 'CHIBIOS =' in lines[l]:
-            lines[l] = lines[l][:-1] + '/../ChibiOS-RT\n'
+            lines[l] = lines[l][:-1] + '/../ChibiOS\n'
             lines.insert(l + 1, 'CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib\n')
 
         if '$(CHIBIOS)/os/hal/hal.mk' in lines[l] \
-                or '$(CHIBIOS)/os/hal/ports/' in lines[l] \
-                or '$(CHIBIOS)/os/various' in lines[l]            :
+                or '$(CHIBIOS)/os/hal/ports/' in lines[l]:
             lines[l] = lines[l].replace('CHIBIOS', 'CHIBIOS_CONTRIB')
 
     return "".join(lines)
@@ -49,13 +49,12 @@ def mcuconf(lines):
 
     return "".join(lines)
 
-
 if __name__ == '__main__':
 
     args = parser.parse_args()
     sources = {}
 
-    for folder in ['testhal']:
+    for folder in FOLDERS:
 
         for family in os.scandir(args.src + '/{}/STM32/'.format(folder)):
             if not family.name[0].isupper() or not family.is_dir():
@@ -63,10 +62,13 @@ if __name__ == '__main__':
 
             for test in os.scandir(family.path):
                 try:
-                    sources[family.name] = {'makefile': None, 'halconf': None, 'mcuconf': None}
+                    sources[family.name] = {'makefile': None, 'halconf': None, 'mcuconf': None, 'chconf': None}
 
                     with open(test.path + '/Makefile', 'r') as file:
                         sources[family.name]['makefile'] = makefile(file.readlines())
+
+                    with open(test.path + '/chconf.h', 'r') as file:
+                        sources[family.name]['chconf'] = file.read()
 
                     with open(test.path + '/halconf.h', 'r') as file:
                         sources[family.name]['halconf'] = halconf(file.readlines())
@@ -92,6 +94,9 @@ if __name__ == '__main__':
                 try:
                     with open(test.path + '/Makefile', 'w') as file:
                         file.write(sources[family.name]['makefile'])
+
+                    with open(test.path + '/chconf.h', 'w') as file:
+                        file.write(sources[family.name]['chconf'])
 
                     with open(test.path + '/halconf.h', 'w') as file:
                         file.write(sources[family.name]['halconf'])
