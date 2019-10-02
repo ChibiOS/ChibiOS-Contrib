@@ -73,6 +73,15 @@
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
+/**
+ * @brief   Possible ADC failure causes.
+ * @note    Error codes are architecture dependent and should not relied
+ *          upon.
+ */
+typedef enum {
+  ADC_ERR_DMAFAILURE = 0,                   /**< DMA operations failure.    */
+  ADC_ERR_OVERFLOW = 1                      /**< ADC overflow condition.    */
+} adcerror_t;
 
 /**
  * @brief   ADC sample data type.
@@ -85,118 +94,35 @@ typedef uint16_t adcsample_t;
 typedef uint8_t adc_channels_num_t;
 
 /**
- * @brief   Type of a structure representing an ADC driver.
+ * @brief   Low level fields of the ADC driver structure.
  */
-typedef struct ADCDriver ADCDriver;
-
-/**
- * @brief   ADC notification callback type.
- *
- * @param[in] adcp      pointer to the @p ADCDriver object triggering the
- *                      callback
- * @param[in] buffer    pointer to the most recent samples data
- * @param[in] n         number of buffer rows available starting from @p buffer
- */
-typedef void (*adccallback_t)(ADCDriver *adcp, adcsample_t *buffer, size_t n);
-
-/**
- * @brief   Conversion group configuration structure.
- * @details This implementation-dependent structure describes a conversion
- *          operation.
- * @note    The use of this configuration structure requires knowledge of
- *          STM32 ADC cell registers interface, please refer to the STM32
- *          reference manual for details.
- */
-typedef struct {
-  /**
-   * @brief   Enables the circular buffer mode for the group.
-   */
-  bool                      circular;
-  /**
-   * @brief   Number of the analog channels belonging to the conversion group.
-   */
-  adc_channels_num_t        num_channels;
-  /**
-   * @brief   Callback function associated to the group or @p NULL.
-   */
-  adccallback_t             end_cb;
-  /* End of the mandatory fields.*/
-  /**
-   * @brief   Bitmask of channels for ADC conversion.
-   */
-  uint32_t                  channel_mask;
-  /**
-   * @brief   ADC CONFIG register details.
-   * @note    All the required bits must be defined into this field.
-   */
-  uint32_t                  cfg;
-} ADCConversionGroup;
-
-/**
- * @brief   Driver configuration structure.
- * @note    It could be empty on some architectures.
- */
-typedef struct {
-  uint32_t                  dummy;
-} ADCConfig;
-
-/**
- * @brief   Structure representing an ADC driver.
- */
-struct ADCDriver {
-  /**
-   * @brief Driver state.
-   */
-  adcstate_t                state;
-  /**
-   * @brief Current configuration data.
-   */
-  const ADCConfig           *config;
-  /**
-   * @brief Current samples buffer pointer or @p NULL.
-   */
-  adcsample_t               *samples;
-  /**
-   * @brief Current samples buffer depth or @p 0.
-   */
-  size_t                    depth;
-  /**
-   * @brief Current conversion group pointer or @p NULL.
-   */
-  const ADCConversionGroup  *grpp;
-#if ADC_USE_WAIT || defined(__DOXYGEN__)
-  /**
-   * @brief Waiting thread.
-   */
-  thread_reference_t        thread;
-#endif
-#if ADC_USE_MUTUAL_EXCLUSION || defined(__DOXYGEN__)
-  /**
-   * @brief Mutex protecting the peripheral.
-   */
-  mutex_t                   mutex;
-#endif /* ADC_USE_MUTUAL_EXCLUSION */
-#if defined(ADC_DRIVER_EXT_FIELDS)
-  ADC_DRIVER_EXT_FIELDS
-#endif
-  /* End of the mandatory fields.*/
-  /**
-   * @brief Pointer to the ADCx registers block.
-   */
-  NRF_ADC_Type             *adc;
-  /**
-   * @brief Number of samples expected.
-   */
-  size_t                    number_of_samples;
-  /**
-   * @brief Current position in the buffer.
-   */
-  size_t                    current_index;
-  /**
-   * @brief Current channel index into group channel_mask.
-   */
+#define adc_lld_driver_fields                                               \
+  /* @brief Pointer to the ADCx registers block. */                         \
+  NRF_ADC_Type             *adc;                                            \
+  /* @brief Number of samples expected. */                                  \
+  size_t                    number_of_samples;                              \
+  /* @brief Current position in the buffer. */                              \
+  size_t                    current_index;                                  \
+  /* @brief Current channel index into group channel_mask. */               \
   size_t                    current_channel;
-};
+
+/**
+ * @brief   Low level fields of the ADC configuration structure.
+ */
+#define adc_lld_config_fields                                               \
+  /* Dummy configuration, it is not needed.*/                               \
+  uint32_t                  dummy
+
+#define adc_lld_configuration_group_fields                                  \
+  /**                                                                       \
+   * @brief   Bitmask of channels for ADC conversion.                       \
+   */                                                                       \
+  uint32_t                  channel_mask;                                   \
+  /**                                                                       \
+   * @brief   ADC CONFIG register details.                                  \
+   * @note    All the required bits must be defined into this field.        \
+   */                                                                       \
+  uint32_t                  cfg;
 
 /*===========================================================================*/
 /* Driver macros.                                                            */

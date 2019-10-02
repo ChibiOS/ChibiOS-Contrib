@@ -63,11 +63,6 @@
 #define STM32_PVD_ENABLE                    FALSE
 #define STM32_PLS                           STM32_PLS_LEV0
 #define STM32_BKPRAM_ENABLE                 FALSE
-#define STM32_SAISRC                        STM32_SAISRC_PLL
-#define STM32_PLLSAIN_VALUE                 192
-#define STM32_PLLSAIQ_VALUE                 7
-#define STM32_PLLSAIR_VALUE                 4
-#define STM32_PLLSAIR_POST                  STM32_SAIR_DIV4
 
 /*
  * IRQ system settings.
@@ -243,8 +238,8 @@
  */
 #define STM32_SDC_SDIO_DMA_PRIORITY         3
 #define STM32_SDC_SDIO_IRQ_PRIORITY         9
-#define STM32_SDC_WRITE_TIMEOUT_MS          250
-#define STM32_SDC_READ_TIMEOUT_MS           25
+#define STM32_SDC_WRITE_TIMEOUT_MS          1000
+#define STM32_SDC_READ_TIMEOUT_MS           1000
 #define STM32_SDC_CLOCK_ACTIVATION_DELAY    10
 #define STM32_SDC_SDIO_UNALIGNED_SUPPORT    TRUE
 #define STM32_SDC_SDIO_DMA_STREAM           STM32_DMA_STREAM_ID(2, 3)
@@ -363,9 +358,6 @@
  */
 #define STM32_WDG_USE_IWDG                  FALSE
 
-/*
- * Header for community drivers.
- */
 #include "mcuconf_community.h"
 
 #endif /* MCUCONF_H */

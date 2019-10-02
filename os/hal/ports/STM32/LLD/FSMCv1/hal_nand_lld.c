@@ -328,10 +328,10 @@ void nand_lld_start(NANDDriver *nandp) {
     fsmc_start(&FSMCD1);
 
   if (nandp->state == NAND_STOP) {
-    b = dmaStreamAllocate(nandp->dma,
-                          STM32_EMC_FSMC1_IRQ_PRIORITY,
-                          (stm32_dmaisr_t)nand_lld_serve_transfer_end_irq,
-                          (void *)nandp);
+    b = dmaStreamAlloc(nandp->dma,
+                       STM32_EMC_FSMC1_IRQ_PRIORITY,
+                       (stm32_dmaisr_t)nand_lld_serve_transfer_end_irq,
+                       (void *)nandp);
     osalDbgAssert(!b, "stream already allocated");
 
 #if AHB_TRANSACTION_WIDTH == 4
@@ -377,7 +377,7 @@ void nand_lld_start(NANDDriver *nandp) {
 void nand_lld_stop(NANDDriver *nandp) {
 
   if (nandp->state == NAND_READY) {
-    dmaStreamRelease(nandp->dma);
+    dmaStreamFree(nandp->dma);
     nandp->nand->PCR &= ~FSMC_PCR_PBKEN;
     nand_ready_isr_disable(nandp);
     nandp->isr_handler = NULL;

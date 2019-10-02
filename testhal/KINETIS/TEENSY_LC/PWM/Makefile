@@ -93,7 +93,7 @@ include $(CHIBIOS)/os/license/license.mk
 # Startup files.
 include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_kl2x.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/os/hal/hal.mk
+include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/KINETIS/KL2x/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/PJRC_TEENSY_LC/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
@@ -103,7 +103,7 @@ include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v6m.mk
 # Other files (optional).
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD)/MKL26Z64.ld
+LDSCRIPT= $(STARTUPLD_CONTRIB)/MKL26Z64.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -209,5 +209,5 @@ ULIBS =
 # End of user defines
 ##############################################################################
 
-RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC
+RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk
 include $(RULESPATH)/rules.mk

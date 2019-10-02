@@ -93,7 +93,7 @@ include $(CHIBIOS)/os/license/license.mk
 # Startup files.
 include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_k20x5.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/os/hal/hal.mk
+include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/KINETIS/K20x/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/MCHCK_K20/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
@@ -109,7 +109,7 @@ include $(CHIBIOS)/os/various/shell/shell.mk
 
 # Define linker script file here
 # Use BLDR4 for a 4k bootloader, BLDR3 for a 3k bootloader
-LDSCRIPT= $(STARTUPLD)/MK20DX128BLDR4.ld
+LDSCRIPT= $(STARTUPLD_CONTRIB)/MK20DX128BLDR4.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -218,5 +218,5 @@ ULIBS =
 # End of user defines
 ##############################################################################
 
-RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC
+RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk
 include $(RULESPATH)/rules.mk
