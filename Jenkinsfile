@@ -28,6 +28,10 @@ exit 0'''
           steps {
             sh '''arm-none-eabi-gcc -v
 
+cd $WORKSPACE/ext
+for i in *.7z; do 7z x -y $i; done
+
+cd $WORKSPACE
 rm -rf $CH_PATH
 git clone /var/lib/git/ChibiOS $CH_PATH
 cd $CH_PATH
@@ -55,6 +59,10 @@ export CHC_PATH=$WORKSPACE
           steps {
             sh '''arm-none-eabi-gcc -v
 
+cd $WORKSPACE/ext
+for i in *.7z; do 7z x -y $i; done
+
+cd $WORKSPACE
 rm -rf $CH_PATH
 git clone /var/lib/git/ChibiOS $CH_PATH
 cd $CH_PATH
@@ -83,6 +91,10 @@ export CHC_PATH=$WORKSPACE
           steps {
             sh '''arm-none-eabi-gcc -v
 
+cd $WORKSPACE/ext
+for i in *.7z; do 7z x -y $i; done
+
+cd $WORKSPACE
 rm -rf $CH_PATH
 git clone /var/lib/git/ChibiOS $CH_PATH
 cd $CH_PATH
@@ -111,6 +123,10 @@ export CHC_PATH=$WORKSPACE
           steps {
             sh '''arm-none-eabi-gcc -v
 
+cd $WORKSPACE/ext
+for i in *.7z; do 7z x -y $i; done
+
+cd $WORKSPACE
 rm -rf $CH_PATH
 git clone /var/lib/git/ChibiOS $CH_PATH
 cd $CH_PATH
