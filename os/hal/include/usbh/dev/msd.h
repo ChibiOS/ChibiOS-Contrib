@@ -72,7 +72,6 @@ struct USBHMassStorageLUNDriver {
 /* Driver macros.                                                            */
 /*===========================================================================*/
 
-
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
@@ -95,6 +94,8 @@ extern "C" {
 	bool usbhmsdLUNGetInfo(USBHMassStorageLUNDriver *lunp, BlockDeviceInfo *bdip);
 	bool usbhmsdLUNIsInserted(USBHMassStorageLUNDriver *lunp);
 	bool usbhmsdLUNIsProtected(USBHMassStorageLUNDriver *lunp);
+
+	USBHDriver *usbhmsdLUNGetHost(const USBHMassStorageLUNDriver *lunp);
 #ifdef __cplusplus
 }
 #endif

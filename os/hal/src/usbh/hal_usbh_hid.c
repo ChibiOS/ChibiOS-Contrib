@@ -27,39 +27,12 @@
 #include "usbh/dev/hid.h"
 #include "usbh/internal.h"
 
-#if USBHHID_DEBUG_ENABLE_TRACE
-#define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define udbg(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define udbgf(f, ...)  do {} while(0)
-#define udbg(f, ...)   do {} while(0)
-#endif
-
-#if USBHHID_DEBUG_ENABLE_INFO
-#define uinfof(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uinfo(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uinfof(f, ...)  do {} while(0)
-#define uinfo(f, ...)   do {} while(0)
-#endif
-
-#if USBHHID_DEBUG_ENABLE_WARNINGS
-#define uwarnf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uwarn(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uwarnf(f, ...)  do {} while(0)
-#define uwarn(f, ...)   do {} while(0)
-#endif
-
-#if USBHHID_DEBUG_ENABLE_ERRORS
-#define uerrf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uerr(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uerrf(f, ...)  do {} while(0)
-#define uerr(f, ...)   do {} while(0)
-#endif
-
-
+#define _USBH_DEBUG_HELPER_CLASS_DRIVER		hidp
+#define _USBH_DEBUG_HELPER_ENABLE_TRACE		USBHHID_DEBUG_ENABLE_TRACE
+#define _USBH_DEBUG_HELPER_ENABLE_INFO		USBHHID_DEBUG_ENABLE_INFO
+#define _USBH_DEBUG_HELPER_ENABLE_WARNINGS	USBHHID_DEBUG_ENABLE_WARNINGS
+#define _USBH_DEBUG_HELPER_ENABLE_ERRORS	USBHHID_DEBUG_ENABLE_ERRORS
+#include "usbh/debug_helpers.h"
 
 #define USBH_HID_REQ_GET_REPORT		0x01
 #define USBH_HID_REQ_GET_IDLE		0x02
@@ -113,7 +86,7 @@ static usbh_baseclassdriver_t *_hid_load(usbh_device_t *dev, const uint8_t *desc
 		}
 	}
 
-	uwarn("Can't alloc HID driver");
+	udevwarn("Can't alloc HID driver");
 
 	/* can't alloc */
 	return NULL;
@@ -136,7 +109,7 @@ alloc_ok:
 	for (ep_iter_init(&iep, &iif); iep.valid; ep_iter_next(&iep)) {
 		const usbh_endpoint_descriptor_t *const epdesc = ep_get(&iep);
 		if ((epdesc->bEndpointAddress & 0x80) && (epdesc->bmAttributes == USBH_EPTYPE_INT)) {
-			uinfof("INT IN endpoint found: bEndpointAddress=%02x", epdesc->bEndpointAddress);
+			udevinfof("INT IN endpoint found: bEndpointAddress=%02x", epdesc->bEndpointAddress);
 			usbhEPObjectInit(&hidp->epin, dev, epdesc);
 			usbhEPSetName(&hidp->epin, "HID[IIN ]");
 #if HAL_USBHHID_USE_INTERRUPT_OUT
@@ -147,7 +120,7 @@ alloc_ok:
 			usbhEPSetName(&hidp->epout, "HID[IOUT]");
 #endif
 		} else {
-			uinfof("unsupported endpoint found: bEndpointAddress=%02x, bmAttributes=%02x",
+			udevinfof("unsupported endpoint found: bEndpointAddress=%02x, bmAttributes=%02x",
 					epdesc->bEndpointAddress, epdesc->bmAttributes);
 		}
 	}
@@ -157,19 +130,19 @@ alloc_ok:
 
 	if (ifdesc->bInterfaceSubClass != 0x01) {
 		hidp->type = USBHHID_DEVTYPE_GENERIC;
-		uinfof("HID: bInterfaceSubClass=%02x, generic HID", ifdesc->bInterfaceSubClass);
+		udevinfof("HID: bInterfaceSubClass=%02x, generic HID", ifdesc->bInterfaceSubClass);
 		if (ifdesc->bInterfaceSubClass != 0x00) {
-			uinfof("HID: bInterfaceSubClass=%02x is an invalid bInterfaceSubClass value",
+			udevinfof("HID: bInterfaceSubClass=%02x is an invalid bInterfaceSubClass value",
 					ifdesc->bInterfaceSubClass);
 		}
 	} else if (ifdesc->bInterfaceProtocol == 0x01) {
 		hidp->type = USBHHID_DEVTYPE_BOOT_KEYBOARD;
-		uinfo("HID: BOOT protocol keyboard found");
+		udevinfo("HID: BOOT protocol keyboard found");
 	} else if (ifdesc->bInterfaceProtocol == 0x02) {
 		hidp->type = USBHHID_DEVTYPE_BOOT_MOUSE;
-		uinfo("HID: BOOT protocol mouse found");
+		udevinfo("HID: BOOT protocol mouse found");
 	} else {
-		uerrf("HID: bInterfaceProtocol=%02x is an invalid boot protocol, abort",
+		udeverrf("HID: bInterfaceProtocol=%02x is an invalid boot protocol, abort",
 				ifdesc->bInterfaceProtocol);
 		goto deinit;
 	}
@@ -200,14 +173,14 @@ static void _in_cb(usbh_urb_t *urb) {
 		}
 		break;
 	case USBH_URBSTATUS_DISCONNECTED:
-		uwarn("HID: URB IN disconnected");
+		uurbwarn("HID: URB IN disconnected");
 
 		return;
 	case USBH_URBSTATUS_TIMEOUT:
 		//no data
 		break;
 	default:
-		uerrf("HID: URB IN status unexpected = %d", urb->status);
+		uurberrf("HID: URB IN status unexpected = %d", urb->status);
 		break;
 	}
 	usbhURBObjectResetI(&hidp->in_urb);

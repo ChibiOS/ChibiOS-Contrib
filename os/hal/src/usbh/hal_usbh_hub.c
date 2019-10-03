@@ -27,38 +27,12 @@
 #include "usbh/dev/hub.h"
 #include "usbh/internal.h"
 
-#if USBHHUB_DEBUG_ENABLE_TRACE
-#define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define udbg(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define udbgf(f, ...)  do {} while(0)
-#define udbg(f, ...)   do {} while(0)
-#endif
-
-#if USBHHUB_DEBUG_ENABLE_INFO
-#define uinfof(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uinfo(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uinfof(f, ...)  do {} while(0)
-#define uinfo(f, ...)   do {} while(0)
-#endif
-
-#if USBHHUB_DEBUG_ENABLE_WARNINGS
-#define uwarnf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uwarn(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uwarnf(f, ...)  do {} while(0)
-#define uwarn(f, ...)   do {} while(0)
-#endif
-
-#if USBHHUB_DEBUG_ENABLE_ERRORS
-#define uerrf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uerr(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uerrf(f, ...)  do {} while(0)
-#define uerr(f, ...)   do {} while(0)
-#endif
-
+#define _USBH_DEBUG_HELPER_CLASS_DRIVER		hubp
+#define _USBH_DEBUG_HELPER_ENABLE_TRACE		USBHHUB_DEBUG_ENABLE_TRACE
+#define _USBH_DEBUG_HELPER_ENABLE_INFO		USBHHUB_DEBUG_ENABLE_INFO
+#define _USBH_DEBUG_HELPER_ENABLE_WARNINGS	USBHHUB_DEBUG_ENABLE_WARNINGS
+#define _USBH_DEBUG_HELPER_ENABLE_ERRORS	USBHHUB_DEBUG_ENABLE_ERRORS
+#include "usbh/debug_helpers.h"
 
 USBHHubDriver USBHHUBD[HAL_USBHHUB_MAX_INSTANCES];
 static usbh_port_t USBHPorts[HAL_USBHHUB_MAX_PORTS];
@@ -106,13 +80,13 @@ static void _urb_complete(usbh_urb_t *urb) {
 	switch (urb->status) {
 	case USBH_URBSTATUS_TIMEOUT:
 		/* the device NAKed */
-		udbg("HUB: no info");
+		uurbdbg("HUB: no info");
 		//hubdp->statuschange = 0;
 		break;
 	case USBH_URBSTATUS_OK: {
 		uint8_t len = hubdp->hubDesc.bNbrPorts / 8 + 1;
 		if (urb->actualLength != len) {
-			uwarnf("Expected %d status change bytes but got %d", len, urb->actualLength);
+			uurbwarnf("Expected %d status change bytes but got %d", len, urb->actualLength);
 		}
 
 		if (urb->actualLength < len)
@@ -126,13 +100,13 @@ static void _urb_complete(usbh_urb_t *urb) {
 		while (len--)
 			*sc++ |= *r++;
 
-		uinfof("HUB: change, %08x", hubdp->statuschange);
+		uurbinfof("HUB: change, %08x", hubdp->statuschange);
 	}	break;
 	case USBH_URBSTATUS_DISCONNECTED:
-		uwarn("HUB: URB disconnected, aborting poll");
+		uurbwarn("HUB: URB disconnected, aborting poll");
 		return;
 	default:
-		uerrf("HUB: URB status unexpected = %d", urb->status);
+		uurberrf("HUB: URB status unexpected = %d", urb->status);
 		break;
 	}
 
@@ -181,7 +155,7 @@ static usbh_baseclassdriver_t *_hub_load(usbh_device_t *dev,
 		}
 	}
 
-	uwarn("Can't alloc HUB driver");
+	udevwarn("Can't alloc HUB driver");
 
 	/* can't alloc */
 	return NULL;
@@ -195,7 +169,7 @@ alloc_ok:
 	usbhEPSetName(&dev->ctrl, "HUB[CTRL]");
 
 	/* read Hub descriptor */
-	uinfo("Read Hub descriptor");
+	udevinfo("Read Hub descriptor");
 	if (usbhhubControlRequest(dev->host, hubdp,
 			USBH_REQTYPE_DIR_IN | USBH_REQTYPE_TYPE_CLASS | USBH_REQTYPE_RECIP_DEVICE,
 			USBH_REQ_GET_DESCRIPTOR,
@@ -207,7 +181,7 @@ alloc_ok:
 
 	const usbh_hub_descriptor_t *const hubdesc = &hubdp->hubDesc;
 
-	uinfof("Hub descriptor loaded; %d ports, wHubCharacteristics=%04x, bPwrOn2PwrGood=%d, bHubContrCurrent=%d",
+	udevinfof("Hub descriptor loaded; %d ports, wHubCharacteristics=%04x, bPwrOn2PwrGood=%d, bHubContrCurrent=%d",
 			hubdesc->bNbrPorts,
 			hubdesc->wHubCharacteristics,
 			hubdesc->bPwrOn2PwrGood,
@@ -217,7 +191,7 @@ alloc_ok:
 	uint8_t ports = hubdesc->bNbrPorts;
 	for (i = 0; (ports > 0) && (i < HAL_USBHHUB_MAX_PORTS); i++) {
 		if (USBHPorts[i].hub == NULL) {
-			uinfof("Alloc port %d", ports);
+			udevinfof("Alloc port %d", ports);
 			_usbhub_port_object_init(&USBHPorts[i], dev->host, hubdp, ports);
 			USBHPorts[i].next = hubdp->ports;
 			hubdp->ports = &USBHPorts[i];
@@ -226,7 +200,7 @@ alloc_ok:
 	}
 
 	if (ports) {
-		uwarn("Could not alloc all ports");
+		udevwarn("Could not alloc all ports");
 	}
 
 	/* link hub to the host's list */
@@ -235,7 +209,7 @@ alloc_ok:
 	/* enable power to ports */
 	usbh_port_t *port = hubdp->ports;
 	while (port) {
-		uinfof("Enable power for port %d", port->number);
+		udevinfof("Enable power for port %d", port->number);
 		usbhhubSetFeaturePort(port, USBH_PORT_FEAT_POWER);
 		port = port->next;
 	}

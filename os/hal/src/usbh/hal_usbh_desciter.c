@@ -25,7 +25,7 @@
 void cfg_iter_init(generic_iterator_t *icfg, const uint8_t *buff, uint16_t rem) {
 	icfg->valid = 0;
 
-	if ((buff[0] < 2) || (rem < 2) || (rem < buff[0])
+	if ((rem < 2) || (buff[0] < 2) || (rem < buff[0])
 			|| (buff[0] < USBH_DT_CONFIG_SIZE)
 			|| (buff[1] != USBH_DT_CONFIG))
 		return;
@@ -45,14 +45,14 @@ void if_iter_next(if_iterator_t *iif) {
 
 	iif->valid = 0;
 
-	if ((curr[0] < 2) || (rem < 2) || (rem < curr[0]))
+	if ((rem < 2) || (curr[0] < 2) || (rem < curr[0]))
 		return;
 
 	for (;;) {
 		rem -= curr[0];
 		curr += curr[0];
 
-		if ((curr[0] < 2) || (rem < 2) || (rem < curr[0]))
+		if ((rem < 2) || (curr[0] < 2) || (rem < curr[0]))
 			return;
 
 		if (curr[1] == USBH_DT_INTERFACE_ASSOCIATION) {
@@ -92,14 +92,14 @@ void ep_iter_next(generic_iterator_t *iep) {
 
 	iep->valid = 0;
 
-	if ((curr[0] < 2) || (rem < 2) || (rem < curr[0]))
+	if ((rem < 2) || (curr[0] < 2) || (rem < curr[0]))
 		return;
 
 	for (;;) {
 		rem -= curr[0];
 		curr += curr[0];
 
-		if ((curr[0] < 2) || (rem < 2) || (rem < curr[0]))
+		if ((rem < 2) || (curr[0] < 2) || (rem < curr[0]))
 			return;
 
 		if ((curr[1] == USBH_DT_INTERFACE_ASSOCIATION)
@@ -131,13 +131,13 @@ void cs_iter_next(generic_iterator_t *ics) {
 
 	ics->valid = 0;
 
-	if ((curr[0] < 2) || (rem < 2) || (rem < curr[0]))
+	if ((rem < 2) || (curr[0] < 2) || (rem < curr[0]))
 		return;
 
 	rem -= curr[0];
 	curr += curr[0];
 
-	if ((curr[0] < 2) || (rem < 2) || (rem < curr[0]))
+	if ((rem < 2) || (curr[0] < 2) || (rem < curr[0]))
 		return;
 
 	if ((curr[1] == USBH_DT_INTERFACE_ASSOCIATION)

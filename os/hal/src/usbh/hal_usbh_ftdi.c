@@ -27,37 +27,13 @@
 #include "usbh/dev/ftdi.h"
 #include "usbh/internal.h"
 
-#if USBHFTDI_DEBUG_ENABLE_TRACE
-#define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define udbg(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define udbgf(f, ...)  do {} while(0)
-#define udbg(f, ...)   do {} while(0)
-#endif
+#define _USBH_DEBUG_HELPER_CLASS_DRIVER		ftdipp->ftdip
+#define _USBH_DEBUG_HELPER_ENABLE_TRACE		USBHFTDI_DEBUG_ENABLE_TRACE
+#define _USBH_DEBUG_HELPER_ENABLE_INFO		USBHFTDI_DEBUG_ENABLE_INFO
+#define _USBH_DEBUG_HELPER_ENABLE_WARNINGS	USBHFTDI_DEBUG_ENABLE_WARNINGS
+#define _USBH_DEBUG_HELPER_ENABLE_ERRORS	USBHFTDI_DEBUG_ENABLE_ERRORS
+#include "usbh/debug_helpers.h"
 
-#if USBHFTDI_DEBUG_ENABLE_INFO
-#define uinfof(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uinfo(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uinfof(f, ...)  do {} while(0)
-#define uinfo(f, ...)   do {} while(0)
-#endif
-
-#if USBHFTDI_DEBUG_ENABLE_WARNINGS
-#define uwarnf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uwarn(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uwarnf(f, ...)  do {} while(0)
-#define uwarn(f, ...)   do {} while(0)
-#endif
-
-#if USBHFTDI_DEBUG_ENABLE_ERRORS
-#define uerrf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uerr(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uerrf(f, ...)  do {} while(0)
-#define uerr(f, ...)   do {} while(0)
-#endif
 
 static void _ftdip_object_init(USBHFTDIPortDriver *ftdipp);
 
@@ -105,7 +81,7 @@ static usbh_baseclassdriver_t *_ftdi_load(usbh_device_t *dev, const uint8_t *des
 	case 0xE2E6:
 		break;
 	default:
-		uerr("FTDI: Unrecognized PID");
+		udeverr("FTDI: Unrecognized PID");
 		return NULL;
 	}
 
@@ -114,7 +90,7 @@ static usbh_baseclassdriver_t *_ftdi_load(usbh_device_t *dev, const uint8_t *des
 		return NULL;
 
 	if (((const usbh_interface_descriptor_t *)descriptor)->bInterfaceNumber != 0) {
-		uwarn("FTDI: Will allocate driver along with IF #0");
+		udevwarn("FTDI: Will allocate driver along with IF #0");
 	}
 
 	/* alloc driver */
@@ -125,7 +101,7 @@ static usbh_baseclassdriver_t *_ftdi_load(usbh_device_t *dev, const uint8_t *des
 		}
 	}
 
-	uwarn("FTDI: Can't alloc driver");
+	udevwarn("FTDI: Can't alloc driver");
 
 	/* can't alloc */
 	return NULL;
@@ -135,24 +111,24 @@ alloc_ok:
 	ftdip->ports = 0;
 	switch (dev->devDesc.bcdDevice) {
 	case 0x200:		//AM
-		uinfo("FTDI: Type A chip");
+		udevinfo("FTDI: Type A chip");
 		ftdip->type = USBHFTDI_TYPE_A;
 		break;
 	case 0x400:		//BM
 	case 0x500:		//2232C
 	case 0x600:		//R
 	case 0x1000:	//230X
-		uinfo("FTDI: Type B chip");
+		udevinfo("FTDI: Type B chip");
 		ftdip->type = USBHFTDI_TYPE_B;
 		break;
 	case 0x700:		//2232H;
 	case 0x800:		//4232H;
 	case 0x900:		//232H;
-		uinfo("FTDI: Type H chip");
+		udevinfo("FTDI: Type H chip");
 		ftdip->type = USBHFTDI_TYPE_H;
 		break;
 	default:
-		uerr("FTDI: Unrecognized chip type");
+		udeverr("FTDI: Unrecognized chip type");
 		return NULL;
 	}
 	usbhEPSetName(&dev->ctrl, "FTD[CTRL]");
@@ -163,11 +139,11 @@ alloc_ok:
 	cfg_iter_init(&icfg, dev->fullConfigurationDescriptor, dev->basicConfigDesc.wTotalLength);
 	for (if_iter_init(&iif, &icfg); iif.valid; if_iter_next(&iif)) {
 		const usbh_interface_descriptor_t *const ifdesc = if_get(&iif);
-		uinfof("FTDI: Interface #%d", ifdesc->bInterfaceNumber);
+		udevinfof("FTDI: Interface #%d", ifdesc->bInterfaceNumber);
 
 		USBHFTDIPortDriver *const prt = _find_port();
 		if (prt == NULL) {
-			uwarn("\tCan't alloc port for this interface");
+			udevwarn("\tCan't alloc port for this interface");
 			break;
 		}
 
@@ -178,23 +154,23 @@ alloc_ok:
 		for (ep_iter_init(&iep, &iif); iep.valid; ep_iter_next(&iep)) {
 			const usbh_endpoint_descriptor_t *const epdesc = ep_get(&iep);
 			if ((epdesc->bEndpointAddress & 0x80) && (epdesc->bmAttributes == USBH_EPTYPE_BULK)) {
-				uinfof("BULK IN endpoint found: bEndpointAddress=%02x", epdesc->bEndpointAddress);
+				udevinfof("BULK IN endpoint found: bEndpointAddress=%02x", epdesc->bEndpointAddress);
 				usbhEPObjectInit(&prt->epin, dev, epdesc);
 				usbhEPSetName(&prt->epin, "FTD[BIN ]");
 			} else if (((epdesc->bEndpointAddress & 0x80) == 0)
 					&& (epdesc->bmAttributes == USBH_EPTYPE_BULK)) {
-				uinfof("BULK OUT endpoint found: bEndpointAddress=%02x", epdesc->bEndpointAddress);
+				udevinfof("BULK OUT endpoint found: bEndpointAddress=%02x", epdesc->bEndpointAddress);
 				usbhEPObjectInit(&prt->epout, dev, epdesc);
 				usbhEPSetName(&prt->epout, "FTD[BOUT]");
 			} else {
-				uinfof("unsupported endpoint found: bEndpointAddress=%02x, bmAttributes=%02x",
+				udevinfof("unsupported endpoint found: bEndpointAddress=%02x, bmAttributes=%02x",
 						epdesc->bEndpointAddress, epdesc->bmAttributes);
 			}
 		}
 
 		if ((prt->epin.status != USBH_EPSTATUS_CLOSED)
 				|| (prt->epout.status != USBH_EPSTATUS_CLOSED)) {
-			uwarn("\tCouldn't find endpoints; can't alloc port for this interface");
+			udevwarn("\tCouldn't find endpoints; can't alloc port for this interface");
 			continue;
 		}
 
@@ -336,13 +312,14 @@ static usbh_urbstatus_t _ftdi_port_control(USBHFTDIPortDriver *ftdipp,
 	return usbhControlRequestExtended(ftdipp->ftdip->dev, &req, buff, NULL, OSAL_MS2I(1000));
 }
 
-static uint32_t _get_divisor(uint32_t baud, usbhftdi_type_t type) {
+static uint32_t _get_divisor(const USBHFTDIPortDriver *ftdipp, uint32_t baud) {
+	usbhftdi_type_t type = ftdipp->ftdip->type;
 	static const uint8_t divfrac[8] = {0, 3, 2, 4, 1, 5, 6, 7};
 	uint32_t divisor;
 
 	if (type == USBHFTDI_TYPE_A) {
 		uint32_t divisor3 = ((48000000UL / 2) + baud / 2) / baud;
-		uinfof("FTDI: desired=%dbps, real=%dbps", baud, (48000000UL / 2) / divisor3);
+		uclassdrvinfof("FTDI: desired=%dbps, real=%dbps", baud, (48000000UL / 2) / divisor3);
 		if ((divisor3 & 0x7) == 7)
 			divisor3++; /* round x.7/8 up to x+1 */
 
@@ -359,13 +336,13 @@ static uint32_t _get_divisor(uint32_t baud, usbhftdi_type_t type) {
 	} else {
 		if (type == USBHFTDI_TYPE_B) {
 			divisor = ((48000000UL / 2) + baud / 2) / baud;
-			uinfof("FTDI: desired=%dbps, real=%dbps", baud, (48000000UL / 2) / divisor);
+			uclassdrvinfof("FTDI: desired=%dbps, real=%dbps", baud, (48000000UL / 2) / divisor);
 		} else {
 			/* hi-speed baud rate is 10-bit sampling instead of 16-bit */
 			if (baud < 1200)
 				baud = 1200;
 			divisor = (120000000UL * 8 + baud * 5) / (baud * 10);
-			uinfof("FTDI: desired=%dbps, real=%dbps", baud, (120000000UL * 8) / divisor / 10);
+			uclassdrvinfof("FTDI: desired=%dbps, real=%dbps", baud, (120000000UL * 8) / divisor / 10);
 		}
 		divisor = (divisor >> 3) | (divfrac[divisor & 0x7] << 14);
 
@@ -382,7 +359,7 @@ static uint32_t _get_divisor(uint32_t baud, usbhftdi_type_t type) {
 }
 
 static usbh_urbstatus_t _set_baudrate(USBHFTDIPortDriver *ftdipp, uint32_t baudrate) {
-	uint32_t divisor = _get_divisor(baudrate, ftdipp->ftdip->type);
+	uint32_t divisor = _get_divisor(ftdipp, baudrate);
 	uint16_t wValue = (uint16_t)divisor;
 	uint16_t wIndex = (uint16_t)(divisor >> 16);
 	if (ftdipp->ftdip->dev->basicConfigDesc.bNumInterfaces > 1)
@@ -400,7 +377,7 @@ static usbh_urbstatus_t _set_baudrate(USBHFTDIPortDriver *ftdipp, uint32_t baudr
 
 
 static void _submitOutI(USBHFTDIPortDriver *ftdipp, uint32_t len) {
-	udbgf("FTDI: Submit OUT %d", len);
+	uclassdrvdbgf("FTDI: Submit OUT %d", len);
 	ftdipp->oq_urb.requestedLength = len;
 	usbhURBObjectResetI(&ftdipp->oq_urb);
 	usbhURBSubmitI(&ftdipp->oq_urb);
@@ -415,11 +392,11 @@ static void _out_cb(usbh_urb_t *urb) {
 		chThdDequeueNextI(&ftdipp->oq_waiting, Q_OK);
 		return;
 	case USBH_URBSTATUS_DISCONNECTED:
-		uwarn("FTDI: URB OUT disconnected");
+		uurbwarn("FTDI: URB OUT disconnected");
 		chThdDequeueAllI(&ftdipp->oq_waiting, Q_RESET);
 		return;
 	default:
-		uerrf("FTDI: URB OUT status unexpected = %d", urb->status);
+		uurberrf("FTDI: URB OUT status unexpected = %d", urb->status);
 		break;
 	}
 	usbhURBObjectResetI(&ftdipp->oq_urb);
@@ -493,7 +470,7 @@ static msg_t _put(USBHFTDIPortDriver *ftdipp, uint8_t b) {
 }
 
 static void _submitInI(USBHFTDIPortDriver *ftdipp) {
-	udbg("FTDI: Submit IN");
+	uclassdrvdbg("FTDI: Submit IN");
 	usbhURBObjectResetI(&ftdipp->iq_urb);
 	usbhURBSubmitI(&ftdipp->iq_urb);
 }
@@ -503,9 +480,9 @@ static void _in_cb(usbh_urb_t *urb) {
 	switch (urb->status) {
 	case USBH_URBSTATUS_OK:
 		if (urb->actualLength < 2) {
-			uwarnf("FTDI: URB IN actualLength = %d, < 2", urb->actualLength);
+			uurbwarnf("FTDI: URB IN actualLength = %d, < 2", urb->actualLength);
 		} else if (urb->actualLength > 2) {
-			udbgf("FTDI: URB IN data len=%d, status=%02x %02x",
+			uurbdbgf("FTDI: URB IN data len=%d, status=%02x %02x",
 					urb->actualLength - 2,
 					((uint8_t *)urb->buff)[0],
 					((uint8_t *)urb->buff)[1]);
@@ -514,18 +491,18 @@ static void _in_cb(usbh_urb_t *urb) {
 			chThdDequeueNextI(&ftdipp->iq_waiting, Q_OK);
 			return;
 		} else {
-			udbgf("FTDI: URB IN no data, status=%02x %02x",
+			uurbdbgf("FTDI: URB IN no data, status=%02x %02x",
 					((uint8_t *)urb->buff)[0],
 					((uint8_t *)urb->buff)[1]);
 		//	return;
 		}
 		break;
 	case USBH_URBSTATUS_DISCONNECTED:
-		uwarn("FTDI: URB IN disconnected");
+		uurbwarn("FTDI: URB IN disconnected");
 		chThdDequeueAllI(&ftdipp->iq_waiting, Q_RESET);
 		return;
 	default:
-		uerrf("FTDI: URB IN status unexpected = %d", urb->status);
+		uurberrf("FTDI: URB IN status unexpected = %d", urb->status);
 		break;
 	}
 	_submitInI(ftdipp);

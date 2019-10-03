@@ -27,37 +27,12 @@
 #include "usbh/dev/msd.h"
 #include "usbh/internal.h"
 
-#if USBHMSD_DEBUG_ENABLE_TRACE
-#define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define udbg(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define udbgf(f, ...)  do {} while(0)
-#define udbg(f, ...)   do {} while(0)
-#endif
-
-#if USBHMSD_DEBUG_ENABLE_INFO
-#define uinfof(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uinfo(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uinfof(f, ...)  do {} while(0)
-#define uinfo(f, ...)   do {} while(0)
-#endif
-
-#if USBHMSD_DEBUG_ENABLE_WARNINGS
-#define uwarnf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uwarn(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uwarnf(f, ...)  do {} while(0)
-#define uwarn(f, ...)   do {} while(0)
-#endif
-
-#if USBHMSD_DEBUG_ENABLE_ERRORS
-#define uerrf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uerr(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uerrf(f, ...)  do {} while(0)
-#define uerr(f, ...)   do {} while(0)
-#endif
+#define _USBH_DEBUG_HELPER_CLASS_DRIVER		msdp
+#define _USBH_DEBUG_HELPER_ENABLE_TRACE		USBHMSD_DEBUG_ENABLE_TRACE
+#define _USBH_DEBUG_HELPER_ENABLE_INFO		USBHMSD_DEBUG_ENABLE_INFO
+#define _USBH_DEBUG_HELPER_ENABLE_WARNINGS	USBHMSD_DEBUG_ENABLE_WARNINGS
+#define _USBH_DEBUG_HELPER_ENABLE_ERRORS	USBHMSD_DEBUG_ENABLE_ERRORS
+#include "usbh/debug_helpers.h"
 
 static void _lun_object_deinit(USBHMassStorageLUNDriver *lunp);
 
@@ -122,7 +97,7 @@ static usbh_baseclassdriver_t *_msd_load(usbh_device_t *dev, const uint8_t *desc
 		}
 	}
 
-	uwarn("Can't alloc MSD driver");
+	udevwarn("Can't alloc MSD driver");
 
 	/* can't alloc */
 	return NULL;
@@ -146,16 +121,16 @@ alloc_ok:
 	for (ep_iter_init(&iep, &iif); iep.valid; ep_iter_next(&iep)) {
 		const usbh_endpoint_descriptor_t *const epdesc = ep_get(&iep);
 		if ((epdesc->bEndpointAddress & 0x80) && (epdesc->bmAttributes == USBH_EPTYPE_BULK)) {
-			uinfof("BULK IN endpoint found: bEndpointAddress=%02x", epdesc->bEndpointAddress);
+			udevinfof("BULK IN endpoint found: bEndpointAddress=%02x", epdesc->bEndpointAddress);
 			usbhEPObjectInit(&msdp->epin, dev, epdesc);
 			usbhEPSetName(&msdp->epin, "MSD[BIN ]");
 		} else if (((epdesc->bEndpointAddress & 0x80) == 0)
 				&& (epdesc->bmAttributes == USBH_EPTYPE_BULK)) {
-			uinfof("BULK OUT endpoint found: bEndpointAddress=%02x", epdesc->bEndpointAddress);
+			udevinfof("BULK OUT endpoint found: bEndpointAddress=%02x", epdesc->bEndpointAddress);
 			usbhEPObjectInit(&msdp->epout, dev, epdesc);
 			usbhEPSetName(&msdp->epout, "MSD[BOUT]");
 		} else {
-			uinfof("unsupported endpoint found: bEndpointAddress=%02x, bmAttributes=%02x",
+			udevinfof("unsupported endpoint found: bEndpointAddress=%02x, bmAttributes=%02x",
 					epdesc->bEndpointAddress, epdesc->bmAttributes);
 		}
 	}
@@ -164,23 +139,23 @@ alloc_ok:
 	}
 
 	/* read the number of LUNs */
-	uinfo("Reading Max LUN:");
+	udevinfo("Reading Max LUN:");
 	USBH_DEFINE_BUFFER(uint8_t buff[4]);
 	stat = usbhControlRequest(dev,
 			USBH_REQTYPE_CLASSIN(USBH_REQTYPE_RECIP_INTERFACE),
 			MSD_GET_MAX_LUN, 0, msdp->ifnum, 1, buff);
 	if (stat == USBH_URBSTATUS_OK) {
 		msdp->max_lun = buff[0] + 1;
-		uinfof("\tmax_lun = %d", msdp->max_lun);
+		udevinfof("\tmax_lun = %d", msdp->max_lun);
 		if (msdp->max_lun > HAL_USBHMSD_MAX_LUNS) {
 			msdp->max_lun = HAL_USBHMSD_MAX_LUNS;
-			uwarnf("\tUsing max_lun = %d", msdp->max_lun);
+			udevwarnf("\tUsing max_lun = %d", msdp->max_lun);
 		}
 	} else if (stat == USBH_URBSTATUS_STALL) {
-		uwarn("\tStall, max_lun = 1");
+		udevwarn("\tStall, max_lun = 1");
 		msdp->max_lun = 1;
 	} else {
-		uerr("\tError");
+		udeverr("\tError");
 		goto deinit;
 	}
 
@@ -293,28 +268,30 @@ static bool _msd_bot_reset(USBHMassStorageDriver *msdp) {
 
 static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassStorageLUNDriver *lunp, void *data) {
 
+	USBHMassStorageDriver *const msdp = lunp->msdp;
+
 	uint32_t data_actual_len, actual_len;
 	usbh_urbstatus_t status;
 	USBH_DEFINE_BUFFER(msd_csw_t csw);
 
-	tran->cbw->bCBWLUN = (uint8_t)(lunp - &lunp->msdp->luns[0]);
+	tran->cbw->bCBWLUN = (uint8_t)(lunp - &msdp->luns[0]);
 	tran->cbw->dCBWSignature = MSD_CBW_SIGNATURE;
-	tran->cbw->dCBWTag = ++lunp->msdp->tag;
+	tran->cbw->dCBWTag = ++msdp->tag;
 	tran->data_processed = 0;
 
 	/* control phase */
-	status = usbhBulkTransfer(&lunp->msdp->epout, tran->cbw,
+	status = usbhBulkTransfer(&msdp->epout, tran->cbw,
 					sizeof(*tran->cbw), &actual_len, OSAL_MS2I(1000));
 
 	if (status == USBH_URBSTATUS_CANCELLED) {
-		uerr("\tMSD: Control phase: USBH_URBSTATUS_CANCELLED");
+		uclassdrverr("\tMSD: Control phase: USBH_URBSTATUS_CANCELLED");
 		return MSD_BOTRESULT_DISCONNECTED;
 	}
 
 	if ((status != USBH_URBSTATUS_OK) || (actual_len != sizeof(*tran->cbw))) {
-		uerrf("\tMSD: Control phase: status = %d (!= OK), actual_len = %d (expected to send %d)",
+		uclassdrverrf("\tMSD: Control phase: status = %d (!= OK), actual_len = %d (expected to send %d)",
 				status, actual_len, sizeof(*tran->cbw));
-		_msd_bot_reset(lunp->msdp);
+		_msd_bot_reset(msdp);
 		return MSD_BOTRESULT_ERROR;
 	}
 
@@ -322,7 +299,7 @@ static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassSt
 	/* data phase */
 	data_actual_len = 0;
 	if (tran->cbw->dCBWDataTransferLength) {
-		usbh_ep_t *const ep = tran->cbw->bmCBWFlags & MSD_CBWFLAGS_D2H ? &lunp->msdp->epin : &lunp->msdp->epout;
+		usbh_ep_t *const ep = tran->cbw->bmCBWFlags & MSD_CBWFLAGS_D2H ? &msdp->epin : &msdp->epout;
 		status = usbhBulkTransfer(
 				ep,
 				data,
@@ -330,62 +307,62 @@ static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassSt
 				&data_actual_len, OSAL_MS2I(20000));
 
 		if (status == USBH_URBSTATUS_CANCELLED) {
-			uerr("\tMSD: Data phase: USBH_URBSTATUS_CANCELLED");
+			uclassdrverr("\tMSD: Data phase: USBH_URBSTATUS_CANCELLED");
 			return MSD_BOTRESULT_DISCONNECTED;
 		}
 
 		if (status == USBH_URBSTATUS_STALL) {
-			uerrf("\tMSD: Data phase: USBH_URBSTATUS_STALL, clear halt");
+			uclassdrverrf("\tMSD: Data phase: USBH_URBSTATUS_STALL, clear halt");
 			status = (usbhEPReset(ep) == HAL_SUCCESS) ? USBH_URBSTATUS_OK : USBH_URBSTATUS_ERROR;
 		}
 
 		if (status != USBH_URBSTATUS_OK) {
-			uerrf("\tMSD: Data phase: status = %d (!= OK), resetting", status);
-			_msd_bot_reset(lunp->msdp);
+			uclassdrverrf("\tMSD: Data phase: status = %d (!= OK), resetting", status);
+			_msd_bot_reset(msdp);
 			return MSD_BOTRESULT_ERROR;
 		}
 	}
 
 
 	/* status phase */
-	status = usbhBulkTransfer(&lunp->msdp->epin, &csw,
+	status = usbhBulkTransfer(&msdp->epin, &csw,
 				sizeof(csw), &actual_len, OSAL_MS2I(1000));
 
 	if (status == USBH_URBSTATUS_STALL) {
-		uwarn("\tMSD: Status phase: USBH_URBSTATUS_STALL, clear halt and retry");
+		uclassdrvwarn("\tMSD: Status phase: USBH_URBSTATUS_STALL, clear halt and retry");
 
-		status = (usbhEPReset(&lunp->msdp->epin) == HAL_SUCCESS) ? USBH_URBSTATUS_OK : USBH_URBSTATUS_ERROR;
+		status = (usbhEPReset(&msdp->epin) == HAL_SUCCESS) ? USBH_URBSTATUS_OK : USBH_URBSTATUS_ERROR;
 
 		if (status == USBH_URBSTATUS_OK) {
-			status = usbhBulkTransfer(&lunp->msdp->epin, &csw,
+			status = usbhBulkTransfer(&msdp->epin, &csw,
 						sizeof(csw), &actual_len, OSAL_MS2I(1000));
 		}
 	}
 
 	if (status == USBH_URBSTATUS_CANCELLED) {
-		uerr("\tMSD: Status phase: USBH_URBSTATUS_CANCELLED");
+		uclassdrverr("\tMSD: Status phase: USBH_URBSTATUS_CANCELLED");
 		return MSD_BOTRESULT_DISCONNECTED;
 	}
 
 	if (status != USBH_URBSTATUS_OK) {
-		uerrf("\tMSD: Status phase: status = %d (!= OK), resetting", status);
-		_msd_bot_reset(lunp->msdp);
+		uclassdrverrf("\tMSD: Status phase: status = %d (!= OK), resetting", status);
+		_msd_bot_reset(msdp);
 		return MSD_BOTRESULT_ERROR;
 	}
 
 	/* validate CSW */
 	if ((actual_len != sizeof(csw))
 		|| (csw.dCSWSignature != MSD_CSW_SIGNATURE)
-		|| (csw.dCSWTag != lunp->msdp->tag)
+		|| (csw.dCSWTag != msdp->tag)
 		|| (csw.bCSWStatus >= CSW_STATUS_PHASE_ERROR)) {
 		/* CSW is not valid */
-		uerrf("\tMSD: Status phase: Invalid CSW: len=%d, dCSWSignature=%x, dCSWTag=%x (expected %x), bCSWStatus=%d, resetting",
+		uclassdrverrf("\tMSD: Status phase: Invalid CSW: len=%d, dCSWSignature=%x, dCSWTag=%x (expected %x), bCSWStatus=%d, resetting",
 				actual_len,
 				csw.dCSWSignature,
 				csw.dCSWTag,
-				lunp->msdp->tag,
+				msdp->tag,
 				csw.bCSWStatus);
-		_msd_bot_reset(lunp->msdp);
+		_msd_bot_reset(msdp);
 		return MSD_BOTRESULT_ERROR;
 	}
 
@@ -393,17 +370,17 @@ static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassSt
 	if ((csw.bCSWStatus != CSW_STATUS_PHASE_ERROR)
 			&& (csw.dCSWDataResidue > tran->cbw->dCBWDataTransferLength)) {
 		/* CSW is not meaningful */
-		uerrf("\tMSD: Status phase: CSW not meaningful: bCSWStatus=%d, dCSWDataResidue=%u, dCBWDataTransferLength=%u, resetting",
+		uclassdrverrf("\tMSD: Status phase: CSW not meaningful: bCSWStatus=%d, dCSWDataResidue=%u, dCBWDataTransferLength=%u, resetting",
 				csw.bCSWStatus,
 				csw.dCSWDataResidue,
 				tran->cbw->dCBWDataTransferLength);
-		_msd_bot_reset(lunp->msdp);
+		_msd_bot_reset(msdp);
 		return MSD_BOTRESULT_ERROR;
 	}
 
 	if (csw.bCSWStatus == CSW_STATUS_PHASE_ERROR) {
-		uerr("\tMSD: Status phase: Phase error, resetting");
-		_msd_bot_reset(lunp->msdp);
+		uclassdrverr("\tMSD: Status phase: Phase error, resetting");
+		_msd_bot_reset(msdp);
 		return MSD_BOTRESULT_ERROR;
 	}
 
@@ -502,6 +479,9 @@ static msd_result_t scsi_requestsense(USBHMassStorageLUNDriver *lunp, scsi_sense
 static msd_result_t _scsi_perform_transaction(USBHMassStorageLUNDriver *lunp,
 		msd_transaction_t *transaction, void *data) {
 
+	USBHMassStorageDriver *const msdp = lunp->msdp;
+	(void)msdp;
+
 	msd_bot_result_t res;
 	res = _msd_bot_transaction(transaction, lunp, data);
 	if (res != MSD_BOTRESULT_OK) {
@@ -511,13 +491,11 @@ static msd_result_t _scsi_perform_transaction(USBHMassStorageLUNDriver *lunp,
 	if (transaction->csw_status == CSW_STATUS_FAILED) {
 		if (transaction->cbw->CBWCB[0] != SCSI_CMD_REQUEST_SENSE) {
 			/* do auto-sense (except for SCSI_CMD_REQUEST_SENSE!) */
-			uwarn("\tMSD: Command failed, auto-sense");
+			uclassdrvwarn("\tMSD: Command failed, auto-sense");
 			USBH_DEFINE_BUFFER(scsi_sense_response_t sense);
 			if (scsi_requestsense(lunp, &sense) == MSD_RESULT_OK) {
-				uwarnf("\tMSD: REQUEST SENSE: Sense key=%x, ASC=%02x, ASCQ=%02x",
+				uclassdrvwarnf("\tMSD: REQUEST SENSE: Sense key=%x, ASC=%02x, ASCQ=%02x",
 						sense.byte[2] & 0xf, sense.byte[12], sense.byte[13]);
-
-				return MSD_RESULT_OK;
 			}
 		}
 		return MSD_RESULT_FAILED;
@@ -724,6 +702,9 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp->msdp != NULL);
 	msd_result_t res;
 
+	USBHMassStorageDriver *const msdp = lunp->msdp;
+	(void)msdp;
+
 	chSemWait(&lunp->sem);
 	osalDbgAssert((lunp->state == BLK_READY) || (lunp->state == BLK_ACTIVE), "invalid state");
 	if (lunp->state == BLK_READY) {
@@ -734,7 +715,7 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 
     {
 		USBH_DEFINE_BUFFER(scsi_inquiry_response_t inq);
-		uinfo("INQUIRY...");
+		uclassdrvinfo("INQUIRY...");
 		res = scsi_inquiry(lunp, &inq);
 		if (res == MSD_RESULT_DISCONNECTED) {
 			goto failed;
@@ -746,9 +727,9 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 			goto failed;
 		}
 
-		uinfof("\tPDT=%02x", inq.peripheral & 0x1f);
+		uclassdrvinfof("\tPDT=%02x", inq.peripheral & 0x1f);
 		if (inq.peripheral != 0) {
-			uerr("\tUnsupported PDT");
+			uclassdrverr("\tUnsupported PDT");
 			goto failed;
 		}
 	}
@@ -756,7 +737,7 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 	// Test if unit ready
     uint8_t i;
 	for (i = 0; i < 10; i++) {
-		uinfo("TEST UNIT READY...");
+		uclassdrvinfo("TEST UNIT READY...");
 		res = scsi_testunitready(lunp);
 		if (res == MSD_RESULT_DISCONNECTED) {
 			goto failed;
@@ -764,11 +745,11 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 			//retry?
 			goto failed;
 		} else if (res == MSD_RESULT_FAILED) {
-			uinfo("\tTEST UNIT READY: Command Failed, retry");
+			uclassdrvinfo("\tTEST UNIT READY: Command Failed, retry");
 			osalThreadSleepMilliseconds(200);
 			continue;
 		}
-		uinfo("\tReady.");
+		uclassdrvinfo("\tReady.");
 		break;
 	}
 	if (i == 10) goto failed;
@@ -776,7 +757,7 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 	{
 		USBH_DEFINE_BUFFER(scsi_readcapacity10_response_t cap);
 		// Read capacity
-		uinfo("READ CAPACITY(10)...");
+		uclassdrvinfo("READ CAPACITY(10)...");
 		res = scsi_readcapacity10(lunp, &cap);
 		if (res == MSD_RESULT_DISCONNECTED) {
 			goto failed;
@@ -792,17 +773,17 @@ bool usbhmsdLUNConnect(USBHMassStorageLUNDriver *lunp) {
 		lunp->info.blk_num = __REV(cap.last_block_addr) + 1;
 	}
 
-	uinfof("\tBlock size=%dbytes, blocks=%u (~%u MB)", lunp->info.blk_size, lunp->info.blk_num,
+	uclassdrvinfof("\tBlock size=%dbytes, blocks=%u (~%u MB)", lunp->info.blk_size, lunp->info.blk_num,
 		(uint32_t)(((uint64_t)lunp->info.blk_size * lunp->info.blk_num) / (1024UL * 1024UL)));
 
-	uinfo("MSD Connected.");
+	uclassdrvinfo("MSD Connected.");
 	lunp->state = BLK_READY;
 	chSemSignal(&lunp->sem);
 	return HAL_SUCCESS;
 
   /* Connection failed, state reset to BLK_ACTIVE.*/
 failed:
-	uinfo("MSD Connect failed.");
+	uclassdrvinfo("MSD Connect failed.");
 	lunp->state = BLK_ACTIVE;
 	chSemSignal(&lunp->sem);
 	return HAL_FAILED;
@@ -947,6 +928,10 @@ bool usbhmsdLUNIsProtected(USBHMassStorageLUNDriver *lunp) {
 	osalDbgCheck(lunp != NULL);
 	//TODO: Implement
 	return FALSE;
+}
+
+USBHDriver *usbhmsdLUNGetHost(const USBHMassStorageLUNDriver *lunp) {
+	return lunp->msdp->dev->host;
 }
 
 static void _msd_object_init(USBHMassStorageDriver *msdp) {
