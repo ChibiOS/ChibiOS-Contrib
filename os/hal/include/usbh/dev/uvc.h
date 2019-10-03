@@ -408,9 +408,9 @@ extern "C" {
 			const uint8_t *framedesc, uint32_t dwFrameInterval);
 
 #if	USBH_DEBUG_ENABLE && USBHUVC_DEBUG_ENABLE_INFO
-	void usbhuvcPrintProbeCommit(const usbh_uvc_ctrl_vs_probecommit_data_t *pc);
+	void usbhuvcPrintProbeCommit(USBHUVCDriver *uvcdp, const usbh_uvc_ctrl_vs_probecommit_data_t *pc);
 #else
-#	define usbhuvcPrintProbeCommit(pc) do {} while(0)
+#	define usbhuvcPrintProbeCommit(uvcdp, pc) do {} while(0)
 #endif
 	bool usbhuvcProbe(USBHUVCDriver *uvcdp);
 	bool usbhuvcCommit(USBHUVCDriver *uvcdp);

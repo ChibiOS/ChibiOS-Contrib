@@ -18,7 +18,7 @@
 #include "hal.h"
 #include "ff.h"
 #include <string.h>
-#include "usbh/debug.h"		/* for usbDbgPuts/usbDbgPrintf */
+#include "usbh/debug.h"		/* for _usbh_dbg/_usbh_dbgf */
 
 
 #define UVC_TO_MSD_PHOTOS_CAPTURE	FALSE
@@ -85,6 +85,8 @@ static const ShellConfig shell_cfg1 = {
 static void ThreadTestFTDI(void *p) {
     (void)p;
     USBHFTDIPortDriver *const ftdipp = &FTDIPD[0];
+    USBHDriver *host = NULL;
+    (void)host;
 
     chRegSetThreadName("FTDI");
 
@@ -95,7 +97,8 @@ start:
         chThdSleepMilliseconds(100);
     }
 
-    usbDbgPuts("FTDI: Connected");
+    host = usbhftdipGetHost(ftdipp);
+	_usbh_dbg(host, "FTDI: Connected");
 
     USBHFTDIPortConfig config = {
         115200,
@@ -112,7 +115,7 @@ start:
         for(;;) {
             msg_t m = streamGet(ftdipp);
             if (m < MSG_OK) {
-                usbDbgPuts("FTDI: Disconnected");
+                _usbh_dbg(host, "FTDI: Disconnected");
                 goto start;
             }
             streamPut(ftdipp, (uint8_t)m);
@@ -146,10 +149,10 @@ start:
         for(;;) {
             msg_t m = streamGet(ftdipp);
             if (m < MSG_OK) {
-                usbDbgPuts("FTDI: Disconnected");
+                _usbh_dbg(host, "FTDI: Disconnected");
                 goto start;
             }
-            sdPut(&USBH_DEBUG_SD, (uint8_t)m);
+            sdPut(&SD2, (uint8_t)m);
             if (m == 'q')
                 break;
         }
@@ -169,19 +172,19 @@ start:
             st = chVTGetSystemTimeX();
             while (times--) {
                 if (streamWrite(ftdipp, buf, 1024) < 1024) {
-                    usbDbgPuts("FTDI: Disconnected");
+                    _usbh_dbg(host, "FTDI: Disconnected");
                     goto start;
                 }
                 bytes -= 1024;
             }
             if (bytes) {
                 if (streamWrite(ftdipp, buf, bytes) < bytes) {
-                    usbDbgPuts("FTDI: Disconnected");
+                    _usbh_dbg(host, "FTDI: Disconnected");
                     goto start;
                 }
             }
             et = chVTGetSystemTimeX();
-            usbDbgPrintf("\tRate=%uB/s", (config.speed * 100) / (et - st));
+            _usbh_dbgf(host, "\tRate=%uB/s", (config.speed * 100) / (et - st));
         }
     }
 
@@ -189,7 +192,7 @@ start:
     if (0) {
         for (;;) {
             if (streamPut(ftdipp, 'A') != MSG_OK) {
-                usbDbgPuts("FTDI: Disconnected");
+                _usbh_dbg(host, "FTDI: Disconnected");
                 goto start;
             }
             chThdSleepMilliseconds(100);
@@ -198,7 +201,7 @@ start:
 
     usbhftdipStop(ftdipp);
 
-    usbDbgPuts("FTDI: Tests done, restarting in 3s");
+    _usbh_dbg(host, "FTDI: Tests done, restarting in 3s");
     chThdSleepMilliseconds(3000);
 
     goto start;
@@ -218,6 +221,8 @@ static void ThreadTestAOA(void *p) {
     (void)p;
     USBHAOADriver *const aoap = &USBHAOAD[0];
     USBHAOAChannel *const aoacp = &aoap->channel;
+    USBHDriver *host = NULL;
+    (void)host;
 
     chRegSetThreadName("AOA");
 
@@ -226,11 +231,12 @@ start:
         chThdSleepMilliseconds(100);
     }
 
-    usbDbgPuts("AOA: Connected");
+    host = usbhaoaGetHost(aoap);
+    _usbh_dbg(host, "AOA: Connected");
 
     if (usbhaoaGetChannelState(aoap) != USBHAOA_CHANNEL_STATE_READY) {
         usbhaoaChannelStart(aoap);
-        usbDbgPuts("AOA: Channel started");
+        _usbh_dbg(host, "AOA: Channel started");
     }
 
     //loopback
@@ -238,7 +244,7 @@ start:
         for(;;) {
             msg_t m = streamGet(aoacp);
             if (m < MSG_OK) {
-                usbDbgPuts("AOA: Disconnected");
+                _usbh_dbg(host, "AOA: Disconnected");
                 goto start;
             }
             streamPut(aoacp, (uint8_t)m);
@@ -258,19 +264,19 @@ start:
             st = chVTGetSystemTimeX();
             while (times--) {
                 if (streamWrite(aoacp, buf, 1024) < 1024) {
-                    usbDbgPuts("AOA: Disconnected");
+                    _usbh_dbg(host, "AOA: Disconnected");
                     goto start;
                 }
                 bytes -= 1024;
             }
             if (bytes) {
                 if (streamWrite(aoacp, buf, bytes) < bytes) {
-                    usbDbgPuts("AOA: Disconnected");
+                    _usbh_dbg(host, "AOA: Disconnected");
                     goto start;
                 }
             }
             et = chVTGetSystemTimeX();
-            usbDbgPrintf("\tRate=%uB/s", AOA_WRITE_SPEED_TEST_BYTES / (et - st) * 100);
+            _usbh_dbgf(host, "\tRate=%uB/s", AOA_WRITE_SPEED_TEST_BYTES / (et - st) * 100);
         }
     }
 
@@ -278,7 +284,7 @@ start:
     if (0) {
         for (;;) {
             if (streamPut(aoacp, 'A') != MSG_OK) {
-                usbDbgPuts("AOA: Disconnected");
+                _usbh_dbg(host, "AOA: Disconnected");
                 goto start;
             }
             chThdSleepMilliseconds(100);
@@ -287,7 +293,7 @@ start:
 
     usbhaoaChannelStop(aoap);
 
-    usbDbgPuts("AOA: Tests done, restarting in 3s");
+    _usbh_dbg(host, "AOA: Tests done, restarting in 3s");
     chThdSleepMilliseconds(3000);
 
     goto start;
@@ -305,7 +311,7 @@ static FATFS MSDLUN0FS;
 static uint8_t fbuff[10240];
 static FIL file;
 
-static FRESULT scan_files(BaseSequentialStream *chp, char *path) {
+static FRESULT scan_files(USBHDriver *host, BaseSequentialStream *chp, char *path) {
   FRESULT res;
   DIR dir;
   UINT i;
@@ -321,12 +327,12 @@ static FRESULT scan_files(BaseSequentialStream *chp, char *path) {
 		i = strlen(path);
         path[i++] = '/';
         strcpy(&path[i], fno.fname);
-        res = scan_files(chp, path);
+        res = scan_files(host, chp, path);
         if (res != FR_OK)
           break;
         path[--i] = 0;
       } else {
-          usbDbgPrintf("FS: %s/%s", path, fno.fname);
+          _usbh_dbgf(host, "FS: %s/%s", path, fno.fname);
       }
     }
   }
@@ -341,11 +347,12 @@ static void ThreadTestMSD(void *p) {
     FATFS *fsp;
     DWORD clusters;
     FRESULT res;
+    USBHDriver *host = NULL;
 
     chRegSetThreadName("MSD");
 
 #if !UVC_TO_MSD_PHOTOS_CAPTURE
-    BaseSequentialStream * const chp = (BaseSequentialStream *)&USBH_DEBUG_SD;
+    BaseSequentialStream * const chp = (BaseSequentialStream *)&SD2;
     systime_t st, et;
     uint32_t j;
 #endif
@@ -355,14 +362,15 @@ start:
         chThdSleepMilliseconds(100);
 
         if (blkGetDriverState(&MSBLKD[0]) == BLK_ACTIVE) {
-        	usbDbgPuts("BLK: Active, connect....");
+        	host = usbhmsdLUNGetHost(&MSBLKD[0]);
+        	_usbh_dbg(host, "BLK: Active, connect....");
         	usbhmsdLUNConnect(&MSBLKD[0]);
         }
         if (blkGetDriverState(&MSBLKD[0]) != BLK_READY) {
             continue;
     	}
 
-    	usbDbgPuts("BLK: Ready.");
+    	_usbh_dbg(host, "BLK: Ready.");
 
 #if !UVC_TO_MSD_PHOTOS_CAPTURE
         //raw read test
@@ -372,7 +380,7 @@ start:
 #define NITERATIONS            ((RAW_READ_SZ_MB * 1024UL * 1024UL) / sizeof(fbuff))
             uint32_t start = 0;
             chThdSetPriority(HIGHPRIO);
-            usbDbgPrintf("BLK: Raw read test (%dMB, %dB blocks)", RAW_READ_SZ_MB, sizeof(fbuff));
+            _usbh_dbgf(host, "BLK: Raw read test (%dMB, %dB blocks)", RAW_READ_SZ_MB, sizeof(fbuff));
             st = chVTGetSystemTime();
             for (j = 0; j < NITERATIONS; j++) {
                 if (blkRead(&MSBLKD[0], start, fbuff, NBLOCKS) != HAL_SUCCESS)
@@ -380,29 +388,29 @@ start:
                 start += NBLOCKS;
             }
             et = chVTGetSystemTime();
-            usbDbgPrintf("BLK: Raw read in %d ms, %dkB/s",
+            _usbh_dbgf(host, "BLK: Raw read in %d ms, %dkB/s",
                     et - st,
                     (RAW_READ_SZ_MB * 1024UL * 1000) / (et - st));
             chThdSetPriority(NORMALPRIO);
         }
 #endif
 
-        usbDbgPuts("FS: Block driver ready, try mount...");
+        _usbh_dbg(host, "FS: Block driver ready, try mount...");
 
         res = f_mount(&MSDLUN0FS, FATFSDEV_MSD_DRIVE, 1);
         if (res != FR_OK) {
-            usbDbgPuts("FS: Can't mount. Check file system.");
+            _usbh_dbg(host, "FS: Can't mount. Check file system.");
             continue;
         }
-        usbDbgPuts("FS: Mounted.");
+        _usbh_dbg(host, "FS: Mounted.");
 
         res = f_getfree(FATFSDEV_MSD_DRIVE, &clusters, &fsp);
         if (res != FR_OK) {
-            usbDbgPuts("FS: f_getfree() failed");
+            _usbh_dbg(host, "FS: f_getfree() failed");
             continue;
         }
 
-        usbDbgPrintf("FS: %lu free clusters, %lu sectors per cluster, %lu bytes free",
+        _usbh_dbgf(host, "FS: %lu free clusters, %lu sectors per cluster, %lu bytes free",
                 clusters, (uint32_t)MSDLUN0FS.csize,
                 clusters * (uint32_t)MSDLUN0FS.csize * MSBLKD[0].info.blk_size);
 
@@ -419,7 +427,7 @@ start:
 
         //write test
         if (1) {
-            usbDbgPuts("FS: Write test (create file /test.dat, 1MB)");
+            _usbh_dbg(host, "FS: Write test (create file /test.dat, 1MB)");
             f_open(&file, FATFSDEV_MSD_DRIVE "/test.dat", FA_CREATE_ALWAYS | FA_WRITE);
             src = start;
             st = chVTGetSystemTime();
@@ -431,7 +439,7 @@ start:
                     src = start;
             }
             et = chVTGetSystemTime();
-            usbDbgPrintf("FS: Written 1MB in %d ms, %dkB/s",
+            _usbh_dbgf(host, "FS: Written 1MB in %d ms, %dkB/s",
                     et - st,
                     (1024UL*1000) / (et - st));
             f_close(&file);
@@ -439,7 +447,7 @@ start:
 
         //read test
         if (1) {
-            usbDbgPuts("FS: Read test (read file /test.dat, 1MB, compare)");
+            _usbh_dbg(host, "FS: Read test (read file /test.dat, 1MB, compare)");
             f_open(&file, FATFSDEV_MSD_DRIVE "/test.dat", FA_READ);
             src = start;
             st = chVTGetSystemTime();
@@ -447,7 +455,7 @@ start:
                 if (f_read(&file, fbuff, 512, &bw) != FR_OK)
                     goto start;
                 if (memcmp(src, fbuff, bw)) {
-                    usbDbgPrintf("Compare error @%08x", (uint32_t)src);
+                    _usbh_dbgf(host, "Compare error @%08x", (uint32_t)src);
                     goto start;
                 }
                 src += bw;
@@ -455,7 +463,7 @@ start:
                     src = start;
             }
             et = chVTGetSystemTime();
-            usbDbgPrintf("FS: Read 1MB in %d ms, %dkB/s",
+            _usbh_dbgf(host, "FS: Read 1MB in %d ms, %dkB/s",
                     et - st,
                     (1024UL*1000) / (et - st));
             f_close(&file);
@@ -463,14 +471,14 @@ start:
 
         //scan files test
         if (1) {
-            usbDbgPuts("FS: Scan files test");
+            _usbh_dbg(host, "FS: Scan files test");
             strcpy((char *)fbuff, FATFSDEV_MSD_DRIVE);
-            scan_files(chp, (char *)fbuff);
+            scan_files(host, chp, (char *)fbuff);
         }
     }
 #endif
 
-    usbDbgPuts("FS: Tests done, restarting in 3s");
+    _usbh_dbg(host, "FS: Tests done, restarting in 3s");
     chThdSleepMilliseconds(3000);
 
     goto start;
@@ -488,12 +496,12 @@ static void _hid_report_callback(USBHHIDDriver *hidp, uint16_t len) {
     uint8_t *report = (uint8_t *)hidp->config->report_buffer;
 
     if (hidp->type == USBHHID_DEVTYPE_BOOT_MOUSE) {
-        usbDbgPrintf("Mouse report: buttons=%02x, Dx=%d, Dy=%d",
+        _usbh_dbgf(hidp->dev->host, "Mouse report: buttons=%02x, Dx=%d, Dy=%d",
                 report[0],
                 (int8_t)report[1],
                 (int8_t)report[2]);
     } else if (hidp->type == USBHHID_DEVTYPE_BOOT_KEYBOARD) {
-        usbDbgPrintf("Keyboard report: modifier=%02x, keys=%02x %02x %02x %02x %02x %02x",
+        _usbh_dbgf(hidp->dev->host, "Keyboard report: modifier=%02x, keys=%02x %02x %02x %02x %02x %02x",
                 report[0],
                 report[2],
                 report[3],
@@ -502,7 +510,7 @@ static void _hid_report_callback(USBHHIDDriver *hidp, uint16_t len) {
                 report[6],
                 report[7]);
     } else {
-        usbDbgPrintf("Generic report, %d bytes", len);
+        _usbh_dbgf(hidp->dev->host, "Generic report, %d bytes", len);
     }
 }
 
@@ -525,21 +533,22 @@ static void ThreadTestHID(void *p) {
 
     for (;;) {
         for (i = 0; i < HAL_USBHHID_MAX_INSTANCES; i++) {
-            if (usbhhidGetState(&USBHHIDD[i]) == USBHHID_STATE_ACTIVE) {
-                usbDbgPrintf("HID: Connected, HID%d", i);
-                usbhhidStart(&USBHHIDD[i], &hidcfg[i]);
-                if (usbhhidGetType(&USBHHIDD[i]) != USBHHID_DEVTYPE_GENERIC) {
-                    usbhhidSetIdle(&USBHHIDD[i], 0, 0);
+        	USBHHIDDriver *const hidp = &USBHHIDD[i];
+            if (usbhhidGetState(hidp) == USBHHID_STATE_ACTIVE) {
+                _usbh_dbgf(hidp->dev->host, "HID: Connected, HID%d", i);
+                usbhhidStart(hidp, &hidcfg[i]);
+                if (usbhhidGetType(hidp) != USBHHID_DEVTYPE_GENERIC) {
+                    usbhhidSetIdle(hidp, 0, 0);
                 }
                 kbd_led_states[i] = 1;
-            } else if (usbhhidGetState(&USBHHIDD[i]) == USBHHID_STATE_READY) {
-                if (usbhhidGetType(&USBHHIDD[i]) == USBHHID_DEVTYPE_BOOT_KEYBOARD) {
+            } else if (usbhhidGetState(hidp) == USBHHID_STATE_READY) {
+                if (usbhhidGetType(hidp) == USBHHID_DEVTYPE_BOOT_KEYBOARD) {
                     USBH_DEFINE_BUFFER(uint8_t val);
                     val = kbd_led_states[i] << 1;
                     if (val == 0x08) {
                         val = 1;
                     }
-                    usbhhidSetReport(&USBHHIDD[i], 0, USBHHID_REPORTTYPE_OUTPUT, &val, 1);
+                    usbhhidSetReport(hidp, 0, USBHHID_REPORTTYPE_OUTPUT, &val, 1);
                     kbd_led_states[i] = val;
                 }
             }
@@ -637,12 +646,12 @@ static void ThreadTestUVC(void *p) {
         if (usbhuvcGetState(&USBHUVCD[0]) != USBHUVC_STATE_ACTIVE)
             continue;
 
-        usbDbgPuts("UVC: Webcam connected");
+        _usbh_dbg(uvcdp->dev->host, "UVC: Webcam connected");
 
         /* ************************************ */
         /*   Find best configuration            */
         /* ************************************ */
-        usbDbgPuts("UVC: Find best configuration");
+        _usbh_dbg(uvcdp->dev->host, "UVC: Find best configuration");
 
         generic_iterator_t ics;
         const usbh_uvc_format_mjpeg_t *format;
@@ -658,7 +667,7 @@ static void ThreadTestUVC(void *p) {
             goto failed;
 
         format = (const usbh_uvc_format_mjpeg_t *)ics.curr;
-        usbDbgPrintf("\tSelect bFormatIndex=%d", format->bFormatIndex);
+        _usbh_dbgf(uvcdp->dev->host, "\tSelect bFormatIndex=%d", format->bFormatIndex);
 
         //find the most suitable frame (largest one within the bandwidth requirements)
         if (usbhuvcFindVSDescriptor(uvcdp, &ics, UVC_VS_FRAME_MJPEG, TRUE) != HAL_SUCCESS)
@@ -668,18 +677,18 @@ static void ThreadTestUVC(void *p) {
             const usbh_uvc_frame_mjpeg_t *const frame = (usbh_uvc_frame_mjpeg_t *)ics.curr;
             uint32_t frame_sz = frame->wWidth * frame->wHeight;
 
-            usbDbgPrintf("\t\tbFrameIndex=%d", frame->bFrameIndex);
-            usbDbgPrintf("\t\t\twWidth=%d, wHeight=%d", frame->wWidth, frame->wHeight);
-            usbDbgPrintf("\t\t\tdwMinBitRate=%u, dwMaxBitRate=%u", frame->dwMinBitRate, frame->dwMaxBitRate);
-            usbDbgPrintf("\t\t\tdwMaxVideoFrameBufferSize=%u", frame->dwMaxVideoFrameBufferSize);
-            usbDbgPrintf("\t\t\tdwDefaultFrameInterval=%u", frame->dwDefaultFrameInterval);
+            _usbh_dbgf(uvcdp->dev->host, "\t\tbFrameIndex=%d", frame->bFrameIndex);
+            _usbh_dbgf(uvcdp->dev->host, "\t\t\twWidth=%d, wHeight=%d", frame->wWidth, frame->wHeight);
+            _usbh_dbgf(uvcdp->dev->host, "\t\t\tdwMinBitRate=%u, dwMaxBitRate=%u", frame->dwMinBitRate, frame->dwMaxBitRate);
+            _usbh_dbgf(uvcdp->dev->host, "\t\t\tdwMaxVideoFrameBufferSize=%u", frame->dwMaxVideoFrameBufferSize);
+            _usbh_dbgf(uvcdp->dev->host, "\t\t\tdwDefaultFrameInterval=%u", frame->dwDefaultFrameInterval);
 
             uint8_t j;
             for (j = 0; j < frame->bFrameIntervalType; j++) {
                 uint32_t ep_sz =
                         usbhuvcEstimateRequiredEPSize(uvcdp, (const uint8_t *)format, (const uint8_t *)frame, frame->dwFrameInterval[j]);
 
-                usbDbgPrintf("\t\t\tdwFrameInterval=%u, estimated EP size=%u", frame->dwFrameInterval[j], ep_sz);
+                _usbh_dbgf(uvcdp->dev->host, "\t\t\tdwFrameInterval=%u, estimated EP size=%u", frame->dwFrameInterval[j], ep_sz);
 
                 if (ep_sz > 310)
                     continue;
@@ -697,7 +706,7 @@ static void ThreadTestUVC(void *p) {
                 if (ep_sz < min_ep_sz) {
                     /* new best bitrate */
                     min_ep_sz = ep_sz;
-                    usbDbgPuts("\t\t\tNew best candidate found");
+                    _usbh_dbg(uvcdp->dev->host, "\t\t\tNew best candidate found");
                     best_frame_interval_index = j;
                     best_frame = frame;
                 }
@@ -706,14 +715,14 @@ static void ThreadTestUVC(void *p) {
 
 failed:
         if (best_frame == NULL) {
-            usbDbgPuts("\t\t\tCouldn't find suitable format/frame");
+            _usbh_dbg(uvcdp->dev->host, "\t\t\tCouldn't find suitable format/frame");
             continue;
         }
 
         /* ************************************ */
         /*   NEGOTIATION                        */
         /* ************************************ */
-        usbDbgPuts("UVC: Start negotiation");
+        _usbh_dbg(uvcdp->dev->host, "UVC: Start negotiation");
 
         usbhuvcResetPC(uvcdp);
         usbh_uvc_ctrl_vs_probecommit_data_t *const pc = usbhuvcGetPC(uvcdp);
@@ -723,42 +732,42 @@ failed:
         pc->bFrameIndex = best_frame->bFrameIndex;
         pc->dwFrameInterval = best_frame->dwFrameInterval[best_frame_interval_index];
 
-        usbDbgPrintf("\tFirst probe, selecting bFormatIndex=%d, bFrameIndex=%d, dwFrameInterval=%u",
+        _usbh_dbgf(uvcdp->dev->host, "\tFirst probe, selecting bFormatIndex=%d, bFrameIndex=%d, dwFrameInterval=%u",
                 pc->bFormatIndex, pc->bFrameIndex, pc->dwFrameInterval);
 
-        usbDbgPuts("SET_CUR (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc);
+        _usbh_dbg(uvcdp->dev->host, "SET_CUR (PROBE):"); usbhuvcPrintProbeCommit(uvcdp, &uvcdp->pc);
         if (usbhuvcProbe(uvcdp) != HAL_SUCCESS) {
-            usbDbgPuts("\tFirst probe failed");
+            _usbh_dbg(uvcdp->dev->host, "\tFirst probe failed");
             continue;
         }
-        usbDbgPuts("GET_CUR (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc);
-        usbDbgPuts("GET_MIN (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc_min);
-        usbDbgPuts("GET_MAX (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc_max);
+        _usbh_dbg(uvcdp->dev->host, "GET_CUR (PROBE):"); usbhuvcPrintProbeCommit(uvcdp, &uvcdp->pc);
+        _usbh_dbg(uvcdp->dev->host, "GET_MIN (PROBE):"); usbhuvcPrintProbeCommit(uvcdp, &uvcdp->pc_min);
+        _usbh_dbg(uvcdp->dev->host, "GET_MAX (PROBE):"); usbhuvcPrintProbeCommit(uvcdp, &uvcdp->pc_max);
 
         pc->bmHint = 0x0001;
         pc->wCompQuality = uvcdp->pc_min.wCompQuality;
 
-        usbDbgPuts("SET_CUR (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc);
-        usbDbgPrintf("\tSecond probe, selecting wCompQuality=%d", pc->wCompQuality);
+        _usbh_dbg(uvcdp->dev->host, "SET_CUR (PROBE):"); usbhuvcPrintProbeCommit(uvcdp, &uvcdp->pc);
+        _usbh_dbgf(uvcdp->dev->host, "\tSecond probe, selecting wCompQuality=%d", pc->wCompQuality);
         if (usbhuvcProbe(uvcdp) != HAL_SUCCESS) {
-            usbDbgPuts("\tSecond probe failed");
+            _usbh_dbg(uvcdp->dev->host, "\tSecond probe failed");
             continue;
         }
-        usbDbgPuts("GET_CUR (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc);
-        usbDbgPuts("GET_MIN (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc_min);
-        usbDbgPuts("GET_MAX (PROBE):"); usbhuvcPrintProbeCommit(&uvcdp->pc_max);
+        _usbh_dbg(uvcdp->dev->host, "GET_CUR (PROBE):"); usbhuvcPrintProbeCommit(uvcdp, &uvcdp->pc);
+        _usbh_dbg(uvcdp->dev->host, "GET_MIN (PROBE):"); usbhuvcPrintProbeCommit(uvcdp, &uvcdp->pc_min);
+        _usbh_dbg(uvcdp->dev->host, "GET_MAX (PROBE):"); usbhuvcPrintProbeCommit(uvcdp, &uvcdp->pc_max);
 
         /* ************************************ */
         /*   Commit negotiated parameters        */
         /* ************************************ */
-        usbDbgPuts("UVC: Commit negotiated parameters");
-        usbDbgPuts("SET_CUR (COMMIT):"); usbhuvcPrintProbeCommit(&uvcdp->pc);
+        _usbh_dbg(uvcdp->dev->host, "UVC: Commit negotiated parameters");
+        _usbh_dbg(uvcdp->dev->host, "SET_CUR (COMMIT):"); usbhuvcPrintProbeCommit(uvcdp, &uvcdp->pc);
         if (usbhuvcCommit(uvcdp) != HAL_SUCCESS) {
-            usbDbgPuts("\tCommit failed");
+            _usbh_dbg(uvcdp->dev->host, "\tCommit failed");
             continue;
         }
 
-        usbDbgPuts("UVC: Ready to start streaming");
+        _usbh_dbg(uvcdp->dev->host, "UVC: Ready to start streaming");
 
         uint32_t npackets = 0;
         uint32_t payload = 0;
@@ -774,7 +783,7 @@ failed:
             msg_t msg, ret;
             ret = usbhuvcLockAndFetch(uvcdp, &msg, TIME_INFINITE);
             if (ret == MSG_RESET) {
-                usbDbgPuts("UVC: Driver is unloading");
+                _usbh_dbg(uvcdp->dev->host, "UVC: Driver is unloading");
                 break;
             } else if (ret == MSG_TIMEOUT) {
                 continue;
@@ -784,7 +793,7 @@ failed:
                 usbhuvc_message_data_t *const data = (usbhuvc_message_data_t *)msg;
 
                 if (data->length < data->data[0]) {
-                    usbDbgPrintf("UVC: Length error!");
+                    _usbh_dbgf(uvcdp->dev->host, "UVC: Length error!");
                     goto free_data;
                 }
 
@@ -815,20 +824,20 @@ failed:
                     chsnprintf(fn, sizeof(fn), "/img%d.jpg", frame);
                     if (f_open(&fp, fn, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK) {
                         if (with_dht && f_write(&fp, jpeg_header_plus_dht, sizeof(jpeg_header_plus_dht), &bw) != FR_OK) {
-                            usbDbgPuts("UVC->MSD: File write error");
+                            _usbh_dbg(uvcdp->dev->host, "UVC->MSD: File write error");
                             f_close(&fp);
                             state = 0;
                         }
                         state = 2;
                     } else {
-                        usbDbgPuts("UVC->MSD: File open error");
+                        _usbh_dbg(uvcdp->dev->host, "UVC->MSD: File open error");
                         state = 0;
                     }
                 }
 
                 if (state == 2) {
                     if (f_write(&fp, message_data, message_payload, &bw) != FR_OK) {
-                        usbDbgPuts("UVC->MSD: File write error");
+                        _usbh_dbg(uvcdp->dev->host, "UVC->MSD: File write error");
                         f_close(&fp);
                         state = 0;
                     }
@@ -837,7 +846,7 @@ failed:
 check_eof:
 #endif
                 if (data->data[1] & UVC_HDR_EOF) {
-                    usbDbgPrintf("UVC: FRAME #%d, delta=%03dticks, #packets=%d, useful_payload=%dbytes, total=%dbytes",
+                    _usbh_dbgf(uvcdp->dev->host, "UVC: FRAME #%d, delta=%03dticks, #packets=%d, useful_payload=%dbytes, total=%dbytes",
                             frame, data->timestamp - last , npackets, payload, total);
                     last = data->timestamp;
                     npackets = 0;
@@ -856,17 +865,17 @@ free_data:
                 const uint8_t *const stat = status->data;
                 switch (stat[0] & 0x0f) {
                 case 1:
-                    usbDbgPrintf("UVC: STATUS Control event, "
+                    _usbh_dbgf(uvcdp->dev->host, "UVC: STATUS Control event, "
                             "bOriginator=%d, bEvent=%d, bSelector=%d, bAttribute=%d",
                             stat[1], stat[2], stat[3], stat[4]);
                     break;
                 case 2:
-                    usbDbgPrintf("UVC: STATUS Streaming event, "
+                    _usbh_dbgf(uvcdp->dev->host, "UVC: STATUS Streaming event, "
                             "bOriginator=%d, bEvent=%d, bValue=%d",
                             stat[1], stat[2], stat[3]);
                     break;
                 default:
-                    usbDbgPrintf("UVC: STATUS unknown status report = %d", stat[0]);
+                    _usbh_dbgf(uvcdp->dev->host, "UVC: STATUS unknown status report = %d", stat[0]);
                     break;
                 }
                 usbhuvcFreeStatusMessage(uvcdp, status);
@@ -878,6 +887,16 @@ free_data:
 
 }
 #endif
+
+#if USBH_DEBUG_MULTI_HOST
+void USBH_DEBUG_OUTPUT_CALLBACK(USBHDriver *host, const uint8_t *buff, size_t len) {
+	(void)host;
+#else
+void USBH_DEBUG_OUTPUT_CALLBACK(const uint8_t *buff, size_t len) {
+#endif
+	sdWrite(&SD2, buff, len);
+	sdWrite(&SD2, (const uint8_t *)"\r\n", 2);
+}
 
 int main(void) {
 
@@ -928,9 +947,11 @@ int main(void) {
     //start
 #if STM32_USBH_USE_OTG1
     usbhStart(&USBHD1);
+    _usbh_dbgf(&USBHD1, "Started");
 #endif
 #if STM32_USBH_USE_OTG2
     usbhStart(&USBHD2);
+    _usbh_dbgf(&USBHD2, "Started");
 #endif
 
     for(;;) {

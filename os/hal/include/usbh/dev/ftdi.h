@@ -127,7 +127,7 @@ struct USBHFTDIDriver {
 /* Driver macros.                                                            */
 /*===========================================================================*/
 #define usbhftdipGetState(ftdipp) ((ftdipp)->state)
-
+#define usbhftdipGetHost(ftdipp) ((ftdipp)->ftdip->dev->host)
 
 /*===========================================================================*/
 /* External declarations.                                                    */

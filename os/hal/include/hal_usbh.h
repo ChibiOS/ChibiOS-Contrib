@@ -242,6 +242,31 @@ struct usbh_port {
 	_usbh_port_ll_data
 };
 
+
+#if USBH_DEBUG_ENABLE
+struct usbh_dq {
+	int rem;
+	int sz;
+	uint8_t *first;
+	uint8_t *next;
+	uint8_t *start;
+	uint8_t *end;
+};
+
+typedef struct usbh_dq usbh_dq_t;
+
+struct usbh_debug_helper {
+	uint8_t buff[USBH_DEBUG_BUFFER];
+	THD_WORKING_AREA(thd_wa, 512);
+	usbh_dq_t dq;
+	systime_t first;
+	systime_t last;
+	bool ena;
+	bool on;
+	thread_reference_t tr;
+};
+#endif
+
 struct USBHDriver {
 	usbh_status_t status;
 	uint8_t address_bitmap[(USBH_MAX_ADDRESSES + 7) / 8];
@@ -255,15 +280,16 @@ struct USBHDriver {
 	/* Low level part */
 	_usbhdriver_ll_data
 
-#if USBH_DEBUG_ENABLE
+#if USBH_DEBUG_ENABLE && USBH_DEBUG_MULTI_HOST
 	/* debug */
-	uint8_t dbg_buff[USBH_DEBUG_BUFFER];
-	THD_WORKING_AREA(waDebug, 512);
-	input_queue_t iq;
+	struct usbh_debug_helper debug;
 #endif
 };
 
-
+#if USBH_DEBUG_ENABLE && !USBH_DEBUG_MULTI_HOST
+/* debug */
+extern struct usbh_debug_helper usbh_debug;
+#endif
 
 /*===========================================================================*/
 /* External declarations.                                                    */
@@ -289,10 +315,10 @@ extern "C" {
 	/* Device-related */
 #if	USBH_DEBUG_ENABLE && USBH_DEBUG_ENABLE_INFO
 	void usbhDevicePrintInfo(usbh_device_t *dev);
-	void usbhDevicePrintConfiguration(const uint8_t *descriptor, uint16_t rem);
+	void usbhDevicePrintConfiguration(const usbh_device_t *dev, const uint8_t *descriptor, uint16_t rem);
 #else
 #	define usbhDevicePrintInfo(dev) do {} while(0)
-#	define usbhDevicePrintConfiguration(descriptor, rem) do {} while(0)
+#	define usbhDevicePrintConfiguration(dev, descriptor, rem) do {} while(0)
 #endif
 	bool usbhDeviceReadString(usbh_device_t *dev, char *dest, uint8_t size,
 			uint8_t index, uint16_t langID);

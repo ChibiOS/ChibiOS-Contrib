@@ -23,36 +23,15 @@
 #include "usbh/dev/hub.h"
 #include <string.h>
 
-#if USBH_DEBUG_ENABLE_TRACE
-#define udbgf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define udbg(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define udbgf(f, ...)  do {} while(0)
-#define udbg(f, ...)   do {} while(0)
-#endif
+#define _USBH_DEBUG_HELPER_ENABLE_TRACE		USBH_DEBUG_ENABLE_TRACE
+#define _USBH_DEBUG_HELPER_ENABLE_INFO		USBH_DEBUG_ENABLE_INFO
+#define _USBH_DEBUG_HELPER_ENABLE_WARNINGS	USBH_DEBUG_ENABLE_WARNINGS
+#define _USBH_DEBUG_HELPER_ENABLE_ERRORS	USBH_DEBUG_ENABLE_ERRORS
+#include "usbh/debug_helpers.h"
 
-#if USBH_DEBUG_ENABLE_INFO
-#define uinfof(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uinfo(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uinfof(f, ...)  do {} while(0)
-#define uinfo(f, ...)   do {} while(0)
-#endif
-
-#if USBH_DEBUG_ENABLE_WARNINGS
-#define uwarnf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uwarn(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uwarnf(f, ...)  do {} while(0)
-#define uwarn(f, ...)   do {} while(0)
-#endif
-
-#if USBH_DEBUG_ENABLE_ERRORS
-#define uerrf(f, ...)  usbDbgPrintf(f, ##__VA_ARGS__)
-#define uerr(f, ...)  usbDbgPuts(f, ##__VA_ARGS__)
-#else
-#define uerrf(f, ...)  do {} while(0)
-#define uerr(f, ...)   do {} while(0)
+#if USBH_DEBUG_ENABLE && !USBH_DEBUG_MULTI_HOST
+/* debug */
+struct usbh_debug_helper usbh_debug;
 #endif
 
 static void _classdriver_process_device(usbh_device_t *dev);
@@ -104,7 +83,11 @@ void usbhObjectInit(USBHDriver *usbh) {
 }
 
 void usbhStart(USBHDriver *usbh) {
+#if USBH_DEBUG_MULTI_HOST
 	usbDbgInit(usbh);
+#else
+	usbDbgInit();
+#endif
 
 	osalSysLock();
 	osalDbgAssert((usbh->status == USBH_STATUS_STOPPED) || (usbh->status == USBH_STATUS_STARTED),
@@ -264,7 +247,7 @@ void _usbh_urb_abort_and_waitS(usbh_urb_t *urb, usbh_urbstatus_t status) {
 	_check_urb(urb);
 
 	if (_usbh_urb_abortI(urb, status) == FALSE) {
-		uwarn("URB wasn't aborted immediately, suspend");
+		uurbwarn("URB wasn't aborted immediately, suspend");
 		osalThreadSuspendS(&urb->abortingThread);
 		osalDbgAssert(urb->abortingThread == 0, "maybe we should uncomment the line below");
 		//urb->abortingThread = 0;
@@ -272,7 +255,7 @@ void _usbh_urb_abort_and_waitS(usbh_urb_t *urb, usbh_urbstatus_t status) {
 		/* This call is necessary because _usbh_urb_abortI may require a reschedule */
 		osalOsRescheduleS();
 	}
-	uwarn("URB aborted");
+	uurbwarn("URB aborted");
 }
 
 /* usbhURBCancelI may require a reschedule if called from a S-locked state */
@@ -607,26 +590,26 @@ static bool _device_set_configuration(usbh_device_t *dev, uint8_t configuration)
 static bool _device_configure(usbh_device_t *dev, uint8_t bConfiguration) {
 	uint8_t i;
 
-	uinfof("Reading basic configuration descriptor %d", bConfiguration);
+	udevinfof("Reading basic configuration descriptor %d", bConfiguration);
 	for (i = 0; i < 3; i++) {
 		if (!_device_read_basic_cfgdesc(dev, bConfiguration))
 			break;
 	}
 
 	if (i == 3) {
-		uerrf("Could not read basic configuration descriptor %d; "
+		udeverrf("Could not read basic configuration descriptor %d; "
 					"won't configure device", bConfiguration);
 		return HAL_FAILED;
 	}
 
-	uinfof("Selecting configuration %d", bConfiguration);
+	udevinfof("Selecting configuration %d", bConfiguration);
 	for (i = 0; i < 3; i++) {
 		if (!_device_set_configuration(dev, dev->basicConfigDesc.bConfigurationValue)) {
 			/* TODO: check if correctly configured using GET_CONFIGURATION */
 			dev->status = USBH_DEVSTATUS_CONFIGURED;
 			dev->bConfiguration = bConfiguration;
 
-			uinfo("Device configured.");
+			udevinfo("Device configured.");
 			return HAL_SUCCESS;
 		}
 	}
@@ -636,16 +619,16 @@ static bool _device_configure(usbh_device_t *dev, uint8_t bConfiguration) {
 
 static bool _device_enumerate(usbh_device_t *dev) {
 
-	uinfo("Enumerate.");
-	uinfo("Get first 8 bytes of device descriptor");
+	udevinfo("Enumerate.");
+	udevinfo("Get first 8 bytes of device descriptor");
 
 	/* get first 8 bytes of device descriptor */
 	if (usbhStdReqGetDeviceDescriptor(dev, 8, (uint8_t *)&dev->devDesc)) {
-		uerr("Error");
+		udeverr("Error");
 		return HAL_FAILED;
 	}
 
-	uinfof("Configure bMaxPacketSize0 = %d", dev->devDesc.bMaxPacketSize0);
+	udevinfof("Configure bMaxPacketSize0 = %d", dev->devDesc.bMaxPacketSize0);
 	/* configure EP0 wMaxPacketSize */
 	usbhEPClose(&dev->ctrl);
 	_ep0_object_init(dev, dev->devDesc.bMaxPacketSize0);
@@ -653,14 +636,14 @@ static bool _device_enumerate(usbh_device_t *dev) {
 
 	uint8_t addr = _find_address(dev->host);
 	if (addr == 0) {
-		uerr("No free addresses found");
+		udeverr("No free addresses found");
 		return HAL_FAILED;
 	}
 
 	/* set device address */
-	uinfof("Set device address: %d", addr);
+	udevinfof("Set device address: %d", addr);
 	if (_device_setaddress(dev, addr)) {
-		uerr("Error");
+		udeverr("Error");
 		_free_address(dev->host, addr);
 		return HAL_FAILED;
 	}
@@ -670,23 +653,23 @@ static bool _device_enumerate(usbh_device_t *dev) {
 	_ep0_object_init(dev, dev->devDesc.bMaxPacketSize0);
 	usbhEPOpen(&dev->ctrl);
 
-	uinfof("Wait stabilization...");
+	udevinfof("Wait stabilization...");
 	osalThreadSleepMilliseconds(HAL_USBH_DEVICE_ADDRESS_STABILIZATION);
 
 	/* address is set */
 	dev->status = USBH_DEVSTATUS_ADDRESS;
 
-	uinfof("Get full device desc");
+	udevinfof("Get full device desc");
 	/* get full device descriptor */
 	if (usbhStdReqGetDeviceDescriptor(dev, sizeof(dev->devDesc),
 			(uint8_t *)&dev->devDesc)) {
-		uerr("Error");
+		udeverr("Error");
 		_device_setaddress(dev, 0);
 		_free_address(dev->host, addr);
 		return HAL_FAILED;
 	}
 
-	uinfof("Enumeration finished.");
+	udevinfof("Enumeration finished.");
 	return HAL_SUCCESS;
 }
 
@@ -695,93 +678,96 @@ void usbhDevicePrintInfo(usbh_device_t *dev) {
 	USBH_DEFINE_BUFFER(char str[64]);
 	usbh_device_descriptor_t *const desc = &dev->devDesc;
 
-	uinfo("----- Device info -----");
-	uinfo("Device descriptor:");
-	uinfof("\tUSBSpec=%04x, #configurations=%d, langID0=%04x",
+	udevinfo("----- Device info -----");
+	udevinfo("Device descriptor:");
+	udevinfof("\tUSBSpec=%04x, #configurations=%d, langID0=%04x",
 			desc->bcdUSB,
 			desc->bNumConfigurations,
 			dev->langID0);
 
-	uinfof("\tClass=%02x, Subclass=%02x, Protocol=%02x",
+	udevinfof("\tClass=%02x, Subclass=%02x, Protocol=%02x",
 			desc->bDeviceClass,
 			desc->bDeviceSubClass,
 			desc->bDeviceProtocol);
 
-	uinfof("\tVID=%04x, PID=%04x, Release=%04x",
+	udevinfof("\tVID=%04x, PID=%04x, Release=%04x",
 			desc->idVendor,
 			desc->idProduct,
 			desc->bcdDevice);
 
 	if (dev->langID0) {
 		usbhDeviceReadString(dev, str, sizeof(str), desc->iManufacturer, dev->langID0);
-		uinfof("\tManufacturer: %s", str);
+		udevinfof("\tManufacturer: %s", str);
 		usbhDeviceReadString(dev, str, sizeof(str), desc->iProduct, dev->langID0);
-		uinfof("\tProduct: %s", str);
+		udevinfof("\tProduct: %s", str);
 		usbhDeviceReadString(dev, str, sizeof(str), desc->iSerialNumber, dev->langID0);
-		uinfof("\tSerial Number: %s", str);
+		udevinfof("\tSerial Number: %s", str);
 	}
 
 	if (dev->status == USBH_DEVSTATUS_CONFIGURED) {
-		uinfo("Configuration descriptor (partial):");
+		udevinfo("Configuration descriptor (partial):");
 		usbh_config_descriptor_t *const cfg = &dev->basicConfigDesc;
-		uinfof("\tbConfigurationValue=%d, Length=%d, #interfaces=%d",
+		udevinfof("\tbConfigurationValue=%d, Length=%d, #interfaces=%d",
 				cfg->bConfigurationValue,
 				cfg->wTotalLength,
 				cfg->bNumInterfaces);
 
-		uinfof("\tCurrent=%dmA", cfg->bMaxPower * 2);
-		uinfof("\tSelfPowered=%d, RemoteWakeup=%d",
+		udevinfof("\tCurrent=%dmA", cfg->bMaxPower * 2);
+		udevinfof("\tSelfPowered=%d, RemoteWakeup=%d",
 				cfg->bmAttributes & 0x40 ? 1 : 0,
 				cfg->bmAttributes & 0x20 ? 1 : 0);
 		if (dev->langID0) {
 			usbhDeviceReadString(dev, str, sizeof(str), cfg->iConfiguration, dev->langID0);
-			uinfof("\tName: %s", str);
+			udevinfof("\tName: %s", str);
 		}
 	}
 
-	uinfo("----- End Device info -----");
+	udevinfo("----- End Device info -----");
 
 }
 
-void usbhDevicePrintConfiguration(const uint8_t *descriptor, uint16_t rem) {
+void usbhDevicePrintConfiguration(const usbh_device_t *dev,
+		const uint8_t *descriptor, uint16_t rem) {
+	(void)dev;
+
 	generic_iterator_t iep, icfg, ics;
 	if_iterator_t iif;
 
-	uinfo("----- Configuration info -----");
-	uinfo("Configuration descriptor:");
+	udevinfo("----- Configuration info -----");
+	udevinfo("Configuration descriptor:");
 	cfg_iter_init(&icfg, descriptor, rem);
 	const usbh_config_descriptor_t *const cfgdesc = cfg_get(&icfg);
-	uinfof("Configuration %d, #IFs=%d", cfgdesc->bConfigurationValue, cfgdesc->bNumInterfaces);
+	udevinfof("Configuration %d, #IFs=%d", cfgdesc->bConfigurationValue, cfgdesc->bNumInterfaces);
 
 	for (if_iter_init(&iif, &icfg); iif.valid; if_iter_next(&iif)) {
 		const usbh_interface_descriptor_t *const ifdesc = if_get(&iif);
 
-		uinfof("  Interface %d, alt=%d, #EPs=%d, "
+		udevinfof("  Interface %d, alt=%d, #EPs=%d, "
 				"Class=%02x, Subclass=%02x, Protocol=%02x",
 				ifdesc->bInterfaceNumber, ifdesc->bAlternateSetting, ifdesc->bNumEndpoints,
 				ifdesc->bInterfaceClass, ifdesc->bInterfaceSubClass, ifdesc->bInterfaceProtocol);
 
 		for (cs_iter_init(&ics, (generic_iterator_t *)&iif); ics.valid; cs_iter_next(&ics)) {
-			uinfof("    Class-Specific descriptor, Length=%d, Type=%02x",
+			udevinfof("    Class-Specific descriptor, Length=%d, Type=%02x",
 					ics.curr[0], ics.curr[1]);
 		}
 
 		for (ep_iter_init(&iep, &iif); iep.valid; ep_iter_next(&iep)) {
 			const usbh_endpoint_descriptor_t *const epdesc = ep_get(&iep);
 
-			uinfof("    Endpoint descriptor, Address=%02x, Type=%d, MaxPacket=%d, Interval=%d",
+			udevinfof("    Endpoint descriptor, Address=%02x, Type=%d, MaxPacket=%d, Interval=%d",
 					epdesc->bEndpointAddress,
 					epdesc->bmAttributes & 3,
 					epdesc->wMaxPacketSize,
 					epdesc->bInterval);
 
 			for (cs_iter_init(&ics, &iep); ics.valid; cs_iter_next(&ics)) {
-				uinfof("    Class-Specific descriptor, Length=%d, Type=%02x",
+				udevinfof("    Class-Specific descriptor, Length=%d, Type=%02x",
 						ics.curr[0], ics.curr[1]);
 			}
 		}
 	}
-	uinfo("----- End Configuration info -----");
+	udevinfo("----- End Configuration info -----");
 }
 #endif
 
@@ -873,25 +859,25 @@ static void _port_process_status_change(usbh_port_t *port) {
 	if (port->c_status & USBH_PORTSTATUS_C_RESET) {
 		port->c_status &= ~USBH_PORTSTATUS_C_RESET;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_RESET);
-		udbgf("Port %d: reset=%d", port->number, port->status & USBH_PORTSTATUS_RESET ? 1 : 0);
+		uportdbgf("Port %d: reset=%d", port->number, port->status & USBH_PORTSTATUS_RESET ? 1 : 0);
 	}
 
 	if (port->c_status & USBH_PORTSTATUS_C_ENABLE) {
 		port->c_status &= ~USBH_PORTSTATUS_C_ENABLE;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_ENABLE);
-		udbgf("Port %d: enable=%d", port->number, port->status & USBH_PORTSTATUS_ENABLE ? 1 : 0);
+		uportdbgf("Port %d: enable=%d", port->number, port->status & USBH_PORTSTATUS_ENABLE ? 1 : 0);
 	}
 
 	if (port->c_status & USBH_PORTSTATUS_C_OVERCURRENT) {
 		port->c_status &= ~USBH_PORTSTATUS_C_OVERCURRENT;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_OVERCURRENT);
-		uwarnf("Port %d: overcurrent=%d", port->number, port->status & USBH_PORTSTATUS_OVERCURRENT ? 1 : 0);
+		uportwarnf("Port %d: overcurrent=%d", port->number, port->status & USBH_PORTSTATUS_OVERCURRENT ? 1 : 0);
 	}
 
 	if (port->c_status & USBH_PORTSTATUS_C_SUSPEND) {
 		port->c_status &= ~USBH_PORTSTATUS_C_SUSPEND;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_SUSPEND);
-		uinfof("Port %d: suspend=%d", port->number, port->status & USBH_PORTSTATUS_SUSPEND ? 1 : 0);
+		uportinfof("Port %d: suspend=%d", port->number, port->status & USBH_PORTSTATUS_SUSPEND ? 1 : 0);
 	}
 
 }
@@ -906,7 +892,7 @@ static void _port_connected(usbh_port_t *port) {
 	USBH_DEFINE_BUFFER(usbh_string_descriptor_t strdesc);
 
 	port->device.status = USBH_DEVSTATUS_ATTACHED;
-	uinfof("Port %d: attached, wait debounce...", port->number);
+	uportinfof("Port %d: attached, wait debounce...", port->number);
 
 	/* wait for attach de-bounce */
 	osalThreadSleepMilliseconds(HAL_USBH_PORT_DEBOUNCE_TIME);
@@ -916,23 +902,23 @@ static void _port_connected(usbh_port_t *port) {
 	if (port->c_status & USBH_PORTSTATUS_C_CONNECTION) {
 		port->c_status &= ~USBH_PORTSTATUS_C_CONNECTION;
 		usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_CONNECTION);
-		uwarnf("Port %d: connection state changed; abort #1", port->number);
+		uportwarnf("Port %d: connection state changed; abort #1", port->number);
 		goto abort;
 	}
 
 	/* make sure that the device is still connected */
 	if ((port->status & USBH_PORTSTATUS_CONNECTION) == 0) {
-		uwarnf("Port %d: device is disconnected", port->number);
+		uportwarnf("Port %d: device is disconnected", port->number);
 		goto abort;
 	}
 
-	uinfof("Port %d: connected", port->number);
+	uportinfof("Port %d: connected", port->number);
 	port->device.status = USBH_DEVSTATUS_CONNECTED;
 	retries = 3;
 
 reset:
 	for (i = 0; i < 3; i++) {
-		uinfof("Port %d: Try reset...", port->number);
+		uportinfof("Port %d: Try reset...", port->number);
 		/* TODO: check that port is actually disabled */
 		port->c_status &= ~(USBH_PORTSTATUS_C_RESET | USBH_PORTSTATUS_C_ENABLE);
 		_port_reset(port);
@@ -945,7 +931,7 @@ reset:
 			if (port->c_status & USBH_PORTSTATUS_C_CONNECTION) {
 				port->c_status &= ~USBH_PORTSTATUS_C_CONNECTION;
 				usbhhubClearFeaturePort(port, USBH_PORT_FEAT_C_CONNECTION);
-				uwarnf("Port %d: connection state changed; abort #2", port->number);
+				uportwarnf("Port %d: connection state changed; abort #2", port->number);
 				goto abort;
 			}
 
@@ -962,7 +948,7 @@ reset:
 
 			/* check for timeout */
 			if (osalOsGetSystemTimeX() - start > HAL_USBH_PORT_RESET_TIMEOUT) {
-				uwarnf("Port %d: reset timeout", port->number);
+				uportwarnf("Port %d: reset timeout", port->number);
 				break;
 			}
 		}
@@ -972,7 +958,7 @@ reset:
 	goto abort;
 
 reset_success:
-	uinfof("Port %d: Reset OK, recovery...", port->number);
+	uportinfof("Port %d: Reset OK, recovery...", port->number);
 
 	/* reset recovery */
 	osalThreadSleepMilliseconds(100);
@@ -994,17 +980,17 @@ reset_success:
 		usbhEPClose(&port->device.ctrl);
 
 		if (!--retries) {
-			uwarnf("Port %d: enumeration failed; abort", port->number);
+			uportwarnf("Port %d: enumeration failed; abort", port->number);
 			goto abort;
 		}
 
 		/* retry reset & enumeration */
-		uwarnf("Port %d: enumeration failed; retry reset & enumeration", port->number);
+		uportwarnf("Port %d: enumeration failed; retry reset & enumeration", port->number);
 		goto reset;
 	}
 
 	/* load the default language ID */
-	uinfof("Port %d: Loading langID0...", port->number);
+	uportinfof("Port %d: Loading langID0...", port->number);
 	if (!usbhStdReqGetStringDescriptor(&port->device, 0, 0,
 			USBH_DT_STRING_SIZE, (uint8_t *)&strdesc)
 		&& (strdesc.bLength >= 4)
@@ -1012,12 +998,12 @@ reset_success:
 			4, (uint8_t *)&strdesc)) {
 
 		port->device.langID0 = strdesc.wData[0];
-		uinfof("Port %d: langID0=%04x", port->number, port->device.langID0);
+		uportinfof("Port %d: langID0=%04x", port->number, port->device.langID0);
 	}
 
 	/* check if the device has only one configuration */
 	if (port->device.devDesc.bNumConfigurations == 1) {
-		uinfof("Port %d: device has only one configuration", port->number);
+		uportinfof("Port %d: device has only one configuration", port->number);
 		_device_configure(&port->device, 0);
 	}
 
@@ -1025,7 +1011,7 @@ reset_success:
 	return;
 
 abort:
-	uerrf("Port %d: abort", port->number);
+	uporterrf("Port %d: abort", port->number);
 	port->device.status = USBH_DEVSTATUS_DISCONNECTED;
 }
 
@@ -1033,14 +1019,14 @@ void _usbh_port_disconnected(usbh_port_t *port) {
 	if (port->device.status == USBH_DEVSTATUS_DISCONNECTED)
 		return;
 
-	uinfof("Port %d: disconnected", port->number);
+	uportinfof("Port %d: disconnected", port->number);
 
 	/* unload drivers */
 	while (port->device.drivers) {
 		usbh_baseclassdriver_t *drv = port->device.drivers;
 
 		/* unload */
-		uinfof("Port %d: unload driver %s", port->number, drv->info->name);
+		uportinfof("Port %d: unload driver %s", port->number, drv->info->name);
 		drv->info->vmt->unload(drv);
 
 		/* unlink */
@@ -1277,7 +1263,7 @@ static bool _classdriver_load(usbh_device_t *dev, uint8_t *descbuff, uint16_t re
 	for (i = 0; i < sizeof_array(usbh_classdrivers_lookup); i++) {
 		const usbh_classdriverinfo_t *const info = usbh_classdrivers_lookup[i];
 
-		uinfof("Try load driver %s", info->name);
+		udevinfof("Try load driver %s", info->name);
 		drv = info->vmt->load(dev, descbuff, rem);
 
 		if (drv != NULL)
@@ -1297,7 +1283,7 @@ success:
 }
 
 static void _classdriver_process_device(usbh_device_t *dev) {
-	uinfo("New device found.");
+	udevinfo("New device found.");
 	const usbh_device_descriptor_t *const devdesc = &dev->devDesc;
 
 	usbhDevicePrintInfo(dev);
@@ -1308,20 +1294,20 @@ static void _classdriver_process_device(usbh_device_t *dev) {
 	 * will have multiple configurations.
 	 */
 	if (dev->status != USBH_DEVSTATUS_CONFIGURED) {
-		uwarn("Multiple configurations not supported, selecting configuration #0");
+		udevwarn("Multiple configurations not supported, selecting configuration #0");
 		if (_device_configure(dev, 0) != HAL_SUCCESS) {
-			uerr("Couldn't configure device; abort.");
+			udeverr("Couldn't configure device; abort.");
 			return;
 		}
 	}
 
 	_device_read_full_cfgdesc(dev, dev->bConfiguration);
 	if (dev->fullConfigurationDescriptor == NULL) {
-		uerr("Couldn't read full configuration descriptor; abort.");
+		udeverr("Couldn't read full configuration descriptor; abort.");
 		return;
 	}
 
-	usbhDevicePrintConfiguration(dev->fullConfigurationDescriptor,
+	usbhDevicePrintConfiguration(dev, dev->fullConfigurationDescriptor,
 			dev->basicConfigDesc.wTotalLength);
 
 #if HAL_USBH_USE_IAD
@@ -1329,7 +1315,7 @@ static void _classdriver_process_device(usbh_device_t *dev) {
 			&& dev->devDesc.bDeviceSubClass == 0x02
 			&& dev->devDesc.bDeviceProtocol == 0x01) {
 
-		uinfo("Load a driver for each IF collection.");
+		udevinfo("Load a driver for each IF collection.");
 
 		generic_iterator_t icfg;
 		if_iterator_t iif;
@@ -1338,7 +1324,7 @@ static void _classdriver_process_device(usbh_device_t *dev) {
 		cfg_iter_init(&icfg, dev->fullConfigurationDescriptor,
 				dev->basicConfigDesc.wTotalLength);
 		if (!icfg.valid) {
-			uerr("Invalid configuration descriptor.");
+			udeverr("Invalid configuration descriptor.");
 			goto exit;
 		}
 
@@ -1348,7 +1334,7 @@ static void _classdriver_process_device(usbh_device_t *dev) {
 				if (_classdriver_load(dev,
 						(uint8_t *)iif.iad,
 						(uint8_t *)iif.curr - (uint8_t *)iif.iad + iif.rem) != HAL_SUCCESS) {
-					uwarnf("No drivers found for IF collection #%d:%d",
+					udevwarnf("No drivers found for IF collection #%d:%d",
 							iif.iad->bFirstInterface,
 							iif.iad->bFirstInterface + iif.iad->bInterfaceCount - 1);
 				}
@@ -1358,11 +1344,11 @@ static void _classdriver_process_device(usbh_device_t *dev) {
 	} else
 #endif
 	if (_classdriver_load(dev, (uint8_t *)devdesc, USBH_DT_DEVICE_SIZE) != HAL_SUCCESS) {
-		uinfo("No drivers found for device.");
+		udevinfo("No drivers found for device.");
 
 		if (devdesc->bDeviceClass == 0) {
 			/* each interface defines its own device class/subclass/protocol */
-			uinfo("Try load a driver for each IF.");
+			udevinfo("Try load a driver for each IF.");
 
 			generic_iterator_t icfg;
 			if_iterator_t iif;
@@ -1371,7 +1357,7 @@ static void _classdriver_process_device(usbh_device_t *dev) {
 			cfg_iter_init(&icfg, dev->fullConfigurationDescriptor,
 					dev->basicConfigDesc.wTotalLength);
 			if (!icfg.valid) {
-				uerr("Invalid configuration descriptor.");
+				udeverr("Invalid configuration descriptor.");
 				goto exit;
 			}
 
@@ -1380,12 +1366,12 @@ static void _classdriver_process_device(usbh_device_t *dev) {
 				if (ifdesc->bInterfaceNumber != last_if) {
 					last_if = ifdesc->bInterfaceNumber;
 					if (_classdriver_load(dev, (uint8_t *)ifdesc, iif.rem) != HAL_SUCCESS) {
-						uwarnf("No drivers found for IF #%d", ifdesc->bInterfaceNumber);
+						udevwarnf("No drivers found for IF #%d", ifdesc->bInterfaceNumber);
 					}
 				}
 			}
 		} else {
-			uwarn("Unable to load driver.");
+			udevwarn("Unable to load driver.");
 		}
 	}
 
