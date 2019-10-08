@@ -7,10 +7,9 @@ from os.path import expanduser, sep, dirname, abspath
 from argparse import ArgumentParser
 import re
 
-parser = ArgumentParser(description='Generate ChibiOS GPIO header file from STM32CubeMX project files.')
-parser.add_argument('--mx', required=True, type=str, help='STM32CubeMX project file path')
-parser.add_argument('--mcu', default='mcuconf.h', type=str, help='mcuconf.h path')
-parser.add_argument('--hal', default='halconf.h', type=str, help='halconf.h path')
+parser = ArgumentParser(description='Update ChibiOS halconf and mcuconf from STM32CubeMX project files.')
+parser.add_argument('cube', type=str, help='STM32CubeMX project file')
+parser.add_argument('cfg', type=str, help='Chibios config files folder')
 
 # Always enable
 ALWAYS = ('PAL', 'EXTI')
@@ -146,13 +145,16 @@ if __name__ == '__main__':
     args = parser.parse_args()
     cur_path = dirname(abspath(__file__))
 
-    with open(args.mx, 'r') as f:
+    halconf_path = args.cfg + '/halconf.h'
+    mcuconf_path = args.cfg + '/mcuconf.h'
+
+    with open(args.cube, 'r') as f:
         project = f.readlines()
 
-    with open(args.hal, 'r') as f:
+    with open(halconf_path, 'r') as f:
         halconf = f.readlines()
 
-    with open(args.mcu, 'r') as f:
+    with open(mcuconf_path, 'r') as f:
         mcuconf = f.readlines()
 
     hal_devices = get_hal_devices(halconf)
@@ -164,11 +166,11 @@ if __name__ == '__main__':
 
 # Update and save halconf
     halconf = update_hal(halconf, enabled_drivers)
-    with open(args.hal, 'w') as f:
+    with open(halconf_path, 'w') as f:
         f.write("".join(halconf))
 
 # Update and save mcuconf drivers
     mcuconf = update_drivers(mcuconf, enabled_drivers)
     mcuconf = update_rcc(mcuconf, rcc)
-    with open(args.mcu, 'w') as f:
+    with open(mcuconf_path, 'w') as f:
         f.write("".join(mcuconf))
