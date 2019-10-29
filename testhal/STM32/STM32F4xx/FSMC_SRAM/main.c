@@ -17,7 +17,6 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "hal_fsmc_sram.h"
 #include "membench.h"
 #include "memtest.h"
 

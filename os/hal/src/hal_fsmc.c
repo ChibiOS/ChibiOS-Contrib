@@ -62,8 +62,6 @@ FSMCDriver FSMCD1;
 /* Driver exported functions.                                                */
 /*===========================================================================*/
 
-#include "hal_fsmc_sdram_lld.h"
-
 /**
  * @brief   Low level FSMC driver initialization.
  *
@@ -191,7 +189,9 @@ CH_IRQ_HANDLER(STM32_FSMC_HANDLER) {
   CH_IRQ_EPILOGUE();
 }
 
+#if (HAL_USE_FSMC_SDRAM == TRUE)
 
+#include "hal_fsmc_sdram_lld.h"
 /**
  * @brief FSMC SDRAM Driver init
  */
@@ -238,6 +238,81 @@ void fsmcSdramStop(SDRAMDriver *sdramp) {
     sdramp->state = SDRAM_STOP;
   }
 }
+#endif  /* HAL_USE_FSMC_SDRAM == TRUE */
+
+
+#if (HAL_USE_FSMC_SRAM == TRUE)
+
+#include "hal_fsmc_sram_lld.h"
+
+/**
+ * @brief   Low level SRAM driver initialization.
+ *
+ * @notapi
+ */
+void fsmcSramInit(void) {
+
+  fsmcInit();
+
+#if STM32_FSMC_USE_SRAM1
+  SRAMD1.sram = FSMCD1.sram1;
+  SRAMD1.state = SRAM_STOP;
+#endif /* STM32_FSMC_USE_SRAM1 */
+
+#if STM32_FSMC_USE_SRAM2
+  SRAMD2.sram = FSMCD1.sram2;
+  SRAMD2.state = SRAM_STOP;
+#endif /* STM32_FSMC_USE_SRAM2 */
+
+#if STM32_FSMC_USE_SRAM3
+  SRAMD3.sram = FSMCD1.sram3;
+  SRAMD3.state = SRAM_STOP;
+#endif /* STM32_FSMC_USE_SRAM3 */
+
+#if STM32_FSMC_USE_SRAM4
+  SRAMD4.sram = FSMCD1.sram4;
+  SRAMD4.state = SRAM_STOP;
+#endif /* STM32_FSMC_USE_SRAM4 */
+}
+
+/**
+ * @brief   Configures and activates the SRAM peripheral.
+ *
+ * @param[in] sramp         pointer to the @p SRAMDriver object
+ * @param[in] cfgp          pointer to the @p SRAMConfig object
+ *
+ * @notapi
+ */
+void fsmcSramStart(SRAMDriver *sramp, const SRAMConfig *cfgp) {
+
+  if (FSMCD1.state == FSMC_STOP)
+    fsmcStart(&FSMCD1);
+
+  osalDbgAssert((sramp->state == SRAM_STOP) || (sramp->state == SRAM_READY),
+              "invalid state");
+
+  if (sramp->state == SRAM_STOP) {
+    lld_sram_start(sramp, cfgp);
+    sramp->state = SRAM_READY;
+  }
+}
+
+/**
+ * @brief   Deactivates the SRAM peripheral.
+ *
+ * @param[in] sramp         pointer to the @p SRAMDriver object
+ *
+ * @notapi
+ */
+void fsmcSramStop(SRAMDriver *sramp) {
+
+  if (sramp->state == SRAM_READY) {
+    lld_sram_stop(sramp);
+    sramp->state = SRAM_STOP;
+  }
+}
+
+#endif  /* HAL_USE_FSMC_SRAM == TRUE */
 
 #endif /* HAL_USE_FSMC */
 

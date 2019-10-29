@@ -37,7 +37,7 @@
 
 #include "hal_fsmc.h"
 
-#if (STM32_FSMC_USE_SDRAM1 == TRUE) || (STM32_FSMC_USE_SDRAM2 == TRUE) || defined(__DOXYGEN__)
+#if (HAL_USE_FSMC_SDRAM == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */

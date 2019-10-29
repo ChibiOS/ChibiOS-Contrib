@@ -34,7 +34,7 @@
      defined(STM32F769xx) || defined(STM32F777xx) || \
      defined(STM32F779xx))
 
-#if (STM32_FSMC_USE_SDRAM1 == TRUE) || (STM32_FSMC_USE_SDRAM2 == TRUE) || defined(__DOXYGEN__)
+#if (HAL_USE_FSMC_SDRAM == TRUE) || defined(__DOXYGEN__)
 
 #include "hal_fsmc_sdram_lld.h"
 

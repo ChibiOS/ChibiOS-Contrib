@@ -46,13 +46,6 @@
 #endif
 
 /**
- * @brief   Enables the NAND subsystem.
- */
-#if !defined(HAL_USE_NAND) || defined(__DOXYGEN__)
-#define HAL_USE_NAND                FALSE
-#endif
-
-/**
  * @brief   Enables the 1-wire subsystem.
  */
 #if !defined(HAL_USE_ONEWIRE) || defined(__DOXYGEN__)

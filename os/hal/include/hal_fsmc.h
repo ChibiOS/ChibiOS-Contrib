@@ -327,25 +327,25 @@ struct FSMCDriver {
   /* End of the mandatory fields.*/
 
 #if HAL_USE_FSMC_SRAM
-  #if STM32_SRAM_USE_FSMC_SRAM1
+  #if STM32_FSMC_USE_SRAM1
   FSMC_SRAM_NOR_TypeDef     *sram1;
   #endif
-  #if STM32_SRAM_USE_FSMC_SRAM2
+  #if STM32_FSMC_USE_SRAM2
   FSMC_SRAM_NOR_TypeDef     *sram2;
   #endif
-  #if STM32_SRAM_USE_FSMC_SRAM3
+  #if STM32_FSMC_USE_SRAM3
   FSMC_SRAM_NOR_TypeDef     *sram3;
   #endif
-  #if STM32_SRAM_USE_FSMC_SRAM4
+  #if STM32_FSMC_USE_SRAM4
   FSMC_SRAM_NOR_TypeDef     *sram4;
   #endif
 #endif
 
 #if HAL_USE_FSMC_NAND
-  #if STM32_NAND_USE_FSMC_NAND1
+  #if STM32_FSMC_USE_NAND1
   FSMC_NAND_TypeDef         *nand1;
   #endif
-  #if STM32_NAND_USE_FSMC_NAND2
+  #if STM32_FSMC_USE_NAND1
   FSMC_NAND_TypeDef         *nand2;
   #endif
 #endif
