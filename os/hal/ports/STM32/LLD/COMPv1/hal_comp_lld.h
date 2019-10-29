@@ -57,11 +57,13 @@
                                                                                PB0 for COMP4, PD12 for COMP5, PD11 for COMP6,
                                                                                PA0 for COMP7) connected to comparator non inverting input */
 
+#ifdef COMP_CSR_COMPxNONINSEL
 #define STM32_COMP_NonInvertingInput_IO2                 COMP_CSR_COMPxNONINSEL /*!< I/O2 (PA3 for COMP2, PD14 for COMP3, PE7 for COMP4, PB13 for COMP5,
                                                                                PB11 for COMP6, PC1 for COMP7) connected to comparator non inverting input */
-
+#endif
 
 #define STM32_COMP_Output_None                            ((uint32_t)0x00000000)   /*!< COMP output isn't connected to other peripherals */
+
 
 /* Output Redirection common for all comparators COMP1...COMP7 */
 #define STM32_COMP_Output_TIM1BKIN                        COMP_CSR_COMPxOUTSEL_0   /*!< COMP output connected to TIM1 Break Input (BKIN) */
@@ -155,10 +157,12 @@
 #define STM32_COMP_OutputPol_NonInverted              ((uint32_t)0x00000000)  /*!< COMP output on GPIO isn't inverted */
 #define STM32_COMP_OutputPol_Inverted                 COMP_CSR_COMPxPOL       /*!< COMP output on GPIO is inverted */
 
+#ifdef COMP_CSR_COMPxHYST
 #define STM32_COMP_Hysteresis_No                      0x00000000           /*!< No hysteresis */
 #define STM32_COMP_Hysteresis_Low                     COMP_CSR_COMPxHYST_0 /*!< Hysteresis level low */
 #define STM32_COMP_Hysteresis_Medium                  COMP_CSR_COMPxHYST_1 /*!< Hysteresis level medium */
 #define STM32_COMP_Hysteresis_High                    COMP_CSR_COMPxHYST   /*!< Hysteresis level high */
+#endif
 
 #define STM32_COMP_Mode_HighSpeed                     0x00000000            /*!< High Speed */
 #define STM32_COMP_Mode_MediumSpeed                   COMP_CSR_COMPxMODE_0  /*!< Medium Speed */
@@ -172,9 +176,8 @@
    the non-inverting input is at a lower voltage than the inverting input*/
 #define STM32_COMP_OutputLevel_Low                    ((uint32_t)0x00000000)
 
-
 #if defined(STM32F301x8) || defined(STM32F302x8) || defined(STM32F303x8) \
-|| defined(STM32F318xx) || defined(STM32F328xx) || defined(STM32F334x8)
+ || defined(STM32F318xx) || defined(STM32F328xx) || defined(STM32F334x8)
 #define STM32_HAS_COMP1 FALSE
 #define STM32_HAS_COMP2 TRUE
 #define STM32_HAS_COMP3 FALSE
@@ -182,6 +185,13 @@
 #define STM32_HAS_COMP5 FALSE
 #define STM32_HAS_COMP6 TRUE
 #define STM32_HAS_COMP7 FALSE
+
+#define STM32_COMP2_IRQn COMP1_2_3_IRQn
+#define STM32_COMP4_IRQn COMP4_5_6_IRQn
+#define STM32_COMP6_IRQn COMP4_5_6_IRQn
+#define STM32_COMP2_HANDLER COMP1_2_3_IRQHandler
+#define STM32_COMP4_HANDLER COMP4_5_6_IRQHandler
+#define STM32_COMP6_HANDLER COMP4_5_6_IRQHandler
 
 #elif defined(STM32F302xc) || defined(STM32F302xe)
 #define STM32_HAS_COMP1 TRUE
@@ -192,6 +202,15 @@
 #define STM32_HAS_COMP6 TRUE
 #define STM32_HAS_COMP7 FALSE
 
+#define STM32_COMP1_IRQn COMP1_2_3_IRQn
+#define STM32_COMP2_IRQn COMP1_2_3_IRQn
+#define STM32_COMP4_IRQn COMP4_5_6_IRQn
+#define STM32_COMP6_IRQn COMP4_5_6_IRQn
+#define STM32_COMP1_HANDLER COMP1_2_3_IRQHandler
+#define STM32_COMP2_HANDLER COMP1_2_3_IRQHandler
+#define STM32_COMP4_HANDLER COMP4_5_6_IRQHandler
+#define STM32_COMP6_HANDLER COMP4_5_6_IRQHandler
+
 #elif defined(STM32F303xC) || defined(STM32F303xE) || defined(STM32F358xx) || defined(STM32F398xx)
 #define STM32_HAS_COMP1 TRUE
 #define STM32_HAS_COMP2 TRUE
@@ -201,9 +220,22 @@
 #define STM32_HAS_COMP6 TRUE
 #define STM32_HAS_COMP7 TRUE
 
-#elif defined(STM32F373xx) || defined(STM32F378xx) || defined(STM32L0XX)   || defined(STM32L1XX) \
-   || defined(STM32F051x8) || defined(STM32F048xx) || defined(STM32F058xx) || defined(STM32F078xx) \
-   || defined(STM32F072xb) || defined(STM32F071xb) || defined(STM32L4XX)
+#define STM32_COMP1_IRQn COMP1_2_3_IRQn
+#define STM32_COMP2_IRQn COMP1_2_3_IRQn
+#define STM32_COMP3_IRQn COMP1_2_3_IRQn
+#define STM32_COMP4_IRQn COMP4_5_6_IRQn
+#define STM32_COMP5_IRQn COMP4_5_6_IRQn
+#define STM32_COMP6_IRQn COMP4_5_6_IRQn
+#define STM32_COMP7_IRQn COMP7_IRQn
+#define STM32_COMP1_HANDLER COMP1_2_3_IRQHandler
+#define STM32_COMP2_HANDLER COMP1_2_3_IRQHandler
+#define STM32_COMP3_HANDLER COMP1_2_3_IRQHandler
+#define STM32_COMP4_HANDLER COMP4_5_6_IRQHandler
+#define STM32_COMP5_HANDLER COMP4_5_6_IRQHandler
+#define STM32_COMP6_HANDLER COMP4_5_6_IRQHandler
+#define STM32_COMP7_HANDLER Vector148
+
+#elif defined(STM32F373xx) || defined(STM32F378xx) || defined(STM32L1XX) || defined(STM32L4XX)
 #define STM32_HAS_COMP1 TRUE
 #define STM32_HAS_COMP2 TRUE
 #define STM32_HAS_COMP3 FALSE
@@ -211,6 +243,31 @@
 #define STM32_HAS_COMP5 FALSE
 #define STM32_HAS_COMP6 FALSE
 #define STM32_HAS_COMP7 FALSE
+
+#define STM32_COMP1_IRQn COMP_IRQn
+#define STM32_COMP2_IRQn COMP_IRQn
+#define STM32_COMP1_HANDLER COMP1_2_3_IRQHandler
+#define STM32_COMP2_HANDLER COMP1_2_3_IRQHandler
+
+#elif defined(STM32L011xx) || defined(STM32L021xx) || defined(STM32L031xx) \
+   || defined(STM32L041xx) || defined(STM32L051xx) || defined(STM32L052xx) || defined(STM32L053xx) \
+   || defined(STM32L062xx) || defined(STM32L063xx) || defined(STM32L071xx) || defined(STM32L072xx) \
+   || defined(STM32L073xx) || defined(STM32L081xx) || defined(STM32L082xx) || defined(STM32L083xx) \
+   || defined(STM32F048xx) || defined(STM32F051x8) || defined(STM32F058xx) || defined(STM32F071xB) \
+   || defined(STM32F072xB) || defined(STM32F078xx) || defined(STM32F091xC) || defined(STM32F098xx)
+
+#define STM32_HAS_COMP1 TRUE
+#define STM32_HAS_COMP2 TRUE
+#define STM32_HAS_COMP3 FALSE
+#define STM32_HAS_COMP4 FALSE
+#define STM32_HAS_COMP5 FALSE
+#define STM32_HAS_COMP6 FALSE
+#define STM32_HAS_COMP7 FALSE
+
+#define STM32_COMP1_IRQn ADC1_COMP_IRQn
+#define STM32_COMP2_IRQn ADC1_COMP_IRQn
+#define STM32_COMP1_HANDLER COMP1_2_3_IRQHandler
+#define STM32_COMP2_HANDLER COMP1_2_3_IRQHandler
 
 #else
 #define STM32_HAS_COMP1 FALSE
@@ -309,10 +366,6 @@
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
-
-#if STM32_COMP_USE_INTERRUPTS && defined(STM32F0XX)
-#error "Interrupts are shared with EXTI on F0s (lines 21-22)"
-#endif
 
 #if STM32_COMP_USE_INTERRUPTS
 #if !defined(STM32_DISABLE_EXTI21_22_29_HANDLER) || !defined(STM32_DISABLE_EXTI30_32_HANDLER) || !defined(STM32_DISABLE_EXTI33_HANDLER)

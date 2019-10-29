@@ -1,4 +1,4 @@
-include ${CHIBIOS}/os/hal/ports/STM32/STM32F0xx/platform.mk
+include ${CHIBIOS}/os/hal/ports/STM32/STM32L0xx/platform.mk
 
 ifeq ($(USE_SMART_BUILD),yes)
 
