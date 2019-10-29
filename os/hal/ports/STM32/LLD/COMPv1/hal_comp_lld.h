@@ -253,8 +253,8 @@
    || defined(STM32L041xx) || defined(STM32L051xx) || defined(STM32L052xx) || defined(STM32L053xx) \
    || defined(STM32L062xx) || defined(STM32L063xx) || defined(STM32L071xx) || defined(STM32L072xx) \
    || defined(STM32L073xx) || defined(STM32L081xx) || defined(STM32L082xx) || defined(STM32L083xx) \
-   || defined(STM32F051x8) || defined(STM32F048xx) || defined(STM32F058xx) || defined(STM32F078xx) \
-   || defined(STM32F072xb) || defined(STM32F071xb)
+   || defined(STM32F048xx) || defined(STM32F051x8) || defined(STM32F058xx) || defined(STM32F071xB) \
+   || defined(STM32F072xB) || defined(STM32F078xx) || defined(STM32F091xC) || defined(STM32F098xx)
 
 #define STM32_HAS_COMP1 TRUE
 #define STM32_HAS_COMP2 TRUE
