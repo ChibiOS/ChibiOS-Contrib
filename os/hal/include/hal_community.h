@@ -79,6 +79,10 @@
 #define HAL_USE_OPAMP                        FALSE
 #endif
 
+#if !defined(HAL_USE_FSMC)
+#define HAL_USE_FSMC                        FALSE
+#endif
+
 /* Abstract interfaces.*/
 
 /* Shared headers.*/
@@ -99,6 +103,7 @@
 #include "hal_eeprom.h"
 #include "hal_usb_hid.h"
 #include "hal_usb_msd.h"
+#include "hal_fsmc.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */

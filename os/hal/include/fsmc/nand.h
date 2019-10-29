@@ -22,13 +22,12 @@
  * @{
  */
 
-#ifndef HAL_NAND_LLD_H_
-#define HAL_NAND_LLD_H_
+#ifndef NAND_H_
+#define NAND_H_
 
-#include "hal_fsmc.h"
 #include "bitmap.h"
 
-#if (HAL_USE_NAND == TRUE) || defined(__DOXYGEN__)
+#if (HAL_USE_FSMC_NAND == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -55,16 +54,16 @@
  * @brief   NAND driver enable switch.
  * @details If set to @p TRUE the support for NAND1 is included.
  */
-#if !defined(STM32_NAND_USE_NAND1) || defined(__DOXYGEN__)
-#define STM32_NAND_USE_NAND1              FALSE
+#if !defined(STM32_FSMC_USE_NAND1) || defined(__DOXYGEN__)
+#define STM32_FSMC_USE_NAND1              FALSE
 #endif
 
 /**
  * @brief   NAND driver enable switch.
  * @details If set to @p TRUE the support for NAND2 is included.
  */
-#if !defined(STM32_NAND_USE_NAND2) || defined(__DOXYGEN__)
-#define STM32_NAND_USE_NAND2              FALSE
+#if !defined(STM32_FSMC_USE_NAND2) || defined(__DOXYGEN__)
+#define STM32_FSMC_USE_NAND2              FALSE
 #endif
 
 /**
@@ -112,11 +111,11 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if !STM32_NAND_USE_FSMC_NAND1 && !STM32_NAND_USE_FSMC_NAND2
+#if !STM32_FSMC_USE_NAND1 && !STM32_FSMC_USE_NAND2
 #error "NAND driver activated but no NAND peripheral assigned"
 #endif
 
-#if (STM32_NAND_USE_FSMC_NAND2 || STM32_NAND_USE_FSMC_NAND1) && !STM32_HAS_FSMC
+#if (STM32_FSMC_USE_NAND1 || STM32_FSMC_USE_NAND2) && !STM32_HAS_FSMC
 #error "FSMC not present in the selected device"
 #endif
 
@@ -260,11 +259,11 @@ struct NANDDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_NAND_USE_FSMC_NAND1 && !defined(__DOXYGEN__)
+#if STM32_FSMC_USE_NAND1 && !defined(__DOXYGEN__)
 extern NANDDriver NANDD1;
 #endif
 
-#if STM32_NAND_USE_FSMC_NAND2 && !defined(__DOXYGEN__)
+#if STM32_FSMC_USE_NAND2 && !defined(__DOXYGEN__)
 extern NANDDriver NANDD2;
 #endif
 
@@ -287,8 +286,8 @@ extern "C" {
 }
 #endif
 
-#endif /* HAL_USE_NAND */
+#endif /* HAL_USE_FSMC_NAND */
 
-#endif /* HAL_NAND_LLD_H_ */
+#endif /* NAND_H_ */
 
 /** @} */

@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    hal_nand_lld.c
- * @brief   NAND Driver subsystem low level driver source.
+ * @file    hal_fsmc_nand_lld.c
+ * @brief   FSMC NAND Driver subsystem low level driver source.
  *
  * @addtogroup NAND
  * @{
@@ -24,7 +24,7 @@
 
 #include "hal.h"
 
-#if (HAL_USE_NAND == TRUE) || defined(__DOXYGEN__)
+#if (HAL_USE_FSMC_NAND == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */

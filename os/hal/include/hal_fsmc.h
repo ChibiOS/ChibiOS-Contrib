@@ -25,7 +25,9 @@
 #ifndef HAL_FSMC_H_
 #define HAL_FSMC_H_
 
-#if (HAL_USE_FSMC == TRUE) || defined(__DOXYGEN__)
+#include "hal.h"
+
+#if (HAL_USE_FSMC_SDRAM == TRUE) || (HAL_USE_FSMC_SRAM == TRUE) || (HAL_USE_FSMC_NAND == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -246,6 +248,10 @@ typedef struct {
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
+#if !defined(STM32_DMA_REQUIRED)
+#define STM32_DMA_REQUIRED
+#endif
+
 /**
  * @name    Configuration options
  * @{
@@ -257,6 +263,31 @@ typedef struct {
 #if !defined(STM32_FSMC_USE_FSMC1) || defined(__DOXYGEN__)
 #define STM32_FSMC_USE_FSMC1             FALSE
 #endif
+
+/**
+ * @brief   SDRAM driver enable switch.
+ * @details If set to @p TRUE the support for SDRAM is included.
+ */
+#if !defined(HAL_USE_FSMC_SDRAM) || defined(__DOXYGEN__)
+#define HAL_USE_FSMC_SDRAM             FALSE
+#endif
+
+/**
+ * @brief   SRAM driver enable switch.
+ * @details If set to @p TRUE the support for SRAM is included.
+ */
+#if !defined(HAL_USE_FSMC_SRAM) || defined(__DOXYGEN__)
+#define HAL_USE_FSMC_SRAM             FALSE
+#endif
+
+/**
+ * @brief   NAND driver enable switch.
+ * @details If set to @p TRUE the support for NAND is included.
+ */
+#if !defined(HAL_USE_FSMC_NAND) || defined(__DOXYGEN__)
+#define HAL_USE_FSMC_NAND             FALSE
+#endif
+
 
 /** @} */
 
@@ -295,29 +326,35 @@ struct FSMCDriver {
   fsmcstate_t               state;
   /* End of the mandatory fields.*/
 
-#if STM32_SRAM_USE_FSMC_SRAM1
+#if HAL_USE_FSMC_SRAM
+  #if STM32_SRAM_USE_FSMC_SRAM1
   FSMC_SRAM_NOR_TypeDef     *sram1;
-#endif
-#if STM32_SRAM_USE_FSMC_SRAM2
+  #endif
+  #if STM32_SRAM_USE_FSMC_SRAM2
   FSMC_SRAM_NOR_TypeDef     *sram2;
-#endif
-#if STM32_SRAM_USE_FSMC_SRAM3
+  #endif
+  #if STM32_SRAM_USE_FSMC_SRAM3
   FSMC_SRAM_NOR_TypeDef     *sram3;
-#endif
-#if STM32_SRAM_USE_FSMC_SRAM4
+  #endif
+  #if STM32_SRAM_USE_FSMC_SRAM4
   FSMC_SRAM_NOR_TypeDef     *sram4;
+  #endif
 #endif
-#if STM32_NAND_USE_FSMC_NAND1
+
+#if HAL_USE_FSMC_NAND
+  #if STM32_NAND_USE_FSMC_NAND1
   FSMC_NAND_TypeDef         *nand1;
-#endif
-#if STM32_NAND_USE_FSMC_NAND2
+  #endif
+  #if STM32_NAND_USE_FSMC_NAND2
   FSMC_NAND_TypeDef         *nand2;
+  #endif
 #endif
+
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
      defined(STM32F7))
-  #if STM32_USE_FSMC_SDRAM
-    FSMC_SDRAM_TypeDef       *sdram;
+  #if HAL_USE_FSMC_SDRAM
+  FSMC_SDRAM_TypeDef        *sdram;
   #endif
 #endif
 };
@@ -337,11 +374,23 @@ extern FSMCDriver FSMCD1;
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void fsmc_init(void);
-  void fsmc_start(FSMCDriver *fsmcp);
-  void fsmc_stop(FSMCDriver *fsmcp);
+  void fsmcInit(void);
+  void fsmcStart(FSMCDriver *fsmcp);
+  void fsmcStop(FSMCDriver *fsmcp);
 #ifdef __cplusplus
 }
+#endif
+
+#if HAL_USE_FSMC_SDRAM == TRUE
+#include "fsmc/sdram.h"
+#endif
+
+#if HAL_USE_FSMC_SRAM == TRUE
+#include "fsmc/sram.h"
+#endif
+
+#if HAL_USE_FSMC_NAND == TRUE
+#include "fsmc/nand.h"
 #endif
 
 #endif /* HAL_USE_FSMC */

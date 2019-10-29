@@ -10,8 +10,8 @@ endif
 HALCONF := $(strip $(shell cat $(CONFDIR)/halconf.h $(CONFDIR)/halconf_community.h | egrep -e "\#define"))
 
 HALSRC_CONTRIB := ${CHIBIOS_CONTRIB}/os/hal/src/hal_community.c
-ifneq ($(findstring HAL_USE_NAND TRUE,$(HALCONF)),)
-HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/hal_nand.c
+ifneq ($(findstring HAL_USE_FSMC_SDRAM TRUE,$(HALCONF)), $(findstring HAL_USE_FSMC_SRAM TRUE,$(HALCONF)), $(findstring HAL_USE_FSMC_NAND TRUE,$(HALCONF)))
+HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/hal_fsmc.c
 endif
 ifneq ($(findstring HAL_USE_ONEWIRE TRUE,$(HALCONF)),)
 HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/hal_onewire.c
@@ -75,7 +75,7 @@ HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/hal_opamp.c
 endif
 else
 HALSRC_CONTRIB := ${CHIBIOS_CONTRIB}/os/hal/src/hal_community.c \
-                  ${CHIBIOS_CONTRIB}/os/hal/src/hal_nand.c \
+                  ${CHIBIOS_CONTRIB}/os/hal/src/hal_fsmc.c \
                   ${CHIBIOS_CONTRIB}/os/hal/src/hal_onewire.c \
                   ${CHIBIOS_CONTRIB}/os/hal/src/hal_eicu.c \
                   ${CHIBIOS_CONTRIB}/os/hal/src/hal_crc.c \
