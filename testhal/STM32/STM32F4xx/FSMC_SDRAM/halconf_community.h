@@ -27,24 +27,30 @@
 /**
  * @brief   Enables the FSMC subsystem.
  */
-#if !defined(HAL_USE_FSMC_SDRAM) || defined(__DOXYGEN__)
-#define HAL_USE_FSMC_SDRAM                TRUE
+#if !defined(HAL_USE_FSMC) || defined(__DOXYGEN__)
+#define HAL_USE_FSMC                TRUE
 #endif
 
 /**
- * @brief   Enables the FSMC subsystem.
+ * @brief   Enables the SDRAM subsystem.
  */
-#if !defined(HAL_USE_FSMC_SRAM) || defined(__DOXYGEN__)
-#define HAL_USE_FSMC_SRAM                FALSE
+#if !defined(HAL_USE_SDRAM) || defined(__DOXYGEN__)
+#define HAL_USE_SDRAM               TRUE
 #endif
 
 /**
- * @brief   Enables the FSMC subsystem.
+ * @brief   Enables the SRAM subsystem.
  */
-#if !defined(HAL_USE_FSMC_NAND) || defined(__DOXYGEN__)
-#define HAL_USE_FSMC_NAND                FALSE
+#if !defined(HAL_USE_SRAM) || defined(__DOXYGEN__)
+#define HAL_USE_SRAM                FALSE
 #endif
 
+/**
+ * @brief   Enables the NAND subsystem.
+ */
+#if !defined(HAL_USE_NAND) || defined(__DOXYGEN__)
+#define HAL_USE_NAND                FALSE
+#endif
 /**
  * @brief   Enables the 1-wire subsystem.
  */

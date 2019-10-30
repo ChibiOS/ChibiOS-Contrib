@@ -22,30 +22,30 @@
 #define STM32_FSMC_USE_FSMC1                TRUE
 #define STM32_FSMC_FSMC1_IRQ_PRIORITY       10
 #define STM32_FSMC_DMA_CHN                  0x03010201
-#define STM32_FSMC_DMA_STREAM               STM32_DMA_STREAM_ID(2, 7)
-#define STM32_FSMC_DMA_PRIORITY             0
-#define STM32_FSMC_DMA_ERROR_HOOK(nandp)    osalSysHalt("FSMC DMA failure")
 
 /*
  * FSMC NAND driver system settings.
  */
-#define STM32_FSMC_USE_NAND1                FALSE
-#define STM32_FSMC_USE_NAND2                FALSE
-#define STM32_FSMC_USE_NAND_EXT_INT         FALSE
+#define STM32_NAND_USE_NAND1                FALSE
+#define STM32_NAND_USE_NAND2                FALSE
+#define STM32_NAND_USE_EXT_INT              FALSE
+#define STM32_NAND_DMA_STREAM               STM32_DMA_STREAM_ID(2, 7)
+#define STM32_NAND_DMA_PRIORITY             0
+#define STM32_NAND_DMA_ERROR_HOOK(nandp)    osalSysHalt("DMA failure")
 
 /*
  * FSMC SRAM driver system settings.
  */
-#define STM32_FSMC_USE_SRAM1                FALSE
-#define STM32_FSMC_USE_SRAM2                FALSE
-#define STM32_FSMC_USE_SRAM3                FALSE
-#define STM32_FSMC_USE_SRAM4                TRUE
+#define STM32_SRAM_USE_SRAM1                FALSE
+#define STM32_SRAM_USE_SRAM2                FALSE
+#define STM32_SRAM_USE_SRAM3                FALSE
+#define STM32_SRAM_USE_SRAM4                TRUE
 
 /*
  * FSMC SDRAM driver system settings.
  */
-#define STM32_FSMC_USE_SDRAM1              FALSE
-#define STM32_FSMC_USE_SDRAM2              FALSE
+#define STM32_SDRAM_USE_SDRAM1              FALSE
+#define STM32_SDRAM_USE_SDRAM2              FALSE
 
 /*
  * TIMCAP driver system settings.

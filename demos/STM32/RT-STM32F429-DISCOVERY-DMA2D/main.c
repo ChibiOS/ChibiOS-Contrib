@@ -556,8 +556,8 @@ int main(void) {
   /*
    * Initialise FSMC for SDRAM.
    */
-  fsmcSdramInit();
-  fsmcSdramStart(&SDRAMD, &sdram_cfg);
+  sdramInit();
+  sdramStart(&SDRAMD, &sdram_cfg);
   sdram_bulk_erase();
 
   /*

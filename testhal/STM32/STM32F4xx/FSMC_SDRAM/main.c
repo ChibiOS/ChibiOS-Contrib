@@ -183,8 +183,8 @@ int main(void) {
   halInit();
   chSysInit();
 
-  fsmcSdramInit();
-  fsmcSdramStart(&SDRAMD, &sdram_cfg);
+  sdramInit();
+  sdramStart(&SDRAMD1, &sdram_cfg);
 
   membench();
   memtest();

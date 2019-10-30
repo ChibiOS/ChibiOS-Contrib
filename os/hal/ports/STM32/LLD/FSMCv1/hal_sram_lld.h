@@ -27,7 +27,7 @@
 
 #include "hal_fsmc.h"
 
-#if (HAL_USE_FSMC_SRAM == TRUE) || defined(__DOXYGEN__)
+#if (HAL_USE_SRAM == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -59,32 +59,32 @@
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_FSMC_USE_SRAM1 && !defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM1 && !defined(__DOXYGEN__)
 extern SRAMDriver SRAMD1;
 #endif
 
-#if STM32_FSMC_USE_SRAM2 && !defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM2 && !defined(__DOXYGEN__)
 extern SRAMDriver SRAMD2;
 #endif
 
-#if STM32_FSMC_USE_SRAM3 && !defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM3 && !defined(__DOXYGEN__)
 extern SRAMDriver SRAMD3;
 #endif
 
-#if STM32_FSMC_USE_SRAM4 && !defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM4 && !defined(__DOXYGEN__)
 extern SRAMDriver SRAMD4;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void lld_sram_start(SRAMDriver *sramp, const SRAMConfig *cfgp);
-  void lld_sram_stop(SRAMDriver *sramp);
+  void sram_lld_start(SRAMDriver *sramp, const SRAMConfig *cfgp);
+  void sram_lld_stop(SRAMDriver *sramp);
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* STM32_FSMC_USE_SRAM */
+#endif /* STM32_SRAM_USE_SRAM */
 
 #endif /* HAL_FSMC_SRAM_H_ */
 

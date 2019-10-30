@@ -27,6 +27,10 @@
 
 
 /* Error checks on the configuration header file.*/
+#if !defined(HAL_USE_COMP)
+#define HAL_USE_COMP                        FALSE
+#endif
+
 #if !defined(HAL_USE_CRC)
 #define HAL_USE_CRC                         FALSE
 #endif
@@ -39,12 +43,20 @@
 #define HAL_USE_EICU                        FALSE
 #endif
 
+#if !defined(HAL_USE_FSMC)
+#define HAL_USE_FSMC                        FALSE
+#endif
+
 #if !defined(HAL_USE_NAND)
 #define HAL_USE_NAND                        FALSE
 #endif
 
 #if !defined(HAL_USE_ONEWIRE)
 #define HAL_USE_ONEWIRE                     FALSE
+#endif
+
+#if !defined(HAL_USE_OPAMP)
+#define HAL_USE_OPAMP                       FALSE
 #endif
 
 #if !defined(HAL_USE_QEI)
@@ -71,15 +83,11 @@
 #define HAL_USE_USB_MSD                     FALSE
 #endif
 
-#if !defined(HAL_USE_COMP)
-#define HAL_USE_COMP                        FALSE
+#if !defined(HAL_USE_SDRAM)
+#define HAL_USE_FSMC                        FALSE
 #endif
 
-#if !defined(HAL_USE_OPAMP)
-#define HAL_USE_OPAMP                        FALSE
-#endif
-
-#if !defined(HAL_USE_FSMC)
+#if !defined(HAL_USE_SRAM)
 #define HAL_USE_FSMC                        FALSE
 #endif
 
@@ -96,6 +104,7 @@
 #include "hal_qei.h"
 #include "hal_comp.h"
 #include "hal_opamp.h"
+#include "hal_fsmc.h"
 
 /* Complex drivers.*/
 #include "hal_onewire.h"
@@ -103,7 +112,9 @@
 #include "hal_eeprom.h"
 #include "hal_usb_hid.h"
 #include "hal_usb_msd.h"
-#include "hal_fsmc.h"
+#include "hal_nand.h"
+#include "hal_sram.h"
+#include "hal_sdram.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */

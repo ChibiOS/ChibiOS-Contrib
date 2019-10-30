@@ -23,9 +23,9 @@
  */
 #include "hal.h"
 
-#if (HAL_USE_FSMC_SRAM == TRUE) || defined(__DOXYGEN__)
+#if (HAL_USE_SRAM == TRUE) || defined(__DOXYGEN__)
 
-#include "hal_fsmc_sram_lld.h"
+#include "hal_sram_lld.h"
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -37,28 +37,28 @@
 /**
  * @brief   SRAM1 driver identifier.
  */
-#if STM32_FSMC_USE_SRAM1 || defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM1 || defined(__DOXYGEN__)
 SRAMDriver SRAMD1;
 #endif
 
 /**
  * @brief   SRAM2 driver identifier.
  */
-#if STM32_FSMC_USE_SRAM2 || defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM2 || defined(__DOXYGEN__)
 SRAMDriver SRAMD2;
 #endif
 
 /**
  * @brief   SRAM3 driver identifier.
  */
-#if STM32_FSMC_USE_SRAM3 || defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM3 || defined(__DOXYGEN__)
 SRAMDriver SRAMD3;
 #endif
 
 /**
  * @brief   SRAM4 driver identifier.
  */
-#if STM32_FSMC_USE_SRAM4 || defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM4 || defined(__DOXYGEN__)
 SRAMDriver SRAMD4;
 #endif
 
@@ -90,7 +90,7 @@ SRAMDriver SRAMD4;
  *
  * @notapi
  */
-void lld_sram_start(SRAMDriver *sramp, const SRAMConfig *cfgp) {
+void sram_lld_start(SRAMDriver *sramp, const SRAMConfig *cfgp) {
 
     sramp->sram->BTR  = cfgp->btr;
     sramp->sram->BWTR = cfgp->bwtr;
@@ -104,7 +104,7 @@ void lld_sram_start(SRAMDriver *sramp, const SRAMConfig *cfgp) {
  *
  * @notapi
  */
-void lld_sram_stop(SRAMDriver *sramp) {
+void sram_lld_stop(SRAMDriver *sramp) {
 
     uint32_t mask = FSMC_BCR_MBKEN;
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
@@ -118,7 +118,7 @@ void lld_sram_stop(SRAMDriver *sramp) {
     sramp->sram->BCR &= ~mask;
 }
 
-#endif /* STM32_FSMC_USE_SRAM */
+#endif /* STM32_SRAM_USE_SRAM */
 
 /** @} */
 

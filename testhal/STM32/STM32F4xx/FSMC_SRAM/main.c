@@ -172,8 +172,8 @@ int main(void) {
   halInit();
   chSysInit();
 
-  fsmcSramInit();
-  fsmcSramStart(&SRAMD4, &sram_cfg);
+  sramInit();
+  sramStart(&SRAMD4, &sram_cfg);
 
   membench();
   memtest();

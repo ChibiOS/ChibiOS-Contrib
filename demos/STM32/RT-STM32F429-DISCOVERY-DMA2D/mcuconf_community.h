@@ -23,8 +23,8 @@
 /*
  * FSMC NAND driver system settings.
  */
-#define STM32_NAND_USE_FSMC_NAND1           FALSE
-#define STM32_NAND_USE_FSMC_NAND2           FALSE
+#define STM32_NAND_USE_NAND1           FALSE
+#define STM32_NAND_USE_NAND2           FALSE
 #define STM32_NAND_USE_EXT_INT              FALSE
 
 /*

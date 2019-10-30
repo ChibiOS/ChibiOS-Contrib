@@ -27,7 +27,7 @@
 
 #include "hal.h"
 
-#if (HAL_USE_FSMC_SDRAM == TRUE) || (HAL_USE_FSMC_SRAM == TRUE) || (HAL_USE_FSMC_NAND == TRUE) || defined(__DOXYGEN__)
+#if (HAL_USE_FSMC == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -161,7 +161,7 @@ typedef struct {
   __IO uint32_t BTR;          /**< SRAM/NOR chip-select timing registers */
   uint32_t      RESERVED[63]; /**< Reserved */
   __IO uint32_t BWTR;         /**< SRAM/NOR write timing registers */
-} FSMC_SRAM_NOR_TypeDef;
+} FSMC_SRAM_TypeDef;
 
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
@@ -264,31 +264,6 @@ typedef struct {
 #define STM32_FSMC_USE_FSMC1             FALSE
 #endif
 
-/**
- * @brief   SDRAM driver enable switch.
- * @details If set to @p TRUE the support for SDRAM is included.
- */
-#if !defined(HAL_USE_FSMC_SDRAM) || defined(__DOXYGEN__)
-#define HAL_USE_FSMC_SDRAM             FALSE
-#endif
-
-/**
- * @brief   SRAM driver enable switch.
- * @details If set to @p TRUE the support for SRAM is included.
- */
-#if !defined(HAL_USE_FSMC_SRAM) || defined(__DOXYGEN__)
-#define HAL_USE_FSMC_SRAM             FALSE
-#endif
-
-/**
- * @brief   NAND driver enable switch.
- * @details If set to @p TRUE the support for NAND is included.
- */
-#if !defined(HAL_USE_FSMC_NAND) || defined(__DOXYGEN__)
-#define HAL_USE_FSMC_NAND             FALSE
-#endif
-
-
 /** @} */
 
 /*===========================================================================*/
@@ -326,26 +301,26 @@ struct FSMCDriver {
   fsmcstate_t               state;
   /* End of the mandatory fields.*/
 
-#if HAL_USE_FSMC_SRAM
-  #if STM32_FSMC_USE_SRAM1
-  FSMC_SRAM_NOR_TypeDef     *sram1;
+#if HAL_USE_SRAM
+  #if STM32_SRAM_USE_SRAM1
+  FSMC_SRAM_TypeDef     *sram1;
   #endif
-  #if STM32_FSMC_USE_SRAM2
-  FSMC_SRAM_NOR_TypeDef     *sram2;
+  #if STM32_SRAM_USE_SRAM2
+  FSMC_SRAM_TypeDef     *sram2;
   #endif
-  #if STM32_FSMC_USE_SRAM3
-  FSMC_SRAM_NOR_TypeDef     *sram3;
+  #if STM32_SRAM_USE_SRAM3
+  FSMC_SRAM_TypeDef     *sram3;
   #endif
-  #if STM32_FSMC_USE_SRAM4
-  FSMC_SRAM_NOR_TypeDef     *sram4;
+  #if STM32_SRAM_USE_SRAM4
+  FSMC_SRAM_TypeDef     *sram4;
   #endif
 #endif
 
-#if HAL_USE_FSMC_NAND
-  #if STM32_FSMC_USE_NAND1
+#if HAL_USE_NAND
+  #if STM32_NAND_USE_NAND1
   FSMC_NAND_TypeDef         *nand1;
   #endif
-  #if STM32_FSMC_USE_NAND1
+  #if STM32_NAND_USE_NAND1
   FSMC_NAND_TypeDef         *nand2;
   #endif
 #endif
@@ -353,7 +328,7 @@ struct FSMCDriver {
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
      defined(STM32F7))
-  #if HAL_USE_FSMC_SDRAM
+  #if HAL_USE_SDRAM
   FSMC_SDRAM_TypeDef        *sdram;
   #endif
 #endif
@@ -379,18 +354,6 @@ extern "C" {
   void fsmcStop(FSMCDriver *fsmcp);
 #ifdef __cplusplus
 }
-#endif
-
-#if HAL_USE_FSMC_SDRAM == TRUE
-#include "fsmc/sdram.h"
-#endif
-
-#if HAL_USE_FSMC_SRAM == TRUE
-#include "fsmc/sram.h"
-#endif
-
-#if HAL_USE_FSMC_NAND == TRUE
-#include "fsmc/nand.h"
 #endif
 
 #endif /* HAL_USE_FSMC */

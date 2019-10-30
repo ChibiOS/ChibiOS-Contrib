@@ -14379,7 +14379,7 @@ typedef struct {
     __IO uint32_t AC;                                /**< Address and Control Register, array offset: 0x48, array step: 0x8 */
     __IO uint32_t CM;                                /**< Control Mask, array offset: 0x4C, array step: 0x8 */
   } BLOCK[2];
-} SDRAM_TypeDef;
+} FSMC_SDRAM_TypeDef;
 
 /* ----------------------------------------------------------------------------
    -- SDRAM Register Masks
@@ -14464,7 +14464,7 @@ typedef struct {
 /** Peripheral SDRAM base address */
 #define SDRAM_BASE                               (0x4000F000u)
 /** Peripheral SDRAM base pointer */
-#define SDRAM                                    ((SDRAM_TypeDef *)SDRAM_BASE)
+#define SDRAM                                    ((FSMC_SDRAM_TypeDef *)SDRAM_BASE)
 /** Array initializer of SDRAM peripheral base addresses */
 #define SDRAM_BASE_ADDRS                         { SDRAM_BASE }
 /** Array initializer of SDRAM peripheral base pointers */
