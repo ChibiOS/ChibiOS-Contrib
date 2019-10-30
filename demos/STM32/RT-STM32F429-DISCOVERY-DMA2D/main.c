@@ -23,7 +23,6 @@
 #include "usbcfg.h"
 #endif
 
-#include "hal_fsmc_sdram.h"
 #include "ili9341.h"
 #include "hal_stm32_ltdc.h"
 #include "hal_stm32_dma2d.h"
@@ -557,7 +556,7 @@ int main(void) {
    * Initialise FSMC for SDRAM.
    */
   sdramInit();
-  sdramStart(&SDRAMD, &sdram_cfg);
+  sdramStart(&SDRAMD1, &sdram_cfg);
   sdram_bulk_erase();
 
   /*
