@@ -84,11 +84,11 @@
 #endif
 
 #if !defined(HAL_USE_SDRAM)
-#define HAL_USE_FSMC                        FALSE
+#define HAL_USE_SDRAM                       FALSE
 #endif
 
 #if !defined(HAL_USE_SRAM)
-#define HAL_USE_FSMC                        FALSE
+#define HAL_USE_SRAM                        FALSE
 #endif
 
 /* Abstract interfaces.*/

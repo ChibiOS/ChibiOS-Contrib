@@ -256,6 +256,7 @@ typedef struct {
  * @name    Configuration options
  * @{
  */
+
 /**
  * @brief   FSMC driver enable switch.
  * @details If set to @p TRUE the support for FSMC is included.
