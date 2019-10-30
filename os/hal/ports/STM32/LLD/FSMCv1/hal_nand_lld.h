@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    hal_fsmc_nand_lld.h
+ * @file    hal_nand_lld.h
  * @brief   FSMC NAND Driver subsystem low level driver header.
  *
  * @addtogroup NAND

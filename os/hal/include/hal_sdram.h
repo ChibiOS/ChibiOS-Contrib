@@ -239,6 +239,6 @@ extern "C" {
 
 #endif /* HAL_USE_SDRAM */
 
-#endif /* SDRAM_H_ */
+#endif /* HAL_SDRAM_H_ */
 
 /** @} */

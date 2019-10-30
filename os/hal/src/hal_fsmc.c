@@ -71,7 +71,7 @@ void fsmcInit(void) {
 
   if (FSMCD1.state == FSMC_UNINIT) {
     FSMCD1.state  = FSMC_STOP;
-
+#if HAL_USE_SRAM
 #if STM32_SRAM_USE_SRAM1
     FSMCD1.sram1 = (FSMC_SRAM_TypeDef *)(FSMC_Bank1_R_BASE);
 #endif
@@ -87,7 +87,9 @@ void fsmcInit(void) {
 #if STM32_SRAM_USE_SRAM4
     FSMCD1.sram4 = (FSMC_SRAM_TypeDef *)(FSMC_Bank1_R_BASE + 8 * 3);
 #endif
+#endif
 
+#if HAL_USE_NAND
 #if STM32_NAND_USE_NAND1
     FSMCD1.nand1 = (FSMC_NAND_TypeDef *)FSMC_Bank2_R_BASE;
 #endif
@@ -95,7 +97,9 @@ void fsmcInit(void) {
 #if STM32_NAND_USE_NAND2
     FSMCD1.nand2 = (FSMC_NAND_TypeDef *)FSMC_Bank3_R_BASE;
 #endif
+#endif
 
+#if HAL_USE_SDRAM
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
      defined(STM32F745xx) || defined(STM32F746xx) || \
@@ -105,6 +109,7 @@ void fsmcInit(void) {
   #if STM32_SDRAM_USE_SDRAM1 || STM32_SDRAM_USE_SDRAM2
     FSMCD1.sdram = (FSMC_SDRAM_TypeDef *)FSMC_Bank5_6_R_BASE;
   #endif
+#endif
 #endif
   }
 }
@@ -176,6 +181,7 @@ void fsmcStop(FSMCDriver *fsmcp) {
 CH_IRQ_HANDLER(STM32_FSMC_HANDLER) {
 
   CH_IRQ_PROLOGUE();
+#if HAL_USE_NAND
 #if STM32_NAND_USE_NAND1
   if (FSMCD1.nand1->SR & FSMC_SR_ISR_MASK) {
     NANDD1.isr_handler(&NANDD1);
@@ -185,6 +191,7 @@ CH_IRQ_HANDLER(STM32_FSMC_HANDLER) {
   if (FSMCD1.nand2->SR & FSMC_SR_ISR_MASK) {
     NANDD2.isr_handler(&NANDD2);
   }
+#endif
 #endif
   CH_IRQ_EPILOGUE();
 }

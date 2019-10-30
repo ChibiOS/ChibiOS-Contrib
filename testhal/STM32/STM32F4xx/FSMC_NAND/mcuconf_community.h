@@ -34,17 +34,16 @@
 /*
  * FSMC SRAM driver system settings.
  */
-#define STM32_SRAM_USE_SRAM1           FALSE
-#define STM32_SRAM_USE_SRAM2           FALSE
-#define STM32_SRAM_USE_SRAM3           FALSE
-#define STM32_SRAM_USE_SRAM4           FALSE
+#define STM32_SRAM_USE_SRAM1                FALSE
+#define STM32_SRAM_USE_SRAM2                FALSE
+#define STM32_SRAM_USE_SRAM3                FALSE
+#define STM32_SRAM_USE_SRAM4                FALSE
 
 /*
  * FSMC SDRAM driver system settings.
  */
-#define STM32_SDRAM_USE_SDRAM1         FALSE
-#define STM32_SDRAM_USE_SDRAM2         FALSE
-
+#define STM32_SDRAM_USE_SDRAM1              FALSE
+#define STM32_SDRAM_USE_SDRAM2              FALSE
 /*
  * TIMCAP driver system settings.
  */

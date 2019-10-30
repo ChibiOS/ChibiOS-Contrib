@@ -96,7 +96,6 @@
 /* Shared headers.*/
 
 /* Normal drivers.*/
-#include "hal_nand.h"
 #include "hal_eicu.h"
 #include "hal_rng.h"
 #include "hal_usbh.h"

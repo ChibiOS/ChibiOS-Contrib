@@ -25,8 +25,8 @@
  * @{
  */
 
-#ifndef HAL_FMC_SDRAM_H_
-#define HAL_FMC_SDRAM_H_
+#ifndef HAL_SDRAM_LLD_H_
+#define HAL_SDRAM_LLD_H_
 
 #include "hal_fsmc.h"
 
@@ -113,6 +113,6 @@ extern "C" {
 
 #endif /* STM32_SDRAM_USE_SDRAM */
 
-#endif /* HAL_FSMC_SDRAM_H_ */
+#endif /* HAL_SDRAM_LLD_H_ */
 
 /** @} */

@@ -22,8 +22,8 @@
  * @{
  */
 
-#ifndef HAL_FSMC_SRAM_H_
-#define HAL_FSMC_SRAM_H_
+#ifndef HAL_SRAM_LLD_H_
+#define HAL_SRAM_LLD_H_
 
 #include "hal_fsmc.h"
 
@@ -86,6 +86,6 @@ extern "C" {
 
 #endif /* STM32_SRAM_USE_SRAM */
 
-#endif /* HAL_FSMC_SRAM_H_ */
+#endif /* HAL_SRAM_LLD_H_ */
 
 /** @} */
