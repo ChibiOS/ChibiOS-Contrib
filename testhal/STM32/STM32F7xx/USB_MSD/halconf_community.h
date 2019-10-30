@@ -32,6 +32,20 @@
 #endif
 
 /**
+ * @brief   Enables the SDRAM subsystem.
+ */
+#if !defined(HAL_USE_SDRAM) || defined(__DOXYGEN__)
+#define HAL_USE_SDRAM               FALSE
+#endif
+
+/**
+ * @brief   Enables the SRAM subsystem.
+ */
+#if !defined(HAL_USE_SRAM) || defined(__DOXYGEN__)
+#define HAL_USE_SRAM                FALSE
+#endif
+
+/**
  * @brief   Enables the NAND subsystem.
  */
 #if !defined(HAL_USE_NAND) || defined(__DOXYGEN__)
