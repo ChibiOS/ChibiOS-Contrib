@@ -16,7 +16,7 @@
 
 /**
  * @file    hal_nand_lld.h
- * @brief   NAND Driver subsystem low level driver header.
+ * @brief   FSMC NAND Driver subsystem low level driver header.
  *
  * @addtogroup NAND
  * @{
@@ -25,8 +25,8 @@
 #ifndef HAL_NAND_LLD_H_
 #define HAL_NAND_LLD_H_
 
-#include "hal_fsmc.h"
 #include "bitmap.h"
+#include "hal_fsmc.h"
 
 #if (HAL_USE_NAND == TRUE) || defined(__DOXYGEN__)
 
@@ -72,38 +72,38 @@
  * @note    The default action for DMA errors is a system halt because DMA
  *          error can only happen because programming errors.
  */
-#if !defined(STM32_NAND_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
-#define STM32_NAND_DMA_ERROR_HOOK(nandp)  osalSysHalt("DMA failure")
+#if !defined(STM32_FSMC_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
+#define STM32_FSMC_DMA_ERROR_HOOK(nandp)  osalSysHalt("DMA failure")
 #endif
 
 /**
  * @brief   NAND interrupt enable switch.
  * @details If set to @p TRUE the support for internal FSMC interrupt included.
  */
-#if !defined(STM32_NAND_USE_INT) || defined(__DOXYGEN__)
-#define STM32_NAND_USE_INT                FALSE
+#if !defined(STM32_FSMC_NAND_USE_INT) || defined(__DOXYGEN__)
+#define STM32_FSMC_NAND_USE_INT                FALSE
 #endif
 
 /**
 * @brief   NAND1 DMA priority (0..3|lowest..highest).
 */
-#if !defined(STM32_NAND_NAND1_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_NAND_NAND1_DMA_PRIORITY     0
+#if !defined(STM32_FSMC_NAND1_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define STM32_FSMC_NAND1_DMA_PRIORITY     0
 #endif
 
 /**
 * @brief   NAND2 DMA priority (0..3|lowest..highest).
 */
-#if !defined(STM32_NAND_NAND2_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_NAND_NAND2_DMA_PRIORITY     0
+#if !defined(STM32_FSMC_NAND2_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define STM32_FSMC_NAND2_DMA_PRIORITY     0
 #endif
 
 /**
  * @brief   DMA stream used for NAND operations.
  * @note    This option is only available on platforms with enhanced DMA.
  */
-#if !defined(STM32_NAND_DMA_STREAM) || defined(__DOXYGEN__)
-#define STM32_NAND_DMA_STREAM             STM32_DMA_STREAM_ID(2, 6)
+#if !defined(STM32_FSMC_DMA_STREAM) || defined(__DOXYGEN__)
+#define STM32_FSMC_DMA_STREAM             STM32_DMA_STREAM_ID(2, 6)
 #endif
 
 /** @} */
@@ -112,16 +112,12 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if !STM32_NAND_USE_FSMC_NAND1 && !STM32_NAND_USE_FSMC_NAND2
+#if !STM32_NAND_USE_NAND1 && !STM32_NAND_USE_NAND2
 #error "NAND driver activated but no NAND peripheral assigned"
 #endif
 
-#if (STM32_NAND_USE_FSMC_NAND2 || STM32_NAND_USE_FSMC_NAND1) && !STM32_HAS_FSMC
+#if (STM32_NAND_USE_NAND1 || STM32_NAND_USE_NAND2) && !STM32_HAS_FSMC
 #error "FSMC not present in the selected device"
-#endif
-
-#if !defined(STM32_DMA_REQUIRED)
-#define STM32_DMA_REQUIRED
 #endif
 
 /*===========================================================================*/
@@ -260,11 +256,11 @@ struct NANDDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_NAND_USE_FSMC_NAND1 && !defined(__DOXYGEN__)
+#if STM32_NAND_USE_NAND1 && !defined(__DOXYGEN__)
 extern NANDDriver NANDD1;
 #endif
 
-#if STM32_NAND_USE_FSMC_NAND2 && !defined(__DOXYGEN__)
+#if STM32_NAND_USE_NAND2 && !defined(__DOXYGEN__)
 extern NANDDriver NANDD2;
 #endif
 

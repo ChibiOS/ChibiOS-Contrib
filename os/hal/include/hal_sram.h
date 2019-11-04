@@ -22,12 +22,10 @@
  * @{
  */
 
-#ifndef HAL_FSMC_SRAM_H_
-#define HAL_FSMC_SRAM_H_
+#ifndef HAL_SRAM_H_
+#define HAL_SRAM_H_
 
-#include "hal_fsmc.h"
-
-#if (STM32_USE_FSMC_SRAM == TRUE) || defined(__DOXYGEN__)
+#if (HAL_USE_SRAM == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -45,32 +43,32 @@
  * @brief   SRAM driver enable switch.
  * @details If set to @p TRUE the support for SRAM1 is included.
  */
-#if !defined(STM32_SRAM_USE_FSMC_SRAM1) || defined(__DOXYGEN__)
-#define STM32_SRAM_USE_FSMC_SRAM1                  FALSE
+#if !defined(STM32_SRAM_USE_SRAM1) || defined(__DOXYGEN__)
+#define STM32_SRAM_USE_SRAM1                  FALSE
 #endif
 
 /**
  * @brief   SRAM driver enable switch.
  * @details If set to @p TRUE the support for SRAM2 is included.
  */
-#if !defined(STM32_SRAM_USE_FSMC_SRAM2) || defined(__DOXYGEN__)
-#define STM32_SRAM_USE_FSMC_SRAM2                  FALSE
+#if !defined(STM32_SRAM_USE_SRAM2) || defined(__DOXYGEN__)
+#define STM32_SRAM_USE_SRAM2                  FALSE
 #endif
 
 /**
  * @brief   SRAM driver enable switch.
  * @details If set to @p TRUE the support for SRAM3 is included.
  */
-#if !defined(STM32_SRAM_USE_FSMC_SRAM3) || defined(__DOXYGEN__)
-#define STM32_SRAM_USE_FSMC_SRAM3                  FALSE
+#if !defined(STM32_SRAM_USE_SRAM3) || defined(__DOXYGEN__)
+#define STM32_SRAM_USE_SRAM3                  FALSE
 #endif
 
 /**
  * @brief   SRAM driver enable switch.
  * @details If set to @p TRUE the support for SRAM4 is included.
  */
-#if !defined(STM32_SRAM_USE_FSMC_SRAM4) || defined(__DOXYGEN__)
-#define STM32_SRAM_USE_FSMC_SRAM4                  FALSE
+#if !defined(STM32_SRAM_USE_SRAM4) || defined(__DOXYGEN__)
+#define STM32_SRAM_USE_SRAM4                  FALSE
 #endif
 
 /** @} */
@@ -79,13 +77,13 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if !STM32_SRAM_USE_FSMC_SRAM1 && !STM32_SRAM_USE_FSMC_SRAM2 && \
-    !STM32_SRAM_USE_FSMC_SRAM3 && !STM32_SRAM_USE_FSMC_SRAM4
+#if !STM32_SRAM_USE_SRAM1 && !STM32_SRAM_USE_SRAM2 && \
+    !STM32_SRAM_USE_SRAM3 && !STM32_SRAM_USE_SRAM4
 #error "SRAM driver activated but no SRAM peripheral assigned"
 #endif
 
-#if (STM32_SRAM_USE_FSMC_SRAM1 || STM32_SRAM_USE_FSMC_SRAM2 || \
-    STM32_SRAM_USE_FSMC_SRAM3 || STM32_SRAM_USE_FSMC_SRAM4) && !STM32_HAS_FSMC
+#if (STM32_SRAM_USE_SRAM1 || STM32_SRAM_USE_SRAM2 || \
+    STM32_SRAM_USE_SRAM3 || STM32_SRAM_USE_SRAM4) && !STM32_HAS_FSMC
 #error "FSMC not present in the selected device"
 #endif
 
@@ -128,7 +126,7 @@ struct SRAMDriver {
   /**
    * @brief     Pointer to the FSMC SRAM registers block.
    */
-  FSMC_SRAM_NOR_TypeDef     *sram;
+  FSMC_SRAM_TypeDef     *sram;
 };
 
 /*===========================================================================*/
@@ -139,34 +137,35 @@ struct SRAMDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_SRAM_USE_FSMC_SRAM1 && !defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM1 && !defined(__DOXYGEN__)
 extern SRAMDriver SRAMD1;
 #endif
 
-#if STM32_SRAM_USE_FSMC_SRAM2 && !defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM2 && !defined(__DOXYGEN__)
 extern SRAMDriver SRAMD2;
 #endif
 
-#if STM32_SRAM_USE_FSMC_SRAM3 && !defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM3 && !defined(__DOXYGEN__)
 extern SRAMDriver SRAMD3;
 #endif
 
-#if STM32_SRAM_USE_FSMC_SRAM4 && !defined(__DOXYGEN__)
+#if STM32_SRAM_USE_SRAM4 && !defined(__DOXYGEN__)
 extern SRAMDriver SRAMD4;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void fsmcSramInit(void);
-  void fsmcSramStart(SRAMDriver *sramp, const SRAMConfig *cfgp);
-  void fsmcSramStop(SRAMDriver *sramp);
+  void sramInit(void);
+  void sramObjectInit(SRAMDriver *sdramp);
+  void sramStart(SRAMDriver *sramp, const SRAMConfig *cfgp);
+  void sramStop(SRAMDriver *sramp);
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* STM32_USE_FSMC_SRAM */
+#endif /* HAL_USE_SRAM */
 
-#endif /* HAL_FSMC_SRAM_H_ */
+#endif /* HAL_SRAM_H_ */
 
 /** @} */

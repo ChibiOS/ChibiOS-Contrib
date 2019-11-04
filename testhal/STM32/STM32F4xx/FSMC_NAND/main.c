@@ -78,9 +78,9 @@
 #define NAND_TEST_KILL_BLOCK      8000
 #endif
 
-#if STM32_NAND_USE_FSMC_NAND1
+#if STM32_NAND_USE_NAND1
   #define NAND                    NANDD1
-#elif STM32_NAND_USE_FSMC_NAND2
+#elif STM32_NAND_USE_NAND2
   #define NAND                    NANDD2
 #else
 #error "You should enable at least one NAND interface"

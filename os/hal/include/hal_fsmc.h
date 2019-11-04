@@ -25,6 +25,8 @@
 #ifndef HAL_FSMC_H_
 #define HAL_FSMC_H_
 
+#include "hal.h"
+
 #if (HAL_USE_FSMC == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
@@ -159,7 +161,7 @@ typedef struct {
   __IO uint32_t BTR;          /**< SRAM/NOR chip-select timing registers */
   uint32_t      RESERVED[63]; /**< Reserved */
   __IO uint32_t BWTR;         /**< SRAM/NOR write timing registers */
-} FSMC_SRAM_NOR_TypeDef;
+} FSMC_SRAM_TypeDef;
 
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
@@ -246,10 +248,15 @@ typedef struct {
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
+#if !defined(STM32_DMA_REQUIRED)
+#define STM32_DMA_REQUIRED
+#endif
+
 /**
  * @name    Configuration options
  * @{
  */
+
 /**
  * @brief   FSMC driver enable switch.
  * @details If set to @p TRUE the support for FSMC is included.
@@ -295,29 +302,35 @@ struct FSMCDriver {
   fsmcstate_t               state;
   /* End of the mandatory fields.*/
 
-#if STM32_SRAM_USE_FSMC_SRAM1
-  FSMC_SRAM_NOR_TypeDef     *sram1;
+#if HAL_USE_SRAM
+  #if STM32_SRAM_USE_SRAM1
+  FSMC_SRAM_TypeDef     *sram1;
+  #endif
+  #if STM32_SRAM_USE_SRAM2
+  FSMC_SRAM_TypeDef     *sram2;
+  #endif
+  #if STM32_SRAM_USE_SRAM3
+  FSMC_SRAM_TypeDef     *sram3;
+  #endif
+  #if STM32_SRAM_USE_SRAM4
+  FSMC_SRAM_TypeDef     *sram4;
+  #endif
 #endif
-#if STM32_SRAM_USE_FSMC_SRAM2
-  FSMC_SRAM_NOR_TypeDef     *sram2;
-#endif
-#if STM32_SRAM_USE_FSMC_SRAM3
-  FSMC_SRAM_NOR_TypeDef     *sram3;
-#endif
-#if STM32_SRAM_USE_FSMC_SRAM4
-  FSMC_SRAM_NOR_TypeDef     *sram4;
-#endif
-#if STM32_NAND_USE_FSMC_NAND1
+
+#if HAL_USE_NAND
+  #if STM32_NAND_USE_NAND1
   FSMC_NAND_TypeDef         *nand1;
-#endif
-#if STM32_NAND_USE_FSMC_NAND2
+  #endif
+  #if STM32_NAND_USE_NAND1
   FSMC_NAND_TypeDef         *nand2;
+  #endif
 #endif
+
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
      defined(STM32F7))
-  #if STM32_USE_FSMC_SDRAM
-    FSMC_SDRAM_TypeDef       *sdram;
+  #if HAL_USE_SDRAM
+  FSMC_SDRAM_TypeDef        *sdram;
   #endif
 #endif
 };
@@ -337,9 +350,9 @@ extern FSMCDriver FSMCD1;
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void fsmc_init(void);
-  void fsmc_start(FSMCDriver *fsmcp);
-  void fsmc_stop(FSMCDriver *fsmcp);
+  void fsmcInit(void);
+  void fsmcStart(FSMCDriver *fsmcp);
+  void fsmcStop(FSMCDriver *fsmcp);
 #ifdef __cplusplus
 }
 #endif
