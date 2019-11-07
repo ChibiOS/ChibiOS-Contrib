@@ -16,11 +16,11 @@ ALWAYS = ('PAL', 'EXTI')
 
 # In case IPs don't match hal names, or if you want to override (ie: use SERIAL instead of UART driver)
 HAL_TRANSLATE = (
-    ('USB', 'USB_OTG_FS'), 
-    ('USB', 'USB_OTG_HS'), 
-    ('SDC', 'SDMMC'), 
-    ('TRNG', 'RNG'), 
-    ('WSPI', 'QUADSPI'), 
+    ('USB', 'USB_OTG_FS'),
+    ('USB', 'USB_OTG_HS'),
+    ('SDC', 'SDMMC'),
+    ('TRNG', 'RNG'),
+    ('WSPI', 'QUADSPI'),
     ('WDG', 'IWDG'),
     ('UART', 'USART')
 )
@@ -34,7 +34,8 @@ DRIVER_TRANSLATE = (
     ('ICU', 'TIM'),
     ('GPT', 'TIM'),
     ('WDG', 'IWDG'),
-    ('WSPI', 'QUADSPI')
+    ('WSPI', 'QUADSPI'),
+    ('RNG', 'RNG')
 )
 
 RCC_TRANSLATE = (
@@ -111,7 +112,7 @@ def update_hal(source, drivers):
         if line.startswith(match):
             if "TRUE" in line:
                 source[i] = line.replace('TRUE', 'FALSE')
-            
+
         for d in drivers:
             source[i] = set_boolean_define(source[i], match, d, True)
 
