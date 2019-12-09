@@ -1,0 +1,333 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ADC_USE_MUTUAL_EXCLUSION	cfg/halconf.h	241;"	d
+ADC_USE_WAIT	cfg/halconf.h	233;"	d
+ASMSRC	Makefile	/^ASMSRC = $(ALLASMSRC)$/;"	m
+ASMXSRC	Makefile	/^ASMXSRC = $(ALLXASMSRC)$/;"	m
+BUILDDIR	Makefile	/^BUILDDIR := .\/build$/;"	m
+CAN_ENFORCE_USE_CALLBACKS	cfg/halconf.h	259;"	d
+CAN_USE_SLEEP_MODE	cfg/halconf.h	252;"	d
+CHCONF_H	cfg/chconf.h	29;"	d
+CHIBIOS	Makefile	/^CHIBIOS  := ..\/..\/..$/;"	m
+CH_CFG_CONTEXT_SWITCH_HOOK	cfg/chconf.h	664;"	d
+CH_CFG_FACTORY_GENERIC_BUFFERS	cfg/chconf.h	468;"	d
+CH_CFG_FACTORY_MAILBOXES	cfg/chconf.h	482;"	d
+CH_CFG_FACTORY_MAX_NAMES_LENGTH	cfg/chconf.h	454;"	d
+CH_CFG_FACTORY_OBJECTS_REGISTRY	cfg/chconf.h	461;"	d
+CH_CFG_FACTORY_OBJ_FIFOS	cfg/chconf.h	489;"	d
+CH_CFG_FACTORY_PIPES	cfg/chconf.h	496;"	d
+CH_CFG_FACTORY_SEMAPHORES	cfg/chconf.h	475;"	d
+CH_CFG_IDLE_ENTER_HOOK	cfg/chconf.h	688;"	d
+CH_CFG_IDLE_LEAVE_HOOK	cfg/chconf.h	698;"	d
+CH_CFG_IDLE_LOOP_HOOK	cfg/chconf.h	706;"	d
+CH_CFG_INTERVALS_SIZE	cfg/chconf.h	63;"	d
+CH_CFG_IRQ_EPILOGUE_HOOK	cfg/chconf.h	678;"	d
+CH_CFG_IRQ_PROLOGUE_HOOK	cfg/chconf.h	671;"	d
+CH_CFG_MEMCORE_SIZE	cfg/chconf.h	356;"	d
+CH_CFG_NO_IDLE_THREAD	cfg/chconf.h	119;"	d
+CH_CFG_OPTIMIZE_SPEED	cfg/chconf.h	140;"	d
+CH_CFG_ST_FREQUENCY	cfg/chconf.h	55;"	d
+CH_CFG_ST_RESOLUTION	cfg/chconf.h	46;"	d
+CH_CFG_ST_TIMEDELTA	cfg/chconf.h	83;"	d
+CH_CFG_SYSTEM_EXTRA_FIELDS	cfg/chconf.h	622;"	d
+CH_CFG_SYSTEM_HALT_HOOK	cfg/chconf.h	724;"	d
+CH_CFG_SYSTEM_INIT_HOOK	cfg/chconf.h	630;"	d
+CH_CFG_SYSTEM_TICK_HOOK	cfg/chconf.h	715;"	d
+CH_CFG_THREAD_EXIT_HOOK	cfg/chconf.h	656;"	d
+CH_CFG_THREAD_EXTRA_FIELDS	cfg/chconf.h	638;"	d
+CH_CFG_THREAD_INIT_HOOK	cfg/chconf.h	648;"	d
+CH_CFG_TIME_QUANTUM	cfg/chconf.h	108;"	d
+CH_CFG_TIME_TYPES_SIZE	cfg/chconf.h	71;"	d
+CH_CFG_TRACE_HOOK	cfg/chconf.h	733;"	d
+CH_CFG_USE_CONDVARS	cfg/chconf.h	238;"	d
+CH_CFG_USE_CONDVARS_TIMEOUT	cfg/chconf.h	250;"	d
+CH_CFG_USE_DELEGATES	cfg/chconf.h	425;"	d
+CH_CFG_USE_DYNAMIC	cfg/chconf.h	309;"	d
+CH_CFG_USE_EVENTS	cfg/chconf.h	260;"	d
+CH_CFG_USE_EVENTS_TIMEOUT	cfg/chconf.h	272;"	d
+CH_CFG_USE_FACTORY	cfg/chconf.h	445;"	d
+CH_CFG_USE_HEAP	cfg/chconf.h	370;"	d
+CH_CFG_USE_MAILBOXES	cfg/chconf.h	330;"	d
+CH_CFG_USE_MEMCORE	cfg/chconf.h	341;"	d
+CH_CFG_USE_MEMPOOLS	cfg/chconf.h	381;"	d
+CH_CFG_USE_MESSAGES	cfg/chconf.h	283;"	d
+CH_CFG_USE_MESSAGES_PRIORITY	cfg/chconf.h	296;"	d
+CH_CFG_USE_MUTEXES	cfg/chconf.h	214;"	d
+CH_CFG_USE_MUTEXES_RECURSIVE	cfg/chconf.h	226;"	d
+CH_CFG_USE_OBJ_CACHES	cfg/chconf.h	414;"	d
+CH_CFG_USE_OBJ_FIFOS	cfg/chconf.h	392;"	d
+CH_CFG_USE_PIPES	cfg/chconf.h	403;"	d
+CH_CFG_USE_REGISTRY	cfg/chconf.h	170;"	d
+CH_CFG_USE_SEMAPHORES	cfg/chconf.h	191;"	d
+CH_CFG_USE_SEMAPHORES_PRIORITY	cfg/chconf.h	204;"	d
+CH_CFG_USE_TM	cfg/chconf.h	160;"	d
+CH_CFG_USE_WAITEXIT	cfg/chconf.h	181;"	d
+CH_DBG_ENABLE_ASSERTS	cfg/chconf.h	548;"	d
+CH_DBG_ENABLE_CHECKS	cfg/chconf.h	536;"	d
+CH_DBG_ENABLE_STACK_CHECK	cfg/chconf.h	581;"	d
+CH_DBG_FILL_THREADS	cfg/chconf.h	593;"	d
+CH_DBG_STATISTICS	cfg/chconf.h	514;"	d
+CH_DBG_SYSTEM_STATE_CHECK	cfg/chconf.h	525;"	d
+CH_DBG_THREADS_PROFILING	cfg/chconf.h	606;"	d
+CH_DBG_TRACE_BUFFER_SIZE	cfg/chconf.h	567;"	d
+CH_DBG_TRACE_MASK	cfg/chconf.h	558;"	d
+CONFDIR	Makefile	/^CONFDIR  := .\/cfg$/;"	m
+CPPSRC	Makefile	/^CPPSRC = $(ALLCPPSRC)$/;"	m
+CPPWARN	Makefile	/^CPPWARN = -Wall -Wextra -Wundef$/;"	m
+CSRC	Makefile	/^CSRC = $(ALLCSRC) \\$/;"	m
+CWARN	Makefile	/^CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes$/;"	m
+DAC_USE_MUTUAL_EXCLUSION	cfg/halconf.h	301;"	d
+DAC_USE_WAIT	cfg/halconf.h	293;"	d
+DEPDIR	Makefile	/^DEPDIR   := .\/.dep$/;"	m
+HALCONF_H	cfg/halconf.h	29;"	d
+HAL_CRY_ENFORCE_FALLBACK	cfg/halconf.h	281;"	d
+HAL_CRY_USE_FALLBACK	cfg/halconf.h	274;"	d
+HAL_USE_ADC	cfg/halconf.h	47;"	d
+HAL_USE_CAN	cfg/halconf.h	54;"	d
+HAL_USE_CRY	cfg/halconf.h	61;"	d
+HAL_USE_DAC	cfg/halconf.h	68;"	d
+HAL_USE_EFL	cfg/halconf.h	75;"	d
+HAL_USE_GPT	cfg/halconf.h	82;"	d
+HAL_USE_I2C	cfg/halconf.h	89;"	d
+HAL_USE_I2S	cfg/halconf.h	96;"	d
+HAL_USE_ICU	cfg/halconf.h	103;"	d
+HAL_USE_MAC	cfg/halconf.h	110;"	d
+HAL_USE_MMC_SPI	cfg/halconf.h	117;"	d
+HAL_USE_PAL	cfg/halconf.h	40;"	d
+HAL_USE_PWM	cfg/halconf.h	124;"	d
+HAL_USE_RTC	cfg/halconf.h	131;"	d
+HAL_USE_SDC	cfg/halconf.h	138;"	d
+HAL_USE_SERIAL	cfg/halconf.h	145;"	d
+HAL_USE_SERIAL_USB	cfg/halconf.h	152;"	d
+HAL_USE_SIO	cfg/halconf.h	159;"	d
+HAL_USE_SPI	cfg/halconf.h	166;"	d
+HAL_USE_TRNG	cfg/halconf.h	173;"	d
+HAL_USE_UART	cfg/halconf.h	180;"	d
+HAL_USE_USB	cfg/halconf.h	187;"	d
+HAL_USE_WDG	cfg/halconf.h	194;"	d
+HAL_USE_WSPI	cfg/halconf.h	201;"	d
+I2C_USE_MUTUAL_EXCLUSION	cfg/halconf.h	312;"	d
+INCDIR	Makefile	/^INCDIR = $(CONFDIR) $(ALLINC) $(TESTINC)$/;"	m
+LDSCRIPT	Makefile	/^LDSCRIPT= $(STARTUPLD)\/STM32G431xB.ld$/;"	m
+MAC_USE_EVENTS	cfg/halconf.h	330;"	d
+MAC_USE_ZERO_COPY	cfg/halconf.h	323;"	d
+MCU	Makefile	/^MCU  = cortex-m4$/;"	m
+MCUCONF_H	cfg/mcuconf.h	32;"	d
+MMC_NICE_WAITING	cfg/halconf.h	346;"	d
+PAL_USE_CALLBACKS	cfg/halconf.h	213;"	d
+PAL_USE_WAIT	cfg/halconf.h	221;"	d
+PROJECT	Makefile	/^PROJECT = ch$/;"	m
+RULESPATH	Makefile	/^RULESPATH = $(CHIBIOS)\/os\/common\/startup\/ARMCMx\/compilers\/GCC\/mk$/;"	m
+SDC_INIT_OCR	cfg/halconf.h	391;"	d
+SDC_INIT_OCR_V20	cfg/halconf.h	384;"	d
+SDC_INIT_RETRY	cfg/halconf.h	358;"	d
+SDC_MMC_SUPPORT	cfg/halconf.h	367;"	d
+SDC_NICE_WAITING	cfg/halconf.h	377;"	d
+SERIAL_BUFFERS_SIZE	cfg/halconf.h	415;"	d
+SERIAL_DEFAULT_BITRATE	cfg/halconf.h	404;"	d
+SERIAL_USB_BUFFERS_NUMBER	cfg/halconf.h	438;"	d
+SERIAL_USB_BUFFERS_SIZE	cfg/halconf.h	430;"	d
+SPI_SELECT_MODE	cfg/halconf.h	474;"	d
+SPI_USE_CIRCULAR	cfg/halconf.h	458;"	d
+SPI_USE_MUTUAL_EXCLUSION	cfg/halconf.h	466;"	d
+SPI_USE_WAIT	cfg/halconf.h	450;"	d
+STM32G431_MCUCONF	cfg/mcuconf.h	35;"	d
+STM32G441_MCUCONF	cfg/mcuconf.h	36;"	d
+STM32G4xx_MCUCONF	cfg/mcuconf.h	34;"	d
+STM32_ADC12SEL	cfg/mcuconf.h	80;"	d
+STM32_CLK48SEL	cfg/mcuconf.h	79;"	d
+STM32_DAC_DAC1_CH1_DMA_PRIORITY	cfg/mcuconf.h	132;"	d
+STM32_DAC_DAC1_CH1_DMA_STREAM	cfg/mcuconf.h	136;"	d
+STM32_DAC_DAC1_CH1_IRQ_PRIORITY	cfg/mcuconf.h	128;"	d
+STM32_DAC_DAC1_CH2_DMA_PRIORITY	cfg/mcuconf.h	133;"	d
+STM32_DAC_DAC1_CH2_DMA_STREAM	cfg/mcuconf.h	137;"	d
+STM32_DAC_DAC1_CH2_IRQ_PRIORITY	cfg/mcuconf.h	129;"	d
+STM32_DAC_DAC3_CH1_DMA_PRIORITY	cfg/mcuconf.h	134;"	d
+STM32_DAC_DAC3_CH1_DMA_STREAM	cfg/mcuconf.h	138;"	d
+STM32_DAC_DAC3_CH1_IRQ_PRIORITY	cfg/mcuconf.h	130;"	d
+STM32_DAC_DAC3_CH2_DMA_PRIORITY	cfg/mcuconf.h	135;"	d
+STM32_DAC_DAC3_CH2_DMA_STREAM	cfg/mcuconf.h	139;"	d
+STM32_DAC_DAC3_CH2_IRQ_PRIORITY	cfg/mcuconf.h	131;"	d
+STM32_DAC_DUAL_MODE	cfg/mcuconf.h	123;"	d
+STM32_DAC_USE_DAC1_CH1	cfg/mcuconf.h	124;"	d
+STM32_DAC_USE_DAC1_CH2	cfg/mcuconf.h	125;"	d
+STM32_DAC_USE_DAC3_CH1	cfg/mcuconf.h	126;"	d
+STM32_DAC_USE_DAC3_CH2	cfg/mcuconf.h	127;"	d
+STM32_FDCANSEL	cfg/mcuconf.h	78;"	d
+STM32_GPT_USE_TIM1	cfg/mcuconf.h	144;"	d
+STM32_GPT_USE_TIM15	cfg/mcuconf.h	151;"	d
+STM32_GPT_USE_TIM16	cfg/mcuconf.h	152;"	d
+STM32_GPT_USE_TIM17	cfg/mcuconf.h	153;"	d
+STM32_GPT_USE_TIM2	cfg/mcuconf.h	145;"	d
+STM32_GPT_USE_TIM3	cfg/mcuconf.h	146;"	d
+STM32_GPT_USE_TIM4	cfg/mcuconf.h	147;"	d
+STM32_GPT_USE_TIM6	cfg/mcuconf.h	148;"	d
+STM32_GPT_USE_TIM7	cfg/mcuconf.h	149;"	d
+STM32_GPT_USE_TIM8	cfg/mcuconf.h	150;"	d
+STM32_HPRE	cfg/mcuconf.h	57;"	d
+STM32_HSE_ENABLED	cfg/mcuconf.h	46;"	d
+STM32_HSI16_ENABLED	cfg/mcuconf.h	44;"	d
+STM32_HSI48_ENABLED	cfg/mcuconf.h	45;"	d
+STM32_I2C1SEL	cfg/mcuconf.h	72;"	d
+STM32_I2C2SEL	cfg/mcuconf.h	73;"	d
+STM32_I2C3SEL	cfg/mcuconf.h	74;"	d
+STM32_I2C_BUSY_TIMEOUT	cfg/mcuconf.h	161;"	d
+STM32_I2C_DMA_ERROR_HOOK	cfg/mcuconf.h	174;"	d
+STM32_I2C_I2C1_DMA_PRIORITY	cfg/mcuconf.h	171;"	d
+STM32_I2C_I2C1_IRQ_PRIORITY	cfg/mcuconf.h	168;"	d
+STM32_I2C_I2C1_RX_DMA_STREAM	cfg/mcuconf.h	162;"	d
+STM32_I2C_I2C1_TX_DMA_STREAM	cfg/mcuconf.h	163;"	d
+STM32_I2C_I2C2_DMA_PRIORITY	cfg/mcuconf.h	172;"	d
+STM32_I2C_I2C2_IRQ_PRIORITY	cfg/mcuconf.h	169;"	d
+STM32_I2C_I2C2_RX_DMA_STREAM	cfg/mcuconf.h	164;"	d
+STM32_I2C_I2C2_TX_DMA_STREAM	cfg/mcuconf.h	165;"	d
+STM32_I2C_I2C3_DMA_PRIORITY	cfg/mcuconf.h	173;"	d
+STM32_I2C_I2C3_IRQ_PRIORITY	cfg/mcuconf.h	170;"	d
+STM32_I2C_I2C3_RX_DMA_STREAM	cfg/mcuconf.h	166;"	d
+STM32_I2C_I2C3_TX_DMA_STREAM	cfg/mcuconf.h	167;"	d
+STM32_I2C_USE_I2C1	cfg/mcuconf.h	158;"	d
+STM32_I2C_USE_I2C2	cfg/mcuconf.h	159;"	d
+STM32_I2C_USE_I2C3	cfg/mcuconf.h	160;"	d
+STM32_I2S23SEL	cfg/mcuconf.h	77;"	d
+STM32_ICU_USE_TIM1	cfg/mcuconf.h	179;"	d
+STM32_ICU_USE_TIM15	cfg/mcuconf.h	184;"	d
+STM32_ICU_USE_TIM2	cfg/mcuconf.h	180;"	d
+STM32_ICU_USE_TIM3	cfg/mcuconf.h	181;"	d
+STM32_ICU_USE_TIM4	cfg/mcuconf.h	182;"	d
+STM32_ICU_USE_TIM8	cfg/mcuconf.h	183;"	d
+STM32_IRQ_EXTI0_PRIORITY	cfg/mcuconf.h	86;"	d
+STM32_IRQ_EXTI10_15_PRIORITY	cfg/mcuconf.h	92;"	d
+STM32_IRQ_EXTI1_PRIORITY	cfg/mcuconf.h	87;"	d
+STM32_IRQ_EXTI2_PRIORITY	cfg/mcuconf.h	88;"	d
+STM32_IRQ_EXTI3_PRIORITY	cfg/mcuconf.h	89;"	d
+STM32_IRQ_EXTI4_PRIORITY	cfg/mcuconf.h	90;"	d
+STM32_IRQ_EXTI5_9_PRIORITY	cfg/mcuconf.h	91;"	d
+STM32_IRQ_LPUART1_PRIORITY	cfg/mcuconf.h	110;"	d
+STM32_IRQ_TIM1_BRK_TIM15_PRIORITY	cfg/mcuconf.h	94;"	d
+STM32_IRQ_TIM1_CC_PRIORITY	cfg/mcuconf.h	97;"	d
+STM32_IRQ_TIM1_TRGCO_TIM17_PRIORITY	cfg/mcuconf.h	96;"	d
+STM32_IRQ_TIM1_UP_TIM16_PRIORITY	cfg/mcuconf.h	95;"	d
+STM32_IRQ_TIM2_PRIORITY	cfg/mcuconf.h	98;"	d
+STM32_IRQ_TIM3_PRIORITY	cfg/mcuconf.h	99;"	d
+STM32_IRQ_TIM4_PRIORITY	cfg/mcuconf.h	100;"	d
+STM32_IRQ_TIM6_PRIORITY	cfg/mcuconf.h	101;"	d
+STM32_IRQ_TIM7_PRIORITY	cfg/mcuconf.h	102;"	d
+STM32_IRQ_TIM8_CC_PRIORITY	cfg/mcuconf.h	104;"	d
+STM32_IRQ_TIM8_UP_PRIORITY	cfg/mcuconf.h	103;"	d
+STM32_IRQ_UART4_PRIORITY	cfg/mcuconf.h	109;"	d
+STM32_IRQ_USART1_PRIORITY	cfg/mcuconf.h	106;"	d
+STM32_IRQ_USART2_PRIORITY	cfg/mcuconf.h	107;"	d
+STM32_IRQ_USART3_PRIORITY	cfg/mcuconf.h	108;"	d
+STM32_LPTIM1SEL	cfg/mcuconf.h	75;"	d
+STM32_LPUART1SEL	cfg/mcuconf.h	71;"	d
+STM32_LSCOSEL	cfg/mcuconf.h	62;"	d
+STM32_LSE_ENABLED	cfg/mcuconf.h	48;"	d
+STM32_LSI_ENABLED	cfg/mcuconf.h	47;"	d
+STM32_MCOPRE	cfg/mcuconf.h	61;"	d
+STM32_MCOSEL	cfg/mcuconf.h	60;"	d
+STM32_NO_INIT	cfg/mcuconf.h	41;"	d
+STM32_PLLM_VALUE	cfg/mcuconf.h	51;"	d
+STM32_PLLN_VALUE	cfg/mcuconf.h	52;"	d
+STM32_PLLPDIV_VALUE	cfg/mcuconf.h	53;"	d
+STM32_PLLP_VALUE	cfg/mcuconf.h	54;"	d
+STM32_PLLQ_VALUE	cfg/mcuconf.h	55;"	d
+STM32_PLLR_VALUE	cfg/mcuconf.h	56;"	d
+STM32_PLLSRC	cfg/mcuconf.h	50;"	d
+STM32_PPRE1	cfg/mcuconf.h	58;"	d
+STM32_PPRE2	cfg/mcuconf.h	59;"	d
+STM32_PWM_USE_ADVANCED	cfg/mcuconf.h	189;"	d
+STM32_PWM_USE_TIM1	cfg/mcuconf.h	190;"	d
+STM32_PWM_USE_TIM15	cfg/mcuconf.h	195;"	d
+STM32_PWM_USE_TIM16	cfg/mcuconf.h	196;"	d
+STM32_PWM_USE_TIM17	cfg/mcuconf.h	197;"	d
+STM32_PWM_USE_TIM2	cfg/mcuconf.h	191;"	d
+STM32_PWM_USE_TIM3	cfg/mcuconf.h	192;"	d
+STM32_PWM_USE_TIM4	cfg/mcuconf.h	193;"	d
+STM32_PWM_USE_TIM8	cfg/mcuconf.h	194;"	d
+STM32_PWR_CR2	cfg/mcuconf.h	43;"	d
+STM32_RTCSEL	cfg/mcuconf.h	81;"	d
+STM32_SAI1SEL	cfg/mcuconf.h	76;"	d
+STM32_SERIAL_USE_LPUART1	cfg/mcuconf.h	214;"	d
+STM32_SERIAL_USE_UART4	cfg/mcuconf.h	213;"	d
+STM32_SERIAL_USE_USART1	cfg/mcuconf.h	210;"	d
+STM32_SERIAL_USE_USART2	cfg/mcuconf.h	211;"	d
+STM32_SERIAL_USE_USART3	cfg/mcuconf.h	212;"	d
+STM32_SPI_DMA_ERROR_HOOK	cfg/mcuconf.h	234;"	d
+STM32_SPI_SPI1_DMA_PRIORITY	cfg/mcuconf.h	228;"	d
+STM32_SPI_SPI1_IRQ_PRIORITY	cfg/mcuconf.h	231;"	d
+STM32_SPI_SPI1_RX_DMA_STREAM	cfg/mcuconf.h	222;"	d
+STM32_SPI_SPI1_TX_DMA_STREAM	cfg/mcuconf.h	223;"	d
+STM32_SPI_SPI2_DMA_PRIORITY	cfg/mcuconf.h	229;"	d
+STM32_SPI_SPI2_IRQ_PRIORITY	cfg/mcuconf.h	232;"	d
+STM32_SPI_SPI2_RX_DMA_STREAM	cfg/mcuconf.h	224;"	d
+STM32_SPI_SPI2_TX_DMA_STREAM	cfg/mcuconf.h	225;"	d
+STM32_SPI_SPI3_DMA_PRIORITY	cfg/mcuconf.h	230;"	d
+STM32_SPI_SPI3_IRQ_PRIORITY	cfg/mcuconf.h	233;"	d
+STM32_SPI_SPI3_RX_DMA_STREAM	cfg/mcuconf.h	226;"	d
+STM32_SPI_SPI3_TX_DMA_STREAM	cfg/mcuconf.h	227;"	d
+STM32_SPI_USE_SPI1	cfg/mcuconf.h	219;"	d
+STM32_SPI_USE_SPI2	cfg/mcuconf.h	220;"	d
+STM32_SPI_USE_SPI3	cfg/mcuconf.h	221;"	d
+STM32_ST_IRQ_PRIORITY	cfg/mcuconf.h	239;"	d
+STM32_ST_USE_TIMER	cfg/mcuconf.h	240;"	d
+STM32_SW	cfg/mcuconf.h	49;"	d
+STM32_TRNG_USE_RNG1	cfg/mcuconf.h	245;"	d
+STM32_UART4SEL	cfg/mcuconf.h	70;"	d
+STM32_UART_DMA_ERROR_HOOK	cfg/mcuconf.h	266;"	d
+STM32_UART_UART4_DMA_PRIORITY	cfg/mcuconf.h	265;"	d
+STM32_UART_UART4_RX_DMA_STREAM	cfg/mcuconf.h	260;"	d
+STM32_UART_UART4_TX_DMA_STREAM	cfg/mcuconf.h	261;"	d
+STM32_UART_USART1_DMA_PRIORITY	cfg/mcuconf.h	262;"	d
+STM32_UART_USART1_RX_DMA_STREAM	cfg/mcuconf.h	254;"	d
+STM32_UART_USART1_TX_DMA_STREAM	cfg/mcuconf.h	255;"	d
+STM32_UART_USART2_DMA_PRIORITY	cfg/mcuconf.h	263;"	d
+STM32_UART_USART2_RX_DMA_STREAM	cfg/mcuconf.h	256;"	d
+STM32_UART_USART2_TX_DMA_STREAM	cfg/mcuconf.h	257;"	d
+STM32_UART_USART3_DMA_PRIORITY	cfg/mcuconf.h	264;"	d
+STM32_UART_USART3_RX_DMA_STREAM	cfg/mcuconf.h	258;"	d
+STM32_UART_USART3_TX_DMA_STREAM	cfg/mcuconf.h	259;"	d
+STM32_UART_USE_UART4	cfg/mcuconf.h	253;"	d
+STM32_UART_USE_USART1	cfg/mcuconf.h	250;"	d
+STM32_UART_USE_USART2	cfg/mcuconf.h	251;"	d
+STM32_UART_USE_USART3	cfg/mcuconf.h	252;"	d
+STM32_USART1SEL	cfg/mcuconf.h	67;"	d
+STM32_USART2SEL	cfg/mcuconf.h	68;"	d
+STM32_USART3SEL	cfg/mcuconf.h	69;"	d
+STM32_USB_LOW_POWER_ON_SUSPEND	cfg/mcuconf.h	272;"	d
+STM32_USB_USB1_HP_IRQ_PRIORITY	cfg/mcuconf.h	273;"	d
+STM32_USB_USB1_LP_IRQ_PRIORITY	cfg/mcuconf.h	274;"	d
+STM32_USB_USE_USB1	cfg/mcuconf.h	271;"	d
+STM32_VOS	cfg/mcuconf.h	42;"	d
+STM32_WDG_USE_IWDG	cfg/mcuconf.h	279;"	d
+THD_FUNCTION	main.c	/^static THD_FUNCTION(Thread1, arg) {$/;"	f	file:
+UADEFS	Makefile	/^UADEFS =$/;"	m
+UART_USE_MUTUAL_EXCLUSION	cfg/halconf.h	494;"	d
+UART_USE_WAIT	cfg/halconf.h	486;"	d
+UDEFS	Makefile	/^UDEFS =$/;"	m
+UINCDIR	Makefile	/^UINCDIR =$/;"	m
+ULIBDIR	Makefile	/^ULIBDIR =$/;"	m
+ULIBS	Makefile	/^ULIBS =$/;"	m
+USB_USE_WAIT	cfg/halconf.h	506;"	d
+USE_COPT	Makefile	/^  USE_COPT = $/;"	m
+USE_CPPOPT	Makefile	/^  USE_CPPOPT = -fno-rtti$/;"	m
+USE_EXCEPTIONS_STACKSIZE	Makefile	/^  USE_EXCEPTIONS_STACKSIZE = 0x400$/;"	m
+USE_FPU	Makefile	/^  USE_FPU = no$/;"	m
+USE_FPU_OPT	Makefile	/^  USE_FPU_OPT = -mfloat-abi=$(USE_FPU) -mfpu=fpv4-sp-d16$/;"	m
+USE_LDOPT	Makefile	/^  USE_LDOPT = $/;"	m
+USE_LINK_GC	Makefile	/^  USE_LINK_GC = yes$/;"	m
+USE_LTO	Makefile	/^  USE_LTO = yes$/;"	m
+USE_OPT	Makefile	/^  USE_OPT = -O2 -ggdb -fomit-frame-pointer -falign-functions=16$/;"	m
+USE_PROCESS_STACKSIZE	Makefile	/^  USE_PROCESS_STACKSIZE = 0x400$/;"	m
+USE_SMART_BUILD	Makefile	/^  USE_SMART_BUILD = yes$/;"	m
+USE_VERBOSE_COMPILE	Makefile	/^  USE_VERBOSE_COMPILE = no$/;"	m
+WSPI_USE_MUTUAL_EXCLUSION	cfg/halconf.h	526;"	d
+WSPI_USE_WAIT	cfg/halconf.h	518;"	d
+_CHIBIOS_HAL_CONF_	cfg/halconf.h	31;"	d
+_CHIBIOS_HAL_CONF_VER_7_1_	cfg/halconf.h	32;"	d
+_CHIBIOS_RT_CONF_	cfg/chconf.h	31;"	d
+_CHIBIOS_RT_CONF_VER_6_1_	cfg/chconf.h	32;"	d
+main	main.c	/^int main(void) {$/;"	f
