@@ -74,8 +74,8 @@
 #define GPIOA_PIN8                  8U
 #define GPIOA_PIN9                  9U
 #define GPIOA_PIN10                 10U
-#define GPIOA_PIN11                 11U
-#define GPIOA_PIN12                 12U
+#define GPIOA_FDCAN1_RX             11U
+#define GPIOA_FDCAN1_TX             12U
 #define GPIOA_SWDIO                 13U
 #define GPIOA_SWCLK                 14U
 #define GPIOA_PIN15                 15U
@@ -251,8 +251,8 @@
  * PA8  - PIN8                      (analog).
  * PA9  - PIN9                      (analog).
  * PA10 - PIN10                     (analog).
- * PA11 - PIN11                     (analog).
- * PA12 - PIN12                     (analog).
+ * PA11 - PIN11                     (alternate 9).
+ * PA12 - PIN12                     (alternate 9).
  * PA13 - SWDIO                     (alternate 0).
  * PA14 - SWCLK                     (alternate 0).
  * PA15 - PIN15                     (analog).
@@ -269,8 +269,8 @@
                                      PIN_MODE_ANALOG(GPIOA_PIN8) |          \
                                      PIN_MODE_ANALOG(GPIOA_PIN9) |          \
                                      PIN_MODE_ANALOG(GPIOA_PIN10) |         \
-                                     PIN_MODE_ANALOG(GPIOA_PIN11) |         \
-                                     PIN_MODE_INPUT(GPIOA_PIN12)  |         \
+                                     PIN_MODE_ALTERNATE(GPIOA_FDCAN1_RX) |  \
+                                     PIN_MODE_ALTERNATE(GPIOA_FDCAN1_TX)  | \
                                      PIN_MODE_ALTERNATE(GPIOA_SWDIO) |      \
                                      PIN_MODE_ALTERNATE(GPIOA_SWCLK) |      \
                                      PIN_MODE_ANALOG(GPIOA_PIN15))
@@ -279,14 +279,14 @@
                                      PIN_OTYPE_PUSHPULL(GPIOA_STLINK_TX) |  \
                                      PIN_OTYPE_PUSHPULL(GPIOA_STLINK_RX) |  \
                                      PIN_OTYPE_PUSHPULL(GPIOA_PIN4) |       \
-                                     PIN_OTYPE_PUSHPULL(GPIOA_PIN5) |        \
+                                     PIN_OTYPE_PUSHPULL(GPIOA_PIN5) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOA_PIN6) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOA_PIN7) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOA_PIN8) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOA_PIN9) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOA_PIN10) |      \
-                                     PIN_OTYPE_PUSHPULL(GPIOA_PIN11) |      \
-                                     PIN_OTYPE_PUSHPULL(GPIOA_PIN12) |      \
+                                     PIN_OTYPE_PUSHPULL(GPIOA_FDCAN1_RX) |  \
+                                     PIN_OTYPE_PUSHPULL(GPIOA_FDCAN1_TX) |  \
                                      PIN_OTYPE_PUSHPULL(GPIOA_SWDIO) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOA_SWCLK) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOA_PIN15))
@@ -295,14 +295,14 @@
                                      PIN_OSPEED_VERYLOW(GPIOA_STLINK_TX) |  \
                                      PIN_OSPEED_VERYLOW(GPIOA_STLINK_RX) |  \
                                      PIN_OSPEED_VERYLOW(GPIOA_PIN4) |       \
-                                     PIN_OSPEED_VERYLOW(GPIOA_PIN5) |           \
+                                     PIN_OSPEED_VERYLOW(GPIOA_PIN5) |       \
                                      PIN_OSPEED_VERYLOW(GPIOA_PIN6) |       \
                                      PIN_OSPEED_VERYLOW(GPIOA_PIN7) |       \
                                      PIN_OSPEED_VERYLOW(GPIOA_PIN8) |       \
                                      PIN_OSPEED_VERYLOW(GPIOA_PIN9) |       \
                                      PIN_OSPEED_VERYLOW(GPIOA_PIN10) |      \
-                                     PIN_OSPEED_VERYLOW(GPIOA_PIN11) |      \
-                                     PIN_OSPEED_VERYLOW(GPIOA_PIN12) |      \
+                                     PIN_OSPEED_HIGH(GPIOA_FDCAN1_RX) |     \
+                                     PIN_OSPEED_HIGH(GPIOA_FDCAN1_TX) |     \
                                      PIN_OSPEED_HIGH(GPIOA_SWDIO) |         \
                                      PIN_OSPEED_HIGH(GPIOA_SWCLK) |         \
                                      PIN_OSPEED_VERYLOW(GPIOA_PIN15))
@@ -311,14 +311,14 @@
                                      PIN_PUPDR_FLOATING(GPIOA_STLINK_TX) |  \
                                      PIN_PUPDR_FLOATING(GPIOA_STLINK_RX) |  \
                                      PIN_PUPDR_FLOATING(GPIOA_PIN4) |       \
-                                     PIN_PUPDR_FLOATING(GPIOA_PIN5) |        \
+                                     PIN_PUPDR_FLOATING(GPIOA_PIN5) |       \
                                      PIN_PUPDR_FLOATING(GPIOA_PIN6) |       \
                                      PIN_PUPDR_FLOATING(GPIOA_PIN7) |       \
                                      PIN_PUPDR_FLOATING(GPIOA_PIN8) |       \
                                      PIN_PUPDR_FLOATING(GPIOA_PIN9) |       \
                                      PIN_PUPDR_FLOATING(GPIOA_PIN10) |      \
-                                     PIN_PUPDR_FLOATING(GPIOA_PIN11) |      \
-                                     PIN_PUPDR_FLOATING(GPIOA_PIN12) |      \
+                                     PIN_PUPDR_FLOATING(GPIOA_FDCAN1_RX) |  \
+                                     PIN_PUPDR_FLOATING(GPIOA_FDCAN1_TX) |  \
                                      PIN_PUPDR_PULLUP(GPIOA_SWDIO) |        \
                                      PIN_PUPDR_PULLDOWN(GPIOA_SWCLK) |      \
                                      PIN_PUPDR_FLOATING(GPIOA_PIN15))
@@ -327,14 +327,14 @@
                                      PIN_ODR_LOW(GPIOA_STLINK_TX) |         \
                                      PIN_ODR_LOW(GPIOA_STLINK_RX) |         \
                                      PIN_ODR_LOW(GPIOA_PIN4) |              \
-                                     PIN_ODR_LOW(GPIOA_PIN5) |               \
+                                     PIN_ODR_LOW(GPIOA_PIN5) |              \
                                      PIN_ODR_LOW(GPIOA_PIN6) |              \
                                      PIN_ODR_LOW(GPIOA_PIN7) |              \
                                      PIN_ODR_LOW(GPIOA_PIN8) |              \
                                      PIN_ODR_LOW(GPIOA_PIN9) |              \
                                      PIN_ODR_LOW(GPIOA_PIN10) |             \
-                                     PIN_ODR_LOW(GPIOA_PIN11) |             \
-                                     PIN_ODR_LOW(GPIOA_PIN12) |             \
+                                     PIN_ODR_LOW(GPIOA_FDCAN1_RX) |         \
+                                     PIN_ODR_LOW(GPIOA_FDCAN1_TX) |         \
                                      PIN_ODR_LOW(GPIOA_SWDIO) |             \
                                      PIN_ODR_LOW(GPIOA_SWCLK) |             \
                                      PIN_ODR_LOW(GPIOA_PIN15))
@@ -343,14 +343,14 @@
                                      PIN_AFIO_AF(GPIOA_STLINK_TX, 12U) |    \
                                      PIN_AFIO_AF(GPIOA_STLINK_RX, 12U) |    \
                                      PIN_AFIO_AF(GPIOA_PIN4, 0U) |          \
-                                     PIN_AFIO_AF(GPIOA_PIN5, 0U) |           \
+                                     PIN_AFIO_AF(GPIOA_PIN5, 0U) |          \
                                      PIN_AFIO_AF(GPIOA_PIN6, 0U) |          \
                                      PIN_AFIO_AF(GPIOA_PIN7, 0U))
 #define VAL_GPIOA_AFRH              (PIN_AFIO_AF(GPIOA_PIN8, 0U) |          \
                                      PIN_AFIO_AF(GPIOA_PIN9, 0U) |          \
                                      PIN_AFIO_AF(GPIOA_PIN10, 0U) |         \
-                                     PIN_AFIO_AF(GPIOA_PIN11, 0U) |         \
-                                     PIN_AFIO_AF(GPIOA_PIN12, 0U) |         \
+                                     PIN_AFIO_AF(GPIOA_FDCAN1_RX, 9U) |     \
+                                     PIN_AFIO_AF(GPIOA_FDCAN1_TX, 9U) |     \
                                      PIN_AFIO_AF(GPIOA_SWDIO, 0U) |         \
                                      PIN_AFIO_AF(GPIOA_SWCLK, 0U) |         \
                                      PIN_AFIO_AF(GPIOA_PIN15, 0U))
