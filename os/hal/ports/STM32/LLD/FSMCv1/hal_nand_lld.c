@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    hal_nand_lld.c
- * @brief   NAND Driver subsystem low level driver source.
+ * @file    hal_fsmc_nand_lld.c
+ * @brief   FSMC NAND Driver subsystem low level driver source.
  *
  * @addtogroup NAND
  * @{
@@ -25,6 +25,8 @@
 #include "hal.h"
 
 #if (HAL_USE_NAND == TRUE) || defined(__DOXYGEN__)
+
+#include "hal_nand_lld.h"
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -53,14 +55,14 @@
 /**
  * @brief   NAND1 driver identifier.
  */
-#if STM32_NAND_USE_FSMC_NAND1 || defined(__DOXYGEN__)
+#if STM32_NAND_USE_NAND1 || defined(__DOXYGEN__)
 NANDDriver NANDD1;
 #endif
 
 /**
  * @brief   NAND2 driver identifier.
  */
-#if STM32_NAND_USE_FSMC_NAND2 || defined(__DOXYGEN__)
+#if STM32_NAND_USE_NAND2 || defined(__DOXYGEN__)
 NANDDriver NANDD2;
 #endif
 
@@ -280,9 +282,9 @@ static void nand_lld_serve_transfer_end_irq(NANDDriver *nandp, uint32_t flags) {
  */
 void nand_lld_init(void) {
 
-  fsmc_init();
+  fsmcInit();
 
-#if STM32_NAND_USE_FSMC_NAND1
+#if STM32_NAND_USE_NAND1
   /* Driver initialization.*/
   nandObjectInit(&NANDD1);
   NANDD1.rxdata   = NULL;
@@ -294,9 +296,9 @@ void nand_lld_init(void) {
   NANDD1.map_cmd  = (uint16_t *)FSMC_Bank2_MAP_COMMON_CMD;
   NANDD1.map_addr = (uint16_t *)FSMC_Bank2_MAP_COMMON_ADDR;
   NANDD1.bb_map   = NULL;
-#endif /* STM32_NAND_USE_FSMC_NAND1 */
+#endif /* STM32_NAND_USE_NAND1 */
 
-#if STM32_NAND_USE_FSMC_NAND2
+#if STM32_NAND_USE_NAND2
   /* Driver initialization.*/
   nandObjectInit(&NANDD2);
   NANDD2.rxdata   = NULL;
@@ -308,7 +310,7 @@ void nand_lld_init(void) {
   NANDD2.map_cmd  = (uint16_t *)FSMC_Bank3_MAP_COMMON_CMD;
   NANDD2.map_addr = (uint16_t *)FSMC_Bank3_MAP_COMMON_ADDR;
   NANDD2.bb_map   = NULL;
-#endif /* STM32_NAND_USE_FSMC_NAND2 */
+#endif /* STM32_NAND_USE_NAND2 */
 }
 
 /**
@@ -325,7 +327,7 @@ void nand_lld_start(NANDDriver *nandp) {
   uint32_t pcr_bus_width;
 
   if (FSMCD1.state == FSMC_STOP)
-    fsmc_start(&FSMCD1);
+    fsmcStart(&FSMCD1);
 
   if (nandp->state == NAND_STOP) {
     b = dmaStreamAlloc(nandp->dma,
@@ -345,7 +347,7 @@ void nand_lld_start(NANDDriver *nandp) {
 #endif
 
     nandp->dmamode = STM32_DMA_CR_CHSEL(NAND_DMA_CHANNEL) |
-                     STM32_DMA_CR_PL(STM32_NAND_NAND1_DMA_PRIORITY) |
+                     STM32_DMA_CR_PL(STM32_NAND_DMA_PRIORITY) |
                      dmasize |
                      STM32_DMA_CR_DMEIE |
                      STM32_DMA_CR_TEIE |

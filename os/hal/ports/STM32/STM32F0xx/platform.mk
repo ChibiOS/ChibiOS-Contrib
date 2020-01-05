@@ -14,6 +14,7 @@ endif
 
 include ${CHIBIOS_CONTRIB}/os/hal/ports/STM32/LLD/CRCv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/STM32/LLD/TIMv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/STM32/LLD/COMPv1/driver.mk
 
 # Shared variables
 ALLCSRC += $(PLATFORMSRC_CONTRIB)

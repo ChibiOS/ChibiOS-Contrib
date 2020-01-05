@@ -17,7 +17,6 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "hal_fsmc_sram.h"
 #include "membench.h"
 #include "memtest.h"
 
@@ -173,8 +172,8 @@ int main(void) {
   halInit();
   chSysInit();
 
-  fsmcSramInit();
-  fsmcSramStart(&SRAMD4, &sram_cfg);
+  sramInit();
+  sramStart(&SRAMD4, &sram_cfg);
 
   membench();
   memtest();

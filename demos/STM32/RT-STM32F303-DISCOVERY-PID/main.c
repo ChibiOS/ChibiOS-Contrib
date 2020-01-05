@@ -30,17 +30,16 @@ static adcsample_t samples[ADC_GRP1_NUM_CHANNELS * ADC_GRP1_BUF_DEPTH];
 /*
  * ADC streaming callback.
  */
-static void adccallback(ADCDriver *adcp, adcsample_t *buffer, size_t n) {
+static void adccallback(ADCDriver *adcp) {
 
   (void)adcp;
-  (void)n;
   uint32_t i, tmp = 0;
-  if (samples == buffer) {
+  if (adcIsBufferComplete(adcp)) {
 
-    for (i = 0; i < n; i++) {
-        tmp += buffer[i];
+    for (i = 0; i < (adcp)->depth; i++) {
+        tmp += (adcp)->samples[i];
     }
-    input = tmp / n;
+    input = tmp / (adcp)->depth;
     
     if (input <= target) {
         palClearLine(LINE_LED7_GREEN);
