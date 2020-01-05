@@ -299,13 +299,8 @@ void i2c_lld_start(I2CDriver *i2cp) {
   (void)i2c->EVENTS_RXDREADY;
   (void)i2c->EVENTS_TXDSENT;
 #endif
-#if NRF_SERIES == 51
   i2c->PSELSCL = cfg->scl_pad;
   i2c->PSELSDA = cfg->sda_pad;
-#else
-  i2c->PSEL.SCL = cfg->scl_pad;
-  i2c->PSEL.SDA = cfg->sda_pad;
-#endif
   
   switch (cfg->clock) {
     case 100000:
