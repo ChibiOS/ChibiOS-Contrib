@@ -66,7 +66,7 @@
  *            1 : 32 MHz external crystal oscillator (HFXO)
  */
 #if !defined(NRF5_HFCLK_SOURCE) || defined(__DOXYGEN__)
-#define NRF5_HFCLK_SOURCE             NRF5_HFCLK_HFINT
+#define NRF5_HFCLK_SOURCE             CLOCK_HFCLKSTAT_SRC_RC
 #endif
 
 /**
@@ -79,7 +79,7 @@
  *          internal RC oscillator that synthesizing the clock.
  */
 #if !defined(NRF5_LFCLK_SOURCE) || defined(__DOXYGEN__)
-#define NRF5_LFCLK_SOURCE             NRF5_LFCLK_RC
+#define NRF5_LFCLK_SOURCE             CLOCK_LFCLKSTAT_SRC_RC
 #endif
 
 /*===========================================================================*/
@@ -105,14 +105,6 @@
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
-#if 0 // moved to board.h
-#define NRF5_HFCLK_HFINT             0
-#define NRF5_HFCLK_HFXO              1
-
-#define NRF5_LFCLK_RC                0
-#define NRF5_LFCLK_XTAL              1
-#define NRF5_LFCLK_SYNTH             2
-#endif
 
 #include "nvic.h"
 #include "nrf52_isr.h"
