@@ -106,7 +106,7 @@ static void sdram_lld_init_sequence(const SDRAMConfig *cfgp) {
   SDRAMD1.sdram->SDCMR = FMCCM_CLK_ENABLED | command_target;
 
   /* Step 4: Insert delay (tipically 100uS).*/
-  osalThreadSleepMilliseconds(1);
+  osalSysPolledDelayX(OSAL_US2RTC(STM32_HCLK, 100));
 
   /* Step 5: Configure a PALL (precharge all) command.*/
   sdram_lld_wait_ready();
