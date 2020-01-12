@@ -120,10 +120,9 @@
 #endif
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */
 
-#if !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_ST_PRIORITY)
+#if !PORT_IRQ_IS_VALID_KERNEL_PRIORITY(NRF5_ST_PRIORITY)
 #error "Invalid IRQ priority assigned to ST driver"
 #endif
-
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
