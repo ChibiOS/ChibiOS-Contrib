@@ -16,6 +16,7 @@ echo $CHC_PATH
 exit 0'''
       }
     }
+
     stage('Build Platforms') {
       parallel {
         stage('Build STM32') {
@@ -49,6 +50,7 @@ export CHC_PATH=$WORKSPACE
 ./tools/chbuild.sh ./demos/STM32/'''
           }
         }
+
         stage('Build NRF51') {
           agent {
             docker {
@@ -81,6 +83,7 @@ export CHC_PATH=$WORKSPACE
 '''
           }
         }
+
         stage('Build NRF52') {
           agent {
             docker {
@@ -113,6 +116,7 @@ export CHC_PATH=$WORKSPACE
 '''
           }
         }
+
         stage('Build Kinetis') {
           agent {
             docker {
@@ -145,11 +149,13 @@ export CHC_PATH=$WORKSPACE
 '''
           }
         }
+
       }
     }
+
   }
   environment {
-    CH_BRANCH = 'stable_19.1.x'
+    CH_BRANCH = 'stable_20.3.x'
     CH_PATH = 'ChibiOS'
   }
 }
