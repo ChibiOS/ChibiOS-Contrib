@@ -32,6 +32,7 @@
  */
 
 #define STM32L0xx_MCUCONF
+#define STM32L053_MCUCONF
 
 /*
  * HAL driver system settings.
