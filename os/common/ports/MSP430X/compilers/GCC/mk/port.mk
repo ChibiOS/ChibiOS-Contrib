@@ -5,3 +5,7 @@ PORTASM =
 
 PORTINC = ${CHIBIOS_CONTRIB}/os/common/ports/MSP430X \
           ${CHIBIOS_CONTRIB}/os/common/ports/MSP430X/compilers/GCC
+
+ALLINC += $(PORTINC)
+ALLSRC += $(PORTSRC)
+ALLASMSRC += $(PORTASM)

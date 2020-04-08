@@ -9,3 +9,6 @@ PLATFORMSRC = ${CHIBIOS_CONTRIB}/os/hal/ports/MSP430X/hal_lld.c \
 
 # Required include directories
 PLATFORMINC = ${CHIBIOS_CONTRIB}/os/hal/ports/MSP430X
+
+ALLINC += $(PLATFORMINC)
+ALLSRC += $(PLATFORMSRC)
