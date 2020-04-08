@@ -2,24 +2,23 @@
 
 import os
 import argparse
-from pcpp import Preprocessor, OutputDirective
+
 
 parser = argparse.ArgumentParser(description='Project upgrade script for ChibiOS')
 parser.add_argument('-p', '--path', dest='path', help='Where project files are located', required=True)
-parser.add_argument('-c', '--chibios-version', dest='chver', help='New chibios version to migrate to', choices=('19.1.x', '20.3.x'), required=True)
+parser.add_argument('-c', '--chibios', dest='chpath', help='Where ChibiOS is located', required=True)
 parser.add_argument('-v', '--verbose', dest='verbose', action='store_true')
 args = parser.parse_args()
 
-new_chconf = os.path.abspath('./chconf-{0}.h'.format(args.chver))
-new_nilconf = os.path.abspath('./nilconf-{0}.h'.format(args.chver))
-new_halconf = os.path.abspath('./halconf-{0}.h'.format(args.chver))
-
 verbose = args.verbose
 
-if not os.path.exists(new_chconf) or not os.path.exists(new_halconf):
-    print('Missing headers', new_chconf, new_halconf)
+if not os.path.exists(args.chpath):
+    print('Invalid Chibios path', args.chpath)
     exit(1)
 
+new_chconf = os.path.abspath('{}/os/rt/templates/chconf.h'.format(args.chpath))
+new_nilconf = os.path.abspath('{}/os/nil/templates/chconf.h'.format(args.chpath))
+new_halconf = os.path.abspath('{}/os/hal/templates/halconf.h'.format(args.chpath))
 
 def find(name, path):
     ret = []
@@ -29,11 +28,14 @@ def find(name, path):
                 ret.append(os.path.abspath(os.path.join(root, f)))
     return ret
 
+
 def is_nil(path):
     with open(path, 'r') as f:
-        for l in f.readlines():
+        for l in f.readlines()[:100]:
             if l.startswith('#define') and '_CHIBIOS_NIL_CONF_' in l:
                 return True
+    return False
+
 
 def get_values(path):
     values = {}
@@ -89,6 +91,15 @@ def write_changes(path, source, values):
         for l in reversed(tuple(lines.keys())):
             size = lines[l]
             del file_lines[l:l+size]
+
+        # Find last #endif to add our #include
+        if 'halconf.h' in source:
+            l_num = 0
+            for l in reversed(file_lines):
+                l_num += 1
+                if l.startswith('#endif'):
+                    break
+            file_lines.insert(-l_num, '#include "halconf_community.h"\n\n')
 
         for v in values.keys():
             size = len(values[v]['data'])
