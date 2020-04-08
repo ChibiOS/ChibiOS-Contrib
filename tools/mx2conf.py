@@ -3,7 +3,7 @@
 __author__ = 'Fabien Poussin'
 __version__ = '0.1'
 
-from os.path import expanduser, sep, dirname, abspath
+from os.path import dirname, abspath
 from argparse import ArgumentParser
 import re
 

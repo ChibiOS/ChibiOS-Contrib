@@ -1,24 +1,14 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
+__author__ = 'Fabien Poussin'
+__version__ = '0.1'
 
 import os
 import argparse
 
 
-parser = argparse.ArgumentParser(description='Project upgrade script for ChibiOS')
-parser.add_argument('-p', '--path', dest='path', help='Where project files are located', required=True)
-parser.add_argument('-c', '--chibios', dest='chpath', help='Where ChibiOS is located', required=True)
-parser.add_argument('-v', '--verbose', dest='verbose', action='store_true')
-args = parser.parse_args()
+verbose = False
 
-verbose = args.verbose
-
-if not os.path.exists(args.chpath):
-    print('Invalid Chibios path', args.chpath)
-    exit(1)
-
-new_chconf = os.path.abspath('{}/os/rt/templates/chconf.h'.format(args.chpath))
-new_nilconf = os.path.abspath('{}/os/nil/templates/chconf.h'.format(args.chpath))
-new_halconf = os.path.abspath('{}/os/hal/templates/halconf.h'.format(args.chpath))
 
 def find(name, path):
     ret = []
@@ -44,7 +34,7 @@ def get_values(path):
         line_num = 0
         for l in f.readlines():
             if l.startswith('#define') or continuation != None:
-                if continuation == None:
+                if continuation is None:
                     words = l.split(' ')
                     if len(words) > 2:
                         defname = words[1]
@@ -56,7 +46,7 @@ def get_values(path):
                 else:
                     values[continuation]['data'].append(l)
                 # multi line define
-                if l.rstrip().endswith('\\') and continuation == None:
+                if l.rstrip().endswith('\\') and continuation is None:
                     continuation = defname
                 # one line define
                 elif not l.rstrip().endswith('\\'):
@@ -116,35 +106,54 @@ def write_changes(path, source, values):
     with open(path, 'w') as f:
         f.write(''.join(file_lines))
 
-new_chconf_values = get_values(new_chconf)
-new_nilconf_values = get_values(new_nilconf)
-new_halconf_values = get_values(new_halconf)
 
-chconf_files = find('chconf.h', args.path)
-halconf_files = find('halconf.h', args.path)
+if __name__ == '__main__':
 
-for c in chconf_files:
-    values = get_values(c)
-    if verbose:
-        print(c)
-        for k, v in values.items():
-            print(k, v)
-    if is_nil(c):
-        new_format = new_nilconf_values.copy()
+    parser = argparse.ArgumentParser(description='Project upgrade script for ChibiOS')
+    parser.add_argument('-p', '--path', dest='path', help='Where project files are located', required=True)
+    parser.add_argument('-c', '--chibios', dest='chpath', help='Where ChibiOS is located', required=True)
+    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true')
+    args = parser.parse_args()
+
+    verbose = args.verbose
+
+    if not os.path.exists(args.chpath):
+        print('Invalid Chibios path', args.chpath)
+        exit(1)
+
+    new_chconf = os.path.abspath('{}/os/rt/templates/chconf.h'.format(args.chpath))
+    new_nilconf = os.path.abspath('{}/os/nil/templates/chconf.h'.format(args.chpath))
+    new_halconf = os.path.abspath('{}/os/hal/templates/halconf.h'.format(args.chpath))
+
+    new_chconf_values = get_values(new_chconf)
+    new_nilconf_values = get_values(new_nilconf)
+    new_halconf_values = get_values(new_halconf)
+
+    chconf_files = find('chconf.h', args.path)
+    halconf_files = find('halconf.h', args.path)
+
+    for c in chconf_files:
+        values = get_values(c)
+        if verbose:
+            print(c)
+            for k, v in values.items():
+                print(k, v)
+        if is_nil(c):
+            new_format = new_nilconf_values.copy()
+            set_values(values, new_format)
+            write_changes(c, new_nilconf, new_format)
+        else:
+            new_format = new_chconf_values.copy()
+            set_values(values, new_format)
+            write_changes(c, new_chconf, new_format)
+
+    for h in halconf_files:
+        values = get_values(h)
+        if verbose:
+            print(h)
+            for k, v in values.items():
+                print(k, v)
+        new_format = new_halconf_values.copy()
+
         set_values(values, new_format)
-        write_changes(c, new_nilconf, new_format)
-    else:
-        new_format = new_chconf_values.copy()
-        set_values(values, new_format)
-        write_changes(c, new_chconf, new_format)
-
-for h in halconf_files:
-    values = get_values(h)
-    if verbose:
-        print(h)
-        for k, v in values.items():
-            print(k, v)
-    new_format = new_halconf_values.copy()
-
-    set_values(values, new_format)
-    write_changes(h, new_halconf, new_format)
+        write_changes(h, new_halconf, new_format)
