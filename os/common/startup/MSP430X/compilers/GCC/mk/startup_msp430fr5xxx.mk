@@ -9,3 +9,6 @@ $(CHIBIOS_CONTRIB)/os/common/ext/MSP430/inc
 
 STARTUPLD  = $(CHIBIOS_CONTRIB)/os/common/startup/MSP430X/compilers/GCC/ld
 
+ALLINC += $(STARTUPINC)
+ALLSRC += $(STARTUPSRC)
+ALLASMSRC += $(STARTUPASM)

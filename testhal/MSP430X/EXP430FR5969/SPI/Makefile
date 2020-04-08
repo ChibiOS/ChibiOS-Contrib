@@ -102,13 +102,15 @@ PROJECT = nil
 # Imported source files and paths
 CHIBIOS = ../../../../../ChibiOS
 CHIBIOS_CONTRIB = ../../../..
+# Licensing files.
+include $(CHIBIOS)/os/license/license.mk
 # Startup files.
 include $(CHIBIOS_CONTRIB)/os/common/startup/MSP430X/compilers/GCC/mk/startup_msp430fr5xxx.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/EXP430FR5969/board.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/MSP430X/platform.mk
-include $(CHIBIOS)/os/hal/osal/nil/osal.mk
+include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/nil/nil.mk
 include $(CHIBIOS_CONTRIB)/os/common/ports/MSP430X/compilers/GCC/mk/port.mk
@@ -118,27 +120,18 @@ include $(CHIBIOS_CONTRIB)/os/common/ports/MSP430X/compilers/GCC/mk/port.mk
 LDSCRIPT = $(STARTUPLD)/msp430fr5969.ld
 
 # C sources 
-CSRC = $(STARTUPSRC) \
-       $(KERNSRC) \
-       $(PORTSRC) \
-       $(OSALSRC) \
-       $(HALSRC) \
-       $(PLATFORMSRC) \
-       $(BOARDSRC) \
+CSRC = $(ALLCSRC) \
        $(TESTSRC) \
        msp_vectors.c \
        main.c
 
 # C++ sources 
-CPPSRC =
+CPPSRC = $(ALLCPPSRC)
 
 # List ASM source files here
-ASMSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
+ASMSRC = $(ALLASMSRC)
 
-INCDIR = $(CHIBIOS)/os/license \
-				 $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
-         $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
-         $(CHIBIOS)/os/various
+INCDIR = $(ALLINC) $(TESTINC)
 
 #
 # Project, sources and paths

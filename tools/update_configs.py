@@ -4,10 +4,9 @@ __author__ = 'Fabien Poussin'
 __version__ = '0.1'
 
 import os
-import re
 from argparse import ArgumentParser
-from traceback import print_exc
 from shutil import copy
+
 
 parser = ArgumentParser(description='Generate ChibiOS-Contrib config and Makefiles from ChibiOS')
 parser.add_argument('-s', '--src', default='../../ChibiOS', type=str, help="ChibiOS folder")
@@ -15,10 +14,9 @@ parser.add_argument('-d', '--dst', default='..', type=str, help='ChibiOS-Contrib
 
 FOLDERS = ['testhal']
 
+
 def makefile(lines):
-
     for l in range(len(lines)):
-
         if 'CHIBIOS =' in lines[l]:
             lines[l] = lines[l][:-1] + '/../ChibiOS\n'
             lines.insert(l + 1, 'CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib\n')
@@ -31,7 +29,6 @@ def makefile(lines):
 
 
 def halconf(lines):
-
     idx_end = lines.index('#endif /* HALCONF_H */\n')
     lines.insert(idx_end - 1, '\n')
     lines.insert(idx_end - 1, '#include "halconf_community.h"')
@@ -41,7 +38,6 @@ def halconf(lines):
 
 
 def mcuconf(lines):
-
     idx_end = lines.index('#endif /* MCUCONF_H */\n')
     lines.insert(idx_end - 1, '\n')
     lines.insert(idx_end - 1, '#include "mcuconf_community.h"')
