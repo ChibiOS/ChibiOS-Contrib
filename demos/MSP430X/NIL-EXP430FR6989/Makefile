@@ -108,12 +108,12 @@ include $(CHIBIOS_CONTRIB)/os/common/startup/MSP430X/compilers/GCC/mk/startup_ms
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/EXP430FR6989/board.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/MSP430X/platform.mk
-include $(CHIBIOS)/os/hal/osal/nil/osal.mk
+include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/nil/nil.mk
 include $(CHIBIOS_CONTRIB)/os/common/ports/MSP430X/compilers/GCC/mk/port.mk
 # Other files (optional).
-include $(CHIBIOS)/test/nil/test.mk
+include $(CHIBIOS)/test/nil/nil_test.mk
 
 # Define linker script file here
 LDSCRIPT = $(STARTUPLD)/msp430fr6989.ld
