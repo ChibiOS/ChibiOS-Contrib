@@ -431,7 +431,7 @@ void sd_lld_init(void) {
   SD1.uart.d_p =   ((uint8_t *)&(LPUART0->DATA)) + 0; /* D: DATA, byte 4 */
 #endif /* ! KINETIS_SERIAL0_IS_LPUART */
 #if KINETIS_SERIAL0_IS_UARTLP
-  SD1.uart.c4_p = UART0->c4_p;  /* fix up misconfigured C4 register */
+  SD1.uart.c4_p = &(UART0->C4);  /* fix up misconfigured C4 register */
   SD1.uart.uartlp_p = UART0;
   SD1.uart.uart_p = NULL;
 #elif KINETIS_SERIAL0_IS_LPUART
