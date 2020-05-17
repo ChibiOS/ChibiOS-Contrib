@@ -416,7 +416,7 @@ void sd_lld_init(void) {
 #if KINETIS_SERIAL_USE_UART0
   /* Driver initialization.*/
 #if ! KINETIS_SERIAL0_IS_LPUART
-  sd_lld_init_driver(&SD1, UART0);
+  sd_lld_init_driver(&SD1, (UART_TypeDef *)UART0);
 #else /* ! KINETIS_SERIAL0_IS_LPUART */
   /* little endian! */
   sdObjectInit(&SD1, NULL, notify);
@@ -431,6 +431,7 @@ void sd_lld_init(void) {
   SD1.uart.d_p =   ((uint8_t *)&(LPUART0->DATA)) + 0; /* D: DATA, byte 4 */
 #endif /* ! KINETIS_SERIAL0_IS_LPUART */
 #if KINETIS_SERIAL0_IS_UARTLP
+  SD1.uart.c4_p = &(UART0->C4);  /* fix up misconfigured C4 register */
   SD1.uart.uartlp_p = UART0;
   SD1.uart.uart_p = NULL;
 #elif KINETIS_SERIAL0_IS_LPUART
