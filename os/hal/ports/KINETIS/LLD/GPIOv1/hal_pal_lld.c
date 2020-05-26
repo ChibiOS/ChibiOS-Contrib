@@ -82,22 +82,24 @@ static inline PORT_TypeDef* _pal_lld_ext_port(ioportid_t port) {
 /*
  * Generic interrupt handler.
  */
-static inline void irq_handler(ioportid_t ioport,
-                               PORT_TypeDef * const port) {
-  unsigned pin;
-  uint32_t isfr = port->ISFR;
+static inline void irq_handler(PORT_TypeDef* const port,
+                               palevent_t* events) {
+    iopadid_t pad;
+    uint32_t pad_mask;
 
-  /* Clear all pending interrupts on this port. */
-  port->ISFR = 0xFFFFFFFF;
+    chSysLockFromISR();
+    uint32_t isfr = port->ISFR; /* Get pending interrupts on this port. */
+    port->ISFR = 0xFFFFFFFFU; /* Clear all pending interrupts on this port. */
+    chSysUnlockFromISR();
 
-  for (pin = 0; pin < PAL_IOPORTS_WIDTH; pin++) {
-    if (isfr & (1 << pin)) {
-        palevent_t* e = _pal_lld_get_pad_event(ioport, pin);
-        if (e && e->cb) {
-            e->cb(e->arg);
+    /* invoke callbacks for pending interrupts */
+    for (pad = 0, pad_mask = 1U;
+         pad < PAL_IOPORTS_WIDTH;
+         ++pad, ++events, pad_mask <<= 1) {
+        if (events->cb && (isfr & pad_mask)) {
+            events->cb(events->arg);
         }
     }
-  }
 }
 
 /**
@@ -108,9 +110,7 @@ static inline void irq_handler(ioportid_t ioport,
 #if defined(KINETIS_PORTA_IRQ_VECTOR)
 OSAL_IRQ_HANDLER(KINETIS_PORTA_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
-
-  irq_handler(IOPORT1, PORTA);
-
+  irq_handler(PORTA, _pal_events);
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* defined(KINETIS_PORTA_IRQ_VECTOR) */
@@ -120,12 +120,10 @@ OSAL_IRQ_HANDLER(KINETIS_PORTA_IRQ_VECTOR) {
 #if defined(KINETIS_PORTD_IRQ_VECTOR)
 OSAL_IRQ_HANDLER(KINETIS_PORTD_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
-
-  irq_handler(IOPORT2, PORTB);
-  irq_handler(IOPORT3, PORTC);
-  irq_handler(IOPORT4, PORTD);
-  irq_handler(IOPORT5, PORTE);
-
+  irq_handler(PORTB, _pal_events + PAL_IOPORTS_WIDTH);
+  irq_handler(PORTC, _pal_events + PAL_IOPORTS_WIDTH * 2);
+  irq_handler(PORTD, _pal_events + PAL_IOPORTS_WIDTH * 3);
+  irq_handler(PORTE, _pal_events + PAL_IOPORTS_WIDTH * 4);
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* defined(KINETIS_PORTD_IRQ_VECTOR) */
@@ -135,10 +133,8 @@ OSAL_IRQ_HANDLER(KINETIS_PORTD_IRQ_VECTOR) {
 #if defined(KINETIS_PORTD_IRQ_VECTOR)
 OSAL_IRQ_HANDLER(KINETIS_PORTD_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
-
-  irq_handler(IOPORT3, PORTC);
-  irq_handler(IOPORT4, PORTD);
-
+  irq_handler(PORTC, _pal_events + PAL_IOPORTS_WIDTH * 2);
+  irq_handler(PORTD, _pal_events + PAL_IOPORTS_WIDTH * 3);
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* defined(KINETIS_PORTD_IRQ_VECTOR) */
@@ -154,9 +150,7 @@ OSAL_IRQ_HANDLER(KINETIS_PORTD_IRQ_VECTOR) {
 #if defined(KINETIS_PORTB_IRQ_VECTOR)
 OSAL_IRQ_HANDLER(KINETIS_PORTB_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
-
-  irq_handler(IOPORT2, PORTB);
-
+  irq_handler(PORTB, _pal_events + PAL_IOPORTS_WIDTH);
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* defined(KINETIS_EXT_PORTB_IRQ_VECTOR */
@@ -169,9 +163,7 @@ OSAL_IRQ_HANDLER(KINETIS_PORTB_IRQ_VECTOR) {
 #if defined(KINETIS_PORTC_IRQ_VECTOR)
 OSAL_IRQ_HANDLER(KINETIS_PORTC_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
-
-  irq_handler(IOPORT3, PORTC);
-
+  irq_handler(PORTC, _pal_events + PAL_IOPORTS_WIDTH * 2);
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* defined(KINETIS_PORTC_IRQ_VECTOR) */
@@ -184,9 +176,7 @@ OSAL_IRQ_HANDLER(KINETIS_PORTC_IRQ_VECTOR) {
 #if defined(KINETIS_PORTD_IRQ_VECTOR)
 OSAL_IRQ_HANDLER(KINETIS_PORTD_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
-
-  irq_handler(IOPORT4, PORTD);
-
+  irq_handler(PORTD, _pal_events + PAL_IOPORTS_WIDTH * 3);
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* defined(KINETIS_PORTD_IRQ_VECTOR) */
@@ -199,9 +189,7 @@ OSAL_IRQ_HANDLER(KINETIS_PORTD_IRQ_VECTOR) {
 #if defined(KINETIS_PORTE_IRQ_VECTOR)
 OSAL_IRQ_HANDLER(KINETIS_PORTE_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
-
-  irq_handler(IOPORT5, PORTE);
-
+  irq_handler(PORTE, _pal_events + PAL_IOPORTS_WIDTH * 4);
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* defined(KINETIS_PORTE_IRQ_VECTOR) */
