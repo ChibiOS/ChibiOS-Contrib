@@ -52,7 +52,7 @@
 
 #if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
 palevent_t _pal_events[TOTAL_PORTS * PADS_PER_PORT];
-#endif
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
 
 /*===========================================================================*/
 /* Driver local functions.                                                   */
@@ -79,6 +79,7 @@ static inline PORT_TypeDef* _pal_lld_ext_port(ioportid_t port) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
 /*
  * Generic interrupt handler.
  */
@@ -195,6 +196,8 @@ OSAL_IRQ_HANDLER(KINETIS_PORTE_IRQ_VECTOR) {
 #endif /* defined(KINETIS_PORTE_IRQ_VECTOR) */
 
 #endif /* !KINETIS_EXT_HAS_COMMON_CD_IRQ */
+
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -418,15 +421,15 @@ palevent_t* _pal_lld_get_pad_event(ioportid_t port,
                                    iopadid_t pad) {
     switch ((uint32_t)port) {
         case GPIOA_BASE:
-            return &_pal_events[pad];
+            return _pal_events + pad;
         case GPIOB_BASE:
-            return &_pal_events[PADS_PER_PORT + pad];
+            return _pal_events + PADS_PER_PORT + pad;
         case GPIOC_BASE:
-            return &_pal_events[PADS_PER_PORT * 2 + pad];
+            return _pal_events + PADS_PER_PORT * 2 + pad;
         case GPIOD_BASE:
-            return &_pal_events[PADS_PER_PORT * 3 + pad];
+            return _pal_events + PADS_PER_PORT * 3 + pad;
         case GPIOE_BASE:
-            return &_pal_events[PADS_PER_PORT * 4 + pad];
+            return _pal_events + PADS_PER_PORT * 4 + pad;
         default:
             return NULL;
     }

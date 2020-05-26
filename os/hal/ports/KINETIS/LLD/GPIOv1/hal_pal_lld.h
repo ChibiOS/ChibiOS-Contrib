@@ -502,7 +502,7 @@ typedef struct {
 extern const PALConfig pal_default_config;
 #if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
 extern palevent_t _pal_events[TOTAL_PORTS * PADS_PER_PORT];
-#endif
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
 #endif
 
 #ifdef __cplusplus
@@ -520,6 +520,7 @@ extern "C" {
     void _pal_lld_writepad(ioportid_t port,
                            uint8_t pad,
                            uint8_t bit);
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
     palevent_t* _pal_lld_get_pad_event(ioportid_t port,
                                        iopadid_t pad);
     void _pal_lld_enablepadevent(ioportid_t port,
@@ -529,6 +530,7 @@ extern "C" {
                                   iopadid_t pad);
     bool _pal_lld_ispadeventenabled(ioportid_t port,
                                     iopadid_t pad);
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
 #ifdef __cplusplus
 }
 #endif
