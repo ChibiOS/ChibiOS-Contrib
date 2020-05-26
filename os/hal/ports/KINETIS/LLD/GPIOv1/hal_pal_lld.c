@@ -31,6 +31,17 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+#define PCR_IRQC_DISABLED           0x0
+#define PCR_IRQC_DMA_RISING_EDGE    0x1
+#define PCR_IRQC_DMA_FALLING_EDGE   0x2
+#define PCR_IRQC_DMA_EITHER_EDGE    0x3
+
+#define PCR_IRQC_LOGIC_ZERO         0x8
+#define PCR_IRQC_RISING_EDGE        0x9
+#define PCR_IRQC_FALLING_EDGE       0xA
+#define PCR_IRQC_EITHER_EDGE        0xB
+#define PCR_IRQC_LOGIC_ONE          0xC
+
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -39,53 +50,235 @@
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
+palevent_t _pal_events[TOTAL_PORTS * PADS_PER_PORT];
+#endif
+
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-/**
- * @brief Reads a logical state from an I/O pad.
- * @note The @ref PAL provides a default software implementation of this
- * functionality, implement this function if can optimize it by using
- * special hardware functionalities or special coding.
- *
- * @param[in] port port identifier
- * @param[in] pad pad number within the port
- * @return The logical state.
- * @retval PAL_LOW low logical state.
- * @retval PAL_HIGH high logical state.
- *
- * @notapi
- */
-uint8_t _pal_lld_readpad(ioportid_t port,
-                         uint8_t pad) {
+static inline PORT_TypeDef* _pal_lld_ext_port(ioportid_t port) {
+    switch ((uint32_t)port) {
+        case GPIOA_BASE:
+            return PORTA;
+        case GPIOB_BASE:
+            return PORTB;
+        case GPIOC_BASE:
+            return PORTC;
+        case GPIOD_BASE:
+            return PORTD;
+        case GPIOE_BASE:
+            return PORTE;
+        default:
+            return NULL;
+    }
+}
 
-  return (port->PDIR & ((uint32_t) 1 << pad)) ? PAL_HIGH : PAL_LOW;
+/*===========================================================================*/
+/* Driver interrupt handlers.                                                */
+/*===========================================================================*/
+
+/*
+ * Generic interrupt handler.
+ */
+static inline void irq_handler(ioportid_t ioport,
+                               PORT_TypeDef * const port) {
+  unsigned pin;
+  uint32_t isfr = port->ISFR;
+
+  /* Clear all pending interrupts on this port. */
+  port->ISFR = 0xFFFFFFFF;
+
+  for (pin = 0; pin < PAL_IOPORTS_WIDTH; pin++) {
+    if (isfr & (1 << pin)) {
+        palevent_t* e = _pal_lld_get_pad_event(ioport, pin);
+        if (e && e->cb) {
+            e->cb(e->arg);
+        }
+    }
+  }
 }
 
 /**
- * @brief Writes a logical state on an output pad.
- * @note This function is not meant to be invoked directly by the
- * application code.
- * @note The @ref PAL provides a default software implementation of this
- * functionality, implement this function if can optimize it by using
- * special hardware functionalities or special coding.
+ * @brief   PORTA interrupt handler.
  *
- * @param[in] port port identifier
- * @param[in] pad pad number within the port
- * @param[in] bit logical value, the value must be @p PAL_LOW or
- * @p PAL_HIGH
+ * @isr
+ */
+#if defined(KINETIS_PORTA_IRQ_VECTOR)
+OSAL_IRQ_HANDLER(KINETIS_PORTA_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+
+  irq_handler(IOPORT1, PORTA);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* defined(KINETIS_PORTA_IRQ_VECTOR) */
+
+#if KINETIS_EXT_HAS_COMMON_BCDE_IRQ
+
+#if defined(KINETIS_PORTD_IRQ_VECTOR)
+OSAL_IRQ_HANDLER(KINETIS_PORTD_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+
+  irq_handler(IOPORT2, PORTB);
+  irq_handler(IOPORT3, PORTC);
+  irq_handler(IOPORT4, PORTD);
+  irq_handler(IOPORT5, PORTE);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* defined(KINETIS_PORTD_IRQ_VECTOR) */
+
+#elif KINETIS_EXT_HAS_COMMON_CD_IRQ /* KINETIS_EXT_HAS_COMMON_BCDE_IRQ */
+
+#if defined(KINETIS_PORTD_IRQ_VECTOR)
+OSAL_IRQ_HANDLER(KINETIS_PORTD_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+
+  irq_handler(IOPORT3, PORTC);
+  irq_handler(IOPORT4, PORTD);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* defined(KINETIS_PORTD_IRQ_VECTOR) */
+
+
+#else /* KINETIS_EXT_HAS_COMMON_CD_IRQ */
+
+/**
+ * @brief   PORTB interrupt handler.
+ *
+ * @isr
+ */
+#if defined(KINETIS_PORTB_IRQ_VECTOR)
+OSAL_IRQ_HANDLER(KINETIS_PORTB_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+
+  irq_handler(IOPORT2, PORTB);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* defined(KINETIS_EXT_PORTB_IRQ_VECTOR */
+
+/**
+ * @brief   PORTC interrupt handler.
+ *
+ * @isr
+ */
+#if defined(KINETIS_PORTC_IRQ_VECTOR)
+OSAL_IRQ_HANDLER(KINETIS_PORTC_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+
+  irq_handler(IOPORT3, PORTC);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* defined(KINETIS_PORTC_IRQ_VECTOR) */
+
+/**
+ * @brief   PORTD interrupt handler.
+ *
+ * @isr
+ */
+#if defined(KINETIS_PORTD_IRQ_VECTOR)
+OSAL_IRQ_HANDLER(KINETIS_PORTD_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+
+  irq_handler(IOPORT4, PORTD);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* defined(KINETIS_PORTD_IRQ_VECTOR) */
+
+/**
+ * @brief   PORTE interrupt handler.
+ *
+ * @isr
+ */
+#if defined(KINETIS_PORTE_IRQ_VECTOR)
+OSAL_IRQ_HANDLER(KINETIS_PORTE_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+
+  irq_handler(IOPORT5, PORTE);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* defined(KINETIS_PORTE_IRQ_VECTOR) */
+
+#endif /* !KINETIS_EXT_HAS_COMMON_CD_IRQ */
+
+/*===========================================================================*/
+/* Driver exported functions.                                                */
+/*===========================================================================*/
+
+/**
+ * @brief   Kinetis I/O ports configuration.
+ * @details Ports A-E clocks enabled.
+ *
+ * @param[in] config    the Kinetis ports configuration
  *
  * @notapi
  */
-void _pal_lld_writepad(ioportid_t port,
-                       uint8_t pad,
-                       uint8_t bit) {
+void _pal_lld_init(const PALConfig *config) {
+  int i, j;
 
-  if (bit == PAL_HIGH)
-    port->PDOR |= ((uint32_t) 1 << pad);
-  else
-    port->PDOR &= ~((uint32_t) 1 << pad);
+  /* Enable clocking on all Ports */
+  SIM->SCGC5 |= SIM_SCGC5_PORTA |
+                SIM_SCGC5_PORTB |
+                SIM_SCGC5_PORTC |
+                SIM_SCGC5_PORTD |
+                SIM_SCGC5_PORTE;
+
+  /* Initial PORT and GPIO setup */
+  for (i = 0; i < TOTAL_PORTS; i++) {
+    for (j = 0; j < PADS_PER_PORT; j++) {
+      pal_lld_setpadmode(config->ports[i].port,
+                         j,
+                         config->ports[i].pads[j]);
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
+      _pal_init_event(PADS_PER_PORT * i + j);
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
+    }
+  }
+
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
+  nvicEnableVector(PINA_IRQn, KINETIS_EXT_PORTA_IRQ_PRIORITY);
+#if KINETIS_EXT_HAS_COMMON_BCDE_IRQ
+  nvicEnableVector(PINBCDE_IRQn, KINETIS_EXT_PORTD_IRQ_PRIORITY);
+#elif KINETIS_EXT_HAS_COMMON_CD_IRQ /* KINETIS_EXT_HAS_COMMON_BCDE_IRQ */
+  nvicEnableVector(PINCD_IRQn, KINETIS_EXT_PORTD_IRQ_PRIORITY);
+#else /* KINETIS_EXT_HAS_COMMON_CD_IRQ */
+  nvicEnableVector(PINB_IRQn, KINETIS_EXT_PORTB_IRQ_PRIORITY);
+  nvicEnableVector(PINC_IRQn, KINETIS_EXT_PORTC_IRQ_PRIORITY);
+  nvicEnableVector(PIND_IRQn, KINETIS_EXT_PORTD_IRQ_PRIORITY);
+  nvicEnableVector(PINE_IRQn, KINETIS_EXT_PORTE_IRQ_PRIORITY);
+#endif /* KINETIS_EXT_HAS_COMMON_BCDE_IRQ */
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
+}
+
+/**
+ * @brief   Pads mode setup.
+ * @details This function programs a pads group belonging to the same port
+ *          with the specified mode.
+ *
+ * @param[in] port      the port identifier
+ * @param[in] mask      the group mask
+ * @param[in] mode      the mode
+ *
+ * @notapi
+ */
+void _pal_lld_setgroupmode(ioportid_t port,
+                           ioportmask_t mask,
+                           iomode_t mode) {
+
+  int i;
+
+  (void)mask;
+
+  for (i = 0; i < PADS_PER_PORT; i++) {
+    pal_lld_setpadmode(port, i, mode);
+  }
 }
 
 /**
@@ -179,67 +372,138 @@ void _pal_lld_setpadmode(ioportid_t port,
   }
 }
 
-/*===========================================================================*/
-/* Driver interrupt handlers.                                                */
-/*===========================================================================*/
-
-/*===========================================================================*/
-/* Driver exported functions.                                                */
-/*===========================================================================*/
-
 /**
- * @brief   Kinetis I/O ports configuration.
- * @details Ports A-E clocks enabled.
+ * @brief Reads a logical state from an I/O pad.
+ * @note The @ref PAL provides a default software implementation of this
+ * functionality, implement this function if can optimize it by using
+ * special hardware functionalities or special coding.
  *
- * @param[in] config    the Kinetis ports configuration
+ * @param[in] port port identifier
+ * @param[in] pad pad number within the port
+ * @return The logical state.
+ * @retval PAL_LOW low logical state.
+ * @retval PAL_HIGH high logical state.
  *
  * @notapi
  */
-void _pal_lld_init(const PALConfig *config) {
+uint8_t _pal_lld_readpad(ioportid_t port,
+                         uint8_t pad) {
 
-  int i, j;
+  return (port->PDIR & ((uint32_t) 1 << pad)) ? PAL_HIGH : PAL_LOW;
+}
 
-  /* Enable clocking on all Ports */
-  SIM->SCGC5 |= SIM_SCGC5_PORTA |
-                SIM_SCGC5_PORTB |
-                SIM_SCGC5_PORTC |
-                SIM_SCGC5_PORTD |
-                SIM_SCGC5_PORTE;
+/**
+ * @brief Writes a logical state on an output pad.
+ * @note This function is not meant to be invoked directly by the
+ * application code.
+ * @note The @ref PAL provides a default software implementation of this
+ * functionality, implement this function if can optimize it by using
+ * special hardware functionalities or special coding.
+ *
+ * @param[in] port port identifier
+ * @param[in] pad pad number within the port
+ * @param[in] bit logical value, the value must be @p PAL_LOW or
+ * @p PAL_HIGH
+ *
+ * @notapi
+ */
+void _pal_lld_writepad(ioportid_t port,
+                       uint8_t pad,
+                       uint8_t bit) {
 
-  /* Initial PORT and GPIO setup */
-  for (i = 0; i < TOTAL_PORTS; i++) {
-    for (j = 0; j < PADS_PER_PORT; j++) {
-      pal_lld_setpadmode(config->ports[i].port,
-                         j,
-                         config->ports[i].pads[j]);
+  if (bit == PAL_HIGH)
+    port->PDOR |= ((uint32_t) 1 << pad);
+  else
+    port->PDOR &= ~((uint32_t) 1 << pad);
+}
+
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
+/**
+ * @brief   Returns a PAL event structure associated to a pad.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ *
+ * @notapi
+ */
+palevent_t* _pal_lld_get_pad_event(ioportid_t port,
+                                   iopadid_t pad) {
+    switch ((uint32_t)port) {
+        case GPIOA_BASE:
+            return &_pal_events[pad];
+        case GPIOB_BASE:
+            return &_pal_events[PADS_PER_PORT + pad];
+        case GPIOC_BASE:
+            return &_pal_events[PADS_PER_PORT * 2 + pad];
+        case GPIOD_BASE:
+            return &_pal_events[PADS_PER_PORT * 3 + pad];
+        case GPIOE_BASE:
+            return &_pal_events[PADS_PER_PORT * 4 + pad];
+        default:
+            return NULL;
     }
-  }
 }
 
 /**
- * @brief   Pads mode setup.
- * @details This function programs a pads group belonging to the same port
- *          with the specified mode.
+ * @brief   Enables a pad event.
  *
- * @param[in] port      the port identifier
- * @param[in] mask      the group mask
- * @param[in] mode      the mode
+ * @param[in] port   port containing pad whose event is to be enabled
+ * @param[in] pad    pad whose event is to be enabled
+ * @param[in] mode   mode of the event
  *
  * @notapi
  */
-void _pal_lld_setgroupmode(ioportid_t port,
-                           ioportmask_t mask,
-                           iomode_t mode) {
-
-  int i;
-
-  (void)mask;
-
-  for (i = 0; i < PADS_PER_PORT; i++) {
-    pal_lld_setpadmode(port, i, mode);
-  }
+void _pal_lld_enablepadevent(ioportid_t ioport,
+                             iopadid_t pad,
+                             iomode_t mode) {
+    PORT_TypeDef *port = _pal_lld_ext_port(ioport);
+    iomode_t pcr_mode;
+    switch(mode) {
+        case PAL_EVENT_MODE_RISING_EDGE:
+            pcr_mode = PCR_IRQC_RISING_EDGE;
+            break;
+        case PAL_EVENT_MODE_FALLING_EDGE:
+            pcr_mode = PCR_IRQC_FALLING_EDGE;
+            break;
+        case PAL_EVENT_MODE_BOTH_EDGES:
+            pcr_mode = PCR_IRQC_EITHER_EDGE;
+            break;
+        case PAL_EVENT_MODE_DISABLED:
+            pcr_mode = PCR_IRQC_DISABLED;
+            break;
+        default:
+            return;
+    }
+    port->PCR[pad] |= PORTx_PCRn_IRQC(pcr_mode);
 }
 
+/**
+ * @brief   Disables a pad event
+ *
+ * @param[in] ioport    port containing pad whose event is to be disabled
+ * @param[in] pad       pad whose event is to be disabled
+ *
+ * @notapi
+ */
+void _pal_lld_disablepadevent(ioportid_t ioport, iopadid_t pad) {
+    _pal_lld_enablepadevent(ioport, pad, PAL_EVENT_MODE_DISABLED);
+}
+
+/**
+ * @brief   Returns whether a pad event is enabled
+ *
+ * @param[in] ioport   port containing the pad
+ * @param[in] pad      pad whose event is to be queried
+ *
+ * @notapi
+ */
+bool _pal_lld_ispadeventenabled(ioportid_t ioport, iopadid_t pad) {
+    PORT_TypeDef *port = _pal_lld_ext_port(ioport);
+    uint32_t pcr = port->PCR[pad];
+    return ((pcr & PORTx_PCRn_IRQC_MASK) >> PORTx_PCRn_IRQC_SHIFT) !=
+        PCR_IRQC_DISABLED;
+}
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
 #endif /* HAL_USE_PAL */
 
 /** @} */
