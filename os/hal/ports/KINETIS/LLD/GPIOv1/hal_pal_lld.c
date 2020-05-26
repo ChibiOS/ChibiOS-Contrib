@@ -31,6 +31,7 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
 #define PCR_IRQC_DISABLED           0x0
 #define PCR_IRQC_DMA_RISING_EDGE    0x1
 #define PCR_IRQC_DMA_FALLING_EDGE   0x2
@@ -41,6 +42,7 @@
 #define PCR_IRQC_FALLING_EDGE       0xA
 #define PCR_IRQC_EITHER_EDGE        0xB
 #define PCR_IRQC_LOGIC_ONE          0xC
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -58,6 +60,7 @@ palevent_t _pal_events[TOTAL_PORTS * PADS_PER_PORT];
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
 static inline PORT_TypeDef* _pal_lld_ext_port(ioportid_t port) {
     switch ((uint32_t)port) {
         case GPIOA_BASE:
@@ -74,6 +77,7 @@ static inline PORT_TypeDef* _pal_lld_ext_port(ioportid_t port) {
             return NULL;
     }
 }
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
 
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
@@ -262,9 +266,7 @@ void _pal_lld_init(const PALConfig *config) {
 void _pal_lld_setgroupmode(ioportid_t port,
                            ioportmask_t mask,
                            iomode_t mode) {
-
   int i;
-
   (void)mask;
 
   for (i = 0; i < PADS_PER_PORT; i++) {
@@ -289,7 +291,6 @@ void _pal_lld_setgroupmode(ioportid_t port,
 void _pal_lld_setpadmode(ioportid_t port,
                          uint8_t pad,
                          iomode_t mode) {
-
   PORT_TypeDef *portcfg = NULL;
 
   osalDbgAssert(pad < PADS_PER_PORT, "pal_lld_setpadmode() #1, invalid pad");
@@ -379,7 +380,6 @@ void _pal_lld_setpadmode(ioportid_t port,
  */
 uint8_t _pal_lld_readpad(ioportid_t port,
                          uint8_t pad) {
-
   return (port->PDIR & ((uint32_t) 1 << pad)) ? PAL_HIGH : PAL_LOW;
 }
 
@@ -401,7 +401,6 @@ uint8_t _pal_lld_readpad(ioportid_t port,
 void _pal_lld_writepad(ioportid_t port,
                        uint8_t pad,
                        uint8_t bit) {
-
   if (bit == PAL_HIGH)
     port->PDOR |= ((uint32_t) 1 << pad);
   else
