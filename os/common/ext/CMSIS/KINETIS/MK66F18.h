@@ -17096,7 +17096,7 @@ typedef struct {
 /** Peripheral UART4 base address */
 #define UART4_BASE                               (0x400EA000u)
 /** Peripheral UART4 base pointer */
-#define UART4                                    ((UARTTypeDef *)UART4_BASE)
+#define UART4                                    ((UART_TypeDef *)UART4_BASE)
 /** Array initializer of UART peripheral base addresses */
 #define UARTx_BASE_ADDRS                          { UART0_BASE, UART1_BASE, UART2_BASE, UART3_BASE, UART4_BASE }
 /** Array initializer of UART peripheral base pointers */
