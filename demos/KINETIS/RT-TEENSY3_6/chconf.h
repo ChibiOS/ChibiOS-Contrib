@@ -80,7 +80,11 @@
  *          this value.
  */
 #if !defined(CH_CFG_ST_TIMEDELTA)
-#define CH_CFG_ST_TIMEDELTA                 2
+
+// TODO: tickless mode is currently broken: e.g. chVTGetSystemTimeX() will
+// always return 0, making all timers hang.
+
+#define CH_CFG_ST_TIMEDELTA                 0
 #endif
 
 /** @} */

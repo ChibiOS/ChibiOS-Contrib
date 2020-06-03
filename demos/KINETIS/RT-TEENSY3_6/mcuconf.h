@@ -17,7 +17,7 @@
 #ifndef _MCUCONF_H_
 #define _MCUCONF_H_
 
-#define K20x_MCUCONF
+#define MK66FX1M0_MCUCONF
 
 /*
  * HAL driver system settings.
@@ -25,8 +25,21 @@
 
 /* Select the MCU clocking mode below by enabling the appropriate block. */
 
-/* PEE mode - 48MHz system clock driven by external crystal. */
+/* PEE mode - 180 MHz system clock driving by 16 MHz xtal */
 #if 1
+#define KINETIS_MCG_MODE KINETIS_MCG_MODE_PEE
+#define KINETIS_PLLCLK_FREQUENCY 180000000UL
+#define KINETIS_SYSCLK_FREQUENCY KINETIS_PLLCLK_FREQUENCY
+#define KINETIS_BUSCLK_FREQUENCY 60000000UL
+#define KINETIS_FLASHCLK_FREQUENCY 28000000UL
+
+#define KINETIS_CLKDIV1_OUTDIV1 1  // -> 0
+#define KINETIS_CLKDIV1_OUTDIV2 3  // -> 2
+#define KINETIS_CLKDIV1_OUTDIV4 7  // -> 6
+#endif
+
+/* PEE mode - 48MHz system clock driven by external crystal. */
+#if 0
 #define KINETIS_MCG_MODE            KINETIS_MCG_MODE_PEE
 #define KINETIS_PLLCLK_FREQUENCY    96000000UL
 #define KINETIS_SYSCLK_FREQUENCY    48000000UL
