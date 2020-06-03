@@ -157,9 +157,9 @@ void MK66F18_clock_init(void) {
    */
   /* Enable OSC, low power mode */
   if (KINETIS_XTAL_FREQUENCY > 8000000UL)
-    MCG->C2 = MCG_C2_LOCRE0 | MCG_C2_EREFS0 | MCG_C2_RANGE0(2);
+    MCG->C2 = MCG_C2_LOCRE0 | MCG_C2_EREFS0 | MCG_C2_RANGE0_SET(2);
   else
-    MCG->C2 = MCG_C2_LOCRE0 | MCG_C2_EREFS0 | MCG_C2_RANGE0(1);
+    MCG->C2 = MCG_C2_LOCRE0 | MCG_C2_EREFS0 | MCG_C2_RANGE0_SET(1);
 
   frdiv = 7;
   ratio = KINETIS_XTAL_FREQUENCY / 31250UL;
@@ -171,7 +171,7 @@ void MK66F18_clock_init(void) {
   }
 
   /* Switch to crystal as clock source, FLL input of 31.25 KHz */
-  MCG->C1 = MCG_C1_CLKS(2) | MCG_C1_FRDIV(frdiv);
+  MCG->C1 = MCG_C1_CLKS_SET(2) | MCG_C1_FRDIV_SET(frdiv);
 
   /* Wait for crystal oscillator to begin */
   while (!(MCG->S & MCG_S_OSCINIT0));
@@ -180,7 +180,7 @@ void MK66F18_clock_init(void) {
   while (MCG->S & MCG_S_IREFST);
 
   /* Wait for the MCGOUTCLK to use the oscillator */
-  while ((MCG->S & MCG_S_CLKST_MASK) != MCG_S_CLKST(2));
+  while ((MCG->S & MCG_S_CLKST_MASK) != MCG_S_CLKST_SET(2));
 
   /*
    * Now in FBE mode
@@ -190,7 +190,7 @@ void MK66F18_clock_init(void) {
    * Config PLL input for 2 MHz
    * TODO: Make sure KINETIS_XTAL_FREQUENCY >= 2Mhz && <= 50Mhz
    */
-  MCG->C5 = MCG_C5_PRDIV0((KINETIS_XTAL_FREQUENCY/KINETIS_PLLIN_FREQUENCY) - 1);
+  MCG->C5 = MCG_C5_PRDIV0_SET((KINETIS_XTAL_FREQUENCY/KINETIS_PLLIN_FREQUENCY) - 1);
 
   /*
    * Config PLL output to match KINETIS_SYSCLK_FREQUENCY
@@ -201,13 +201,13 @@ void MK66F18_clock_init(void) {
     if(i == (KINETIS_PLLCLK_FREQUENCY/KINETIS_PLLIN_FREQUENCY))
     {
       /* Config PLL to match KINETIS_PLLCLK_FREQUENCY */
-      MCG->C6 = MCG_C6_PLLS | MCG_C6_VDIV0(i-24);
+      MCG->C6 = MCG_C6_PLLS | MCG_C6_VDIV0_SET(i-24);
       break;
     }
   }
 
   if(i>=56)  /* Config PLL for 96 MHz output as default setting */
-    MCG->C6 = MCG_C6_PLLS | MCG_C6_VDIV0(0);
+    MCG->C6 = MCG_C6_PLLS | MCG_C6_VDIV0_SET(0);
 
   /* Wait for PLL to start using crystal as its input, and to lock */
   while ((MCG->S & (MCG_S_PLLST|MCG_S_LOCK0))!=(MCG_S_PLLST|MCG_S_LOCK0));
@@ -225,7 +225,7 @@ void MK66F18_clock_init(void) {
   SIM->SOPT2 = SIM_SOPT2_PLLFLLSEL;
 
   /* Switch to PLL as clock source */
-  MCG->C1 = MCG_C1_CLKS(0);
+  MCG->C1 = MCG_C1_CLKS_SET(0);
 
   /* Wait for PLL clock to be used */
   while ((MCG->S & MCG_S_CLKST_MASK) != MCG_S_CLKST_PLL);
