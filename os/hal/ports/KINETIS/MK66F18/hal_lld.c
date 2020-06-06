@@ -12,6 +12,34 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+    Portions Copyright (C) 2017 PJRC.COM, LLC.
+
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+    
+    1. The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+    
+    2. If the Software is incorporated into a build system that allows
+    selection among a list of target devices, then similar target
+    devices manufactured by PJRC.COM must be included in the list of
+    target devices and selectable in the same manner.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+    BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+    ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
 */
 
 /**
@@ -112,6 +140,12 @@ void MK66F18_clock_init(void) {
                 SIM_SCGC5_PORTD |
                 SIM_SCGC5_PORTE;
 
+  /* Ported from the Teensyduino Core Library at
+     https://github.com/PaulStoffregen/cores/blob/master/teensy3/mk20dx128.c
+   */    
+  /* Allow the MCU to enter High Speed Run mode (HSRUN) */
+  SMC->PMPROT = SMC_PMPROT_AHSRUN_SET(1) | SMC_PMPROT_AVLP_SET(1) | SMC_PMPROT_ALLS_SET(1) | SMC_PMPROT_AVLLS_SET(1);
+
 #if KINETIS_MCG_MODE == KINETIS_MCG_MODE_FEI
   /* This is the default mode at reset. */
 
@@ -157,9 +191,9 @@ void MK66F18_clock_init(void) {
    */
   /* Enable OSC, low power mode */
   if (KINETIS_XTAL_FREQUENCY > 8000000UL)
-    MCG->C2 = MCG_C2_LOCRE0 | MCG_C2_EREFS0 | MCG_C2_RANGE0(2);
+    MCG->C2 = MCG_C2_LOCRE0 | MCG_C2_EREFS0 | MCG_C2_RANGE0_SET(2);
   else
-    MCG->C2 = MCG_C2_LOCRE0 | MCG_C2_EREFS0 | MCG_C2_RANGE0(1);
+    MCG->C2 = MCG_C2_LOCRE0 | MCG_C2_EREFS0 | MCG_C2_RANGE0_SET(1);
 
   frdiv = 7;
   ratio = KINETIS_XTAL_FREQUENCY / 31250UL;
@@ -171,7 +205,7 @@ void MK66F18_clock_init(void) {
   }
 
   /* Switch to crystal as clock source, FLL input of 31.25 KHz */
-  MCG->C1 = MCG_C1_CLKS(2) | MCG_C1_FRDIV(frdiv);
+  MCG->C1 = MCG_C1_CLKS_SET(2) | MCG_C1_FRDIV_SET(frdiv);
 
   /* Wait for crystal oscillator to begin */
   while (!(MCG->S & MCG_S_OSCINIT0));
@@ -180,7 +214,63 @@ void MK66F18_clock_init(void) {
   while (MCG->S & MCG_S_IREFST);
 
   /* Wait for the MCGOUTCLK to use the oscillator */
-  while ((MCG->S & MCG_S_CLKST_MASK) != MCG_S_CLKST(2));
+  while ((MCG->S & MCG_S_CLKST_MASK) != MCG_S_CLKST_SET(2));
+
+  /* Ported from the Teensyduino Core Library at
+     https://github.com/PaulStoffregen/cores/blob/master/teensy3/mk20dx128.c
+   */    
+#define F_CPU KINETIS_SYSCLK_FREQUENCY
+#define MCG_C5 MCG->C5
+#undef MCG_C5_PRDIV0
+#define MCG_C5_PRDIV0 MCG_C5_PRDIV0_SET
+#define MCG_C6 MCG->C6
+#undef MCG_C6_VDIV0
+#define MCG_C6_VDIV0 MCG_C6_VDIV0_SET
+#if 1 /* PJRC_HSRUN */
+  // if we need faster than the crystal, turn on the PLL
+
+  SMC->PMCTRL = SMC_PMCTRL_RUNM_SET(3); // enter HSRUN mode
+  #define SMC_PMSTAT_HSRUN		((uint8_t)0x80)
+  while (SMC->PMSTAT != SMC_PMSTAT_HSRUN)
+    ; // wait for HSRUN
+
+                #if F_CPU == 256000000
+        //See table in 27.4.6 MCG Control 6 Register (MCG_C6)
+        //16 -> Multiply factor 32. 32*8MHz =256MHz
+        MCG_C5 = MCG_C5_PRDIV0(0);
+        MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(16);
+    #elif F_CPU == 240000000
+        MCG_C5 = MCG_C5_PRDIV0(0);
+        MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(14);
+    #elif F_CPU == 216000000
+        MCG_C5 = MCG_C5_PRDIV0(0);
+        MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(11);
+    #elif F_CPU == 192000000
+        MCG_C5 = MCG_C5_PRDIV0(0);
+        MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(8);
+    #elif F_CPU == 180000000
+        MCG_C5 = MCG_C5_PRDIV0(1);
+        MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(29);
+    #elif F_CPU == 168000000
+        MCG_C5 = MCG_C5_PRDIV0(0);
+        MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(5);
+    #elif F_CPU == 144000000
+        MCG_C5 = MCG_C5_PRDIV0(0);
+        MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(2);
+    #elif F_CPU == 120000000
+        MCG_C5 = MCG_C5_PRDIV0(1);
+        MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(14);
+    #elif F_CPU == 96000000 || F_CPU == 48000000 || F_CPU == 24000000
+        MCG_C5 = MCG_C5_PRDIV0(1);
+        MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(8);
+    #elif F_CPU == 72000000
+        MCG_C5 = MCG_C5_PRDIV0(1);
+        MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(2);
+    #elif F_CPU > 16000000
+    #error "MK66FX1M0 does not support this clock speed yet...."
+    #endif
+
+#else /* PJRC_HSRUN */
 
   /*
    * Now in FBE mode
@@ -190,7 +280,7 @@ void MK66F18_clock_init(void) {
    * Config PLL input for 2 MHz
    * TODO: Make sure KINETIS_XTAL_FREQUENCY >= 2Mhz && <= 50Mhz
    */
-  MCG->C5 = MCG_C5_PRDIV0((KINETIS_XTAL_FREQUENCY/KINETIS_PLLIN_FREQUENCY) - 1);
+  MCG->C5 = MCG_C5_PRDIV0_SET((KINETIS_XTAL_FREQUENCY/KINETIS_PLLIN_FREQUENCY) - 1);
 
   /*
    * Config PLL output to match KINETIS_SYSCLK_FREQUENCY
@@ -201,13 +291,14 @@ void MK66F18_clock_init(void) {
     if(i == (KINETIS_PLLCLK_FREQUENCY/KINETIS_PLLIN_FREQUENCY))
     {
       /* Config PLL to match KINETIS_PLLCLK_FREQUENCY */
-      MCG->C6 = MCG_C6_PLLS | MCG_C6_VDIV0(i-24);
+      MCG->C6 = MCG_C6_PLLS | MCG_C6_VDIV0_SET(i-24);
       break;
     }
   }
 
   if(i>=56)  /* Config PLL for 96 MHz output as default setting */
-    MCG->C6 = MCG_C6_PLLS | MCG_C6_VDIV0(0);
+    MCG->C6 = MCG_C6_PLLS | MCG_C6_VDIV0_SET(0);
+#endif /* PJRC_HSRUN */
 
   /* Wait for PLL to start using crystal as its input, and to lock */
   while ((MCG->S & (MCG_S_PLLST|MCG_S_LOCK0))!=(MCG_S_PLLST|MCG_S_LOCK0));
@@ -225,7 +316,7 @@ void MK66F18_clock_init(void) {
   SIM->SOPT2 = SIM_SOPT2_PLLFLLSEL;
 
   /* Switch to PLL as clock source */
-  MCG->C1 = MCG_C1_CLKS(0);
+  MCG->C1 = MCG_C1_CLKS_SET(0);
 
   /* Wait for PLL clock to be used */
   while ((MCG->S & MCG_S_CLKST_MASK) != MCG_S_CLKST_PLL);

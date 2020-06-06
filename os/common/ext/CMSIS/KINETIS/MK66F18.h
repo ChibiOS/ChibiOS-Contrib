@@ -11592,7 +11592,7 @@ typedef struct {
 #define MCG_S_CLKST_SHIFT                        (2U)
 #define MCG_S_CLKST_SET(x)                       (((uint8_t)(((uint8_t)(x)) << MCG_S_CLKST_SHIFT)) & MCG_S_CLKST_MASK)
 #define MCG_S_CLKST MCG_S_CLKST_MASK
-#define MCG_S_CLKST_PLL                          MCG_S_CLKST(3)   /*!< Output of the PLL is selected */
+#define MCG_S_CLKST_PLL                          MCG_S_CLKST_SET(3)   /*!< Output of the PLL is selected */
 #define MCG_S_IREFST_MASK                        (0x10U)
 #define MCG_S_IREFST_SHIFT                       (4U)
 #define MCG_S_IREFST_SET(x)                      (((uint8_t)(((uint8_t)(x)) << MCG_S_IREFST_SHIFT)) & MCG_S_IREFST_MASK)
@@ -11717,28 +11717,28 @@ typedef struct {
 #define MCG_C5_PLLCLKEN0_MASK         (MCG_C5_PLLCLKEN_MASK)
 #define MCG_C5_PLLCLKEN0_SHIFT        (MCG_C5_PLLCLKEN_SHIFT)
 #define MCG_C5_PLLCLKEN0_WIDTH        (MCG_C5_PLLCLKEN_WIDTH)
-#define MCG_C5_PLLCLKEN0_SET(x)       (MCG_C5_PLLCLKEN(x))
+#define MCG_C5_PLLCLKEN0_SET(x)       (MCG_C5_PLLCLKEN_SET(x))
 #define MCG_C5_PLLCLKEN0 MCG_C5_PLLCLKEN0_MASK
 
 /* MCG C5[PLLSTEN0] backward compatibility */
 #define MCG_C5_PLLSTEN0_MASK         (MCG_C5_PLLSTEN_MASK)
 #define MCG_C5_PLLSTEN0_SHIFT        (MCG_C5_PLLSTEN_SHIFT)
 #define MCG_C5_PLLSTEN0_WIDTH        (MCG_C5_PLLSTEN_WIDTH)
-#define MCG_C5_PLLSTEN0_SET(x)       (MCG_C5_PLLSTEN(x))
+#define MCG_C5_PLLSTEN0_SET(x)       (MCG_C5_PLLSTEN_SET(x))
 #define MCG_C5_PLLSTEN0 MCG_C5_PLLSTEN0_MASK
 
 /* MCG C5[PRDIV0] backward compatibility */
 #define MCG_C5_PRDIV0_MASK         (MCG_C5_PRDIV_MASK)
 #define MCG_C5_PRDIV0_SHIFT        (MCG_C5_PRDIV_SHIFT)
 #define MCG_C5_PRDIV0_WIDTH        (MCG_C5_PRDIV_WIDTH)
-#define MCG_C5_PRDIV0_SET(x)       (MCG_C5_PRDIV(x))
+#define MCG_C5_PRDIV0_SET(x)       (MCG_C5_PRDIV_SET(x))
 #define MCG_C5_PRDIV0 MCG_C5_PRDIV0_MASK
 
 /* MCG C6[VDIV0] backward compatibility */
 #define MCG_C6_VDIV0_MASK         (MCG_C6_VDIV_MASK)
 #define MCG_C6_VDIV0_SHIFT        (MCG_C6_VDIV_SHIFT)
 #define MCG_C6_VDIV0_WIDTH        (MCG_C6_VDIV_WIDTH)
-#define MCG_C6_VDIV0_SET(x)       (MCG_C6_VDIV(x))
+#define MCG_C6_VDIV0_SET(x)       (MCG_C6_VDIV_SET(x))
 #define MCG_C6_VDIV0 MCG_C6_VDIV0_MASK
 
 
@@ -20975,7 +20975,7 @@ typedef struct {
 #define MCG_C2_HGO0_SHIFT                        MCG_C2_HGO_SHIFT
 #define MCG_C2_RANGE0_MASK                       MCG_C2_RANGE_MASK
 #define MCG_C2_RANGE0_SHIFT                      MCG_C2_RANGE_SHIFT
-#define MCG_C2_RANGE0_SET(x)                     MCG_C2_RANGE(x)
+#define MCG_C2_RANGE0_SET(x)                     MCG_C2_RANGE_SET(x)
 #define MCG_C2_RANGE0 MCG_C2_RANGE0_MASK
 #define PMC_REGSC_BGBDS_MASK                     This_symbol_has_been_deprecated
 #define PMC_REGSC_BGBDS_SHIFT                    This_symbol_has_been_deprecated
