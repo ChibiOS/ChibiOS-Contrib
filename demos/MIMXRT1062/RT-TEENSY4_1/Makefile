@@ -91,11 +91,11 @@ CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
 # Startup files.
-include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_MK66F18.mk
+include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_MIMXRT1062.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
-include $(CHIBIOS_CONTRIB)/os/hal/ports/KINETIS/MK66F18/platform.mk
-include $(CHIBIOS_CONTRIB)/os/hal/boards/PJRC_TEENSY_3_6/board.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/MIMXRT1062/MIMXRT1062/platform.mk
+include $(CHIBIOS_CONTRIB)/os/hal/boards/PJRC_TEENSY_4_1/board.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
@@ -106,7 +106,7 @@ include $(CHIBIOS)/test/rt/rt_test.mk
 include $(CHIBIOS)/test/oslib/oslib_test.mk
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD_CONTRIB)/MK66FX1M0.ld
+LDSCRIPT= $(STARTUPLD_CONTRIB)/MIMXRT1062.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.

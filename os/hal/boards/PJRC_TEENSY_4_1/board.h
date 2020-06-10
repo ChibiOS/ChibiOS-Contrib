@@ -24,11 +24,13 @@
 /*
  * Board identifier.
  */
-#define BOARD_PJRC_TEENSY_3_6
-#define BOARD_NAME                  "PJRC Teensy 3.6"
+#define BOARD_PJRC_TEENSY_4_1
+#define BOARD_NAME                  "PJRC Teensy 4.1"
+
+// TODO: correct clock values
 
 /* External 16 MHz crystal */
-#define KINETIS_XTAL_FREQUENCY      16000000UL
+#define KINETIS_XTAL_FREQUENCY      16000000UL 
 
 /* Use internal capacitors for the crystal */
 #define KINETIS_BOARD_OSCILLATOR_SETTING OSC0_CR_SC8P_SET(1) | OSC0_CR_SC2P_SET(1) | OSC0_CR_ERCLKEN_SET(1)
@@ -36,7 +38,7 @@
 /*
  * MCU type
  */
-#define MK66F18
+#define MIMXRT1062
 
 /*
  * IO pins assignments.

@@ -17,7 +17,7 @@
 #ifndef _MCUCONF_H_
 #define _MCUCONF_H_
 
-#define MK66FX1M0_MCUCONF
+#define MIMXRT1062_MCUCONF
 
 /*
  * HAL driver system settings.

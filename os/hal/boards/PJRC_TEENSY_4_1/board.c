@@ -205,7 +205,7 @@ const PALConfig pal_default_config =
  */
 void __early_init(void) {
 
-  MK66F18_clock_init();
+  MIMXRT1062_clock_init();
 }
 
 /**
