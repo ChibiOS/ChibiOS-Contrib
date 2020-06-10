@@ -256,6 +256,9 @@ void BOARD_BootClockRUN(void)
     /* Set Flexspi clock source. */
     CLOCK_SetMux(kCLOCK_FlexspiMux, 3);
 #endif
+    // The following code results in a fault and seems incorrect: why set clock
+    // detail settings after disabling the clock?
+#if 0
     /* Disable Flexspi2 clock gate. */
     CLOCK_DisableClock(kCLOCK_FlexSpi2);
     /* Set FLEXSPI2_PODF. */
@@ -268,6 +271,7 @@ void BOARD_BootClockRUN(void)
     CLOCK_SetDiv(kCLOCK_CsiDiv, 1);
     /* Set Csi clock source. */
     CLOCK_SetMux(kCLOCK_CsiMux, 0);
+#endif
     /* Disable LPSPI clock gate. */
     CLOCK_DisableClock(kCLOCK_Lpspi1);
     CLOCK_DisableClock(kCLOCK_Lpspi2);
