@@ -73,6 +73,16 @@ OSAL_IRQ_HANDLER(SysTick_Handler) {
 /* Driver exported functions.                                                */
 /*===========================================================================*/
 
+// ARM SysTick is used for most Ardiuno timing functions, delay(), millis(),
+// micros().  SysTick can run from either the ARM core clock, or from an
+// "external" clock.  NXP documents it as "24 MHz XTALOSC can be the external
+// clock source of SYSTICK" (RT1052 ref manual, rev 1, page 411).  However,
+// NXP actually hid an undocumented divide-by-240 circuit in the hardware, so
+// the external clock is really 100 kHz.  We use this clock rather than the
+// ARM clock, to allow SysTick to maintain correct timing even when we change
+// the ARM clock to run at different speeds.
+#define SYSTICK_EXT_FREQ 100000
+
 /**
  * @brief   Low level ST driver initialization.
  *
@@ -82,14 +92,12 @@ void st_lld_init(void) {
 #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
   /* Periodic systick mode, the Cortex-Mx internal systick timer is used
      in this mode.*/
-  SysTick->LOAD = (KINETIS_SYSCLK_FREQUENCY / OSAL_ST_FREQUENCY) - 1;
+  SysTick->LOAD = (SYSTICK_EXT_FREQ / OSAL_ST_FREQUENCY) - 1;
   SysTick->VAL = 0;
-  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
-                  SysTick_CTRL_ENABLE_Msk |
-                  SysTick_CTRL_TICKINT_Msk;
+  SysTick->CTRL = SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
 
   /* IRQ enabled.*/
-  nvicSetSystemHandlerPriority(HANDLER_SYSTICK, KINETIS_ST_IRQ_PRIORITY);
+  nvicSetSystemHandlerPriority(HANDLER_SYSTICK, MIMXRT1062_ST_IRQ_PRIORITY);
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC */
 }
 

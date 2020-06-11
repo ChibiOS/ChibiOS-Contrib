@@ -44,8 +44,8 @@
 /**
  * @brief   SysTick timer IRQ priority.
  */
-#if !defined(KINETIS_ST_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define KINETIS_ST_IRQ_PRIORITY               8
+#if !defined(MIMXRT1062_ST_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define MIMXRT1062_ST_IRQ_PRIORITY               8
 #endif
 
 /** @} */
