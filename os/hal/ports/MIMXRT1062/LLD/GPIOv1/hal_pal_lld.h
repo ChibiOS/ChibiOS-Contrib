@@ -39,13 +39,13 @@
 #define PAL_MODE_ALTERNATIVE_6      0x15
 #define PAL_MODE_ALTERNATIVE_7      0x16
 
-#define PIN_MUX_ALTERNATIVE(x)      PORTx_PCRn_MUX(x)
+#define PIN_MUX_ALTERNATIVE(x)      IOMUXC_SW_MUX_CTL_PAD_MUX_MODE(x)
 
 /*===========================================================================*/
 /* I/O Ports Types and constants.                                            */
 /*===========================================================================*/
 
-#define TOTAL_PORTS                 5
+#define TOTAL_PORTS                 9
 #define PADS_PER_PORT               32
 
 /**
@@ -80,22 +80,12 @@ typedef uint32_t ioline_t;
  *          any assumption about it, use the provided macros when populating
  *          variables of this type.
  */
-typedef GPIO_TypeDef *ioportid_t;
+typedef GPIO_Type *ioportid_t;
 
 /**
  * @brief   Type of an pad identifier.
  */
 typedef uint32_t iopadid_t;
-
-/**
- * @brief   Port Configuration.
- * @details This structure stores the configuration parameters of all pads
- *          belonging to a port.
- */
-typedef struct {
-    ioportid_t      port;
-    iomode_t        pads[PADS_PER_PORT];
-} PortConfig;
 
 /**
  * @brief   Generic I/O ports static initializer.
@@ -107,7 +97,6 @@ typedef struct {
  *          architecture dependent, fields.
  */
 typedef struct {
-    PortConfig      ports[TOTAL_PORTS];
 } PALConfig;
 
 /*===========================================================================*/
@@ -115,29 +104,49 @@ typedef struct {
 /*===========================================================================*/
 
 /**
- * @brief   GPIO port A identifier.
+ * @brief   GPIO1 identifier.
  */
-#define IOPORT1          GPIOA
+#define IOPORT1          GPIO1
 
 /**
- * @brief   GPIO port B identifier.
+ * @brief   GPIO2 identifier.
  */
-#define IOPORT2          GPIOB
+#define IOPORT2          GPIO2
 
 /**
- * @brief   GPIO port C identifier.
+ * @brief   GPIO3 identifier.
  */
-#define IOPORT3          GPIOC
+#define IOPORT3          GPIO3
 
 /**
- * @brief   GPIO port D identifier.
+ * @brief   GPIO4 identifier.
  */
-#define IOPORT4          GPIOD
+#define IOPORT4          GPIO4
 
 /**
- * @brief   GPIO port E identifier.
+ * @brief   GPIO5 identifier.
  */
-#define IOPORT5          GPIOE
+#define IOPORT5          GPIO5
+
+/**
+ * @brief   GPIO6 identifier.
+ */
+#define IOPORT6          GPIO6
+
+/**
+ * @brief   GPIO7 identifier.
+ */
+#define IOPORT7          GPIO7
+
+/**
+ * @brief   GPIO8 identifier.
+ */
+#define IOPORT8          GPIO8
+
+/**
+ * @brief   GPIO9 identifier.
+ */
+#define IOPORT9          GPIO9
 
 /**
  * @name    Line handling macros
@@ -151,19 +160,23 @@ typedef struct {
  *          address that's zero on all Kinetis devices.
  */
 #define PAL_LINE(port, pad)                                                 \
-  ((ioline_t)((uint32_t)(port) | ((uint32_t)(pad)<<20)))
+  ((ioline_t)((uint32_t)(port) | ((uint32_t)(pad))))
 
 /**
  * @brief   Decodes a port identifier from a line identifier.
+ * @note    The GPIOn base addresses follow the division of port/pad
+ *          and must match the division used in PAL_PORT and PAL_PAD.
  */
 #define PAL_PORT(line)                                                      \
-  ((GPIO_TypeDef *)(((uint32_t)(line)) & 0xF00FFFFFU))
+  ((GPIO_Type *)(((uint32_t)(line)) & 0xFFFFF000U))
 
 /**
  * @brief   Decodes a pad identifier from a line identifier.
+ * @note    The GPIOn base addresses follow the division of port/pad
+ *          and must match the division used in PAL_PORT and PAL_PAD.
  */
 #define PAL_PAD(line)                                                       \
-  ((uint32_t)((uint32_t)(line) & 0x0FF00000U)>>20)
+  ((uint32_t)((uint32_t)(line) & 0x00000FFFU))
 
 /**
  * @brief   Value identifying an invalid line.
@@ -184,130 +197,6 @@ typedef struct {
  * @notapi
  */
 #define pal_lld_init(config) _pal_lld_init(config)
-
-/**
- * @brief   Reads the physical I/O port states.
- *
- * @param[in] port      port identifier
- * @return              The port bits.
- *
- * @notapi
- */
-#define pal_lld_readport(port) \
-          (port)->PDIR
-
-/**
- * @brief   Reads the output latch.
- * @details The purpose of this function is to read back the latched output
- *          value.
- *
- * @param[in] port      port identifier
- * @return              The latched logical states.
- *
- * @notapi
- */
-#define pal_lld_readlatch(port) \
-          (port)->PDOR
-
-/**
- * @brief   Writes a bits mask on a I/O port.
- *
- * @param[in] port      port identifier
- * @param[in] bits      bits to be written on the specified port
- *
- * @notapi
- */
-#define pal_lld_writeport(port, bits) \
-          (port)->PDOR = (bits)
-
-/**
- * @brief   Sets a bits mask on a I/O port.
- * @note    The @ref PAL provides a default software implementation of this
- *          functionality, implement this function if can optimize it by using
- *          special hardware functionalities or special coding.
- *
- * @param[in] port      port identifier
- * @param[in] bits      bits to be ORed on the specified port
- *
- * @notapi
- */
-#define pal_lld_setport(port, bits) \
-          (port)->PSOR = (bits)
-
-/**
- * @brief   Clears a bits mask on a I/O port.
- * @note    The @ref PAL provides a default software implementation of this
- *          functionality, implement this function if can optimize it by using
- *          special hardware functionalities or special coding.
- *
- * @param[in] port      port identifier
- * @param[in] bits      bits to be cleared on the specified port
- *
- * @notapi
- */
-#define pal_lld_clearport(port, bits) \
-          (port)->PCOR = (bits)
-
-/**
- * @brief   Toggles a bits mask on a I/O port.
- * @note    The @ref PAL provides a default software implementation of this
- *          functionality, implement this function if can optimize it by using
- *          special hardware functionalities or special coding.
- *
- * @param[in] port      port identifier
- * @param[in] bits      bits to be toggled on the specified port
- *
- * @notapi
- */
-#define pal_lld_toggleport(port, bits) \
-          (port)->PTOR = (bits)
-
-/**
- * @brief   Reads a group of bits.
- * @note    The @ref PAL provides a default software implementation of this
- *          functionality, implement this function if can optimize it by using
- *          special hardware functionalities or special coding.
- *
- * @param[in] port      port identifier
- * @param[in] mask      group mask
- * @param[in] offset    group bit offset within the port
- * @return              The group logical states.
- *
- * @notapi
- */
-#define pal_lld_readgroup(port, mask, offset) 0
-
-/**
- * @brief   Writes a group of bits.
- * @note    The @ref PAL provides a default software implementation of this
- *          functionality, implement this function if can optimize it by using
- *          special hardware functionalities or special coding.
- *
- * @param[in] port      port identifier
- * @param[in] mask      group mask
- * @param[in] offset    group bit offset within the port
- * @param[in] bits      bits to be written. Values exceeding the group width
- *                      are masked.
- *
- * @notapi
- */
-#define pal_lld_writegroup(port, mask, offset, bits) (void)bits
-
-/**
- * @brief   Pads group mode setup.
- * @details This function programs a pads group belonging to the same port
- *          with the specified mode.
- * @note    Programming an unknown or unsupported mode is silently ignored.
- *
- * @param[in] port      port identifier
- * @param[in] mask      group mask
- * @param[in] offset    group bit offset within the port
- * @param[in] mode      group mode
- *
- * @notapi
- */
-#define pal_lld_setgroupmode(port, mask, offset, mode)                      \
-  _pal_lld_setgroupmode(port, mask << offset, mode)
 
 /**
  * @brief   Reads a logical state from an I/O pad.
@@ -353,7 +242,7 @@ typedef struct {
  *
  * @notapi
  */
-#define pal_lld_setpad(port, pad) (port)->PSOR = ((uint32_t) 1 << (pad))
+#define pal_lld_setpad(port, pad) _pal_lld_writepad(port, pad, PAL_HIGH)
 
 /**
  * @brief   Clears a pad logical state to @p PAL_LOW.
@@ -366,7 +255,7 @@ typedef struct {
  *
  * @notapi
  */
-#define pal_lld_clearpad(port, pad) (port)->PCOR = ((uint32_t) 1 << (pad))
+#define pal_lld_clearpad(port, pad) _pal_lld_writepad(port, pad, PAL_LOW)
 
 /**
  * @brief   Toggles a pad logical state.
@@ -379,7 +268,7 @@ typedef struct {
  *
  * @notapi
  */
-#define pal_lld_togglepad(port, pad) (port)->PTOR = ((uint32_t) 1 << (pad))
+#define pal_lld_togglepad(port, pad) _pal_lld_togglepad(port, pad)
 
 /**
  * @brief   Pad mode setup.
@@ -406,9 +295,6 @@ extern const PALConfig pal_default_config;
 extern "C" {
 #endif
   void _pal_lld_init(const PALConfig *config);
-  void _pal_lld_setgroupmode(ioportid_t port,
-                             ioportmask_t mask,
-                             iomode_t mode);
   void _pal_lld_setpadmode(ioportid_t port,
                            uint8_t pad,
                            iomode_t mode);
@@ -417,6 +303,8 @@ extern "C" {
   void _pal_lld_writepad(ioportid_t port,
                          uint8_t pad,
                          uint8_t bit);
+  void _pal_lld_togglepad(ioportid_t port,
+			  uint8_t pad);
 #ifdef __cplusplus
 }
 #endif
