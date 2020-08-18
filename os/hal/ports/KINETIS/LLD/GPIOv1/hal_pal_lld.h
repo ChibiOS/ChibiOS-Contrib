@@ -22,10 +22,10 @@
  * @{
  */
 
-#ifndef HAL_PAL_LLD_H_
-#define HAL_PAL_LLD_H_
+#ifndef HAL_PAL_LLD_H
+#define HAL_PAL_LLD_H
 
-#if HAL_USE_PAL || defined(__DOXYGEN__)
+#if (HAL_USE_PAL == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Unsupported modes and specific modes                                      */
@@ -45,19 +45,59 @@
 /* I/O Ports Types and constants.                                            */
 /*===========================================================================*/
 
-#define TOTAL_PORTS                 5
-#define PADS_PER_PORT               32
+/**
+ * @name    Configuration options
+ * @{
+ */
+/**
+ * @brief   PORTA interrupt priority level setting.
+ */
+#if !defined(KINETIS_EXT_PORTA_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_EXT_PORTA_IRQ_PRIORITY      3
+#endif
+
+/**
+ * @brief   PORTB interrupt priority level setting.
+ */
+#if !defined(KINETIS_EXT_PORTB_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_EXT_PORTB_IRQ_PRIORITY      3
+#endif
+
+/**
+ * @brief   PORTC interrupt priority level setting.
+ */
+#if !defined(KINETIS_EXT_PORTC_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_EXT_PORTC_IRQ_PRIORITY      3
+#endif
+
+/**
+ * @brief   PORTD interrupt priority level setting.
+ */
+#if !defined(KINETIS_EXT_PORTD_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_EXT_PORTD_IRQ_PRIORITY       3
+#endif
+
+/**
+ * @brief   PORTE interrupt priority level setting.
+ */
+#if !defined(KINETIS_EXT_PORTE_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define KINETIS_EXT_PORTE_IRQ_PRIORITY       3
+#endif
+/** @} */
+
+#define TOTAL_PORTS                 5U
+#define PADS_PER_PORT               32U
 
 /**
  * @brief   Width, in bits, of an I/O port.
  */
-#define PAL_IOPORTS_WIDTH 32
+#define PAL_IOPORTS_WIDTH 32U
 
 /**
  * @brief   Whole port mask.
  * @brief   This macro specifies all the valid bits into a port.
  */
-#define PAL_WHOLE_PORT ((ioportmask_t)0xFFFFFFFF)
+#define PAL_WHOLE_PORT ((ioportmask_t)0xFFFFFFFFU)
 
 /**
  * @brief   Digital I/O port sized unsigned type.
@@ -398,31 +438,105 @@ typedef struct {
 #define pal_lld_setpadmode(port, pad, mode)                                 \
     _pal_lld_setpadmode(port, pad, mode)
 
+/**
+ * @brief   Returns a PAL event structure associated to a pad.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ *
+ * @notapi
+ */
+#define pal_lld_get_pad_event(port, pad)                                \
+    _pal_lld_get_pad_event(port, pad)
+
+/**
+ * @brief   Returns a PAL event structure associated to a line.
+ *
+ * @param[in] line      line identifier
+ *
+ * @notapi
+ */
+#define pal_lld_get_line_event(line)                                        \
+    pal_lld_get_pad_event(PAL_PORT(line), PAL_PAD(line))
+
+/**
+ * @brief   Pad event enable.
+ * @note    Programming an unknown or unsupported mode is silently ignored.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ * @param[in] mode      pad event mode
+ *
+ * @notapi
+ */
+#define pal_lld_enablepadevent(port, pad, mode)                             \
+    _pal_lld_enablepadevent(port, pad, mode)
+
+/**
+ * @brief   Pad event disable.
+ * @details This function disables previously programmed event callbacks.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ *
+ * @notapi
+ */
+#define pal_lld_disablepadevent(port, pad)                                  \
+    _pal_lld_disablepadevent(port, pad)
+
+/**
+ * @brief   Pad event enable check.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ * @return              Pad event status.
+ * @retval false        if the pad event is disabled.
+ * @retval true         if the pad event is enabled.
+ *
+ * @notapi
+ */
+#define pal_lld_ispadeventenabled(port, pad)                                \
+    _pal_lld_ispadeventenabled(port, pad)
+
 #if !defined(__DOXYGEN__)
 extern const PALConfig pal_default_config;
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
+extern palevent_t _pal_events[TOTAL_PORTS * PADS_PER_PORT];
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void _pal_lld_init(const PALConfig *config);
-  void _pal_lld_setgroupmode(ioportid_t port,
-                             ioportmask_t mask,
+    void _pal_lld_init(const PALConfig *config);
+    void _pal_lld_setgroupmode(ioportid_t port,
+                               ioportmask_t mask,
+                               iomode_t mode);
+    void _pal_lld_setpadmode(ioportid_t port,
+                             uint8_t pad,
                              iomode_t mode);
-  void _pal_lld_setpadmode(ioportid_t port,
+    uint8_t _pal_lld_readpad(ioportid_t port,
+                             uint8_t pad);
+    void _pal_lld_writepad(ioportid_t port,
                            uint8_t pad,
-                           iomode_t mode);
-  uint8_t _pal_lld_readpad(ioportid_t port,
-                           uint8_t pad);
-  void _pal_lld_writepad(ioportid_t port,
-                         uint8_t pad,
-                         uint8_t bit);
+                           uint8_t bit);
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
+    palevent_t* _pal_lld_get_pad_event(ioportid_t port,
+                                       iopadid_t pad);
+    void _pal_lld_enablepadevent(ioportid_t port,
+                                 iopadid_t pad,
+                                 iomode_t mode);
+    void _pal_lld_disablepadevent(ioportid_t port,
+                                  iopadid_t pad);
+    bool _pal_lld_ispadeventenabled(ioportid_t port,
+                                    iopadid_t pad);
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* HAL_USE_PAL */
 
-#endif /* HAL_PAL_LLD_H_ */
+#endif /* HAL_PAL_LLD_H */
 
 /** @} */
