@@ -144,7 +144,7 @@ def get_gpio_file(proj_file, mx_path):
         print('Could not find GPIO file')
         exit(1)
 
-    print('Opened ' + path)
+    print('Opened ' + path + mcu_name)
 
     for ip in mcu_info.findall("IP"):
         if ip.attrib['Name'] == 'GPIO':
@@ -224,7 +224,7 @@ def read_project(gpio, filename):
         pads[p] = {}
         for i in range(0, 16):
             pads[p][i] = DEFAULT_PAD.copy()
-            pads[p][i]['PUPDR'] = PIN_PUPDR_TRANSLATE[gpio['defaults']['GPIO_PuPdOD']]
+            pads[p][i]['PUPDR'] = PIN_PUPDR_TRANSLATE[gpio['defaults']['GPIO_PuPd']]
             pads[p][i]['OTYPER'] = PIN_OTYPE_TRANSLATE[gpio['defaults']['GPIO_ModeDefaultOutputPP']]
             pads[p][i]['OSPEEDR'] = PIN_OSPEED_TRANSLATE[gpio['defaults']['GPIO_Speed']]
 
