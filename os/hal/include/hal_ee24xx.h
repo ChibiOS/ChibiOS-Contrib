@@ -28,6 +28,8 @@ typedef struct {
   i2caddr_t     addr;
   /**
    * Pointer to write buffer. The safest size is (pagesize + 2)
+   * Declare with CC_SECTION(".nocache") ... if using I2C with DMA to avoid
+   * cache coherence issues.
    */
   uint8_t       *write_buf;
 } I2CEepromFileConfig;
