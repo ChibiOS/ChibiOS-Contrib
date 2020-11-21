@@ -218,13 +218,14 @@
 #define STM32_IRQ_USART6_PRIORITY           12
 #define STM32_IRQ_UART7_PRIORITY            12
 #define STM32_IRQ_UART8_PRIORITY            12
+#define STM32_IRQ_LPUART1_PRIORITY          12
 
 /*
  * ADC driver system settings.
  */
 #define STM32_ADC_DUAL_MODE                 FALSE
 #define STM32_ADC_COMPACT_SAMPLES           FALSE
-#define STM32_ADC_USE_ADC12                 FALSE
+#define STM32_ADC_USE_ADC12                 TRUE
 #define STM32_ADC_USE_ADC3                  FALSE
 #define STM32_ADC_ADC12_DMA_STREAM          STM32_DMA_STREAM_ID_ANY
 #define STM32_ADC_ADC3_BDMA_STREAM          STM32_BDMA_STREAM_ID_ANY
@@ -364,7 +365,7 @@
 /*
  * SERIAL driver system settings.
  */
-#define STM32_SERIAL_USE_USART1             TRUE
+#define STM32_SERIAL_USE_USART1             FALSE
 #define STM32_SERIAL_USE_USART2             FALSE
 #define STM32_SERIAL_USE_USART3             TRUE
 #define STM32_SERIAL_USE_UART4              FALSE
@@ -372,11 +373,12 @@
 #define STM32_SERIAL_USE_USART6             FALSE
 #define STM32_SERIAL_USE_UART7              FALSE
 #define STM32_SERIAL_USE_UART8              FALSE
+#define STM32_SERIAL_USE_LPUART1            FALSE
 
 /*
  * SPI driver system settings.
  */
-#define STM32_SPI_USE_SPI1                  FALSE
+#define STM32_SPI_USE_SPI1                  TRUE
 #define STM32_SPI_USE_SPI2                  FALSE
 #define STM32_SPI_USE_SPI3                  FALSE
 #define STM32_SPI_USE_SPI4                  FALSE
@@ -460,7 +462,7 @@
  * USB driver system settings.
  */
 #define STM32_USB_USE_OTG1                  TRUE
-#define STM32_USB_USE_OTG2                  FALSE
+#define STM32_USB_USE_OTG2                  TRUE
 #define STM32_USB_OTG1_IRQ_PRIORITY         14
 #define STM32_USB_OTG2_IRQ_PRIORITY         14
 #define STM32_USB_OTG1_RX_FIFO_SIZE         512
@@ -480,5 +482,7 @@
 #define STM32_WSPI_QUADSPI1_MDMA_CHANNEL    STM32_MDMA_CHANNEL_ID_ANY
 #define STM32_WSPI_QUADSPI1_MDMA_PRIORITY   1
 #define STM32_WSPI_MDMA_ERROR_HOOK(qspip)   osalSysHalt("MDMA failure")
+
+#include "mcuconf_community.h"
 
 #endif /* MCUCONF_H */
