@@ -42,6 +42,15 @@
 #if (STM32_OTG1_RXFIFO_SIZE % 4) || (STM32_OTG1_PTXFIFO_SIZE % 4) || (STM32_OTG1_NPTXFIFO_SIZE % 4)
 #error "FIFO sizes must be a multiple of 32-bit words"
 #endif
+#if defined(STM32H7XX)
+#define rccEnableUSB1(x) rccEnableUSB1_OTG_HS(x)
+#define rccDisableUSB1() rccDisableUSB1_OTG_HS()
+#define rccResetUSB1() rccResetUSB1_OTG_HS()
+#else
+#define rccEnableUSB1(x) rccEnableOTG_FS(x)
+#define rccDisableUSB1() rccDisableOTG_FS()
+#define rccResetUSB1() rccResetOTG_FS()
+#endif
 #endif
 
 #if STM32_USBH_USE_OTG2
@@ -64,6 +73,15 @@
 #endif
 #if (STM32_OTG2_RXFIFO_SIZE % 4) || (STM32_OTG2_PTXFIFO_SIZE % 4) || (STM32_OTG2_NPTXFIFO_SIZE % 4)
 #error "FIFO sizes must be a multiple of 32-bit words"
+#endif
+#if defined(STM32H7xx)
+#define rccEnableUSB2(x) rccEnableUSB1_OTG_FS(x)
+#define rccDisableUSB2() rccDisableUSB1_OTG_FS()
+#define rccResetUSB2() rccResetUSB2_OTG_FS()
+#else
+#define rccEnableUSB2(x) rccEnableOTG_HS(x)
+#define rccDisableUSB2() rccDisableOTG_HS()
+#define rccResetUSB2() rccResetOTG_HS()
 #endif
 #endif
 
@@ -1476,8 +1494,8 @@ static void _usbh_start(USBHDriver *host) {
 #endif
 	{
 		/* OTG FS clock enable and reset.*/
-		rccEnableOTG_FS(FALSE);
-		rccResetOTG_FS();
+		rccEnableUSB1(FALSE);
+		rccResetUSB1();
 
 		otgp->GINTMSK = 0;
 
@@ -1492,9 +1510,9 @@ static void _usbh_start(USBHDriver *host) {
 #endif
 	{
 		/* OTG HS clock enable and reset.*/
-		rccEnableOTG_HS(FALSE); // Disable HS clock when cpu is in sleep mode
+		rccEnableUSB2(FALSE); // Disable HS clock when cpu is in sleep mode
 		rccDisableOTG_HSULPI();
-		rccResetOTG_HS();
+		rccResetUSB2();
 
 		otgp->GINTMSK = 0;
 
