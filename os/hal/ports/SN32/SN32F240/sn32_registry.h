@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    SN32F24xx/stm32_registry.h
+ * @file    sn32_registry.h
  * @brief   SN32F24xx capabilities registry.
  *
  * @addtogroup HAL

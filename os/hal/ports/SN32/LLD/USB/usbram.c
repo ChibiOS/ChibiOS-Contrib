@@ -23,15 +23,6 @@ uint32_t	wUSB_PreTableLength;
 
 uint16_t	mode;
 uint32_t	cnt;
-uint32_t	wUSB_MouseData;
 
-
-//USB Interrupt FIFO Read/Write Data buffer
-volatile uint32_t	wUSBINT_ReadDataBuf;
-volatile uint32_t	wUSBINT_WriteDataBuf;
-
-//USB Main Loop FIFO Read/Write Data buffer
-volatile uint32_t	wUSBMAIN_ReadDataBuf;
-volatile uint32_t	wUSBMAIN_WriteDataBuf;
 
 SUSB_EUME_DATA	sUSB_EumeData;
