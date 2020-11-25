@@ -87,7 +87,7 @@ PROJECT = ch
 
 # Imported source files and paths
 CHIBIOS = ../../../../ChibiOS
-CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
+CHIBIOS_CONTRIB = ../../..
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
 # Startup files.
