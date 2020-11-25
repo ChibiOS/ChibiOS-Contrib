@@ -26,8 +26,12 @@ function chbuild {
       continue
     fi
     pushd $t > /dev/null
+    if [[ ! -z ${CH_CLEAN+x} ]]; then
+        printf "CLEANING: ${t}\n"
+        make clean
+    fi
     printf "BUILDING: ${t}\n"
-    if [[ -z "$CH_PATH" && -z "$CHC_PATH" ]]; then
+    if [[ -z "${CH_PATH+x}" || -z "${CHC_PATH+x}" ]]; then
         make --quiet -j $JOBS > /dev/null
     else
         make CHIBIOS=$CH_PATH CHIBIOS_CONTRIB=$CHC_PATH --quiet -j $JOBS > /dev/null
