@@ -49,7 +49,6 @@ typedef struct {
   uint16_t    size;
   semaphore_t sem;
 } osal_semaphore_def_t;
-
 typedef osal_semaphore_def_t * osal_semaphore_t;
 
 static inline osal_semaphore_t osal_semaphore_create(osal_semaphore_def_t* semdef)
@@ -63,21 +62,21 @@ static inline bool osal_semaphore_post(osal_semaphore_t sem_hdl, bool in_isr)
   if ( !in_isr )
   {
     chSemSignal(&sem_hdl->sem);
-    return false;
+    return true;
   }
   else
   {
     chSysLockFromISR();
     chSemSignalI(&sem_hdl->sem);
     chSysUnlockFromISR();
-    return false;
+    return true;
   }
 }
 
 static inline bool osal_semaphore_wait (osal_semaphore_t sem_hdl, uint32_t msec)
 {
   const sysinterval_t ticks = (msec == OSAL_TIMEOUT_WAIT_FOREVER) ? TIME_INFINITE : TIME_MS2I(msec);
-  return chSemWaitTimeout(&sem_hdl->sem, ticks);
+  return chSemWaitTimeout(&sem_hdl->sem, ticks) == MSG_OK;
 }
 
 static inline void osal_semaphore_reset(osal_semaphore_t const sem_hdl)
@@ -100,13 +99,13 @@ static inline osal_mutex_t osal_mutex_create(osal_mutex_def_t* mdef)
 static inline bool osal_mutex_lock (osal_mutex_t mutex_hdl, uint32_t msec)
 {
   uint32_t const ticks = (msec == OSAL_TIMEOUT_WAIT_FOREVER) ? TIME_INFINITE : TIME_MS2I(msec);
-  return chSemWaitTimeout(&mutex_hdl->sem, ticks);
+  return chSemWaitTimeout(&mutex_hdl->sem, ticks) == MSG_OK;
 }
 
 static inline bool osal_mutex_unlock(osal_mutex_t mutex_hdl)
 {
   chSemSignal(&mutex_hdl->sem);
-  return false;
+  return true;
 }
 
 //--------------------------------------------------------------------+
@@ -129,30 +128,25 @@ typedef struct
 
   objects_fifo_t fifo;
 } osal_queue_def_t;
-
-typedef struct {
-  uint16_t         obj_sz;
-  objects_fifo_t * fifo;
-} osal_queue_t;
+typedef osal_queue_def_t * osal_queue_t;
 
 static inline osal_queue_t osal_queue_create(osal_queue_def_t* qdef)
 {
-  osal_queue_t q = { qdef->obj_sz, &qdef->fifo };
   chFifoObjectInit(&qdef->fifo, qdef->obj_sz, qdef->depth, qdef->objbuf, qdef->msgbuf);
-  return q;
+  return qdef;
 }
 
 static inline bool osal_queue_receive(osal_queue_t qhdl, void* data)
 {
   void* objpp; // pointer to the object
 
-  bool r = chFifoReceiveObjectTimeout(qhdl.fifo, &objpp, TIME_INFINITE) != MSG_OK;
+  bool r = chFifoReceiveObjectTimeout(&qhdl->fifo, &objpp, TIME_MS2I(10000)) != MSG_OK;
   if (r)
-    return 1;
+    return false;
 
-  memcpy(data, objpp, qhdl.obj_sz);
-  chFifoReturnObject(qhdl.fifo, objpp);
-  return 0;
+  memcpy(data, objpp, qhdl->obj_sz);
+  chFifoReturnObject(&qhdl->fifo, objpp);
+  return true;
 }
 
 static inline bool osal_queue_send(osal_queue_t qhdl, void const * data, bool in_isr)
@@ -161,27 +155,27 @@ static inline bool osal_queue_send(osal_queue_t qhdl, void const * data, bool in
 
   if ( !in_isr )
   {
-    obj = chFifoTakeObjectTimeout(qhdl.fifo, TIME_INFINITE);
+    obj = chFifoTakeObjectTimeout(&qhdl->fifo, TIME_MS2I(10000));
     if (obj == NULL) // Allocation failed
-      return 1;
-    memcpy(obj, data, qhdl.obj_sz);
-    chFifoSendObject(qhdl.fifo, obj);
-    return 0;
+      return false;
+    memcpy(obj, data, qhdl->obj_sz);
+    chFifoSendObject(&qhdl->fifo, obj);
+    return true;
   }
   else
   {
     chSysLockFromISR();
-    obj = chFifoTakeObjectI(qhdl.fifo);
+    obj = chFifoTakeObjectI(&qhdl->fifo);
     chSysUnlockFromISR();
 
     if (obj == NULL) // Allocation failed
-      return 1;
-    memcpy(obj, data, qhdl.obj_sz);
+      return false;
+    memcpy(obj, data, qhdl->obj_sz);
 
     chSysLockFromISR();
-    chFifoSendObjectI(qhdl.fifo, obj);
+    chFifoSendObjectI(&qhdl->fifo, obj);
     chSysUnlockFromISR();
-    return 0;
+    return true;
   }
 }
 
@@ -189,7 +183,7 @@ static inline bool osal_queue_empty(osal_queue_t qhdl)
 {
   uint16_t cnt;
   chSysLock();
-  cnt = chMBGetFreeCountI(&qhdl.fifo->mbx);
+  cnt = chMBGetFreeCountI(&qhdl->fifo.mbx);
   chSysUnlock();
   return cnt == 0;
 }
