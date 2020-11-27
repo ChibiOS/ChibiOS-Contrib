@@ -50,6 +50,14 @@
 /*===========================================================================*/
 
 void lpc_clock_init(void) {
+
+    #if defined(LPC_USE_SYSOSC) && LPC_USE_SYSOSC != FALSE
+
+    LPC_SYSCON->PDRUNCFG &= ~SYSCON_PDRUNCFG_SYSSOC_PD;
+    LPC_SYSCON->SYSOSCCTRL = 0;
+
+    #endif
+
     #if  LPC_MAINCLKSEL == SYSCON_MAINCLKSEL_PLLOUT ||\
             LPC_MAINCLKSEL == SYSCON_MAINCLKSEL_PLLIN
     // 1. Config PLL input clock
@@ -62,7 +70,7 @@ void lpc_clock_init(void) {
 
     // 2. Config PLL
     // Enable PLL power
-    LPC_SYSCON->PDRUNCFG &= (~SYS_CON_PDRUNCFG_SYSPLL_PD);
+    LPC_SYSCON->PDRUNCFG &= (~SYSCON_PDRUNCFG_SYSPLL_PD);
     // Apply PLL Config
     LPC_SYSCON->SYSPLLCTRL = (LPC_SYSPLL_PSEL_VAL << SYSCON_SYSPLLCTRL_PSEL_POS)
         | (LPC_SYSPLL_MSEL_VAL << SYSCON_SYSPLLCTRL_MSEL_POS);
