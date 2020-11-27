@@ -487,35 +487,59 @@ typedef struct {                            /*!< (@ 0x40048000) SYSCON Structure
 } LPC_SYSCON_Type;
 
 // SYSCON_SYSPLLCTRL
-#define   SYSCON_SYSPLLCTRL_MSEL_POS        0U
-#define   SYSCON_SYSPLLCTRL_MSEL_MASK       0x1FU << SYSPLLCTRL_MSEL_POS
-#define   SYSCON_SYSPLLCTRL_PSEL_POS        5U
-#define   SYSCON_SYSPLLCTRL_PSEL_MASK       0x03U << SYSPLLCTRL_PSEL_POS
+#define   SYSCON_SYSPLLCTRL_MSEL_POS        (0U)
+#define   SYSCON_SYSPLLCTRL_MSEL_MASK       (0x1FU << SYSPLLCTRL_MSEL_POS)
+#define   SYSCON_SYSPLLCTRL_PSEL_POS        (5U)
+#define   SYSCON_SYSPLLCTRL_PSEL_MASK       (0x03U << SYSPLLCTRL_PSEL_POS)
 // SYSCON_SYSPLLSTAT
 #define   SYSCON_SYSPLLSTAT_LOCK            0x1
 // SYSCON_SYSPLLCLKSEL
-#define   SYSCON_SYSPLLCLKSEL_IRC           0x00U << 0
-#define   SYSCON_SYSPLLCLKSEL_SYSOSC        0x01U << 0
+#define   SYSCON_SYSPLLCLKSEL_IRC           (0x00U << 0)
+#define   SYSCON_SYSPLLCLKSEL_SYSOSC        (0x01U << 0)
 
 #define   SYSCON_SYSPLLCLKUEN_ENA           0x01
 
-#define   SYSCON_MAINCLKSEL_IRC             0x00U << 0
-#define   SYSCON_MAINCLKSEL_PLLIN           0x01U << 0
-#define   SYSCON_MAINCLKSEL_WATCHDOG        0x02U << 0
-#define   SYSCON_MAINCLKSEL_PLLOUT          0x03U << 0
+#define   SYSCON_MAINCLKSEL_IRC             (0x00U << 0)
+#define   SYSCON_MAINCLKSEL_PLLIN           (0x01U << 0)
+#define   SYSCON_MAINCLKSEL_WATCHDOG        (0x02U << 0)
+#define   SYSCON_MAINCLKSEL_PLLOUT          (0x03U << 0)
 
 #define   SYSCON_MAINCLKUEN_ENA             0x01
 
-#define   SYS_CON_PDRUNCFG_IRCOUT_PD        0x1U << 0U
-#define   SYS_CON_PDRUNCFG_IRC_PD           0x1U << 1U
-#define   SYS_CON_PDRUNCFG_FLASH_PD         0x1U << 2U
-#define   SYS_CON_PDRUNCFG_BOD_PD           0x1U << 3U
-#define   SYS_CON_PDRUNCFG_ADC_PD           0x1U << 4U
-#define   SYS_CON_PDRUNCFG_SYSSOC_PD        0x1U << 5U
-#define   SYS_CON_PDRUNCFG_WDTOSC_PD        0x1U << 6U
-#define   SYS_CON_PDRUNCFG_SYSPLL_PD        0x1U << 7U
-#define   SYS_CON_PDRUNCFG_USBPLL_PD        0x1U << 8U
-#define   SYS_CON_PDRUNCFG_USBPAD_PD        0x1U << 10U
+#define   SYSAHBCLKCTRL_SYS                 (1U << 0)
+#define   SYSAHBCLKCTRL_ROM                 (1U << 1)
+#define   SYSAHBCLKCTRL_RAM0                (1U << 2)
+#define   SYSAHBCLKCTRL_FLASHREG            (1U << 3)
+#define   SYSAHBCLKCTRL_FLASHARRAY          (1U << 4)
+#define   SYSAHBCLKCTRL_I2C                 (1U << 5)
+#define   SYSAHBCLKCTRL_GPIO                (1U << 6)
+#define   SYSAHBCLKCTRL_CT16B0              (1U << 7)
+#define   SYSAHBCLKCTRL_CT16B1              (1U << 8)
+#define   SYSAHBCLKCTRL_CT32B0              (1U << 9)
+#define   SYSAHBCLKCTRL_CT32B1              (1U << 10)
+#define   SYSAHBCLKCTRL_SSP0                (1U << 11)
+#define   SYSAHBCLKCTRL_USART               (1U << 12)
+#define   SYSAHBCLKCTRL_ADC                 (1U << 13)
+#define   SYSAHBCLKCTRL_USB                 (1U << 14)
+#define   SYSAHBCLKCTRL_WWDT                (1U << 15)
+#define   SYSAHBCLKCTRL_IOCON               (1U << 16)
+#define   SYSAHBCLKCTRL_SSP1                (1U << 18)
+#define   SYSAHBCLKCTRL_PINT                (1U << 19)
+#define   SYSAHBCLKCTRL_GROUP0INT           (1U << 23)
+#define   SYSAHBCLKCTRL_GROUP1INT           (1U << 24)
+#define   SYSAHBCLKCTRL_RAM1                (1U << 26)
+#define   SYSAHBCLKCTRL_USBRAM              (1U << 27)
+
+#define   SYSCON_PDRUNCFG_IRCOUT_PD         (1U << 0U)
+#define   SYSCON_PDRUNCFG_IRC_PD            (1U << 1U)
+#define   SYSCON_PDRUNCFG_FLASH_PD          (1U << 2U)
+#define   SYSCON_PDRUNCFG_BOD_PD            (1U << 3U)
+#define   SYSCON_PDRUNCFG_ADC_PD            (1U << 4U)
+#define   SYSCON_PDRUNCFG_SYSSOC_PD         (1U << 5U)
+#define   SYSCON_PDRUNCFG_WDTOSC_PD         (1U << 6U)
+#define   SYSCON_PDRUNCFG_SYSPLL_PD         (1U << 7U)
+#define   SYSCON_PDRUNCFG_USBPLL_PD         (1U << 8U)
+#define   SYSCON_PDRUNCFG_USBPAD_PD         (1U << 10U)
 // ------------------------------------------------------------------------------------------------
 // -----                                     GPIO_PIN_INT                                     -----
 // ------------------------------------------------------------------------------------------------
