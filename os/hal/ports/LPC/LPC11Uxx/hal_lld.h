@@ -58,7 +58,7 @@
     #error "Using a wrong mcuconf.h file, LPC11Uxx_MCUCONF not defined"
 #endif
 
-#if (defined(LPC_USE_SYSOSC) && LPC_USE_SYSOSC == FALSE) || !defined(LPC_SYSOSC_FREQUENCY)
+#if defined(LPC_USE_SYSOSC) && LPC_USE_SYSOSC != FALSE && !defined(LPC_SYSOSC_FREQUENCY)
     #error "LPC_SYSOSC_FREQUENCY must be defined if LPC_USE_SYSOSC"
 #endif
 
@@ -89,7 +89,7 @@ SYSCON_SYSPLLCLKSEL_SYSOSC"
     // PLL OUT
     #if defined(LPC_SYSPLL_MULT) && LPC_SYSPLL_MULT > 0 && LPC_SYSPLL_MULT <= 32 \
     && defined(LPC_SYSPLL_PDIV) && (LPC_SYSPLL_PDIV == 2 || LPC_SYSPLL_PDIV == 4 \
-    && LPC_SYSPLL_PDIV == 8 || LPC_SYSPLL_PDIV == 16)
+    || LPC_SYSPLL_PDIV == 8 || LPC_SYSPLL_PDIV == 16)
 
     #if LPC_SYSPLL_PDIV == 2
     #define LPC_SYSPLL_PSEL_VAL     0x0U
@@ -99,7 +99,9 @@ SYSCON_SYSPLLCLKSEL_SYSOSC"
     #define LPC_SYSPLL_PSEL_VAL     0x2U
     #elif LPC_SYSPLL_PDIV == 16
     #define LPC_SYSPLL_PSEL_VAL     0x3U
-    #endif
+    #else
+    #error "INVALID PDIV VALUE"
+    #endif //LPC_SYSPLL_PDIV == xx
 
     #if (LPC_SYSPLLIN_FREQUENCY * LPC_SYSPLL_MULT * LPC_SYSPLL_PDIV < 156000000UL) ||\
         (LPC_SYSPLLIN_FREQUENCY * LPC_SYSPLL_MULT * LPC_SYSPLL_PDIV > 320000000UL)
