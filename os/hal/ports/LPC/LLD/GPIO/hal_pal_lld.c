@@ -57,7 +57,7 @@
  */
 void _pal_lld_init(void) {
   // Enable GPIO / IOCON CLK
-  LPC_SYSCON->SYSAHBCLKCTRL |= SYSAHBCLKCTRL_GPIO | SYSAHBCLKCTRL_IOCON;
+  LPC_SYSCON->SYSAHBCLKCTRL |= SYSCON_SYSAHBCLKCTRL_GPIO | SYSCON_SYSAHBCLKCTRL_IOCON;
 }
 
 /**
@@ -94,12 +94,16 @@ void _pal_lld_setgroupmode(ioportid_t port,
  * @notapi
  */
 void _pal_lld_setpadmode(ioportid_t port, iopadid_t pad, iomode_t mode) {
-  ((uint32_t *)LPC_IOCON)[(PAL_IOPORTS_WIDTH * LPC_IOPORT_NUM(port)) + pad]
-    = mode & MODE_IOCONF_MASK;
+  while (pad > 0x1F){}
+  uint32_t* base = (uint32_t*)0x40044000;
+  if (LPC_IOPORT_NUM(port) == 1) {
+    base = (uint32_t*)0x40044060;
+  }
+  base[pad & 0x1F]  = (mode & MODE_IOCONF_MASK);
   if (mode & MODE_DIR_MASK) {
-    LPC_GPIO->DIR[LPC_IOPORT_NUM(port)] |= 1U << pad;
+    LPC_GPIO->DIR[LPC_IOPORT_NUM(port)] |= (uint32_t) 1U << pad;
   } else {
-    LPC_GPIO->DIR[LPC_IOPORT_NUM(port)] &= ~(1U << pad);
+    LPC_GPIO->DIR[LPC_IOPORT_NUM(port)] &= ~(((uint32_t)1U) << pad);
   }
 }
 

@@ -1,4 +1,3 @@
-
 /****************************************************************************************************//**
  * @file     LPC11Uxx.h
  *
@@ -492,43 +491,55 @@ typedef struct {                            /*!< (@ 0x40048000) SYSCON Structure
 #define   SYSCON_SYSPLLCTRL_PSEL_POS        (5U)
 #define   SYSCON_SYSPLLCTRL_PSEL_MASK       (0x03U << SYSPLLCTRL_PSEL_POS)
 // SYSCON_SYSPLLSTAT
-#define   SYSCON_SYSPLLSTAT_LOCK            0x1
+#define   SYSCON_SYSPLLSTAT_LOCK            0x1U
 // SYSCON_SYSPLLCLKSEL
 #define   SYSCON_SYSPLLCLKSEL_IRC           (0x00U << 0)
 #define   SYSCON_SYSPLLCLKSEL_SYSOSC        (0x01U << 0)
 
-#define   SYSCON_SYSPLLCLKUEN_ENA           0x01
+#define   SYSCON_SYSPLLCLKUEN_ENA           0x01U
+
+#define   SYSCON_USBPLLCLKSEL_IRC           (0U << 0U)
+#define   SYSCON_USBPLLCLKSEL_SYSOSC        (1U << 0U)
+
+#define   SYSCON_USBPLLCLKUEN_ENA           0x01U
 
 #define   SYSCON_MAINCLKSEL_IRC             (0x00U << 0)
 #define   SYSCON_MAINCLKSEL_PLLIN           (0x01U << 0)
 #define   SYSCON_MAINCLKSEL_WATCHDOG        (0x02U << 0)
 #define   SYSCON_MAINCLKSEL_PLLOUT          (0x03U << 0)
 
-#define   SYSCON_MAINCLKUEN_ENA             0x01
+#define   SYSCON_MAINCLKUEN_ENA             0x01U
 
-#define   SYSAHBCLKCTRL_SYS                 (1U << 0)
-#define   SYSAHBCLKCTRL_ROM                 (1U << 1)
-#define   SYSAHBCLKCTRL_RAM0                (1U << 2)
-#define   SYSAHBCLKCTRL_FLASHREG            (1U << 3)
-#define   SYSAHBCLKCTRL_FLASHARRAY          (1U << 4)
-#define   SYSAHBCLKCTRL_I2C                 (1U << 5)
-#define   SYSAHBCLKCTRL_GPIO                (1U << 6)
-#define   SYSAHBCLKCTRL_CT16B0              (1U << 7)
-#define   SYSAHBCLKCTRL_CT16B1              (1U << 8)
-#define   SYSAHBCLKCTRL_CT32B0              (1U << 9)
-#define   SYSAHBCLKCTRL_CT32B1              (1U << 10)
-#define   SYSAHBCLKCTRL_SSP0                (1U << 11)
-#define   SYSAHBCLKCTRL_USART               (1U << 12)
-#define   SYSAHBCLKCTRL_ADC                 (1U << 13)
-#define   SYSAHBCLKCTRL_USB                 (1U << 14)
-#define   SYSAHBCLKCTRL_WWDT                (1U << 15)
-#define   SYSAHBCLKCTRL_IOCON               (1U << 16)
-#define   SYSAHBCLKCTRL_SSP1                (1U << 18)
-#define   SYSAHBCLKCTRL_PINT                (1U << 19)
-#define   SYSAHBCLKCTRL_GROUP0INT           (1U << 23)
-#define   SYSAHBCLKCTRL_GROUP1INT           (1U << 24)
-#define   SYSAHBCLKCTRL_RAM1                (1U << 26)
-#define   SYSAHBCLKCTRL_USBRAM              (1U << 27)
+#define   SYSCON_SYSAHBCLKCTRL_SYS          (1U << 0)
+#define   SYSCON_SYSAHBCLKCTRL_ROM          (1U << 1)
+#define   SYSCON_SYSAHBCLKCTRL_RAM0         (1U << 2)
+#define   SYSCON_SYSAHBCLKCTRL_FLASHREG     (1U << 3)
+#define   SYSCON_SYSAHBCLKCTRL_FLASHARRAY   (1U << 4)
+#define   SYSCON_SYSAHBCLKCTRL_I2C          (1U << 5)
+#define   SYSCON_SYSAHBCLKCTRL_GPIO         (1U << 6)
+#define   SYSCON_SYSAHBCLKCTRL_CT16B0       (1U << 7)
+#define   SYSCON_SYSAHBCLKCTRL_CT16B1       (1U << 8)
+#define   SYSCON_SYSAHBCLKCTRL_CT32B0       (1U << 9)
+#define   SYSCON_SYSAHBCLKCTRL_CT32B1       (1U << 10)
+#define   SYSCON_SYSAHBCLKCTRL_SSP0         (1U << 11)
+#define   SYSCON_SYSAHBCLKCTRL_USART        (1U << 12)
+#define   SYSCON_SYSAHBCLKCTRL_ADC          (1U << 13)
+#define   SYSCON_SYSAHBCLKCTRL_USB          (1U << 14)
+#define   SYSCON_SYSAHBCLKCTRL_WWDT         (1U << 15)
+#define   SYSCON_SYSAHBCLKCTRL_IOCON        (1U << 16)
+#define   SYSCON_SYSAHBCLKCTRL_SSP1         (1U << 18)
+#define   SYSCON_SYSAHBCLKCTRL_PINT         (1U << 19)
+#define   SYSCON_SYSAHBCLKCTRL_GROUP0INT    (1U << 23)
+#define   SYSCON_SYSAHBCLKCTRL_GROUP1INT    (1U << 24)
+#define   SYSCON_SYSAHBCLKCTRL_RAM1         (1U << 26)
+#define   SYSCON_SYSAHBCLKCTRL_USBRAM       (1U << 27)
+
+#define   SYSCON_USBCLKSEL_USBPLLOUT        (0U << 0U)
+#define   SYSCON_USBCLKSEL_MAINCLK          (1U << 0U)
+
+#define   SYSCON_USBCLKUEN_ENA              0x01U
+
+#define   SYSCON_USBCLKDIV_MASK
 
 #define   SYSCON_PDRUNCFG_IRCOUT_PD         (1U << 0U)
 #define   SYSCON_PDRUNCFG_IRC_PD            (1U << 1U)
@@ -608,6 +619,38 @@ typedef struct {                            /*!< (@ 0x40080000) USB Structure   
   __I  uint32_t EPTOGGLE;                   /*!< (@ 0x40080034) USB Endpoint toggle register */
 } LPC_USB_Type;
 
+#define USB_DEVCMDSTAT_DEVADDR_POS        0U
+#define USB_DEVCMDSTAT_DEVADDR_MASK       (0x7FU << USB_DEVCMDSTAT_DEVADDR_POS)
+#define USB_DEVCMDSTAT_DEV_EN             (1U << 7U)
+#define USB_DEVCMDSTAT_SETUP              (1U << 8U)
+#define USB_DEVCMDSTAT_PLL_ON             (1U << 9U)
+#define USB_DEVCMDSTAT_LPM_SUP            (1U << 11U)
+#define USB_DEVCMDSTAT_INTONNAK_AO        (1U << 12U)
+#define USB_DEVCMDSTAT_INTONNAK_AI        (1U << 13U)
+#define USB_DEVCMDSTAT_INTONNAK_CO        (1U << 14U)
+#define USB_DEVCMDSTAT_INTONNAK_CI        (1U << 15U)
+#define USB_DEVCMDSTAT_DCON               (1U << 16U)
+#define USB_DEVCMDSTAT_DSUP               (1U << 17U)
+#define USB_DEVCMDSTAT_LPM_SUS            (1U << 19U)
+#define USB_DEVCMDSTAT_LPM_REWP           (1U << 20U)
+#define USB_DEVCMDSTAT_DCON_C             (1U << 24U)
+#define USB_DEVCMDSTAT_DSUS_C             (1U << 25U)
+#define USB_DEVCMDSTAT_DRES_C             (1U << 26U)
+
+#define USB_INFO_FRAME_NR_POS             0U
+#define USB_INFO_FRAME_NR_MASK            (0x7FFU << USB_INFO_FRAME_NR_POS)
+
+#define USB_EPLISTSTART_POS               (8U)
+#define USB_EPLISTSTART_MASK              (0xFFFFFF << USB_EPLISTSTART_POS)
+
+#define USB_DATABUFSTART_POS              (22U)
+#define USB_DATABUFSTART_MASK             (0x3FF << USB_DATABUFSTART_POS)
+
+#define USB_INT_EPn_INT                   (1U)
+#define USB_INT_EP(ep)                    (1U << (ep))
+#define USB_INT_EP_ALL_INT                (0x3FF)
+#define USB_INT_FRAME_INT                 (1U << 30U)
+#define USB_INT_DEV_INT                   (1U << 31U)
 
 // ------------------------------------------------------------------------------------------------
 // -----                                       GPIO_PORT                                      -----
