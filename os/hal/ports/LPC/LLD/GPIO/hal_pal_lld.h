@@ -71,13 +71,13 @@
  * @brief   Decodes a port identifier from a line identifier.
  */
 #define PAL_PORT(line)                                                      \
-   (((uint32_t)(line)) & 0xFFFFFFE0U)
+   (((uint32_t)(line)) & 0xFFFFFF00U)
 
 /**
  * @brief   Decodes a pad identifier from a line identifier.
  */
 #define PAL_PAD(line)                                                       \
-  (((uint32_t)(line) & 0x0000001FU))
+  (((uint32_t)(line) & 0x000000FFU))
 
 /**
  * @brief   Value identifying an invalid line.
@@ -128,10 +128,16 @@ typedef uint32_t iomode_t;
 #define   MODE_MODE_PULL_UP       (0x2U << MODE_MODE_POS)
 #define   MODE_MODE_REPEATER      (0x3U << MODE_MODE_POS)
 
+#define   MODE_AD_POS             (7U)
+#define   MODE_AD_MASK            (1U << MODE_AD_POS)
+#define   MODE_AD_ANALOG          (0U << MODE_AD_POS)
+#define   MODE_AD_DIGITAL         (1U << MODE_AD_POS)
+
 #define   MODE_DIR_POS            31U
 #define   MODE_DIR_MASK           (0x1U << MODE_DIR_POS)
 #define   MODE_DIR_IN             (0U << MODE_DIR_POS)
 #define   MODE_DIR_OUT            (1U << MODE_DIR_POS)
+
 
 /**
  * @brief   Type of an I/O line.
@@ -160,8 +166,8 @@ typedef uint32_t iopadid_t;
  * @details Low level drivers can define multiple ports, it is suggested to
  *          use this naming convention.
  */
-#define LPC_IOPORT_ID(x)    (x << 5U)
-#define LPC_IOPORT_NUM(x)   (x >> 5U)
+#define LPC_IOPORT_ID(x)    ((x) << 8U)
+#define LPC_IOPORT_NUM(x)   ((x) >> 8U)
 #define IOPORT0         LPC_IOPORT_ID(0)
 #define IOPORT1         LPC_IOPORT_ID(1)
 
@@ -379,5 +385,4 @@ extern "C" {
 #endif /* HAL_USE_PAL == TRUE */
 
 #endif /* HAL_PAL_LLD_H */
-
 /** @} */
