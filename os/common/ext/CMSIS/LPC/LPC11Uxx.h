@@ -347,7 +347,31 @@ typedef struct {                            /*!< (@ 0x40040000) SSP0 Structure  
 } LPC_SSPx_Type;
 
 
+#define   SSP_CR0_DSS_POS               (0U)
+#define   SSP_CR0_DSS_MASK              (0xF << SSP_CR0_DSS_POS)
+#define   SSP_CR0_DSS(X)                (((X) << SSP_CR0_DSS_POS) & SSP_CR0_DSS_MASK)
+#define   SSP_CR0_FRF_POS               (4U)
+#define   SSP_CR0_FRF_MASK              (0x3 << SSP_CR0_FRF_POS)
+#define   SSP_CR0_SCR_POS               (8U)
+#define   SSP_CR0_SCR_MASK              (0xFF << SSP_CR0_SCR_POS)
+#define   SSP_CR0_SCR(X)                (((X) << SSP_CR0_SCR_POS) & SSP_CR0_SCR_MASK)
+#define   SSP_CR0_CPOL                  (1U << 6U)
+#define   SSP_CR0_CPHA                  (1U << 7U)
 
+#define   SSP_CR1_SPI_EN                (1U << 1U)
+#define   SSP_CR1_SLAVE                 (1U << 2U)
+#define   SSP_CR1_SLAVE_OUTPUT_DISABLE  (1U << 3U)
+
+#define   SSP_SR_TxEmpty                (1U << 0U) // Tx Empty
+#define   SSP_SR_TxNotFull              (1U << 1U)
+#define   SSP_SR_RxNotEmpty             (1U << 2U)
+#define   SSP_SR_RxFull                 (1U << 3U)
+#define   SSP_SR_BUSY                   (1U << 4U)
+
+#define   SSP_INT_ROR                   (1U << 0U) // RxOverrun
+#define   SSP_INT_RTMIS                 (1U << 1U) // Rx FIFO not Empty Timeout
+#define   SSP_INT_RXMIS                 (1U << 2U) // Rx Half Full
+#define   SSP_INT_TXMIS                 (1U << 3U) // Tx Half Empty
 // ------------------------------------------------------------------------------------------------
 // -----                                       IOCONFIG                                       -----
 // ------------------------------------------------------------------------------------------------
@@ -485,6 +509,9 @@ typedef struct {                            /*!< (@ 0x40048000) SYSCON Structure
   __I  uint32_t DEVICE_ID;                  /*!< (@ 0x400483F4) Device ID              */
 } LPC_SYSCON_Type;
 
+#define   SYSCON_PRESETCTRL_SSP0_RSTn       (1U << 0U)
+#define   SYSCON_PRESETCTRL_I2C_RSTn        (1U << 1U)
+#define   SYSCON_PRESETCTRL_SSP1_RSTn       (1U << 2U)
 // SYSCON_SYSPLLCTRL
 #define   SYSCON_SYSPLLCTRL_MSEL_POS        (0U)
 #define   SYSCON_SYSPLLCTRL_MSEL_MASK       (0x1FU << SYSPLLCTRL_MSEL_POS)

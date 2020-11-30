@@ -133,11 +133,12 @@ typedef uint32_t iomode_t;
 #define   MODE_AD_ANALOG          (0U << MODE_AD_POS)
 #define   MODE_AD_DIGITAL         (1U << MODE_AD_POS)
 
+#define   MODE_OD_ENABLE          (1U << 10U)
+
 #define   MODE_DIR_POS            31U
 #define   MODE_DIR_MASK           (0x1U << MODE_DIR_POS)
 #define   MODE_DIR_IN             (0U << MODE_DIR_POS)
 #define   MODE_DIR_OUT            (1U << MODE_DIR_POS)
-
 
 /**
  * @brief   Type of an I/O line.
