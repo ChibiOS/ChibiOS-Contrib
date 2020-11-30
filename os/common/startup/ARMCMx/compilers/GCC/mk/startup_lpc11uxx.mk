@@ -3,7 +3,7 @@ STARTUPSRC = 	$(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/crt1.c
 
 
 STARTUPASM = 	$(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/crt0_v6m.S \
-				$(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/vectors.S
+				$(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/vectors_lpc.S
 
 
 STARTUPINC = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/ld \

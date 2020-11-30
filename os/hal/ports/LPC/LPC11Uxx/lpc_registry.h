@@ -38,8 +38,13 @@ defined(__DOXYGEN__)
 #if defined(LPC11Uxx) || defined(__DOXYGEN__)
 
 /* USB attributes.*/
-#define LPC_HAS_USB                TRUE
-#define LPC_USB_IRQ_VECTOR         Vector98
+#define LPC_HAS_USB                 TRUE
+#define LPC_USB_IRQ_VECTOR          Vector98
+
+
+#define LPC_SSP0_IRQ_VECTOR         Vector90
+#define LPC_SSP1_IRQ_VECTOR         Vector78
+
 
 #endif
 

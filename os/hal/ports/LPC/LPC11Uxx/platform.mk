@@ -9,6 +9,7 @@ PLATFORMINC =	${CHIBIOS}/os/hal/ports/common/ARMCMx \
 include $(CHIBIOS_CONTRIB)/os/hal/ports/LPC/LLD/STM/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/LPC/LLD/GPIO/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/LPC/LLD/USB/driver.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/LPC/LLD/SPI/driver.mk
 
 # Shared variables
 ALLCSRC += $(PLATFORMSRC)
