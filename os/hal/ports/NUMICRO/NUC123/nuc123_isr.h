@@ -107,13 +107,13 @@
 #define NUC123_TIM4_NUMBER           TMR3_IRQn
 
 /*
- * USART units.
+ * UART units.
  */
-#define NUC123_USART1_HANDLER        Vector70
-#define NUC123_USART2_HANDLER        Vector74
+#define NUC123_UART0_HANDLER         Vector70
+#define NUC123_UART1_HANDLER         Vector74
 
-#define NUC123_USART1_NUMBER         UART0_IRQn
-#define NUC123_USART2_NUMBER         UART1_IRQn
+#define NUC123_UART0_NUMBER          UART0_IRQn
+#define NUC123_UART1_NUMBER          UART1_IRQn
 
 /*
  * USB units.
