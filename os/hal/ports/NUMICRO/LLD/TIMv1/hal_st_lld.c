@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2019 /u/KeepItUnder
+    Copyright (C) 2020 Alex Lewontin
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -30,7 +31,7 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
+#if (OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING)
 
 #if (OSAL_ST_RESOLUTION == 32)
 #define ST_ARR_INIT                         0xFFFFFFFF
@@ -156,91 +157,6 @@ OSAL_IRQ_HANDLER(ST_HANDLER) {
 }
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */
 
-/* DEBUG - Catch unused Interrupt Vectors and output to test pins
-
-OSAL_IRQ_HANDLER(Vector7C){
-  OSAL_IRQ_PROLOGUE();
-
-  GPIO_TOGGLE(PB8);
-  GPIO_TOGGLE(PB11);
-  
-  OSAL_IRQ_EPILOGUE();
-}
-
-OSAL_IRQ_HANDLER(NUC123_TIM3_HANDLER){
-
-  OSAL_IRQ_PROLOGUE();
-
-  GPIO_TOGGLE(PB4);
-  GPIO_TOGGLE(PB5);
-  GPIO_TOGGLE(PB6);
-  GPIO_TOGGLE(PB7);
-  GPIO_TOGGLE(PB8);
-  
-  OSAL_IRQ_EPILOGUE();
-}
-
-OSAL_IRQ_HANDLER(NUC123_TIM4_HANDLER){
-
-  OSAL_IRQ_PROLOGUE();
-
-  GPIO_TOGGLE(PB4);
-  GPIO_TOGGLE(PB5);
-  GPIO_TOGGLE(PB6);
-  GPIO_TOGGLE(PB7);
-  GPIO_TOGGLE(PB8);
-  
-  OSAL_IRQ_EPILOGUE();
-}
-
-OSAL_IRQ_HANDLER(NUC123_ADC_HANDLER){
-
-  OSAL_IRQ_PROLOGUE();
-
-  GPIO_TOGGLE(PB4);
-  GPIO_TOGGLE(PB5);
-  GPIO_TOGGLE(PB6);
-  GPIO_TOGGLE(PB7);
-  GPIO_TOGGLE(PB8);
-  
-  OSAL_IRQ_EPILOGUE();
-}
-
-OSAL_IRQ_HANDLER(NUC123_USB1_HANDLER){
-
-  OSAL_IRQ_PROLOGUE();
-
-  GPIO_TOGGLE(PB4);
-  GPIO_TOGGLE(PB5);
-  GPIO_TOGGLE(PB6);
-  GPIO_TOGGLE(PB7);
-  GPIO_TOGGLE(PB8);
-  
-  OSAL_IRQ_EPILOGUE();
-}
-
-OSAL_IRQ_HANDLER(NUC123_PDMA_HANDLER){
-
-  OSAL_IRQ_PROLOGUE();
-
-  GPIO_TOGGLE(PB4);
-  GPIO_TOGGLE(PB5);
-  GPIO_TOGGLE(PB6);
-  GPIO_TOGGLE(PB7);
-  GPIO_TOGGLE(PB8);
-  
-  OSAL_IRQ_EPILOGUE();
-}
-
-//OSAL_IRQ_HANDLER(HardFault_Handler){
-//  OSAL_IRQ_PROLOGUE();
-
-//  NVIC_SystemReset();
-  
-//  OSAL_IRQ_EPILOGUE();
-//}
-*/
-
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -284,9 +200,12 @@ void st_lld_init(void) {
 #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
   /* Periodic systick mode, the Cortex-Mx internal systick timer is used
      in this mode.*/
-
- // CLK_EnableSysTick(CLK_CLKSEL0_STCLK_S_HCLK, (NUC123_HCLK / OSAL_ST_FREQUENCY) - 1);
-  SysTick->LOAD = (NUC123_HCLK / OSAL_ST_FREQUENCY) - 1;
+  SystemUnlockReg();
+  CLK->CLKSEL0 &= ~CLK_CLKSEL0_STCLK_S_Msk;
+  CLK->CLKSEL0 |= CLK_CLKSEL0_STCLK_S_HCLK_DIV2;
+  LOCKREG();
+  
+  SysTick->LOAD = ((NUC123_HCLK / 2) / OSAL_ST_FREQUENCY) - 1;
   SysTick->VAL = 0;
   SysTick->CTRL = (~SysTick_CTRL_CLKSOURCE_Msk) &
                   (SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_TICKINT_Msk);
