@@ -200,6 +200,42 @@ typedef struct {                            /*!< (@ 0x40008000) USART Structure 
   __IO uint32_t SYNCCTRL;
 } LPC_USART_Type;
 
+#define USART_FCR_FIFOEN                (1U << 0U)
+#define USART_FCR_RX_RST                (1U << 1U)
+#define USART_FCR_TX_RST                (1U << 2U)
+#define USART_FCR_RXTL_POS              (6U)
+#define USART_FCR_RXTL_1B               (0x0 << USART_FCR_RXTL_POS)
+#define USART_FCR_RXTL_4B               (0x1 << USART_FCR_RXTL_POS)
+#define USART_FCR_RXTL_8B               (0x2 << USART_FCR_RXTL_POS)
+#define USART_FCR_RXTL_14B              (0x3 << USART_FCR_RXTL_POS)
+#define USART_FCR_RXTL_MASK             (0x3 << USART_FCR_RXTL_POS)
+
+#define USART_LCR_WLS_POS               (0U)
+#define USART_LCR_WLS_5B                (0x0U << USART_LCR_WLS_POS)
+#define USART_LCR_WLS_6B                (0x1U << USART_LCR_WLS_POS)
+#define USART_LCR_WLS_7B                (0x2U << USART_LCR_WLS_POS)
+#define USART_LCR_WLS_8B                (0x3U << USART_LCR_WLS_POS)
+#define USART_LCR_WLS_MASK              (0x3U << USART_LCR_WLS_POS)
+#define USART_LCR_SBS_POS               (2U)
+#define USART_LCR_SBS_1B                (0U << USART_LCR_SBS_POS)
+#define USART_LCR_SBS_2B                (0U << USART_LCR_SBS_POS)
+#define USART_LCR_SBS_MASK              (0x1 << USART_LCR_SBS_POS)
+#define USART_LCR_PE                    (1U << 3U)
+#define USART_LCR_PS_POS                (4U)
+#define USART_LCR_PS_ODD                (0x0U << USART_LCR_PS_POS)
+#define USART_LCR_PS_EVEN               (0x1U << USART_LCR_PS_POS)
+#define USART_LCR_PS_F1                 (0x2U << USART_LCR_PS_POS)
+#define USART_LCR_PS_F0                 (0x3U << USART_LCR_PS_POS)
+#define USART_LCR_PS_MASK               (0x3U << USART_LCR_PS_POS)
+#define USART_LCR_DLAB                  (1U << 7U)
+
+#define USART_LSR_RDR                   (1U << 0U)
+#define USART_LSR_THRE                  (1U << 5U)
+
+#define USART_TER_TXEN                  (1U << 7U)
+
+#define USART_IER_RBRINTEN              (1U << 0U)  // Rx Has Data
+#define USART_IER_THRINTEN              (1U << 1U)  // Tx Empty
 
 // ------------------------------------------------------------------------------------------------
 // -----                                        Timer                                       -----

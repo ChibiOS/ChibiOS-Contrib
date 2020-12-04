@@ -41,10 +41,10 @@ defined(__DOXYGEN__)
 #define LPC_HAS_USB                 TRUE
 #define LPC_USB_IRQ_VECTOR          Vector98
 
-
 #define LPC_SSP0_IRQ_VECTOR         Vector90
 #define LPC_SSP1_IRQ_VECTOR         Vector78
 
+#define LPC_UART_IRQ_VECTOR         Vector94
 
 #endif
 
