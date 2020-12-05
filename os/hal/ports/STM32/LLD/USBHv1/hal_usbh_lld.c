@@ -77,7 +77,7 @@
 #if defined(STM32H7xx)
 #define rccEnableUSB2(x) rccEnableUSB1_OTG_FS(x)
 #define rccDisableUSB2() rccDisableUSB1_OTG_FS()
-#define rccResetUSB2() rccResetUSB2_OTG_FS()
+#define rccResetUSB2() rccResetUSB2_OTG_HS()
 #else
 #define rccEnableUSB2(x) rccEnableOTG_HS(x)
 #define rccDisableUSB2() rccDisableOTG_HS()
