@@ -1,213 +1,85 @@
 pipeline {
-  agent any
+  agent {
+    docker { image 'fpoussin/jenkins:ubuntu-18.04-chibios' }
+  }
   stages {
     stage('Prepare ChibiOS') {
-      agent {
-        docker {
-          image 'fpoussin/jenkins:ubuntu-18.04'
-        }
-
-      }
       steps {
-        sh '''echo $CH_BRANCH
-echo $CH_PATH
-echo $CHC_PATH
+        sh '''
+        echo $CH_BRANCH
+        echo $CH_PATH
+        echo $CHC_PATH
 
-exit 0'''
+        exit 0
+        '''
+        
+        sh '''
+        arm-none-eabi-gcc -v
+
+        cd $WORKSPACE/ext
+        for i in *.7z; do 7z x -y $i; done
+
+        cd $WORKSPACE
+        rm -rf $CH_PATH
+        git clone /var/lib/git/ChibiOS $CH_PATH
+        cd $CH_PATH
+        git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
+        git fetch --all
+        git checkout -b $CH_BRANCH origin/$CH_BRANCH
+        git pull --rebase origin $CH_BRANCH
+
+        cd ext
+        for i in *.7z; do 7z x -y $i; done
+        '''
       }
     }
-
-    stage('Build Platforms') {
-      parallel {
-        stage('Build STM32') {
-          agent {
-            docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-chibios'
-            }
-
-          }
-          steps {
-            sh '''arm-none-eabi-gcc -v
-
-cd $WORKSPACE/ext
-for i in *.7z; do 7z x -y $i; done
-
-cd $WORKSPACE
-rm -rf $CH_PATH
-git clone /var/lib/git/ChibiOS $CH_PATH
-cd $CH_PATH
-git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
-git fetch --all
-git checkout -b $CH_BRANCH origin/$CH_BRANCH
-git pull --rebase origin $CH_BRANCH
-
-cd ext
-for i in *.7z; do 7z x -y $i; done'''
-            sh '''export CH_PATH=$WORKSPACE/ChibiOS
-export CHC_PATH=$WORKSPACE
-
-./tools/chbuild.sh ./testhal/STM32/
-./tools/chbuild.sh ./demos/STM32/'''
-          }
-        }
-
-        stage('Build NRF51') {
-          agent {
-            docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-chibios'
-            }
-
-          }
-          steps {
-            sh '''arm-none-eabi-gcc -v
-
-cd $WORKSPACE/ext
-for i in *.7z; do 7z x -y $i; done
-
-cd $WORKSPACE
-rm -rf $CH_PATH
-git clone /var/lib/git/ChibiOS $CH_PATH
-cd $CH_PATH
-git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
-git fetch --all
-git checkout -b $CH_BRANCH origin/$CH_BRANCH
-git pull --rebase origin $CH_BRANCH
-
-cd ext
-for i in *.7z; do 7z x -y $i; done'''
-            sh '''export CH_PATH=$WORKSPACE/ChibiOS
-export CHC_PATH=$WORKSPACE
-
-./tools/chbuild.sh ./testhal/NRF51/
-./tools/chbuild.sh ./demos/NRF51/
-'''
-          }
-        }
-
-        stage('Build NRF52') {
-          agent {
-            docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-chibios'
-            }
-
-          }
-          steps {
-            sh '''arm-none-eabi-gcc -v
-
-cd $WORKSPACE/ext
-for i in *.7z; do 7z x -y $i; done
-
-cd $WORKSPACE
-rm -rf $CH_PATH
-git clone /var/lib/git/ChibiOS $CH_PATH
-cd $CH_PATH
-git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
-git fetch --all
-git checkout -b $CH_BRANCH origin/$CH_BRANCH
-git pull --rebase origin $CH_BRANCH
-
-cd ext
-for i in *.7z; do 7z x -y $i; done'''
-            sh '''export CH_PATH=$WORKSPACE/ChibiOS
-export CHC_PATH=$WORKSPACE
-
-./tools/chbuild.sh ./testhal/NRF52/
-./tools/chbuild.sh ./demos/NRF52/
-'''
-          }
-        }
-
-        stage('Build Kinetis') {
-          agent {
-            docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-chibios'
-            }
-
-          }
-          steps {
-            sh '''arm-none-eabi-gcc -v
-
-cd $WORKSPACE/ext
-for i in *.7z; do 7z x -y $i; done
-
-cd $WORKSPACE
-rm -rf $CH_PATH
-git clone /var/lib/git/ChibiOS $CH_PATH
-cd $CH_PATH
-git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
-git fetch --all
-git checkout -b $CH_BRANCH origin/$CH_BRANCH
-git pull --rebase origin $CH_BRANCH
-
-cd ext
-for i in *.7z; do 7z x -y $i; done'''
-            sh '''export CH_PATH=$WORKSPACE/ChibiOS
-export CHC_PATH=$WORKSPACE
-
-./tools/chbuild.sh ./testhal/KINETIS/
-./tools/chbuild.sh ./demos/KINETIS/
-'''
-          }
-        }
-        stage('Build LPC') {
-          agent {
-            docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-chibios'
-            }
-
-          }
-          steps {
-            sh '''arm-none-eabi-gcc -v
-cd $WORKSPACE/ext
-for i in *.7z; do 7z x -y $i; done
-cd $WORKSPACE
-rm -rf $CH_PATH
-git clone /var/lib/git/ChibiOS $CH_PATH
-cd $CH_PATH
-git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
-git fetch --all
-git checkout -b $CH_BRANCH origin/$CH_BRANCH
-git pull --rebase origin $CH_BRANCH
-cd ext
-for i in *.7z; do 7z x -y $i; done'''
-            sh '''export CH_PATH=$WORKSPACE/ChibiOS
-export CHC_PATH=$WORKSPACE
-./tools/chbuild.sh ./demos/LPC/
-'''
-          }
-        }
-        stage('Build NUMICRO') {
-          agent {
-            docker {
-              image 'fpoussin/jenkins:ubuntu-18.04-chibios'
-            }
-
-          }
-          steps {
-            sh '''arm-none-eabi-gcc -v
-cd $WORKSPACE/ext
-for i in *.7z; do 7z x -y $i; done
-cd $WORKSPACE
-rm -rf $CH_PATH
-git clone /var/lib/git/ChibiOS $CH_PATH
-cd $CH_PATH
-git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
-git fetch --all
-git checkout -b $CH_BRANCH origin/$CH_BRANCH
-git pull --rebase origin $CH_BRANCH
-cd ext
-for i in *.7z; do 7z x -y $i; done'''
-            sh '''export CH_PATH=$WORKSPACE/ChibiOS
-export CHC_PATH=$WORKSPACE
-
-./tools/chbuild.sh ./testhal/NUMICRO/
-./tools/chbuild.sh ./demos/NUMICRO/
-'''
-          }
-        }
+    stage('Build STM32') {
+      steps {
+        sh '''
+        ./tools/chbuild.sh ./testhal/STM32/
+        ./tools/chbuild.sh ./demos/STM32/
+        '''
       }
     }
-
+    stage('Build NRF51') {
+      steps {
+        sh '''
+        ./tools/chbuild.sh ./testhal/NRF51/
+        ./tools/chbuild.sh ./demos/NRF51/
+        '''
+      }
+    }
+    stage('Build NRF52') {
+      steps {
+        sh '''
+        ./tools/chbuild.sh ./testhal/NRF52/
+        ./tools/chbuild.sh ./demos/NRF52/
+        '''
+      }
+    }
+    stage('Build Kinetis') {
+      steps {
+        sh '''
+        ./tools/chbuild.sh ./testhal/KINETIS/
+        ./tools/chbuild.sh ./demos/KINETIS/
+        '''
+      }
+    }
+    stage('Build LPC') {
+      steps {
+        sh '''
+        ./tools/chbuild.sh ./demos/LPC/
+        '''
+      }
+    }
+    stage('Build NUMICRO') {
+      steps {
+        sh '''
+        ./tools/chbuild.sh ./testhal/NUMICRO/
+        ./tools/chbuild.sh ./demos/NUMICRO/
+        '''
+      }
+    }
   }
   environment {
     CH_BRANCH = 'stable_20.3.x'
