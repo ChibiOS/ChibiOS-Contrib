@@ -149,7 +149,33 @@ export CHC_PATH=$WORKSPACE
 '''
           }
         }
+        stage('Build LPC') {
+          agent {
+            docker {
+              image 'fpoussin/jenkins:ubuntu-18.04-chibios'
+            }
 
+          }
+          steps {
+            sh '''arm-none-eabi-gcc -v
+cd $WORKSPACE/ext
+for i in *.7z; do 7z x -y $i; done
+cd $WORKSPACE
+rm -rf $CH_PATH
+git clone /var/lib/git/ChibiOS $CH_PATH
+cd $CH_PATH
+git remote set-url origin https://github.com/ChibiOS/ChibiOS.git
+git fetch --all
+git checkout -b $CH_BRANCH origin/$CH_BRANCH
+git pull --rebase origin $CH_BRANCH
+cd ext
+for i in *.7z; do 7z x -y $i; done'''
+            sh '''export CH_PATH=$WORKSPACE/ChibiOS
+export CHC_PATH=$WORKSPACE
+./tools/chbuild.sh ./demos/LPC/
+'''
+          }
+        }
       }
     }
 
