@@ -42,7 +42,6 @@
 #define CLK_CLKSEL0_STCLK_S_HXT_DIV2         (0x2ul<<CLK_CLKSEL0_STCLK_S_Pos)         /*!< Set HXT/2 as STCLK clock source */
 #define CLK_CLKSEL0_STCLK_S_HCLK_DIV2        (0x3ul<<CLK_CLKSEL0_STCLK_S_Pos)         /*!< Set HCLK/2 as STCLK clock source */
 #define CLK_CLKSEL0_STCLK_S_HIRC_DIV2        (0x7ul<<CLK_CLKSEL0_STCLK_S_Pos)         /*!< Set HIRC/2 as STCLK clock source */
-#define CLK_CLKSEL0_STCLK_S_HCLK             (0x1ul<<SysTick_CTRL_CLKSOURCE_Pos)      /*!< Set HCLK as STCLK clock source */
 
 #define TIMER_MODE_PERIODIC                  (0x01ul << TIMER_TCSR_MODE_Pos)
 #define TIMER_MODE_CONTINUOUS                (0x03ul << TIMER_TCSR_MODE_Pos)
@@ -78,19 +77,19 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if NUC123_ST_USE_TIMER == 2
+#if (NUC123_ST_USE_TIMER == 2)
 #if !NUC123_HAS_TIM2
 #error "TIM2 not present"
 #endif
 #define NUC123_ST_TIM                              TIMER1
 
-#elif NUC123_ST_USE_TIMER == 3
+#elif (NUC123_ST_USE_TIMER == 3)
 #if !NUC123_HAS_TIM3
 #error "TIM3 not present"
 #endif
 #define NUC123_ST_TIM                              TIMER2
 
-#elif NUC123_ST_USE_TIMER == 4
+#elif (NUC123_ST_USE_TIMER == 4)
 #if !NUC123_HAS_TIM4
 #error "TIM4 not present"
 #endif

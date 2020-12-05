@@ -24,7 +24,7 @@
 
 #include "hal.h"
 
-// #if HAL_USE_PWM || defined(__DOXYGEN__)
+#if (HAL_USE_PWM == TRUE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -226,6 +226,6 @@ uint32_t pwm_lld_config_output_channel(PWM_T *pwm, uint32_t channel, uint32_t fr
     return(pwmClk);
 }
 
-// #endif /* HAL_USE_PWM */
+#endif /* HAL_USE_PWM */
 
 /** @} */

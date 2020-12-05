@@ -253,8 +253,12 @@
 #define NUC123_HAS_CRC                       TRUE
 #define NUC123_CRC_PROGRAMMABLE              FALSE
 
+/*
+This currently correspond to the header guards, and gets tripped on double inclusion.
+This does not seem correct.
 #else
 #error "NUC123SD4AN0 device not specified"
+*/
 
 /** @} */
 
