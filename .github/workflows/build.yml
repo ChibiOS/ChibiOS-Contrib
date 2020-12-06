@@ -18,10 +18,10 @@ jobs:
       run: |
         echo "CH_VER=stable_20.3.x" >> $GITHUB_ENV
         echo "CHC_PATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
-        echo "CH_PATH=$GITHUB_WORKSPACE/ChibiOS-$CH_VER" >> $GITHUB_ENV
     - name: download Chibios
       run: |
         curl -L https://github.com/ChibiOS/ChibiOS/archive/$CH_VER.tar.gz | tar xz
+        echo "CH_PATH=$GITHUB_WORKSPACE/ChibiOS-$CH_VER" >> $GITHUB_ENV
     - name: decompress ChibiOS ext resources
       run: |
         cd $CH_PATH/ext
