@@ -19,7 +19,7 @@ jobs:
         echo "CHC_PATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
     - name: download Chibios
       run: |
-        curl -L https://github.com/ChibiOS/ChibiOS/archive/$CH_VER.tar.gz | tar xz $CH_VER.tar.gz
+        curl -L https://github.com/ChibiOS/ChibiOS/archive/$CH_VER.tar.gz | tar xz
         echo "CH_PATH=$GITHUB_WORKSPACE/ChibiOS-$CH_VER" >> $GITHUB_ENV
     - name: decompress resources
       run: |
