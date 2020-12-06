@@ -11,10 +11,9 @@ pipeline {
         sh '''
         echo $CH_BRANCH
         echo $CH_PATH
-        echo $CHC_PATH
-
         exit 0
         '''
+
         sh '''
         arm-none-eabi-gcc -v
 
@@ -104,5 +103,6 @@ pipeline {
   }
   environment {
     CH_BRANCH = 'stable_20.3.x'
+    CH_PATH   = 'ChibiOS'
   }
 }
