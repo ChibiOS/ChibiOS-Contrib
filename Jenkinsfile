@@ -39,6 +39,8 @@ pipeline {
     stage('Build STM32') {
       steps {
         sh '''
+        export CH_PATH=$WORKSPACE/ChibiOS
+        export CHC_PATH=$WORKSPACE
         ./tools/chbuild.sh ./testhal/STM32/
         ./tools/chbuild.sh ./demos/STM32/
         '''
@@ -48,6 +50,8 @@ pipeline {
     stage('Build NRF51') {
       steps {
         sh '''
+        export CH_PATH=$WORKSPACE/ChibiOS
+        export CHC_PATH=$WORKSPACE
         ./tools/chbuild.sh ./testhal/NRF51/
         ./tools/chbuild.sh ./demos/NRF51/
         '''
@@ -57,6 +61,8 @@ pipeline {
     stage('Build NRF52') {
       steps {
         sh '''
+        export CH_PATH=$WORKSPACE/ChibiOS
+        export CHC_PATH=$WORKSPACE
         ./tools/chbuild.sh ./testhal/NRF52/
         ./tools/chbuild.sh ./demos/NRF52/
         '''
@@ -66,6 +72,8 @@ pipeline {
     stage('Build Kinetis') {
       steps {
         sh '''
+        export CH_PATH=$WORKSPACE/ChibiOS
+        export CHC_PATH=$WORKSPACE
         ./tools/chbuild.sh ./testhal/KINETIS/
         ./tools/chbuild.sh ./demos/KINETIS/
         '''
@@ -75,6 +83,8 @@ pipeline {
     stage('Build LPC') {
       steps {
         sh '''
+        export CH_PATH=$WORKSPACE/ChibiOS
+        export CHC_PATH=$WORKSPACE
         ./tools/chbuild.sh ./demos/LPC/
         '''
       }
@@ -83,6 +93,8 @@ pipeline {
     stage('Build NUMICRO') {
       steps {
         sh '''
+        export CH_PATH=$WORKSPACE/ChibiOS
+        export CHC_PATH=$WORKSPACE
         ./tools/chbuild.sh ./testhal/NUMICRO/
         ./tools/chbuild.sh ./demos/NUMICRO/
         '''
@@ -92,7 +104,5 @@ pipeline {
   }
   environment {
     CH_BRANCH = 'stable_20.3.x'
-    CH_PATH = 'ChibiOS'
-    CHC_PATH = '.'
   }
 }
