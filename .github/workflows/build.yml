@@ -10,6 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - uses: fiam/arm-none-eabi-gcc@v1
       with:
         release: '9-2019-q4'
@@ -21,11 +22,11 @@ jobs:
       run: |
         curl -L https://github.com/ChibiOS/ChibiOS/archive/$CH_VER.tar.gz | tar xz
         echo "CH_PATH=$GITHUB_WORKSPACE/ChibiOS-$CH_VER" >> $GITHUB_ENV
-    - name: decompress resources
+    - name: decompress ChibiOS ext resources
       run: |
         cd $CH_PATH/ext
         for i in *.7z; do 7z x -y $i; done
-    - name: decompress resources
+    - name: decompress ChibiOS-Contrib ext resources
       run: |
         cd $CHC_PATH/ext
         for i in *.7z; do 7z x -y $i; done
