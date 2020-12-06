@@ -1,0 +1,26 @@
+name: build tests
+
+on:
+  push:
+    branches: [ chibios-20.3.x ]
+  pull_request:
+    branches: [ chibios-20.3.x ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: fiam/arm-none-eabi-gcc@v1.0.2
+      with:
+        release: '9-2019-q4'
+    - name: setup vars
+      run: export CH_PATH=$GITHUB_WORKSPACE/ChibiOS CHC_PATH=$GITHUB_WORKSPACE
+    - name: checkout Chibios
+      run: git clone --branch stable_20.3.x git@github.com:ChibiOS/ChibiOS.git ChibiOS
+    - name: decompress resources
+      run: cd $CH_PATH/ext && for i in *.7z; do 7z x -y $i; done
+    - name: decompress resources
+      run: cd $CHC_PATH/ext && for i in *.7z; do 7z x -y $i; done
+    - name: build STM32
+      run: $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/STM32/
+      
