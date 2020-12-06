@@ -1,6 +1,9 @@
 pipeline {
   agent {
-    docker { image 'fpoussin/jenkins:ubuntu-18.04-chibios' }
+    docker {
+      image 'fpoussin/jenkins:ubuntu-18.04-chibios'
+    }
+
   }
   stages {
     stage('Prepare ChibiOS') {
@@ -12,7 +15,6 @@ pipeline {
 
         exit 0
         '''
-        
         sh '''
         arm-none-eabi-gcc -v
 
@@ -33,6 +35,7 @@ pipeline {
         '''
       }
     }
+
     stage('Build STM32') {
       steps {
         sh '''
@@ -41,6 +44,7 @@ pipeline {
         '''
       }
     }
+
     stage('Build NRF51') {
       steps {
         sh '''
@@ -49,6 +53,7 @@ pipeline {
         '''
       }
     }
+
     stage('Build NRF52') {
       steps {
         sh '''
@@ -57,6 +62,7 @@ pipeline {
         '''
       }
     }
+
     stage('Build Kinetis') {
       steps {
         sh '''
@@ -65,6 +71,7 @@ pipeline {
         '''
       }
     }
+
     stage('Build LPC') {
       steps {
         sh '''
@@ -72,6 +79,7 @@ pipeline {
         '''
       }
     }
+
     stage('Build NUMICRO') {
       steps {
         sh '''
@@ -80,9 +88,11 @@ pipeline {
         '''
       }
     }
+
   }
   environment {
     CH_BRANCH = 'stable_20.3.x'
     CH_PATH = 'ChibiOS'
+    CHC_PATH = '.'
   }
 }
