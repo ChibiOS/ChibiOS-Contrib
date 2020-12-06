@@ -14,13 +14,23 @@ jobs:
       with:
         release: '9-2019-q4'
     - name: setup vars
-      run: export CH_PATH=$GITHUB_WORKSPACE/ChibiOS CHC_PATH=$GITHUB_WORKSPACE
-    - name: checkout Chibios
-      run: git clone --branch stable_20.3.x git@github.com:ChibiOS/ChibiOS.git ChibiOS
+      run: |
+        echo "CH_VER=stable_20.3.x" >> $GITHUB_ENV
+        echo "CHC_PATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+    - name: download Chibios
+      run: |
+        curl -L https://github.com/ChibiOS/ChibiOS/archive/$CH_VER.tar.gz | tar xz $CH_VER.tar.gz
+        echo "CH_PATH=$GITHUB_WORKSPACE/ChibiOS-$CH_VER" >> $GITHUB_ENV
     - name: decompress resources
-      run: cd $CH_PATH/ext && for i in *.7z; do 7z x -y $i; done
+      run: |
+        cd $CH_PATH/ext
+        for i in *.7z; do 7z x -y $i; done
     - name: decompress resources
-      run: cd $CHC_PATH/ext && for i in *.7z; do 7z x -y $i; done
+      run: |
+        cd $CHC_PATH/ext
+        for i in *.7z; do 7z x -y $i; done
     - name: build STM32
-      run: $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/STM32/
+      run: |
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/STM32
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/STM32
       
