@@ -16,7 +16,9 @@
 
 #include "hal.h"
 
+#if HAL_USE_PAL
 const PALConfig pal_default_config;
+#endif
 
 /**
  * @brief   Board-specific initialization code.

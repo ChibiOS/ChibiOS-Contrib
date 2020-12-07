@@ -115,6 +115,9 @@ include $(CHIBIOS)/tools/mk/autobuild.mk
 #include $(CHIBIOS)/test/rt/rt_test.mk
 #include $(CHIBIOS)/test/oslib/oslib_test.mk
 
+# Define linker script file here
+LDSCRIPT= $(STARTUPLD_CONTRIB)/NUC123SD4AN0.ld
+
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
 CSRC = $(ALLCSRC) \
@@ -183,7 +186,6 @@ include $(RULESPATH)/rules.mk
 # Custom rules
 #
 
-
 OPENOCD:=$(shell readlink -f `which openocd`)
 OPENOCDPATH:=$(shell dirname $(OPENOCD))/../share/openocd
 
@@ -195,11 +197,3 @@ connect:
 
 flash: $(BUILDDIR)/$(PROJECT).elf
 	openocd -f ../scripts/interface/nulink.cfg -f ../scripts/target/numicroM0.cfg -c "program $< verify reset exit"
-
-
-
-
-#
-# Custom rules
-##############################################################################
-
