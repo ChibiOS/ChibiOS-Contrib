@@ -99,10 +99,10 @@ DEPDIR          := ./.dep
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
 # Startup files.
-include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_NUC123SD4AN0.mk
+include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_NUC123.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/NUC123SD4AN0/platform.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/NUC123/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/NUTINY-SDK-NUC123-V2.0/board.mk
 include $(CHIBIOS)/os/hal/osal/os-less/ARMCMx/osal.mk
 # RTOS files (optional).
@@ -116,7 +116,7 @@ include $(CHIBIOS)/tools/mk/autobuild.mk
 #include $(CHIBIOS)/test/oslib/oslib_test.mk
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD_CONTRIB)/NUC123SD4AN0.ld
+LDSCRIPT= $(STARTUPLD_CONTRIB)/NUC123xD4xx0.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.

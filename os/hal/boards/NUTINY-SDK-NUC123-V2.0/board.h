@@ -27,7 +27,6 @@
 #define NUC123SD4AN0
 #define BOARD_NAME "NUTINY SDK NUC123 V2.0"
 
-#define NUC123_LSE_BYPASS TRUE
 /*
  * Board specific settings.
  */

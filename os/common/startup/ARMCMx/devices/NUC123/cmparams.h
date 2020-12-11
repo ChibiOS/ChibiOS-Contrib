@@ -15,13 +15,13 @@
 */
 
 /**
- * @file    NUC123SD4AN0/cmparams.h
- * @brief   ARM Cortex-M0 parameters for the NUC123SD4AN0.
+ * @file    NUC123/cmparams.h
+ * @brief   ARM Cortex-M0 parameters for the NUC123.
  *
- * @defgroup ARMCMx_NUC123 NUC123SD4AN0 Specific Parameters
+ * @defgroup ARMCMx_NUC123 NUC123 Specific Parameters
  * @ingroup ARMCMx_SPECIFIC
  * @details This file contains the Cortex-M0 specific parameters for the
- *          NUC123SD4AN0 platform.
+ *          NUC123 platform.
  * @{
  */
 
@@ -57,7 +57,12 @@
 /* If the device type is not externally defined, for example from the Makefile,
    then a file named board.h is included. This file must contain a device
    definition compatible with the vendor include file.*/
-#if !defined (NUC123SD4AN0)
+#if !defined(NUC123SD4AN0) && !defined(NUC123SC2AN1) &&                     \
+    !defined(NUC123LD4AN0) && !defined(NUC123LC2AN1) &&                     \
+    !defined(NUC123ZD4AN0) && !defined(NUC123ZC2AN1) &&                     \
+    !defined(NUC123SD4AE0) && !defined(NUC123SC2AE1) &&                     \
+    !defined(NUC123LD4AE0) && !defined(NUC123LC2AE1) &&                     \
+    !defined(NUC123ZD4AE0) && !defined(NUC123ZC2AE1)
 #include "board.h"
 #endif
 

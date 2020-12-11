@@ -385,8 +385,8 @@ static uint32_t enable_pll(uint32_t pllSrc, uint32_t pllFreq)
 /** @brief Set Core Clock
  * 
  * @description Set the core system clock some reference speed (Hz).
- *              This should be between 25MHz and 72MHz for the NUC123SD4AN0.
- * 
+ *              This should be between 25MHz and 72MHz.
+ *
  *              Use either the HXT (exact) or HIRC (nearest using 22.1184MHz)
  *              as the clock source.
  * 

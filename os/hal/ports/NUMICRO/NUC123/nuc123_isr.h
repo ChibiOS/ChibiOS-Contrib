@@ -18,7 +18,7 @@
  * @file    NUMICRO/nuc123_isr.h
  * @brief   ISR remapper driver header.
  *
- * @addtogroup NUC123SD4AN0_ISR
+ * @addtogroup NUC123_ISR
  * @{
  */
 
