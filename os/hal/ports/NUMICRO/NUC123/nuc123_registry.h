@@ -95,8 +95,8 @@
 #define NUC123_HAS_ETH                       FALSE
 
 /* EXTI attributes.*/
-//#define NUC123_EXTI_NUM_LINES                20
-//#define NUC123_EXTI_IMR_MASK                 0xFFF50000U
+/* #define NUC123_EXTI_NUM_LINES                20 */
+/* #define NUC123_EXTI_IMR_MASK                 0xFFF50000U */
 
 /* GPIO attributes.*/
 #define NUC123_HAS_GPIOA                     TRUE
@@ -199,7 +199,7 @@
 #define NUC123_HAS_TIM22                     FALSE
 
 /* USART attributes.*/
-/*#define NUC123_HAS_USART1                    TRUE
+/* #define NUC123_HAS_USART1                    TRUE
 #define NUC123_USART1_RX_DMA_MSK             (NUC123_DMA_STREAM_ID_MSK(1, 1) |\
                                              NUC123_DMA_STREAM_ID_MSK(1, 3) |\
                                              NUC123_DMA_STREAM_ID_MSK(1, 5))
@@ -215,8 +215,8 @@
 #define NUC123_USART2_RX_DMA_CHN             0x00090909
 #define NUC123_USART2_TX_DMA_MSK             (NUC123_DMA_STREAM_ID_MSK(1, 2) |\
                                              NUC123_DMA_STREAM_ID_MSK(1, 4))
-#define NUC123_USART2_TX_DMA_CHN             0x00009090
-*/
+#define NUC123_USART2_TX_DMA_CHN             0x00009090 */
+
 #define NUC123_HAS_USART1                    FALSE
 #define NUC123_HAS_USART2                    FALSE
 #define NUC123_HAS_USART3                    FALSE

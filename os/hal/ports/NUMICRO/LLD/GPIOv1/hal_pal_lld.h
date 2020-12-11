@@ -66,19 +66,17 @@
 #define PAL_MODE_NUC123_ALTERNATE_QUASI                   GPIO_PMD_QUASI
 /** @} */
 
-
 /**
  * @brief        Alternate GPIO pin defines
- * 
+ *
  * @description  SYS defines for alternative GPIO pin usage (instead of general I/O)
  *               These are all for two sets of registers - GPx_MFP and ALT_MFP/ALT_MFP1
- * 
+ *
  */
-
 
 /**
  * GPIO Port A Alternative Pin Modes
- * 
+ *
  */
 
 /* Pin 10 */
@@ -88,22 +86,22 @@
 #define SYS_ALT_MFP1_PA10_GPIO                            NULL
 
 /* I2C1 SDA */
-#define SYS_GPA_MFP_PA10_I2C1_SDA                         (0x01ul<<GPA_MFP10)
+#define SYS_GPA_MFP_PA10_I2C1_SDA                         (0x01ul << GPA_MFP10)
 #define SYS_ALT_MFP_PA10_I2C1_SDA                         0x0ul
 #define SYS_ALT_MFP1_PA10_I2C1_SDA                        NULL
 
 /* SPI1 MISO0 */
 #define SYS_GPA_MFP_PA10_SPI1_MISO0                       0x0ul
-#define SYS_ALT_MFP_PA10_SPI1_MISO0                       (0x01ul<<SYS_ALT_MFP_PA10_MFP1_Pos)
+#define SYS_ALT_MFP_PA10_SPI1_MISO0                       (0x01ul << SYS_ALT_MFP_PA10_MFP1_Pos)
 #define SYS_ALT_MFP1_PA10_SPI1_MISO0                      NULL
 
 /* SPI2 MISO0 */
-#define SYS_GPA_MFP_PA10_SPI2_MISO0                       (0x01ul<<GPA_MFP10)
-#define SYS_ALT_MFP_PA10_SPI2_MISO0                       (0x01ul<<SYS_ALT_MFP_PA10_MFP1_Pos)
+#define SYS_GPA_MFP_PA10_SPI2_MISO0                       (0x01ul << GPA_MFP10)
+#define SYS_ALT_MFP_PA10_SPI2_MISO0                       (0x01ul << SYS_ALT_MFP_PA10_MFP1_Pos)
 #define SYS_ALT_MFP1_PA10_SPI2_MISO0                      NULL
 
-#define SYS_GPA_MFP_PA10_Msk                              (0x01ul<<GPA_MFP10)
-#define SYS_ALT_MFP_PA10_Msk                              (0x01ul<<SYS_ALT_MFP_PA10_MFP1_Pos)
+#define SYS_GPA_MFP_PA10_Msk                              (0x01ul << GPA_MFP10)
+#define SYS_ALT_MFP_PA10_Msk                              (0x01ul << SYS_ALT_MFP_PA10_MFP1_Pos)
 #define SYS_ALT_MFP1_PA10_Msk                             NULL
 
 /* Pin 11 */
@@ -113,22 +111,22 @@
 #define SYS_ALT_MFP1_PA11_GPIO                            NULL
 
 /* I2C1 SCL */
-#define SYS_GPA_MFP_PA11_I2C1_SCL                         (0x01ul<<GPA_MFP11)
+#define SYS_GPA_MFP_PA11_I2C1_SCL                         (0x01ul << GPA_MFP11)
 #define SYS_ALT_MFP_PA11_I2C1_SCL                         0x0ul
 #define SYS_ALT_MFP1_PA11_I2C1_SCL                        NULL
 
 /* SPI1 CLK */
 #define SYS_GPA_MFP_PA11_SPI1_CLK                         0x0ul
-#define SYS_ALT_MFP_PA11_SPI1_CLK                         (0x01ul<<GPA_MFP11)
+#define SYS_ALT_MFP_PA11_SPI1_CLK                         (0x01ul << GPA_MFP11)
 #define SYS_ALT_MFP1_PA11_SPI1_CLK                        NULL
 
 /* SPI2 MOSI0 */
-#define SYS_GPA_MFP_PA11_SPI2_MOSI0                       (0x01ul<<GPA_MFP11)
-#define SYS_ALT_MFP_PA11_SPI2_MOSI0                       (0x01ul<<SYS_ALT_MFP_PA11_MFP1_Pos)
+#define SYS_GPA_MFP_PA11_SPI2_MOSI0                       (0x01ul << GPA_MFP11)
+#define SYS_ALT_MFP_PA11_SPI2_MOSI0                       (0x01ul << SYS_ALT_MFP_PA11_MFP1_Pos)
 #define SYS_ALT_MFP1_PA11_SPI2_MOSI0                      NULL
 
-#define SYS_GPA_MFP_PA11_Msk                              (0x01ul<<GPA_MFP11)
-#define SYS_ALT_MFP_PA11_Msk                              (0x01ul<<SYS_ALT_MFP_PA11_MFP1_Pos)
+#define SYS_GPA_MFP_PA11_Msk                              (0x01ul << GPA_MFP11)
+#define SYS_ALT_MFP_PA11_Msk                              (0x01ul << SYS_ALT_MFP_PA11_MFP1_Pos)
 #define SYS_ALT_MFP1_PA11_Msk                             NULL
 
 /* Pin 12 */
@@ -138,11 +136,11 @@
 #define SYS_ALT_MFP1_PA12_GPIO                            NULL
 
 /* PWM0 */
-#define SYS_GPA_MFP_PA12_PWM0                             (0x01ul<<GPA_MFP12)
+#define SYS_GPA_MFP_PA12_PWM0                             (0x01ul << GPA_MFP12)
 #define SYS_ALT_MFP_PA12_PWM0                             NULL
 #define SYS_ALT_MFP1_PA12_PWM0                            NULL
 
-#define SYS_GPA_MFP_PA12_Msk                              (0x01ul<<GPA_MFP12)
+#define SYS_GPA_MFP_PA12_Msk                              (0x01ul << GPA_MFP12)
 #define SYS_ALT_MFP_PA12_Msk                              NULL
 #define SYS_ALT_MFP1_PA12_Msk                             NULL
 
@@ -153,11 +151,11 @@
 #define SYS_ALT_MFP1_PA13_GPIO                            NULL
 
 /* PWM1 */
-#define SYS_GPA_MFP_PA13_PWM1                             (0x01ul<<GPA_MFP13)
+#define SYS_GPA_MFP_PA13_PWM1                             (0x01ul << GPA_MFP13)
 #define SYS_ALT_MFP_PA13_PWM1                             NULL
 #define SYS_ALT_MFP1_PA13_PWM1                            NULL
 
-#define SYS_GPA_MFP_PA13_Msk                              (0x01ul<<GPA_MFP13)
+#define SYS_GPA_MFP_PA13_Msk                              (0x01ul << GPA_MFP13)
 #define SYS_ALT_MFP_PA13_Msk                              NULL
 #define SYS_ALT_MFP1_PA13_Msk                             NULL
 
@@ -168,11 +166,11 @@
 #define SYS_ALT_MFP1_PA14_GPIO                            NULL
 
 /* PWM2 */
-#define SYS_GPA_MFP_PA14_PWM2                             (0x01ul<<GPA_MFP14)
+#define SYS_GPA_MFP_PA14_PWM2                             (0x01ul << GPA_MFP14)
 #define SYS_ALT_MFP_PA14_PWM2                             NULL
 #define SYS_ALT_MFP1_PA14_PWM2                            NULL
 
-#define SYS_GPA_MFP_PA14_Msk                              (0x01ul<<GPA_MFP14)
+#define SYS_GPA_MFP_PA14_Msk                              (0x01ul << GPA_MFP14)
 #define SYS_ALT_MFP_PA14_Msk                              NULL
 #define SYS_ALT_MFP1_PA14_Msk                             NULL
 
@@ -183,28 +181,27 @@
 #define SYS_ALT_MFP1_PA15_GPIO                            NULL
 
 /* PWM3 */
-#define SYS_GPA_MFP_PA15_PWM3                             (0x01ul<<GPA_MFP15)
+#define SYS_GPA_MFP_PA15_PWM3                             (0x01ul << GPA_MFP15)
 #define SYS_ALT_MFP_PA15_PWM3                             0x0ul
 #define SYS_ALT_MFP1_PA15_PWM3                            NULL
 
 /* CLK0 */
 #define SYS_GPA_MFP_PA15_CLKO                             0x0ul
-#define SYS_ALT_MFP_PA15_CLKO                             (0x01ul<<SYS_ALT_MFP_PA15_MFP1_Pos)
+#define SYS_ALT_MFP_PA15_CLKO                             (0x01ul << SYS_ALT_MFP_PA15_MFP1_Pos)
 #define SYS_ALT_MFP1_PA15_CLKO                            NULL
 
 /* I2S MCLK */
-#define SYS_GPA_MFP_PA15_I2S_MCLK                         (0x01ul<<GPA_MFP15)
-#define SYS_ALT_MFP_PA15_I2S_MCLK                         (0x01ul<<SYS_ALT_MFP_PA15_MFP1_Pos)
+#define SYS_GPA_MFP_PA15_I2S_MCLK                         (0x01ul << GPA_MFP15)
+#define SYS_ALT_MFP_PA15_I2S_MCLK                         (0x01ul << SYS_ALT_MFP_PA15_MFP1_Pos)
 #define SYS_ALT_MFP1_PA15_I2S_MCLK                        NULL
 
-#define SYS_GPA_MFP_PA15_Msk                              (0x01ul<<GPA_MFP15)
-#define SYS_ALT_MFP_PA15_Msk                              (0x01ul<<SYS_ALT_MFP_PA15_MFP1_Pos)
+#define SYS_GPA_MFP_PA15_Msk                              (0x01ul << GPA_MFP15)
+#define SYS_ALT_MFP_PA15_Msk                              (0x01ul << SYS_ALT_MFP_PA15_MFP1_Pos)
 #define SYS_ALT_MFP1_PA15_Msk                             NULL
-
 
 /**
  * GPIO Port B Alternative Pin Modes
- * 
+ *
  */
 
 /* Pin 0 */
@@ -233,7 +230,7 @@
 #define SYS_ALT_MFP_PB1_UART0_TXD                         NULL
 #define SYS_ALT_MFP1_PB1_UART0_TXD                        NULL
 
-#define SYS_GPB_MFP_PB1_Msk                               (0x01ul<< 1)
+#define SYS_GPB_MFP_PB1_Msk                               (0x01ul << 1)
 #define SYS_ALT_MFP_PB1_Msk                               NULL
 #define SYS_ALT_MFP1_PB1_Msk                              NULL
 
@@ -244,17 +241,17 @@
 #define SYS_ALT_MFP1_PB2_GPIO                             NULL
 
 /* UART0 nRTS */
-#define SYS_GPB_MFP_PB2_UART0_nRTS                        (0x01ul<<2)
+#define SYS_GPB_MFP_PB2_UART0_nRTS                        (0x01ul << 2)
 #define SYS_ALT_MFP_PB2_UART0_nRTS                        0x0ul
 #define SYS_ALT_MFP1_PB2_UART0_nRTS                       NULL
 
 /* TM2_EXT */
-#define SYS_GPB_MFP_PB2_TM2_EXT                           (0x01ul<<2)
-#define SYS_ALT_MFP_PB2_TM2_EXT                           (0x01ul<<SYS_ALT_MFP_PB2_MFP1_Pos)
+#define SYS_GPB_MFP_PB2_TM2_EXT                           (0x01ul << 2)
+#define SYS_ALT_MFP_PB2_TM2_EXT                           (0x01ul << SYS_ALT_MFP_PB2_MFP1_Pos)
 #define SYS_ALT_MFP1_PB2_TM2_EXT                          NULL
 
-#define SYS_GPB_MFP_PB2_Msk                               (0x01ul<<2)
-#define SYS_ALT_MFP_PB2_Msk                               (0x01ul<<SYS_ALT_MFP_PB2_MFP1_Pos)
+#define SYS_GPB_MFP_PB2_Msk                               (0x01ul << 2)
+#define SYS_ALT_MFP_PB2_Msk                               (0x01ul << SYS_ALT_MFP_PB2_MFP1_Pos)
 #define SYS_ALT_MFP1_PB2_Msk                              NULL
 
 /* Pin 3 */
@@ -264,17 +261,17 @@
 #define SYS_ALT_MFP1_PB3_GPIO                             NULL
 
 /* UART0 nCTS */
-#define SYS_GPB_MFP_PB3_UART0_nCTS                        (0x01ul<<3)
+#define SYS_GPB_MFP_PB3_UART0_nCTS                        (0x01ul << 3)
 #define SYS_ALT_MFP_PB3_UART0_nCTS                        0x0ul
 #define SYS_ALT_MFP1_PB3_UART0_nCTS                       NULL
 
 /* TM3_EXT */
-#define SYS_GPB_MFP_PB3_TM3_EXT                           (0x01ul<<3)
-#define SYS_ALT_MFP_PB3_TM3_EXT                           (0x01ul<<SYS_ALT_MFP_PB3_MFP1_Pos)
+#define SYS_GPB_MFP_PB3_TM3_EXT                           (0x01ul << 3)
+#define SYS_ALT_MFP_PB3_TM3_EXT                           (0x01ul << SYS_ALT_MFP_PB3_MFP1_Pos)
 #define SYS_ALT_MFP1_PB3_TM3_EXT                          NULL
 
-#define SYS_GPB_MFP_PB3_Msk                               (0x01ul<<3)
-#define SYS_ALT_MFP_PB3_Msk                               (0x01ul<<SYS_ALT_MFP_PB3_MFP1_Pos)
+#define SYS_GPB_MFP_PB3_Msk                               (0x01ul << 3)
+#define SYS_ALT_MFP_PB3_Msk                               (0x01ul << SYS_ALT_MFP_PB3_MFP1_Pos)
 #define SYS_ALT_MFP1_PB3_Msk                              NULL
 
 /* Pin 4 */
@@ -284,22 +281,22 @@
 #define SYS_ALT_MFP1_PB4_GPIO                             NULL
 
 /* UART1 RXD */
-#define SYS_GPB_MFP_PB4_UART1_RXD                         (0x01ul<<4)
+#define SYS_GPB_MFP_PB4_UART1_RXD                         (0x01ul << 4)
 #define SYS_ALT_MFP_PB4_UART1_RXD                         0x0ul
 #define SYS_ALT_MFP1_PB4_UART1_RXD                        NULL
 
 /* SPI2 SS0 */
 #define SYS_GPB_MFP_PB4_SPI2_SS0                          0x0ul
-#define SYS_ALT_MFP_PB4_SPI2_SS0                          (0x01ul<<SYS_ALT_MFP_PB4_MFP1_Pos)
+#define SYS_ALT_MFP_PB4_SPI2_SS0                          (0x01ul << SYS_ALT_MFP_PB4_MFP1_Pos)
 #define SYS_ALT_MFP1_PB4_SPI2_SS0                         NULL
 
 /* SPI1 SS1 */
-#define SYS_GPB_MFP_PB4_SPI1_SS1                          (0x01ul<<4)
-#define SYS_ALT_MFP_PB4_SPI1_SS1                          (0x01ul<<SYS_ALT_MFP_PB4_MFP1_Pos)
+#define SYS_GPB_MFP_PB4_SPI1_SS1                          (0x01ul << 4)
+#define SYS_ALT_MFP_PB4_SPI1_SS1                          (0x01ul << SYS_ALT_MFP_PB4_MFP1_Pos)
 #define SYS_ALT_MFP1_PB4_SPI1_SS1                         NULL
 
-#define SYS_GPB_MFP_PB4_Msk                               (0x01ul<<4)
-#define SYS_ALT_MFP_PB4_Msk                               (0x01ul<<SYS_ALT_MFP_PB4_MFP1_Pos)
+#define SYS_GPB_MFP_PB4_Msk                               (0x01ul << 4)
+#define SYS_ALT_MFP_PB4_Msk                               (0x01ul << SYS_ALT_MFP_PB4_MFP1_Pos)
 #define SYS_ALT_MFP1_PB4_Msk                              NULL
 
 /* Pin 5 */
@@ -309,17 +306,17 @@
 #define SYS_ALT_MFP1_PB5_GPIO                             NULL
 
 /* UART1 TXD */
-#define SYS_GPB_MFP_PB5_UART1_TXD                         (0x01ul<<5)
+#define SYS_GPB_MFP_PB5_UART1_TXD                         (0x01ul << 5)
 #define SYS_ALT_MFP_PB5_UART1_TXD                         0x0ul
 #define SYS_ALT_MFP1_PB5_UART1_TXD                        NULL
 
 /* SPI2 CLK */
-#define SYS_GPB_MFP_PB5_SPI2_CLK                          (0x01ul<<5)
-#define SYS_ALT_MFP_PB5_SPI2_CLK                          (0x01ul<<SYS_ALT_MFP_PB5_MFP1_Pos)
+#define SYS_GPB_MFP_PB5_SPI2_CLK                          (0x01ul << 5)
+#define SYS_ALT_MFP_PB5_SPI2_CLK                          (0x01ul << SYS_ALT_MFP_PB5_MFP1_Pos)
 #define SYS_ALT_MFP1_PB5_SPI2_CLK                         NULL
 
-#define SYS_GPB_MFP_PB5_Msk                               (0x01ul<<5)
-#define SYS_ALT_MFP_PB5_Msk                               (0x01ul<<SYS_ALT_MFP_PB5_MFP1_Pos)
+#define SYS_GPB_MFP_PB5_Msk                               (0x01ul << 5)
+#define SYS_ALT_MFP_PB5_Msk                               (0x01ul << SYS_ALT_MFP_PB5_MFP1_Pos)
 #define SYS_ALT_MFP1_PB5_Msk                              NULL
 
 /* Pin 6 */
@@ -329,17 +326,17 @@
 #define SYS_ALT_MFP1_PB6_GPIO                             NULL
 
 /* UART1 nRTS */
-#define SYS_GPB_MFP_PB6_UART1_nRTS                        (0x01ul<<6)
+#define SYS_GPB_MFP_PB6_UART1_nRTS                        (0x01ul << 6)
 #define SYS_ALT_MFP_PB6_UART1_nRTS                        0x0ul
 #define SYS_ALT_MFP1_PB6_UART1_nRTS                       NULL
 
 /* SPI2 MOSI0 */
-#define SYS_GPB_MFP_PB6_SPI2_MOSI0                        (0x01ul<<6)
-#define SYS_ALT_MFP_PB6_SPI2_MOSI0                        (0x01ul<<SYS_ALT_MFP_PB6_MFP1_Pos)
+#define SYS_GPB_MFP_PB6_SPI2_MOSI0                        (0x01ul << 6)
+#define SYS_ALT_MFP_PB6_SPI2_MOSI0                        (0x01ul << SYS_ALT_MFP_PB6_MFP1_Pos)
 #define SYS_ALT_MFP1_PB6_SPI2_MOSI0                       NULL
 
-#define SYS_GPB_MFP_PB6_Msk                               (0x01ul<<6)
-#define SYS_ALT_MFP_PB6_Msk                               (0x01ul<<SYS_ALT_MFP_PB6_MFP1_Pos)
+#define SYS_GPB_MFP_PB6_Msk                               (0x01ul << 6)
+#define SYS_ALT_MFP_PB6_Msk                               (0x01ul << SYS_ALT_MFP_PB6_MFP1_Pos)
 #define SYS_ALT_MFP1_PB6_Msk                              NULL
 
 /* Pin 7 */
@@ -349,17 +346,17 @@
 #define SYS_ALT_MFP1_PB7_GPIO                             NULL
 
 /* UART1 nCTS */
-#define SYS_GPB_MFP_PB7_UART1_nCTS                        (0x01ul<<7)
+#define SYS_GPB_MFP_PB7_UART1_nCTS                        (0x01ul << 7)
 #define SYS_ALT_MFP_PB7_UART1_nCTS                        0x0ul
 #define SYS_ALT_MFP1_PB7_UART1_nCTS                       NULL
 
 /* SPI2 MISO0 */
-#define SYS_GPB_MFP_PB7_SPI2_MISO0                        (0x01ul<<7)
-#define SYS_ALT_MFP_PB7_SPI2_MISO0                        (0x01ul<<SYS_ALT_MFP_PB7_MFP1_Pos)
+#define SYS_GPB_MFP_PB7_SPI2_MISO0                        (0x01ul << 7)
+#define SYS_ALT_MFP_PB7_SPI2_MISO0                        (0x01ul << SYS_ALT_MFP_PB7_MFP1_Pos)
 #define SYS_ALT_MFP1_PB7_SPI2_MISO0                       NULL
 
-#define SYS_GPB_MFP_PB7_Msk                               (0x01ul<<7)
-#define SYS_ALT_MFP_PB7_Msk                               (0x01ul<<SYS_ALT_MFP_PB7_MFP1_Pos)
+#define SYS_GPB_MFP_PB7_Msk                               (0x01ul << 7)
+#define SYS_ALT_MFP_PB7_Msk                               (0x01ul << SYS_ALT_MFP_PB7_MFP1_Pos)
 #define SYS_ALT_MFP1_PB7_Msk                              NULL
 
 /* Pin 8 */
@@ -369,11 +366,11 @@
 #define SYS_ALT_MFP1_PB8_GPIO                             NULL
 
 /* TM0 */
-#define SYS_GPB_MFP_PB8_TM0                               (0x01ul<<8)
+#define SYS_GPB_MFP_PB8_TM0                               (0x01ul << 8)
 #define SYS_ALT_MFP_PB8_TM0                               NULL
 #define SYS_ALT_MFP1_PB8_TM0                              NULL
 
-#define SYS_GPB_MFP_PB8_Msk                               (0x01ul<<8)
+#define SYS_GPB_MFP_PB8_Msk                               (0x01ul << 8)
 #define SYS_ALT_MFP_PB8_Msk                               NULL
 #define SYS_ALT_MFP1_PB8_Msk                              NULL
 
@@ -384,22 +381,22 @@
 #define SYS_ALT_MFP1_PB9_GPIO                             NULL
 
 /* TM1 */
-#define SYS_GPB_MFP_PB9_TM1                               (0x01ul<<9)
+#define SYS_GPB_MFP_PB9_TM1                               (0x01ul << 9)
 #define SYS_ALT_MFP_PB9_TM1                               0x0ul
 #define SYS_ALT_MFP1_PB9_TM1                              NULL
 
 /* SPI1 SS1 */
-#define SYS_GPB_MFP_PB9_SPI1_SS1                          (0x01ul<<9)
-#define SYS_ALT_MFP_PB9_SPI1_SS1                          (0x01ul<<SYS_ALT_MFP_PB9_MFP1_Pos)
+#define SYS_GPB_MFP_PB9_SPI1_SS1                          (0x01ul << 9)
+#define SYS_ALT_MFP_PB9_SPI1_SS1                          (0x01ul << SYS_ALT_MFP_PB9_MFP1_Pos)
 #define SYS_ALT_MFP1_PB9_SPI1_SS1                         NULL
 
 /* PWM1 */
 #define SYS_GPB_MFP_PB9_PWM1                              0x0ul
-#define SYS_ALT_MFP_PB9_PWM1                              (0x01ul<<SYS_ALT_MFP_PB9_MFP1_Pos)
+#define SYS_ALT_MFP_PB9_PWM1                              (0x01ul << SYS_ALT_MFP_PB9_MFP1_Pos)
 #define SYS_ALT_MFP1_PB9_PWM1                             NULL
 
-#define SYS_GPB_MFP_PB9_Msk                               (0x01ul<<9)
-#define SYS_ALT_MFP_PB9_Msk                               (0x01ul<<SYS_ALT_MFP_PB9_MFP1_Pos)
+#define SYS_GPB_MFP_PB9_Msk                               (0x01ul << 9)
+#define SYS_ALT_MFP_PB9_Msk                               (0x01ul << SYS_ALT_MFP_PB9_MFP1_Pos)
 #define SYS_ALT_MFP1_PB9_Msk                              NULL
 
 /* Pin 10 */
@@ -409,17 +406,17 @@
 #define SYS_ALT_MFP1_PB10_GPIO                            NULL
 
 /* TM2 */
-#define SYS_GPB_MFP_PB10_TM2                              (0x01ul<<10)
+#define SYS_GPB_MFP_PB10_TM2                              (0x01ul << 10)
 #define SYS_ALT_MFP_PB10_TM2                              0x0ul
 #define SYS_ALT_MFP1_PB10_TM2                             NULL
 
 /* SPI0 SS1 */
-#define SYS_GPB_MFP_PB10_SPI0_SS1                         (0x01ul<<10)
-#define SYS_ALT_MFP_PB10_SPI0_SS1                         (0x01ul<<SYS_ALT_MFP_PB10_MFP1_Pos)
+#define SYS_GPB_MFP_PB10_SPI0_SS1                         (0x01ul << 10)
+#define SYS_ALT_MFP_PB10_SPI0_SS1                         (0x01ul << SYS_ALT_MFP_PB10_MFP1_Pos)
 #define SYS_ALT_MFP1_PB10_SPI0_SS1                        NULL
 
-#define SYS_GPB_MFP_PB10_Msk                              (0x01ul<<10)
-#define SYS_ALT_MFP_PB10_Msk                              (0x01ul<<SYS_ALT_MFP_PB10_MFP1_Pos)
+#define SYS_GPB_MFP_PB10_Msk                              (0x01ul << 10)
+#define SYS_ALT_MFP_PB10_Msk                              (0x01ul << SYS_ALT_MFP_PB10_MFP1_Pos)
 #define SYS_ALT_MFP1_PB10_Msk                             NULL
 
 /* Pin 12 */
@@ -429,17 +426,17 @@
 #define SYS_ALT_MFP1_PB12_GPIO                            NULL
 
 /* SPI1 SS0 */
-#define SYS_GPB_MFP_PB12_SPI1_SS0                         (0x01ul<<12)
+#define SYS_GPB_MFP_PB12_SPI1_SS0                         (0x01ul << 12)
 #define SYS_ALT_MFP_PB12_SPI1_SS0                         0x0ul
 #define SYS_ALT_MFP1_PB12_SPI1_SS0                        NULL
 
 /* CLK0 */
-#define SYS_GPB_MFP_PB12_CLKO                             (0x01ul<<12)
-#define SYS_ALT_MFP_PB12_CLKO                             (0x01ul<<SYS_ALT_MFP_PB12_MFP1_Pos)
+#define SYS_GPB_MFP_PB12_CLKO                             (0x01ul << 12)
+#define SYS_ALT_MFP_PB12_CLKO                             (0x01ul << SYS_ALT_MFP_PB12_MFP1_Pos)
 #define SYS_ALT_MFP1_PB12_CLKO                            NULL
 
-#define SYS_GPB_MFP_PB12_Msk                              (0x01ul<<12)
-#define SYS_ALT_MFP_PB12_Msk                              (0x01ul<<SYS_ALT_MFP_PB12_MFP1_Pos)
+#define SYS_GPB_MFP_PB12_Msk                              (0x01ul << 12)
+#define SYS_ALT_MFP_PB12_Msk                              (0x01ul << SYS_ALT_MFP_PB12_MFP1_Pos)
 #define SYS_ALT_MFP1_PB12_Msk                             NULL
 
 /* Pin 13 */
@@ -448,7 +445,7 @@
 #define SYS_ALT_MFP_PB13_GPIO                             NULL
 #define SYS_ALT_MFP1_PB13_GPIO                            NULL
 
-#define SYS_GPB_MFP_PB13_Msk                              (0x01ul<<13)
+#define SYS_GPB_MFP_PB13_Msk                              (0x01ul << 13)
 #define SYS_ALT_MFP_PB13_Msk                              NULL
 #define SYS_ALT_MFP1_PB13_Msk                             NULL
 
@@ -459,11 +456,11 @@
 #define SYS_ALT_MFP1_PB14_GPIO                            NULL
 
 /* INT0 */
-#define SYS_GPB_MFP_PB14_INT0                             (0x01ul<<14)
+#define SYS_GPB_MFP_PB14_INT0                             (0x01ul << 14)
 #define SYS_ALT_MFP_PB14_INT0                             NULL
 #define SYS_ALT_MFP1_PB14_INT0                            NULL
 
-#define SYS_GPB_MFP_PB14_Msk                              (0x01ul<<14)
+#define SYS_GPB_MFP_PB14_Msk                              (0x01ul << 14)
 #define SYS_ALT_MFP_PB14_Msk                              NULL
 #define SYS_ALT_MFP1_PB14_Msk                             NULL
 
@@ -474,23 +471,22 @@
 #define SYS_ALT_MFP1_PB15_GPIO                            NULL
 
 /* INT1 */
-#define SYS_GPB_MFP_PB15_INT1                             (0x01ul<<15)
+#define SYS_GPB_MFP_PB15_INT1                             (0x01ul << 15)
 #define SYS_ALT_MFP_PB15_INT1                             0x0ul
 #define SYS_ALT_MFP1_PB15_INT1                            NULL
 
 /* TM0_EXT */
-#define SYS_GPB_MFP_PB15_TM0_EXT                          (0x01ul<<15)
-#define SYS_ALT_MFP_PB15_TM0_EXT                          (0x01ul<<SYS_ALT_MFP_PB15_MFP1_Pos)
+#define SYS_GPB_MFP_PB15_TM0_EXT                          (0x01ul << 15)
+#define SYS_ALT_MFP_PB15_TM0_EXT                          (0x01ul << SYS_ALT_MFP_PB15_MFP1_Pos)
 #define SYS_ALT_MFP1_PB15_TM0_EXT                         NULL
 
-#define SYS_GPB_MFP_PB15_Msk                              (0x01ul<<15)
-#define SYS_ALT_MFP_PB15_Msk                              (0x01ul<<SYS_ALT_MFP_PB15_MFP1_Pos)
+#define SYS_GPB_MFP_PB15_Msk                              (0x01ul << 15)
+#define SYS_ALT_MFP_PB15_Msk                              (0x01ul << SYS_ALT_MFP_PB15_MFP1_Pos)
 #define SYS_ALT_MFP1_PB15_Msk                             NULL
-
 
 /**
  * GPIO Port C Alternative Pin Modes
- * 
+ *
  */
 
 /* Pin 0 */
@@ -500,17 +496,17 @@
 #define SYS_ALT_MFP1_PC0_GPIO                             NULL
 
 /* SPI0 SS0 */
-#define SYS_GPC_MFP_PC0_SPI0_SS0                          (0x01ul<<GPC_MFP0)
+#define SYS_GPC_MFP_PC0_SPI0_SS0                          (0x01ul << GPC_MFP0)
 #define SYS_ALT_MFP_PC0_SPI0_SS0                          0x0ul
 #define SYS_ALT_MFP1_PC0_SPI0_SS0                         NULL
 
 /* I2S LRCLK */
-#define SYS_GPC_MFP_PC0_I2S_LRCLK                         (0x01ul<<GPC_MFP0)
-#define SYS_ALT_MFP_PC0_I2S_LRCLK                         (0x01ul<<SYS_ALT_MFP_PC0_MFP1_Pos)
+#define SYS_GPC_MFP_PC0_I2S_LRCLK                         (0x01ul << GPC_MFP0)
+#define SYS_ALT_MFP_PC0_I2S_LRCLK                         (0x01ul << SYS_ALT_MFP_PC0_MFP1_Pos)
 #define SYS_ALT_MFP1_PC0_I2S_LRCLK                        NULL
 
-#define SYS_GPC_MFP_PC0_Msk                               (0x01ul<<GPC_MFP0)
-#define SYS_ALT_MFP_PC0_Msk                               (0x01ul<<SYS_ALT_MFP_PC0_MFP1_Pos)
+#define SYS_GPC_MFP_PC0_Msk                               (0x01ul << GPC_MFP0)
+#define SYS_ALT_MFP_PC0_Msk                               (0x01ul << SYS_ALT_MFP_PC0_MFP1_Pos)
 #define SYS_ALT_MFP1_PC0_Msk                              NULL
 
 /* Pin 1 */
@@ -520,17 +516,17 @@
 #define SYS_ALT_MFP1_PC1_GPIO                             NULL
 
 /* SPI0 CLK */
-#define SYS_GPC_MFP_PC1_SPI0_CLK                          (0x01ul<<GPC_MFP1)
+#define SYS_GPC_MFP_PC1_SPI0_CLK                          (0x01ul << GPC_MFP1)
 #define SYS_ALT_MFP_PC1_SPI0_CLK                          0x0ul
 #define SYS_ALT_MFP1_PC1_SPI0_CLK                         NULL
 
 /* I2S BCLK */
-#define SYS_GPC_MFP_PC1_I2S_BCLK                          (0x01ul<<GPC_MFP1)
-#define SYS_ALT_MFP_PC1_I2S_BCLK                          (0x01ul<<SYS_ALT_MFP_PC1_MFP1_Pos)
+#define SYS_GPC_MFP_PC1_I2S_BCLK                          (0x01ul << GPC_MFP1)
+#define SYS_ALT_MFP_PC1_I2S_BCLK                          (0x01ul << SYS_ALT_MFP_PC1_MFP1_Pos)
 #define SYS_ALT_MFP1_PC1_I2S_BCLK                         NULL
 
-#define SYS_GPC_MFP_PC1_Msk                               (0x01ul<<GPC_MFP1)
-#define SYS_ALT_MFP_PC1_Msk                               (0x01ul<<SYS_ALT_MFP_PC1_MFP1_Pos)
+#define SYS_GPC_MFP_PC1_Msk                               (0x01ul << GPC_MFP1)
+#define SYS_ALT_MFP_PC1_Msk                               (0x01ul << SYS_ALT_MFP_PC1_MFP1_Pos)
 #define SYS_ALT_MFP1_PC1_Msk                              NULL
 
 /* Pin 2 */
@@ -540,17 +536,17 @@
 #define SYS_ALT_MFP1_PC2_GPIO                             NULL
 
 /* SPI0 MISO0 */
-#define SYS_GPC_MFP_PC2_SPI0_MISO0                        (0x01ul<<GPC_MFP2)
+#define SYS_GPC_MFP_PC2_SPI0_MISO0                        (0x01ul << GPC_MFP2)
 #define SYS_ALT_MFP_PC2_SPI0_MISO0                        0x0ul
 #define SYS_ALT_MFP1_PC2_SPI0_MISO0                       NULL
 
 /* I2S DI */
-#define SYS_GPC_MFP_PC2_I2S_DI                            (0x01ul<<GPC_MFP2)
-#define SYS_ALT_MFP_PC2_I2S_DI                            (0x01ul<<SYS_ALT_MFP_PC2_MFP1_Pos)
+#define SYS_GPC_MFP_PC2_I2S_DI                            (0x01ul << GPC_MFP2)
+#define SYS_ALT_MFP_PC2_I2S_DI                            (0x01ul << SYS_ALT_MFP_PC2_MFP1_Pos)
 #define SYS_ALT_MFP1_PC2_I2S_DI                           NULL
 
-#define SYS_GPC_MFP_PC2_Msk                               (0x01ul<<GPC_MFP2)
-#define SYS_ALT_MFP_PC2_Msk                               (0x01ul<<SYS_ALT_MFP_PC2_MFP1_Pos)
+#define SYS_GPC_MFP_PC2_Msk                               (0x01ul << GPC_MFP2)
+#define SYS_ALT_MFP_PC2_Msk                               (0x01ul << SYS_ALT_MFP_PC2_MFP1_Pos)
 #define SYS_ALT_MFP1_PC2_Msk                              NULL
 
 /* Pin 3 */
@@ -560,17 +556,17 @@
 #define SYS_ALT_MFP1_PC3_GPIO                             NULL
 
 /* SPI0 MOSI0 */
-#define SYS_GPC_MFP_PC3_SPI0_MOSI0                        (0x01ul<<GPC_MFP3)
+#define SYS_GPC_MFP_PC3_SPI0_MOSI0                        (0x01ul << GPC_MFP3)
 #define SYS_ALT_MFP_PC3_SPI0_MOSI0                        0x0ul
 #define SYS_ALT_MFP1_PC3_SPI0_MOSI0                       NULL
 
 /* I2S DO */
-#define SYS_GPC_MFP_PC3_I2S_DO                            (0x01ul<<GPC_MFP3)
-#define SYS_ALT_MFP_PC3_I2S_DO                            (0x01ul<<SYS_ALT_MFP_PC3_MFP1_Pos)
+#define SYS_GPC_MFP_PC3_I2S_DO                            (0x01ul << GPC_MFP3)
+#define SYS_ALT_MFP_PC3_I2S_DO                            (0x01ul << SYS_ALT_MFP_PC3_MFP1_Pos)
 #define SYS_ALT_MFP1_PC3_I2S_DO                           NULL
 
-#define SYS_GPC_MFP_PC3_Msk                               (0x01ul<<GPC_MFP3)
-#define SYS_ALT_MFP_PC3_Msk                               (0x01ul<<SYS_ALT_MFP_PC3_MFP1_Pos)
+#define SYS_GPC_MFP_PC3_Msk                               (0x01ul << GPC_MFP3)
+#define SYS_ALT_MFP_PC3_Msk                               (0x01ul << SYS_ALT_MFP_PC3_MFP1_Pos)
 #define SYS_ALT_MFP1_PC3_Msk                              NULL
 
 /* Pin 4 */
@@ -580,17 +576,17 @@
 #define SYS_ALT_MFP1_PC4_GPIO                             NULL
 
 /* SPI0 MISO1 */
-#define SYS_GPC_MFP_PC4_SPI0_MISO1                        (0x01ul<<GPC_MFP4)
+#define SYS_GPC_MFP_PC4_SPI0_MISO1                        (0x01ul << GPC_MFP4)
 #define SYS_ALT_MFP_PC4_SPI0_MISO1                        0x0ul
 #define SYS_ALT_MFP1_PC4_SPI0_MISO1                       NULL
 
 /* UART0 RXD */
-#define SYS_GPC_MFP_PC4_UART0_RXD                         (0x01ul<<GPC_MFP4)
-#define SYS_ALT_MFP_PC4_UART0_RXD                         (0x01ul<<SYS_ALT_MFP_PC4_MFP1_Pos)
+#define SYS_GPC_MFP_PC4_UART0_RXD                         (0x01ul << GPC_MFP4)
+#define SYS_ALT_MFP_PC4_UART0_RXD                         (0x01ul << SYS_ALT_MFP_PC4_MFP1_Pos)
 #define SYS_ALT_MFP1_PC4_UART0_RXD                        NULL
 
-#define SYS_GPC_MFP_PC4_Msk                               (0x01ul<<GPC_MFP4)
-#define SYS_ALT_MFP_PC4_Msk                               (0x01ul<<SYS_ALT_MFP_PC4_MFP1_Pos)
+#define SYS_GPC_MFP_PC4_Msk                               (0x01ul << GPC_MFP4)
+#define SYS_ALT_MFP_PC4_Msk                               (0x01ul << SYS_ALT_MFP_PC4_MFP1_Pos)
 #define SYS_ALT_MFP1_PC4_Msk                              NULL
 
 /* Pin 5 */
@@ -600,17 +596,17 @@
 #define SYS_ALT_MFP1_PC5_GPIO                             NULL
 
 /* SPI0 MOSI1 */
-#define SYS_GPC_MFP_PC5_SPI0_MOSI1                        (0x01ul<<GPC_MFP5)
+#define SYS_GPC_MFP_PC5_SPI0_MOSI1                        (0x01ul << GPC_MFP5)
 #define SYS_ALT_MFP_PC5_SPI0_MOSI1                        0x0ul
 #define SYS_ALT_MFP1_PC5_SPI0_MOSI1                       NULL
 
 /* UART0 TXD */
-#define SYS_GPC_MFP_PC5_UART0_TXD                         (0x01ul<<GPC_MFP5)
-#define SYS_ALT_MFP_PC5_UART0_TXD                         (0x01ul<<SYS_ALT_MFP_PC5_MFP1_Pos)
+#define SYS_GPC_MFP_PC5_UART0_TXD                         (0x01ul << GPC_MFP5)
+#define SYS_ALT_MFP_PC5_UART0_TXD                         (0x01ul << SYS_ALT_MFP_PC5_MFP1_Pos)
 #define SYS_ALT_MFP1_PC5_UART0_TXD                        NULL
 
-#define SYS_GPC_MFP_PC5_Msk                               (0x01ul<<GPC_MFP5)
-#define SYS_ALT_MFP_PC5_Msk                               (0x01ul<<SYS_ALT_MFP_PC5_MFP1_Pos)
+#define SYS_GPC_MFP_PC5_Msk                               (0x01ul << GPC_MFP5)
+#define SYS_ALT_MFP_PC5_Msk                               (0x01ul << SYS_ALT_MFP_PC5_MFP1_Pos)
 #define SYS_ALT_MFP1_PC5_Msk                              NULL
 
 /* Pin 8 */
@@ -620,18 +616,18 @@
 #define SYS_ALT_MFP1_PC8_GPIO                             0x0ul
 
 /* SPI1 SS0 */
-#define SYS_GPC_MFP_PC8_SPI1_SS0                          (0x01ul<<GPC_MFP8)
+#define SYS_GPC_MFP_PC8_SPI1_SS0                          (0x01ul << GPC_MFP8)
 #define SYS_ALT_MFP_PC8_SPI1_SS0                          NULL
 #define SYS_ALT_MFP1_PC8_SPI1_SS0                         0x0ul
 
 /* PWM0 */
-#define SYS_GPC_MFP_PC8_PWM0                              (0x01ul<<GPC_MFP8)
+#define SYS_GPC_MFP_PC8_PWM0                              (0x01ul << GPC_MFP8)
 #define SYS_ALT_MFP_PC8_PWM0                              NULL
-#define SYS_ALT_MFP1_PC8_PWM0                             (0x01ul<<SYS_ALT_MFP1_PC8_MFP1_Pos)
+#define SYS_ALT_MFP1_PC8_PWM0                             (0x01ul << SYS_ALT_MFP1_PC8_MFP1_Pos)
 
-#define SYS_GPC_MFP_PC8_Msk                               (0x01ul<<GPC_MFP8)
+#define SYS_GPC_MFP_PC8_Msk                               (0x01ul << GPC_MFP8)
 #define SYS_ALT_MFP_PC8_Msk                               NULL
-#define SYS_ALT_MFP1_PC8_Msk                              (0x01ul<<SYS_ALT_MFP1_PC8_MFP1_Pos)
+#define SYS_ALT_MFP1_PC8_Msk                              (0x01ul << SYS_ALT_MFP1_PC8_MFP1_Pos)
 
 /* Pin 9 */
 /* GPIO */
@@ -640,11 +636,11 @@
 #define SYS_ALT_MFP1_PC9_GPIO                             NULL
 
 /* SPI1 CLK */
-#define SYS_GPC_MFP_PC9_SPI1_CLK                          (0x01ul<<GPC_MFP9)
+#define SYS_GPC_MFP_PC9_SPI1_CLK                          (0x01ul << GPC_MFP9)
 #define SYS_ALT_MFP_PC9_SPI1_CLK                          NULL
 #define SYS_ALT_MFP1_PC9_SPI1_CLK                         NULL
 
-#define SYS_GPC_MFP_PC9_Msk                               (0x01ul<<GPC_MFP9)
+#define SYS_GPC_MFP_PC9_Msk                               (0x01ul << GPC_MFP9)
 #define SYS_ALT_MFP_PC9_Msk                               NULL
 #define SYS_ALT_MFP1_PC9_Msk                              NULL
 
@@ -655,11 +651,11 @@
 #define SYS_ALT_MFP1_PC10_GPIO                            NULL
 
 /* SPI1 MISO0 */
-#define SYS_GPC_MFP_PC10_SPI1_MISO0                       (0x01ul<<GPC_MFP10)
+#define SYS_GPC_MFP_PC10_SPI1_MISO0                       (0x01ul << GPC_MFP10)
 #define SYS_ALT_MFP_PC10_SPI1_MISO0                       NULL
 #define SYS_ALT_MFP1_PC10_SPI1_MISO0                      NULL
 
-#define SYS_GPC_MFP_PC10_Msk                              (0x01ul<<GPC_MFP10)
+#define SYS_GPC_MFP_PC10_Msk                              (0x01ul << GPC_MFP10)
 #define SYS_ALT_MFP_PC10_Msk                              NULL
 #define SYS_ALT_MFP1_PC10_Msk                             NULL
 
@@ -670,11 +666,11 @@
 #define SYS_ALT_MFP1_PC11_GPIO                            NULL
 
 /* SPI1 MOSI0 */
-#define SYS_GPC_MFP_PC11_SPI1_MOSI0                       (0x01ul<<GPC_MFP11)
+#define SYS_GPC_MFP_PC11_SPI1_MOSI0                       (0x01ul << GPC_MFP11)
 #define SYS_ALT_MFP_PC11_SPI1_MOSI0                       NULL
 #define SYS_ALT_MFP1_PC11_SPI1_MOSI0                      NULL
 
-#define SYS_GPC_MFP_PC11_Msk                              (0x01ul<<GPC_MFP11)
+#define SYS_GPC_MFP_PC11_Msk                              (0x01ul << GPC_MFP11)
 #define SYS_ALT_MFP_PC11_Msk                              NULL
 #define SYS_ALT_MFP1_PC11_Msk                             NULL
 
@@ -685,22 +681,22 @@
 #define SYS_ALT_MFP1_PC12_GPIO                            NULL
 
 /* SPI1 MISO1 */
-#define SYS_GPC_MFP_PC12_SPI1_MISO1                       (0x01ul<<GPC_MFP12)
+#define SYS_GPC_MFP_PC12_SPI1_MISO1                       (0x01ul << GPC_MFP12)
 #define SYS_ALT_MFP_PC12_SPI1_MISO1                       0x0ul
 #define SYS_ALT_MFP1_PC12_SPI1_MISO1                      NULL
 
 /* I2S MCLK */
 #define SYS_GPC_MFP_PC12_I2S_MCLK                         0x0ul
-#define SYS_ALT_MFP_PC12_I2S_MCLK                         (0x01ul<<SYS_ALT_MFP_PC12_MFP1_Pos)
+#define SYS_ALT_MFP_PC12_I2S_MCLK                         (0x01ul << SYS_ALT_MFP_PC12_MFP1_Pos)
 #define SYS_ALT_MFP1_PC12_I2S_MCLK                        NULL
 
 /* PWM2 */
-#define SYS_GPC_MFP_PC12_PWM2                             (0x01ul<<GPC_MFP12)
-#define SYS_ALT_MFP_PC12_PWM2                             (0x01ul<<SYS_ALT_MFP_PC12_MFP1_Pos)
+#define SYS_GPC_MFP_PC12_PWM2                             (0x01ul << GPC_MFP12)
+#define SYS_ALT_MFP_PC12_PWM2                             (0x01ul << SYS_ALT_MFP_PC12_MFP1_Pos)
 #define SYS_ALT_MFP1_PC12_PWM2                            NULL
 
-#define SYS_GPC_MFP_PC12_Msk                              (0x01ul<<GPC_MFP12)
-#define SYS_ALT_MFP_PC12_Msk                              (0x01ul<<SYS_ALT_MFP_PC12_MFP1_Pos)
+#define SYS_GPC_MFP_PC12_Msk                              (0x01ul << GPC_MFP12)
+#define SYS_ALT_MFP_PC12_Msk                              (0x01ul << SYS_ALT_MFP_PC12_MFP1_Pos)
 #define SYS_ALT_MFP1_PC12_Msk                             NULL
 
 /* Pin 12 */
@@ -710,28 +706,27 @@
 #define SYS_ALT_MFP1_PC13_GPIO                            NULL
 
 /* SPI1 MOSI1 */
-#define SYS_GPC_MFP_PC13_SPI1_MOSI1                       (0x01ul<<GPC_MFP13)
+#define SYS_GPC_MFP_PC13_SPI1_MOSI1                       (0x01ul << GPC_MFP13)
 #define SYS_ALT_MFP_PC13_SPI1_MOSI1                       0x0ul
 #define SYS_ALT_MFP1_PC13_SPI1_MOSI1                      NULL
 
 /* CLK0 */
 #define SYS_GPC_MFP_PC13_CLKO                             0x0ul
-#define SYS_ALT_MFP_PC13_CLKO                             (0x01ul<<SYS_ALT_MFP_PC13_MFP1_Pos)
+#define SYS_ALT_MFP_PC13_CLKO                             (0x01ul << SYS_ALT_MFP_PC13_MFP1_Pos)
 #define SYS_ALT_MFP1_PC13_CLKO                            NULL
 
 /* PWM3 */
-#define SYS_GPC_MFP_PC13_PWM3                             (0x01ul<<GPC_MFP13)
-#define SYS_ALT_MFP_PC13_PWM3                             (0x01ul<<SYS_ALT_MFP_PC13_MFP1_Pos)
+#define SYS_GPC_MFP_PC13_PWM3                             (0x01ul << GPC_MFP13)
+#define SYS_ALT_MFP_PC13_PWM3                             (0x01ul << SYS_ALT_MFP_PC13_MFP1_Pos)
 #define SYS_ALT_MFP1_PC13_PWM3                            NULL
 
-#define SYS_GPC_MFP_PC13_Msk                              (0x01ul<<GPC_MFP13)
-#define SYS_ALT_MFP_PC13_Msk                              (0x01ul<<SYS_ALT_MFP_PC13_MFP1_Pos)
+#define SYS_GPC_MFP_PC13_Msk                              (0x01ul << GPC_MFP13)
+#define SYS_ALT_MFP_PC13_Msk                              (0x01ul << SYS_ALT_MFP_PC13_MFP1_Pos)
 #define SYS_ALT_MFP1_PC13_Msk                             NULL
-
 
 /**
  * GPIO Port D Alternative Pin Modes
- * 
+ *
  */
 
 /* Pin 0 */
@@ -743,16 +738,16 @@
 /* SPI2 SS0 */
 #define SYS_GPD_MFP_PD0_SPI2_SS0                          0x0ul
 #define SYS_ALT_MFP_PD0_SPI2_SS0                          NULL
-#define SYS_ALT_MFP1_PD0_SPI2_SS0                         (0x01ul<<SYS_ALT_MFP1_PD0_MFP1_Pos)
+#define SYS_ALT_MFP1_PD0_SPI2_SS0                         (0x01ul << SYS_ALT_MFP1_PD0_MFP1_Pos)
 
 /* ADC0 */
-#define SYS_GPD_MFP_PD0_ADC0                              (0x01ul<<GPD_MFP0)
+#define SYS_GPD_MFP_PD0_ADC0                              (0x01ul << GPD_MFP0)
 #define SYS_ALT_MFP_PD0_ADC0                              NULL
-#define SYS_ALT_MFP1_PD0_ADC0                             (0x01ul<<SYS_ALT_MFP1_PD0_MFP1_Pos)
+#define SYS_ALT_MFP1_PD0_ADC0                             (0x01ul << SYS_ALT_MFP1_PD0_MFP1_Pos)
 
-#define SYS_GPD_MFP_PD0_Msk                               (0x01ul<<GPD_MFP0)
+#define SYS_GPD_MFP_PD0_Msk                               (0x01ul << GPD_MFP0)
 #define SYS_ALT_MFP_PD0_Msk                               NULL
-#define SYS_ALT_MFP1_PD0_Msk                              (0x01ul<<SYS_ALT_MFP1_PD0_MFP1_Pos)
+#define SYS_ALT_MFP1_PD0_Msk                              (0x01ul << SYS_ALT_MFP1_PD0_MFP1_Pos)
 
 /* Pin 1 */
 /* GPIO */
@@ -761,23 +756,23 @@
 #define SYS_ALT_MFP1_PD1_GPIO                             0x0ul
 
 /* SPI0 SS1 */
-#define SYS_GPD_MFP_PD1_SPI0_SS1                          (0x01ul<<GPD_MFP1)
+#define SYS_GPD_MFP_PD1_SPI0_SS1                          (0x01ul << GPD_MFP1)
 #define SYS_ALT_MFP_PD1_SPI0_SS1                          NULL
 #define SYS_ALT_MFP1_PD1_SPI0_SS1                         0x0ul
 
 /* SPI2 CLK */
 #define SYS_GPD_MFP_PD1_SPI2_CLK                          0x0ul
 #define SYS_ALT_MFP_PD1_SPI2_CLK                          NULL
-#define SYS_ALT_MFP1_PD1_SPI2_CLK                         (0x01ul<<SYS_ALT_MFP1_PD1_MFP1_Pos)
+#define SYS_ALT_MFP1_PD1_SPI2_CLK                         (0x01ul << SYS_ALT_MFP1_PD1_MFP1_Pos)
 
 /* ADC1 */
-#define SYS_GPD_MFP_PD1_ADC1                              (0x01ul<<GPD_MFP1)
+#define SYS_GPD_MFP_PD1_ADC1                              (0x01ul << GPD_MFP1)
 #define SYS_ALT_MFP_PD1_ADC1                              NULL
-#define SYS_ALT_MFP1_PD1_ADC1                             (0x01ul<<SYS_ALT_MFP1_PD1_MFP1_Pos)
+#define SYS_ALT_MFP1_PD1_ADC1                             (0x01ul << SYS_ALT_MFP1_PD1_MFP1_Pos)
 
-#define SYS_GPD_MFP_PD1_Msk                               (0x01ul<<GPD_MFP1)
+#define SYS_GPD_MFP_PD1_Msk                               (0x01ul << GPD_MFP1)
 #define SYS_ALT_MFP_PD1_Msk                               NULL
-#define SYS_ALT_MFP1_PD1_Msk                              (0x01ul<<SYS_ALT_MFP1_PD1_MFP1_Pos)
+#define SYS_ALT_MFP1_PD1_Msk                              (0x01ul << SYS_ALT_MFP1_PD1_MFP1_Pos)
 
 /* Pin 2 */
 /* GPIO */
@@ -786,23 +781,23 @@
 #define SYS_ALT_MFP1_PD2_GPIO                             0x0ul
 
 /* SPI0 MISO1 */
-#define SYS_GPD_MFP_PD2_SPI0_MISO1                        (0x01ul<<GPD_MFP2)
+#define SYS_GPD_MFP_PD2_SPI0_MISO1                        (0x01ul << GPD_MFP2)
 #define SYS_ALT_MFP_PD2_SPI0_MISO1                        NULL
 #define SYS_ALT_MFP1_PD2_SPI0_MISO1                       0x0ul
 
 /* SPI2 MISO0 */
 #define SYS_GPD_MFP_PD2_SPI2_MISO0                        0x0ul
 #define SYS_ALT_MFP_PD2_SPI2_MISO0                        NULL
-#define SYS_ALT_MFP1_PD2_SPI2_MISO0                       (0x01ul<<SYS_ALT_MFP1_PD2_MFP1_Pos)
+#define SYS_ALT_MFP1_PD2_SPI2_MISO0                       (0x01ul << SYS_ALT_MFP1_PD2_MFP1_Pos)
 
 /* ADC2 */
-#define SYS_GPD_MFP_PD2_ADC2                              (0x01ul<<GPD_MFP2)
+#define SYS_GPD_MFP_PD2_ADC2                              (0x01ul << GPD_MFP2)
 #define SYS_ALT_MFP_PD2_ADC2                              NULL
-#define SYS_ALT_MFP1_PD2_ADC2                             (0x01ul<<SYS_ALT_MFP1_PD2_MFP1_Pos)
+#define SYS_ALT_MFP1_PD2_ADC2                             (0x01ul << SYS_ALT_MFP1_PD2_MFP1_Pos)
 
-#define SYS_GPD_MFP_PD2_Msk                               (0x01ul<<GPD_MFP2)
+#define SYS_GPD_MFP_PD2_Msk                               (0x01ul << GPD_MFP2)
 #define SYS_ALT_MFP_PD2_Msk                               NULL
-#define SYS_ALT_MFP1_PD2_Msk                              (0x01ul<<SYS_ALT_MFP1_PD2_MFP1_Pos)
+#define SYS_ALT_MFP1_PD2_Msk                              (0x01ul << SYS_ALT_MFP1_PD2_MFP1_Pos)
 
 /* Pin 3 */
 /* GPIO */
@@ -811,23 +806,23 @@
 #define SYS_ALT_MFP1_PD3_GPIO                             0x0ul
 
 /* SPI0 MOSI1 */
-#define SYS_GPD_MFP_PD3_SPI0_MOSI1                        (0x01ul<<GPD_MFP3)
+#define SYS_GPD_MFP_PD3_SPI0_MOSI1                        (0x01ul << GPD_MFP3)
 #define SYS_ALT_MFP_PD3_SPI0_MOSI1                        NULL
 #define SYS_ALT_MFP1_PD3_SPI0_MOSI1                       0x0ul
 
 /* SPI2 MOSI0 */
 #define SYS_GPD_MFP_PD3_SPI2_MOSI0                        0x0ul
 #define SYS_ALT_MFP_PD3_SPI2_MOSI0                        NULL
-#define SYS_ALT_MFP1_PD3_SPI2_MOSI0                       (0x01ul<<SYS_ALT_MFP1_PD3_MFP1_Pos)
+#define SYS_ALT_MFP1_PD3_SPI2_MOSI0                       (0x01ul << SYS_ALT_MFP1_PD3_MFP1_Pos)
 
 /* ADC3 */
-#define SYS_GPD_MFP_PD3_ADC3                              (0x01ul<<GPD_MFP3)
+#define SYS_GPD_MFP_PD3_ADC3                              (0x01ul << GPD_MFP3)
 #define SYS_ALT_MFP_PD3_ADC3                              NULL
-#define SYS_ALT_MFP1_PD3_ADC3                             (0x01ul<<SYS_ALT_MFP1_PD3_MFP1_Pos)
+#define SYS_ALT_MFP1_PD3_ADC3                             (0x01ul << SYS_ALT_MFP1_PD3_MFP1_Pos)
 
-#define SYS_GPD_MFP_PD3_Msk                               (0x01ul<<GPD_MFP3)
+#define SYS_GPD_MFP_PD3_Msk                               (0x01ul << GPD_MFP3)
 #define SYS_ALT_MFP_PD3_Msk                               NULL
-#define SYS_ALT_MFP1_PD3_Msk                              (0x01ul<<SYS_ALT_MFP1_PD3_MFP1_Pos)
+#define SYS_ALT_MFP1_PD3_Msk                              (0x01ul << SYS_ALT_MFP1_PD3_MFP1_Pos)
 
 /* Pin 4 */
 /* GPIO */
@@ -838,16 +833,16 @@
 /* SPI2 MISO1 */
 #define SYS_GPD_MFP_PD4_SPI2_MISO1                        0x0ul
 #define SYS_ALT_MFP_PD4_SPI2_MISO1                        NULL
-#define SYS_ALT_MFP1_PD4_SPI2_MISO1                       (0x01ul<<SYS_ALT_MFP1_PD4_MFP1_Pos)
+#define SYS_ALT_MFP1_PD4_SPI2_MISO1                       (0x01ul << SYS_ALT_MFP1_PD4_MFP1_Pos)
 
 /* ADC4 */
-#define SYS_GPD_MFP_PD4_ADC4                              (0x01ul<<GPD_MFP4)
+#define SYS_GPD_MFP_PD4_ADC4                              (0x01ul << GPD_MFP4)
 #define SYS_ALT_MFP_PD4_ADC4                              NULL
-#define SYS_ALT_MFP1_PD4_ADC4                             (0x01ul<<SYS_ALT_MFP1_PD4_MFP1_Pos)
+#define SYS_ALT_MFP1_PD4_ADC4                             (0x01ul << SYS_ALT_MFP1_PD4_MFP1_Pos)
 
-#define SYS_GPD_MFP_PD4_Msk                               (0x01ul<<GPD_MFP4)
+#define SYS_GPD_MFP_PD4_Msk                               (0x01ul << GPD_MFP4)
 #define SYS_ALT_MFP_PD4_Msk                               NULL
-#define SYS_ALT_MFP1_PD4_Msk                              (0x01ul<<SYS_ALT_MFP1_PD4_MFP1_Pos)
+#define SYS_ALT_MFP1_PD4_Msk                              (0x01ul << SYS_ALT_MFP1_PD4_MFP1_Pos)
 
 /* Pin 5 */
 /* GPIO */
@@ -858,16 +853,16 @@
 /* SPI2 MOSI1 */
 #define SYS_GPD_MFP_PD5_SPI2_MOSI1                        0x0ul
 #define SYS_ALT_MFP_PD5_SPI2_MOSI1                        NULL
-#define SYS_ALT_MFP1_PD5_SPI2_MOSI1                       (0x01ul<<SYS_ALT_MFP1_PD5_MFP1_Pos)
+#define SYS_ALT_MFP1_PD5_SPI2_MOSI1                       (0x01ul << SYS_ALT_MFP1_PD5_MFP1_Pos)
 
 /* ADC5 */
-#define SYS_GPD_MFP_PD5_ADC5                              (0x01ul<<GPD_MFP5)
+#define SYS_GPD_MFP_PD5_ADC5                              (0x01ul << GPD_MFP5)
 #define SYS_ALT_MFP_PD5_ADC5                              NULL
-#define SYS_ALT_MFP1_PD5_ADC5                             (0x01ul<<SYS_ALT_MFP1_PD5_MFP1_Pos)
+#define SYS_ALT_MFP1_PD5_ADC5                             (0x01ul << SYS_ALT_MFP1_PD5_MFP1_Pos)
 
-#define SYS_GPD_MFP_PD5_Msk                               (0x01ul<<GPD_MFP5)
+#define SYS_GPD_MFP_PD5_Msk                               (0x01ul << GPD_MFP5)
 #define SYS_ALT_MFP_PD5_Msk                               NULL
-#define SYS_ALT_MFP1_PD5_Msk                              (0x01ul<<SYS_ALT_MFP1_PD5_MFP1_Pos)
+#define SYS_ALT_MFP1_PD5_Msk                              (0x01ul << SYS_ALT_MFP1_PD5_MFP1_Pos)
 
 /* Pin 8 */
 /* GPIO */
@@ -876,11 +871,11 @@
 #define SYS_ALT_MFP1_PD8_GPIO                             NULL
 
 /* SPI1 MOSI0 */
-#define SYS_GPD_MFP_PD8_SPI1_MOSI0                        (0x01ul<<GPD_MFP8)
+#define SYS_GPD_MFP_PD8_SPI1_MOSI0                        (0x01ul << GPD_MFP8)
 #define SYS_ALT_MFP_PD8_SPI1_MOSI0                        NULL
 #define SYS_ALT_MFP1_PD8_SPI1_MOSI0                       NULL
 
-#define SYS_GPD_MFP_PD8_Msk                               (0x01ul<<GPD_MFP8)
+#define SYS_GPD_MFP_PD8_Msk                               (0x01ul << GPD_MFP8)
 #define SYS_ALT_MFP_PD8_Msk                               NULL
 #define SYS_ALT_MFP1_PD8_Msk                              NULL
 
@@ -890,7 +885,7 @@
 #define SYS_ALT_MFP_PD9_GPIO                              NULL
 #define SYS_ALT_MFP1_PD9_GPIO                             NULL
 
-#define SYS_GPD_MFP_PD9_Msk                               (0x01ul<<GPD_MFP9)
+#define SYS_GPD_MFP_PD9_Msk                               (0x01ul << GPD_MFP9)
 #define SYS_ALT_MFP_PD9_Msk                               NULL
 #define SYS_ALT_MFP1_PD9_Msk                              NULL
 
@@ -901,11 +896,11 @@
 #define SYS_ALT_MFP1_PD10_GPIO                            NULL
 
 /* CLK0 */
-#define SYS_GPD_MFP_PD10_CLKO                             (0x01ul<<GPD_MFP10)
+#define SYS_GPD_MFP_PD10_CLKO                             (0x01ul << GPD_MFP10)
 #define SYS_ALT_MFP_PD10_CLKO                             NULL
 #define SYS_ALT_MFP1_PD10_CLKO                            NULL
 
-#define SYS_GPD_MFP_PD10_Msk                              (0x01ul<<GPD_MFP10)
+#define SYS_GPD_MFP_PD10_Msk                              (0x01ul << GPD_MFP10)
 #define SYS_ALT_MFP_PD10_Msk                              NULL
 #define SYS_ALT_MFP1_PD10_Msk                             NULL
 
@@ -916,18 +911,17 @@
 #define SYS_ALT_MFP1_PD11_GPIO                            NULL
 
 /* INT1 */
-#define SYS_GPD_MFP_PD11_INT1                             (0x01ul<<GPD_MFP11)
+#define SYS_GPD_MFP_PD11_INT1                             (0x01ul << GPD_MFP11)
 #define SYS_ALT_MFP_PD11_INT1                             NULL
 #define SYS_ALT_MFP1_PD11_INT1                            NULL
 
-#define SYS_GPD_MFP_PD11_Msk                              (0x01ul<<GPD_MFP11)
+#define SYS_GPD_MFP_PD11_Msk                              (0x01ul << GPD_MFP11)
 #define SYS_ALT_MFP_PD11_Msk                              NULL
 #define SYS_ALT_MFP1_PD11_Msk                             NULL
 
-
 /**
  * GPIO Port F Alternative Pin Modes
- * 
+ *
  */
 
 /* Pin 0 */
@@ -974,16 +968,16 @@
 /* I2C0 SDA */
 #define SYS_GPF_MFP_PF2_I2C0_SDA                          SYS_GPF_MFP_GPF_MFP2_Msk
 #define SYS_ALT_MFP_PF2_I2C0_SDA                          NULL
-#define SYS_ALT_MFP1_PF2_I2C0_SDA                         (0x02ul<<SYS_ALT_MFP1_PF2_MFP1_Pos)
+#define SYS_ALT_MFP1_PF2_I2C0_SDA                         (0x02ul << SYS_ALT_MFP1_PF2_MFP1_Pos)
 
 /* ADC6 */
 #define SYS_GPF_MFP_PF2_ADC6                              SYS_GPF_MFP_GPF_MFP2_Msk
 #define SYS_ALT_MFP_PF2_ADC6                              NULL
-#define SYS_ALT_MFP1_PF2_ADC6                             (0x03ul<<SYS_ALT_MFP1_PF2_MFP1_Pos)
+#define SYS_ALT_MFP1_PF2_ADC6                             (0x03ul << SYS_ALT_MFP1_PF2_MFP1_Pos)
 
 #define SYS_GPF_MFP_PF2_Msk                               SYS_GPF_MFP_GPF_MFP2_Msk
 #define SYS_ALT_MFP_PF2_Msk                               NULL
-#define SYS_ALT_MFP1_PF2_Msk                              (0x03ul<<SYS_ALT_MFP1_PF2_MFP1_Pos)
+#define SYS_ALT_MFP1_PF2_Msk                              (0x03ul << SYS_ALT_MFP1_PF2_MFP1_Pos)
 
 /* Pin 3 */
 /* GPIO */
@@ -999,17 +993,16 @@
 /* I2C0 SCL */
 #define SYS_GPF_MFP_PF3_I2C0_SCL                          SYS_GPF_MFP_GPF_MFP3_Msk
 #define SYS_ALT_MFP_PF3_I2C0_SCL                          NULL
-#define SYS_ALT_MFP1_PF3_I2C0_SCL                         (0x2UL<<SYS_ALT_MFP1_PF3_MFP1_Pos)
+#define SYS_ALT_MFP1_PF3_I2C0_SCL                         (0x2UL << SYS_ALT_MFP1_PF3_MFP1_Pos)
 
 /* ADC7 */
 #define SYS_GPF_MFP_PF3_ADC7                              (SYS_GPF_MFP_GPF_MFP3_Msk
 #define SYS_ALT_MFP_PF3_ADC7                              NULL
-#define SYS_ALT_MFP1_PF3_ADC7                             (0x03ul<<SYS_ALT_MFP1_PF3_MFP1_Pos)
+#define SYS_ALT_MFP1_PF3_ADC7                             (0x03ul << SYS_ALT_MFP1_PF3_MFP1_Pos)
 
 #define SYS_GPF_MFP_PF3_Msk                               SYS_GPF_MFP_GPF_MFP3_Msk
 #define SYS_ALT_MFP_PF3_Msk                               NULL
-#define SYS_ALT_MFP1_PF3_Msk                              (0x03ul<<SYS_ALT_MFP1_PF3_MFP1_Pos)
-
+#define SYS_ALT_MFP1_PF3_Msk                              (0x03ul << SYS_ALT_MFP1_PF3_MFP1_Pos)
 
 /*
 #undef PAL_MODE_RESET
@@ -1040,65 +1033,65 @@
 #define GPIO_PINSPERPORT_MAX        16
 
 /* GPIO PORT/PIN TO BASE ADDRESS MACRO */
-#define GPIO_PIN_DATA(port, pin)    (*((volatile uint32_t *)((GPIO_PIN_DATA_BASE+(0x40*(port))) + ((pin)<<2))))
+#define GPIO_PIN_DATA(port, pin)    \
+  (*((volatile uint32_t *)((GPIO_PIN_DATA_BASE + (0x40 * (port))) + ((pin) << 2))))
 
 /* GPIO Port A (10~15) */
-#define PA10                        GPIO_PIN_DATA(0,10)
-#define PA11                        GPIO_PIN_DATA(0,11)
-#define PA12                        GPIO_PIN_DATA(0,12)
-#define PA13                        GPIO_PIN_DATA(0,13)
-#define PA14                        GPIO_PIN_DATA(0,14)
-#define PA15                        GPIO_PIN_DATA(0,15)
+#define PA10                        GPIO_PIN_DATA(0, 10)
+#define PA11                        GPIO_PIN_DATA(0, 11)
+#define PA12                        GPIO_PIN_DATA(0, 12)
+#define PA13                        GPIO_PIN_DATA(0, 13)
+#define PA14                        GPIO_PIN_DATA(0, 14)
+#define PA15                        GPIO_PIN_DATA(0, 15)
 
 /* GPIO Port B (0~10 & 12~15) */
-#define PB0                         GPIO_PIN_DATA(1,0)
-#define PB1                         GPIO_PIN_DATA(1,1)
-#define PB2                         GPIO_PIN_DATA(1,2)
-#define PB3                         GPIO_PIN_DATA(1,3)
-#define PB4                         GPIO_PIN_DATA(1,4)
-#define PB5                         GPIO_PIN_DATA(1,5)
-#define PB6                         GPIO_PIN_DATA(1,6)
-#define PB7                         GPIO_PIN_DATA(1,7)
-#define PB8                         GPIO_PIN_DATA(1,8)
-#define PB9                         GPIO_PIN_DATA(1,9)
-#define PB10                        GPIO_PIN_DATA(1,10)
-#define PB12                        GPIO_PIN_DATA(1,12)
-#define PB13                        GPIO_PIN_DATA(1,13)
-#define PB14                        GPIO_PIN_DATA(1,14)
-#define PB15                        GPIO_PIN_DATA(1,15)
+#define PB0                         GPIO_PIN_DATA(1, 0)
+#define PB1                         GPIO_PIN_DATA(1, 1)
+#define PB2                         GPIO_PIN_DATA(1, 2)
+#define PB3                         GPIO_PIN_DATA(1, 3)
+#define PB4                         GPIO_PIN_DATA(1, 4)
+#define PB5                         GPIO_PIN_DATA(1, 5)
+#define PB6                         GPIO_PIN_DATA(1, 6)
+#define PB7                         GPIO_PIN_DATA(1, 7)
+#define PB8                         GPIO_PIN_DATA(1, 8)
+#define PB9                         GPIO_PIN_DATA(1, 9)
+#define PB10                        GPIO_PIN_DATA(1, 10)
+#define PB12                        GPIO_PIN_DATA(1, 12)
+#define PB13                        GPIO_PIN_DATA(1, 13)
+#define PB14                        GPIO_PIN_DATA(1, 14)
+#define PB15                        GPIO_PIN_DATA(1, 15)
 
 /* GPIO Port C (0~5 & 8~13) */
-#define PC0                         GPIO_PIN_DATA(2,0)
-#define PC1                         GPIO_PIN_DATA(2,1)
-#define PC2                         GPIO_PIN_DATA(2,2)
-#define PC3                         GPIO_PIN_DATA(2,3)
-#define PC4                         GPIO_PIN_DATA(2,4)
-#define PC5                         GPIO_PIN_DATA(2,5)
-#define PC8                         GPIO_PIN_DATA(2,8)
-#define PC9                         GPIO_PIN_DATA(2,9)
-#define PC10                        GPIO_PIN_DATA(2,10)
-#define PC11                        GPIO_PIN_DATA(2,11)
-#define PC12                        GPIO_PIN_DATA(2,12)
-#define PC13                        GPIO_PIN_DATA(2,13)
+#define PC0                         GPIO_PIN_DATA(2, 0)
+#define PC1                         GPIO_PIN_DATA(2, 1)
+#define PC2                         GPIO_PIN_DATA(2, 2)
+#define PC3                         GPIO_PIN_DATA(2, 3)
+#define PC4                         GPIO_PIN_DATA(2, 4)
+#define PC5                         GPIO_PIN_DATA(2, 5)
+#define PC8                         GPIO_PIN_DATA(2, 8)
+#define PC9                         GPIO_PIN_DATA(2, 9)
+#define PC10                        GPIO_PIN_DATA(2, 10)
+#define PC11                        GPIO_PIN_DATA(2, 11)
+#define PC12                        GPIO_PIN_DATA(2, 12)
+#define PC13                        GPIO_PIN_DATA(2, 13)
 
 /* GPIO Port D (0~5 & 8~11) */
-#define PD0                         GPIO_PIN_DATA(3,0)
-#define PD1                         GPIO_PIN_DATA(3,1)
-#define PD2                         GPIO_PIN_DATA(3,2)
-#define PD3                         GPIO_PIN_DATA(3,3)
-#define PD4                         GPIO_PIN_DATA(3,4)
-#define PD5                         GPIO_PIN_DATA(3,5)
-#define PD8                         GPIO_PIN_DATA(3,8)
-#define PD9                         GPIO_PIN_DATA(3,9)
-#define PD10                        GPIO_PIN_DATA(3,10)
-#define PD11                        GPIO_PIN_DATA(3,11)
+#define PD0                         GPIO_PIN_DATA(3, 0)
+#define PD1                         GPIO_PIN_DATA(3, 1)
+#define PD2                         GPIO_PIN_DATA(3, 2)
+#define PD3                         GPIO_PIN_DATA(3, 3)
+#define PD4                         GPIO_PIN_DATA(3, 4)
+#define PD5                         GPIO_PIN_DATA(3, 5)
+#define PD8                         GPIO_PIN_DATA(3, 8)
+#define PD9                         GPIO_PIN_DATA(3, 9)
+#define PD10                        GPIO_PIN_DATA(3, 10)
+#define PD11                        GPIO_PIN_DATA(3, 11)
 
 /* GPIO Port D (0~3) */
-#define PF0                         GPIO_PIN_DATA(5,0)
-#define PF1                         GPIO_PIN_DATA(5,1)
-#define PF2                         GPIO_PIN_DATA(5,2)
-#define PF3                         GPIO_PIN_DATA(5,3)
-
+#define PF0                         GPIO_PIN_DATA(5, 0)
+#define PF1                         GPIO_PIN_DATA(5, 1)
+#define PF2                         GPIO_PIN_DATA(5, 2)
+#define PF3                         GPIO_PIN_DATA(5, 3)
 
 /**
  * @name    Port Abstraction Layer related definitions
@@ -1113,7 +1106,7 @@
  * @brief   Whole port mask.
  * @details This macro specifies all the valid bits into a port.
  */
-//#define PAL_WHOLE_PORT              ((ioportmask_t)0xFFFFU)
+/* #define PAL_WHOLE_PORT              ((ioportmask_t)0xFFFFU) */
 #define PAL_WHOLE_PORT ((ioportmask_t)(2^PAL_IOPORTS_WIDTH) - 1)
 /** @} */
 
@@ -1254,7 +1247,6 @@ typedef GPIO_T * ioportid_t;
  */
 #define pal_lld_writeport(port, bits) (port->DOUT = bits)
 
-
 /**
  * @brief   Sets a bits mask on a I/O port.
  * @note    The @ref PAL provides a default software implementation of this
@@ -1268,7 +1260,6 @@ typedef GPIO_T * ioportid_t;
  */
 #define pal_lld_setport(port, bits) (port->DOUT |= bits)
 
-
 /**
  * @brief   Clears a bits mask on a I/O port.
  * @note    The @ref PAL provides a default software implementation of this
@@ -1281,7 +1272,6 @@ typedef GPIO_T * ioportid_t;
  * @notapi
  */
 #define pal_lld_clearport(port, bits) (port->DOUT &= ~bits)
-
 
 /**
  * @brief   Toggles a bits mask on a I/O port.
@@ -1309,7 +1299,7 @@ typedef GPIO_T * ioportid_t;
  *
  * @notapi
  */
-//#define pal_lld_readgroup(port, mask, offset) 0U
+/* #define pal_lld_readgroup(port, mask, offset) 0U */
 
 /**
  * @brief   Writes a group of bits.
@@ -1377,7 +1367,7 @@ typedef GPIO_T * ioportid_t;
  *
  * @notapi
  */
-/*#define pal_lld_readpad(port, pad) PAL_LOW*/
+/* #define pal_lld_readpad(port, pad) PAL_LOW */
 #define pal_lld_readpad(port, pad) ((port->PIN & PAL_PORT_BIT(pad)) >> pad)
 
 /**
@@ -1417,7 +1407,6 @@ typedef GPIO_T * ioportid_t;
 #define pal_lld_setpad(port, pad)                                           \
   (port->DOUT |= PAL_PORT_BIT(pad))
 
-
 /**
  * @brief   Clears a pad logical state to @p PAL_LOW.
  * @note    The @ref PAL provides a default software implementation of this
@@ -1432,7 +1421,6 @@ typedef GPIO_T * ioportid_t;
 #define pal_lld_clearpad(port, pad)                                         \
   (port->DOUT &= ~(0xFFFF0000U | PAL_PORT_BIT(pad)))
 
-
 /**
  * @brief   Toggles a pad logical state.
  * @note    The @ref PAL provides a default software implementation of this
@@ -1446,7 +1434,6 @@ typedef GPIO_T * ioportid_t;
  */
 #define pal_lld_togglepad(port, pad)                                        \
   (port->DOUT ^= PAL_PORT_BIT(pad))
-
 
 /**
  * @brief   Pad mode setup.
@@ -1464,7 +1451,7 @@ typedef GPIO_T * ioportid_t;
  */
 #define pal_lld_setpadmode(port, pad, mode)                                 \
   _pal_lld_setgroupmode(port, PAL_PORT_BIT(pad), mode)
-  //GPIO_SetMode(port, PAL_PORT_BIT(pad), mode)
+  /* GPIO_SetMode(port, PAL_PORT_BIT(pad), mode) */
 
 #if !defined(__DOXYGEN__)
 extern const PALConfig pal_default_config;

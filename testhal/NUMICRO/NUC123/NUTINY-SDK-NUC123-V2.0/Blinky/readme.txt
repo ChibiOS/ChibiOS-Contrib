@@ -1,5 +1,5 @@
 *****************************************************************************
-** ChibiOS/HAL - USB driver demo for NUC123.                               **
+** ChibiOS/HAL - Blinky demo for NUC123.                                   **
 *****************************************************************************
 
 ** TARGET **
@@ -11,7 +11,6 @@ The demo runs on a NUTINY-SDK-NUC123-V2.0 board with a NUC123SD4AN0 MCU.
 The application demonstrates the use of the NUC123 platform driver, and a little
 bit of the PAL. A successful run of the test involves the on-board LED blinking at .5 Hz
 (on for 1 second, then off for one second).
-
 
 ** Board Setup **
 

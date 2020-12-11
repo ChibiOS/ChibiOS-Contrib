@@ -60,7 +60,7 @@ void SystemCoreClockUpdate(void) /* Get Core Clock Frequency      */
          register settings.
          This function can be used to retrieve the system core clock frequeny
          after user changed register sittings. */
-  // SystemCoreClock = SYSTEM_CLOCK;
+  /* SystemCoreClock = SYSTEM_CLOCK; */
 
   uint32_t clkFreq;
   uint32_t PllReg;
@@ -68,7 +68,7 @@ void SystemCoreClockUpdate(void) /* Get Core Clock Frequency      */
   uint32_t pllFIN, pllNF, pllNR, pllNO;
 
   /* Update PLL Clock */
-  // PllClock = clks_lld_get_pll_clock_freq();
+  /* PllClock = clks_lld_get_pll_clock_freq(); */
   PllReg = CLK->PLLCON;
 
   if (PllReg & (CLK_PLLCON_PD_Msk | CLK_PLLCON_OE_Msk)) {
@@ -106,19 +106,19 @@ void SystemCoreClockUpdate(void) /* Get Core Clock Frequency      */
 
   /* Pick Clock Source */
   switch (CLK->CLKSEL0 & CLK_CLKSEL0_HCLK_S_Msk) {
-  case 0: // External HF Xtal
+  case 0: /* External HF Xtal */
     clkFreq = __HXT;
     break;
-  case 1: // PLL clock / 2
+  case 1: /* PLL clock / 2 */
     clkFreq = PllClock >> 1;
     break;
-  case 3: // Internal 10kHz
+  case 3: /* Internal 10kHz */
     clkFreq = __LIRC;
     break;
-  case 2: // PLL clock
+  case 2: /* PLL clock */
     clkFreq = PllClock;
     break;
-  case 7: // Internal 22.184MHz
+  case 7: /* Internal 22.184MHz */
     clkFreq = __HIRC;
     break;
   default:
@@ -157,13 +157,13 @@ static inline uint32_t get_pll_clock_freq(void)
       PllClock = pllFIN;
     } else {
       switch (((PllReg & CLK_PLLCON_OUT_DV_Msk) >> CLK_PLLCON_OUT_DV_Pos)) {
-      case 0: // OUT_DIV == 00 : NO = 1
+      case 0: /* OUT_DIV == 00 : NO = 1 */
         pllNO = 1;
         break;
-      case 3: // OUT_DIV == 11 : NO = 4
+      case 3: /* OUT_DIV == 11 : NO = 4 */
         pllNO = 4;
         break;
-      default: // OUT_DIV == 01 or 10 : NO = 2
+      default: /* OUT_DIV == 01 or 10 : NO = 2 */
         pllNO = 2;
         break;
       }
@@ -171,7 +171,7 @@ static inline uint32_t get_pll_clock_freq(void)
       pllNF = ((PllReg & CLK_PLLCON_FB_DV_Msk) >> CLK_PLLCON_FB_DV_Pos) + 2;
       pllNR = ((PllReg & CLK_PLLCON_IN_DV_Msk) >> CLK_PLLCON_IN_DV_Pos) + 2;
 
-      /* shift to avoid overflow condition */
+      /* Shift to avoid overflow condition */
       PllClock = (((pllFIN >> 2) * pllNF) / (pllNR * pllNO) << 2);
     }
   }
@@ -181,9 +181,9 @@ static inline uint32_t get_pll_clock_freq(void)
 
 /**
   * @brief         Wait for stable clock
-  * 
+  *
   * @description   Always wait around 300ms for clock to be stable
-  * 
+  *
   */
 static uint32_t wait_for_clock_ready(uint32_t clkMask)
 {
@@ -199,13 +199,13 @@ static uint32_t wait_for_clock_ready(uint32_t clkMask)
 }
 
 /** @brief Set system HCLK
- * 
+ *
  * @description Setup HCLK source and divider
- * 
+ *
  * Always switch to a known stable clock source before changing a
  * system clock, to avoid issues related to the original clock's
  * speed/settings.
- * 
+ *
  */
 static void set_HCLK(uint32_t clkSource, uint32_t clkDivider)
 {
@@ -265,13 +265,13 @@ static uint32_t enable_pll(uint32_t pllSrc, uint32_t pllFreq)
 
   /**
      * Calculate best PLL variables from requested frequency
-     * 
+     *
      * See NUC123 Technical Reference Manual 5.4.8 PLL Control Register Description, page 124
-     * 
+     *
      *                NF     1
      * FOUT = FIN  x  --  x  --
      *                NR     NO
-     * 
+     *
      */
 
   uint32_t NO      = 0;
@@ -328,9 +328,9 @@ static uint32_t enable_pll(uint32_t pllSrc, uint32_t pllFreq)
 
   /**
      * Loop to calculate best/lowest NR (between 0 or 2 and 31) and best/lowest NF (between 0 and 511)
-     * 
+     *
      * Best results are off-by-2 until final equation calculation (to allow use in PLLCON)
-     * 
+     *
      */
   uint32_t bestNR   = 0;
   uint32_t bestNF   = 0;
@@ -383,13 +383,13 @@ static uint32_t enable_pll(uint32_t pllSrc, uint32_t pllFreq)
 }
 
 /** @brief Set Core Clock
- * 
+ *
  * @description Set the core system clock some reference speed (Hz).
- *              This should be between 25MHz and 72MHz.
+ *              This should be between 25MHz and 72MHz for the NUC123SD4AN0.
  *
  *              Use either the HXT (exact) or HIRC (nearest using 22.1184MHz)
  *              as the clock source.
- * 
+ *
  */
 static uint32_t set_core_clock(uint32_t clkCore)
 {
