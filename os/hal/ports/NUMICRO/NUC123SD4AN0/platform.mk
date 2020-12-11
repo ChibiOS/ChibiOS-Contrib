@@ -8,8 +8,7 @@ PLATFORMINC := $(CHIBIOS)/os/hal/ports/common/ARMCMx \
 
 # Optional platform files.
 ifeq ($(USE_SMART_BUILD),yes)
-HALCONF := $(strip $(shell cat halconf.h | egrep -e "\#define"))
-
+HALCONF := $(strip $(shell cat $(CONFDIR)/halconf.h $(CONFDIR)/halconf_community.h | egrep -e "\#define"))
 endif
 
 # Drivers compatible with the platform.

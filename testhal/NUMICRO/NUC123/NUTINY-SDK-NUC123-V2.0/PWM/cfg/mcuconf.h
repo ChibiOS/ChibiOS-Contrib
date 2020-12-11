@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2020 Alex Lewontin
+    Copyright (C) 2016 Stephane D'Alu
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,18 +14,21 @@
     limitations under the License.
 */
 
-#include "hal.h"
+#ifndef _MCUCONF_H_
+#define _MCUCONF_H_
 
-#if HAL_USE_PAL
-const PALConfig pal_default_config;
-#endif
-
-/**
- * @brief   Board-specific initialization code.
+/*
+ * Board setting
  */
-void boardInit(void)
-{
-#if HAL_USE_PAL
-  OnboardLED_Init();
-#endif
-}
+
+/*
+ * HAL driver system settings.
+ */
+#define NUC123_HSE_ENABLED TRUE
+#define NUC123_PLL_ENABLED TRUE
+#define NUC123_PLLSRC NUC123_PLLSRC_HSE
+#define NUC123_HCLKSRC NUC123_HCLKSRC_PLL
+
+#define NUC123SD4AN0_MCUCONF
+
+#endif /* _MCUCONF_H_ */
