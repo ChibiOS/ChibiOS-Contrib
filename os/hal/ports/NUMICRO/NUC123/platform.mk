@@ -17,5 +17,6 @@ include $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/LLD/TIMv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/LLD/USBv1/driver.mk
 
 # Shared variables
-ALLCSRC += $(PLATFORMSRC)
-ALLINC  += $(PLATFORMINC)
+ALLCSRC    += $(PLATFORMSRC)
+ALLXASMSRC += $(PLATFORMASM)
+ALLINC     += $(PLATFORMINC)

@@ -17,7 +17,7 @@
 
 /**
  * @file    hal_lld.c
- * @brief   NUC123xxxANx HAL subsystem low level driver source.
+ * @brief   NUC123 HAL subsystem low level driver source.
  *
  * @addtogroup HAL
  * @{
@@ -410,17 +410,17 @@ static uint32_t set_core_clock(uint32_t clkCore)
   /* Is HXT stable ? */
   if (CLK->CLKSTATUS & CLK_CLKSTATUS_XTL12M_STB_Msk) {
     /* Use __HXT as PLL source */
-    clkCore = enable_pll(NUC123_PLLSRC_HSE, (clkCore));
+    clkCore = enable_pll(NUC123_PLLSRC_HSE, (2 * clkCore));
   } else {
     /* Use __HIRC as PLL source */
-    clkCore = enable_pll(NUC123_PLLSRC_HSI, (clkCore));
+    clkCore = enable_pll(NUC123_PLLSRC_HSI, (2 * clkCore));
 
     /* Read HIRC clock source stable flag again (since we're using it now) */
     stableHIRC = CLK->CLKSTATUS & CLK_CLKSTATUS_OSC22M_STB_Msk;
   }
 
   /* Set HCLK clock source to PLL */
-  set_HCLK(NUC123_HCLKSRC_PLL, CLK_CLKDIV_HCLK(1));
+  set_HCLK(NUC123_HCLKSRC_PLL_2, CLK_CLKDIV_HCLK(1));
 
   /* Disable HIRC if HIRC was disabled before we started */
   if (stableHIRC == 0) {
