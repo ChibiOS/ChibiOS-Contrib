@@ -18,7 +18,7 @@
  * @file    NUMICRO/nuc123_isr.h
  * @brief   ISR remapper driver header.
  *
- * @addtogroup NUC123SD4AN0_ISR
+ * @addtogroup NUC123_ISR
  * @{
  */
 
@@ -34,16 +34,14 @@
  * @{
  */
 
-/* 
+/*
  * GPIO units.
  */
-#if defined(NUC123SD4AN0)
 #define NUC123_GPIOAB_HANDLER        Vector50
 #define NUC123_GPIOCDF_HANDLER       Vector54
 
 #define NUC123_GPIOAB_NUMBER         GPAB_IRQn
 #define NUC123_GPIOCDF_NUMBER        GPCDF_IRQn
-#endif
 
 /*
  * Special ST unit

@@ -16,8 +16,8 @@
 */
 
 /**
- * @file    NUC123SD4AN0/hal_lld.h
- * @brief   NUC123SD4AN0 HAL subsystem low level driver header.
+ * @file    NUC123/hal_lld.h
+ * @brief   NUC123 HAL subsystem low level driver header.
  * @pre     This module requires the following macros to be defined in the
  *          @p board.h file:
  *          - NUC123_HSECLK.
@@ -41,12 +41,13 @@
  */
 #if defined(NUC123SD4AN0) || defined(__DOXYGEN__)
 #define PLATFORM_NAME           "NUC123SD4AN0 NUC123 Cortex M0 USB Micro"
+#define NUC123xxxANx
+#undef NUC123xxxAEx
 #else
 #error "NUC123 device unsupported or not specified"
 #endif
 
-#define NUC123xxxANx
-#undef NUC123xxxAEx
+/* TODO: Add other NUC123xxxxxx versions */
 
 /** @} */
 
@@ -186,8 +187,8 @@
 /*
  * Configuration-related checks.
  */
-#if !defined(NUC123SD4AN0_MCUCONF)
-#error "Using a wrong mcuconf.h file, NUC123SD4AN0_MCUCONF not defined"
+#if !defined(NUC123_MCUCONF)
+#error "Using a wrong mcuconf.h file, NUC123_MCUCONF not defined"
 #endif
 
 /*

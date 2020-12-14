@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    NUC123SD4AN0/nuc123_registry.h
- * @brief   NUC123SD4AN0 capabilities registry.
+ * @file    NUC123/nuc123_registry.h
+ * @brief   NUC123 capabilities registry.
  *
  * @addtogroup HAL
  * @{
@@ -25,16 +25,12 @@
 #ifndef NUC123_REGISTRY_H
 #define NUC123_REGISTRY_H
 
-#if !defined(NUC123SD4AN0) || defined(__DOXYGEN__)
-#define NUC123SD4AN0
-#endif
-
 /*===========================================================================*/
 /* Platform capabilities.                                                    */
 /*===========================================================================*/
 
 /**
- * @name    NUC123SD4AN0 capabilities
+ * @name    NUC123 capabilities
  * @{
  */
 
@@ -99,8 +95,8 @@
 #define NUC123_HAS_ETH                       FALSE
 
 /* EXTI attributes.*/
-//#define NUC123_EXTI_NUM_LINES                20
-//#define NUC123_EXTI_IMR_MASK                 0xFFF50000U
+/* #define NUC123_EXTI_NUM_LINES                20 */
+/* #define NUC123_EXTI_IMR_MASK                 0xFFF50000U */
 
 /* GPIO attributes.*/
 #define NUC123_HAS_GPIOA                     TRUE
@@ -203,7 +199,7 @@
 #define NUC123_HAS_TIM22                     FALSE
 
 /* USART attributes.*/
-/*#define NUC123_HAS_USART1                    TRUE
+/* #define NUC123_HAS_USART1                    TRUE
 #define NUC123_USART1_RX_DMA_MSK             (NUC123_DMA_STREAM_ID_MSK(1, 1) |\
                                              NUC123_DMA_STREAM_ID_MSK(1, 3) |\
                                              NUC123_DMA_STREAM_ID_MSK(1, 5))
@@ -219,8 +215,8 @@
 #define NUC123_USART2_RX_DMA_CHN             0x00090909
 #define NUC123_USART2_TX_DMA_MSK             (NUC123_DMA_STREAM_ID_MSK(1, 2) |\
                                              NUC123_DMA_STREAM_ID_MSK(1, 4))
-#define NUC123_USART2_TX_DMA_CHN             0x00009090
-*/
+#define NUC123_USART2_TX_DMA_CHN             0x00009090 */
+
 #define NUC123_HAS_USART1                    FALSE
 #define NUC123_HAS_USART2                    FALSE
 #define NUC123_HAS_USART3                    FALSE
@@ -252,13 +248,6 @@
 /* CRC attributes.*/
 #define NUC123_HAS_CRC                       TRUE
 #define NUC123_CRC_PROGRAMMABLE              FALSE
-
-/*
-This currently correspond to the header guards, and gets tripped on double inclusion.
-This does not seem correct.
-#else
-#error "NUC123SD4AN0 device not specified"
-*/
 
 /** @} */
 

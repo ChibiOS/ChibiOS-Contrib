@@ -51,7 +51,6 @@
 OSAL_IRQ_HANDLER(NUC123_GPIOAB_HANDLER){
     OSAL_IRQ_PROLOGUE();
 
-
   GPIO_TOGGLE(PB4);
   GPIO_TOGGLE(PB5);
   GPIO_TOGGLE(PB6);
@@ -88,7 +87,7 @@ OSAL_IRQ_HANDLER(NUC123_GPIOCDF_HANDLER){
  */
 void _pal_lld_init(const PALConfig *config) {
 
-  //(void)config;
+  /* (void)config; */
   /* Turn on GPIO subsystem
    * Set all GPIO to Input/HZ
    * Clear all GPIO Interrupts
@@ -148,7 +147,7 @@ void _pal_lld_init(const PALConfig *config) {
   /* Enable External Crystal Oscillator pins */
   SYS->GPF_MFP |= SYS_GPF_MFP_PF0_XT1_OUT | SYS_GPF_MFP_PF1_XT1_IN;
 
-//  SYS->GPD_MFP |= SYS_GPD_MFP_PD10_CLKO;
+/*   SYS->GPD_MFP |= SYS_GPD_MFP_PD10_CLKO; */
 
   /* Enable UART1 data pins */
   SYS->GPB_MFP |= SYS_GPB_MFP_PB1_UART0_TXD | SYS_GPB_MFP_PB0_UART0_RXD;
@@ -181,10 +180,10 @@ void _pal_lld_setgroupmode(ioportid_t port,
   else
       nucMode = GPIO_PMD_QUASI;
 
-  // GPIO_SetMode(port, mask, nucMode);
+  /*  GPIO_SetMode(port, mask, nucMode); */
   for (uint32_t i = 0; i < PAL_IOPORTS_WIDTH; i++) {
-  // for(uint32_t i = 0; i < GPIO_PINSPERPORT_MAX; i++) {
-    if(mask & (1 << i)) {
+  /*  for (uint32_t i = 0; i < GPIO_PINSPERPORT_MAX; i++) { */
+    if (mask & (1 << i)) {
       port->PMD = (port->PMD & ~(0x03ul << (i << 1))) | (nucMode << (i << 1));
     }
   }

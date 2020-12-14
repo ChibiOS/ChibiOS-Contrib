@@ -1,9 +1,9 @@
 PLATFORMSRC := $(CHIBIOS)/os/hal/ports/common/ARMCMx/nvic.c \
-               $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/NUC123SD4AN0/hal_lld.c
+               $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/NUC123/hal_lld.c
 
 # Required include directories.
 PLATFORMINC := $(CHIBIOS)/os/hal/ports/common/ARMCMx \
-               $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/NUC123SD4AN0 \
+               $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/NUC123 \
                $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/LLD
 
 # Optional platform files.
