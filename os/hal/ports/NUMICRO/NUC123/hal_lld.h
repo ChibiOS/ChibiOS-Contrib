@@ -159,24 +159,10 @@
 #endif
 
 /**
- * @brief   Main clock source selection.
- */
-#if !defined(NUC123_HCLKSRC) || defined(__DOXYGEN__)
-#define NUC123_HCLKSRC NUC123_HCLKSRC_HSI
-#endif
-
-/**
- * @brief   Main clock divider value.
- */
-#if !defined(NUC123_HCLKDIV) || defined(__DOXYGEN__)
-#define NUC123_HCLKDIV 1
-#endif
-
-/**
  * @brief   Clock source for the PLL.
  */
-#if !defined(NUC123_PLLCLK) || defined(__DOXYGEN__)
-#define NUC123_PLLCLK 72000000UL
+#if !defined(NUC123_HCLK) || defined(__DOXYGEN__)
+#define NUC123_HCLK 72000000UL
 #endif
 /** @} */
 
@@ -203,73 +189,7 @@
 #endif
 #endif
 
-/*
- * PLL checks
- */
-
-#if NUC123_PLL_ENABLED
-
-#if !defined(NUC123_PLLCLK)
-#error "PLL frequency not defined"
-#endif
-
-#if (NUC123_PLLCLK < NUC123_PLLCLK_MIN) ||                                  \
-    (NUC123_PLLCLK > NUC123_PLLCLK_MAX)
-#error                                                                      \
-    "NUC123_PLLCLK outside acceptable range (NUC123_PLLCLK_MIN...NUC123_PLLCLK_MAX)"
-#endif
-#endif /* NUC123_PLL_ENABLED */
-
-/*
- * HCLK checks.
- */
-
-#if (NUC123_HCLKDIV < NUC123_HCLKDIV_MIN ||                                 \
-     NUC123_HCLKDIV > NUC123_HCLKDIV_MAX)
-#error                                                                      \
-    "NUC123_HCLKDIV outside acceptable range (NUC123_HCLKDIV_MIN...NUC123_HCLDIV_MAX)"
-#endif
-
-#if NUC123_HCLKSRC == NUC123_HCLKSRC_HSE
-
-#if !NUC123_HSE_ENABLED
-#error "Cannot use HSE as a HCLK source if it is disabled."
-#endif
-
-#define NUC123_HCLK (NUC123_HSECLK / NUC123_HCLKDIV)
-
-#elif NUC123_HCLKSRC == NUC123_HCLKSRC_PLL_2
-
-#if !NUC123_PLL_ENABLED
-#error "Cannot use PLL as a HCLK source if it is disabled."
-#endif
-
-#define NUC123_HCLK (NUC123_PLLCLK / 2)
-
-#elif NUC123_HCLKSRC == NUC123_HCLKSRC_PLL
-
-#if !NUC123_PLL_ENABLED
-#error "Cannot use PLL as a HCLK source if it is disabled."
-#endif
-
-#define NUC123_HCLK (NUC123_PLLCLK / NUC123_HCLKDIV)
-
-#elif NUC123_HCLKSRC == NUC123_HCLKSRC_LSI
-
-#if !NUC123_LSI_ENABLED
-#error "Cannot use LSI as a HCLK source if it is disabled."
-#endif
-
-#define NUC123_HCLK (NUC123_LSICLK / NUC123_HCLKDIV)
-
-#elif NUC123_HCLKSRC == NUC123_HCLKSRC_HSI
-#if !NUC123_HSI_ENABLED
-#error "Cannot use HSI as a HCLK source if it is disabled."
-#endif
-
-#define NUC123_HCLK (NUC123_HSICLK / NUC123_HCLKDIV)
-
-#endif
+#define NUC123_PLLCLK (NUC123_HCLK * 2)
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
