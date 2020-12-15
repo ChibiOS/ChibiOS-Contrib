@@ -100,6 +100,11 @@ static union {
 } ep0_state;
 
 /**
+* @brief   Buffer for the EP0 setup packets.
+*/
+static uint8_t ep0setup_buffer[8];
+
+/**
  * @brief   EP0 initialization structure.
  */
 static const USBEndpointConfig ep0config = {USB_EP_MODE_TYPE_CTRL,
@@ -109,7 +114,9 @@ static const USBEndpointConfig ep0config = {USB_EP_MODE_TYPE_CTRL,
                                             0x40,
                                             0x40,
                                             &ep0_state.in,
-                                            &ep0_state.out};
+                                            &ep0_state.out,
+                                            1,
+                                            ep0setup_buffer};
 
 /**
  * @brief   Tracks the first unallocated word in the SRAM buffer

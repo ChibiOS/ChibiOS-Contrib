@@ -88,7 +88,7 @@ PROJECT = ch
 MCU  = cortex-m0
 
 # Imported source files and paths.
-BASE_PATH       := /Users/lewontin/Documents/development/Projects
+BASE_PATH       := ../../../../../../..
 CHIBIOS         := $(BASE_PATH)/ChibiOS/ChibiOS
 CHIBIOS_CONTRIB := $(BASE_PATH)/ChibiOS/ChibiOS-Contrib
 CONFDIR         := ./cfg
