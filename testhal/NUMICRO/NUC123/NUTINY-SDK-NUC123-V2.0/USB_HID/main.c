@@ -56,7 +56,7 @@ int main(void)
    */
   OnboardLED_Off();
 
-  chDbgSuspendTrace(CH_DBG_TRACE_MASK_READY | CH_DBG_TRACE_MASK_SWITCH);
+  chDbgSuspendTrace(CH_DBG_TRACE_MASK_SWITCH);
   /*
    * Initializes a USB HID driver.
    */
