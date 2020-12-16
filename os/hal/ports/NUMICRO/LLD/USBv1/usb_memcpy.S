@@ -148,9 +148,9 @@ unaligned:
   str     r5, [r4, #16]
 
 unaligned_loop_top:
+  subs    r2, r2, #1
   ldrb    r5, [r1, r2]
   strb    r5, [r0, r2]
-  subs    r2, r2, #1
 unaligned_loop_check:
   bne.n   unaligned_loop_top
 
