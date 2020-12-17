@@ -157,7 +157,7 @@ static size_t usb_packet_receive(USBDriver *usbp, usbep_t ep) {
   osp->rxcnt += n;
   osp->rxsize -= n;
 
-  size_t next_xfer = (osp->rxsize > epcp->out_maxsize) ? epcp->out_maxsize : osp->rxsize; 
+  size_t next_xfer = (osp->rxsize > epcp->out_maxsize) ? epcp->out_maxsize : osp->rxsize;
   USB_EPLIST->entry[4 * ep] &= ~(0x3FFFFFF | EPLIST_ENTRY_STALL | EPLIST_ENTRY_ACTIVE);
   if (next_xfer > 0) {
     // ReSetup for recieve
@@ -218,12 +218,12 @@ OSAL_IRQ_HANDLER(LPC_USB_IRQ_VECTOR) {
       } else {
         // OUT endpoint, receive
         USBOutEndpointState *osp = usbp->epc[ep]->out_state;
-        size_t n = 0;
         if (osp->rxsize > 0) {
-          osalSysLockFromISR();     
-          n = usb_packet_receive(usbp, ep);
+          osalSysLockFromISR();
+          usb_packet_receive(usbp, ep);
           osalSysUnlockFromISR();
-        } else {
+        }
+        if (osp->rxsize == 0) { // TODO: Check if this is correct
           _usb_isr_invoke_out_cb(usbp, ep);
         }
       }
