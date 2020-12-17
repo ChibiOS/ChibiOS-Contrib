@@ -132,7 +132,7 @@ static void usb_packet_transmit(USBDriver *usbp, usbep_t ep, size_t n)
   }
 
   /* Get EP command/status List, update the length field and data pointer. */
-  USB_EPLIST->entry[ep * 4 + 2] &= ~0x3FFFFFF;
+  USB_EPLIST->entry[ep * 4 + 2] &= ~(0x3FFFFFF | EPLIST_ENTRY_STALL | EPLIST_ENTRY_ACTIVE);
   USB_EPLIST->entry[ep * 4 + 2] |= EPLIST_ENTRY_NBYTES(n) |
     EPLIST_ADDR(usbp->epn_buffer[ep * 2 + 1]);
   if (n > 0)
@@ -145,21 +145,28 @@ static size_t usb_packet_receive(USBDriver *usbp, usbep_t ep) {
   const USBEndpointConfig *epcp = usbp->epc[ep];
   USBOutEndpointState *osp = usbp->epc[ep]->out_state;
   uint32_t n = (USB_EPLIST->entry[4 * ep] & EPLIST_ENTRY_NBYTES_MASK) >> EPLIST_ENTRY_NBYTES_POS;
-  n = epcp->out_maxsize - n;
+  const size_t xfer_size = (osp->rxsize > epcp->out_maxsize) ? epcp->out_maxsize : osp->rxsize;
+  n = xfer_size - n;
   if (osp->rxbuf != NULL && n > 0) {
     memcpy(osp->rxbuf, usbp->epn_buffer[ep * 2], n);
     osp->rxbuf += n;
   }
 
-  // ReSetup for recieve
-  USB_EPLIST->entry[4 * ep] &= ~0x3FFFFFF;
-  USB_EPLIST->entry[4 * ep] |= EPLIST_ENTRY_NBYTES(epcp->out_maxsize) |
-    EPLIST_ADDR(usbp->epn_buffer[ep * 2]);
-
   if (osp->rxpkts > 0)
     osp->rxpkts -= 1;
   osp->rxcnt += n;
   osp->rxsize -= n;
+
+  size_t next_xfer = (osp->rxsize > epcp->out_maxsize) ? epcp->out_maxsize : osp->rxsize; 
+  USB_EPLIST->entry[4 * ep] &= ~(0x3FFFFFF | EPLIST_ENTRY_STALL | EPLIST_ENTRY_ACTIVE);
+  if (next_xfer > 0) {
+    // ReSetup for recieve
+    USB_EPLIST->entry[4 * ep] |= EPLIST_ENTRY_NBYTES(next_xfer) |
+      EPLIST_ADDR(usbp->epn_buffer[ep * 2]) | EPLIST_ENTRY_ACTIVE;
+  } else {
+    USB_EPLIST->entry[4 * ep] |= EPLIST_ENTRY_STALL;
+  }
+
   return n;
 }
 
@@ -174,10 +181,9 @@ OSAL_IRQ_HANDLER(LPC_USB_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
   USBDriver *usbp = &USBD1;
 
-  uint32_t isr = LPC_USB->INTSTAT;
-  #define devstat   (LPC_USB->DEVCMDSTAT)
+  uint32_t isr = (LPC_USB->INTSTAT & LPC_USB->INTEN);
   LPC_USB->INTSTAT &= 0xFFFFFFFF; // Clear Flags
-
+  #define devstat   (LPC_USB->DEVCMDSTAT)
 
   // SOF
   if (isr & USB_INT_FRAME_INT) {
@@ -212,13 +218,13 @@ OSAL_IRQ_HANDLER(LPC_USB_IRQ_VECTOR) {
       } else {
         // OUT endpoint, receive
         USBOutEndpointState *osp = usbp->epc[ep]->out_state;
-        osalSysLockFromISR();
-        size_t n = usb_packet_receive(usbp, ep);
-        osalSysUnlockFromISR();
-        if ((n < usbp->epc[0]->out_maxsize) || (osp->rxpkts == 0)) {
-          _usb_isr_invoke_out_cb(usbp, ep);
+        size_t n = 0;
+        if (osp->rxsize > 0) {
+          osalSysLockFromISR();     
+          n = usb_packet_receive(usbp, ep);
+          osalSysUnlockFromISR();
         } else {
-          USB_EPLIST->entry[4 * ep] |= EPLIST_ENTRY_ACTIVE;
+          _usb_isr_invoke_out_cb(usbp, ep);
         }
       }
     }
@@ -356,9 +362,9 @@ void usb_lld_reset(USBDriver *usbp) {
   LPC_USB->DATABUFSTART = LPC_USB_SRAM_START & USB_DATABUFSTART_MASK;
 
   // Clear Existing Interrupts
-  LPC_USB->INTSTAT = USB_INT_DEV_INT | USB_INT_FRAME_INT | USB_INT_EP_ALL_INT;
+  LPC_USB->INTSTAT |= USB_INT_DEV_INT | USB_INT_FRAME_INT | USB_INT_EP_ALL_INT;
   // Setup Interrupt Masks
-  LPC_USB->INTEN = USB_INT_DEV_INT | USB_INT_EP_ALL_INT;
+  LPC_USB->INTEN = USB_INT_DEV_INT | 0b11;
   // SOF only if there is a handler registered.
   if ((usbp)->config->sof_cb != NULL) {
     LPC_USB->INTEN |= USB_INT_FRAME_INT;
@@ -425,32 +431,31 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
     case USB_EP_MODE_TYPE_INTR:
       break;
     default:
-      while(1) {}
+      break;
   }
-  if (epcp->out_state != NULL) {
-    while(epcp->out_maxsize > 1023);
+  if (epcp->out_state != NULL || ep == 0) {
     uint32_t ep_mem = usb_ep_malloc(usbp, epcp->out_maxsize, 64);
     usbp->epn_buffer[(2 * ep)] = (void *)ep_mem;
+
     USB_EPLIST->entry[(4 * ep)] = usbep_cfg | EPLIST_ADDR(ep_mem)
       | EPLIST_ENTRY_NBYTES(epcp->out_maxsize);
+
+    LPC_USB->INTEN |= USB_INT_EP((ep * 2));
   }
 
   if (ep == 0) {
-    while(usbp->setup_buffer != NULL){}
     // Allocate Setup Bytes
     uint32_t ep_mem = usb_ep_malloc(usbp, 8, 64);
     usbp->setup_buffer = (void *)ep_mem;
     USB_EPLIST->entry[1] = EPLIST_ADDR(ep_mem);
-    LPC_USB->INTEN |= USB_INT_EP(ep * 2);
   }
 
-  if (epcp->in_state != NULL) {
-    while(epcp->in_maxsize > 1023);
+  if (epcp->in_state != NULL || ep == 0) {
     uint32_t ep_mem = usb_ep_malloc(usbp, epcp->in_maxsize, 64);
     usbp->epn_buffer[(2 * ep) + 1] = (void *)ep_mem;
     USB_EPLIST->entry[(4 * ep) + 2] = usbep_cfg | EPLIST_ADDR(ep_mem)
       | EPLIST_ENTRY_NBYTES(epcp->in_maxsize);
-    LPC_USB->INTEN |= USB_INT_EP((ep * 2) + 1);
+    LPC_USB->INTEN |= USB_INT_EP(((ep * 2) + 1));
   }
 }
 
@@ -469,10 +474,10 @@ void usb_lld_disable_endpoints(USBDriver *usbp) {
   while (LPC_USB->EPSKIP) {}
   for (int i = 1; i < 5; ++i) // 4 EPs needs to be disabled, EP0 can't
   {
-    USB_EPLIST->entry[i * 2] &= ~EP_STATUS_ACTIVE;
-    USB_EPLIST->entry[i * 2] |= EP_STATUS_DISABLED;
-    USB_EPLIST->entry[i * 2 + 2] &= ~EP_STATUS_ACTIVE;
-    USB_EPLIST->entry[i * 2 + 2] |= EP_STATUS_DISABLED;
+    USB_EPLIST->entry[i * 4] &= ~EP_STATUS_ACTIVE;
+    USB_EPLIST->entry[i * 4] |= EP_STATUS_DISABLED;
+    USB_EPLIST->entry[i * 4 + 2] &= ~EP_STATUS_ACTIVE;
+    USB_EPLIST->entry[i * 4 + 2] |= EP_STATUS_DISABLED;
   }
 }
 
@@ -491,9 +496,9 @@ void usb_lld_disable_endpoints(USBDriver *usbp) {
 usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep) {
   if (usbp != &USBD1)
     return EP_STATUS_DISABLED;
-  if (USB_EPLIST->entry[ep * 2] & EPLIST_ENTRY_DISABLE) {
+  if (USB_EPLIST->entry[ep * 4] & EPLIST_ENTRY_DISABLE) {
     return EP_STATUS_DISABLED;
-  } else if (USB_EPLIST->entry[ep * 2] & EPLIST_ENTRY_STALL) {
+  } else if (USB_EPLIST->entry[ep * 4] & EPLIST_ENTRY_STALL) {
     return EP_STATUS_STALLED;
   } else {
     return EP_STATUS_ACTIVE;
@@ -515,9 +520,9 @@ usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep) {
 usbepstatus_t usb_lld_get_status_in(USBDriver *usbp, usbep_t ep) {
   if (usbp != &USBD1)
     return EP_STATUS_DISABLED;
-  if (USB_EPLIST->entry[ep * 2 + 2] & EPLIST_ENTRY_DISABLE) {
+  if (USB_EPLIST->entry[ep * 4 + 2] & EPLIST_ENTRY_DISABLE) {
       return EP_STATUS_DISABLED;
-  } else if (USB_EPLIST->entry[ep * 2 + 2] & EPLIST_ENTRY_STALL) {
+  } else if (USB_EPLIST->entry[ep * 4 + 2] & EPLIST_ENTRY_STALL) {
     return EP_STATUS_STALLED;
   } else {
     return EP_STATUS_ACTIVE;
@@ -546,11 +551,8 @@ void usb_lld_read_setup(USBDriver *usbp, usbep_t ep, uint8_t *buf) {
       USB_EPLIST->entry[0] &= ~(EPLIST_ENTRY_STALL | EPLIST_ENTRY_ACTIVE); // EP0OUT
       USB_EPLIST->entry[2] &= ~(EPLIST_ENTRY_STALL | EPLIST_ENTRY_ACTIVE); // EP0IN
       LPC_USB->DEVCMDSTAT |= USB_DEVCMDSTAT_SETUP; // Clear SETUP
-      LPC_USB->DEVCMDSTAT &= ~(USB_DEVCMDSTAT_INTONNAK_CO | USB_DEVCMDSTAT_INTONNAK_CI);
       memcpy(buf, usbp->setup_buffer, 8);
       USB_EPLIST->entry[1] = EPLIST_ADDR(usbp->setup_buffer);
-    } else {
-      while(1){}
     }
   }
 }
@@ -567,19 +569,28 @@ void usb_lld_start_out(USBDriver *usbp, usbep_t ep) {
   USBOutEndpointState *osp = usbp->epc[ep]->out_state;
   const USBEndpointConfig *epcp = usbp->epc[ep];
 
-  if (osp->rxsize == 0)         /* Special case for zero sized packets.*/
-    osp->rxpkts = 1;
-  else
-    osp->rxpkts = (uint16_t)((osp->rxsize + usbp->epc[ep]->out_maxsize - 1) /
-                             usbp->epc[ep]->out_maxsize);
+  size_t rx_size = 0;
 
-  USB_EPLIST->entry[ep * 4] &= ~0x3FFFFFF;
+  if (osp->rxsize == 0) {         /* Special case for zero sized packets.*/
+    osp->rxpkts = 1;
+    rx_size = 0;
+  } else {
+    osp->rxpkts = (uint16_t)((osp->rxsize + epcp->out_maxsize - 1) /
+                             epcp->out_maxsize);
+    if (osp->rxsize > epcp->out_maxsize) {
+      rx_size = epcp->out_maxsize;
+    } else {
+      rx_size = osp->rxsize;
+    }
+  }
+
+  USB_EPLIST->entry[ep * 4] &= ~(0x3FFFFFF | EPLIST_ENTRY_STALL | EPLIST_ENTRY_ACTIVE);
   USB_EPLIST->entry[ep * 4] |= EPLIST_ENTRY_ACTIVE |
-    EPLIST_ENTRY_NBYTES(epcp->out_maxsize) |
+    EPLIST_ENTRY_NBYTES(rx_size) |
     EPLIST_ADDR(usbp->epn_buffer[ep * 2]);
 
-  LPC_USB->DEVCMDSTAT |= USB_DEVCMDSTAT_INTONNAK_CO;
-  LPC_USB->DEVCMDSTAT &= ~USB_DEVCMDSTAT_INTONNAK_CI;
+  if (ep == 0)
+    LPC_USB->DEVCMDSTAT |= USB_DEVCMDSTAT_INTONNAK_CO;
 }
 
 /**
