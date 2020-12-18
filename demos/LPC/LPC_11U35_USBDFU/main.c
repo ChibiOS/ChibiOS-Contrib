@@ -41,10 +41,6 @@ static void jump_to_application(void) {
     while (1) {}
 }
 
-#define IAP_LOCATION  0x1fff1ff1
-typedef void (*IAP)(uint32_t [], uint32_t []);
-const IAP iap_entry = (IAP)IAP_LOCATION;
-
 /*
  * Application entry point.
  */
@@ -57,66 +53,16 @@ int main(void) {
    */
   chSysInit();
 
-  memset(fw_buffer, 0, FW_BUFFER_SIZE);
-  dfu_need_flush = 0;
-
   /*
    * Normal main() thread activity, in this demo it does nothing except
    * increasing the minutes counter.
    */
-  while (true) {
-    uint32_t iap_command[5];
-    uint32_t iap_result[4];
+  usbDisconnectBus(&USBD1);
+  chThdSleepMilliseconds(1500);
+  usbStart(&USBD1, &usbcfg);
+  usbConnectBus(&USBD1);
 
-    usbDisconnectBus(&USBD1);
-    chThdSleepMilliseconds(1500);
-    usbStart(&USBD1, &usbcfg);
-    usbConnectBus(&USBD1);
-
-    while(1){
-      if (dfu_need_flush) {
-        if (global_offset == APP_BASE) {
-          do {
-          iap_command[0] = 50; // Prep Sector
-          iap_command[1] = 3; // Start Sec
-          iap_command[2] = 15; // Stop Sec
-          iap_entry(iap_command, iap_result);
-          } while(iap_result[0]);
-          // Erase All Flash (3-15)
-          do {
-          iap_command[0] = 52; // Erase Sector
-          iap_command[1] = 3; // Start Sec
-          iap_command[2] = 15; // Stop Sec
-          iap_command[3] = 48000; // 48MHz
-          iap_entry(iap_command, iap_result);
-          } while(iap_result[0]);
-        }
-        uint32_t start_sector = global_offset / 4096;
-        uint32_t end_sector = (global_offset + FW_BUFFER_SIZE) / 4096;
-        iap_command[0] = 50; // Prep Sector
-        iap_command[1] = start_sector; // Start Sec
-        iap_command[2] = end_sector; // Stop Sec
-        iap_entry(iap_command, iap_result);
-        // Copy the buffer
-        iap_command[0] = 51;
-        iap_command[1] = global_offset;
-        iap_command[2] = (uint32_t)fw_buffer;
-        iap_command[3] = FW_BUFFER_SIZE;
-        iap_command[4] = 48000;
-        iap_entry(iap_command, iap_result);
-        global_offset += FW_BUFFER_SIZE;
-
-        dfu_need_flush = 0;
-        memset(fw_buffer, 0, FW_BUFFER_SIZE);
-        buffer_fill = 0;
-        if (currentState == STATE_DFU_DNLOAD_SYNC || currentState == STATE_DFU_DNBUSY)
-          currentState = STATE_DFU_DNLOAD_IDLE;
-        if (currentState == STATE_DFU_MANIFEST_SYNC) {
-          currentState = STATE_DFU_MANIFEST_WAIT_RESET;
-          chThdSleepMilliseconds(2000);
-          jump_to_application();
-        }
-      }
-    }
+  while(1){
+    chThdSleepSeconds(600);
   }
 }
