@@ -819,9 +819,9 @@ void usb_lld_start_in(USBDriver *usbp, usbep_t ep)
 
         isp->txlast = n;
 
-        USB_EPnAck(ep, n);
-
         sn32_usb_write_fifo(ep, isp->txbuf, n, false);
+
+        USB_EPnAck(ep, n);
     }
     else
     {
