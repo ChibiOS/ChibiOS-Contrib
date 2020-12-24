@@ -54,7 +54,7 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define NUC123_USB_HW_ENDPOINTS 8
+#define NUC123_USB_HW_ENDPOINTS 6
 
 #define NUC123_USBD_CFG_OUT (1UL << USBD_CFG_STATE_Pos)
 #define NUC123_USBD_CFG_IN  (2UL << USBD_CFG_STATE_Pos)
@@ -352,10 +352,12 @@ static void usb_lld_serve_interrupt(USBDriver* usbp)
 
     if (intsts & USBD_INTSTS_EPEVT5_Msk) {
       /* Clear event flag */
-      USBD->INTSTS = (USBD_INTSTS_EPEVT5_Msk);
+      /* TODO: when the EP5/6 confusion bug is resolved, remove the EP6 mask here */
+      USBD->INTSTS = (USBD_INTSTS_EPEVT5_Msk | USBD_INTSTS_EPEVT6_Msk);
       usb_serve_in_endpoint(2);
     }
 
+#if 0
     if (intsts & USBD_INTSTS_EPEVT6_Msk) {
       /* Clear event flag */
       USBD->INTSTS = (USBD_INTSTS_EPEVT6_Msk);
@@ -367,6 +369,7 @@ static void usb_lld_serve_interrupt(USBDriver* usbp)
       USBD->INTSTS = (USBD_INTSTS_EPEVT7_Msk);
       usb_serve_in_endpoint(3);
     }
+#endif
   }
 }
 
