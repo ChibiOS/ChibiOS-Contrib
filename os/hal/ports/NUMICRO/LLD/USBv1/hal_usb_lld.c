@@ -313,8 +313,8 @@ static void usb_lld_serve_interrupt(USBDriver* usbp)
       HW_IN_EP(0)->CFGP |= USBD_CFGP_CLRRDY_Msk;
       HW_OUT_EP(0)->CFGP |= USBD_CFGP_CLRRDY_Msk;
 
-      _usb_isr_invoke_setup_cb(&USBD1, 0);
       HW_IN_EP(0)->CFG |= USBD_CFG_DSQ_SYNC_Msk;
+      _usb_isr_invoke_setup_cb(&USBD1, 0);
     }
 
     /* EP events */
