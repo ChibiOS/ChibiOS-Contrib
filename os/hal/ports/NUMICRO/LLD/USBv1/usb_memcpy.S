@@ -142,9 +142,9 @@ offset_loop:
 unaligned:
   ldr     r4, =0x40060000
   ldr     r5, [r4, #16]
-  movs    r3, #128 
-  lsls    r3, r3, #3 /* USBD_ATTR_BYTEM_Msk */
-  orrs    r5, r3
+  movs    r7, #128 
+  lsls    r7, r7, #3 /* USBD_ATTR_BYTEM_Msk */
+  orrs    r5, r7
   str     r5, [r4, #16]
 
 unaligned_loop_top:
