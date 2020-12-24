@@ -300,7 +300,7 @@ static void usb_lld_serve_interrupt(USBDriver* usbp)
     if (bussts & USBD_ATTR_RESUME_Msk) {
       /* Enable USB and enable PHY */
       USBD->ATTR |= (USBD_ATTR_PHY_EN_Msk | USBD_ATTR_USB_EN_Msk);
-
+      _usb_wakeup(usbp);
     }
   }
 
