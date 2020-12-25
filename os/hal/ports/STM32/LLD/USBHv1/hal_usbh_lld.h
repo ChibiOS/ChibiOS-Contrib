@@ -132,6 +132,7 @@ typedef struct stm32_hc_management {
 
 void usbh_lld_init(void);
 void usbh_lld_start(USBHDriver *usbh);
+void usbh_lld_stop(USBHDriver *usbh);
 void usbh_lld_ep_object_init(usbh_ep_t *ep);
 void usbh_lld_ep_open(usbh_ep_t *ep);
 void usbh_lld_ep_close(usbh_ep_t *ep);

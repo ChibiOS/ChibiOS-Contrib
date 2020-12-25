@@ -1497,7 +1497,7 @@ void usbh_lld_init(void) {
 #endif
 }
 
-static void _usbh_start(USBHDriver *host) {
+void usbh_lld_start(USBHDriver *host) {
 	stm32_otg_t *const otgp = host->otg;
 
 	/* Clock activation.*/
@@ -1526,8 +1526,6 @@ static void _usbh_start(USBHDriver *host) {
 		rccEnableOTG_HS(FALSE); // Disable HS clock when cpu is in sleep mode
 #if STM32_USBH_USE_OTG_HS_ULPI
 		rccEnableOTG_HSULPI();
-#else
-		rccDisableOTG_HSULPI();
 #endif
 		rccResetOTG_HS();
 
@@ -1555,6 +1553,7 @@ static void _usbh_start(USBHDriver *host) {
 	/* PHY enabled.*/
 	otgp->PCGCCTL = 0;
 
+#if !STM32_USBH_USE_OTG_HS_ULPI
 	/* Internal FS PHY activation.*/
 #if STM32_OTG_STEPPING == 1
 #if defined(BOARD_OTG_NOVBUSSENS)
@@ -1568,10 +1567,10 @@ static void _usbh_start(USBHDriver *host) {
 #else
 	otgp->GCCFG = (GCCFG_VBDEN | GCCFG_PWRDWN);
 #endif
-
 #endif
 	/* 48MHz 1.1 PHY.*/
 	otgp->HCFG = HCFG_FSLSS | HCFG_FSLSPCS_48;
+#endif
 
 	/* Interrupts on FIFOs half empty.*/
 	otgp->GAHBCFG = 0;
@@ -1593,9 +1592,46 @@ static void _usbh_start(USBHDriver *host) {
 	otgp->GAHBCFG |= GAHBCFG_GINTMSK;
 }
 
-void usbh_lld_start(USBHDriver *host) {
-	if (host->status != USBH_STATUS_STOPPED) return;
-	_usbh_start(host);
+void usbh_lld_stop(USBHDriver *host) {
+
+	stm32_otg_t *const otgp = host->otg;
+
+	otg_txfifo_flush(host, 0x10);
+	otg_rxfifo_flush(host);
+
+	/* OTG power down */
+	otgp->GCCFG = GCCFG_PWRDWN;
+
+	/* Clock activation.*/
+#if STM32_USBH_USE_OTG_FS
+#if STM32_USBH_USE_OTG_HS
+	if (&USBHD1 == host)
+#endif
+	{
+		/* Disable IRQ vector.*/
+		nvicDisableVector(STM32_OTG_FS_NUMBER);
+
+		/* OTG FS clock disable.*/
+		rccDisableOTG_FS();
+	}
+#endif
+
+#if STM32_USBH_USE_OTG_HS
+#if STM32_USBH_USE_OTG_FS
+	if (&USBHD2 == host)
+#endif
+	{
+		/* Enables IRQ vector.*/
+		nvicDisableVector(STM32_OTG_HS_NUMBER);
+
+		/* OTG HS clock disable.*/
+		rccDisableOTG_HS(); // Disable HS clock when cpu is in sleep mode
+#if STM32_USBH_USE_OTG_HS_ULPI
+		rccDisableOTG_HSULPI();
+#endif
+	}
+#endif
+
 }
 
 /*===========================================================================*/
@@ -1702,7 +1738,7 @@ usbh_urbstatus_t usbh_lld_root_hub_request(USBHDriver *host, uint8_t bmRequestTy
 				uerr("Detected enabled port; resetting OTG core");
 				otg->GAHBCFG = 0;
 				osalThreadSleepS(OSAL_MS2I(20));
-				_usbh_start(host);				/* this effectively resets the core */
+				usbh_lld_start(host);				/* this effectively resets the core */
 				osalThreadSleepS(OSAL_MS2I(100));	/* during this delay, the core generates connect ISR */
 				uinfo("OTG reset ended");
 				if (otg->HPRT & HPRT_PCSTS) {
