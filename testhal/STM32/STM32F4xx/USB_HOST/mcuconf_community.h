@@ -89,18 +89,19 @@
 /*
  * USBH driver system settings.
  */
-#define STM32_OTG_FS_CHANNELS_NUMBER          8
-#define STM32_OTG_HS_CHANNELS_NUMBER          12
+#define STM32_OTG_FS_CHANNELS_NUMBER        8
+#define STM32_OTG_HS_CHANNELS_NUMBER        12
 
-#define STM32_USBH_USE_OTG_FS                 1
-#define STM32_OTG_FS_RXFIFO_SIZE              1024
-#define STM32_OTG_FS_PTXFIFO_SIZE             128
-#define STM32_OTG_FS_NPTXFIFO_SIZE            128
+#define STM32_USBH_USE_OTG_FS               TRUE
+#define STM32_OTG_FS_RXFIFO_SIZE            1024
+#define STM32_OTG_FS_PTXFIFO_SIZE           128
+#define STM32_OTG_FS_NPTXFIFO_SIZE          128
 
-#define STM32_USBH_USE_OTG_HS                 0
-#define STM32_OTG_HS_RXFIFO_SIZE              2048
-#define STM32_OTG_HS_PTXFIFO_SIZE             1024
-#define STM32_OTG_HS_NPTXFIFO_SIZE            1024
+#define STM32_USBH_USE_OTG_HS               FALSE
+#define STM32_USBH_USE_OTG_HS_ULPI          TRUE
+#define STM32_OTG_HS_RXFIFO_SIZE            2048
+#define STM32_OTG_HS_PTXFIFO_SIZE           1024
+#define STM32_OTG_HS_NPTXFIFO_SIZE          1024
 
 #define STM32_USBH_MIN_QSPACE               4
 #define STM32_USBH_CHANNELS_NP              4

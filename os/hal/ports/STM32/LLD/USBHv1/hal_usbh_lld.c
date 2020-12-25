@@ -73,6 +73,9 @@
 #if !defined(STM32_OTG_HS_FIFO_MEM_SIZE)
 #define STM32_OTG_HS_FIFO_MEM_SIZE 1024
 #endif
+#if !defined(STM32_USBH_USE_OTG_HS_ULPI)
+#define STM32_USBH_USE_OTG_HS_ULPI FALSE
+#endif
 #if defined(STM32H7xx)
 #define STM32_OTG_HS_NUMBER STM32_OTG1_NUMBER
 #define STM32_USB_OTG_HS_IRQ_PRIORITY STM32_USB_OTG1_IRQ_PRIORITY
@@ -1519,7 +1522,11 @@ static void _usbh_start(USBHDriver *host) {
 	{
 		/* OTG HS clock enable and reset.*/
 		rccEnableOTG_HS(FALSE); // Disable HS clock when cpu is in sleep mode
+#if STM32_USBH_USE_OTG_HS_ULPI
+		rccEnableOTG_HSULPI();
+#else
 		rccDisableOTG_HSULPI();
+#endif
 		rccResetOTG_HS();
 
 		otgp->GINTMSK = 0;
@@ -1529,14 +1536,19 @@ static void _usbh_start(USBHDriver *host) {
 	}
 #endif
 
-	otgp->GUSBCFG = GUSBCFG_PHYSEL | GUSBCFG_TRDT(5);
-
+#if STM32_USBH_USE_OTG_HS_ULPI
+		/* Select vbus source */
+		otgp->GUSBCFG = USB_OTG_GUSBCFG_ULPIAR | USB_OTG_GUSBCFG_ULPIEVBUSD;
+#else
+		otgp->GUSBCFG = GUSBCFG_PHYSEL;
+#endif
+	/* Reset after a PHY change */
 	otg_core_reset(host);
 
 	otgp->GCCFG = GCCFG_PWRDWN;
 
 	/* Forced host mode. */
-	otgp->GUSBCFG = GUSBCFG_FHMOD | GUSBCFG_PHYSEL | GUSBCFG_TRDT(5);
+	otgp->GUSBCFG |= GUSBCFG_FHMOD | GUSBCFG_TRDT(5);
 
 	/* PHY enabled.*/
 	otgp->PCGCCTL = 0;
