@@ -67,7 +67,7 @@ typedef struct stm32_hc_management {
 	bool check_ls_activity;											\
 	/* channels */													\
 	uint8_t channels_number;										\
-	stm32_hc_management_t channels[STM32_OTG2_CHANNELS_NUMBER];		\
+	stm32_hc_management_t channels[STM32_OTG_HS_CHANNELS_NUMBER];		\
 	struct list_head ch_free[2];									\
 	/* Enpoints being processed */									\
 	struct list_head ep_active_lists[4];							\
@@ -153,11 +153,11 @@ uint8_t usbh_lld_roothub_get_statuschange_bitmap(USBHDriver *usbh);
 #endif
 
 
-#if STM32_USBH_USE_OTG1
+#if STM32_USBH_USE_OTG_FS
 extern USBHDriver USBHD1;
 #endif
 
-#if STM32_USBH_USE_OTG2
+#if STM32_USBH_USE_OTG_HS
 extern USBHDriver USBHD2;
 #endif
 
