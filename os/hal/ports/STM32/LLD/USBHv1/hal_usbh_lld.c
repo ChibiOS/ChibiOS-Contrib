@@ -40,9 +40,9 @@
 #if defined(STM32H7xx)
 #define STM32_OTG_FS_NUMBER STM32_OTG2_NUMBER
 #define STM32_USB_OTG_FS_IRQ_PRIORITY STM32_USB_OTG2_IRQ_PRIORITY
-#define rccEnableOTG_FS(x) rccEnableAHB1(RCC_AHB1ENR_USB2OTGFSEN, lp)
-#define rccDisableOTG_FS() rccDisableAHB1(RCC_AHB1ENR_USB2OTGFSEN)
-#define rccResetOTG_FS() rccResetAHB1(RCC_AHB1ENR_USB2OTGFSEN)
+#define rccEnableOTG_FS(x) rccEnableUSB2_OTG_FS(lp)
+#define rccDisableOTG_FS() rccDisableUSB2_OTG_FS()
+#define rccResetOTG_FS() rccResetUSB2_OTG_FS()
 #else
 #define STM32_OTG_FS_NUMBER STM32_OTG1_NUMBER
 #define STM32_USB_OTG_FS_IRQ_PRIORITY STM32_USB_OTG1_IRQ_PRIORITY
@@ -79,10 +79,12 @@
 #if defined(STM32H7xx)
 #define STM32_OTG_HS_NUMBER STM32_OTG1_NUMBER
 #define STM32_USB_OTG_HS_IRQ_PRIORITY STM32_USB_OTG1_IRQ_PRIORITY
-#define rccEnableOTG_HS(x) rccEnableAHB1(RCC_AHB1ENR_USB1OTGHSEN, lp)
-#define rccDisableOTG_HS() rccDisableAHB1(RCC_AHB1ENR_USB1OTGHSEN)
-#define rccResetOTG_HS() rccResetAHB1(RCC_AHB1ENR_USB1OTGHSEN)
-#else
+#define rccEnableOTG_HS(x) rccEnableUSB1_OTG_HS(x)
+#define rccDisableOTG_HS() rccDisableUSB1_OTG_HS()
+#define rccResetOTG_HS() rccResetUSB1_OTG_HS()
+#define rccEnableOTG_HSULPI(x) rccEnableUSB1_HSULPI(x)
+#define rccDisableOTG_HSULPI() rccDisableUSB1_HSULPI()
+#define rccResetOTG_HSULPI() rccResetUSB1_HSULPI()
 #define STM32_OTG_HS_NUMBER STM32_OTG2_NUMBER
 #define STM32_USB_OTG_HS_IRQ_PRIORITY STM32_USB_OTG2_IRQ_PRIORITY
 #endif
