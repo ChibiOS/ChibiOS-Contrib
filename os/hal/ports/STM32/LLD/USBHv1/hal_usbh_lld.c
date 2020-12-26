@@ -37,7 +37,7 @@
 #if !defined(STM32_OTG_FS_FIFO_MEM_SIZE)
 #define STM32_OTG_FS_FIFO_MEM_SIZE 320
 #endif
-#if defined(STM32H7xx)
+#if defined(STM32H7XX)
 #define STM32_OTG_FS_NUMBER STM32_OTG2_NUMBER
 #define STM32_USB_OTG_FS_IRQ_PRIORITY STM32_USB_OTG2_IRQ_PRIORITY
 #define rccEnableOTG_FS(x) rccEnableUSB2_OTG_FS(lp)
@@ -76,7 +76,7 @@
 #if !defined(STM32_USBH_USE_OTG_HS_ULPI)
 #define STM32_USBH_USE_OTG_HS_ULPI FALSE
 #endif
-#if defined(STM32H7xx)
+#if defined(STM32H7XX)
 #define STM32_OTG_HS_NUMBER STM32_OTG1_NUMBER
 #define STM32_USB_OTG_HS_IRQ_PRIORITY STM32_USB_OTG1_IRQ_PRIORITY
 #define rccEnableOTG_HS(x) rccEnableUSB1_OTG_HS(x)
@@ -85,8 +85,12 @@
 #define rccEnableOTG_HSULPI(x) rccEnableUSB1_HSULPI(x)
 #define rccDisableOTG_HSULPI() rccDisableUSB1_HSULPI()
 #define rccResetOTG_HSULPI() rccResetUSB1_HSULPI()
+#else
 #define STM32_OTG_HS_NUMBER STM32_OTG2_NUMBER
 #define STM32_USB_OTG_HS_IRQ_PRIORITY STM32_USB_OTG2_IRQ_PRIORITY
+#define rccEnableOTG_HSULPI(x) rccEnableUSB2_HSULPI(x)
+#define rccDisableOTG_HSULPI() rccDisableUSB2_HSULPI()
+#define rccResetOTG_HSULPI() rccResetUSB2_HSULPI()
 #endif
 #if (STM32_OTG_HS_RXFIFO_SIZE + STM32_OTG_HS_PTXFIFO_SIZE + STM32_OTG_HS_NPTXFIFO_SIZE) > (STM32_OTG_HS_FIFO_MEM_SIZE * 4)
 #error "Not enough memory in OTG_HS implementation"
@@ -1525,7 +1529,7 @@ void usbh_lld_start(USBHDriver *host) {
 		/* OTG HS clock enable and reset.*/
 		rccEnableOTG_HS(FALSE); // Disable HS clock when cpu is in sleep mode
 #if STM32_USBH_USE_OTG_HS_ULPI
-		rccEnableOTG_HSULPI();
+		rccEnableOTG_HSULPI(FALSE);
 #endif
 		rccResetOTG_HS();
 
