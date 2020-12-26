@@ -900,8 +900,8 @@ void USBH_DEBUG_OUTPUT_CALLBACK(const uint8_t *buff, size_t len) {
 
 int main(void) {
 
-    IWDG->KR = 0x5555;
-    IWDG->PR = 7;
+    IWDG1->KR = 0x5555;
+    IWDG1->PR = 7;
 
     halInit();
     chSysInit();
@@ -917,7 +917,7 @@ int main(void) {
 #endif
 
 #if STM32_USBH_USE_OTG_HS
-#error "TODO: Initialize USB_HS pads"
+    //USB_HS - configured in board.h
 #endif
 
 #if HAL_USBH_USE_MSD
@@ -941,8 +941,8 @@ int main(void) {
 #endif
 
     //turn on USB power
-    palClearPad(GPIOC, GPIOC_OTG_FS_POWER_ON);
-    chThdSleepMilliseconds(100);
+    // palClearPad(GPIOC, GPIOC_OTG_FS_POWER_ON);
+    // chThdSleepMilliseconds(100);
 
     //start
 #if STM32_USBH_USE_OTG_FS
@@ -963,6 +963,6 @@ int main(void) {
 #endif
         chThdSleepMilliseconds(100);
 
-        IWDG->KR = 0xAAAA;
+        IWDG1->KR = 0xAAAA;
     }
 }

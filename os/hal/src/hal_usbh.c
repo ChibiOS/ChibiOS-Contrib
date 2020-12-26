@@ -90,16 +90,19 @@ void usbhStart(USBHDriver *usbh) {
 #endif
 
 	osalSysLock();
-	osalDbgAssert((usbh->status == USBH_STATUS_STOPPED) || (usbh->status == USBH_STATUS_STARTED),
-				"invalid state");
+	osalDbgAssert((usbh->status == USBH_STATUS_STOPPED), "invalid state");
 	usbh_lld_start(usbh);
 	usbh->status = USBH_STATUS_STARTED;
 	osalSysUnlock();
 }
 
 void usbhStop(USBHDriver *usbh) {
-	//TODO: implement
-	(void)usbh;
+
+	osalSysLock();
+	osalDbgAssert((usbh->status == USBH_STATUS_STARTED), "invalid state");
+	usbh_lld_stop(usbh);
+	usbh->status = USBH_STATUS_STOPPED;
+	osalSysUnlock();
 }
 void usbhSuspend(USBHDriver *usbh) {
 	//TODO: implement
