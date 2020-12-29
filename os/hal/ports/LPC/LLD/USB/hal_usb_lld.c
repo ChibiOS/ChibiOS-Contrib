@@ -145,8 +145,7 @@ static size_t usb_packet_receive(USBDriver *usbp, usbep_t ep) {
   const USBEndpointConfig *epcp = usbp->epc[ep];
   USBOutEndpointState *osp = usbp->epc[ep]->out_state;
   uint32_t n = (USB_EPLIST->entry[4 * ep] & EPLIST_ENTRY_NBYTES_MASK) >> EPLIST_ENTRY_NBYTES_POS;
-  const size_t xfer_size = (osp->rxsize > epcp->out_maxsize) ? epcp->out_maxsize : osp->rxsize;
-  n = xfer_size - n;
+  n = epcp->out_maxsize - n;
   if (osp->rxbuf != NULL && n > 0) {
     memcpy(osp->rxbuf, usbp->epn_buffer[ep * 2], n);
     osp->rxbuf += n;
@@ -157,14 +156,15 @@ static size_t usb_packet_receive(USBDriver *usbp, usbep_t ep) {
   osp->rxcnt += n;
   osp->rxsize -= n;
 
-  size_t next_xfer = (osp->rxsize > epcp->out_maxsize) ? epcp->out_maxsize : osp->rxsize; 
   USB_EPLIST->entry[4 * ep] &= ~(0x3FFFFFF | EPLIST_ENTRY_STALL | EPLIST_ENTRY_ACTIVE);
-  if (next_xfer > 0) {
+  if (osp->rxsize > 0) {
     // ReSetup for recieve
-    USB_EPLIST->entry[4 * ep] |= EPLIST_ENTRY_NBYTES(next_xfer) |
+    USB_EPLIST->entry[4 * ep] |= EPLIST_ENTRY_NBYTES(epcp->out_maxsize) |
       EPLIST_ADDR(usbp->epn_buffer[ep * 2]) | EPLIST_ENTRY_ACTIVE;
   } else {
-    USB_EPLIST->entry[4 * ep] |= EPLIST_ENTRY_STALL;
+    if (ep != 0) {
+      USB_EPLIST->entry[4 * ep] |= EPLIST_ENTRY_STALL;
+    }
   }
 
   return n;
@@ -218,12 +218,15 @@ OSAL_IRQ_HANDLER(LPC_USB_IRQ_VECTOR) {
       } else {
         // OUT endpoint, receive
         USBOutEndpointState *osp = usbp->epc[ep]->out_state;
-        size_t n = 0;
+        size_t actual_rx = 0;
         if (osp->rxsize > 0) {
-          osalSysLockFromISR();     
-          n = usb_packet_receive(usbp, ep);
+          osalSysLockFromISR();
+          actual_rx = usb_packet_receive(usbp, ep);
           osalSysUnlockFromISR();
-        } else {
+        }
+        if (osp->rxsize == 0) { // TODO: Check if this is correct
+          _usb_isr_invoke_out_cb(usbp, ep);
+        } else if (actual_rx < usbp->epc[ep]->out_maxsize && ep != 0) {
           _usb_isr_invoke_out_cb(usbp, ep);
         }
       }
@@ -569,24 +572,16 @@ void usb_lld_start_out(USBDriver *usbp, usbep_t ep) {
   USBOutEndpointState *osp = usbp->epc[ep]->out_state;
   const USBEndpointConfig *epcp = usbp->epc[ep];
 
-  size_t rx_size = 0;
-
   if (osp->rxsize == 0) {         /* Special case for zero sized packets.*/
     osp->rxpkts = 1;
-    rx_size = 0;
   } else {
     osp->rxpkts = (uint16_t)((osp->rxsize + epcp->out_maxsize - 1) /
                              epcp->out_maxsize);
-    if (osp->rxsize > epcp->out_maxsize) {
-      rx_size = epcp->out_maxsize;
-    } else {
-      rx_size = osp->rxsize;
-    }
   }
 
   USB_EPLIST->entry[ep * 4] &= ~(0x3FFFFFF | EPLIST_ENTRY_STALL | EPLIST_ENTRY_ACTIVE);
   USB_EPLIST->entry[ep * 4] |= EPLIST_ENTRY_ACTIVE |
-    EPLIST_ENTRY_NBYTES(rx_size) |
+    EPLIST_ENTRY_NBYTES(epcp->out_maxsize) |
     EPLIST_ADDR(usbp->epn_buffer[ep * 2]);
 
   if (ep == 0)
