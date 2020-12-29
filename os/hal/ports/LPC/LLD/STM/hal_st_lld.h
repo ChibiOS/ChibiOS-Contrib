@@ -53,6 +53,10 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
+#if OSAL_ST_MODE_PERIODIC == OSAL_ST_MODE_FREERUNNING
+  #error "OSAL_ST_MODE_FREERUNNING is not supported. Check CH_CFG_ST_TIMEDELTA"
+#endif
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
