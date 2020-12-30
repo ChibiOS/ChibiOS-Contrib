@@ -423,6 +423,7 @@ void usb_lld_init(void)
  */
 void usb_lld_start(USBDriver* usbp)
 {
+  uint32_t delay;
 
   if (usbp->state == USB_STOP) {
     /* Enables the peripheral.*/
@@ -437,6 +438,8 @@ void usb_lld_start(USBDriver* usbp)
   /* Reset procedure enforced on driver start.*/
 
   SYS->IPRSTC2 |= SYS_IPRSTC2_USBD_RST_Msk;
+  for (delay = 0; delay < 0x800; ++delay)
+    ;
   SYS->IPRSTC2 &= ~(SYS_IPRSTC2_USBD_RST_Msk);
 
   /* Post reset initialization.*/
@@ -455,6 +458,8 @@ void usb_lld_start(USBDriver* usbp)
 
   nvicEnableVector(USBD_IRQn, NUC123_USB_IRQ_PRIORITY);
 
+  for (delay = 0; delay < 0x800; ++delay)
+    ;
   usb_lld_reset(usbp);
 }
 
