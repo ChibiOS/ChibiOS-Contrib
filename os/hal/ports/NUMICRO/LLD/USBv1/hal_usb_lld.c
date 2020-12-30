@@ -211,11 +211,12 @@ static void usb_serve_out_endpoint(uint32_t epn)
   USBDriver *const usbp = &USBD1;
   uint32_t mxpld = HW_OUT_EP(epn)->MXPLD;
   uint32_t rxsize_actual = min(mxpld, usbp->epc[epn]->out_state->rxcnt - usbp->epc[epn]->out_state->rxsize);
-  usbp->epc[epn]->out_state->rxcnt += rxsize_actual;
+
   usb_memcpy(usbp->epc[epn]->out_state->rxbuf +
                  usbp->epc[epn]->out_state->rxcnt,
              USBD_SRAM_BASE + (HW_OUT_EP(epn)->BUFSEG),
              rxsize_actual);
+  usbp->epc[epn]->out_state->rxcnt += rxsize_actual;
 
   if ((rxsize_actual < usbp->epc[epn]->out_maxsize) ||
       (usbp->epc[epn]->out_state->rxcnt >=
@@ -407,10 +408,6 @@ void usb_lld_init(void)
   CLK->CLKDIV = (CLK->CLKDIV & (~CLK_CLKDIV_USB_N_Msk)) |
                 NUC123_CLK_CLKDIV_USB(NUC123_USBD_CLKDIV);
 
-  for (uint8_t i = 0; i < NUC123_USB_HW_ENDPOINTS; ++i) {
-    USBD->EP[i].CFG &= ~USBD_CFG_DSQ_SYNC_Msk;
-  }
-
 #if NUC123_USB_USE_USB1
   /* Driver initialization.*/
   usbObjectInit(&USBD1);
@@ -495,11 +492,7 @@ void usb_lld_stop(USBDriver* usbp)
  */
 void usb_lld_reset(USBDriver* usbp)
 {
-  uint_fast16_t i;
   sram_free_dword_offset = 1UL;
-  for (i = 0; i < 0x200; ++i) {
-    USBD_SRAM_BASE[i] = 0x55;
-  }
   USBD->FADDR = 0;
   /* EP0 initialization.*/
   usbp->epc[0] = &ep0config;
@@ -800,7 +793,6 @@ void usb_lld_clear_out(USBDriver* usbp, usbep_t ep)
 void usb_lld_clear_in(USBDriver* usbp, usbep_t ep)
 {
   (void)usbp;
-  HW_IN_EP(ep)->CFG &= ~USBD_CFG_DSQ_SYNC_Msk;
   HW_IN_EP(ep)->CFGP &= ~USBD_CFGP_SSTALL_Msk;
 }
 
