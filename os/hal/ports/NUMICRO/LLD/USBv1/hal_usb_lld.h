@@ -35,7 +35,7 @@
  * @brief   Maximum endpoint address.
  * @details This value does not include the endpoint 0 which is always present.
 */
-#define USB_MAX_ENDPOINTS 3
+#define USB_MAX_ENDPOINTS 2
 
 /**
  * @brief   Status stage handling method.

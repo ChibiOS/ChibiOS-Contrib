@@ -54,7 +54,7 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define NUC123_USB_HW_ENDPOINTS 8
+#define NUC123_USB_HW_ENDPOINTS 6
 
 #define NUC123_USBD_CFG_OUT (1UL << USBD_CFG_STATE_Pos)
 #define NUC123_USBD_CFG_IN  (2UL << USBD_CFG_STATE_Pos)
@@ -211,11 +211,12 @@ static void usb_serve_out_endpoint(uint32_t epn)
   USBDriver *const usbp = &USBD1;
   uint32_t mxpld = HW_OUT_EP(epn)->MXPLD;
   uint32_t rxsize_actual = min(mxpld, usbp->epc[epn]->out_state->rxcnt - usbp->epc[epn]->out_state->rxsize);
-  usbp->epc[epn]->out_state->rxcnt += rxsize_actual;
+
   usb_memcpy(usbp->epc[epn]->out_state->rxbuf +
                  usbp->epc[epn]->out_state->rxcnt,
              USBD_SRAM_BASE + (HW_OUT_EP(epn)->BUFSEG),
              rxsize_actual);
+  usbp->epc[epn]->out_state->rxcnt += rxsize_actual;
 
   if ((rxsize_actual < usbp->epc[epn]->out_maxsize) ||
       (usbp->epc[epn]->out_state->rxcnt >=
@@ -300,7 +301,7 @@ static void usb_lld_serve_interrupt(USBDriver* usbp)
     if (bussts & USBD_ATTR_RESUME_Msk) {
       /* Enable USB and enable PHY */
       USBD->ATTR |= (USBD_ATTR_PHY_EN_Msk | USBD_ATTR_USB_EN_Msk);
-
+      _usb_wakeup(usbp);
     }
   }
 
@@ -313,8 +314,8 @@ static void usb_lld_serve_interrupt(USBDriver* usbp)
       HW_IN_EP(0)->CFGP |= USBD_CFGP_CLRRDY_Msk;
       HW_OUT_EP(0)->CFGP |= USBD_CFGP_CLRRDY_Msk;
 
-      _usb_isr_invoke_setup_cb(&USBD1, 0);
       HW_IN_EP(0)->CFG |= USBD_CFG_DSQ_SYNC_Msk;
+      _usb_isr_invoke_setup_cb(&USBD1, 0);
     }
 
     /* EP events */
@@ -352,10 +353,12 @@ static void usb_lld_serve_interrupt(USBDriver* usbp)
 
     if (intsts & USBD_INTSTS_EPEVT5_Msk) {
       /* Clear event flag */
-      USBD->INTSTS = (USBD_INTSTS_EPEVT5_Msk);
+      /* TODO: when the EP5/6 confusion bug is resolved, remove the EP6 mask here */
+      USBD->INTSTS = (USBD_INTSTS_EPEVT5_Msk | USBD_INTSTS_EPEVT6_Msk);
       usb_serve_in_endpoint(2);
     }
 
+#if 0
     if (intsts & USBD_INTSTS_EPEVT6_Msk) {
       /* Clear event flag */
       USBD->INTSTS = (USBD_INTSTS_EPEVT6_Msk);
@@ -367,6 +370,7 @@ static void usb_lld_serve_interrupt(USBDriver* usbp)
       USBD->INTSTS = (USBD_INTSTS_EPEVT7_Msk);
       usb_serve_in_endpoint(3);
     }
+#endif
   }
 }
 
@@ -404,10 +408,6 @@ void usb_lld_init(void)
   CLK->CLKDIV = (CLK->CLKDIV & (~CLK_CLKDIV_USB_N_Msk)) |
                 NUC123_CLK_CLKDIV_USB(NUC123_USBD_CLKDIV);
 
-  for (uint8_t i = 0; i < NUC123_USB_HW_ENDPOINTS; ++i) {
-    USBD->EP[i].CFG &= ~USBD_CFG_DSQ_SYNC_Msk;
-  }
-
 #if NUC123_USB_USE_USB1
   /* Driver initialization.*/
   usbObjectInit(&USBD1);
@@ -423,6 +423,7 @@ void usb_lld_init(void)
  */
 void usb_lld_start(USBDriver* usbp)
 {
+  uint32_t delay;
 
   if (usbp->state == USB_STOP) {
     /* Enables the peripheral.*/
@@ -437,6 +438,8 @@ void usb_lld_start(USBDriver* usbp)
   /* Reset procedure enforced on driver start.*/
 
   SYS->IPRSTC2 |= SYS_IPRSTC2_USBD_RST_Msk;
+  for (delay = 0; delay < 0x800; ++delay)
+    ;
   SYS->IPRSTC2 &= ~(SYS_IPRSTC2_USBD_RST_Msk);
 
   /* Post reset initialization.*/
@@ -455,6 +458,8 @@ void usb_lld_start(USBDriver* usbp)
 
   nvicEnableVector(USBD_IRQn, NUC123_USB_IRQ_PRIORITY);
 
+  for (delay = 0; delay < 0x800; ++delay)
+    ;
   usb_lld_reset(usbp);
 }
 
@@ -492,11 +497,7 @@ void usb_lld_stop(USBDriver* usbp)
  */
 void usb_lld_reset(USBDriver* usbp)
 {
-  uint_fast16_t i;
   sram_free_dword_offset = 1UL;
-  for (i = 0; i < 0x200; ++i) {
-    USBD_SRAM_BASE[i] = 0x55;
-  }
   USBD->FADDR = 0;
   /* EP0 initialization.*/
   usbp->epc[0] = &ep0config;
@@ -797,7 +798,6 @@ void usb_lld_clear_out(USBDriver* usbp, usbep_t ep)
 void usb_lld_clear_in(USBDriver* usbp, usbep_t ep)
 {
   (void)usbp;
-  HW_IN_EP(ep)->CFG &= ~USBD_CFG_DSQ_SYNC_Msk;
   HW_IN_EP(ep)->CFGP &= ~USBD_CFGP_SSTALL_Msk;
 }
 
