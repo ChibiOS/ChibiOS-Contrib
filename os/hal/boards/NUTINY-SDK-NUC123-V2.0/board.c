@@ -29,3 +29,12 @@ void boardInit(void)
   OnboardLED_Init();
 #endif
 }
+
+/**
+ * @brief   Early initialization code.
+ * @details This initialization is performed just after reset before BSS and
+ *          DATA segments initialization.
+ */
+void __early_init(void)
+{
+}
