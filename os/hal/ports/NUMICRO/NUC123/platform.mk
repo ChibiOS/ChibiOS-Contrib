@@ -16,6 +16,7 @@ include $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/LLD/GPIOv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/LLD/TIMv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/LLD/USBv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/LLD/SERIALv1/driver.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/LLD/I2Cv1/driver.mk
 
 # Shared variables
 ALLCSRC    += $(PLATFORMSRC)

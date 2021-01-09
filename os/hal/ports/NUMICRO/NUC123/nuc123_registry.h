@@ -112,20 +112,8 @@
 #define NUC123_HAS_GPIOK                     FALSE
 
 /* I2C attributes.*/
+#define NUC123_HAS_I2C0                      TRUE
 #define NUC123_HAS_I2C1                      TRUE
-#define NUC123_I2C1_RX_DMA_MSK               NUC123_DMA_STREAM_ID_MSK(1, 3)
-#define NUC123_I2C1_RX_DMA_CHN               0x00000200
-#define NUC123_I2C1_TX_DMA_MSK               NUC123_DMA_STREAM_ID_MSK(1, 2)
-#define NUC123_I2C1_TX_DMA_CHN               0x00000020
-
-#define NUC123_HAS_I2C2                      TRUE
-#define NUC123_I2C2_RX_DMA_MSK               NUC123_DMA_STREAM_ID_MSK(1, 5)
-#define NUC123_I2C2_RX_DMA_CHN               0x00020000
-#define NUC123_I2C2_TX_DMA_MSK               NUC123_DMA_STREAM_ID_MSK(1, 4)
-#define NUC123_I2C2_TX_DMA_CHN               0x00002000
-
-#define NUC123_HAS_I2C3                      FALSE
-#define NUC123_HAS_I2C4                      FALSE
 
 /* QUADSPI attributes.*/
 #define NUC123_HAS_QUADSPI1                  FALSE
