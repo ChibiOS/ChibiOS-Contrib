@@ -43,6 +43,7 @@
 #define PLATFORM_NAME           "NUC123SD4AN0 NUC123 Cortex M0 USB Micro"
 #define NUC123xxxANx
 #undef NUC123xxxAEx
+#define NUC123_FLASH_SIZE 0x11000
 #else
 #error "NUC123 device unsupported or not specified"
 #endif
@@ -184,6 +185,13 @@
 
 /**
  * @brief   Enables or disables data flash
+ * @warning If data this is set to @p TRUE, the data flash
+ *          is subtracted from the APROM. The linker script is not aware
+ *          of this, so therefore it is the responsiblity of the user to ensure
+ *          that the combination of the data flash & the text section still fit
+ *          into ROM.
+
+ * @note    The default is @p FALSE.
  */
 #if !defined(NUC123_DATAFLASH_ENABLED) || defined(__DOXYGEN__)
 #define NUC123_DATAFLASH_ENABLED FALSE
@@ -229,7 +237,7 @@
 /*
 * Persistant configuration settings.
 */
-#if NUC123_DATAFLASH_ENABLE
+#if (NUC123_DATAFLASH_ENABLED == TRUE)
 
 #if (NUC123_DATAFLASH_SIZE == 4096)
 /* DFVSEN = 1, nothing else matters */
