@@ -81,17 +81,17 @@
 /*
  * I2S units.
  */
-#define NUC123_I2C1_HANDLER         VectorB8
-#define NUC123_I2C1_NUMBER          I2S_IRQn
+#define NUC123_I2S_HANDLER         VectorB8
+#define NUC123_I2S_NUMBER          I2S_IRQn
 
 /*
  * I2C units.
  */
-#define NUC123_I2C1_GLOBAL_HANDLER   Vector88
-#define NUC123_I2C1_GLOBAL_NUMBER    I2C0_IRQn
+#define NUC123_I2C0_HANDLER   Vector88
+#define NUC123_I2C0_NUMBER    I2C0_IRQn
 
-#define NUC123_I2C2_GLOBAL_HANDLER   Vector8C
-#define NUC123_I2C2_GLOBAL_NUMBER    I2C1_IRQn
+#define NUC123_I2C1_HANDLER   Vector8C
+#define NUC123_I2C1_NUMBER    I2C1_IRQn
 
 /*
  * TIM units.
