@@ -1223,7 +1223,7 @@ typedef GPIO_T * ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_readport(port) (port->PIN)
+#define pal_lld_readport(port) ((port)->PIN)
 
 /**
  * @brief   Reads the output latch.
@@ -1235,7 +1235,7 @@ typedef GPIO_T * ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_readlatch(port) (port->DOUT)
+#define pal_lld_readlatch(port) ((port)->DOUT)
 
 /**
  * @brief   Writes a bits mask on a I/O port.
@@ -1245,7 +1245,7 @@ typedef GPIO_T * ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_writeport(port, bits) (port->DOUT = bits)
+#define pal_lld_writeport(port, bits) ((port)->DOUT = (bits))
 
 /**
  * @brief   Sets a bits mask on a I/O port.
@@ -1258,7 +1258,7 @@ typedef GPIO_T * ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_setport(port, bits) (port->DOUT |= bits)
+#define pal_lld_setport(port, bits) ((port)->DOUT |= (bits))
 
 /**
  * @brief   Clears a bits mask on a I/O port.
@@ -1271,7 +1271,7 @@ typedef GPIO_T * ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_clearport(port, bits) (port->DOUT &= ~bits)
+#define pal_lld_clearport(port, bits) ((port)->DOUT &= ~(bits))
 
 /**
  * @brief   Toggles a bits mask on a I/O port.
@@ -1284,7 +1284,7 @@ typedef GPIO_T * ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_toggleport(port, bits) (port->DOUT ^= bits)
+#define pal_lld_toggleport(port, bits) ((port)->DOUT ^= (bits))
 
 /**
  * @brief   Reads a group of bits.
@@ -1317,10 +1317,10 @@ typedef GPIO_T * ioportid_t;
  */
 #define pal_lld_writegroup(port, mask, offset, bits)                        \
   do {                                                                      \
-    uint32_t oldmask = port->DMASK;                                         \
-    port->DMASK = ~(mask << offset);                                        \
-    port->DOUT = (bits & mask) << offset;                                   \
-    port->DMASK = oldmask;                                                      \
+    uint32_t oldmask = (port)->DMASK;                                       \
+    (port)->DMASK = ~((mask) << (offset));                                  \
+    (port)->DOUT = ((bits) & (mask)) << (offset);                           \
+    (port)->DMASK = oldmask;                                                \
   } while (false)
 
 /**
@@ -1337,7 +1337,7 @@ typedef GPIO_T * ioportid_t;
  * @notapi
  */
 #define pal_lld_setgroupmode(port, mask, offset, mode)                      \
-  _pal_lld_setgroupmode(port, mask << offset, mode)
+  _pal_lld_setgroupmode(port, (mask) << (offset), mode)
 
 /**
  * @brief   Reads a logical state from an I/O pad.
@@ -1368,7 +1368,7 @@ typedef GPIO_T * ioportid_t;
  * @notapi
  */
 /* #define pal_lld_readpad(port, pad) PAL_LOW */
-#define pal_lld_readpad(port, pad) ((port->PIN & PAL_PORT_BIT(pad)) >> pad)
+#define pal_lld_readpad(port, pad) (((port)->PIN & PAL_PORT_BIT(pad)) >> (pad))
 
 /**
  * @brief   Writes a logical state on an output pad.
@@ -1405,7 +1405,7 @@ typedef GPIO_T * ioportid_t;
  * @notapi
  */
 #define pal_lld_setpad(port, pad)                                           \
-  (port->DOUT |= PAL_PORT_BIT(pad))
+  ((port)->DOUT |= PAL_PORT_BIT(pad))
 
 /**
  * @brief   Clears a pad logical state to @p PAL_LOW.
@@ -1419,7 +1419,7 @@ typedef GPIO_T * ioportid_t;
  * @notapi
  */
 #define pal_lld_clearpad(port, pad)                                         \
-  (port->DOUT &= ~(0xFFFF0000U | PAL_PORT_BIT(pad)))
+  ((port)->DOUT &= ~(0xFFFF0000U | PAL_PORT_BIT(pad)))
 
 /**
  * @brief   Toggles a pad logical state.
@@ -1433,7 +1433,7 @@ typedef GPIO_T * ioportid_t;
  * @notapi
  */
 #define pal_lld_togglepad(port, pad)                                        \
-  (port->DOUT ^= PAL_PORT_BIT(pad))
+  ((port)->DOUT ^= PAL_PORT_BIT(pad))
 
 /**
  * @brief   Pad mode setup.
