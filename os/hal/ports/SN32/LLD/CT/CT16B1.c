@@ -51,11 +51,11 @@ void	CT16B1_Init (void)
 	__CT16B1_ENABLE;
 
 	//CT16B1 PCLK prescalar setting
-	SN_SYS1->APBCP0_b.CT16B1PRE = 0x00;							//PCLK = HCLK/1
-	//SN_SYS1->APBCP0_b.CT16B1PRE = 0x01;						//PCLK = HCLK/2
-	//SN_SYS1->APBCP0_b.CT16B1PRE = 0x02;						//PCLK = HCLK/4
-	//SN_SYS1->APBCP0_b.CT16B1PRE = 0x03;						//PCLK = HCLK/8
-	//SN_SYS1->APBCP0_b.CT16B1PRE = 0x04;						//PCLK = HCLK/16
+	//SN_SYS1->APBCP1_b.CT16B1PRE = 0x00;							//PCLK = HCLK/1
+	//SN_SYS1->APBCP1_b.CT16B1PRE = 0x01;						//PCLK = HCLK/2
+	//SN_SYS1->APBCP1_b.CT16B1PRE = 0x02;						//PCLK = HCLK/4
+	//SN_SYS1->APBCP1_b.CT16B1PRE = 0x03;						//PCLK = HCLK/8
+	//SN_SYS1->APBCP1_b.CT16B1PRE = 0x04;						//PCLK = HCLK/16
 }
 
 /*****************************************************************************
@@ -94,7 +94,7 @@ void	CT16B1_NvicDisable (void)
 * Return		: None
 * Note			: None
 *****************************************************************************/
-__irq void CT16B1_IRQHandler(void)
+void	CT16B1_IRQHandler(void)
 {
 	uint32_t iwRisStatus;
 
@@ -198,7 +198,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR10
-	if (SN_CT16B1->MCTRL_b.MR10IE)				//Check if MR10 IE enables?
+	if (SN_CT16B1->MCTRL2_b.MR10IE)				//Check if MR10 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR10IF)
 		{
@@ -207,7 +207,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR11
-	if (SN_CT16B1->MCTRL_b.MR11IE)				//Check if MR11 IE enables?
+	if (SN_CT16B1->MCTRL2_b.MR11IE)				//Check if MR11 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR11IF)
 		{
@@ -216,7 +216,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR12
-	if (SN_CT16B1->MCTRL_b.MR12IE)				//Check if MR12 IE enables?
+	if (SN_CT16B1->MCTRL2_b.MR12IE)				//Check if MR12 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR12IF)
 		{
@@ -225,7 +225,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR13
-	if (SN_CT16B1->MCTRL_b.MR13IE)				//Check if MR13 IE enables?
+	if (SN_CT16B1->MCTRL2_b.MR13IE)				//Check if MR13 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR13IF)
 		{
@@ -234,7 +234,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR14
-	if (SN_CT16B1->MCTRL_b.MR14IE)				//Check if MR14 IE enables?
+	if (SN_CT16B1->MCTRL2_b.MR14IE)				//Check if MR14 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR14IF)
 		{
@@ -243,7 +243,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR15
-	if (SN_CT16B1->MCTRL_b.MR15IE)				//Check if MR15 IE enables?
+	if (SN_CT16B1->MCTRL2_b.MR15IE)				//Check if MR15 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR15IF)
 		{
@@ -252,7 +252,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR16
-	if (SN_CT16B1->MCTRL_b.MR16IE)				//Check if MR16 IE enables?
+	if (SN_CT16B1->MCTRL2_b.MR16IE)				//Check if MR16 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR16IF)
 		{
@@ -261,7 +261,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR17
-	if (SN_CT16B1->MCTRL_b.MR17IE)				//Check if MR17 IE enables?
+	if (SN_CT16B1->MCTRL2_b.MR17IE)				//Check if MR17 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR17IF)
 		{
@@ -270,7 +270,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR18
-	if (SN_CT16B1->MCTRL_b.MR18IE)				//Check if MR18 IE enables?
+	if (SN_CT16B1->MCTRL2_b.MR18IE)				//Check if MR18 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR18IF)
 		{
@@ -279,7 +279,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR19
-	if (SN_CT16B1->MCTRL_b.MR19IE)				//Check if MR19 IE enables?
+	if (SN_CT16B1->MCTRL2_b.MR19IE)				//Check if MR19 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR19IF)
 		{
@@ -288,7 +288,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR20
-	if (SN_CT16B1->MCTRL_b.MR20IE)				//Check if MR20 IE enables?
+	if (SN_CT16B1->MCTRL3_b.MR20IE)				//Check if MR20 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR20IF)
 		{
@@ -297,7 +297,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR21
-	if (SN_CT16B1->MCTRL_b.MR21IE)				//Check if MR21 IE enables?
+	if (SN_CT16B1->MCTRL3_b.MR21IE)				//Check if MR21 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR21IF)
 		{
@@ -306,7 +306,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR22
-	if (SN_CT16B1->MCTRL_b.MR22IE)				//Check if MR22 IE enables?
+	if (SN_CT16B1->MCTRL3_b.MR22IE)				//Check if MR22 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR22IF)
 		{
@@ -315,7 +315,7 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR23
-	if (SN_CT16B1->MCTRL_b.MR23IE)				//Check if MR23 IE enables?
+	if (SN_CT16B1->MCTRL3_b.MR23IE)				//Check if MR23 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR23IF)
 		{
@@ -324,21 +324,12 @@ __irq void CT16B1_IRQHandler(void)
 		}
 	}
 	//MR24
-	if (SN_CT16B1->MCTRL_b.MR24IE)				//Check if MR24 IE enables?
+	if (SN_CT16B1->MCTRL3_b.MR24IE)				//Check if MR24 IE enables?
 	{
 		if(iwRisStatus & mskCT16_MR24IF)
 		{
 			iwCT16B1_IrqEvent |= mskCT16_MR24IF;
 			SN_CT16B1->IC = mskCT16_MR24IC;	//Clear MR24 match interrupt status
-		}
-	}
-	//CAP0
-	if (SN_CT16B1->CAPCTRL_b.CAP0IE)		//Check if CAP0 IE enables?
-	{
-		if(iwRisStatus & mskCT16_CAP0IF)	//CAP0
-		{
-			iwCT16B1_IrqEvent |= mskCT16_CAP0IF;
-			SN_CT16B1->IC = mskCT16_CAP0IC;	//Clear CAP0 interrupt status
 		}
 	}
 }
