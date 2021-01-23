@@ -50,14 +50,14 @@
 /*===========================================================================*/
 
 /**
- * @brief   SN32F240 clocks and PLL initialization.
+ * @brief   SN32F24xx clocks and PLL initialization.
  * @note    All the involved constants come from the file @p board.h.
  * @note    This function should be invoked just after the system reset.
  *
  * @special
  */
 void sn32_clock_init(void) {
-
+  SystemCoreClockUpdate();
 }
 
 /**
@@ -67,7 +67,7 @@ void sn32_clock_init(void) {
  */
 void hal_lld_init(void) {
   SystemInit();
-  SystemCoreClockUpdate();
+  sn32_clock_init();
 }
 
 /** @} */
