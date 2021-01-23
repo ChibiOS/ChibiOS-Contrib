@@ -24,7 +24,7 @@
 
 #include "hal.h"
 #include "CT16.h"
-#include "CT16B0.h"
+#include "CT16B1.h"
 #include "SN32F240B.h"
 
 #if (OSAL_ST_MODE != OSAL_ST_MODE_NONE) || defined(__DOXYGEN__)

@@ -27,7 +27,7 @@
 #ifndef HAL_ST_LLD_H
 #define HAL_ST_LLD_H
 
-#include "CT16B0.h"
+#include "CT16B1.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
