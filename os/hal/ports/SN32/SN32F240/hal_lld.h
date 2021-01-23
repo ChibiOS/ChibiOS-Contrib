@@ -29,7 +29,7 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-// #include "sn32_registry.h"
+#include "sn32_registry.h"
 
 /**
  * @name    Platform identification macros
