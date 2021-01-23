@@ -23,4 +23,5 @@ extern volatile uint32_t iwCT16B1_IrqEvent; //The bitmask usage of iwCT16Bn_IrqE
 extern	void CT16B1_Init(void);
 extern 	void CT16B1_NvicEnable(void);
 extern 	void CT16B1_NvicDisable(void);
+extern  void CT16B1_IRQHandler(void);
 #endif	/*__SN32F240_CT16B1_H*/
