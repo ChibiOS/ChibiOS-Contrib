@@ -25,6 +25,7 @@
 
 #include <stdint.h>
 #include <SN32F240B.h>
+#include <mcuconf.h>
 
 
 
@@ -66,12 +67,21 @@
 //					<7=> CLKOUT/128
 //</e>
 */
-
+#ifndef SYS_CLOCK_SETUP
 #define SYS_CLOCK_SETUP		1
+#endif
+#ifndef SYS0_CLKCFG_VAL
 #define SYS0_CLKCFG_VAL		0
+#endif
+#ifndef AHB_PRESCALAR
 #define AHB_PRESCALAR 		0x2
+#endif
+#ifndef CLKOUT_SEL_VAL
 #define CLKOUT_SEL_VAL 		0x0
+#endif
+#ifndef CLKOUT_PRESCALAR
 #define CLKOUT_PRESCALAR 	0x0
+#endif
 
 /*
 //-------- <<< end of configuration section >>> ------------------------------
@@ -81,9 +91,12 @@
 /*----------------------------------------------------------------------------
   DEFINES
  *----------------------------------------------------------------------------*/
+#ifndef IHRC48
 #define	IHRC48						0
+#endif
+#ifndef ILRC
 #define	ILRC			  			1
-
+#endif
 
 /*----------------------------------------------------------------------------
   Define clocks
