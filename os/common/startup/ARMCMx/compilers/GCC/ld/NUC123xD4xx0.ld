@@ -20,15 +20,15 @@
  */
 MEMORY
 {
-    flash0 (rx) : org = 0x00000000, len = 64k
-    flash1 (rx) : org = 0x00000000, len = 0
-    flash2 (rx) : org = 0x00000000, len = 0
-    flash3 (rx) : org = 0x00000000, len = 0
-    flash4 (rx) : org = 0x00000000, len = 0
+    flash0 (rx) : org = 0x00000000, len = 0x11000       /* APROM */
+    flash1 (rx) : org = 0x00000000, len = 0             /* Data flash placeholder */
+    flash2 (rx) : org = 0x00100000, len = 0x1000        /* LDROM */
+    flash3 (rx) : org = 0x00300000, len = 4             /* Config0 */
+    flash4 (rx) : org = 0x00300004, len = 4             /* Config1 */
     flash5 (rx) : org = 0x00000000, len = 0
     flash6 (rx) : org = 0x00000000, len = 0
     flash7 (rx) : org = 0x00000000, len = 0
-    ram0   (wx) : org = 0x20000000, len = 20k
+    ram0   (wx) : org = 0x20000000, len = 0x5000
     ram1   (wx) : org = 0x00000000, len = 0
     ram2   (wx) : org = 0x00000000, len = 0
     ram3   (wx) : org = 0x00000000, len = 0
@@ -36,6 +36,22 @@ MEMORY
     ram5   (wx) : org = 0x00000000, len = 0
     ram6   (wx) : org = 0x00000000, len = 0
     ram7   (wx) : org = 0x00000000, len = 0
+}
+
+REGION_ALIAS("CONFIG0", flash3);
+REGION_ALIAS("CONFIG1", flash4);
+
+SECTIONS
+{
+    .nuc123_config0 : ALIGN(4)
+    {
+        KEEP(*(.nuc123_config0))
+    } > CONFIG0
+
+    .nuc123_config1 : ALIGN(4)
+    {
+        KEEP(*(.nuc123_config1))
+    } > CONFIG1
 }
 
 /* For each data/text section two region are defined, a virtual region

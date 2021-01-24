@@ -114,6 +114,23 @@
 #define NUC123_PLLSRC_HSI      (1 << CLK_PLLCON_PLL_SRC_Pos) /**< PLL source is HSI.      */
 /** @} */
 
+/**
+ * @name    User config bit definitions
+ * @{
+ */
+#define NUC123_CONFIG0_DFEN_Pos 0
+#define NUC123_CONFIG0_DFEN_Msk (1 << NUC123_CONFIG0_DFEN_Pos)
+
+#define NUC123_CONFIG0_LOCK_Pos 1
+#define NUC123_CONFIG0_LOCK_Msk (1 << NUC123_CONFIG0_LOCK_Pos)
+
+#define NUC123_CONFIG0_DFVSEN_Pos 2
+#define NUC123_CONFIG0_DFVSEN_Msk (1 << NUC123_CONFIG0_DFVSEN_Pos)
+
+#define NUC123_CONFIG0_CGPFMFP_Pos 27
+#define NUC123_CONFIG0_CGPFMFP_Msk (1 << NUC123_CONFIG0_CGPFMFP_Pos)
+/** @} */
+
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -159,7 +176,7 @@
 #endif
 
 /**
- * @brief   Clock source for the PLL.
+ * @brief   Core clock speed.
  */
 #if !defined(NUC123_HCLK) || defined(__DOXYGEN__)
 #if NUC123_PLL_ENABLED
@@ -168,6 +185,21 @@
 #define NUC123_HCLK __HIRC
 #endif
 #endif
+
+/**
+ * @brief   Enables or disables data flash
+ */
+#if !defined(NUC123_DATAFLASH_ENABLED) || defined(__DOXYGEN__)
+#define NUC123_DATAFLASH_ENABLED FALSE
+#endif
+
+/**
+ * @brief   Sets the data flash size. This is ignored if data flash is disabled.
+ */
+#if !defined(NUC123_DATAFLASH_SIZE) || defined(__DOXYGEN__)
+#define NUC123_DATAFLASH_SIZE 4096
+#endif
+
 /** @} */
 
 /*===========================================================================*/
@@ -191,9 +223,38 @@
 #elif (NUC123_HSECLK < NUC123_HSECLK_MIN) || (NUC123_HSECLK > NUC123_HSECLK_MAX)
 #error "NUC123_HSECLK outside acceptable range (NUC123_HSECLK_MIN...NUC123_HSECLK_MAX)"
 #endif
+#define NUC123_CONFIG0_HSE_PINS 0
+#else
+#define NUC123_CONFIG0_HSE_PINS NUC123_CONFIG0_CGPFMFP_Msk
 #endif
 
 #define NUC123_PLLCLK (NUC123_HCLK * 2)
+
+/*
+* Persistant configuration settings.
+*/
+#if NUC123_DATAFLASH_ENABLE
+
+#if (NUC123_DATAFLASH_SIZE == 4096)
+/* DFVSEN = 1, nothing else matters */
+#define NUC123_CONFIG0_DATAFLASH 0UL
+/* NUC123_DFBADDR doesn't actually control anything here, but convenient for flash drivers
+which need the starting address */
+#define NUC123_DFBADDR 0x1F000UL
+#else
+/* DFVSEN = 0, DFEN = 0 */
+#define NUC123_CONFIG0_DATAFLASH (NUC123_CONFIG0_DFVSEN_Msk | NUC123_CONFIG0_DFEN_Msk)
+#define NUC123_DFBADDR ((0x11000UL - NUC123_DATAFLASH_SIZE) & ~(0xFFUL))
+#endif
+#else
+/* DFVSEN = 0, DFEN = 1 */
+#define NUC123_CONFIG0_DATAFLASH NUC123_CONFIG0_DFVSEN_Msk
+#define NUC123_DFBADDR 0xFFFFFF00UL
+#endif
+
+#define NUC123_CONFIG0                                                      \
+  0xFFFFFFFFUL & (~NUC123_CONFIG0_DATAFLASH) & (~NUC123_CONFIG0_HSE_PINS)
+#define NUC123_CONFIG1 NUC123_DFBADDR
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
@@ -202,6 +263,7 @@
 /*===========================================================================*/
 /* Driver macros.                                                            */
 /*===========================================================================*/
+
 /* Alias for compatibility */
 #define SystemUnlockReg() UNLOCKREG()
 
