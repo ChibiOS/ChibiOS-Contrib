@@ -196,7 +196,7 @@ connect:
 	openocd -f ../scripts/interface/nulink.cfg -f ../scripts/target/numicroM0.cfg
 
 flash: $(BUILDDIR)/$(PROJECT).elf
-	openocd -f ../scripts/interface/nulink.cfg -f ../scripts/target/numicroM0.cfg -c "program $< verify reset exit"
+	openocd -f ../scripts/interface/nulink.cfg -f ../scripts/target/numicroM0.cfg -c "program $< reset exit"
 
 #
 # Custom rules
