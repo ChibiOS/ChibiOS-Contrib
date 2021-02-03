@@ -33,7 +33,7 @@
 /*===========================================================================*/
 
 #define MSD_REQ_RESET                   0xFF
-#define MSD_GET_MAX_LUN                 0xFE
+#define MSD_REQ_GET_MAX_LUN             0xFE
 
 #define MSD_CBW_SIGNATURE               0x43425355
 #define MSD_CSW_SIGNATURE               0x53425355
@@ -263,70 +263,34 @@ static THD_FUNCTION(usb_msd_worker, arg) {
  * @notapi
  */
 bool msd_request_hook(USBDriver *usbp) {
-
-  if (((usbp->setup[0] & USB_RTYPE_TYPE_MASK) == USB_RTYPE_TYPE_CLASS) &&
-    ((usbp->setup[0] & USB_RTYPE_RECIPIENT_MASK) == USB_RTYPE_RECIPIENT_INTERFACE)) {
+  if (usbp->setup[0] == (USB_RTYPE_TYPE_CLASS | USB_RTYPE_RECIPIENT_INTERFACE | USB_RTYPE_DIR_HOST2DEV)) {
     /* check that the request is for interface 0.*/
     if (MSD_SETUP_INDEX(usbp->setup) != 0)
       return false;
-
     /* act depending on bRequest = setup[1] */
-    switch(usbp->setup[1]) {
+    switch (usbp->setup[1]) {
     case MSD_REQ_RESET:
-      /* check that it is a HOST2DEV request */
-      if (((usbp->setup[0] & USB_RTYPE_DIR_MASK) != USB_RTYPE_DIR_HOST2DEV) ||
-         (MSD_SETUP_LENGTH(usbp->setup) != 0) ||
-         (MSD_SETUP_VALUE(usbp->setup) != 0)) {
-        return false;
-      }
-
-      /*
-      As required by the BOT specification, the Bulk-only mass storage reset request (classspecific
-      request) is implemented. This request is used to reset the mass storage device and
-      its associated interface. This class-specific request should prepare the device for the next
-      CBW from the host.
-      To generate the BOT Mass Storage Reset, the host must send a device request on the
-      default pipe of:
-      • bmRequestType: Class, interface, host to device
-      • bRequest field set to 255 (FFh)
-      • wValue field set to ‘0’
-      • wIndex field set to the interface number
-      • wLength field set to ‘0’
-      */
-      chSysLockFromISR();
-
-      /* release and abandon current transmission */
-      usbStallReceiveI(usbp, 1);
-      usbStallTransmitI(usbp, 1);
+      /* Bulk-Only Mass Storage Reset (class-specific request)
+      This request is used to reset the mass storage device and its associated interface.
+      This class-specific request shall ready the device for the next CBW from the host. */
+      /* Do any special reset code here. */
       /* The device shall NAK the status stage of the device request until
        * the Bulk-Only Mass Storage Reset is complete.
        * NAK EP1 in and out */
-      usbp->otg->ie[1].DIEPCTL = DIEPCTL_SNAK;
-      usbp->otg->oe[1].DOEPCTL = DOEPCTL_SNAK;
-
-      chSysUnlockFromISR();
-
+      // usbp->otg->ie[1].DIEPCTL = DIEPCTL_SNAK;
+      // usbp->otg->oe[1].DOEPCTL = DOEPCTL_SNAK;
       /* response to this request using EP0 */
       usbSetupTransfer(usbp, 0, 0, NULL);
       return true;
-
-    case MSD_GET_MAX_LUN:
-      /* check that it is a DEV2HOST request */
-      if (((usbp->setup[0] & USB_RTYPE_DIR_MASK) != USB_RTYPE_DIR_DEV2HOST) ||
-         (MSD_SETUP_LENGTH(usbp->setup) != 1) ||
-         (MSD_SETUP_VALUE(usbp->setup) != 0)) {
-        return false;
-      }
-
-      /* stall to indicate that we don't support LUN */
-      osalSysLockFromISR();
-      usbStallTransmitI(usbp, 0);
-      osalSysUnlockFromISR();
+    case MSD_REQ_GET_MAX_LUN:
+      /* Return the maximum supported LUN. */
+      usbSetupTransfer(usbp, 0, 1, NULL);
       return true;
-
+      /* OR */
+      /* Return false to stall to indicate that we don't support LUN */
+      // return false;
     default:
       return false;
-      break;
     }
   }
   return false;
