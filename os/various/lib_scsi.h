@@ -141,7 +141,7 @@ typedef struct PACKED_VAR {
   uint8_t page_code;
   uint8_t reserved;
   uint8_t page_length;
-  uint8_t serianNumber[8];
+  uint8_t serialNumber[8];
 } scsi_unit_serial_number_inquiry_response_t;
 /**
  * @brief   Represents SCSI mode sense (6) request structure.
