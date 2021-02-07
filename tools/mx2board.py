@@ -229,12 +229,12 @@ def read_project(gpio, filename):
             pads[p][i]['OSPEEDR'] = PIN_OSPEED_TRANSLATE[gpio['defaults']['GPIO_Speed']]
 
     for t in tmp:
-        if re.search(r"^P[A-Z]\d{1,2}(-OSC.+)?\.", t, re.M):
+        if re.search(r"^P[A-Z]\d{1,2}(_C|-OSC.+|\\.*SW.*)?\.", t, re.M):
             split = t.split('=')
-            pad_name = split[0].split(".")[0]
+            pad_name = split[0].split(".")[0].replace('\\', '').replace('_C', '')
             pad_port = pad_name[1:2]
             pad_num = int(pad_name[2:4].replace('.', '').replace('-', ''))
-            pad_prop = split[0].split(".")[-1]
+            pad_prop = split[0].split(".")[-1].replace(" ", "")
             prop_value = split[-1].rstrip('\r\n')
 
 
