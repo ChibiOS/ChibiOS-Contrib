@@ -263,36 +263,34 @@ static THD_FUNCTION(usb_msd_worker, arg) {
  * @notapi
  */
 bool msd_request_hook(USBDriver *usbp) {
-  if (usbp->setup[0] == (USB_RTYPE_TYPE_CLASS | USB_RTYPE_RECIPIENT_INTERFACE | USB_RTYPE_DIR_HOST2DEV)) {
-    /* check that the request is for interface 0.*/
-    if (MSD_SETUP_INDEX(usbp->setup) != 0)
-      return false;
-    /* act depending on bRequest = setup[1] */
-    switch (usbp->setup[1]) {
-    case MSD_REQ_RESET:
-      /* Bulk-Only Mass Storage Reset (class-specific request)
-      This request is used to reset the mass storage device and its associated interface.
-      This class-specific request shall ready the device for the next CBW from the host. */
-      /* Do any special reset code here. */
-      /* The device shall NAK the status stage of the device request until
-       * the Bulk-Only Mass Storage Reset is complete.
-       * NAK EP1 in and out */
-      // usbp->otg->ie[1].DIEPCTL = DIEPCTL_SNAK;
-      // usbp->otg->oe[1].DOEPCTL = DOEPCTL_SNAK;
-      /* response to this request using EP0 */
-      usbSetupTransfer(usbp, 0, 0, NULL);
-      return true;
-    case MSD_REQ_GET_MAX_LUN:
-      /* Return the maximum supported LUN. */
-      usbSetupTransfer(usbp, 0, 1, NULL);
-      return true;
-      /* OR */
-      /* Return false to stall to indicate that we don't support LUN */
-      // return false;
-    default:
-      return false;
-    }
+  /* check that the request is for interface 0.*/
+  if (MSD_SETUP_INDEX(usbp->setup) != 0)
+    return false;
+
+  if (usbp->setup[0] == (USB_RTYPE_TYPE_CLASS | USB_RTYPE_RECIPIENT_INTERFACE | USB_RTYPE_DIR_HOST2DEV)
+    && usbp->setup[1] == MSD_REQ_RESET) {
+    /* Bulk-Only Mass Storage Reset (class-specific request)
+    This request is used to reset the mass storage device and its associated interface.
+    This class-specific request shall ready the device for the next CBW from the host. */
+    /* Do any special reset code here. */
+    /* The device shall NAK the status stage of the device request until
+     * the Bulk-Only Mass Storage Reset is complete.
+     * NAK EP1 in and out */
+    // usbp->otg->ie[1].DIEPCTL = DIEPCTL_SNAK;
+    // usbp->otg->oe[1].DOEPCTL = DOEPCTL_SNAK;
+    /* response to this request using EP0 */
+    usbSetupTransfer(usbp, 0, 0, NULL);
+    return true;
+  } else if (usbp->setup[0] == (USB_RTYPE_TYPE_CLASS | USB_RTYPE_RECIPIENT_INTERFACE | USB_RTYPE_DIR_DEV2HOST)
+    && usbp->setup[1] == MSD_REQ_GET_MAX_LUN) {
+    /* Return the maximum supported LUN. */
+    usbSetupTransfer(usbp, 0, 1, NULL);
+    return true;
+    /* OR */
+    /* Return false to stall to indicate that we don't support LUN */
+    // return false;
   }
+
   return false;
 }
 
