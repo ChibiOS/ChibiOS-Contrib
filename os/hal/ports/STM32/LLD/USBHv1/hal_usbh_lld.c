@@ -52,6 +52,8 @@
 #define rccResetOTG1() rccResetUSB1_OTG_FS()
 #define OTG1 OTG_FS
 #define OTG1_CHANNELS_NUMBER STM32_OTG_FS_CHANNELS_NUMBER
+#ifdef STM32_OTG1_USE_ULPI
+#error "OTG1 has no ULPI on this platform"
 #endif
 #if (STM32_OTG_FS_RXFIFO_SIZE + STM32_OTG_FS_PTXFIFO_SIZE + STM32_OTG_FS_NPTXFIFO_SIZE) > (STM32_OTG_FS_FIFO_MEM_SIZE * 4)
 #error "Not enough memory in OTG_FS implementation"
@@ -88,6 +90,9 @@
 #define rccResetOTG2() rccResetUSB2_OTG_FS()
 #define OTG2 OTG_FS
 #define OTG2_CHANNELS_NUMBER STM32_OTG_FS_CHANNELS_NUMBER
+#ifdef STM32_OTG2_USE_ULPI
+#error "OTG2 has no ULPI on this platform"
+#endif
 #else          
 #define rccEnableOTG2(lp) rccEnableUSB2_OTG_HS(lp)
 #define rccDisableOTG2() rccDisableUSB2_OTG_HS()
