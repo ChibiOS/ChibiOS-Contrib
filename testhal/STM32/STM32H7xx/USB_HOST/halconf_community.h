@@ -250,7 +250,7 @@
 /* debug */
 #define USBH_DEBUG_ENABLE                             TRUE
 #define USBH_DEBUG_MULTI_HOST                         FALSE
-#define USBH_DEBUG_SINGLE_HOST_SELECTION			  USBHD2
+#define USBH_DEBUG_SINGLE_HOST_SELECTION			  USBHD1
 #define USBH_DEBUG_BUFFER                             25000
 #define USBH_DEBUG_OUTPUT_CALLBACK                    usbh_debug_output
 
