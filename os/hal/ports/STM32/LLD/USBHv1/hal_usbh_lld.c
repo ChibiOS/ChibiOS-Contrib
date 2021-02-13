@@ -25,14 +25,23 @@
 #if !defined(STM32_OTG_FS_CHANNELS_NUMBER)
 #error "STM32_OTG_FS_CHANNELS_NUMBER must be defined"
 #endif
+#if !defined(STM32_OTG1_USE_HS)
+#define STM32_OTG1_USE_HS FALSE
+#endif
+#if !defined(STM32_OTG1_USE_ULPI)
+#define STM32_OTG1_USE_ULPI FALSE
+#endif
+#if !defined(STM32_OTG1_USE_ULPI_VBUS)
+#define STM32_OTG1_USE_ULPI_VBUS FALSE
+#endif
 #if !defined(STM32_OTG_FS_RXFIFO_SIZE)
-#define STM32_OTG_FS_RXFIFO_SIZE		1024
+#define STM32_OTG_FS_RXFIFO_SIZE 1024
 #endif
 #if !defined(STM32_OTG_FS_PTXFIFO_SIZE)
-#define STM32_OTG_FS_PTXFIFO_SIZE		128
+#define STM32_OTG_FS_PTXFIFO_SIZE 128
 #endif
 #if !defined(STM32_OTG_FS_NPTXFIFO_SIZE)
-#define STM32_OTG_FS_NPTXFIFO_SIZE	128
+#define STM32_OTG_FS_NPTXFIFO_SIZE 128
 #endif
 #if !defined(STM32_OTG_FS_FIFO_MEM_SIZE)
 #define STM32_OTG_FS_FIFO_MEM_SIZE 320
@@ -47,12 +56,12 @@
 #define OTG1 OTG_HS
 #define OTG1_CHANNELS_NUMBER STM32_OTG_HS_CHANNELS_NUMBER
 #else
-#define rccEnableOTG1(lp) rccEnableUSB1_OTG_FS(lp)
-#define rccDisableOTG1() rccDisableUSB1_OTG_FS()
-#define rccResetOTG1() rccResetUSB1_OTG_FS()
+#define rccEnableOTG1(lp) rccEnableOTG_FS(lp)
+#define rccDisableOTG1() rccDisableOTG_FS()
+#define rccResetOTG1() rccResetOTG_FS()
 #define OTG1 OTG_FS
 #define OTG1_CHANNELS_NUMBER STM32_OTG_FS_CHANNELS_NUMBER
-#ifdef STM32_OTG1_USE_ULPI
+#if STM32_OTG1_USE_ULPI
 #error "OTG1 has no ULPI on this platform"
 #endif
 #endif
@@ -69,6 +78,15 @@
 #if STM32_USBH_USE_OTG2
 #if !defined(STM32_OTG_HS_CHANNELS_NUMBER)
 #error "STM32_OTG_HS_CHANNELS_NUMBER must be defined"
+#endif
+#if !defined(STM32_OTG2_USE_HS)
+#define STM32_OTG2_USE_HS FALSE
+#endif
+#if !defined(STM32_OTG2_USE_ULPI)
+#define STM32_OTG2_USE_ULPI FALSE
+#endif
+#if !defined(STM32_OTG2_USE_ULPI_VBUS)
+#define STM32_OTG2_USE_ULPI_VBUS FALSE
 #endif
 #if !defined(STM32_OTG_HS_RXFIFO_SIZE)
 #define STM32_OTG_HS_RXFIFO_SIZE		2048
@@ -91,13 +109,13 @@
 #define rccResetOTG2() rccResetUSB2_OTG_FS()
 #define OTG2 OTG_FS
 #define OTG2_CHANNELS_NUMBER STM32_OTG_FS_CHANNELS_NUMBER
-#ifdef STM32_OTG2_USE_ULPI
+#if STM32_OTG2_USE_ULPI
 #error "OTG2 has no ULPI on this platform"
 #endif
 #else          
-#define rccEnableOTG2(lp) rccEnableUSB2_OTG_HS(lp)
-#define rccDisableOTG2() rccDisableUSB2_OTG_HS()
-#define rccResetOTG2() rccResetUSB2_OTG_HS()                                                                                                                                                         
+#define rccEnableOTG2(lp) rccEnableOTG_HS(lp)
+#define rccDisableOTG2() rccDisableOTG_HS()
+#define rccResetOTG2() rccResetOTG_HS()                                                                                                                                                         
 #define rccEnableOTG2_HSULPI(x) rccEnableUSB2_HSULPI(x)
 #define rccDisableOTG2_HSULPI() rccDisableUSB2_HSULPI()
 #define rccResetOTG2_HSULPI() rccResetUSB2_HSULPI()
