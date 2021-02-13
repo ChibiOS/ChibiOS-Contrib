@@ -911,12 +911,12 @@ int main(void) {
     palSetPadMode(GPIOA, 2, PAL_MODE_ALTERNATE(7));
     palSetPadMode(GPIOA, 3, PAL_MODE_ALTERNATE(7));
 
-#if STM32_USBH_USE_OTG_FS
+#if STM32_USBH_USE_OTG1
     //VBUS - configured in board.h
     //USB_FS - configured in board.h
 #endif
 
-#if STM32_USBH_USE_OTG_HS
+#if STM32_USBH_USE_OTG2
 #error "TODO: Initialize USB_HS pads"
 #endif
 
@@ -945,20 +945,20 @@ int main(void) {
     chThdSleepMilliseconds(100);
 
     //start
-#if STM32_USBH_USE_OTG_FS
+#if STM32_USBH_USE_OTG1
     usbhStart(&USBHD1);
     _usbh_dbgf(&USBHD1, "Started");
 #endif
-#if STM32_USBH_USE_OTG_HS
+#if STM32_USBH_USE_OTG2
     usbhStart(&USBHD2);
     _usbh_dbgf(&USBHD2, "Started");
 #endif
 
     for(;;) {
-#if STM32_USBH_USE_OTG_FS
+#if STM32_USBH_USE_OTG1
         usbhMainLoop(&USBHD1);
 #endif
-#if STM32_USBH_USE_OTG_HS
+#if STM32_USBH_USE_OTG2
         usbhMainLoop(&USBHD2);
 #endif
         chThdSleepMilliseconds(100);

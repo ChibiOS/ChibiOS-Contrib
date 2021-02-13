@@ -153,12 +153,11 @@ uint8_t usbh_lld_roothub_get_statuschange_bitmap(USBHDriver *usbh);
 #define USBH_LLD_DECLARE_STRUCT_MEMBER(member) member __attribute__((aligned(4)))
 #endif
 
-
-#if STM32_USBH_USE_OTG_FS
+#if STM32_USBH_USE_OTG1
 extern USBHDriver USBHD1;
 #endif
 
-#if STM32_USBH_USE_OTG_HS
+#if STM32_USBH_USE_OTG2
 extern USBHDriver USBHD2;
 #endif
 
