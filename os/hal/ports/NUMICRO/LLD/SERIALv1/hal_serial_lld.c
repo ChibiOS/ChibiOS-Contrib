@@ -311,6 +311,8 @@ void sd_lld_init(void)
   sdObjectInit(&SD0, NULL, notify0);
   /* Select UART0 Pins */
   SYS->ALT_MFP &= ~(SYS_ALT_MFP_PB3_MFP1_Msk | SYS_ALT_MFP_PB3_MFP1_Msk);
+  /* SYS->GPB_MFP |= SYS_GPB_MFP_PB1_UART0_TXD | SYS_GPB_MFP_PB0_UART0_RXD |
+                    SYS_GPB_MFP_PB3_UART0_nCTS | SYS_GPB_MFP_PB2_UART0_nRTS; */
   SYS->GPB_MFP |= 0x0FUL;
   SD0.uart = UART0;
 #endif
@@ -320,6 +322,8 @@ void sd_lld_init(void)
   /* Select UART1 Pins */
   SYS->ALT_MFP &= ~(SYS_ALT_MFP_PB7_MFP1_Msk | SYS_ALT_MFP_PB6_MFP1_Msk |
                     SYS_ALT_MFP_PB5_MFP1_Msk | SYS_ALT_MFP_PB4_MFP1_Msk);
+  /* SYS->GPB_MFP |= SYS_GPB_MFP_PB5_UART1_TXD | SYS_GPB_MFP_PB4_UART1_RXD |
+                    SYS_GPB_MFP_PB7_UART1_nCTS | SYS_GPB_MFP_PB6_UART1_nRTS; */
   SYS->GPB_MFP |= 0xF0UL;
   SD1.uart = UART1;
 #endif

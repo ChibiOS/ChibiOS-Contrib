@@ -143,14 +143,6 @@ void _pal_lld_init(const PALConfig *config) {
 
   /* Set DeBounce conditions */
   GPIO->DBNCECON = 0x04u;
-
-  /* Enable External Crystal Oscillator pins */
-  SYS->GPF_MFP |= SYS_GPF_MFP_PF0_XT1_OUT | SYS_GPF_MFP_PF1_XT1_IN;
-
-/*   SYS->GPD_MFP |= SYS_GPD_MFP_PD10_CLKO; */
-
-  /* Enable UART1 data pins */
-  SYS->GPB_MFP |= SYS_GPB_MFP_PB1_UART0_TXD | SYS_GPB_MFP_PB0_UART0_RXD;
 }
 
 /**
