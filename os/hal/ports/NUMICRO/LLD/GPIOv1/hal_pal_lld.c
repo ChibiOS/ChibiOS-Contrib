@@ -170,23 +170,24 @@ void _pal_lld_setgroupmode(ioportid_t port,
 
   uint32_t nucMode = 0;
 
-  if (mode == PAL_MODE_INPUT || mode == PAL_MODE_INPUT_PULLUP)
+  if (mode == PAL_MODE_INPUT)
       nucMode = GPIO_PMD_INPUT;
   else if (mode == PAL_MODE_OUTPUT_OPENDRAIN)
       nucMode = GPIO_PMD_OPEN_DRAIN;
   else if (mode == PAL_MODE_OUTPUT_PUSHPULL)
       nucMode = GPIO_PMD_OUTPUT;
-  else
+  else /* mode == PAL_MODE_INPUT_PULLUP */
       nucMode = GPIO_PMD_QUASI;
 
-  /*  GPIO_SetMode(port, mask, nucMode); */
   for (uint32_t i = 0; i < PAL_IOPORTS_WIDTH; i++) {
-  /*  for (uint32_t i = 0; i < GPIO_PINSPERPORT_MAX; i++) { */
     if (mask & (1 << i)) {
       port->PMD = (port->PMD & ~(0x03ul << (i << 1))) | (nucMode << (i << 1));
     }
   }
 
+  if (nucMode == GPIO_PMD_QUASI) {
+    port->DOUT |= (uint32_t)(uint16_t)mask;
+  }
 }
 
 #endif /* HAL_USE_PAL == TRUE */
