@@ -85,6 +85,12 @@ OSAL_IRQ_HANDLER(NUC123_GPIOCDF_HANDLER){
  *
  * @notapi
  */
+#if defined(PAL_NEW_INIT)
+void _pal_lld_init(void) {
+  /* Set DeBounce conditions */
+  GPIO->DBNCECON = 0x04u;
+}
+#else
 void _pal_lld_init(const PALConfig *config) {
 
   /* (void)config; */
@@ -144,6 +150,7 @@ void _pal_lld_init(const PALConfig *config) {
   /* Set DeBounce conditions */
   GPIO->DBNCECON = 0x04u;
 }
+#endif
 
 /**
  * @brief   Pads mode setup.

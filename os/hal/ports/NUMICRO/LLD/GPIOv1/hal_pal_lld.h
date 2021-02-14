@@ -27,6 +27,10 @@
 
 #if (HAL_USE_PAL == TRUE) || defined(__DOXYGEN__)
 
+#ifndef PAL_OLD_INIT
+#define PAL_NEW_INIT
+#endif
+
 /*===========================================================================*/
 /* Unsupported modes and specific modes                                      */
 /*===========================================================================*/
@@ -1213,7 +1217,11 @@ typedef GPIO_T * ioportid_t;
  *
  * @notapi
  */
+#if defined(PAL_NEW_INIT)
+#define pal_lld_init() _pal_lld_init()
+#else
 #define pal_lld_init(config) _pal_lld_init(config)
+#endif
 
 /**
  * @brief   Reads the physical I/O port states.
@@ -1453,14 +1461,18 @@ typedef GPIO_T * ioportid_t;
   _pal_lld_setgroupmode(port, PAL_PORT_BIT(pad), mode)
   /* GPIO_SetMode(port, PAL_PORT_BIT(pad), mode) */
 
-#if !defined(__DOXYGEN__)
+#if !defined(PAL_NEW_INIT) && !defined(__DOXYGEN__)
 extern const PALConfig pal_default_config;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#if defined(PAL_NEW_INIT)
+  void _pal_lld_init(void);
+#else
   void _pal_lld_init(const PALConfig *config);
+#endif
   void _pal_lld_setgroupmode(ioportid_t port,
                              ioportmask_t mask,
                              iomode_t mode);
