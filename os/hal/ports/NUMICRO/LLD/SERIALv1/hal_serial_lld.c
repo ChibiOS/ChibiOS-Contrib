@@ -351,7 +351,7 @@ void sd_lld_start(SerialDriver* sdp, const SerialConfig* config)
     if (&SD0 == sdp) {
       CLK->APBCLK |= CLK_APBCLK_UART0_EN_Msk;
       CLK->CLKSEL1 = (CLK->CLKSEL1 & ~(CLK_CLKSEL1_UART_S_Msk)) | NUC123_SERIAL_CLKSRC;
-      nvicEnableVector(UART0_IRQn, NUC123_SERIAL_UART0_IRQ_PRIORITY);
+      nvicEnableVector(NUC123_UART0_NUMBER, NUC123_SERIAL_UART0_IRQ_PRIORITY);
       SYS->IPRSTC2 |= SYS_IPRSTC2_UART0_RST_Msk;
       SYS->IPRSTC2 &= ~(SYS_IPRSTC2_UART0_RST_Msk);
     }
@@ -359,7 +359,7 @@ void sd_lld_start(SerialDriver* sdp, const SerialConfig* config)
 #if NUC123_SERIAL_USE_UART1
     if (&SD1 == sdp) {
       CLK->APBCLK |= CLK_APBCLK_UART1_EN_Msk;
-      nvicEnableVector(NUC123_UART1_IRQn, NUC123_SERIAL_UART1_IRQ_PRIORITY);
+      nvicEnableVector(NUC123_UART1_NUMBER, NUC123_SERIAL_UART1_IRQ_PRIORITY);
       SYS->IPRSTC2 |= SYS_IPRSTC2_UART1_RST_Msk;
       SYS->IPRSTC2 &= ~(SYS_IPRSTC2_UART1_RST_Msk);
     }
@@ -455,7 +455,7 @@ void sd_lld_stop(SerialDriver* sdp)
 #if NUC123_SERIAL_USE_UART0
     if (&SD0 == sdp) {
       CLK->APBCLK &= ~CLK_APBCLK_UART0_EN_Msk;
-      nvicDisableVector(UART0_IRQn);
+      nvicDisableVector(NUC123_UART0_NUMBER);
       return;
     }
 #endif
@@ -463,7 +463,7 @@ void sd_lld_stop(SerialDriver* sdp)
 #if NUC123_SERIAL_USE_UART1
     if (&SD1 == sdp) {
       CLK->APBCLK &= ~CLK_APBCLK_UART1_EN_Msk;
-      nvicDisableVector(NUC123_UART1_IRQn);
+      nvicDisableVector(NUC123_UART1_NUMBER);
       return;
     }
 #endif
