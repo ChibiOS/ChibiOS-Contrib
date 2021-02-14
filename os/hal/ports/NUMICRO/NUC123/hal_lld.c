@@ -480,7 +480,6 @@ void NUC123_clock_init(void)
 #endif /* NUC123_LSI_ENABLED */
 
   set_core_clock(NUC123_HCLK);
-  SystemCoreClock = NUC123_HCLK;
 
   LOCKREG();
 }
