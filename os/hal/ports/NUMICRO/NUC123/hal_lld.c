@@ -78,7 +78,7 @@ void SystemCoreClockUpdate(void) /* Get Core Clock Frequency      */
     if (PllReg & 0x00080000ul) {
       pllFIN = __HIRC; /* Use HXT for PLL clock */
     } else {
-      pllFIN = __HXT; /* Use HXT for PLL clock */
+      pllFIN = NUC123_HSECLK; /* Use HXT for PLL clock */
     }
 
     if (PllReg & CLK_PLLCON_BP_Msk) {
@@ -107,7 +107,7 @@ void SystemCoreClockUpdate(void) /* Get Core Clock Frequency      */
   /* Pick Clock Source */
   switch (CLK->CLKSEL0 & CLK_CLKSEL0_HCLK_S_Msk) {
   case 0: /* External HF Xtal */
-    clkFreq = __HXT;
+    clkFreq = NUC123_HSECLK;
     break;
   case 1: /* PLL clock / 2 */
     clkFreq = PllClock >> 1;
@@ -150,7 +150,7 @@ static inline uint32_t get_pll_clock_freq(void)
     if (PllReg & NUC123_PLLSRC_HSI) {
       pllFIN = __HIRC; /* Use HXT for PLL clock */
     } else {
-      pllFIN = __HXT; /* Use HXT for PLL clock */
+      pllFIN = NUC123_HSECLK; /* Use HXT for PLL clock */
     }
 
     if (PllReg & CLK_PLLCON_BP_Msk) {
@@ -318,7 +318,7 @@ static uint32_t enable_pll(uint32_t pllSrc, uint32_t pllFreq)
   switch (pllSrc) {
   case NUC123_PLLSRC_HSE:
     NR      = 2;
-    clkCalc = __HXT;
+    clkCalc = NUC123_HSECLK;
     break;
   case NUC123_PLLSRC_HSI:
     NR      = 4;
@@ -409,7 +409,7 @@ static uint32_t set_core_clock(uint32_t clkCore)
 
   /* Is HXT stable ? */
   if (CLK->CLKSTATUS & CLK_CLKSTATUS_XTL12M_STB_Msk) {
-    /* Use __HXT as PLL source */
+    /* Use NUC123_HSECLK as PLL source */
     clkCore = enable_pll(NUC123_PLLSRC_HSE, (2 * clkCore));
   } else {
     /* Use __HIRC as PLL source */
