@@ -1,6 +1,7 @@
 ChibiOS-Contrib
 ===============
 
+![test build](https://github.com/ChibiOS/ChibiOS-Contrib/workflows/build%20tests/badge.svg)
 [![Join the chat at https://gitter.im/ChibiOS/contrib](https://badges.gitter.im/ChibiOS/contrib.svg)](https://gitter.im/ChibiOS/contrib?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Code under this directory is not part of the core ChibiOS project 
