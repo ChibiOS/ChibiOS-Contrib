@@ -310,7 +310,7 @@ void sd_lld_init(void)
 #if NUC123_SERIAL_USE_UART0
   sdObjectInit(&SD0, NULL, notify0);
   /* Select UART0 Pins */
-  SYS->ALT_MFP &= ~(SYS_ALT_MFP_PB3_MFP1_Msk | SYS_ALT_MFP_PB3_MFP1_Msk);
+  SYS->ALT_MFP &= ~(SYS_ALT_MFP_PB3_MFP1_Msk | SYS_ALT_MFP_PB2_MFP1_Msk);
   /* SYS->GPB_MFP |= SYS_GPB_MFP_PB1_UART0_TXD | SYS_GPB_MFP_PB0_UART0_RXD |
                     SYS_GPB_MFP_PB3_UART0_nCTS | SYS_GPB_MFP_PB2_UART0_nRTS; */
   SYS->GPB_MFP |= 0x0FUL;
