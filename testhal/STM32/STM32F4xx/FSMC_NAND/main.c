@@ -63,6 +63,9 @@
 #define FSMCNAND_TIME_HOLD        ((uint32_t) 1) //(5nS)
 #define FSMCNAND_TIME_HIZ         ((uint32_t) 4) //(20nS)
 
+#define NAND_DIES_COUNT           1
+#define NAND_LOGUNS_COUNT         1
+#define NAND_PLANES_COUNT         1
 #define NAND_BLOCKS_COUNT         8192
 #define NAND_PAGE_DATA_SIZE       2048
 #define NAND_PAGE_SPARE_SIZE      64
@@ -134,9 +137,9 @@ static bitmap_t badblock_map = {
  *
  */
 static const NANDConfig nandcfg = {
-  .dies = 0,
-  .loguns = 0,
-  .planes = 0,
+  .dies = NAND_DIES_COUNT,
+  .loguns = NAND_LOGUNS_COUNT,
+  .planes = NAND_PLANES_COUNT,
   .blocks = NAND_BLOCKS_COUNT,
   .page_data_size = NAND_PAGE_DATA_SIZE,
   .page_spare_size = NAND_PAGE_SPARE_SIZE,
