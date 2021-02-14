@@ -238,6 +238,7 @@ static void set_HCLK(uint32_t clkSource, uint32_t clkDivider)
   }
 }
 
+#if NUC123_PLL_ENABLED
 static uint32_t enable_pll(uint32_t pllSrc, uint32_t pllFreq)
 {
   /* Disable PLL first to avoid unstable when setting PLL. */
@@ -430,6 +431,7 @@ static uint32_t set_core_clock(uint32_t clkCore)
   /* Return actual HCLK frequency is PLL frequency divide 2 */
   return (clkCore >> 1);
 }
+#endif
 
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
@@ -466,12 +468,10 @@ void NUC123_clock_init(void)
   set_HCLK(NUC123_HCLKSRC_HSI, CLK_CLKDIV_HCLK(1));
 
 #if NUC123_HSE_ENABLED
-
   SYS->GPF_MFP |= (SYS_GPF_MFP_GPF_MFP0_Msk | SYS_GPF_MFP_GPF_MFP1_Msk);
 
   CLK->PWRCON |= CLK_PWRCON_XTL12M_EN_Msk;
   wait_for_clock_ready(CLK_CLKSTATUS_XTL12M_STB_Msk);
-
 #endif /* NUC123_HSE_ENABLED */
 
 #if NUC123_LSI_ENABLED
@@ -479,7 +479,9 @@ void NUC123_clock_init(void)
   wait_for_clock_ready(CLK_CLKSTATUS_IRC10K_STB_Msk);
 #endif /* NUC123_LSI_ENABLED */
 
+#if NUC123_PLL_ENABLED
   set_core_clock(NUC123_HCLK);
+#endif /* NUC123_PLL_ENABLED */
 
   LOCKREG();
 }
