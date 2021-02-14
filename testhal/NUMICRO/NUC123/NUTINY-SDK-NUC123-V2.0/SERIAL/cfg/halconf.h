@@ -36,8 +36,6 @@
 #define PAL_USE_CALLBACKS TRUE
 #define PAL_USE_WAIT      TRUE
 
-#define NUC123_SERIAL_CLKSRC NUC123_SERIAL_CLKSRC_HSI
-
 /**
  * @brief   Enables the PAL subsystem.
  */
