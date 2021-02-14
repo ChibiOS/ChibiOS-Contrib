@@ -24,8 +24,6 @@
 /*
  * HAL driver system settings.
  */
-#define NUC123_HSE_ENABLED TRUE
-#define NUC123_PLL_ENABLED TRUE
 #define NUC123_SERIAL_CLKSRC NUC123_SERIAL_CLKSRC_HSI
 
 #define NUC123_MCUCONF
