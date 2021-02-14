@@ -49,6 +49,81 @@
 /*===========================================================================*/
 
 /**
+ * @brief   This function should be defined in application for implementing 
+ *          chip selects on nand flash which has multiple dies
+ *
+ * @param[in] die                 nand flash die to be selected
+ *
+ * @notapi
+ */
+__attribute__ ((weak)) void hook_for_chipselect_nand_flash(uint32_t die);
+void hook_for_chipselect_nand_flash(uint32_t die)
+{
+  (void)die;
+}
+
+/**
+ * @brief   This function should be defined in nand flash device header file 
+ *          based on the row configuration from the data sheet
+ *
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
+ * @param[in] block         block number in nand flash
+ * @param[in] page          page number in nand flash
+ * @param[in] cfg           pointer to nand flash configuration
+ * 
+ * @return                  calculated row address
+ * 
+ * @note                    Caller function should ensure die, logun, plane
+ *                          & block address should not exceed device config
+ * @notapi
+ */
+__attribute__ ((weak)) uint32_t hook_for_calc_row_addr_with_page(uint32_t logun,
+                                                                uint32_t plane,
+                                                                uint32_t block,
+                                                                uint32_t page,
+                                                                const void *cfg);
+uint32_t hook_for_calc_row_addr_with_page(uint32_t logun, uint32_t plane,
+                                           uint32_t block, uint32_t page, 
+                                           const void *cfg)
+{
+  (void)logun;
+  (void)plane;
+  const NANDConfig *nandcfg = (NANDConfig *)cfg;
+
+  return (block * nandcfg->pages_per_block) + page;
+}
+
+/**
+ * @brief   This function should be defined in nand flash device header file 
+ *          based on the row configuration from the data sheet
+ *
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
+ * @param[in] block         block number in nand flash
+ * @param[in] cfg           pointer to nand flash configuration
+ *
+ * @return                  calculated row address
+ * 
+ * @note                    Caller function should ensure die, logun, plane
+ *                          & block address should not exceed device config
+ * @notapi
+ */
+__attribute__ ((weak)) uint32_t hook_for_calc_row_addr_with_blk(uint32_t logun,
+                                                                uint32_t plane,
+                                                                uint32_t block,
+                                                                const void *cfg);
+uint32_t hook_for_calc_row_addr_with_blk(uint32_t logun, uint32_t plane,
+                                           uint32_t block, const void *cfg)
+{
+  (void)logun;
+  (void)plane;
+  const NANDConfig *nandcfg = (NANDConfig *)cfg;
+
+  return block * nandcfg->pages_per_block;
+}
+
+/**
  * @brief   Check page size.
  *
  * @param[in] page_data_size      size of page data area
@@ -70,24 +145,28 @@ static void pagesize_check(size_t page_data_size) {
  *
  * @param[in] cfg         pointer to the @p NANDConfig from
  *                        corresponding NAND driver
+ * @param[in] logun       logical unit number in nand flash
+ * @param[in] plane       plane number in nand flash
  * @param[in] block       block number
- * @param[in] page        page number related to begin of block
+ * @param[in] page        page number in nand flash
  * @param[in] page_offset data offset related to begin of page
  * @param[out] addr       buffer to store calculated address
  * @param[in] addr_len    length of address buffer
  *
  * @notapi
  */
-static void calc_addr(const NANDConfig *cfg, uint32_t block, uint32_t page,
-                      uint32_t page_offset, uint8_t *addr, size_t addr_len) {
+static void calc_addr(const NANDConfig *cfg, uint32_t logun, uint32_t plane, 
+                      uint32_t block, uint32_t page, uint32_t page_offset, 
+                      uint8_t *addr, size_t addr_len) {
   size_t i;
   uint32_t row;
 
   osalDbgCheck(cfg->rowcycles + cfg->colcycles == addr_len);
   osalDbgCheck((block < cfg->blocks) && (page < cfg->pages_per_block) &&
-             (page_offset < cfg->page_data_size + cfg->page_spare_size));
+             (page_offset < cfg->page_data_size + cfg->page_spare_size) &&
+             (plane < cfg->planes) && (logun < cfg->loguns));
 
-  row = (block * cfg->pages_per_block) + page;
+  row = hook_for_calc_row_addr_with_page(logun, plane, block, page, cfg);
   for (i=0; i<cfg->colcycles; i++){
     addr[i] = page_offset & 0xFF;
     page_offset = page_offset >> 8;
@@ -104,21 +183,27 @@ static void calc_addr(const NANDConfig *cfg, uint32_t block, uint32_t page,
  *
  * @param[in] cfg       pointer to the @p NANDConfig from
  *                      corresponding NAND driver
+ * @param[in] logun     logical unit number in nand flash
+ * @param[in] plane     plane number in nand flash
  * @param[in] block     block number
  * @param[out] addr     buffer to store calculated address
  * @param[in] addr_len  length of address buffer
  *
  * @notapi
  */
-static void calc_blk_addr(const NANDConfig *cfg, uint32_t block,
-                          uint8_t *addr, size_t addr_len) {
+static void calc_blk_addr(const NANDConfig *cfg, uint32_t logun, 
+                          uint32_t plane, uint32_t block, uint8_t *addr,
+                          size_t addr_len) {
   size_t i;
   uint32_t row;
 
-  osalDbgCheck(cfg->rowcycles == addr_len); /* Incorrect buffer length  */
-  osalDbgCheck(block < cfg->blocks);        /* Overflow                 */
+  /* Incorrect buffer length  */
+  osalDbgCheck(cfg->rowcycles == addr_len);
+  /* Overflow                 */
+  osalDbgCheck((block < cfg->blocks) && (plane < cfg->planes) &&
+               (logun < cfg->loguns));        
 
-  row = block * cfg->pages_per_block;
+  row = hook_for_calc_row_addr_with_blk(logun, plane, block, cfg);
   for (i=0; i<addr_len; i++) {
     addr[i] = row & 0xFF;
     row = row >> 8;
@@ -129,20 +214,51 @@ static void calc_blk_addr(const NANDConfig *cfg, uint32_t block,
  * @brief   Read block badness mark directly from NAND memory array.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
  * @param[in] block         block number
  *
  * @return                  block condition
  * @retval true             if the block is bad.
  * @retval false            if the block is good.
  *
- * @notapi
+ * @api
  */
-static bool read_is_block_bad(NANDDriver *nandp, size_t block) {
+bool readIsBlockBad(NANDDriver *nandp, uint32_t die, uint32_t logun,
+                    uint32_t plane, size_t block) {
 
-  uint16_t badmark0 = nandReadBadMark(nandp, block, 0);
-  uint16_t badmark1 = nandReadBadMark(nandp, block, 1);
+  uint16_t badmark0 = nandReadBadMark(nandp, die, logun, plane, block, 0);
+  uint16_t badmark1 = nandReadBadMark(nandp, die, logun, plane, block, 1);
 
   if ((0xFFFF != badmark0) || (0xFFFF != badmark1))
+    return true;
+  else
+    return false;
+}
+
+/**
+ * @brief   Read page badness mark directly from NAND memory array.
+ *
+ * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
+ * @param[in] block         block number
+ * @param[in] page          page number in nand flash
+ * 
+ * @return                  block condition
+ * @retval true             if the block is bad.
+ * @retval false            if the block is good.
+ *
+ * @notapi
+ */
+static bool read_is_page_bad(NANDDriver *nandp, uint32_t die, uint32_t logun,
+                          uint32_t plane, size_t block, uint32_t page) {
+
+  uint16_t badmark0 = nandReadBadMark(nandp, die, logun, plane, block, page);
+
+  if (0xFFFF != badmark0)
     return true;
   else
     return false;
@@ -157,18 +273,30 @@ static bool read_is_block_bad(NANDDriver *nandp, size_t block) {
  */
 static void scan_bad_blocks(NANDDriver *nandp) {
 
-  const size_t blocks = nandp->config->blocks;
-  size_t b;
+  const size_t blocks = nandp->config->blocks,
+      planes = nandp->config->planes,
+      loguns = nandp->config->loguns,
+      dies    = nandp->config->dies;
+
+  size_t d, l, b, p;
 
   osalDbgCheck(bitmapGetBitsCount(nandp->bb_map) >= blocks);
 
   /* clear map just to be safe */
   bitmapObjectInit(nandp->bb_map, 0);
+  size_t block_number_of_total_blocks = 0;
 
   /* now write numbers of bad block to map */
-  for (b=0; b<blocks; b++) {
-    if (read_is_block_bad(nandp, b)) {
-      bitmapSet(nandp->bb_map, b);
+  for(d = 0; d < dies; d++){
+    hook_for_chipselect_nand_flash(d);
+    for(l = 0; l < loguns; l++){
+      for(p = 0; p < planes; p++){
+        for (b = 0; b < blocks; b++, block_number_of_total_blocks++) {
+          if (readIsBlockBad(nandp, d, l, p, b)) {
+            bitmapSet(nandp->bb_map, block_number_of_total_blocks);
+          }
+        }
+      }
     }
   }
 }
@@ -230,7 +358,12 @@ void nandStart(NANDDriver *nandp, const NANDConfig *config, bitmap_t *bb_map) {
   pagesize_check(nandp->config->page_data_size);
   nand_lld_start(nandp);
   nandp->state = NAND_READY;
-  nand_lld_reset(nandp);
+  for(uint32_t d = 0; d < config->dies; d++)
+  {
+    /* For each die, send a reset */
+    hook_for_chipselect_nand_flash(d);
+    nand_lld_reset(nandp);
+  }
 
   if (NULL != bb_map) {
     nandp->bb_map = bb_map;
@@ -259,6 +392,9 @@ void nandStop(NANDDriver *nandp) {
  * @brief   Read whole page.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
  * @param[in] block         block number
  * @param[in] page          page number related to begin of block
  * @param[out] data         buffer to store data, half word aligned
@@ -266,7 +402,8 @@ void nandStop(NANDDriver *nandp) {
  *
  * @api
  */
-void nandReadPageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
+void nandReadPageWhole(NANDDriver *nandp, uint32_t die, uint32_t logun,
+                       uint32_t plane, uint32_t block, uint32_t page,
                        void *data, size_t datalen) {
 
   const NANDConfig *cfg = nandp->config;
@@ -276,8 +413,14 @@ void nandReadPageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
   osalDbgCheck((nandp != NULL) && (data != NULL));
   osalDbgCheck((datalen <= (cfg->page_data_size + cfg->page_spare_size)));
   osalDbgAssert(nandp->state == NAND_READY, "invalid state");
+  osalDbgCheck(die <= cfg->dies);
+  osalDbgCheck(logun <= cfg->loguns);
+  osalDbgCheck(plane <= cfg->planes);
+  osalDbgCheck(block <= cfg->blocks);
 
-  calc_addr(cfg, block, page, 0, addr, addrlen);
+  /* generates chipselect for a particular die if need be */
+  hook_for_chipselect_nand_flash(die);
+  calc_addr(cfg, logun, plane, block, page, 0, addr, addrlen);
   nand_lld_read_data(nandp, data, datalen, addr, addrlen, NULL);
 }
 
@@ -285,6 +428,9 @@ void nandReadPageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
  * @brief   Write whole page.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
  * @param[in] block         block number
  * @param[in] page          page number related to begin of block
  * @param[in] data          buffer with data to be written, half word aligned
@@ -294,7 +440,8 @@ void nandReadPageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
  *
  * @api
  */
-uint8_t nandWritePageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
+uint8_t nandWritePageWhole(NANDDriver *nandp, uint32_t die, uint32_t logun,
+                           uint32_t plane, uint32_t block, uint32_t page,
                            const void *data, size_t datalen) {
 
   uint8_t retval;
@@ -305,8 +452,14 @@ uint8_t nandWritePageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
   osalDbgCheck((nandp != NULL) && (data != NULL));
   osalDbgCheck((datalen <= (cfg->page_data_size + cfg->page_spare_size)));
   osalDbgAssert(nandp->state == NAND_READY, "invalid state");
+  osalDbgCheck(die <= cfg->dies);
+  osalDbgCheck(logun <= cfg->loguns);
+  osalDbgCheck(plane <= cfg->planes);
+  osalDbgCheck(block <= cfg->blocks);
 
-  calc_addr(cfg, block, page, 0, addr, addrlen);
+  /* generates chipselect for a particular die if need be */
+  hook_for_chipselect_nand_flash(die);
+  calc_addr(cfg, logun, plane, block, page, 0, addr, addrlen);
   retval = nand_lld_write_data(nandp, data, datalen, addr, addrlen, NULL);
   return retval;
 }
@@ -315,6 +468,9 @@ uint8_t nandWritePageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
  * @brief   Read page data without spare area.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
  * @param[in] block         block number
  * @param[in] page          page number related to begin of block
  * @param[out] data         buffer to store data, half word aligned
@@ -323,7 +479,8 @@ uint8_t nandWritePageWhole(NANDDriver *nandp, uint32_t block, uint32_t page,
  *
  * @api
  */
-void nandReadPageData(NANDDriver *nandp, uint32_t block, uint32_t page,
+void nandReadPageData(NANDDriver *nandp, uint32_t die, uint32_t logun,
+                      uint32_t plane, uint32_t block, uint32_t page,
                          void *data, size_t datalen, uint32_t *ecc) {
 
   const NANDConfig *cfg = nandp->config;
@@ -333,8 +490,14 @@ void nandReadPageData(NANDDriver *nandp, uint32_t block, uint32_t page,
   osalDbgCheck((nandp != NULL) && (data != NULL));
   osalDbgCheck((datalen <= cfg->page_data_size));
   osalDbgAssert(nandp->state == NAND_READY, "invalid state");
+  osalDbgCheck(die <= cfg->dies);
+  osalDbgCheck(logun <= cfg->loguns);
+  osalDbgCheck(plane <= cfg->planes);
+  osalDbgCheck(block <= cfg->blocks);
 
-  calc_addr(cfg, block, page, 0, addr, addrlen);
+  /* generates chipselect for a particular die if need be */
+  hook_for_chipselect_nand_flash(die);
+  calc_addr(cfg, logun, plane, block, page, 0, addr, addrlen);
   nand_lld_read_data(nandp, data, datalen, addr, addrlen, ecc);
 }
 
@@ -342,6 +505,9 @@ void nandReadPageData(NANDDriver *nandp, uint32_t block, uint32_t page,
  * @brief   Write page data without spare area.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
  * @param[in] block         block number
  * @param[in] page          page number related to begin of block
  * @param[in] data          buffer with data to be written, half word aligned
@@ -352,7 +518,8 @@ void nandReadPageData(NANDDriver *nandp, uint32_t block, uint32_t page,
  *
  * @api
  */
-uint8_t nandWritePageData(NANDDriver *nandp, uint32_t block, uint32_t page,
+uint8_t nandWritePageData(NANDDriver *nandp, uint32_t die, uint32_t logun,
+                          uint32_t plane, uint32_t block, uint32_t page,
                           const void *data, size_t datalen, uint32_t *ecc) {
 
   uint8_t retval;
@@ -363,8 +530,14 @@ uint8_t nandWritePageData(NANDDriver *nandp, uint32_t block, uint32_t page,
   osalDbgCheck((nandp != NULL) && (data != NULL));
   osalDbgCheck((datalen <= cfg->page_data_size));
   osalDbgAssert(nandp->state == NAND_READY, "invalid state");
+  osalDbgCheck(die <= cfg->dies);
+  osalDbgCheck(logun <= cfg->loguns);
+  osalDbgCheck(plane <= cfg->planes);
+  osalDbgCheck(block <= cfg->blocks);
 
-  calc_addr(cfg, block, page, 0, addr, addrlen);
+  /* generates chipselect for a particular die if need be */
+  hook_for_chipselect_nand_flash(die);
+  calc_addr(cfg, logun, plane, block, page, 0, addr, addrlen);
   retval = nand_lld_write_data(nandp, data, datalen, addr, addrlen, ecc);
   return retval;
 }
@@ -373,6 +546,9 @@ uint8_t nandWritePageData(NANDDriver *nandp, uint32_t block, uint32_t page,
  * @brief   Read page spare area.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
  * @param[in] block         block number
  * @param[in] page          page number related to begin of block
  * @param[out] spare        buffer to store data, half word aligned
@@ -380,7 +556,8 @@ uint8_t nandWritePageData(NANDDriver *nandp, uint32_t block, uint32_t page,
  *
  * @api
  */
-void nandReadPageSpare(NANDDriver *nandp, uint32_t block, uint32_t page,
+void nandReadPageSpare(NANDDriver *nandp, uint32_t die, uint32_t logun,
+                       uint32_t plane, uint32_t block, uint32_t page,
                        void *spare, size_t sparelen) {
 
   const NANDConfig *cfg = nandp->config;
@@ -390,8 +567,14 @@ void nandReadPageSpare(NANDDriver *nandp, uint32_t block, uint32_t page,
   osalDbgCheck((NULL != spare) && (nandp != NULL));
   osalDbgCheck(sparelen <= cfg->page_spare_size);
   osalDbgAssert(nandp->state == NAND_READY, "invalid state");
+  osalDbgCheck(die <= cfg->dies);
+  osalDbgCheck(logun <= cfg->loguns);
+  osalDbgCheck(plane <= cfg->planes);
+  osalDbgCheck(block <= cfg->blocks);
 
-  calc_addr(cfg, block, page, cfg->page_data_size, addr, addrlen);
+  /* generates chipselect for a particular die if need be */
+  hook_for_chipselect_nand_flash(die);
+  calc_addr(cfg, logun, plane, block, page, cfg->page_data_size, addr, addrlen);
   nand_lld_read_data(nandp, spare, sparelen, addr, addrlen, NULL);
 }
 
@@ -399,6 +582,9 @@ void nandReadPageSpare(NANDDriver *nandp, uint32_t block, uint32_t page,
  * @brief   Write page spare area.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
  * @param[in] block         block number
  * @param[in] page          page number related to begin of block
  * @param[in] spare         buffer with spare data to be written, half word aligned
@@ -408,7 +594,8 @@ void nandReadPageSpare(NANDDriver *nandp, uint32_t block, uint32_t page,
  *
  * @api
  */
-uint8_t nandWritePageSpare(NANDDriver *nandp, uint32_t block, uint32_t page,
+uint8_t nandWritePageSpare(NANDDriver *nandp, uint32_t die, uint32_t logun,
+                           uint32_t plane, uint32_t block, uint32_t page,
                            const void *spare, size_t sparelen) {
 
   const NANDConfig *cfg = nandp->config;
@@ -418,8 +605,14 @@ uint8_t nandWritePageSpare(NANDDriver *nandp, uint32_t block, uint32_t page,
   osalDbgCheck((NULL != spare) && (nandp != NULL));
   osalDbgCheck(sparelen <= cfg->page_spare_size);
   osalDbgAssert(nandp->state == NAND_READY, "invalid state");
+  osalDbgCheck(die <= cfg->dies);
+  osalDbgCheck(logun <= cfg->loguns);
+  osalDbgCheck(plane <= cfg->planes);
+  osalDbgCheck(block <= cfg->blocks);
 
-  calc_addr(cfg, block, page, cfg->page_data_size, addr, addrlen);
+  /* generates chipselect for a particular die if need be */
+  hook_for_chipselect_nand_flash(die);
+  calc_addr(cfg, logun, plane, block, page, cfg->page_data_size, addr, addrlen);
   return nand_lld_write_data(nandp, spare, sparelen, addr, addrlen, NULL);
 }
 
@@ -427,25 +620,41 @@ uint8_t nandWritePageSpare(NANDDriver *nandp, uint32_t block, uint32_t page,
  * @brief   Mark block as bad.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
  * @param[in] block         block number
  *
  * @api
  */
-void nandMarkBad(NANDDriver *nandp, uint32_t block) {
+void nandMarkBad(NANDDriver *nandp, uint32_t die, uint32_t logun,
+                 uint32_t plane, uint32_t block) {
 
   uint16_t bb_mark = 0;
 
-  nandWritePageSpare(nandp, block, 0, &bb_mark, sizeof(bb_mark));
-  nandWritePageSpare(nandp, block, 1, &bb_mark, sizeof(bb_mark));
+  nandWritePageSpare(nandp, die, logun, plane, block, 0, &bb_mark, sizeof(bb_mark));
+  nandWritePageSpare(nandp, die, logun, plane, block, 1, &bb_mark, sizeof(bb_mark));
 
-  if (NULL != nandp->bb_map)
-    bitmapSet(nandp->bb_map, block);
+  if (NULL != nandp->bb_map){
+    uint32_t block_number_of_total_blocks = block +
+        /* NAND_BLOCKS_PER_PLANE */
+        (nandp->config->blocks * plane) +
+        /* NAND_BLOCKS_PER_PLANE * NAND_PLANES_PER_LOGUN */
+        (nandp->config->blocks * nandp->config->planes * logun) +
+        /* NAND_BLOCKS_PER_PLANE * NAND_PLANES_PER_LOGUN * NAND_LOGUNS_PER_DIE */
+        (nandp->config->blocks * nandp->config->planes * nandp->config->loguns * die);
+
+    bitmapSet(nandp->bb_map, block_number_of_total_blocks);
+  }
 }
 
 /**
  * @brief   Read bad mark out.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
  * @param[in] block         block number
  * @param[in] page          page number related to begin of block
  *
@@ -453,10 +662,11 @@ void nandMarkBad(NANDDriver *nandp, uint32_t block) {
  *
  * @api
  */
-uint16_t nandReadBadMark(NANDDriver *nandp, uint32_t block, uint32_t page) {
+uint16_t nandReadBadMark(NANDDriver *nandp, uint32_t die, uint32_t logun,
+                         uint32_t plane, uint32_t block, uint32_t page) {
   uint16_t bb_mark;
 
-  nandReadPageSpare(nandp, block, page, &bb_mark, sizeof(bb_mark));
+  nandReadPageSpare(nandp, die, logun, plane, block, page, &bb_mark, sizeof(bb_mark));
   return bb_mark;
 }
 
@@ -464,13 +674,17 @@ uint16_t nandReadBadMark(NANDDriver *nandp, uint32_t block, uint32_t page) {
  * @brief   Erase block.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
  * @param[in] block         block number
  *
  * @return    The operation status reported by NAND IC (0x70 command).
  *
  * @api
  */
-uint8_t nandErase(NANDDriver *nandp, uint32_t block) {
+uint8_t nandErase(NANDDriver *nandp, uint32_t die, uint32_t logun,
+                  uint32_t plane, uint32_t block) {
 
   const NANDConfig *cfg = nandp->config;
   const size_t addrlen = cfg->rowcycles;
@@ -478,8 +692,15 @@ uint8_t nandErase(NANDDriver *nandp, uint32_t block) {
 
   osalDbgCheck(nandp != NULL);
   osalDbgAssert(nandp->state == NAND_READY, "invalid state");
+  osalDbgCheck(die <= cfg->dies);
+  osalDbgCheck(logun <= cfg->loguns);
+  osalDbgCheck(plane <= cfg->planes);
+  osalDbgCheck(block <= cfg->blocks);
 
-  calc_blk_addr(cfg, block, addr, addrlen);
+  /* generates chipselect for a particular die if need be */
+  hook_for_chipselect_nand_flash(die);
+  calc_blk_addr(cfg, logun, plane, block, addr, addrlen);
+
   return nand_lld_erase(nandp, addr, addrlen);
 }
 
@@ -487,7 +708,11 @@ uint8_t nandErase(NANDDriver *nandp, uint32_t block) {
  * @brief   Check block badness.
  *
  * @param[in] nandp         pointer to the @p NANDDriver object
+ * @param[in] die           die number in nand flash
+ * @param[in] logun         logical unit number in nand flash
+ * @param[in] plane         plane number in nand flash
  * @param[in] block         block number
+ * @param[in] page          page number in nand flash
  *
  * @return                  block condition
  * @retval true             if the block is bad.
@@ -495,15 +720,27 @@ uint8_t nandErase(NANDDriver *nandp, uint32_t block) {
  *
  * @api
  */
-bool nandIsBad(NANDDriver *nandp, uint32_t block) {
-
+bool nandIsBad(NANDDriver *nandp, uint32_t die, uint32_t logun,
+               uint32_t plane, uint32_t block, uint32_t page) {
   osalDbgCheck(nandp != NULL);
   osalDbgAssert(nandp->state == NAND_READY, "invalid state");
 
-  if (NULL != nandp->bb_map)
-    return 1 == bitmapGet(nandp->bb_map, block);
+  osalDbgCheck(die <= nandp->config->dies);
+  osalDbgCheck(logun <= nandp->config->loguns);
+  osalDbgCheck(plane <= nandp->config->planes);
+  osalDbgCheck(block <= nandp->config->blocks);
+  osalDbgCheck(page <= nandp->config->pages_per_block);
+
+  if (NULL != nandp->bb_map){
+    uint32_t block_number_of_total_blocks = block +
+        (nandp->config->blocks * plane) + //NAND_BLOCKS_PER_PLANE
+        (nandp->config->blocks * nandp->config->planes * logun) + //NAND_BLOCKS_PER_PLANE * NAND_PLANES_PER_LOGUN
+        (nandp->config->blocks * nandp->config->planes * nandp->config->loguns * die); //NAND_BLOCKS_PER_PLANE * NAND_PLANES_PER_LOGUN * NAND_LOGUNS_PER_DIE
+
+    return 1 == bitmapGet(nandp->bb_map, block_number_of_total_blocks);
+  }
   else
-    return read_is_block_bad(nandp, block);
+    return read_is_page_bad(nandp, die, logun, plane, block, page);
 }
 
 #if NAND_USE_MUTUAL_EXCLUSION || defined(__DOXYGEN__)
@@ -553,7 +790,3 @@ void nandReleaseBus(NANDDriver *nandp) {
 #endif /* HAL_USE_NAND */
 
 /** @} */
-
-
-
-
