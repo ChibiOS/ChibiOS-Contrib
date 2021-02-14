@@ -170,13 +170,13 @@ void _pal_lld_setgroupmode(ioportid_t port,
 
   uint32_t nucMode = 0;
 
-  if (mode == PAL_MODE_INPUT || mode == PAL_MODE_INPUT_PULLUP)
+  if (mode == PAL_MODE_INPUT)
       nucMode = GPIO_PMD_INPUT;
   else if (mode == PAL_MODE_OUTPUT_OPENDRAIN)
       nucMode = GPIO_PMD_OPEN_DRAIN;
   else if (mode == PAL_MODE_OUTPUT_PUSHPULL)
       nucMode = GPIO_PMD_OUTPUT;
-  else
+  else /* mode == PAL_MODE_INPUT_PULLUP */
       nucMode = GPIO_PMD_QUASI;
 
   /*  GPIO_SetMode(port, mask, nucMode); */
