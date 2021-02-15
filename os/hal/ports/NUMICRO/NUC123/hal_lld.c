@@ -50,8 +50,12 @@ uint32_t SystemCoreClock = __HSI; /* System Clock Frequency (Core Clock)*/
 uint32_t CyclesPerUs     = (__HSI / 1000000); /* Cycles per micro second */
 uint32_t PllClock        = __HSI;             /*!< PLL Clock Frequency */
 
-volatile const uint32_t config0 __attribute__((used, unused, section(".nuc123_config0"))) = NUC123_CONFIG0;
-volatile const uint32_t config1 __attribute__((used, unused, section(".nuc123_config1"))) = NUC123_CONFIG1;
+#if (NUC123_CONFIG_ENABLED == TRUE)
+
+static volatile const uint32_t config0 __attribute__((used, unused, section(".nuc123_config0"))) = NUC123_CONFIG0;
+static volatile const uint32_t config1 __attribute__((used, unused, section(".nuc123_config1"))) = NUC123_CONFIG1;
+
+#endif
 
 /*===========================================================================*/
 /* Driver local functions.                                                   */
