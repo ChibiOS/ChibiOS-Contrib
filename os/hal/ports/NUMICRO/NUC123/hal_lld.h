@@ -184,6 +184,13 @@
 #endif
 
 /**
+ * @brief   Enables the use of the CONFIG0/1 registers
+ */
+#if !defined(NUC123_CONFIG_ENABLED) || defined(__DOXYGEN__)
+#define NUC123_CONFIG_ENABLED FALSE
+#endif
+
+/**
  * @brief   Enables or disables data flash
  * @warning If data this is set to @p TRUE, the data flash
  *          is subtracted from the APROM. The linker script is not aware
@@ -191,10 +198,10 @@
  *          that the combination of the data flash & the text section still fit
  *          into ROM.
 
- * @note    The default is @p FALSE.
+ * @note    The default is @p TRUE.
  */
 #if !defined(NUC123_DATAFLASH_ENABLED) || defined(__DOXYGEN__)
-#define NUC123_DATAFLASH_ENABLED FALSE
+#define NUC123_DATAFLASH_ENABLED TRUE
 #endif
 
 /**
@@ -237,6 +244,19 @@
 /*
 * Persistant configuration settings.
 */
+
+#if (NUC123_CONFIG_ENABLED == FALSE)
+
+#if (NUC123_DATAFLASH_ENABLED == FALSE)
+#error "Setting NUC123_DATAFLASH_ENABLED to FALSE requires NUC123_CONFIG_ENABLED to be TRUE"
+#endif
+
+#if (NUC123_DATAFLASH_SIZE != 4096)
+#error "Setting NUC123_DATAFLASH_SIZE to a value other than 4096 requires NUC123_CONFIG_ENABLED to be TRUE"
+#endif
+
+#endif
+
 #if (NUC123_DATAFLASH_ENABLED == TRUE)
 
 #if (NUC123_DATAFLASH_SIZE == 4096)
