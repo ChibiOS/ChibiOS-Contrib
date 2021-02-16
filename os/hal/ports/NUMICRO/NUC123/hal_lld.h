@@ -194,6 +194,7 @@
 #define NUC123_CONFIG_ENABLED FALSE
 #endif
 
+#if (NUC123_CONFIG_ENABLED == TRUE)
 /**
  * @brief   Enables or disables data flash
  * @warning If data this is set to @p TRUE, the data flash
@@ -204,16 +205,18 @@
 
  * @note    The default is @p TRUE.
  */
-#if !defined(NUC123_DATAFLASH_ENABLED) || defined(__DOXYGEN__)
-#define NUC123_DATAFLASH_ENABLED TRUE
+#if !defined(NUC123_CONFIG_DATAFLASH_ENABLED) || defined(__DOXYGEN__)
+#define NUC123_CONFIG_DATAFLASH_ENABLED TRUE
 #endif
 
 /**
  * @brief   Sets the data flash size. This is ignored if data flash is disabled.
  */
-#if !defined(NUC123_DATAFLASH_SIZE) || defined(__DOXYGEN__)
-#define NUC123_DATAFLASH_SIZE 4096
+#if !defined(NUC123_CONFIG_DATAFLASH_SIZE) || defined(__DOXYGEN__)
+#define NUC123_CONFIG_DATAFLASH_SIZE 4096
 #endif
+
+#endif /* NUC123_CONFIG_ENABLED == TRUE */
 
 /** @} */
 
@@ -249,40 +252,48 @@
 * Persistant configuration settings.
 */
 
-#if (NUC123_CONFIG_ENABLED == FALSE)
+#if (NUC123_CONFIG_ENABLED == TRUE)
 
-#if (NUC123_DATAFLASH_ENABLED == FALSE)
-#error "Setting NUC123_DATAFLASH_ENABLED to FALSE requires NUC123_CONFIG_ENABLED to be TRUE"
-#endif
+#if (NUC123_CONFIG_DATAFLASH_ENABLED == TRUE)
 
-#if (NUC123_DATAFLASH_SIZE != 4096)
-#error "Setting NUC123_DATAFLASH_SIZE to a value other than 4096 requires NUC123_CONFIG_ENABLED to be TRUE"
-#endif
-
-#endif
-
-#if (NUC123_DATAFLASH_ENABLED == TRUE)
-
-#if (NUC123_DATAFLASH_SIZE == 4096)
+#if (NUC123_CONFIG_DATAFLASH_SIZE == 4096)
 /* DFVSEN = 1, nothing else matters */
 #define NUC123_CONFIG0_DATAFLASH 0UL
 /* NUC123_DFBADDR doesn't actually control anything here, but convenient for flash drivers
 which need the starting address */
 #define NUC123_DFBADDR 0x1F000UL
-#else
+#else /* NUC123_CONFIG_DATAFLASH_SIZE != 4096 */
 /* DFVSEN = 0, DFEN = 0 */
 #define NUC123_CONFIG0_DATAFLASH (NUC123_CONFIG0_DFVSEN_Msk | NUC123_CONFIG0_DFEN_Msk)
-#define NUC123_DFBADDR ((0x11000UL - NUC123_DATAFLASH_SIZE) & ~(0xFFUL))
-#endif
-#else
+#define NUC123_DFBADDR ((0x11000UL - NUC123_CONFIG_DATAFLASH_SIZE) & ~(0xFFUL))
+#endif /* NUC123_CONFIG_DATAFLASH_SIZE ?= 4096 */
+#else  /* NUC123_CONFIG_DATAFLASH_ENABLED == TRUE/FALSE */
+
+#undef NUC123_CONFIG_DATAFLASH_SIZE
+#define NUC123_CONFIG_DATAFLASH_SIZE 0
 /* DFVSEN = 0, DFEN = 1 */
 #define NUC123_CONFIG0_DATAFLASH NUC123_CONFIG0_DFVSEN_Msk
 #define NUC123_DFBADDR 0xFFFFFF00UL
-#endif
+
+#endif /* NUC123_CONFIG_DATAFLASH_ENABLED == TRUE/FALSE */
 
 #define NUC123_CONFIG0                                                      \
   0xFFFFFFFFUL & (~NUC123_CONFIG0_DATAFLASH) & (~NUC123_CONFIG0_HSE_PINS)
 #define NUC123_CONFIG1 NUC123_DFBADDR
+
+#else /* NUC123_CONFIG_ENABLED == FALSE */
+
+#if defined(NUC123_CONFIG_DATAFLASH_ENABLED)
+#error                                                                      \
+    "Defining NUC123_CONFIG_DATAFLASH_ENABLED requires NUC123_CONFIG_ENABLED to be TRUE"
+#endif
+
+#if defined(NUC123_CONFIG_DATAFLASH_SIZE)
+#error                                                                      \
+    "Defining NUC123_CONFIG_DATAFLASH_SIZE requires NUC123_CONFIG_ENABLED to be TRUE"
+#endif
+
+#endif /* NUC123_CONFIG_ENABLED == TRUE/FALSE */
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
