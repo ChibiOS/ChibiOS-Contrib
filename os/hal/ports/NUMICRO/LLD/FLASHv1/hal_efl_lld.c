@@ -42,12 +42,16 @@
 #define NUC123_SECTOR_SIZE 0x200UL
 
 #define NUC123_LDROM_SIZE 0x1000UL
-#define NUC123_APROM_SIZE (NUC123_FLASH_SIZE - NUC123_DATAFLASH_SIZE)
 
 #define NUC123_EFL_CMD_ERASE     0x22UL
 #define NUC123_EFL_CMD_PROG      0x21UL
 #define NUC123_EFL_CMD_READ      0UL
 #define NUC123_EFL_CMD_CHIPERASE 0x26UL /* Undocumented */
+
+#if ((NUC123_CONFIG_ENABLED == FALSE) || (NUC123_EFL_ACCESS_CONFIG == TRUE)) && \
+    (NUC123_EFL_ACCESS_APROM == TRUE) && (NUC123_EFL_ACCESS_DATAFLASH == TRUE)
+#define NUC123_EFL_DYNAMICALLY_CHECK_CONFIG TRUE
+#endif
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -64,48 +68,7 @@ EFlashDriver EFLD1;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
-static const flash_descriptor_t efl_lld_descriptors[] = {
-#if (NUC123_EFL_ACCESS_APROM == TRUE) || defined(__DOXYGEN__)
-    {.attributes = FLASH_ATTR_ERASED_IS_ONE | FLASH_ATTR_MEMORY_MAPPED |
-                   FLASH_ATTR_REWRITABLE,
-     .page_size     = NUC123_PAGE_SIZE,
-     .sectors_count = NUC123_APROM_SIZE / NUC123_SECTOR_SIZE,
-     .sectors       = NULL,
-     .sectors_size  = NUC123_SECTOR_SIZE,
-     .address       = (uint8_t *)0,
-     .size          = NUC123_APROM_SIZE},
-#endif
-#if (NUC123_EFL_ACCESS_DATAFLASH == TRUE) || defined(__DOXYGEN__)
-    {.attributes = FLASH_ATTR_ERASED_IS_ONE | FLASH_ATTR_MEMORY_MAPPED |
-                   FLASH_ATTR_REWRITABLE,
-     .page_size     = NUC123_PAGE_SIZE,
-     .sectors_count = NUC123_DATAFLASH_SIZE / NUC123_SECTOR_SIZE,
-     .sectors       = NULL,
-     .sectors_size  = NUC123_SECTOR_SIZE,
-     .address       = (uint8_t *)NUC123_DFBADDR,
-     .size          = NUC123_DATAFLASH_SIZE},
-#endif
-#if (NUC123_EFL_ACCESS_LDROM == TRUE) || defined(__DOXYGEN__)
-    {.attributes = FLASH_ATTR_ERASED_IS_ONE | FLASH_ATTR_MEMORY_MAPPED |
-                   FLASH_ATTR_REWRITABLE,
-     .page_size     = NUC123_PAGE_SIZE,
-     .sectors_count = NUC123_LDROM_SIZE / NUC123_SECTOR_SIZE,
-     .sectors       = NULL,
-     .sectors_size  = NUC123_SECTOR_SIZE,
-     .address       = (uint8_t *)0x100000,
-     .size          = NUC123_LDROM_SIZE},
-#endif
-#if (NUC123_EFL_ACCESS_CONFIG == TRUE) || defined(__DOXYGEN__)
-    {.attributes = FLASH_ATTR_ERASED_IS_ONE | FLASH_ATTR_MEMORY_MAPPED |
-                   FLASH_ATTR_REWRITABLE,
-     .page_size     = NUC123_PAGE_SIZE,
-     .sectors_count = 1,
-     .sectors       = NULL,
-     .sectors_size  = NUC123_SECTOR_SIZE,
-     .address       = (uint8_t *)0x300000,
-     .size          = 8},
-#endif
-};
+static flash_descriptor_t efl_lld_descriptor;
 
 /*===========================================================================*/
 /* Driver local functions.                                                   */
@@ -164,6 +127,13 @@ static inline unsigned min(unsigned x, unsigned y)
  */
 void efl_lld_init(void)
 {
+  efl_lld_descriptor = (flash_descriptor_t){
+      .attributes = FLASH_ATTR_ERASED_IS_ONE | FLASH_ATTR_MEMORY_MAPPED |
+                    FLASH_ATTR_REWRITABLE,
+      .page_size    = NUC123_PAGE_SIZE,
+      .sectors      = NULL,
+      .sectors_size = NUC123_SECTOR_SIZE,
+  };
 
 #if (NUC123_EFL_USE_EFL1 == TRUE)
   eflObjectInit(&EFLD1);
@@ -256,7 +226,79 @@ void efl_lld_stop(EFlashDriver* eflp)
  */
 const flash_descriptor_t* efl_lld_get_descriptor(void* instance)
 {
-  return efl_lld_descriptors + ((EFlashDriver *)instance)->bank;
+  size_t dataflash_size;
+  void* dfbaddr;
+
+#if (NUC123_EFL_DYNAMICALLY_CHECK_CONFIG == TRUE)
+
+  uint32_t ispcon = FMC->ISPCON;
+
+  FMC->ISPCON = ispcon | FMC_ISPCON_CFGUEN_Msk;
+  FMC->ISPCMD     = NUC123_EFL_CMD_READ;
+
+  FMC->ISPADR = 0x300000UL;
+  do_ISP();
+  dataflash_size = FMC->ISPDAT;
+
+  if (dataflash_size & 4) {
+    /* DFVSEN = 1 */
+    dataflash_size = 4096;
+    dfbaddr        = (void *)0x1F000UL;
+  } else {
+    if (dataflash_size & 1) {
+      /* DFVSEN = 0 & DFEN = 1 */
+      dataflash_size = 0;
+      dfbaddr        = (void *)0xFFFFF000UL;
+    } else {
+      /* DFVSEN = 0 & DFEN = 0 */
+      dfbaddr = (void *)FMC->DFBADR;
+      dataflash_size = NUC123_FLASH_SIZE - (uint32_t)dfbaddr;
+    }
+  }
+
+  FMC->ISPCON = ispcon;
+
+#else
+
+  dataflash_size = NUC123_CONFIG_DATAFLASH_SIZE;
+  dfbaddr = NUC123_DFBADDR;
+
+#endif
+
+  switch (((EFlashDriver *)instance)->bank) {
+#if (NUC123_EFL_ACCESS_APROM == TRUE)
+  case NUC123_EFL_BANK_APROM:
+    efl_lld_descriptor.address       = (uint8_t *)0;
+    efl_lld_descriptor.sectors_count = (NUC123_FLASH_SIZE - dataflash_size) / NUC123_SECTOR_SIZE;
+    efl_lld_descriptor.size          = (NUC123_FLASH_SIZE - dataflash_size);
+    break;
+#endif
+#if (NUC123_EFL_ACCESS_DATAFLASH == TRUE)
+  case NUC123_EFL_BANK_DATAFLASH:
+    efl_lld_descriptor.address       = (uint8_t *)dfbaddr;
+    efl_lld_descriptor.sectors_count = dataflash_size / NUC123_SECTOR_SIZE;
+    efl_lld_descriptor.size          = dataflash_size;
+    break;
+#endif
+#if (NUC123_EFL_ACCESS_LDROM == TRUE)
+  case NUC123_EFL_BANK_LDROM:
+    efl_lld_descriptor.address       = (uint8_t *)0x100000;
+    efl_lld_descriptor.sectors_count = NUC123_LDROM_SIZE / NUC123_SECTOR_SIZE;
+    efl_lld_descriptor.size          = NUC123_LDROM_SIZE;
+    break;
+#endif
+#if (NUC123_EFL_ACCESS_CONFIG == TRUE)
+  case NUC123_EFL_BANK_CONFIG:
+    efl_lld_descriptor.address       = (uint8_t *)0x300000;
+    efl_lld_descriptor.sectors_count = 1;
+    efl_lld_descriptor.size          = 8;
+    break;
+#endif
+  case NUC123_EFL_BANK_NONE:
+  default: 
+    return NULL;
+  }
+  return &efl_lld_descriptor;
 }
 
 /**
@@ -274,16 +316,16 @@ const flash_descriptor_t* efl_lld_get_descriptor(void* instance)
  *
  * @notapi
  */
-flash_error_t efl_lld_read(void* instance, flash_offset_t offset, size_t n, uint8_t* rp)
+flash_error_t efl_lld_read(void *instance, flash_offset_t offset, size_t n, uint8_t *rp)
 {
-  EFlashDriver* devp = (EFlashDriver*)instance;
+  EFlashDriver             *devp = (EFlashDriver *)instance;
   const flash_descriptor_t *desc = efl_lld_get_descriptor(instance);
-  flash_error_t err  = FLASH_NO_ERROR;
-  uint32_t data;
+  flash_error_t             err  = FLASH_NO_ERROR;
+  uint32_t                  data;
 
   osalDbgCheck((instance != NULL) && (rp != NULL) && (n > 0U));
   osalDbgCheck(((size_t)offset + n) <= (size_t)desc->size);
-  osalDbgAssert((devp->state == FLASH_READY) || (devp->state == FLASH_ERASE),
+  osalDbgAssert((devp->state == FLASH_READY) || (devp->state == FLASH_ERASE), 
                 "invalid state");
 
   /* No reading while erasing.*/
@@ -327,10 +369,10 @@ flash_error_t efl_lld_read(void* instance, flash_offset_t offset, size_t n, uint
     offset += (4 - (offset % 4));
   }
 
-    /* Ready state again.*/
-    devp->state = FLASH_READY;
+  /* Ready state again.*/
+  devp->state = FLASH_READY;
 
-    return err;
+  return err;
 }
 
 /**

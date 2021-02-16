@@ -96,10 +96,6 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if (NUC123_EFL_ACCESS_DATAFLASH == TRUE) && (NUC123_CONFIG_ENABLED == FALSE)
-#error "EFL driver data flash access requires NUC123_CONFIG_ENABLED to be set to TRUE"
-#endif
-
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
