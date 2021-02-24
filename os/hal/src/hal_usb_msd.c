@@ -284,7 +284,8 @@ bool msd_request_hook(USBDriver *usbp) {
   } else if (usbp->setup[0] == (USB_RTYPE_TYPE_CLASS | USB_RTYPE_RECIPIENT_INTERFACE | USB_RTYPE_DIR_DEV2HOST)
     && usbp->setup[1] == MSD_REQ_GET_MAX_LUN) {
     /* Return the maximum supported LUN. */
-    usbSetupTransfer(usbp, 0, 1, NULL);
+    static uint8_t zero = 0;
+    usbSetupTransfer(usbp, &zero, 1, NULL);
     return true;
     /* OR */
     /* Return false to stall to indicate that we don't support LUN */
