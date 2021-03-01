@@ -27,31 +27,32 @@
 #ifndef SN32_USB_H
 #define SN32_USB_H
 
+// TODO: ENDPOINTS nubmer is chip dependent and needs to be organized better
 /**
  * @brief   Number of the available endpoints.
  * @details This value does not include the endpoint 0 which is always present.
  */
-#define USB_ENDOPOINTS_NUMBER           4
+#define USB_MAX_ENDPOINTS       4
 
 /**
  * @brief USB registers block numeric address.
  */
-#define SN32_USB_BASE          SN_USB_BASE
+#define SN32_USB_BASE           SN_USB_BASE
 
 /**
  * @brief USB RAM numeric address.
  */
-#define SN32_USBRAM_BASE       SN_USB_BASE + 0x100
+#define SN32_USBRAM_BASE        SN_USB_BASE + 0x100
 
 /**
  * @brief Pointer to the USB registers block.
  */
-// #define SN32_USB               ((sn32_usb_t *)SN32_USB_BASE)
+// #define SN32_USB             ((sn32_usb_t *)SN32_USB_BASE)
 
 /**
  * @brief   Pointer to the USB RAM.
  */
-#define SN32_USBRAM            ((sn32_usb_pma_t *)SN32_USBRAM_BASE)
+#define SN32_USBRAM             ((sn32_usb_pma_t *)SN32_USBRAM_BASE)
 
 #endif /* SN32_USB_H */
 

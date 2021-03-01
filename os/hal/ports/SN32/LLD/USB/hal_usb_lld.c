@@ -26,9 +26,6 @@
 #include <string.h>
 #include "hal.h"
 #include "usbhw.h"
-#include "usbuser.h"
-#include "usbram.h"
-#include "usbdesc.h"
 
 #if (HAL_USE_USB == TRUE) || defined(__DOXYGEN__)
 
@@ -255,14 +252,13 @@ static void usb_lld_serve_interrupt(USBDriver *usbp)
 		else if (iwIntFlag & mskBUS_SUSPEND)
 		{
 			/* Suspend */
-			USB_SuspendEvent();
             _usb_suspend(usbp);
 		}
 		else if(iwIntFlag & mskBUS_RESUME)
 		{
 			/* Resume */
 			USB_ReturntoNormal();
-			USB_ResumeEvent();
+			__USB_CLRINSTS(mskBUS_RESUME);
             _usb_wakeup(usbp);
 		}
 	}
@@ -559,7 +555,7 @@ static void usb_lld_serve_interrupt(USBDriver *usbp)
 	if ((iwIntFlag & mskUSB_SOF) && (SN_USB->INTEN & mskUSB_SOF_IE))
 	{
 		/* SOF */
-		USB_SOFEvent();
+		__USB_CLRINSTS(mskUSB_SOF);
         _usb_isr_invoke_sof_cb(usbp);
 	}
 }
@@ -762,7 +758,7 @@ void usb_lld_disable_endpoints(USBDriver *usbp) {
     unsigned i;
 
     /* Disabling all endpoints.*/
-    for (i = 1; i <= USB_ENDOPOINTS_NUMBER; i++) {
+    for (i = 1; i <= USB_MAX_ENDPOINTS; i++) {
         USB_EPnDisable(i);
     }
 }

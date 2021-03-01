@@ -9,17 +9,18 @@
 #include	<SN32F240B.h>
 #include	"SN32F200_Def.h"
 
-#include	"usbram.h"
 #include	"usbhw.h"
-#include	"usbuser.h"
-#include	"usbdesc.h"
+
+
+volatile uint32_t wUSB_EPnOffset[4];
+volatile uint32_t wUSB_EPnPacketsize[5];
 
 /*****************************************************************************
 * Description	:Setting USB for different Power domain
 *****************************************************************************/
 #define System_Power_Supply 			System_Work_at_5_0V					// only 3.3V, 5V
-	#define System_Work_at_3_3V				0
-	#define	System_Work_at_5_0V				1
+#define System_Work_at_3_3V				0
+#define	System_Work_at_5_0V				1
 
 
 /*****************************************************************************
@@ -40,8 +41,6 @@ void USB_Init	(void)
 {
 	volatile uint32_t	*pRam;
 	uint32_t 	wTmp;
-	USB_StandardVar_Init();
-	//USB_HidVar_Init();
 
 	/* Initialize clock and Enable USB PHY. */
 	SystemInit();
@@ -106,118 +105,6 @@ void USB_Init	(void)
 
 	SN_USB->PHYPRM = 0x80000000;			// PHY parameter
 	SN_USB->PHYPRM2 = 0x00004004;			// PHY parameter 2
-}
-
-
-/*****************************************************************************
-* Function		: USB_EP1AckEvent
-* Description	: USB Clear EP1 ACK interrupt status
-* Input				: None
-* Output			: None
-* Return			: None
-* Note				: None
-*****************************************************************************/
-void USB_EP1AckEvent (void)
-{
-	__USB_CLRINSTS(mskEP1_ACK);
-}
-
-
-/*****************************************************************************
-* Function		: USB_EP2AckEvent
-* Description	: USB Clear EP2 ACK interrupt status
-* Input				: None
-* Output			: None
-* Return			: None
-* Note				: None
-*****************************************************************************/
-void USB_EP2AckEvent (void)
-{
-	__USB_CLRINSTS(mskEP2_ACK);
-}
-
-
-/*****************************************************************************
-* Function		: USB_EP3AckEvent
-* Description	: USB Clear EP3 ACK interrupt status
-* Input				: None
-* Output			: None
-* Return			: None
-* Note				: None
-*****************************************************************************/
-void USB_EP3AckEvent (void)
-{
-	__USB_CLRINSTS(mskEP3_ACK);
-}
-
-
-/*****************************************************************************
-* Function		: USB_EP4AckEvent
-* Description	: USB Clear EP4 ACK interrupt status
-* Input				: None
-* Output			: None
-* Return			: None
-* Note				: None
-*****************************************************************************/
-void USB_EP4AckEvent (void)
-{
-	__USB_CLRINSTS(mskEP4_ACK);
-}
-
-
-/*****************************************************************************
-* Function		: USB_EP1NakEvent
-* Description	: USB Clear EP1 NAK interrupt status
-* Input				: None
-* Output			: None
-* Return			: None
-* Note				: None
-*****************************************************************************/
-void USB_EP1NakEvent (void)
-{
-	__USB_CLRINSTS(mskEP1_NAK);
-}
-
-
-/*****************************************************************************
-* Function		: USB_EP2NakEvent
-* Description	: USB Clear EP2 NAK interrupt status
-* Input				: None
-* Output			: None
-* Return			: None
-* Note				: None
-*****************************************************************************/
-void USB_EP2NakEvent (void)
-{
-	__USB_CLRINSTS(mskEP2_NAK);
-}
-
-
-/*****************************************************************************
-* Function		: USB_EP3NakEvent
-* Description	: USB Clear EP3 NAK interrupt status
-* Input				: None
-* Output			: None
-* Return			: None
-* Note				: None
-*****************************************************************************/
-void USB_EP3NakEvent (void)
-{
-	__USB_CLRINSTS(mskEP3_NAK);
-}
-
-
-/*****************************************************************************
-* Function		: USB_EP4NakEvent
-* Description	: USB Clear EP4 NAK interrupt status
-* Input				: None
-* Output			: None
-* Return			: None
-* Note				: None
-*****************************************************************************/
-void USB_EP4NakEvent (void)
-{
-	__USB_CLRINSTS(mskEP4_NAK);
 }
 
 
@@ -401,3 +288,39 @@ void USB_ReturntoNormal	(void)
 	SystemCoreClockUpdate();
 	USB_WakeupEvent();
 }
+
+
+/*****************************************************************************
+* Function		: USB_ResetEvent
+* Description	: recevice USB bus reset to Initial parameter
+* Input				: None
+* Output			: None
+* Return			: None
+* Note				: None
+*****************************************************************************/
+void USB_ResetEvent (void)
+{
+	uint32_t	wLoop;
+	__USB_CLRINSTS(0xFFFFFFFF);		//** Clear all USB Event status
+	__USB_SETADDRESS(0);					//** Set USB address = 0
+	USB_EPnStall(USB_EP0);				//** Set EP0 enable & INOUTSTALL
+
+	for (wLoop=USB_EP1; wLoop<=USB_EP4; wLoop++)
+		USB_EPnDisable(wLoop);			//** Set EP1~EP4 disable & NAK
+}
+
+
+/*****************************************************************************
+* Function		: USB_WakeupEvent
+* Description	: Enable USB CLK and PHY
+* Input				: None
+* Output			: None
+* Return			: None
+* Note				: None
+*****************************************************************************/
+void USB_WakeupEvent	(void)
+{
+	__USB_PHY_ENABLE;												//** enable ESD_EN & PHY_EN
+	__USB_CLRINSTS(mskBUS_WAKEUP);					//** Clear BUS_WAKEUP
+}
+
