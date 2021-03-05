@@ -396,24 +396,24 @@ extern USBDriver USBD1;
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void usb_lld_init(void);
-  void usb_lld_start(USBDriver *usbp);
-  void usb_lld_stop(USBDriver *usbp);
-  void usb_lld_reset(USBDriver *usbp);
-  void usb_lld_set_address(USBDriver *usbp);
-  void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep);
-  void usb_lld_disable_endpoints(USBDriver *usbp);
-  usbepstatus_t usb_lld_get_status_in(USBDriver *usbp, usbep_t ep);
-  usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep);
-  void usb_lld_read_setup(USBDriver *usbp, usbep_t ep, uint8_t *buf);
-  void usb_lld_prepare_receive(USBDriver *usbp, usbep_t ep);
-  void usb_lld_prepare_transmit(USBDriver *usbp, usbep_t ep);
-  void usb_lld_start_out(USBDriver *usbp, usbep_t ep);
-  void usb_lld_start_in(USBDriver *usbp, usbep_t ep);
-  void usb_lld_stall_out(USBDriver *usbp, usbep_t ep);
-  void usb_lld_stall_in(USBDriver *usbp, usbep_t ep);
-  void usb_lld_clear_out(USBDriver *usbp, usbep_t ep);
-  void usb_lld_clear_in(USBDriver *usbp, usbep_t ep);
+    void usb_lld_init(void);
+    void usb_lld_start(USBDriver *usbp);
+    void usb_lld_stop(USBDriver *usbp);
+    void usb_lld_reset(USBDriver *usbp);
+    void usb_lld_set_address(USBDriver *usbp);
+    void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep);
+    void usb_lld_disable_endpoints(USBDriver *usbp);
+    usbepstatus_t usb_lld_get_status_in(USBDriver *usbp, usbep_t ep);
+    usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep);
+    void usb_lld_read_setup(USBDriver *usbp, usbep_t ep, uint8_t *buf);
+    void usb_lld_prepare_receive(USBDriver *usbp, usbep_t ep);
+    void usb_lld_prepare_transmit(USBDriver *usbp, usbep_t ep);
+    void usb_lld_start_out(USBDriver *usbp, usbep_t ep);
+    void usb_lld_start_in(USBDriver *usbp, usbep_t ep);
+    void usb_lld_stall_out(USBDriver *usbp, usbep_t ep);
+    void usb_lld_stall_in(USBDriver *usbp, usbep_t ep);
+    void usb_lld_clear_out(USBDriver *usbp, usbep_t ep);
+    void usb_lld_clear_in(USBDriver *usbp, usbep_t ep);
 #ifdef __cplusplus
 }
 #endif
