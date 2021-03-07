@@ -38,8 +38,6 @@
 #define MSD_CBW_SIGNATURE               0x43425355
 #define MSD_CSW_SIGNATURE               0x53425355
 
-#define MSD_THD_PRIO                    NORMALPRIO
-
 #define CBW_FLAGS_RESERVED_MASK         0b01111111
 #define CBW_LUN_RESERVED_MASK           0b11110000
 #define CBW_CMD_LEN_RESERVED_MASK       0b11000000
