@@ -138,7 +138,11 @@ static uint32_t sram_free_dword_offset = 1UL;
  */
 #define HW_OUT_EPN(lepn)   (2 * (lepn))
 #define HW_IN_EPN(lepn)    (HW_OUT_EPN(lepn) + 1)
+#if NUC123_USB_HW_ENDPOINTS <= 6
+#define HW_EP(hwepn)       ((USBD_EP_T *)&(USBD->RESERVE0[1]) + (hwepn))
+#else
 #define HW_EP(hwepn)       ((USBD->EP) + (hwepn))
+#endif
 #define HW_OUT_EP(lepn)    (HW_EP(HW_OUT_EPN(lepn)))
 #define HW_IN_EP(lepn)     (HW_EP(HW_IN_EPN(lepn)))
 #define LOGICAL_EPN(hwepn) ((hwepn) / 2)
