@@ -576,7 +576,7 @@ void usb_lld_start(USBDriver *usbp) {
         #if PLATFORM_USB_USE_USB1 == TRUE
         if (&USBD1 == usbp) {
             USB_Init();
-            nvicEnableVector(USB_IRQn, 2);
+            nvicEnableVector(USB_IRQn, 14);
         }
         #endif
     }
