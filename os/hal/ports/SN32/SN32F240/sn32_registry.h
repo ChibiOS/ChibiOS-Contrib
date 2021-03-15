@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    SN32F24xx/sn32_registry.h
+ * @file    sn32_registry.h
  * @brief   SN32F24xx capabilities registry.
  *
  * @addtogroup HAL
@@ -87,9 +87,22 @@
  */
 #define SN32_CT16B0_HANDLER       Vector7C
 #define SN32_CT16B1_HANDLER       Vector80
+#define SN32_CT16B2_HANDLER		  Vector84
 
 #define SN32_CT16B0_NUMBER        CT16B0_IRQn
 #define SN32_CT16B1_NUMBER        CT16B1_IRQn
+#define SN32_CT16B2_NUMBER        CT16B2_IRQn
+
+/*
+ * CT32 units.
+ */
+#define SN32_CT32B0_HANDLER		  Vector8C
+#define SN32_CT32B1_HANDLER 	  Vector90
+#define SN32_CT32B2_HANDLER 	  Vector94
+
+#define SN32_CT32B0_NUMBER        CT32B0_IRQn
+#define SN32_CT32B1_NUMBER        CT32B1_IRQn
+#define SN32_CT32B2_NUMBER        CT32B2_IRQn
 
 /*
  * ADC unit.

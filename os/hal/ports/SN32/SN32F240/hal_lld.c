@@ -23,7 +23,7 @@
  */
 
 #include "hal.h"
-#include <SN32F240B.h>
+#include <SN32F240.h>
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
