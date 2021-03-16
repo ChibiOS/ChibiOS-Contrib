@@ -25,7 +25,7 @@
 
 #include <stdint.h>
 #include <SN32F240.h>
-#include <mcuconf.h>
+
 
 
 /*
@@ -90,36 +90,17 @@
 //					<7=> PLL
 //</e>
 */
-#ifndef SYS_CLOCK_SETUP
+
 #define SYS_CLOCK_SETUP		1
-#endif
-#ifndef SYS0_CLKCFG_VAL
 #define SYS0_CLKCFG_VAL		0
-#endif
-#ifndef EHS_FREQ
 #define EHS_FREQ			10
-#endif
-#ifndef PLL_MSEL
 #define PLL_MSEL			12
-#endif
-#ifndef PLL_PSEL
 #define PLL_PSEL			3
-#endif
-#ifndef PLL_FSEL
 #define PLL_FSEL			0
-#endif
-#ifndef PLL_CLKIN
 #define PLL_CLKIN			1
-#endif
-#ifndef PLL_ENABLE
 #define PLL_ENABLE			0
-#endif
-#ifndef AHB_PRESCALAR
 #define AHB_PRESCALAR 		0x0
-#endif
-#ifndef CLKOUT_SEL_VAL
 #define CLKOUT_SEL_VAL 		0x0
-#endif
 
 /*
 //-------- <<< end of configuration section >>> ------------------------------
@@ -129,21 +110,12 @@
 /*----------------------------------------------------------------------------
   DEFINES
  *----------------------------------------------------------------------------*/
-#ifndef IHRC
 #define	IHRC		0
-#endif
-#ifndef ILRC
 #define	ILRC		1
-#endif
-#ifndef EHSXTAL
 #define EHSXTAL		2
-#endif
-#ifndef ELSXTAL
 #define ELSXTAL		3
-#endif
-#ifndef PLL
 #define PLL			4
-#endif
+
 
 /*----------------------------------------------------------------------------
   Define clocks
