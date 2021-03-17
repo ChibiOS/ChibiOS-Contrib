@@ -98,7 +98,10 @@
 
 /* Inclusion of the RISC-V implementation specific parameters.*/
 #if !defined(_FROM_ASM_)
+
+#include "eclic_parameters.h"
 #include "nmsis_core.h"
+
 #endif
 
 /*===========================================================================*/
@@ -404,14 +407,14 @@ static inline bool port_is_isr_context(void) {
  * @details Usually this function just disables interrupts but may perform more
  *          actions.
  */
-static inline void port_lock(void) { __RV_CSR_CLEAR(CSR_MSTATUS, MSTATUS_MIE); }
+static inline void port_lock(void) { __disable_irq(); }
 
 /**
  * @brief   Kernel-unlock action.
  * @details Usually this function just enables interrupts but may perform more
  *          actions.
  */
-static inline void port_unlock(void) { __RV_CSR_SET(CSR_MSTATUS, MSTATUS_MIE); }
+static inline void port_unlock(void) { __enable_irq(); }
 
 /**
  * @brief   Kernel-lock action from an interrupt handler.
@@ -433,18 +436,18 @@ static inline void port_unlock_from_isr(void) {}
  * @brief   Disables all the interrupt sources.
  * @note    Of course non-maskable interrupt sources are not included.
  */
-static inline void port_disable(void) { __RV_CSR_CLEAR(CSR_MSTATUS, MSTATUS_MIE); }
+static inline void port_disable(void) { __disable_irq(); }
 
 /**
  * @brief   Disables the interrupt sources below kernel-level priority.
  * @note    Interrupt sources above kernel level remains enabled.
  */
-static inline void port_suspend(void) { __RV_CSR_CLEAR(CSR_MSTATUS, MSTATUS_MIE); }
+static inline void port_suspend(void) { __disable_irq(); }
 
 /**
  * @brief   Enables all the interrupt sources.
  */
-static inline void port_enable(void) { __RV_CSR_SET(CSR_MSTATUS, MSTATUS_MIE); }
+static inline void port_enable(void) { __enable_irq(); }
 
 /**
  * @details The function is meant to return when an interrupt becomes pending.
@@ -454,7 +457,7 @@ static inline void port_enable(void) { __RV_CSR_SET(CSR_MSTATUS, MSTATUS_MIE); }
  */
 static inline void port_wait_for_interrupt(void) {
 #if PORT_RISCV_ENABLE_WFI_IDLE
-  __asm volatile("wfi");
+  __WFI();
 #endif
 }
 
@@ -464,14 +467,7 @@ static inline void port_wait_for_interrupt(void) {
  * @return  The realtime counter value.
  */
 static inline rtcnt_t port_rt_get_counter_value(void) {
-  uint32_t high, low;
-
-  do {
-    high = __RV_CSR_READ(CSR_MCYCLEH);
-    low = __RV_CSR_READ(CSR_MCYCLE);
-  } while (high != __RV_CSR_READ(CSR_MCYCLEH));
-
-  return (((rtcnt_t)high) << 32) | (rtcnt_t)low;
+  return (rtcnt_t)__get_rv_cycle();
 }
 
 #endif /* !defined(_FROM_ASM_) */

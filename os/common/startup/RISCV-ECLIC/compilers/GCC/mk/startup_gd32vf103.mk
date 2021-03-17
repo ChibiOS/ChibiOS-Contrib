@@ -6,6 +6,7 @@ STARTUPASM = $(CHIBIOS_CONTRIB)/os/common/startup/RISCV-ECLIC/compilers/GCC/crt0
 
 STARTUPINC = $(CHIBIOS)/os/common/portability/GCC \
              $(CHIBIOS_CONTRIB)/os/common/startup/RISCV-ECLIC/compilers/GCC \
+             $(CHIBIOS_CONTRIB)/os/common/startup/RISCV-ECLIC/devices/GD32VF103 \
              $(CHIBIOS_CONTRIB)/os/common/ext/NMSIS/Core/Include
 
 STARTUPLD  = $(CHIBIOS_CONTRIB)/os/common/startup/RISCV-ECLIC/compilers/GCC/ld
