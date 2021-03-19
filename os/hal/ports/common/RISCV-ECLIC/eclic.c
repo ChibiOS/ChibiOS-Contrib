@@ -78,7 +78,8 @@ void eclicClearPending(uint32_t n) { __ECLIC_ClearPendingIRQ(n); }
 /**
  * @brief   System Reset
  */
-__attribute__((noreturn)) void eclicSystemReset(void) {
+void __attribute__((noreturn)) eclicSystemReset(void) {
   SysTimer_SoftwareReset();
+  while(1);
 }
 /** @} */
