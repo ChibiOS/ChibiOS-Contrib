@@ -90,22 +90,22 @@
  * @details If set to @p TRUE the support for ADC1 is included.
  * @note    The default is @p TRUE.
  */
-#if !defined(STM32_ADC_USE_ADC1) || defined(__DOXYGEN__)
-#define STM32_ADC_USE_ADC1                  FALSE
+#if !defined(GD32_ADC_USE_ADC1) || defined(__DOXYGEN__)
+#define GD32_ADC_USE_ADC1                  FALSE
 #endif
 
 /**
  * @brief   ADC1 DMA priority (0..3|lowest..highest).
  */
-#if !defined(STM32_ADC_ADC1_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_ADC_ADC1_DMA_PRIORITY         2
+#if !defined(GD32_ADC_ADC1_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_ADC_ADC1_DMA_PRIORITY         2
 #endif
 
 /**
  * @brief   ADC1 interrupt priority level setting.
  */
-#if !defined(STM32_ADC_ADC1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_ADC_ADC1_IRQ_PRIORITY         5
+#if !defined(GD32_ADC_ADC1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_ADC_ADC1_IRQ_PRIORITY         5
 #endif
 /** @} */
 
@@ -113,16 +113,16 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if STM32_ADC_USE_ADC1 && !STM32_HAS_ADC1
+#if GD32_ADC_USE_ADC1 && !GD32_HAS_ADC1
 #error "ADC1 not present in the selected device"
 #endif
 
-#if !STM32_ADC_USE_ADC1
+#if !GD32_ADC_USE_ADC1
 #error "ADC driver activated but no ADC peripheral assigned"
 #endif
 
-#if !defined(STM32_DMA_REQUIRED)
-#define STM32_DMA_REQUIRED
+#if !defined(GD32_DMA_REQUIRED)
+#define GD32_DMA_REQUIRED
 #endif
 
 /*===========================================================================*/
@@ -261,7 +261,7 @@ typedef enum {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_ADC_USE_ADC1 && !defined(__DOXYGEN__)
+#if GD32_ADC_USE_ADC1 && !defined(__DOXYGEN__)
 extern ADCDriver ADCD1;
 #endif
 

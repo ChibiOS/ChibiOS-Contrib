@@ -51,7 +51,7 @@
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if defined(STM32_DMA_REQUIRED) || defined(__DOXYGEN__)
+#if defined(GD32_DMA_REQUIRED) || defined(__DOXYGEN__)
 /**
  * @brief   DMA1 streams 4, 5, 6 and 7 shared ISR.
  *
@@ -62,16 +62,16 @@ OSAL_IRQ_HANDLER(GD32_DMA1_CH4567_HANDLER) {
   OSAL_IRQ_PROLOGUE();
 
   /* Check on channel 4.*/
-  dmaServeInterrupt(STM32_DMA1_STREAM4);
+  dmaServeInterrupt(GD32_DMA1_STREAM4);
 
   /* Check on channel 5.*/
-  dmaServeInterrupt(STM32_DMA1_STREAM5);
+  dmaServeInterrupt(GD32_DMA1_STREAM5);
 
   /* Check on channel 6.*/
-  dmaServeInterrupt(STM32_DMA1_STREAM6);
+  dmaServeInterrupt(GD32_DMA1_STREAM6);
 
   /* Check on channel 7.*/
-  dmaServeInterrupt(STM32_DMA1_STREAM7);
+  dmaServeInterrupt(GD32_DMA1_STREAM7);
 
   OSAL_IRQ_EPILOGUE();
 }

@@ -42,8 +42,8 @@
 /**
  * @brief   Suggested wait time during erase operations polling.
  */
-#if !defined(STM32_FLASH_WAIT_TIME_MS) || defined(__DOXYGEN__)
-#define STM32_FLASH_WAIT_TIME_MS            1
+#if !defined(GD32_FLASH_WAIT_TIME_MS) || defined(__DOXYGEN__)
+#define GD32_FLASH_WAIT_TIME_MS            1
 #endif
 /** @} */
 
@@ -51,16 +51,16 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if !defined(STM32_FLASH_SECTOR_SIZE)
-#error "STM32_FLASH_SECTOR_SIZE not defined in registry"
+#if !defined(GD32_FLASH_SECTOR_SIZE)
+#error "GD32_FLASH_SECTOR_SIZE not defined in registry"
 #endif
 
-#if !defined(STM32_FLASH_NUMBER_OF_BANKS)
-#error "STM32_FLASH_NUMBER_OF_BANKS not defined in registry"
+#if !defined(GD32_FLASH_NUMBER_OF_BANKS)
+#error "GD32_FLASH_NUMBER_OF_BANKS not defined in registry"
 #endif
 
-#if !defined(STM32_FLASH_SECTORS_PER_BANK)
-#error "STM32_FLASH_SECTORS_PER_BANK not defined in registry"
+#if !defined(GD32_FLASH_SECTORS_PER_BANK)
+#error "GD32_FLASH_SECTORS_PER_BANK not defined in registry"
 #endif
 
 /*===========================================================================*/

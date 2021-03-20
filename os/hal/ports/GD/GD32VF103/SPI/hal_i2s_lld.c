@@ -31,105 +31,105 @@
 /*===========================================================================*/
 
 #define I2S1_RX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2S_SPI1_RX_DMA_STREAM,                        \
-                       STM32_SPI1_RX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2S_SPI1_RX_DMA_STREAM,                        \
+                       GD32_SPI1_RX_DMA_CHN)
 
 #define I2S1_TX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2S_SPI1_TX_DMA_STREAM,                        \
-                       STM32_SPI1_TX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2S_SPI1_TX_DMA_STREAM,                        \
+                       GD32_SPI1_TX_DMA_CHN)
 
 #define I2S2_RX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2S_SPI2_RX_DMA_STREAM,                        \
-                       STM32_SPI2_RX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2S_SPI2_RX_DMA_STREAM,                        \
+                       GD32_SPI2_RX_DMA_CHN)
 
 #define I2S2_TX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2S_SPI2_TX_DMA_STREAM,                        \
-                       STM32_SPI2_TX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2S_SPI2_TX_DMA_STREAM,                        \
+                       GD32_SPI2_TX_DMA_CHN)
 
 #define I2S3_RX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2S_SPI3_RX_DMA_STREAM,                        \
-                       STM32_SPI3_RX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2S_SPI3_RX_DMA_STREAM,                        \
+                       GD32_SPI3_RX_DMA_CHN)
 
 #define I2S3_TX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2S_SPI3_TX_DMA_STREAM,                        \
-                       STM32_SPI3_TX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2S_SPI3_TX_DMA_STREAM,                        \
+                       GD32_SPI3_TX_DMA_CHN)
 
 /*
  * Static I2S settings for I2S1.
  */
-#if !STM32_I2S_IS_MASTER(STM32_I2S_SPI1_MODE)
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI1_MODE)
-#define STM32_I2S1_CFGR_CFG                 0
+#if !GD32_I2S_IS_MASTER(GD32_I2S_SPI1_MODE)
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
+#define GD32_I2S1_CFGR_CFG                 0
 #endif
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI1_MODE)
-#define STM32_I2S1_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_0
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
+#define GD32_I2S1_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_0
 #endif
-#else /* !STM32_I2S_IS_MASTER(STM32_I2S_SPI1_MODE) */
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI1_MODE)
-#define STM32_I2S1_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_1
+#else /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI1_MODE) */
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
+#define GD32_I2S1_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_1
 #endif
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI1_MODE)
-#define STM32_I2S1_CFGR_CFG                 (SPI_I2SCFGR_I2SCFG_1 |         \
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
+#define GD32_I2S1_CFGR_CFG                 (SPI_I2SCFGR_I2SCFG_1 |         \
                                              SPI_I2SCFGR_I2SCFG_0)
 #endif
-#endif /* !STM32_I2S_IS_MASTER(STM32_I2S_SPI1_MODE) */
+#endif /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI1_MODE) */
 
 /*
  * Static I2S settings for I2S2.
  */
-#if !STM32_I2S_IS_MASTER(STM32_I2S_SPI2_MODE)
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI2_MODE)
-#define STM32_I2S2_CFGR_CFG                 0
+#if !GD32_I2S_IS_MASTER(GD32_I2S_SPI2_MODE)
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI2_MODE)
+#define GD32_I2S2_CFGR_CFG                 0
 #endif
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI2_MODE)
-#define STM32_I2S2_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_0
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE)
+#define GD32_I2S2_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_0
 #endif
-#else /* !STM32_I2S_IS_MASTER(STM32_I2S_SPI2_MODE) */
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI2_MODE)
-#define STM32_I2S2_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_1
+#else /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI2_MODE) */
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI2_MODE)
+#define GD32_I2S2_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_1
 #endif
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI2_MODE)
-#define STM32_I2S2_CFGR_CFG                 (SPI_I2SCFGR_I2SCFG_1 |         \
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE)
+#define GD32_I2S2_CFGR_CFG                 (SPI_I2SCFGR_I2SCFG_1 |         \
                                              SPI_I2SCFGR_I2SCFG_0)
 #endif
-#endif /* !STM32_I2S_IS_MASTER(STM32_I2S_SPI2_MODE) */
+#endif /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI2_MODE) */
 
 /*
  * Static I2S settings for I2S3.
  */
-#if !STM32_I2S_IS_MASTER(STM32_I2S_SPI3_MODE)
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI3_MODE)
-#define STM32_I2S3_CFGR_CFG                 0
+#if !GD32_I2S_IS_MASTER(GD32_I2S_SPI3_MODE)
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI3_MODE)
+#define GD32_I2S3_CFGR_CFG                 0
 #endif
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI3_MODE)
-#define STM32_I2S3_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_0
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE)
+#define GD32_I2S3_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_0
 #endif
-#else /* !STM32_I2S_IS_MASTER(STM32_I2S_SPI3_MODE) */
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI3_MODE)
-#define STM32_I2S3_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_1
+#else /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI3_MODE) */
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI3_MODE)
+#define GD32_I2S3_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_1
 #endif
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI3_MODE)
-#define STM32_I2S3_CFGR_CFG                 (SPI_I2SCFGR_I2SCFG_1 |         \
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE)
+#define GD32_I2S3_CFGR_CFG                 (SPI_I2SCFGR_I2SCFG_1 |         \
                                              SPI_I2SCFGR_I2SCFG_0)
 #endif
-#endif /* !STM32_I2S_IS_MASTER(STM32_I2S_SPI3_MODE) */
+#endif /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI3_MODE) */
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
 /** @brief I2S1 driver identifier.*/
-#if STM32_I2S_USE_SPI1 || defined(__DOXYGEN__)
+#if GD32_I2S_USE_SPI1 || defined(__DOXYGEN__)
 I2SDriver I2SD1;
 #endif
 
 /** @brief I2S2 driver identifier.*/
-#if STM32_I2S_USE_SPI2 || defined(__DOXYGEN__)
+#if GD32_I2S_USE_SPI2 || defined(__DOXYGEN__)
 I2SDriver I2SD2;
 #endif
 
 /** @brief I2S3 driver identifier.*/
-#if STM32_I2S_USE_SPI3 || defined(__DOXYGEN__)
+#if GD32_I2S_USE_SPI3 || defined(__DOXYGEN__)
 I2SDriver I2SD3;
 #endif
 
@@ -141,9 +141,9 @@ I2SDriver I2SD3;
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI1_MODE) ||                            \
-    STM32_I2S_RX_ENABLED(STM32_I2S_SPI2_MODE) ||                            \
-    STM32_I2S_RX_ENABLED(STM32_I2S_SPI3_MODE) || defined(__DOXYGEN__)
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE) ||                            \
+    GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE) ||                            \
+    GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE) || defined(__DOXYGEN__)
 /**
  * @brief   Shared end-of-rx service routine.
  *
@@ -155,28 +155,28 @@ static void i2s_lld_serve_rx_interrupt(I2SDriver *i2sp, uint32_t flags) {
   (void)i2sp;
 
   /* DMA errors handling.*/
-#if defined(STM32_I2S_DMA_ERROR_HOOK)
-  if ((flags & (STM32_DMA_ISR_TEIF | STM32_DMA_ISR_DMEIF)) != 0) {
-    STM32_I2S_DMA_ERROR_HOOK(i2sp);
+#if defined(GD32_I2S_DMA_ERROR_HOOK)
+  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+    GD32_I2S_DMA_ERROR_HOOK(i2sp);
   }
 #endif
 
   /* Callbacks handling, note it is portable code defined in the high
      level driver.*/
-  if ((flags & STM32_DMA_ISR_TCIF) != 0) {
+  if ((flags & GD32_DMA_ISR_TCIF) != 0) {
     /* Transfer complete processing.*/
     _i2s_isr_full_code(i2sp);
   }
-  else if ((flags & STM32_DMA_ISR_HTIF) != 0) {
+  else if ((flags & GD32_DMA_ISR_HTIF) != 0) {
     /* Half transfer processing.*/
     _i2s_isr_half_code(i2sp);
   }
 }
 #endif
 
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI1_MODE) ||                            \
-    STM32_I2S_TX_ENABLED(STM32_I2S_SPI2_MODE) ||                            \
-    STM32_I2S_TX_ENABLED(STM32_I2S_SPI3_MODE) || defined(__DOXYGEN__)
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE) ||                            \
+    GD32_I2S_TX_ENABLED(GD32_I2S_SPI2_MODE) ||                            \
+    GD32_I2S_TX_ENABLED(GD32_I2S_SPI3_MODE) || defined(__DOXYGEN__)
 /**
  * @brief   Shared end-of-tx service routine.
  *
@@ -188,19 +188,19 @@ static void i2s_lld_serve_tx_interrupt(I2SDriver *i2sp, uint32_t flags) {
   (void)i2sp;
 
   /* DMA errors handling.*/
-#if defined(STM32_I2S_DMA_ERROR_HOOK)
-  if ((flags & (STM32_DMA_ISR_TEIF | STM32_DMA_ISR_DMEIF)) != 0) {
-    STM32_I2S_DMA_ERROR_HOOK(i2sp);
+#if defined(GD32_I2S_DMA_ERROR_HOOK)
+  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+    GD32_I2S_DMA_ERROR_HOOK(i2sp);
   }
 #endif
 
   /* Callbacks handling, note it is portable code defined in the high
      level driver.*/
-  if ((flags & STM32_DMA_ISR_TCIF) != 0) {
+  if ((flags & GD32_DMA_ISR_TCIF) != 0) {
     /* Transfer complete processing.*/
     _i2s_isr_full_code(i2sp);
   }
-  else if ((flags & STM32_DMA_ISR_HTIF) != 0) {
+  else if ((flags & GD32_DMA_ISR_HTIF) != 0) {
     /* Half transfer processing.*/
     _i2s_isr_half_code(i2sp);
   }
@@ -222,115 +222,115 @@ static void i2s_lld_serve_tx_interrupt(I2SDriver *i2sp, uint32_t flags) {
  */
 void i2s_lld_init(void) {
 
-#if STM32_I2S_USE_SPI1
+#if GD32_I2S_USE_SPI1
   i2sObjectInit(&I2SD1);
   I2SD1.spi       = SPI1;
-  I2SD1.cfg       = STM32_I2S1_CFGR_CFG;
+  I2SD1.cfg       = GD32_I2S1_CFGR_CFG;
   I2SD1.dmarx     = NULL;
   I2SD1.dmatx     = NULL;
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI1_MODE)
-  I2SD1.rxdmamode = STM32_DMA_CR_CHSEL(I2S1_RX_DMA_CHANNEL) |
-                    STM32_DMA_CR_PL(STM32_I2S_SPI1_DMA_PRIORITY) |
-                    STM32_DMA_CR_PSIZE_HWORD |
-                    STM32_DMA_CR_MSIZE_HWORD |
-                    STM32_DMA_CR_DIR_P2M |
-                    STM32_DMA_CR_MINC |
-                    STM32_DMA_CR_CIRC |
-                    STM32_DMA_CR_HTIE |
-                    STM32_DMA_CR_TCIE |
-                    STM32_DMA_CR_DMEIE |
-                    STM32_DMA_CR_TEIE;
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
+  I2SD1.rxdmamode = GD32_DMA_CR_CHSEL(I2S1_RX_DMA_CHANNEL) |
+                    GD32_DMA_CR_PL(GD32_I2S_SPI1_DMA_PRIORITY) |
+                    GD32_DMA_CR_PSIZE_HWORD |
+                    GD32_DMA_CR_MSIZE_HWORD |
+                    GD32_DMA_CR_DIR_P2M |
+                    GD32_DMA_CR_MINC |
+                    GD32_DMA_CR_CIRC |
+                    GD32_DMA_CR_HTIE |
+                    GD32_DMA_CR_TCIE |
+                    GD32_DMA_CR_DMEIE |
+                    GD32_DMA_CR_TEIE;
 #else
   I2SD1.rxdmamode = 0;
 #endif
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI1_MODE)
-  I2SD1.txdmamode = STM32_DMA_CR_CHSEL(I2S1_TX_DMA_CHANNEL) |
-                    STM32_DMA_CR_PL(STM32_I2S_SPI1_DMA_PRIORITY) |
-                    STM32_DMA_CR_PSIZE_HWORD |
-                    STM32_DMA_CR_MSIZE_HWORD |
-                    STM32_DMA_CR_DIR_M2P |
-                    STM32_DMA_CR_MINC |
-                    STM32_DMA_CR_CIRC |
-                    STM32_DMA_CR_HTIE |
-                    STM32_DMA_CR_TCIE |
-                    STM32_DMA_CR_DMEIE |
-                    STM32_DMA_CR_TEIE;
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
+  I2SD1.txdmamode = GD32_DMA_CR_CHSEL(I2S1_TX_DMA_CHANNEL) |
+                    GD32_DMA_CR_PL(GD32_I2S_SPI1_DMA_PRIORITY) |
+                    GD32_DMA_CR_PSIZE_HWORD |
+                    GD32_DMA_CR_MSIZE_HWORD |
+                    GD32_DMA_CR_DIR_M2P |
+                    GD32_DMA_CR_MINC |
+                    GD32_DMA_CR_CIRC |
+                    GD32_DMA_CR_HTIE |
+                    GD32_DMA_CR_TCIE |
+                    GD32_DMA_CR_DMEIE |
+                    GD32_DMA_CR_TEIE;
 #else
   I2SD1.txdmamode = 0;
 #endif
 #endif
 
-#if STM32_I2S_USE_SPI2
+#if GD32_I2S_USE_SPI2
   i2sObjectInit(&I2SD2);
   I2SD2.spi       = SPI2;
-  I2SD2.cfg       = STM32_I2S2_CFGR_CFG;
+  I2SD2.cfg       = GD32_I2S2_CFGR_CFG;
   I2SD2.dmarx     = NULL;
   I2SD2.dmatx     = NULL;
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI2_MODE)
-  I2SD2.rxdmamode = STM32_DMA_CR_CHSEL(I2S2_RX_DMA_CHANNEL) |
-                    STM32_DMA_CR_PL(STM32_I2S_SPI2_DMA_PRIORITY) |
-                    STM32_DMA_CR_PSIZE_HWORD |
-                    STM32_DMA_CR_MSIZE_HWORD |
-                    STM32_DMA_CR_DIR_P2M |
-                    STM32_DMA_CR_MINC |
-                    STM32_DMA_CR_CIRC |
-                    STM32_DMA_CR_HTIE |
-                    STM32_DMA_CR_TCIE |
-                    STM32_DMA_CR_DMEIE |
-                    STM32_DMA_CR_TEIE;
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE)
+  I2SD2.rxdmamode = GD32_DMA_CR_CHSEL(I2S2_RX_DMA_CHANNEL) |
+                    GD32_DMA_CR_PL(GD32_I2S_SPI2_DMA_PRIORITY) |
+                    GD32_DMA_CR_PSIZE_HWORD |
+                    GD32_DMA_CR_MSIZE_HWORD |
+                    GD32_DMA_CR_DIR_P2M |
+                    GD32_DMA_CR_MINC |
+                    GD32_DMA_CR_CIRC |
+                    GD32_DMA_CR_HTIE |
+                    GD32_DMA_CR_TCIE |
+                    GD32_DMA_CR_DMEIE |
+                    GD32_DMA_CR_TEIE;
 #else
   I2SD2.rxdmamode = 0;
 #endif
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI2_MODE)
-  I2SD2.txdmamode = STM32_DMA_CR_CHSEL(I2S2_TX_DMA_CHANNEL) |
-                    STM32_DMA_CR_PL(STM32_I2S_SPI2_DMA_PRIORITY) |
-                    STM32_DMA_CR_PSIZE_HWORD |
-                    STM32_DMA_CR_MSIZE_HWORD |
-                    STM32_DMA_CR_DIR_M2P |
-                    STM32_DMA_CR_MINC |
-                    STM32_DMA_CR_CIRC |
-                    STM32_DMA_CR_HTIE |
-                    STM32_DMA_CR_TCIE |
-                    STM32_DMA_CR_DMEIE |
-                    STM32_DMA_CR_TEIE;
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI2_MODE)
+  I2SD2.txdmamode = GD32_DMA_CR_CHSEL(I2S2_TX_DMA_CHANNEL) |
+                    GD32_DMA_CR_PL(GD32_I2S_SPI2_DMA_PRIORITY) |
+                    GD32_DMA_CR_PSIZE_HWORD |
+                    GD32_DMA_CR_MSIZE_HWORD |
+                    GD32_DMA_CR_DIR_M2P |
+                    GD32_DMA_CR_MINC |
+                    GD32_DMA_CR_CIRC |
+                    GD32_DMA_CR_HTIE |
+                    GD32_DMA_CR_TCIE |
+                    GD32_DMA_CR_DMEIE |
+                    GD32_DMA_CR_TEIE;
 #else
   I2SD2.txdmamode = 0;
 #endif
 #endif
 
-#if STM32_I2S_USE_SPI3
+#if GD32_I2S_USE_SPI3
   i2sObjectInit(&I2SD3);
   I2SD3.spi       = SPI3;
-  I2SD3.cfg       = STM32_I2S3_CFGR_CFG;
+  I2SD3.cfg       = GD32_I2S3_CFGR_CFG;
   I2SD3.dmarx     = NULL;
   I2SD3.dmatx     = NULL;
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI3_MODE)
-  I2SD3.rxdmamode = STM32_DMA_CR_CHSEL(I2S3_RX_DMA_CHANNEL) |
-                    STM32_DMA_CR_PL(STM32_I2S_SPI3_DMA_PRIORITY) |
-                    STM32_DMA_CR_PSIZE_HWORD |
-                    STM32_DMA_CR_MSIZE_HWORD |
-                    STM32_DMA_CR_DIR_P2M |
-                    STM32_DMA_CR_MINC |
-                    STM32_DMA_CR_CIRC |
-                    STM32_DMA_CR_HTIE |
-                    STM32_DMA_CR_TCIE |
-                    STM32_DMA_CR_DMEIE |
-                    STM32_DMA_CR_TEIE;
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE)
+  I2SD3.rxdmamode = GD32_DMA_CR_CHSEL(I2S3_RX_DMA_CHANNEL) |
+                    GD32_DMA_CR_PL(GD32_I2S_SPI3_DMA_PRIORITY) |
+                    GD32_DMA_CR_PSIZE_HWORD |
+                    GD32_DMA_CR_MSIZE_HWORD |
+                    GD32_DMA_CR_DIR_P2M |
+                    GD32_DMA_CR_MINC |
+                    GD32_DMA_CR_CIRC |
+                    GD32_DMA_CR_HTIE |
+                    GD32_DMA_CR_TCIE |
+                    GD32_DMA_CR_DMEIE |
+                    GD32_DMA_CR_TEIE;
 #else
   I2SD3.rxdmamode = 0;
 #endif
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI3_MODE)
-  I2SD3.txdmamode = STM32_DMA_CR_CHSEL(I2S3_TX_DMA_CHANNEL) |
-                    STM32_DMA_CR_PL(STM32_I2S_SPI3_DMA_PRIORITY) |
-                    STM32_DMA_CR_PSIZE_HWORD |
-                    STM32_DMA_CR_MSIZE_HWORD |
-                    STM32_DMA_CR_DIR_M2P |
-                    STM32_DMA_CR_MINC |
-                    STM32_DMA_CR_CIRC |
-                    STM32_DMA_CR_HTIE |
-                    STM32_DMA_CR_TCIE |
-                    STM32_DMA_CR_DMEIE |
-                    STM32_DMA_CR_TEIE;
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI3_MODE)
+  I2SD3.txdmamode = GD32_DMA_CR_CHSEL(I2S3_TX_DMA_CHANNEL) |
+                    GD32_DMA_CR_PL(GD32_I2S_SPI3_DMA_PRIORITY) |
+                    GD32_DMA_CR_PSIZE_HWORD |
+                    GD32_DMA_CR_MSIZE_HWORD |
+                    GD32_DMA_CR_DIR_M2P |
+                    GD32_DMA_CR_MINC |
+                    GD32_DMA_CR_CIRC |
+                    GD32_DMA_CR_HTIE |
+                    GD32_DMA_CR_TCIE |
+                    GD32_DMA_CR_DMEIE |
+                    GD32_DMA_CR_TEIE;
 #else
   I2SD3.txdmamode = 0;
 #endif
@@ -349,15 +349,15 @@ void i2s_lld_start(I2SDriver *i2sp) {
   /* If in stopped state then enables the SPI and DMA clocks.*/
   if (i2sp->state == I2S_STOP) {
 
-#if STM32_I2S_USE_SPI1
+#if GD32_I2S_USE_SPI1
     if (&I2SD1 == i2sp) {
 
       /* Enabling I2S unit clock.*/
       rccEnableSPI1(true);
 
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI1_MODE)
-      i2sp->dmarx = dmaStreamAllocI(STM32_I2S_SPI1_RX_DMA_STREAM,
-                                    STM32_I2S_SPI1_IRQ_PRIORITY,
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
+      i2sp->dmarx = dmaStreamAllocI(GD32_I2S_SPI1_RX_DMA_STREAM,
+                                    GD32_I2S_SPI1_IRQ_PRIORITY,
                                     (stm32_dmaisr_t)i2s_lld_serve_rx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmarx != NULL, "unable to allocate stream");
@@ -367,9 +367,9 @@ void i2s_lld_start(I2SDriver *i2sp) {
       i2sp->spi->CR1 = 0;
       i2sp->spi->CR2 = SPI_CR2_RXDMAEN;
 #endif
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI1_MODE)
-      i2sp->dmatx = dmaStreamAllocI(STM32_I2S_SPI1_TX_DMA_STREAM,
-                                    STM32_I2S_SPI1_IRQ_PRIORITY,
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
+      i2sp->dmatx = dmaStreamAllocI(GD32_I2S_SPI1_TX_DMA_STREAM,
+                                    GD32_I2S_SPI1_IRQ_PRIORITY,
                                     (stm32_dmaisr_t)i2s_lld_serve_tx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmatx != NULL, "unable to allocate stream");
@@ -382,15 +382,15 @@ void i2s_lld_start(I2SDriver *i2sp) {
     }
 #endif
 
-#if STM32_I2S_USE_SPI2
+#if GD32_I2S_USE_SPI2
     if (&I2SD2 == i2sp) {
 
       /* Enabling I2S unit clock.*/
       rccEnableSPI2(true);
 
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI2_MODE)
-      i2sp->dmarx = dmaStreamAllocI(STM32_I2S_SPI2_RX_DMA_STREAM,
-                                    STM32_I2S_SPI2_IRQ_PRIORITY,
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE)
+      i2sp->dmarx = dmaStreamAllocI(GD32_I2S_SPI2_RX_DMA_STREAM,
+                                    GD32_I2S_SPI2_IRQ_PRIORITY,
                                     (stm32_dmaisr_t)i2s_lld_serve_rx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmarx != NULL, "unable to allocate stream");
@@ -400,9 +400,9 @@ void i2s_lld_start(I2SDriver *i2sp) {
       i2sp->spi->CR1 = 0;
       i2sp->spi->CR2 = SPI_CR2_RXDMAEN;
 #endif
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI2_MODE)
-      i2sp->dmatx = dmaStreamAllocI(STM32_I2S_SPI2_TX_DMA_STREAM,
-                                    STM32_I2S_SPI2_IRQ_PRIORITY,
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI2_MODE)
+      i2sp->dmatx = dmaStreamAllocI(GD32_I2S_SPI2_TX_DMA_STREAM,
+                                    GD32_I2S_SPI2_IRQ_PRIORITY,
                                     (stm32_dmaisr_t)i2s_lld_serve_tx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmatx != NULL, "unable to allocate stream");
@@ -415,15 +415,15 @@ void i2s_lld_start(I2SDriver *i2sp) {
     }
 #endif
 
-#if STM32_I2S_USE_SPI3
+#if GD32_I2S_USE_SPI3
     if (&I2SD3 == i2sp) {
 
       /* Enabling I2S unit clock.*/
       rccEnableSPI3(true);
 
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI3_MODE)
-      i2sp->dmarx = dmaStreamAllocI(STM32_I2S_SPI3_RX_DMA_STREAM,
-                                    STM32_I2S_SPI3_IRQ_PRIORITY,
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE)
+      i2sp->dmarx = dmaStreamAllocI(GD32_I2S_SPI3_RX_DMA_STREAM,
+                                    GD32_I2S_SPI3_IRQ_PRIORITY,
                                     (stm32_dmaisr_t)i2s_lld_serve_rx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmarx != NULL, "unable to allocate stream");
@@ -433,9 +433,9 @@ void i2s_lld_start(I2SDriver *i2sp) {
       i2sp->spi->CR1 = 0;
       i2sp->spi->CR2 = SPI_CR2_RXDMAEN;
 #endif
-#if STM32_I2S_TX_ENABLED(STM32_I2S_SPI3_MODE)
-      i2sp->dmatx = dmaStreamAllocI(STM32_I2S_SPI3_TX_DMA_STREAM,
-                                    STM32_I2S_SPI3_IRQ_PRIORITY,
+#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI3_MODE)
+      i2sp->dmatx = dmaStreamAllocI(GD32_I2S_SPI3_TX_DMA_STREAM,
+                                    GD32_I2S_SPI3_IRQ_PRIORITY,
                                     (stm32_dmaisr_t)i2s_lld_serve_tx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmatx != NULL, "unable to allocate stream");
@@ -477,17 +477,17 @@ void i2s_lld_stop(I2SDriver *i2sp) {
       i2sp->dmatx = NULL;
     }
 
-#if STM32_I2S_USE_SPI1
+#if GD32_I2S_USE_SPI1
     if (&I2SD1 == i2sp)
       rccDisableSPI1();
 #endif
 
-#if STM32_I2S_USE_SPI2
+#if GD32_I2S_USE_SPI2
     if (&I2SD2 == i2sp)
       rccDisableSPI2();
 #endif
 
-#if STM32_I2S_USE_SPI3
+#if GD32_I2S_USE_SPI3
     if (&I2SD3 == i2sp)
       rccDisableSPI3();
 #endif

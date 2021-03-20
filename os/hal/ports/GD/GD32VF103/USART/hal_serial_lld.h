@@ -44,8 +44,8 @@
  * @details If set to @p TRUE the support for USART1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_SERIAL_USE_USART1) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USE_USART1             FALSE
+#if !defined(GD32_SERIAL_USE_USART1) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USE_USART1             FALSE
 #endif
 
 /**
@@ -53,8 +53,8 @@
  * @details If set to @p TRUE the support for USART2 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_SERIAL_USE_USART2) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USE_USART2             FALSE
+#if !defined(GD32_SERIAL_USE_USART2) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USE_USART2             FALSE
 #endif
 
 /**
@@ -62,8 +62,8 @@
  * @details If set to @p TRUE the support for USART3 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_SERIAL_USE_USART3) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USE_USART3             FALSE
+#if !defined(GD32_SERIAL_USE_USART3) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USE_USART3             FALSE
 #endif
 
 /**
@@ -71,8 +71,8 @@
  * @details If set to @p TRUE the support for UART4 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_SERIAL_USE_UART4) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USE_UART4              FALSE
+#if !defined(GD32_SERIAL_USE_UART4) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USE_UART4              FALSE
 #endif
 
 /**
@@ -80,8 +80,8 @@
  * @details If set to @p TRUE the support for UART5 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_SERIAL_USE_UART5) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USE_UART5              FALSE
+#if !defined(GD32_SERIAL_USE_UART5) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USE_UART5              FALSE
 #endif
 
 /**
@@ -89,8 +89,8 @@
  * @details If set to @p TRUE the support for USART6 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_SERIAL_USE_USART6) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USE_USART6             FALSE
+#if !defined(GD32_SERIAL_USE_USART6) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USE_USART6             FALSE
 #endif
 
 /**
@@ -98,8 +98,8 @@
  * @details If set to @p TRUE the support for UART7 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_SERIAL_USE_UART7) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USE_UART7              FALSE
+#if !defined(GD32_SERIAL_USE_UART7) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USE_UART7              FALSE
 #endif
 
 /**
@@ -107,64 +107,64 @@
  * @details If set to @p TRUE the support for UART8 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_SERIAL_USE_UART8) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USE_UART8              FALSE
+#if !defined(GD32_SERIAL_USE_UART8) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USE_UART8              FALSE
 #endif
 
 /**
  * @brief   USART1 interrupt priority level setting.
  */
-#if !defined(STM32_SERIAL_USART1_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USART1_PRIORITY        12
+#if !defined(GD32_SERIAL_USART1_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USART1_PRIORITY        12
 #endif
 
 /**
  * @brief   USART2 interrupt priority level setting.
  */
-#if !defined(STM32_SERIAL_USART2_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USART2_PRIORITY        12
+#if !defined(GD32_SERIAL_USART2_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USART2_PRIORITY        12
 #endif
 
 /**
  * @brief   USART3 interrupt priority level setting.
  */
-#if !defined(STM32_SERIAL_USART3_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USART3_PRIORITY        12
+#if !defined(GD32_SERIAL_USART3_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USART3_PRIORITY        12
 #endif
 
 /**
  * @brief   UART4 interrupt priority level setting.
  */
-#if !defined(STM32_SERIAL_UART4_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_SERIAL_UART4_PRIORITY         12
+#if !defined(GD32_SERIAL_UART4_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_SERIAL_UART4_PRIORITY         12
 #endif
 
 /**
  * @brief   UART5 interrupt priority level setting.
  */
-#if !defined(STM32_SERIAL_UART5_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_SERIAL_UART5_PRIORITY         12
+#if !defined(GD32_SERIAL_UART5_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_SERIAL_UART5_PRIORITY         12
 #endif
 
 /**
  * @brief   USART6 interrupt priority level setting.
  */
-#if !defined(STM32_SERIAL_USART6_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_SERIAL_USART6_PRIORITY        12
+#if !defined(GD32_SERIAL_USART6_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USART6_PRIORITY        12
 #endif
 
 /**
  * @brief   UART7 interrupt priority level setting.
  */
-#if !defined(STM32_SERIAL_UART7_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_SERIAL_UART7_PRIORITY         12
+#if !defined(GD32_SERIAL_UART7_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_SERIAL_UART7_PRIORITY         12
 #endif
 
 /**
  * @brief   UART8 interrupt priority level setting.
  */
-#if !defined(STM32_SERIAL_UART8_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_SERIAL_UART8_PRIORITY         12
+#if !defined(GD32_SERIAL_UART8_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_SERIAL_UART8_PRIORITY         12
 #endif
 /** @} */
 
@@ -172,82 +172,82 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if STM32_SERIAL_USE_USART1 && !STM32_HAS_USART1
+#if GD32_SERIAL_USE_USART1 && !GD32_HAS_USART1
 #error "USART1 not present in the selected device"
 #endif
 
-#if STM32_SERIAL_USE_USART2 && !STM32_HAS_USART2
+#if GD32_SERIAL_USE_USART2 && !GD32_HAS_USART2
 #error "USART2 not present in the selected device"
 #endif
 
-#if STM32_SERIAL_USE_USART3 && !STM32_HAS_USART3
+#if GD32_SERIAL_USE_USART3 && !GD32_HAS_USART3
 #error "USART3 not present in the selected device"
 #endif
 
-#if STM32_SERIAL_USE_UART4 && !STM32_HAS_UART4
+#if GD32_SERIAL_USE_UART4 && !GD32_HAS_UART4
 #error "UART4 not present in the selected device"
 #endif
 
-#if STM32_SERIAL_USE_UART5 && !STM32_HAS_UART5
+#if GD32_SERIAL_USE_UART5 && !GD32_HAS_UART5
 #error "UART5 not present in the selected device"
 #endif
 
-#if STM32_SERIAL_USE_USART6 && !STM32_HAS_USART6
+#if GD32_SERIAL_USE_USART6 && !GD32_HAS_USART6
 #error "USART6 not present in the selected device"
 #endif
 
-#if STM32_SERIAL_USE_UART7 && !STM32_HAS_UART7
+#if GD32_SERIAL_USE_UART7 && !GD32_HAS_UART7
 #error "UART7 not present in the selected device"
 #endif
 
-#if STM32_SERIAL_USE_UART8 && !STM32_HAS_UART8
+#if GD32_SERIAL_USE_UART8 && !GD32_HAS_UART8
 #error "UART8 not present in the selected device"
 #endif
 
-#if !STM32_SERIAL_USE_USART1 && !STM32_SERIAL_USE_USART2 &&                 \
-    !STM32_SERIAL_USE_USART3 && !STM32_SERIAL_USE_UART4  &&                 \
-    !STM32_SERIAL_USE_UART5  && !STM32_SERIAL_USE_USART6 &&                 \
-    !STM32_SERIAL_USE_UART7  && !STM32_SERIAL_USE_UART8
+#if !GD32_SERIAL_USE_USART1 && !GD32_SERIAL_USE_USART2 &&                 \
+    !GD32_SERIAL_USE_USART3 && !GD32_SERIAL_USE_UART4  &&                 \
+    !GD32_SERIAL_USE_UART5  && !GD32_SERIAL_USE_USART6 &&                 \
+    !GD32_SERIAL_USE_UART7  && !GD32_SERIAL_USE_UART8
 #error "SERIAL driver activated but no USART/UART peripheral assigned"
 #endif
 
-#if STM32_SERIAL_USE_USART1 &&                                              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_SERIAL_USART1_PRIORITY)
+#if GD32_SERIAL_USE_USART1 &&                                              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SERIAL_USART1_PRIORITY)
 #error "Invalid IRQ priority assigned to USART1"
 #endif
 
-#if STM32_SERIAL_USE_USART2 &&                                              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_SERIAL_USART2_PRIORITY)
+#if GD32_SERIAL_USE_USART2 &&                                              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SERIAL_USART2_PRIORITY)
 #error "Invalid IRQ priority assigned to USART2"
 #endif
 
-#if STM32_SERIAL_USE_USART3 &&                                              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_SERIAL_USART3_PRIORITY)
+#if GD32_SERIAL_USE_USART3 &&                                              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SERIAL_USART3_PRIORITY)
 #error "Invalid IRQ priority assigned to USART3"
 #endif
 
-#if STM32_SERIAL_USE_UART4 &&                                               \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_SERIAL_UART4_PRIORITY)
+#if GD32_SERIAL_USE_UART4 &&                                               \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SERIAL_UART4_PRIORITY)
 #error "Invalid IRQ priority assigned to UART4"
 #endif
 
-#if STM32_SERIAL_USE_UART5 &&                                               \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_SERIAL_UART5_PRIORITY)
+#if GD32_SERIAL_USE_UART5 &&                                               \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SERIAL_UART5_PRIORITY)
 #error "Invalid IRQ priority assigned to UART5"
 #endif
 
-#if STM32_SERIAL_USE_USART6 &&                                              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_SERIAL_USART6_PRIORITY)
+#if GD32_SERIAL_USE_USART6 &&                                              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SERIAL_USART6_PRIORITY)
 #error "Invalid IRQ priority assigned to USART6"
 #endif
 
-#if STM32_SERIAL_USE_UART7 &&                                               \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_SERIAL_UART7_PRIORITY)
+#if GD32_SERIAL_USE_UART7 &&                                               \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SERIAL_UART7_PRIORITY)
 #error "Invalid IRQ priority assigned to UART7"
 #endif
 
-#if STM32_SERIAL_USE_UART8 &&                                               \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_SERIAL_UART8_PRIORITY)
+#if GD32_SERIAL_USE_UART8 &&                                               \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SERIAL_UART8_PRIORITY)
 #error "Invalid IRQ priority assigned to UART8"
 #endif
 
@@ -320,28 +320,28 @@ typedef struct {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_SERIAL_USE_USART1 && !defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART1 && !defined(__DOXYGEN__)
 extern SerialDriver SD1;
 #endif
-#if STM32_SERIAL_USE_USART2 && !defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART2 && !defined(__DOXYGEN__)
 extern SerialDriver SD2;
 #endif
-#if STM32_SERIAL_USE_USART3 && !defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART3 && !defined(__DOXYGEN__)
 extern SerialDriver SD3;
 #endif
-#if STM32_SERIAL_USE_UART4 && !defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART4 && !defined(__DOXYGEN__)
 extern SerialDriver SD4;
 #endif
-#if STM32_SERIAL_USE_UART5 && !defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART5 && !defined(__DOXYGEN__)
 extern SerialDriver SD5;
 #endif
-#if STM32_SERIAL_USE_USART6 && !defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART6 && !defined(__DOXYGEN__)
 extern SerialDriver SD6;
 #endif
-#if STM32_SERIAL_USE_UART7 && !defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART7 && !defined(__DOXYGEN__)
 extern SerialDriver SD7;
 #endif
-#if STM32_SERIAL_USE_UART8 && !defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART8 && !defined(__DOXYGEN__)
 extern SerialDriver SD8;
 #endif
 

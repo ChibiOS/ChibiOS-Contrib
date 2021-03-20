@@ -24,8 +24,8 @@
  * @{
  */
 
-#ifndef STM32_RCC_H
-#define STM32_RCC_H
+#ifndef GD32_RCC_H
+#define GD32_RCC_H
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -1225,6 +1225,6 @@ extern "C" {
 }
 #endif
 
-#endif /* STM32_RCC_H */
+#endif /* GD32_RCC_H */
 
 /** @} */

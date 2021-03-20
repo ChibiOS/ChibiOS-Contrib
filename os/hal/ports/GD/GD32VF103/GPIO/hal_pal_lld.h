@@ -38,12 +38,12 @@
 /**
  * @brief   STM32 specific alternate push-pull output mode.
  */
-#define PAL_MODE_STM32_ALTERNATE_PUSHPULL   16
+#define PAL_MODE_GD32_ALTERNATE_PUSHPULL   16
 
 /**
  * @brief   STM32 specific alternate open-drain output mode.
  */
-#define PAL_MODE_STM32_ALTERNATE_OPENDRAIN  17
+#define PAL_MODE_GD32_ALTERNATE_OPENDRAIN  17
 /** @} */
 
 /*===========================================================================*/
@@ -126,13 +126,13 @@ typedef struct {
   stm32_gpio_setup_t    PCData;
   /** @brief Port D setup data.*/
   stm32_gpio_setup_t    PDData;
-#if STM32_HAS_GPIOE || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOE || defined(__DOXYGEN__)
   /** @brief Port E setup data.*/
   stm32_gpio_setup_t    PEData;
-#if STM32_HAS_GPIOF || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOF || defined(__DOXYGEN__)
   /** @brief Port F setup data.*/
   stm32_gpio_setup_t    PFData;
-#if STM32_HAS_GPIOG || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOG || defined(__DOXYGEN__)
   /** @brief Port G setup data.*/
   stm32_gpio_setup_t    PGData;
 #endif
@@ -182,49 +182,49 @@ typedef uint32_t iopadid_t;
 /**
  * @brief   GPIO port A identifier.
  */
-#if STM32_HAS_GPIOA || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOA || defined(__DOXYGEN__)
 #define IOPORT1         GPIOA
 #endif
 
 /**
  * @brief   GPIO port B identifier.
  */
-#if STM32_HAS_GPIOB || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOB || defined(__DOXYGEN__)
 #define IOPORT2         GPIOB
 #endif
 
 /**
  * @brief   GPIO port C identifier.
  */
-#if STM32_HAS_GPIOC || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOC || defined(__DOXYGEN__)
 #define IOPORT3         GPIOC
 #endif
 
 /**
  * @brief   GPIO port D identifier.
  */
-#if STM32_HAS_GPIOD || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOD || defined(__DOXYGEN__)
 #define IOPORT4         GPIOD
 #endif
 
 /**
  * @brief   GPIO port E identifier.
  */
-#if STM32_HAS_GPIOE || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOE || defined(__DOXYGEN__)
 #define IOPORT5         GPIOE
 #endif
 
 /**
  * @brief   GPIO port F identifier.
  */
-#if STM32_HAS_GPIOF || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOF || defined(__DOXYGEN__)
 #define IOPORT6         GPIOF
 #endif
 
 /**
  * @brief   GPIO port G identifier.
  */
-#if STM32_HAS_GPIOG || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOG || defined(__DOXYGEN__)
 #define IOPORT7         GPIOG
 #endif
 

@@ -200,8 +200,8 @@ void rtc_lld_set_prescaler(void) {
   sts = osalSysGetStatusAndLockX();
 
   rtc_acquire_access();
-  RTC->PRLH = (uint16_t)((STM32_RTCCLK - 1) >> 16) & 0x000F;
-  RTC->PRLL = (uint16_t)(((STM32_RTCCLK - 1))      & 0xFFFF);
+  RTC->PRLH = (uint16_t)((GD32_RTCCLK - 1) >> 16) & 0x000F;
+  RTC->PRLL = (uint16_t)(((GD32_RTCCLK - 1))      & 0xFFFF);
   rtc_release_access();
 
   /* Leaving a reentrant critical zone.*/
@@ -236,7 +236,7 @@ void rtc_lld_init(void) {
   RTCD1.callback = NULL;
 
   /* IRQ vector permanently assigned to this driver.*/
-  eclicEnableVector(GD32_RTC1_NUMBER, STM32_RTC_IRQ_PRIORITY, STM32_RTC_IRQ_TRIGGER);
+  eclicEnableVector(GD32_RTC1_NUMBER, GD32_RTC_IRQ_PRIORITY, GD32_RTC_IRQ_TRIGGER);
 }
 
 /**
@@ -413,7 +413,7 @@ void rtcSTM32GetSecMsec(RTCDriver *rtcp, uint32_t *tv_sec, uint32_t *tv_msec) {
   osalSysRestoreStatusX(sts);
 
   if (NULL != tv_msec)
-    *tv_msec = (((uint32_t)STM32_RTCCLK - 1 - time_frac) * 1000) / STM32_RTCCLK;
+    *tv_msec = (((uint32_t)GD32_RTCCLK - 1 - time_frac) * 1000) / GD32_RTCCLK;
 }
 
 /**

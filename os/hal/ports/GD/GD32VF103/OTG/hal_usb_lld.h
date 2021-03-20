@@ -57,8 +57,8 @@
  * @details If set to @p TRUE the support for OTG_FS is included.
  * @note    The default is @p FALSE
  */
-#if !defined(STM32_USB_USE_OTG1) || defined(__DOXYGEN__)
-#define STM32_USB_USE_OTG1                  FALSE
+#if !defined(GD32_USB_USE_OTG1) || defined(__DOXYGEN__)
+#define GD32_USB_USE_OTG1                  FALSE
 #endif
 
 /**
@@ -66,38 +66,38 @@
  * @details If set to @p TRUE the support for OTG_HS is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_USB_USE_OTG2) || defined(__DOXYGEN__)
-#define STM32_USB_USE_OTG2                  FALSE
+#if !defined(GD32_USB_USE_OTG2) || defined(__DOXYGEN__)
+#define GD32_USB_USE_OTG2                  FALSE
 #endif
 
 /**
  * @brief   OTG1 interrupt priority level setting.
  */
-#if !defined(STM32_USB_OTG1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_USB_OTG1_IRQ_PRIORITY         1
+#if !defined(GD32_USB_OTG1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_USB_OTG1_IRQ_PRIORITY         1
 #endif
 
 /**
  * @brief   OTG2 interrupt priority level setting.
  */
-#if !defined(STM32_USB_OTG2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_USB_OTG2_IRQ_PRIORITY         1
+#if !defined(GD32_USB_OTG2_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_USB_OTG2_IRQ_PRIORITY         1
 #endif
 
 /**
  * @brief   OTG1 RX shared FIFO size.
  * @note    Must be a multiple of 4.
  */
-#if !defined(STM32_USB_OTG1_RX_FIFO_SIZE) || defined(__DOXYGEN__)
-#define STM32_USB_OTG1_RX_FIFO_SIZE         128
+#if !defined(GD32_USB_OTG1_RX_FIFO_SIZE) || defined(__DOXYGEN__)
+#define GD32_USB_OTG1_RX_FIFO_SIZE         128
 #endif
 
 /**
  * @brief   OTG2 RX shared FIFO size.
  * @note    Must be a multiple of 4.
  */
-#if !defined(STM32_USB_OTG2_RX_FIFO_SIZE) || defined(__DOXYGEN__)
-#define STM32_USB_OTG2_RX_FIFO_SIZE         1024
+#if !defined(GD32_USB_OTG2_RX_FIFO_SIZE) || defined(__DOXYGEN__)
+#define GD32_USB_OTG2_RX_FIFO_SIZE         1024
 #endif
 
 /**
@@ -105,8 +105,8 @@
  * @note    The default is @p TRUE.
  * @note    Has effect only if @p BOARD_OTG2_USES_ULPI is defined.
  */
-#if !defined(STM32_USE_USB_OTG2_HS) || defined(__DOXYGEN__)
-#define STM32_USE_USB_OTG2_HS               TRUE
+#if !defined(GD32_USE_USB_OTG2_HS) || defined(__DOXYGEN__)
+#define GD32_USE_USB_OTG2_HS               TRUE
 #endif
 
 /**
@@ -124,15 +124,15 @@
  *          functions is only safe from thread level or from USB
  *          callbacks.
  */
-#if !defined(STM32_USB_OTGFIFO_FILL_BASEPRI) || defined(__DOXYGEN__)
-#define STM32_USB_OTGFIFO_FILL_BASEPRI      0
+#if !defined(GD32_USB_OTGFIFO_FILL_BASEPRI) || defined(__DOXYGEN__)
+#define GD32_USB_OTGFIFO_FILL_BASEPRI      0
 #endif
 
 /**
  * @brief   Host wake-up procedure duration.
  */
-#if !defined(STM32_USB_HOST_WAKEUP_DURATION) || defined(__DOXYGEN__)
-#define STM32_USB_HOST_WAKEUP_DURATION      2
+#if !defined(GD32_USB_HOST_WAKEUP_DURATION) || defined(__DOXYGEN__)
+#define GD32_USB_HOST_WAKEUP_DURATION      2
 #endif
 
 /*===========================================================================*/
@@ -140,96 +140,96 @@
 /*===========================================================================*/
 
 /* Registry checks.*/
-#if !defined(STM32_OTG_STEPPING)
-#error "STM32_OTG_STEPPING not defined in registry"
+#if !defined(GD32_OTG_STEPPING)
+#error "GD32_OTG_STEPPING not defined in registry"
 #endif
 
-#if (STM32_OTG_STEPPING < 1) || (STM32_OTG_STEPPING > 2)
-#error "unsupported STM32_OTG_STEPPING"
+#if (GD32_OTG_STEPPING < 1) || (GD32_OTG_STEPPING > 2)
+#error "unsupported GD32_OTG_STEPPING"
 #endif
 
-#define STM32_HAS_OTG2 FALSE
-#if !defined(STM32_HAS_OTG1) || !defined(STM32_HAS_OTG2)
-#error "STM32_HAS_OTGx not defined in registry"
+#define GD32_HAS_OTG2 FALSE
+#if !defined(GD32_HAS_OTG1) || !defined(GD32_HAS_OTG2)
+#error "GD32_HAS_OTGx not defined in registry"
 #endif
 
-#if STM32_HAS_OTG1 && !defined(STM32_OTG1_ENDPOINTS)
-#error "STM32_OTG1_ENDPOINTS not defined in registry"
+#if GD32_HAS_OTG1 && !defined(GD32_OTG1_ENDPOINTS)
+#error "GD32_OTG1_ENDPOINTS not defined in registry"
 #endif
 
-#if STM32_HAS_OTG2 && !defined(STM32_OTG2_ENDPOINTS)
-#error "STM32_OTG2_ENDPOINTS not defined in registry"
+#if GD32_HAS_OTG2 && !defined(GD32_OTG2_ENDPOINTS)
+#error "GD32_OTG2_ENDPOINTS not defined in registry"
 #endif
 
-#if STM32_HAS_OTG1 && !defined(STM32_OTG1_FIFO_MEM_SIZE)
-#error "STM32_OTG1_FIFO_MEM_SIZE not defined in registry"
+#if GD32_HAS_OTG1 && !defined(GD32_OTG1_FIFO_MEM_SIZE)
+#error "GD32_OTG1_FIFO_MEM_SIZE not defined in registry"
 #endif
 
-#if STM32_HAS_OTG2 && !defined(STM32_OTG2_FIFO_MEM_SIZE)
-#error "STM32_OTG2_FIFO_MEM_SIZE not defined in registry"
+#if GD32_HAS_OTG2 && !defined(GD32_OTG2_FIFO_MEM_SIZE)
+#error "GD32_OTG2_FIFO_MEM_SIZE not defined in registry"
 #endif
 
-#if (STM32_USB_USE_OTG1 && !defined(GD32_OTG1_HANDLER)) ||                 \
-    (STM32_USB_USE_OTG2 && !defined(GD32_OTG2_HANDLER))
+#if (GD32_USB_USE_OTG1 && !defined(GD32_OTG1_HANDLER)) ||                 \
+    (GD32_USB_USE_OTG2 && !defined(GD32_OTG2_HANDLER))
 #error "GD32_OTGx_HANDLER not defined in registry"
 #endif
 
-#if (STM32_USB_USE_OTG1 && !defined(GD32_OTG1_NUMBER)) ||                  \
-    (STM32_USB_USE_OTG2 && !defined(GD32_OTG2_NUMBER))
+#if (GD32_USB_USE_OTG1 && !defined(GD32_OTG1_NUMBER)) ||                  \
+    (GD32_USB_USE_OTG2 && !defined(GD32_OTG2_NUMBER))
 #error "GD32_OTGx_NUMBER not defined in registry"
 #endif
 
 /**
  * @brief   Maximum endpoint address.
  */
-#if (STM32_HAS_OTG2 && STM32_USB_USE_OTG2) || defined(__DOXYGEN__)
-#if (STM32_OTG1_ENDPOINTS < STM32_OTG2_ENDPOINTS) || defined(__DOXYGEN__)
-#define USB_MAX_ENDPOINTS                   STM32_OTG2_ENDPOINTS
+#if (GD32_HAS_OTG2 && GD32_USB_USE_OTG2) || defined(__DOXYGEN__)
+#if (GD32_OTG1_ENDPOINTS < GD32_OTG2_ENDPOINTS) || defined(__DOXYGEN__)
+#define USB_MAX_ENDPOINTS                   GD32_OTG2_ENDPOINTS
 #else
-#define USB_MAX_ENDPOINTS                   STM32_OTG1_ENDPOINTS
+#define USB_MAX_ENDPOINTS                   GD32_OTG1_ENDPOINTS
 #endif
 #else
-#define USB_MAX_ENDPOINTS                   STM32_OTG1_ENDPOINTS
+#define USB_MAX_ENDPOINTS                   GD32_OTG1_ENDPOINTS
 #endif
 
-#if STM32_USB_USE_OTG1 && !STM32_HAS_OTG1
+#if GD32_USB_USE_OTG1 && !GD32_HAS_OTG1
 #error "OTG1 not present in the selected device"
 #endif
 
-#if STM32_USB_USE_OTG2 && !STM32_HAS_OTG2
+#if GD32_USB_USE_OTG2 && !GD32_HAS_OTG2
 #error "OTG2 not present in the selected device"
 #endif
 
-#if !STM32_USB_USE_OTG1 && !STM32_USB_USE_OTG2
+#if !GD32_USB_USE_OTG1 && !GD32_USB_USE_OTG2
 #error "USB driver activated but no USB peripheral assigned"
 #endif
 
-#if STM32_USB_USE_OTG1 &&                                                \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_USB_OTG1_IRQ_PRIORITY)
+#if GD32_USB_USE_OTG1 &&                                                \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_USB_OTG1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to OTG1"
 #endif
 
-#if STM32_USB_USE_OTG2 &&                                                \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_USB_OTG2_IRQ_PRIORITY)
+#if GD32_USB_USE_OTG2 &&                                                \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_USB_OTG2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to OTG2"
 #endif
 
-#if (STM32_USB_OTG1_RX_FIFO_SIZE & 3) != 0
+#if (GD32_USB_OTG1_RX_FIFO_SIZE & 3) != 0
 #error "OTG1 RX FIFO size must be a multiple of 4"
 #endif
 
-#if (STM32_USB_OTG2_RX_FIFO_SIZE & 3) != 0
+#if (GD32_USB_OTG2_RX_FIFO_SIZE & 3) != 0
 #error "OTG2 RX FIFO size must be a multiple of 4"
 #endif
 
 /*#if defined(STM32F2XX) || defined(STM32F4XX) || defined(STM32F7XX)
-#define STM32_USBCLK                        STM32_PLL48CLK*/
+#define GD32_USBCLK                        GD32_PLL48CLK*/
 #if defined(STM32F10X_CL) || defined (GD32VF103CB)
-#define STM32_USBCLK                        STM32_OTGFSCLK
+#define GD32_USBCLK                        GD32_OTGFSCLK
 // #elif defined(STM32L4XX) || defined(STM32L4XXP)
-// #define STM32_USBCLK                        STM32_48CLK
+// #define GD32_USBCLK                        GD32_48CLK
 // #elif  defined(STM32H7XX)
-// /* Defines directly STM32_USBCLK.*/
+// /* Defines directly GD32_USBCLK.*/
 // #define rccEnableOTG_FS                     rccEnableUSB2_OTG_HS
 // #define rccDisableOTG_FS                    rccDisableUSB2_OTG_HS
 // #define rccResetOTG_FS                      rccResetUSB2_OTG_HS
@@ -243,12 +243,12 @@
 #endif
 
 /* Allowing for a small tolerance.*/
-#if STM32_USBCLK < 47880000 || STM32_USBCLK > 48120000
+#if GD32_USBCLK < 47880000 || GD32_USBCLK > 48120000
 #error "the USB OTG driver requires a 48MHz clock"
 #endif
 
-#if (STM32_USB_HOST_WAKEUP_DURATION < 2) || (STM32_USB_HOST_WAKEUP_DURATION > 15)
-#error "invalid STM32_USB_HOST_WAKEUP_DURATION setting, it must be between 2 and 15"
+#if (GD32_USB_HOST_WAKEUP_DURATION < 2) || (GD32_USB_HOST_WAKEUP_DURATION > 15)
+#error "invalid GD32_USB_HOST_WAKEUP_DURATION setting, it must be between 2 and 15"
 #endif
 
 /*===========================================================================*/
@@ -534,7 +534,7 @@ struct USBDriver {
  *
  * @notapi
  */
-#if (STM32_OTG_STEPPING == 1) || defined(__DOXYGEN__)
+#if (GD32_OTG_STEPPING == 1) || defined(__DOXYGEN__)
 #define usb_lld_connect_bus(usbp) ((usbp)->otg->GCCFG |= GCCFG_VBUSBSEN)
 #else
 #define usb_lld_connect_bus(usbp) ((usbp)->otg->DCTL &= ~DCTL_SDIS)
@@ -545,7 +545,7 @@ struct USBDriver {
  *
  * @notapi
  */
-#if (STM32_OTG_STEPPING == 1) || defined(__DOXYGEN__)
+#if (GD32_OTG_STEPPING == 1) || defined(__DOXYGEN__)
 #define usb_lld_disconnect_bus(usbp) ((usbp)->otg->GCCFG &= ~GCCFG_VBUSBSEN)
 #else
 #define usb_lld_disconnect_bus(usbp) ((usbp)->otg->DCTL |= DCTL_SDIS)
@@ -559,7 +559,7 @@ struct USBDriver {
 #define usb_lld_wakeup_host(usbp)                                           \
   do {                                                                      \
     (usbp)->otg->DCTL |= DCTL_RWUSIG;                                       \
-    osalThreadSleepMilliseconds(STM32_USB_HOST_WAKEUP_DURATION);            \
+    osalThreadSleepMilliseconds(GD32_USB_HOST_WAKEUP_DURATION);            \
     (usbp)->otg->DCTL &= ~DCTL_RWUSIG;                                      \
   } while (false)
 
@@ -567,11 +567,11 @@ struct USBDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_USB_USE_OTG1 && !defined(__DOXYGEN__)
+#if GD32_USB_USE_OTG1 && !defined(__DOXYGEN__)
 extern USBDriver USBD1;
 #endif
 
-#if STM32_USB_USE_OTG2 && !defined(__DOXYGEN__)
+#if GD32_USB_USE_OTG2 && !defined(__DOXYGEN__)
 extern USBDriver USBD2;
 #endif
 

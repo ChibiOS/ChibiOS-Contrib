@@ -20,12 +20,12 @@
  * @note    This driver uses the new naming convention used for the STM32F2xx
  *          so the "DMA channels" are referred as "DMA streams".
  *
- * @addtogroup STM32_DMA
+ * @addtogroup GD32_DMA
  * @{
  */
 
-#ifndef STM32_DMA_H
-#define STM32_DMA_H
+#ifndef GD32_DMA_H
+#define GD32_DMA_H
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -36,19 +36,19 @@
  * @details if @p TRUE then the DMA is able of burst transfers, FIFOs,
  *          scatter gather and other advanced features.
  */
-#define STM32_DMA_ADVANCED          FALSE
+#define GD32_DMA_ADVANCED          FALSE
 
 /**
  * @brief   Total number of DMA streams.
  * @details This is the total number of streams among all the DMA units.
  */
-#define STM32_DMA_STREAMS           (STM32_DMA1_NUM_CHANNELS +              \
-                                     STM32_DMA2_NUM_CHANNELS)
+#define GD32_DMA_STREAMS           (GD32_DMA1_NUM_CHANNELS +              \
+                                     GD32_DMA2_NUM_CHANNELS)
 
 /**
  * @brief   Mask of the ISR bits passed to the DMA callback functions.
  */
-#define STM32_DMA_ISR_MASK          0x0E
+#define GD32_DMA_ISR_MASK          0x0E
 
 /**
  * @brief   Returns the request line associated to the specified stream.
@@ -60,8 +60,8 @@
  *                      nibble
  * @return              Returns the request associated to the stream.
  */
-#define STM32_DMA_GETCHANNEL(id, c)                                         \
-  (((uint32_t)(c) >> (((uint32_t)(id) % (uint32_t)STM32_DMA1_NUM_CHANNELS) * 4U)) & 15U)
+#define GD32_DMA_GETCHANNEL(id, c)                                         \
+  (((uint32_t)(c) >> (((uint32_t)(id) % (uint32_t)GD32_DMA1_NUM_CHANNELS) * 4U)) & 15U)
 
 /**
  * @brief   Checks if a DMA priority is within the valid range.
@@ -71,9 +71,9 @@
  * @retval false        invalid DMA priority.
  * @retval true         correct DMA priority.
  */
-#define STM32_DMA_IS_VALID_PRIORITY(prio) (((prio) >= 0U) && ((prio) <= 3U))
+#define GD32_DMA_IS_VALID_PRIORITY(prio) (((prio) >= 0U) && ((prio) <= 3U))
 
-#if (STM32_DMA_SUPPORTS_DMAMUX == FALSE) || defined(_DOXYGEN__)
+#if (GD32_DMA_SUPPORTS_DMAMUX == FALSE) || defined(_DOXYGEN__)
 /**
  * @brief   Checks if a DMA stream id is within the valid range.
  *
@@ -82,17 +82,17 @@
  * @retval false        invalid DMA channel.
  * @retval true         correct DMA channel.
  */
-#define STM32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                      \
-                                       ((id) < STM32_DMA_STREAMS))
-#else /* STM32_DMA_SUPPORTS_DMAMUX == FALSE */
-#if STM32_DMA2_NUM_CHANNELS > 0
-#define STM32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                      \
-                                       ((id) <= (STM32_DMA_STREAMS + 2)))
+#define GD32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                      \
+                                       ((id) < GD32_DMA_STREAMS))
+#else /* GD32_DMA_SUPPORTS_DMAMUX == FALSE */
+#if GD32_DMA2_NUM_CHANNELS > 0
+#define GD32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                      \
+                                       ((id) <= (GD32_DMA_STREAMS + 2)))
 #else
-#define STM32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                      \
-                                       ((id) <= (STM32_DMA_STREAMS + 1)))
+#define GD32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                      \
+                                       ((id) <= (GD32_DMA_STREAMS + 1)))
 #endif
-#endif /* STM32_DMA_SUPPORTS_DMAMUX == FALSE */
+#endif /* GD32_DMA_SUPPORTS_DMAMUX == FALSE */
 
 /**
  * @brief   Returns an unique numeric identifier for a DMA stream.
@@ -101,8 +101,8 @@
  * @param[in] stream    the stream number
  * @return              An unique numeric stream identifier.
  */
-#define STM32_DMA_STREAM_ID(dma, stream)                                    \
-  ((((dma) - 1) * STM32_DMA1_NUM_CHANNELS) + ((stream) - 1))
+#define GD32_DMA_STREAM_ID(dma, stream)                                    \
+  ((((dma) - 1) * GD32_DMA1_NUM_CHANNELS) + ((stream) - 1))
 
 /**
  * @brief   Returns a DMA stream identifier mask.
@@ -112,8 +112,8 @@
  * @param[in] stream    the stream number
  * @return              A DMA stream identifier mask.
  */
-#define STM32_DMA_STREAM_ID_MSK(dma, stream)                                \
-  (1U << STM32_DMA_STREAM_ID(dma, stream))
+#define GD32_DMA_STREAM_ID_MSK(dma, stream)                                \
+  (1U << GD32_DMA_STREAM_ID(dma, stream))
 
 /**
  * @brief   Checks if a DMA stream unique identifier belongs to a mask.
@@ -125,17 +125,17 @@
  * @retval false        id does not belong to the mask.
  * @retval true         id belongs to the mask.
  */
-#define STM32_DMA_IS_VALID_ID(id, mask) (((1U << (id)) & (mask)))
+#define GD32_DMA_IS_VALID_ID(id, mask) (((1U << (id)) & (mask)))
 
-#if (STM32_DMA_SUPPORTS_DMAMUX == TRUE) || defined(_DOXYGEN__)
+#if (GD32_DMA_SUPPORTS_DMAMUX == TRUE) || defined(_DOXYGEN__)
 /**
  * @name    Special stream identifiers
  * @{
  */
-#define STM32_DMA_STREAM_ID_ANY         STM32_DMA_STREAMS
-#define STM32_DMA_STREAM_ID_ANY_DMA1    (STM32_DMA_STREAM_ID_ANY + 1)
-#if STM32_DMA2_NUM_CHANNELS > 0
-#define STM32_DMA_STREAM_ID_ANY_DMA2    (STM32_DMA_STREAM_ID_ANY_DMA1 + 1)
+#define GD32_DMA_STREAM_ID_ANY         GD32_DMA_STREAMS
+#define GD32_DMA_STREAM_ID_ANY_DMA1    (GD32_DMA_STREAM_ID_ANY + 1)
+#if GD32_DMA2_NUM_CHANNELS > 0
+#define GD32_DMA_STREAM_ID_ANY_DMA2    (GD32_DMA_STREAM_ID_ANY_DMA1 + 1)
 #endif
 /** @} */
 #endif
@@ -151,62 +151,62 @@
  * @return              A pointer to the stm32_dma_stream_t constant structure
  *                      associated to the DMA stream.
  */
-#define STM32_DMA_STREAM(id)        (&_stm32_dma_streams[id])
+#define GD32_DMA_STREAM(id)        (&_stm32_dma_streams[id])
 
-#define STM32_DMA1_STREAM1          STM32_DMA_STREAM(0)
-#define STM32_DMA1_STREAM2          STM32_DMA_STREAM(1)
-#define STM32_DMA1_STREAM3          STM32_DMA_STREAM(2)
-#define STM32_DMA1_STREAM4          STM32_DMA_STREAM(3)
-#define STM32_DMA1_STREAM5          STM32_DMA_STREAM(4)
-#define STM32_DMA1_STREAM6          STM32_DMA_STREAM(5)
-#define STM32_DMA1_STREAM7          STM32_DMA_STREAM(6)
-#define STM32_DMA2_STREAM1          STM32_DMA_STREAM(STM32_DMA1_NUM_CHANNELS + 0)
-#define STM32_DMA2_STREAM2          STM32_DMA_STREAM(STM32_DMA1_NUM_CHANNELS + 1)
-#define STM32_DMA2_STREAM3          STM32_DMA_STREAM(STM32_DMA1_NUM_CHANNELS + 2)
-#define STM32_DMA2_STREAM4          STM32_DMA_STREAM(STM32_DMA1_NUM_CHANNELS + 3)
-#define STM32_DMA2_STREAM5          STM32_DMA_STREAM(STM32_DMA1_NUM_CHANNELS + 4)
+#define GD32_DMA1_STREAM1          GD32_DMA_STREAM(0)
+#define GD32_DMA1_STREAM2          GD32_DMA_STREAM(1)
+#define GD32_DMA1_STREAM3          GD32_DMA_STREAM(2)
+#define GD32_DMA1_STREAM4          GD32_DMA_STREAM(3)
+#define GD32_DMA1_STREAM5          GD32_DMA_STREAM(4)
+#define GD32_DMA1_STREAM6          GD32_DMA_STREAM(5)
+#define GD32_DMA1_STREAM7          GD32_DMA_STREAM(6)
+#define GD32_DMA2_STREAM1          GD32_DMA_STREAM(GD32_DMA1_NUM_CHANNELS + 0)
+#define GD32_DMA2_STREAM2          GD32_DMA_STREAM(GD32_DMA1_NUM_CHANNELS + 1)
+#define GD32_DMA2_STREAM3          GD32_DMA_STREAM(GD32_DMA1_NUM_CHANNELS + 2)
+#define GD32_DMA2_STREAM4          GD32_DMA_STREAM(GD32_DMA1_NUM_CHANNELS + 3)
+#define GD32_DMA2_STREAM5          GD32_DMA_STREAM(GD32_DMA1_NUM_CHANNELS + 4)
 /** @} */
 
 /**
  * @name    CR register constants common to all DMA types
  * @{
  */
-#define STM32_DMA_CCR_RESET_VALUE   0x00000000U
-#define STM32_DMA_CR_EN             DMA_CCR_EN
-#define STM32_DMA_CR_TEIE           DMA_CCR_TEIE
-#define STM32_DMA_CR_HTIE           DMA_CCR_HTIE
-#define STM32_DMA_CR_TCIE           DMA_CCR_TCIE
-#define STM32_DMA_CR_DIR_MASK       (DMA_CCR_DIR | DMA_CCR_MEM2MEM)
-#define STM32_DMA_CR_DIR_P2M        0U
-#define STM32_DMA_CR_DIR_M2P        DMA_CCR_DIR
-#define STM32_DMA_CR_DIR_M2M        DMA_CCR_MEM2MEM
-#define STM32_DMA_CR_CIRC           DMA_CCR_CIRC
-#define STM32_DMA_CR_PINC           DMA_CCR_PINC
-#define STM32_DMA_CR_MINC           DMA_CCR_MINC
-#define STM32_DMA_CR_PSIZE_MASK     DMA_CCR_PSIZE
-#define STM32_DMA_CR_PSIZE_BYTE     0U
-#define STM32_DMA_CR_PSIZE_HWORD    DMA_CCR_PSIZE_0
-#define STM32_DMA_CR_PSIZE_WORD     DMA_CCR_PSIZE_1
-#define STM32_DMA_CR_MSIZE_MASK     DMA_CCR_MSIZE
-#define STM32_DMA_CR_MSIZE_BYTE     0U
-#define STM32_DMA_CR_MSIZE_HWORD    DMA_CCR_MSIZE_0
-#define STM32_DMA_CR_MSIZE_WORD     DMA_CCR_MSIZE_1
-#define STM32_DMA_CR_SIZE_MASK      (STM32_DMA_CR_PSIZE_MASK |              \
-                                     STM32_DMA_CR_MSIZE_MASK)
-#define STM32_DMA_CR_PL_MASK        DMA_CCR_PL
-#define STM32_DMA_CR_PL(n)          ((n) << 12U)
+#define GD32_DMA_CCR_RESET_VALUE   0x00000000U
+#define GD32_DMA_CR_EN             DMA_CCR_EN
+#define GD32_DMA_CR_TEIE           DMA_CCR_TEIE
+#define GD32_DMA_CR_HTIE           DMA_CCR_HTIE
+#define GD32_DMA_CR_TCIE           DMA_CCR_TCIE
+#define GD32_DMA_CR_DIR_MASK       (DMA_CCR_DIR | DMA_CCR_MEM2MEM)
+#define GD32_DMA_CR_DIR_P2M        0U
+#define GD32_DMA_CR_DIR_M2P        DMA_CCR_DIR
+#define GD32_DMA_CR_DIR_M2M        DMA_CCR_MEM2MEM
+#define GD32_DMA_CR_CIRC           DMA_CCR_CIRC
+#define GD32_DMA_CR_PINC           DMA_CCR_PINC
+#define GD32_DMA_CR_MINC           DMA_CCR_MINC
+#define GD32_DMA_CR_PSIZE_MASK     DMA_CCR_PSIZE
+#define GD32_DMA_CR_PSIZE_BYTE     0U
+#define GD32_DMA_CR_PSIZE_HWORD    DMA_CCR_PSIZE_0
+#define GD32_DMA_CR_PSIZE_WORD     DMA_CCR_PSIZE_1
+#define GD32_DMA_CR_MSIZE_MASK     DMA_CCR_MSIZE
+#define GD32_DMA_CR_MSIZE_BYTE     0U
+#define GD32_DMA_CR_MSIZE_HWORD    DMA_CCR_MSIZE_0
+#define GD32_DMA_CR_MSIZE_WORD     DMA_CCR_MSIZE_1
+#define GD32_DMA_CR_SIZE_MASK      (GD32_DMA_CR_PSIZE_MASK |              \
+                                     GD32_DMA_CR_MSIZE_MASK)
+#define GD32_DMA_CR_PL_MASK        DMA_CCR_PL
+#define GD32_DMA_CR_PL(n)          ((n) << 12U)
 /** @} */
 
 /**
  * @name    Request line selector macro
  * @{
  */
-#if STM32_DMA_SUPPORTS_CSELR || defined(__DOXYGEN__)
-#define STM32_DMA_CR_CHSEL_MASK     (15U << 16U)
-#define STM32_DMA_CR_CHSEL(n)       ((n) << 16U)
+#if GD32_DMA_SUPPORTS_CSELR || defined(__DOXYGEN__)
+#define GD32_DMA_CR_CHSEL_MASK     (15U << 16U)
+#define GD32_DMA_CR_CHSEL(n)       ((n) << 16U)
 #else
-#define STM32_DMA_CR_CHSEL_MASK     0U
-#define STM32_DMA_CR_CHSEL(n)       0U
+#define GD32_DMA_CR_CHSEL_MASK     0U
+#define GD32_DMA_CR_CHSEL(n)       0U
 #endif
 /** @} */
 
@@ -214,18 +214,18 @@
  * @name    CR register constants only found in enhanced DMA
  * @{
  */
-#define STM32_DMA_CR_DMEIE          0U  /**< @brief Ignored by normal DMA.  */
+#define GD32_DMA_CR_DMEIE          0U  /**< @brief Ignored by normal DMA.  */
 /** @} */
 
 /**
  * @name    Status flags passed to the ISR callbacks
  * @{
  */
-#define STM32_DMA_ISR_FEIF          0U
-#define STM32_DMA_ISR_DMEIF         0U
-#define STM32_DMA_ISR_TEIF          DMA_ISR_TEIF1
-#define STM32_DMA_ISR_HTIF          DMA_ISR_HTIF1
-#define STM32_DMA_ISR_TCIF          DMA_ISR_TCIF1
+#define GD32_DMA_ISR_FEIF          0U
+#define GD32_DMA_ISR_DMEIF         0U
+#define GD32_DMA_ISR_TEIF          DMA_ISR_TEIF1
+#define GD32_DMA_ISR_HTIF          DMA_ISR_HTIF1
+#define GD32_DMA_ISR_TCIF          DMA_ISR_TCIF1
 /** @} */
 
 /*===========================================================================*/
@@ -236,19 +236,19 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if !defined(STM32_DMA1_NUM_CHANNELS)
-#error "STM32_DMA1_NUM_CHANNELS not defined in registry"
+#if !defined(GD32_DMA1_NUM_CHANNELS)
+#error "GD32_DMA1_NUM_CHANNELS not defined in registry"
 #endif
 
-#if !defined(STM32_DMA2_NUM_CHANNELS)
-#error "STM32_DMA2_NUM_CHANNELS not defined in registry"
+#if !defined(GD32_DMA2_NUM_CHANNELS)
+#error "GD32_DMA2_NUM_CHANNELS not defined in registry"
 #endif
 
-#if (STM32_DMA1_NUM_CHANNELS < 0) || (STM32_DMA1_NUM_CHANNELS > 7)
+#if (GD32_DMA1_NUM_CHANNELS < 0) || (GD32_DMA1_NUM_CHANNELS > 7)
 #error "unsupported channels configuration"
 #endif
 
-#if (STM32_DMA2_NUM_CHANNELS < 0) || (STM32_DMA2_NUM_CHANNELS > 5)
+#if (GD32_DMA2_NUM_CHANNELS < 0) || (GD32_DMA2_NUM_CHANNELS > 5)
 #error "unsupported channels configuration"
 #endif
 
@@ -357,7 +357,7 @@ typedef struct {
  *
  * @special
  */
-#if STM32_DMA_SUPPORTS_CSELR || defined(__DOXYGEN__)
+#if GD32_DMA_SUPPORTS_CSELR || defined(__DOXYGEN__)
 #define dmaStreamSetMode(dmastp, mode) {                                    \
   uint32_t cselr = *(dmastp)->cselr;                                        \
   cselr &= ~(0x0000000FU << (dmastp)->shift);                               \
@@ -382,7 +382,7 @@ typedef struct {
  * @special
  */
 #define dmaStreamEnable(dmastp) {                                           \
-  (dmastp)->channel->CCR |= STM32_DMA_CR_EN;                                \
+  (dmastp)->channel->CCR |= GD32_DMA_CR_EN;                                \
 }
 
 /**
@@ -400,8 +400,8 @@ typedef struct {
  * @special
  */
 #define dmaStreamDisable(dmastp) {                                          \
-  (dmastp)->channel->CCR &= ~(STM32_DMA_CR_TCIE | STM32_DMA_CR_HTIE |       \
-                              STM32_DMA_CR_TEIE | STM32_DMA_CR_EN);         \
+  (dmastp)->channel->CCR &= ~(GD32_DMA_CR_TCIE | GD32_DMA_CR_HTIE |       \
+                              GD32_DMA_CR_TEIE | GD32_DMA_CR_EN);         \
   dmaStreamClearInterrupt(dmastp);                                          \
 }
 
@@ -416,7 +416,7 @@ typedef struct {
  * @special
  */
 #define dmaStreamClearInterrupt(dmastp) {                                   \
-  (dmastp)->dma->IFCR = STM32_DMA_ISR_MASK << (dmastp)->shift;              \
+  (dmastp)->dma->IFCR = GD32_DMA_ISR_MASK << (dmastp)->shift;              \
 }
 
 /**
@@ -429,10 +429,10 @@ typedef struct {
  * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
  * @param[in] mode      value to be written in the CCR register, this value
  *                      is implicitly ORed with:
- *                      - @p STM32_DMA_CR_MINC
- *                      - @p STM32_DMA_CR_PINC
- *                      - @p STM32_DMA_CR_DIR_M2M
- *                      - @p STM32_DMA_CR_EN
+ *                      - @p GD32_DMA_CR_MINC
+ *                      - @p GD32_DMA_CR_PINC
+ *                      - @p GD32_DMA_CR_DIR_M2M
+ *                      - @p GD32_DMA_CR_EN
  *                      .
  * @param[in] src       source address
  * @param[in] dst       destination address
@@ -443,8 +443,8 @@ typedef struct {
   dmaStreamSetMemory0(dmastp, dst);                                         \
   dmaStreamSetTransactionSize(dmastp, n);                                   \
   dmaStreamSetMode(dmastp, (mode) |                                         \
-                           STM32_DMA_CR_MINC | STM32_DMA_CR_PINC |          \
-                           STM32_DMA_CR_DIR_M2M | STM32_DMA_CR_EN);         \
+                           GD32_DMA_CR_MINC | GD32_DMA_CR_PINC |          \
+                           GD32_DMA_CR_DIR_M2M | GD32_DMA_CR_EN);         \
 }
 
 /**
@@ -466,7 +466,7 @@ typedef struct {
 /*===========================================================================*/
 
 #if !defined(__DOXYGEN__)
-extern const stm32_dma_stream_t _stm32_dma_streams[STM32_DMA_STREAMS];
+extern const stm32_dma_stream_t _stm32_dma_streams[GD32_DMA_STREAMS];
 #endif
 
 #ifdef __cplusplus
@@ -484,13 +484,13 @@ extern "C" {
   void dmaStreamFreeI(const stm32_dma_stream_t *dmastp);
   void dmaStreamFree(const stm32_dma_stream_t *dmastp);
   void dmaServeInterrupt(const stm32_dma_stream_t *dmastp);
-#if STM32_DMA_SUPPORTS_DMAMUX == TRUE
+#if GD32_DMA_SUPPORTS_DMAMUX == TRUE
   void dmaSetRequestSource(const stm32_dma_stream_t *dmastp, uint32_t per);
 #endif
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* STM32_DMA_H */
+#endif /* GD32_DMA_H */
 
 /** @} */

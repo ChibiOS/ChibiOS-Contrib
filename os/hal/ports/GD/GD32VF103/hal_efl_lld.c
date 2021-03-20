@@ -32,8 +32,8 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define STM32_FLASH_LINE_SIZE               2U
-#define STM32_FLASH_LINE_MASK               (STM32_FLASH_LINE_SIZE - 1U)
+#define GD32_FLASH_LINE_SIZE               2U
+#define GD32_FLASH_LINE_MASK               (GD32_FLASH_LINE_SIZE - 1U)
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -51,15 +51,15 @@ EFlashDriver EFLD1;
 static const flash_descriptor_t efl_lld_descriptor = {
  .attributes        = FLASH_ATTR_ERASED_IS_ONE |
                       FLASH_ATTR_MEMORY_MAPPED,
- .page_size         = STM32_FLASH_LINE_SIZE,
- .sectors_count     = STM32_FLASH_NUMBER_OF_BANKS *
-                      STM32_FLASH_SECTORS_PER_BANK,
+ .page_size         = GD32_FLASH_LINE_SIZE,
+ .sectors_count     = GD32_FLASH_NUMBER_OF_BANKS *
+                      GD32_FLASH_SECTORS_PER_BANK,
  .sectors           = NULL,
- .sectors_size      = STM32_FLASH_SECTOR_SIZE,
+ .sectors_size      = GD32_FLASH_SECTOR_SIZE,
  .address           = (uint8_t *)FLASH_BASE,
- .size              = STM32_FLASH_NUMBER_OF_BANKS *
-                      STM32_FLASH_SECTORS_PER_BANK *
-                      STM32_FLASH_SECTOR_SIZE
+ .size              = GD32_FLASH_NUMBER_OF_BANKS *
+                      GD32_FLASH_SECTORS_PER_BANK *
+                      GD32_FLASH_SECTOR_SIZE
 };
 
 /*===========================================================================*/
@@ -274,8 +274,8 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
     volatile uint16_t *address;
 
     union {
-      uint16_t  hw[STM32_FLASH_LINE_SIZE / sizeof (uint16_t)];
-      uint8_t   b[STM32_FLASH_LINE_SIZE / sizeof (uint8_t)];
+      uint16_t  hw[GD32_FLASH_LINE_SIZE / sizeof (uint16_t)];
+      uint8_t   b[GD32_FLASH_LINE_SIZE / sizeof (uint8_t)];
     } line;
 
     /* Unwritten bytes are initialized to all ones.*/
@@ -283,16 +283,16 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
 
     /* Programming address aligned to flash lines.*/
     address = (volatile uint16_t *)(efl_lld_descriptor.address +
-                                    (offset & ~STM32_FLASH_LINE_MASK));
+                                    (offset & ~GD32_FLASH_LINE_MASK));
 
     /* Copying data inside the prepared line.*/
     do {
-      line.b[offset & STM32_FLASH_LINE_MASK] = *pp;
+      line.b[offset & GD32_FLASH_LINE_MASK] = *pp;
       offset++;
       n--;
       pp++;
     }
-    while ((n > 0U) & ((offset & STM32_FLASH_LINE_MASK) != 0U));
+    while ((n > 0U) & ((offset & GD32_FLASH_LINE_MASK) != 0U));
 
     /* Programming line.*/
     address[0] = line.hw[0];
@@ -420,7 +420,7 @@ flash_error_t efl_lld_query_erase(void *instance, uint32_t *wait_time) {
       /* Recommended time before polling again, this is a simplified
          implementation.*/
       if (wait_time != NULL) {
-        *wait_time = (uint32_t)STM32_FLASH_WAIT_TIME_MS;
+        *wait_time = (uint32_t)GD32_FLASH_WAIT_TIME_MS;
       }
 
       err = FLASH_BUSY_ERASING;
@@ -470,7 +470,7 @@ flash_error_t efl_lld_verify_erase(void *instance, flash_sector_t sector) {
   devp->state = FLASH_READ;
 
   /* Scanning the sector space.*/
-  for (i = 0U; i < STM32_FLASH_SECTOR_SIZE / sizeof(uint32_t); i++) {
+  for (i = 0U; i < GD32_FLASH_SECTOR_SIZE / sizeof(uint32_t); i++) {
     if (*address != 0xFFFFFFFFU) {
       err = FLASH_ERROR_VERIFY;
       break;

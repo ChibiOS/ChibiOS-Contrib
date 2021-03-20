@@ -31,37 +31,37 @@
 /*===========================================================================*/
 
 /* Registry checks for robustness.*/
-#if !defined(STM32_HAS_TIM2)
-#error "STM32_HAS_TIM2 not defined in registry"
+#if !defined(GD32_HAS_TIM2)
+#error "GD32_HAS_TIM2 not defined in registry"
 #endif
 
 /* Driver checks for robustness, undefined USE macros are defaulted to
    FALSE. This makes this module independent from drivers implementation.*/
-#if !defined(STM32_GPT_USE_TIM2)
-#define STM32_GPT_USE_TIM2                  FALSE
+#if !defined(GD32_GPT_USE_TIM2)
+#define GD32_GPT_USE_TIM2                  FALSE
 #endif
-#if !defined(STM32_ICU_USE_TIM2)
-#define STM32_ICU_USE_TIM2                  FALSE
+#if !defined(GD32_ICU_USE_TIM2)
+#define GD32_ICU_USE_TIM2                  FALSE
 #endif
-#if !defined(STM32_PWM_USE_TIM2)
-#define STM32_PWM_USE_TIM2                  FALSE
+#if !defined(GD32_PWM_USE_TIM2)
+#define GD32_PWM_USE_TIM2                  FALSE
 #endif
-#if !defined(STM32_ST_USE_TIM2)
-#define STM32_ST_USE_TIM2                   FALSE
+#if !defined(GD32_ST_USE_TIM2)
+#define GD32_ST_USE_TIM2                   FALSE
 #endif
 
-#if STM32_HAS_TIM2
+#if GD32_HAS_TIM2
 
 /* Priority settings checks.*/
-#if !defined(STM32_IRQ_TIM2_PRIORITY)
-#error "STM32_IRQ_TIM2_PRIORITY not defined in mcuconf.h"
+#if !defined(GD32_IRQ_TIM2_PRIORITY)
+#error "GD32_IRQ_TIM2_PRIORITY not defined in mcuconf.h"
 #endif
 
-#if !OSAL_IRQ_IS_VALID_PRIORITY(STM32_IRQ_TIM2_PRIORITY)
-#error "Invalid IRQ priority assigned to STM32_IRQ_TIM2_PRIORITY"
+#if !OSAL_IRQ_IS_VALID_PRIORITY(GD32_IRQ_TIM2_PRIORITY)
+#error "Invalid IRQ priority assigned to GD32_IRQ_TIM2_PRIORITY"
 #endif
 
-#endif /* STM32_HAS_TIM2 */
+#endif /* GD32_HAS_TIM2 */
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -76,13 +76,13 @@
 /*===========================================================================*/
 
 static inline void tim2_irq_init(void) {
-#if defined(STM32_TIM2_IS_USED)
-  eclicEnableVector(GD32_TIM2_NUMBER, STM32_IRQ_TIM2_PRIORITY, STM32_IRQ_TIM2_TRIGGER);
+#if defined(GD32_TIM2_IS_USED)
+  eclicEnableVector(GD32_TIM2_NUMBER, GD32_IRQ_TIM2_PRIORITY, GD32_IRQ_TIM2_TRIGGER);
 #endif
 }
 
 static inline void tim2_irq_deinit(void) {
-#if defined(STM32_TIM2_IS_USED)
+#if defined(GD32_TIM2_IS_USED)
   eclicDisableVector(GD32_TIM2_NUMBER);
 #endif
 }
@@ -91,7 +91,7 @@ static inline void tim2_irq_deinit(void) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if defined(STM32_TIM2_IS_USED) || defined(__DOXYGEN__)
+#if defined(GD32_TIM2_IS_USED) || defined(__DOXYGEN__)
 /**
  * @brief   TIM2 interrupt handler.
  *
@@ -102,22 +102,22 @@ OSAL_IRQ_HANDLER(GD32_TIM2_HANDLER) {
   OSAL_IRQ_PROLOGUE();
 
 #if HAL_USE_GPT
-#if STM32_GPT_USE_TIM2
+#if GD32_GPT_USE_TIM2
   gpt_lld_serve_interrupt(&GPTD2);
 #endif
 #endif
 #if HAL_USE_ICU
-#if STM32_ICU_USE_TIM2
+#if GD32_ICU_USE_TIM2
   icu_lld_serve_interrupt(&ICUD2);
 #endif
 #endif
 #if HAL_USE_PWM
-#if STM32_PWM_USE_TIM2
+#if GD32_PWM_USE_TIM2
   pwm_lld_serve_interrupt(&PWMD2);
 #endif
 #endif
 #if 1
-#if STM32_ST_USE_TIM2
+#if GD32_ST_USE_TIM2
   st_lld_serve_interrupt();
 #endif
 #endif

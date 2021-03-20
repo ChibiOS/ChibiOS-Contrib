@@ -35,42 +35,42 @@
 /*===========================================================================*/
 
 /** @brief USART1 serial driver identifier.*/
-#if STM32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
 SerialDriver SD1;
 #endif
 
 /** @brief USART2 serial driver identifier.*/
-#if STM32_SERIAL_USE_USART2 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART2 || defined(__DOXYGEN__)
 SerialDriver SD2;
 #endif
 
 /** @brief USART3 serial driver identifier.*/
-#if STM32_SERIAL_USE_USART3 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART3 || defined(__DOXYGEN__)
 SerialDriver SD3;
 #endif
 
 /** @brief UART4 serial driver identifier.*/
-#if STM32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
 SerialDriver SD4;
 #endif
 
 /** @brief UART5 serial driver identifier.*/
-#if STM32_SERIAL_USE_UART5 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART5 || defined(__DOXYGEN__)
 SerialDriver SD5;
 #endif
 
 /** @brief USART6 serial driver identifier.*/
-#if STM32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
 SerialDriver SD6;
 #endif
 
 /** @brief UART7 serial driver identifier.*/
-#if STM32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
 SerialDriver SD7;
 #endif
 
 /** @brief UART8 serial driver identifier.*/
-#if STM32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
 SerialDriver SD8;
 #endif
 
@@ -103,14 +103,14 @@ static void usart_init(SerialDriver *sdp, const SerialConfig *config) {
   USART_TypeDef *u = sdp->usart;
 
   /* Baud rate setting.*/
-#if STM32_HAS_USART6
+#if GD32_HAS_USART6
   if ((sdp->usart == USART1) || (sdp->usart == USART6))
 #else
   if (sdp->usart == USART1)
 #endif
-    fck = STM32_PCLK2 / config->speed;
+    fck = GD32_PCLK2 / config->speed;
   else
-    fck = STM32_PCLK1 / config->speed;
+    fck = GD32_PCLK1 / config->speed;
 
   /* Correcting USARTDIV when oversampling by 8 instead of 16.
      Fraction is still 4 bits wide, but only lower 3 bits used.
@@ -233,7 +233,7 @@ static void serve_interrupt(SerialDriver *sdp) {
   }
 }
 
-#if STM32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
 static void notify1(io_queue_t *qp) {
 
   (void)qp;
@@ -241,7 +241,7 @@ static void notify1(io_queue_t *qp) {
 }
 #endif
 
-#if STM32_SERIAL_USE_USART2 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART2 || defined(__DOXYGEN__)
 static void notify2(io_queue_t *qp) {
 
   (void)qp;
@@ -249,7 +249,7 @@ static void notify2(io_queue_t *qp) {
 }
 #endif
 
-#if STM32_SERIAL_USE_USART3 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART3 || defined(__DOXYGEN__)
 static void notify3(io_queue_t *qp) {
 
   (void)qp;
@@ -257,7 +257,7 @@ static void notify3(io_queue_t *qp) {
 }
 #endif
 
-#if STM32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
 static void notify4(io_queue_t *qp) {
 
   (void)qp;
@@ -265,7 +265,7 @@ static void notify4(io_queue_t *qp) {
 }
 #endif
 
-#if STM32_SERIAL_USE_UART5 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART5 || defined(__DOXYGEN__)
 static void notify5(io_queue_t *qp) {
 
   (void)qp;
@@ -273,7 +273,7 @@ static void notify5(io_queue_t *qp) {
 }
 #endif
 
-#if STM32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
 static void notify6(io_queue_t *qp) {
 
   (void)qp;
@@ -281,7 +281,7 @@ static void notify6(io_queue_t *qp) {
 }
 #endif
 
-#if STM32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
 static void notify7(io_queue_t *qp) {
 
   (void)qp;
@@ -289,7 +289,7 @@ static void notify7(io_queue_t *qp) {
 }
 #endif
 
-#if STM32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
 static void notify8(io_queue_t *qp) {
 
   (void)qp;
@@ -301,7 +301,7 @@ static void notify8(io_queue_t *qp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if STM32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
 #if !defined(GD32_USART1_HANDLER)
 #error "GD32_USART1_HANDLER not defined"
 #endif
@@ -320,7 +320,7 @@ OSAL_IRQ_HANDLER(GD32_USART1_HANDLER) {
 }
 #endif
 
-#if STM32_SERIAL_USE_USART2 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART2 || defined(__DOXYGEN__)
 #if !defined(GD32_USART2_HANDLER)
 #error "GD32_USART2_HANDLER not defined"
 #endif
@@ -339,7 +339,7 @@ OSAL_IRQ_HANDLER(GD32_USART2_HANDLER) {
 }
 #endif
 
-#if STM32_SERIAL_USE_USART3 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART3 || defined(__DOXYGEN__)
 #if !defined(GD32_USART3_HANDLER)
 #error "GD32_USART3_HANDLER not defined"
 #endif
@@ -358,7 +358,7 @@ OSAL_IRQ_HANDLER(GD32_USART3_HANDLER) {
 }
 #endif
 
-#if STM32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
 #if !defined(GD32_UART4_HANDLER)
 #error "GD32_UART4_HANDLER not defined"
 #endif
@@ -377,7 +377,7 @@ OSAL_IRQ_HANDLER(GD32_UART4_HANDLER) {
 }
 #endif
 
-#if STM32_SERIAL_USE_UART5 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART5 || defined(__DOXYGEN__)
 #if !defined(GD32_UART5_HANDLER)
 #error "GD32_UART5_HANDLER not defined"
 #endif
@@ -396,7 +396,7 @@ OSAL_IRQ_HANDLER(GD32_UART5_HANDLER) {
 }
 #endif
 
-#if STM32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
 #if !defined(GD32_USART6_HANDLER)
 #error "GD32_USART6_HANDLER not defined"
 #endif
@@ -415,7 +415,7 @@ OSAL_IRQ_HANDLER(GD32_USART6_HANDLER) {
 }
 #endif
 
-#if STM32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
 #if !defined(GD32_UART7_HANDLER)
 #error "GD32_UART7_HANDLER not defined"
 #endif
@@ -434,7 +434,7 @@ OSAL_IRQ_HANDLER(GD32_UART7_HANDLER) {
 }
 #endif
 
-#if STM32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
 #if !defined(GD32_UART8_HANDLER)
 #error "GD32_UART8_HANDLER not defined"
 #endif
@@ -464,42 +464,42 @@ OSAL_IRQ_HANDLER(GD32_UART8_HANDLER) {
  */
 void sd_lld_init(void) {
 
-#if STM32_SERIAL_USE_USART1
+#if GD32_SERIAL_USE_USART1
   sdObjectInit(&SD1, NULL, notify1);
   SD1.usart = USART1;
 #endif
 
-#if STM32_SERIAL_USE_USART2
+#if GD32_SERIAL_USE_USART2
   sdObjectInit(&SD2, NULL, notify2);
   SD2.usart = USART2;
 #endif
 
-#if STM32_SERIAL_USE_USART3
+#if GD32_SERIAL_USE_USART3
   sdObjectInit(&SD3, NULL, notify3);
   SD3.usart = USART3;
 #endif
 
-#if STM32_SERIAL_USE_UART4
+#if GD32_SERIAL_USE_UART4
   sdObjectInit(&SD4, NULL, notify4);
   SD4.usart = UART4;
 #endif
 
-#if STM32_SERIAL_USE_UART5
+#if GD32_SERIAL_USE_UART5
   sdObjectInit(&SD5, NULL, notify5);
   SD5.usart = UART5;
 #endif
 
-#if STM32_SERIAL_USE_USART6
+#if GD32_SERIAL_USE_USART6
   sdObjectInit(&SD6, NULL, notify6);
   SD6.usart = USART6;
 #endif
 
-#if STM32_SERIAL_USE_UART7
+#if GD32_SERIAL_USE_UART7
   sdObjectInit(&SD7, NULL, notify7);
   SD7.usart = UART7;
 #endif
 
-#if STM32_SERIAL_USE_UART8
+#if GD32_SERIAL_USE_UART8
   sdObjectInit(&SD8, NULL, notify8);
   SD8.usart = UART8;
 #endif
@@ -521,52 +521,52 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
     config = &default_config;
 
   if (sdp->state == SD_STOP) {
-#if STM32_SERIAL_USE_USART1
+#if GD32_SERIAL_USE_USART1
     if (&SD1 == sdp) {
       rccEnableUSART1(true);
-      eclicEnableVector(GD32_USART1_NUMBER, STM32_SERIAL_USART1_PRIORITY, STM32_SERIAL_USART1_TRIGGER);
+      eclicEnableVector(GD32_USART1_NUMBER, GD32_SERIAL_USART1_PRIORITY, GD32_SERIAL_USART1_TRIGGER);
     }
 #endif
-#if STM32_SERIAL_USE_USART2
+#if GD32_SERIAL_USE_USART2
     if (&SD2 == sdp) {
       rccEnableUSART2(true);
-      eclicEnableVector(GD32_USART2_NUMBER, STM32_SERIAL_USART2_PRIORITY, STM32_SERIAL_USART2_TRIGGER);
+      eclicEnableVector(GD32_USART2_NUMBER, GD32_SERIAL_USART2_PRIORITY, GD32_SERIAL_USART2_TRIGGER);
     }
 #endif
-#if STM32_SERIAL_USE_USART3
+#if GD32_SERIAL_USE_USART3
     if (&SD3 == sdp) {
       rccEnableUSART3(true);
-      eclicEnableVector(GD32_USART3_NUMBER, STM32_SERIAL_USART3_PRIORITY, STM32_SERIAL_USART3_TRIGGER);
+      eclicEnableVector(GD32_USART3_NUMBER, GD32_SERIAL_USART3_PRIORITY, GD32_SERIAL_USART3_TRIGGER);
     }
 #endif
-#if STM32_SERIAL_USE_UART4
+#if GD32_SERIAL_USE_UART4
     if (&SD4 == sdp) {
       rccEnableUART4(true);
-      eclicEnableVector(GD32_UART4_NUMBER, STM32_SERIAL_UART4_PRIORITY, STM32_SERIAL_UART4_TRIGGER);
+      eclicEnableVector(GD32_UART4_NUMBER, GD32_SERIAL_UART4_PRIORITY, GD32_SERIAL_UART4_TRIGGER);
     }
 #endif
-#if STM32_SERIAL_USE_UART5
+#if GD32_SERIAL_USE_UART5
     if (&SD5 == sdp) {
       rccEnableUART5(true);
-      eclicEnableVector(GD32_UART5_NUMBER, STM32_SERIAL_UART5_PRIORITY, STM32_SERIAL_UART5_TRIGGER);
+      eclicEnableVector(GD32_UART5_NUMBER, GD32_SERIAL_UART5_PRIORITY, GD32_SERIAL_UART5_TRIGGER);
     }
 #endif
-#if STM32_SERIAL_USE_USART6
+#if GD32_SERIAL_USE_USART6
     if (&SD6 == sdp) {
       rccEnableUSART6(true);
-      eclicEnableVector(GD32_USART6_NUMBER, STM32_SERIAL_USART6_PRIORITY, STM32_SERIAL_USART6_TRIGGER);
+      eclicEnableVector(GD32_USART6_NUMBER, GD32_SERIAL_USART6_PRIORITY, GD32_SERIAL_USART6_TRIGGER);
     }
 #endif
-#if STM32_SERIAL_USE_UART7
+#if GD32_SERIAL_USE_UART7
     if (&SD7 == sdp) {
       rccEnableUART7(true);
-      eclicEnableVector(GD32_UART7_NUMBER, STM32_SERIAL_UART7_PRIORITY, STM32_SERIAL_UART7_TRIGGER);
+      eclicEnableVector(GD32_UART7_NUMBER, GD32_SERIAL_UART7_PRIORITY, GD32_SERIAL_UART7_TRIGGER);
     }
 #endif
-#if STM32_SERIAL_USE_UART8
+#if GD32_SERIAL_USE_UART8
     if (&SD8 == sdp) {
       rccEnableUART8(true);
-      eclicEnableVector(GD32_UART8_NUMBER, STM32_SERIAL_UART8_PRIORITY, STM32_SERIAL_UART8_TRIGGER);
+      eclicEnableVector(GD32_UART8_NUMBER, GD32_SERIAL_UART8_PRIORITY, GD32_SERIAL_UART8_TRIGGER);
     }
 #endif
   }
@@ -586,56 +586,56 @@ void sd_lld_stop(SerialDriver *sdp) {
 
   if (sdp->state == SD_READY) {
     usart_deinit(sdp->usart);
-#if STM32_SERIAL_USE_USART1
+#if GD32_SERIAL_USE_USART1
     if (&SD1 == sdp) {
       rccDisableUSART1();
       eclicDisableVector(GD32_USART1_NUMBER);
       return;
     }
 #endif
-#if STM32_SERIAL_USE_USART2
+#if GD32_SERIAL_USE_USART2
     if (&SD2 == sdp) {
       rccDisableUSART2();
       eclicDisableVector(GD32_USART2_NUMBER);
       return;
     }
 #endif
-#if STM32_SERIAL_USE_USART3
+#if GD32_SERIAL_USE_USART3
     if (&SD3 == sdp) {
       rccDisableUSART3();
       eclicDisableVector(GD32_USART3_NUMBER);
       return;
     }
 #endif
-#if STM32_SERIAL_USE_UART4
+#if GD32_SERIAL_USE_UART4
     if (&SD4 == sdp) {
       rccDisableUART4();
       eclicDisableVector(GD32_UART4_NUMBER);
       return;
     }
 #endif
-#if STM32_SERIAL_USE_UART5
+#if GD32_SERIAL_USE_UART5
     if (&SD5 == sdp) {
       rccDisableUART5();
       eclicDisableVector(GD32_UART5_NUMBER);
       return;
     }
 #endif
-#if STM32_SERIAL_USE_USART6
+#if GD32_SERIAL_USE_USART6
     if (&SD6 == sdp) {
       rccDisableUSART6();
       eclicDisableVector(GD32_USART6_NUMBER);
       return;
     }
 #endif
-#if STM32_SERIAL_USE_UART7
+#if GD32_SERIAL_USE_UART7
     if (&SD7 == sdp) {
       rccDisableUART7();
       eclicDisableVector(GD32_UART7_NUMBER);
       return;
     }
 #endif
-#if STM32_SERIAL_USE_UART8
+#if GD32_SERIAL_USE_UART8
     if (&SD8 == sdp) {
       rccDisableUART8();
       eclicDisableVector(GD32_UART8_NUMBER);

@@ -65,18 +65,18 @@
 /*
  * RTC driver system settings.
  */
-#define STM32_RTC_IRQ_PRIORITY      15
+#define GD32_RTC_IRQ_PRIORITY      15
 /** @} */
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if HAL_USE_RTC && !STM32_HAS_RTC
+#if HAL_USE_RTC && !GD32_HAS_RTC
 #error "RTC not present in the selected device"
 #endif
 
-#if STM32_RTCCLK == 0
+#if GD32_RTCCLK == 0
 #error "RTC clock not enabled"
 #endif
 

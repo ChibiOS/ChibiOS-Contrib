@@ -18,7 +18,7 @@
  * @file    DMA/stm32_dma.c
  * @brief   DMA helper driver code.
  *
- * @addtogroup STM32_DMA
+ * @addtogroup GD32_DMA
  * @details DMA sharing helper driver. In the STM32 the DMA streams are a
  *          shared resource, this driver allows to allocate and free DMA
  *          streams at runtime in order to allow all the other device
@@ -33,7 +33,7 @@
 
 /* The following macro is only defined if some driver requiring DMA services
    has been enabled.*/
-#if defined(STM32_DMA_REQUIRED) || defined(__DOXYGEN__)
+#if defined(GD32_DMA_REQUIRED) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -42,13 +42,13 @@
 /**
  * @brief   Mask of the DMA1 streams in @p dma_streams_mask.
  */
-#define STM32_DMA1_STREAMS_MASK     ((1U << STM32_DMA1_NUM_CHANNELS) - 1U)
+#define GD32_DMA1_STREAMS_MASK     ((1U << GD32_DMA1_NUM_CHANNELS) - 1U)
 
 /**
  * @brief   Mask of the DMA2 streams in @p dma_streams_mask.
  */
-#define STM32_DMA2_STREAMS_MASK     (((1U << STM32_DMA2_NUM_CHANNELS) -     \
-                                      1U) << STM32_DMA1_NUM_CHANNELS)
+#define GD32_DMA2_STREAMS_MASK     (((1U << GD32_DMA2_NUM_CHANNELS) -     \
+                                      1U) << GD32_DMA1_NUM_CHANNELS)
 
 #define DMA1_CH1_VARIANT            0
 #define DMA1_CH2_VARIANT            0
@@ -68,52 +68,52 @@
 /*
  * Default ISR collision masks.
  */
-#if !defined(STM32_DMA1_CH1_CMASK)
-#define STM32_DMA1_CH1_CMASK        (1U << 0U)
+#if !defined(GD32_DMA1_CH1_CMASK)
+#define GD32_DMA1_CH1_CMASK        (1U << 0U)
 #endif
 
-#if !defined(STM32_DMA1_CH2_CMASK)
-#define STM32_DMA1_CH2_CMASK        (1U << 1U)
+#if !defined(GD32_DMA1_CH2_CMASK)
+#define GD32_DMA1_CH2_CMASK        (1U << 1U)
 #endif
 
-#if !defined(STM32_DMA1_CH3_CMASK)
-#define STM32_DMA1_CH3_CMASK        (1U << 2U)
+#if !defined(GD32_DMA1_CH3_CMASK)
+#define GD32_DMA1_CH3_CMASK        (1U << 2U)
 #endif
 
-#if !defined(STM32_DMA1_CH4_CMASK)
-#define STM32_DMA1_CH4_CMASK        (1U << 3U)
+#if !defined(GD32_DMA1_CH4_CMASK)
+#define GD32_DMA1_CH4_CMASK        (1U << 3U)
 #endif
 
-#if !defined(STM32_DMA1_CH5_CMASK)
-#define STM32_DMA1_CH5_CMASK        (1U << 4U)
+#if !defined(GD32_DMA1_CH5_CMASK)
+#define GD32_DMA1_CH5_CMASK        (1U << 4U)
 #endif
 
-#if !defined(STM32_DMA1_CH6_CMASK)
-#define STM32_DMA1_CH6_CMASK        (1U << 5U)
+#if !defined(GD32_DMA1_CH6_CMASK)
+#define GD32_DMA1_CH6_CMASK        (1U << 5U)
 #endif
 
-#if !defined(STM32_DMA1_CH7_CMASK)
-#define STM32_DMA1_CH7_CMASK        (1U << 6U)
+#if !defined(GD32_DMA1_CH7_CMASK)
+#define GD32_DMA1_CH7_CMASK        (1U << 6U)
 #endif
 
-#if !defined(STM32_DMA2_CH1_CMASK)
-#define STM32_DMA2_CH1_CMASK        (1U << (STM32_DMA1_NUM_CHANNELS + 0U))
+#if !defined(GD32_DMA2_CH1_CMASK)
+#define GD32_DMA2_CH1_CMASK        (1U << (GD32_DMA1_NUM_CHANNELS + 0U))
 #endif
 
-#if !defined(STM32_DMA2_CH2_CMASK)
-#define STM32_DMA2_CH2_CMASK        (1U << (STM32_DMA1_NUM_CHANNELS + 1U))
+#if !defined(GD32_DMA2_CH2_CMASK)
+#define GD32_DMA2_CH2_CMASK        (1U << (GD32_DMA1_NUM_CHANNELS + 1U))
 #endif
 
-#if !defined(STM32_DMA2_CH3_CMASK)
-#define STM32_DMA2_CH3_CMASK        (1U << (STM32_DMA1_NUM_CHANNELS + 2U))
+#if !defined(GD32_DMA2_CH3_CMASK)
+#define GD32_DMA2_CH3_CMASK        (1U << (GD32_DMA1_NUM_CHANNELS + 2U))
 #endif
 
-#if !defined(STM32_DMA2_CH4_CMASK)
-#define STM32_DMA2_CH4_CMASK        (1U << (STM32_DMA1_NUM_CHANNELS + 3U))
+#if !defined(GD32_DMA2_CH4_CMASK)
+#define GD32_DMA2_CH4_CMASK        (1U << (GD32_DMA1_NUM_CHANNELS + 3U))
 #endif
 
-#if !defined(STM32_DMA2_CH5_CMASK)
-#define STM32_DMA2_CH5_CMASK        (1U << (STM32_DMA1_NUM_CHANNELS + 4U))
+#if !defined(GD32_DMA2_CH5_CMASK)
+#define GD32_DMA2_CH5_CMASK        (1U << (GD32_DMA1_NUM_CHANNELS + 4U))
 #endif
 
 /*===========================================================================*/
@@ -125,21 +125,21 @@
  * @details This table keeps the association between an unique stream
  *          identifier and the involved physical registers.
  * @note    Don't use this array directly, use the appropriate wrapper macros
- *          instead: @p STM32_DMA1_STREAM1, @p STM32_DMA1_STREAM2 etc.
+ *          instead: @p GD32_DMA1_STREAM1, @p GD32_DMA1_STREAM2 etc.
  */
-const stm32_dma_stream_t _stm32_dma_streams[STM32_DMA_STREAMS] = {
-  {DMA1, DMA1_Channel1, STM32_DMA1_CH1_CMASK, DMA1_CH1_VARIANT,  0, 0, GD32_DMA1_CH1_NUMBER},
-  {DMA1, DMA1_Channel2, STM32_DMA1_CH2_CMASK, DMA1_CH2_VARIANT,  4, 1, GD32_DMA1_CH2_NUMBER},
-  {DMA1, DMA1_Channel3, STM32_DMA1_CH3_CMASK, DMA1_CH3_VARIANT,  8, 2, GD32_DMA1_CH3_NUMBER},
-  {DMA1, DMA1_Channel4, STM32_DMA1_CH4_CMASK, DMA1_CH4_VARIANT, 12, 3, GD32_DMA1_CH4_NUMBER},
-  {DMA1, DMA1_Channel5, STM32_DMA1_CH5_CMASK, DMA1_CH5_VARIANT, 16, 4, GD32_DMA1_CH5_NUMBER},
-  {DMA1, DMA1_Channel6, STM32_DMA1_CH6_CMASK, DMA1_CH6_VARIANT, 20, 5, GD32_DMA1_CH6_NUMBER},
-  {DMA1, DMA1_Channel7, STM32_DMA1_CH7_CMASK, DMA1_CH7_VARIANT, 24, 6, GD32_DMA1_CH7_NUMBER},
-  {DMA2, DMA2_Channel1, STM32_DMA2_CH1_CMASK, DMA2_CH1_VARIANT,  0, 0 + STM32_DMA1_NUM_CHANNELS, GD32_DMA2_CH1_NUMBER},
-  {DMA2, DMA2_Channel2, STM32_DMA2_CH2_CMASK, DMA2_CH2_VARIANT,  4, 1 + STM32_DMA1_NUM_CHANNELS, GD32_DMA2_CH2_NUMBER},
-  {DMA2, DMA2_Channel3, STM32_DMA2_CH3_CMASK, DMA2_CH3_VARIANT,  8, 2 + STM32_DMA1_NUM_CHANNELS, GD32_DMA2_CH3_NUMBER},
-  {DMA2, DMA2_Channel4, STM32_DMA2_CH4_CMASK, DMA2_CH4_VARIANT, 12, 3 + STM32_DMA1_NUM_CHANNELS, GD32_DMA2_CH4_NUMBER},
-  {DMA2, DMA2_Channel5, STM32_DMA2_CH5_CMASK, DMA2_CH5_VARIANT, 16, 4 + STM32_DMA1_NUM_CHANNELS, GD32_DMA2_CH5_NUMBER},
+const stm32_dma_stream_t _stm32_dma_streams[GD32_DMA_STREAMS] = {
+  {DMA1, DMA1_Channel1, GD32_DMA1_CH1_CMASK, DMA1_CH1_VARIANT,  0, 0, GD32_DMA1_CH1_NUMBER},
+  {DMA1, DMA1_Channel2, GD32_DMA1_CH2_CMASK, DMA1_CH2_VARIANT,  4, 1, GD32_DMA1_CH2_NUMBER},
+  {DMA1, DMA1_Channel3, GD32_DMA1_CH3_CMASK, DMA1_CH3_VARIANT,  8, 2, GD32_DMA1_CH3_NUMBER},
+  {DMA1, DMA1_Channel4, GD32_DMA1_CH4_CMASK, DMA1_CH4_VARIANT, 12, 3, GD32_DMA1_CH4_NUMBER},
+  {DMA1, DMA1_Channel5, GD32_DMA1_CH5_CMASK, DMA1_CH5_VARIANT, 16, 4, GD32_DMA1_CH5_NUMBER},
+  {DMA1, DMA1_Channel6, GD32_DMA1_CH6_CMASK, DMA1_CH6_VARIANT, 20, 5, GD32_DMA1_CH6_NUMBER},
+  {DMA1, DMA1_Channel7, GD32_DMA1_CH7_CMASK, DMA1_CH7_VARIANT, 24, 6, GD32_DMA1_CH7_NUMBER},
+  {DMA2, DMA2_Channel1, GD32_DMA2_CH1_CMASK, DMA2_CH1_VARIANT,  0, 0 + GD32_DMA1_NUM_CHANNELS, GD32_DMA2_CH1_NUMBER},
+  {DMA2, DMA2_Channel2, GD32_DMA2_CH2_CMASK, DMA2_CH2_VARIANT,  4, 1 + GD32_DMA1_NUM_CHANNELS, GD32_DMA2_CH2_NUMBER},
+  {DMA2, DMA2_Channel3, GD32_DMA2_CH3_CMASK, DMA2_CH3_VARIANT,  8, 2 + GD32_DMA1_NUM_CHANNELS, GD32_DMA2_CH3_NUMBER},
+  {DMA2, DMA2_Channel4, GD32_DMA2_CH4_CMASK, DMA2_CH4_VARIANT, 12, 3 + GD32_DMA1_NUM_CHANNELS, GD32_DMA2_CH4_NUMBER},
+  {DMA2, DMA2_Channel5, GD32_DMA2_CH5_CMASK, DMA2_CH5_VARIANT, 16, 4 + GD32_DMA1_NUM_CHANNELS, GD32_DMA2_CH5_NUMBER},
 };
 
 /*===========================================================================*/
@@ -170,7 +170,7 @@ static struct {
      * @brief   DMA callback parameter.
      */
     void              *param;
-  } streams[STM32_DMA_STREAMS];
+  } streams[GD32_DMA_STREAMS];
 } dma;
 
 /*===========================================================================*/
@@ -191,7 +191,7 @@ OSAL_IRQ_HANDLER(GD32_DMA1_CH1_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA1_STREAM1);
+  dmaServeInterrupt(GD32_DMA1_STREAM1);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -207,7 +207,7 @@ OSAL_IRQ_HANDLER(GD32_DMA1_CH2_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA1_STREAM2);
+  dmaServeInterrupt(GD32_DMA1_STREAM2);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -223,7 +223,7 @@ OSAL_IRQ_HANDLER(GD32_DMA1_CH3_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA1_STREAM3);
+  dmaServeInterrupt(GD32_DMA1_STREAM3);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -239,7 +239,7 @@ OSAL_IRQ_HANDLER(GD32_DMA1_CH4_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA1_STREAM4);
+  dmaServeInterrupt(GD32_DMA1_STREAM4);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -255,7 +255,7 @@ OSAL_IRQ_HANDLER(GD32_DMA1_CH5_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA1_STREAM5);
+  dmaServeInterrupt(GD32_DMA1_STREAM5);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -271,7 +271,7 @@ OSAL_IRQ_HANDLER(GD32_DMA1_CH6_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA1_STREAM6);
+  dmaServeInterrupt(GD32_DMA1_STREAM6);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -287,7 +287,7 @@ OSAL_IRQ_HANDLER(GD32_DMA1_CH7_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA1_STREAM7);
+  dmaServeInterrupt(GD32_DMA1_STREAM7);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -303,7 +303,7 @@ OSAL_IRQ_HANDLER(GD32_DMA2_CH1_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA2_STREAM1);
+  dmaServeInterrupt(GD32_DMA2_STREAM1);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -319,7 +319,7 @@ OSAL_IRQ_HANDLER(GD32_DMA2_CH2_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA2_STREAM2);
+  dmaServeInterrupt(GD32_DMA2_STREAM2);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -335,7 +335,7 @@ OSAL_IRQ_HANDLER(GD32_DMA2_CH3_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA2_STREAM3);
+  dmaServeInterrupt(GD32_DMA2_STREAM3);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -351,7 +351,7 @@ OSAL_IRQ_HANDLER(GD32_DMA2_CH4_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA2_STREAM4);
+  dmaServeInterrupt(GD32_DMA2_STREAM4);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -367,7 +367,7 @@ OSAL_IRQ_HANDLER(GD32_DMA2_CH5_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(STM32_DMA2_STREAM5);
+  dmaServeInterrupt(GD32_DMA2_STREAM5);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -388,8 +388,8 @@ void dmaInit(void) {
 
   dma.allocated_mask = 0U;
   dma.isr_mask       = 0U;
-  for (i = 0; i < STM32_DMA_STREAMS; i++) {
-    _stm32_dma_streams[i].channel->CCR = STM32_DMA_CCR_RESET_VALUE;
+  for (i = 0; i < GD32_DMA_STREAMS; i++) {
+    _stm32_dma_streams[i].channel->CCR = GD32_DMA_CCR_RESET_VALUE;
     dma.streams[i].func = NULL;
   }
   DMA1->IFCR = 0xFFFFFFFFU;
@@ -403,10 +403,10 @@ void dmaInit(void) {
  *          and initializes its priority.
  *
  * @param[in] id        numeric identifiers of a specific stream or:
- *                      - @p STM32_DMA_STREAM_ID_ANY for any stream.
- *                      - @p STM32_DMA_STREAM_ID_ANY_DMA1 for any stream
+ *                      - @p GD32_DMA_STREAM_ID_ANY for any stream.
+ *                      - @p GD32_DMA_STREAM_ID_ANY_DMA1 for any stream
  *                        on DMA1.
- *                      - @p STM32_DMA_STREAM_ID_ANY_DMA2 for any stream
+ *                      - @p GD32_DMA_STREAM_ID_ANY_DMA2 for any stream
  *                        on DMA2.
  *                      .
  * @param[in] priority  IRQ priority for the DMA stream
@@ -426,23 +426,23 @@ const stm32_dma_stream_t *dmaStreamAllocI(uint32_t id,
 
   osalDbgCheckClassI();
 
-  if (id < STM32_DMA_STREAMS) {
+  if (id < GD32_DMA_STREAMS) {
     startid = id;
     endid   = id;
   }
-#if STM32_DMA_SUPPORTS_DMAMUX == TRUE
-  else if (id == STM32_DMA_STREAM_ID_ANY) {
+#if GD32_DMA_SUPPORTS_DMAMUX == TRUE
+  else if (id == GD32_DMA_STREAM_ID_ANY) {
     startid = 0U;
-    endid   = STM32_DMA_STREAMS - 1U;
+    endid   = GD32_DMA_STREAMS - 1U;
   }
-  else if (id == STM32_DMA_STREAM_ID_ANY_DMA1) {
+  else if (id == GD32_DMA_STREAM_ID_ANY_DMA1) {
     startid = 0U;
-    endid   = STM32_DMA1_NUM_CHANNELS - 1U;
+    endid   = GD32_DMA1_NUM_CHANNELS - 1U;
   }
-#if STM32_DMA2_NUM_CHANNELS > 0
-  else if (id == STM32_DMA_STREAM_ID_ANY_DMA2) {
-    startid = STM32_DMA1_NUM_CHANNELS;
-    endid   = STM32_DMA_STREAMS - 1U;
+#if GD32_DMA2_NUM_CHANNELS > 0
+  else if (id == GD32_DMA_STREAM_ID_ANY_DMA2) {
+    startid = GD32_DMA1_NUM_CHANNELS;
+    endid   = GD32_DMA_STREAMS - 1U;
   }
 #endif
 #endif
@@ -454,7 +454,7 @@ const stm32_dma_stream_t *dmaStreamAllocI(uint32_t id,
   for (i = startid; i <= endid; i++) {
     uint32_t mask = (1U << i);
     if ((dma.allocated_mask & mask) == 0U) {
-      const stm32_dma_stream_t *dmastp = STM32_DMA_STREAM(i);
+      const stm32_dma_stream_t *dmastp = GD32_DMA_STREAM(i);
 
       /* Installs the DMA handler.*/
       dma.streams[i].func  = func;
@@ -462,11 +462,11 @@ const stm32_dma_stream_t *dmaStreamAllocI(uint32_t id,
       dma.allocated_mask  |= mask;
 
       /* Enabling DMA clocks required by the current streams set.*/
-      if ((STM32_DMA1_STREAMS_MASK & mask) != 0U) {
+      if ((GD32_DMA1_STREAMS_MASK & mask) != 0U) {
         rccEnableDMA1(true);
       }
 
-      if ((STM32_DMA2_STREAMS_MASK & mask) != 0U) {
+      if ((GD32_DMA2_STREAMS_MASK & mask) != 0U) {
         rccEnableDMA2(true);
       }
 
@@ -481,7 +481,7 @@ const stm32_dma_stream_t *dmaStreamAllocI(uint32_t id,
 
       /* Putting the stream in a known state.*/
       dmaStreamDisable(dmastp);
-      dmastp->channel->CCR = STM32_DMA_CCR_RESET_VALUE;
+      dmastp->channel->CCR = GD32_DMA_CCR_RESET_VALUE;
 
       return dmastp;
     }
@@ -497,10 +497,10 @@ const stm32_dma_stream_t *dmaStreamAllocI(uint32_t id,
  *          and initializes its priority.
  *
  * @param[in] id        numeric identifiers of a specific stream or:
- *                      - @p STM32_DMA_STREAM_ID_ANY for any stream.
- *                      - @p STM32_DMA_STREAM_ID_ANY_DMA1 for any stream
+ *                      - @p GD32_DMA_STREAM_ID_ANY for any stream.
+ *                      - @p GD32_DMA_STREAM_ID_ANY_DMA1 for any stream
  *                        on DMA1.
- *                      - @p STM32_DMA_STREAM_ID_ANY_DMA2 for any stream
+ *                      - @p GD32_DMA_STREAM_ID_ANY_DMA2 for any stream
  *                        on DMA2.
  *                      .
  * @param[in] priority  IRQ priority for the DMA stream
@@ -558,10 +558,10 @@ void dmaStreamFreeI(const stm32_dma_stream_t *dmastp) {
   dma.streams[selfindex].param = NULL;
 
   /* Shutting down clocks that are no more required, if any.*/
-  if ((dma.allocated_mask & STM32_DMA1_STREAMS_MASK) == 0U) {
+  if ((dma.allocated_mask & GD32_DMA1_STREAMS_MASK) == 0U) {
     rccDisableDMA1();
   }
-  if ((dma.allocated_mask & STM32_DMA2_STREAMS_MASK) == 0U) {
+  if ((dma.allocated_mask & GD32_DMA2_STREAMS_MASK) == 0U) {
     rccDisableDMA2();
   }
 }
@@ -594,7 +594,7 @@ void dmaServeInterrupt(const stm32_dma_stream_t *dmastp) {
   uint32_t flags;
   uint32_t selfindex = (uint32_t)dmastp->selfindex;
 
-  flags = (dmastp->dma->ISR >> dmastp->shift) & STM32_DMA_ISR_MASK;
+  flags = (dmastp->dma->ISR >> dmastp->shift) & GD32_DMA_ISR_MASK;
   if (flags & dmastp->channel->CCR) {
     dmastp->dma->IFCR = flags << dmastp->shift;
     if (dma.streams[selfindex].func) {
@@ -603,6 +603,6 @@ void dmaServeInterrupt(const stm32_dma_stream_t *dmastp) {
   }
 }
 
-#endif /* STM32_DMA_REQUIRED */
+#endif /* GD32_DMA_REQUIRED */
 
 /** @} */

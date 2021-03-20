@@ -43,7 +43,7 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-#if STM32_WDG_USE_IWDG || defined(__DOXYGEN__)
+#if GD32_WDG_USE_IWDG || defined(__DOXYGEN__)
 WDGDriver WDGD1;
 #endif
 
@@ -70,7 +70,7 @@ WDGDriver WDGD1;
  */
 void wdg_lld_init(void) {
 
-#if STM32_WDG_USE_IWDG
+#if GD32_WDG_USE_IWDG
   WDGD1.state = WDG_STOP;
   WDGD1.wdg   = IWDG;
 #endif
@@ -97,7 +97,7 @@ void wdg_lld_start(WDGDriver *wdgp) {
   while (wdgp->wdg->SR != 0)
     ;
 
-#if STM32_IWDG_IS_WINDOWED
+#if GD32_IWDG_IS_WINDOWED
   /* This also triggers a refresh.*/
   wdgp->wdg->WINR = wdgp->config->winr;
 #else

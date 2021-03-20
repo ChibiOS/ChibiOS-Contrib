@@ -30,12 +30,12 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#if STM32_HAS_GPIOG
+#if GD32_HAS_GPIOG
 #define APB2_EN_MASK  (RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN |            \
                        RCC_APB2ENR_IOPCEN | RCC_APB2ENR_IOPDEN |            \
                        RCC_APB2ENR_IOPEEN | RCC_APB2ENR_IOPFEN |            \
                        RCC_APB2ENR_IOPGEN | RCC_APB2ENR_AFIOEN)
-#elif STM32_HAS_GPIOE
+#elif GD32_HAS_GPIOE
 #define APB2_EN_MASK  (RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN |            \
                        RCC_APB2ENR_IOPCEN | RCC_APB2ENR_IOPDEN |            \
                        RCC_APB2ENR_IOPEEN | RCC_APB2ENR_AFIOEN)
@@ -110,15 +110,15 @@ void _pal_lld_init(const PALConfig *config) {
   GPIOD->ODR = config->PDData.odr;
   GPIOD->CRH = config->PDData.crh;
   GPIOD->CRL = config->PDData.crl;
-#if STM32_HAS_GPIOE || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOE || defined(__DOXYGEN__)
   GPIOE->ODR = config->PEData.odr;
   GPIOE->CRH = config->PEData.crh;
   GPIOE->CRL = config->PEData.crl;
-#if STM32_HAS_GPIOF || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOF || defined(__DOXYGEN__)
   GPIOF->ODR = config->PFData.odr;
   GPIOF->CRH = config->PFData.crh;
   GPIOF->CRL = config->PFData.crl;
-#if STM32_HAS_GPIOG || defined(__DOXYGEN__)
+#if GD32_HAS_GPIOG || defined(__DOXYGEN__)
   GPIOG->ODR = config->PGData.odr;
   GPIOG->CRH = config->PGData.crh;
   GPIOG->CRL = config->PGData.crl;
@@ -162,8 +162,8 @@ void _pal_lld_setgroupmode(ioportid_t port,
     8,          /* Reserved.*/
     8,          /* Reserved.*/
     8,          /* Reserved.*/
-    0xB,        /* PAL_MODE_STM32_ALTERNATE_PUSHPULL, 50MHz.*/
-    0xF,        /* PAL_MODE_STM32_ALTERNATE_OPENDRAIN, 50MHz.*/
+    0xB,        /* PAL_MODE_GD32_ALTERNATE_PUSHPULL, 50MHz.*/
+    0xF,        /* PAL_MODE_GD32_ALTERNATE_OPENDRAIN, 50MHz.*/
   };
   uint32_t mh, ml, crh, crl, cfg;
   unsigned i;

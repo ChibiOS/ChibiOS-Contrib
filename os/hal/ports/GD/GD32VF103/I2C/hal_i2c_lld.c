@@ -35,28 +35,28 @@
 /*===========================================================================*/
 
 #define I2C1_RX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2C_I2C1_RX_DMA_STREAM,                        \
-                       STM32_I2C1_RX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2C_I2C1_RX_DMA_STREAM,                        \
+                       GD32_I2C1_RX_DMA_CHN)
 
 #define I2C1_TX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2C_I2C1_TX_DMA_STREAM,                        \
-                       STM32_I2C1_TX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2C_I2C1_TX_DMA_STREAM,                        \
+                       GD32_I2C1_TX_DMA_CHN)
 
 #define I2C2_RX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2C_I2C2_RX_DMA_STREAM,                        \
-                       STM32_I2C2_RX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2C_I2C2_RX_DMA_STREAM,                        \
+                       GD32_I2C2_RX_DMA_CHN)
 
 #define I2C2_TX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2C_I2C2_TX_DMA_STREAM,                        \
-                       STM32_I2C2_TX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2C_I2C2_TX_DMA_STREAM,                        \
+                       GD32_I2C2_TX_DMA_CHN)
 
 #define I2C3_RX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2C_I2C3_RX_DMA_STREAM,                        \
-                       STM32_I2C3_RX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2C_I2C3_RX_DMA_STREAM,                        \
+                       GD32_I2C3_RX_DMA_CHN)
 
 #define I2C3_TX_DMA_CHANNEL                                                 \
-  STM32_DMA_GETCHANNEL(STM32_I2C_I2C3_TX_DMA_STREAM,                        \
-                       STM32_I2C3_TX_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_I2C_I2C3_TX_DMA_STREAM,                        \
+                       GD32_I2C3_TX_DMA_CHN)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -93,17 +93,17 @@
 /*===========================================================================*/
 
 /** @brief I2C1 driver identifier.*/
-#if STM32_I2C_USE_I2C1 || defined(__DOXYGEN__)
+#if GD32_I2C_USE_I2C1 || defined(__DOXYGEN__)
 I2CDriver I2CD1;
 #endif
 
 /** @brief I2C2 driver identifier.*/
-#if STM32_I2C_USE_I2C2 || defined(__DOXYGEN__)
+#if GD32_I2C_USE_I2C2 || defined(__DOXYGEN__)
 I2CDriver I2CD2;
 #endif
 
 /** @brief I2C3 driver identifier.*/
-#if STM32_I2C_USE_I2C3 || defined(__DOXYGEN__)
+#if GD32_I2C_USE_I2C3 || defined(__DOXYGEN__)
 I2CDriver I2CD3;
 #endif
 
@@ -166,9 +166,9 @@ static void i2c_lld_set_clock(I2CDriver *i2cp) {
     osalDbgAssert(duty == STD_DUTY_CYCLE, "invalid standard mode duty cycle");
 
     /* Standard mode clock_div calculate: Tlow/Thigh = 1/1.*/
-    osalDbgAssert((STM32_PCLK1 % (clock_speed * 2)) == 0,
+    osalDbgAssert((GD32_PCLK1 % (clock_speed * 2)) == 0,
                   "PCLK1 must be divisible without remainder");
-    clock_div = (uint16_t)(STM32_PCLK1 / (clock_speed * 2));
+    clock_div = (uint16_t)(GD32_PCLK1 / (clock_speed * 2));
 
     osalDbgAssert(clock_div >= 0x04,
                   "clock divider less then 0x04 not allowed");
@@ -185,15 +185,15 @@ static void i2c_lld_set_clock(I2CDriver *i2cp) {
 
     if (duty == FAST_DUTY_CYCLE_2) {
       /* Fast mode clock_div calculate: Tlow/Thigh = 2/1.*/
-      osalDbgAssert((STM32_PCLK1 % (clock_speed * 3)) == 0,
+      osalDbgAssert((GD32_PCLK1 % (clock_speed * 3)) == 0,
                     "PCLK1 must be divided without remainder");
-      clock_div = (uint16_t)(STM32_PCLK1 / (clock_speed * 3));
+      clock_div = (uint16_t)(GD32_PCLK1 / (clock_speed * 3));
     }
     else if (duty == FAST_DUTY_CYCLE_16_9) {
       /* Fast mode clock_div calculate: Tlow/Thigh = 16/9.*/
-      osalDbgAssert((STM32_PCLK1 % (clock_speed * 25)) == 0,
+      osalDbgAssert((GD32_PCLK1 % (clock_speed * 25)) == 0,
                     "PCLK1 must be divided without remainder");
-      clock_div = (uint16_t)(STM32_PCLK1 / (clock_speed * 25));
+      clock_div = (uint16_t)(GD32_PCLK1 / (clock_speed * 25));
       regCCR |= I2C_CCR_DUTY;
     }
 
@@ -328,9 +328,9 @@ static void i2c_lld_serve_rx_end_irq(I2CDriver *i2cp, uint32_t flags) {
   I2C_TypeDef *dp = i2cp->i2c;
 
   /* DMA errors handling.*/
-#if defined(STM32_I2C_DMA_ERROR_HOOK)
-  if ((flags & (STM32_DMA_ISR_TEIF | STM32_DMA_ISR_DMEIF)) != 0) {
-    STM32_I2C_DMA_ERROR_HOOK(i2cp);
+#if defined(GD32_I2C_DMA_ERROR_HOOK)
+  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+    GD32_I2C_DMA_ERROR_HOOK(i2cp);
   }
 #else
   (void)flags;
@@ -355,9 +355,9 @@ static void i2c_lld_serve_tx_end_irq(I2CDriver *i2cp, uint32_t flags) {
   I2C_TypeDef *dp = i2cp->i2c;
 
   /* DMA errors handling.*/
-#if defined(STM32_I2C_DMA_ERROR_HOOK)
-  if ((flags & (STM32_DMA_ISR_TEIF | STM32_DMA_ISR_DMEIF)) != 0) {
-    STM32_I2C_DMA_ERROR_HOOK(i2cp);
+#if defined(GD32_I2C_DMA_ERROR_HOOK)
+  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+    GD32_I2C_DMA_ERROR_HOOK(i2cp);
   }
 #else
   (void)flags;
@@ -423,7 +423,7 @@ static void i2c_lld_serve_error_interrupt(I2CDriver *i2cp, uint16_t sr) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if STM32_I2C_USE_I2C1 || defined(__DOXYGEN__)
+#if GD32_I2C_USE_I2C1 || defined(__DOXYGEN__)
 /**
  * @brief   I2C1 event interrupt handler.
  *
@@ -451,9 +451,9 @@ OSAL_IRQ_HANDLER(GD32_I2C1_ERROR_HANDLER) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* STM32_I2C_USE_I2C1 */
+#endif /* GD32_I2C_USE_I2C1 */
 
-#if STM32_I2C_USE_I2C2 || defined(__DOXYGEN__)
+#if GD32_I2C_USE_I2C2 || defined(__DOXYGEN__)
 /**
  * @brief   I2C2 event interrupt handler.
  *
@@ -483,9 +483,9 @@ OSAL_IRQ_HANDLER(GD32_I2C2_ERROR_HANDLER) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* STM32_I2C_USE_I2C2 */
+#endif /* GD32_I2C_USE_I2C2 */
 
-#if STM32_I2C_USE_I2C3 || defined(__DOXYGEN__)
+#if GD32_I2C_USE_I2C3 || defined(__DOXYGEN__)
 /**
  * @brief   I2C3 event interrupt handler.
  *
@@ -515,7 +515,7 @@ OSAL_IRQ_HANDLER(GD32_I2C3_ERROR_HANDLER) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* STM32_I2C_USE_I2C3 */
+#endif /* GD32_I2C_USE_I2C3 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -528,29 +528,29 @@ OSAL_IRQ_HANDLER(GD32_I2C3_ERROR_HANDLER) {
  */
 void i2c_lld_init(void) {
 
-#if STM32_I2C_USE_I2C1
+#if GD32_I2C_USE_I2C1
   i2cObjectInit(&I2CD1);
   I2CD1.thread = NULL;
   I2CD1.i2c    = I2C1;
   I2CD1.dmarx  = NULL;
   I2CD1.dmatx  = NULL;
-#endif /* STM32_I2C_USE_I2C1 */
+#endif /* GD32_I2C_USE_I2C1 */
 
-#if STM32_I2C_USE_I2C2
+#if GD32_I2C_USE_I2C2
   i2cObjectInit(&I2CD2);
   I2CD2.thread = NULL;
   I2CD2.i2c    = I2C2;
   I2CD2.dmarx  = NULL;
   I2CD2.dmatx  = NULL;
-#endif /* STM32_I2C_USE_I2C2 */
+#endif /* GD32_I2C_USE_I2C2 */
 
-#if STM32_I2C_USE_I2C3
+#if GD32_I2C_USE_I2C3
   i2cObjectInit(&I2CD3);
   I2CD3.thread = NULL;
   I2CD3.i2c    = I2C3;
   I2CD3.dmarx  = NULL;
   I2CD3.dmatx  = NULL;
-#endif /* STM32_I2C_USE_I2C3 */
+#endif /* GD32_I2C_USE_I2C3 */
 }
 
 /**
@@ -566,66 +566,66 @@ void i2c_lld_start(I2CDriver *i2cp) {
   /* If in stopped state then enables the I2C and DMA clocks.*/
   if (i2cp->state == I2C_STOP) {
 
-    i2cp->txdmamode = STM32_DMA_CR_PSIZE_BYTE | STM32_DMA_CR_MSIZE_BYTE |
-                      STM32_DMA_CR_MINC       | STM32_DMA_CR_DMEIE |
-                      STM32_DMA_CR_TEIE       | STM32_DMA_CR_TCIE |
-                      STM32_DMA_CR_DIR_M2P;
-    i2cp->rxdmamode = STM32_DMA_CR_PSIZE_BYTE | STM32_DMA_CR_MSIZE_BYTE |
-                      STM32_DMA_CR_MINC       | STM32_DMA_CR_DMEIE |
-                      STM32_DMA_CR_TEIE       | STM32_DMA_CR_TCIE |
-                      STM32_DMA_CR_DIR_P2M;
+    i2cp->txdmamode = GD32_DMA_CR_PSIZE_BYTE | GD32_DMA_CR_MSIZE_BYTE |
+                      GD32_DMA_CR_MINC       | GD32_DMA_CR_DMEIE |
+                      GD32_DMA_CR_TEIE       | GD32_DMA_CR_TCIE |
+                      GD32_DMA_CR_DIR_M2P;
+    i2cp->rxdmamode = GD32_DMA_CR_PSIZE_BYTE | GD32_DMA_CR_MSIZE_BYTE |
+                      GD32_DMA_CR_MINC       | GD32_DMA_CR_DMEIE |
+                      GD32_DMA_CR_TEIE       | GD32_DMA_CR_TCIE |
+                      GD32_DMA_CR_DIR_P2M;
 
-#if STM32_I2C_USE_I2C1
+#if GD32_I2C_USE_I2C1
     if (&I2CD1 == i2cp) {
       rccResetI2C1();
 
-      i2cp->dmarx = dmaStreamAllocI(STM32_I2C_I2C1_RX_DMA_STREAM,
-                                    STM32_I2C_I2C1_IRQ_PRIORITY,
+      i2cp->dmarx = dmaStreamAllocI(GD32_I2C_I2C1_RX_DMA_STREAM,
+                                    GD32_I2C_I2C1_IRQ_PRIORITY,
                                     (stm32_dmaisr_t)i2c_lld_serve_rx_end_irq,
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmarx != NULL, "unable to allocate stream");
-      i2cp->dmatx = dmaStreamAllocI(STM32_I2C_I2C1_TX_DMA_STREAM,
-                                    STM32_I2C_I2C1_IRQ_PRIORITY,
+      i2cp->dmatx = dmaStreamAllocI(GD32_I2C_I2C1_TX_DMA_STREAM,
+                                    GD32_I2C_I2C1_IRQ_PRIORITY,
                                     (stm32_dmaisr_t)i2c_lld_serve_tx_end_irq,
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmatx != NULL, "unable to allocate stream");
 
       rccEnableI2C1(true);
-      eclicEnableVector(I2C0_EV_IRQn, STM32_I2C_I2C1_IRQ_PRIORITY, STM32_I2C_I2C1_IRQ_TRIGGER);
-      eclicEnableVector(I2C0_ER_IRQn, STM32_I2C_I2C1_IRQ_PRIORITY, STM32_I2C_I2C1_IRQ_TRIGGER);
+      eclicEnableVector(I2C0_EV_IRQn, GD32_I2C_I2C1_IRQ_PRIORITY, GD32_I2C_I2C1_IRQ_TRIGGER);
+      eclicEnableVector(I2C0_ER_IRQn, GD32_I2C_I2C1_IRQ_PRIORITY, GD32_I2C_I2C1_IRQ_TRIGGER);
 
-      i2cp->rxdmamode |= STM32_DMA_CR_CHSEL(I2C1_RX_DMA_CHANNEL) |
-                       STM32_DMA_CR_PL(STM32_I2C_I2C1_DMA_PRIORITY);
-      i2cp->txdmamode |= STM32_DMA_CR_CHSEL(I2C1_TX_DMA_CHANNEL) |
-                       STM32_DMA_CR_PL(STM32_I2C_I2C1_DMA_PRIORITY);
+      i2cp->rxdmamode |= GD32_DMA_CR_CHSEL(I2C1_RX_DMA_CHANNEL) |
+                       GD32_DMA_CR_PL(GD32_I2C_I2C1_DMA_PRIORITY);
+      i2cp->txdmamode |= GD32_DMA_CR_CHSEL(I2C1_TX_DMA_CHANNEL) |
+                       GD32_DMA_CR_PL(GD32_I2C_I2C1_DMA_PRIORITY);
     }
-#endif /* STM32_I2C_USE_I2C1 */
+#endif /* GD32_I2C_USE_I2C1 */
 
-#if STM32_I2C_USE_I2C2
+#if GD32_I2C_USE_I2C2
     if (&I2CD2 == i2cp) {
       rccResetI2C2();
 
-      i2cp->dmarx = dmaStreamAllocI(STM32_I2C_I2C2_RX_DMA_STREAM,
-                                    STM32_I2C_I2C2_IRQ_PRIORITY,
+      i2cp->dmarx = dmaStreamAllocI(GD32_I2C_I2C2_RX_DMA_STREAM,
+                                    GD32_I2C_I2C2_IRQ_PRIORITY,
                                     (stm32_dmaisr_t)i2c_lld_serve_rx_end_irq,
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmarx != NULL, "unable to allocate stream");
-      i2cp->dmatx = dmaStreamAllocI(STM32_I2C_I2C2_TX_DMA_STREAM,
-                                    STM32_I2C_I2C2_IRQ_PRIORITY,
+      i2cp->dmatx = dmaStreamAllocI(GD32_I2C_I2C2_TX_DMA_STREAM,
+                                    GD32_I2C_I2C2_IRQ_PRIORITY,
                                     (stm32_dmaisr_t)i2c_lld_serve_tx_end_irq,
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmatx != NULL, "unable to allocate stream");
 
       rccEnableI2C2(true);
-      eclicEnableVector(I2C1_EV_IRQn, STM32_I2C_I2C2_IRQ_PRIORITY, STM32_I2C_I2C2_IRQ_TRIGGER);
-      eclicEnableVector(I2C1_ER_IRQn, STM32_I2C_I2C2_IRQ_PRIORITY, STM32_I2C_I2C2_IRQ_TRIGGER);
+      eclicEnableVector(I2C1_EV_IRQn, GD32_I2C_I2C2_IRQ_PRIORITY, GD32_I2C_I2C2_IRQ_TRIGGER);
+      eclicEnableVector(I2C1_ER_IRQn, GD32_I2C_I2C2_IRQ_PRIORITY, GD32_I2C_I2C2_IRQ_TRIGGER);
 
-      i2cp->rxdmamode |= STM32_DMA_CR_CHSEL(I2C2_RX_DMA_CHANNEL) |
-                       STM32_DMA_CR_PL(STM32_I2C_I2C2_DMA_PRIORITY);
-      i2cp->txdmamode |= STM32_DMA_CR_CHSEL(I2C2_TX_DMA_CHANNEL) |
-                       STM32_DMA_CR_PL(STM32_I2C_I2C2_DMA_PRIORITY);
+      i2cp->rxdmamode |= GD32_DMA_CR_CHSEL(I2C2_RX_DMA_CHANNEL) |
+                       GD32_DMA_CR_PL(GD32_I2C_I2C2_DMA_PRIORITY);
+      i2cp->txdmamode |= GD32_DMA_CR_CHSEL(I2C2_TX_DMA_CHANNEL) |
+                       GD32_DMA_CR_PL(GD32_I2C_I2C2_DMA_PRIORITY);
     }
-#endif /* STM32_I2C_USE_I2C2 */
+#endif /* GD32_I2C_USE_I2C2 */
   }
 
   /* I2C registers pointed by the DMA.*/
@@ -663,7 +663,7 @@ void i2c_lld_stop(I2CDriver *i2cp) {
     i2cp->dmatx = NULL;
     i2cp->dmarx = NULL;
 
-#if STM32_I2C_USE_I2C1
+#if GD32_I2C_USE_I2C1
     if (&I2CD1 == i2cp) {
       eclicDisableVector(I2C1_EV_IRQn);
       eclicDisableVector(I2C1_ER_IRQn);
@@ -671,7 +671,7 @@ void i2c_lld_stop(I2CDriver *i2cp) {
     }
 #endif
 
-#if STM32_I2C_USE_I2C2
+#if GD32_I2C_USE_I2C2
     if (&I2CD2 == i2cp) {
       eclicDisableVector(I2C2_EV_IRQn);
       eclicDisableVector(I2C2_ER_IRQn);
@@ -679,7 +679,7 @@ void i2c_lld_stop(I2CDriver *i2cp) {
     }
 #endif
 
-#if STM32_I2C_USE_I2C3
+#if GD32_I2C_USE_I2C3
     if (&I2CD3 == i2cp) {
       eclicDisableVector(I2C3_EV_IRQn);
       eclicDisableVector(I2C3_ER_IRQn);
@@ -739,7 +739,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
   /* Calculating the time window for the timeout on the busy bus condition.*/
   start = osalOsGetSystemTimeX();
-  end = osalTimeAddX(start, OSAL_MS2I(STM32_I2C_BUSY_TIMEOUT));
+  end = osalTimeAddX(start, OSAL_MS2I(GD32_I2C_BUSY_TIMEOUT));
 
   /* Waits until BUSY flag is reset or, alternatively, for a timeout
      condition.*/
@@ -832,7 +832,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
   /* Calculating the time window for the timeout on the busy bus condition.*/
   start = osalOsGetSystemTimeX();
-  end = osalTimeAddX(start, OSAL_MS2I(STM32_I2C_BUSY_TIMEOUT));
+  end = osalTimeAddX(start, OSAL_MS2I(GD32_I2C_BUSY_TIMEOUT));
 
   /* Waits until BUSY flag is reset or, alternatively, for a timeout
      condition.*/

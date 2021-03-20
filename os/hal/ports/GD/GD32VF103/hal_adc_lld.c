@@ -35,7 +35,7 @@
 /*===========================================================================*/
 
 /** @brief ADC1 driver identifier.*/
-#if STM32_ADC_USE_ADC1 || defined(__DOXYGEN__)
+#if GD32_ADC_USE_ADC1 || defined(__DOXYGEN__)
 ADCDriver ADCD1;
 #endif
 
@@ -56,17 +56,17 @@ ADCDriver ADCD1;
 static void adc_lld_serve_rx_interrupt(ADCDriver *adcp, uint32_t flags) {
 
   /* DMA errors handling.*/
-  if ((flags & STM32_DMA_ISR_TEIF) != 0) {
+  if ((flags & GD32_DMA_ISR_TEIF) != 0) {
     /* DMA, this could help only if the DMA tries to access an unmapped
        address space or violates alignment rules.*/
     _adc_isr_error_code(adcp, ADC_ERR_DMAFAILURE);
   }
   else {
-    if ((flags & STM32_DMA_ISR_TCIF) != 0) {
+    if ((flags & GD32_DMA_ISR_TCIF) != 0) {
       /* Transfer complete processing.*/
       _adc_isr_full_code(adcp);
     }
-    else if ((flags & STM32_DMA_ISR_HTIF) != 0) {
+    else if ((flags & GD32_DMA_ISR_HTIF) != 0) {
       /* Half transfer processing.*/
       _adc_isr_half_code(adcp);
     }
@@ -88,15 +88,15 @@ static void adc_lld_serve_rx_interrupt(ADCDriver *adcp, uint32_t flags) {
  */
 void adc_lld_init(void) {
 
-#if STM32_ADC_USE_ADC1
+#if GD32_ADC_USE_ADC1
   /* Driver initialization.*/
   adcObjectInit(&ADCD1);
   ADCD1.adc = ADC1;
   ADCD1.dmastp  = NULL;
-  ADCD1.dmamode = STM32_DMA_CR_PL(STM32_ADC_ADC1_DMA_PRIORITY) |
-                  STM32_DMA_CR_MSIZE_HWORD | STM32_DMA_CR_PSIZE_HWORD |
-                  STM32_DMA_CR_MINC        | STM32_DMA_CR_TCIE        |
-                  STM32_DMA_CR_TEIE;
+  ADCD1.dmamode = GD32_DMA_CR_PL(GD32_ADC_ADC1_DMA_PRIORITY) |
+                  GD32_DMA_CR_MSIZE_HWORD | GD32_DMA_CR_PSIZE_HWORD |
+                  GD32_DMA_CR_MINC        | GD32_DMA_CR_TCIE        |
+                  GD32_DMA_CR_TEIE;
 
   /* Temporary activation.*/
   rccEnableADC1(true);
@@ -130,10 +130,10 @@ void adc_lld_start(ADCDriver *adcp) {
 
   /* If in stopped state then enables the ADC and DMA clocks.*/
   if (adcp->state == ADC_STOP) {
-#if STM32_ADC_USE_ADC1
+#if GD32_ADC_USE_ADC1
     if (&ADCD1 == adcp) {
-      adcp->dmastp = dmaStreamAllocI(STM32_DMA_STREAM_ID(1, 1),
-                                     STM32_ADC_ADC1_IRQ_PRIORITY,
+      adcp->dmastp = dmaStreamAllocI(GD32_DMA_STREAM_ID(1, 1),
+                                     GD32_ADC_ADC1_IRQ_PRIORITY,
                                      (stm32_dmaisr_t)adc_lld_serve_rx_interrupt,
                                      (void *)adcp);
       osalDbgAssert(adcp->dmastp != NULL, "unable to allocate stream");
@@ -160,7 +160,7 @@ void adc_lld_stop(ADCDriver *adcp) {
 
   /* If in ready state then disables the ADC clock.*/
   if (adcp->state == ADC_READY) {
-#if STM32_ADC_USE_ADC1
+#if GD32_ADC_USE_ADC1
     if (&ADCD1 == adcp) {
       ADC1->CR1 = 0;
       ADC1->CR2 = 0;
@@ -188,11 +188,11 @@ void adc_lld_start_conversion(ADCDriver *adcp) {
   /* DMA setup.*/
   mode = adcp->dmamode;
   if (grpp->circular) {
-    mode |= STM32_DMA_CR_CIRC;
+    mode |= GD32_DMA_CR_CIRC;
     if (adcp->depth > 1) {
       /* If circular buffer depth > 1, then the half transfer interrupt
          is enabled in order to allow streaming processing.*/
-      mode |= STM32_DMA_CR_HTIE;
+      mode |= GD32_DMA_CR_HTIE;
     }
   }
   dmaStreamSetMemory0(adcp->dmastp, adcp->samples);

@@ -36,7 +36,7 @@
 /**
  * @brief   Number of PWM channels per PWM driver.
  */
-#define PWM_CHANNELS                            STM32_TIM_MAX_CHANNELS
+#define PWM_CHANNELS                            GD32_TIM_MAX_CHANNELS
 
 /**
  * @name    STM32-specific PWM complementary output mode macros
@@ -58,7 +58,7 @@
  * @brief   Complementary output, active is logic level one.
  * @note    This is an STM32-specific setting.
  * @note    This setting is only available if the configuration option
- *          @p STM32_PWM_USE_ADVANCED is set to TRUE and only for advanced
+ *          @p GD32_PWM_USE_ADVANCED is set to TRUE and only for advanced
  *          timers TIM1 and TIM8.
  */
 #define PWM_COMPLEMENTARY_OUTPUT_ACTIVE_HIGH    0x10
@@ -67,7 +67,7 @@
  * @brief   Complementary output, active is logic level zero.
  * @note    This is an STM32-specific setting.
  * @note    This setting is only available if the configuration option
- *          @p STM32_PWM_USE_ADVANCED is set to TRUE and only for advanced
+ *          @p GD32_PWM_USE_ADVANCED is set to TRUE and only for advanced
  *          timers TIM1 and TIM8.
  */
 #define PWM_COMPLEMENTARY_OUTPUT_ACTIVE_LOW     0x20
@@ -87,8 +87,8 @@
  *          enabled.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_ADVANCED) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_ADVANCED              FALSE
+#if !defined(GD32_PWM_USE_ADVANCED) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_ADVANCED              FALSE
 #endif
 
 /**
@@ -96,8 +96,8 @@
  * @details If set to @p TRUE the support for PWMD1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM1) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM1                  FALSE
+#if !defined(GD32_PWM_USE_TIM1) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM1                  FALSE
 #endif
 
 /**
@@ -105,8 +105,8 @@
  * @details If set to @p TRUE the support for PWMD2 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM2) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM2                  FALSE
+#if !defined(GD32_PWM_USE_TIM2) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM2                  FALSE
 #endif
 
 /**
@@ -114,8 +114,8 @@
  * @details If set to @p TRUE the support for PWMD3 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM3) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM3                  FALSE
+#if !defined(GD32_PWM_USE_TIM3) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM3                  FALSE
 #endif
 
 /**
@@ -123,8 +123,8 @@
  * @details If set to @p TRUE the support for PWMD4 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM4) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM4                  FALSE
+#if !defined(GD32_PWM_USE_TIM4) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM4                  FALSE
 #endif
 
 /**
@@ -132,8 +132,8 @@
  * @details If set to @p TRUE the support for PWMD5 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM5) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM5                  FALSE
+#if !defined(GD32_PWM_USE_TIM5) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM5                  FALSE
 #endif
 
 /**
@@ -141,8 +141,8 @@
  * @details If set to @p TRUE the support for PWMD8 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM8) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM8                  FALSE
+#if !defined(GD32_PWM_USE_TIM8) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM8                  FALSE
 #endif
 
 /**
@@ -150,8 +150,8 @@
  * @details If set to @p TRUE the support for PWMD9 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM9) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM9                  FALSE
+#if !defined(GD32_PWM_USE_TIM9) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM9                  FALSE
 #endif
 
 /**
@@ -159,8 +159,8 @@
  * @details If set to @p TRUE the support for PWMD10 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM10) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM10                 FALSE
+#if !defined(GD32_PWM_USE_TIM10) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM10                 FALSE
 #endif
 
 /**
@@ -168,8 +168,8 @@
  * @details If set to @p TRUE the support for PWMD11 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM11) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM11                 FALSE
+#if !defined(GD32_PWM_USE_TIM11) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM11                 FALSE
 #endif
 
 /**
@@ -177,8 +177,8 @@
  * @details If set to @p TRUE the support for PWMD12 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM12) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM12                 FALSE
+#if !defined(GD32_PWM_USE_TIM12) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM12                 FALSE
 #endif
 
 /**
@@ -186,8 +186,8 @@
  * @details If set to @p TRUE the support for PWMD13 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM13) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM13                 FALSE
+#if !defined(GD32_PWM_USE_TIM13) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM13                 FALSE
 #endif
 
 /**
@@ -195,8 +195,8 @@
  * @details If set to @p TRUE the support for PWMD14 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM14) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM14                 FALSE
+#if !defined(GD32_PWM_USE_TIM14) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM14                 FALSE
 #endif
 
 /**
@@ -204,8 +204,8 @@
  * @details If set to @p TRUE the support for PWMD15 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM15) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM15                 FALSE
+#if !defined(GD32_PWM_USE_TIM15) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM15                 FALSE
 #endif
 
 /**
@@ -213,8 +213,8 @@
  * @details If set to @p TRUE the support for PWMD16 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM16) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM16                 FALSE
+#if !defined(GD32_PWM_USE_TIM16) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM16                 FALSE
 #endif
 
 /**
@@ -222,8 +222,8 @@
  * @details If set to @p TRUE the support for PWMD17 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM17) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM17                 FALSE
+#if !defined(GD32_PWM_USE_TIM17) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM17                 FALSE
 #endif
 
 /**
@@ -231,8 +231,8 @@
  * @details If set to @p TRUE the support for PWMD20 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM20) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM20                 FALSE
+#if !defined(GD32_PWM_USE_TIM20) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM20                 FALSE
 #endif
 
 /**
@@ -240,8 +240,8 @@
  * @details If set to @p TRUE the support for PWMD21 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM21) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM21                 FALSE
+#if !defined(GD32_PWM_USE_TIM21) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM21                 FALSE
 #endif
 
 /**
@@ -249,134 +249,134 @@
  * @details If set to @p TRUE the support for PWMD22 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_PWM_USE_TIM22) || defined(__DOXYGEN__)
-#define STM32_PWM_USE_TIM22                 FALSE
+#if !defined(GD32_PWM_USE_TIM22) || defined(__DOXYGEN__)
+#define GD32_PWM_USE_TIM22                 FALSE
 #endif
 
 /**
  * @brief   PWMD1 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM1_IRQ_PRIORITY         7
+#if !defined(GD32_PWM_TIM1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM1_IRQ_PRIORITY         7
 #endif
 
 /**
  * @brief   PWMD2 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM2_IRQ_PRIORITY         7
+#if !defined(GD32_PWM_TIM2_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM2_IRQ_PRIORITY         7
 #endif
 
 /**
  * @brief   PWMD3 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM3_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM3_IRQ_PRIORITY         7
+#if !defined(GD32_PWM_TIM3_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM3_IRQ_PRIORITY         7
 #endif
 
 /**
  * @brief   PWMD4 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM4_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM4_IRQ_PRIORITY         7
+#if !defined(GD32_PWM_TIM4_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM4_IRQ_PRIORITY         7
 #endif
 
 /**
  * @brief   PWMD5 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM5_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM5_IRQ_PRIORITY         7
+#if !defined(GD32_PWM_TIM5_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM5_IRQ_PRIORITY         7
 #endif
 
 /**
  * @brief   PWMD8 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM8_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM8_IRQ_PRIORITY         7
+#if !defined(GD32_PWM_TIM8_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM8_IRQ_PRIORITY         7
 #endif
 
 /**
  * @brief   PWMD9 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM9_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM9_IRQ_PRIORITY         7
+#if !defined(GD32_PWM_TIM9_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM9_IRQ_PRIORITY         7
 #endif
 
 /**
  * @brief   PWMD10 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM10_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM10_IRQ_PRIORITY        7
+#if !defined(GD32_PWM_TIM10_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM10_IRQ_PRIORITY        7
 #endif
 
 /**
  * @brief   PWMD11 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM11_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM11_IRQ_PRIORITY        7
+#if !defined(GD32_PWM_TIM11_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM11_IRQ_PRIORITY        7
 #endif
 
 /**
  * @brief   PWMD12 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM12_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM12_IRQ_PRIORITY        7
+#if !defined(GD32_PWM_TIM12_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM12_IRQ_PRIORITY        7
 #endif
 
 /**
  * @brief   PWMD13 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM13_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM13_IRQ_PRIORITY        7
+#if !defined(GD32_PWM_TIM13_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM13_IRQ_PRIORITY        7
 #endif
 
 /**
  * @brief   PWMD14 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM14_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM14_IRQ_PRIORITY        7
+#if !defined(GD32_PWM_TIM14_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM14_IRQ_PRIORITY        7
 #endif
 
 /**
  * @brief   PWMD15 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM15_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM15_IRQ_PRIORITY        7
+#if !defined(GD32_PWM_TIM15_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM15_IRQ_PRIORITY        7
 #endif
 
 /**
  * @brief   PWMD16 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM16_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM16_IRQ_PRIORITY        7
+#if !defined(GD32_PWM_TIM16_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM16_IRQ_PRIORITY        7
 #endif
 
 /**
  * @brief   PWMD17 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM17_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM17_IRQ_PRIORITY        7
+#if !defined(GD32_PWM_TIM17_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM17_IRQ_PRIORITY        7
 #endif
 
 /**
  * @brief   PWMD20 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM20_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM20_IRQ_PRIORITY        7
+#if !defined(GD32_PWM_TIM20_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM20_IRQ_PRIORITY        7
 #endif
 
 /**
  * @brief   PWMD21 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM21_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM21_IRQ_PRIORITY        7
+#if !defined(GD32_PWM_TIM21_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM21_IRQ_PRIORITY        7
 #endif
 
 /**
  * @brief   PWMD22 interrupt priority level setting.
  */
-#if !defined(STM32_PWM_TIM22_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_PWM_TIM22_IRQ_PRIORITY        7
+#if !defined(GD32_PWM_TIM22_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM22_IRQ_PRIORITY        7
 #endif
 /** @} */
 
@@ -384,400 +384,400 @@
 /* Configuration checks.                                                     */
 /*===========================================================================*/
 
-#if !defined(STM32_HAS_TIM1)
-#define STM32_HAS_TIM1                      FALSE
+#if !defined(GD32_HAS_TIM1)
+#define GD32_HAS_TIM1                      FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM2)
-#define STM32_HAS_TIM2                      FALSE
+#if !defined(GD32_HAS_TIM2)
+#define GD32_HAS_TIM2                      FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM3)
-#define STM32_HAS_TIM3                      FALSE
+#if !defined(GD32_HAS_TIM3)
+#define GD32_HAS_TIM3                      FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM4)
-#define STM32_HAS_TIM4                      FALSE
+#if !defined(GD32_HAS_TIM4)
+#define GD32_HAS_TIM4                      FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM5)
-#define STM32_HAS_TIM5                      FALSE
+#if !defined(GD32_HAS_TIM5)
+#define GD32_HAS_TIM5                      FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM8)
-#define STM32_HAS_TIM8                      FALSE
+#if !defined(GD32_HAS_TIM8)
+#define GD32_HAS_TIM8                      FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM9)
-#define STM32_HAS_TIM9                      FALSE
+#if !defined(GD32_HAS_TIM9)
+#define GD32_HAS_TIM9                      FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM10)
-#define STM32_HAS_TIM10                     FALSE
+#if !defined(GD32_HAS_TIM10)
+#define GD32_HAS_TIM10                     FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM11)
-#define STM32_HAS_TIM11                     FALSE
+#if !defined(GD32_HAS_TIM11)
+#define GD32_HAS_TIM11                     FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM12)
-#define STM32_HAS_TIM12                     FALSE
+#if !defined(GD32_HAS_TIM12)
+#define GD32_HAS_TIM12                     FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM13)
-#define STM32_HAS_TIM13                     FALSE
+#if !defined(GD32_HAS_TIM13)
+#define GD32_HAS_TIM13                     FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM14)
-#define STM32_HAS_TIM14                     FALSE
+#if !defined(GD32_HAS_TIM14)
+#define GD32_HAS_TIM14                     FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM15)
-#define STM32_HAS_TIM15                     FALSE
+#if !defined(GD32_HAS_TIM15)
+#define GD32_HAS_TIM15                     FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM16)
-#define STM32_HAS_TIM16                     FALSE
+#if !defined(GD32_HAS_TIM16)
+#define GD32_HAS_TIM16                     FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM17)
-#define STM32_HAS_TIM17                     FALSE
+#if !defined(GD32_HAS_TIM17)
+#define GD32_HAS_TIM17                     FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM20)
-#define STM32_HAS_TIM20                     FALSE
+#if !defined(GD32_HAS_TIM20)
+#define GD32_HAS_TIM20                     FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM21)
-#define STM32_HAS_TIM21                     FALSE
+#if !defined(GD32_HAS_TIM21)
+#define GD32_HAS_TIM21                     FALSE
 #endif
 
-#if !defined(STM32_HAS_TIM22)
-#define STM32_HAS_TIM22                     FALSE
+#if !defined(GD32_HAS_TIM22)
+#define GD32_HAS_TIM22                     FALSE
 #endif
 
-#if STM32_PWM_USE_TIM1 && !STM32_HAS_TIM1
+#if GD32_PWM_USE_TIM1 && !GD32_HAS_TIM1
 #error "TIM1 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM2 && !STM32_HAS_TIM2
+#if GD32_PWM_USE_TIM2 && !GD32_HAS_TIM2
 #error "TIM2 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM3 && !STM32_HAS_TIM3
+#if GD32_PWM_USE_TIM3 && !GD32_HAS_TIM3
 #error "TIM3 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM4 && !STM32_HAS_TIM4
+#if GD32_PWM_USE_TIM4 && !GD32_HAS_TIM4
 #error "TIM4 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM5 && !STM32_HAS_TIM5
+#if GD32_PWM_USE_TIM5 && !GD32_HAS_TIM5
 #error "TIM5 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM8 && !STM32_HAS_TIM8
+#if GD32_PWM_USE_TIM8 && !GD32_HAS_TIM8
 #error "TIM8 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM9 && !STM32_HAS_TIM9
+#if GD32_PWM_USE_TIM9 && !GD32_HAS_TIM9
 #error "TIM9 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM10 && !STM32_HAS_TIM10
+#if GD32_PWM_USE_TIM10 && !GD32_HAS_TIM10
 #error "TIM10 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM11 && !STM32_HAS_TIM11
+#if GD32_PWM_USE_TIM11 && !GD32_HAS_TIM11
 #error "TIM11 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM12 && !STM32_HAS_TIM12
+#if GD32_PWM_USE_TIM12 && !GD32_HAS_TIM12
 #error "TIM12 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM13 && !STM32_HAS_TIM13
+#if GD32_PWM_USE_TIM13 && !GD32_HAS_TIM13
 #error "TIM13 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM14 && !STM32_HAS_TIM14
+#if GD32_PWM_USE_TIM14 && !GD32_HAS_TIM14
 #error "TIM14 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM15 && !STM32_HAS_TIM15
+#if GD32_PWM_USE_TIM15 && !GD32_HAS_TIM15
 #error "TIM15 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM16 && !STM32_HAS_TIM16
+#if GD32_PWM_USE_TIM16 && !GD32_HAS_TIM16
 #error "TIM16 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM17 && !STM32_HAS_TIM17
+#if GD32_PWM_USE_TIM17 && !GD32_HAS_TIM17
 #error "TIM17 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM20 && !STM32_HAS_TIM20
+#if GD32_PWM_USE_TIM20 && !GD32_HAS_TIM20
 #error "TIM20 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM21 && !STM32_HAS_TIM21
+#if GD32_PWM_USE_TIM21 && !GD32_HAS_TIM21
 #error "TIM21 not present in the selected device"
 #endif
 
-#if STM32_PWM_USE_TIM22 && !STM32_HAS_TIM22
+#if GD32_PWM_USE_TIM22 && !GD32_HAS_TIM22
 #error "TIM22 not present in the selected device"
 #endif
 
-#if !STM32_PWM_USE_TIM1  && !STM32_PWM_USE_TIM2  &&                         \
-    !STM32_PWM_USE_TIM3  && !STM32_PWM_USE_TIM4  &&                         \
-    !STM32_PWM_USE_TIM5  && !STM32_PWM_USE_TIM8  &&                         \
-    !STM32_PWM_USE_TIM9  && !STM32_PWM_USE_TIM10 &&                         \
-    !STM32_PWM_USE_TIM11 && !STM32_PWM_USE_TIM11 &&                         \
-    !STM32_PWM_USE_TIM13 && !STM32_PWM_USE_TIM13 &&                         \
-    !STM32_PWM_USE_TIM15 && !STM32_PWM_USE_TIM15 &&                         \
-    !STM32_PWM_USE_TIM17 && !STM32_PWM_USE_TIM20 &&                         \
-    !STM32_PWM_USE_TIM21 && !STM32_PWM_USE_TIM22
+#if !GD32_PWM_USE_TIM1  && !GD32_PWM_USE_TIM2  &&                         \
+    !GD32_PWM_USE_TIM3  && !GD32_PWM_USE_TIM4  &&                         \
+    !GD32_PWM_USE_TIM5  && !GD32_PWM_USE_TIM8  &&                         \
+    !GD32_PWM_USE_TIM9  && !GD32_PWM_USE_TIM10 &&                         \
+    !GD32_PWM_USE_TIM11 && !GD32_PWM_USE_TIM11 &&                         \
+    !GD32_PWM_USE_TIM13 && !GD32_PWM_USE_TIM13 &&                         \
+    !GD32_PWM_USE_TIM15 && !GD32_PWM_USE_TIM15 &&                         \
+    !GD32_PWM_USE_TIM17 && !GD32_PWM_USE_TIM20 &&                         \
+    !GD32_PWM_USE_TIM21 && !GD32_PWM_USE_TIM22
 #error "PWM driver activated but no TIM peripheral assigned"
 #endif
 
-#if STM32_PWM_USE_ADVANCED && !STM32_PWM_USE_TIM1 && !STM32_PWM_USE_TIM8 && \
-    !STM32_PWM_USE_TIM20
+#if GD32_PWM_USE_ADVANCED && !GD32_PWM_USE_TIM1 && !GD32_PWM_USE_TIM8 && \
+    !GD32_PWM_USE_TIM20
 #error "advanced mode selected but no advanced timer assigned"
 #endif
 
 /* Checks on allocation of TIMx units.*/
-#if STM32_PWM_USE_TIM1
-#if defined(STM32_TIM1_IS_USED)
+#if GD32_PWM_USE_TIM1
+#if defined(GD32_TIM1_IS_USED)
 #error "PWMD1 requires TIM1 but the timer is already used"
 #else
-#define STM32_TIM1_IS_USED
+#define GD32_TIM1_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM2
-#if defined(STM32_TIM2_IS_USED)
+#if GD32_PWM_USE_TIM2
+#if defined(GD32_TIM2_IS_USED)
 #error "PWMD2 requires TIM2 but the timer is already used"
 #else
-#define STM32_TIM2_IS_USED
+#define GD32_TIM2_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM3
-#if defined(STM32_TIM3_IS_USED)
+#if GD32_PWM_USE_TIM3
+#if defined(GD32_TIM3_IS_USED)
 #error "PWMD3 requires TIM3 but the timer is already used"
 #else
-#define STM32_TIM3_IS_USED
+#define GD32_TIM3_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM4
-#if defined(STM32_TIM4_IS_USED)
+#if GD32_PWM_USE_TIM4
+#if defined(GD32_TIM4_IS_USED)
 #error "PWMD4 requires TIM4 but the timer is already used"
 #else
-#define STM32_TIM4_IS_USED
+#define GD32_TIM4_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM5
-#if defined(STM32_TIM5_IS_USED)
+#if GD32_PWM_USE_TIM5
+#if defined(GD32_TIM5_IS_USED)
 #error "PWMD5 requires TIM5 but the timer is already used"
 #else
-#define STM32_TIM5_IS_USED
+#define GD32_TIM5_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM8
-#if defined(STM32_TIM8_IS_USED)
+#if GD32_PWM_USE_TIM8
+#if defined(GD32_TIM8_IS_USED)
 #error "PWMD8 requires TIM8 but the timer is already used"
 #else
-#define STM32_TIM8_IS_USED
+#define GD32_TIM8_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM9
-#if defined(STM32_TIM9_IS_USED)
+#if GD32_PWM_USE_TIM9
+#if defined(GD32_TIM9_IS_USED)
 #error "PWMD9 requires TIM9 but the timer is already used"
 #else
-#define STM32_TIM9_IS_USED
+#define GD32_TIM9_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM10
-#if defined(STM32_TIM10_IS_USED)
+#if GD32_PWM_USE_TIM10
+#if defined(GD32_TIM10_IS_USED)
 #error "PWMD10 requires TIM10 but the timer is already used"
 #else
-#define STM32_TIM10_IS_USED
+#define GD32_TIM10_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM11
-#if defined(STM32_TIM11_IS_USED)
+#if GD32_PWM_USE_TIM11
+#if defined(GD32_TIM11_IS_USED)
 #error "PWMD11 requires TIM11 but the timer is already used"
 #else
-#define STM32_TIM11_IS_USED
+#define GD32_TIM11_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM12
-#if defined(STM32_TIM12_IS_USED)
+#if GD32_PWM_USE_TIM12
+#if defined(GD32_TIM12_IS_USED)
 #error "PWMD12 requires TIM12 but the timer is already used"
 #else
-#define STM32_TIM12_IS_USED
+#define GD32_TIM12_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM13
-#if defined(STM32_TIM13_IS_USED)
+#if GD32_PWM_USE_TIM13
+#if defined(GD32_TIM13_IS_USED)
 #error "PWMD13 requires TIM13 but the timer is already used"
 #else
-#define STM32_TIM13_IS_USED
+#define GD32_TIM13_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM14
-#if defined(STM32_TIM14_IS_USED)
+#if GD32_PWM_USE_TIM14
+#if defined(GD32_TIM14_IS_USED)
 #error "PWMD14 requires TIM14 but the timer is already used"
 #else
-#define STM32_TIM14_IS_USED
+#define GD32_TIM14_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM15
-#if defined(STM32_TIM15_IS_USED)
+#if GD32_PWM_USE_TIM15
+#if defined(GD32_TIM15_IS_USED)
 #error "PWMD15 requires TIM15 but the timer is already used"
 #else
-#define STM32_TIM15_IS_USED
+#define GD32_TIM15_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM16
-#if defined(STM32_TIM16_IS_USED)
+#if GD32_PWM_USE_TIM16
+#if defined(GD32_TIM16_IS_USED)
 #error "PWMD16 requires TIM16 but the timer is already used"
 #else
-#define STM32_TIM16_IS_USED
+#define GD32_TIM16_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM17
-#if defined(STM32_TIM17_IS_USED)
+#if GD32_PWM_USE_TIM17
+#if defined(GD32_TIM17_IS_USED)
 #error "PWMD17 requires TIM17 but the timer is already used"
 #else
-#define STM32_TIM17_IS_USED
+#define GD32_TIM17_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM20
-#if defined(STM32_TIM20_IS_USED)
+#if GD32_PWM_USE_TIM20
+#if defined(GD32_TIM20_IS_USED)
 #error "PWMD20 requires TIM20 but the timer is already used"
 #else
-#define STM32_TIM20_IS_USED
+#define GD32_TIM20_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM21
-#if defined(STM32_TIM21_IS_USED)
+#if GD32_PWM_USE_TIM21
+#if defined(GD32_TIM21_IS_USED)
 #error "PWMD21 requires TIM21 but the timer is already used"
 #else
-#define STM32_TIM21_IS_USED
+#define GD32_TIM21_IS_USED
 #endif
 #endif
 
-#if STM32_PWM_USE_TIM22
-#if defined(STM32_TIM22_IS_USED)
+#if GD32_PWM_USE_TIM22
+#if defined(GD32_TIM22_IS_USED)
 #error "PWMD22 requires TIM22 but the timer is already used"
 #else
-#define STM32_TIM22_IS_USED
+#define GD32_TIM22_IS_USED
 #endif
 #endif
 
 /* IRQ priority checks.*/
-#if STM32_PWM_USE_TIM1 && !defined(STM32_TIM1_SUPPRESS_ISR) &&              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM1_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM1 && !defined(GD32_TIM1_SUPPRESS_ISR) &&              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM1"
 #endif
 
-#if STM32_PWM_USE_TIM2 && !defined(STM32_TIM2_SUPPRESS_ISR) &&              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM2_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM2 && !defined(GD32_TIM2_SUPPRESS_ISR) &&              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM2"
 #endif
 
-#if STM32_PWM_USE_TIM3 && !defined(STM32_TIM3_SUPPRESS_ISR) &&              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM3_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM3 && !defined(GD32_TIM3_SUPPRESS_ISR) &&              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM3"
 #endif
 
-#if STM32_PWM_USE_TIM4 && !defined(STM32_TIM4_SUPPRESS_ISR) &&              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM4_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM4 && !defined(GD32_TIM4_SUPPRESS_ISR) &&              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM4_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM4"
 #endif
 
-#if STM32_PWM_USE_TIM5 && !defined(STM32_TIM5_SUPPRESS_ISR) &&              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM5_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM5 && !defined(GD32_TIM5_SUPPRESS_ISR) &&              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM5_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM5"
 #endif
 
-#if STM32_PWM_USE_TIM8 && !defined(STM32_TIM8_SUPPRESS_ISR) &&              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM8_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM8 && !defined(GD32_TIM8_SUPPRESS_ISR) &&              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM8_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM8"
 #endif
 
-#if STM32_PWM_USE_TIM9 && !defined(STM32_TIM9_SUPPRESS_ISR) &&              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM9_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM9 && !defined(GD32_TIM9_SUPPRESS_ISR) &&              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM9_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM9"
 #endif
 
-#if STM32_PWM_USE_TIM10 && !defined(STM32_TIM10_SUPPRESS_ISR) &&            \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM10_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM10 && !defined(GD32_TIM10_SUPPRESS_ISR) &&            \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM10_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM10"
 #endif
 
-#if STM32_PWM_USE_TIM11 && !defined(STM32_TIM11_SUPPRESS_ISR) &&            \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM11_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM11 && !defined(GD32_TIM11_SUPPRESS_ISR) &&            \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM11_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM11"
 #endif
 
-#if STM32_PWM_USE_TIM12 && !defined(STM32_TIM12_SUPPRESS_ISR) &&            \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM12_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM12 && !defined(GD32_TIM12_SUPPRESS_ISR) &&            \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM12_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM12"
 #endif
 
-#if STM32_PWM_USE_TIM13 && !defined(STM32_TIM13_SUPPRESS_ISR) &&            \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM13_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM13 && !defined(GD32_TIM13_SUPPRESS_ISR) &&            \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM13_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM13"
 #endif
 
-#if STM32_PWM_USE_TIM14 && !defined(STM32_TIM14_SUPPRESS_ISR) &&            \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM14_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM14 && !defined(GD32_TIM14_SUPPRESS_ISR) &&            \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM14_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM14"
 #endif
 
-#if STM32_PWM_USE_TIM15 && !defined(STM32_TIM15_SUPPRESS_ISR) &&            \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM15_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM15 && !defined(GD32_TIM15_SUPPRESS_ISR) &&            \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM15_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM15"
 #endif
 
-#if STM32_PWM_USE_TIM16 && !defined(STM32_TIM16_SUPPRESS_ISR) &&            \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM16_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM16 && !defined(GD32_TIM16_SUPPRESS_ISR) &&            \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM16_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM16"
 #endif
 
-#if STM32_PWM_USE_TIM17 && !defined(STM32_TIM17_SUPPRESS_ISR) &&            \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM17_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM17 && !defined(GD32_TIM17_SUPPRESS_ISR) &&            \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM17_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM17"
 #endif
 
-#if STM32_PWM_USE_TIM20 && !defined(STM32_TIM20_SUPPRESS_ISR) &&            \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM20_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM20 && !defined(GD32_TIM20_SUPPRESS_ISR) &&            \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM20_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM20"
 #endif
 
-#if STM32_PWM_USE_TIM21 && !defined(STM32_TIM21_SUPPRESS_ISR) &&            \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM21_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM21 && !defined(GD32_TIM21_SUPPRESS_ISR) &&            \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM21_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM21"
 #endif
 
-#if STM32_PWM_USE_TIM22 && !defined(STM32_TIM22_SUPPRESS_ISR) &&            \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_PWM_TIM22_IRQ_PRIORITY)
+#if GD32_PWM_USE_TIM22 && !defined(GD32_TIM22_SUPPRESS_ISR) &&            \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_PWM_TIM22_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM22"
 #endif
 
@@ -854,7 +854,7 @@ typedef struct {
    * @note  The value of this field should normally be equal to zero.
    */
   uint32_t                  cr2;
-#if STM32_PWM_USE_ADVANCED || defined(__DOXYGEN__)
+#if GD32_PWM_USE_ADVANCED || defined(__DOXYGEN__)
   /**
    * @brief TIM BDTR (break & dead-time) register initialization data.
    * @note  The value of this field should normally be equal to zero.
@@ -934,75 +934,75 @@ struct PWMDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_PWM_USE_TIM1 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM1 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD1;
 #endif
 
-#if STM32_PWM_USE_TIM2 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM2 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD2;
 #endif
 
-#if STM32_PWM_USE_TIM3 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM3 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD3;
 #endif
 
-#if STM32_PWM_USE_TIM4 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM4 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD4;
 #endif
 
-#if STM32_PWM_USE_TIM5 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM5 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD5;
 #endif
 
-#if STM32_PWM_USE_TIM8 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM8 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD8;
 #endif
 
-#if STM32_PWM_USE_TIM9 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM9 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD9;
 #endif
 
-#if STM32_PWM_USE_TIM10 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM10 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD10;
 #endif
 
-#if STM32_PWM_USE_TIM11 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM11 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD11;
 #endif
 
-#if STM32_PWM_USE_TIM12 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM12 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD12;
 #endif
 
-#if STM32_PWM_USE_TIM13 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM13 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD13;
 #endif
 
-#if STM32_PWM_USE_TIM14 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM14 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD14;
 #endif
 
-#if STM32_PWM_USE_TIM15 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM15 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD15;
 #endif
 
-#if STM32_PWM_USE_TIM16 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM16 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD16;
 #endif
 
-#if STM32_PWM_USE_TIM17 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM17 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD17;
 #endif
 
-#if STM32_PWM_USE_TIM20 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM20 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD20;
 #endif
 
-#if STM32_PWM_USE_TIM21 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM21 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD21;
 #endif
 
-#if STM32_PWM_USE_TIM22 && !defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM22 && !defined(__DOXYGEN__)
 extern PWMDriver PWMD22;
 #endif
 

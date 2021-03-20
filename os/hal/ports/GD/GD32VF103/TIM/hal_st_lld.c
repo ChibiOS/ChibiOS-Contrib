@@ -38,19 +38,19 @@
 #define ST_ARR_INIT                         0x0000FFFFU
 #endif
 
-#if STM32_ST_USE_TIMER == 2
+#if GD32_ST_USE_TIMER == 2
 
-#if !STM32_HAS_TIM2
+#if !GD32_HAS_TIM2
 #error "TIM2 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM2_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM2_IS_32BITS
 #error "TIM2 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM2_HANDLER
 #define ST_NUMBER                           GD32_TIM2_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK1
+#define ST_CLOCK_SRC                        GD32_TIMCLK1
 #define ST_ENABLE_CLOCK()                   rccEnableTIM2(true)
 #if defined(STM32F1XX)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM2_STOP
@@ -64,19 +64,19 @@
 #define ST_ENABLE_STOP()                    DBGMCU->APB1FZ |= DBGMCU_APB1_FZ_DBG_TIM2_STOP
 #endif
 
-#elif STM32_ST_USE_TIMER == 3
+#elif GD32_ST_USE_TIMER == 3
 
-#if !STM32_HAS_TIM3
+#if !GD32_HAS_TIM3
 #error "TIM3 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM3_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM3_IS_32BITS
 #error "TIM3 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM3_HANDLER
 #define ST_NUMBER                           GD32_TIM3_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK1
+#define ST_CLOCK_SRC                        GD32_TIMCLK1
 #define ST_ENABLE_CLOCK()                   rccEnableTIM3(true)
 #if defined(STM32F1XX)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM3_STOP
@@ -90,19 +90,19 @@
 #define ST_ENABLE_STOP()                    DBGMCU->APB1FZ |= DBGMCU_APB1_FZ_DBG_TIM3_STOP
 #endif
 
-#elif STM32_ST_USE_TIMER == 4
+#elif GD32_ST_USE_TIMER == 4
 
-#if !STM32_HAS_TIM4
+#if !GD32_HAS_TIM4
 #error "TIM4 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM4_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM4_IS_32BITS
 #error "TIM4 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM4_HANDLER
 #define ST_NUMBER                           GD32_TIM4_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK1
+#define ST_CLOCK_SRC                        GD32_TIMCLK1
 #define ST_ENABLE_CLOCK()                   rccEnableTIM4(true)
 #if defined(STM32F1XX)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM4_STOP
@@ -114,19 +114,19 @@
 #define ST_ENABLE_STOP()                    DBGMCU->APB1FZ |= DBGMCU_APB1_FZ_DBG_TIM4_STOP
 #endif
 
-#elif STM32_ST_USE_TIMER == 5
+#elif GD32_ST_USE_TIMER == 5
 
-#if !STM32_HAS_TIM5
+#if !GD32_HAS_TIM5
 #error "TIM5 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM5_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM5_IS_32BITS
 #error "TIM5 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM5_HANDLER
 #define ST_NUMBER                           GD32_TIM5_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK1
+#define ST_CLOCK_SRC                        GD32_TIMCLK1
 #define ST_ENABLE_CLOCK()                   rccEnableTIM5(true)
 #if defined(STM32F1XX)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM5_STOP
@@ -138,19 +138,19 @@
 #define ST_ENABLE_STOP()                    DBGMCU->APB1FZ |= DBGMCU_APB1_FZ_DBG_TIM5_STOP
 #endif
 
-#elif STM32_ST_USE_TIMER == 9
+#elif GD32_ST_USE_TIMER == 9
 
-#if !STM32_HAS_TIM9
+#if !GD32_HAS_TIM9
 #error "TIM9 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM9_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM9_IS_32BITS
 #error "TIM9 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM9_HANDLER
 #define ST_NUMBER                           GD32_TIM9_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK2
+#define ST_CLOCK_SRC                        GD32_TIMCLK2
 #define ST_ENABLE_CLOCK()                   rccEnableTIM9(true)
 #if defined(STM32F1XX)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM9_STOP
@@ -162,19 +162,19 @@
 #define ST_ENABLE_STOP()                    DBGMCU->APB2FZ |= DBGMCU_APB2_FZ_DBG_TIM9_STOP
 #endif
 
-#elif STM32_ST_USE_TIMER == 10
+#elif GD32_ST_USE_TIMER == 10
 
-#if !STM32_HAS_TIM10
+#if !GD32_HAS_TIM10
 #error "TIM10 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM10_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM10_IS_32BITS
 #error "TIM10 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM10_HANDLER
 #define ST_NUMBER                           GD32_TIM10_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK2
+#define ST_CLOCK_SRC                        GD32_TIMCLK2
 #define ST_ENABLE_CLOCK()                   rccEnableTIM10(true)
 #if defined(STM32F1XX)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM10_STOP
@@ -186,19 +186,19 @@
 #define ST_ENABLE_STOP()                    DBGMCU->APB2FZ |= DBGMCU_APB2_FZ_DBG_TIM10_STOP
 #endif
 
-#elif STM32_ST_USE_TIMER == 11
+#elif GD32_ST_USE_TIMER == 11
 
-#if !STM32_HAS_TIM11
+#if !GD32_HAS_TIM11
 #error "TIM11 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM11_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM11_IS_32BITS
 #error "TIM11 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM11_HANDLER
 #define ST_NUMBER                           GD32_TIM11_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK2
+#define ST_CLOCK_SRC                        GD32_TIMCLK2
 #define ST_ENABLE_CLOCK()                   rccEnableTIM11(true)
 #if defined(STM32F1XX)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM11_STOP
@@ -210,19 +210,19 @@
 #define ST_ENABLE_STOP()                    DBGMCU->APB2FZ |= DBGMCU_APB2_FZ_DBG_TIM11_STOP
 #endif
 
-#elif STM32_ST_USE_TIMER == 12
+#elif GD32_ST_USE_TIMER == 12
 
-#if !STM32_HAS_TIM12
+#if !GD32_HAS_TIM12
 #error "TIM12 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM12_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM12_IS_32BITS
 #error "TIM12 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM12_HANDLER
 #define ST_NUMBER                           GD32_TIM12_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK1
+#define ST_CLOCK_SRC                        GD32_TIMCLK1
 #define ST_ENABLE_CLOCK()                   rccEnableTIM12(true)
 #if defined(STM32F1XX)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM12_STOP
@@ -234,19 +234,19 @@
 #define ST_ENABLE_STOP()                    DBGMCU->APB1FZ |= DBGMCU_APB1_FZ_DBG_TIM12_STOP
 #endif
 
-#elif STM32_ST_USE_TIMER == 13
+#elif GD32_ST_USE_TIMER == 13
 
-#if !STM32_HAS_TIM13
+#if !GD32_HAS_TIM13
 #error "TIM13 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM13_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM13_IS_32BITS
 #error "TIM13 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM13_HANDLER
 #define ST_NUMBER                           GD32_TIM13_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK1
+#define ST_CLOCK_SRC                        GD32_TIMCLK1
 #define ST_ENABLE_CLOCK()                   rccEnableTIM13(true)
 #if defined(STM32F1XX)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM13_STOP
@@ -258,19 +258,19 @@
 #define ST_ENABLE_STOP()                    DBGMCU->APB1FZ |= DBGMCU_APB1_FZ_DBG_TIM13_STOP
 #endif
 
-#elif STM32_ST_USE_TIMER == 14
+#elif GD32_ST_USE_TIMER == 14
 
-#if !STM32_HAS_TIM14
+#if !GD32_HAS_TIM14
 #error "TIM14 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM14_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM14_IS_32BITS
 #error "TIM14 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM14_HANDLER
 #define ST_NUMBER                           GD32_TIM14_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK1
+#define ST_CLOCK_SRC                        GD32_TIMCLK1
 #define ST_ENABLE_CLOCK()                   rccEnableTIM14(true)
 #if defined(STM32F1XX)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM14_STOP
@@ -282,40 +282,40 @@
 #define ST_ENABLE_STOP()                    DBGMCU->APB1FZ |= DBGMCU_APB1_FZ_DBG_TIM14_STOP
 #endif
 
-#elif STM32_ST_USE_TIMER == 21
+#elif GD32_ST_USE_TIMER == 21
 
-#if !STM32_HAS_TIM21
+#if !GD32_HAS_TIM21
 #error "TIM21 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM21_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM21_IS_32BITS
 #error "TIM21 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM21_HANDLER
 #define ST_NUMBER                           GD32_TIM21_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK2
+#define ST_CLOCK_SRC                        GD32_TIMCLK2
 #define ST_ENABLE_CLOCK()                   rccEnableTIM21(true)
 #define ST_ENABLE_STOP()                    DBGMCU->APB1FZ |= DBGMCU_APB2_FZ_DBG_TIM21_STOP
 
-#elif STM32_ST_USE_TIMER == 22
+#elif GD32_ST_USE_TIMER == 22
 
-#if !STM32_HAS_TIM22
+#if !GD32_HAS_TIM22
 #error "TIM22 not present in the selected device"
 #endif
 
-#if (OSAL_ST_RESOLUTION == 32) && !STM32_TIM22_IS_32BITS
+#if (OSAL_ST_RESOLUTION == 32) && !GD32_TIM22_IS_32BITS
 #error "TIM21 is not a 32bits timer"
 #endif
 
 #define ST_HANDLER                          GD32_TIM22_HANDLER
 #define ST_NUMBER                           GD32_TIM22_NUMBER
-#define ST_CLOCK_SRC                        STM32_TIMCLK2
+#define ST_CLOCK_SRC                        GD32_TIMCLK2
 #define ST_ENABLE_CLOCK()                   rccEnableTIM22(true)
 #define ST_ENABLE_STOP()                    DBGMCU->APB1FZ |= DBGMCU_APB2_FZ_DBG_TIM21_STOP
 
 #else
-#error "STM32_ST_USE_TIMER specifies an unsupported timer"
+#error "GD32_ST_USE_TIMER specifies an unsupported timer"
 #endif
 
 #if ST_CLOCK_SRC % OSAL_ST_FREQUENCY != 0
@@ -332,10 +332,10 @@
 
 #define ST_HANDLER                          vector7
 
-#if defined(STM32_CORE_CK)
-#define SYSTICK_CK                          STM32_CORE_CK
+#if defined(GD32_CORE_CK)
+#define SYSTICK_CK                          GD32_CORE_CK
 #else
-#define SYSTICK_CK                          STM32_HCLK
+#define SYSTICK_CK                          GD32_HCLK
 #endif
 
 #if SYSTICK_CK % OSAL_ST_FREQUENCY != 0
@@ -368,7 +368,7 @@
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if !defined(STM32_SYSTICK_SUPPRESS_ISR)
+#if !defined(GD32_SYSTICK_SUPPRESS_ISR)
 /**
  * @brief   Interrupt handler.
  *
@@ -405,28 +405,28 @@ void st_lld_init(void) {
   ST_ENABLE_STOP();
 
   /* Initializing the counter in free running mode.*/
-  STM32_ST_TIM->PSC    = (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1;
-  STM32_ST_TIM->ARR    = ST_ARR_INIT;
-  STM32_ST_TIM->CCMR1  = 0;
-  STM32_ST_TIM->CCR[0] = 0;
+  GD32_ST_TIM->PSC    = (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1;
+  GD32_ST_TIM->ARR    = ST_ARR_INIT;
+  GD32_ST_TIM->CCMR1  = 0;
+  GD32_ST_TIM->CCR[0] = 0;
 #if ST_LLD_NUM_ALARMS > 1
-  STM32_ST_TIM->CCR[1] = 0;
+  GD32_ST_TIM->CCR[1] = 0;
 #endif
 #if ST_LLD_NUM_ALARMS > 2
-  STM32_ST_TIM->CCR[2] = 0;
+  GD32_ST_TIM->CCR[2] = 0;
 #endif
 #if ST_LLD_NUM_ALARMS > 3
-  STM32_ST_TIM->CCR[3] = 0;
+  GD32_ST_TIM->CCR[3] = 0;
 #endif
-  STM32_ST_TIM->DIER   = 0;
-  STM32_ST_TIM->CR2    = 0;
-  STM32_ST_TIM->EGR    = TIM_EGR_UG;
-  STM32_ST_TIM->CR1    = TIM_CR1_CEN;
+  GD32_ST_TIM->DIER   = 0;
+  GD32_ST_TIM->CR2    = 0;
+  GD32_ST_TIM->EGR    = TIM_EGR_UG;
+  GD32_ST_TIM->CR1    = TIM_CR1_CEN;
 
 //TODO
-#if !defined(STM32_SYSTICK_SUPPRESS_ISR)
+#if !defined(GD32_SYSTICK_SUPPRESS_ISR)
   /* IRQ enabled.*/
-  eclicEnableVector(ST_NUMBER, STM32_ST_IRQ_PRIORITY, STM32_ST_IRQ_TRIGGER);
+  eclicEnableVector(ST_NUMBER, GD32_ST_IRQ_PRIORITY, GD32_ST_IRQ_TRIGGER);
 #endif
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */
 
@@ -443,7 +443,7 @@ void st_lld_init(void) {
                   SysTick_CTRL_TICKINT_Msk;
 */
   /* IRQ enabled.*/
-  eclicEnableVector(HANDLER_SYSTICK, STM32_ST_IRQ_PRIORITY, STM32_ST_IRQ_TRIGGER);
+  eclicEnableVector(HANDLER_SYSTICK, GD32_ST_IRQ_PRIORITY, GD32_ST_IRQ_TRIGGER);
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC */
 }
 
@@ -458,10 +458,10 @@ void st_lld_serve_interrupt(void) {
 #endif
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   uint32_t sr;
-  stm32_tim_t *timp = STM32_ST_TIM;
+  stm32_tim_t *timp = GD32_ST_TIM;
 
   sr  = timp->SR;
-  sr &= timp->DIER & STM32_TIM_DIER_IRQ_MASK;
+  sr &= timp->DIER & GD32_TIM_DIER_IRQ_MASK;
   timp->SR = ~sr;
 
   if ((sr & TIM_SR_CC1IF) != 0U)

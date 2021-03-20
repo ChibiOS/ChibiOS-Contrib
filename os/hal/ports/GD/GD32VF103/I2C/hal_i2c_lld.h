@@ -38,7 +38,7 @@
 /**
  * @brief   Peripheral clock frequency.
  */
-#define I2C_CLK_FREQ  ((STM32_PCLK1) / 1000000)
+#define I2C_CLK_FREQ  ((GD32_PCLK1) / 1000000)
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -53,8 +53,8 @@
  * @details If set to @p TRUE the support for I2C1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_I2C_USE_I2C1) || defined(__DOXYGEN__)
-#define STM32_I2C_USE_I2C1                  FALSE
+#if !defined(GD32_I2C_USE_I2C1) || defined(__DOXYGEN__)
+#define GD32_I2C_USE_I2C1                  FALSE
 #endif
 
 /**
@@ -62,8 +62,8 @@
  * @details If set to @p TRUE the support for I2C2 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_I2C_USE_I2C2) || defined(__DOXYGEN__)
-#define STM32_I2C_USE_I2C2                  FALSE
+#if !defined(GD32_I2C_USE_I2C2) || defined(__DOXYGEN__)
+#define GD32_I2C_USE_I2C2                  FALSE
 #endif
 
 /**
@@ -71,36 +71,36 @@
  * @details If set to @p TRUE the support for I2C3 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_I2C_USE_I2C3) || defined(__DOXYGEN__)
-#define STM32_I2C_USE_I2C3                  FALSE
+#if !defined(GD32_I2C_USE_I2C3) || defined(__DOXYGEN__)
+#define GD32_I2C_USE_I2C3                  FALSE
 #endif
 
 /**
  * @brief   I2C timeout on busy condition in milliseconds.
  */
-#if !defined(STM32_I2C_BUSY_TIMEOUT) || defined(__DOXYGEN__)
-#define STM32_I2C_BUSY_TIMEOUT              50
+#if !defined(GD32_I2C_BUSY_TIMEOUT) || defined(__DOXYGEN__)
+#define GD32_I2C_BUSY_TIMEOUT              50
 #endif
 
 /**
  * @brief   I2C1 interrupt priority level setting.
  */
-#if !defined(STM32_I2C_I2C1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C1_IRQ_PRIORITY         10
+#if !defined(GD32_I2C_I2C1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C1_IRQ_PRIORITY         10
 #endif
 
 /**
  * @brief   I2C2 interrupt priority level setting.
  */
-#if !defined(STM32_I2C_I2C2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C2_IRQ_PRIORITY         10
+#if !defined(GD32_I2C_I2C2_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C2_IRQ_PRIORITY         10
 #endif
 
 /**
  * @brief   I2C3 interrupt priority level setting.
  */
-#if !defined(STM32_I2C_I2C3_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C3_IRQ_PRIORITY         10
+#if !defined(GD32_I2C_I2C3_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C3_IRQ_PRIORITY         10
 #endif
 
 /**
@@ -109,8 +109,8 @@
 *          because of the streams ordering the RX stream has always priority
 *          over the TX stream.
 */
-#if !defined(STM32_I2C_I2C1_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C1_DMA_PRIORITY         1
+#if !defined(GD32_I2C_I2C1_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C1_DMA_PRIORITY         1
 #endif
 
 /**
@@ -119,8 +119,8 @@
 *          because of the streams ordering the RX stream has always priority
 *          over the TX stream.
 */
-#if !defined(STM32_I2C_I2C2_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C2_DMA_PRIORITY         1
+#if !defined(GD32_I2C_I2C2_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C2_DMA_PRIORITY         1
 #endif
 
 /**
@@ -129,8 +129,8 @@
 *          because of the streams ordering the RX stream has always priority
 *          over the TX stream.
 */
-#if !defined(STM32_I2C_I2C3_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C3_DMA_PRIORITY         1
+#if !defined(GD32_I2C_I2C3_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C3_DMA_PRIORITY         1
 #endif
 
 /**
@@ -138,70 +138,70 @@
  * @note    The default action for DMA errors is a system halt because DMA
  *          error can only happen because programming errors.
  */
-#if !defined(STM32_I2C_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
-#define STM32_I2C_DMA_ERROR_HOOK(i2cp)      osalSysHalt("DMA failure")
+#if !defined(GD32_I2C_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
+#define GD32_I2C_DMA_ERROR_HOOK(i2cp)      osalSysHalt("DMA failure")
 #endif
 
-#if STM32_ADVANCED_DMA || defined(__DOXYGEN__)
+#if GD32_ADVANCED_DMA || defined(__DOXYGEN__)
 
 /**
  * @brief   DMA stream used for I2C1 RX operations.
  * @note    This option is only available on platforms with enhanced DMA.
  */
-#if !defined(STM32_I2C_I2C1_RX_DMA_STREAM) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C1_RX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 0)
+#if !defined(GD32_I2C_I2C1_RX_DMA_STREAM) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 0)
 #endif
 
 /**
  * @brief   DMA stream used for I2C1 TX operations.
  * @note    This option is only available on platforms with enhanced DMA.
  */
-#if !defined(STM32_I2C_I2C1_TX_DMA_STREAM) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C1_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 6)
+#if !defined(GD32_I2C_I2C1_TX_DMA_STREAM) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
 #endif
 
 /**
  * @brief   DMA stream used for I2C2 RX operations.
  * @note    This option is only available on platforms with enhanced DMA.
  */
-#if !defined(STM32_I2C_I2C2_RX_DMA_STREAM) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C2_RX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 2)
+#if !defined(GD32_I2C_I2C2_RX_DMA_STREAM) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 2)
 #endif
 
 /**
  * @brief   DMA stream used for I2C2 TX operations.
  * @note    This option is only available on platforms with enhanced DMA.
  */
-#if !defined(STM32_I2C_I2C2_TX_DMA_STREAM) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C2_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 7)
+#if !defined(GD32_I2C_I2C2_TX_DMA_STREAM) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C2_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
 #endif
 
 /**
  * @brief   DMA stream used for I2C3 RX operations.
  * @note    This option is only available on platforms with enhanced DMA.
  */
-#if !defined(STM32_I2C_I2C3_RX_DMA_STREAM) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C3_RX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 2)
+#if !defined(GD32_I2C_I2C3_RX_DMA_STREAM) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C3_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 2)
 #endif
 
 /**
  * @brief   DMA stream used for I2C3 TX operations.
  * @note    This option is only available on platforms with enhanced DMA.
  */
-#if !defined(STM32_I2C_I2C3_TX_DMA_STREAM) || defined(__DOXYGEN__)
-#define STM32_I2C_I2C3_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 4)
+#if !defined(GD32_I2C_I2C3_TX_DMA_STREAM) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C3_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 4)
 #endif
 
-#else /* !STM32_ADVANCED_DMA */
+#else /* !GD32_ADVANCED_DMA */
 
 /* Fixed streams for platforms using the old DMA peripheral, the values are
    valid for both STM32F1xx and STM32L1xx.*/
-#define STM32_I2C_I2C1_RX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 7)
-#define STM32_I2C_I2C1_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 6)
-#define STM32_I2C_I2C2_RX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 5)
-#define STM32_I2C_I2C2_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 4)
+#define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
+#define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
+#define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 5)
+#define GD32_I2C_I2C2_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 4)
 
-#endif /* !STM32_ADVANCED_DMA*/
+#endif /* !GD32_ADVANCED_DMA*/
 
 /* Flag for the whole STM32F1XX family. */
 #if defined(STM32F10X_LD_VL) || defined(GD32VF103_MD_VL) || \
@@ -217,107 +217,107 @@
 /*===========================================================================*/
 
 /** @brief  error checks */
-#if STM32_I2C_USE_I2C1 && !STM32_HAS_I2C1
+#if GD32_I2C_USE_I2C1 && !GD32_HAS_I2C1
 #error "I2C1 not present in the selected device"
 #endif
 
-#if STM32_I2C_USE_I2C2 && !STM32_HAS_I2C2
+#if GD32_I2C_USE_I2C2 && !GD32_HAS_I2C2
 #error "I2C2 not present in the selected device"
 #endif
 
-#if STM32_I2C_USE_I2C3 && !STM32_HAS_I2C3
+#if GD32_I2C_USE_I2C3 && !GD32_HAS_I2C3
 #error "I2C3 not present in the selected device"
 #endif
 
-#if !STM32_I2C_USE_I2C1 && !STM32_I2C_USE_I2C2 &&                           \
-    !STM32_I2C_USE_I2C3
+#if !GD32_I2C_USE_I2C1 && !GD32_I2C_USE_I2C2 &&                           \
+    !GD32_I2C_USE_I2C3
 #error "I2C driver activated but no I2C peripheral assigned"
 #endif
 
-#if STM32_I2C_USE_I2C1 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_I2C_I2C1_IRQ_PRIORITY)
+#if GD32_I2C_USE_I2C1 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_I2C_I2C1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to I2C1"
 #endif
 
-#if STM32_I2C_USE_I2C2 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_I2C_I2C2_IRQ_PRIORITY)
+#if GD32_I2C_USE_I2C2 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_I2C_I2C2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to I2C2"
 #endif
 
-#if STM32_I2C_USE_I2C3 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_I2C_I2C3_IRQ_PRIORITY)
+#if GD32_I2C_USE_I2C3 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_I2C_I2C3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to I2C3"
 #endif
 
-#if STM32_I2C_USE_I2C1 &&                                                   \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_I2C_I2C1_DMA_PRIORITY)
+#if GD32_I2C_USE_I2C1 &&                                                   \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_I2C_I2C1_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to I2C1"
 #endif
 
-#if STM32_I2C_USE_I2C2 &&                                                   \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_I2C_I2C2_DMA_PRIORITY)
+#if GD32_I2C_USE_I2C2 &&                                                   \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_I2C_I2C2_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to I2C2"
 #endif
 
-#if STM32_I2C_USE_I2C3 &&                                                   \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_I2C_I2C3_DMA_PRIORITY)
+#if GD32_I2C_USE_I2C3 &&                                                   \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_I2C_I2C3_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to I2C3"
 #endif
 
 /* The following checks are only required when there is a DMA able to
    reassign streams to different channels.*/
-#if STM32_ADVANCED_DMA
+#if GD32_ADVANCED_DMA
 /* Check on the presence of the DMA streams settings in mcuconf.h.*/
-#if STM32_I2C_USE_I2C1 && (!defined(STM32_I2C_I2C1_RX_DMA_STREAM) ||        \
-                           !defined(STM32_I2C_I2C1_TX_DMA_STREAM))
+#if GD32_I2C_USE_I2C1 && (!defined(GD32_I2C_I2C1_RX_DMA_STREAM) ||        \
+                           !defined(GD32_I2C_I2C1_TX_DMA_STREAM))
 #error "I2C1 DMA streams not defined"
 #endif
 
-#if STM32_I2C_USE_I2C2 && (!defined(STM32_I2C_I2C2_RX_DMA_STREAM) ||        \
-                           !defined(STM32_I2C_I2C2_TX_DMA_STREAM))
+#if GD32_I2C_USE_I2C2 && (!defined(GD32_I2C_I2C2_RX_DMA_STREAM) ||        \
+                           !defined(GD32_I2C_I2C2_TX_DMA_STREAM))
 #error "I2C2 DMA streams not defined"
 #endif
 
 /* Check on the validity of the assigned DMA channels.*/
-#if STM32_I2C_USE_I2C1 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2C_I2C1_RX_DMA_STREAM,                    \
-                           STM32_I2C1_RX_DMA_MSK)
+#if GD32_I2C_USE_I2C1 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2C_I2C1_RX_DMA_STREAM,                    \
+                           GD32_I2C1_RX_DMA_MSK)
 #error "invalid DMA stream associated to I2C1 RX"
 #endif
 
-#if STM32_I2C_USE_I2C1 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2C_I2C1_TX_DMA_STREAM,                    \
-                           STM32_I2C1_TX_DMA_MSK)
+#if GD32_I2C_USE_I2C1 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2C_I2C1_TX_DMA_STREAM,                    \
+                           GD32_I2C1_TX_DMA_MSK)
 #error "invalid DMA stream associated to I2C1 TX"
 #endif
 
-#if STM32_I2C_USE_I2C2 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2C_I2C2_RX_DMA_STREAM,                    \
-                           STM32_I2C2_RX_DMA_MSK)
+#if GD32_I2C_USE_I2C2 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2C_I2C2_RX_DMA_STREAM,                    \
+                           GD32_I2C2_RX_DMA_MSK)
 #error "invalid DMA stream associated to I2C2 RX"
 #endif
 
-#if STM32_I2C_USE_I2C2 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2C_I2C2_TX_DMA_STREAM,                    \
-                           STM32_I2C2_TX_DMA_MSK)
+#if GD32_I2C_USE_I2C2 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2C_I2C2_TX_DMA_STREAM,                    \
+                           GD32_I2C2_TX_DMA_MSK)
 #error "invalid DMA stream associated to I2C2 TX"
 #endif
 
-#if STM32_I2C_USE_I2C3 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2C_I2C3_RX_DMA_STREAM,                    \
-                           STM32_I2C3_RX_DMA_MSK)
+#if GD32_I2C_USE_I2C3 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2C_I2C3_RX_DMA_STREAM,                    \
+                           GD32_I2C3_RX_DMA_MSK)
 #error "invalid DMA stream associated to I2C3 RX"
 #endif
 
-#if STM32_I2C_USE_I2C3 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2C_I2C3_TX_DMA_STREAM,                    \
-                           STM32_I2C3_TX_DMA_MSK)
+#if GD32_I2C_USE_I2C3 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2C_I2C3_TX_DMA_STREAM,                    \
+                           GD32_I2C3_TX_DMA_MSK)
 #error "invalid DMA stream associated to I2C3 TX"
 #endif
-#endif /* STM32_ADVANCED_DMA */
+#endif /* GD32_ADVANCED_DMA */
 
-#if !defined(STM32_DMA_REQUIRED)
-#define STM32_DMA_REQUIRED
+#if !defined(GD32_DMA_REQUIRED)
+#define GD32_DMA_REQUIRED
 #endif
 
 /* Check clock range. */
@@ -461,15 +461,15 @@ struct I2CDriver {
 /*===========================================================================*/
 
 #if !defined(__DOXYGEN__)
-#if STM32_I2C_USE_I2C1
+#if GD32_I2C_USE_I2C1
 extern I2CDriver I2CD1;
 #endif
 
-#if STM32_I2C_USE_I2C2
+#if GD32_I2C_USE_I2C2
 extern I2CDriver I2CD2;
 #endif
 
-#if STM32_I2C_USE_I2C3
+#if GD32_I2C_USE_I2C3
 extern I2CDriver I2CD3;
 #endif
 #endif /* !defined(__DOXYGEN__) */

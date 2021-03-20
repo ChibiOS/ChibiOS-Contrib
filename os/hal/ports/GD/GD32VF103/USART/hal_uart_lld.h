@@ -44,8 +44,8 @@
  * @details If set to @p TRUE the support for USART1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_UART_USE_USART1) || defined(__DOXYGEN__)
-#define STM32_UART_USE_USART1               FALSE
+#if !defined(GD32_UART_USE_USART1) || defined(__DOXYGEN__)
+#define GD32_UART_USE_USART1               FALSE
 #endif
 
 /**
@@ -53,8 +53,8 @@
  * @details If set to @p TRUE the support for USART2 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_UART_USE_USART2) || defined(__DOXYGEN__)
-#define STM32_UART_USE_USART2               FALSE
+#if !defined(GD32_UART_USE_USART2) || defined(__DOXYGEN__)
+#define GD32_UART_USE_USART2               FALSE
 #endif
 
 /**
@@ -62,8 +62,8 @@
  * @details If set to @p TRUE the support for USART3 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_UART_USE_USART3) || defined(__DOXYGEN__)
-#define STM32_UART_USE_USART3               FALSE
+#if !defined(GD32_UART_USE_USART3) || defined(__DOXYGEN__)
+#define GD32_UART_USE_USART3               FALSE
 #endif
 
 /**
@@ -71,8 +71,8 @@
  * @details If set to @p TRUE the support for UART4 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_UART_USE_UART4) || defined(__DOXYGEN__)
-#define STM32_UART_USE_UART4                FALSE
+#if !defined(GD32_UART_USE_UART4) || defined(__DOXYGEN__)
+#define GD32_UART_USE_UART4                FALSE
 #endif
 
 /**
@@ -80,8 +80,8 @@
  * @details If set to @p TRUE the support for UART5 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_UART_USE_UART5) || defined(__DOXYGEN__)
-#define STM32_UART_USE_UART5                FALSE
+#if !defined(GD32_UART_USE_UART5) || defined(__DOXYGEN__)
+#define GD32_UART_USE_UART5                FALSE
 #endif
 
 /**
@@ -89,8 +89,8 @@
  * @details If set to @p TRUE the support for USART6 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_UART_USE_USART6) || defined(__DOXYGEN__)
-#define STM32_UART_USE_USART6               FALSE
+#if !defined(GD32_UART_USE_USART6) || defined(__DOXYGEN__)
+#define GD32_UART_USE_USART6               FALSE
 #endif
 
 /**
@@ -98,8 +98,8 @@
  * @details If set to @p TRUE the support for UART7 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_UART_USE_UART7) || defined(__DOXYGEN__)
-#define STM32_UART_USE_UART7                FALSE
+#if !defined(GD32_UART_USE_UART7) || defined(__DOXYGEN__)
+#define GD32_UART_USE_UART7                FALSE
 #endif
 
 /**
@@ -107,64 +107,64 @@
  * @details If set to @p TRUE the support for UART8 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_UART_USE_UART8) || defined(__DOXYGEN__)
-#define STM32_UART_USE_UART8                FALSE
+#if !defined(GD32_UART_USE_UART8) || defined(__DOXYGEN__)
+#define GD32_UART_USE_UART8                FALSE
 #endif
 
 /**
  * @brief   USART1 interrupt priority level setting.
  */
-#if !defined(STM32_UART_USART1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_USART1_IRQ_PRIORITY      12
+#if !defined(GD32_UART_USART1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_USART1_IRQ_PRIORITY      12
 #endif
 
 /**
  * @brief   USART2 interrupt priority level setting.
  */
-#if !defined(STM32_UART_USART2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_USART2_IRQ_PRIORITY      12
+#if !defined(GD32_UART_USART2_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_USART2_IRQ_PRIORITY      12
 #endif
 
 /**
  * @brief   USART3 interrupt priority level setting.
  */
-#if !defined(STM32_UART_USART3_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_USART3_IRQ_PRIORITY      12
+#if !defined(GD32_UART_USART3_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_USART3_IRQ_PRIORITY      12
 #endif
 
 /**
  * @brief   UART4 interrupt priority level setting.
  */
-#if !defined(STM32_UART_UART4_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_UART4_IRQ_PRIORITY       12
+#if !defined(GD32_UART_UART4_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_UART4_IRQ_PRIORITY       12
 #endif
 
 /**
  * @brief   UART5 interrupt priority level setting.
  */
-#if !defined(STM32_UART_UART5_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_UART5_IRQ_PRIORITY       12
+#if !defined(GD32_UART_UART5_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_UART5_IRQ_PRIORITY       12
 #endif
 
 /**
  * @brief   USART6 interrupt priority level setting.
  */
-#if !defined(STM32_UART_USART6_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_USART6_IRQ_PRIORITY      12
+#if !defined(GD32_UART_USART6_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_USART6_IRQ_PRIORITY      12
 #endif
 
 /**
  * @brief   UART7 interrupt priority level setting.
  */
-#if !defined(STM32_UART_UART7_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_UART7_IRQ_PRIORITY       12
+#if !defined(GD32_UART_UART7_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_UART7_IRQ_PRIORITY       12
 #endif
 
 /**
  * @brief   UART8 interrupt priority level setting.
  */
-#if !defined(STM32_UART_UART8_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_UART8_IRQ_PRIORITY       12
+#if !defined(GD32_UART_UART8_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_UART8_IRQ_PRIORITY       12
 #endif
 
 /**
@@ -173,8 +173,8 @@
  *          because of the channels ordering the RX channel has always priority
  *          over the TX channel.
  */
-#if !defined(STM32_UART_USART1_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_USART1_DMA_PRIORITY      0
+#if !defined(GD32_UART_USART1_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_USART1_DMA_PRIORITY      0
 #endif
 
 /**
@@ -183,8 +183,8 @@
  *          because of the channels ordering the RX channel has always priority
  *          over the TX channel.
  */
-#if !defined(STM32_UART_USART2_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_USART2_DMA_PRIORITY      0
+#if !defined(GD32_UART_USART2_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_USART2_DMA_PRIORITY      0
 #endif
 
 /**
@@ -193,8 +193,8 @@
  *          because of the channels ordering the RX channel has always priority
  *          over the TX channel.
  */
-#if !defined(STM32_UART_USART3_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_USART3_DMA_PRIORITY      0
+#if !defined(GD32_UART_USART3_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_USART3_DMA_PRIORITY      0
 #endif
 
 /**
@@ -203,8 +203,8 @@
  *          because of the channels ordering the RX channel has always priority
  *          over the TX channel.
  */
-#if !defined(STM32_UART_UART4_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_UART4_DMA_PRIORITY       0
+#if !defined(GD32_UART_UART4_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_UART4_DMA_PRIORITY       0
 #endif
 
 /**
@@ -213,8 +213,8 @@
  *          because of the channels ordering the RX channel has always priority
  *          over the TX channel.
  */
-#if !defined(STM32_UART_UART5_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_UART5_DMA_PRIORITY       0
+#if !defined(GD32_UART_UART5_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_UART5_DMA_PRIORITY       0
 #endif
 
 /**
@@ -223,8 +223,8 @@
  *          because of the channels ordering the RX channel has always priority
  *          over the TX channel.
  */
-#if !defined(STM32_UART_USART6_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_USART6_DMA_PRIORITY      0
+#if !defined(GD32_UART_USART6_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_USART6_DMA_PRIORITY      0
 #endif
 
 /**
@@ -233,8 +233,8 @@
  *          because of the channels ordering the RX channel has always priority
  *          over the TX channel.
  */
-#if !defined(STM32_UART_UART7_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_UART7_DMA_PRIORITY       0
+#if !defined(GD32_UART_UART7_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_UART7_DMA_PRIORITY       0
 #endif
 
 /**
@@ -243,8 +243,8 @@
  *          because of the channels ordering the RX channel has always priority
  *          over the TX channel.
  */
-#if !defined(STM32_UART_UART8_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_UART_UART8_DMA_PRIORITY       0
+#if !defined(GD32_UART_UART8_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_UART8_DMA_PRIORITY       0
 #endif
 
 /**
@@ -252,8 +252,8 @@
  * @note    The default action for DMA errors is a system halt because DMA
  *          error can only happen because programming errors.
  */
-#if !defined(STM32_UART_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
-#define STM32_UART_DMA_ERROR_HOOK(uartp)    osalSysHalt("DMA failure")
+#if !defined(GD32_UART_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
+#define GD32_UART_DMA_ERROR_HOOK(uartp)    osalSysHalt("DMA failure")
 #endif
 /** @} */
 
@@ -261,20 +261,20 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if STM32_UART_USE_USART1 && !STM32_HAS_USART1
+#if GD32_UART_USE_USART1 && !GD32_HAS_USART1
 #error "USART1 not present in the selected device"
 #endif
 
-#if STM32_UART_USE_USART2 && !STM32_HAS_USART2
+#if GD32_UART_USE_USART2 && !GD32_HAS_USART2
 #error "USART2 not present in the selected device"
 #endif
 
-#if STM32_UART_USE_USART3 && !STM32_HAS_USART3
+#if GD32_UART_USE_USART3 && !GD32_HAS_USART3
 #error "USART3 not present in the selected device"
 #endif
 
-#if STM32_UART_USE_UART4
-#if !STM32_HAS_UART4
+#if GD32_UART_USE_UART4
+#if !GD32_HAS_UART4
 #error "UART4 not present in the selected device"
 #endif
 
@@ -282,10 +282,10 @@
     !defined(STM32L152xE) && !defined(STM32L162xE)
 #error "UART4 DMA access not supported in this platform"
 #endif
-#endif /* STM32_UART_USE_UART4 */
+#endif /* GD32_UART_USE_UART4 */
 
-#if STM32_UART_USE_UART5
-#if !STM32_HAS_UART5
+#if GD32_UART_USE_UART5
+#if !GD32_HAS_UART5
 #error "UART5 not present in the selected device"
 #endif
 
@@ -293,251 +293,251 @@
     !defined(STM32L152xE) && !defined(STM32L162xE)
 #error "UART5 DMA access not supported in this platform"
 #endif
-#endif /* STM32_UART_USE_UART5 */
+#endif /* GD32_UART_USE_UART5 */
 
-#if STM32_UART_USE_USART6 && !STM32_HAS_USART6
+#if GD32_UART_USE_USART6 && !GD32_HAS_USART6
 #error "USART6 not present in the selected device"
 #endif
 
-#if STM32_UART_USE_UART7 && !STM32_HAS_UART7
+#if GD32_UART_USE_UART7 && !GD32_HAS_UART7
 #error "UART7 not present in the selected device"
 #endif
 
-#if STM32_UART_USE_UART8 && !STM32_HAS_UART8
+#if GD32_UART_USE_UART8 && !GD32_HAS_UART8
 #error "UART8 not present in the selected device"
 #endif
 
-#if !STM32_UART_USE_USART1 && !STM32_UART_USE_USART2 &&                     \
-    !STM32_UART_USE_USART3 && !STM32_UART_USE_UART4 &&                      \
-    !STM32_UART_USE_UART5  && !STM32_UART_USE_USART6 &&                     \
-    !STM32_UART_USE_UART7  && !STM32_UART_USE_UART8
+#if !GD32_UART_USE_USART1 && !GD32_UART_USE_USART2 &&                     \
+    !GD32_UART_USE_USART3 && !GD32_UART_USE_UART4 &&                      \
+    !GD32_UART_USE_UART5  && !GD32_UART_USE_USART6 &&                     \
+    !GD32_UART_USE_UART7  && !GD32_UART_USE_UART8
 #error "UART driver activated but no USART/UART peripheral assigned"
 #endif
 
-#if STM32_UART_USE_USART1 &&                                                \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_UART_USART1_IRQ_PRIORITY)
+#if GD32_UART_USE_USART1 &&                                                \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_UART_USART1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to USART1"
 #endif
 
-#if STM32_UART_USE_USART2 &&                                                \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_UART_USART2_IRQ_PRIORITY)
+#if GD32_UART_USE_USART2 &&                                                \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_UART_USART2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to USART2"
 #endif
 
-#if STM32_UART_USE_USART3 &&                                                \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_UART_USART3_IRQ_PRIORITY)
+#if GD32_UART_USE_USART3 &&                                                \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_UART_USART3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to USART3"
 #endif
 
-#if STM32_UART_USE_UART4 &&                                                 \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_UART_UART4_IRQ_PRIORITY)
+#if GD32_UART_USE_UART4 &&                                                 \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_UART_UART4_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to UART4"
 #endif
 
-#if STM32_UART_USE_UART5 &&                                                 \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_UART_UART5_IRQ_PRIORITY)
+#if GD32_UART_USE_UART5 &&                                                 \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_UART_UART5_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to UART5"
 #endif
 
-#if STM32_UART_USE_USART6 &&                                                \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_UART_USART6_IRQ_PRIORITY)
+#if GD32_UART_USE_USART6 &&                                                \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_UART_USART6_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to USART6"
 #endif
 
-#if STM32_UART_USE_UART7 &&                                                 \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_UART_UART7_IRQ_PRIORITY)
+#if GD32_UART_USE_UART7 &&                                                 \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_UART_UART7_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to UART7"
 #endif
 
-#if STM32_UART_USE_UART8 &&                                                 \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_UART_UART8_IRQ_PRIORITY)
+#if GD32_UART_USE_UART8 &&                                                 \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_UART_UART8_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to UART8"
 #endif
 
-#if STM32_UART_USE_USART1 &&                                                \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_UART_USART1_DMA_PRIORITY)
+#if GD32_UART_USE_USART1 &&                                                \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_UART_USART1_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to USART1"
 #endif
 
-#if STM32_UART_USE_USART2 &&                                                \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_UART_USART2_DMA_PRIORITY)
+#if GD32_UART_USE_USART2 &&                                                \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_UART_USART2_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to USART2"
 #endif
 
-#if STM32_UART_USE_USART3 &&                                                \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_UART_USART3_DMA_PRIORITY)
+#if GD32_UART_USE_USART3 &&                                                \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_UART_USART3_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to USART3"
 #endif
 
-#if STM32_UART_USE_UART4 &&                                                 \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_UART_UART4_DMA_PRIORITY)
+#if GD32_UART_USE_UART4 &&                                                 \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_UART_UART4_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to UART4"
 #endif
 
-#if STM32_UART_USE_UART5 &&                                                 \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_UART_UART5_DMA_PRIORITY)
+#if GD32_UART_USE_UART5 &&                                                 \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_UART_UART5_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to UART5"
 #endif
 
-#if STM32_UART_USE_USART6 &&                                                \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_UART_USART6_DMA_PRIORITY)
+#if GD32_UART_USE_USART6 &&                                                \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_UART_USART6_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to USART6"
 #endif
 
-#if STM32_UART_USE_UART7 &&                                                 \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_UART_UART7_DMA_PRIORITY)
+#if GD32_UART_USE_UART7 &&                                                 \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_UART_UART7_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to UART7"
 #endif
 
-#if STM32_UART_USE_UART8 &&                                                 \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_UART_UART8_DMA_PRIORITY)
+#if GD32_UART_USE_UART8 &&                                                 \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_UART_UART8_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to UART8"
 #endif
 
 /* The following checks are only required when there is a DMA able to
    reassign streams to different channels.*/
-#if STM32_ADVANCED_DMA
+#if GD32_ADVANCED_DMA
 /* Check on the presence of the DMA streams settings in mcuconf.h.*/
-#if STM32_UART_USE_USART1 && (!defined(STM32_UART_USART1_RX_DMA_STREAM) ||  \
-                              !defined(STM32_UART_USART1_TX_DMA_STREAM))
+#if GD32_UART_USE_USART1 && (!defined(GD32_UART_USART1_RX_DMA_STREAM) ||  \
+                              !defined(GD32_UART_USART1_TX_DMA_STREAM))
 #error "USART1 DMA streams not defined"
 #endif
 
-#if STM32_UART_USE_USART2 && (!defined(STM32_UART_USART2_RX_DMA_STREAM) ||  \
-                              !defined(STM32_UART_USART2_TX_DMA_STREAM))
+#if GD32_UART_USE_USART2 && (!defined(GD32_UART_USART2_RX_DMA_STREAM) ||  \
+                              !defined(GD32_UART_USART2_TX_DMA_STREAM))
 #error "USART2 DMA streams not defined"
 #endif
 
-#if STM32_UART_USE_USART3 && (!defined(STM32_UART_USART3_RX_DMA_STREAM) ||  \
-                              !defined(STM32_UART_USART3_TX_DMA_STREAM))
+#if GD32_UART_USE_USART3 && (!defined(GD32_UART_USART3_RX_DMA_STREAM) ||  \
+                              !defined(GD32_UART_USART3_TX_DMA_STREAM))
 #error "USART3 DMA streams not defined"
 #endif
 
-#if STM32_UART_USE_UART4 && (!defined(STM32_UART_UART4_RX_DMA_STREAM) ||    \
-                             !defined(STM32_UART_UART4_TX_DMA_STREAM))
+#if GD32_UART_USE_UART4 && (!defined(GD32_UART_UART4_RX_DMA_STREAM) ||    \
+                             !defined(GD32_UART_UART4_TX_DMA_STREAM))
 #error "UART4 DMA streams not defined"
 #endif
 
-#if STM32_UART_USE_UART5 && (!defined(STM32_UART_UART5_RX_DMA_STREAM) ||    \
-                             !defined(STM32_UART_UART5_TX_DMA_STREAM))
+#if GD32_UART_USE_UART5 && (!defined(GD32_UART_UART5_RX_DMA_STREAM) ||    \
+                             !defined(GD32_UART_UART5_TX_DMA_STREAM))
 #error "UART5 DMA streams not defined"
 #endif
 
-#if STM32_UART_USE_USART6 && (!defined(STM32_UART_USART6_RX_DMA_STREAM) ||  \
-                              !defined(STM32_UART_USART6_TX_DMA_STREAM))
+#if GD32_UART_USE_USART6 && (!defined(GD32_UART_USART6_RX_DMA_STREAM) ||  \
+                              !defined(GD32_UART_USART6_TX_DMA_STREAM))
 #error "USART6 DMA streams not defined"
 #endif
 
-#if STM32_UART_USE_UART7 && (!defined(STM32_UART_UART7_RX_DMA_STREAM) ||    \
-                             !defined(STM32_UART_UART7_TX_DMA_STREAM))
+#if GD32_UART_USE_UART7 && (!defined(GD32_UART_UART7_RX_DMA_STREAM) ||    \
+                             !defined(GD32_UART_UART7_TX_DMA_STREAM))
 #error "UART7 DMA streams not defined"
 #endif
 
-#if STM32_UART_USE_UART8 && (!defined(STM32_UART_UART8_RX_DMA_STREAM) ||    \
-                             !defined(STM32_UART_UART8_TX_DMA_STREAM))
+#if GD32_UART_USE_UART8 && (!defined(GD32_UART_UART8_RX_DMA_STREAM) ||    \
+                             !defined(GD32_UART_UART8_TX_DMA_STREAM))
 #error "UART8 DMA streams not defined"
 #endif
 
 /* Check on the validity of the assigned DMA channels.*/
-#if STM32_UART_USE_USART1 &&                                                \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_USART1_RX_DMA_STREAM,                 \
-                           STM32_USART1_RX_DMA_MSK)
+#if GD32_UART_USE_USART1 &&                                                \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_USART1_RX_DMA_STREAM,                 \
+                           GD32_USART1_RX_DMA_MSK)
 #error "invalid DMA stream associated to USART1 RX"
 #endif
 
-#if STM32_UART_USE_USART1 &&                                                \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_USART1_TX_DMA_STREAM,                 \
-                           STM32_USART1_TX_DMA_MSK)
+#if GD32_UART_USE_USART1 &&                                                \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_USART1_TX_DMA_STREAM,                 \
+                           GD32_USART1_TX_DMA_MSK)
 #error "invalid DMA stream associated to USART1 TX"
 #endif
 
-#if STM32_UART_USE_USART2 &&                                                \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_USART2_RX_DMA_STREAM,                 \
-                           STM32_USART2_RX_DMA_MSK)
+#if GD32_UART_USE_USART2 &&                                                \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_USART2_RX_DMA_STREAM,                 \
+                           GD32_USART2_RX_DMA_MSK)
 #error "invalid DMA stream associated to USART2 RX"
 #endif
 
-#if STM32_UART_USE_USART2 &&                                                \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_USART2_TX_DMA_STREAM,                 \
-                           STM32_USART2_TX_DMA_MSK)
+#if GD32_UART_USE_USART2 &&                                                \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_USART2_TX_DMA_STREAM,                 \
+                           GD32_USART2_TX_DMA_MSK)
 #error "invalid DMA stream associated to USART2 TX"
 #endif
 
-#if STM32_UART_USE_USART3 &&                                                \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_USART3_RX_DMA_STREAM,                 \
-                           STM32_USART3_RX_DMA_MSK)
+#if GD32_UART_USE_USART3 &&                                                \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_USART3_RX_DMA_STREAM,                 \
+                           GD32_USART3_RX_DMA_MSK)
 #error "invalid DMA stream associated to USART3 RX"
 #endif
 
-#if STM32_UART_USE_USART3 &&                                                \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_USART3_TX_DMA_STREAM,                 \
-                           STM32_USART3_TX_DMA_MSK)
+#if GD32_UART_USE_USART3 &&                                                \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_USART3_TX_DMA_STREAM,                 \
+                           GD32_USART3_TX_DMA_MSK)
 #error "invalid DMA stream associated to USART3 TX"
 #endif
 
-#if STM32_UART_USE_UART4 &&                                                 \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_UART4_RX_DMA_STREAM,                  \
-                           STM32_UART4_RX_DMA_MSK)
+#if GD32_UART_USE_UART4 &&                                                 \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_UART4_RX_DMA_STREAM,                  \
+                           GD32_UART4_RX_DMA_MSK)
 #error "invalid DMA stream associated to UART4 RX"
 #endif
 
-#if STM32_UART_USE_UART4 &&                                                 \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_UART4_TX_DMA_STREAM,                  \
-                           STM32_UART4_TX_DMA_MSK)
+#if GD32_UART_USE_UART4 &&                                                 \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_UART4_TX_DMA_STREAM,                  \
+                           GD32_UART4_TX_DMA_MSK)
 #error "invalid DMA stream associated to UART4 TX"
 #endif
 
-#if STM32_UART_USE_UART5 &&                                                 \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_UART5_RX_DMA_STREAM,                  \
-                           STM32_UART5_RX_DMA_MSK)
+#if GD32_UART_USE_UART5 &&                                                 \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_UART5_RX_DMA_STREAM,                  \
+                           GD32_UART5_RX_DMA_MSK)
 #error "invalid DMA stream associated to UART5 RX"
 #endif
 
-#if STM32_UART_USE_UART5 &&                                                 \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_UART5_TX_DMA_STREAM,                  \
-                           STM32_UART5_TX_DMA_MSK)
+#if GD32_UART_USE_UART5 &&                                                 \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_UART5_TX_DMA_STREAM,                  \
+                           GD32_UART5_TX_DMA_MSK)
 #error "invalid DMA stream associated to UART5 TX"
 #endif
 
-#if STM32_UART_USE_USART6 &&                                                \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_USART6_RX_DMA_STREAM,                 \
-                           STM32_USART6_RX_DMA_MSK)
+#if GD32_UART_USE_USART6 &&                                                \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_USART6_RX_DMA_STREAM,                 \
+                           GD32_USART6_RX_DMA_MSK)
 #error "invalid DMA stream associated to USART6 RX"
 #endif
 
-#if STM32_UART_USE_USART6 &&                                                \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_USART6_TX_DMA_STREAM,                 \
-                           STM32_USART6_TX_DMA_MSK)
+#if GD32_UART_USE_USART6 &&                                                \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_USART6_TX_DMA_STREAM,                 \
+                           GD32_USART6_TX_DMA_MSK)
 #error "invalid DMA stream associated to USART6 TX"
 #endif
-#endif /* STM32_ADVANCED_DMA */
+#endif /* GD32_ADVANCED_DMA */
 
-#if STM32_UART_USE_UART7 &&                                                 \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_UART7_RX_DMA_STREAM,                  \
-                           STM32_UART7_RX_DMA_MSK)
+#if GD32_UART_USE_UART7 &&                                                 \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_UART7_RX_DMA_STREAM,                  \
+                           GD32_UART7_RX_DMA_MSK)
 #error "invalid DMA stream associated to UART7 RX"
 #endif
 
-#if STM32_UART_USE_UART7 &&                                                 \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_UART7_TX_DMA_STREAM,                  \
-                           STM32_UART7_TX_DMA_MSK)
+#if GD32_UART_USE_UART7 &&                                                 \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_UART7_TX_DMA_STREAM,                  \
+                           GD32_UART7_TX_DMA_MSK)
 #error "invalid DMA stream associated to UART7 TX"
 #endif
 
-#if STM32_UART_USE_UART8 &&                                                 \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_UART8_RX_DMA_STREAM,                  \
-                           STM32_UART8_RX_DMA_MSK)
+#if GD32_UART_USE_UART8 &&                                                 \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_UART8_RX_DMA_STREAM,                  \
+                           GD32_UART8_RX_DMA_MSK)
 #error "invalid DMA stream associated to UART8 RX"
 #endif
 
-#if STM32_UART_USE_UART8 &&                                                 \
-    !STM32_DMA_IS_VALID_ID(STM32_UART_UART8_TX_DMA_STREAM,                  \
-                           STM32_UART8_TX_DMA_MSK)
+#if GD32_UART_USE_UART8 &&                                                 \
+    !GD32_DMA_IS_VALID_ID(GD32_UART_UART8_TX_DMA_STREAM,                  \
+                           GD32_UART8_TX_DMA_MSK)
 #error "invalid DMA stream associated to UART8 TX"
 #endif
 
-#if !defined(STM32_DMA_REQUIRED)
-#define STM32_DMA_REQUIRED
+#if !defined(GD32_DMA_REQUIRED)
+#define GD32_DMA_REQUIRED
 #endif
 
 /*===========================================================================*/
@@ -705,35 +705,35 @@ struct UARTDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_UART_USE_USART1 && !defined(__DOXYGEN__)
+#if GD32_UART_USE_USART1 && !defined(__DOXYGEN__)
 extern UARTDriver UARTD1;
 #endif
 
-#if STM32_UART_USE_USART2 && !defined(__DOXYGEN__)
+#if GD32_UART_USE_USART2 && !defined(__DOXYGEN__)
 extern UARTDriver UARTD2;
 #endif
 
-#if STM32_UART_USE_USART3 && !defined(__DOXYGEN__)
+#if GD32_UART_USE_USART3 && !defined(__DOXYGEN__)
 extern UARTDriver UARTD3;
 #endif
 
-#if STM32_UART_USE_UART4 && !defined(__DOXYGEN__)
+#if GD32_UART_USE_UART4 && !defined(__DOXYGEN__)
 extern UARTDriver UARTD4;
 #endif
 
-#if STM32_UART_USE_UART5 && !defined(__DOXYGEN__)
+#if GD32_UART_USE_UART5 && !defined(__DOXYGEN__)
 extern UARTDriver UARTD5;
 #endif
 
-#if STM32_UART_USE_USART6 && !defined(__DOXYGEN__)
+#if GD32_UART_USE_USART6 && !defined(__DOXYGEN__)
 extern UARTDriver UARTD6;
 #endif
 
-#if STM32_UART_USE_UART7 && !defined(__DOXYGEN__)
+#if GD32_UART_USE_UART7 && !defined(__DOXYGEN__)
 extern UARTDriver UARTD7;
 #endif
 
-#if STM32_UART_USE_UART8 && !defined(__DOXYGEN__)
+#if GD32_UART_USE_UART8 && !defined(__DOXYGEN__)
 extern UARTDriver UARTD8;
 #endif
 

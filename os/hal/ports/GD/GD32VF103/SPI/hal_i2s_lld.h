@@ -35,21 +35,21 @@
  * @name    Static I2S modes
  * @{
  */
-#define STM32_I2S_MODE_SLAVE                0
-#define STM32_I2S_MODE_MASTER               1
-#define STM32_I2S_MODE_RX                   2
-#define STM32_I2S_MODE_TX                   4
-#define STM32_I2S_MODE_RXTX                 (STM32_I2S_MODE_RX |            \
-                                             STM32_I2S_MODE_TX)
+#define GD32_I2S_MODE_SLAVE                0
+#define GD32_I2S_MODE_MASTER               1
+#define GD32_I2S_MODE_RX                   2
+#define GD32_I2S_MODE_TX                   4
+#define GD32_I2S_MODE_RXTX                 (GD32_I2S_MODE_RX |            \
+                                             GD32_I2S_MODE_TX)
 /** @} */
 
 /**
  * @name    Mode checks
  * @{
  */
-#define STM32_I2S_IS_MASTER(mode)           ((mode) & STM32_I2S_MODE_MASTER)
-#define STM32_I2S_RX_ENABLED(mode)          ((mode) & STM32_I2S_MODE_RX)
-#define STM32_I2S_TX_ENABLED(mode)          ((mode) & STM32_I2S_MODE_TX)
+#define GD32_I2S_IS_MASTER(mode)           ((mode) & GD32_I2S_MODE_MASTER)
+#define GD32_I2S_RX_ENABLED(mode)          ((mode) & GD32_I2S_MODE_RX)
+#define GD32_I2S_TX_ENABLED(mode)          ((mode) & GD32_I2S_MODE_TX)
 /** @} */
 
 /*===========================================================================*/
@@ -65,8 +65,8 @@
  * @details If set to @p TRUE the support for I2S1 is included.
  * @note    The default is @p TRUE.
  */
-#if !defined(STM32_I2S_USE_SPI1) || defined(__DOXYGEN__)
-#define STM32_I2S_USE_SPI1                  FALSE
+#if !defined(GD32_I2S_USE_SPI1) || defined(__DOXYGEN__)
+#define GD32_I2S_USE_SPI1                  FALSE
 #endif
 
 /**
@@ -74,8 +74,8 @@
  * @details If set to @p TRUE the support for I2S2 is included.
  * @note    The default is @p TRUE.
  */
-#if !defined(STM32_I2S_USE_SPI2) || defined(__DOXYGEN__)
-#define STM32_I2S_USE_SPI2                  FALSE
+#if !defined(GD32_I2S_USE_SPI2) || defined(__DOXYGEN__)
+#define GD32_I2S_USE_SPI2                  FALSE
 #endif
 
 /**
@@ -83,81 +83,81 @@
  * @details If set to @p TRUE the support for I2S3 is included.
  * @note    The default is @p TRUE.
  */
-#if !defined(STM32_I2S_USE_SPI3) || defined(__DOXYGEN__)
-#define STM32_I2S_USE_SPI3                  FALSE
+#if !defined(GD32_I2S_USE_SPI3) || defined(__DOXYGEN__)
+#define GD32_I2S_USE_SPI3                  FALSE
 #endif
 
 /**
  * @brief   I2S1 mode.
  */
-#if !defined(STM32_I2S_SPI1_MODE) || defined(__DOXYGEN__)
-#define STM32_I2S_SPI1_MODE                 (STM32_I2S_MODE_MASTER |        \
-                                             STM32_I2S_MODE_RX)
+#if !defined(GD32_I2S_SPI1_MODE) || defined(__DOXYGEN__)
+#define GD32_I2S_SPI1_MODE                 (GD32_I2S_MODE_MASTER |        \
+                                             GD32_I2S_MODE_RX)
 #endif
 
 /**
  * @brief   I2S2 mode.
  */
-#if !defined(STM32_I2S_SPI2_MODE) || defined(__DOXYGEN__)
-#define STM32_I2S_SPI2_MODE                 (STM32_I2S_MODE_MASTER |        \
-                                             STM32_I2S_MODE_RX)
+#if !defined(GD32_I2S_SPI2_MODE) || defined(__DOXYGEN__)
+#define GD32_I2S_SPI2_MODE                 (GD32_I2S_MODE_MASTER |        \
+                                             GD32_I2S_MODE_RX)
 #endif
 
 /**
  * @brief   I2S3 mode.
  */
-#if !defined(STM32_I2S_SPI3_MODE) || defined(__DOXYGEN__)
-#define STM32_I2S_SPI3_MODE                 (STM32_I2S_MODE_MASTER |        \
-                                             STM32_I2S_MODE_RX)
+#if !defined(GD32_I2S_SPI3_MODE) || defined(__DOXYGEN__)
+#define GD32_I2S_SPI3_MODE                 (GD32_I2S_MODE_MASTER |        \
+                                             GD32_I2S_MODE_RX)
 #endif
 
 /**
  * @brief   I2S1 interrupt priority level setting.
  */
-#if !defined(STM32_I2S_SPI1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2S_SPI1_IRQ_PRIORITY         10
+#if !defined(GD32_I2S_SPI1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2S_SPI1_IRQ_PRIORITY         10
 #endif
 
 /**
  * @brief   I2S2 interrupt priority level setting.
  */
-#if !defined(STM32_I2S_SPI2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2S_SPI2_IRQ_PRIORITY         10
+#if !defined(GD32_I2S_SPI2_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2S_SPI2_IRQ_PRIORITY         10
 #endif
 
 /**
  * @brief   I2S3 interrupt priority level setting.
  */
-#if !defined(STM32_I2S_SPI3_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2S_SPI3_IRQ_PRIORITY         10
+#if !defined(GD32_I2S_SPI3_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2S_SPI3_IRQ_PRIORITY         10
 #endif
 
 /**
  * @brief   I2S1 DMA priority (0..3|lowest..highest).
  */
-#if !defined(STM32_I2S_SPI1_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2S_SPI1_DMA_PRIORITY         1
+#if !defined(GD32_I2S_SPI1_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2S_SPI1_DMA_PRIORITY         1
 #endif
 
 /**
  * @brief   I2S2 DMA priority (0..3|lowest..highest).
  */
-#if !defined(STM32_I2S_SPI2_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2S_SPI2_DMA_PRIORITY         1
+#if !defined(GD32_I2S_SPI2_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2S_SPI2_DMA_PRIORITY         1
 #endif
 
 /**
  * @brief   I2S3 DMA priority (0..3|lowest..highest).
  */
-#if !defined(STM32_I2S_SPI3_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define STM32_I2S_SPI3_DMA_PRIORITY         1
+#if !defined(GD32_I2S_SPI3_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2S_SPI3_DMA_PRIORITY         1
 #endif
 
 /**
  * @brief   I2S DMA error hook.
  */
-#if !defined(STM32_I2S_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
-#define STM32_I2S_DMA_ERROR_HOOK(i2sp)      osalSysHalt("DMA failure")
+#if !defined(GD32_I2S_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
+#define GD32_I2S_DMA_ERROR_HOOK(i2sp)      osalSysHalt("DMA failure")
 #endif
 /** @} */
 
@@ -165,132 +165,132 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if STM32_I2S_USE_SPI1 && !STM32_SPI1_SUPPORTS_I2S
+#if GD32_I2S_USE_SPI1 && !GD32_SPI1_SUPPORTS_I2S
 #error "SPI1 does not support I2S mode"
 #endif
 
-#if STM32_I2S_USE_SPI2 && !STM32_SPI2_SUPPORTS_I2S
+#if GD32_I2S_USE_SPI2 && !GD32_SPI2_SUPPORTS_I2S
 #error "SPI2 does not support I2S mode"
 #endif
 
-#if STM32_I2S_USE_SPI3 && !STM32_SPI3_SUPPORTS_I2S
+#if GD32_I2S_USE_SPI3 && !GD32_SPI3_SUPPORTS_I2S
 #error "SPI3 does not support I2S mode"
 #endif
 
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI1_MODE) &&                            \
-    STM32_I2S_TX_ENABLED(STM32_I2S_SPI1_MODE)
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE) &&                            \
+    GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
 #error "I2S1 RX and TX mode not supported in this driver implementation"
 #endif
 
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI2_MODE) &&                            \
-    STM32_I2S_TX_ENABLED(STM32_I2S_SPI2_MODE)
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE) &&                            \
+    GD32_I2S_TX_ENABLED(GD32_I2S_SPI2_MODE)
 #error "I2S2 RX and TX mode not supported in this driver implementation"
 #endif
 
-#if STM32_I2S_RX_ENABLED(STM32_I2S_SPI3_MODE) &&                            \
-    STM32_I2S_TX_ENABLED(STM32_I2S_SPI3_MODE)
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE) &&                            \
+    GD32_I2S_TX_ENABLED(GD32_I2S_SPI3_MODE)
 #error "I2S3 RX and TX mode not supported in this driver implementation"
 #endif
 
-#if STM32_I2S_USE_SPI1 && !STM32_HAS_SPI1
+#if GD32_I2S_USE_SPI1 && !GD32_HAS_SPI1
 #error "SPI1 not present in the selected device"
 #endif
 
-#if STM32_I2S_USE_SPI2 && !STM32_HAS_SPI2
+#if GD32_I2S_USE_SPI2 && !GD32_HAS_SPI2
 #error "SPI2 not present in the selected device"
 #endif
 
-#if STM32_I2S_USE_SPI3 && !STM32_HAS_SPI3
+#if GD32_I2S_USE_SPI3 && !GD32_HAS_SPI3
 #error "SPI3 not present in the selected device"
 #endif
 
-#if !STM32_I2S_USE_SPI1 && !STM32_I2S_USE_SPI2 && !STM32_I2S_USE_SPI3
+#if !GD32_I2S_USE_SPI1 && !GD32_I2S_USE_SPI2 && !GD32_I2S_USE_SPI3
 #error "I2S driver activated but no SPI peripheral assigned"
 #endif
 
-#if STM32_I2S_USE_SPI1 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_I2S_SPI1_IRQ_PRIORITY)
+#if GD32_I2S_USE_SPI1 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_I2S_SPI1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SPI1"
 #endif
 
-#if STM32_I2S_USE_SPI2 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_I2S_SPI2_IRQ_PRIORITY)
+#if GD32_I2S_USE_SPI2 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_I2S_SPI2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SPI2"
 #endif
 
-#if STM32_I2S_USE_SPI3 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(STM32_I2S_SPI3_IRQ_PRIORITY)
+#if GD32_I2S_USE_SPI3 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_I2S_SPI3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SPI3"
 #endif
 
-#if STM32_I2S_USE_SPI1 &&                                                   \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_I2S_SPI1_DMA_PRIORITY)
+#if GD32_I2S_USE_SPI1 &&                                                   \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_I2S_SPI1_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to SPI1"
 #endif
 
-#if STM32_I2S_USE_SPI2 &&                                                   \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_I2S_SPI2_DMA_PRIORITY)
+#if GD32_I2S_USE_SPI2 &&                                                   \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_I2S_SPI2_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to SPI2"
 #endif
 
-#if STM32_I2S_USE_SPI3 &&                                                   \
-    !STM32_DMA_IS_VALID_PRIORITY(STM32_I2S_SPI3_DMA_PRIORITY)
+#if GD32_I2S_USE_SPI3 &&                                                   \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_I2S_SPI3_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to SPI3"
 #endif
 
 /* The following checks are only required when there is a DMA able to
    reassign streams to different channels.*/
-#if STM32_ADVANCED_DMA
+#if GD32_ADVANCED_DMA
 /* Check on the presence of the DMA streams settings in mcuconf.h.*/
-#if STM32_I2S_USE_SPI1 && (!defined(STM32_I2S_SPI1_RX_DMA_STREAM) ||        \
-                           !defined(STM32_I2S_SPI1_TX_DMA_STREAM))
+#if GD32_I2S_USE_SPI1 && (!defined(GD32_I2S_SPI1_RX_DMA_STREAM) ||        \
+                           !defined(GD32_I2S_SPI1_TX_DMA_STREAM))
 #error "SPI1 DMA streams not defined"
 #endif
 
-#if STM32_I2S_USE_SPI2 && (!defined(STM32_I2S_SPI2_RX_DMA_STREAM) ||        \
-                           !defined(STM32_I2S_SPI2_TX_DMA_STREAM))
+#if GD32_I2S_USE_SPI2 && (!defined(GD32_I2S_SPI2_RX_DMA_STREAM) ||        \
+                           !defined(GD32_I2S_SPI2_TX_DMA_STREAM))
 #error "SPI2 DMA streams not defined"
 #endif
 
-#if STM32_I2S_USE_SPI3 && (!defined(STM32_I2S_SPI3_RX_DMA_STREAM) ||        \
-                           !defined(STM32_I2S_SPI3_TX_DMA_STREAM))
+#if GD32_I2S_USE_SPI3 && (!defined(GD32_I2S_SPI3_RX_DMA_STREAM) ||        \
+                           !defined(GD32_I2S_SPI3_TX_DMA_STREAM))
 #error "SPI3 DMA streams not defined"
 #endif
 
 /* Check on the validity of the assigned DMA channels.*/
-#if STM32_I2S_USE_SPI1 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2S_SPI1_RX_DMA_STREAM, STM32_SPI1_RX_DMA_MSK)
+#if GD32_I2S_USE_SPI1 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2S_SPI1_RX_DMA_STREAM, GD32_SPI1_RX_DMA_MSK)
 #error "invalid DMA stream associated to SPI1 RX"
 #endif
 
-#if STM32_I2S_USE_SPI1 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2S_SPI1_TX_DMA_STREAM, STM32_SPI1_TX_DMA_MSK)
+#if GD32_I2S_USE_SPI1 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2S_SPI1_TX_DMA_STREAM, GD32_SPI1_TX_DMA_MSK)
 #error "invalid DMA stream associated to SPI1 TX"
 #endif
 
-#if STM32_I2S_USE_SPI2 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2S_SPI2_RX_DMA_STREAM, STM32_SPI2_RX_DMA_MSK)
+#if GD32_I2S_USE_SPI2 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2S_SPI2_RX_DMA_STREAM, GD32_SPI2_RX_DMA_MSK)
 #error "invalid DMA stream associated to SPI2 RX"
 #endif
 
-#if STM32_I2S_USE_SPI2 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2S_SPI2_TX_DMA_STREAM, STM32_SPI2_TX_DMA_MSK)
+#if GD32_I2S_USE_SPI2 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2S_SPI2_TX_DMA_STREAM, GD32_SPI2_TX_DMA_MSK)
 #error "invalid DMA stream associated to SPI2 TX"
 #endif
 
-#if STM32_I2S_USE_SPI3 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2S_SPI3_RX_DMA_STREAM, STM32_SPI3_RX_DMA_MSK)
+#if GD32_I2S_USE_SPI3 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2S_SPI3_RX_DMA_STREAM, GD32_SPI3_RX_DMA_MSK)
 #error "invalid DMA stream associated to SPI3 RX"
 #endif
 
-#if STM32_I2S_USE_SPI3 &&                                                   \
-    !STM32_DMA_IS_VALID_ID(STM32_I2S_SPI3_TX_DMA_STREAM, STM32_SPI3_TX_DMA_MSK)
+#if GD32_I2S_USE_SPI3 &&                                                   \
+    !GD32_DMA_IS_VALID_ID(GD32_I2S_SPI3_TX_DMA_STREAM, GD32_SPI3_TX_DMA_MSK)
 #error "invalid DMA stream associated to SPI3 TX"
 #endif
-#endif /* STM32_ADVANCED_DMA */
+#endif /* GD32_ADVANCED_DMA */
 
-#if !defined(STM32_DMA_REQUIRED)
-#define STM32_DMA_REQUIRED
+#if !defined(GD32_DMA_REQUIRED)
+#define GD32_DMA_REQUIRED
 #endif
 
 /*===========================================================================*/
@@ -340,15 +340,15 @@
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if STM32_I2S_USE_SPI1 && !defined(__DOXYGEN__)
+#if GD32_I2S_USE_SPI1 && !defined(__DOXYGEN__)
 extern I2SDriver I2SD1;
 #endif
 
-#if STM32_I2S_USE_SPI2 && !defined(__DOXYGEN__)
+#if GD32_I2S_USE_SPI2 && !defined(__DOXYGEN__)
 extern I2SDriver I2SD2;
 #endif
 
-#if STM32_I2S_USE_SPI3 && !defined(__DOXYGEN__)
+#if GD32_I2S_USE_SPI3 && !defined(__DOXYGEN__)
 extern I2SDriver I2SD3;
 #endif
 

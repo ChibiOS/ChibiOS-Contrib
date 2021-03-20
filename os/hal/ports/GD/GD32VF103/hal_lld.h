@@ -20,10 +20,10 @@
  * @brief   STM32F1xx HAL subsystem low level driver header.
  * @pre     This module requires the following macros to be defined in the
  *          @p board.h file:
- *          - STM32_LSECLK.
- *          - STM32_LSE_BYPASS (optionally).
- *          - STM32_HSECLK.
- *          - STM32_HSE_BYPASS (optionally).
+ *          - GD32_LSECLK.
+ *          - GD32_LSE_BYPASS (optionally).
+ *          - GD32_HSECLK.
+ *          - GD32_HSE_BYPASS (optionally).
  *          .
  *          One of the following macros must also be defined:
  *          - STM32F100xB for Value Line Medium Density devices.
@@ -76,23 +76,23 @@
  * @name    Internal clock sources
  * @{
  */
-#define STM32_HSICLK            8000000     /**< High speed internal clock. */
-#define STM32_LSICLK            40000       /**< Low speed internal clock.  */
+#define GD32_HSICLK            8000000     /**< High speed internal clock. */
+#define GD32_LSICLK            40000       /**< Low speed internal clock.  */
 /** @} */
 
 /**
  * @name    PWR_CR register bits definitions
  * @{
  */
-#define STM32_PLS_MASK          (7 << 5)    /**< PLS bits mask.             */
-#define STM32_PLS_LEV0          (0 << 5)    /**< PVD level 0.               */
-#define STM32_PLS_LEV1          (1 << 5)    /**< PVD level 1.               */
-#define STM32_PLS_LEV2          (2 << 5)    /**< PVD level 2.               */
-#define STM32_PLS_LEV3          (3 << 5)    /**< PVD level 3.               */
-#define STM32_PLS_LEV4          (4 << 5)    /**< PVD level 4.               */
-#define STM32_PLS_LEV5          (5 << 5)    /**< PVD level 5.               */
-#define STM32_PLS_LEV6          (6 << 5)    /**< PVD level 6.               */
-#define STM32_PLS_LEV7          (7 << 5)    /**< PVD level 7.               */
+#define GD32_PLS_MASK          (7 << 5)    /**< PLS bits mask.             */
+#define GD32_PLS_LEV0          (0 << 5)    /**< PVD level 0.               */
+#define GD32_PLS_LEV1          (1 << 5)    /**< PVD level 1.               */
+#define GD32_PLS_LEV2          (2 << 5)    /**< PVD level 2.               */
+#define GD32_PLS_LEV3          (3 << 5)    /**< PVD level 3.               */
+#define GD32_PLS_LEV4          (4 << 5)    /**< PVD level 4.               */
+#define GD32_PLS_LEV5          (5 << 5)    /**< PVD level 5.               */
+#define GD32_PLS_LEV6          (6 << 5)    /**< PVD level 6.               */
+#define GD32_PLS_LEV7          (7 << 5)    /**< PVD level 7.               */
 /** @} */
 
 /*===========================================================================*/
@@ -110,50 +110,50 @@
 /**
  * @brief   Disables the PWR/RCC initialization in the HAL.
  */
-#if !defined(STM32_NO_INIT) || defined(__DOXYGEN__)
-#define STM32_NO_INIT               FALSE
+#if !defined(GD32_NO_INIT) || defined(__DOXYGEN__)
+#define GD32_NO_INIT               FALSE
 #endif
 
 /**
  * @brief   Enables or disables the programmable voltage detector.
  */
-#if !defined(STM32_PVD_ENABLE) || defined(__DOXYGEN__)
-#define STM32_PVD_ENABLE            FALSE
+#if !defined(GD32_PVD_ENABLE) || defined(__DOXYGEN__)
+#define GD32_PVD_ENABLE            FALSE
 #endif
 
 /**
  * @brief   Sets voltage level for programmable voltage detector.
  */
-#if !defined(STM32_PLS) || defined(__DOXYGEN__)
-#define STM32_PLS                   STM32_PLS_LEV0
+#if !defined(GD32_PLS) || defined(__DOXYGEN__)
+#define GD32_PLS                   GD32_PLS_LEV0
 #endif
 
 /**
  * @brief   Enables or disables the HSI clock source.
  */
-#if !defined(STM32_HSI_ENABLED) || defined(__DOXYGEN__)
-#define STM32_HSI_ENABLED           TRUE
+#if !defined(GD32_HSI_ENABLED) || defined(__DOXYGEN__)
+#define GD32_HSI_ENABLED           TRUE
 #endif
 
 /**
  * @brief   Enables or disables the LSI clock source.
  */
-#if !defined(STM32_LSI_ENABLED) || defined(__DOXYGEN__)
-#define STM32_LSI_ENABLED           FALSE
+#if !defined(GD32_LSI_ENABLED) || defined(__DOXYGEN__)
+#define GD32_LSI_ENABLED           FALSE
 #endif
 
 /**
  * @brief   Enables or disables the HSE clock source.
  */
-#if !defined(STM32_HSE_ENABLED) || defined(__DOXYGEN__)
-#define STM32_HSE_ENABLED           TRUE
+#if !defined(GD32_HSE_ENABLED) || defined(__DOXYGEN__)
+#define GD32_HSE_ENABLED           TRUE
 #endif
 
 /**
  * @brief   Enables or disables the LSE clock source.
  */
-#if !defined(STM32_LSE_ENABLED) || defined(__DOXYGEN__)
-#define STM32_LSE_ENABLED           FALSE
+#if !defined(GD32_LSE_ENABLED) || defined(__DOXYGEN__)
+#define GD32_LSE_ENABLED           FALSE
 #endif
 /** @} */
 

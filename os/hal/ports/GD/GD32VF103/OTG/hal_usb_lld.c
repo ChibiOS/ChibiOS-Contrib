@@ -38,7 +38,7 @@
 #define EP0_MAX_INSIZE          64
 #define EP0_MAX_OUTSIZE         64
 
-#if STM32_OTG_STEPPING == 1
+#if GD32_OTG_STEPPING == 1
 #if defined(BOARD_OTG_NOVBUSSENS)
 #define GCCFG_INIT_VALUE        (GCCFG_NOVBUSSENS | GCCFG_VBUSASEN |        \
                                  GCCFG_VBUSBSEN | GCCFG_PWRDWN)
@@ -47,7 +47,7 @@
                                  GCCFG_PWRDWN)
 #endif
 
-#elif STM32_OTG_STEPPING == 2
+#elif GD32_OTG_STEPPING == 2
 #if defined(BOARD_OTG_NOVBUSSENS)
 #define GCCFG_INIT_VALUE        GCCFG_PWRDWN
 #else
@@ -61,12 +61,12 @@
 /*===========================================================================*/
 
 /** @brief OTG_FS driver identifier.*/
-#if STM32_USB_USE_OTG1 || defined(__DOXYGEN__)
+#if GD32_USB_USE_OTG1 || defined(__DOXYGEN__)
 USBDriver USBD1;
 #endif
 
 /** @brief OTG_HS driver identifier.*/
-#if STM32_USB_USE_OTG2 || defined(__DOXYGEN__)
+#if GD32_USB_USE_OTG2 || defined(__DOXYGEN__)
 USBDriver USBD2;
 #endif
 
@@ -111,19 +111,19 @@ static const USBEndpointConfig ep0config = {
   ep0setup_buffer
 };
 
-#if STM32_USB_USE_OTG1
+#if GD32_USB_USE_OTG1
 static const stm32_otg_params_t fsparams = {
-  STM32_USB_OTG1_RX_FIFO_SIZE / 4,
-  STM32_OTG1_FIFO_MEM_SIZE,
-  STM32_OTG1_ENDPOINTS
+  GD32_USB_OTG1_RX_FIFO_SIZE / 4,
+  GD32_OTG1_FIFO_MEM_SIZE,
+  GD32_OTG1_ENDPOINTS
 };
 #endif
 
-#if STM32_USB_USE_OTG2
+#if GD32_USB_USE_OTG2
 static const stm32_otg_params_t hsparams = {
-  STM32_USB_OTG2_RX_FIFO_SIZE / 4,
-  STM32_OTG2_FIFO_MEM_SIZE,
-  STM32_OTG2_ENDPOINTS
+  GD32_USB_OTG2_RX_FIFO_SIZE / 4,
+  GD32_OTG2_FIFO_MEM_SIZE,
+  GD32_OTG2_ENDPOINTS
 };
 #endif
 
@@ -349,20 +349,21 @@ static bool otg_txfifo_handler(USBDriver *usbp, usbep_t ep) {
     if (((usbp->otg->ie[ep].DTXFSTS & DTXFSTS_INEPTFSAV_MASK) * 4) < n)
       return false;
 
-#if STM32_USB_OTGFIFO_FILL_BASEPRI
+// TODO Enable again or keep brute force?
+/*#if GD32_USB_OTGFIFO_FILL_BASEPRI
     uint8_t threshold_old = eclic_get_mth();
-    eclic_set_mth(STM32_USB_OTGFIFO_FILL_BASEPRI);
-#endif
-    osalSysLock();
+    eclic_set_mth(GD32_USB_OTGFIFO_FILL_BASEPRI);
+#endif*/
+    osalSysLockFromISR();
     otg_fifo_write_from_buffer(usbp->otg->FIFO[ep],
                                usbp->epc[ep]->in_state->txbuf,
                                n);
     usbp->epc[ep]->in_state->txbuf += n;
     usbp->epc[ep]->in_state->txcnt += n;
-    osalSysUnlock();
-#if STM32_USB_OTGFIFO_FILL_BASEPRI
+    osalSysUnlockFromISR();
+/*#if GD32_USB_OTGFIFO_FILL_BASEPRI
     eclic_set_mth(threshold_old);
-#endif
+#endif*/
   }
 }
 
@@ -439,7 +440,7 @@ static void otg_epout_handler(USBDriver *usbp, usbep_t ep) {
     /* EP0 requires special handling.*/
     if (ep == 0) {
 
-#if defined(STM32_OTG_SEQUENCE_WORKAROUND)
+#if defined(GD32_OTG_SEQUENCE_WORKAROUND)
       /* If an OUT transaction end interrupt is processed while the state
          machine is not in an OUT state then it is ignored, this is caused
          on some devices (L4) apparently injecting spurious data complete
@@ -675,7 +676,7 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if STM32_USB_USE_OTG1 || defined(__DOXYGEN__)
+#if GD32_USB_USE_OTG1 || defined(__DOXYGEN__)
 /**
  * @brief   OTG1 interrupt handler.
  *
@@ -691,7 +692,7 @@ OSAL_IRQ_HANDLER(GD32_OTG1_HANDLER) {
 }
 #endif
 
-#if STM32_USB_USE_OTG2 || defined(__DOXYGEN__)
+#if GD32_USB_USE_OTG2 || defined(__DOXYGEN__)
 /**
  * @brief   OTG2 interrupt handler.
  *
@@ -719,14 +720,14 @@ OSAL_IRQ_HANDLER(GD32_OTG2_HANDLER) {
 void usb_lld_init(void) {
 
   /* Driver initialization.*/
-#if STM32_USB_USE_OTG1
+#if GD32_USB_USE_OTG1
   usbObjectInit(&USBD1);
   USBD1.otg       = OTG_FS;
   USBD1.otgparams = &fsparams;
 
 #endif
 
-#if STM32_USB_USE_OTG2
+#if GD32_USB_USE_OTG2
   usbObjectInit(&USBD2);
   USBD2.otg       = OTG_HS;
   USBD2.otgparams = &hsparams;
@@ -749,14 +750,14 @@ void usb_lld_start(USBDriver *usbp) {
   if (usbp->state == USB_STOP) {
     /* Clock activation.*/
 
-#if STM32_USB_USE_OTG1
+#if GD32_USB_USE_OTG1
     if (&USBD1 == usbp) {
       /* OTG FS clock enable and reset.*/
       rccEnableOTG_FS(true);
       rccResetOTG_FS();
 
       /* Enables IRQ vector.*/
-      eclicEnableVector(GD32_OTG1_NUMBER, STM32_USB_OTG1_IRQ_PRIORITY, STM32_USB_OTG1_IRQ_TRIGGER);
+      eclicEnableVector(GD32_OTG1_NUMBER, GD32_USB_OTG1_IRQ_PRIORITY, GD32_USB_OTG1_IRQ_TRIGGER);
 
       /* - Forced device mode.
          - USB turn-around time = TRDT_VALUE_FS.
@@ -769,7 +770,7 @@ void usb_lld_start(USBDriver *usbp) {
     }
 #endif
 
-#if STM32_USB_USE_OTG2
+#if GD32_USB_USE_OTG2
     if (&USBD2 == usbp) {
       /* OTG HS clock enable and reset.*/
       rccEnableOTG_HS(true);
@@ -786,7 +787,7 @@ void usb_lld_start(USBDriver *usbp) {
 #endif
 
       /* Enables IRQ vector.*/
-      eclicEnableVector(GD32_OTG2_NUMBER, STM32_USB_OTG2_IRQ_PRIORITY, STM32_USB_OTG2_IRQ_TRIGGER);
+      eclicEnableVector(GD32_OTG2_NUMBER, GD32_USB_OTG2_IRQ_PRIORITY, GD32_USB_OTG2_IRQ_TRIGGER);
 
       /* - Forced device mode.
          - USB turn-around time = TRDT_VALUE_HS or TRDT_VALUE_FS.*/
@@ -800,7 +801,7 @@ void usb_lld_start(USBDriver *usbp) {
 #endif
 
 #if defined(BOARD_OTG2_USES_ULPI)
-#if STM32_USE_USB_OTG2_HS
+#if GD32_USE_USB_OTG2_HS
       /* USB 2.0 High Speed PHY in HS mode.*/
       otgp->DCFG = 0x02200000 | DCFG_DSPD_HS;
 #else
@@ -821,13 +822,13 @@ void usb_lld_start(USBDriver *usbp) {
     otgp->GOTGCTL = GOTGCTL_BVALOEN | GOTGCTL_BVALOVAL;
 
 #if defined(BOARD_OTG2_USES_ULPI)
-#if STM32_USB_USE_OTG1
+#if GD32_USB_USE_OTG1
     if (&USBD1 == usbp) {
       otgp->GCCFG = GCCFG_INIT_VALUE;
     }
 #endif
 
-#if STM32_USB_USE_OTG2
+#if GD32_USB_USE_OTG2
     if (&USBD2 == usbp) {
       otgp->GCCFG = 0;
     }
@@ -889,14 +890,14 @@ void usb_lld_stop(USBDriver *usbp) {
     otgp->GAHBCFG    = 0;
     otgp->GCCFG      = 0;
 
-#if STM32_USB_USE_OTG1
+#if GD32_USB_USE_OTG1
     if (&USBD1 == usbp) {
       eclicDisableVector(GD32_OTG1_NUMBER);
       rccDisableOTG_FS();
     }
 #endif
 
-#if STM32_USB_USE_OTG2
+#if GD32_USB_USE_OTG2
     if (&USBD2 == usbp) {
       eclicDisableVector(GD32_OTG2_NUMBER);
       rccDisableOTG_HS();

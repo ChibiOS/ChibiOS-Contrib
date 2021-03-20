@@ -36,36 +36,36 @@
 #endif
 
 #define DAC1_CH1_DMA_CHANNEL                                                \
-  STM32_DMA_GETCHANNEL(STM32_DAC_DAC1_CH1_DMA_STREAM,                       \
-                       STM32_DAC1_CH1_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_DAC_DAC1_CH1_DMA_STREAM,                       \
+                       GD32_DAC1_CH1_DMA_CHN)
 
 #define DAC1_CH2_DMA_CHANNEL                                                \
-  STM32_DMA_GETCHANNEL(STM32_DAC_DAC1_CH2_DMA_STREAM,                       \
-                       STM32_DAC1_CH2_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_DAC_DAC1_CH2_DMA_STREAM,                       \
+                       GD32_DAC1_CH2_DMA_CHN)
 
 #define DAC2_CH1_DMA_CHANNEL                                                \
-  STM32_DMA_GETCHANNEL(STM32_DAC_DAC2_CH1_DMA_STREAM,                       \
-                       STM32_DAC2_CH1_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_DAC_DAC2_CH1_DMA_STREAM,                       \
+                       GD32_DAC2_CH1_DMA_CHN)
 
 #define DAC2_CH2_DMA_CHANNEL                                                \
-  STM32_DMA_GETCHANNEL(STM32_DAC_DAC2_CH2_DMA_STREAM,                       \
-                       STM32_DAC2_CH2_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_DAC_DAC2_CH2_DMA_STREAM,                       \
+                       GD32_DAC2_CH2_DMA_CHN)
 
 #define DAC3_CH1_DMA_CHANNEL                                                \
-  STM32_DMA_GETCHANNEL(STM32_DAC_DAC3_CH1_DMA_STREAM,                       \
-                       STM32_DAC3_CH1_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_DAC_DAC3_CH1_DMA_STREAM,                       \
+                       GD32_DAC3_CH1_DMA_CHN)
 
 #define DAC3_CH2_DMA_CHANNEL                                                \
-  STM32_DMA_GETCHANNEL(STM32_DAC_DAC3_CH2_DMA_STREAM,                       \
-                       STM32_DAC3_CH2_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_DAC_DAC3_CH2_DMA_STREAM,                       \
+                       GD32_DAC3_CH2_DMA_CHN)
 
 #define DAC4_CH1_DMA_CHANNEL                                                \
-  STM32_DMA_GETCHANNEL(STM32_DAC_DAC4_CH1_DMA_STREAM,                       \
-                       STM32_DAC4_CH1_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_DAC_DAC4_CH1_DMA_STREAM,                       \
+                       GD32_DAC4_CH1_DMA_CHN)
 
 #define DAC4_CH2_DMA_CHANNEL                                                \
-  STM32_DMA_GETCHANNEL(STM32_DAC_DAC4_CH2_DMA_STREAM,                       \
-                       STM32_DAC4_CH2_DMA_CHN)
+  GD32_DMA_GETCHANNEL(GD32_DAC_DAC4_CH2_DMA_STREAM,                       \
+                       GD32_DAC4_CH2_DMA_CHN)
 
 #define CHANNEL_DATA_OFFSET 3U
 
@@ -74,42 +74,42 @@
 /*===========================================================================*/
 
 /** @brief DAC1 CH1 driver identifier.*/
-#if STM32_DAC_USE_DAC1_CH1 || defined(__DOXYGEN__)
+#if GD32_DAC_USE_DAC1_CH1 || defined(__DOXYGEN__)
 DACDriver DACD1;
 #endif
 
 /** @brief DAC1 CH2 driver identifier.*/
-#if (STM32_DAC_USE_DAC1_CH2 && !STM32_DAC_DUAL_MODE) || defined(__DOXYGEN__)
+#if (GD32_DAC_USE_DAC1_CH2 && !GD32_DAC_DUAL_MODE) || defined(__DOXYGEN__)
 DACDriver DACD2;
 #endif
 
 /** @brief DAC2 CH1 driver identifier.*/
-#if STM32_DAC_USE_DAC2_CH1 || defined(__DOXYGEN__)
+#if GD32_DAC_USE_DAC2_CH1 || defined(__DOXYGEN__)
 DACDriver DACD3;
 #endif
 
 /** @brief DAC2 CH2 driver identifier.*/
-#if (STM32_DAC_USE_DAC2_CH2 && !STM32_DAC_DUAL_MODE) || defined(__DOXYGEN__)
+#if (GD32_DAC_USE_DAC2_CH2 && !GD32_DAC_DUAL_MODE) || defined(__DOXYGEN__)
 DACDriver DACD4;
 #endif
 
 /** @brief DAC3 CH1 driver identifier.*/
-#if STM32_DAC_USE_DAC3_CH1 || defined(__DOXYGEN__)
+#if GD32_DAC_USE_DAC3_CH1 || defined(__DOXYGEN__)
 DACDriver DACD5;
 #endif
 
 /** @brief DAC3 CH2 driver identifier.*/
-#if (STM32_DAC_USE_DAC3_CH2 && !STM32_DAC_DUAL_MODE) || defined(__DOXYGEN__)
+#if (GD32_DAC_USE_DAC3_CH2 && !GD32_DAC_DUAL_MODE) || defined(__DOXYGEN__)
 DACDriver DACD6;
 #endif
 
 /** @brief DAC4 CH1 driver identifier.*/
-#if STM32_DAC_USE_DAC4_CH1 || defined(__DOXYGEN__)
+#if GD32_DAC_USE_DAC4_CH1 || defined(__DOXYGEN__)
 DACDriver DACD7;
 #endif
 
 /** @brief DAC4 CH2 driver identifier.*/
-#if (STM32_DAC_USE_DAC4_CH2 && !STM32_DAC_DUAL_MODE) || defined(__DOXYGEN__)
+#if (GD32_DAC_USE_DAC4_CH2 && !GD32_DAC_DUAL_MODE) || defined(__DOXYGEN__)
 DACDriver DACD8;
 #endif
 
@@ -117,155 +117,155 @@ DACDriver DACD8;
 /* Driver local variables.                                                   */
 /*===========================================================================*/
 
-#if STM32_DAC_USE_DAC1_CH1 == TRUE
+#if GD32_DAC_USE_DAC1_CH1 == TRUE
 static const dacparams_t dac1_ch1_params = {
   .dac          = DAC1,
   .dataoffset   = 0U,
   .regshift     = 0U,
   .regmask      = 0xFFFF0000U,
-  .dmastream    = STM32_DAC_DAC1_CH1_DMA_STREAM,
-#if STM32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = STM32_DMAMUX1_DAC1_CH1,
+  .dmastream    = GD32_DAC_DAC1_CH1_DMA_STREAM,
+#if GD32_DMA_SUPPORTS_DMAMUX
+  .peripheral   = GD32_DMAMUX1_DAC1_CH1,
 #endif
-  .dmamode      = STM32_DMA_CR_CHSEL(DAC1_CH1_DMA_CHANNEL) |
-                  STM32_DMA_CR_PL(STM32_DAC_DAC1_CH1_DMA_PRIORITY) |
-                  STM32_DMA_CR_MINC | STM32_DMA_CR_CIRC | STM32_DMA_CR_DIR_M2P |
-                  STM32_DMA_CR_DMEIE | STM32_DMA_CR_TEIE | STM32_DMA_CR_HTIE |
-                  STM32_DMA_CR_TCIE,
-  .dmairqprio   = STM32_DAC_DAC1_CH1_IRQ_PRIORITY
+  .dmamode      = GD32_DMA_CR_CHSEL(DAC1_CH1_DMA_CHANNEL) |
+                  GD32_DMA_CR_PL(GD32_DAC_DAC1_CH1_DMA_PRIORITY) |
+                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
+                  GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
+                  GD32_DMA_CR_TCIE,
+  .dmairqprio   = GD32_DAC_DAC1_CH1_IRQ_PRIORITY
 };
 #endif
 
-#if STM32_DAC_USE_DAC1_CH2 == TRUE
+#if GD32_DAC_USE_DAC1_CH2 == TRUE
 static const dacparams_t dac1_ch2_params = {
   .dac          = DAC1,
   .dataoffset   = CHANNEL_DATA_OFFSET,
   .regshift     = 16U,
   .regmask      = 0x0000FFFFU,
-  .dmastream    = STM32_DAC_DAC1_CH2_DMA_STREAM,
-#if STM32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = STM32_DMAMUX1_DAC1_CH2,
+  .dmastream    = GD32_DAC_DAC1_CH2_DMA_STREAM,
+#if GD32_DMA_SUPPORTS_DMAMUX
+  .peripheral   = GD32_DMAMUX1_DAC1_CH2,
 #endif
-  .dmamode      = STM32_DMA_CR_CHSEL(DAC1_CH2_DMA_CHANNEL) |
-                  STM32_DMA_CR_PL(STM32_DAC_DAC1_CH2_DMA_PRIORITY) |
-                  STM32_DMA_CR_MINC | STM32_DMA_CR_CIRC | STM32_DMA_CR_DIR_M2P |
-                  STM32_DMA_CR_DMEIE | STM32_DMA_CR_TEIE | STM32_DMA_CR_HTIE |
-                  STM32_DMA_CR_TCIE,
-  .dmairqprio   = STM32_DAC_DAC1_CH2_IRQ_PRIORITY
+  .dmamode      = GD32_DMA_CR_CHSEL(DAC1_CH2_DMA_CHANNEL) |
+                  GD32_DMA_CR_PL(GD32_DAC_DAC1_CH2_DMA_PRIORITY) |
+                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
+                  GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
+                  GD32_DMA_CR_TCIE,
+  .dmairqprio   = GD32_DAC_DAC1_CH2_IRQ_PRIORITY
 };
 #endif
 
-#if STM32_DAC_USE_DAC2_CH1 == TRUE
+#if GD32_DAC_USE_DAC2_CH1 == TRUE
 static const dacparams_t dac2_ch1_params = {
   .dac          = DAC2,
   .dataoffset   = 0U,
   .regshift     = 0U,
   .regmask      = 0xFFFF0000U,
-  .dmastream    = STM32_DAC_DAC2_CH1_DMA_STREAM,
-#if STM32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = STM32_DMAMUX1_DAC2_CH1,
+  .dmastream    = GD32_DAC_DAC2_CH1_DMA_STREAM,
+#if GD32_DMA_SUPPORTS_DMAMUX
+  .peripheral   = GD32_DMAMUX1_DAC2_CH1,
 #endif
-  .dmamode      = STM32_DMA_CR_CHSEL(DAC2_CH1_DMA_CHANNEL) |
-                  STM32_DMA_CR_PL(STM32_DAC_DAC2_CH1_DMA_PRIORITY) |
-                  STM32_DMA_CR_MINC | STM32_DMA_CR_CIRC | STM32_DMA_CR_DIR_M2P |
-                  STM32_DMA_CR_DMEIE | STM32_DMA_CR_TEIE | STM32_DMA_CR_HTIE |
-                  STM32_DMA_CR_TCIE,
-  .dmairqprio   = STM32_DAC_DAC2_CH1_IRQ_PRIORITY
+  .dmamode      = GD32_DMA_CR_CHSEL(DAC2_CH1_DMA_CHANNEL) |
+                  GD32_DMA_CR_PL(GD32_DAC_DAC2_CH1_DMA_PRIORITY) |
+                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
+                  GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
+                  GD32_DMA_CR_TCIE,
+  .dmairqprio   = GD32_DAC_DAC2_CH1_IRQ_PRIORITY
 };
 #endif
 
-#if STM32_DAC_USE_DAC2_CH2 == TRUE
+#if GD32_DAC_USE_DAC2_CH2 == TRUE
 static const dacparams_t dac2_ch2_params = {
   .dac          = DAC2,
   .dataoffset   = CHANNEL_DATA_OFFSET,
   .regshift     = 16U,
   .regmask      = 0x0000FFFFU,
-  .dmastream    = STM32_DAC_DAC2_CH2_DMA_STREAM,
-#if STM32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = STM32_DMAMUX1_DAC2_CH2,
+  .dmastream    = GD32_DAC_DAC2_CH2_DMA_STREAM,
+#if GD32_DMA_SUPPORTS_DMAMUX
+  .peripheral   = GD32_DMAMUX1_DAC2_CH2,
 #endif
-  .dmamode      = STM32_DMA_CR_CHSEL(DAC2_CH2_DMA_CHANNEL) |
-                  STM32_DMA_CR_PL(STM32_DAC_DAC2_CH2_DMA_PRIORITY) |
-                  STM32_DMA_CR_MINC | STM32_DMA_CR_CIRC | STM32_DMA_CR_DIR_M2P |
-                  STM32_DMA_CR_DMEIE | STM32_DMA_CR_TEIE | STM32_DMA_CR_HTIE |
-                  STM32_DMA_CR_TCIE,
-  .dmairqprio   = STM32_DAC_DAC2_CH2_IRQ_PRIORITY
+  .dmamode      = GD32_DMA_CR_CHSEL(DAC2_CH2_DMA_CHANNEL) |
+                  GD32_DMA_CR_PL(GD32_DAC_DAC2_CH2_DMA_PRIORITY) |
+                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
+                  GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
+                  GD32_DMA_CR_TCIE,
+  .dmairqprio   = GD32_DAC_DAC2_CH2_IRQ_PRIORITY
 };
 #endif
 
-#if STM32_DAC_USE_DAC3_CH1 == TRUE
+#if GD32_DAC_USE_DAC3_CH1 == TRUE
 static const dacparams_t dac3_ch1_params = {
   .dac          = DAC3,
   .dataoffset   = 0U,
   .regshift     = 0U,
   .regmask      = 0xFFFF0000U,
-  .dmastream    = STM32_DAC_DAC3_CH1_DMA_STREAM,
-#if STM32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = STM32_DMAMUX1_DAC3_CH1,
+  .dmastream    = GD32_DAC_DAC3_CH1_DMA_STREAM,
+#if GD32_DMA_SUPPORTS_DMAMUX
+  .peripheral   = GD32_DMAMUX1_DAC3_CH1,
 #endif
-  .dmamode      = STM32_DMA_CR_CHSEL(DAC3_CH1_DMA_CHANNEL) |
-                  STM32_DMA_CR_PL(STM32_DAC_DAC3_CH1_DMA_PRIORITY) |
-                  STM32_DMA_CR_MINC | STM32_DMA_CR_CIRC | STM32_DMA_CR_DIR_M2P |
-                  STM32_DMA_CR_DMEIE | STM32_DMA_CR_TEIE | STM32_DMA_CR_HTIE |
-                  STM32_DMA_CR_TCIE,
-  .dmairqprio   = STM32_DAC_DAC3_CH1_IRQ_PRIORITY
+  .dmamode      = GD32_DMA_CR_CHSEL(DAC3_CH1_DMA_CHANNEL) |
+                  GD32_DMA_CR_PL(GD32_DAC_DAC3_CH1_DMA_PRIORITY) |
+                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
+                  GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
+                  GD32_DMA_CR_TCIE,
+  .dmairqprio   = GD32_DAC_DAC3_CH1_IRQ_PRIORITY
 };
 #endif
 
-#if STM32_DAC_USE_DAC3_CH2 == TRUE
+#if GD32_DAC_USE_DAC3_CH2 == TRUE
 static const dacparams_t dac3_ch2_params = {
   .dac          = DAC3,
   .dataoffset   = CHANNEL_DATA_OFFSET,
   .regshift     = 16U,
   .regmask      = 0x0000FFFFU,
-  .dmastream    = STM32_DAC_DAC3_CH2_DMA_STREAM,
-#if STM32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = STM32_DMAMUX1_DAC3_CH2,
+  .dmastream    = GD32_DAC_DAC3_CH2_DMA_STREAM,
+#if GD32_DMA_SUPPORTS_DMAMUX
+  .peripheral   = GD32_DMAMUX1_DAC3_CH2,
 #endif
-  .dmamode      = STM32_DMA_CR_CHSEL(DAC3_CH2_DMA_CHANNEL) |
-                  STM32_DMA_CR_PL(STM32_DAC_DAC3_CH2_DMA_PRIORITY) |
-                  STM32_DMA_CR_MINC | STM32_DMA_CR_CIRC | STM32_DMA_CR_DIR_M2P |
-                  STM32_DMA_CR_DMEIE | STM32_DMA_CR_TEIE | STM32_DMA_CR_HTIE |
-                  STM32_DMA_CR_TCIE,
-  .dmairqprio   = STM32_DAC_DAC3_CH2_IRQ_PRIORITY
+  .dmamode      = GD32_DMA_CR_CHSEL(DAC3_CH2_DMA_CHANNEL) |
+                  GD32_DMA_CR_PL(GD32_DAC_DAC3_CH2_DMA_PRIORITY) |
+                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
+                  GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
+                  GD32_DMA_CR_TCIE,
+  .dmairqprio   = GD32_DAC_DAC3_CH2_IRQ_PRIORITY
 };
 #endif
 
-#if STM32_DAC_USE_DAC4_CH1 == TRUE
+#if GD32_DAC_USE_DAC4_CH1 == TRUE
 static const dacparams_t dac4_ch1_params = {
   .dac          = DAC4,
   .dataoffset   = 0U,
   .regshift     = 0U,
   .regmask      = 0xFFFF0000U,
-  .dmastream    = STM32_DAC_DAC4_CH1_DMA_STREAM,
-#if STM32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = STM32_DMAMUX1_DAC4_CH1,
+  .dmastream    = GD32_DAC_DAC4_CH1_DMA_STREAM,
+#if GD32_DMA_SUPPORTS_DMAMUX
+  .peripheral   = GD32_DMAMUX1_DAC4_CH1,
 #endif
-  .dmamode      = STM32_DMA_CR_CHSEL(DAC4_CH1_DMA_CHANNEL) |
-                  STM32_DMA_CR_PL(STM32_DAC_DAC4_CH1_DMA_PRIORITY) |
-                  STM32_DMA_CR_MINC | STM32_DMA_CR_CIRC | STM32_DMA_CR_DIR_M2P |
-                  STM32_DMA_CR_DMEIE | STM32_DMA_CR_TEIE | STM32_DMA_CR_HTIE |
-                  STM32_DMA_CR_TCIE,
-  .dmairqprio   = STM32_DAC_DAC4_CH1_IRQ_PRIORITY
+  .dmamode      = GD32_DMA_CR_CHSEL(DAC4_CH1_DMA_CHANNEL) |
+                  GD32_DMA_CR_PL(GD32_DAC_DAC4_CH1_DMA_PRIORITY) |
+                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
+                  GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
+                  GD32_DMA_CR_TCIE,
+  .dmairqprio   = GD32_DAC_DAC4_CH1_IRQ_PRIORITY
 };
 #endif
 
-#if STM32_DAC_USE_DAC4_CH2 == TRUE
+#if GD32_DAC_USE_DAC4_CH2 == TRUE
 static const dacparams_t dac4_ch2_params = {
   .dac          = DAC4,
   .dataoffset   = CHANNEL_DATA_OFFSET,
   .regshift     = 16U,
   .regmask      = 0x0000FFFFU,
-  .dmastream    = STM32_DAC_DAC4_CH2_DMA_STREAM,
-#if STM32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = STM32_DMAMUX1_DAC4_CH2,
+  .dmastream    = GD32_DAC_DAC4_CH2_DMA_STREAM,
+#if GD32_DMA_SUPPORTS_DMAMUX
+  .peripheral   = GD32_DMAMUX1_DAC4_CH2,
 #endif
-  .dmamode      = STM32_DMA_CR_CHSEL(DAC4_CH2_DMA_CHANNEL) |
-                  STM32_DMA_CR_PL(STM32_DAC_DAC4_CH2_DMA_PRIORITY) |
-                  STM32_DMA_CR_MINC | STM32_DMA_CR_CIRC | STM32_DMA_CR_DIR_M2P |
-                  STM32_DMA_CR_DMEIE | STM32_DMA_CR_TEIE | STM32_DMA_CR_HTIE |
-                  STM32_DMA_CR_TCIE,
-  .dmairqprio   = STM32_DAC_DAC4_CH2_IRQ_PRIORITY
+  .dmamode      = GD32_DMA_CR_CHSEL(DAC4_CH2_DMA_CHANNEL) |
+                  GD32_DMA_CR_PL(GD32_DAC_DAC4_CH2_DMA_PRIORITY) |
+                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
+                  GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
+                  GD32_DMA_CR_TCIE,
+  .dmairqprio   = GD32_DAC_DAC4_CH2_IRQ_PRIORITY
 };
 #endif
 
@@ -281,17 +281,17 @@ static const dacparams_t dac4_ch2_params = {
  */
 static void dac_lld_serve_tx_interrupt(DACDriver *dacp, uint32_t flags) {
 
-  if ((flags & (STM32_DMA_ISR_TEIF | STM32_DMA_ISR_DMEIF)) != 0) {
+  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
     /* DMA errors handling.*/
     dac_lld_stop_conversion(dacp);
     _dac_isr_error_code(dacp, DAC_ERR_DMAFAILURE);
   }
   else {
-    if ((flags & STM32_DMA_ISR_HTIF) != 0) {
+    if ((flags & GD32_DMA_ISR_HTIF) != 0) {
       /* Half transfer processing.*/
       _dac_isr_half_code(dacp);
     }
-    if ((flags & STM32_DMA_ISR_TCIF) != 0) {
+    if ((flags & GD32_DMA_ISR_TCIF) != 0) {
       /* Transfer complete processing.*/
       _dac_isr_full_code(dacp);
     }
@@ -313,49 +313,49 @@ static void dac_lld_serve_tx_interrupt(DACDriver *dacp, uint32_t flags) {
  */
 void dac_lld_init(void) {
 
-#if STM32_DAC_USE_DAC1_CH1
+#if GD32_DAC_USE_DAC1_CH1
   dacObjectInit(&DACD1);
   DACD1.params  = &dac1_ch1_params;
   DACD1.dma = NULL;
 #endif
 
-#if STM32_DAC_USE_DAC1_CH2
+#if GD32_DAC_USE_DAC1_CH2
   dacObjectInit(&DACD2);
   DACD2.params  = &dac1_ch2_params;
   DACD2.dma = NULL;
 #endif
 
-#if STM32_DAC_USE_DAC2_CH1
+#if GD32_DAC_USE_DAC2_CH1
   dacObjectInit(&DACD3);
   DACD3.params  = &dac2_ch1_params;
   DACD3.dma = NULL;
 #endif
 
-#if STM32_DAC_USE_DAC2_CH2
+#if GD32_DAC_USE_DAC2_CH2
   dacObjectInit(&DACD4);
   DACD4.params  = &dac2_ch2_params;
   DACD4.dma = NULL;
 #endif
 
-#if STM32_DAC_USE_DAC3_CH1
+#if GD32_DAC_USE_DAC3_CH1
   dacObjectInit(&DACD5);
   DACD5.params  = &dac3_ch1_params;
   DACD5.dma = NULL;
 #endif
 
-#if STM32_DAC_USE_DAC3_CH2
+#if GD32_DAC_USE_DAC3_CH2
   dacObjectInit(&DACD6);
   DACD6.params  = &dac3_ch2_params;
   DACD6.dma = NULL;
 #endif
 
-#if STM32_DAC_USE_DAC4_CH1
+#if GD32_DAC_USE_DAC4_CH1
   dacObjectInit(&DACD7);
   DACD7.params  = &dac4_ch1_params;
   DACD7.dma = NULL;
 #endif
 
-#if STM32_DAC_USE_DAC4_CH2
+#if GD32_DAC_USE_DAC4_CH2
   dacObjectInit(&DACD8);
   DACD8.params  = &dac4_ch2_params;
   DACD8.dma = NULL;
@@ -377,52 +377,52 @@ void dac_lld_start(DACDriver *dacp) {
     dacchannel_t channel = 0;
 
     /* Enabling the clock source.*/
-#if STM32_DAC_USE_DAC1_CH1
+#if GD32_DAC_USE_DAC1_CH1
     if (&DACD1 == dacp) {
       rccEnableDAC1(true);
     }
 #endif
 
-#if STM32_DAC_USE_DAC1_CH2
+#if GD32_DAC_USE_DAC1_CH2
     if (&DACD2 == dacp) {
       rccEnableDAC1(true);
       channel = 1;
     }
 #endif
 
-#if STM32_DAC_USE_DAC2_CH1
+#if GD32_DAC_USE_DAC2_CH1
     if (&DACD3 == dacp) {
       rccEnableDAC2(true);
     }
 #endif
 
-#if STM32_DAC_USE_DAC2_CH2
+#if GD32_DAC_USE_DAC2_CH2
     if (&DACD4 == dacp) {
       rccEnableDAC2(true);
       channel = 1;
     }
 #endif
 
-#if STM32_DAC_USE_DAC3_CH1
+#if GD32_DAC_USE_DAC3_CH1
     if (&DACD5 == dacp) {
       rccEnableDAC3(true);
     }
 #endif
 
-#if STM32_DAC_USE_DAC3_CH2
+#if GD32_DAC_USE_DAC3_CH2
     if (&DACD6 == dacp) {
       rccEnableDAC3(true);
       channel = 1;
     }
 #endif
 
-#if STM32_DAC_USE_DAC4_CH1
+#if GD32_DAC_USE_DAC4_CH1
     if (&DACD7 == dacp) {
       rccEnableDAC4(true);
     }
 #endif
 
-#if STM32_DAC_USE_DAC4_CH2
+#if GD32_DAC_USE_DAC4_CH2
     if (&DACD8 == dacp) {
       rccEnableDAC4(true);
       channel = 1;
@@ -431,7 +431,7 @@ void dac_lld_start(DACDriver *dacp) {
 
     /* Enabling DAC in SW triggering mode initially, initializing data to
        zero.*/
-#if STM32_DAC_DUAL_MODE == FALSE
+#if GD32_DAC_DUAL_MODE == FALSE
     {
       uint32_t cr;
 
@@ -471,7 +471,7 @@ void dac_lld_stop(DACDriver *dacp) {
     /* Disabling DAC.*/
     dacp->params->dac->CR &= dacp->params->regmask;
 
-#if STM32_DAC_USE_DAC1_CH1
+#if GD32_DAC_USE_DAC1_CH1
     if (&DACD1 == dacp) {
       if ((dacp->params->dac->CR & DAC_CR_EN2) == 0U) {
         rccDisableDAC1();
@@ -479,7 +479,7 @@ void dac_lld_stop(DACDriver *dacp) {
     }
 #endif
 
-#if STM32_DAC_USE_DAC1_CH2
+#if GD32_DAC_USE_DAC1_CH2
     if (&DACD2 == dacp) {
       if ((dacp->params->dac->CR & DAC_CR_EN1) == 0U) {
         rccDisableDAC1();
@@ -487,7 +487,7 @@ void dac_lld_stop(DACDriver *dacp) {
     }
 #endif
 
-#if STM32_DAC_USE_DAC2_CH1
+#if GD32_DAC_USE_DAC2_CH1
     if (&DACD3 == dacp) {
       if ((dacp->params->dac->CR & DAC_CR_EN2) == 0U) {
         rccDisableDAC2();
@@ -495,7 +495,7 @@ void dac_lld_stop(DACDriver *dacp) {
     }
 #endif
 
-#if STM32_DAC_USE_DAC2_CH2
+#if GD32_DAC_USE_DAC2_CH2
     if (&DACD4 == dacp) {
       if ((dacp->params->dac->CR & DAC_CR_EN1) == 0U) {
         rccDisableDAC2();
@@ -503,7 +503,7 @@ void dac_lld_stop(DACDriver *dacp) {
     }
 #endif
 
-#if STM32_DAC_USE_DAC3_CH1
+#if GD32_DAC_USE_DAC3_CH1
     if (&DACD5 == dacp) {
       if ((dacp->params->dac->CR & DAC_CR_EN2) == 0U) {
         rccDisableDAC3();
@@ -511,7 +511,7 @@ void dac_lld_stop(DACDriver *dacp) {
     }
 #endif
 
-#if STM32_DAC_USE_DAC3_CH2
+#if GD32_DAC_USE_DAC3_CH2
     if (&DACD6 == dacp) {
       if ((dacp->params->dac->CR & DAC_CR_EN1) == 0U) {
         rccDisableDAC3();
@@ -519,7 +519,7 @@ void dac_lld_stop(DACDriver *dacp) {
     }
 #endif
 
-#if STM32_DAC_USE_DAC4_CH1
+#if GD32_DAC_USE_DAC4_CH1
     if (&DACD7 == dacp) {
       if ((dacp->params->dac->CR & DAC_CR_EN2) == 0U) {
         rccDisableDAC4();
@@ -527,7 +527,7 @@ void dac_lld_stop(DACDriver *dacp) {
     }
 #endif
 
-#if STM32_DAC_USE_DAC4_CH2
+#if GD32_DAC_USE_DAC4_CH2
     if (&DACD8 == dacp) {
       if ((dacp->params->dac->CR & DAC_CR_EN1) == 0U) {
         rccDisableDAC4();
@@ -552,54 +552,54 @@ void dac_lld_put_channel(DACDriver *dacp,
 
   switch (dacp->config->datamode) {
   case DAC_DHRM_12BIT_RIGHT:
-#if STM32_DAC_DUAL_MODE
+#if GD32_DAC_DUAL_MODE
   case DAC_DHRM_12BIT_RIGHT_DUAL:
 #endif
     if (channel == 0U) {
-#if STM32_DAC_DUAL_MODE
+#if GD32_DAC_DUAL_MODE
       dacp->params->dac->DHR12R1 = (uint32_t)sample;
 #else
       *(&dacp->params->dac->DHR12R1 + dacp->params->dataoffset) = (uint32_t)sample;
 #endif
     }
-#if (STM32_HAS_DAC1_CH2 || STM32_HAS_DAC2_CH2 ||                            \
-     STM32_HAS_DAC3_CH2 || STM32_HAS_DAC4_CH2)
+#if (GD32_HAS_DAC1_CH2 || GD32_HAS_DAC2_CH2 ||                            \
+     GD32_HAS_DAC3_CH2 || GD32_HAS_DAC4_CH2)
     else {
       dacp->params->dac->DHR12R2 = (uint32_t)sample;
     }
 #endif
     break;
   case DAC_DHRM_12BIT_LEFT:
-#if STM32_DAC_DUAL_MODE
+#if GD32_DAC_DUAL_MODE
   case DAC_DHRM_12BIT_LEFT_DUAL:
 #endif
     if (channel == 0U) {
-#if STM32_DAC_DUAL_MODE
+#if GD32_DAC_DUAL_MODE
       dacp->params->dac->DHR12L1 = (uint32_t)sample;
 #else
       *(&dacp->params->dac->DHR12L1 + dacp->params->dataoffset) = (uint32_t)sample;
 #endif
     }
-#if (STM32_HAS_DAC1_CH2 || STM32_HAS_DAC2_CH2 ||                            \
-     STM32_HAS_DAC3_CH2 || STM32_HAS_DAC4_CH2)
+#if (GD32_HAS_DAC1_CH2 || GD32_HAS_DAC2_CH2 ||                            \
+     GD32_HAS_DAC3_CH2 || GD32_HAS_DAC4_CH2)
     else {
       dacp->params->dac->DHR12L2 = (uint32_t)sample;
     }
 #endif
     break;
   case DAC_DHRM_8BIT_RIGHT:
-#if STM32_DAC_DUAL_MODE
+#if GD32_DAC_DUAL_MODE
   case DAC_DHRM_8BIT_RIGHT_DUAL:
 #endif
     if (channel == 0U) {
-#if STM32_DAC_DUAL_MODE
+#if GD32_DAC_DUAL_MODE
       dacp->params->dac->DHR8R1 = (uint32_t)sample;
 #else
       *(&dacp->params->dac->DHR8R1 + dacp->params->dataoffset) = (uint32_t)sample;
 #endif
     }
-#if (STM32_HAS_DAC1_CH2 || STM32_HAS_DAC2_CH2 ||                            \
-     STM32_HAS_DAC3_CH2 || STM32_HAS_DAC4_CH2)
+#if (GD32_HAS_DAC1_CH2 || GD32_HAS_DAC2_CH2 ||                            \
+     GD32_HAS_DAC3_CH2 || GD32_HAS_DAC4_CH2)
     else {
       dacp->params->dac->DHR8R2 = (uint32_t)sample;
     }
@@ -639,7 +639,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
                               (stm32_dmaisr_t)dac_lld_serve_tx_interrupt,
                               (void *)dacp);
   osalDbgAssert(dacp->dma != NULL, "unable to allocate stream");
-#if STM32_DMA_SUPPORTS_DMAMUX
+#if GD32_DMA_SUPPORTS_DMAMUX
   dmaSetRequestSource(dacp->dma, dacp->params->peripheral);
 #endif
 
@@ -652,7 +652,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12R1 +
                                       dacp->params->dataoffset);
     dmamode = dacp->params->dmamode |
-              STM32_DMA_CR_PSIZE_HWORD | STM32_DMA_CR_MSIZE_HWORD;
+              GD32_DMA_CR_PSIZE_HWORD | GD32_DMA_CR_MSIZE_HWORD;
     break;
   case DAC_DHRM_12BIT_LEFT:
     osalDbgAssert(dacp->grpp->num_channels == 1, "invalid number of channels");
@@ -660,7 +660,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12L1 +
                                       dacp->params->dataoffset);
     dmamode = dacp->params->dmamode |
-              STM32_DMA_CR_PSIZE_HWORD | STM32_DMA_CR_MSIZE_HWORD;
+              GD32_DMA_CR_PSIZE_HWORD | GD32_DMA_CR_MSIZE_HWORD;
     break;
   case DAC_DHRM_8BIT_RIGHT:
     osalDbgAssert(dacp->grpp->num_channels == 1, "invalid number of channels");
@@ -668,19 +668,19 @@ void dac_lld_start_conversion(DACDriver *dacp) {
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR8R1 +
                                       dacp->params->dataoffset);
     dmamode = dacp->params->dmamode |
-              STM32_DMA_CR_PSIZE_BYTE | STM32_DMA_CR_MSIZE_BYTE;
+              GD32_DMA_CR_PSIZE_BYTE | GD32_DMA_CR_MSIZE_BYTE;
 
     /* In this mode the size of the buffer is halved because two samples
        packed in a single dacsample_t element.*/
     n = (n + 1) / 2;
     break;
-#if STM32_DAC_DUAL_MODE == TRUE
+#if GD32_DAC_DUAL_MODE == TRUE
   case DAC_DHRM_12BIT_RIGHT_DUAL:
     osalDbgAssert(dacp->grpp->num_channels == 2, "invalid number of channels");
 
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12RD);
     dmamode = dacp->params->dmamode |
-              STM32_DMA_CR_PSIZE_WORD | STM32_DMA_CR_MSIZE_WORD;
+              GD32_DMA_CR_PSIZE_WORD | GD32_DMA_CR_MSIZE_WORD;
     n /= 2;
     break;
   case DAC_DHRM_12BIT_LEFT_DUAL:
@@ -688,7 +688,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
 
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12LD);
     dmamode = dacp->params->dmamode |
-              STM32_DMA_CR_PSIZE_WORD | STM32_DMA_CR_MSIZE_WORD;
+              GD32_DMA_CR_PSIZE_WORD | GD32_DMA_CR_MSIZE_WORD;
     n /= 2;
     break;
   case DAC_DHRM_8BIT_RIGHT_DUAL:
@@ -696,7 +696,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
 
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR8RD);
     dmamode = dacp->params->dmamode |
-              STM32_DMA_CR_PSIZE_HWORD | STM32_DMA_CR_MSIZE_HWORD;
+              GD32_DMA_CR_PSIZE_HWORD | GD32_DMA_CR_MSIZE_HWORD;
     n /= 2;
     break;
 #endif
@@ -708,14 +708,14 @@ void dac_lld_start_conversion(DACDriver *dacp) {
   dmaStreamSetMemory0(dacp->dma, dacp->samples);
   dmaStreamSetTransactionSize(dacp->dma, n);
   dmaStreamSetMode(dacp->dma, dmamode            |
-                              STM32_DMA_CR_DMEIE | STM32_DMA_CR_TEIE |
-                              STM32_DMA_CR_HTIE  | STM32_DMA_CR_TCIE);
+                              GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE |
+                              GD32_DMA_CR_HTIE  | GD32_DMA_CR_TCIE);
   dmaStreamEnable(dacp->dma);
 
   /* DAC configuration.*/
   cr = dacp->params->dac->CR;
 
-#if STM32_DAC_DUAL_MODE == FALSE
+#if GD32_DAC_DUAL_MODE == FALSE
   cr &= dacp->params->regmask;
   cr |= (DAC_CR_DMAEN1 | (dacp->grpp->trigger << DAC_CR_TSEL1_Pos) | DAC_CR_TEN1 | DAC_CR_EN1 | dacp->config->cr) << dacp->params->regshift;
 #else
@@ -746,7 +746,7 @@ void dac_lld_stop_conversion(DACDriver *dacp) {
 
   cr = dacp->params->dac->CR;
 
-#if STM32_DAC_DUAL_MODE == FALSE
+#if GD32_DAC_DUAL_MODE == FALSE
   cr &= dacp->params->regmask;
   cr |= (DAC_CR_EN1 | dacp->config->cr) << dacp->params->regshift;
 #else
