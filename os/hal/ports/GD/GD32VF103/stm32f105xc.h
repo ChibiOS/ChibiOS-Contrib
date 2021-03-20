@@ -734,14 +734,14 @@ typedef struct
 
 #define SDIO_BASE             (PERIPH_BASE + 0x00018000U)
 
-#define DMA1_BASE             (AHBPERIPH_BASE + 0x00000000U)
-#define DMA1_Channel1_BASE    (AHBPERIPH_BASE + 0x00000008U)
-#define DMA1_Channel2_BASE    (AHBPERIPH_BASE + 0x0000001CU)
-#define DMA1_Channel3_BASE    (AHBPERIPH_BASE + 0x00000030U)
-#define DMA1_Channel4_BASE    (AHBPERIPH_BASE + 0x00000044U)
-#define DMA1_Channel5_BASE    (AHBPERIPH_BASE + 0x00000058U)
-#define DMA1_Channel6_BASE    (AHBPERIPH_BASE + 0x0000006CU)
-#define DMA1_Channel7_BASE    (AHBPERIPH_BASE + 0x00000080U)
+#define DMA0_BASE             (AHBPERIPH_BASE + 0x00000000U)
+#define DMA0_Channel1_BASE    (AHBPERIPH_BASE + 0x00000008U)
+#define DMA0_Channel2_BASE    (AHBPERIPH_BASE + 0x0000001CU)
+#define DMA0_Channel3_BASE    (AHBPERIPH_BASE + 0x00000030U)
+#define DMA0_Channel4_BASE    (AHBPERIPH_BASE + 0x00000044U)
+#define DMA0_Channel5_BASE    (AHBPERIPH_BASE + 0x00000058U)
+#define DMA0_Channel6_BASE    (AHBPERIPH_BASE + 0x0000006CU)
+#define DMA0_Channel7_BASE    (AHBPERIPH_BASE + 0x00000080U)
 #define DMA2_BASE             (AHBPERIPH_BASE + 0x00000400U)
 #define DMA2_Channel1_BASE    (AHBPERIPH_BASE + 0x00000408U)
 #define DMA2_Channel2_BASE    (AHBPERIPH_BASE + 0x0000041CU)
@@ -822,15 +822,15 @@ typedef struct
 #define SPI1                ((SPI_TypeDef *)SPI1_BASE)
 #define USART1              ((USART_TypeDef *)USART1_BASE)
 #define SDIO                ((SDIO_TypeDef *)SDIO_BASE)
-#define DMA1                ((DMA_TypeDef *)DMA1_BASE)
+#define DMA0                ((DMA_TypeDef *)DMA0_BASE)
 #define DMA2                ((DMA_TypeDef *)DMA2_BASE)
-#define DMA1_Channel1       ((DMA_Channel_TypeDef *)DMA1_Channel1_BASE)
-#define DMA1_Channel2       ((DMA_Channel_TypeDef *)DMA1_Channel2_BASE)
-#define DMA1_Channel3       ((DMA_Channel_TypeDef *)DMA1_Channel3_BASE)
-#define DMA1_Channel4       ((DMA_Channel_TypeDef *)DMA1_Channel4_BASE)
-#define DMA1_Channel5       ((DMA_Channel_TypeDef *)DMA1_Channel5_BASE)
-#define DMA1_Channel6       ((DMA_Channel_TypeDef *)DMA1_Channel6_BASE)
-#define DMA1_Channel7       ((DMA_Channel_TypeDef *)DMA1_Channel7_BASE)
+#define DMA0_Channel1       ((DMA_Channel_TypeDef *)DMA0_Channel1_BASE)
+#define DMA0_Channel2       ((DMA_Channel_TypeDef *)DMA0_Channel2_BASE)
+#define DMA0_Channel3       ((DMA_Channel_TypeDef *)DMA0_Channel3_BASE)
+#define DMA0_Channel4       ((DMA_Channel_TypeDef *)DMA0_Channel4_BASE)
+#define DMA0_Channel5       ((DMA_Channel_TypeDef *)DMA0_Channel5_BASE)
+#define DMA0_Channel6       ((DMA_Channel_TypeDef *)DMA0_Channel6_BASE)
+#define DMA0_Channel7       ((DMA_Channel_TypeDef *)DMA0_Channel7_BASE)
 #define DMA2_Channel1       ((DMA_Channel_TypeDef *)DMA2_Channel1_BASE)
 #define DMA2_Channel2       ((DMA_Channel_TypeDef *)DMA2_Channel2_BASE)
 #define DMA2_Channel3       ((DMA_Channel_TypeDef *)DMA2_Channel3_BASE)
@@ -1616,9 +1616,9 @@ typedef struct
 #define RCC_APB1RSTR_DACRST                  RCC_APB1RSTR_DACRST_Msk           /*!< DAC interface reset */
 
 /******************  Bit definition for RCC_AHBENR register  ******************/
-#define RCC_AHBENR_DMA1EN_Pos                (0U)                              
-#define RCC_AHBENR_DMA1EN_Msk                (0x1U << RCC_AHBENR_DMA1EN_Pos)   /*!< 0x00000001 */
-#define RCC_AHBENR_DMA1EN                    RCC_AHBENR_DMA1EN_Msk             /*!< DMA1 clock enable */
+#define RCC_AHBENR_DMA0EN_Pos                (0U)                              
+#define RCC_AHBENR_DMA0EN_Msk                (0x1U << RCC_AHBENR_DMA0EN_Pos)   /*!< 0x00000001 */
+#define RCC_AHBENR_DMA0EN                    RCC_AHBENR_DMA0EN_Msk             /*!< DMA0 clock enable */
 #define RCC_AHBENR_SRAMEN_Pos                (2U)                              
 #define RCC_AHBENR_SRAMEN_Msk                (0x1U << RCC_AHBENR_SRAMEN_Pos)   /*!< 0x00000004 */
 #define RCC_AHBENR_SRAMEN                    RCC_AHBENR_SRAMEN_Msk             /*!< SRAM interface clock enable */
@@ -14268,13 +14268,13 @@ typedef struct
 #define IS_DAC_ALL_INSTANCE(INSTANCE) ((INSTANCE) == DAC1)
 
 /****************************** DMA Instances *********************************/
-#define IS_DMA_ALL_INSTANCE(INSTANCE) (((INSTANCE) == DMA1_Channel1) || \
-                                       ((INSTANCE) == DMA1_Channel2) || \
-                                       ((INSTANCE) == DMA1_Channel3) || \
-                                       ((INSTANCE) == DMA1_Channel4) || \
-                                       ((INSTANCE) == DMA1_Channel5) || \
-                                       ((INSTANCE) == DMA1_Channel6) || \
-                                       ((INSTANCE) == DMA1_Channel7) || \
+#define IS_DMA_ALL_INSTANCE(INSTANCE) (((INSTANCE) == DMA0_Channel1) || \
+                                       ((INSTANCE) == DMA0_Channel2) || \
+                                       ((INSTANCE) == DMA0_Channel3) || \
+                                       ((INSTANCE) == DMA0_Channel4) || \
+                                       ((INSTANCE) == DMA0_Channel5) || \
+                                       ((INSTANCE) == DMA0_Channel6) || \
+                                       ((INSTANCE) == DMA0_Channel7) || \
                                        ((INSTANCE) == DMA2_Channel1) || \
                                        ((INSTANCE) == DMA2_Channel2) || \
                                        ((INSTANCE) == DMA2_Channel3) || \

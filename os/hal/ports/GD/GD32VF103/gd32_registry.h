@@ -118,21 +118,21 @@
 #define GD32_DMA_SUPPORTS_DMAMUX           FALSE
 #define GD32_DMA_SUPPORTS_CSELR            FALSE
 
-#define GD32_DMA1_NUM_CHANNELS             7
-#define GD32_DMA1_CH1_HANDLER               vector30
-#define GD32_DMA1_CH2_HANDLER               vector31
-#define GD32_DMA1_CH3_HANDLER               vector32
-#define GD32_DMA1_CH4_HANDLER               vector33
-#define GD32_DMA1_CH5_HANDLER               vector34
-#define GD32_DMA1_CH6_HANDLER               vector35
-#define GD32_DMA1_CH7_HANDLER               vector36
-#define GD32_DMA1_CH1_NUMBER                30
-#define GD32_DMA1_CH2_NUMBER                31
-#define GD32_DMA1_CH3_NUMBER                32
-#define GD32_DMA1_CH4_NUMBER                33
-#define GD32_DMA1_CH5_NUMBER                34
-#define GD32_DMA1_CH6_NUMBER                35
-#define GD32_DMA1_CH7_NUMBER                36
+#define GD32_DMA0_NUM_CHANNELS             7
+#define GD32_DMA0_CH0_HANDLER               vector30
+#define GD32_DMA0_CH1_HANDLER               vector31
+#define GD32_DMA0_CH2_HANDLER               vector32
+#define GD32_DMA0_CH3_HANDLER               vector33
+#define GD32_DMA0_CH4_HANDLER               vector34
+#define GD32_DMA0_CH5_HANDLER               vector35
+#define GD32_DMA0_CH6_HANDLER               vector36
+#define GD32_DMA0_CH0_NUMBER                30
+#define GD32_DMA0_CH1_NUMBER                31
+#define GD32_DMA0_CH2_NUMBER                32
+#define GD32_DMA0_CH3_NUMBER                33
+#define GD32_DMA0_CH4_NUMBER                34
+#define GD32_DMA0_CH5_NUMBER                35
+#define GD32_DMA0_CH6_NUMBER                36
 
 #define GD32_DMA2_NUM_CHANNELS             5
 #define GD32_DMA2_CH1_HANDLER              vector75

@@ -35,7 +35,7 @@
  * @brief   Total number of DMA streams.
  * @details This is the total number of streams among all the DMA units.
  */
-#define GD32_DMA_STREAMS           (GD32_DMA1_NUM_CHANNELS +              \
+#define GD32_DMA_STREAMS           (GD32_DMA0_NUM_CHANNELS +              \
                                      GD32_DMA2_NUM_CHANNELS)
 
 /**
@@ -54,7 +54,7 @@
  * @return              Returns the request associated to the stream.
  */
 #define GD32_DMA_GETCHANNEL(id, c)                                         \
-  (((uint32_t)(c) >> (((uint32_t)(id) % (uint32_t)GD32_DMA1_NUM_CHANNELS) * 4U)) & 15U)
+  (((uint32_t)(c) >> (((uint32_t)(id) % (uint32_t)GD32_DMA0_NUM_CHANNELS) * 4U)) & 15U)
 
 /**
  * @brief   Checks if a DMA priority is within the valid range.
@@ -85,7 +85,7 @@
  * @return              An unique numeric stream identifier.
  */
 #define GD32_DMA_STREAM_ID(dma, stream)                                    \
-  ((((dma) - 1) * GD32_DMA1_NUM_CHANNELS) + ((stream) - 1))
+  ((((dma) - 1) * GD32_DMA0_NUM_CHANNELS) + ((stream) - 1))
 
 /**
  * @brief   Returns a DMA stream identifier mask.
@@ -123,18 +123,18 @@
  */
 #define GD32_DMA_STREAM(id)        (&_gd32_dma_streams[id])
 
-#define GD32_DMA1_STREAM1          GD32_DMA_STREAM(0)
-#define GD32_DMA1_STREAM2          GD32_DMA_STREAM(1)
-#define GD32_DMA1_STREAM3          GD32_DMA_STREAM(2)
-#define GD32_DMA1_STREAM4          GD32_DMA_STREAM(3)
-#define GD32_DMA1_STREAM5          GD32_DMA_STREAM(4)
-#define GD32_DMA1_STREAM6          GD32_DMA_STREAM(5)
-#define GD32_DMA1_STREAM7          GD32_DMA_STREAM(6)
-#define GD32_DMA2_STREAM1          GD32_DMA_STREAM(GD32_DMA1_NUM_CHANNELS + 0)
-#define GD32_DMA2_STREAM2          GD32_DMA_STREAM(GD32_DMA1_NUM_CHANNELS + 1)
-#define GD32_DMA2_STREAM3          GD32_DMA_STREAM(GD32_DMA1_NUM_CHANNELS + 2)
-#define GD32_DMA2_STREAM4          GD32_DMA_STREAM(GD32_DMA1_NUM_CHANNELS + 3)
-#define GD32_DMA2_STREAM5          GD32_DMA_STREAM(GD32_DMA1_NUM_CHANNELS + 4)
+#define GD32_DMA0_STREAM0          GD32_DMA_STREAM(0)
+#define GD32_DMA0_STREAM1          GD32_DMA_STREAM(1)
+#define GD32_DMA0_STREAM2          GD32_DMA_STREAM(2)
+#define GD32_DMA0_STREAM3          GD32_DMA_STREAM(3)
+#define GD32_DMA0_STREAM4          GD32_DMA_STREAM(4)
+#define GD32_DMA0_STREAM5          GD32_DMA_STREAM(5)
+#define GD32_DMA0_STREAM6          GD32_DMA_STREAM(6)
+#define GD32_DMA2_STREAM1          GD32_DMA_STREAM(GD32_DMA0_NUM_CHANNELS + 0)
+#define GD32_DMA2_STREAM2          GD32_DMA_STREAM(GD32_DMA0_NUM_CHANNELS + 1)
+#define GD32_DMA2_STREAM3          GD32_DMA_STREAM(GD32_DMA0_NUM_CHANNELS + 2)
+#define GD32_DMA2_STREAM4          GD32_DMA_STREAM(GD32_DMA0_NUM_CHANNELS + 3)
+#define GD32_DMA2_STREAM5          GD32_DMA_STREAM(GD32_DMA0_NUM_CHANNELS + 4)
 /** @} */
 
 /**
@@ -193,15 +193,15 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if !defined(GD32_DMA1_NUM_CHANNELS)
-#error "GD32_DMA1_NUM_CHANNELS not defined in registry"
+#if !defined(GD32_DMA0_NUM_CHANNELS)
+#error "GD32_DMA0_NUM_CHANNELS not defined in registry"
 #endif
 
 #if !defined(GD32_DMA2_NUM_CHANNELS)
 #error "GD32_DMA2_NUM_CHANNELS not defined in registry"
 #endif
 
-#if (GD32_DMA1_NUM_CHANNELS < 0) || (GD32_DMA1_NUM_CHANNELS > 7)
+#if (GD32_DMA0_NUM_CHANNELS < 0) || (GD32_DMA0_NUM_CHANNELS > 7)
 #error "unsupported channels configuration"
 #endif
 
