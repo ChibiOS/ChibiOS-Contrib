@@ -134,17 +134,17 @@
 #define GD32_DMA0_CH5_NUMBER                35
 #define GD32_DMA0_CH6_NUMBER                36
 
-#define GD32_DMA2_NUM_CHANNELS             5
-#define GD32_DMA2_CH1_HANDLER              vector75
-#define GD32_DMA2_CH2_HANDLER              vector76
-#define GD32_DMA2_CH3_HANDLER              vector77
-#define GD32_DMA2_CH4_HANDLER              vector78
-#define GD32_DMA2_CH5_HANDLER              vector79
-#define GD32_DMA2_CH1_NUMBER                75
-#define GD32_DMA2_CH2_NUMBER                76
-#define GD32_DMA2_CH3_NUMBER                77
-#define GD32_DMA2_CH4_NUMBER                78
-#define GD32_DMA2_CH5_NUMBER                79
+#define GD32_DMA1_NUM_CHANNELS             5
+#define GD32_DMA1_CH0_HANDLER              vector75
+#define GD32_DMA1_CH1_HANDLER              vector76
+#define GD32_DMA1_CH2_HANDLER              vector77
+#define GD32_DMA1_CH3_HANDLER              vector78
+#define GD32_DMA1_CH4_HANDLER              vector79
+#define GD32_DMA1_CH0_NUMBER                75
+#define GD32_DMA1_CH1_NUMBER                76
+#define GD32_DMA1_CH2_NUMBER                77
+#define GD32_DMA1_CH3_NUMBER                78
+#define GD32_DMA1_CH4_NUMBER                79
 
 /* EXTI attributes.*/
 #define GD32_EXTI_NUM_LINES                19

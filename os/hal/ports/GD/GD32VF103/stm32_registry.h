@@ -106,7 +106,7 @@
 #define GD32_DMA0_CH5_NUMBER               16
 #define GD32_DMA0_CH6_NUMBER               17
 
-#define GD32_DMA2_NUM_CHANNELS             0
+#define GD32_DMA1_NUM_CHANNELS             0
 
 /* ETH attributes.*/
 #define GD32_HAS_ETH                       FALSE
@@ -259,8 +259,8 @@
 /* LTDC attributes.*/
 #define GD32_HAS_LTDC                      FALSE
 
-/* DMA2D attributes.*/
-#define GD32_HAS_DMA2D                     FALSE
+/* DMA1D attributes.*/
+#define GD32_HAS_DMA1D                     FALSE
 
 /* FSMC attributes.*/
 #define GD32_HAS_FSMC                      FALSE
@@ -319,7 +319,7 @@
 #define GD32_DMA0_CH5_NUMBER               16
 #define GD32_DMA0_CH6_NUMBER               17
 
-#define GD32_DMA2_NUM_CHANNELS             0
+#define GD32_DMA1_NUM_CHANNELS             0
 
 /* ETH attributes.*/
 #define GD32_HAS_ETH                       FALSE
@@ -444,8 +444,8 @@
 /* LTDC attributes.*/
 #define GD32_HAS_LTDC                      FALSE
 
-/* DMA2D attributes.*/
-#define GD32_HAS_DMA2D                     FALSE
+/* DMA1D attributes.*/
+#define GD32_HAS_DMA1D                     FALSE
 
 /* FSMC attributes.*/
 #define GD32_HAS_FSMC                      FALSE
@@ -504,7 +504,7 @@
 #define GD32_DMA0_CH5_NUMBER               16
 #define GD32_DMA0_CH6_NUMBER               17
 
-#define GD32_DMA2_NUM_CHANNELS             0
+#define GD32_DMA1_NUM_CHANNELS             0
 
 /* ETH attributes.*/
 #define GD32_HAS_ETH                       FALSE
@@ -645,8 +645,8 @@
 /* LTDC attributes.*/
 #define GD32_HAS_LTDC                      FALSE
 
-/* DMA2D attributes.*/
-#define GD32_HAS_DMA2D                     FALSE
+/* DMA1D attributes.*/
+#define GD32_HAS_DMA1D                     FALSE
 
 /* FSMC attributes.*/
 #define GD32_HAS_FSMC                      FALSE
@@ -709,20 +709,20 @@
 #define GD32_DMA0_CH5_NUMBER               16
 #define GD32_DMA0_CH6_NUMBER               17
 
-#define GD32_DMA2_NUM_CHANNELS             5
-#define GD32_DMA2_CH1_HANDLER              Vector120
-#define GD32_DMA2_CH2_HANDLER              Vector124
-#define GD32_DMA2_CH3_HANDLER              Vector128
-#define GD32_DMA2_CH45_HANDLER             Vector12C
-#define GD32_DMA2_CH1_NUMBER               56
-#define GD32_DMA2_CH2_NUMBER               57
-#define GD32_DMA2_CH3_NUMBER               58
-#define GD32_DMA2_CH45_NUMBER              59
+#define GD32_DMA1_NUM_CHANNELS             5
+#define GD32_DMA1_CH0_HANDLER              Vector120
+#define GD32_DMA1_CH1_HANDLER              Vector124
+#define GD32_DMA1_CH2_HANDLER              Vector128
+#define GD32_DMA1_CH35_HANDLER             Vector12C
+#define GD32_DMA1_CH0_NUMBER               56
+#define GD32_DMA1_CH1_NUMBER               57
+#define GD32_DMA1_CH2_NUMBER               58
+#define GD32_DMA1_CH35_NUMBER              59
 
-#define GD32_DMA2_CH4_NUMBER               GD32_DMA2_CH45_NUMBER
-#define GD32_DMA2_CH5_NUMBER               GD32_DMA2_CH45_NUMBER
-#define DMA2_CH4_CMASK                      0x00000C00U
-#define DMA2_CH5_CMASK                      0x00000C00U
+#define GD32_DMA1_CH3_NUMBER               GD32_DMA1_CH35_NUMBER
+#define GD32_DMA1_CH4_NUMBER               GD32_DMA1_CH35_NUMBER
+#define DMA1_CH3_CMASK                      0x00000C00U
+#define DMA1_CH4_CMASK                      0x00000C00U
 
 /* ETH attributes.*/
 #define GD32_HAS_ETH                       FALSE
@@ -885,8 +885,8 @@
 /* LTDC attributes.*/
 #define GD32_HAS_LTDC                      FALSE
 
-/* DMA2D attributes.*/
-#define GD32_HAS_DMA2D                     FALSE
+/* DMA1D attributes.*/
+#define GD32_HAS_DMA1D                     FALSE
 
 /* FSMC attributes.*/
 #define GD32_HAS_FSMC                      TRUE
@@ -952,17 +952,17 @@
 #define GD32_DMA0_CH5_NUMBER               16
 #define GD32_DMA0_CH6_NUMBER               17
 
-#define GD32_DMA2_NUM_CHANNELS             5
-#define GD32_DMA2_CH1_HANDLER              Vector120
-#define GD32_DMA2_CH2_HANDLER              Vector124
-#define GD32_DMA2_CH3_HANDLER              Vector128
-#define GD32_DMA2_CH4_HANDLER              Vector12C
-#define GD32_DMA2_CH5_HANDLER              Vector130
-#define GD32_DMA2_CH1_NUMBER               56
-#define GD32_DMA2_CH2_NUMBER               57
-#define GD32_DMA2_CH3_NUMBER               58
-#define GD32_DMA2_CH4_NUMBER               59
-#define GD32_DMA2_CH5_NUMBER               60
+#define GD32_DMA1_NUM_CHANNELS             5
+#define GD32_DMA1_CH0_HANDLER              Vector120
+#define GD32_DMA1_CH1_HANDLER              Vector124
+#define GD32_DMA1_CH2_HANDLER              Vector128
+#define GD32_DMA1_CH3_HANDLER              Vector12C
+#define GD32_DMA1_CH4_HANDLER              Vector130
+#define GD32_DMA1_CH0_NUMBER               56
+#define GD32_DMA1_CH1_NUMBER               57
+#define GD32_DMA1_CH2_NUMBER               58
+#define GD32_DMA1_CH3_NUMBER               59
+#define GD32_DMA1_CH4_NUMBER               60
 
 /* ETH attributes.*/
 #define GD32_HAS_ETH                       FALSE
@@ -1143,8 +1143,8 @@
 /* LTDC attributes.*/
 #define GD32_HAS_LTDC                      FALSE
 
-/* DMA2D attributes.*/
-#define GD32_HAS_DMA2D                     FALSE
+/* DMA1D attributes.*/
+#define GD32_HAS_DMA1D                     FALSE
 
 /* FSMC attributes.*/
 #define GD32_HAS_FSMC                      TRUE
@@ -1210,17 +1210,17 @@
 #define GD32_DMA0_CH5_NUMBER               16
 #define GD32_DMA0_CH6_NUMBER               17
 
-#define GD32_DMA2_NUM_CHANNELS             5
-#define GD32_DMA2_CH1_HANDLER              Vector120
-#define GD32_DMA2_CH2_HANDLER              Vector124
-#define GD32_DMA2_CH3_HANDLER              Vector128
-#define GD32_DMA2_CH4_HANDLER              Vector12C
-#define GD32_DMA2_CH5_HANDLER              Vector130
-#define GD32_DMA2_CH1_NUMBER               56
-#define GD32_DMA2_CH2_NUMBER               57
-#define GD32_DMA2_CH3_NUMBER               58
-#define GD32_DMA2_CH4_NUMBER               59
-#define GD32_DMA2_CH5_NUMBER               60
+#define GD32_DMA1_NUM_CHANNELS             5
+#define GD32_DMA1_CH0_HANDLER              Vector120
+#define GD32_DMA1_CH1_HANDLER              Vector124
+#define GD32_DMA1_CH2_HANDLER              Vector128
+#define GD32_DMA1_CH3_HANDLER              Vector12C
+#define GD32_DMA1_CH4_HANDLER              Vector130
+#define GD32_DMA1_CH0_NUMBER               56
+#define GD32_DMA1_CH1_NUMBER               57
+#define GD32_DMA1_CH2_NUMBER               58
+#define GD32_DMA1_CH3_NUMBER               59
+#define GD32_DMA1_CH4_NUMBER               60
 
 /* ETH attributes.*/
 #define GD32_HAS_ETH                       TRUE
@@ -1382,8 +1382,8 @@
 /* LTDC attributes.*/
 #define GD32_HAS_LTDC                      FALSE
 
-/* DMA2D attributes.*/
-#define GD32_HAS_DMA2D                     FALSE
+/* DMA1D attributes.*/
+#define GD32_HAS_DMA1D                     FALSE
 
 /* FSMC attributes.*/
 #define GD32_HAS_FSMC                      FALSE

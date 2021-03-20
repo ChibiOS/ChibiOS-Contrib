@@ -742,12 +742,12 @@ typedef struct
 #define DMA0_Channel5_BASE    (AHBPERIPH_BASE + 0x00000058U)
 #define DMA0_Channel6_BASE    (AHBPERIPH_BASE + 0x0000006CU)
 #define DMA0_Channel7_BASE    (AHBPERIPH_BASE + 0x00000080U)
-#define DMA2_BASE             (AHBPERIPH_BASE + 0x00000400U)
-#define DMA2_Channel1_BASE    (AHBPERIPH_BASE + 0x00000408U)
-#define DMA2_Channel2_BASE    (AHBPERIPH_BASE + 0x0000041CU)
-#define DMA2_Channel3_BASE    (AHBPERIPH_BASE + 0x00000430U)
-#define DMA2_Channel4_BASE    (AHBPERIPH_BASE + 0x00000444U)
-#define DMA2_Channel5_BASE    (AHBPERIPH_BASE + 0x00000458U)
+#define DMA1_BASE             (AHBPERIPH_BASE + 0x00000400U)
+#define DMA1_Channel1_BASE    (AHBPERIPH_BASE + 0x00000408U)
+#define DMA1_Channel2_BASE    (AHBPERIPH_BASE + 0x0000041CU)
+#define DMA1_Channel3_BASE    (AHBPERIPH_BASE + 0x00000430U)
+#define DMA1_Channel4_BASE    (AHBPERIPH_BASE + 0x00000444U)
+#define DMA1_Channel5_BASE    (AHBPERIPH_BASE + 0x00000458U)
 #define RCC_BASE              (AHBPERIPH_BASE + 0x00001000U)
 //#define CRC_BASE              (AHBPERIPH_BASE + 0x00003000U)
 
@@ -823,7 +823,7 @@ typedef struct
 #define USART1              ((USART_TypeDef *)USART1_BASE)
 #define SDIO                ((SDIO_TypeDef *)SDIO_BASE)
 #define DMA0                ((DMA_TypeDef *)DMA0_BASE)
-#define DMA2                ((DMA_TypeDef *)DMA2_BASE)
+#define DMA1                ((DMA_TypeDef *)DMA1_BASE)
 #define DMA0_Channel1       ((DMA_Channel_TypeDef *)DMA0_Channel1_BASE)
 #define DMA0_Channel2       ((DMA_Channel_TypeDef *)DMA0_Channel2_BASE)
 #define DMA0_Channel3       ((DMA_Channel_TypeDef *)DMA0_Channel3_BASE)
@@ -831,11 +831,11 @@ typedef struct
 #define DMA0_Channel5       ((DMA_Channel_TypeDef *)DMA0_Channel5_BASE)
 #define DMA0_Channel6       ((DMA_Channel_TypeDef *)DMA0_Channel6_BASE)
 #define DMA0_Channel7       ((DMA_Channel_TypeDef *)DMA0_Channel7_BASE)
-#define DMA2_Channel1       ((DMA_Channel_TypeDef *)DMA2_Channel1_BASE)
-#define DMA2_Channel2       ((DMA_Channel_TypeDef *)DMA2_Channel2_BASE)
-#define DMA2_Channel3       ((DMA_Channel_TypeDef *)DMA2_Channel3_BASE)
-#define DMA2_Channel4       ((DMA_Channel_TypeDef *)DMA2_Channel4_BASE)
-#define DMA2_Channel5       ((DMA_Channel_TypeDef *)DMA2_Channel5_BASE)
+#define DMA1_Channel1       ((DMA_Channel_TypeDef *)DMA1_Channel1_BASE)
+#define DMA1_Channel2       ((DMA_Channel_TypeDef *)DMA1_Channel2_BASE)
+#define DMA1_Channel3       ((DMA_Channel_TypeDef *)DMA1_Channel3_BASE)
+#define DMA1_Channel4       ((DMA_Channel_TypeDef *)DMA1_Channel4_BASE)
+#define DMA1_Channel5       ((DMA_Channel_TypeDef *)DMA1_Channel5_BASE)
 #define RCC                 ((RCC_TypeDef *)RCC_BASE)
 #define CRC                 ((CRC_TypeDef *)CRC_BASE)
 #define FLASH               ((FLASH_TypeDef *)FLASH_R_BASE)
@@ -1629,9 +1629,9 @@ typedef struct
 #define RCC_AHBENR_CRCEN_Msk                 (0x1U << RCC_AHBENR_CRCEN_Pos)    /*!< 0x00000040 */
 #define RCC_AHBENR_CRCEN                     RCC_AHBENR_CRCEN_Msk              /*!< CRC clock enable */
 
-#define RCC_AHBENR_DMA2EN_Pos                (1U)                              
-#define RCC_AHBENR_DMA2EN_Msk                (0x1U << RCC_AHBENR_DMA2EN_Pos)   /*!< 0x00000002 */
-#define RCC_AHBENR_DMA2EN                    RCC_AHBENR_DMA2EN_Msk             /*!< DMA2 clock enable */
+#define RCC_AHBENR_DMA1EN_Pos                (1U)                              
+#define RCC_AHBENR_DMA1EN_Msk                (0x1U << RCC_AHBENR_DMA1EN_Pos)   /*!< 0x00000002 */
+#define RCC_AHBENR_DMA1EN                    RCC_AHBENR_DMA1EN_Msk             /*!< DMA1 clock enable */
 
 
 #define RCC_AHBENR_OTGFSEN_Pos               (12U)                             
@@ -14275,11 +14275,11 @@ typedef struct
                                        ((INSTANCE) == DMA0_Channel5) || \
                                        ((INSTANCE) == DMA0_Channel6) || \
                                        ((INSTANCE) == DMA0_Channel7) || \
-                                       ((INSTANCE) == DMA2_Channel1) || \
-                                       ((INSTANCE) == DMA2_Channel2) || \
-                                       ((INSTANCE) == DMA2_Channel3) || \
-                                       ((INSTANCE) == DMA2_Channel4) || \
-                                       ((INSTANCE) == DMA2_Channel5))
+                                       ((INSTANCE) == DMA1_Channel1) || \
+                                       ((INSTANCE) == DMA1_Channel2) || \
+                                       ((INSTANCE) == DMA1_Channel3) || \
+                                       ((INSTANCE) == DMA1_Channel4) || \
+                                       ((INSTANCE) == DMA1_Channel5))
   
 /******************************* GPIO Instances *******************************/
 #define IS_GPIO_ALL_INSTANCE(INSTANCE) (((INSTANCE) == GPIOA) || \
@@ -14608,7 +14608,7 @@ typedef struct
 #define USB_LP_IRQn             CAN1_RX0_IRQn
 #define USB_HP_CAN1_TX_IRQn     CAN1_TX_IRQn
 #define USB_HP_IRQn             CAN1_TX_IRQn
-#define DMA2_Channel4_5_IRQn    DMA2_Channel4_IRQn
+#define DMA1_Channel4_5_IRQn    DMA1_Channel4_IRQn
 #define USBWakeUp_IRQn          OTG_FS_WKUP_IRQn
 #define CEC_IRQn                OTG_FS_WKUP_IRQn
 #define TIM1_BRK_TIM9_IRQn      TIM1_BRK_IRQn
@@ -14629,7 +14629,7 @@ typedef struct
 #define USB_LP_IRQHandler             CAN1_RX0_IRQHandler
 #define USB_HP_CAN1_TX_IRQHandler     CAN1_TX_IRQHandler
 #define USB_HP_IRQHandler             CAN1_TX_IRQHandler
-#define DMA2_Channel4_5_IRQHandler    DMA2_Channel4_IRQHandler
+#define DMA1_Channel4_5_IRQHandler    DMA1_Channel4_IRQHandler
 #define USBWakeUp_IRQHandler          OTG_FS_WKUP_IRQHandler
 #define CEC_IRQHandler                OTG_FS_WKUP_IRQHandler
 #define TIM1_BRK_TIM9_IRQHandler      TIM1_BRK_IRQHandler

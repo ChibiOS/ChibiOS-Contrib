@@ -99,25 +99,25 @@ static void hal_lld_backup_domain_init(void) {
 /*===========================================================================*/
 
 #if defined(GD32_DMA_REQUIRED) || defined(__DOXYGEN__)
-#if defined(GD32_DMA2_CH45_HANDLER) || defined(__DOXYGEN__)
+#if defined(GD32_DMA1_CH35_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA2 streams 4 and 5 shared ISR.
+ * @brief   DMA1 streams 4 and 5 shared ISR.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_DMA2_CH45_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_DMA1_CH35_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  /* Check on channel 4 of DMA2.*/
-  dmaServeInterrupt(GD32_DMA2_STREAM4);
+  /* Check on channel 4 of DMA1.*/
+  dmaServeInterrupt(GD32_DMA1_STREAM3);
 
-  /* Check on channel 5 of DMA2.*/
-  dmaServeInterrupt(GD32_DMA2_STREAM5);
+  /* Check on channel 5 of DMA1.*/
+  dmaServeInterrupt(GD32_DMA1_STREAM4);
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* defined(GD32_DMA2_CH45_HANDLER) */
+#endif /* defined(GD32_DMA1_CH35_HANDLER) */
 #endif /* defined(GD32_DMA_REQUIRED) */
 
 /*===========================================================================*/

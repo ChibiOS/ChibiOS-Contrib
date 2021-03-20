@@ -45,9 +45,9 @@
 #define GD32_DMA0_STREAMS_MASK     ((1U << GD32_DMA0_NUM_CHANNELS) - 1U)
 
 /**
- * @brief   Mask of the DMA2 streams in @p dma_streams_mask.
+ * @brief   Mask of the DMA1 streams in @p dma_streams_mask.
  */
-#define GD32_DMA2_STREAMS_MASK     (((1U << GD32_DMA2_NUM_CHANNELS) -     \
+#define GD32_DMA1_STREAMS_MASK     (((1U << GD32_DMA1_NUM_CHANNELS) -     \
                                       1U) << GD32_DMA0_NUM_CHANNELS)
 
 #define DMA0_CH0_VARIANT            0
@@ -57,13 +57,11 @@
 #define DMA0_CH4_VARIANT            0
 #define DMA0_CH5_VARIANT            0
 #define DMA0_CH6_VARIANT            0
-#define DMA2_CH1_VARIANT            0
-#define DMA2_CH2_VARIANT            0
-#define DMA2_CH3_VARIANT            0
-#define DMA2_CH4_VARIANT            0
-#define DMA2_CH5_VARIANT            0
-#define DMA2_CH6_VARIANT            0
-#define DMA2_CH7_VARIANT            0
+#define DMA1_CH0_VARIANT            0
+#define DMA1_CH1_VARIANT            0
+#define DMA1_CH2_VARIANT            0
+#define DMA1_CH3_VARIANT            0
+#define DMA1_CH4_VARIANT            0
 
 /*
  * Default ISR collision masks.
@@ -96,24 +94,24 @@
 #define GD32_DMA0_CH6_CMASK        (1U << 6U)
 #endif
 
-#if !defined(GD32_DMA2_CH1_CMASK)
-#define GD32_DMA2_CH1_CMASK        (1U << (GD32_DMA0_NUM_CHANNELS + 0U))
+#if !defined(GD32_DMA1_CH0_CMASK)
+#define GD32_DMA1_CH0_CMASK        (1U << (GD32_DMA0_NUM_CHANNELS + 0U))
 #endif
 
-#if !defined(GD32_DMA2_CH2_CMASK)
-#define GD32_DMA2_CH2_CMASK        (1U << (GD32_DMA0_NUM_CHANNELS + 1U))
+#if !defined(GD32_DMA1_CH1_CMASK)
+#define GD32_DMA1_CH1_CMASK        (1U << (GD32_DMA0_NUM_CHANNELS + 1U))
 #endif
 
-#if !defined(GD32_DMA2_CH3_CMASK)
-#define GD32_DMA2_CH3_CMASK        (1U << (GD32_DMA0_NUM_CHANNELS + 2U))
+#if !defined(GD32_DMA1_CH2_CMASK)
+#define GD32_DMA1_CH2_CMASK        (1U << (GD32_DMA0_NUM_CHANNELS + 2U))
 #endif
 
-#if !defined(GD32_DMA2_CH4_CMASK)
-#define GD32_DMA2_CH4_CMASK        (1U << (GD32_DMA0_NUM_CHANNELS + 3U))
+#if !defined(GD32_DMA1_CH3_CMASK)
+#define GD32_DMA1_CH3_CMASK        (1U << (GD32_DMA0_NUM_CHANNELS + 3U))
 #endif
 
-#if !defined(GD32_DMA2_CH5_CMASK)
-#define GD32_DMA2_CH5_CMASK        (1U << (GD32_DMA0_NUM_CHANNELS + 4U))
+#if !defined(GD32_DMA1_CH4_CMASK)
+#define GD32_DMA1_CH4_CMASK        (1U << (GD32_DMA0_NUM_CHANNELS + 4U))
 #endif
 
 /*===========================================================================*/
@@ -135,11 +133,11 @@ const gd32_dma_stream_t _gd32_dma_streams[GD32_DMA_STREAMS] = {
   {DMA0, DMA0_Channel5, GD32_DMA0_CH4_CMASK, DMA0_CH4_VARIANT, 16, 4, GD32_DMA0_CH4_NUMBER},
   {DMA0, DMA0_Channel6, GD32_DMA0_CH5_CMASK, DMA0_CH5_VARIANT, 20, 5, GD32_DMA0_CH5_NUMBER},
   {DMA0, DMA0_Channel7, GD32_DMA0_CH6_CMASK, DMA0_CH6_VARIANT, 24, 6, GD32_DMA0_CH6_NUMBER},
-  {DMA2, DMA2_Channel1, GD32_DMA2_CH1_CMASK, DMA2_CH1_VARIANT,  0, 0 + GD32_DMA0_NUM_CHANNELS, GD32_DMA2_CH1_NUMBER},
-  {DMA2, DMA2_Channel2, GD32_DMA2_CH2_CMASK, DMA2_CH2_VARIANT,  4, 1 + GD32_DMA0_NUM_CHANNELS, GD32_DMA2_CH2_NUMBER},
-  {DMA2, DMA2_Channel3, GD32_DMA2_CH3_CMASK, DMA2_CH3_VARIANT,  8, 2 + GD32_DMA0_NUM_CHANNELS, GD32_DMA2_CH3_NUMBER},
-  {DMA2, DMA2_Channel4, GD32_DMA2_CH4_CMASK, DMA2_CH4_VARIANT, 12, 3 + GD32_DMA0_NUM_CHANNELS, GD32_DMA2_CH4_NUMBER},
-  {DMA2, DMA2_Channel5, GD32_DMA2_CH5_CMASK, DMA2_CH5_VARIANT, 16, 4 + GD32_DMA0_NUM_CHANNELS, GD32_DMA2_CH5_NUMBER},
+  {DMA1, DMA1_Channel1, GD32_DMA1_CH0_CMASK, DMA1_CH0_VARIANT,  0, 0 + GD32_DMA0_NUM_CHANNELS, GD32_DMA1_CH0_NUMBER},
+  {DMA1, DMA1_Channel2, GD32_DMA1_CH1_CMASK, DMA1_CH1_VARIANT,  4, 1 + GD32_DMA0_NUM_CHANNELS, GD32_DMA1_CH1_NUMBER},
+  {DMA1, DMA1_Channel3, GD32_DMA1_CH2_CMASK, DMA1_CH2_VARIANT,  8, 2 + GD32_DMA0_NUM_CHANNELS, GD32_DMA1_CH2_NUMBER},
+  {DMA1, DMA1_Channel4, GD32_DMA1_CH3_CMASK, DMA1_CH3_VARIANT, 12, 3 + GD32_DMA0_NUM_CHANNELS, GD32_DMA1_CH3_NUMBER},
+  {DMA1, DMA1_Channel5, GD32_DMA1_CH4_CMASK, DMA1_CH4_VARIANT, 16, 4 + GD32_DMA0_NUM_CHANNELS, GD32_DMA1_CH4_NUMBER},
 };
 
 /*===========================================================================*/
@@ -183,7 +181,7 @@ static struct {
 
 #if defined(GD32_DMA0_CH0_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA0 stream 1 shared ISR.
+ * @brief   DMA0 stream 0 shared ISR.
  *
  * @isr
  */
@@ -199,7 +197,7 @@ OSAL_IRQ_HANDLER(GD32_DMA0_CH0_HANDLER) {
 
 #if defined(GD32_DMA0_CH1_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA0 stream 2 shared ISR.
+ * @brief   DMA0 stream 1 shared ISR.
  *
  * @isr
  */
@@ -215,7 +213,7 @@ OSAL_IRQ_HANDLER(GD32_DMA0_CH1_HANDLER) {
 
 #if defined(GD32_DMA0_CH2_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA0 stream 3 shared ISR.
+ * @brief   DMA0 stream 2 shared ISR.
  *
  * @isr
  */
@@ -231,7 +229,7 @@ OSAL_IRQ_HANDLER(GD32_DMA0_CH2_HANDLER) {
 
 #if defined(GD32_DMA0_CH3_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA0 stream 4 shared ISR.
+ * @brief   DMA0 stream 3 shared ISR.
  *
  * @isr
  */
@@ -247,7 +245,7 @@ OSAL_IRQ_HANDLER(GD32_DMA0_CH3_HANDLER) {
 
 #if defined(GD32_DMA0_CH4_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA0 stream 5 shared ISR.
+ * @brief   DMA0 stream 4 shared ISR.
  *
  * @isr
  */
@@ -263,7 +261,7 @@ OSAL_IRQ_HANDLER(GD32_DMA0_CH4_HANDLER) {
 
 #if defined(GD32_DMA0_CH5_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA0 stream 6 shared ISR.
+ * @brief   DMA0 stream 5 shared ISR.
  *
  * @isr
  */
@@ -279,7 +277,7 @@ OSAL_IRQ_HANDLER(GD32_DMA0_CH5_HANDLER) {
 
 #if defined(GD32_DMA0_CH6_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA0 stream 7 shared ISR.
+ * @brief   DMA0 stream 6 shared ISR.
  *
  * @isr
  */
@@ -293,81 +291,81 @@ OSAL_IRQ_HANDLER(GD32_DMA0_CH6_HANDLER) {
 }
 #endif
 
-#if defined(GD32_DMA2_CH1_HANDLER) || defined(__DOXYGEN__)
+#if defined(GD32_DMA1_CH0_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA2 stream 1 shared ISR.
+ * @brief   DMA1 stream 0 shared ISR.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_DMA2_CH1_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_DMA1_CH0_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(GD32_DMA2_STREAM1);
+  dmaServeInterrupt(GD32_DMA1_STREAM0);
 
   OSAL_IRQ_EPILOGUE();
 }
 #endif
 
-#if defined(GD32_DMA2_CH2_HANDLER) || defined(__DOXYGEN__)
+#if defined(GD32_DMA1_CH1_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA2 stream 2 shared ISR.
+ * @brief   DMA1 stream 1 shared ISR.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_DMA2_CH2_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_DMA1_CH1_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(GD32_DMA2_STREAM2);
+  dmaServeInterrupt(GD32_DMA1_STREAM1);
 
   OSAL_IRQ_EPILOGUE();
 }
 #endif
 
-#if defined(GD32_DMA2_CH3_HANDLER) || defined(__DOXYGEN__)
+#if defined(GD32_DMA1_CH2_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA2 stream 3 shared ISR.
+ * @brief   DMA1 stream 2 shared ISR.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_DMA2_CH3_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_DMA1_CH2_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(GD32_DMA2_STREAM3);
+  dmaServeInterrupt(GD32_DMA1_STREAM2);
 
   OSAL_IRQ_EPILOGUE();
 }
 #endif
 
-#if defined(GD32_DMA2_CH4_HANDLER) || defined(__DOXYGEN__)
+#if defined(GD32_DMA1_CH3_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA2 stream 4 shared ISR.
+ * @brief   DMA1 stream 3 shared ISR.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_DMA2_CH4_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_DMA1_CH3_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(GD32_DMA2_STREAM4);
+  dmaServeInterrupt(GD32_DMA1_STREAM3);
 
   OSAL_IRQ_EPILOGUE();
 }
 #endif
 
-#if defined(GD32_DMA2_CH5_HANDLER) || defined(__DOXYGEN__)
+#if defined(GD32_DMA1_CH4_HANDLER) || defined(__DOXYGEN__)
 /**
- * @brief   DMA2 stream 5 shared ISR.
+ * @brief   DMA1 stream 4 shared ISR.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_DMA2_CH5_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_DMA1_CH4_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  dmaServeInterrupt(GD32_DMA2_STREAM5);
+  dmaServeInterrupt(GD32_DMA1_STREAM4);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -393,7 +391,7 @@ void dmaInit(void) {
     dma.streams[i].func = NULL;
   }
   DMA0->IFCR = 0xFFFFFFFFU;
-  DMA2->IFCR = 0xFFFFFFFFU;
+  DMA1->IFCR = 0xFFFFFFFFU;
 }
 
 /**
@@ -406,8 +404,8 @@ void dmaInit(void) {
  *                      - @p GD32_DMA_STREAM_ID_ANY for any stream.
  *                      - @p GD32_DMA_STREAM_ID_ANY_DMA0 for any stream
  *                        on DMA0.
- *                      - @p GD32_DMA_STREAM_ID_ANY_DMA2 for any stream
- *                        on DMA2.
+ *                      - @p GD32_DMA_STREAM_ID_ANY_DMA1 for any stream
+ *                        on DMA1.
  *                      .
  * @param[in] priority  IRQ priority for the DMA stream
  * @param[in] func      handling function pointer, can be @p NULL
@@ -449,8 +447,8 @@ const gd32_dma_stream_t *dmaStreamAllocI(uint32_t id,
         rccEnableDMA0(true);
       }
 
-      if ((GD32_DMA2_STREAMS_MASK & mask) != 0U) {
-        rccEnableDMA2(true);
+      if ((GD32_DMA1_STREAMS_MASK & mask) != 0U) {
+        rccEnableDMA1(true);
       }
 
       /* Enables the associated IRQ vector if not already enabled and if a
@@ -483,8 +481,8 @@ const gd32_dma_stream_t *dmaStreamAllocI(uint32_t id,
  *                      - @p GD32_DMA_STREAM_ID_ANY for any stream.
  *                      - @p GD32_DMA_STREAM_ID_ANY_DMA0 for any stream
  *                        on DMA0.
- *                      - @p GD32_DMA_STREAM_ID_ANY_DMA2 for any stream
- *                        on DMA2.
+ *                      - @p GD32_DMA_STREAM_ID_ANY_DMA1 for any stream
+ *                        on DMA1.
  *                      .
  * @param[in] priority  IRQ priority for the DMA stream
  * @param[in] func      handling function pointer, can be @p NULL
@@ -544,8 +542,8 @@ void dmaStreamFreeI(const gd32_dma_stream_t *dmastp) {
   if ((dma.allocated_mask & GD32_DMA0_STREAMS_MASK) == 0U) {
     rccDisableDMA0();
   }
-  if ((dma.allocated_mask & GD32_DMA2_STREAMS_MASK) == 0U) {
-    rccDisableDMA2();
+  if ((dma.allocated_mask & GD32_DMA1_STREAMS_MASK) == 0U) {
+    rccDisableDMA1();
   }
 }
 
