@@ -329,7 +329,7 @@ static void i2c_lld_serve_rx_end_irq(I2CDriver *i2cp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_I2C_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
     GD32_I2C_DMA_ERROR_HOOK(i2cp);
   }
 #else
@@ -356,7 +356,7 @@ static void i2c_lld_serve_tx_end_irq(I2CDriver *i2cp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_I2C_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
     GD32_I2C_DMA_ERROR_HOOK(i2cp);
   }
 #else
@@ -567,11 +567,11 @@ void i2c_lld_start(I2CDriver *i2cp) {
   if (i2cp->state == I2C_STOP) {
 
     i2cp->txdmamode = GD32_DMA_CR_PSIZE_BYTE | GD32_DMA_CR_MSIZE_BYTE |
-                      GD32_DMA_CR_MINC       | GD32_DMA_CR_DMEIE |
+                      GD32_DMA_CR_MINC       | 
                       GD32_DMA_CR_TEIE       | GD32_DMA_CR_TCIE |
                       GD32_DMA_CR_DIR_M2P;
     i2cp->rxdmamode = GD32_DMA_CR_PSIZE_BYTE | GD32_DMA_CR_MSIZE_BYTE |
-                      GD32_DMA_CR_MINC       | GD32_DMA_CR_DMEIE |
+                      GD32_DMA_CR_MINC       | 
                       GD32_DMA_CR_TEIE       | GD32_DMA_CR_TCIE |
                       GD32_DMA_CR_DIR_P2M;
 

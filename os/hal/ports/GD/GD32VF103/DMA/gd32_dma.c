@@ -429,24 +429,7 @@ const gd32_dma_stream_t *dmaStreamAllocI(uint32_t id,
   if (id < GD32_DMA_STREAMS) {
     startid = id;
     endid   = id;
-  }
-#if GD32_DMA_SUPPORTS_DMAMUX == TRUE
-  else if (id == GD32_DMA_STREAM_ID_ANY) {
-    startid = 0U;
-    endid   = GD32_DMA_STREAMS - 1U;
-  }
-  else if (id == GD32_DMA_STREAM_ID_ANY_DMA1) {
-    startid = 0U;
-    endid   = GD32_DMA1_NUM_CHANNELS - 1U;
-  }
-#if GD32_DMA2_NUM_CHANNELS > 0
-  else if (id == GD32_DMA_STREAM_ID_ANY_DMA2) {
-    startid = GD32_DMA1_NUM_CHANNELS;
-    endid   = GD32_DMA_STREAMS - 1U;
-  }
-#endif
-#endif
-  else {
+  } else {
     osalDbgCheck(false);
     return NULL;
   }

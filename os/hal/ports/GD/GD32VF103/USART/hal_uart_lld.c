@@ -278,7 +278,7 @@ static void uart_lld_serve_rx_end_irq(UARTDriver *uartp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_UART_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
     GD32_UART_DMA_ERROR_HOOK(uartp);
   }
 #else
@@ -308,7 +308,7 @@ static void uart_lld_serve_tx_end_irq(UARTDriver *uartp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_UART_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
     GD32_UART_DMA_ERROR_HOOK(uartp);
   }
 #else
@@ -525,8 +525,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_USART1
   uartObjectInit(&UARTD1);
   UARTD1.usart   = USART1;
-  UARTD1.dmarxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
-  UARTD1.dmatxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
+  UARTD1.dmarxmode = GD32_DMA_CR_TEIE;
+  UARTD1.dmatxmode = GD32_DMA_CR_TEIE;
   UARTD1.dmarx   = NULL;
   UARTD1.dmatx   = NULL;
 #endif
@@ -534,8 +534,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_USART2
   uartObjectInit(&UARTD2);
   UARTD2.usart   = USART2;
-  UARTD2.dmarxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
-  UARTD2.dmatxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
+  UARTD2.dmarxmode = GD32_DMA_CR_TEIE;
+  UARTD2.dmatxmode = GD32_DMA_CR_TEIE;
   UARTD2.dmarx   = NULL;
   UARTD2.dmatx   = NULL;
 #endif
@@ -543,8 +543,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_USART3
   uartObjectInit(&UARTD3);
   UARTD3.usart   = USART3;
-  UARTD3.dmarxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
-  UARTD3.dmatxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
+  UARTD3.dmarxmode = GD32_DMA_CR_TEIE;
+  UARTD3.dmatxmode = GD32_DMA_CR_TEIE;
   UARTD3.dmarx   = NULL;
   UARTD3.dmatx   = NULL;
 #endif
@@ -552,8 +552,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_UART4
   uartObjectInit(&UARTD4);
   UARTD4.usart   = UART4;
-  UARTD4.dmarxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
-  UARTD4.dmatxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
+  UARTD4.dmarxmode = GD32_DMA_CR_TEIE;
+  UARTD4.dmatxmode = GD32_DMA_CR_TEIE;
   UARTD4.dmarx   = NULL;
   UARTD4.dmatx   = NULL;
 #endif
@@ -561,8 +561,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_UART5
   uartObjectInit(&UARTD5);
   UARTD5.usart   = UART5;
-  UARTD5.dmarxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
-  UARTD5.dmatxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
+  UARTD5.dmarxmode = GD32_DMA_CR_TEIE;
+  UARTD5.dmatxmode = GD32_DMA_CR_TEIE;
   UARTD5.dmarx   = NULL;
   UARTD5.dmatx   = NULL;
 #endif
@@ -570,8 +570,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_USART6
   uartObjectInit(&UARTD6);
   UARTD6.usart   = USART6;
-  UARTD6.dmarxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
-  UARTD6.dmatxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
+  UARTD6.dmarxmode = GD32_DMA_CR_TEIE;
+  UARTD6.dmatxmode = GD32_DMA_CR_TEIE;
   UARTD6.dmarx   = NULL;
   UARTD6.dmatx   = NULL;
 #endif
@@ -579,8 +579,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_UART7
   uartObjectInit(&UARTD7);
   UARTD7.usart   = UART7;
-  UARTD7.dmarxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
-  UARTD7.dmatxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
+  UARTD7.dmarxmode = GD32_DMA_CR_TEIE;
+  UARTD7.dmatxmode = GD32_DMA_CR_TEIE;
   UARTD7.dmarx   = NULL;
   UARTD7.dmatx   = NULL;
 #endif
@@ -588,8 +588,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_UART8
   uartObjectInit(&UARTD8);
   UARTD8.usart   = UART8;
-  UARTD8.dmarxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
-  UARTD8.dmatxmode = GD32_DMA_CR_DMEIE | GD32_DMA_CR_TEIE;
+  UARTD8.dmarxmode = GD32_DMA_CR_TEIE;
+  UARTD8.dmatxmode = GD32_DMA_CR_TEIE;
   UARTD8.dmarx   = NULL;
   UARTD8.dmatx   = NULL;
 #endif

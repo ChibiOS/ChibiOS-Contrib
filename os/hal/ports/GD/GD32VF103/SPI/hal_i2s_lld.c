@@ -156,7 +156,7 @@ static void i2s_lld_serve_rx_interrupt(I2SDriver *i2sp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_I2S_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
     GD32_I2S_DMA_ERROR_HOOK(i2sp);
   }
 #endif
@@ -189,7 +189,7 @@ static void i2s_lld_serve_tx_interrupt(I2SDriver *i2sp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_I2S_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
     GD32_I2S_DMA_ERROR_HOOK(i2sp);
   }
 #endif
@@ -238,7 +238,7 @@ void i2s_lld_init(void) {
                     GD32_DMA_CR_CIRC |
                     GD32_DMA_CR_HTIE |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #else
   I2SD1.rxdmamode = 0;
@@ -253,7 +253,7 @@ void i2s_lld_init(void) {
                     GD32_DMA_CR_CIRC |
                     GD32_DMA_CR_HTIE |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #else
   I2SD1.txdmamode = 0;
@@ -276,7 +276,7 @@ void i2s_lld_init(void) {
                     GD32_DMA_CR_CIRC |
                     GD32_DMA_CR_HTIE |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #else
   I2SD2.rxdmamode = 0;
@@ -291,7 +291,7 @@ void i2s_lld_init(void) {
                     GD32_DMA_CR_CIRC |
                     GD32_DMA_CR_HTIE |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #else
   I2SD2.txdmamode = 0;
@@ -314,7 +314,7 @@ void i2s_lld_init(void) {
                     GD32_DMA_CR_CIRC |
                     GD32_DMA_CR_HTIE |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #else
   I2SD3.rxdmamode = 0;
@@ -329,7 +329,7 @@ void i2s_lld_init(void) {
                     GD32_DMA_CR_CIRC |
                     GD32_DMA_CR_HTIE |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #else
   I2SD3.txdmamode = 0;

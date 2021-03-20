@@ -133,7 +133,7 @@ static void spi_lld_serve_rx_interrupt(SPIDriver *spip, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_SPI_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
     GD32_SPI_DMA_ERROR_HOOK(spip);
   }
 #else
@@ -172,7 +172,7 @@ static void spi_lld_serve_tx_interrupt(SPIDriver *spip, uint32_t flags) {
   /* DMA errors handling.*/
 #if defined(GD32_SPI_DMA_ERROR_HOOK)
   (void)spip;
-  if ((flags & (GD32_DMA_ISR_TEIF | GD32_DMA_ISR_DMEIF)) != 0) {
+  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
     GD32_SPI_DMA_ERROR_HOOK(spip);
   }
 #else
@@ -205,12 +205,12 @@ void spi_lld_init(void) {
                     GD32_DMA_CR_PL(GD32_SPI_SPI1_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_P2M |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
   SPID1.txdmamode = GD32_DMA_CR_CHSEL(SPI1_TX_DMA_CHANNEL) |
                     GD32_DMA_CR_PL(GD32_SPI_SPI1_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_M2P |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #endif
 
@@ -223,12 +223,12 @@ void spi_lld_init(void) {
                     GD32_DMA_CR_PL(GD32_SPI_SPI2_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_P2M |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
   SPID2.txdmamode = GD32_DMA_CR_CHSEL(SPI2_TX_DMA_CHANNEL) |
                     GD32_DMA_CR_PL(GD32_SPI_SPI2_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_M2P |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #endif
 
@@ -241,12 +241,12 @@ void spi_lld_init(void) {
                     GD32_DMA_CR_PL(GD32_SPI_SPI3_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_P2M |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
   SPID3.txdmamode = GD32_DMA_CR_CHSEL(SPI3_TX_DMA_CHANNEL) |
                     GD32_DMA_CR_PL(GD32_SPI_SPI3_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_M2P |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #endif
 
@@ -259,12 +259,12 @@ void spi_lld_init(void) {
                     GD32_DMA_CR_PL(GD32_SPI_SPI4_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_P2M |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
   SPID4.txdmamode = GD32_DMA_CR_CHSEL(SPI4_TX_DMA_CHANNEL) |
                     GD32_DMA_CR_PL(GD32_SPI_SPI4_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_M2P |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #endif
 
@@ -277,12 +277,12 @@ void spi_lld_init(void) {
                     GD32_DMA_CR_PL(GD32_SPI_SPI5_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_P2M |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
   SPID5.txdmamode = GD32_DMA_CR_CHSEL(SPI5_TX_DMA_CHANNEL) |
                     GD32_DMA_CR_PL(GD32_SPI_SPI5_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_M2P |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #endif
 
@@ -295,12 +295,12 @@ void spi_lld_init(void) {
                     GD32_DMA_CR_PL(GD32_SPI_SPI6_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_P2M |
                     GD32_DMA_CR_TCIE |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
   SPID6.txdmamode = GD32_DMA_CR_CHSEL(SPI6_TX_DMA_CHANNEL) |
                     GD32_DMA_CR_PL(GD32_SPI_SPI6_DMA_PRIORITY) |
                     GD32_DMA_CR_DIR_M2P |
-                    GD32_DMA_CR_DMEIE |
+                    
                     GD32_DMA_CR_TEIE;
 #endif
 }

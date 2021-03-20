@@ -32,13 +32,6 @@
 /*===========================================================================*/
 
 /**
- * @brief   DMA capability.
- * @details if @p TRUE then the DMA is able of burst transfers, FIFOs,
- *          scatter gather and other advanced features.
- */
-#define GD32_DMA_ADVANCED          FALSE
-
-/**
  * @brief   Total number of DMA streams.
  * @details This is the total number of streams among all the DMA units.
  */
@@ -73,7 +66,6 @@
  */
 #define GD32_DMA_IS_VALID_PRIORITY(prio) (((prio) >= 0U) && ((prio) <= 3U))
 
-#if (GD32_DMA_SUPPORTS_DMAMUX == FALSE) || defined(_DOXYGEN__)
 /**
  * @brief   Checks if a DMA stream id is within the valid range.
  *
@@ -84,15 +76,6 @@
  */
 #define GD32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                      \
                                        ((id) < GD32_DMA_STREAMS))
-#else /* GD32_DMA_SUPPORTS_DMAMUX == FALSE */
-#if GD32_DMA2_NUM_CHANNELS > 0
-#define GD32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                      \
-                                       ((id) <= (GD32_DMA_STREAMS + 2)))
-#else
-#define GD32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                      \
-                                       ((id) <= (GD32_DMA_STREAMS + 1)))
-#endif
-#endif /* GD32_DMA_SUPPORTS_DMAMUX == FALSE */
 
 /**
  * @brief   Returns an unique numeric identifier for a DMA stream.
@@ -126,19 +109,6 @@
  * @retval true         id belongs to the mask.
  */
 #define GD32_DMA_IS_VALID_ID(id, mask) (((1U << (id)) & (mask)))
-
-#if (GD32_DMA_SUPPORTS_DMAMUX == TRUE) || defined(_DOXYGEN__)
-/**
- * @name    Special stream identifiers
- * @{
- */
-#define GD32_DMA_STREAM_ID_ANY         GD32_DMA_STREAMS
-#define GD32_DMA_STREAM_ID_ANY_DMA1    (GD32_DMA_STREAM_ID_ANY + 1)
-#if GD32_DMA2_NUM_CHANNELS > 0
-#define GD32_DMA_STREAM_ID_ANY_DMA2    (GD32_DMA_STREAM_ID_ANY_DMA1 + 1)
-#endif
-/** @} */
-#endif
 
 /**
  * @name    DMA streams identifiers
@@ -201,20 +171,8 @@
  * @name    Request line selector macro
  * @{
  */
-#if GD32_DMA_SUPPORTS_CSELR || defined(__DOXYGEN__)
-#define GD32_DMA_CR_CHSEL_MASK     (15U << 16U)
-#define GD32_DMA_CR_CHSEL(n)       ((n) << 16U)
-#else
 #define GD32_DMA_CR_CHSEL_MASK     0U
 #define GD32_DMA_CR_CHSEL(n)       0U
-#endif
-/** @} */
-
-/**
- * @name    CR register constants only found in enhanced DMA
- * @{
- */
-#define GD32_DMA_CR_DMEIE          0U  /**< @brief Ignored by normal DMA.  */
 /** @} */
 
 /**
@@ -222,7 +180,6 @@
  * @{
  */
 #define GD32_DMA_ISR_FEIF          0U
-#define GD32_DMA_ISR_DMEIF         0U
 #define GD32_DMA_ISR_TEIF          DMA_ISR_TEIF1
 #define GD32_DMA_ISR_HTIF          DMA_ISR_HTIF1
 #define GD32_DMA_ISR_TCIF          DMA_ISR_TCIF1
@@ -357,19 +314,9 @@ typedef struct {
  *
  * @special
  */
-#if GD32_DMA_SUPPORTS_CSELR || defined(__DOXYGEN__)
-#define dmaStreamSetMode(dmastp, mode) {                                    \
-  uint32_t cselr = *(dmastp)->cselr;                                        \
-  cselr &= ~(0x0000000FU << (dmastp)->shift);                               \
-  cselr |=  (((uint32_t)(mode) >> 16U) << (dmastp)->shift);                 \
-  *(dmastp)->cselr = cselr;                                                 \
-  (dmastp)->channel->CCR  = (uint32_t)(mode);                               \
-}
-#else
 #define dmaStreamSetMode(dmastp, mode) {                                    \
   (dmastp)->channel->CCR  = (uint32_t)(mode);                               \
 }
-#endif
 
 /**
  * @brief   DMA stream enable.
@@ -484,9 +431,6 @@ extern "C" {
   void dmaStreamFreeI(const gd32_dma_stream_t *dmastp);
   void dmaStreamFree(const gd32_dma_stream_t *dmastp);
   void dmaServeInterrupt(const gd32_dma_stream_t *dmastp);
-#if GD32_DMA_SUPPORTS_DMAMUX == TRUE
-  void dmaSetRequestSource(const gd32_dma_stream_t *dmastp, uint32_t per);
-#endif
 #ifdef __cplusplus
 }
 #endif
