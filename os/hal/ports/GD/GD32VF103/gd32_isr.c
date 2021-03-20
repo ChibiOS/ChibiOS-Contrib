@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    GD32F1xx/stm32_isr.c
+ * @file    GD32F1xx/gd32_isr.c
  * @brief   GD32F1xx ISR handler code.
  *
  * @addtogroup GD32F1xx_ISR

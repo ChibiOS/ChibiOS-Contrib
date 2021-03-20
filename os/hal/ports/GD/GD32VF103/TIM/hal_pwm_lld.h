@@ -27,7 +27,7 @@
 
 #if HAL_USE_PWM || defined(__DOXYGEN__)
 
-#include "stm32_tim.h"
+#include "gd32_tim.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -904,7 +904,7 @@ struct PWMDriver {
   /**
    * @brief Pointer to the TIMx registers block.
    */
-  stm32_tim_t               *tim;
+  gd32_tim_t               *tim;
 };
 
 /*===========================================================================*/

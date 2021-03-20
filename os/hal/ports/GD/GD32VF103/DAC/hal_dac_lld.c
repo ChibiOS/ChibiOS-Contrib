@@ -636,7 +636,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
   /* Allocating the DMA channel.*/
   dacp->dma = dmaStreamAllocI(dacp->params->dmastream,
                               dacp->params->dmairqprio,
-                              (stm32_dmaisr_t)dac_lld_serve_tx_interrupt,
+                              (gd32_dmaisr_t)dac_lld_serve_tx_interrupt,
                               (void *)dacp);
   osalDbgAssert(dacp->dma != NULL, "unable to allocate stream");
 #if GD32_DMA_SUPPORTS_DMAMUX

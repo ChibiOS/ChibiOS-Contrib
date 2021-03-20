@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    DMA/stm32_dma.c
+ * @file    DMA/gd32_dma.c
  * @brief   DMA helper driver code.
  *
  * @addtogroup GD32_DMA
@@ -127,7 +127,7 @@
  * @note    Don't use this array directly, use the appropriate wrapper macros
  *          instead: @p GD32_DMA1_STREAM1, @p GD32_DMA1_STREAM2 etc.
  */
-const stm32_dma_stream_t _stm32_dma_streams[GD32_DMA_STREAMS] = {
+const gd32_dma_stream_t _gd32_dma_streams[GD32_DMA_STREAMS] = {
   {DMA1, DMA1_Channel1, GD32_DMA1_CH1_CMASK, DMA1_CH1_VARIANT,  0, 0, GD32_DMA1_CH1_NUMBER},
   {DMA1, DMA1_Channel2, GD32_DMA1_CH2_CMASK, DMA1_CH2_VARIANT,  4, 1, GD32_DMA1_CH2_NUMBER},
   {DMA1, DMA1_Channel3, GD32_DMA1_CH3_CMASK, DMA1_CH3_VARIANT,  8, 2, GD32_DMA1_CH3_NUMBER},
@@ -165,7 +165,7 @@ static struct {
     /**
      * @brief   DMA callback function.
      */
-    stm32_dmaisr_t    func;
+    gd32_dmaisr_t    func;
     /**
      * @brief   DMA callback parameter.
      */
@@ -389,7 +389,7 @@ void dmaInit(void) {
   dma.allocated_mask = 0U;
   dma.isr_mask       = 0U;
   for (i = 0; i < GD32_DMA_STREAMS; i++) {
-    _stm32_dma_streams[i].channel->CCR = GD32_DMA_CCR_RESET_VALUE;
+    _gd32_dma_streams[i].channel->CCR = GD32_DMA_CCR_RESET_VALUE;
     dma.streams[i].func = NULL;
   }
   DMA1->IFCR = 0xFFFFFFFFU;
@@ -412,15 +412,15 @@ void dmaInit(void) {
  * @param[in] priority  IRQ priority for the DMA stream
  * @param[in] func      handling function pointer, can be @p NULL
  * @param[in] param     a parameter to be passed to the handling function
- * @return              Pointer to the allocated @p stm32_dma_stream_t
+ * @return              Pointer to the allocated @p gd32_dma_stream_t
  *                      structure.
  * @retval NULL         if a/the stream is not available.
  *
  * @iclass
  */
-const stm32_dma_stream_t *dmaStreamAllocI(uint32_t id,
+const gd32_dma_stream_t *dmaStreamAllocI(uint32_t id,
                                           uint32_t priority,
-                                          stm32_dmaisr_t func,
+                                          gd32_dmaisr_t func,
                                           void *param) {
   uint32_t i, startid, endid;
 
@@ -454,7 +454,7 @@ const stm32_dma_stream_t *dmaStreamAllocI(uint32_t id,
   for (i = startid; i <= endid; i++) {
     uint32_t mask = (1U << i);
     if ((dma.allocated_mask & mask) == 0U) {
-      const stm32_dma_stream_t *dmastp = GD32_DMA_STREAM(i);
+      const gd32_dma_stream_t *dmastp = GD32_DMA_STREAM(i);
 
       /* Installs the DMA handler.*/
       dma.streams[i].func  = func;
@@ -506,17 +506,17 @@ const stm32_dma_stream_t *dmaStreamAllocI(uint32_t id,
  * @param[in] priority  IRQ priority for the DMA stream
  * @param[in] func      handling function pointer, can be @p NULL
  * @param[in] param     a parameter to be passed to the handling function
- * @return              Pointer to the allocated @p stm32_dma_stream_t
+ * @return              Pointer to the allocated @p gd32_dma_stream_t
  *                      structure.
  * @retval NULL         if a/the stream is not available.
  *
  * @api
  */
-const stm32_dma_stream_t *dmaStreamAlloc(uint32_t id,
+const gd32_dma_stream_t *dmaStreamAlloc(uint32_t id,
                                          uint32_t priority,
-                                         stm32_dmaisr_t func,
+                                         gd32_dmaisr_t func,
                                          void *param) {
-  const stm32_dma_stream_t *dmastp;
+  const gd32_dma_stream_t *dmastp;
 
   osalSysLock();
   dmastp = dmaStreamAllocI(id, priority, func, param);
@@ -531,11 +531,11 @@ const stm32_dma_stream_t *dmaStreamAlloc(uint32_t id,
  *          Trying to release a unallocated stream is an illegal operation
  *          and is trapped if assertions are enabled.
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  *
  * @iclass
  */
-void dmaStreamFreeI(const stm32_dma_stream_t *dmastp) {
+void dmaStreamFreeI(const gd32_dma_stream_t *dmastp) {
   uint32_t selfindex = (uint32_t)dmastp->selfindex;
 
   osalDbgCheck(dmastp != NULL);
@@ -572,11 +572,11 @@ void dmaStreamFreeI(const stm32_dma_stream_t *dmastp) {
  *          Trying to release a unallocated stream is an illegal operation
  *          and is trapped if assertions are enabled.
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  *
  * @api
  */
-void dmaStreamFree(const stm32_dma_stream_t *dmastp) {
+void dmaStreamFree(const gd32_dma_stream_t *dmastp) {
 
   osalSysLock();
   dmaStreamFreeI(dmastp);
@@ -586,11 +586,11 @@ void dmaStreamFree(const stm32_dma_stream_t *dmastp) {
 /**
  * @brief   Serves a DMA IRQ.
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  *
  * @special
  */
-void dmaServeInterrupt(const stm32_dma_stream_t *dmastp) {
+void dmaServeInterrupt(const gd32_dma_stream_t *dmastp) {
   uint32_t flags;
   uint32_t selfindex = (uint32_t)dmastp->selfindex;
 

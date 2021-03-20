@@ -66,45 +66,45 @@ static const flash_descriptor_t efl_lld_descriptor = {
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-static inline void stm32_flash_lock(EFlashDriver *eflp) {
+static inline void gd32_flash_lock(EFlashDriver *eflp) {
 
   eflp->flash->CR |= FLASH_CR_LOCK;
 }
 
-static inline void stm32_flash_unlock(EFlashDriver *eflp) {
+static inline void gd32_flash_unlock(EFlashDriver *eflp) {
 
   eflp->flash->KEYR |= FLASH_KEY1;
   eflp->flash->KEYR |= FLASH_KEY2;
 }
 
-static inline void stm32_flash_enable_pgm(EFlashDriver *eflp) {
+static inline void gd32_flash_enable_pgm(EFlashDriver *eflp) {
 
   eflp->flash->CR |= FLASH_CR_PG;
 }
 
-static inline void stm32_flash_disable_pgm(EFlashDriver *eflp) {
+static inline void gd32_flash_disable_pgm(EFlashDriver *eflp) {
 
   eflp->flash->CR &= ~FLASH_CR_PG;
 }
 
-static inline void stm32_flash_clear_status(EFlashDriver *eflp) {
+static inline void gd32_flash_clear_status(EFlashDriver *eflp) {
 
   eflp->flash->SR = 0x0000001FU;
 }
 
-static inline uint32_t stm32_flash_is_busy(EFlashDriver *eflp) {
+static inline uint32_t gd32_flash_is_busy(EFlashDriver *eflp) {
 
   return (eflp->flash->SR & FLASH_SR_BSY);
 }
 
-static inline void stm32_flash_wait_busy(EFlashDriver *eflp) {
+static inline void gd32_flash_wait_busy(EFlashDriver *eflp) {
 
   /* Wait for busy bit clear.*/
-  while (stm32_flash_is_busy(eflp) != 0U) {
+  while (gd32_flash_is_busy(eflp) != 0U) {
   }
 }
 
-static inline flash_error_t stm32_flash_check_errors(EFlashDriver *eflp) {
+static inline flash_error_t gd32_flash_check_errors(EFlashDriver *eflp) {
   uint32_t sr = eflp->flash->SR;
 
   /* Clearing error conditions.*/
@@ -151,7 +151,7 @@ void efl_lld_init(void) {
  */
 void efl_lld_start(EFlashDriver *eflp) {
 
-  stm32_flash_unlock(eflp);
+  gd32_flash_unlock(eflp);
   FLASH->CR = 0x00000000U;
 }
 
@@ -164,7 +164,7 @@ void efl_lld_start(EFlashDriver *eflp) {
  */
 void efl_lld_stop(EFlashDriver *eflp) {
 
-  stm32_flash_lock(eflp);
+  gd32_flash_lock(eflp);
 }
 
 /**
@@ -216,7 +216,7 @@ flash_error_t efl_lld_read(void *instance, flash_offset_t offset,
   devp->state = FLASH_READ;
 
   /* Clearing error status bits.*/
-  stm32_flash_clear_status(devp);
+  gd32_flash_clear_status(devp);
 
   /* Actual read implementation.*/
   memcpy((void *)rp, (const void *)efl_lld_descriptor.address + offset, n);
@@ -264,10 +264,10 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
   devp->state = FLASH_PGM;
 
   /* Clearing error status bits.*/
-  stm32_flash_clear_status(devp);
+  gd32_flash_clear_status(devp);
 
   /* Enabling PGM mode in the controller.*/
-  stm32_flash_enable_pgm(devp);
+  gd32_flash_enable_pgm(devp);
 
   /* Actual program implementation.*/
   while (n > 0U) {
@@ -296,9 +296,9 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
 
     /* Programming line.*/
     address[0] = line.hw[0];
-    stm32_flash_wait_busy(devp);
+    gd32_flash_wait_busy(devp);
 
-    err = stm32_flash_check_errors(devp);
+    err = gd32_flash_check_errors(devp);
     if (err != FLASH_NO_ERROR) {
       break;
     }
@@ -310,7 +310,7 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
   }
 
   /* Disabling PGM mode in the controller.*/
-  stm32_flash_disable_pgm(devp);
+  gd32_flash_disable_pgm(devp);
 
   /* Ready state again.*/
   devp->state = FLASH_READY;
@@ -367,7 +367,7 @@ flash_error_t efl_lld_start_erase_sector(void *instance,
   devp->state = FLASH_ERASE;
 
   /* Clearing error status bits.*/
-  stm32_flash_clear_status(devp);
+  gd32_flash_clear_status(devp);
 
   /* Enable page erase.*/
   devp->flash->CR |= FLASH_CR_PER;
@@ -405,7 +405,7 @@ flash_error_t efl_lld_query_erase(void *instance, uint32_t *wait_time) {
   if (devp->state == FLASH_ERASE) {
 
     /* Checking for operation in progress.*/
-    if (stm32_flash_is_busy(devp) == 0U) {
+    if (gd32_flash_is_busy(devp) == 0U) {
 
       /* Disabling the various erase control bits.*/
       devp->flash->CR &= ~(FLASH_CR_OPTER | FLASH_CR_OPTPG |

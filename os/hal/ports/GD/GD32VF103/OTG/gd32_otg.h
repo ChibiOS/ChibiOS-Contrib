@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    OTG/stm32_otg.h
+ * @file    OTG/gd32_otg.h
  * @brief   STM32 OTG registers layout header.
  *
  * @addtogroup USB
@@ -50,7 +50,7 @@ typedef struct {
   volatile uint32_t resvd14;
   volatile uint32_t resvd18;
   volatile uint32_t resvd1c;
-} stm32_otg_host_chn_t;
+} gd32_otg_host_chn_t;
 
 /**
  * @brief   Device input endpoint registers group.
@@ -68,7 +68,7 @@ typedef struct {
   volatile uint32_t DTXFSTS;    /**< @brief Device IN endpoint transmit FIFO
                                             status register.                */
   volatile uint32_t resvd1C;
-} stm32_otg_in_ep_t;
+} gd32_otg_in_ep_t;
 
 /**
  * @brief   Device output endpoint registers group.
@@ -85,7 +85,7 @@ typedef struct {
   volatile uint32_t resvd14;
   volatile uint32_t resvd18;
   volatile uint32_t resvd1C;
-} stm32_otg_out_ep_t;
+} gd32_otg_out_ep_t;
 
 /**
  * @brief   USB registers memory map.
@@ -132,7 +132,7 @@ typedef struct {
   volatile uint32_t HPRT;       /**< @brief Host port control and status
                                             register.                       */
   volatile uint32_t resvd444[47];
-  stm32_otg_host_chn_t hc[16];  /**< @brief Host channels array.            */
+  gd32_otg_host_chn_t hc[16];  /**< @brief Host channels array.            */
   volatile uint32_t resvd700[64];
   volatile uint32_t DCFG;       /**< @brief Device configuration register.  */
   volatile uint32_t DCTL;       /**< @brief Device control register.        */
@@ -160,14 +160,14 @@ typedef struct {
   volatile uint32_t resvd840[16];
   volatile uint32_t resvd880[16];
   volatile uint32_t resvd8C0[16];
-  stm32_otg_in_ep_t ie[16];     /**< @brief Input endpoints.                */
-  stm32_otg_out_ep_t oe[16];    /**< @brief Output endpoints.               */
+  gd32_otg_in_ep_t ie[16];     /**< @brief Input endpoints.                */
+  gd32_otg_out_ep_t oe[16];    /**< @brief Output endpoints.               */
   volatile uint32_t resvdD00[64];
   volatile uint32_t PCGCCTL;    /**< @brief Power and clock gating control
                                             register.                       */
   volatile uint32_t resvdE04[127];
   volatile uint32_t FIFO[16][1024];
-} stm32_otg_t;
+} gd32_otg_t;
 
 /**
  * @name GOTGCTL register bit definitions
@@ -902,7 +902,7 @@ typedef struct {
 /**
  * @brief   Accesses to the OTG_FS registers block.
  */
-#define OTG_FS                      ((stm32_otg_t *)OTG_FS_ADDR)
+#define OTG_FS                      ((gd32_otg_t *)OTG_FS_ADDR)
 
 #endif /* GD32_OTG_H */
 

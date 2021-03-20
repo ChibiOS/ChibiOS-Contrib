@@ -609,12 +609,12 @@ void uart_lld_start(UARTDriver *uartp) {
     if (&UARTD1 == uartp) {
       uartp->dmarx = dmaStreamAllocI(GD32_UART_USART1_RX_DMA_STREAM,
                                      GD32_UART_USART1_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_rx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
       uartp->dmatx = dmaStreamAllocI(GD32_UART_USART1_TX_DMA_STREAM,
                                      GD32_UART_USART1_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_tx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_tx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
@@ -631,12 +631,12 @@ void uart_lld_start(UARTDriver *uartp) {
     if (&UARTD2 == uartp) {
       uartp->dmarx = dmaStreamAllocI(GD32_UART_USART2_RX_DMA_STREAM,
                                      GD32_UART_USART2_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_rx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
       uartp->dmatx = dmaStreamAllocI(GD32_UART_USART2_TX_DMA_STREAM,
                                      GD32_UART_USART2_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_tx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_tx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
@@ -653,12 +653,12 @@ void uart_lld_start(UARTDriver *uartp) {
     if (&UARTD3 == uartp) {
       uartp->dmarx = dmaStreamAllocI(GD32_UART_USART3_RX_DMA_STREAM,
                                      GD32_UART_USART3_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_rx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
       uartp->dmatx = dmaStreamAllocI(GD32_UART_USART3_TX_DMA_STREAM,
                                      GD32_UART_USART3_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_tx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_tx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
@@ -681,12 +681,12 @@ void uart_lld_start(UARTDriver *uartp) {
 
       uartp->dmarx = dmaStreamAllocI(GD32_UART_UART4_RX_DMA_STREAM,
                                      GD32_UART_UART4_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_rx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
       uartp->dmatx = dmaStreamAllocI(GD32_UART_UART4_TX_DMA_STREAM,
                                      GD32_UART_UART4_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_tx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_tx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
@@ -709,12 +709,12 @@ void uart_lld_start(UARTDriver *uartp) {
 
       uartp->dmarx = dmaStreamAllocI(GD32_UART_UART5_RX_DMA_STREAM,
                                      GD32_UART_UART5_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_rx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
       uartp->dmatx = dmaStreamAllocI(GD32_UART_UART5_TX_DMA_STREAM,
                                      GD32_UART_UART5_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_tx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_tx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
@@ -731,12 +731,12 @@ void uart_lld_start(UARTDriver *uartp) {
     if (&UARTD6 == uartp) {
       uartp->dmarx = dmaStreamAllocI(GD32_UART_USART6_RX_DMA_STREAM,
                                      GD32_UART_USART6_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_rx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
       uartp->dmatx = dmaStreamAllocI(GD32_UART_USART6_TX_DMA_STREAM,
                                      GD32_UART_USART6_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_tx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_tx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
@@ -759,12 +759,12 @@ void uart_lld_start(UARTDriver *uartp) {
 
       uartp->dmarx = dmaStreamAllocI(GD32_UART_UART7_RX_DMA_STREAM,
                                      GD32_UART_UART7_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_rx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
       uartp->dmatx = dmaStreamAllocI(GD32_UART_UART7_TX_DMA_STREAM,
                                      GD32_UART_UART7_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_tx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_tx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
@@ -787,12 +787,12 @@ void uart_lld_start(UARTDriver *uartp) {
 
       uartp->dmarx = dmaStreamAllocI(GD32_UART_UART8_RX_DMA_STREAM,
                                      GD32_UART_UART8_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_rx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
       uartp->dmatx = dmaStreamAllocI(GD32_UART_UART8_TX_DMA_STREAM,
                                      GD32_UART_UART8_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)uart_lld_serve_tx_end_irq,
+                                     (gd32_dmaisr_t)uart_lld_serve_tx_end_irq,
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 

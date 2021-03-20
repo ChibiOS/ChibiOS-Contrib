@@ -582,7 +582,7 @@ typedef enum {
   /* DAC channel parameters.*/                                              \
   const dacparams_t         *params;                                        \
   /* Associated DMA.*/                                                      \
-  const stm32_dma_stream_t  *dma
+  const gd32_dma_stream_t  *dma
 
 /**
  * @brief   Low level fields of the DAC configuration structure.

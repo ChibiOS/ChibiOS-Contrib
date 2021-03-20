@@ -112,7 +112,7 @@ static const USBEndpointConfig ep0config = {
 };
 
 #if GD32_USB_USE_OTG1
-static const stm32_otg_params_t fsparams = {
+static const gd32_otg_params_t fsparams = {
   GD32_USB_OTG1_RX_FIFO_SIZE / 4,
   GD32_OTG1_FIFO_MEM_SIZE,
   GD32_OTG1_ENDPOINTS
@@ -120,7 +120,7 @@ static const stm32_otg_params_t fsparams = {
 #endif
 
 #if GD32_USB_USE_OTG2
-static const stm32_otg_params_t hsparams = {
+static const gd32_otg_params_t hsparams = {
   GD32_USB_OTG2_RX_FIFO_SIZE / 4,
   GD32_OTG2_FIFO_MEM_SIZE,
   GD32_OTG2_ENDPOINTS
@@ -132,7 +132,7 @@ static const stm32_otg_params_t hsparams = {
 /*===========================================================================*/
 
 static void otg_core_reset(USBDriver *usbp) {
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
 
   /* Wait AHB idle condition.*/
   while ((otgp->GRSTCTL & GRSTCTL_AHBIDL) == 0)
@@ -152,7 +152,7 @@ static void otg_core_reset(USBDriver *usbp) {
 }
 
 static void otg_disable_ep(USBDriver *usbp) {
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
   unsigned i;
 
   for (i = 0; i <= usbp->otgparams->num_endpoints; i++) {
@@ -172,7 +172,7 @@ static void otg_disable_ep(USBDriver *usbp) {
 }
 
 static void otg_rxfifo_flush(USBDriver *usbp) {
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
 
   otgp->GRSTCTL = GRSTCTL_RXFFLSH;
   while ((otgp->GRSTCTL & GRSTCTL_RXFFLSH) != 0)
@@ -182,7 +182,7 @@ static void otg_rxfifo_flush(USBDriver *usbp) {
 }
 
 static void otg_txfifo_flush(USBDriver *usbp, uint32_t fifo) {
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
 
   otgp->GRSTCTL = GRSTCTL_TXFNUM(fifo) | GRSTCTL_TXFFLSH;
   while ((otgp->GRSTCTL & GRSTCTL_TXFFLSH) != 0)
@@ -376,7 +376,7 @@ static bool otg_txfifo_handler(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 static void otg_epin_handler(USBDriver *usbp, usbep_t ep) {
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
   uint32_t epint = otgp->ie[ep].DIEPINT;
 
   otgp->ie[ep].DIEPINT = epint;
@@ -419,7 +419,7 @@ static void otg_epin_handler(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 static void otg_epout_handler(USBDriver *usbp, usbep_t ep) {
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
   uint32_t epint = otgp->oe[ep].DOEPINT;
 
   /* Resets all EP IRQ sources.*/
@@ -477,7 +477,7 @@ static void otg_epout_handler(USBDriver *usbp, usbep_t ep) {
  */
 static void otg_isoc_in_failed_handler(USBDriver *usbp) {
   usbep_t ep;
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
 
   for (ep = 0; ep <= usbp->otgparams->num_endpoints; ep++) {
     if (((otgp->ie[ep].DIEPCTL & DIEPCTL_EPTYP_MASK) == DIEPCTL_EPTYP_ISO) &&
@@ -509,7 +509,7 @@ static void otg_isoc_in_failed_handler(USBDriver *usbp) {
  */
 static void otg_isoc_out_failed_handler(USBDriver *usbp) {
   usbep_t ep;
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
 
   for (ep = 0; ep <= usbp->otgparams->num_endpoints; ep++) {
     if (((otgp->oe[ep].DOEPCTL & DOEPCTL_EPTYP_MASK) == DOEPCTL_EPTYP_ISO) &&
@@ -534,7 +534,7 @@ static void otg_isoc_out_failed_handler(USBDriver *usbp) {
  * @notapi
  */
 static void usb_lld_serve_interrupt(USBDriver *usbp) {
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
   uint32_t sts, src;
 
   sts  = otgp->GINTSTS;
@@ -745,7 +745,7 @@ void usb_lld_init(void) {
  * @notapi
  */
 void usb_lld_start(USBDriver *usbp) {
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
 
   if (usbp->state == USB_STOP) {
     /* Clock activation.*/
@@ -877,7 +877,7 @@ void usb_lld_start(USBDriver *usbp) {
  * @notapi
  */
 void usb_lld_stop(USBDriver *usbp) {
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
 
   /* If in ready state then disables the USB clock.*/
   if (usbp->state != USB_STOP) {
@@ -918,7 +918,7 @@ void usb_lld_stop(USBDriver *usbp) {
  */
 void usb_lld_reset(USBDriver *usbp) {
   unsigned i;
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
 
   /* Flush the Tx FIFO.*/
   otg_txfifo_flush(usbp, 0);
@@ -971,7 +971,7 @@ void usb_lld_reset(USBDriver *usbp) {
  * @notapi
  */
 void usb_lld_set_address(USBDriver *usbp) {
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
 
   otgp->DCFG = (otgp->DCFG & ~DCFG_DAD_MASK) | DCFG_DAD(usbp->address);
 }
@@ -986,7 +986,7 @@ void usb_lld_set_address(USBDriver *usbp) {
  */
 void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
   uint32_t ctl, fsize;
-  stm32_otg_t *otgp = usbp->otg;
+  gd32_otg_t *otgp = usbp->otg;
 
   /* IN and OUT common parameters.*/
   switch (usbp->epc[ep]->ep_mode & USB_EP_MODE_TYPE) {

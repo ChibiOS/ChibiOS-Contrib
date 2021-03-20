@@ -25,7 +25,7 @@
 #ifndef HAL_GPT_LLD_H
 #define HAL_GPT_LLD_H
 
-#include "stm32_tim.h"
+#include "gd32_tim.h"
 
 #if HAL_USE_GPT || defined(__DOXYGEN__)
 
@@ -833,7 +833,7 @@ struct GPTDriver {
   /**
    * @brief Pointer to the TIMx registers block.
    */
-  stm32_tim_t               *tim;
+  gd32_tim_t               *tim;
 };
 
 /*===========================================================================*/

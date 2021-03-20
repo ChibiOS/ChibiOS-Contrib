@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    DMA/stm32_dma.h
+ * @file    DMA/gd32_dma.h
  * @brief   DMA helper driver header.
  * @note    This driver uses the new naming convention used for the STM32F2xx
  *          so the "DMA channels" are referred as "DMA streams".
@@ -145,13 +145,13 @@
  * @{
  */
 /**
- * @brief   Returns a pointer to a stm32_dma_stream_t structure.
+ * @brief   Returns a pointer to a gd32_dma_stream_t structure.
  *
  * @param[in] id        the stream numeric identifier
- * @return              A pointer to the stm32_dma_stream_t constant structure
+ * @return              A pointer to the gd32_dma_stream_t constant structure
  *                      associated to the DMA stream.
  */
-#define GD32_DMA_STREAM(id)        (&_stm32_dma_streams[id])
+#define GD32_DMA_STREAM(id)        (&_gd32_dma_streams[id])
 
 #define GD32_DMA1_STREAM1          GD32_DMA_STREAM(0)
 #define GD32_DMA1_STREAM2          GD32_DMA_STREAM(1)
@@ -263,7 +263,7 @@
  * @param[in] flags     pre-shifted content of the ISR register, the bits
  *                      are aligned to bit zero
  */
-typedef void (*stm32_dmaisr_t)(void *p, uint32_t flags);
+typedef void (*gd32_dmaisr_t)(void *p, uint32_t flags);
 
 /**
  * @brief   STM32 DMA stream descriptor structure.
@@ -278,7 +278,7 @@ typedef struct {
                                              and CSELR registers.           */
   uint8_t               selfindex;      /**< @brief Index to self in array. */
   uint8_t               vector;         /**< @brief Associated IRQ vector.  */
-} stm32_dma_stream_t;
+} gd32_dma_stream_t;
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
@@ -294,7 +294,7 @@ typedef struct {
  * @pre     The stream must have been allocated using @p dmaStreamAlloc().
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  * @param[in] addr      value to be written in the CPAR register
  *
  * @special
@@ -309,7 +309,7 @@ typedef struct {
  * @pre     The stream must have been allocated using @p dmaStreamAlloc().
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  * @param[in] addr      value to be written in the CMAR register
  *
  * @special
@@ -324,7 +324,7 @@ typedef struct {
  * @pre     The stream must have been allocated using @p dmaStreamAlloc().
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  * @param[in] size      value to be written in the CNDTR register
  *
  * @special
@@ -339,7 +339,7 @@ typedef struct {
  * @pre     The stream must have been allocated using @p dmaStreamAlloc().
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  * @return              The number of transfers to be performed.
  *
  * @special
@@ -352,7 +352,7 @@ typedef struct {
  * @pre     The stream must have been allocated using @p dmaStreamAlloc().
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  * @param[in] mode      value to be written in the CCR register
  *
  * @special
@@ -377,7 +377,7 @@ typedef struct {
  * @pre     The stream must have been allocated using @p dmaStreamAlloc().
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  *
  * @special
  */
@@ -395,7 +395,7 @@ typedef struct {
  * @pre     The stream must have been allocated using @p dmaStreamAlloc().
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  *
  * @special
  */
@@ -411,7 +411,7 @@ typedef struct {
  * @pre     The stream must have been allocated using @p dmaStreamAlloc().
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  *
  * @special
  */
@@ -426,7 +426,7 @@ typedef struct {
  * @pre     The stream must have been allocated using @p dmaStreamAlloc().
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  * @param[in] mode      value to be written in the CCR register, this value
  *                      is implicitly ORed with:
  *                      - @p GD32_DMA_CR_MINC
@@ -452,7 +452,7 @@ typedef struct {
  * @pre     The stream must have been allocated using @p dmaStreamAlloc().
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
- * @param[in] dmastp    pointer to a stm32_dma_stream_t structure
+ * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  */
 #define dmaWaitCompletion(dmastp) {                                         \
   while ((dmastp)->channel->CNDTR > 0U)                                     \
@@ -466,26 +466,26 @@ typedef struct {
 /*===========================================================================*/
 
 #if !defined(__DOXYGEN__)
-extern const stm32_dma_stream_t _stm32_dma_streams[GD32_DMA_STREAMS];
+extern const gd32_dma_stream_t _gd32_dma_streams[GD32_DMA_STREAMS];
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
   void dmaInit(void);
-  const stm32_dma_stream_t *dmaStreamAllocI(uint32_t id,
+  const gd32_dma_stream_t *dmaStreamAllocI(uint32_t id,
                                             uint32_t priority,
-                                            stm32_dmaisr_t func,
+                                            gd32_dmaisr_t func,
                                             void *param);
-  const stm32_dma_stream_t *dmaStreamAlloc(uint32_t id,
+  const gd32_dma_stream_t *dmaStreamAlloc(uint32_t id,
                                            uint32_t priority,
-                                           stm32_dmaisr_t func,
+                                           gd32_dmaisr_t func,
                                            void *param);
-  void dmaStreamFreeI(const stm32_dma_stream_t *dmastp);
-  void dmaStreamFree(const stm32_dma_stream_t *dmastp);
-  void dmaServeInterrupt(const stm32_dma_stream_t *dmastp);
+  void dmaStreamFreeI(const gd32_dma_stream_t *dmastp);
+  void dmaStreamFree(const gd32_dma_stream_t *dmastp);
+  void dmaServeInterrupt(const gd32_dma_stream_t *dmastp);
 #if GD32_DMA_SUPPORTS_DMAMUX == TRUE
-  void dmaSetRequestSource(const stm32_dma_stream_t *dmastp, uint32_t per);
+  void dmaSetRequestSource(const gd32_dma_stream_t *dmastp, uint32_t per);
 #endif
 #ifdef __cplusplus
 }

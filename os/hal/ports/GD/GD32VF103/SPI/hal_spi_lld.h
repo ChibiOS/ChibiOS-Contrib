@@ -420,9 +420,9 @@
   /* Pointer to the SPIx registers block.*/                                 \
   SPI_TypeDef               *spi;                                           \
   /* Receive DMA stream.*/                                                  \
-  const stm32_dma_stream_t  *dmarx;                                         \
+  const gd32_dma_stream_t  *dmarx;                                         \
   /* Transmit DMA stream.*/                                                 \
-  const stm32_dma_stream_t  *dmatx;                                         \
+  const gd32_dma_stream_t  *dmatx;                                         \
   /* RX DMA mode bit mask.*/                                                \
   uint32_t                  rxdmamode;                                      \
   /* TX DMA mode bit mask.*/                                                \

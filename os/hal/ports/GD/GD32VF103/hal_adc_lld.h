@@ -159,7 +159,7 @@ typedef enum {
   /* Pointer to the ADCx registers block.*/                                 \
   ADC_TypeDef               *adc;                                           \
   /* Pointer to associated DMA channel.*/                                   \
-  const stm32_dma_stream_t  *dmastp;                                        \
+  const gd32_dma_stream_t  *dmastp;                                        \
   /* DMA mode bit mask.*/                                                   \
   uint32_t                  dmamode
 

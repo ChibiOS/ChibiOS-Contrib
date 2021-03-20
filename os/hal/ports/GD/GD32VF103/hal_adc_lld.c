@@ -134,7 +134,7 @@ void adc_lld_start(ADCDriver *adcp) {
     if (&ADCD1 == adcp) {
       adcp->dmastp = dmaStreamAllocI(GD32_DMA_STREAM_ID(1, 1),
                                      GD32_ADC_ADC1_IRQ_PRIORITY,
-                                     (stm32_dmaisr_t)adc_lld_serve_rx_interrupt,
+                                     (gd32_dmaisr_t)adc_lld_serve_rx_interrupt,
                                      (void *)adcp);
       osalDbgAssert(adcp->dmastp != NULL, "unable to allocate stream");
       dmaStreamSetPeripheral(adcp->dmastp, &ADC1->DR);

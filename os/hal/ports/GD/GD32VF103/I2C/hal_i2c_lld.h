@@ -432,11 +432,11 @@ struct I2CDriver {
   /**
    * @brief     Receive DMA channel.
    */
-  const stm32_dma_stream_t  *dmarx;
+  const gd32_dma_stream_t  *dmarx;
   /**
    * @brief     Transmit DMA channel.
    */
-  const stm32_dma_stream_t  *dmatx;
+  const gd32_dma_stream_t  *dmatx;
   /**
    * @brief     Pointer to the I2Cx registers block.
    */

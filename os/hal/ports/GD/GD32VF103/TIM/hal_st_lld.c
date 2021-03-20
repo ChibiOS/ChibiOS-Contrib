@@ -458,7 +458,7 @@ void st_lld_serve_interrupt(void) {
 #endif
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   uint32_t sr;
-  stm32_tim_t *timp = GD32_ST_TIM;
+  gd32_tim_t *timp = GD32_ST_TIM;
 
   sr  = timp->SR;
   sr &= timp->DIER & GD32_TIM_DIER_IRQ_MASK;

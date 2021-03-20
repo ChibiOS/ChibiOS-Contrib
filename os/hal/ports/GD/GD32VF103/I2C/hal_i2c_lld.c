@@ -581,12 +581,12 @@ void i2c_lld_start(I2CDriver *i2cp) {
 
       i2cp->dmarx = dmaStreamAllocI(GD32_I2C_I2C1_RX_DMA_STREAM,
                                     GD32_I2C_I2C1_IRQ_PRIORITY,
-                                    (stm32_dmaisr_t)i2c_lld_serve_rx_end_irq,
+                                    (gd32_dmaisr_t)i2c_lld_serve_rx_end_irq,
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmarx != NULL, "unable to allocate stream");
       i2cp->dmatx = dmaStreamAllocI(GD32_I2C_I2C1_TX_DMA_STREAM,
                                     GD32_I2C_I2C1_IRQ_PRIORITY,
-                                    (stm32_dmaisr_t)i2c_lld_serve_tx_end_irq,
+                                    (gd32_dmaisr_t)i2c_lld_serve_tx_end_irq,
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmatx != NULL, "unable to allocate stream");
 
@@ -607,12 +607,12 @@ void i2c_lld_start(I2CDriver *i2cp) {
 
       i2cp->dmarx = dmaStreamAllocI(GD32_I2C_I2C2_RX_DMA_STREAM,
                                     GD32_I2C_I2C2_IRQ_PRIORITY,
-                                    (stm32_dmaisr_t)i2c_lld_serve_rx_end_irq,
+                                    (gd32_dmaisr_t)i2c_lld_serve_rx_end_irq,
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmarx != NULL, "unable to allocate stream");
       i2cp->dmatx = dmaStreamAllocI(GD32_I2C_I2C2_TX_DMA_STREAM,
                                     GD32_I2C_I2C2_IRQ_PRIORITY,
-                                    (stm32_dmaisr_t)i2c_lld_serve_tx_end_irq,
+                                    (gd32_dmaisr_t)i2c_lld_serve_tx_end_irq,
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmatx != NULL, "unable to allocate stream");
 

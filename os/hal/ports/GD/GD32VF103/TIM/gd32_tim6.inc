@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIM/stm32_tim6.inc
+ * @file    TIM/gd32_tim6.inc
  * @brief   Shared TIM6 handler.
  *
  * @addtogroup GD32_TIM6_HANDLER

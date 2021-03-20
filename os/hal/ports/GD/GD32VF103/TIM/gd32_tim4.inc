@@ -15,10 +15,10 @@
 */
 
 /**
- * @file    DMA/stm32_dma1_ch4567.inc
- * @brief   Shared DMA1 Channels 4, 5, 6 and 7 handler.
+ * @file    TIM/gd32_tim4.inc
+ * @brief   Shared TIM4 handler.
  *
- * @addtogroup GD32_DMA1_CH4567_HANDLER
+ * @addtogroup GD32_TIM4_HANDLER
  * @{
  */
 
@@ -30,10 +30,38 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-/* Other checks.*/
-#if !defined(GD32_DMA1_CH4567_HANDLER)
-#error "GD32_DMA1_CH4567_HANDLER not defined in stm32_isr.h"
+/* Registry checks for robustness.*/
+#if !defined(GD32_HAS_TIM4)
+#error "GD32_HAS_TIM4 not defined in registry"
 #endif
+
+/* Driver checks for robustness, undefined USE macros are defaulted to
+   FALSE. This makes this module independent from drivers implementation.*/
+#if !defined(GD32_GPT_USE_TIM4)
+#define GD32_GPT_USE_TIM4                  FALSE
+#endif
+#if !defined(GD32_ICU_USE_TIM4)
+#define GD32_ICU_USE_TIM4                  FALSE
+#endif
+#if !defined(GD32_PWM_USE_TIM4)
+#define GD32_PWM_USE_TIM4                  FALSE
+#endif
+#if !defined(GD32_ST_USE_TIM4)
+#define GD32_ST_USE_TIM4                   FALSE
+#endif
+
+#if GD32_HAS_TIM4
+
+/* Priority settings checks.*/
+#if !defined(GD32_IRQ_TIM4_PRIORITY)
+#error "GD32_IRQ_TIM4_PRIORITY not defined in mcuconf.h"
+#endif
+
+#if !OSAL_IRQ_IS_VALID_PRIORITY(GD32_IRQ_TIM4_PRIORITY)
+#error "Invalid IRQ priority assigned to GD32_IRQ_TIM4_PRIORITY"
+#endif
+
+#endif /* GD32_HAS_TIM4 */
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -47,31 +75,52 @@
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
+static inline void tim4_irq_init(void) {
+#if defined(GD32_TIM4_IS_USED)
+  eclicEnableVector(GD32_TIM4_NUMBER, GD32_IRQ_TIM4_PRIORITY, GD32_IRQ_TIM4_TRIGGER);
+#endif
+}
+
+static inline void tim4_irq_deinit(void) {
+#if defined(GD32_TIM4_IS_USED)
+  eclicDisableVector(GD32_TIM4_NUMBER);
+#endif
+}
+
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if defined(GD32_DMA_REQUIRED) || defined(__DOXYGEN__)
+#if defined(GD32_TIM4_IS_USED) || defined(__DOXYGEN__)
 /**
- * @brief   DMA1 streams 4, 5, 6 and 7 shared ISR.
+ * @brief   TIM4 interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_DMA1_CH4567_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_TIM4_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  /* Check on channel 4.*/
-  dmaServeInterrupt(GD32_DMA1_STREAM4);
-
-  /* Check on channel 5.*/
-  dmaServeInterrupt(GD32_DMA1_STREAM5);
-
-  /* Check on channel 6.*/
-  dmaServeInterrupt(GD32_DMA1_STREAM6);
-
-  /* Check on channel 7.*/
-  dmaServeInterrupt(GD32_DMA1_STREAM7);
+#if HAL_USE_GPT
+#if GD32_GPT_USE_TIM4
+  gpt_lld_serve_interrupt(&GPTD4);
+#endif
+#endif
+#if HAL_USE_ICU
+#if GD32_ICU_USE_TIM4
+  icu_lld_serve_interrupt(&ICUD4);
+#endif
+#endif
+#if HAL_USE_PWM
+#if GD32_PWM_USE_TIM4
+  pwm_lld_serve_interrupt(&PWMD4);
+#endif
+#endif
+#if 1
+#if GD32_ST_USE_TIM4
+  st_lld_serve_interrupt();
+#endif
+#endif
 
   OSAL_IRQ_EPILOGUE();
 }

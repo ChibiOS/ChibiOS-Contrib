@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    TIM/stm32_tim.h
+ * @file    TIM/gd32_tim.h
  * @brief   STM32 TIM units common header.
  * @note    This file requires definitions from the ST STM32 header file.
  *
@@ -455,31 +455,31 @@
  * @name    TIM units references
  * @{
  */
-#define GD32_TIM1      ((stm32_tim_t *)TIM1_BASE)
-#define GD32_TIM2      ((stm32_tim_t *)TIM2_BASE)
-#define GD32_TIM3      ((stm32_tim_t *)TIM3_BASE)
-#define GD32_TIM4      ((stm32_tim_t *)TIM4_BASE)
-#define GD32_TIM5      ((stm32_tim_t *)TIM5_BASE)
-#define GD32_TIM6      ((stm32_tim_t *)TIM6_BASE)
-#define GD32_TIM7      ((stm32_tim_t *)TIM7_BASE)
-#define GD32_TIM8      ((stm32_tim_t *)TIM8_BASE)
-#define GD32_TIM9      ((stm32_tim_t *)TIM9_BASE)
-#define GD32_TIM10     ((stm32_tim_t *)TIM10_BASE)
-#define GD32_TIM11     ((stm32_tim_t *)TIM11_BASE)
-#define GD32_TIM12     ((stm32_tim_t *)TIM12_BASE)
-#define GD32_TIM13     ((stm32_tim_t *)TIM13_BASE)
-#define GD32_TIM14     ((stm32_tim_t *)TIM14_BASE)
-#define GD32_TIM15     ((stm32_tim_t *)TIM15_BASE)
-#define GD32_TIM16     ((stm32_tim_t *)TIM16_BASE)
-#define GD32_TIM17     ((stm32_tim_t *)TIM17_BASE)
-#define GD32_TIM18     ((stm32_tim_t *)TIM18_BASE)
-#define GD32_TIM19     ((stm32_tim_t *)TIM19_BASE)
-#define GD32_TIM20     ((stm32_tim_t *)TIM20_BASE)
-#define GD32_TIM21     ((stm32_tim_t *)TIM21_BASE)
-#define GD32_TIM22     ((stm32_tim_t *)TIM22_BASE)
+#define GD32_TIM1      ((gd32_tim_t *)TIM1_BASE)
+#define GD32_TIM2      ((gd32_tim_t *)TIM2_BASE)
+#define GD32_TIM3      ((gd32_tim_t *)TIM3_BASE)
+#define GD32_TIM4      ((gd32_tim_t *)TIM4_BASE)
+#define GD32_TIM5      ((gd32_tim_t *)TIM5_BASE)
+#define GD32_TIM6      ((gd32_tim_t *)TIM6_BASE)
+#define GD32_TIM7      ((gd32_tim_t *)TIM7_BASE)
+#define GD32_TIM8      ((gd32_tim_t *)TIM8_BASE)
+#define GD32_TIM9      ((gd32_tim_t *)TIM9_BASE)
+#define GD32_TIM10     ((gd32_tim_t *)TIM10_BASE)
+#define GD32_TIM11     ((gd32_tim_t *)TIM11_BASE)
+#define GD32_TIM12     ((gd32_tim_t *)TIM12_BASE)
+#define GD32_TIM13     ((gd32_tim_t *)TIM13_BASE)
+#define GD32_TIM14     ((gd32_tim_t *)TIM14_BASE)
+#define GD32_TIM15     ((gd32_tim_t *)TIM15_BASE)
+#define GD32_TIM16     ((gd32_tim_t *)TIM16_BASE)
+#define GD32_TIM17     ((gd32_tim_t *)TIM17_BASE)
+#define GD32_TIM18     ((gd32_tim_t *)TIM18_BASE)
+#define GD32_TIM19     ((gd32_tim_t *)TIM19_BASE)
+#define GD32_TIM20     ((gd32_tim_t *)TIM20_BASE)
+#define GD32_TIM21     ((gd32_tim_t *)TIM21_BASE)
+#define GD32_TIM22     ((gd32_tim_t *)TIM22_BASE)
 
-#define GD32_LPTIM1    ((stm32_lptim_t *)LPTIM1_BASE)
-#define GD32_LPTIM2    ((stm32_lptim_t *)LPTIM2_BASE)
+#define GD32_LPTIM1    ((gd32_lptim_t *)LPTIM1_BASE)
+#define GD32_LPTIM2    ((gd32_lptim_t *)LPTIM2_BASE)
 /** @} */
 
 /*===========================================================================*/
@@ -520,7 +520,7 @@ typedef struct {
   volatile uint32_t     OR;
   volatile uint32_t     CCMR3;
   volatile uint32_t     CCXR[2];
-} stm32_tim_t;
+} gd32_tim_t;
 
 /**
  * @brief   STM32 LPTIM registers block.
@@ -537,7 +537,7 @@ typedef struct {
   volatile uint32_t     ARR;
   volatile uint32_t     CNT;
   volatile uint32_t     OR;
-} stm32_lptim_t;
+} gd32_lptim_t;
 
 /*===========================================================================*/
 /* Driver macros.                                                            */

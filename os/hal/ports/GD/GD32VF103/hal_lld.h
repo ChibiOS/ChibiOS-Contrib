@@ -183,9 +183,9 @@
 /* Various helpers.*/
 #include "eclic.h"
 #include "gd32_isr.h"
-#include "stm32_dma.h"
-#include "stm32_rcc.h"
-#include "stm32_tim.h"
+#include "gd32_dma.h"
+#include "gd32_rcc.h"
+#include "gd32_tim.h"
 
 #ifdef __cplusplus
 extern "C" {

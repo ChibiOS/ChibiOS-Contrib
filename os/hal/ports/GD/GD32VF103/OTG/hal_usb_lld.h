@@ -27,7 +27,7 @@
 
 #if HAL_USE_USB || defined(__DOXYGEN__)
 
-#include "stm32_otg.h"
+#include "gd32_otg.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -262,7 +262,7 @@ typedef struct {
   uint32_t                      rx_fifo_size;
   uint32_t                      otg_ram_size;
   uint32_t                      num_endpoints;
-} stm32_otg_params_t;
+} gd32_otg_params_t;
 
 /**
  * @brief   Type of an IN endpoint state structure.
@@ -497,11 +497,11 @@ struct USBDriver {
   /**
    * @brief   Pointer to the OTG peripheral associated to this driver.
    */
-  stm32_otg_t                   *otg;
+  gd32_otg_t                   *otg;
   /**
    * @brief   Peripheral-specific parameters.
    */
-  const stm32_otg_params_t      *otgparams;
+  const gd32_otg_params_t      *otgparams;
   /**
    * @brief   Pointer to the next address in the packet memory.
    */

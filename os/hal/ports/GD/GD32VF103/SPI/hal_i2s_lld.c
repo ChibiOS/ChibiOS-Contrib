@@ -358,7 +358,7 @@ void i2s_lld_start(I2SDriver *i2sp) {
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
       i2sp->dmarx = dmaStreamAllocI(GD32_I2S_SPI1_RX_DMA_STREAM,
                                     GD32_I2S_SPI1_IRQ_PRIORITY,
-                                    (stm32_dmaisr_t)i2s_lld_serve_rx_interrupt,
+                                    (gd32_dmaisr_t)i2s_lld_serve_rx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmarx != NULL, "unable to allocate stream");
 
@@ -370,7 +370,7 @@ void i2s_lld_start(I2SDriver *i2sp) {
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
       i2sp->dmatx = dmaStreamAllocI(GD32_I2S_SPI1_TX_DMA_STREAM,
                                     GD32_I2S_SPI1_IRQ_PRIORITY,
-                                    (stm32_dmaisr_t)i2s_lld_serve_tx_interrupt,
+                                    (gd32_dmaisr_t)i2s_lld_serve_tx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmatx != NULL, "unable to allocate stream");
 
@@ -391,7 +391,7 @@ void i2s_lld_start(I2SDriver *i2sp) {
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE)
       i2sp->dmarx = dmaStreamAllocI(GD32_I2S_SPI2_RX_DMA_STREAM,
                                     GD32_I2S_SPI2_IRQ_PRIORITY,
-                                    (stm32_dmaisr_t)i2s_lld_serve_rx_interrupt,
+                                    (gd32_dmaisr_t)i2s_lld_serve_rx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmarx != NULL, "unable to allocate stream");
 
@@ -403,7 +403,7 @@ void i2s_lld_start(I2SDriver *i2sp) {
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI2_MODE)
       i2sp->dmatx = dmaStreamAllocI(GD32_I2S_SPI2_TX_DMA_STREAM,
                                     GD32_I2S_SPI2_IRQ_PRIORITY,
-                                    (stm32_dmaisr_t)i2s_lld_serve_tx_interrupt,
+                                    (gd32_dmaisr_t)i2s_lld_serve_tx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmatx != NULL, "unable to allocate stream");
 
@@ -424,7 +424,7 @@ void i2s_lld_start(I2SDriver *i2sp) {
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE)
       i2sp->dmarx = dmaStreamAllocI(GD32_I2S_SPI3_RX_DMA_STREAM,
                                     GD32_I2S_SPI3_IRQ_PRIORITY,
-                                    (stm32_dmaisr_t)i2s_lld_serve_rx_interrupt,
+                                    (gd32_dmaisr_t)i2s_lld_serve_rx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmarx != NULL, "unable to allocate stream");
 
@@ -436,7 +436,7 @@ void i2s_lld_start(I2SDriver *i2sp) {
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI3_MODE)
       i2sp->dmatx = dmaStreamAllocI(GD32_I2S_SPI3_TX_DMA_STREAM,
                                     GD32_I2S_SPI3_IRQ_PRIORITY,
-                                    (stm32_dmaisr_t)i2s_lld_serve_tx_interrupt,
+                                    (gd32_dmaisr_t)i2s_lld_serve_tx_interrupt,
                                     (void *)i2sp);
       osalDbgAssert(i2sp->dmatx != NULL, "unable to allocate stream");
 

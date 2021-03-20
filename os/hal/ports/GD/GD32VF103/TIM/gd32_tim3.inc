@@ -15,10 +15,10 @@
 */
 
 /**
- * @file    TIM/stm32_tim5.inc
- * @brief   Shared TIM5 handler.
+ * @file    TIM/gd32_tim3.inc
+ * @brief   Shared TIM3 handler.
  *
- * @addtogroup GD32_TIM5_HANDLER
+ * @addtogroup GD32_TIM3_HANDLER
  * @{
  */
 
@@ -31,37 +31,37 @@
 /*===========================================================================*/
 
 /* Registry checks for robustness.*/
-#if !defined(GD32_HAS_TIM5)
-#error "GD32_HAS_TIM5 not defined in registry"
+#if !defined(GD32_HAS_TIM3)
+#error "GD32_HAS_TIM3 not defined in registry"
 #endif
 
 /* Driver checks for robustness, undefined USE macros are defaulted to
    FALSE. This makes this module independent from drivers implementation.*/
-#if !defined(GD32_GPT_USE_TIM5)
-#define GD32_GPT_USE_TIM5                  FALSE
+#if !defined(GD32_GPT_USE_TIM3)
+#define GD32_GPT_USE_TIM3                  FALSE
 #endif
-#if !defined(GD32_ICU_USE_TIM5)
-#define GD32_ICU_USE_TIM5                  FALSE
+#if !defined(GD32_ICU_USE_TIM3)
+#define GD32_ICU_USE_TIM3                  FALSE
 #endif
-#if !defined(GD32_PWM_USE_TIM5)
-#define GD32_PWM_USE_TIM5                  FALSE
+#if !defined(GD32_PWM_USE_TIM3)
+#define GD32_PWM_USE_TIM3                  FALSE
 #endif
-#if !defined(GD32_ST_USE_TIM5)
-#define GD32_ST_USE_TIM5                   FALSE
+#if !defined(GD32_ST_USE_TIM3)
+#define GD32_ST_USE_TIM3                   FALSE
 #endif
 
-#if GD32_HAS_TIM5
+#if GD32_HAS_TIM3
 
 /* Priority settings checks.*/
-#if !defined(GD32_IRQ_TIM5_PRIORITY)
-#error "GD32_IRQ_TIM5_PRIORITY not defined in mcuconf.h"
+#if !defined(GD32_IRQ_TIM3_PRIORITY)
+#error "GD32_IRQ_TIM3_PRIORITY not defined in mcuconf.h"
 #endif
 
-#if !OSAL_IRQ_IS_VALID_PRIORITY(GD32_IRQ_TIM5_PRIORITY)
-#error "Invalid IRQ priority assigned to GD32_IRQ_TIM5_PRIORITY"
+#if !OSAL_IRQ_IS_VALID_PRIORITY(GD32_IRQ_TIM3_PRIORITY)
+#error "Invalid IRQ priority assigned to GD32_IRQ_TIM3_PRIORITY"
 #endif
 
-#endif /* GD32_HAS_TIM5 */
+#endif /* GD32_HAS_TIM3 */
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -75,15 +75,15 @@
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-static inline void tim5_irq_init(void) {
-#if defined(GD32_TIM5_IS_USED)
-  eclicEnableVector(GD32_TIM5_NUMBER, GD32_IRQ_TIM5_PRIORITY, GD32_IRQ_TIM5_TRIGGER);
+static inline void tim3_irq_init(void) {
+#if defined(GD32_TIM3_IS_USED)
+  eclicEnableVector(GD32_TIM3_NUMBER, GD32_IRQ_TIM3_PRIORITY, GD32_IRQ_TIM3_TRIGGER);
 #endif
 }
 
-static inline void tim5_irq_deinit(void) {
-#if defined(GD32_TIM5_IS_USED)
-  eclicDisableVector(GD32_TIM5_NUMBER);
+static inline void tim3_irq_deinit(void) {
+#if defined(GD32_TIM3_IS_USED)
+  eclicDisableVector(GD32_TIM3_NUMBER);
 #endif
 }
 
@@ -91,33 +91,33 @@ static inline void tim5_irq_deinit(void) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if defined(GD32_TIM5_IS_USED) || defined(__DOXYGEN__)
+#if defined(GD32_TIM3_IS_USED) || defined(__DOXYGEN__)
 /**
- * @brief   TIM5 interrupt handler.
+ * @brief   TIM3 interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_TIM5_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_TIM3_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
 #if HAL_USE_GPT
-#if GD32_GPT_USE_TIM5
-  gpt_lld_serve_interrupt(&GPTD5);
+#if GD32_GPT_USE_TIM3
+  gpt_lld_serve_interrupt(&GPTD3);
 #endif
 #endif
 #if HAL_USE_ICU
-#if GD32_ICU_USE_TIM5
-  icu_lld_serve_interrupt(&ICUD5);
+#if GD32_ICU_USE_TIM3
+  icu_lld_serve_interrupt(&ICUD3);
 #endif
 #endif
 #if HAL_USE_PWM
-#if GD32_PWM_USE_TIM5
-  pwm_lld_serve_interrupt(&PWMD5);
+#if GD32_PWM_USE_TIM3
+  pwm_lld_serve_interrupt(&PWMD3);
 #endif
 #endif
 #if 1
-#if GD32_ST_USE_TIM5
+#if GD32_ST_USE_TIM3
   st_lld_serve_interrupt();
 #endif
 #endif

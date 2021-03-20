@@ -108,7 +108,7 @@ typedef struct {
   uint32_t      crl;
   /** Initial value for CRH register.*/
   uint32_t      crh;
-} stm32_gpio_setup_t;
+} gd32_gpio_setup_t;
 
 /**
  * @brief   STM32 GPIO static initializer.
@@ -119,22 +119,22 @@ typedef struct {
  */
 typedef struct {
   /** @brief Port A setup data.*/
-  stm32_gpio_setup_t    PAData;
+  gd32_gpio_setup_t    PAData;
   /** @brief Port B setup data.*/
-  stm32_gpio_setup_t    PBData;
+  gd32_gpio_setup_t    PBData;
   /** @brief Port C setup data.*/
-  stm32_gpio_setup_t    PCData;
+  gd32_gpio_setup_t    PCData;
   /** @brief Port D setup data.*/
-  stm32_gpio_setup_t    PDData;
+  gd32_gpio_setup_t    PDData;
 #if GD32_HAS_GPIOE || defined(__DOXYGEN__)
   /** @brief Port E setup data.*/
-  stm32_gpio_setup_t    PEData;
+  gd32_gpio_setup_t    PEData;
 #if GD32_HAS_GPIOF || defined(__DOXYGEN__)
   /** @brief Port F setup data.*/
-  stm32_gpio_setup_t    PFData;
+  gd32_gpio_setup_t    PFData;
 #if GD32_HAS_GPIOG || defined(__DOXYGEN__)
   /** @brief Port G setup data.*/
-  stm32_gpio_setup_t    PGData;
+  gd32_gpio_setup_t    PGData;
 #endif
 #endif
 #endif
