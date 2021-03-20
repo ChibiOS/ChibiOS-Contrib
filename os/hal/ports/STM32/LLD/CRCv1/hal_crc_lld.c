@@ -119,12 +119,12 @@ static void crc_lld_serve_interrupt(CRCDriver *crcp, uint32_t flags) {
 #endif
 
   /* Stop everything.*/
-  dmaStreamDisable(crcp->dma);
+  dmaStreamDisable(crcp->dmastp);
 
   if (crcp->rem_data_size) {
     /* Start DMA follow up transfer for next data chunk */
     crc_lld_start_calc(crcp, crcp->rem_data_size,
-      (const void *)crcp->dma->channel->CPAR+0xffff);
+      (const void *)crcp->dmastp->channel->CPAR+0xffff);
   } else {
     /* Portable CRC ISR code defined in the high level driver, note, it is a macro.*/
     _crc_isr_code(crcp, crcp->crc->DR ^ crcp->config->final_val);
@@ -144,9 +144,6 @@ static void crc_lld_serve_interrupt(CRCDriver *crcp, uint32_t flags) {
 void crc_lld_init(void) {
   crcObjectInit(&CRCD1);
   CRCD1.crc    = CRC;
-#if CRC_USE_DMA == TRUE
-  CRCD1.dma    = STM32_CRC_CRC1_DMA_STREAM;
-#endif
 }
 
 /**
@@ -215,12 +212,11 @@ void crc_lld_start(CRCDriver *crcp) {
                   STM32_DMA_CR_PL(STM32_CRC_CRC1_DMA_PRIORITY);
 #endif
   {
-    bool b;
-    b = dmaStreamAllocate(crcp->dma,
-                          STM32_CRC_CRC1_DMA_IRQ_PRIORITY,
-                          (stm32_dmaisr_t)crc_lld_serve_interrupt,
-                          (void *)crcp);
-    osalDbgAssert(!b, "stream already allocated");
+    crcp->dmastp = dmaStreamAlloc(STM32_CRC_CRC1_DMA_STREAM,
+                                                 STM32_CRC_CRC1_DMA_IRQ_PRIORITY,
+                                                 (stm32_dmaisr_t)crc_lld_serve_interrupt,
+                                                 (void *)crcp);
+    osalDbgAssert(crcp->dmastp != NULL, "unable to allocate stream");
   }
 #endif
 }
@@ -235,7 +231,7 @@ void crc_lld_start(CRCDriver *crcp) {
  */
 void crc_lld_stop(CRCDriver *crcp) {
 #if CRC_USE_DMA == TRUE
-  dmaStreamFree(crcp->dma);
+  dmaStreamFree(crcp->dmastp);
 #else
   (void)crcp;
 #endif
@@ -318,16 +314,16 @@ void crc_lld_start_calc(CRCDriver *crcp, size_t n, const void *buf) {
   size_t sz = (n > 0xffff) ? 0xffff : n;
   crcp->rem_data_size = n-sz;
 
-  dmaStreamSetPeripheral(crcp->dma, buf);
-  dmaStreamSetMemory0(crcp->dma, &crcp->crc->DR);
+  dmaStreamSetPeripheral(crcp->dmastp, buf);
+  dmaStreamSetMemory0(crcp->dmastp, &crcp->crc->DR);
 #if STM32_CRC_PROGRAMMABLE == TRUE
-  dmaStreamSetTransactionSize(crcp->dma, sz);
+  dmaStreamSetTransactionSize(crcp->dmastp, sz);
 #else
-  dmaStreamSetTransactionSize(crcp->dma, (sz / 4));
+  dmaStreamSetTransactionSize(crcp->dmastp, (sz / 4));
 #endif
-  dmaStreamSetMode(crcp->dma, crcp->dmamode);
+  dmaStreamSetMode(crcp->dmastp, crcp->dmamode);
 
-  dmaStreamEnable(crcp->dma);
+  dmaStreamEnable(crcp->dmastp);
 }
 #endif
 
