@@ -380,14 +380,20 @@ void sd_lld_start(SerialDriver* sdp, const SerialConfig* config)
 
   /* Configures the peripheral.*/
 
-  osalDbgAssert((NUC123_SERIAL_CLK % config->speed == 0),
-                "NUC123_SERIAL_CLK % config->speed must be 0 or speed cannot be generated");
   uint32_t baud_found = false;
 
   /* Speed is controlled by the expression
       BAUD = UART_CLK / (m * (BRD + 2))
   Here, baud_denom represents the (m * (BRD + 2)) part of the expression */
-  uint32_t baud_denom = (NUC123_SERIAL_CLK / config->speed);
+  uint32_t baudrate = config->speed;
+  uint32_t baud_denom = (NUC123_SERIAL_CLK + (baudrate - 1) / 2) / baudrate;
+
+  /* Generally it is better to have whatever output than nothing. */
+#if FALSE
+  osalDbgAssert((NUC123_SERIAL_CLK / baud_denom) >= baudrate - (baudrate>>6) &&
+                (NUC123_SERIAL_CLK / baud_denom) <= baudrate + (baudrate>>6),
+                "Error is too large with the BAUDRATE");
+#endif
 
   /* Mode 0: m = 16 */
   if ((baud_denom % 16 == 0) && (((baud_denom / 16) - 2) <= NUC123_BRD_MAX)) {
