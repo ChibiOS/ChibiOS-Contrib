@@ -115,7 +115,7 @@
  *          by @p PORT_INT_REQUIRED_STACK.
  */
 #if !defined(PORT_IDLE_THREAD_STACK_SIZE) || defined(__DOXYGEN__)
-#define PORT_IDLE_THREAD_STACK_SIZE 32
+#define PORT_IDLE_THREAD_STACK_SIZE 64
 #endif
 
 /**
@@ -422,7 +422,7 @@ static inline void port_unlock(void) { __enable_irq(); }
  *          interrupt handlers. The implementation is architecture dependent,
  *          in its simplest form it is void.
  */
-static inline void port_lock_from_isr(void) {}
+static inline void port_lock_from_isr(void) { port_lock(); }
 
 /**
  * @brief   Kernel-unlock action from an interrupt handler.
@@ -430,7 +430,7 @@ static inline void port_lock_from_isr(void) {}
  *          handlers. The implementation is architecture dependent, in its
  *          simplest form it is void.
  */
-static inline void port_unlock_from_isr(void) {}
+static inline void port_unlock_from_isr(void) { port_unlock(); }
 
 /**
  * @brief   Disables all the interrupt sources.
