@@ -313,21 +313,31 @@ void sd_lld_init(void)
 #if NUC123_SERIAL_USE_UART0
   sdObjectInit(&SD0, NULL, notify0);
   /* Select UART0 Pins */
+#if defined(NUC123xxxANx) && !defined(NUC123xxxAEx)
   SYS->ALT_MFP &= ~(SYS_ALT_MFP_PB3_MFP1_Msk | SYS_ALT_MFP_PB2_MFP1_Msk);
   /* SYS->GPB_MFP |= SYS_GPB_MFP_PB1_UART0_TXD | SYS_GPB_MFP_PB0_UART0_RXD |
                     SYS_GPB_MFP_PB3_UART0_nCTS | SYS_GPB_MFP_PB2_UART0_nRTS; */
   SYS->GPB_MFP |= 0x0FUL;
+#endif
+#if defined(NUC123xxxAEx)
+  SYS->GPB_MFPL = (SYS->GPB_MFPL & ~0x000000FF) | 0x00000011;
+#endif
   SD0.uart = UART0;
 #endif
 
 #if NUC123_SERIAL_USE_UART1
   sdObjectInit(&SD1, NULL, notify1);
   /* Select UART1 Pins */
+#if defined(NUC123xxxANx) && !defined(NUC123xxxAEx)
   SYS->ALT_MFP &= ~(SYS_ALT_MFP_PB7_MFP1_Msk | SYS_ALT_MFP_PB6_MFP1_Msk |
                     SYS_ALT_MFP_PB5_MFP1_Msk | SYS_ALT_MFP_PB4_MFP1_Msk);
   /* SYS->GPB_MFP |= SYS_GPB_MFP_PB5_UART1_TXD | SYS_GPB_MFP_PB4_UART1_RXD |
                     SYS_GPB_MFP_PB7_UART1_nCTS | SYS_GPB_MFP_PB6_UART1_nRTS; */
   SYS->GPB_MFP |= 0xF0UL;
+#endif
+#if defined(NUC123xxxAEx)
+  SYS->GPB_MFPL = (SYS->GPB_MFPL & ~0x00FF0000) | 0x00110000;
+#endif
   SD1.uart = UART1;
 #endif
 }
@@ -414,10 +424,26 @@ void sd_lld_start(SerialDriver* sdp, const SerialConfig* config)
     }
 #endif
 #elif defined(NUC123xxxAEx)
-    /* TODO: Implement the specific requirements for the AE series */
+#if NUC123_SERIAL_CLK <= (3 * NUC123_HCLK)
+    if ((9 <= (baud_denom - 2)) && ((baud_denom - 2) <= NUC123_BRD_MAX)) {
+      sdp->uart->BAUD = NUC123_BRD_MODE2 | (baud_denom - 2);
+      baud_found      = true;
+    }
+#elif NUC123_SERIAL_CLK <= (4 * NUC123_HCLK)
+    if ((11 <= (baud_denom - 2)) && ((baud_denom - 2) <= NUC123_BRD_MAX)) {
+      sdp->uart->BAUD = NUC123_BRD_MODE2 | (baud_denom - 2);
+      baud_found      = true;
+    }
+#elif NUC123_SERIAL_CLK <= (5 * NUC123_HCLK)
+    if ((14 <= (baud_denom - 2)) && ((baud_denom - 2) <= NUC123_BRD_MAX)) {
+      sdp->uart->BAUD = NUC123_BRD_MODE2 | (baud_denom - 2);
+      baud_found      = true;
+    }
+#else
     /* Dummy statement to prevent an orphaned else at the begining of the Mode 1 block */
     if (FALSE) {
     }
+#endif
 #endif
     /* Mode 1: m = (DIVIDER_X + 1),  8 <= DIVIDER_X <= 16 */
     else {
