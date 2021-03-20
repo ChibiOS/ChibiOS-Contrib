@@ -211,7 +211,7 @@ struct CRCDriver {
   /**
    * @brief CRC DMA stream
    */
-  const stm32_dma_stream_t  *dma;
+  const stm32_dma_stream_t  *dmastp;
   /**
    * @brief DMA mode bit mask.
    */
