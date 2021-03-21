@@ -133,7 +133,7 @@ static void spi_lld_serve_rx_interrupt(SPIDriver *spip, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_SPI_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
+  if ((flags & (GD32_DMA_INTF_ERRIF)) != 0) {
     GD32_SPI_DMA_ERROR_HOOK(spip);
   }
 #else
@@ -141,11 +141,11 @@ static void spi_lld_serve_rx_interrupt(SPIDriver *spip, uint32_t flags) {
 #endif
 
   if (spip->config->circular) {
-    if ((flags & GD32_DMA_ISR_HTIF) != 0U) {
+    if ((flags & GD32_DMA_INTF_HTFIF) != 0U) {
       /* Half buffer interrupt.*/
       _spi_isr_half_code(spip);
     }
-    if ((flags & GD32_DMA_ISR_TCIF) != 0U) {
+    if ((flags & GD32_DMA_INTF_FTFIF) != 0U) {
       /* End buffer interrupt.*/
       _spi_isr_full_code(spip);
     }
@@ -172,7 +172,7 @@ static void spi_lld_serve_tx_interrupt(SPIDriver *spip, uint32_t flags) {
   /* DMA errors handling.*/
 #if defined(GD32_SPI_DMA_ERROR_HOOK)
   (void)spip;
-  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
+  if ((flags & (GD32_DMA_INTF_ERRIF)) != 0) {
     GD32_SPI_DMA_ERROR_HOOK(spip);
   }
 #else

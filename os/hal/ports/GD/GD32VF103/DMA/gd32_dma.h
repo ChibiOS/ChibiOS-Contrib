@@ -41,7 +41,7 @@
 /**
  * @brief   Mask of the ISR bits passed to the DMA callback functions.
  */
-#define GD32_DMA_ISR_MASK          0x0E
+#define GD32_DMA_INTF_MASK          0x0E
 
 /**
  * @brief   Returns the request line associated to the specified stream.
@@ -179,10 +179,10 @@
  * @name    Status flags passed to the ISR callbacks
  * @{
  */
-#define GD32_DMA_ISR_FEIF          0U
-#define GD32_DMA_ISR_TEIF          DMA_ISR_TEIF1
-#define GD32_DMA_ISR_HTIF          DMA_ISR_HTIF1
-#define GD32_DMA_ISR_TCIF          DMA_ISR_TCIF1
+#define GD32_DMA_INTF_FEIF          0U
+#define GD32_DMA_INTF_ERRIF          DMA_INTF_ERRIF0
+#define GD32_DMA_INTF_HTFIF          DMA_INTF_HTFIF0
+#define GD32_DMA_INTF_FTFIF          DMA_INTF_FTFIF0
 /** @} */
 
 /*===========================================================================*/
@@ -363,7 +363,7 @@ typedef struct {
  * @special
  */
 #define dmaStreamClearInterrupt(dmastp) {                                   \
-  (dmastp)->dma->IFCR = GD32_DMA_ISR_MASK << (dmastp)->shift;              \
+  (dmastp)->dma->IFCR = GD32_DMA_INTF_MASK << (dmastp)->shift;              \
 }
 
 /**

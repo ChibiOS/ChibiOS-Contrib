@@ -3686,90 +3686,90 @@ typedef struct
 /******************************************************************************/
 
 /*******************  Bit definition for DMA_ISR register  ********************/
-#define DMA_ISR_GIF1_Pos                    (0U)                               
-#define DMA_ISR_GIF1_Msk                    (0x1U << DMA_ISR_GIF1_Pos)         /*!< 0x00000001 */
-#define DMA_ISR_GIF1                        DMA_ISR_GIF1_Msk                   /*!< Channel 1 Global interrupt flag */
-#define DMA_ISR_TCIF1_Pos                   (1U)                               
-#define DMA_ISR_TCIF1_Msk                   (0x1U << DMA_ISR_TCIF1_Pos)        /*!< 0x00000002 */
-#define DMA_ISR_TCIF1                       DMA_ISR_TCIF1_Msk                  /*!< Channel 1 Transfer Complete flag */
-#define DMA_ISR_HTIF1_Pos                   (2U)                               
-#define DMA_ISR_HTIF1_Msk                   (0x1U << DMA_ISR_HTIF1_Pos)        /*!< 0x00000004 */
-#define DMA_ISR_HTIF1                       DMA_ISR_HTIF1_Msk                  /*!< Channel 1 Half Transfer flag */
-#define DMA_ISR_TEIF1_Pos                   (3U)                               
-#define DMA_ISR_TEIF1_Msk                   (0x1U << DMA_ISR_TEIF1_Pos)        /*!< 0x00000008 */
-#define DMA_ISR_TEIF1                       DMA_ISR_TEIF1_Msk                  /*!< Channel 1 Transfer Error flag */
-#define DMA_ISR_GIF2_Pos                    (4U)                               
-#define DMA_ISR_GIF2_Msk                    (0x1U << DMA_ISR_GIF2_Pos)         /*!< 0x00000010 */
-#define DMA_ISR_GIF2                        DMA_ISR_GIF2_Msk                   /*!< Channel 2 Global interrupt flag */
-#define DMA_ISR_TCIF2_Pos                   (5U)                               
-#define DMA_ISR_TCIF2_Msk                   (0x1U << DMA_ISR_TCIF2_Pos)        /*!< 0x00000020 */
-#define DMA_ISR_TCIF2                       DMA_ISR_TCIF2_Msk                  /*!< Channel 2 Transfer Complete flag */
-#define DMA_ISR_HTIF2_Pos                   (6U)                               
-#define DMA_ISR_HTIF2_Msk                   (0x1U << DMA_ISR_HTIF2_Pos)        /*!< 0x00000040 */
-#define DMA_ISR_HTIF2                       DMA_ISR_HTIF2_Msk                  /*!< Channel 2 Half Transfer flag */
-#define DMA_ISR_TEIF2_Pos                   (7U)                               
-#define DMA_ISR_TEIF2_Msk                   (0x1U << DMA_ISR_TEIF2_Pos)        /*!< 0x00000080 */
-#define DMA_ISR_TEIF2                       DMA_ISR_TEIF2_Msk                  /*!< Channel 2 Transfer Error flag */
-#define DMA_ISR_GIF3_Pos                    (8U)                               
-#define DMA_ISR_GIF3_Msk                    (0x1U << DMA_ISR_GIF3_Pos)         /*!< 0x00000100 */
-#define DMA_ISR_GIF3                        DMA_ISR_GIF3_Msk                   /*!< Channel 3 Global interrupt flag */
-#define DMA_ISR_TCIF3_Pos                   (9U)                               
-#define DMA_ISR_TCIF3_Msk                   (0x1U << DMA_ISR_TCIF3_Pos)        /*!< 0x00000200 */
-#define DMA_ISR_TCIF3                       DMA_ISR_TCIF3_Msk                  /*!< Channel 3 Transfer Complete flag */
-#define DMA_ISR_HTIF3_Pos                   (10U)                              
-#define DMA_ISR_HTIF3_Msk                   (0x1U << DMA_ISR_HTIF3_Pos)        /*!< 0x00000400 */
-#define DMA_ISR_HTIF3                       DMA_ISR_HTIF3_Msk                  /*!< Channel 3 Half Transfer flag */
-#define DMA_ISR_TEIF3_Pos                   (11U)                              
-#define DMA_ISR_TEIF3_Msk                   (0x1U << DMA_ISR_TEIF3_Pos)        /*!< 0x00000800 */
-#define DMA_ISR_TEIF3                       DMA_ISR_TEIF3_Msk                  /*!< Channel 3 Transfer Error flag */
-#define DMA_ISR_GIF4_Pos                    (12U)                              
-#define DMA_ISR_GIF4_Msk                    (0x1U << DMA_ISR_GIF4_Pos)         /*!< 0x00001000 */
-#define DMA_ISR_GIF4                        DMA_ISR_GIF4_Msk                   /*!< Channel 4 Global interrupt flag */
-#define DMA_ISR_TCIF4_Pos                   (13U)                              
-#define DMA_ISR_TCIF4_Msk                   (0x1U << DMA_ISR_TCIF4_Pos)        /*!< 0x00002000 */
-#define DMA_ISR_TCIF4                       DMA_ISR_TCIF4_Msk                  /*!< Channel 4 Transfer Complete flag */
-#define DMA_ISR_HTIF4_Pos                   (14U)                              
-#define DMA_ISR_HTIF4_Msk                   (0x1U << DMA_ISR_HTIF4_Pos)        /*!< 0x00004000 */
-#define DMA_ISR_HTIF4                       DMA_ISR_HTIF4_Msk                  /*!< Channel 4 Half Transfer flag */
-#define DMA_ISR_TEIF4_Pos                   (15U)                              
-#define DMA_ISR_TEIF4_Msk                   (0x1U << DMA_ISR_TEIF4_Pos)        /*!< 0x00008000 */
-#define DMA_ISR_TEIF4                       DMA_ISR_TEIF4_Msk                  /*!< Channel 4 Transfer Error flag */
-#define DMA_ISR_GIF5_Pos                    (16U)                              
-#define DMA_ISR_GIF5_Msk                    (0x1U << DMA_ISR_GIF5_Pos)         /*!< 0x00010000 */
-#define DMA_ISR_GIF5                        DMA_ISR_GIF5_Msk                   /*!< Channel 5 Global interrupt flag */
-#define DMA_ISR_TCIF5_Pos                   (17U)                              
-#define DMA_ISR_TCIF5_Msk                   (0x1U << DMA_ISR_TCIF5_Pos)        /*!< 0x00020000 */
-#define DMA_ISR_TCIF5                       DMA_ISR_TCIF5_Msk                  /*!< Channel 5 Transfer Complete flag */
-#define DMA_ISR_HTIF5_Pos                   (18U)                              
-#define DMA_ISR_HTIF5_Msk                   (0x1U << DMA_ISR_HTIF5_Pos)        /*!< 0x00040000 */
-#define DMA_ISR_HTIF5                       DMA_ISR_HTIF5_Msk                  /*!< Channel 5 Half Transfer flag */
-#define DMA_ISR_TEIF5_Pos                   (19U)                              
-#define DMA_ISR_TEIF5_Msk                   (0x1U << DMA_ISR_TEIF5_Pos)        /*!< 0x00080000 */
-#define DMA_ISR_TEIF5                       DMA_ISR_TEIF5_Msk                  /*!< Channel 5 Transfer Error flag */
-#define DMA_ISR_GIF6_Pos                    (20U)                              
-#define DMA_ISR_GIF6_Msk                    (0x1U << DMA_ISR_GIF6_Pos)         /*!< 0x00100000 */
-#define DMA_ISR_GIF6                        DMA_ISR_GIF6_Msk                   /*!< Channel 6 Global interrupt flag */
-#define DMA_ISR_TCIF6_Pos                   (21U)                              
-#define DMA_ISR_TCIF6_Msk                   (0x1U << DMA_ISR_TCIF6_Pos)        /*!< 0x00200000 */
-#define DMA_ISR_TCIF6                       DMA_ISR_TCIF6_Msk                  /*!< Channel 6 Transfer Complete flag */
-#define DMA_ISR_HTIF6_Pos                   (22U)                              
-#define DMA_ISR_HTIF6_Msk                   (0x1U << DMA_ISR_HTIF6_Pos)        /*!< 0x00400000 */
-#define DMA_ISR_HTIF6                       DMA_ISR_HTIF6_Msk                  /*!< Channel 6 Half Transfer flag */
-#define DMA_ISR_TEIF6_Pos                   (23U)                              
-#define DMA_ISR_TEIF6_Msk                   (0x1U << DMA_ISR_TEIF6_Pos)        /*!< 0x00800000 */
-#define DMA_ISR_TEIF6                       DMA_ISR_TEIF6_Msk                  /*!< Channel 6 Transfer Error flag */
-#define DMA_ISR_GIF7_Pos                    (24U)                              
-#define DMA_ISR_GIF7_Msk                    (0x1U << DMA_ISR_GIF7_Pos)         /*!< 0x01000000 */
-#define DMA_ISR_GIF7                        DMA_ISR_GIF7_Msk                   /*!< Channel 7 Global interrupt flag */
-#define DMA_ISR_TCIF7_Pos                   (25U)                              
-#define DMA_ISR_TCIF7_Msk                   (0x1U << DMA_ISR_TCIF7_Pos)        /*!< 0x02000000 */
-#define DMA_ISR_TCIF7                       DMA_ISR_TCIF7_Msk                  /*!< Channel 7 Transfer Complete flag */
-#define DMA_ISR_HTIF7_Pos                   (26U)                              
-#define DMA_ISR_HTIF7_Msk                   (0x1U << DMA_ISR_HTIF7_Pos)        /*!< 0x04000000 */
-#define DMA_ISR_HTIF7                       DMA_ISR_HTIF7_Msk                  /*!< Channel 7 Half Transfer flag */
-#define DMA_ISR_TEIF7_Pos                   (27U)                              
-#define DMA_ISR_TEIF7_Msk                   (0x1U << DMA_ISR_TEIF7_Pos)        /*!< 0x08000000 */
-#define DMA_ISR_TEIF7                       DMA_ISR_TEIF7_Msk                  /*!< Channel 7 Transfer Error flag */
+#define DMA_INTF_GIF0_Pos                    (0U)                               
+#define DMA_INTF_GIF0_Msk                    (0x1U << DMA_INTF_GIF0_Pos)         /*!< 0x00000001 */
+#define DMA_INTF_GIF0                        DMA_INTF_GIF0_Msk                   /*!< Channel 1 Global interrupt flag */
+#define DMA_INTF_FTFIF0_Pos                   (1U)                               
+#define DMA_INTF_FTFIF0_Msk                   (0x1U << DMA_INTF_FTFIF0_Pos)        /*!< 0x00000002 */
+#define DMA_INTF_FTFIF0                       DMA_INTF_FTFIF0_Msk                  /*!< Channel 1 Full Transfer finish flag */
+#define DMA_INTF_HTFIF0_Pos                   (2U)                               
+#define DMA_INTF_HTFIF0_Msk                   (0x1U << DMA_INTF_HTFIF0_Pos)        /*!< 0x00000004 */
+#define DMA_INTF_HTFIF0                       DMA_INTF_HTFIF0_Msk                  /*!< Channel 1 Half Transfer flag */
+#define DMA_INTF_ERRIF0_Pos                   (3U)                               
+#define DMA_INTF_ERRIF0_Msk                   (0x1U << DMA_INTF_ERRIF0_Pos)        /*!< 0x00000008 */
+#define DMA_INTF_ERRIF0                       DMA_INTF_ERRIF0_Msk                  /*!< Channel 1 Transfer Error flag */
+#define DMA_INTF_GIF1_Pos                    (4U)                               
+#define DMA_INTF_GIF1_Msk                    (0x1U << DMA_INTF_GIF1_Pos)         /*!< 0x00000010 */
+#define DMA_INTF_GIF1                        DMA_INTF_GIF1_Msk                   /*!< Channel 2 Global interrupt flag */
+#define DMA_INTF_FTFIF1_Pos                   (5U)                               
+#define DMA_INTF_FTFIF1_Msk                   (0x1U << DMA_INTF_FTFIF1_Pos)        /*!< 0x00000020 */
+#define DMA_INTF_FTFIF1                       DMA_INTF_FTFIF1_Msk                  /*!< Channel 2 Full Transfer finish flag */
+#define DMA_INTF_HTFIF1_Pos                   (6U)                               
+#define DMA_INTF_HTFIF1_Msk                   (0x1U << DMA_INTF_HTFIF1_Pos)        /*!< 0x00000040 */
+#define DMA_INTF_HTFIF1                       DMA_INTF_HTFIF1_Msk                  /*!< Channel 2 Half Transfer flag */
+#define DMA_INTF_ERRIF1_Pos                   (7U)                               
+#define DMA_INTF_ERRIF1_Msk                   (0x1U << DMA_INTF_ERRIF1_Pos)        /*!< 0x00000080 */
+#define DMA_INTF_ERRIF1                       DMA_INTF_ERRIF1_Msk                  /*!< Channel 2 Transfer Error flag */
+#define DMA_INTF_GIF2_Pos                    (8U)                               
+#define DMA_INTF_GIF2_Msk                    (0x1U << DMA_INTF_GIF2_Pos)         /*!< 0x00000100 */
+#define DMA_INTF_GIF2                        DMA_INTF_GIF2_Msk                   /*!< Channel 3 Global interrupt flag */
+#define DMA_INTF_FTFIF2_Pos                   (9U)                               
+#define DMA_INTF_FTFIF2_Msk                   (0x1U << DMA_INTF_FTFIF2_Pos)        /*!< 0x00000200 */
+#define DMA_INTF_FTFIF2                       DMA_INTF_FTFIF2_Msk                  /*!< Channel 3 Full Transfer finish flag */
+#define DMA_INTF_HTFIF2_Pos                   (10U)                              
+#define DMA_INTF_HTFIF2_Msk                   (0x1U << DMA_INTF_HTFIF2_Pos)        /*!< 0x00000400 */
+#define DMA_INTF_HTFIF2                       DMA_INTF_HTFIF2_Msk                  /*!< Channel 3 Half Transfer flag */
+#define DMA_INTF_ERRIF2_Pos                   (11U)                              
+#define DMA_INTF_ERRIF2_Msk                   (0x1U << DMA_INTF_ERRIF2_Pos)        /*!< 0x00000800 */
+#define DMA_INTF_ERRIF2                       DMA_INTF_ERRIF2_Msk                  /*!< Channel 3 Transfer Error flag */
+#define DMA_INTF_GIF3_Pos                    (12U)                              
+#define DMA_INTF_GIF3_Msk                    (0x1U << DMA_INTF_GIF3_Pos)         /*!< 0x00001000 */
+#define DMA_INTF_GIF3                        DMA_INTF_GIF3_Msk                   /*!< Channel 4 Global interrupt flag */
+#define DMA_INTF_FTFIF3_Pos                   (13U)                              
+#define DMA_INTF_FTFIF3_Msk                   (0x1U << DMA_INTF_FTFIF3_Pos)        /*!< 0x00002000 */
+#define DMA_INTF_FTFIF3                       DMA_INTF_FTFIF3_Msk                  /*!< Channel 4 Full Transfer finish flag */
+#define DMA_INTF_HTFIF3_Pos                   (14U)                              
+#define DMA_INTF_HTFIF3_Msk                   (0x1U << DMA_INTF_HTFIF3_Pos)        /*!< 0x00004000 */
+#define DMA_INTF_HTFIF3                       DMA_INTF_HTFIF3_Msk                  /*!< Channel 4 Half Transfer flag */
+#define DMA_INTF_ERRIF3_Pos                   (15U)                              
+#define DMA_INTF_ERRIF3_Msk                   (0x1U << DMA_INTF_ERRIF3_Pos)        /*!< 0x00008000 */
+#define DMA_INTF_ERRIF3                       DMA_INTF_ERRIF3_Msk                  /*!< Channel 4 Transfer Error flag */
+#define DMA_INTF_GIF4_Pos                    (16U)                              
+#define DMA_INTF_GIF4_Msk                    (0x1U << DMA_INTF_GIF4_Pos)         /*!< 0x00010000 */
+#define DMA_INTF_GIF4                        DMA_INTF_GIF4_Msk                   /*!< Channel 5 Global interrupt flag */
+#define DMA_INTF_FTFIF4_Pos                   (17U)                              
+#define DMA_INTF_FTFIF4_Msk                   (0x1U << DMA_INTF_FTFIF4_Pos)        /*!< 0x00020000 */
+#define DMA_INTF_FTFIF4                       DMA_INTF_FTFIF4_Msk                  /*!< Channel 5 Full Transfer finish flag */
+#define DMA_INTF_HTFIF4_Pos                   (18U)                              
+#define DMA_INTF_HTFIF4_Msk                   (0x1U << DMA_INTF_HTFIF4_Pos)        /*!< 0x00040000 */
+#define DMA_INTF_HTFIF4                       DMA_INTF_HTFIF4_Msk                  /*!< Channel 5 Half Transfer flag */
+#define DMA_INTF_ERRIF4_Pos                   (19U)                              
+#define DMA_INTF_ERRIF4_Msk                   (0x1U << DMA_INTF_ERRIF4_Pos)        /*!< 0x00080000 */
+#define DMA_INTF_ERRIF4                       DMA_INTF_ERRIF4_Msk                  /*!< Channel 5 Transfer Error flag */
+#define DMA_INTF_GIF5_Pos                    (20U)                              
+#define DMA_INTF_GIF5_Msk                    (0x1U << DMA_INTF_GIF5_Pos)         /*!< 0x00100000 */
+#define DMA_INTF_GIF5                        DMA_INTF_GIF5_Msk                   /*!< Channel 6 Global interrupt flag */
+#define DMA_INTF_FTFIF5_Pos                   (21U)                              
+#define DMA_INTF_FTFIF5_Msk                   (0x1U << DMA_INTF_FTFIF5_Pos)        /*!< 0x00200000 */
+#define DMA_INTF_FTFIF5                       DMA_INTF_FTFIF5_Msk                  /*!< Channel 6 Full Transfer finish flag */
+#define DMA_INTF_HTFIF5_Pos                   (22U)                              
+#define DMA_INTF_HTFIF5_Msk                   (0x1U << DMA_INTF_HTFIF5_Pos)        /*!< 0x00400000 */
+#define DMA_INTF_HTFIF5                       DMA_INTF_HTFIF5_Msk                  /*!< Channel 6 Half Transfer flag */
+#define DMA_INTF_ERRIF5_Pos                   (23U)                              
+#define DMA_INTF_ERRIF5_Msk                   (0x1U << DMA_INTF_ERRIF5_Pos)        /*!< 0x00800000 */
+#define DMA_INTF_ERRIF5                       DMA_INTF_ERRIF5_Msk                  /*!< Channel 6 Transfer Error flag */
+#define DMA_INTF_GIF6_Pos                    (24U)                              
+#define DMA_INTF_GIF6_Msk                    (0x1U << DMA_INTF_GIF6_Pos)         /*!< 0x01000000 */
+#define DMA_INTF_GIF6                        DMA_INTF_GIF6_Msk                   /*!< Channel 7 Global interrupt flag */
+#define DMA_INTF_FTFIF6_Pos                   (25U)                              
+#define DMA_INTF_FTFIF6_Msk                   (0x1U << DMA_INTF_FTFIF6_Pos)        /*!< 0x02000000 */
+#define DMA_INTF_FTFIF6                       DMA_INTF_FTFIF6_Msk                  /*!< Channel 7 Full Transfer finish flag */
+#define DMA_INTF_HTFIF6_Pos                   (26U)                              
+#define DMA_INTF_HTFIF6_Msk                   (0x1U << DMA_INTF_HTFIF6_Pos)        /*!< 0x04000000 */
+#define DMA_INTF_HTFIF6                       DMA_INTF_HTFIF6_Msk                  /*!< Channel 7 Half Transfer flag */
+#define DMA_INTF_ERRIF6_Pos                   (27U)                              
+#define DMA_INTF_ERRIF6_Msk                   (0x1U << DMA_INTF_ERRIF6_Pos)        /*!< 0x08000000 */
+#define DMA_INTF_ERRIF6                       DMA_INTF_ERRIF6_Msk                  /*!< Channel 7 Transfer Error flag */
 
 /*******************  Bit definition for DMA_IFCR register  *******************/
 #define DMA_IFCR_CGIF1_Pos                  (0U)                               

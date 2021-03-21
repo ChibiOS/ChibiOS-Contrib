@@ -278,7 +278,7 @@ static void uart_lld_serve_rx_end_irq(UARTDriver *uartp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_UART_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
+  if ((flags & (GD32_DMA_INTF_ERRIF)) != 0) {
     GD32_UART_DMA_ERROR_HOOK(uartp);
   }
 #else
@@ -308,7 +308,7 @@ static void uart_lld_serve_tx_end_irq(UARTDriver *uartp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_UART_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
+  if ((flags & (GD32_DMA_INTF_ERRIF)) != 0) {
     GD32_UART_DMA_ERROR_HOOK(uartp);
   }
 #else

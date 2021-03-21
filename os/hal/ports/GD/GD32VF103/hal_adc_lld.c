@@ -56,17 +56,17 @@ ADCDriver ADCD1;
 static void adc_lld_serve_rx_interrupt(ADCDriver *adcp, uint32_t flags) {
 
   /* DMA errors handling.*/
-  if ((flags & GD32_DMA_ISR_TEIF) != 0) {
+  if ((flags & GD32_DMA_INTF_ERRIF) != 0) {
     /* DMA, this could help only if the DMA tries to access an unmapped
        address space or violates alignment rules.*/
     _adc_isr_error_code(adcp, ADC_ERR_DMAFAILURE);
   }
   else {
-    if ((flags & GD32_DMA_ISR_TCIF) != 0) {
+    if ((flags & GD32_DMA_INTF_FTFIF) != 0) {
       /* Transfer complete processing.*/
       _adc_isr_full_code(adcp);
     }
-    else if ((flags & GD32_DMA_ISR_HTIF) != 0) {
+    else if ((flags & GD32_DMA_INTF_HTFIF) != 0) {
       /* Half transfer processing.*/
       _adc_isr_half_code(adcp);
     }

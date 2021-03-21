@@ -329,7 +329,7 @@ static void i2c_lld_serve_rx_end_irq(I2CDriver *i2cp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_I2C_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
+  if ((flags & (GD32_DMA_INTF_ERRIF)) != 0) {
     GD32_I2C_DMA_ERROR_HOOK(i2cp);
   }
 #else
@@ -356,7 +356,7 @@ static void i2c_lld_serve_tx_end_irq(I2CDriver *i2cp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_I2C_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
+  if ((flags & (GD32_DMA_INTF_ERRIF)) != 0) {
     GD32_I2C_DMA_ERROR_HOOK(i2cp);
   }
 #else

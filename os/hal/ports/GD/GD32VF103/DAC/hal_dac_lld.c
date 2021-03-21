@@ -281,17 +281,17 @@ static const dacparams_t dac4_ch2_params = {
  */
 static void dac_lld_serve_tx_interrupt(DACDriver *dacp, uint32_t flags) {
 
-  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
+  if ((flags & (GD32_DMA_INTF_ERRIF)) != 0) {
     /* DMA errors handling.*/
     dac_lld_stop_conversion(dacp);
     _dac_isr_error_code(dacp, DAC_ERR_DMAFAILURE);
   }
   else {
-    if ((flags & GD32_DMA_ISR_HTIF) != 0) {
+    if ((flags & GD32_DMA_INTF_HTFIF) != 0) {
       /* Half transfer processing.*/
       _dac_isr_half_code(dacp);
     }
-    if ((flags & GD32_DMA_ISR_TCIF) != 0) {
+    if ((flags & GD32_DMA_INTF_FTFIF) != 0) {
       /* Transfer complete processing.*/
       _dac_isr_full_code(dacp);
     }

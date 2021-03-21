@@ -156,18 +156,18 @@ static void i2s_lld_serve_rx_interrupt(I2SDriver *i2sp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_I2S_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
+  if ((flags & (GD32_DMA_INTF_ERRIF)) != 0) {
     GD32_I2S_DMA_ERROR_HOOK(i2sp);
   }
 #endif
 
   /* Callbacks handling, note it is portable code defined in the high
      level driver.*/
-  if ((flags & GD32_DMA_ISR_TCIF) != 0) {
+  if ((flags & GD32_DMA_INTF_FTFIF) != 0) {
     /* Transfer complete processing.*/
     _i2s_isr_full_code(i2sp);
   }
-  else if ((flags & GD32_DMA_ISR_HTIF) != 0) {
+  else if ((flags & GD32_DMA_INTF_HTFIF) != 0) {
     /* Half transfer processing.*/
     _i2s_isr_half_code(i2sp);
   }
@@ -189,18 +189,18 @@ static void i2s_lld_serve_tx_interrupt(I2SDriver *i2sp, uint32_t flags) {
 
   /* DMA errors handling.*/
 #if defined(GD32_I2S_DMA_ERROR_HOOK)
-  if ((flags & (GD32_DMA_ISR_TEIF)) != 0) {
+  if ((flags & (GD32_DMA_INTF_ERRIF)) != 0) {
     GD32_I2S_DMA_ERROR_HOOK(i2sp);
   }
 #endif
 
   /* Callbacks handling, note it is portable code defined in the high
      level driver.*/
-  if ((flags & GD32_DMA_ISR_TCIF) != 0) {
+  if ((flags & GD32_DMA_INTF_FTFIF) != 0) {
     /* Transfer complete processing.*/
     _i2s_isr_full_code(i2sp);
   }
-  else if ((flags & GD32_DMA_ISR_HTIF) != 0) {
+  else if ((flags & GD32_DMA_INTF_HTFIF) != 0) {
     /* Half transfer processing.*/
     _i2s_isr_half_code(i2sp);
   }
