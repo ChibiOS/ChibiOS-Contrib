@@ -299,7 +299,7 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t ISR;
+  __IO uint32_t INTF;
   __IO uint32_t IFCR;
 } DMA_TypeDef;
 

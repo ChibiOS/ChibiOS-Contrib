@@ -575,7 +575,7 @@ void dmaServeInterrupt(const gd32_dma_stream_t *dmastp) {
   uint32_t flags;
   uint32_t selfindex = (uint32_t)dmastp->selfindex;
 
-  flags = (dmastp->dma->ISR >> dmastp->shift) & GD32_DMA_INTF_MASK;
+  flags = (dmastp->dma->INTF >> dmastp->shift) & GD32_DMA_INTF_MASK;
   if (flags & dmastp->channel->CCR) {
     dmastp->dma->IFCR = flags << dmastp->shift;
     if (dma.streams[selfindex].func) {
