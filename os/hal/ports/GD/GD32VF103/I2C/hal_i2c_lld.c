@@ -566,14 +566,14 @@ void i2c_lld_start(I2CDriver *i2cp) {
   /* If in stopped state then enables the I2C and DMA clocks.*/
   if (i2cp->state == I2C_STOP) {
 
-    i2cp->txdmamode = GD32_DMA_CR_PSIZE_BYTE | GD32_DMA_CR_MSIZE_BYTE |
-                      GD32_DMA_CR_MINC       | 
-                      GD32_DMA_CR_TEIE       | GD32_DMA_CR_TCIE |
-                      GD32_DMA_CR_DIR_M2P;
-    i2cp->rxdmamode = GD32_DMA_CR_PSIZE_BYTE | GD32_DMA_CR_MSIZE_BYTE |
-                      GD32_DMA_CR_MINC       | 
-                      GD32_DMA_CR_TEIE       | GD32_DMA_CR_TCIE |
-                      GD32_DMA_CR_DIR_P2M;
+    i2cp->txdmamode = GD32_DMA_CTL_PWIDTH_BYTE | GD32_DMA_CTL_MWIDTH_BYTE |
+                      GD32_DMA_CTL_MNAGA       | 
+                      GD32_DMA_CTL_ERRIE       | GD32_DMA_CTL_FTFIE |
+                      GD32_DMA_CTL_DIR_M2P;
+    i2cp->rxdmamode = GD32_DMA_CTL_PWIDTH_BYTE | GD32_DMA_CTL_MWIDTH_BYTE |
+                      GD32_DMA_CTL_MNAGA       | 
+                      GD32_DMA_CTL_ERRIE       | GD32_DMA_CTL_FTFIE |
+                      GD32_DMA_CTL_DIR_P2M;
 
 #if GD32_I2C_USE_I2C1
     if (&I2CD1 == i2cp) {
@@ -594,10 +594,10 @@ void i2c_lld_start(I2CDriver *i2cp) {
       eclicEnableVector(I2C0_EV_IRQn, GD32_I2C_I2C1_IRQ_PRIORITY, GD32_I2C_I2C1_IRQ_TRIGGER);
       eclicEnableVector(I2C0_ER_IRQn, GD32_I2C_I2C1_IRQ_PRIORITY, GD32_I2C_I2C1_IRQ_TRIGGER);
 
-      i2cp->rxdmamode |= GD32_DMA_CR_CHSEL(I2C1_RX_DMA_CHANNEL) |
-                       GD32_DMA_CR_PL(GD32_I2C_I2C1_DMA_PRIORITY);
-      i2cp->txdmamode |= GD32_DMA_CR_CHSEL(I2C1_TX_DMA_CHANNEL) |
-                       GD32_DMA_CR_PL(GD32_I2C_I2C1_DMA_PRIORITY);
+      i2cp->rxdmamode |= GD32_DMA_CTL_CHSEL(I2C1_RX_DMA_CHANNEL) |
+                       GD32_DMA_CTL_PRIO(GD32_I2C_I2C1_DMA_PRIORITY);
+      i2cp->txdmamode |= GD32_DMA_CTL_CHSEL(I2C1_TX_DMA_CHANNEL) |
+                       GD32_DMA_CTL_PRIO(GD32_I2C_I2C1_DMA_PRIORITY);
     }
 #endif /* GD32_I2C_USE_I2C1 */
 
@@ -620,10 +620,10 @@ void i2c_lld_start(I2CDriver *i2cp) {
       eclicEnableVector(I2C1_EV_IRQn, GD32_I2C_I2C2_IRQ_PRIORITY, GD32_I2C_I2C2_IRQ_TRIGGER);
       eclicEnableVector(I2C1_ER_IRQn, GD32_I2C_I2C2_IRQ_PRIORITY, GD32_I2C_I2C2_IRQ_TRIGGER);
 
-      i2cp->rxdmamode |= GD32_DMA_CR_CHSEL(I2C2_RX_DMA_CHANNEL) |
-                       GD32_DMA_CR_PL(GD32_I2C_I2C2_DMA_PRIORITY);
-      i2cp->txdmamode |= GD32_DMA_CR_CHSEL(I2C2_TX_DMA_CHANNEL) |
-                       GD32_DMA_CR_PL(GD32_I2C_I2C2_DMA_PRIORITY);
+      i2cp->rxdmamode |= GD32_DMA_CTL_CHSEL(I2C2_RX_DMA_CHANNEL) |
+                       GD32_DMA_CTL_PRIO(GD32_I2C_I2C2_DMA_PRIORITY);
+      i2cp->txdmamode |= GD32_DMA_CTL_CHSEL(I2C2_TX_DMA_CHANNEL) |
+                       GD32_DMA_CTL_PRIO(GD32_I2C_I2C2_DMA_PRIORITY);
     }
 #endif /* GD32_I2C_USE_I2C2 */
   }

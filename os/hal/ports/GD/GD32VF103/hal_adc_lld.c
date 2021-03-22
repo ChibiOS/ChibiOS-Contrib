@@ -93,10 +93,10 @@ void adc_lld_init(void) {
   adcObjectInit(&ADCD1);
   ADCD1.adc = ADC1;
   ADCD1.dmastp  = NULL;
-  ADCD1.dmamode = GD32_DMA_CR_PL(GD32_ADC_ADC1_DMA_PRIORITY) |
-                  GD32_DMA_CR_MSIZE_HWORD | GD32_DMA_CR_PSIZE_HWORD |
-                  GD32_DMA_CR_MINC        | GD32_DMA_CR_TCIE        |
-                  GD32_DMA_CR_TEIE;
+  ADCD1.dmamode = GD32_DMA_CTL_PRIO(GD32_ADC_ADC1_DMA_PRIORITY) |
+                  GD32_DMA_CTL_MWIDTH_HWORD | GD32_DMA_CTL_PWIDTH_HWORD |
+                  GD32_DMA_CTL_MNAGA        | GD32_DMA_CTL_FTFIE        |
+                  GD32_DMA_CTL_ERRIE;
 
   /* Temporary activation.*/
   rccEnableADC1(true);
@@ -188,11 +188,11 @@ void adc_lld_start_conversion(ADCDriver *adcp) {
   /* DMA setup.*/
   mode = adcp->dmamode;
   if (grpp->circular) {
-    mode |= GD32_DMA_CR_CIRC;
+    mode |= GD32_DMA_CTL_CMEN;
     if (adcp->depth > 1) {
       /* If circular buffer depth > 1, then the half transfer interrupt
          is enabled in order to allow streaming processing.*/
-      mode |= GD32_DMA_CR_HTIE;
+      mode |= GD32_DMA_CTL_HTFIE;
     }
   }
   dmaStreamSetMemory0(adcp->dmastp, adcp->samples);

@@ -387,7 +387,7 @@ void dmaInit(void) {
   dma.allocated_mask = 0U;
   dma.isr_mask       = 0U;
   for (i = 0; i < GD32_DMA_STREAMS; i++) {
-    _gd32_dma_streams[i].channel->CCR = GD32_DMA_CCR_RESET_VALUE;
+    _gd32_dma_streams[i].channel->CTL = GD32_DMA_CTL_RESET_VALUE;
     dma.streams[i].func = NULL;
   }
   DMA0->INTC = 0xFFFFFFFFU;
@@ -462,7 +462,7 @@ const gd32_dma_stream_t *dmaStreamAllocI(uint32_t id,
 
       /* Putting the stream in a known state.*/
       dmaStreamDisable(dmastp);
-      dmastp->channel->CCR = GD32_DMA_CCR_RESET_VALUE;
+      dmastp->channel->CTL = GD32_DMA_CTL_RESET_VALUE;
 
       return dmastp;
     }
@@ -576,7 +576,7 @@ void dmaServeInterrupt(const gd32_dma_stream_t *dmastp) {
   uint32_t selfindex = (uint32_t)dmastp->selfindex;
 
   flags = (dmastp->dma->INTF >> dmastp->shift) & GD32_DMA_INTF_MASK;
-  if (flags & dmastp->channel->CCR) {
+  if (flags & dmastp->channel->CTL) {
     dmastp->dma->INTC = flags << dmastp->shift;
     if (dma.streams[selfindex].func) {
       dma.streams[selfindex].func(dma.streams[selfindex].param, flags);

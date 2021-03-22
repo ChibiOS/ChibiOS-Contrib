@@ -188,9 +188,9 @@ static void uart_enter_rx_idle_loop(UARTDriver *uartp) {
   /* RX DMA channel preparation, if the char callback is defined then the
      TCIE interrupt is enabled too.*/
   if (uartp->config->rxchar_cb == NULL)
-    mode = GD32_DMA_CR_DIR_P2M | GD32_DMA_CR_CIRC;
+    mode = GD32_DMA_CTL_DIR_P2M | GD32_DMA_CTL_CMEN;
   else
-    mode = GD32_DMA_CR_DIR_P2M | GD32_DMA_CR_CIRC | GD32_DMA_CR_TCIE;
+    mode = GD32_DMA_CTL_DIR_P2M | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_FTFIE;
   dmaStreamSetMemory0(uartp->dmarx, &uartp->rxbuf);
   dmaStreamSetTransactionSize(uartp->dmarx, 1);
   dmaStreamSetMode(uartp->dmarx, uartp->dmarxmode | mode);
@@ -525,8 +525,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_USART1
   uartObjectInit(&UARTD1);
   UARTD1.usart   = USART1;
-  UARTD1.dmarxmode = GD32_DMA_CR_TEIE;
-  UARTD1.dmatxmode = GD32_DMA_CR_TEIE;
+  UARTD1.dmarxmode = GD32_DMA_CTL_ERRIE;
+  UARTD1.dmatxmode = GD32_DMA_CTL_ERRIE;
   UARTD1.dmarx   = NULL;
   UARTD1.dmatx   = NULL;
 #endif
@@ -534,8 +534,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_USART2
   uartObjectInit(&UARTD2);
   UARTD2.usart   = USART2;
-  UARTD2.dmarxmode = GD32_DMA_CR_TEIE;
-  UARTD2.dmatxmode = GD32_DMA_CR_TEIE;
+  UARTD2.dmarxmode = GD32_DMA_CTL_ERRIE;
+  UARTD2.dmatxmode = GD32_DMA_CTL_ERRIE;
   UARTD2.dmarx   = NULL;
   UARTD2.dmatx   = NULL;
 #endif
@@ -543,8 +543,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_USART3
   uartObjectInit(&UARTD3);
   UARTD3.usart   = USART3;
-  UARTD3.dmarxmode = GD32_DMA_CR_TEIE;
-  UARTD3.dmatxmode = GD32_DMA_CR_TEIE;
+  UARTD3.dmarxmode = GD32_DMA_CTL_ERRIE;
+  UARTD3.dmatxmode = GD32_DMA_CTL_ERRIE;
   UARTD3.dmarx   = NULL;
   UARTD3.dmatx   = NULL;
 #endif
@@ -552,8 +552,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_UART4
   uartObjectInit(&UARTD4);
   UARTD4.usart   = UART4;
-  UARTD4.dmarxmode = GD32_DMA_CR_TEIE;
-  UARTD4.dmatxmode = GD32_DMA_CR_TEIE;
+  UARTD4.dmarxmode = GD32_DMA_CTL_ERRIE;
+  UARTD4.dmatxmode = GD32_DMA_CTL_ERRIE;
   UARTD4.dmarx   = NULL;
   UARTD4.dmatx   = NULL;
 #endif
@@ -561,8 +561,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_UART5
   uartObjectInit(&UARTD5);
   UARTD5.usart   = UART5;
-  UARTD5.dmarxmode = GD32_DMA_CR_TEIE;
-  UARTD5.dmatxmode = GD32_DMA_CR_TEIE;
+  UARTD5.dmarxmode = GD32_DMA_CTL_ERRIE;
+  UARTD5.dmatxmode = GD32_DMA_CTL_ERRIE;
   UARTD5.dmarx   = NULL;
   UARTD5.dmatx   = NULL;
 #endif
@@ -570,8 +570,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_USART6
   uartObjectInit(&UARTD6);
   UARTD6.usart   = USART6;
-  UARTD6.dmarxmode = GD32_DMA_CR_TEIE;
-  UARTD6.dmatxmode = GD32_DMA_CR_TEIE;
+  UARTD6.dmarxmode = GD32_DMA_CTL_ERRIE;
+  UARTD6.dmatxmode = GD32_DMA_CTL_ERRIE;
   UARTD6.dmarx   = NULL;
   UARTD6.dmatx   = NULL;
 #endif
@@ -579,8 +579,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_UART7
   uartObjectInit(&UARTD7);
   UARTD7.usart   = UART7;
-  UARTD7.dmarxmode = GD32_DMA_CR_TEIE;
-  UARTD7.dmatxmode = GD32_DMA_CR_TEIE;
+  UARTD7.dmarxmode = GD32_DMA_CTL_ERRIE;
+  UARTD7.dmatxmode = GD32_DMA_CTL_ERRIE;
   UARTD7.dmarx   = NULL;
   UARTD7.dmatx   = NULL;
 #endif
@@ -588,8 +588,8 @@ void uart_lld_init(void) {
 #if GD32_UART_USE_UART8
   uartObjectInit(&UARTD8);
   UARTD8.usart   = UART8;
-  UARTD8.dmarxmode = GD32_DMA_CR_TEIE;
-  UARTD8.dmatxmode = GD32_DMA_CR_TEIE;
+  UARTD8.dmarxmode = GD32_DMA_CTL_ERRIE;
+  UARTD8.dmatxmode = GD32_DMA_CTL_ERRIE;
   UARTD8.dmarx   = NULL;
   UARTD8.dmatx   = NULL;
 #endif
@@ -620,10 +620,10 @@ void uart_lld_start(UARTDriver *uartp) {
 
       rccEnableUSART1(true);
       eclicEnableVector(GD32_USART1_NUMBER, GD32_UART_USART1_IRQ_PRIORITY, GD32_UART_USART1_IRQ_TRIGGER);
-      uartp->dmarxmode |= GD32_DMA_CR_CHSEL(USART1_RX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_USART1_DMA_PRIORITY);
-      uartp->dmatxmode |= GD32_DMA_CR_CHSEL(USART1_TX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_USART1_DMA_PRIORITY);
+      uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(USART1_RX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_USART1_DMA_PRIORITY);
+      uartp->dmatxmode |= GD32_DMA_CTL_CHSEL(USART1_TX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_USART1_DMA_PRIORITY);
     }
 #endif
 
@@ -642,10 +642,10 @@ void uart_lld_start(UARTDriver *uartp) {
 
       rccEnableUSART2(true);
       eclicEnableVector(GD32_USART2_NUMBER, GD32_UART_USART2_IRQ_PRIORITY, GD32_UART_USART2_IRQ_TRIGGER);
-      uartp->dmarxmode |= GD32_DMA_CR_CHSEL(USART2_RX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_USART2_DMA_PRIORITY);
-      uartp->dmatxmode |= GD32_DMA_CR_CHSEL(USART2_TX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_USART2_DMA_PRIORITY);
+      uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(USART2_RX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_USART2_DMA_PRIORITY);
+      uartp->dmatxmode |= GD32_DMA_CTL_CHSEL(USART2_TX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_USART2_DMA_PRIORITY);
     }
 #endif
 
@@ -664,10 +664,10 @@ void uart_lld_start(UARTDriver *uartp) {
 
       rccEnableUSART3(true);
       eclicEnableVector(GD32_USART3_NUMBER, GD32_UART_USART3_IRQ_PRIORITY, GD32_UART_USART3_IRQ_TRIGGER);
-      uartp->dmarxmode |= GD32_DMA_CR_CHSEL(USART3_RX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_USART3_DMA_PRIORITY);
-      uartp->dmatxmode |= GD32_DMA_CR_CHSEL(USART3_TX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_USART3_DMA_PRIORITY);
+      uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(USART3_RX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_USART3_DMA_PRIORITY);
+      uartp->dmatxmode |= GD32_DMA_CTL_CHSEL(USART3_TX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_USART3_DMA_PRIORITY);
     }
 #endif
 
@@ -692,10 +692,10 @@ void uart_lld_start(UARTDriver *uartp) {
 
       rccEnableUART4(true);
       eclicEnableVector(GD32_UART4_NUMBER, GD32_UART_UART4_IRQ_PRIORITY, GD32_UART_UART4_IRQ_TRIGGER);
-      uartp->dmarxmode |= GD32_DMA_CR_CHSEL(UART4_RX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_UART4_DMA_PRIORITY);
-      uartp->dmatxmode |= GD32_DMA_CR_CHSEL(UART4_TX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_UART4_DMA_PRIORITY);
+      uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(UART4_RX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_UART4_DMA_PRIORITY);
+      uartp->dmatxmode |= GD32_DMA_CTL_CHSEL(UART4_TX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_UART4_DMA_PRIORITY);
     }
 #endif
 
@@ -720,10 +720,10 @@ void uart_lld_start(UARTDriver *uartp) {
 
       rccEnableUART5(true);
       eclicEnableVector(GD32_UART5_NUMBER, GD32_UART_UART5_IRQ_PRIORITY, GD32_UART_UART5_IRQ_TRIGGER);
-      uartp->dmarxmode |= GD32_DMA_CR_CHSEL(UART5_RX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_UART5_DMA_PRIORITY);
-      uartp->dmatxmode |= GD32_DMA_CR_CHSEL(UART5_TX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_UART5_DMA_PRIORITY);
+      uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(UART5_RX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_UART5_DMA_PRIORITY);
+      uartp->dmatxmode |= GD32_DMA_CTL_CHSEL(UART5_TX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_UART5_DMA_PRIORITY);
     }
 #endif
 
@@ -742,10 +742,10 @@ void uart_lld_start(UARTDriver *uartp) {
 
       rccEnableUSART6(true);
       eclicEnableVector(GD32_USART6_NUMBER, GD32_UART_USART6_IRQ_PRIORITY, GD32_UART_USART6_IRQ_TRIGGER);
-      uartp->dmarxmode |= GD32_DMA_CR_CHSEL(USART6_RX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_USART6_DMA_PRIORITY);
-      uartp->dmatxmode |= GD32_DMA_CR_CHSEL(USART6_TX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_USART6_DMA_PRIORITY);
+      uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(USART6_RX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_USART6_DMA_PRIORITY);
+      uartp->dmatxmode |= GD32_DMA_CTL_CHSEL(USART6_TX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_USART6_DMA_PRIORITY);
     }
 #endif
 
@@ -770,10 +770,10 @@ void uart_lld_start(UARTDriver *uartp) {
 
       rccEnableUART7(true);
       eclicEnableVector(GD32_UART7_NUMBER, GD32_UART_UART7_IRQ_PRIORITY, GD32_UART_UART7_IRQ_TRIGGER);
-      uartp->dmarxmode |= GD32_DMA_CR_CHSEL(UART7_RX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_UART7_DMA_PRIORITY);
-      uartp->dmatxmode |= GD32_DMA_CR_CHSEL(UART7_TX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_UART7_DMA_PRIORITY);
+      uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(UART7_RX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_UART7_DMA_PRIORITY);
+      uartp->dmatxmode |= GD32_DMA_CTL_CHSEL(UART7_TX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_UART7_DMA_PRIORITY);
     }
 #endif
 
@@ -798,18 +798,18 @@ void uart_lld_start(UARTDriver *uartp) {
 
       rccEnableUART8(true);
       eclicEnableVector(GD32_UART8_NUMBER, GD32_UART_UART8_IRQ_PRIORITY, GD32_UART_UART8_IRQ_TRIGGER);
-      uartp->dmarxmode |= GD32_DMA_CR_CHSEL(UART8_RX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_UART8_DMA_PRIORITY);
-      uartp->dmatxmode |= GD32_DMA_CR_CHSEL(UART8_TX_DMA_CHANNEL) |
-                          GD32_DMA_CR_PL(GD32_UART_UART8_DMA_PRIORITY);
+      uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(UART8_RX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_UART8_DMA_PRIORITY);
+      uartp->dmatxmode |= GD32_DMA_CTL_CHSEL(UART8_TX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_UART8_DMA_PRIORITY);
     }
 #endif
 
     /* Static DMA setup, the transfer size depends on the USART settings,
        it is 16 bits if M=1 and PCE=0 else it is 8 bits.*/
     if ((uartp->config->cr1 & (USART_CR1_M | USART_CR1_PCE)) == USART_CR1_M) {
-      uartp->dmarxmode |= GD32_DMA_CR_PSIZE_HWORD | GD32_DMA_CR_MSIZE_HWORD;
-      uartp->dmatxmode |= GD32_DMA_CR_PSIZE_HWORD | GD32_DMA_CR_MSIZE_HWORD;
+      uartp->dmarxmode |= GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
+      uartp->dmatxmode |= GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
     }
     dmaStreamSetPeripheral(uartp->dmarx, &uartp->usart->DR);
     dmaStreamSetPeripheral(uartp->dmatx, &uartp->usart->DR);
@@ -919,8 +919,8 @@ void uart_lld_start_send(UARTDriver *uartp, size_t n, const void *txbuf) {
   /* TX DMA channel preparation.*/
   dmaStreamSetMemory0(uartp->dmatx, txbuf);
   dmaStreamSetTransactionSize(uartp->dmatx, n);
-  dmaStreamSetMode(uartp->dmatx, uartp->dmatxmode  | GD32_DMA_CR_DIR_M2P |
-                                 GD32_DMA_CR_MINC | GD32_DMA_CR_TCIE);
+  dmaStreamSetMode(uartp->dmatx, uartp->dmatxmode  | GD32_DMA_CTL_DIR_M2P |
+                                 GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_FTFIE);
 
   /* Only enable TC interrupt if there's a callback attached to it or
      if called from uartSendFullTimeout(). Also we need to clear TC flag
@@ -975,8 +975,8 @@ void uart_lld_start_receive(UARTDriver *uartp, size_t n, void *rxbuf) {
   /* RX DMA channel preparation.*/
   dmaStreamSetMemory0(uartp->dmarx, rxbuf);
   dmaStreamSetTransactionSize(uartp->dmarx, n);
-  dmaStreamSetMode(uartp->dmarx, uartp->dmarxmode  | GD32_DMA_CR_DIR_P2M |
-                                 GD32_DMA_CR_MINC | GD32_DMA_CR_TCIE);
+  dmaStreamSetMode(uartp->dmarx, uartp->dmarxmode  | GD32_DMA_CTL_DIR_P2M |
+                                 GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_FTFIE);
 
   /* Starting transfer.*/
   dmaStreamEnable(uartp->dmarx);

@@ -127,11 +127,11 @@ static const dacparams_t dac1_ch1_params = {
 #if GD32_DMA_SUPPORTS_DMAMUX
   .peripheral   = GD32_DMAMUX1_DAC1_CH1,
 #endif
-  .dmamode      = GD32_DMA_CR_CHSEL(DAC1_CH1_DMA_CHANNEL) |
-                  GD32_DMA_CR_PL(GD32_DAC_DAC1_CH1_DMA_PRIORITY) |
-                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
-                  GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
-                  GD32_DMA_CR_TCIE,
+  .dmamode      = GD32_DMA_CTL_CHSEL(DAC1_CH1_DMA_CHANNEL) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC1_CH1_DMA_PRIORITY) |
+                  GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
+                  GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
+                  GD32_DMA_CTL_FTFIE,
   .dmairqprio   = GD32_DAC_DAC1_CH1_IRQ_PRIORITY
 };
 #endif
@@ -146,11 +146,11 @@ static const dacparams_t dac1_ch2_params = {
 #if GD32_DMA_SUPPORTS_DMAMUX
   .peripheral   = GD32_DMAMUX1_DAC1_CH2,
 #endif
-  .dmamode      = GD32_DMA_CR_CHSEL(DAC1_CH2_DMA_CHANNEL) |
-                  GD32_DMA_CR_PL(GD32_DAC_DAC1_CH2_DMA_PRIORITY) |
-                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
-                  GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
-                  GD32_DMA_CR_TCIE,
+  .dmamode      = GD32_DMA_CTL_CHSEL(DAC1_CH2_DMA_CHANNEL) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC1_CH2_DMA_PRIORITY) |
+                  GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
+                  GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
+                  GD32_DMA_CTL_FTFIE,
   .dmairqprio   = GD32_DAC_DAC1_CH2_IRQ_PRIORITY
 };
 #endif
@@ -165,11 +165,11 @@ static const dacparams_t dac2_ch1_params = {
 #if GD32_DMA_SUPPORTS_DMAMUX
   .peripheral   = GD32_DMAMUX1_DAC2_CH1,
 #endif
-  .dmamode      = GD32_DMA_CR_CHSEL(DAC2_CH1_DMA_CHANNEL) |
-                  GD32_DMA_CR_PL(GD32_DAC_DAC2_CH1_DMA_PRIORITY) |
-                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
-                  GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
-                  GD32_DMA_CR_TCIE,
+  .dmamode      = GD32_DMA_CTL_CHSEL(DAC2_CH1_DMA_CHANNEL) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC2_CH1_DMA_PRIORITY) |
+                  GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
+                  GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
+                  GD32_DMA_CTL_FTFIE,
   .dmairqprio   = GD32_DAC_DAC2_CH1_IRQ_PRIORITY
 };
 #endif
@@ -184,11 +184,11 @@ static const dacparams_t dac2_ch2_params = {
 #if GD32_DMA_SUPPORTS_DMAMUX
   .peripheral   = GD32_DMAMUX1_DAC2_CH2,
 #endif
-  .dmamode      = GD32_DMA_CR_CHSEL(DAC2_CH2_DMA_CHANNEL) |
-                  GD32_DMA_CR_PL(GD32_DAC_DAC2_CH2_DMA_PRIORITY) |
-                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
-                  GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
-                  GD32_DMA_CR_TCIE,
+  .dmamode      = GD32_DMA_CTL_CHSEL(DAC2_CH2_DMA_CHANNEL) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC2_CH2_DMA_PRIORITY) |
+                  GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
+                  GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
+                  GD32_DMA_CTL_FTFIE,
   .dmairqprio   = GD32_DAC_DAC2_CH2_IRQ_PRIORITY
 };
 #endif
@@ -203,11 +203,11 @@ static const dacparams_t dac3_ch1_params = {
 #if GD32_DMA_SUPPORTS_DMAMUX
   .peripheral   = GD32_DMAMUX1_DAC3_CH1,
 #endif
-  .dmamode      = GD32_DMA_CR_CHSEL(DAC3_CH1_DMA_CHANNEL) |
-                  GD32_DMA_CR_PL(GD32_DAC_DAC3_CH1_DMA_PRIORITY) |
-                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
-                  GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
-                  GD32_DMA_CR_TCIE,
+  .dmamode      = GD32_DMA_CTL_CHSEL(DAC3_CH1_DMA_CHANNEL) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC3_CH1_DMA_PRIORITY) |
+                  GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
+                  GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
+                  GD32_DMA_CTL_FTFIE,
   .dmairqprio   = GD32_DAC_DAC3_CH1_IRQ_PRIORITY
 };
 #endif
@@ -222,11 +222,11 @@ static const dacparams_t dac3_ch2_params = {
 #if GD32_DMA_SUPPORTS_DMAMUX
   .peripheral   = GD32_DMAMUX1_DAC3_CH2,
 #endif
-  .dmamode      = GD32_DMA_CR_CHSEL(DAC3_CH2_DMA_CHANNEL) |
-                  GD32_DMA_CR_PL(GD32_DAC_DAC3_CH2_DMA_PRIORITY) |
-                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
-                  GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
-                  GD32_DMA_CR_TCIE,
+  .dmamode      = GD32_DMA_CTL_CHSEL(DAC3_CH2_DMA_CHANNEL) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC3_CH2_DMA_PRIORITY) |
+                  GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
+                  GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
+                  GD32_DMA_CTL_FTFIE,
   .dmairqprio   = GD32_DAC_DAC3_CH2_IRQ_PRIORITY
 };
 #endif
@@ -241,11 +241,11 @@ static const dacparams_t dac4_ch1_params = {
 #if GD32_DMA_SUPPORTS_DMAMUX
   .peripheral   = GD32_DMAMUX1_DAC4_CH1,
 #endif
-  .dmamode      = GD32_DMA_CR_CHSEL(DAC4_CH1_DMA_CHANNEL) |
-                  GD32_DMA_CR_PL(GD32_DAC_DAC4_CH1_DMA_PRIORITY) |
-                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
-                  GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
-                  GD32_DMA_CR_TCIE,
+  .dmamode      = GD32_DMA_CTL_CHSEL(DAC4_CH1_DMA_CHANNEL) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC4_CH1_DMA_PRIORITY) |
+                  GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
+                  GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
+                  GD32_DMA_CTL_FTFIE,
   .dmairqprio   = GD32_DAC_DAC4_CH1_IRQ_PRIORITY
 };
 #endif
@@ -260,11 +260,11 @@ static const dacparams_t dac4_ch2_params = {
 #if GD32_DMA_SUPPORTS_DMAMUX
   .peripheral   = GD32_DMAMUX1_DAC4_CH2,
 #endif
-  .dmamode      = GD32_DMA_CR_CHSEL(DAC4_CH2_DMA_CHANNEL) |
-                  GD32_DMA_CR_PL(GD32_DAC_DAC4_CH2_DMA_PRIORITY) |
-                  GD32_DMA_CR_MINC | GD32_DMA_CR_CIRC | GD32_DMA_CR_DIR_M2P |
-                  GD32_DMA_CR_TEIE | GD32_DMA_CR_HTIE |
-                  GD32_DMA_CR_TCIE,
+  .dmamode      = GD32_DMA_CTL_CHSEL(DAC4_CH2_DMA_CHANNEL) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC4_CH2_DMA_PRIORITY) |
+                  GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
+                  GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
+                  GD32_DMA_CTL_FTFIE,
   .dmairqprio   = GD32_DAC_DAC4_CH2_IRQ_PRIORITY
 };
 #endif
@@ -652,7 +652,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12R1 +
                                       dacp->params->dataoffset);
     dmamode = dacp->params->dmamode |
-              GD32_DMA_CR_PSIZE_HWORD | GD32_DMA_CR_MSIZE_HWORD;
+              GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
     break;
   case DAC_DHRM_12BIT_LEFT:
     osalDbgAssert(dacp->grpp->num_channels == 1, "invalid number of channels");
@@ -660,7 +660,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12L1 +
                                       dacp->params->dataoffset);
     dmamode = dacp->params->dmamode |
-              GD32_DMA_CR_PSIZE_HWORD | GD32_DMA_CR_MSIZE_HWORD;
+              GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
     break;
   case DAC_DHRM_8BIT_RIGHT:
     osalDbgAssert(dacp->grpp->num_channels == 1, "invalid number of channels");
@@ -668,7 +668,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR8R1 +
                                       dacp->params->dataoffset);
     dmamode = dacp->params->dmamode |
-              GD32_DMA_CR_PSIZE_BYTE | GD32_DMA_CR_MSIZE_BYTE;
+              GD32_DMA_CTL_PWIDTH_BYTE | GD32_DMA_CTL_MWIDTH_BYTE;
 
     /* In this mode the size of the buffer is halved because two samples
        packed in a single dacsample_t element.*/
@@ -680,7 +680,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
 
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12RD);
     dmamode = dacp->params->dmamode |
-              GD32_DMA_CR_PSIZE_WORD | GD32_DMA_CR_MSIZE_WORD;
+              GD32_DMA_CTL_PWIDTH_WORD | GD32_DMA_CTL_MWIDTH_WORD;
     n /= 2;
     break;
   case DAC_DHRM_12BIT_LEFT_DUAL:
@@ -688,7 +688,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
 
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12LD);
     dmamode = dacp->params->dmamode |
-              GD32_DMA_CR_PSIZE_WORD | GD32_DMA_CR_MSIZE_WORD;
+              GD32_DMA_CTL_PWIDTH_WORD | GD32_DMA_CTL_MWIDTH_WORD;
     n /= 2;
     break;
   case DAC_DHRM_8BIT_RIGHT_DUAL:
@@ -696,7 +696,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
 
     dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR8RD);
     dmamode = dacp->params->dmamode |
-              GD32_DMA_CR_PSIZE_HWORD | GD32_DMA_CR_MSIZE_HWORD;
+              GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
     n /= 2;
     break;
 #endif
@@ -708,8 +708,8 @@ void dac_lld_start_conversion(DACDriver *dacp) {
   dmaStreamSetMemory0(dacp->dma, dacp->samples);
   dmaStreamSetTransactionSize(dacp->dma, n);
   dmaStreamSetMode(dacp->dma, dmamode            |
-                              GD32_DMA_CR_TEIE |
-                              GD32_DMA_CR_HTIE  | GD32_DMA_CR_TCIE);
+                              GD32_DMA_CTL_ERRIE |
+                              GD32_DMA_CTL_HTFIE  | GD32_DMA_CTL_FTFIE);
   dmaStreamEnable(dacp->dma);
 
   /* DAC configuration.*/

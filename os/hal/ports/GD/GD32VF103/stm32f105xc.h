@@ -291,7 +291,7 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CCR;
+  __IO uint32_t CTL;
   __IO uint32_t CNDTR;
   __IO uint32_t CPAR;
   __IO uint32_t CMAR;
@@ -3685,7 +3685,7 @@ typedef struct
 /*                                                                            */
 /******************************************************************************/
 
-/*******************  Bit definition for DMA_ISR register  ********************/
+/*******************  Bit definition for DMA_INTF register  ********************/
 #define DMA_INTF_GIF0_Pos                    (0U)                               
 #define DMA_INTF_GIF0_Msk                    (0x1U << DMA_INTF_GIF0_Pos)         /*!< 0x00000001 */
 #define DMA_INTF_GIF0                        DMA_INTF_GIF0_Msk                   /*!< Channel 1 Global interrupt flag */
@@ -3771,139 +3771,139 @@ typedef struct
 #define DMA_INTF_ERRIF6_Msk                   (0x1U << DMA_INTF_ERRIF6_Pos)        /*!< 0x08000000 */
 #define DMA_INTF_ERRIF6                       DMA_INTF_ERRIF6_Msk                  /*!< Channel 7 Transfer Error flag */
 
-/*******************  Bit definition for DMA_IFCR register  *******************/
-#define DMA_IFCR_CGIF1_Pos                  (0U)                               
-#define DMA_IFCR_CGIF1_Msk                  (0x1U << DMA_IFCR_CGIF1_Pos)       /*!< 0x00000001 */
-#define DMA_IFCR_CGIF1                      DMA_IFCR_CGIF1_Msk                 /*!< Channel 1 Global interrupt clear */
-#define DMA_IFCR_CTCIF1_Pos                 (1U)                               
-#define DMA_IFCR_CTCIF1_Msk                 (0x1U << DMA_IFCR_CTCIF1_Pos)      /*!< 0x00000002 */
-#define DMA_IFCR_CTCIF1                     DMA_IFCR_CTCIF1_Msk                /*!< Channel 1 Transfer Complete clear */
-#define DMA_IFCR_CHTIF1_Pos                 (2U)                               
-#define DMA_IFCR_CHTIF1_Msk                 (0x1U << DMA_IFCR_CHTIF1_Pos)      /*!< 0x00000004 */
-#define DMA_IFCR_CHTIF1                     DMA_IFCR_CHTIF1_Msk                /*!< Channel 1 Half Transfer clear */
-#define DMA_IFCR_CTEIF1_Pos                 (3U)                               
-#define DMA_IFCR_CTEIF1_Msk                 (0x1U << DMA_IFCR_CTEIF1_Pos)      /*!< 0x00000008 */
-#define DMA_IFCR_CTEIF1                     DMA_IFCR_CTEIF1_Msk                /*!< Channel 1 Transfer Error clear */
-#define DMA_IFCR_CGIF2_Pos                  (4U)                               
-#define DMA_IFCR_CGIF2_Msk                  (0x1U << DMA_IFCR_CGIF2_Pos)       /*!< 0x00000010 */
-#define DMA_IFCR_CGIF2                      DMA_IFCR_CGIF2_Msk                 /*!< Channel 2 Global interrupt clear */
-#define DMA_IFCR_CTCIF2_Pos                 (5U)                               
-#define DMA_IFCR_CTCIF2_Msk                 (0x1U << DMA_IFCR_CTCIF2_Pos)      /*!< 0x00000020 */
-#define DMA_IFCR_CTCIF2                     DMA_IFCR_CTCIF2_Msk                /*!< Channel 2 Transfer Complete clear */
-#define DMA_IFCR_CHTIF2_Pos                 (6U)                               
-#define DMA_IFCR_CHTIF2_Msk                 (0x1U << DMA_IFCR_CHTIF2_Pos)      /*!< 0x00000040 */
-#define DMA_IFCR_CHTIF2                     DMA_IFCR_CHTIF2_Msk                /*!< Channel 2 Half Transfer clear */
-#define DMA_IFCR_CTEIF2_Pos                 (7U)                               
-#define DMA_IFCR_CTEIF2_Msk                 (0x1U << DMA_IFCR_CTEIF2_Pos)      /*!< 0x00000080 */
-#define DMA_IFCR_CTEIF2                     DMA_IFCR_CTEIF2_Msk                /*!< Channel 2 Transfer Error clear */
-#define DMA_IFCR_CGIF3_Pos                  (8U)                               
-#define DMA_IFCR_CGIF3_Msk                  (0x1U << DMA_IFCR_CGIF3_Pos)       /*!< 0x00000100 */
-#define DMA_IFCR_CGIF3                      DMA_IFCR_CGIF3_Msk                 /*!< Channel 3 Global interrupt clear */
-#define DMA_IFCR_CTCIF3_Pos                 (9U)                               
-#define DMA_IFCR_CTCIF3_Msk                 (0x1U << DMA_IFCR_CTCIF3_Pos)      /*!< 0x00000200 */
-#define DMA_IFCR_CTCIF3                     DMA_IFCR_CTCIF3_Msk                /*!< Channel 3 Transfer Complete clear */
-#define DMA_IFCR_CHTIF3_Pos                 (10U)                              
-#define DMA_IFCR_CHTIF3_Msk                 (0x1U << DMA_IFCR_CHTIF3_Pos)      /*!< 0x00000400 */
-#define DMA_IFCR_CHTIF3                     DMA_IFCR_CHTIF3_Msk                /*!< Channel 3 Half Transfer clear */
-#define DMA_IFCR_CTEIF3_Pos                 (11U)                              
-#define DMA_IFCR_CTEIF3_Msk                 (0x1U << DMA_IFCR_CTEIF3_Pos)      /*!< 0x00000800 */
-#define DMA_IFCR_CTEIF3                     DMA_IFCR_CTEIF3_Msk                /*!< Channel 3 Transfer Error clear */
-#define DMA_IFCR_CGIF4_Pos                  (12U)                              
-#define DMA_IFCR_CGIF4_Msk                  (0x1U << DMA_IFCR_CGIF4_Pos)       /*!< 0x00001000 */
-#define DMA_IFCR_CGIF4                      DMA_IFCR_CGIF4_Msk                 /*!< Channel 4 Global interrupt clear */
-#define DMA_IFCR_CTCIF4_Pos                 (13U)                              
-#define DMA_IFCR_CTCIF4_Msk                 (0x1U << DMA_IFCR_CTCIF4_Pos)      /*!< 0x00002000 */
-#define DMA_IFCR_CTCIF4                     DMA_IFCR_CTCIF4_Msk                /*!< Channel 4 Transfer Complete clear */
-#define DMA_IFCR_CHTIF4_Pos                 (14U)                              
-#define DMA_IFCR_CHTIF4_Msk                 (0x1U << DMA_IFCR_CHTIF4_Pos)      /*!< 0x00004000 */
-#define DMA_IFCR_CHTIF4                     DMA_IFCR_CHTIF4_Msk                /*!< Channel 4 Half Transfer clear */
-#define DMA_IFCR_CTEIF4_Pos                 (15U)                              
-#define DMA_IFCR_CTEIF4_Msk                 (0x1U << DMA_IFCR_CTEIF4_Pos)      /*!< 0x00008000 */
-#define DMA_IFCR_CTEIF4                     DMA_IFCR_CTEIF4_Msk                /*!< Channel 4 Transfer Error clear */
-#define DMA_IFCR_CGIF5_Pos                  (16U)                              
-#define DMA_IFCR_CGIF5_Msk                  (0x1U << DMA_IFCR_CGIF5_Pos)       /*!< 0x00010000 */
-#define DMA_IFCR_CGIF5                      DMA_IFCR_CGIF5_Msk                 /*!< Channel 5 Global interrupt clear */
-#define DMA_IFCR_CTCIF5_Pos                 (17U)                              
-#define DMA_IFCR_CTCIF5_Msk                 (0x1U << DMA_IFCR_CTCIF5_Pos)      /*!< 0x00020000 */
-#define DMA_IFCR_CTCIF5                     DMA_IFCR_CTCIF5_Msk                /*!< Channel 5 Transfer Complete clear */
-#define DMA_IFCR_CHTIF5_Pos                 (18U)                              
-#define DMA_IFCR_CHTIF5_Msk                 (0x1U << DMA_IFCR_CHTIF5_Pos)      /*!< 0x00040000 */
-#define DMA_IFCR_CHTIF5                     DMA_IFCR_CHTIF5_Msk                /*!< Channel 5 Half Transfer clear */
-#define DMA_IFCR_CTEIF5_Pos                 (19U)                              
-#define DMA_IFCR_CTEIF5_Msk                 (0x1U << DMA_IFCR_CTEIF5_Pos)      /*!< 0x00080000 */
-#define DMA_IFCR_CTEIF5                     DMA_IFCR_CTEIF5_Msk                /*!< Channel 5 Transfer Error clear */
-#define DMA_IFCR_CGIF6_Pos                  (20U)                              
-#define DMA_IFCR_CGIF6_Msk                  (0x1U << DMA_IFCR_CGIF6_Pos)       /*!< 0x00100000 */
-#define DMA_IFCR_CGIF6                      DMA_IFCR_CGIF6_Msk                 /*!< Channel 6 Global interrupt clear */
-#define DMA_IFCR_CTCIF6_Pos                 (21U)                              
-#define DMA_IFCR_CTCIF6_Msk                 (0x1U << DMA_IFCR_CTCIF6_Pos)      /*!< 0x00200000 */
-#define DMA_IFCR_CTCIF6                     DMA_IFCR_CTCIF6_Msk                /*!< Channel 6 Transfer Complete clear */
-#define DMA_IFCR_CHTIF6_Pos                 (22U)                              
-#define DMA_IFCR_CHTIF6_Msk                 (0x1U << DMA_IFCR_CHTIF6_Pos)      /*!< 0x00400000 */
-#define DMA_IFCR_CHTIF6                     DMA_IFCR_CHTIF6_Msk                /*!< Channel 6 Half Transfer clear */
-#define DMA_IFCR_CTEIF6_Pos                 (23U)                              
-#define DMA_IFCR_CTEIF6_Msk                 (0x1U << DMA_IFCR_CTEIF6_Pos)      /*!< 0x00800000 */
-#define DMA_IFCR_CTEIF6                     DMA_IFCR_CTEIF6_Msk                /*!< Channel 6 Transfer Error clear */
-#define DMA_IFCR_CGIF7_Pos                  (24U)                              
-#define DMA_IFCR_CGIF7_Msk                  (0x1U << DMA_IFCR_CGIF7_Pos)       /*!< 0x01000000 */
-#define DMA_IFCR_CGIF7                      DMA_IFCR_CGIF7_Msk                 /*!< Channel 7 Global interrupt clear */
-#define DMA_IFCR_CTCIF7_Pos                 (25U)                              
-#define DMA_IFCR_CTCIF7_Msk                 (0x1U << DMA_IFCR_CTCIF7_Pos)      /*!< 0x02000000 */
-#define DMA_IFCR_CTCIF7                     DMA_IFCR_CTCIF7_Msk                /*!< Channel 7 Transfer Complete clear */
-#define DMA_IFCR_CHTIF7_Pos                 (26U)                              
-#define DMA_IFCR_CHTIF7_Msk                 (0x1U << DMA_IFCR_CHTIF7_Pos)      /*!< 0x04000000 */
-#define DMA_IFCR_CHTIF7                     DMA_IFCR_CHTIF7_Msk                /*!< Channel 7 Half Transfer clear */
-#define DMA_IFCR_CTEIF7_Pos                 (27U)                              
-#define DMA_IFCR_CTEIF7_Msk                 (0x1U << DMA_IFCR_CTEIF7_Pos)      /*!< 0x08000000 */
-#define DMA_IFCR_CTEIF7                     DMA_IFCR_CTEIF7_Msk                /*!< Channel 7 Transfer Error clear */
+/*******************  Bit definition for DMA_INTC register  *******************/
+#define DMA_INTC_GIFC0_Pos                  (0U)                               
+#define DMA_INTC_GIFC0_Msk                  (0x1U << DMA_INTC_GIFC0_Pos)       /*!< 0x00000001 */
+#define DMA_INTC_GIFC0                      DMA_INTC_GIFC0_Msk                 /*!< Channel 1 Global interrupt clear */
+#define DMA_INTC_FTFIFC0_Pos                 (1U)                               
+#define DMA_INTC_FTFIFC0_Msk                 (0x1U << DMA_INTC_FTFIFC0_Pos)      /*!< 0x00000002 */
+#define DMA_INTC_FTFIFC0                     DMA_INTC_FTFIFC0_Msk                /*!< Channel 1 Transfer Complete clear */
+#define DMA_INTC_HTFIFC0_Pos                 (2U)                               
+#define DMA_INTC_HTFIFC0_Msk                 (0x1U << DMA_INTC_HTFIFC0_Pos)      /*!< 0x00000004 */
+#define DMA_INTC_HTFIFC0                     DMA_INTC_HTFIFC0_Msk                /*!< Channel 1 Half Transfer clear */
+#define DMA_INTC_ERRIFC0_Pos                 (3U)                               
+#define DMA_INTC_ERRIFC0_Msk                 (0x1U << DMA_INTC_ERRIFC0_Pos)      /*!< 0x00000008 */
+#define DMA_INTC_ERRIFC0                     DMA_INTC_ERRIFC0_Msk                /*!< Channel 1 Transfer Error clear */
+#define DMA_INTC_GIFC1_Pos                  (4U)                               
+#define DMA_INTC_GIFC1_Msk                  (0x1U << DMA_INTC_GIFC1_Pos)       /*!< 0x00000010 */
+#define DMA_INTC_GIFC1                      DMA_INTC_GIFC1_Msk                 /*!< Channel 2 Global interrupt clear */
+#define DMA_INTC_FTFIFC1_Pos                 (5U)                               
+#define DMA_INTC_FTFIFC1_Msk                 (0x1U << DMA_INTC_FTFIFC1_Pos)      /*!< 0x00000020 */
+#define DMA_INTC_FTFIFC1                     DMA_INTC_FTFIFC1_Msk                /*!< Channel 2 Transfer Complete clear */
+#define DMA_INTC_HTFIFC1_Pos                 (6U)                               
+#define DMA_INTC_HTFIFC1_Msk                 (0x1U << DMA_INTC_HTFIFC1_Pos)      /*!< 0x00000040 */
+#define DMA_INTC_HTFIFC1                     DMA_INTC_HTFIFC1_Msk                /*!< Channel 2 Half Transfer clear */
+#define DMA_INTC_ERRIFC1_Pos                 (7U)                               
+#define DMA_INTC_ERRIFC1_Msk                 (0x1U << DMA_INTC_ERRIFC1_Pos)      /*!< 0x00000080 */
+#define DMA_INTC_ERRIFC1                     DMA_INTC_ERRIFC1_Msk                /*!< Channel 2 Transfer Error clear */
+#define DMA_INTC_GIFC2_Pos                  (8U)                               
+#define DMA_INTC_GIFC2_Msk                  (0x1U << DMA_INTC_GIFC2_Pos)       /*!< 0x00000100 */
+#define DMA_INTC_GIFC2                      DMA_INTC_GIFC2_Msk                 /*!< Channel 3 Global interrupt clear */
+#define DMA_INTC_FTFIFC2_Pos                 (9U)                               
+#define DMA_INTC_FTFIFC2_Msk                 (0x1U << DMA_INTC_FTFIFC2_Pos)      /*!< 0x00000200 */
+#define DMA_INTC_FTFIFC2                     DMA_INTC_FTFIFC2_Msk                /*!< Channel 3 Transfer Complete clear */
+#define DMA_INTC_HTFIFC2_Pos                 (10U)                              
+#define DMA_INTC_HTFIFC2_Msk                 (0x1U << DMA_INTC_HTFIFC2_Pos)      /*!< 0x00000400 */
+#define DMA_INTC_HTFIFC2                     DMA_INTC_HTFIFC2_Msk                /*!< Channel 3 Half Transfer clear */
+#define DMA_INTC_ERRIFC2_Pos                 (11U)                              
+#define DMA_INTC_ERRIFC2_Msk                 (0x1U << DMA_INTC_ERRIFC2_Pos)      /*!< 0x00000800 */
+#define DMA_INTC_ERRIFC2                     DMA_INTC_ERRIFC2_Msk                /*!< Channel 3 Transfer Error clear */
+#define DMA_INTC_GIFC3_Pos                  (12U)                              
+#define DMA_INTC_GIFC3_Msk                  (0x1U << DMA_INTC_GIFC3_Pos)       /*!< 0x00001000 */
+#define DMA_INTC_GIFC3                      DMA_INTC_GIFC3_Msk                 /*!< Channel 4 Global interrupt clear */
+#define DMA_INTC_FTFIFC3_Pos                 (13U)                              
+#define DMA_INTC_FTFIFC3_Msk                 (0x1U << DMA_INTC_FTFIFC3_Pos)      /*!< 0x00002000 */
+#define DMA_INTC_FTFIFC3                     DMA_INTC_FTFIFC3_Msk                /*!< Channel 4 Transfer Complete clear */
+#define DMA_INTC_HTFIFC3_Pos                 (14U)                              
+#define DMA_INTC_HTFIFC3_Msk                 (0x1U << DMA_INTC_HTFIFC3_Pos)      /*!< 0x00004000 */
+#define DMA_INTC_HTFIFC3                     DMA_INTC_HTFIFC3_Msk                /*!< Channel 4 Half Transfer clear */
+#define DMA_INTC_ERRIFC3_Pos                 (15U)                              
+#define DMA_INTC_ERRIFC3_Msk                 (0x1U << DMA_INTC_ERRIFC3_Pos)      /*!< 0x00008000 */
+#define DMA_INTC_ERRIFC3                     DMA_INTC_ERRIFC3_Msk                /*!< Channel 4 Transfer Error clear */
+#define DMA_INTC_GIFC4_Pos                  (16U)                              
+#define DMA_INTC_GIFC4_Msk                  (0x1U << DMA_INTC_GIFC4_Pos)       /*!< 0x00010000 */
+#define DMA_INTC_GIFC4                      DMA_INTC_GIFC4_Msk                 /*!< Channel 5 Global interrupt clear */
+#define DMA_INTC_FTFIFC4_Pos                 (17U)                              
+#define DMA_INTC_FTFIFC4_Msk                 (0x1U << DMA_INTC_FTFIFC4_Pos)      /*!< 0x00020000 */
+#define DMA_INTC_FTFIFC4                     DMA_INTC_FTFIFC4_Msk                /*!< Channel 5 Transfer Complete clear */
+#define DMA_INTC_HTFIFC4_Pos                 (18U)                              
+#define DMA_INTC_HTFIFC4_Msk                 (0x1U << DMA_INTC_HTFIFC4_Pos)      /*!< 0x00040000 */
+#define DMA_INTC_HTFIFC4                     DMA_INTC_HTFIFC4_Msk                /*!< Channel 5 Half Transfer clear */
+#define DMA_INTC_ERRIFC4_Pos                 (19U)                              
+#define DMA_INTC_ERRIFC4_Msk                 (0x1U << DMA_INTC_ERRIFC4_Pos)      /*!< 0x00080000 */
+#define DMA_INTC_ERRIFC4                     DMA_INTC_ERRIFC4_Msk                /*!< Channel 5 Transfer Error clear */
+#define DMA_INTC_GIFC5_Pos                  (20U)                              
+#define DMA_INTC_GIFC5_Msk                  (0x1U << DMA_INTC_GIFC5_Pos)       /*!< 0x00100000 */
+#define DMA_INTC_GIFC5                      DMA_INTC_GIFC5_Msk                 /*!< Channel 6 Global interrupt clear */
+#define DMA_INTC_FTFIFC5_Pos                 (21U)                              
+#define DMA_INTC_FTFIFC5_Msk                 (0x1U << DMA_INTC_FTFIFC5_Pos)      /*!< 0x00200000 */
+#define DMA_INTC_FTFIFC5                     DMA_INTC_FTFIFC5_Msk                /*!< Channel 6 Transfer Complete clear */
+#define DMA_INTC_HTFIFC5_Pos                 (22U)                              
+#define DMA_INTC_HTFIFC5_Msk                 (0x1U << DMA_INTC_HTFIFC5_Pos)      /*!< 0x00400000 */
+#define DMA_INTC_HTFIFC5                     DMA_INTC_HTFIFC5_Msk                /*!< Channel 6 Half Transfer clear */
+#define DMA_INTC_ERRIFC5_Pos                 (23U)                              
+#define DMA_INTC_ERRIFC5_Msk                 (0x1U << DMA_INTC_ERRIFC5_Pos)      /*!< 0x00800000 */
+#define DMA_INTC_ERRIFC5                     DMA_INTC_ERRIFC5_Msk                /*!< Channel 6 Transfer Error clear */
+#define DMA_INTC_GIFC6_Pos                  (24U)                              
+#define DMA_INTC_GIFC6_Msk                  (0x1U << DMA_INTC_GIFC6_Pos)       /*!< 0x01000000 */
+#define DMA_INTC_GIFC6                      DMA_INTC_GIFC6_Msk                 /*!< Channel 7 Global interrupt clear */
+#define DMA_INTC_FTFIFC6_Pos                 (25U)                              
+#define DMA_INTC_FTFIFC6_Msk                 (0x1U << DMA_INTC_FTFIFC6_Pos)      /*!< 0x02000000 */
+#define DMA_INTC_FTFIFC6                     DMA_INTC_FTFIFC6_Msk                /*!< Channel 7 Transfer Complete clear */
+#define DMA_INTC_HTFIFC6_Pos                 (26U)                              
+#define DMA_INTC_HTFIFC6_Msk                 (0x1U << DMA_INTC_HTFIFC6_Pos)      /*!< 0x04000000 */
+#define DMA_INTC_HTFIFC6                     DMA_INTC_HTFIFC6_Msk                /*!< Channel 7 Half Transfer clear */
+#define DMA_INTC_ERRIFC6_Pos                 (27U)                              
+#define DMA_INTC_ERRIFC6_Msk                 (0x1U << DMA_INTC_ERRIFC6_Pos)      /*!< 0x08000000 */
+#define DMA_INTC_ERRIFC6                     DMA_INTC_ERRIFC6_Msk                /*!< Channel 7 Transfer Error clear */
 
-/*******************  Bit definition for DMA_CCR register   *******************/
-#define DMA_CCR_EN_Pos                      (0U)                               
-#define DMA_CCR_EN_Msk                      (0x1U << DMA_CCR_EN_Pos)           /*!< 0x00000001 */
-#define DMA_CCR_EN                          DMA_CCR_EN_Msk                     /*!< Channel enable */
-#define DMA_CCR_TCIE_Pos                    (1U)                               
-#define DMA_CCR_TCIE_Msk                    (0x1U << DMA_CCR_TCIE_Pos)         /*!< 0x00000002 */
-#define DMA_CCR_TCIE                        DMA_CCR_TCIE_Msk                   /*!< Transfer complete interrupt enable */
-#define DMA_CCR_HTIE_Pos                    (2U)                               
-#define DMA_CCR_HTIE_Msk                    (0x1U << DMA_CCR_HTIE_Pos)         /*!< 0x00000004 */
-#define DMA_CCR_HTIE                        DMA_CCR_HTIE_Msk                   /*!< Half Transfer interrupt enable */
-#define DMA_CCR_TEIE_Pos                    (3U)                               
-#define DMA_CCR_TEIE_Msk                    (0x1U << DMA_CCR_TEIE_Pos)         /*!< 0x00000008 */
-#define DMA_CCR_TEIE                        DMA_CCR_TEIE_Msk                   /*!< Transfer error interrupt enable */
-#define DMA_CCR_DIR_Pos                     (4U)                               
-#define DMA_CCR_DIR_Msk                     (0x1U << DMA_CCR_DIR_Pos)          /*!< 0x00000010 */
-#define DMA_CCR_DIR                         DMA_CCR_DIR_Msk                    /*!< Data transfer direction */
-#define DMA_CCR_CIRC_Pos                    (5U)                               
-#define DMA_CCR_CIRC_Msk                    (0x1U << DMA_CCR_CIRC_Pos)         /*!< 0x00000020 */
-#define DMA_CCR_CIRC                        DMA_CCR_CIRC_Msk                   /*!< Circular mode */
-#define DMA_CCR_PINC_Pos                    (6U)                               
-#define DMA_CCR_PINC_Msk                    (0x1U << DMA_CCR_PINC_Pos)         /*!< 0x00000040 */
-#define DMA_CCR_PINC                        DMA_CCR_PINC_Msk                   /*!< Peripheral increment mode */
-#define DMA_CCR_MINC_Pos                    (7U)                               
-#define DMA_CCR_MINC_Msk                    (0x1U << DMA_CCR_MINC_Pos)         /*!< 0x00000080 */
-#define DMA_CCR_MINC                        DMA_CCR_MINC_Msk                   /*!< Memory increment mode */
+/*******************  Bit definition for DMA_CTL register   *******************/
+#define DMA_CTL_CHEN_Pos                      (0U)                               
+#define DMA_CTL_CHEN_Msk                      (0x1U << DMA_CTL_CHEN_Pos)           /*!< 0x00000001 */
+#define DMA_CTL_CHEN                          DMA_CTL_CHEN_Msk                     /*!< Channel enable */
+#define DMA_CTL_FTFIE_Pos                    (1U)                               
+#define DMA_CTL_FTFIE_Msk                    (0x1U << DMA_CTL_FTFIE_Pos)         /*!< 0x00000002 */
+#define DMA_CTL_FTFIE                        DMA_CTL_FTFIE_Msk                   /*!< Transfer complete interrupt enable */
+#define DMA_CTL_HTFIE_Pos                    (2U)                               
+#define DMA_CTL_HTFIE_Msk                    (0x1U << DMA_CTL_HTFIE_Pos)         /*!< 0x00000004 */
+#define DMA_CTL_HTFIE                        DMA_CTL_HTFIE_Msk                   /*!< Half Transfer interrupt enable */
+#define DMA_CTL_ERRIE_Pos                    (3U)                               
+#define DMA_CTL_ERRIE_Msk                    (0x1U << DMA_CTL_ERRIE_Pos)         /*!< 0x00000008 */
+#define DMA_CTL_ERRIE                        DMA_CTL_ERRIE_Msk                   /*!< Transfer error interrupt enable */
+#define DMA_CTL_DIR_Pos                     (4U)                               
+#define DMA_CTL_DIR_Msk                     (0x1U << DMA_CTL_DIR_Pos)          /*!< 0x00000010 */
+#define DMA_CTL_DIR                         DMA_CTL_DIR_Msk                    /*!< Data transfer direction */
+#define DMA_CTL_CMEN_Pos                    (5U)                               
+#define DMA_CTL_CMEN_Msk                    (0x1U << DMA_CTL_CMEN_Pos)         /*!< 0x00000020 */
+#define DMA_CTL_CMEN                        DMA_CTL_CMEN_Msk                   /*!< Circular mode */
+#define DMA_CTL_PNAGA_Pos                    (6U)                               
+#define DMA_CTL_PNAGA_Msk                    (0x1U << DMA_CTL_PNAGA_Pos)         /*!< 0x00000040 */
+#define DMA_CTL_PNAGA                        DMA_CTL_PNAGA_Msk                   /*!< Peripheral increment mode */
+#define DMA_CTL_MNAGA_Pos                    (7U)                               
+#define DMA_CTL_MNAGA_Msk                    (0x1U << DMA_CTL_MNAGA_Pos)         /*!< 0x00000080 */
+#define DMA_CTL_MNAGA                        DMA_CTL_MNAGA_Msk                   /*!< Memory increment mode */
 
-#define DMA_CCR_PSIZE_Pos                   (8U)                               
-#define DMA_CCR_PSIZE_Msk                   (0x3U << DMA_CCR_PSIZE_Pos)        /*!< 0x00000300 */
-#define DMA_CCR_PSIZE                       DMA_CCR_PSIZE_Msk                  /*!< PSIZE[1:0] bits (Peripheral size) */
-#define DMA_CCR_PSIZE_0                     (0x1U << DMA_CCR_PSIZE_Pos)        /*!< 0x00000100 */
-#define DMA_CCR_PSIZE_1                     (0x2U << DMA_CCR_PSIZE_Pos)        /*!< 0x00000200 */
+#define DMA_CTL_PWIDTH_Pos                   (8U)                               
+#define DMA_CTL_PWIDTH_Msk                   (0x3U << DMA_CTL_PWIDTH_Pos)        /*!< 0x00000300 */
+#define DMA_CTL_PWIDTH                       DMA_CTL_PWIDTH_Msk                  /*!< PSIZE[1:0] bits (Peripheral size) */
+#define DMA_CTL_PWIDTH_0                     (0x1U << DMA_CTL_PWIDTH_Pos)        /*!< 0x00000100 */
+#define DMA_CTL_PWIDTH_1                     (0x2U << DMA_CTL_PWIDTH_Pos)        /*!< 0x00000200 */
 
-#define DMA_CCR_MSIZE_Pos                   (10U)                              
-#define DMA_CCR_MSIZE_Msk                   (0x3U << DMA_CCR_MSIZE_Pos)        /*!< 0x00000C00 */
-#define DMA_CCR_MSIZE                       DMA_CCR_MSIZE_Msk                  /*!< MSIZE[1:0] bits (Memory size) */
-#define DMA_CCR_MSIZE_0                     (0x1U << DMA_CCR_MSIZE_Pos)        /*!< 0x00000400 */
-#define DMA_CCR_MSIZE_1                     (0x2U << DMA_CCR_MSIZE_Pos)        /*!< 0x00000800 */
+#define DMA_CTL_MWIDTH_Pos                   (10U)                              
+#define DMA_CTL_MWIDTH_Msk                   (0x3U << DMA_CTL_MWIDTH_Pos)        /*!< 0x00000C00 */
+#define DMA_CTL_MWIDTH                       DMA_CTL_MWIDTH_Msk                  /*!< MSIZE[1:0] bits (Memory size) */
+#define DMA_CTL_MWIDTH_0                     (0x1U << DMA_CTL_MWIDTH_Pos)        /*!< 0x00000400 */
+#define DMA_CTL_MWIDTH_1                     (0x2U << DMA_CTL_MWIDTH_Pos)        /*!< 0x00000800 */
 
-#define DMA_CCR_PL_Pos                      (12U)                              
-#define DMA_CCR_PL_Msk                      (0x3U << DMA_CCR_PL_Pos)           /*!< 0x00003000 */
-#define DMA_CCR_PL                          DMA_CCR_PL_Msk                     /*!< PL[1:0] bits(Channel Priority level) */
-#define DMA_CCR_PL_0                        (0x1U << DMA_CCR_PL_Pos)           /*!< 0x00001000 */
-#define DMA_CCR_PL_1                        (0x2U << DMA_CCR_PL_Pos)           /*!< 0x00002000 */
+#define DMA_CTL_PRIO_Pos                      (12U)                              
+#define DMA_CTL_PRIO_Msk                      (0x3U << DMA_CTL_PRIO_Pos)           /*!< 0x00003000 */
+#define DMA_CTL_PRIO                          DMA_CTL_PRIO_Msk                     /*!< PL[1:0] bits(Channel Priority level) */
+#define DMA_CTL_PRIO_0                        (0x1U << DMA_CTL_PRIO_Pos)           /*!< 0x00001000 */
+#define DMA_CTL_PRIO_1                        (0x2U << DMA_CTL_PRIO_Pos)           /*!< 0x00002000 */
 
-#define DMA_CCR_MEM2MEM_Pos                 (14U)                              
-#define DMA_CCR_MEM2MEM_Msk                 (0x1U << DMA_CCR_MEM2MEM_Pos)      /*!< 0x00004000 */
-#define DMA_CCR_MEM2MEM                     DMA_CCR_MEM2MEM_Msk                /*!< Memory to memory mode */
+#define DMA_CTL_M2M_Pos                 (14U)                              
+#define DMA_CTL_M2M_Msk                 (0x1U << DMA_CTL_M2M_Pos)      /*!< 0x00004000 */
+#define DMA_CTL_M2M                     DMA_CTL_M2M_Msk                /*!< Memory to memory mode */
 
 /******************  Bit definition for DMA_CNDTR  register  ******************/
 #define DMA_CNDTR_NDT_Pos                   (0U)                               

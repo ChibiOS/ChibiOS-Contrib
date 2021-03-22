@@ -141,38 +141,38 @@
  * @name    CR register constants common to all DMA types
  * @{
  */
-#define GD32_DMA_CCR_RESET_VALUE   0x00000000U
-#define GD32_DMA_CR_EN             DMA_CCR_EN
-#define GD32_DMA_CR_TEIE           DMA_CCR_TEIE
-#define GD32_DMA_CR_HTIE           DMA_CCR_HTIE
-#define GD32_DMA_CR_TCIE           DMA_CCR_TCIE
-#define GD32_DMA_CR_DIR_MASK       (DMA_CCR_DIR | DMA_CCR_MEM2MEM)
-#define GD32_DMA_CR_DIR_P2M        0U
-#define GD32_DMA_CR_DIR_M2P        DMA_CCR_DIR
-#define GD32_DMA_CR_DIR_M2M        DMA_CCR_MEM2MEM
-#define GD32_DMA_CR_CIRC           DMA_CCR_CIRC
-#define GD32_DMA_CR_PINC           DMA_CCR_PINC
-#define GD32_DMA_CR_MINC           DMA_CCR_MINC
-#define GD32_DMA_CR_PSIZE_MASK     DMA_CCR_PSIZE
-#define GD32_DMA_CR_PSIZE_BYTE     0U
-#define GD32_DMA_CR_PSIZE_HWORD    DMA_CCR_PSIZE_0
-#define GD32_DMA_CR_PSIZE_WORD     DMA_CCR_PSIZE_1
-#define GD32_DMA_CR_MSIZE_MASK     DMA_CCR_MSIZE
-#define GD32_DMA_CR_MSIZE_BYTE     0U
-#define GD32_DMA_CR_MSIZE_HWORD    DMA_CCR_MSIZE_0
-#define GD32_DMA_CR_MSIZE_WORD     DMA_CCR_MSIZE_1
-#define GD32_DMA_CR_SIZE_MASK      (GD32_DMA_CR_PSIZE_MASK |              \
-                                     GD32_DMA_CR_MSIZE_MASK)
-#define GD32_DMA_CR_PL_MASK        DMA_CCR_PL
-#define GD32_DMA_CR_PL(n)          ((n) << 12U)
+#define GD32_DMA_CTL_RESET_VALUE   0x00000000U
+#define GD32_DMA_CTL_EN             DMA_CTL_CHEN
+#define GD32_DMA_CTL_ERRIE           DMA_CTL_ERRIE
+#define GD32_DMA_CTL_HTFIE           DMA_CTL_HTFIE
+#define GD32_DMA_CTL_FTFIE           DMA_CTL_FTFIE
+#define GD32_DMA_CTL_DIR_MASK       (DMA_CTL_DIR | DMA_CTL_M2M)
+#define GD32_DMA_CTL_DIR_P2M        0U
+#define GD32_DMA_CTL_DIR_M2P        DMA_CTL_DIR
+#define GD32_DMA_CTL_DIR_M2M        DMA_CTL_M2M
+#define GD32_DMA_CTL_CMEN           DMA_CTL_CMEN
+#define GD32_DMA_CTL_PNAGA           DMA_CTL_PNAGA
+#define GD32_DMA_CTL_MNAGA           DMA_CTL_MNAGA
+#define GD32_DMA_CTL_PWIDTH_MASK     DMA_CTL_PWIDTH
+#define GD32_DMA_CTL_PWIDTH_BYTE     0U
+#define GD32_DMA_CTL_PWIDTH_HWORD    DMA_CTL_PWIDTH_0
+#define GD32_DMA_CTL_PWIDTH_WORD     DMA_CTL_PWIDTH_1
+#define GD32_DMA_CTL_MWIDTH_MASK     DMA_CTL_MWIDTH
+#define GD32_DMA_CTL_MWIDTH_BYTE     0U
+#define GD32_DMA_CTL_MWIDTH_HWORD    DMA_CTL_MWIDTH_0
+#define GD32_DMA_CTL_MWIDTH_WORD     DMA_CTL_MWIDTH_1
+#define GD32_DMA_CTL_SIZE_MASK      (GD32_DMA_CTL_PWIDTH_MASK |              \
+                                     GD32_DMA_CTL_MWIDTH_MASK)
+#define GD32_DMA_CTL_PRIO_MASK        DMA_CTL_PRIO
+#define GD32_DMA_CTL_PRIO(n)          ((n) << 12U)
 /** @} */
 
 /**
  * @name    Request line selector macro
  * @{
  */
-#define GD32_DMA_CR_CHSEL_MASK     0U
-#define GD32_DMA_CR_CHSEL(n)       0U
+#define GD32_DMA_CTL_CHSEL_MASK     0U
+#define GD32_DMA_CTL_CHSEL(n)       0U
 /** @} */
 
 /**
@@ -315,7 +315,7 @@ typedef struct {
  * @special
  */
 #define dmaStreamSetMode(dmastp, mode) {                                    \
-  (dmastp)->channel->CCR  = (uint32_t)(mode);                               \
+  (dmastp)->channel->CTL  = (uint32_t)(mode);                               \
 }
 
 /**
@@ -329,7 +329,7 @@ typedef struct {
  * @special
  */
 #define dmaStreamEnable(dmastp) {                                           \
-  (dmastp)->channel->CCR |= GD32_DMA_CR_EN;                                \
+  (dmastp)->channel->CTL |= GD32_DMA_CTL_EN;                                \
 }
 
 /**
@@ -347,8 +347,8 @@ typedef struct {
  * @special
  */
 #define dmaStreamDisable(dmastp) {                                          \
-  (dmastp)->channel->CCR &= ~(GD32_DMA_CR_TCIE | GD32_DMA_CR_HTIE |       \
-                              GD32_DMA_CR_TEIE | GD32_DMA_CR_EN);         \
+  (dmastp)->channel->CTL &= ~(GD32_DMA_CTL_FTFIE | GD32_DMA_CTL_HTFIE |       \
+                              GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_EN);         \
   dmaStreamClearInterrupt(dmastp);                                          \
 }
 
@@ -376,10 +376,10 @@ typedef struct {
  * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  * @param[in] mode      value to be written in the CCR register, this value
  *                      is implicitly ORed with:
- *                      - @p GD32_DMA_CR_MINC
- *                      - @p GD32_DMA_CR_PINC
- *                      - @p GD32_DMA_CR_DIR_M2M
- *                      - @p GD32_DMA_CR_EN
+ *                      - @p GD32_DMA_CTL_MNAGA
+ *                      - @p GD32_DMA_CTL_PNAGA
+ *                      - @p GD32_DMA_CTL_DIR_M2M
+ *                      - @p GD32_DMA_CTL_EN
  *                      .
  * @param[in] src       source address
  * @param[in] dst       destination address
@@ -390,8 +390,8 @@ typedef struct {
   dmaStreamSetMemory0(dmastp, dst);                                         \
   dmaStreamSetTransactionSize(dmastp, n);                                   \
   dmaStreamSetMode(dmastp, (mode) |                                         \
-                           GD32_DMA_CR_MINC | GD32_DMA_CR_PINC |          \
-                           GD32_DMA_CR_DIR_M2M | GD32_DMA_CR_EN);         \
+                           GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_PNAGA |          \
+                           GD32_DMA_CTL_DIR_M2M | GD32_DMA_CTL_EN);         \
 }
 
 /**

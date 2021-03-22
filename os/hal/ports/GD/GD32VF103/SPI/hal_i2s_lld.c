@@ -229,32 +229,32 @@ void i2s_lld_init(void) {
   I2SD1.dmarx     = NULL;
   I2SD1.dmatx     = NULL;
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
-  I2SD1.rxdmamode = GD32_DMA_CR_CHSEL(I2S1_RX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_I2S_SPI1_DMA_PRIORITY) |
-                    GD32_DMA_CR_PSIZE_HWORD |
-                    GD32_DMA_CR_MSIZE_HWORD |
-                    GD32_DMA_CR_DIR_P2M |
-                    GD32_DMA_CR_MINC |
-                    GD32_DMA_CR_CIRC |
-                    GD32_DMA_CR_HTIE |
-                    GD32_DMA_CR_TCIE |
+  I2SD1.rxdmamode = GD32_DMA_CTL_CHSEL(I2S1_RX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_I2S_SPI1_DMA_PRIORITY) |
+                    GD32_DMA_CTL_PWIDTH_HWORD |
+                    GD32_DMA_CTL_MWIDTH_HWORD |
+                    GD32_DMA_CTL_DIR_P2M |
+                    GD32_DMA_CTL_MNAGA |
+                    GD32_DMA_CTL_CMEN |
+                    GD32_DMA_CTL_HTFIE |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #else
   I2SD1.rxdmamode = 0;
 #endif
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
-  I2SD1.txdmamode = GD32_DMA_CR_CHSEL(I2S1_TX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_I2S_SPI1_DMA_PRIORITY) |
-                    GD32_DMA_CR_PSIZE_HWORD |
-                    GD32_DMA_CR_MSIZE_HWORD |
-                    GD32_DMA_CR_DIR_M2P |
-                    GD32_DMA_CR_MINC |
-                    GD32_DMA_CR_CIRC |
-                    GD32_DMA_CR_HTIE |
-                    GD32_DMA_CR_TCIE |
+  I2SD1.txdmamode = GD32_DMA_CTL_CHSEL(I2S1_TX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_I2S_SPI1_DMA_PRIORITY) |
+                    GD32_DMA_CTL_PWIDTH_HWORD |
+                    GD32_DMA_CTL_MWIDTH_HWORD |
+                    GD32_DMA_CTL_DIR_M2P |
+                    GD32_DMA_CTL_MNAGA |
+                    GD32_DMA_CTL_CMEN |
+                    GD32_DMA_CTL_HTFIE |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #else
   I2SD1.txdmamode = 0;
 #endif
@@ -267,32 +267,32 @@ void i2s_lld_init(void) {
   I2SD2.dmarx     = NULL;
   I2SD2.dmatx     = NULL;
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE)
-  I2SD2.rxdmamode = GD32_DMA_CR_CHSEL(I2S2_RX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_I2S_SPI2_DMA_PRIORITY) |
-                    GD32_DMA_CR_PSIZE_HWORD |
-                    GD32_DMA_CR_MSIZE_HWORD |
-                    GD32_DMA_CR_DIR_P2M |
-                    GD32_DMA_CR_MINC |
-                    GD32_DMA_CR_CIRC |
-                    GD32_DMA_CR_HTIE |
-                    GD32_DMA_CR_TCIE |
+  I2SD2.rxdmamode = GD32_DMA_CTL_CHSEL(I2S2_RX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_I2S_SPI2_DMA_PRIORITY) |
+                    GD32_DMA_CTL_PWIDTH_HWORD |
+                    GD32_DMA_CTL_MWIDTH_HWORD |
+                    GD32_DMA_CTL_DIR_P2M |
+                    GD32_DMA_CTL_MNAGA |
+                    GD32_DMA_CTL_CMEN |
+                    GD32_DMA_CTL_HTFIE |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #else
   I2SD2.rxdmamode = 0;
 #endif
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI2_MODE)
-  I2SD2.txdmamode = GD32_DMA_CR_CHSEL(I2S2_TX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_I2S_SPI2_DMA_PRIORITY) |
-                    GD32_DMA_CR_PSIZE_HWORD |
-                    GD32_DMA_CR_MSIZE_HWORD |
-                    GD32_DMA_CR_DIR_M2P |
-                    GD32_DMA_CR_MINC |
-                    GD32_DMA_CR_CIRC |
-                    GD32_DMA_CR_HTIE |
-                    GD32_DMA_CR_TCIE |
+  I2SD2.txdmamode = GD32_DMA_CTL_CHSEL(I2S2_TX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_I2S_SPI2_DMA_PRIORITY) |
+                    GD32_DMA_CTL_PWIDTH_HWORD |
+                    GD32_DMA_CTL_MWIDTH_HWORD |
+                    GD32_DMA_CTL_DIR_M2P |
+                    GD32_DMA_CTL_MNAGA |
+                    GD32_DMA_CTL_CMEN |
+                    GD32_DMA_CTL_HTFIE |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #else
   I2SD2.txdmamode = 0;
 #endif
@@ -305,32 +305,32 @@ void i2s_lld_init(void) {
   I2SD3.dmarx     = NULL;
   I2SD3.dmatx     = NULL;
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE)
-  I2SD3.rxdmamode = GD32_DMA_CR_CHSEL(I2S3_RX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_I2S_SPI3_DMA_PRIORITY) |
-                    GD32_DMA_CR_PSIZE_HWORD |
-                    GD32_DMA_CR_MSIZE_HWORD |
-                    GD32_DMA_CR_DIR_P2M |
-                    GD32_DMA_CR_MINC |
-                    GD32_DMA_CR_CIRC |
-                    GD32_DMA_CR_HTIE |
-                    GD32_DMA_CR_TCIE |
+  I2SD3.rxdmamode = GD32_DMA_CTL_CHSEL(I2S3_RX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_I2S_SPI3_DMA_PRIORITY) |
+                    GD32_DMA_CTL_PWIDTH_HWORD |
+                    GD32_DMA_CTL_MWIDTH_HWORD |
+                    GD32_DMA_CTL_DIR_P2M |
+                    GD32_DMA_CTL_MNAGA |
+                    GD32_DMA_CTL_CMEN |
+                    GD32_DMA_CTL_HTFIE |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #else
   I2SD3.rxdmamode = 0;
 #endif
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI3_MODE)
-  I2SD3.txdmamode = GD32_DMA_CR_CHSEL(I2S3_TX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_I2S_SPI3_DMA_PRIORITY) |
-                    GD32_DMA_CR_PSIZE_HWORD |
-                    GD32_DMA_CR_MSIZE_HWORD |
-                    GD32_DMA_CR_DIR_M2P |
-                    GD32_DMA_CR_MINC |
-                    GD32_DMA_CR_CIRC |
-                    GD32_DMA_CR_HTIE |
-                    GD32_DMA_CR_TCIE |
+  I2SD3.txdmamode = GD32_DMA_CTL_CHSEL(I2S3_TX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_I2S_SPI3_DMA_PRIORITY) |
+                    GD32_DMA_CTL_PWIDTH_HWORD |
+                    GD32_DMA_CTL_MWIDTH_HWORD |
+                    GD32_DMA_CTL_DIR_M2P |
+                    GD32_DMA_CTL_MNAGA |
+                    GD32_DMA_CTL_CMEN |
+                    GD32_DMA_CTL_HTFIE |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #else
   I2SD3.txdmamode = 0;
 #endif

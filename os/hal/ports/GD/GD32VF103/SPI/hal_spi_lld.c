@@ -201,17 +201,17 @@ void spi_lld_init(void) {
   SPID1.spi       = SPI1;
   SPID1.dmarx     = NULL;
   SPID1.dmatx     = NULL;
-  SPID1.rxdmamode = GD32_DMA_CR_CHSEL(SPI1_RX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI1_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_P2M |
-                    GD32_DMA_CR_TCIE |
+  SPID1.rxdmamode = GD32_DMA_CTL_CHSEL(SPI1_RX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI1_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_P2M |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
-  SPID1.txdmamode = GD32_DMA_CR_CHSEL(SPI1_TX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI1_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_M2P |
+                    GD32_DMA_CTL_ERRIE;
+  SPID1.txdmamode = GD32_DMA_CTL_CHSEL(SPI1_TX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI1_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_M2P |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #endif
 
 #if GD32_SPI_USE_SPI2
@@ -219,17 +219,17 @@ void spi_lld_init(void) {
   SPID2.spi       = SPI2;
   SPID2.dmarx     = NULL;
   SPID2.dmatx     = NULL;
-  SPID2.rxdmamode = GD32_DMA_CR_CHSEL(SPI2_RX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI2_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_P2M |
-                    GD32_DMA_CR_TCIE |
+  SPID2.rxdmamode = GD32_DMA_CTL_CHSEL(SPI2_RX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI2_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_P2M |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
-  SPID2.txdmamode = GD32_DMA_CR_CHSEL(SPI2_TX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI2_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_M2P |
+                    GD32_DMA_CTL_ERRIE;
+  SPID2.txdmamode = GD32_DMA_CTL_CHSEL(SPI2_TX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI2_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_M2P |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #endif
 
 #if GD32_SPI_USE_SPI3
@@ -237,17 +237,17 @@ void spi_lld_init(void) {
   SPID3.spi       = SPI3;
   SPID3.dmarx     = NULL;
   SPID3.dmatx     = NULL;
-  SPID3.rxdmamode = GD32_DMA_CR_CHSEL(SPI3_RX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI3_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_P2M |
-                    GD32_DMA_CR_TCIE |
+  SPID3.rxdmamode = GD32_DMA_CTL_CHSEL(SPI3_RX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI3_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_P2M |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
-  SPID3.txdmamode = GD32_DMA_CR_CHSEL(SPI3_TX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI3_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_M2P |
+                    GD32_DMA_CTL_ERRIE;
+  SPID3.txdmamode = GD32_DMA_CTL_CHSEL(SPI3_TX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI3_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_M2P |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #endif
 
 #if GD32_SPI_USE_SPI4
@@ -255,17 +255,17 @@ void spi_lld_init(void) {
   SPID4.spi       = SPI4;
   SPID4.dmarx     = NULL;
   SPID4.dmatx     = NULL;
-  SPID4.rxdmamode = GD32_DMA_CR_CHSEL(SPI4_RX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI4_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_P2M |
-                    GD32_DMA_CR_TCIE |
+  SPID4.rxdmamode = GD32_DMA_CTL_CHSEL(SPI4_RX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI4_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_P2M |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
-  SPID4.txdmamode = GD32_DMA_CR_CHSEL(SPI4_TX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI4_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_M2P |
+                    GD32_DMA_CTL_ERRIE;
+  SPID4.txdmamode = GD32_DMA_CTL_CHSEL(SPI4_TX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI4_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_M2P |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #endif
 
 #if GD32_SPI_USE_SPI5
@@ -273,17 +273,17 @@ void spi_lld_init(void) {
   SPID5.spi       = SPI5;
   SPID5.dmarx     = NULL;
   SPID5.dmatx     = NULL;
-  SPID5.rxdmamode = GD32_DMA_CR_CHSEL(SPI5_RX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI5_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_P2M |
-                    GD32_DMA_CR_TCIE |
+  SPID5.rxdmamode = GD32_DMA_CTL_CHSEL(SPI5_RX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI5_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_P2M |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
-  SPID5.txdmamode = GD32_DMA_CR_CHSEL(SPI5_TX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI5_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_M2P |
+                    GD32_DMA_CTL_ERRIE;
+  SPID5.txdmamode = GD32_DMA_CTL_CHSEL(SPI5_TX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI5_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_M2P |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #endif
 
 #if GD32_SPI_USE_SPI6
@@ -291,17 +291,17 @@ void spi_lld_init(void) {
   SPID6.spi       = SPI6;
   SPID6.dmarx     = NULL;
   SPID6.dmatx     = NULL;
-  SPID6.rxdmamode = GD32_DMA_CR_CHSEL(SPI6_RX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI6_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_P2M |
-                    GD32_DMA_CR_TCIE |
+  SPID6.rxdmamode = GD32_DMA_CTL_CHSEL(SPI6_RX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI6_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_P2M |
+                    GD32_DMA_CTL_FTFIE |
                     
-                    GD32_DMA_CR_TEIE;
-  SPID6.txdmamode = GD32_DMA_CR_CHSEL(SPI6_TX_DMA_CHANNEL) |
-                    GD32_DMA_CR_PL(GD32_SPI_SPI6_DMA_PRIORITY) |
-                    GD32_DMA_CR_DIR_M2P |
+                    GD32_DMA_CTL_ERRIE;
+  SPID6.txdmamode = GD32_DMA_CTL_CHSEL(SPI6_TX_DMA_CHANNEL) |
+                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI6_DMA_PRIORITY) |
+                    GD32_DMA_CTL_DIR_M2P |
                     
-                    GD32_DMA_CR_TEIE;
+                    GD32_DMA_CTL_ERRIE;
 #endif
 }
 
@@ -415,26 +415,26 @@ void spi_lld_start(SPIDriver *spip) {
   /* Configuration-specific DMA setup.*/
   if ((spip->config->cr1 & SPI_CR1_DFF) == 0) {
     /* Frame width is 8 bits or smaller.*/
-    spip->rxdmamode = (spip->rxdmamode & ~GD32_DMA_CR_SIZE_MASK) |
-                      GD32_DMA_CR_PSIZE_BYTE | GD32_DMA_CR_MSIZE_BYTE;
-    spip->txdmamode = (spip->txdmamode & ~GD32_DMA_CR_SIZE_MASK) |
-                      GD32_DMA_CR_PSIZE_BYTE | GD32_DMA_CR_MSIZE_BYTE;
+    spip->rxdmamode = (spip->rxdmamode & ~GD32_DMA_CTL_SIZE_MASK) |
+                      GD32_DMA_CTL_PWIDTH_BYTE | GD32_DMA_CTL_MWIDTH_BYTE;
+    spip->txdmamode = (spip->txdmamode & ~GD32_DMA_CTL_SIZE_MASK) |
+                      GD32_DMA_CTL_PWIDTH_BYTE | GD32_DMA_CTL_MWIDTH_BYTE;
   }
   else {
     /* Frame width is larger than 8 bits.*/
-    spip->rxdmamode = (spip->rxdmamode & ~GD32_DMA_CR_SIZE_MASK) |
-                      GD32_DMA_CR_PSIZE_HWORD | GD32_DMA_CR_MSIZE_HWORD;
-    spip->txdmamode = (spip->txdmamode & ~GD32_DMA_CR_SIZE_MASK) |
-                      GD32_DMA_CR_PSIZE_HWORD | GD32_DMA_CR_MSIZE_HWORD;
+    spip->rxdmamode = (spip->rxdmamode & ~GD32_DMA_CTL_SIZE_MASK) |
+                      GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
+    spip->txdmamode = (spip->txdmamode & ~GD32_DMA_CTL_SIZE_MASK) |
+                      GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
   }
 
   if (spip->config->circular) {
-    spip->rxdmamode |= (GD32_DMA_CR_CIRC | GD32_DMA_CR_HTIE);
-    spip->txdmamode |= (GD32_DMA_CR_CIRC | GD32_DMA_CR_HTIE);
+    spip->rxdmamode |= (GD32_DMA_CTL_CMEN | GD32_DMA_CTL_HTFIE);
+    spip->txdmamode |= (GD32_DMA_CTL_CMEN | GD32_DMA_CTL_HTFIE);
   }
   else {
-    spip->rxdmamode &= ~(GD32_DMA_CR_CIRC | GD32_DMA_CR_HTIE);
-    spip->txdmamode &= ~(GD32_DMA_CR_CIRC | GD32_DMA_CR_HTIE);
+    spip->rxdmamode &= ~(GD32_DMA_CTL_CMEN | GD32_DMA_CTL_HTFIE);
+    spip->txdmamode &= ~(GD32_DMA_CTL_CMEN | GD32_DMA_CTL_HTFIE);
   }
 
   /* SPI setup and enable.*/
@@ -570,11 +570,11 @@ void spi_lld_exchange(SPIDriver *spip, size_t n,
 
   dmaStreamSetMemory0(spip->dmarx, rxbuf);
   dmaStreamSetTransactionSize(spip->dmarx, n);
-  dmaStreamSetMode(spip->dmarx, spip->rxdmamode| GD32_DMA_CR_MINC);
+  dmaStreamSetMode(spip->dmarx, spip->rxdmamode| GD32_DMA_CTL_MNAGA);
 
   dmaStreamSetMemory0(spip->dmatx, txbuf);
   dmaStreamSetTransactionSize(spip->dmatx, n);
-  dmaStreamSetMode(spip->dmatx, spip->txdmamode | GD32_DMA_CR_MINC);
+  dmaStreamSetMode(spip->dmatx, spip->txdmamode | GD32_DMA_CTL_MNAGA);
 
   dmaStreamEnable(spip->dmarx);
   dmaStreamEnable(spip->dmatx);
@@ -603,7 +603,7 @@ void spi_lld_send(SPIDriver *spip, size_t n, const void *txbuf) {
 
   dmaStreamSetMemory0(spip->dmatx, txbuf);
   dmaStreamSetTransactionSize(spip->dmatx, n);
-  dmaStreamSetMode(spip->dmatx, spip->txdmamode | GD32_DMA_CR_MINC);
+  dmaStreamSetMode(spip->dmatx, spip->txdmamode | GD32_DMA_CTL_MNAGA);
 
   dmaStreamEnable(spip->dmarx);
   dmaStreamEnable(spip->dmatx);
@@ -628,7 +628,7 @@ void spi_lld_receive(SPIDriver *spip, size_t n, void *rxbuf) {
 
   dmaStreamSetMemory0(spip->dmarx, rxbuf);
   dmaStreamSetTransactionSize(spip->dmarx, n);
-  dmaStreamSetMode(spip->dmarx, spip->rxdmamode | GD32_DMA_CR_MINC);
+  dmaStreamSetMode(spip->dmarx, spip->rxdmamode | GD32_DMA_CTL_MNAGA);
 
   dmaStreamSetMemory0(spip->dmatx, &dummytx);
   dmaStreamSetTransactionSize(spip->dmatx, n);
