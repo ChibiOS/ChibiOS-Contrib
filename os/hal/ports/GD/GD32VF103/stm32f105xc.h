@@ -358,13 +358,13 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CRL;
-  __IO uint32_t CRH;
-  __IO uint32_t IDR;
-  __IO uint32_t ODR;
-  __IO uint32_t BSRR;
-  __IO uint32_t BRR;
-  __IO uint32_t LCKR;
+  __IO uint32_t CTL0;
+  __IO uint32_t CTL1;
+  __IO uint32_t ISTAT;
+  __IO uint32_t OCTL;
+  __IO uint32_t BOP;
+  __IO uint32_t BC;
+  __IO uint32_t LOCK;
 } GPIO_TypeDef;
 
 /** 

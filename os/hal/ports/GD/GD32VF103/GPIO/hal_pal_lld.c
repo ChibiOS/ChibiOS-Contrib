@@ -30,12 +30,7 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#if GD32_HAS_GPIOG
-#define APB2_EN_MASK  (RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN |            \
-                       RCC_APB2ENR_IOPCEN | RCC_APB2ENR_IOPDEN |            \
-                       RCC_APB2ENR_IOPEEN | RCC_APB2ENR_IOPFEN |            \
-                       RCC_APB2ENR_IOPGEN | RCC_APB2ENR_AFIOEN)
-#elif GD32_HAS_GPIOE
+#if GD32_HAS_GPIOE
 #define APB2_EN_MASK  (RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN |            \
                        RCC_APB2ENR_IOPCEN | RCC_APB2ENR_IOPDEN |            \
                        RCC_APB2ENR_IOPEEN | RCC_APB2ENR_AFIOEN)
@@ -98,32 +93,22 @@ void _pal_lld_init(const PALConfig *config) {
   /*
    * Initial GPIO setup.
    */
-  GPIOA->ODR = config->PAData.odr;
-  GPIOA->CRH = config->PAData.crh;
-  GPIOA->CRL = config->PAData.crl;
-  GPIOB->ODR = config->PBData.odr;
-  GPIOB->CRH = config->PBData.crh;
-  GPIOB->CRL = config->PBData.crl;
-  GPIOC->ODR = config->PCData.odr;
-  GPIOC->CRH = config->PCData.crh;
-  GPIOC->CRL = config->PCData.crl;
-  GPIOD->ODR = config->PDData.odr;
-  GPIOD->CRH = config->PDData.crh;
-  GPIOD->CRL = config->PDData.crl;
+  GPIOA->OCTL = config->PAData.odr;
+  GPIOA->CTL1 = config->PAData.crh;
+  GPIOA->CTL0 = config->PAData.crl;
+  GPIOB->OCTL = config->PBData.odr;
+  GPIOB->CTL1 = config->PBData.crh;
+  GPIOB->CTL0 = config->PBData.crl;
+  GPIOC->OCTL = config->PCData.odr;
+  GPIOC->CTL1 = config->PCData.crh;
+  GPIOC->CTL0 = config->PCData.crl;
+  GPIOD->OCTL = config->PDData.odr;
+  GPIOD->CTL1 = config->PDData.crh;
+  GPIOD->CTL0 = config->PDData.crl;
 #if GD32_HAS_GPIOE || defined(__DOXYGEN__)
-  GPIOE->ODR = config->PEData.odr;
-  GPIOE->CRH = config->PEData.crh;
-  GPIOE->CRL = config->PEData.crl;
-#if GD32_HAS_GPIOF || defined(__DOXYGEN__)
-  GPIOF->ODR = config->PFData.odr;
-  GPIOF->CRH = config->PFData.crh;
-  GPIOF->CRL = config->PFData.crl;
-#if GD32_HAS_GPIOG || defined(__DOXYGEN__)
-  GPIOG->ODR = config->PGData.odr;
-  GPIOG->CRH = config->PGData.crh;
-  GPIOG->CRL = config->PGData.crl;
-#endif
-#endif
+  GPIOE->OCTL = config->PEData.odr;
+  GPIOE->CTL1 = config->PEData.crh;
+  GPIOE->CTL0 = config->PEData.crl;
 #endif
 }
 
@@ -165,13 +150,14 @@ void _pal_lld_setgroupmode(ioportid_t port,
     0xB,        /* PAL_MODE_GD32_ALTERNATE_PUSHPULL, 50MHz.*/
     0xF,        /* PAL_MODE_GD32_ALTERNATE_OPENDRAIN, 50MHz.*/
   };
+  // TODO RENAME
   uint32_t mh, ml, crh, crl, cfg;
   unsigned i;
 
   if (mode == PAL_MODE_INPUT_PULLUP)
-    port->BSRR = mask;
+    port->BOP = mask;
   else if (mode == PAL_MODE_INPUT_PULLDOWN)
-    port->BRR = mask;
+    port->BC = mask;
   cfg = cfgtab[mode];
   mh = ml = crh = crl = 0;
   for (i = 0; i < 8; i++) {
@@ -189,8 +175,8 @@ void _pal_lld_setgroupmode(ioportid_t port,
       crh |= cfg;
     mask <<= 1;
   }
-  port->CRH = (port->CRH & mh) | crh;
-  port->CRL = (port->CRL & ml) | crl;
+  port->CTL1 = (port->CTL1 & mh) | crh;
+  port->CTL0 = (port->CTL0 & ml) | crl;
 }
 
 #if PAL_USE_CALLBACKS || PAL_USE_WAIT || defined(__DOXYGEN__)

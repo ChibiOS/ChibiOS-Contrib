@@ -129,14 +129,6 @@ typedef struct {
 #if GD32_HAS_GPIOE || defined(__DOXYGEN__)
   /** @brief Port E setup data.*/
   gd32_gpio_setup_t    PEData;
-#if GD32_HAS_GPIOF || defined(__DOXYGEN__)
-  /** @brief Port F setup data.*/
-  gd32_gpio_setup_t    PFData;
-#if GD32_HAS_GPIOG || defined(__DOXYGEN__)
-  /** @brief Port G setup data.*/
-  gd32_gpio_setup_t    PGData;
-#endif
-#endif
 #endif
 } PALConfig;
 
@@ -214,20 +206,6 @@ typedef uint32_t iopadid_t;
 #define IOPORT5         GPIOE
 #endif
 
-/**
- * @brief   GPIO port F identifier.
- */
-#if GD32_HAS_GPIOF || defined(__DOXYGEN__)
-#define IOPORT6         GPIOF
-#endif
-
-/**
- * @brief   GPIO port G identifier.
- */
-#if GD32_HAS_GPIOG || defined(__DOXYGEN__)
-#define IOPORT7         GPIOG
-#endif
-
 /*===========================================================================*/
 /* Implementation, some of the following macros could be implemented as      */
 /* functions, if so please put them in pal_lld.c.                            */
@@ -252,7 +230,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_readport(port) ((ioportmask_t)((port)->IDR))
+#define pal_lld_readport(port) ((ioportmask_t)((port)->ISTAT))
 
 /**
  * @brief   Reads the output latch.
@@ -266,7 +244,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_readlatch(port) ((ioportmask_t)((port)->ODR))
+#define pal_lld_readlatch(port) ((ioportmask_t)((port)->OCTL))
 
 /**
  * @brief   Writes on a I/O port.
@@ -281,7 +259,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_writeport(port, bits) ((port)->ODR = (uint32_t)(bits))
+#define pal_lld_writeport(port, bits) ((port)->OCTL = (uint32_t)(bits))
 
 /**
  * @brief   Sets a bits mask on a I/O port.
@@ -296,7 +274,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_setport(port, bits) ((port)->BSRR = (uint32_t)(bits))
+#define pal_lld_setport(port, bits) ((port)->BOP = (uint32_t)(bits))
 
 /**
  * @brief   Clears a bits mask on a I/O port.
@@ -311,7 +289,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_clearport(port, bits) ((port)->BRR = (uint32_t)(bits))
+#define pal_lld_clearport(port, bits) ((port)->BC = (uint32_t)(bits))
 
 /**
  * @brief   Writes a group of bits.
@@ -332,7 +310,7 @@ typedef uint32_t iopadid_t;
 #define pal_lld_writegroup(port, mask, offset, bits) {                      \
   uint32_t w = ((~(uint32_t)(bits) & (uint32_t)(mask)) << (16U + (offset))) | \
                ((uint32_t)(bits) & (uint32_t)(mask)) << (offset);           \
-  (port)->BSRR = w;                                                         \
+  (port)->BOP = w;                                                         \
 }
 
 /**
