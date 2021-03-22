@@ -363,7 +363,7 @@ typedef struct {
  * @special
  */
 #define dmaStreamClearInterrupt(dmastp) {                                   \
-  (dmastp)->dma->IFCR = GD32_DMA_INTF_MASK << (dmastp)->shift;              \
+  (dmastp)->dma->INTC = GD32_DMA_INTF_MASK << (dmastp)->shift;              \
 }
 
 /**

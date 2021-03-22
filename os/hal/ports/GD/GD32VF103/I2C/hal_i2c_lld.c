@@ -635,6 +635,8 @@ void i2c_lld_start(I2CDriver *i2cp) {
   /* Reset i2c peripheral.*/
   dp->CR1 = I2C_CR1_SWRST;
   dp->CR1 = 0;
+  dp->CR2 = 0;
+  dp->SR1 = 0;
   dp->CR2 = I2C_CR2_ITERREN;
   /* Setup I2C parameters.*/
   i2c_lld_set_clock(i2cp);

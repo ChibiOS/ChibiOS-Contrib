@@ -390,8 +390,8 @@ void dmaInit(void) {
     _gd32_dma_streams[i].channel->CCR = GD32_DMA_CCR_RESET_VALUE;
     dma.streams[i].func = NULL;
   }
-  DMA0->IFCR = 0xFFFFFFFFU;
-  DMA1->IFCR = 0xFFFFFFFFU;
+  DMA0->INTC = 0xFFFFFFFFU;
+  DMA1->INTC = 0xFFFFFFFFU;
 }
 
 /**
@@ -577,7 +577,7 @@ void dmaServeInterrupt(const gd32_dma_stream_t *dmastp) {
 
   flags = (dmastp->dma->INTF >> dmastp->shift) & GD32_DMA_INTF_MASK;
   if (flags & dmastp->channel->CCR) {
-    dmastp->dma->IFCR = flags << dmastp->shift;
+    dmastp->dma->INTC = flags << dmastp->shift;
     if (dma.streams[selfindex].func) {
       dma.streams[selfindex].func(dma.streams[selfindex].param, flags);
     }

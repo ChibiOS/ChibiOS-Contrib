@@ -300,7 +300,7 @@ typedef struct
 typedef struct
 {
   __IO uint32_t INTF;
-  __IO uint32_t IFCR;
+  __IO uint32_t INTC ;
 } DMA_TypeDef;
 
 
