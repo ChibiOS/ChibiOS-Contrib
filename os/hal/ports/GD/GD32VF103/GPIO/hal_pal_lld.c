@@ -69,7 +69,7 @@ palevent_t _pal_events[16];
 
 /**
  * @brief   STM32 I/O ports configuration.
- * @details Ports A-D(E, F, G) clocks enabled, AFIO clock enabled.
+ * @details Ports A-D(E) clocks enabled, AFIO clock enabled.
  *
  * @param[in] config    the STM32 ports configuration
  *
@@ -93,22 +93,22 @@ void _pal_lld_init(const PALConfig *config) {
   /*
    * Initial GPIO setup.
    */
-  GPIOA->OCTL = config->PAData.odr;
-  GPIOA->CTL1 = config->PAData.crh;
-  GPIOA->CTL0 = config->PAData.crl;
-  GPIOB->OCTL = config->PBData.odr;
-  GPIOB->CTL1 = config->PBData.crh;
-  GPIOB->CTL0 = config->PBData.crl;
-  GPIOC->OCTL = config->PCData.odr;
-  GPIOC->CTL1 = config->PCData.crh;
-  GPIOC->CTL0 = config->PCData.crl;
-  GPIOD->OCTL = config->PDData.odr;
-  GPIOD->CTL1 = config->PDData.crh;
-  GPIOD->CTL0 = config->PDData.crl;
+  GPIOA->OCTL = config->PAData.octl;
+  GPIOA->CTL1 = config->PAData.ctl1;
+  GPIOA->CTL0 = config->PAData.ctl0;
+  GPIOB->OCTL = config->PBData.octl;
+  GPIOB->CTL1 = config->PBData.ctl1;
+  GPIOB->CTL0 = config->PBData.ctl0;
+  GPIOC->OCTL = config->PCData.octl;
+  GPIOC->CTL1 = config->PCData.ctl1;
+  GPIOC->CTL0 = config->PCData.ctl0;
+  GPIOD->OCTL = config->PDData.octl;
+  GPIOD->CTL1 = config->PDData.ctl1;
+  GPIOD->CTL0 = config->PDData.ctl0;
 #if GD32_HAS_GPIOE || defined(__DOXYGEN__)
-  GPIOE->OCTL = config->PEData.odr;
-  GPIOE->CTL1 = config->PEData.crh;
-  GPIOE->CTL0 = config->PEData.crl;
+  GPIOE->OCTL = config->PEData.octl;
+  GPIOE->CTL1 = config->PEData.ctl1;
+  GPIOE->CTL0 = config->PEData.ctl0;
 #endif
 }
 
@@ -150,8 +150,7 @@ void _pal_lld_setgroupmode(ioportid_t port,
     0xB,        /* PAL_MODE_GD32_ALTERNATE_PUSHPULL, 50MHz.*/
     0xF,        /* PAL_MODE_GD32_ALTERNATE_OPENDRAIN, 50MHz.*/
   };
-  // TODO RENAME
-  uint32_t mh, ml, crh, crl, cfg;
+  uint32_t mh, ml, ctl1, ctl0, cfg;
   unsigned i;
 
   if (mode == PAL_MODE_INPUT_PULLUP)
@@ -159,24 +158,24 @@ void _pal_lld_setgroupmode(ioportid_t port,
   else if (mode == PAL_MODE_INPUT_PULLDOWN)
     port->BC = mask;
   cfg = cfgtab[mode];
-  mh = ml = crh = crl = 0;
+  mh = ml = ctl1 = ctl0 = 0;
   for (i = 0; i < 8; i++) {
     ml <<= 4;
     mh <<= 4;
-    crl <<= 4;
-    crh <<= 4;
+    ctl0 <<= 4;
+    ctl1 <<= 4;
     if ((mask & 0x0080) == 0)
       ml |= 0xf;
     else
-      crl |= cfg;
+      ctl0 |= cfg;
     if ((mask & 0x8000) == 0)
       mh |= 0xf;
     else
-      crh |= cfg;
+      ctl1 |= cfg;
     mask <<= 1;
   }
-  port->CTL1 = (port->CTL1 & mh) | crh;
-  port->CTL0 = (port->CTL0 & ml) | crl;
+  port->CTL1 = (port->CTL1 & mh) | ctl1;
+  port->CTL0 = (port->CTL0 & ml) | ctl0;
 }
 
 #if PAL_USE_CALLBACKS || PAL_USE_WAIT || defined(__DOXYGEN__)

@@ -102,12 +102,12 @@
  * @brief   GPIO port setup info.
  */
 typedef struct {
-  /** Initial value for ODR register.*/
-  uint32_t      odr;
-  /** Initial value for CRL register.*/
-  uint32_t      crl;
-  /** Initial value for CRH register.*/
-  uint32_t      crh;
+  /** Initial value for OCTL register.*/
+  uint32_t      octl;
+  /** Initial value for CTL0 register.*/
+  uint32_t      ctl0;
+  /** Initial value for CTL1 register.*/
+  uint32_t      ctl1;
 } gd32_gpio_setup_t;
 
 /**
@@ -220,7 +220,7 @@ typedef uint32_t iopadid_t;
 
 /**
  * @brief   Reads an I/O port.
- * @details This function is implemented by reading the GPIO IDR register, the
+ * @details This function is implemented by reading the GPIO ISTAT register, the
  *          implementation has no side effects.
  * @note    This function is not meant to be invoked directly by the application
  *          code.
@@ -234,7 +234,7 @@ typedef uint32_t iopadid_t;
 
 /**
  * @brief   Reads the output latch.
- * @details This function is implemented by reading the GPIO ODR register, the
+ * @details This function is implemented by reading the GPIO OCTL register, the
  *          implementation has no side effects.
  * @note    This function is not meant to be invoked directly by the application
  *          code.
@@ -248,7 +248,7 @@ typedef uint32_t iopadid_t;
 
 /**
  * @brief   Writes on a I/O port.
- * @details This function is implemented by writing the GPIO ODR register, the
+ * @details This function is implemented by writing the GPIO OCTL register, the
  *          implementation has no side effects.
  * @note    Writing on pads programmed as pull-up or pull-down has the side
  *          effect to modify the resistor setting because the output latched
@@ -263,7 +263,7 @@ typedef uint32_t iopadid_t;
 
 /**
  * @brief   Sets a bits mask on a I/O port.
- * @details This function is implemented by writing the GPIO BSRR register, the
+ * @details This function is implemented by writing the GPIO BOP register, the
  *          implementation has no side effects.
  * @note    Writing on pads programmed as pull-up or pull-down has the side
  *          effect to modify the resistor setting because the output latched
@@ -278,7 +278,7 @@ typedef uint32_t iopadid_t;
 
 /**
  * @brief   Clears a bits mask on a I/O port.
- * @details This function is implemented by writing the GPIO BRR register, the
+ * @details This function is implemented by writing the GPIO BC register, the
  *          implementation has no side effects.
  * @note    Writing on pads programmed as pull-up or pull-down has the side
  *          effect to modify the resistor setting because the output latched
@@ -293,7 +293,7 @@ typedef uint32_t iopadid_t;
 
 /**
  * @brief   Writes a group of bits.
- * @details This function is implemented by writing the GPIO BSRR register, the
+ * @details This function is implemented by writing the GPIO BOP register, the
  *          implementation has no side effects.
  * @note    Writing on pads programmed as pull-up or pull-down has the side
  *          effect to modify the resistor setting because the output latched
