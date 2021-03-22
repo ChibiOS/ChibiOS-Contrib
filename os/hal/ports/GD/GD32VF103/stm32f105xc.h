@@ -292,9 +292,9 @@ typedef struct
 typedef struct
 {
   __IO uint32_t CTL;
-  __IO uint32_t CNDTR;
-  __IO uint32_t CPAR;
-  __IO uint32_t CMAR;
+  __IO uint32_t CNT;
+  __IO uint32_t PADDR;
+  __IO uint32_t MADDR;
 } DMA_Channel_TypeDef;
 
 typedef struct
@@ -3905,20 +3905,20 @@ typedef struct
 #define DMA_CTL_M2M_Msk                 (0x1U << DMA_CTL_M2M_Pos)      /*!< 0x00004000 */
 #define DMA_CTL_M2M                     DMA_CTL_M2M_Msk                /*!< Memory to memory mode */
 
-/******************  Bit definition for DMA_CNDTR  register  ******************/
-#define DMA_CNDTR_NDT_Pos                   (0U)                               
-#define DMA_CNDTR_NDT_Msk                   (0xFFFFU << DMA_CNDTR_NDT_Pos)     /*!< 0x0000FFFF */
-#define DMA_CNDTR_NDT                       DMA_CNDTR_NDT_Msk                  /*!< Number of data to Transfer */
+/******************  Bit definition for DMA_CNT  register  ******************/
+#define DMA_CNT_CNT_Pos                   (0U)                               
+#define DMA_CNT_CNT_Msk                   (0xFFFFU << DMA_CNT_CNT_Pos)     /*!< 0x0000FFFF */
+#define DMA_CNT_CNT                       DMA_CNT_CNT_Msk                  /*!< Number of data to Transfer */
 
-/******************  Bit definition for DMA_CPAR  register  *******************/
-#define DMA_CPAR_PA_Pos                     (0U)                               
-#define DMA_CPAR_PA_Msk                     (0xFFFFFFFFU << DMA_CPAR_PA_Pos)   /*!< 0xFFFFFFFF */
-#define DMA_CPAR_PA                         DMA_CPAR_PA_Msk                    /*!< Peripheral Address */
+/******************  Bit definition for DMA_PADDR  register  *******************/
+#define DMA_PADDR_PADDR_Pos                     (0U)                               
+#define DMA_PADDR_PADDR_Msk                     (0xFFFFFFFFU << DMA_PADDR_PADDR_Pos)   /*!< 0xFFFFFFFF */
+#define DMA_PADDR_PADDR                         DMA_PADDR_PADDR_Msk                    /*!< Peripheral Address */
 
-/******************  Bit definition for DMA_CMAR  register  *******************/
-#define DMA_CMAR_MA_Pos                     (0U)                               
-#define DMA_CMAR_MA_Msk                     (0xFFFFFFFFU << DMA_CMAR_MA_Pos)   /*!< 0xFFFFFFFF */
-#define DMA_CMAR_MA                         DMA_CMAR_MA_Msk                    /*!< Memory Address */
+/******************  Bit definition for DMA_MADDR  register  *******************/
+#define DMA_MADDR_MADDR_Pos                     (0U)                               
+#define DMA_MADDR_MADDR_Msk                     (0xFFFFFFFFU << DMA_MADDR_MADDR_Pos)   /*!< 0xFFFFFFFF */
+#define DMA_MADDR_MADDR                         DMA_MADDR_MADDR_Msk                    /*!< Memory Address */
 
 /******************************************************************************/
 /*                                                                            */

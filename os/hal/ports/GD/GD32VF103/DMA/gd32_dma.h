@@ -252,12 +252,12 @@ typedef struct {
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
  * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
- * @param[in] addr      value to be written in the CPAR register
+ * @param[in] addr      value to be written in the PADDR register
  *
  * @special
  */
 #define dmaStreamSetPeripheral(dmastp, addr) {                              \
-  (dmastp)->channel->CPAR = (uint32_t)(addr);                               \
+  (dmastp)->channel->PADDR = (uint32_t)(addr);                               \
 }
 
 /**
@@ -267,12 +267,12 @@ typedef struct {
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
  * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
- * @param[in] addr      value to be written in the CMAR register
+ * @param[in] addr      value to be written in the MADDR register
  *
  * @special
  */
 #define dmaStreamSetMemory0(dmastp, addr) {                                 \
-  (dmastp)->channel->CMAR = (uint32_t)(addr);                               \
+  (dmastp)->channel->MADDR = (uint32_t)(addr);                               \
 }
 
 /**
@@ -282,12 +282,12 @@ typedef struct {
  * @post    After use the stream can be released using @p dmaStreamRelease().
  *
  * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
- * @param[in] size      value to be written in the CNDTR register
+ * @param[in] size      value to be written in the CNT register
  *
  * @special
  */
 #define dmaStreamSetTransactionSize(dmastp, size) {                         \
-  (dmastp)->channel->CNDTR = (uint32_t)(size);                              \
+  (dmastp)->channel->CNT = (uint32_t)(size);                              \
 }
 
 /**
@@ -301,7 +301,7 @@ typedef struct {
  *
  * @special
  */
-#define dmaStreamGetTransactionSize(dmastp) ((size_t)((dmastp)->channel->CNDTR))
+#define dmaStreamGetTransactionSize(dmastp) ((size_t)((dmastp)->channel->CNT))
 
 /**
  * @brief   Programs the stream mode settings.
@@ -402,7 +402,7 @@ typedef struct {
  * @param[in] dmastp    pointer to a gd32_dma_stream_t structure
  */
 #define dmaWaitCompletion(dmastp) {                                         \
-  while ((dmastp)->channel->CNDTR > 0U)                                     \
+  while ((dmastp)->channel->CNT > 0U)                                     \
     ;                                                                       \
   dmaStreamDisable(dmastp);                                                 \
 }
