@@ -288,7 +288,6 @@
 #define GD32_UART_USART3_IRQ_TRIGGER     ECLIC_TRIGGER_DEFAULT
 #define GD32_UART_USART6_IRQ_TRIGGER     ECLIC_TRIGGER_DEFAULT
 #define GD32_USB_OTG1_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_USB_OTG2_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */

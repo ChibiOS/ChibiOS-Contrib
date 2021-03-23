@@ -65,11 +65,6 @@
 USBDriver USBD1;
 #endif
 
-/** @brief OTG_HS driver identifier.*/
-#if GD32_USB_USE_OTG2 || defined(__DOXYGEN__)
-USBDriver USBD2;
-#endif
-
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
@@ -116,14 +111,6 @@ static const gd32_otg_params_t fsparams = {
   GD32_USB_OTG1_RX_FIFO_SIZE / 4,
   GD32_OTG1_FIFO_MEM_SIZE,
   GD32_OTG1_ENDPOINTS
-};
-#endif
-
-#if GD32_USB_USE_OTG2
-static const gd32_otg_params_t hsparams = {
-  GD32_USB_OTG2_RX_FIFO_SIZE / 4,
-  GD32_OTG2_FIFO_MEM_SIZE,
-  GD32_OTG2_ENDPOINTS
 };
 #endif
 
@@ -286,20 +273,20 @@ static void otg_rxfifo_handler(USBDriver *usbp) {
   uint32_t sts, cnt, ep;
 
   /* Popping the event word out of the RX FIFO.*/
-  sts = usbp->otg->GRXSTSP;
+  sts = usbp->otg->GRSTATP;
 
   /* Event details.*/
-  cnt = (sts & GRXSTSP_BCNT_MASK) >> GRXSTSP_BCNT_OFF;
-  ep  = (sts & GRXSTSP_EPNUM_MASK) >> GRXSTSP_EPNUM_OFF;
+  cnt = (sts & GRSTATP_BCNT_MASK) >> GRSTATP_BCNT_OFF;
+  ep  = (sts & GRSTATP_EPNUM_MASK) >> GRSTATP_EPNUM_OFF;
 
-  switch (sts & GRXSTSP_PKTSTS_MASK) {
-  case GRXSTSP_SETUP_DATA:
+  switch (sts & GRSTATP_PKTSTS_MASK) {
+  case GRSTATP_SETUP_DATA:
     otg_fifo_read_to_buffer(usbp->otg->FIFO[0], usbp->epc[ep]->setup_buf,
                             cnt, 8);
     break;
-  case GRXSTSP_SETUP_COMP:
+  case GRSTATP_SETUP_COMP:
     break;
-  case GRXSTSP_OUT_DATA:
+  case GRSTATP_OUT_DATA:
     otg_fifo_read_to_buffer(usbp->otg->FIFO[0],
                             usbp->epc[ep]->out_state->rxbuf,
                             cnt,
@@ -308,9 +295,9 @@ static void otg_rxfifo_handler(USBDriver *usbp) {
     usbp->epc[ep]->out_state->rxbuf += cnt;
     usbp->epc[ep]->out_state->rxcnt += cnt;
     break;
-  case GRXSTSP_OUT_COMP:
+  case GRSTATP_OUT_COMP:
     break;
-  case GRXSTSP_OUT_GLOBAL_NAK:
+  case GRSTATP_OUT_GLOBAL_NAK:
     break;
   default:
     break;
@@ -537,12 +524,12 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
   gd32_otg_t *otgp = usbp->otg;
   uint32_t sts, src;
 
-  sts  = otgp->GINTSTS;
-  sts &= otgp->GINTMSK;
-  otgp->GINTSTS = sts;
+  sts  = otgp->GINTF;
+  sts &= otgp->GINTEN;
+  otgp->GINTF = sts;
 
   /* Reset interrupt handling.*/
-  if (sts & GINTSTS_USBRST) {
+  if (sts & GINTF_USBRST) {
     /* Default reset action.*/
     _usb_reset(usbp);
 
@@ -551,7 +538,7 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
   }
 
   /* Wake-up handling.*/
-  if (sts & GINTSTS_WKUPINT) {
+  if (sts & GINTF_WKUPINT) {
     /* If clocks are gated off, turn them back on (may be the case if
        coming out of suspend mode).*/
     if (otgp->PCGCCTL & (PCGCCTL_STPPCLK | PCGCCTL_GATEHCLK)) {
@@ -566,7 +553,7 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
   }
 
   /* Suspend handling.*/
-  if (sts & GINTSTS_USBSUSP) {
+  if (sts & GINTF_USBSUSP) {
     /* Stopping all ongoing transfers.*/
     otg_disable_ep(usbp);
 
@@ -575,42 +562,42 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
   }
 
   /* Enumeration done.*/
-  if (sts & GINTSTS_ENUMDNE) {
+  if (sts & GINTF_ENUMDNE) {
     /* Full or High speed timing selection.*/
     if ((otgp->DSTS & DSTS_ENUMSPD_MASK) == DSTS_ENUMSPD_HS_480) {
-      otgp->GUSBCFG = (otgp->GUSBCFG & ~(GUSBCFG_TRDT_MASK)) |
-                      GUSBCFG_TRDT(TRDT_VALUE_HS);
+      otgp->GUSBCS = (otgp->GUSBCS & ~(GUSBCS_TRDT_MASK)) |
+                      GUSBCS_TRDT(TRDT_VALUE_HS);
     }
     else {
-      otgp->GUSBCFG = (otgp->GUSBCFG & ~(GUSBCFG_TRDT_MASK)) |
-                      GUSBCFG_TRDT(TRDT_VALUE_FS);
+      otgp->GUSBCS = (otgp->GUSBCS & ~(GUSBCS_TRDT_MASK)) |
+                      GUSBCS_TRDT(TRDT_VALUE_FS);
     }
   }
 
   /* SOF interrupt handling.*/
-  if (sts & GINTSTS_SOF) {
+  if (sts & GINTF_SOF) {
     _usb_isr_invoke_sof_cb(usbp);
   }
 
   /* Isochronous IN failed handling */
-  if (sts & GINTSTS_IISOIXFR) {
+  if (sts & GINTF_IISOIXFR) {
     otg_isoc_in_failed_handler(usbp);
   }
 
   /* Isochronous OUT failed handling */
-  if (sts & GINTSTS_IISOOXFR) {
+  if (sts & GINTF_IISOOXFR) {
     otg_isoc_out_failed_handler(usbp);
   }
 
   /* Performing the whole FIFO emptying in the ISR, it is advised to keep
      this IRQ at a very low priority level.*/
-  if ((sts & GINTSTS_RXFLVL) != 0U) {
+  if ((sts & GINTF_RXFLVL) != 0U) {
     otg_rxfifo_handler(usbp);
   }
 
   /* IN/OUT endpoints event handling.*/
   src = otgp->DAINT;
-  if (sts & GINTSTS_OEPINT) {
+  if (sts & GINTF_OEPINT) {
     if (src & (1 << 16))
       otg_epout_handler(usbp, 0);
     if (src & (1 << 17))
@@ -619,28 +606,8 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
       otg_epout_handler(usbp, 2);
     if (src & (1 << 19))
       otg_epout_handler(usbp, 3);
-#if USB_MAX_ENDPOINTS >= 4
-    if (src & (1 << 20))
-      otg_epout_handler(usbp, 4);
-#endif
-#if USB_MAX_ENDPOINTS >= 5
-    if (src & (1 << 21))
-      otg_epout_handler(usbp, 5);
-#endif
-#if USB_MAX_ENDPOINTS >= 6
-    if (src & (1 << 22))
-      otg_epout_handler(usbp, 6);
-#endif
-#if USB_MAX_ENDPOINTS >= 7
-    if (src & (1 << 23))
-      otg_epout_handler(usbp, 7);
-#endif
-#if USB_MAX_ENDPOINTS >= 8
-    if (src & (1 << 24))
-      otg_epout_handler(usbp, 8);
-#endif
   }
-  if (sts & GINTSTS_IEPINT) {
+  if (sts & GINTF_IEPINT) {
     if (src & (1 << 0))
       otg_epin_handler(usbp, 0);
     if (src & (1 << 1))
@@ -649,26 +616,6 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
       otg_epin_handler(usbp, 2);
     if (src & (1 << 3))
       otg_epin_handler(usbp, 3);
-#if USB_MAX_ENDPOINTS >= 4
-    if (src & (1 << 4))
-      otg_epin_handler(usbp, 4);
-#endif
-#if USB_MAX_ENDPOINTS >= 5
-    if (src & (1 << 5))
-      otg_epin_handler(usbp, 5);
-#endif
-#if USB_MAX_ENDPOINTS >= 6
-    if (src & (1 << 6))
-      otg_epin_handler(usbp, 6);
-#endif
-#if USB_MAX_ENDPOINTS >= 7
-    if (src & (1 << 7))
-      otg_epin_handler(usbp, 7);
-#endif
-#if USB_MAX_ENDPOINTS >= 8
-    if (src & (1 << 8))
-      otg_epin_handler(usbp, 8);
-#endif
   }
 }
 
@@ -692,22 +639,6 @@ OSAL_IRQ_HANDLER(GD32_OTG1_HANDLER) {
 }
 #endif
 
-#if GD32_USB_USE_OTG2 || defined(__DOXYGEN__)
-/**
- * @brief   OTG2 interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_OTG2_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  usb_lld_serve_interrupt(&USBD2);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif
-
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -720,18 +651,9 @@ OSAL_IRQ_HANDLER(GD32_OTG2_HANDLER) {
 void usb_lld_init(void) {
 
   /* Driver initialization.*/
-#if GD32_USB_USE_OTG1
   usbObjectInit(&USBD1);
   USBD1.otg       = OTG_FS;
   USBD1.otgparams = &fsparams;
-
-#endif
-
-#if GD32_USB_USE_OTG2
-  usbObjectInit(&USBD2);
-  USBD2.otg       = OTG_HS;
-  USBD2.otgparams = &hsparams;
-#endif
 }
 
 /**
@@ -750,98 +672,36 @@ void usb_lld_start(USBDriver *usbp) {
   if (usbp->state == USB_STOP) {
     /* Clock activation.*/
 
-#if GD32_USB_USE_OTG1
-    if (&USBD1 == usbp) {
-      /* OTG FS clock enable and reset.*/
-      rccEnableOTG_FS(true);
-      rccResetOTG_FS();
+  if (&USBD1 == usbp) {
+    /* OTG FS clock enable and reset.*/
+    rccEnableOTG_FS(true);
+    rccResetOTG_FS();
 
-      /* Enables IRQ vector.*/
-      eclicEnableVector(GD32_OTG1_NUMBER, GD32_USB_OTG1_IRQ_PRIORITY, GD32_USB_OTG1_IRQ_TRIGGER);
+    /* Enables IRQ vector.*/
+    eclicEnableVector(GD32_OTG1_NUMBER, GD32_USB_OTG1_IRQ_PRIORITY, GD32_USB_OTG1_IRQ_TRIGGER);
 
-      /* - Forced device mode.
-         - USB turn-around time = TRDT_VALUE_FS.
-         - Full Speed 1.1 PHY.*/
-      otgp->GUSBCFG = GUSBCFG_FDMOD | GUSBCFG_TRDT(TRDT_VALUE_FS) |
-                      GUSBCFG_PHYSEL;
+    /* - Forced device mode.
+        - USB turn-around time = TRDT_VALUE_FS.
+        - Full Speed 1.1 PHY.*/
+    otgp->GUSBCS = GUSBCS_FDMOD | GUSBCS_TRDT(TRDT_VALUE_FS) |
+                    GUSBCS_PHYSEL;
 
-      /* 48MHz 1.1 PHY.*/
-      otgp->DCFG = 0x02200000 | DCFG_DSPD_FS11;
-    }
-#endif
-
-#if GD32_USB_USE_OTG2
-    if (&USBD2 == usbp) {
-      /* OTG HS clock enable and reset.*/
-      rccEnableOTG_HS(true);
-      rccResetOTG_HS();
-
-      /* ULPI clock is managed depending on the presence of an external
-         PHY.*/
-#if defined(BOARD_OTG2_USES_ULPI)
-      rccEnableOTG_HSULPI(true);
-#else
-      /* Workaround for the problem described here:
-         http://forum.chibios.org/phpbb/viewtopic.php?f=16&t=1798.*/
-      rccDisableOTG_HSULPI();
-#endif
-
-      /* Enables IRQ vector.*/
-      eclicEnableVector(GD32_OTG2_NUMBER, GD32_USB_OTG2_IRQ_PRIORITY, GD32_USB_OTG2_IRQ_TRIGGER);
-
-      /* - Forced device mode.
-         - USB turn-around time = TRDT_VALUE_HS or TRDT_VALUE_FS.*/
-#if defined(BOARD_OTG2_USES_ULPI)
-      /* High speed ULPI PHY.*/
-      otgp->GUSBCFG = GUSBCFG_FDMOD | GUSBCFG_TRDT(TRDT_VALUE_HS) |
-                      GUSBCFG_SRPCAP | GUSBCFG_HNPCAP;
-#else
-      otgp->GUSBCFG = GUSBCFG_FDMOD | GUSBCFG_TRDT(TRDT_VALUE_FS) |
-                      GUSBCFG_PHYSEL;
-#endif
-
-#if defined(BOARD_OTG2_USES_ULPI)
-#if GD32_USE_USB_OTG2_HS
-      /* USB 2.0 High Speed PHY in HS mode.*/
-      otgp->DCFG = 0x02200000 | DCFG_DSPD_HS;
-#else
-      /* USB 2.0 High Speed PHY in FS mode.*/
-      otgp->DCFG = 0x02200000 | DCFG_DSPD_HS_FS;
-#endif
-#else
-      /* 48MHz 1.1 PHY.*/
-      otgp->DCFG = 0x02200000 | DCFG_DSPD_FS11;
-#endif
-    }
-#endif
+    /* 48MHz 1.1 PHY.*/
+    otgp->DCFG = 0x02200000 | DCFG_DSPD_FS11;
+  }
 
     /* PHY enabled.*/
     otgp->PCGCCTL = 0;
 
     /* VBUS sensing and transceiver enabled.*/
-    otgp->GOTGCTL = GOTGCTL_BVALOEN | GOTGCTL_BVALOVAL;
-
-#if defined(BOARD_OTG2_USES_ULPI)
-#if GD32_USB_USE_OTG1
-    if (&USBD1 == usbp) {
-      otgp->GCCFG = GCCFG_INIT_VALUE;
-    }
-#endif
-
-#if GD32_USB_USE_OTG2
-    if (&USBD2 == usbp) {
-      otgp->GCCFG = 0;
-    }
-#endif
-#else
+    otgp->GOTGCS = GOTGCS_BVALOEN | GOTGCS_BVALOVAL;
     otgp->GCCFG = GCCFG_INIT_VALUE;
-#endif
 
     /* Soft core reset.*/
     otg_core_reset(usbp);
 
     /* Interrupts on TXFIFOs half empty.*/
-    otgp->GAHBCFG = 0;
+    otgp->GAHBCS = 0;
 
     /* Endpoints re-initialization.*/
     otg_disable_ep(usbp);
@@ -852,20 +712,20 @@ void usb_lld_start(USBDriver *usbp) {
     otgp->DOEPMSK  = 0;
     otgp->DAINTMSK = 0;
     if (usbp->config->sof_cb == NULL)
-      otgp->GINTMSK  = GINTMSK_ENUMDNEM | GINTMSK_USBRSTM | GINTMSK_USBSUSPM |
-                       GINTMSK_ESUSPM | GINTMSK_SRQM | GINTMSK_WKUM |
-                       GINTMSK_IISOIXFRM | GINTMSK_IISOOXFRM;
+      otgp->GINTEN  = GINTEN_ENUMDNEM | GINTEN_USBRSTM | GINTEN_USBSUSPM |
+                       GINTEN_ESUSPM | GINTEN_SRQM | GINTEN_WKUM |
+                       GINTEN_IISOIXFRM | GINTEN_IISOOXFRM;
     else
-      otgp->GINTMSK  = GINTMSK_ENUMDNEM | GINTMSK_USBRSTM | GINTMSK_USBSUSPM |
-                       GINTMSK_ESUSPM | GINTMSK_SRQM | GINTMSK_WKUM |
-                       GINTMSK_IISOIXFRM | GINTMSK_IISOOXFRM |
-                       GINTMSK_SOFM;
+      otgp->GINTEN  = GINTEN_ENUMDNEM | GINTEN_USBRSTM | GINTEN_USBSUSPM |
+                       GINTEN_ESUSPM | GINTEN_SRQM | GINTEN_WKUM |
+                       GINTEN_IISOIXFRM | GINTEN_IISOOXFRM |
+                       GINTEN_SOFM;
 
     /* Clears all pending IRQs, if any. */
-    otgp->GINTSTS  = 0xFFFFFFFF;
+    otgp->GINTF  = 0xFFFFFFFF;
 
     /* Global interrupts enable.*/
-    otgp->GAHBCFG |= GAHBCFG_GINTMSK;
+    otgp->GAHBCS |= GAHBCS_GINTEN;
   }
 }
 
@@ -887,25 +747,13 @@ void usb_lld_stop(USBDriver *usbp) {
     otg_disable_ep(usbp);
 
     otgp->DAINTMSK   = 0;
-    otgp->GAHBCFG    = 0;
+    otgp->GAHBCS    = 0;
     otgp->GCCFG      = 0;
 
-#if GD32_USB_USE_OTG1
     if (&USBD1 == usbp) {
       eclicDisableVector(GD32_OTG1_NUMBER);
       rccDisableOTG_FS();
     }
-#endif
-
-#if GD32_USB_USE_OTG2
-    if (&USBD2 == usbp) {
-      eclicDisableVector(GD32_OTG2_NUMBER);
-      rccDisableOTG_HS();
-#if defined(BOARD_OTG2_USES_ULPI)
-      rccDisableOTG_HSULPI()
-#endif
-    }
-#endif
   }
 }
 
@@ -939,14 +787,14 @@ void usb_lld_reset(USBDriver *usbp) {
   otg_ram_reset(usbp);
 
   /* Receive FIFO size initialization, the address is always zero.*/
-  otgp->GRXFSIZ = usbp->otgparams->rx_fifo_size;
+  otgp->GRFLEN = usbp->otgparams->rx_fifo_size;
   otg_rxfifo_flush(usbp);
 
   /* Resets the device address to zero.*/
   otgp->DCFG = (otgp->DCFG & ~DCFG_DAD_MASK) | DCFG_DAD(0);
 
   /* Enables also EP-related interrupt sources.*/
-  otgp->GINTMSK  |= GINTMSK_RXFLVLM | GINTMSK_OEPM  | GINTMSK_IEPM;
+  otgp->GINTEN  |= GINTEN_RXFLVLM | GINTEN_OEPM  | GINTEN_IEPM;
   otgp->DIEPMSK   = DIEPMSK_TOCM    | DIEPMSK_XFRCM;
   otgp->DOEPMSK   = DOEPMSK_STUPM   | DOEPMSK_XFRCM;
 

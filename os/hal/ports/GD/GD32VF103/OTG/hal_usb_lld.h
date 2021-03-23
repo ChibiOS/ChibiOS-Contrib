@@ -62,26 +62,10 @@
 #endif
 
 /**
- * @brief   OTG2 driver enable switch.
- * @details If set to @p TRUE the support for OTG_HS is included.
- * @note    The default is @p FALSE.
- */
-#if !defined(GD32_USB_USE_OTG2) || defined(__DOXYGEN__)
-#define GD32_USB_USE_OTG2                  FALSE
-#endif
-
-/**
  * @brief   OTG1 interrupt priority level setting.
  */
 #if !defined(GD32_USB_OTG1_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_USB_OTG1_IRQ_PRIORITY         1
-#endif
-
-/**
- * @brief   OTG2 interrupt priority level setting.
- */
-#if !defined(GD32_USB_OTG2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_USB_OTG2_IRQ_PRIORITY         1
 #endif
 
 /**
@@ -90,23 +74,6 @@
  */
 #if !defined(GD32_USB_OTG1_RX_FIFO_SIZE) || defined(__DOXYGEN__)
 #define GD32_USB_OTG1_RX_FIFO_SIZE         128
-#endif
-
-/**
- * @brief   OTG2 RX shared FIFO size.
- * @note    Must be a multiple of 4.
- */
-#if !defined(GD32_USB_OTG2_RX_FIFO_SIZE) || defined(__DOXYGEN__)
-#define GD32_USB_OTG2_RX_FIFO_SIZE         1024
-#endif
-
-/**
- * @brief   Enables HS mode on OTG2 else FS mode.
- * @note    The default is @p TRUE.
- * @note    Has effect only if @p BOARD_OTG2_USES_ULPI is defined.
- */
-#if !defined(GD32_USE_USB_OTG2_HS) || defined(__DOXYGEN__)
-#define GD32_USE_USB_OTG2_HS               TRUE
 #endif
 
 /**
@@ -148,59 +115,32 @@
 #error "unsupported GD32_OTG_STEPPING"
 #endif
 
-#define GD32_HAS_OTG2 FALSE
-#if !defined(GD32_HAS_OTG1) || !defined(GD32_HAS_OTG2)
-#error "GD32_HAS_OTGx not defined in registry"
-#endif
-
 #if GD32_HAS_OTG1 && !defined(GD32_OTG1_ENDPOINTS)
 #error "GD32_OTG1_ENDPOINTS not defined in registry"
-#endif
-
-#if GD32_HAS_OTG2 && !defined(GD32_OTG2_ENDPOINTS)
-#error "GD32_OTG2_ENDPOINTS not defined in registry"
 #endif
 
 #if GD32_HAS_OTG1 && !defined(GD32_OTG1_FIFO_MEM_SIZE)
 #error "GD32_OTG1_FIFO_MEM_SIZE not defined in registry"
 #endif
 
-#if GD32_HAS_OTG2 && !defined(GD32_OTG2_FIFO_MEM_SIZE)
-#error "GD32_OTG2_FIFO_MEM_SIZE not defined in registry"
-#endif
-
-#if (GD32_USB_USE_OTG1 && !defined(GD32_OTG1_HANDLER)) ||                 \
-    (GD32_USB_USE_OTG2 && !defined(GD32_OTG2_HANDLER))
+#if (GD32_USB_USE_OTG1 && !defined(GD32_OTG1_HANDLER))
 #error "GD32_OTGx_HANDLER not defined in registry"
 #endif
 
-#if (GD32_USB_USE_OTG1 && !defined(GD32_OTG1_NUMBER)) ||                  \
-    (GD32_USB_USE_OTG2 && !defined(GD32_OTG2_NUMBER))
+#if (GD32_USB_USE_OTG1 && !defined(GD32_OTG1_NUMBER))
 #error "GD32_OTGx_NUMBER not defined in registry"
 #endif
 
 /**
  * @brief   Maximum endpoint address.
  */
-#if (GD32_HAS_OTG2 && GD32_USB_USE_OTG2) || defined(__DOXYGEN__)
-#if (GD32_OTG1_ENDPOINTS < GD32_OTG2_ENDPOINTS) || defined(__DOXYGEN__)
-#define USB_MAX_ENDPOINTS                   GD32_OTG2_ENDPOINTS
-#else
 #define USB_MAX_ENDPOINTS                   GD32_OTG1_ENDPOINTS
-#endif
-#else
-#define USB_MAX_ENDPOINTS                   GD32_OTG1_ENDPOINTS
-#endif
 
 #if GD32_USB_USE_OTG1 && !GD32_HAS_OTG1
 #error "OTG1 not present in the selected device"
 #endif
 
-#if GD32_USB_USE_OTG2 && !GD32_HAS_OTG2
-#error "OTG2 not present in the selected device"
-#endif
-
-#if !GD32_USB_USE_OTG1 && !GD32_USB_USE_OTG2
+#if !GD32_USB_USE_OTG1 
 #error "USB driver activated but no USB peripheral assigned"
 #endif
 
@@ -209,38 +149,11 @@
 #error "Invalid IRQ priority assigned to OTG1"
 #endif
 
-#if GD32_USB_USE_OTG2 &&                                                \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_USB_OTG2_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to OTG2"
-#endif
-
 #if (GD32_USB_OTG1_RX_FIFO_SIZE & 3) != 0
 #error "OTG1 RX FIFO size must be a multiple of 4"
 #endif
 
-#if (GD32_USB_OTG2_RX_FIFO_SIZE & 3) != 0
-#error "OTG2 RX FIFO size must be a multiple of 4"
-#endif
-
-/*#if defined(STM32F2XX) || defined(STM32F4XX) || defined(STM32F7XX)
-#define GD32_USBCLK                        GD32_PLL48CLK*/
-#if defined(STM32F10X_CL) || defined (GD32VF103CB)
 #define GD32_USBCLK                        GD32_OTGFSCLK
-// #elif defined(STM32L4XX) || defined(STM32L4XXP)
-// #define GD32_USBCLK                        GD32_48CLK
-// #elif  defined(STM32H7XX)
-// /* Defines directly GD32_USBCLK.*/
-// #define rccEnableOTG_FS                     rccEnableUSB2_OTG_HS
-// #define rccDisableOTG_FS                    rccDisableUSB2_OTG_HS
-// #define rccResetOTG_FS                      rccResetUSB2_OTG_HS
-// #define rccEnableOTG_HS                     rccEnableUSB1_OTG_HS
-// #define rccDisableOTG_HS                    rccDisableUSB1_OTG_HS
-// #define rccResetOTG_HS                      rccResetUSB1_OTG_HS
-// #define rccEnableOTG_HSULPI                 rccEnableUSB1_HSULPI
-// #define rccDisableOTG_HSULPI                rccDisableUSB1_HSULPI
-#else
-#error "unsupported STM32 platform for OTG functionality"
-#endif
 
 /* Allowing for a small tolerance.*/
 #if GD32_USBCLK < 47880000 || GD32_USBCLK > 48120000
@@ -569,10 +482,6 @@ struct USBDriver {
 
 #if GD32_USB_USE_OTG1 && !defined(__DOXYGEN__)
 extern USBDriver USBD1;
-#endif
-
-#if GD32_USB_USE_OTG2 && !defined(__DOXYGEN__)
-extern USBDriver USBD2;
 #endif
 
 #ifdef __cplusplus
