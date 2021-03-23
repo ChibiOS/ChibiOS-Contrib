@@ -495,27 +495,27 @@
  * @{
  */
 /**
- * @brief   Enables the OTG_FS peripheral clock.
+ * @brief   Enables the USBFS peripheral clock.
  *
  * @param[in] lp        low power enable flag
  *
  * @api
  */
-#define rccEnableOTG_FS(lp) rccEnableAHB(RCC_AHBENR_OTGFSEN, lp)
+#define rccEnableUSBFS(lp) rccEnableAHB(RCC_AHBENR_OTGFSEN, lp)
 
 /**
- * @brief   Disables the OTG_FS peripheral clock.
+ * @brief   Disables the USBFS peripheral clock.
  *
  * @api
  */
-#define rccDisableOTG_FS() rccDisableAHB(RCC_AHBENR_OTGFSEN)
+#define rccDisableUSBFS() rccDisableAHB(RCC_AHBENR_OTGFSEN)
 
 /**
- * @brief   Resets the OTG_FS peripheral.
+ * @brief   Resets the USBFS peripheral.
  *
  * @api
  */
-#define rccResetOTG_FS() rccResetAHB(RCC_AHBRSTR_OTGFSRST)
+#define rccResetUSBFS() rccResetAHB(RCC_AHBRSTR_OTGFSRST)
 /** @} */
 
 /**

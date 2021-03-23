@@ -762,7 +762,7 @@ typedef struct
 
 
 /*!< USB registers base address */
-#define USB_OTG_FS_PERIPH_BASE               0x50000000U
+#define USB_USBFS_PERIPH_BASE               0x50000000U
 
 #define USB_OTG_GLOBAL_BASE                  0x00000000U
 #define USB_OTG_DEVICE_BASE                  0x00000800U
@@ -842,7 +842,7 @@ typedef struct
 #define OB                  ((OB_TypeDef *)OB_BASE)
 #define DBGMCU              ((DBGMCU_TypeDef *)DBGMCU_BASE)
 
-#define USB_OTG_FS          ((USB_OTG_GlobalTypeDef *)USB_OTG_FS_PERIPH_BASE)
+#define USB_USBFS          ((USB_OTG_GlobalTypeDef *)USB_USBFS_PERIPH_BASE)
 
 /**
   * @}
@@ -14211,7 +14211,7 @@ typedef struct
 
 
 /****************************** USB Instances ********************************/
-#define IS_USB_ALL_INSTANCE(INSTANCE) ((INSTANCE) == USB_OTG_FS)
+#define IS_USB_ALL_INSTANCE(INSTANCE) ((INSTANCE) == USB_USBFS)
 
 
 #define RCC_HSE_MIN         3000000U
@@ -14237,8 +14237,8 @@ typedef struct
 #define USB_HP_CAN1_TX_IRQn     CAN1_TX_IRQn
 #define USB_HP_IRQn             CAN1_TX_IRQn
 #define DMA1_Channel3_5_IRQn    DMA1_Channel3_IRQn
-#define USBWakeUp_IRQn          OTG_FS_WKUP_IRQn
-#define CEC_IRQn                OTG_FS_WKUP_IRQn
+#define USBWakeUp_IRQn          USBFS_WKUP_IRQn
+#define CEC_IRQn                USBFS_WKUP_IRQn
 #define TIM1_BRK_TIM9_IRQn      TIM1_BRK_IRQn
 #define TIM1_BRK_TIM15_IRQn     TIM1_BRK_IRQn
 #define TIM9_IRQn               TIM1_BRK_IRQn
@@ -14258,8 +14258,8 @@ typedef struct
 #define USB_HP_CAN1_TX_IRQHandler     CAN1_TX_IRQHandler
 #define USB_HP_IRQHandler             CAN1_TX_IRQHandler
 #define DMA1_Channel3_5_IRQHandler    DMA1_Channel3_IRQHandler
-#define USBWakeUp_IRQHandler          OTG_FS_WKUP_IRQHandler
-#define CEC_IRQHandler                OTG_FS_WKUP_IRQHandler
+#define USBWakeUp_IRQHandler          USBFS_WKUP_IRQHandler
+#define CEC_IRQHandler                USBFS_WKUP_IRQHandler
 #define TIM1_BRK_TIM9_IRQHandler      TIM1_BRK_IRQHandler
 #define TIM1_BRK_TIM15_IRQHandler     TIM1_BRK_IRQHandler
 #define TIM9_IRQHandler               TIM1_BRK_IRQHandler

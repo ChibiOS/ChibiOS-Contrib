@@ -39,7 +39,7 @@
 #define EP0_MAX_OUTSIZE         64
 
 #if GD32_USBFS_STEPPING == 1
-#if defined(BOARD_OTG_NOVBUSSENS)
+#if defined(BOARD_USBFS_NOVBUSSENS)
 #define GCCFG_INIT_VALUE        (GCCFG_NOVBUSSENS | GCCFG_VBUSASEN |        \
                                  GCCFG_VBUSBSEN | GCCFG_PWRDWN)
 #else
@@ -48,7 +48,7 @@
 #endif
 
 #elif GD32_USBFS_STEPPING == 2
-#if defined(BOARD_OTG_NOVBUSSENS)
+#if defined(BOARD_USBFS_NOVBUSSENS)
 #define GCCFG_INIT_VALUE        GCCFG_PWRDWN
 #else
 #define GCCFG_INIT_VALUE        (GCCFG_VBDEN | GCCFG_PWRDWN)
@@ -60,7 +60,7 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-/** @brief OTG_FS driver identifier.*/
+/** @brief USBFS driver identifier.*/
 #if GD32_USB_USE_USBFS || defined(__DOXYGEN__)
 USBDriver USBD1;
 #endif
@@ -107,7 +107,7 @@ static const USBEndpointConfig ep0config = {
 };
 
 #if GD32_USB_USE_USBFS
-static const gd32_otg_params_t fsparams = {
+static const gd32_usbfs_params_t fsparams = {
   GD32_USB_USBFS_RX_FIFO_SIZE / 4,
   GD32_USBFS_FIFO_MEM_SIZE,
   GD32_USBFS_ENDPOINTS
@@ -119,7 +119,7 @@ static const gd32_otg_params_t fsparams = {
 /*===========================================================================*/
 
 static void otg_core_reset(USBDriver *usbp) {
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
 
   /* Wait AHB idle condition.*/
   while ((otgp->GRSTCTL & GRSTCTL_AHBIDL) == 0)
@@ -139,7 +139,7 @@ static void otg_core_reset(USBDriver *usbp) {
 }
 
 static void otg_disable_ep(USBDriver *usbp) {
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
   unsigned i;
 
   for (i = 0; i <= usbp->otgparams->num_endpoints; i++) {
@@ -159,7 +159,7 @@ static void otg_disable_ep(USBDriver *usbp) {
 }
 
 static void otg_rxfifo_flush(USBDriver *usbp) {
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
 
   otgp->GRSTCTL = GRSTCTL_RXFFLSH;
   while ((otgp->GRSTCTL & GRSTCTL_RXFFLSH) != 0)
@@ -169,7 +169,7 @@ static void otg_rxfifo_flush(USBDriver *usbp) {
 }
 
 static void otg_txfifo_flush(USBDriver *usbp, uint32_t fifo) {
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
 
   otgp->GRSTCTL = GRSTCTL_TXFNUM(fifo) | GRSTCTL_TXFFLSH;
   while ((otgp->GRSTCTL & GRSTCTL_TXFFLSH) != 0)
@@ -204,7 +204,7 @@ static uint32_t otg_ram_alloc(USBDriver *usbp, size_t size) {
   next = usbp->pmnext;
   usbp->pmnext += size;
   osalDbgAssert(usbp->pmnext <= usbp->otgparams->otg_ram_size,
-                "OTG FIFO memory overflow");
+                "USBFS FIFO memory overflow");
   return next;
 }
 
@@ -337,9 +337,9 @@ static bool otg_txfifo_handler(USBDriver *usbp, usbep_t ep) {
       return false;
 
 // TODO Enable again or keep brute force?
-/*#if GD32_USB_OTGFIFO_FILL_BASEPRI
+/*#if GD32_USB_USBFSFIFO_FILL_BASEPRI
     uint8_t threshold_old = eclic_get_mth();
-    eclic_set_mth(GD32_USB_OTGFIFO_FILL_BASEPRI);
+    eclic_set_mth(GD32_USB_USBFSFIFO_FILL_BASEPRI);
 #endif*/
     osalSysLockFromISR();
     otg_fifo_write_from_buffer(usbp->otg->FIFO[ep],
@@ -348,7 +348,7 @@ static bool otg_txfifo_handler(USBDriver *usbp, usbep_t ep) {
     usbp->epc[ep]->in_state->txbuf += n;
     usbp->epc[ep]->in_state->txcnt += n;
     osalSysUnlockFromISR();
-/*#if GD32_USB_OTGFIFO_FILL_BASEPRI
+/*#if GD32_USB_USBFSFIFO_FILL_BASEPRI
     eclic_set_mth(threshold_old);
 #endif*/
   }
@@ -363,7 +363,7 @@ static bool otg_txfifo_handler(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 static void otg_epin_handler(USBDriver *usbp, usbep_t ep) {
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
   uint32_t epint = otgp->ie[ep].DIEPINT;
 
   otgp->ie[ep].DIEPINT = epint;
@@ -406,7 +406,7 @@ static void otg_epin_handler(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 static void otg_epout_handler(USBDriver *usbp, usbep_t ep) {
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
   uint32_t epint = otgp->oe[ep].DOEPINT;
 
   /* Resets all EP IRQ sources.*/
@@ -464,7 +464,7 @@ static void otg_epout_handler(USBDriver *usbp, usbep_t ep) {
  */
 static void otg_isoc_in_failed_handler(USBDriver *usbp) {
   usbep_t ep;
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
 
   for (ep = 0; ep <= usbp->otgparams->num_endpoints; ep++) {
     if (((otgp->ie[ep].DIEPCTL & DIEPCTL_EPTYP_MASK) == DIEPCTL_EPTYP_ISO) &&
@@ -496,7 +496,7 @@ static void otg_isoc_in_failed_handler(USBDriver *usbp) {
  */
 static void otg_isoc_out_failed_handler(USBDriver *usbp) {
   usbep_t ep;
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
 
   for (ep = 0; ep <= usbp->otgparams->num_endpoints; ep++) {
     if (((otgp->oe[ep].DOEPCTL & DOEPCTL_EPTYP_MASK) == DOEPCTL_EPTYP_ISO) &&
@@ -514,14 +514,14 @@ static void otg_isoc_out_failed_handler(USBDriver *usbp) {
 }
 
 /**
- * @brief   OTG shared ISR.
+ * @brief   USBFS shared ISR.
  *
  * @param[in] usbp      pointer to the @p USBDriver object
  *
  * @notapi
  */
 static void usb_lld_serve_interrupt(USBDriver *usbp) {
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
   uint32_t sts, src;
 
   sts  = otgp->GINTF;
@@ -652,13 +652,13 @@ void usb_lld_init(void) {
 
   /* Driver initialization.*/
   usbObjectInit(&USBD1);
-  USBD1.otg       = OTG_FS;
+  USBD1.otg       = USBFS;
   USBD1.otgparams = &fsparams;
 }
 
 /**
  * @brief   Configures and activates the USB peripheral.
- * @note    Starting the OTG cell can be a slow operation carried out with
+ * @note    Starting the USBFS cell can be a slow operation carried out with
  *          interrupts disabled, perform it before starting time-critical
  *          operations.
  *
@@ -667,28 +667,28 @@ void usb_lld_init(void) {
  * @notapi
  */
 void usb_lld_start(USBDriver *usbp) {
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
 
   if (usbp->state == USB_STOP) {
     /* Clock activation.*/
 
   if (&USBD1 == usbp) {
-    /* OTG FS clock enable and reset.*/
-    rccEnableOTG_FS(true);
-    rccResetOTG_FS();
+    /* USBFS clock enable and reset.*/
+    rccEnableUSBFS(true);
+    rccResetUSBFS();
 
     /* Enables IRQ vector.*/
     eclicEnableVector(GD32_USBFS_NUMBER, GD32_USB_USBFS_IRQ_PRIORITY, GD32_USB_USBFS_IRQ_TRIGGER);
 
-    /* - Forced device mode.
+   /* - Forced device mode.
         - USB turn-around time = TRDT_VALUE_FS.
         - Full Speed 1.1 PHY.*/
     otgp->GUSBCS = GUSBCS_FDMOD | GUSBCS_TRDT(TRDT_VALUE_FS) |
-                    GUSBCS_PHYSEL;
+                   GUSBCS_PHYSEL;
 
     /* 48MHz 1.1 PHY.*/
     otgp->DCFG = 0x02200000 | DCFG_DSPD_FS11;
-  }
+    }
 
     /* PHY enabled.*/
     otgp->PCGCCTL = 0;
@@ -737,7 +737,7 @@ void usb_lld_start(USBDriver *usbp) {
  * @notapi
  */
 void usb_lld_stop(USBDriver *usbp) {
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
 
   /* If in ready state then disables the USB clock.*/
   if (usbp->state != USB_STOP) {
@@ -752,7 +752,7 @@ void usb_lld_stop(USBDriver *usbp) {
 
     if (&USBD1 == usbp) {
       eclicDisableVector(GD32_USBFS_NUMBER);
-      rccDisableOTG_FS();
+      rccDisableUSBFS();
     }
   }
 }
@@ -766,7 +766,7 @@ void usb_lld_stop(USBDriver *usbp) {
  */
 void usb_lld_reset(USBDriver *usbp) {
   unsigned i;
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
 
   /* Flush the Tx FIFO.*/
   otg_txfifo_flush(usbp, 0);
@@ -819,7 +819,7 @@ void usb_lld_reset(USBDriver *usbp) {
  * @notapi
  */
 void usb_lld_set_address(USBDriver *usbp) {
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
 
   otgp->DCFG = (otgp->DCFG & ~DCFG_DAD_MASK) | DCFG_DAD(usbp->address);
 }
@@ -834,7 +834,7 @@ void usb_lld_set_address(USBDriver *usbp) {
  */
 void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
   uint32_t ctl, fsize;
-  gd32_otg_t *otgp = usbp->otg;
+  gd32_usbfs_t *otgp = usbp->otg;
 
   /* IN and OUT common parameters.*/
   switch (usbp->epc[ep]->ep_mode & USB_EP_MODE_TYPE) {

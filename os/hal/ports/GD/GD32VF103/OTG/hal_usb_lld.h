@@ -54,7 +54,7 @@
 
 /**
  * @brief   USBFS driver enable switch.
- * @details If set to @p TRUE the support for OTG_FS is included.
+ * @details If set to @p TRUE the support for USBFS is included.
  * @note    The default is @p FALSE
  */
 #if !defined(GD32_USB_USE_USBFS) || defined(__DOXYGEN__)
@@ -80,7 +80,7 @@
  * @brief   Exception priority level during TXFIFOs operations.
  * @note    Because an undocumented silicon behavior the operation of
  *          copying a packet into a TXFIFO must not be interrupted by
- *          any other operation on the OTG peripheral.
+ *          any other operation on the USBFS peripheral.
  *          This parameter represents the priority mask during copy
  *          operations. The default value only allows to call USB
  *          functions from callbacks invoked from USB ISR handlers.
@@ -91,8 +91,8 @@
  *          functions is only safe from thread level or from USB
  *          callbacks.
  */
-#if !defined(GD32_USB_OTGFIFO_FILL_BASEPRI) || defined(__DOXYGEN__)
-#define GD32_USB_OTGFIFO_FILL_BASEPRI      0
+#if !defined(GD32_USB_USBFSFIFO_FILL_BASEPRI) || defined(__DOXYGEN__)
+#define GD32_USB_USBFSFIFO_FILL_BASEPRI      0
 #endif
 
 /**
@@ -175,7 +175,7 @@ typedef struct {
   uint32_t                      rx_fifo_size;
   uint32_t                      otg_ram_size;
   uint32_t                      num_endpoints;
-} gd32_otg_params_t;
+} gd32_usbfs_params_t;
 
 /**
  * @brief   Type of an IN endpoint state structure.
@@ -408,13 +408,13 @@ struct USBDriver {
 #endif
   /* End of the mandatory fields.*/
   /**
-   * @brief   Pointer to the OTG peripheral associated to this driver.
+   * @brief   Pointer to the USBFS peripheral associated to this driver.
    */
-  gd32_otg_t                   *otg;
+  gd32_usbfs_t                   *otg;
   /**
    * @brief   Peripheral-specific parameters.
    */
-  const gd32_otg_params_t      *otgparams;
+  const gd32_usbfs_params_t      *otgparams;
   /**
    * @brief   Pointer to the next address in the packet memory.
    */
