@@ -106,8 +106,8 @@
 /*
  * OTG units.
  */
-#define GD32_OTG1_HANDLER          vector86
-#define GD32_OTG1_NUMBER           86
+#define GD32_USBFS_HANDLER          vector86
+#define GD32_USBFS_NUMBER           86
 
 /*
  * RTC unit
@@ -287,7 +287,7 @@
 #define GD32_UART_USART2_IRQ_TRIGGER     ECLIC_TRIGGER_DEFAULT
 #define GD32_UART_USART3_IRQ_TRIGGER     ECLIC_TRIGGER_DEFAULT
 #define GD32_UART_USART6_IRQ_TRIGGER     ECLIC_TRIGGER_DEFAULT
-#define GD32_USB_OTG1_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
+#define GD32_USB_USBFS_IRQ_TRIGGER       ECLIC_TRIGGER_DEFAULT
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */

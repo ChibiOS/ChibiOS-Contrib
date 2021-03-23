@@ -53,27 +53,27 @@
 /*===========================================================================*/
 
 /**
- * @brief   OTG1 driver enable switch.
+ * @brief   USBFS driver enable switch.
  * @details If set to @p TRUE the support for OTG_FS is included.
  * @note    The default is @p FALSE
  */
-#if !defined(GD32_USB_USE_OTG1) || defined(__DOXYGEN__)
-#define GD32_USB_USE_OTG1                  FALSE
+#if !defined(GD32_USB_USE_USBFS) || defined(__DOXYGEN__)
+#define GD32_USB_USE_USBFS                  FALSE
 #endif
 
 /**
- * @brief   OTG1 interrupt priority level setting.
+ * @brief   USBFS interrupt priority level setting.
  */
-#if !defined(GD32_USB_OTG1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_USB_OTG1_IRQ_PRIORITY         1
+#if !defined(GD32_USB_USBFS_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_USB_USBFS_IRQ_PRIORITY         1
 #endif
 
 /**
- * @brief   OTG1 RX shared FIFO size.
+ * @brief   USBFS RX shared FIFO size.
  * @note    Must be a multiple of 4.
  */
-#if !defined(GD32_USB_OTG1_RX_FIFO_SIZE) || defined(__DOXYGEN__)
-#define GD32_USB_OTG1_RX_FIFO_SIZE         128
+#if !defined(GD32_USB_USBFS_RX_FIFO_SIZE) || defined(__DOXYGEN__)
+#define GD32_USB_USBFS_RX_FIFO_SIZE         128
 #endif
 
 /**
@@ -107,53 +107,53 @@
 /*===========================================================================*/
 
 /* Registry checks.*/
-#if !defined(GD32_OTG_STEPPING)
-#error "GD32_OTG_STEPPING not defined in registry"
+#if !defined(GD32_USBFS_STEPPING)
+#error "GD32_USBFS_STEPPING not defined in registry"
 #endif
 
-#if (GD32_OTG_STEPPING < 1) || (GD32_OTG_STEPPING > 2)
-#error "unsupported GD32_OTG_STEPPING"
+#if (GD32_USBFS_STEPPING < 1) || (GD32_USBFS_STEPPING > 2)
+#error "unsupported GD32_USBFS_STEPPING"
 #endif
 
-#if GD32_HAS_OTG1 && !defined(GD32_OTG1_ENDPOINTS)
-#error "GD32_OTG1_ENDPOINTS not defined in registry"
+#if GD32_HAS_USBFS && !defined(GD32_USBFS_ENDPOINTS)
+#error "GD32_USBFS_ENDPOINTS not defined in registry"
 #endif
 
-#if GD32_HAS_OTG1 && !defined(GD32_OTG1_FIFO_MEM_SIZE)
-#error "GD32_OTG1_FIFO_MEM_SIZE not defined in registry"
+#if GD32_HAS_USBFS && !defined(GD32_USBFS_FIFO_MEM_SIZE)
+#error "GD32_USBFS_FIFO_MEM_SIZE not defined in registry"
 #endif
 
-#if (GD32_USB_USE_OTG1 && !defined(GD32_OTG1_HANDLER))
-#error "GD32_OTGx_HANDLER not defined in registry"
+#if (GD32_USB_USE_USBFS && !defined(GD32_USBFS_HANDLER))
+#error "GD32_USBFS_HANDLER not defined in registry"
 #endif
 
-#if (GD32_USB_USE_OTG1 && !defined(GD32_OTG1_NUMBER))
-#error "GD32_OTGx_NUMBER not defined in registry"
+#if (GD32_USB_USE_USBFS && !defined(GD32_USBFS_NUMBER))
+#error "GD32_USBFS_NUMBER not defined in registry"
 #endif
 
 /**
  * @brief   Maximum endpoint address.
  */
-#define USB_MAX_ENDPOINTS                   GD32_OTG1_ENDPOINTS
+#define USB_MAX_ENDPOINTS                   GD32_USBFS_ENDPOINTS
 
-#if GD32_USB_USE_OTG1 && !GD32_HAS_OTG1
-#error "OTG1 not present in the selected device"
+#if GD32_USB_USE_USBFS && !GD32_HAS_USBFS
+#error "USBFS not present in the selected device"
 #endif
 
-#if !GD32_USB_USE_OTG1 
+#if !GD32_USB_USE_USBFS 
 #error "USB driver activated but no USB peripheral assigned"
 #endif
 
-#if GD32_USB_USE_OTG1 &&                                                \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_USB_OTG1_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to OTG1"
+#if GD32_USB_USE_USBFS &&                                                \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_USB_USBFS_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to USBFS"
 #endif
 
-#if (GD32_USB_OTG1_RX_FIFO_SIZE & 3) != 0
-#error "OTG1 RX FIFO size must be a multiple of 4"
+#if (GD32_USB_USBFS_RX_FIFO_SIZE & 3) != 0
+#error "USBFS RX FIFO size must be a multiple of 4"
 #endif
 
-#define GD32_USBCLK                        GD32_OTGFSCLK
+#define GD32_USBCLK                        GD32_USBFSCLK
 
 /* Allowing for a small tolerance.*/
 #if GD32_USBCLK < 47880000 || GD32_USBCLK > 48120000
@@ -447,7 +447,7 @@ struct USBDriver {
  *
  * @notapi
  */
-#if (GD32_OTG_STEPPING == 1) || defined(__DOXYGEN__)
+#if (GD32_USBFS_STEPPING == 1) || defined(__DOXYGEN__)
 #define usb_lld_connect_bus(usbp) ((usbp)->otg->GCCFG |= GCCFG_VBUSBSEN)
 #else
 #define usb_lld_connect_bus(usbp) ((usbp)->otg->DCTL &= ~DCTL_SDIS)
@@ -458,7 +458,7 @@ struct USBDriver {
  *
  * @notapi
  */
-#if (GD32_OTG_STEPPING == 1) || defined(__DOXYGEN__)
+#if (GD32_USBFS_STEPPING == 1) || defined(__DOXYGEN__)
 #define usb_lld_disconnect_bus(usbp) ((usbp)->otg->GCCFG &= ~GCCFG_VBUSBSEN)
 #else
 #define usb_lld_disconnect_bus(usbp) ((usbp)->otg->DCTL |= DCTL_SDIS)
@@ -480,7 +480,7 @@ struct USBDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if GD32_USB_USE_OTG1 && !defined(__DOXYGEN__)
+#if GD32_USB_USE_USBFS && !defined(__DOXYGEN__)
 extern USBDriver USBD1;
 #endif
 

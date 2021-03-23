@@ -249,7 +249,7 @@
 
 /* USB attributes.*/
 #define GD32_HAS_USB                       FALSE
-#define GD32_HAS_OTG1                      FALSE
+#define GD32_HAS_USBFS                      FALSE
 #define GD32_HAS_OTG2                      FALSE
 
 /* IWDG attributes.*/
@@ -434,7 +434,7 @@
 
 /* USB attributes.*/
 #define GD32_HAS_USB                       FALSE
-#define GD32_HAS_OTG1                      FALSE
+#define GD32_HAS_USBFS                      FALSE
 #define GD32_HAS_OTG2                      FALSE
 
 /* IWDG attributes.*/
@@ -635,7 +635,7 @@
 #define GD32_USB_ACCESS_SCHEME_2x16        FALSE
 #define GD32_USB_PMA_SIZE                  512
 #define GD32_USB_HAS_BCDR                  FALSE
-#define GD32_HAS_OTG1                      FALSE
+#define GD32_HAS_USBFS                      FALSE
 #define GD32_HAS_OTG2                      FALSE
 
 /* IWDG attributes.*/
@@ -875,7 +875,7 @@
 #define GD32_USB_ACCESS_SCHEME_2x16        FALSE
 #define GD32_USB_PMA_SIZE                  512
 #define GD32_USB_HAS_BCDR                  FALSE
-#define GD32_HAS_OTG1                      FALSE
+#define GD32_HAS_USBFS                      FALSE
 #define GD32_HAS_OTG2                      FALSE
 
 /* IWDG attributes.*/
@@ -1133,7 +1133,7 @@
 #define GD32_USB_ACCESS_SCHEME_2x16        FALSE
 #define GD32_USB_PMA_SIZE                  512
 #define GD32_USB_HAS_BCDR                  FALSE
-#define GD32_HAS_OTG1                      FALSE
+#define GD32_HAS_USBFS                      FALSE
 #define GD32_HAS_OTG2                      FALSE
 
 /* IWDG attributes.*/
@@ -1368,9 +1368,9 @@
 #define GD32_HAS_LPUART1                   FALSE
 
 /* USB attributes.*/
-#define GD32_OTG_STEPPING                  1
-#define GD32_HAS_OTG1                      TRUE
-#define GD32_OTG1_ENDPOINTS                3
+#define GD32_USBFS_STEPPING                  1
+#define GD32_HAS_USBFS                      TRUE
+#define GD32_USBFS_ENDPOINTS                3
 
 #define GD32_HAS_OTG2                      FALSE
 #define GD32_HAS_USB                       FALSE

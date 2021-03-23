@@ -22,13 +22,13 @@
  * @{
  */
 
-#ifndef GD32_OTG_H
-#define GD32_OTG_H
+#ifndef GD32_USBFS_H
+#define GD32_USBFS_H
 
 /**
  * @brief   OTG_FS FIFO memory size in words.
  */
-#define GD32_OTG1_FIFO_MEM_SIZE        320
+#define GD32_USBFS_FIFO_MEM_SIZE        320
 
 /**
  * @brief   Host channel registers group.
@@ -899,6 +899,6 @@ typedef struct {
  */
 #define OTG_FS                      ((gd32_otg_t *)OTG_FS_ADDR)
 
-#endif /* GD32_OTG_H */
+#endif /* GD32_USBFS_H */
 
 /** @} */

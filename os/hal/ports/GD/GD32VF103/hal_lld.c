@@ -234,7 +234,7 @@ void gd32_clock_init(void) {
 #endif
 
   /* Clock settings.*/
-#if GD32_HAS_OTG1
+#if GD32_HAS_USBFS
   RCC->CFGR = GD32_MCOSEL | GD32_USBPRE   | GD32_PLLMUL | GD32_PLLSRC |
               GD32_ADCPRE | GD32_PPRE2    | GD32_PPRE1  | GD32_HPRE;
 #else

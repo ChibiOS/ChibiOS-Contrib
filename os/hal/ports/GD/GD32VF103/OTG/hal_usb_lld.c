@@ -38,7 +38,7 @@
 #define EP0_MAX_INSIZE          64
 #define EP0_MAX_OUTSIZE         64
 
-#if GD32_OTG_STEPPING == 1
+#if GD32_USBFS_STEPPING == 1
 #if defined(BOARD_OTG_NOVBUSSENS)
 #define GCCFG_INIT_VALUE        (GCCFG_NOVBUSSENS | GCCFG_VBUSASEN |        \
                                  GCCFG_VBUSBSEN | GCCFG_PWRDWN)
@@ -47,7 +47,7 @@
                                  GCCFG_PWRDWN)
 #endif
 
-#elif GD32_OTG_STEPPING == 2
+#elif GD32_USBFS_STEPPING == 2
 #if defined(BOARD_OTG_NOVBUSSENS)
 #define GCCFG_INIT_VALUE        GCCFG_PWRDWN
 #else
@@ -61,7 +61,7 @@
 /*===========================================================================*/
 
 /** @brief OTG_FS driver identifier.*/
-#if GD32_USB_USE_OTG1 || defined(__DOXYGEN__)
+#if GD32_USB_USE_USBFS || defined(__DOXYGEN__)
 USBDriver USBD1;
 #endif
 
@@ -106,11 +106,11 @@ static const USBEndpointConfig ep0config = {
   ep0setup_buffer
 };
 
-#if GD32_USB_USE_OTG1
+#if GD32_USB_USE_USBFS
 static const gd32_otg_params_t fsparams = {
-  GD32_USB_OTG1_RX_FIFO_SIZE / 4,
-  GD32_OTG1_FIFO_MEM_SIZE,
-  GD32_OTG1_ENDPOINTS
+  GD32_USB_USBFS_RX_FIFO_SIZE / 4,
+  GD32_USBFS_FIFO_MEM_SIZE,
+  GD32_USBFS_ENDPOINTS
 };
 #endif
 
@@ -427,7 +427,7 @@ static void otg_epout_handler(USBDriver *usbp, usbep_t ep) {
     /* EP0 requires special handling.*/
     if (ep == 0) {
 
-#if defined(GD32_OTG_SEQUENCE_WORKAROUND)
+#if defined(GD32_USBFS_SEQUENCE_WORKAROUND)
       /* If an OUT transaction end interrupt is processed while the state
          machine is not in an OUT state then it is ignored, this is caused
          on some devices (L4) apparently injecting spurious data complete
@@ -623,13 +623,13 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if GD32_USB_USE_OTG1 || defined(__DOXYGEN__)
+#if GD32_USB_USE_USBFS || defined(__DOXYGEN__)
 /**
- * @brief   OTG1 interrupt handler.
+ * @brief   USBFS interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_OTG1_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_USBFS_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -678,7 +678,7 @@ void usb_lld_start(USBDriver *usbp) {
     rccResetOTG_FS();
 
     /* Enables IRQ vector.*/
-    eclicEnableVector(GD32_OTG1_NUMBER, GD32_USB_OTG1_IRQ_PRIORITY, GD32_USB_OTG1_IRQ_TRIGGER);
+    eclicEnableVector(GD32_USBFS_NUMBER, GD32_USB_USBFS_IRQ_PRIORITY, GD32_USB_USBFS_IRQ_TRIGGER);
 
     /* - Forced device mode.
         - USB turn-around time = TRDT_VALUE_FS.
@@ -751,7 +751,7 @@ void usb_lld_stop(USBDriver *usbp) {
     otgp->GCCFG      = 0;
 
     if (&USBD1 == usbp) {
-      eclicDisableVector(GD32_OTG1_NUMBER);
+      eclicDisableVector(GD32_USBFS_NUMBER);
       rccDisableOTG_FS();
     }
   }

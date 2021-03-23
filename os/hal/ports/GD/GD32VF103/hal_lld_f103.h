@@ -571,13 +571,13 @@
  * @brief   USB frequency.
  */
 #if (GD32_USBPRE == GD32_USBPRE_DIV1P5) || defined(__DOXYGEN__)
-#define GD32_OTGFSCLK                ((GD32_PLLCLKOUT * 2) / 3)
+#define GD32_USBFSCLK                ((GD32_PLLCLKOUT * 2) / 3)
 #elif (GD32_USBPRE == GD32_USBPRE_DIV1)
-#define GD32_OTGFSCLK                GD32_PLLCLKOUT
+#define GD32_USBFSCLK                GD32_PLLCLKOUT
 #elif (GD32_USBPRE == GD32_USBPRE_DIV2)
-#define GD32_OTGFSCLK                GD32_PLLCLKOUT / 2
+#define GD32_USBFSCLK                GD32_PLLCLKOUT / 2
 #elif (GD32_USBPRE == GD32_USBPRE_DIV2P5)
-#define GD32_OTGFSCLK                ((GD32_PLLCLKOUT * 2) / 5)
+#define GD32_USBFSCLK                ((GD32_PLLCLKOUT * 2) / 5)
 #else
 #error "invalid GD32_USBPRE value specified"
 #endif

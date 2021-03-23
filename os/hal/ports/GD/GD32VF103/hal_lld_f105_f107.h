@@ -165,8 +165,8 @@
 #define GD32_PLLSRC_PREDIV1    (1 << 16)   /**< PLL clock source is
                                                  PREDIV1.                   */
 
-#define GD32_OTGFSPRE_DIV2     (1 << 22)   /**< HCLK*2 divided by 2.       */
-#define GD32_OTGFSPRE_DIV3     (0 << 22)   /**< HCLK*2 divided by 3.       */
+#define GD32_USBFSPRE_DIV2     (1 << 22)   /**< HCLK*2 divided by 2.       */
+#define GD32_USBFSPRE_DIV3     (0 << 22)   /**< HCLK*2 divided by 3.       */
 
 #define GD32_MCOSEL_NOCLOCK    (0 << 24)   /**< No clock on MCO pin.       */
 #define GD32_MCOSEL_SYSCLK     (4 << 24)   /**< SYSCLK on MCO pin.         */
@@ -315,15 +315,15 @@
 /**
  * @brief   USB clock setting.
  */
-#if !defined(GD32_OTG_CLOCK_REQUIRED) || defined(__DOXYGEN__)
-#define GD32_OTG_CLOCK_REQUIRED    TRUE
+#if !defined(GD32_USBFS_CLOCK_REQUIRED) || defined(__DOXYGEN__)
+#define GD32_USBFS_CLOCK_REQUIRED    TRUE
 #endif
 
 /**
  * @brief   OTG prescaler initialization.
  */
-#if !defined(GD32_OTGFSPRE) || defined(__DOXYGEN__)
-#define GD32_OTGFSPRE              GD32_OTGFSPRE_DIV3
+#if !defined(GD32_USBFSPRE) || defined(__DOXYGEN__)
+#define GD32_USBFSPRE              GD32_USBFSPRE_DIV3
 #endif
 
 /**
@@ -452,7 +452,7 @@
 #endif /* !GD32_LSE_ENABLED */
 
 /* PLL1 activation conditions.*/
-#if GD32_OTG_CLOCK_REQUIRED ||                                             \
+#if GD32_USBFS_CLOCK_REQUIRED ||                                             \
     (GD32_SW == GD32_SW_PLL) ||                                           \
     (GD32_MCOSEL == GD32_MCOSEL_PLLDIV2) ||                               \
     defined(__DOXYGEN__)
@@ -772,12 +772,12 @@
 /**
  * @brief   OTG frequency.
  */
-#if (GD32_OTGFSPRE == GD32_OTGFSPRE_DIV3) || defined(__DOXYGEN__)
-#define GD32_OTGFSCLK              (GD32_PLLVCO / 3)
-#elif (GD32_OTGFSPRE == GD32_OTGFSPRE_DIV2)
-#define GD32_OTGFSCLK              (GD32_PLLVCO / 2)
+#if (GD32_USBFSPRE == GD32_USBFSPRE_DIV3) || defined(__DOXYGEN__)
+#define GD32_USBFSCLK              (GD32_PLLVCO / 3)
+#elif (GD32_USBFSPRE == GD32_USBFSPRE_DIV2)
+#define GD32_USBFSCLK              (GD32_PLLVCO / 2)
 #else
-#error "invalid GD32_OTGFSPRE value specified"
+#error "invalid GD32_USBFSPRE value specified"
 #endif
 
 /**
