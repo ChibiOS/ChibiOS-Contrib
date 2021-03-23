@@ -107,14 +107,6 @@
 /*===========================================================================*/
 
 /* Registry checks.*/
-#if !defined(GD32_USBFS_STEPPING)
-#error "GD32_USBFS_STEPPING not defined in registry"
-#endif
-
-#if (GD32_USBFS_STEPPING < 1) || (GD32_USBFS_STEPPING > 2)
-#error "unsupported GD32_USBFS_STEPPING"
-#endif
-
 #if GD32_HAS_USBFS && !defined(GD32_USBFS_ENDPOINTS)
 #error "GD32_USBFS_ENDPOINTS not defined in registry"
 #endif
@@ -447,22 +439,14 @@ struct USBDriver {
  *
  * @notapi
  */
-#if (GD32_USBFS_STEPPING == 1) || defined(__DOXYGEN__)
-#define usb_lld_connect_bus(usbp) ((usbp)->otg->GCCFG |= GCCFG_VBUSBSEN)
-#else
-#define usb_lld_connect_bus(usbp) ((usbp)->otg->DCTL &= ~DCTL_SDIS)
-#endif
+#define usb_lld_connect_bus(usbp) ((usbp)->otg->GCCFG |= GCCFG_VBUSBCEN)
 
 /**
  * @brief   Disconnect the USB device.
  *
  * @notapi
  */
-#if (GD32_USBFS_STEPPING == 1) || defined(__DOXYGEN__)
-#define usb_lld_disconnect_bus(usbp) ((usbp)->otg->GCCFG &= ~GCCFG_VBUSBSEN)
-#else
-#define usb_lld_disconnect_bus(usbp) ((usbp)->otg->DCTL |= DCTL_SDIS)
-#endif
+#define usb_lld_disconnect_bus(usbp) ((usbp)->otg->GCCFG &= ~GCCFG_VBUSBCEN)
 
 /**
  * @brief   Start of host wake-up procedure.

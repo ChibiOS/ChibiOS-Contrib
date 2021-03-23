@@ -303,7 +303,6 @@
 #endif
 
 /* USB attributes.*/
-#define GD32_USBFS_STEPPING                  1
 #define GD32_HAS_USBFS                      TRUE
 #define GD32_USBFS_ENDPOINTS                3
 
