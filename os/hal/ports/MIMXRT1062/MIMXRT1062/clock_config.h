@@ -1,10 +1,3 @@
-/*
- * Copyright 2018-2020 NXP
- * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 #ifndef _CLOCK_CONFIG_H_
 #define _CLOCK_CONFIG_H_
 
@@ -87,7 +80,7 @@ void BOARD_InitBootClocks(void);
 #define BOARD_BOOTCLOCKRUN_SPDIF0_EXTCLK_OUT          0UL
 #define BOARD_BOOTCLOCKRUN_TRACE_CLK_ROOT             132000000UL
 #define BOARD_BOOTCLOCKRUN_UART_CLK_ROOT              80000000UL
-#define BOARD_BOOTCLOCKRUN_USBPHY1_CLK                0UL
+#define BOARD_BOOTCLOCKRUN_USBPHY1_CLK                480000000UL
 #define BOARD_BOOTCLOCKRUN_USBPHY2_CLK                0UL
 #define BOARD_BOOTCLOCKRUN_USDHC1_CLK_ROOT            198000000UL
 #define BOARD_BOOTCLOCKRUN_USDHC2_CLK_ROOT            198000000UL

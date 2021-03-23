@@ -1,11 +1,4 @@
 /*
- * Copyright 2018-2020 NXP
- * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
-/*
  * How to setup clock using clock driver functions:
  *
  * 1. Call CLOCK_InitXXXPLL() to configure corresponding PLL clock.
@@ -26,7 +19,7 @@ product: Clocks v7.0
 processor: MIMXRT1062xxxxA
 package_id: MIMXRT1062DVL6A
 mcu_data: ksdk2_0
-processor_version: 0.7.9
+processor_version: 9.0.1
 board: MIMXRT1060-EVK
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 
@@ -98,6 +91,7 @@ outputs:
 - {id: SPDIF0_CLK_ROOT.outFreq, value: 30 MHz}
 - {id: TRACE_CLK_ROOT.outFreq, value: 132 MHz}
 - {id: UART_CLK_ROOT.outFreq, value: 80 MHz}
+- {id: USBPHY1_CLK.outFreq, value: 480 MHz}
 - {id: USDHC1_CLK_ROOT.outFreq, value: 198 MHz}
 - {id: USDHC2_CLK_ROOT.outFreq, value: 198 MHz}
 settings:
@@ -138,6 +132,8 @@ settings:
 - {id: CCM_ANALOG.PLL5_POST_DIV.scale, value: '2'}
 - {id: CCM_ANALOG.VIDEO_DIV.scale, value: '4'}
 - {id: CCM_ANALOG_PLL_ENET_POWERDOWN_CFG, value: 'Yes'}
+- {id: CCM_ANALOG_PLL_USB1_EN_USB_CLKS_CFG, value: Enabled}
+- {id: CCM_ANALOG_PLL_USB1_EN_USB_CLKS_OUT_CFG, value: Enabled}
 - {id: CCM_ANALOG_PLL_USB1_POWER_CFG, value: 'Yes'}
 - {id: CCM_ANALOG_PLL_VIDEO_POWERDOWN_CFG, value: 'No'}
 sources:
@@ -247,7 +243,7 @@ void BOARD_BootClockRUN(void)
     /* Set Semc alt clock source. */
     CLOCK_SetMux(kCLOCK_SemcAltMux, 0);
     /* Set Semc clock source. */
-    CLOCK_SetMux(kCLOCK_SemcMux, 3);
+    CLOCK_SetMux(kCLOCK_SemcMux, 0);
 #endif
     /* In SDK projects, external flash (configured by FLEXSPI) will be initialized by dcd.
      * With this macro XIP_EXTERNAL_FLASH, usb1 pll (selected to be FLEXSPI clock source in SDK projects) will be left unchanged.
@@ -411,8 +407,6 @@ void BOARD_BootClockRUN(void)
     CLOCK_InitUsb1Pfd(kCLOCK_Pfd2, 17);
     /* Init Usb1 pfd3. */
     CLOCK_InitUsb1Pfd(kCLOCK_Pfd3, 19);
-    /* Disable Usb1 PLL output for USBPHY1. */
-    CCM_ANALOG->PLL_USB1 &= ~CCM_ANALOG_PLL_USB1_EN_USB_CLKS_MASK;
 #endif
     /* DeInit Audio PLL. */
     CLOCK_DeinitAudioPll();
