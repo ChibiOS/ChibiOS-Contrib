@@ -785,8 +785,8 @@ void usb_lld_reset(USBDriver *usbp) {
   otgp->ie[0].DIEPTSIZ = 0;
   otgp->ie[0].DIEPCTL = DIEPCTL_SD0PID | DIEPCTL_USBAEP | DIEPCTL_EPTYP_CTRL |
                         DIEPCTL_TXFNUM(0) | DIEPCTL_MPSIZ(ep0config.in_maxsize);
-  otgp->DIEPTXF0 = DIEPTXF_INEPTXFD(ep0config.in_maxsize / 4) |
-                   DIEPTXF_INEPTXSA(otg_ram_alloc(usbp,
+  otgp->DIEPTFLEN0 = DIEPTFLEN_IEPTXFD(ep0config.in_maxsize / 4) |
+                   DIEPTFLEN_IEPTXRSAR(otg_ram_alloc(usbp,
                                                   ep0config.in_maxsize / 4));
 }
 
@@ -851,8 +851,8 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
     fsize = usbp->epc[ep]->in_maxsize / 4;
     if (usbp->epc[ep]->in_multiplier > 1)
       fsize *= usbp->epc[ep]->in_multiplier;
-    otgp->DIEPTXF[ep - 1] = DIEPTXF_INEPTXFD(fsize) |
-                            DIEPTXF_INEPTXSA(otg_ram_alloc(usbp, fsize));
+    otgp->DIEPTFLEN[ep - 1] = DIEPTFLEN_IEPTXFD(fsize) |
+                            DIEPTFLEN_IEPTXRSAR(otg_ram_alloc(usbp, fsize));
     otg_txfifo_flush(usbp, ep);
 
     otgp->ie[ep].DIEPCTL = ctl |
@@ -861,7 +861,7 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
     otgp->DAINTMSK |= DAINTMSK_IEPM(ep);
   }
   else {
-    otgp->DIEPTXF[ep - 1] = 0x02000400; /* Reset value.*/
+    otgp->DIEPTFLEN[ep - 1] = 0x02000400; /* Reset value.*/
     otg_txfifo_flush(usbp, ep);
     otgp->ie[ep].DIEPCTL &= ~DIEPCTL_USBAEP;
     otgp->DAINTMSK &= ~DAINTMSK_IEPM(ep);

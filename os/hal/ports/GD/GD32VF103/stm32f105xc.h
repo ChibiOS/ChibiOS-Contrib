@@ -571,7 +571,7 @@ typedef struct
   __IO uint32_t CID;                  /*!< User ID Register                           Address offset: 03Ch */
   uint32_t  Reserved40[48];           /*!< Reserved 040h-0FFh */
   __IO uint32_t HPTFLEN;             /*!< Host Periodic Tx FIFO Size Reg             Address offset: 100h */
-  __IO uint32_t DIEPTXF[0x0F];        /*!< dev Periodic Transmit FIFO                 Address offset: 0x104 */
+  __IO uint32_t DIEPTFLEN[0x0F];        /*!< dev Periodic Transmit FIFO                 Address offset: 0x104 */
 } USB_OTG_GlobalTypeDef;
 
 /** 
@@ -639,13 +639,13 @@ typedef struct
 
 typedef struct 
 {
-  __IO uint32_t HCFG;                 /*!< Host Configuration Register    400h*/
-  __IO uint32_t HFIR;                 /*!< Host Frame Interval Register   404h*/
+  __IO uint32_t HCTL;                 /*!< Host Configuration Register    400h*/
+  __IO uint32_t HFT;                 /*!< Host Frame Interval Register   404h*/
   __IO uint32_t HFNUM;                /*!< Host Frame Nbr/Frame Remaining 408h*/
   uint32_t Reserved40C;               /*!< Reserved                       40Ch*/
-  __IO uint32_t HPTXSTS;              /*!< Host Periodic Tx FIFO/ Queue Status 410h*/
-  __IO uint32_t HAINT;                /*!< Host All Channels Interrupt Register 414h*/
-  __IO uint32_t HAINTMSK;             /*!< Host All Channels Interrupt Mask 418h*/
+  __IO uint32_t HPTFQSTAT;              /*!< Host Periodic Tx FIFO/ Queue Status 410h*/
+  __IO uint32_t HACHINT;                /*!< Host All Channels Interrupt Register 414h*/
+  __IO uint32_t HACHINTEN;             /*!< Host All Channels Interrupt Mask 418h*/
 } USB_OTG_HostTypeDef;
 
 /** 
@@ -654,11 +654,11 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t HCCHAR;
+  __IO uint32_t HCHCTL;
   __IO uint32_t HCSPLT;
-  __IO uint32_t HCINT;
-  __IO uint32_t HCINTMSK;
-  __IO uint32_t HCTSIZ;
+  __IO uint32_t HCHINTF;
+  __IO uint32_t HCHINTEN;
+  __IO uint32_t HCHLEN;
   __IO uint32_t HCDMA;
   uint32_t Reserved[2];
 } USB_OTG_HostChannelTypeDef;
