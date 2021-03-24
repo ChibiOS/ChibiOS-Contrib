@@ -125,18 +125,18 @@ static void otg_disable_ep(USBDriver *usbp) {
 
   for (i = 0; i <= usbp->otgparams->num_endpoints; i++) {
 
-    if ((otgp->ie[i].DIEPCTL & DIEPCTL_EPENA) != 0U) {
-      otgp->ie[i].DIEPCTL |= DIEPCTL_EPDIS;
+    if ((otgp->ie[i].DIEPCTL & DIEPCTL_EPEN) != 0U) {
+      otgp->ie[i].DIEPCTL |= DIEPCTL_EPD;
     }
 
-    if ((otgp->oe[i].DOEPCTL & DIEPCTL_EPENA) != 0U) {
-      otgp->oe[i].DOEPCTL |= DIEPCTL_EPDIS;
+    if ((otgp->oe[i].DOEPCTL & DIEPCTL_EPEN) != 0U) {
+      otgp->oe[i].DOEPCTL |= DIEPCTL_EPD;
     }
 
-    otgp->ie[i].DIEPINT = 0xFFFFFFFF;
-    otgp->oe[i].DOEPINT = 0xFFFFFFFF;
+    otgp->ie[i].DIEPINTF = 0xFFFFFFFF;
+    otgp->oe[i].DOEPINTF = 0xFFFFFFFF;
   }
-  otgp->DAINTMSK = DAINTMSK_OEPM(0) | DAINTMSK_IEPM(0);
+  otgp->DAEPINTEN = DAEPINTEN_OEPIE(0) | DAEPINTEN_IEPIE(0);
 }
 
 static void otg_rxfifo_flush(USBDriver *usbp) {
@@ -302,7 +302,7 @@ static bool otg_txfifo_handler(USBDriver *usbp, usbep_t ep) {
     /* Transaction end condition.*/
     if (usbp->epc[ep]->in_state->txcnt >= usbp->epc[ep]->in_state->txsize) {
 #if 1
-      usbp->otg->DIEPEMPMSK &= ~DIEPEMPMSK_INEPTXFEM(ep);
+      usbp->otg->DIEPFEINTEN &= ~DIEPFEINTEN_IEPTXFEIE(ep);
 #endif
       return true;
     }
@@ -314,7 +314,7 @@ static bool otg_txfifo_handler(USBDriver *usbp, usbep_t ep) {
 
     /* Checks if in the TXFIFO there is enough space to accommodate the
        next packet.*/
-    if (((usbp->otg->ie[ep].DTXFSTS & DTXFSTS_INEPTFSAV_MASK) * 4) < n)
+    if (((usbp->otg->ie[ep].DIEPTFSTAT & DIEPTFSTAT_IEPTFS_MASK) * 4) < n)
       return false;
 
 // TODO Enable again or keep brute force?
@@ -345,14 +345,14 @@ static bool otg_txfifo_handler(USBDriver *usbp, usbep_t ep) {
  */
 static void otg_epin_handler(USBDriver *usbp, usbep_t ep) {
   gd32_usbfs_t *otgp = usbp->otg;
-  uint32_t epint = otgp->ie[ep].DIEPINT;
+  uint32_t epint = otgp->ie[ep].DIEPINTF;
 
-  otgp->ie[ep].DIEPINT = epint;
+  otgp->ie[ep].DIEPINTF = epint;
 
-  if (epint & DIEPINT_TOC) {
+  if (epint & DIEPINTFF_CITO) {
     /* Timeouts not handled yet, not sure how to handle.*/
   }
-  if ((epint & DIEPINT_XFRC) && (otgp->DIEPMSK & DIEPMSK_XFRCM)) {
+  if ((epint & DIEPINTFF_TF) && (otgp->DIEPINTFEN & DIEPINTFEN_TFEN)) {
     /* Transmit transfer complete.*/
     USBInEndpointState *isp = usbp->epc[ep]->in_state;
 
@@ -371,8 +371,8 @@ static void otg_epin_handler(USBDriver *usbp, usbep_t ep) {
       _usb_isr_invoke_in_cb(usbp, ep);
     }
   }
-  if ((epint & DIEPINT_TXFE) &&
-      (otgp->DIEPEMPMSK & DIEPEMPMSK_INEPTXFEM(ep))) {
+  if ((epint & DIEPINTFF_TXFE) &&
+      (otgp->DIEPFEINTEN & DIEPFEINTEN_IEPTXFEIE(ep))) {
     /* TX FIFO empty or emptying.*/
     otg_txfifo_handler(usbp, ep);
   }
@@ -388,18 +388,18 @@ static void otg_epin_handler(USBDriver *usbp, usbep_t ep) {
  */
 static void otg_epout_handler(USBDriver *usbp, usbep_t ep) {
   gd32_usbfs_t *otgp = usbp->otg;
-  uint32_t epint = otgp->oe[ep].DOEPINT;
+  uint32_t epint = otgp->oe[ep].DOEPINTF;
 
   /* Resets all EP IRQ sources.*/
-  otgp->oe[ep].DOEPINT = epint;
+  otgp->oe[ep].DOEPINTF = epint;
 
-  if ((epint & DOEPINT_STUP) && (otgp->DOEPMSK & DOEPMSK_STUPM)) {
+  if ((epint & DOEPINTF_STPF) && (otgp->DOEPINTFEN & DOEPINTFEN_STPFEN)) {
     /* Setup packets handling, setup packets are handled using a
        specific callback.*/
     _usb_isr_invoke_setup_cb(usbp, ep);
   }
 
-  if ((epint & DOEPINT_XFRC) && (otgp->DOEPMSK & DOEPMSK_XFRCM)) {
+  if ((epint & DOEPINTF_TF) && (otgp->DOEPINTFEN & DOEPINTFEN_TFEN)) {
     USBOutEndpointState *osp;
 
     /* OUT state structure pointer for this endpoint.*/
@@ -448,12 +448,12 @@ static void otg_isoc_in_failed_handler(USBDriver *usbp) {
   gd32_usbfs_t *otgp = usbp->otg;
 
   for (ep = 0; ep <= usbp->otgparams->num_endpoints; ep++) {
-    if (((otgp->ie[ep].DIEPCTL & DIEPCTL_EPTYP_MASK) == DIEPCTL_EPTYP_ISO) &&
-        ((otgp->ie[ep].DIEPCTL & DIEPCTL_EPENA) != 0)) {
+    if (((otgp->ie[ep].DIEPCTL & DIEPCTL_EPTYPE_MASK) == DIEPCTL_EPTYPE_ISO) &&
+        ((otgp->ie[ep].DIEPCTL & DIEPCTL_EPEN) != 0)) {
       /* Endpoint enabled -> ISOC IN transfer failed */
       /* Disable endpoint */
-      otgp->ie[ep].DIEPCTL |= (DIEPCTL_EPDIS | DIEPCTL_SNAK);
-      while (otgp->ie[ep].DIEPCTL & DIEPCTL_EPENA)
+      otgp->ie[ep].DIEPCTL |= (DIEPCTL_EPD | DIEPCTL_SNAK);
+      while (otgp->ie[ep].DIEPCTL & DIEPCTL_EPEN)
         ;
 
       /* Flush FIFO */
@@ -480,13 +480,13 @@ static void otg_isoc_out_failed_handler(USBDriver *usbp) {
   gd32_usbfs_t *otgp = usbp->otg;
 
   for (ep = 0; ep <= usbp->otgparams->num_endpoints; ep++) {
-    if (((otgp->oe[ep].DOEPCTL & DOEPCTL_EPTYP_MASK) == DOEPCTL_EPTYP_ISO) &&
-        ((otgp->oe[ep].DOEPCTL & DOEPCTL_EPENA) != 0)) {
+    if (((otgp->oe[ep].DOEPCTL & DOEPCTL_EPTYPE_MASK) == DOEPCTL_EPTYPE_ISO) &&
+        ((otgp->oe[ep].DOEPCTL & DOEPCTL_EPEN) != 0)) {
       /* Endpoint enabled -> ISOC OUT transfer failed */
       /* Disable endpoint */
       /* CHTODO:: Core stucks here */
-      /*otgp->oe[ep].DOEPCTL |= (DOEPCTL_EPDIS | DOEPCTL_SNAK);
-      while (otgp->oe[ep].DOEPCTL & DOEPCTL_EPENA)
+      /*otgp->oe[ep].DOEPCTL |= (DOEPCTL_EPD | DOEPCTL_SNAK);
+      while (otgp->oe[ep].DOEPCTL & DOEPCTL_EPEN)
         ;*/
       /* Prepare transfer for next frame.*/
       _usb_isr_invoke_out_cb(usbp, ep);
@@ -522,13 +522,13 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
   if (sts & GINTF_WKUPIF) {
     /* If clocks are gated off, turn them back on (may be the case if
        coming out of suspend mode).*/
-    if (otgp->PCGCCTL & (PCGCCTL_STPPCLK | PCGCCTL_GATEHCLK)) {
+    if (otgp->PWRCLKCTL & (PWRCLKCTL_SUCLK | PWRCLKCTL_SHCLK)) {
       /* Set to zero to un-gate the USB core clocks.*/
-      otgp->PCGCCTL &= ~(PCGCCTL_STPPCLK | PCGCCTL_GATEHCLK);
+      otgp->PWRCLKCTL &= ~(PWRCLKCTL_SUCLK | PWRCLKCTL_SHCLK);
     }
 
     /* Clear the Remote Wake-up Signaling.*/
-    otgp->DCTL &= ~DCTL_RWUSIG;
+    otgp->DCTL &= ~DCTL_RWKUP;
 
     _usb_wakeup(usbp);
   }
@@ -544,15 +544,8 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
 
   /* Enumeration done.*/
   if (sts & GINTF_ENUMF) {
-    /* Full or High speed timing selection.*/
-    if ((otgp->DSTS & DSTS_ENUMSPD_MASK) == DSTS_ENUMSPD_HS_480) {
-      otgp->GUSBCS = (otgp->GUSBCS & ~(GUSBCS_UTT_MASK)) |
-                      GUSBCS_UTT(TRDT_VALUE_HS);
-    }
-    else {
       otgp->GUSBCS = (otgp->GUSBCS & ~(GUSBCS_UTT_MASK)) |
                       GUSBCS_UTT(TRDT_VALUE_FS);
-    }
   }
 
   /* SOF interrupt handling.*/
@@ -577,7 +570,7 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
   }
 
   /* IN/OUT endpoints event handling.*/
-  src = otgp->DAINT;
+  src = otgp->DAEPINT;
   if (sts & GINTF_OEPIF) {
     if (src & (1 << 16))
       otg_epout_handler(usbp, 0);
@@ -667,11 +660,11 @@ void usb_lld_start(USBDriver *usbp) {
     otgp->GUSBCS = GUSBCS_FDM | GUSBCS_UTT(TRDT_VALUE_FS);
 
     /* 48MHz 1.1 PHY.*/
-    otgp->DCFG = 0x02200000 | DCFG_DSPD_FS11;
+    otgp->DCFG = 0x02200000 | DCFG_DS_FS11;
     }
 
     /* PHY enabled.*/
-    otgp->PCGCCTL = 0;
+    otgp->PWRCLKCTL = 0;
 
     /* VBUS sensing and transceiver enabled.*/
     otgp->GCCFG = GCCFG_INIT_VALUE;
@@ -687,9 +680,9 @@ void usb_lld_start(USBDriver *usbp) {
 
     /* Clear all pending Device Interrupts, only the USB Reset interrupt
        is required initially.*/
-    otgp->DIEPMSK  = 0;
-    otgp->DOEPMSK  = 0;
-    otgp->DAINTMSK = 0;
+    otgp->DIEPINTFEN  = 0;
+    otgp->DOEPINTFEN  = 0;
+    otgp->DAEPINTEN = 0;
     if (usbp->config->sof_cb == NULL)
       otgp->GINTEN  = GINTEN_ENUMFIE | GINTEN_RSTIE | GINTEN_SPIE |
                        GINTEN_ESPIE | GINTEN_SESIE | GINTEN_WKUPIE |
@@ -725,7 +718,7 @@ void usb_lld_stop(USBDriver *usbp) {
        active.*/
     otg_disable_ep(usbp);
 
-    otgp->DAINTMSK   = 0;
+    otgp->DAEPINTEN   = 0;
     otgp->GAHBCS    = 0;
     otgp->GCCFG      = 0;
 
@@ -751,15 +744,15 @@ void usb_lld_reset(USBDriver *usbp) {
   otg_txfifo_flush(usbp, 0);
 
   /* Endpoint interrupts all disabled and cleared.*/
-  otgp->DIEPEMPMSK = 0;
-  otgp->DAINTMSK   = DAINTMSK_OEPM(0) | DAINTMSK_IEPM(0);
+  otgp->DIEPFEINTEN = 0;
+  otgp->DAEPINTEN   = DAEPINTEN_OEPIE(0) | DAEPINTEN_IEPIE(0);
 
   /* All endpoints in NAK mode, interrupts cleared.*/
   for (i = 0; i <= usbp->otgparams->num_endpoints; i++) {
     otgp->ie[i].DIEPCTL = DIEPCTL_SNAK;
     otgp->oe[i].DOEPCTL = DOEPCTL_SNAK;
-    otgp->ie[i].DIEPINT = 0xFFFFFFFF;
-    otgp->oe[i].DOEPINT = 0xFFFFFFFF;
+    otgp->ie[i].DIEPINTF = 0xFFFFFFFF;
+    otgp->oe[i].DOEPINTF = 0xFFFFFFFF;
   }
 
   /* Resets the FIFO memory allocator.*/
@@ -770,21 +763,21 @@ void usb_lld_reset(USBDriver *usbp) {
   otg_rxfifo_flush(usbp);
 
   /* Resets the device address to zero.*/
-  otgp->DCFG = (otgp->DCFG & ~DCFG_DAD_MASK) | DCFG_DAD(0);
+  otgp->DCFG = (otgp->DCFG & ~DCFG_DAR_MASK) | DCFG_DAR(0);
 
   /* Enables also EP-related interrupt sources.*/
   otgp->GINTEN  |= GINTEN_RXFNEIE | GINTEN_OEPIE  | GINTEN_IEPIE;
-  otgp->DIEPMSK   = DIEPMSK_TOCM    | DIEPMSK_XFRCM;
-  otgp->DOEPMSK   = DOEPMSK_STUPM   | DOEPMSK_XFRCM;
+  otgp->DIEPINTFEN   = DIEPINTFEN_CITOEN    | DIEPINTFEN_TFEN;
+  otgp->DOEPINTFEN   = DOEPINTFEN_STPFEN   | DOEPINTFEN_TFEN;
 
   /* EP0 initialization, it is a special case.*/
   usbp->epc[0] = &ep0config;
-  otgp->oe[0].DOEPTSIZ = DOEPTSIZ_STUPCNT(3);
-  otgp->oe[0].DOEPCTL = DOEPCTL_SD0PID | DOEPCTL_USBAEP | DOEPCTL_EPTYP_CTRL |
-                        DOEPCTL_MPSIZ(ep0config.out_maxsize);
-  otgp->ie[0].DIEPTSIZ = 0;
-  otgp->ie[0].DIEPCTL = DIEPCTL_SD0PID | DIEPCTL_USBAEP | DIEPCTL_EPTYP_CTRL |
-                        DIEPCTL_TXFNUM(0) | DIEPCTL_MPSIZ(ep0config.in_maxsize);
+  otgp->oe[0].DOEPLEN = DOEPLEN_STPCNT(3);
+  otgp->oe[0].DOEPCTL = DOEPCTL_SD0PID | DOEPCTL_EPACT | DOEPCTL_EPTYPE_CTRL |
+                        DOEPCTL_MPL(ep0config.out_maxsize);
+  otgp->ie[0].DIEPLEN = 0;
+  otgp->ie[0].DIEPCTL = DIEPCTL_SD0PID | DIEPCTL_EPACT | DIEPCTL_EPTYPE_CTRL |
+                        DIEPCTL_TXFNUM(0) | DIEPCTL_MPL(ep0config.in_maxsize);
   otgp->DIEPTFLEN0 = DIEPTFLEN_IEPTXFD(ep0config.in_maxsize / 4) |
                    DIEPTFLEN_IEPTXRSAR(otg_ram_alloc(usbp,
                                                   ep0config.in_maxsize / 4));
@@ -800,7 +793,7 @@ void usb_lld_reset(USBDriver *usbp) {
 void usb_lld_set_address(USBDriver *usbp) {
   gd32_usbfs_t *otgp = usbp->otg;
 
-  otgp->DCFG = (otgp->DCFG & ~DCFG_DAD_MASK) | DCFG_DAD(usbp->address);
+  otgp->DCFG = (otgp->DCFG & ~DCFG_DAR_MASK) | DCFG_DAR(usbp->address);
 }
 
 /**
@@ -818,34 +811,34 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
   /* IN and OUT common parameters.*/
   switch (usbp->epc[ep]->ep_mode & USB_EP_MODE_TYPE) {
   case USB_EP_MODE_TYPE_CTRL:
-    ctl = DIEPCTL_SD0PID | DIEPCTL_USBAEP | DIEPCTL_EPTYP_CTRL;
+    ctl = DIEPCTL_SD0PID | DIEPCTL_EPACT | DIEPCTL_EPTYPE_CTRL;
     break;
   case USB_EP_MODE_TYPE_ISOC:
-    ctl = DIEPCTL_SD0PID | DIEPCTL_USBAEP | DIEPCTL_EPTYP_ISO;
+    ctl = DIEPCTL_SD0PID | DIEPCTL_EPACT | DIEPCTL_EPTYPE_ISO;
     break;
   case USB_EP_MODE_TYPE_BULK:
-    ctl = DIEPCTL_SD0PID | DIEPCTL_USBAEP | DIEPCTL_EPTYP_BULK;
+    ctl = DIEPCTL_SD0PID | DIEPCTL_EPACT | DIEPCTL_EPTYPE_BULK;
     break;
   case USB_EP_MODE_TYPE_INTR:
-    ctl = DIEPCTL_SD0PID | DIEPCTL_USBAEP | DIEPCTL_EPTYP_INTR;
+    ctl = DIEPCTL_SD0PID | DIEPCTL_EPACT | DIEPCTL_EPTYPE_INTR;
     break;
   default:
     return;
   }
 
   /* OUT endpoint activation or deactivation.*/
-  otgp->oe[ep].DOEPTSIZ = 0;
+  otgp->oe[ep].DOEPLEN = 0;
   if (usbp->epc[ep]->out_state != NULL) {
-    otgp->oe[ep].DOEPCTL = ctl | DOEPCTL_MPSIZ(usbp->epc[ep]->out_maxsize);
-    otgp->DAINTMSK |= DAINTMSK_OEPM(ep);
+    otgp->oe[ep].DOEPCTL = ctl | DOEPCTL_MPL(usbp->epc[ep]->out_maxsize);
+    otgp->DAEPINTEN |= DAEPINTEN_OEPIE(ep);
   }
   else {
-    otgp->oe[ep].DOEPCTL &= ~DOEPCTL_USBAEP;
-    otgp->DAINTMSK &= ~DAINTMSK_OEPM(ep);
+    otgp->oe[ep].DOEPCTL &= ~DOEPCTL_EPACT;
+    otgp->DAEPINTEN &= ~DAEPINTEN_OEPIE(ep);
   }
 
   /* IN endpoint activation or deactivation.*/
-  otgp->ie[ep].DIEPTSIZ = 0;
+  otgp->ie[ep].DIEPLEN = 0;
   if (usbp->epc[ep]->in_state != NULL) {
     /* FIFO allocation for the IN endpoint.*/
     fsize = usbp->epc[ep]->in_maxsize / 4;
@@ -857,14 +850,14 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
 
     otgp->ie[ep].DIEPCTL = ctl |
                            DIEPCTL_TXFNUM(ep) |
-                           DIEPCTL_MPSIZ(usbp->epc[ep]->in_maxsize);
-    otgp->DAINTMSK |= DAINTMSK_IEPM(ep);
+                           DIEPCTL_MPL(usbp->epc[ep]->in_maxsize);
+    otgp->DAEPINTEN |= DAEPINTEN_IEPIE(ep);
   }
   else {
     otgp->DIEPTFLEN[ep - 1] = 0x02000400; /* Reset value.*/
     otg_txfifo_flush(usbp, ep);
-    otgp->ie[ep].DIEPCTL &= ~DIEPCTL_USBAEP;
-    otgp->DAINTMSK &= ~DAINTMSK_IEPM(ep);
+    otgp->ie[ep].DIEPCTL &= ~DIEPCTL_EPACT;
+    otgp->DAEPINTEN &= ~DAEPINTEN_IEPIE(ep);
   }
 }
 
@@ -902,7 +895,7 @@ usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep) {
   (void)usbp;
 
   ctl = usbp->otg->oe[ep].DOEPCTL;
-  if (!(ctl & DOEPCTL_USBAEP))
+  if (!(ctl & DOEPCTL_EPACT))
     return EP_STATUS_DISABLED;
   if (ctl & DOEPCTL_STALL)
     return EP_STATUS_STALLED;
@@ -927,7 +920,7 @@ usbepstatus_t usb_lld_get_status_in(USBDriver *usbp, usbep_t ep) {
   (void)usbp;
 
   ctl = usbp->otg->ie[ep].DIEPCTL;
-  if (!(ctl & DIEPCTL_USBAEP))
+  if (!(ctl & DIEPCTL_EPACT))
     return EP_STATUS_DISABLED;
   if (ctl & DIEPCTL_STALL)
     return EP_STATUS_STALLED;
@@ -979,21 +972,21 @@ void usb_lld_start_out(USBDriver *usbp, usbep_t ep) {
            usbp->epc[ep]->out_maxsize;
   rxsize = (pcnt * usbp->epc[ep]->out_maxsize + 3U) & 0xFFFFFFFCU;
 
-  /*Setting up transaction parameters in DOEPTSIZ.*/
-  usbp->otg->oe[ep].DOEPTSIZ = DOEPTSIZ_STUPCNT(3) | DOEPTSIZ_PKTCNT(pcnt) |
-                               DOEPTSIZ_XFRSIZ(rxsize);
+  /*Setting up transaction parameters in DOEPLEN.*/
+  usbp->otg->oe[ep].DOEPLEN = DOEPLEN_STPCNT(3) | DOEPLEN_PCNT(pcnt) |
+                               DOEPLEN_TLEN(rxsize);
 
   /* Special case of isochronous endpoint.*/
   if ((usbp->epc[ep]->ep_mode & USB_EP_MODE_TYPE) == USB_EP_MODE_TYPE_ISOC) {
     /* Odd/even bit toggling for isochronous endpoint.*/
-    if (usbp->otg->DSTS & DSTS_FNSOF_ODD)
-      usbp->otg->oe[ep].DOEPCTL |= DOEPCTL_SEVNFRM;
+    if (usbp->otg->DSTAT & DSTAT_FNRSOF_ODD)
+      usbp->otg->oe[ep].DOEPCTL |= DOEPCTL_SEVENFRM;
     else
       usbp->otg->oe[ep].DOEPCTL |= DOEPCTL_SODDFRM;
   }
 
   /* Starting operation.*/
-  usbp->otg->oe[ep].DOEPCTL |= DOEPCTL_EPENA | DOEPCTL_CNAK;
+  usbp->otg->oe[ep].DOEPCTL |= DOEPCTL_EPEN | DOEPCTL_CNAK;
 }
 
 /**
@@ -1011,7 +1004,7 @@ void usb_lld_start_in(USBDriver *usbp, usbep_t ep) {
   isp->totsize = isp->txsize;
   if (isp->txsize == 0) {
     /* Special case, sending zero size packet.*/
-    usbp->otg->ie[ep].DIEPTSIZ = DIEPTSIZ_PKTCNT(1) | DIEPTSIZ_XFRSIZ(0);
+    usbp->otg->ie[ep].DIEPLEN = DIEPLEN_PCNT(1) | DIEPLEN_TLEN(0);
   }
   else {
     if ((ep == 0) && (isp->txsize > EP0_MAX_INSIZE))
@@ -1021,22 +1014,22 @@ void usb_lld_start_in(USBDriver *usbp, usbep_t ep) {
     uint32_t pcnt = (isp->txsize + usbp->epc[ep]->in_maxsize - 1) /
                     usbp->epc[ep]->in_maxsize;
     /* CHTODO: Support more than one packet per frame for isochronous transfers.*/
-    usbp->otg->ie[ep].DIEPTSIZ = DIEPTSIZ_MCNT(1) | DIEPTSIZ_PKTCNT(pcnt) |
-                                 DIEPTSIZ_XFRSIZ(isp->txsize);
+    usbp->otg->ie[ep].DIEPLEN = DIEPLEN_MCPF(1) | DIEPLEN_PCNT(pcnt) |
+                                 DIEPLEN_TLEN(isp->txsize);
   }
 
   /* Special case of isochronous endpoint.*/
   if ((usbp->epc[ep]->ep_mode & USB_EP_MODE_TYPE) == USB_EP_MODE_TYPE_ISOC) {
     /* Odd/even bit toggling.*/
-    if (usbp->otg->DSTS & DSTS_FNSOF_ODD)
-      usbp->otg->ie[ep].DIEPCTL |= DIEPCTL_SEVNFRM;
+    if (usbp->otg->DSTAT & DSTAT_FNRSOF_ODD)
+      usbp->otg->ie[ep].DIEPCTL |= DIEPCTL_SEVENFRM;
     else
       usbp->otg->ie[ep].DIEPCTL |= DIEPCTL_SODDFRM;
   }
 
   /* Starting operation.*/
-  usbp->otg->ie[ep].DIEPCTL |= DIEPCTL_EPENA | DIEPCTL_CNAK;
-  usbp->otg->DIEPEMPMSK |= DIEPEMPMSK_INEPTXFEM(ep);
+  usbp->otg->ie[ep].DIEPCTL |= DIEPCTL_EPEN | DIEPCTL_CNAK;
+  usbp->otg->DIEPFEINTEN |= DIEPFEINTEN_IEPTXFEIE(ep);
 }
 
 /**

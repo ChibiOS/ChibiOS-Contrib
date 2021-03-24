@@ -455,9 +455,9 @@ struct USBDriver {
  */
 #define usb_lld_wakeup_host(usbp)                                           \
   do {                                                                      \
-    (usbp)->otg->DCTL |= DCTL_RWUSIG;                                       \
+    (usbp)->otg->DCTL |= DCTL_RWKUP;                                       \
     osalThreadSleepMilliseconds(GD32_USB_HOST_WAKEUP_DURATION);            \
-    (usbp)->otg->DCTL &= ~DCTL_RWUSIG;                                      \
+    (usbp)->otg->DCTL &= ~DCTL_RWKUP;                                      \
   } while (false)
 
 /*===========================================================================*/

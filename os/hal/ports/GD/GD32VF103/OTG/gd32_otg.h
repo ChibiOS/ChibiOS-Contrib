@@ -54,13 +54,13 @@ typedef struct {
   volatile uint32_t DIEPCTL;    /**< @brief Device control IN endpoint
                                             control register.               */
   volatile uint32_t resvd4;
-  volatile uint32_t DIEPINT;    /**< @brief Device IN endpoint interrupt
+  volatile uint32_t DIEPINTF;    /**< @brief Device IN endpoint interrupt
                                             register.                       */
   volatile uint32_t resvdC;
-  volatile uint32_t DIEPTSIZ;   /**< @brief Device IN endpoint transfer size
+  volatile uint32_t DIEPLEN;   /**< @brief Device IN endpoint transfer size
                                             register.                       */
   volatile uint32_t resvd14;
-  volatile uint32_t DTXFSTS;    /**< @brief Device IN endpoint transmit FIFO
+  volatile uint32_t DIEPTFSTAT;    /**< @brief Device IN endpoint transmit FIFO
                                             status register.                */
   volatile uint32_t resvd1C;
 } gd32_usbfs_in_ep_t;
@@ -72,10 +72,10 @@ typedef struct {
   volatile uint32_t DOEPCTL;    /**< @brief Device control OUT endpoint
                                             control register.               */
   volatile uint32_t resvd4;
-  volatile uint32_t DOEPINT;    /**< @brief Device OUT endpoint interrupt
+  volatile uint32_t DOEPINTF;    /**< @brief Device OUT endpoint interrupt
                                             register.                       */
   volatile uint32_t resvdC;
-  volatile uint32_t DOEPTSIZ;   /**< @brief Device OUT endpoint transfer
+  volatile uint32_t DOEPLEN;   /**< @brief Device OUT endpoint transfer
                                             size register.                  */
   volatile uint32_t resvd14;
   volatile uint32_t resvd18;
@@ -131,24 +131,24 @@ typedef struct {
   volatile uint32_t resvd700[64];
   volatile uint32_t DCFG;       /**< @brief Device configuration register.  */
   volatile uint32_t DCTL;       /**< @brief Device control register.        */
-  volatile uint32_t DSTS;       /**< @brief Device status register.         */
+  volatile uint32_t DSTAT;       /**< @brief Device status register.         */
   volatile uint32_t resvd80C;
-  volatile uint32_t DIEPMSK;    /**< @brief Device IN endpoint common
+  volatile uint32_t DIEPINTFEN;    /**< @brief Device IN endpoint common
                                             interrupt mask register.        */
-  volatile uint32_t DOEPMSK;    /**< @brief Device OUT endpoint common
+  volatile uint32_t DOEPINTFEN;    /**< @brief Device OUT endpoint common
                                             interrupt mask register.        */
-  volatile uint32_t DAINT;      /**< @brief Device all endpoints interrupt
+  volatile uint32_t DAEPINT;      /**< @brief Device all endpoints interrupt
                                             register.                       */
-  volatile uint32_t DAINTMSK;   /**< @brief Device all endpoints interrupt
+  volatile uint32_t DAEPINTEN;   /**< @brief Device all endpoints interrupt
                                             mask register.                  */
   volatile uint32_t resvd820;
   volatile uint32_t resvd824;
-  volatile uint32_t DVBUSDIS;   /**< @brief Device VBUS discharge time
+  volatile uint32_t DVBUSDT;   /**< @brief Device VBUS discharge time
                                             register.                       */
-  volatile uint32_t DVBUSPULSE; /**< @brief Device VBUS pulsing time
+  volatile uint32_t DVBUSPT; /**< @brief Device VBUS pulsing time
                                             register.                       */
   volatile uint32_t resvd830;
-  volatile uint32_t DIEPEMPMSK; /**< @brief Device IN endpoint FIFO empty
+  volatile uint32_t DIEPFEINTEN; /**< @brief Device IN endpoint FIFO empty
                                             interrupt mask register.        */
   volatile uint32_t resvd838;
   volatile uint32_t resvd83C;
@@ -158,7 +158,7 @@ typedef struct {
   gd32_usbfs_in_ep_t ie[16];     /**< @brief Input endpoints.                */
   gd32_usbfs_out_ep_t oe[16];    /**< @brief Output endpoints.               */
   volatile uint32_t resvdD00[64];
-  volatile uint32_t PCGCCTL;    /**< @brief Power and clock gating control
+  volatile uint32_t PWRCLKCTL;    /**< @brief Power and clock gating control
                                             register.                       */
   volatile uint32_t resvdE04[127];
   volatile uint32_t FIFO[16][1024];
@@ -591,19 +591,16 @@ typedef struct {
  * @name DCFG register bit definitions
  * @{
  */
-#define DCFG_PFIVL_MASK         (3U<<11)    /**< Periodic frame interval
+#define DCFG_EOPFT_MASK         (3U<<11)    /**< Periodic frame interval
                                                  mask.                      */
-#define DCFG_PFIVL(n)           ((n)<<11)   /**< Periodic frame interval
+#define DCFG_EOPFT(n)           ((n)<<11)   /**< Periodic frame interval
                                                  value.                     */
-#define DCFG_DAD_MASK           (0x7FU<<4)  /**< Device address mask.       */
-#define DCFG_DAD(n)             ((n)<<4)    /**< Device address value.      */
-#define DCFG_NZLSOHSK           (1U<<2)     /**< Non-Zero-Length status
+#define DCFG_DAR_MASK           (0x7FU<<4)  /**< Device address mask.       */
+#define DCFG_DAR(n)             ((n)<<4)    /**< Device address value.      */
+#define DCFG_NZLSOH           (1U<<2)     /**< Non-Zero-Length status
                                                  OUT handshake.             */
-#define DCFG_DSPD_MASK          (3U<<0)     /**< Device speed mask.         */
-#define DCFG_DSPD_HS            (0U<<0)     /**< High speed (USB 2.0).      */
-#define DCFG_DSPD_HS_FS         (1U<<0)     /**< High speed (USB 2.0) in FS
-                                                 mode.                      */
-#define DCFG_DSPD_FS11          (3U<<0)     /**< Full speed (USB 1.1
+#define DCFG_DS_MASK          (3U<<0)     /**< Device speed mask.         */
+#define DCFG_DS_FS11          (3U<<0)     /**< Full speed (USB 1.1
                                                  transceiver clock is 48
                                                  MHz).                      */
 /** @} */
@@ -612,122 +609,118 @@ typedef struct {
  * @name DCTL register bit definitions
  * @{
  */
-#define DCTL_POPRGDNE           (1U<<11)    /**< Power-on programming done. */
+#define DCTL_POIF           (1U<<11)    /**< Power-on programming done. */
 #define DCTL_CGONAK             (1U<<10)    /**< Clear global OUT NAK.      */
 #define DCTL_SGONAK             (1U<<9)     /**< Set global OUT NAK.        */
 #define DCTL_CGINAK             (1U<<8)     /**< Clear global non-periodic
                                                  IN NAK.                    */
 #define DCTL_SGINAK             (1U<<7)     /**< Set global non-periodic
                                                  IN NAK.                    */
-#define DCTL_TCTL_MASK          (7U<<4)     /**< Test control mask.         */
-#define DCTL_TCTL(n)            ((n)<<4     /**< Test control value.        */
-#define DCTL_GONSTS             (1U<<3)     /**< Global OUT NAK status.     */
-#define DCTL_GINSTS             (1U<<2)     /**< Global non-periodic IN
+#define DCTL_GONS             (1U<<3)     /**< Global OUT NAK status.     */
+#define DCTL_GINS             (1U<<2)     /**< Global non-periodic IN
                                                  NAK status.                */
-#define DCTL_SDIS               (1U<<1)     /**< Soft disconnect.           */
-#define DCTL_RWUSIG             (1U<<0)     /**< Remote wakeup signaling.   */
+#define DCTL_SD               (1U<<1)     /**< Soft disconnect.           */
+#define DCTL_RWKUP             (1U<<0)     /**< Remote wakeup signaling.   */
 /** @} */
 
 /**
- * @name DSTS register bit definitions
+ * @name DSTAT register bit definitions
  * @{
  */
-#define DSTS_FNSOF_MASK         (0x3FFU<<8) /**< Frame number of the received
+#define DSTAT_FNRSOF_MASK         (0x3FFU<<8) /**< Frame number of the received
                                                  SOF mask.                  */
-#define DSTS_FNSOF(n)           ((n)<<8)    /**< Frame number of the received
+#define DSTAT_FNRSOF(n)           ((n)<<8)    /**< Frame number of the received
                                                  SOF value.                 */
-#define DSTS_FNSOF_ODD          (1U<<8)     /**< Frame parity of the received
+#define DSTAT_FNRSOF_ODD          (1U<<8)     /**< Frame parity of the received
                                                  SOF value.                 */
-#define DSTS_EERR               (1U<<3)     /**< Erratic error.             */
-#define DSTS_ENUMSPD_MASK       (3U<<1)     /**< Enumerated speed mask.     */
-#define DSTS_ENUMSPD_FS_48      (3U<<1)     /**< Full speed (PHY clock is
+#define DSTAT_ES_MASK       (3U<<1)     /**< Enumerated speed mask.     */
+#define DSTAT_ES_FS_48      (3U<<1)     /**< Full speed (PHY clock is
                                                  running at 48 MHz).        */
-#define DSTS_ENUMSPD_HS_480     (0U<<1)     /**< High speed.                */
-#define DSTS_SUSPSTS            (1U<<0)     /**< Suspend status.            */
+#define DSTAT_SPST            (1U<<0)     /**< Suspend status.            */
 /** @} */
 
 /**
- * @name DIEPMSK register bit definitions
+ * @name DIEPINTFEN register bit definitions
  * @{
  */
-#define DIEPMSK_TXFEM           (1U<<6)     /**< Transmit FIFO empty mask.  */
-#define DIEPMSK_INEPNEM         (1U<<6)     /**< IN endpoint NAK effective
-                                                 mask.                      */
-#define DIEPMSK_ITTXFEMSK       (1U<<4)     /**< IN token received when
+#define DIEPINTFEN_IEPNEEN           (1U<<6)     /**< Transmit FIFO empty mask.  */
+#define DIEPINTFEN_EPTXFUDEN       (1U<<4)     /**< IN token received when
                                                  TxFIFO empty mask.         */
-#define DIEPMSK_TOCM            (1U<<3)     /**< Timeout condition mask.    */
-#define DIEPMSK_EPDM            (1U<<1)     /**< Endpoint disabled
+#define DIEPINTFEN_CITOEN            (1U<<3)     /**< Timeout condition mask.    */
+#define DIEPINTFEN_EPDISEN            (1U<<1)     /**< Endpoint disabled
                                                  interrupt mask.            */
-#define DIEPMSK_XFRCM           (1U<<0)     /**< Transfer completed
+#define DIEPINTFEN_TFEN           (1U<<0)     /**< Transfer completed
                                                  interrupt mask.            */
 /** @} */
 
 /**
- * @name DOEPMSK register bit definitions
+ * @name DOEPINTFEN register bit definitions
  * @{
  */
-#define DOEPMSK_OTEPDM          (1U<<4)     /**< OUT token received when
+#define DOEPINTFEN_BTBSTPEN      (1U<<6)     /**< Back-to-back Setup packets
+                                                 interrupt enable bit */
+#define DOEPINTFEN_EPRXFOVREN          (1U<<4)     /**< OUT token received when
                                                  endpoint disabled mask.    */
-#define DOEPMSK_STUPM           (1U<<3)     /**< SETUP phase done mask.     */
-#define DOEPMSK_EPDM            (1U<<1)     /**< Endpoint disabled
+#define DOEPINTFEN_STPFEN           (1U<<3)     /**< SETUP phase done mask.     */
+#define DOEPINTFEN_EPDISEN            (1U<<1)     /**< Endpoint disabled
                                                  interrupt mask.            */
-#define DOEPMSK_XFRCM           (1U<<0)     /**< Transfer completed
+#define DOEPINTFEN_TFEN           (1U<<0)     /**< Transfer completed
                                                  interrupt mask.            */
 /** @} */
 
 /**
- * @name DAINT register bit definitions
+ * @name DAEPINT register bit definitions
  * @{
  */
-#define DAINT_OEPINT_MASK       (0xFFFFU<<16)/**< OUT endpoint interrupt
+#define DAEPINT_OEPITB_MASK       (0xFFFFU<<16)/**< OUT endpoint interrupt
                                                  bits mask.                 */
-#define DAINT_OEPINT(n)         ((n)<<16)   /**< OUT endpoint interrupt
+#define DAEPINT_OEPITB(n)         ((n)<<16)   /**< OUT endpoint interrupt
                                                  bits value.                */
-#define DAINT_IEPINT_MASK       (0xFFFFU<<0)/**< IN endpoint interrupt
+#define DAEPINT_IEPITB_MASK       (0xFFFFU<<0)/**< IN endpoint interrupt
                                                  bits mask.                 */
-#define DAINT_IEPINT(n)         ((n)<<0)    /**< IN endpoint interrupt
+#define DAEPINT_IEPITB(n)         ((n)<<0)    /**< IN endpoint interrupt
                                                  bits value.                */
 /** @} */
 
 /**
- * @name DAINTMSK register bit definitions
+ * @name DAEPINTEN register bit definitions
  * @{
  */
-#define DAINTMSK_OEPM_MASK      (0xFFFFU<<16)/**< OUT EP interrupt mask
+#define DAEPINTEN_OEPIE_MASK      (0xFFFFU<<16)/**< OUT EP interrupt mask
                                                  bits mask.                 */
-#define DAINTMSK_OEPM(n)        (1U<<(16+(n)))/**< OUT EP interrupt mask
+#define DAEPINTEN_OEPIE(n)        (1U<<(16+(n)))/**< OUT EP interrupt mask
                                                  bits value.                */
-#define DAINTMSK_IEPM_MASK      (0xFFFFU<<0)/**< IN EP interrupt mask
+#define DAEPINTEN_IEPIE_MASK      (0xFFFFU<<0)/**< IN EP interrupt mask
                                                  bits mask.                 */
-#define DAINTMSK_IEPM(n)        (1U<<(n))   /**< IN EP interrupt mask
+#define DAEPINTEN_IEPIE(n)        (1U<<(n))   /**< IN EP interrupt mask
                                                  bits value.                */
 /** @} */
 
 /**
- * @name DVBUSDIS register bit definitions
+ * @name DVBUSDT register bit definitions
  * @{
  */
-#define DVBUSDIS_VBUSDT_MASK    (0xFFFFU<<0)/**< Device VBUS discharge
+#define DVBUSDT_DVBUSDT_MASK    (0xFFFFU<<0)/**< Device VBUS discharge
                                                  time mask.                 */
-#define DVBUSDIS_VBUSDT(n)      ((n)<<0)    /**< Device VBUS discharge
+#define DVBUSDT_DVBUSDT(n)      ((n)<<0)    /**< Device VBUS discharge
                                                  time value.                */
 /** @} */
 
 /**
- * @name DVBUSPULSE register bit definitions
+ * @name DVBUSPT register bit definitions
  * @{
  */
-#define DVBUSPULSE_DVBUSP_MASK  (0xFFFU<<0) /**< Device VBUSpulsing time
+#define DVBUSPT_DVBUSPT_MASK  (0xFFFU<<0) /**< Device VBUSpulsing time
                                                  mask.                      */
-#define DVBUSPULSE_DVBUSP(n)    ((n)<<0)    /**< Device VBUS pulsing time
+#define DVBUSPT_DVBUSPT(n)    ((n)<<0)    /**< Device VBUS pulsing time
                                                  value.                     */
 /** @} */
 
 /**
- * @name DIEPEMPMSK register bit definitions
+ * @name DIEPFEINTEN register bit definitions
  * @{
  */
-#define DIEPEMPMSK_INEPTXFEM(n) (1U<<(n))   /**< IN EP Tx FIFO empty
+#define DIEPFEINTEN_IEPTXFEIE(n) (1U<<(n))   /**< IN EP Tx FIFO empty
                                                  interrupt mask bit.        */
 /** @} */
 
@@ -735,62 +728,62 @@ typedef struct {
  * @name DIEPCTL register bit definitions
  * @{
  */
-#define DIEPCTL_EPENA           (1U<<31)    /**< Endpoint enable.           */
-#define DIEPCTL_EPDIS           (1U<<30)    /**< Endpoint disable.          */
+#define DIEPCTL_EPEN           (1U<<31)    /**< Endpoint enable.           */
+#define DIEPCTL_EPD           (1U<<30)    /**< Endpoint disable.          */
 #define DIEPCTL_SD1PID          (1U<<29)    /**< Set DATA1 PID.             */
 #define DIEPCTL_SODDFRM         (1U<<29)    /**< Set odd frame.             */
 #define DIEPCTL_SD0PID          (1U<<28)    /**< Set DATA0 PID.             */
-#define DIEPCTL_SEVNFRM         (1U<<28)    /**< Set even frame.            */
+#define DIEPCTL_SEVENFRM         (1U<<28)    /**< Set even frame.            */
 #define DIEPCTL_SNAK            (1U<<27)    /**< Set NAK.                   */
 #define DIEPCTL_CNAK            (1U<<26)    /**< Clear NAK.                 */
 #define DIEPCTL_TXFNUM_MASK     (15U<<22)   /**< TxFIFO number mask.        */
 #define DIEPCTL_TXFNUM(n)       ((n)<<22)   /**< TxFIFO number value.       */
 #define DIEPCTL_STALL           (1U<<21)    /**< STALL handshake.           */
 #define DIEPCTL_SNPM            (1U<<20)    /**< Snoop mode.                */
-#define DIEPCTL_EPTYP_MASK      (3<<18)     /**< Endpoint type mask.        */
-#define DIEPCTL_EPTYP_CTRL      (0U<<18)    /**< Control.                   */
-#define DIEPCTL_EPTYP_ISO       (1U<<18)    /**< Isochronous.               */
-#define DIEPCTL_EPTYP_BULK      (2U<<18)    /**< Bulk.                      */
-#define DIEPCTL_EPTYP_INTR      (3U<<18)    /**< Interrupt.                 */
-#define DIEPCTL_NAKSTS          (1U<<17)    /**< NAK status.                */
+#define DIEPCTL_EPTYPE_MASK      (3<<18)     /**< Endpoint type mask.        */
+#define DIEPCTL_EPTYPE_CTRL      (0U<<18)    /**< Control.                   */
+#define DIEPCTL_EPTYPE_ISO       (1U<<18)    /**< Isochronous.               */
+#define DIEPCTL_EPTYPE_BULK      (2U<<18)    /**< Bulk.                      */
+#define DIEPCTL_EPTYPE_INTR      (3U<<18)    /**< Interrupt.                 */
+#define DIEPCTL_NAKS          (1U<<17)    /**< NAK status.                */
 #define DIEPCTL_EONUM           (1U<<16)    /**< Even/odd frame.            */
 #define DIEPCTL_DPID            (1U<<16)    /**< Endpoint data PID.         */
-#define DIEPCTL_USBAEP          (1U<<15)    /**< USB active endpoint.       */
-#define DIEPCTL_MPSIZ_MASK      (0x3FFU<<0) /**< Maximum Packet size mask.  */
-#define DIEPCTL_MPSIZ(n)        ((n)<<0)    /**< Maximum Packet size value. */
+#define DIEPCTL_EPACT          (1U<<15)    /**< USB active endpoint.       */
+#define DIEPCTL_MPL_MASK      (0x3FFU<<0) /**< Maximum Packet size mask.  */
+#define DIEPCTL_MPL(n)        ((n)<<0)    /**< Maximum Packet size value. */
 /** @} */
 
 /**
- * @name DIEPINT register bit definitions
+ * @name DIEPINTF register bit definitions
  * @{
  */
-#define DIEPINT_TXFE            (1U<<7)     /**< Transmit FIFO empty.       */
-#define DIEPINT_INEPNE          (1U<<6)     /**< IN endpoint NAK effective. */
-#define DIEPINT_ITTXFE          (1U<<4)     /**< IN Token received when
+#define DIEPINTFF_TXFE            (1U<<7)     /**< Transmit FIFO empty.       */
+#define DIEPINTFF_IEPNE          (1U<<6)     /**< IN endpoint NAK effective. */
+#define DIEPINTFF_EPTXFUD          (1U<<4)     /**< IN Token received when
                                                  TxFIFO is empty.           */
-#define DIEPINT_TOC             (1U<<3)     /**< Timeout condition.         */
-#define DIEPINT_EPDISD          (1U<<1)     /**< Endpoint disabled
+#define DIEPINTFF_CITO             (1U<<3)     /**< Timeout condition.         */
+#define DIEPINTFF_EPDIS          (1U<<1)     /**< Endpoint disabled
                                                  interrupt.                 */
-#define DIEPINT_XFRC            (1U<<0)     /**< Transfer completed.        */
+#define DIEPINTFF_TF            (1U<<0)     /**< Transfer completed.        */
 /** @} */
 
 /**
- * @name DIEPTSIZ register bit definitions
+ * @name DIEPLEN register bit definitions
  * @{
  */
-#define DIEPTSIZ_MCNT_MASK      (3U<<29)    /**< Multi count mask.          */
-#define DIEPTSIZ_MCNT(n)        ((n)<<29)   /**< Multi count value.         */
-#define DIEPTSIZ_PKTCNT_MASK    (0x3FF<<19) /**< Packet count mask.         */
-#define DIEPTSIZ_PKTCNT(n)      ((n)<<19)   /**< Packet count value.        */
-#define DIEPTSIZ_XFRSIZ_MASK    (0x7FFFFU<<0)/**< Transfer size mask.       */
-#define DIEPTSIZ_XFRSIZ(n)      ((n)<<0)    /**< Transfer size value.       */
+#define DIEPLEN_MCPF_MASK      (3U<<29)    /**< Multi count mask.          */
+#define DIEPLEN_MCPF(n)        ((n)<<29)   /**< Multi count value.         */
+#define DIEPLEN_PCNT_MASK    (0x3FF<<19) /**< Packet count mask.         */
+#define DIEPLEN_PCNT(n)      ((n)<<19)   /**< Packet count value.        */
+#define DIEPLEN_TLEN_MASK    (0x7FFFFU<<0)/**< Transfer size mask.       */
+#define DIEPLEN_TLEN(n)      ((n)<<0)    /**< Transfer size value.       */
 /** @} */
 
 /**
- * @name DTXFSTS register bit definitions.
+ * @name DIEPTFSTAT register bit definitions.
  * @{
  */
-#define DTXFSTS_INEPTFSAV_MASK  (0xFFFF<<0) /**< IN endpoint TxFIFO space
+#define DIEPTFSTAT_IEPTFS_MASK  (0xFFFF<<0) /**< IN endpoint TxFIFO space
                                                  available.                 */
 /** @} */
 
@@ -798,66 +791,64 @@ typedef struct {
  * @name DOEPCTL register bit definitions.
  * @{
  */
-#define DOEPCTL_EPENA           (1U<<31)    /**< Endpoint enable.           */
-#define DOEPCTL_EPDIS           (1U<<30)    /**< Endpoint disable.          */
+#define DOEPCTL_EPEN           (1U<<31)    /**< Endpoint enable.           */
+#define DOEPCTL_EPD           (1U<<30)    /**< Endpoint disable.          */
 #define DOEPCTL_SD1PID          (1U<<29)    /**< Set DATA1 PID.             */
 #define DOEPCTL_SODDFRM         (1U<<29)    /**< Set odd frame.             */
 #define DOEPCTL_SD0PID          (1U<<28)    /**< Set DATA0 PID.             */
-#define DOEPCTL_SEVNFRM         (1U<<28)    /**< Set even frame.            */
+#define DOEPCTL_SEVENFRM         (1U<<28)    /**< Set even frame.            */
 #define DOEPCTL_SNAK            (1U<<27)    /**< Set NAK.                   */
 #define DOEPCTL_CNAK            (1U<<26)    /**< Clear NAK.                 */
 #define DOEPCTL_STALL           (1U<<21)    /**< STALL handshake.           */
-#define DOEPCTL_SNPM            (1U<<20)    /**< Snoop mode.                */
-#define DOEPCTL_EPTYP_MASK      (3U<<18)    /**< Endpoint type mask.        */
-#define DOEPCTL_EPTYP_CTRL      (0U<<18)    /**< Control.                   */
-#define DOEPCTL_EPTYP_ISO       (1U<<18)    /**< Isochronous.               */
-#define DOEPCTL_EPTYP_BULK      (2U<<18)    /**< Bulk.                      */
-#define DOEPCTL_EPTYP_INTR      (3U<<18)    /**< Interrupt.                 */
-#define DOEPCTL_NAKSTS          (1U<<17)    /**< NAK status.                */
-#define DOEPCTL_EONUM           (1U<<16)    /**< Even/odd frame.            */
+#define DOEPCTL_SNOOP            (1U<<20)    /**< Snoop mode.                */
+#define DOEPCTL_EPTYPE_MASK      (3U<<18)    /**< Endpoint type mask.        */
+#define DOEPCTL_EPTYPE_CTRL      (0U<<18)    /**< Control.                   */
+#define DOEPCTL_EPTYPE_ISO       (1U<<18)    /**< Isochronous.               */
+#define DOEPCTL_EPTYPE_BULK      (2U<<18)    /**< Bulk.                      */
+#define DOEPCTL_EPTYPE_INTR      (3U<<18)    /**< Interrupt.                 */
+#define DOEPCTL_NAKS          (1U<<17)    /**< NAK status.                */
+#define DOEPCTL_EOFRM           (1U<<16)    /**< Even/odd frame.            */
 #define DOEPCTL_DPID            (1U<<16)    /**< Endpoint data PID.         */
-#define DOEPCTL_USBAEP          (1U<<15)    /**< USB active endpoint.       */
-#define DOEPCTL_MPSIZ_MASK      (0x3FFU<<0) /**< Maximum Packet size mask.  */
-#define DOEPCTL_MPSIZ(n)        ((n)<<0)    /**< Maximum Packet size value. */
+#define DOEPCTL_EPACT          (1U<<15)    /**< USB active endpoint.       */
+#define DOEPCTL_MPL_MASK      (0x3FFU<<0) /**< Maximum Packet size mask.  */
+#define DOEPCTL_MPL(n)        ((n)<<0)    /**< Maximum Packet size value. */
 /** @} */
 
 /**
- * @name DOEPINT register bit definitions
+ * @name DOEPINTF register bit definitions
  * @{
  */
-#define DOEPINT_SETUP_RCVD      (1U<<15)    /**< SETUP packet received.     */
-#define DOEPINT_B2BSTUP         (1U<<6)     /**< Back-to-back SETUP packets
+#define DOEPINTF_BTBSTP         (1U<<6)     /**< Back-to-back SETUP packets
                                                  received.                  */
-#define DOEPINT_OTEPDIS         (1U<<4)     /**< OUT token received when
+#define DOEPINTF_EPRXFOVR         (1U<<4)     /**< OUT token received when
                                                  endpoint disabled.         */
-#define DOEPINT_STUP            (1U<<3)     /**< SETUP phase done.          */
-#define DOEPINT_EPDISD          (1U<<1)     /**< Endpoint disabled
+#define DOEPINTF_STPF            (1U<<3)     /**< SETUP phase done.          */
+#define DOEPINTF_EPDIS          (1U<<1)     /**< Endpoint disabled
                                                  interrupt.                 */
-#define DOEPINT_XFRC            (1U<<0)     /**< Transfer completed
+#define DOEPINTF_TF            (1U<<0)     /**< Transfer completed
                                                  interrupt.                 */
 /** @} */
 
 /**
- * @name DOEPTSIZ register bit definitions
+ * @name DOEPLEN register bit definitions
  * @{
  */
-#define DOEPTSIZ_RXDPID_MASK    (3U<<29)    /**< Received data PID mask.    */
-#define DOEPTSIZ_RXDPID(n)      ((n)<<29)   /**< Received data PID value.   */
-#define DOEPTSIZ_STUPCNT_MASK   (3U<<29)    /**< SETUP packet count mask.   */
-#define DOEPTSIZ_STUPCNT(n)     ((n)<<29)   /**< SETUP packet count value.  */
-#define DOEPTSIZ_PKTCNT_MASK    (0x3FFU<<19)/**< Packet count mask.         */
-#define DOEPTSIZ_PKTCNT(n)      ((n)<<19)   /**< Packet count value.        */
-#define DOEPTSIZ_XFRSIZ_MASK    (0x7FFFFU<<0)/**< Transfer size mask.       */
-#define DOEPTSIZ_XFRSIZ(n)      ((n)<<0)    /**< Transfer size value.       */
+#define DOEPLEN_RXDPID_MASK    (3U<<29)    /**< Received data PID mask.    */
+#define DOEPLEN_RXDPID(n)      ((n)<<29)   /**< Received data PID value.   */
+#define DOEPLEN_STPCNT_MASK   (3U<<29)    /**< SETUP packet count mask.   */
+#define DOEPLEN_STPCNT(n)     ((n)<<29)   /**< SETUP packet count value.  */
+#define DOEPLEN_PCNT_MASK    (0x3FFU<<19)/**< Packet count mask.         */
+#define DOEPLEN_PCNT(n)      ((n)<<19)   /**< Packet count value.        */
+#define DOEPLEN_TLEN_MASK    (0x7FFFFU<<0)/**< Transfer size mask.       */
+#define DOEPLEN_TLEN(n)      ((n)<<0)    /**< Transfer size value.       */
 /** @} */
 
 /**
- * @name PCGCCTL register bit definitions
+ * @name PWRCLKCTL register bit definitions
  * @{
  */
-#define PCGCCTL_PHYSUSP         (1U<<4)     /**< PHY Suspended.             */
-#define PCGCCTL_GATEHCLK        (1U<<1)     /**< Gate HCLK.                 */
-#define PCGCCTL_STPPCLK         (1U<<0)     /**< Stop PCLK.                 */
+#define PWRCLKCTL_SHCLK        (1U<<1)     /**< Gate HCLK.                 */
+#define PWRCLKCTL_SUCLK         (1U<<0)     /**< Stop PCLK.                 */
 /** @} */
 
 #define USBFS_ADDR                 0x50000000

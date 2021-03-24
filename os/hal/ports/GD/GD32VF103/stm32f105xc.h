@@ -582,18 +582,18 @@ typedef struct
 {
   __IO uint32_t DCFG;                 /*!< dev Configuration Register                 Address offset: 800h*/
   __IO uint32_t DCTL;                 /*!< dev Control Register                       Address offset: 804h*/
-  __IO uint32_t DSTS;                 /*!< dev Status Register (RO)                   Address offset: 808h*/
+  __IO uint32_t DSTAT;                 /*!< dev Status Register (RO)                   Address offset: 808h*/
   uint32_t Reserved0C;                /*!< Reserved 80Ch*/
-  __IO uint32_t DIEPMSK;              /*!< dev IN Endpoint Mask                       Address offset: 810h*/
-  __IO uint32_t DOEPMSK;              /*!< dev OUT Endpoint Mask                      Address offset: 814h*/
-  __IO uint32_t DAINT;                /*!< dev All Endpoints Itr Reg                  Address offset: 818h*/
-  __IO uint32_t DAINTMSK;             /*!< dev All Endpoints Itr Mask                 Address offset: 81Ch*/
+  __IO uint32_t DIEPINTFEN;              /*!< dev IN Endpoint Mask                       Address offset: 810h*/
+  __IO uint32_t DOEPINTFEN;              /*!< dev OUT Endpoint Mask                      Address offset: 814h*/
+  __IO uint32_t DAEPINT;                /*!< dev All Endpoints Itr Reg                  Address offset: 818h*/
+  __IO uint32_t DAEPINTEN;             /*!< dev All Endpoints Itr Mask                 Address offset: 81Ch*/
   uint32_t  Reserved20;               /*!< Reserved 820h*/
   uint32_t Reserved9;                 /*!< Reserved 824h*/
-  __IO uint32_t DVBUSDIS;             /*!< dev VBUS discharge Register                Address offset: 828h*/
-  __IO uint32_t DVBUSPULSE;           /*!< dev VBUS Pulse Register                    Address offset: 82Ch*/
+  __IO uint32_t DVBUSDT;             /*!< dev VBUS discharge Register                Address offset: 828h*/
+  __IO uint32_t DVBUSPT;           /*!< dev VBUS Pulse Register                    Address offset: 82Ch*/
   __IO uint32_t DTHRCTL;              /*!< dev thr                                    Address offset: 830h*/
-  __IO uint32_t DIEPEMPMSK;           /*!< dev empty msk                              Address offset: 834h*/
+  __IO uint32_t DIEPFEINTEN;           /*!< dev empty msk                              Address offset: 834h*/
   __IO uint32_t DEACHINT;             /*!< dedicated EP interrupt                     Address offset: 838h*/
   __IO uint32_t DEACHMSK;             /*!< dedicated EP msk                           Address offset: 83Ch*/  
   uint32_t Reserved40;                /*!< dedicated EP mask                          Address offset: 840h*/
@@ -610,11 +610,11 @@ typedef struct
 {
   __IO uint32_t DIEPCTL;              /*!< dev IN Endpoint Control Reg                900h + (ep_num * 20h) + 00h*/
   uint32_t Reserved04;                /*!< Reserved                                   900h + (ep_num * 20h) + 04h*/
-  __IO uint32_t DIEPINT;              /*!< dev IN Endpoint Itr Reg                    900h + (ep_num * 20h) + 08h*/
+  __IO uint32_t DIEPINTF;              /*!< dev IN Endpoint Itr Reg                    900h + (ep_num * 20h) + 08h*/
   uint32_t Reserved0C;                /*!< Reserved                                   900h + (ep_num * 20h) + 0Ch*/
-  __IO uint32_t DIEPTSIZ;             /*!< IN Endpoint Txfer Size                     900h + (ep_num * 20h) + 10h*/
+  __IO uint32_t DIEPLEN;             /*!< IN Endpoint Txfer Size                     900h + (ep_num * 20h) + 10h*/
   __IO uint32_t DIEPDMA;              /*!< IN Endpoint DMA Address Reg                900h + (ep_num * 20h) + 14h*/
-  __IO uint32_t DTXFSTS;              /*!< IN Endpoint Tx FIFO Status Reg             900h + (ep_num * 20h) + 18h*/
+  __IO uint32_t DIEPTFSTAT;              /*!< IN Endpoint Tx FIFO Status Reg             900h + (ep_num * 20h) + 18h*/
   uint32_t Reserved18;                /*!< Reserved                                   900h+(ep_num*20h)+1Ch-900h+ (ep_num * 20h) + 1Ch*/
 } USB_OTG_INEndpointTypeDef;
 
@@ -626,9 +626,9 @@ typedef struct
 {
   __IO uint32_t DOEPCTL;              /*!< dev OUT Endpoint Control Reg               B00h + (ep_num * 20h) + 00h*/
   uint32_t Reserved04;                /*!< Reserved                                   B00h + (ep_num * 20h) + 04h*/
-  __IO uint32_t DOEPINT;              /*!< dev OUT Endpoint Itr Reg                   B00h + (ep_num * 20h) + 08h*/
+  __IO uint32_t DOEPINTF;              /*!< dev OUT Endpoint Itr Reg                   B00h + (ep_num * 20h) + 08h*/
   uint32_t Reserved0C;                /*!< Reserved                                   B00h + (ep_num * 20h) + 0Ch*/
-  __IO uint32_t DOEPTSIZ;             /*!< dev OUT Endpoint Txfer Size                B00h + (ep_num * 20h) + 10h*/
+  __IO uint32_t DOEPLEN;             /*!< dev OUT Endpoint Txfer Size                B00h + (ep_num * 20h) + 10h*/
   __IO uint32_t DOEPDMA;              /*!< dev OUT Endpoint DMA Address               B00h + (ep_num * 20h) + 14h*/
   uint32_t Reserved18[2];             /*!< Reserved                                   B00h + (ep_num * 20h) + 18h - B00h + (ep_num * 20h) + 1Ch*/
 } USB_OTG_OUTEndpointTypeDef;
@@ -773,7 +773,7 @@ typedef struct
 #define USB_OTG_HOST_PORT_BASE               0x00000440U
 #define USB_OTG_HOST_CHANNEL_BASE            0x00000500U
 #define USB_OTG_HOST_CHANNEL_SIZE            0x00000020U
-#define USB_OTG_PCGCCTL_BASE                 0x00000E00U
+#define USB_OTG_PWRCLKCTL_BASE                 0x00000E00U
 #define USB_OTG_FIFO_BASE                    0x00001000U
 #define USB_OTG_FIFO_SIZE                    0x00001000U
 
