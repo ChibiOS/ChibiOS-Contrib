@@ -114,7 +114,7 @@ typedef struct {
   volatile uint32_t resvd140[176];
   volatile uint32_t HCTL;       /**< @brief Host configuration register.    */
   volatile uint32_t HFT;       /**< @brief Host frame interval register.   */
-  volatile uint32_t HFNUM;      /**< @brief Host frame number/frame time
+  volatile uint32_t HFINFR;      /**< @brief Host frame number/frame time
                                             Remaining register.             */
   volatile uint32_t resvd40C;
   volatile uint32_t HPTFQSTAT;    /**< @brief Host periodic transmit FIFO/queue
@@ -133,9 +133,9 @@ typedef struct {
   volatile uint32_t DCTL;       /**< @brief Device control register.        */
   volatile uint32_t DSTAT;       /**< @brief Device status register.         */
   volatile uint32_t resvd80C;
-  volatile uint32_t DIEPINTFEN;    /**< @brief Device IN endpoint common
+  volatile uint32_t DIEPINTF;    /**< @brief Device IN endpoint common
                                             interrupt mask register.        */
-  volatile uint32_t DOEPINTFEN;    /**< @brief Device OUT endpoint common
+  volatile uint32_t DOEPINTF;    /**< @brief Device OUT endpoint common
                                             interrupt mask register.        */
   volatile uint32_t DAEPINT;      /**< @brief Device all endpoints interrupt
                                             register.                       */
@@ -439,13 +439,13 @@ typedef struct {
 /** @} */
 
 /**
- * @name HFNUM register bit definitions
+ * @name HFINFR register bit definitions
  * @{
  */
-#define HFNUM_FTREM_MASK        (0xFFFFU<<16)/**< Frame time Remaining mask.*/
-#define HFNUM_FTREM(n)          ((n)<<16)   /**< Frame time Remaining value.*/
-#define HFNUM_FRNUM_MASK        (0xFFFFU<<0)/**< Frame number mask.         */
-#define HFNUM_FRNUM(n)          ((n)<<0)    /**< Frame number value.        */
+#define HFINFR_FTR_MASK        (0xFFFFU<<16)/**< Frame time Remaining mask.*/
+#define HFINFR_FTR(n)          ((n)<<16)   /**< Frame time Remaining value.*/
+#define HFINFR_FRNUM_MASK        (0xFFFFU<<0)/**< Frame number mask.         */
+#define HFINFR_FRNUM(n)          ((n)<<0)    /**< Frame number value.        */
 /** @} */
 
 /**
@@ -640,31 +640,31 @@ typedef struct {
 /** @} */
 
 /**
- * @name DIEPINTFEN register bit definitions
+ * @name DIEPINTF register bit definitions
  * @{
  */
-#define DIEPINTFEN_IEPNEEN           (1U<<6)     /**< Transmit FIFO empty mask.  */
-#define DIEPINTFEN_EPTXFUDEN       (1U<<4)     /**< IN token received when
+#define DIEPINTF_IEPNEEN           (1U<<6)     /**< Transmit FIFO empty mask.  */
+#define DIEPINTF_EPTXFUDEN       (1U<<4)     /**< IN token received when
                                                  TxFIFO empty mask.         */
-#define DIEPINTFEN_CITOEN            (1U<<3)     /**< Timeout condition mask.    */
-#define DIEPINTFEN_EPDISEN            (1U<<1)     /**< Endpoint disabled
+#define DIEPINTF_CITOEN            (1U<<3)     /**< Timeout condition mask.    */
+#define DIEPINTF_EPDISEN            (1U<<1)     /**< Endpoint disabled
                                                  interrupt mask.            */
-#define DIEPINTFEN_TFEN           (1U<<0)     /**< Transfer completed
+#define DIEPINTF_TFEN           (1U<<0)     /**< Transfer completed
                                                  interrupt mask.            */
 /** @} */
 
 /**
- * @name DOEPINTFEN register bit definitions
+ * @name DOEPINTF register bit definitions
  * @{
  */
-#define DOEPINTFEN_BTBSTPEN      (1U<<6)     /**< Back-to-back Setup packets
+#define DOEPINTF_BTBSTPEN      (1U<<6)     /**< Back-to-back Setup packets
                                                  interrupt enable bit */
-#define DOEPINTFEN_EPRXFOVREN          (1U<<4)     /**< OUT token received when
+#define DOEPINTF_EPRXFOVREN          (1U<<4)     /**< OUT token received when
                                                  endpoint disabled mask.    */
-#define DOEPINTFEN_STPFEN           (1U<<3)     /**< SETUP phase done mask.     */
-#define DOEPINTFEN_EPDISEN            (1U<<1)     /**< Endpoint disabled
+#define DOEPINTF_STPFEN           (1U<<3)     /**< SETUP phase done mask.     */
+#define DOEPINTF_EPDISEN            (1U<<1)     /**< Endpoint disabled
                                                  interrupt mask.            */
-#define DOEPINTFEN_TFEN           (1U<<0)     /**< Transfer completed
+#define DOEPINTF_TFEN           (1U<<0)     /**< Transfer completed
                                                  interrupt mask.            */
 /** @} */
 

@@ -352,7 +352,7 @@ static void otg_epin_handler(USBDriver *usbp, usbep_t ep) {
   if (epint & DIEPINTFF_CITO) {
     /* Timeouts not handled yet, not sure how to handle.*/
   }
-  if ((epint & DIEPINTFF_TF) && (otgp->DIEPINTFEN & DIEPINTFEN_TFEN)) {
+  if ((epint & DIEPINTFF_TF) && (otgp->DIEPINTF & DIEPINTF_TFEN)) {
     /* Transmit transfer complete.*/
     USBInEndpointState *isp = usbp->epc[ep]->in_state;
 
@@ -393,13 +393,13 @@ static void otg_epout_handler(USBDriver *usbp, usbep_t ep) {
   /* Resets all EP IRQ sources.*/
   otgp->oe[ep].DOEPINTF = epint;
 
-  if ((epint & DOEPINTF_STPF) && (otgp->DOEPINTFEN & DOEPINTFEN_STPFEN)) {
+  if ((epint & DOEPINTF_STPF) && (otgp->DOEPINTF & DOEPINTF_STPFEN)) {
     /* Setup packets handling, setup packets are handled using a
        specific callback.*/
     _usb_isr_invoke_setup_cb(usbp, ep);
   }
 
-  if ((epint & DOEPINTF_TF) && (otgp->DOEPINTFEN & DOEPINTFEN_TFEN)) {
+  if ((epint & DOEPINTF_TF) && (otgp->DOEPINTF & DOEPINTF_TFEN)) {
     USBOutEndpointState *osp;
 
     /* OUT state structure pointer for this endpoint.*/
@@ -680,8 +680,8 @@ void usb_lld_start(USBDriver *usbp) {
 
     /* Clear all pending Device Interrupts, only the USB Reset interrupt
        is required initially.*/
-    otgp->DIEPINTFEN  = 0;
-    otgp->DOEPINTFEN  = 0;
+    otgp->DIEPINTF  = 0;
+    otgp->DOEPINTF  = 0;
     otgp->DAEPINTEN = 0;
     if (usbp->config->sof_cb == NULL)
       otgp->GINTEN  = GINTEN_ENUMFIE | GINTEN_RSTIE | GINTEN_SPIE |
@@ -767,8 +767,8 @@ void usb_lld_reset(USBDriver *usbp) {
 
   /* Enables also EP-related interrupt sources.*/
   otgp->GINTEN  |= GINTEN_RXFNEIE | GINTEN_OEPIE  | GINTEN_IEPIE;
-  otgp->DIEPINTFEN   = DIEPINTFEN_CITOEN    | DIEPINTFEN_TFEN;
-  otgp->DOEPINTFEN   = DOEPINTFEN_STPFEN   | DOEPINTFEN_TFEN;
+  otgp->DIEPINTF   = DIEPINTF_CITOEN    | DIEPINTF_TFEN;
+  otgp->DOEPINTF   = DOEPINTF_STPFEN   | DOEPINTF_TFEN;
 
   /* EP0 initialization, it is a special case.*/
   usbp->epc[0] = &ep0config;

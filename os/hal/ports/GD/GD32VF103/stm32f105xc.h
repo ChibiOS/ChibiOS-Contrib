@@ -584,8 +584,8 @@ typedef struct
   __IO uint32_t DCTL;                 /*!< dev Control Register                       Address offset: 804h*/
   __IO uint32_t DSTAT;                 /*!< dev Status Register (RO)                   Address offset: 808h*/
   uint32_t Reserved0C;                /*!< Reserved 80Ch*/
-  __IO uint32_t DIEPINTFEN;              /*!< dev IN Endpoint Mask                       Address offset: 810h*/
-  __IO uint32_t DOEPINTFEN;              /*!< dev OUT Endpoint Mask                      Address offset: 814h*/
+  __IO uint32_t DIEPINTF;              /*!< dev IN Endpoint Mask                       Address offset: 810h*/
+  __IO uint32_t DOEPINTF;              /*!< dev OUT Endpoint Mask                      Address offset: 814h*/
   __IO uint32_t DAEPINT;                /*!< dev All Endpoints Itr Reg                  Address offset: 818h*/
   __IO uint32_t DAEPINTEN;             /*!< dev All Endpoints Itr Mask                 Address offset: 81Ch*/
   uint32_t  Reserved20;               /*!< Reserved 820h*/
@@ -641,7 +641,7 @@ typedef struct
 {
   __IO uint32_t HCTL;                 /*!< Host Configuration Register    400h*/
   __IO uint32_t HFT;                 /*!< Host Frame Interval Register   404h*/
-  __IO uint32_t HFNUM;                /*!< Host Frame Nbr/Frame Remaining 408h*/
+  __IO uint32_t HFINFR;                /*!< Host Frame Nbr/Frame Remaining 408h*/
   uint32_t Reserved40C;               /*!< Reserved                       40Ch*/
   __IO uint32_t HPTFQSTAT;              /*!< Host Periodic Tx FIFO/ Queue Status 410h*/
   __IO uint32_t HACHINT;                /*!< Host All Channels Interrupt Register 414h*/
