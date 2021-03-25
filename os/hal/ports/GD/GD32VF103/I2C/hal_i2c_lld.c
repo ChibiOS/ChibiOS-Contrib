@@ -190,7 +190,9 @@ static void i2c_lld_set_clock(I2CDriver *i2cp) {
 
     /* Sets the Maximum Rise Time for fast mode.*/
     dp->RT = (I2C_CLK_FREQ * 300 / 1000) + 1;
-  }
+    } else if (clock_speed <= 1000000){
+      /* TODO: Add fast mode plus*/
+    }
 
   osalDbgAssert((clock_div <= I2C_CKCFG_CLKC), "the selected clock is too low");
 
