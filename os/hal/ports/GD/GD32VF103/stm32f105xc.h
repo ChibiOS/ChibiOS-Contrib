@@ -715,7 +715,7 @@ typedef struct
 #define UART4_BASE            (APB1PERIPH_BASE + 0x00004C00U)
 #define UART5_BASE            (APB1PERIPH_BASE + 0x00005000U)
 #define I2C0_BASE             (APB1PERIPH_BASE + 0x00005400U)
-#define I2C2_BASE             (APB1PERIPH_BASE + 0x5800)
+#define I2C1_BASE             (APB1PERIPH_BASE + 0x5800)
 #define CAN1_BASE             (APB1PERIPH_BASE + 0x00006400U)
 #define CAN2_BASE             (APB1PERIPH_BASE + 0x00006800U)
 //#define BKP_BASE              (APB1PERIPH_BASE + 0x00006C00U)
@@ -803,7 +803,7 @@ typedef struct
 #define UART4               ((USART_TypeDef *)UART4_BASE)
 #define UART5               ((USART_TypeDef *)UART5_BASE)
 #define I2C0                ((I2C_TypeDef *)I2C0_BASE)
-#define I2C2                ((I2C_TypeDef *)I2C2_BASE)
+#define I2C1                ((I2C_TypeDef *)I2C1_BASE)
 #define CAN1                ((CAN_TypeDef *)CAN1_BASE)
 #define CAN2                ((CAN_TypeDef *)CAN2_BASE)
 #define BKP                 ((BKP_TypeDef *)BKP_BASE)
@@ -1583,9 +1583,9 @@ typedef struct
 #define RCC_APB1RSTR_USART3RST_Pos           (18U)                             
 #define RCC_APB1RSTR_USART3RST_Msk           (0x1U << RCC_APB1RSTR_USART3RST_Pos) /*!< 0x00040000 */
 #define RCC_APB1RSTR_USART3RST               RCC_APB1RSTR_USART3RST_Msk        /*!< USART 3 reset */
-#define RCC_APB1RSTR_I2C2RST_Pos             (22U)                             
-#define RCC_APB1RSTR_I2C2RST_Msk             (0x1U << RCC_APB1RSTR_I2C2RST_Pos) /*!< 0x00400000 */
-#define RCC_APB1RSTR_I2C2RST                 RCC_APB1RSTR_I2C2RST_Msk          /*!< I2C 2 reset */
+#define RCC_APB1RSTR_I2C1RST_Pos             (22U)                             
+#define RCC_APB1RSTR_I2C1RST_Msk             (0x1U << RCC_APB1RSTR_I2C1RST_Pos) /*!< 0x00400000 */
+#define RCC_APB1RSTR_I2C1RST                 RCC_APB1RSTR_I2C1RST_Msk          /*!< I2C 2 reset */
 
 
 #define RCC_APB1RSTR_TIM5RST_Pos             (3U)                              
@@ -1719,9 +1719,9 @@ typedef struct
 #define RCC_APB1ENR_USART3EN_Pos             (18U)                             
 #define RCC_APB1ENR_USART3EN_Msk             (0x1U << RCC_APB1ENR_USART3EN_Pos) /*!< 0x00040000 */
 #define RCC_APB1ENR_USART3EN                 RCC_APB1ENR_USART3EN_Msk          /*!< USART 3 clock enable */
-#define RCC_APB1ENR_I2C2EN_Pos               (22U)                             
-#define RCC_APB1ENR_I2C2EN_Msk               (0x1U << RCC_APB1ENR_I2C2EN_Pos)  /*!< 0x00400000 */
-#define RCC_APB1ENR_I2C2EN                   RCC_APB1ENR_I2C2EN_Msk            /*!< I2C 2 clock enable */
+#define RCC_APB1ENR_I2C1EN_Pos               (22U)                             
+#define RCC_APB1ENR_I2C1EN_Msk               (0x1U << RCC_APB1ENR_I2C1EN_Pos)  /*!< 0x00400000 */
+#define RCC_APB1ENR_I2C1EN                   RCC_APB1ENR_I2C1EN_Msk            /*!< I2C 2 clock enable */
 
 
 #define RCC_APB1ENR_TIM5EN_Pos               (3U)                              
@@ -12350,9 +12350,9 @@ typedef struct
 #define DBGMCU_CR_DBG_I2C0_SMBUS_TIMEOUT_Pos (15U)                             
 #define DBGMCU_CR_DBG_I2C0_SMBUS_TIMEOUT_Msk (0x1U << DBGMCU_CR_DBG_I2C0_SMBUS_TIMEOUT_Pos) /*!< 0x00008000 */
 #define DBGMCU_CR_DBG_I2C0_SMBUS_TIMEOUT    DBGMCU_CR_DBG_I2C0_SMBUS_TIMEOUT_Msk /*!< SMBUS timeout mode stopped when Core is halted */
-#define DBGMCU_CR_DBG_I2C2_SMBUS_TIMEOUT_Pos (16U)                             
-#define DBGMCU_CR_DBG_I2C2_SMBUS_TIMEOUT_Msk (0x1U << DBGMCU_CR_DBG_I2C2_SMBUS_TIMEOUT_Pos) /*!< 0x00010000 */
-#define DBGMCU_CR_DBG_I2C2_SMBUS_TIMEOUT    DBGMCU_CR_DBG_I2C2_SMBUS_TIMEOUT_Msk /*!< SMBUS timeout mode stopped when Core is halted */
+#define DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT_Pos (16U)                             
+#define DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT_Msk (0x1U << DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT_Pos) /*!< 0x00010000 */
+#define DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT    DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT_Msk /*!< SMBUS timeout mode stopped when Core is halted */
 #define DBGMCU_CR_DBG_TIM5_STOP_Pos         (18U)                              
 #define DBGMCU_CR_DBG_TIM5_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM5_STOP_Pos) /*!< 0x00040000 */
 #define DBGMCU_CR_DBG_TIM5_STOP             DBGMCU_CR_DBG_TIM5_STOP_Msk        /*!< TIM5 counter stopped when core is halted */
@@ -12631,7 +12631,7 @@ typedef struct
 
 /******************************** I2C Instances *******************************/
 #define IS_I2C_ALL_INSTANCE(INSTANCE) (((INSTANCE) == I2C0) || \
-                                       ((INSTANCE) == I2C2))
+                                       ((INSTANCE) == I2C1))
 
 /******************************* SMBUS Instances ******************************/
 #define IS_SMBUS_ALL_INSTANCE         IS_I2C_ALL_INSTANCE

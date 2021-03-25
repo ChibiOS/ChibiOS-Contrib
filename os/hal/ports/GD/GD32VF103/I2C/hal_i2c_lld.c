@@ -42,13 +42,13 @@
   GD32_DMA_GETCHANNEL(GD32_I2C_I2C0_TX_DMA_STREAM,                        \
                        GD32_I2C0_TX_DMA_CHN)
 
-#define I2C2_RX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_I2C_I2C2_RX_DMA_STREAM,                        \
-                       GD32_I2C2_RX_DMA_CHN)
+#define I2C1_RX_DMA_CHANNEL                                                 \
+  GD32_DMA_GETCHANNEL(GD32_I2C_I2C1_RX_DMA_STREAM,                        \
+                       GD32_I2C1_RX_DMA_CHN)
 
-#define I2C2_TX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_I2C_I2C2_TX_DMA_STREAM,                        \
-                       GD32_I2C2_TX_DMA_CHN)
+#define I2C1_TX_DMA_CHANNEL                                                 \
+  GD32_DMA_GETCHANNEL(GD32_I2C_I2C1_TX_DMA_STREAM,                        \
+                       GD32_I2C1_TX_DMA_CHN)
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -89,8 +89,8 @@
 I2CDriver I2CD1;
 #endif
 
-/** @brief I2C2 driver identifier.*/
-#if GD32_I2C_USE_I2C2 || defined(__DOXYGEN__)
+/** @brief I2C1 driver identifier.*/
+#if GD32_I2C_USE_I2C1 || defined(__DOXYGEN__)
 I2CDriver I2CD2;
 #endif
 
@@ -439,13 +439,13 @@ OSAL_IRQ_HANDLER(GD32_I2C0_ERROR_HANDLER) {
 }
 #endif /* GD32_I2C_USE_I2C0 */
 
-#if GD32_I2C_USE_I2C2 || defined(__DOXYGEN__)
+#if GD32_I2C_USE_I2C1 || defined(__DOXYGEN__)
 /**
- * @brief   I2C2 event interrupt handler.
+ * @brief   I2C1 event interrupt handler.
  *
  * @notapi
  */
-OSAL_IRQ_HANDLER(GD32_I2C2_EVENT_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_I2C1_EVENT_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -455,11 +455,11 @@ OSAL_IRQ_HANDLER(GD32_I2C2_EVENT_HANDLER) {
 }
 
 /**
- * @brief   I2C2 error interrupt handler.
+ * @brief   I2C1 error interrupt handler.
  *
  * @notapi
  */
-OSAL_IRQ_HANDLER(GD32_I2C2_ERROR_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_I2C1_ERROR_HANDLER) {
   uint16_t sr = I2CD2.i2c->STAT0;
 
   OSAL_IRQ_PROLOGUE();
@@ -469,7 +469,7 @@ OSAL_IRQ_HANDLER(GD32_I2C2_ERROR_HANDLER) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* GD32_I2C_USE_I2C2 */
+#endif /* GD32_I2C_USE_I2C1 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -490,13 +490,13 @@ void i2c_lld_init(void) {
   I2CD1.dmatx  = NULL;
 #endif /* GD32_I2C_USE_I2C0 */
 
-#if GD32_I2C_USE_I2C2
+#if GD32_I2C_USE_I2C1
   i2cObjectInit(&I2CD2);
   I2CD2.thread = NULL;
-  I2CD2.i2c    = I2C2;
+  I2CD2.i2c    = I2C1;
   I2CD2.dmarx  = NULL;
   I2CD2.dmatx  = NULL;
-#endif /* GD32_I2C_USE_I2C2 */
+#endif /* GD32_I2C_USE_I2C1 */
 }
 
 /**
@@ -547,31 +547,31 @@ void i2c_lld_start(I2CDriver *i2cp) {
     }
 #endif /* GD32_I2C_USE_I2C0 */
 
-#if GD32_I2C_USE_I2C2
+#if GD32_I2C_USE_I2C1
     if (&I2CD2 == i2cp) {
-      rccResetI2C2();
+      rccResetI2C1();
 
-      i2cp->dmarx = dmaStreamAllocI(GD32_I2C_I2C2_RX_DMA_STREAM,
-                                    GD32_I2C_I2C2_IRQ_PRIORITY,
+      i2cp->dmarx = dmaStreamAllocI(GD32_I2C_I2C1_RX_DMA_STREAM,
+                                    GD32_I2C_I2C1_IRQ_PRIORITY,
                                     (gd32_dmaisr_t)i2c_lld_serve_rx_end_irq,
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmarx != NULL, "unable to allocate stream");
-      i2cp->dmatx = dmaStreamAllocI(GD32_I2C_I2C2_TX_DMA_STREAM,
-                                    GD32_I2C_I2C2_IRQ_PRIORITY,
+      i2cp->dmatx = dmaStreamAllocI(GD32_I2C_I2C1_TX_DMA_STREAM,
+                                    GD32_I2C_I2C1_IRQ_PRIORITY,
                                     (gd32_dmaisr_t)i2c_lld_serve_tx_end_irq,
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmatx != NULL, "unable to allocate stream");
 
-      rccEnableI2C2(true);
-      eclicEnableVector(I2C0_EV_IRQn, GD32_I2C_I2C2_IRQ_PRIORITY, GD32_I2C_I2C2_IRQ_TRIGGER);
-      eclicEnableVector(I2C0_ER_IRQn, GD32_I2C_I2C2_IRQ_PRIORITY, GD32_I2C_I2C2_IRQ_TRIGGER);
+      rccEnableI2C1(true);
+      eclicEnableVector(I2C0_EV_IRQn, GD32_I2C_I2C1_IRQ_PRIORITY, GD32_I2C_I2C1_IRQ_TRIGGER);
+      eclicEnableVector(I2C0_ER_IRQn, GD32_I2C_I2C1_IRQ_PRIORITY, GD32_I2C_I2C1_IRQ_TRIGGER);
 
-      i2cp->rxdmamode |= GD32_DMA_CTL_CHSEL(I2C2_RX_DMA_CHANNEL) |
-                       GD32_DMA_CTL_PRIO(GD32_I2C_I2C2_DMA_PRIORITY);
-      i2cp->txdmamode |= GD32_DMA_CTL_CHSEL(I2C2_TX_DMA_CHANNEL) |
-                       GD32_DMA_CTL_PRIO(GD32_I2C_I2C2_DMA_PRIORITY);
+      i2cp->rxdmamode |= GD32_DMA_CTL_CHSEL(I2C1_RX_DMA_CHANNEL) |
+                       GD32_DMA_CTL_PRIO(GD32_I2C_I2C1_DMA_PRIORITY);
+      i2cp->txdmamode |= GD32_DMA_CTL_CHSEL(I2C1_TX_DMA_CHANNEL) |
+                       GD32_DMA_CTL_PRIO(GD32_I2C_I2C1_DMA_PRIORITY);
     }
-#endif /* GD32_I2C_USE_I2C2 */
+#endif /* GD32_I2C_USE_I2C1 */
   }
 
   /* I2C registers pointed by the DMA.*/
@@ -619,11 +619,11 @@ void i2c_lld_stop(I2CDriver *i2cp) {
     }
 #endif
 
-#if GD32_I2C_USE_I2C2
+#if GD32_I2C_USE_I2C1
     if (&I2CD2 == i2cp) {
-      eclicDisableVector(I2C2_EV_IRQn);
-      eclicDisableVector(I2C2_ER_IRQn);
-      rccDisableI2C2();
+      eclicDisableVector(I2C1_EV_IRQn);
+      eclicDisableVector(I2C1_ER_IRQn);
+      rccDisableI2C1();
     }
 #endif
   }

@@ -466,28 +466,28 @@
 #define rccResetI2C0() rccResetAPB1(RCC_APB1RSTR_I2C0RST)
 
 /**
- * @brief   Enables the I2C2 peripheral clock.
+ * @brief   Enables the I2C1 peripheral clock.
  * @note    The @p lp parameter is ignored in this family.
  *
  * @param[in] lp        low power enable flag
  *
  * @api
  */
-#define rccEnableI2C2(lp) rccEnableAPB1(RCC_APB1ENR_I2C2EN, lp)
+#define rccEnableI2C1(lp) rccEnableAPB1(RCC_APB1ENR_I2C1EN, lp)
 
 /**
- * @brief   Disables the I2C2 peripheral clock.
+ * @brief   Disables the I2C1 peripheral clock.
  *
  * @api
  */
-#define rccDisableI2C2() rccDisableAPB1(RCC_APB1ENR_I2C2EN)
+#define rccDisableI2C1() rccDisableAPB1(RCC_APB1ENR_I2C1EN)
 
 /**
- * @brief   Resets the I2C2 peripheral.
+ * @brief   Resets the I2C1 peripheral.
  *
  * @api
  */
-#define rccResetI2C2() rccResetAPB1(RCC_APB1RSTR_I2C2RST)
+#define rccResetI2C1() rccResetAPB1(RCC_APB1RSTR_I2C1RST)
 /** @} */
 
 /**

@@ -190,11 +190,11 @@
 #endif
 
 #if GD32_HAS_I2C_01
-    #define GD32_HAS_I2C2                      TRUE
-    #define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 4)
-    #define GD32_I2C_I2C2_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 3)
+    #define GD32_HAS_I2C1                      TRUE
+    #define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 4)
+    #define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 3)
 #else
-    #define GD32_HAS_I2C2                      FALSE
+    #define GD32_HAS_I2C1                      FALSE
 #endif
 
 /* RTC attributes.*/
