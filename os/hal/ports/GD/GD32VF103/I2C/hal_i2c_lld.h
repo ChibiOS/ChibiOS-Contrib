@@ -116,10 +116,10 @@
 #define GD32_I2C_DMA_ERROR_HOOK(i2cp)      osalSysHalt("DMA failure")
 #endif
 
-#define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
-#define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
-#define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 5)
-#define GD32_I2C_I2C2_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 4)
+#define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 6)
+#define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 5)
+#define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 4)
+#define GD32_I2C_I2C2_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 3)
 
 /** @} */
 
@@ -165,20 +165,12 @@
 #endif
 
 /* Check clock range. */
-#if defined(STM32F10X_LD_VL) || defined(GD32VF103_MD_VL) ||               \
-      defined(STM32F10X_HD_VL)
-#if !(I2C_CLK_FREQ >= 2) && (I2C_CLK_FREQ <= 24)
-#error "I2C peripheral clock frequency out of range."
-#endif
-
-#elif defined(STM32F10X_LD) || defined(GD32VF103CB) ||                     \
-      defined(STM32F10X_HD) || defined(STM32F10X_XL) ||                     \
-      defined(STM32F10X_CL)
-#if !(I2C_CLK_FREQ >= 2) && (I2C_CLK_FREQ <= 36)
+#if defined(GD32VF103) 
+#if !(I2C_CLK_FREQ >= 2) && (I2C_CLK_FREQ <= 48)
 #error "I2C peripheral clock frequency out of range."
 #endif
 #else
-#error "unspecified, unsupported or invalid STM32 platform"
+#error "unspecified, unsupported or invalid GD32 platform"
 #endif
 
 /*===========================================================================*/
@@ -221,8 +213,8 @@ typedef struct {
   i2copmode_t     op_mode;       /**< @brief Specifies the I2C mode.        */
   uint32_t        clock_speed;   /**< @brief Specifies the clock frequency.
                                       @note Must be set to a value lower
-                                      than 400kHz.                          */
-  i2cdutycycle_t  duty_cycle;    /**< @brief Specifies the I2C fast mode
+                                      than 1MHz.                            */
+  i2cdutycycle_t  duty_cycle;    /**< @brief Specifies the I2C fast mode (plus)
                                       duty cycle.                           */
 } I2CConfig;
 

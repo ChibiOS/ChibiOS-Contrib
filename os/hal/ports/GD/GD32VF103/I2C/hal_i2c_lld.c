@@ -138,7 +138,7 @@ static void i2c_lld_set_clock(I2CDriver *i2cp) {
 
   osalDbgCheck((i2cp != NULL) &&
                (clock_speed > 0) &&
-               (clock_speed <= 400000));
+               (clock_speed <= 1000000));
 
   /* CR2 Configuration.*/
   dp->CTL1 &= (uint16_t)~I2C_CTL1_I2CCLK;
@@ -164,8 +164,8 @@ static void i2c_lld_set_clock(I2CDriver *i2cp) {
     /* Sets the Maximum Rise Time for standard mode.*/
     dp->RT = I2C_CLK_FREQ + 1;
   }
-  else if (clock_speed <= 400000) {
-    /* Configure clock_div in fast mode.*/
+  else if (clock_speed <= 1000000) {
+    /* Configure clock_div in fast mode and fast mode plus.*/
     osalDbgAssert((duty == FAST_DUTY_CYCLE_2) ||
                   (duty == FAST_DUTY_CYCLE_16_9),
                   "invalid fast mode duty cycle");
@@ -190,9 +190,12 @@ static void i2c_lld_set_clock(I2CDriver *i2cp) {
 
     /* Sets the Maximum Rise Time for fast mode.*/
     dp->RT = (I2C_CLK_FREQ * 300 / 1000) + 1;
-    } else if (clock_speed <= 1000000){
-      /* TODO: Add fast mode plus*/
+
+    if(clock_speed > 400000) {
+      /* Enable Fast mode plus */
+      dp->FMPCFG = I2C_FMPCFG_FMPEN;
     }
+  }
 
   osalDbgAssert((clock_div <= I2C_CKCFG_CLKC), "the selected clock is too low");
 
@@ -236,17 +239,13 @@ static void i2c_lld_set_opmode(I2CDriver *i2cp) {
  */
 static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
    I2C_TypeDef *dp = i2cp->i2c;
-   uint32_t regSR2 = dp->STAT1;
+   uint32_t regSTAT1 = dp->STAT1;
    uint32_t event = dp->STAT0;
-
-   /*for(int32_t i = 0; i < 20; i++){
-     __asm__ volatile ("nop");
-   }*/
 
   /* Interrupts are disabled just before dmaStreamEnable() because there
      is no need of interrupts until next transaction begin. All the work is
      done by the DMA.*/
-  switch (I2C_EV_MASK & (event | (regSR2 << 16))) {
+  switch (I2C_EV_MASK & (event | (regSTAT1 << 16))) {
   case I2C_EV5_MASTER_MODE_SELECT:
   case I2C_EV5_MASTER_MODE_SELECT_NO_BUSY:
     if ((i2cp->addr >> 8) > 0) {

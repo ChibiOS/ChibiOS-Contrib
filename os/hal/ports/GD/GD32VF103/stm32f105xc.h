@@ -394,6 +394,7 @@ typedef struct
   __IO uint32_t STAT1;
   __IO uint32_t CKCFG;
   __IO uint32_t RT;
+  uint32_t RESERVED[27];
   __IO uint32_t FMPCFG;
 } I2C_TypeDef;
 
