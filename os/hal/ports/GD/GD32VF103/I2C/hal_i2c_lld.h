@@ -260,8 +260,8 @@ struct I2CDriver {
    */
   mutex_t                   mutex;
 #endif /* I2C_USE_MUTUAL_EXCLUSION */
-#if defined(I2C_DRIVER_EXT_FIELDS)
-  I2C_DRIVER_EXT_FIELDS
+#if defined(I2C_DATAIVER_EXT_FIELDS)
+  I2C_DATAIVER_EXT_FIELDS
 #endif
   /* End of the mandatory fields.*/
   /**

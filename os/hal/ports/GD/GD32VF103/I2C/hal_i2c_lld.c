@@ -55,30 +55,30 @@
 /*===========================================================================*/
 
 #define I2C_EV5_MASTER_MODE_SELECT                                          \
-  ((uint32_t)(((I2C_SR2_MSL | I2C_SR2_BUSY) << 16) | I2C_SR1_SB))
+  ((uint32_t)(((I2C_STAT1_MASTER | I2C_STAT1_I2CBSY) << 16) | I2C_STAT0_SBSEND))
 
 #define I2C_EV5_MASTER_MODE_SELECT_NO_BUSY                                  \
-  ((uint32_t)((I2C_SR2_MSL << 16) | I2C_SR1_SB))
+  ((uint32_t)((I2C_STAT1_MASTER << 16) | I2C_STAT0_SBSEND))
 
 #define I2C_EV6_MASTER_TRA_MODE_SELECTED                                    \
-  ((uint32_t)(((I2C_SR2_MSL | I2C_SR2_BUSY | I2C_SR2_TRA) << 16) |          \
-              I2C_SR1_ADDR | I2C_SR1_TXE))
+  ((uint32_t)(((I2C_STAT1_MASTER | I2C_STAT1_I2CBSY | I2C_STAT1_TR) << 16) |          \
+              I2C_STAT0_ADDSEND | I2C_STAT0_TBE))
 
 #define I2C_EV6_MASTER_REC_MODE_SELECTED                                    \
-  ((uint32_t)(((I2C_SR2_MSL | I2C_SR2_BUSY)<< 16) | I2C_SR1_ADDR))
+  ((uint32_t)(((I2C_STAT1_MASTER | I2C_STAT1_I2CBSY)<< 16) | I2C_STAT0_ADDSEND))
 
 #define I2C_EV8_2_MASTER_BYTE_TRANSMITTED                                   \
-  ((uint32_t)(((I2C_SR2_MSL | I2C_SR2_BUSY | I2C_SR2_TRA) << 16) |          \
-              I2C_SR1_BTF | I2C_SR1_TXE))
+  ((uint32_t)(((I2C_STAT1_MASTER | I2C_STAT1_I2CBSY | I2C_STAT1_TR) << 16) |          \
+              I2C_STAT0_BTC | I2C_STAT0_TBE))
 
 #define I2C_EV9_MASTER_ADD10                                                \
-  ((uint32_t)(((I2C_SR2_MSL | I2C_SR2_BUSY) << 16) | I2C_SR1_ADD10))
+  ((uint32_t)(((I2C_STAT1_MASTER | I2C_STAT1_I2CBSY) << 16) | I2C_STAT0_ADD10SEND))
 
 #define I2C_EV_MASK 0x00FFFFFF
 
 #define I2C_ERROR_MASK                                                      \
-  ((uint16_t)(I2C_SR1_BERR | I2C_SR1_ARLO | I2C_SR1_AF | I2C_SR1_OVR |      \
-              I2C_SR1_PECERR | I2C_SR1_TIMEOUT | I2C_SR1_SMBALERT))
+  ((uint16_t)(I2C_STAT0_BERR | I2C_STAT0_LOSTARB | I2C_STAT0_AERR | I2C_STAT0_OUERR |      \
+              I2C_STAT0_PECERR | I2C_STAT0_SMBTO | I2C_STAT0_SMBALT))
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -113,10 +113,10 @@ static void i2c_lld_abort_operation(I2CDriver *i2cp) {
   I2C_TypeDef *dp = i2cp->i2c;
 
   /* Stops the I2C peripheral.*/
-  dp->CR1 = I2C_CR1_SWRST;
-  dp->CR1 = 0;
-  dp->CR2 = 0;
-  dp->SR1 = 0;
+  dp->CTL0 = I2C_CTL0_SRESET;
+  dp->CTL0 = 0;
+  dp->CTL1 = 0;
+  dp->STAT0 = 0;
 
   /* Stops the associated DMA streams.*/
   dmaStreamDisable(i2cp->dmatx);
@@ -132,7 +132,7 @@ static void i2c_lld_abort_operation(I2CDriver *i2cp) {
  */
 static void i2c_lld_set_clock(I2CDriver *i2cp) {
   I2C_TypeDef *dp = i2cp->i2c;
-  uint16_t regCCR, clock_div;
+  uint16_t regCKCFG, clock_div;
   int32_t clock_speed = i2cp->config->clock_speed;
   i2cdutycycle_t duty = i2cp->config->duty_cycle;
 
@@ -141,12 +141,12 @@ static void i2c_lld_set_clock(I2CDriver *i2cp) {
                (clock_speed <= 400000));
 
   /* CR2 Configuration.*/
-  dp->CR2 &= (uint16_t)~I2C_CR2_FREQ;
-  dp->CR2 |= (uint16_t)I2C_CLK_FREQ;
+  dp->CTL1 &= (uint16_t)~I2C_CTL1_I2CCLK;
+  dp->CTL1 |= (uint16_t)I2C_CLK_FREQ;
 
   /* CCR Configuration.*/
-  regCCR = 0;
-  clock_div = I2C_CCR_CCR;
+  regCKCFG = 0;
+  clock_div = I2C_CKCFG_CLKC;
 
   if (clock_speed <= 100000) {
     /* Configure clock_div in standard mode.*/
@@ -159,10 +159,10 @@ static void i2c_lld_set_clock(I2CDriver *i2cp) {
 
     osalDbgAssert(clock_div >= 0x04,
                   "clock divider less then 0x04 not allowed");
-    regCCR |= (clock_div & I2C_CCR_CCR);
+    regCKCFG |= (clock_div & I2C_CKCFG_CLKC);
 
     /* Sets the Maximum Rise Time for standard mode.*/
-    dp->TRISE = I2C_CLK_FREQ + 1;
+    dp->RT = I2C_CLK_FREQ + 1;
   }
   else if (clock_speed <= 400000) {
     /* Configure clock_div in fast mode.*/
@@ -181,20 +181,20 @@ static void i2c_lld_set_clock(I2CDriver *i2cp) {
       osalDbgAssert((GD32_PCLK1 % (clock_speed * 25)) == 0,
                     "PCLK1 must be divided without remainder");
       clock_div = (uint16_t)(GD32_PCLK1 / (clock_speed * 25));
-      regCCR |= I2C_CCR_DUTY;
+      regCKCFG |= I2C_CKCFG_DTCY;
     }
 
     osalDbgAssert(clock_div >= 0x01,
                   "clock divider less then 0x04 not allowed");
-    regCCR |= (I2C_CCR_FS | (clock_div & I2C_CCR_CCR));
+    regCKCFG |= (I2C_CKCFG_FAST | (clock_div & I2C_CKCFG_CLKC));
 
     /* Sets the Maximum Rise Time for fast mode.*/
-    dp->TRISE = (I2C_CLK_FREQ * 300 / 1000) + 1;
+    dp->RT = (I2C_CLK_FREQ * 300 / 1000) + 1;
   }
 
-  osalDbgAssert((clock_div <= I2C_CCR_CCR), "the selected clock is too low");
+  osalDbgAssert((clock_div <= I2C_CKCFG_CLKC), "the selected clock is too low");
 
-  dp->CCR = regCCR;
+  dp->CKCFG = regCKCFG;
 }
 
 /**
@@ -209,20 +209,20 @@ static void i2c_lld_set_opmode(I2CDriver *i2cp) {
   i2copmode_t opmode = i2cp->config->op_mode;
   uint16_t regCR1;
 
-  regCR1 = dp->CR1;
+  regCR1 = dp->CTL0;
   switch (opmode) {
   case OPMODE_I2C:
-    regCR1 &= (uint16_t)~(I2C_CR1_SMBUS|I2C_CR1_SMBTYPE);
+    regCR1 &= (uint16_t)~(I2C_CTL0_SMBEN|I2C_CTL0_SMBSEL);
     break;
   case OPMODE_SMBUS_DEVICE:
-    regCR1 |= I2C_CR1_SMBUS;
-    regCR1 &= (uint16_t)~(I2C_CR1_SMBTYPE);
+    regCR1 |= I2C_CTL0_SMBEN;
+    regCR1 &= (uint16_t)~(I2C_CTL0_SMBSEL);
     break;
   case OPMODE_SMBUS_HOST:
-    regCR1 |= (I2C_CR1_SMBUS|I2C_CR1_SMBTYPE);
+    regCR1 |= (I2C_CTL0_SMBEN|I2C_CTL0_SMBSEL);
     break;
   }
-  dp->CR1 = regCR1;
+  dp->CTL0 = regCR1;
 }
 
 /**
@@ -234,8 +234,8 @@ static void i2c_lld_set_opmode(I2CDriver *i2cp) {
  */
 static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
    I2C_TypeDef *dp = i2cp->i2c;
-   uint32_t regSR2 = dp->SR2;
-   uint32_t event = dp->SR1;
+   uint32_t regSR2 = dp->STAT1;
+   uint32_t event = dp->STAT0;
 
    /*for(int32_t i = 0; i < 20; i++){
      __asm__ volatile ("nop");
@@ -249,57 +249,57 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
   case I2C_EV5_MASTER_MODE_SELECT_NO_BUSY:
     if ((i2cp->addr >> 8) > 0) {
       /* 10-bit address: 1 1 1 1 0 X X R/W */
-      dp->DR = 0xF0 | (0x6 & (i2cp->addr >> 8)) | (0x1 & i2cp->addr);
+      dp->DATA = 0xF0 | (0x6 & (i2cp->addr >> 8)) | (0x1 & i2cp->addr);
     } else {
-      dp->DR = i2cp->addr;
+      dp->DATA = i2cp->addr;
     }
     break;
   case I2C_EV9_MASTER_ADD10:
     /* Set second addr byte (10-bit addressing)*/
-    dp->DR = (0xFF & (i2cp->addr >> 1));
+    dp->DATA = (0xFF & (i2cp->addr >> 1));
     break;
   case I2C_EV6_MASTER_REC_MODE_SELECTED:
-    dp->CR2 &= ~I2C_CR2_ITEVTEN;
+    dp->CTL1 &= ~I2C_CTL1_EVIE;
 	  /* Clear address flags before dma enable */
-    if (event & (I2C_SR1_ADDR | I2C_SR1_ADD10)){
-      (void)dp->SR1;
-      (void)dp->SR2;
+    if (event & (I2C_STAT0_ADDSEND | I2C_STAT0_ADD10SEND)){
+      (void)dp->STAT0;
+      (void)dp->STAT1;
     }
-    dp->CR2 |= I2C_CR2_DMAEN;
+    dp->CTL1 |= I2C_CTL1_DMAON;
     dmaStreamEnable(i2cp->dmarx);
-    dp->CR2 |= I2C_CR2_LAST;                 /* Needed in receiver mode. */
+    dp->CTL1 |= I2C_CTL1_DMALST;                 /* Needed in receiver mode. */
     if (dmaStreamGetTransactionSize(i2cp->dmarx) < 2)
-      dp->CR1 &= ~I2C_CR1_ACK;
+      dp->CTL0 &= ~I2C_CTL0_ACKEN;
     break;
   case I2C_EV6_MASTER_TRA_MODE_SELECTED:
-    dp->CR2 &= ~I2C_CR2_ITEVTEN;
+    dp->CTL1 &= ~I2C_CTL1_EVIE;
     /* Clear address flags before dma enable */
-    if (event & (I2C_SR1_ADDR | I2C_SR1_ADD10)){
-      (void)dp->SR1;
-      (void)dp->SR2;
+    if (event & (I2C_STAT0_ADDSEND | I2C_STAT0_ADD10SEND)){
+      (void)dp->STAT0;
+      (void)dp->STAT1;
     }
-    dp->CR2 |= I2C_CR2_DMAEN;
+    dp->CTL1 |= I2C_CTL1_DMAON;
     dmaStreamEnable(i2cp->dmatx);
     break;
   case I2C_EV8_2_MASTER_BYTE_TRANSMITTED:
     /* Catches BTF event after the end of transmission.*/
-    (void)dp->DR; /* clear BTF.*/
+    (void)dp->DATA; /* clear BTF.*/
     if (dmaStreamGetTransactionSize(i2cp->dmarx) > 0) {
       /* Starts "read after write" operation, LSB = 1 -> receive.*/
       i2cp->addr |= 0x01;
-      dp->CR1 |= I2C_CR1_START | I2C_CR1_ACK;
+      dp->CTL0 |= I2C_CTL0_START | I2C_CTL0_ACKEN;
       return;
     }
-    dp->CR2 &= ~I2C_CR2_ITEVTEN;
-    dp->CR1 |= I2C_CR1_STOP;
+    dp->CTL1 &= ~I2C_CTL1_EVIE;
+    dp->CTL0 |= I2C_CTL0_STOP;
     _i2c_wakeup_isr(i2cp);
     break;
   default:
     break;
   }
-  if (event & (I2C_SR1_ADDR | I2C_SR1_ADD10)){
-    (void)dp->SR1;
-    (void)dp->SR2;
+  if (event & (I2C_STAT0_ADDSEND | I2C_STAT0_ADD10SEND)){
+    (void)dp->STAT0;
+    (void)dp->STAT1;
   }
 }
 
@@ -325,9 +325,9 @@ static void i2c_lld_serve_rx_end_irq(I2CDriver *i2cp, uint32_t flags) {
 
   dmaStreamDisable(i2cp->dmarx);
 
-  dp->CR2 &= ~I2C_CR2_LAST;
-  dp->CR1 &= ~I2C_CR1_ACK;
-  dp->CR1 |= I2C_CR1_STOP;
+  dp->CTL1 &= ~I2C_CTL1_DMALST;
+  dp->CTL0 &= ~I2C_CTL0_ACKEN;
+  dp->CTL0 |= I2C_CTL0_STOP;
   _i2c_wakeup_isr(i2cp);
 }
 
@@ -354,7 +354,7 @@ static void i2c_lld_serve_tx_end_irq(I2CDriver *i2cp, uint32_t flags) {
   /* Enables interrupts to catch BTF event meaning transmission part complete.
      Interrupt handler will decide to generate STOP or to begin receiving part
      of R/W transaction itself.*/
-  dp->CR2 |= I2C_CR2_ITEVTEN;
+  dp->CTL1 |= I2C_CTL1_EVIE;
 }
 
 /**
@@ -373,32 +373,32 @@ static void i2c_lld_serve_error_interrupt(I2CDriver *i2cp, uint16_t sr) {
 
   i2cp->errors = I2C_NO_ERROR;
 
-  if (sr & I2C_SR1_BERR) {                          /* Bus error.           */
+  if (sr & I2C_STAT0_BERR) {                          /* Bus error.           */
     i2cp->errors |= I2C_BUS_ERROR;
     /* Errata 2.4.6 for STM32F40x, Spurious Bus Error detection in
        Master mode.*/
-    i2cp->i2c->SR1 &= ~I2C_SR1_BERR;
+    i2cp->i2c->STAT0 &= ~I2C_STAT0_BERR;
   }
 
-  if (sr & I2C_SR1_ARLO)                            /* Arbitration lost.    */
+  if (sr & I2C_STAT0_LOSTARB)                            /* Arbitration lost.    */
     i2cp->errors |= I2C_ARBITRATION_LOST;
 
-  if (sr & I2C_SR1_AF) {                            /* Acknowledge fail.    */
-    i2cp->i2c->CR2 &= ~I2C_CR2_ITEVTEN;
-    i2cp->i2c->CR1 |= I2C_CR1_STOP;                 /* Setting stop bit.    */
+  if (sr & I2C_STAT0_AERR) {                            /* Acknowledge fail.    */
+    i2cp->i2c->CTL1 &= ~I2C_CTL1_EVIE;
+    i2cp->i2c->CTL0 |= I2C_CTL0_STOP;                 /* Setting stop bit.    */
     i2cp->errors |= I2C_ACK_FAILURE;
   }
 
-  if (sr & I2C_SR1_OVR)                             /* Overrun.             */
+  if (sr & I2C_STAT0_OUERR)                             /* Overrun.             */
     i2cp->errors |= I2C_OVERRUN;
 
-  if (sr & I2C_SR1_TIMEOUT)                         /* SMBus Timeout.       */
+  if (sr & I2C_STAT0_SMBTO)                         /* SMBus Timeout.       */
     i2cp->errors |= I2C_TIMEOUT;
 
-  if (sr & I2C_SR1_PECERR)                          /* PEC error.           */
+  if (sr & I2C_STAT0_PECERR)                          /* PEC error.           */
     i2cp->errors |= I2C_PEC_ERROR;
 
-  if (sr & I2C_SR1_SMBALERT)                        /* SMBus alert.         */
+  if (sr & I2C_STAT0_SMBALT)                        /* SMBus alert.         */
     i2cp->errors |= I2C_SMB_ALERT;
 
   /* If some error has been identified then sends wakes the waiting thread.*/
@@ -429,11 +429,11 @@ OSAL_IRQ_HANDLER(GD32_I2C1_EVENT_HANDLER) {
  * @brief   I2C1 error interrupt handler.
  */
 OSAL_IRQ_HANDLER(GD32_I2C1_ERROR_HANDLER) {
-  uint16_t sr = I2CD1.i2c->SR1;
+  uint16_t sr = I2CD1.i2c->STAT0;
 
   OSAL_IRQ_PROLOGUE();
 
-  I2CD1.i2c->SR1 = ~(sr & I2C_ERROR_MASK);
+  I2CD1.i2c->STAT0 = ~(sr & I2C_ERROR_MASK);
   i2c_lld_serve_error_interrupt(&I2CD1, sr);
 
   OSAL_IRQ_EPILOGUE();
@@ -461,11 +461,11 @@ OSAL_IRQ_HANDLER(GD32_I2C2_EVENT_HANDLER) {
  * @notapi
  */
 OSAL_IRQ_HANDLER(GD32_I2C2_ERROR_HANDLER) {
-  uint16_t sr = I2CD2.i2c->SR1;
+  uint16_t sr = I2CD2.i2c->STAT0;
 
   OSAL_IRQ_PROLOGUE();
 
-  I2CD2.i2c->SR1 = ~(sr & I2C_ERROR_MASK);
+  I2CD2.i2c->STAT0 = ~(sr & I2C_ERROR_MASK);
   i2c_lld_serve_error_interrupt(&I2CD2, sr);
 
   OSAL_IRQ_EPILOGUE();
@@ -576,21 +576,21 @@ void i2c_lld_start(I2CDriver *i2cp) {
   }
 
   /* I2C registers pointed by the DMA.*/
-  dmaStreamSetPeripheral(i2cp->dmarx, &dp->DR);
-  dmaStreamSetPeripheral(i2cp->dmatx, &dp->DR);
+  dmaStreamSetPeripheral(i2cp->dmarx, &dp->DATA);
+  dmaStreamSetPeripheral(i2cp->dmatx, &dp->DATA);
 
   /* Reset i2c peripheral.*/
-  dp->CR1 = I2C_CR1_SWRST;
-  dp->CR1 = 0;
-  dp->CR2 = 0;
-  dp->SR1 = 0;
-  dp->CR2 = I2C_CR2_ITERREN;
+  dp->CTL0 = I2C_CTL0_SRESET;
+  dp->CTL0 = 0;
+  dp->CTL1 = 0;
+  dp->STAT0 = 0;
+  dp->CTL1 = I2C_CTL1_ERRIE;
   /* Setup I2C parameters.*/
   i2c_lld_set_clock(i2cp);
   i2c_lld_set_opmode(i2cp);
 
   /* Ready to go.*/
-  dp->CR1 |= I2C_CR1_PE;
+  dp->CTL0 |= I2C_CTL0_I2CEN;
 }
 
 /**
@@ -689,7 +689,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
     /* If the bus is not busy then the operation can continue, note, the
        loop is exited in the locked state.*/
-    if (!(dp->SR2 & I2C_SR2_BUSY) && !(dp->CR1 & I2C_CR1_STOP))
+    if (!(dp->STAT1 & I2C_STAT1_I2CBSY) && !(dp->CTL0 & I2C_CTL0_STOP))
       break;
 
     /* If the system time went outside the allowed window then a timeout
@@ -703,8 +703,8 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   }
 
   /* Starts the operation.*/
-  dp->CR2 |= I2C_CR2_ITEVTEN;
-  dp->CR1 |= I2C_CR1_START | I2C_CR1_ACK;
+  dp->CTL1 |= I2C_CTL1_EVIE;
+  dp->CTL0 |= I2C_CTL0_START | I2C_CTL0_ACKEN;
 
   /* Waits for the operation completion or a timeout.*/
   msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
@@ -782,7 +782,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
     /* If the bus is not busy then the operation can continue, note, the
        loop is exited in the locked state.*/
-    if (!(dp->SR2 & I2C_SR2_BUSY) && !(dp->CR1 & I2C_CR1_STOP))
+    if (!(dp->STAT1 & I2C_STAT1_I2CBSY) && !(dp->CTL0 & I2C_CTL0_STOP))
       break;
 
     /* If the system time went outside the allowed window then a timeout
@@ -797,8 +797,8 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   }
 
   /* Starts the operation.*/
-  dp->CR2 |= I2C_CR2_ITEVTEN;
-  dp->CR1 |= I2C_CR1_START;
+  dp->CTL1 |= I2C_CTL1_EVIE;
+  dp->CTL0 |= I2C_CTL0_START;
 
   /* Waits for the operation completion or a timeout.*/
   msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
