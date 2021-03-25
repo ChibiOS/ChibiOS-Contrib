@@ -2631,25 +2631,25 @@ typedef struct
 #define AFIO_PCF0_I2C0_REMAP                 AFIO_PCF0_I2C0_REMAP_Msk          /*!< I2C0 remapping */
 #define AFIO_PCF0_USART0_REMAP_Pos           (2U)                              
 #define AFIO_PCF0_USART0_REMAP_Msk           (0x1U << AFIO_PCF0_USART0_REMAP_Pos) /*!< 0x00000004 */
-#define AFIO_PCF0_USART0_REMAP               AFIO_PCF0_USART0_REMAP_Msk        /*!< USART0 remapping */
-#define AFIO_PCF0_USART0_REMAP_Pos           (3U)                              
-#define AFIO_PCF0_USART0_REMAP_Msk           (0x1U << AFIO_PCF0_USART0_REMAP_Pos) /*!< 0x00000008 */
 #define AFIO_PCF0_USART0_REMAP               AFIO_PCF0_USART0_REMAP_Msk        /*!< USART1 remapping */
+#define AFIO_PCF0_USART1_REMAP_Pos           (3U)                              
+#define AFIO_PCF0_USART1_REMAP_Msk           (0x1U << AFIO_PCF0_USART1_REMAP_Pos) /*!< 0x00000008 */
+#define AFIO_PCF0_USART1_REMAP               AFIO_PCF0_USART1_REMAP_Msk        /*!< USART2 remapping */
 
-#define AFIO_PCF0_USART1_REMAP_Pos           (4U)                              
-#define AFIO_PCF0_USART1_REMAP_Msk           (0x3U << AFIO_PCF0_USART1_REMAP_Pos) /*!< 0x00000030 */
-#define AFIO_PCF0_USART1_REMAP               AFIO_PCF0_USART1_REMAP_Msk        /*!< USART2_REMAP[1:0] bits (USART2 remapping) */
-#define AFIO_PCF0_USART1_REMAP_0             (0x1U << AFIO_PCF0_USART1_REMAP_Pos) /*!< 0x00000010 */
-#define AFIO_PCF0_USART1_REMAP_1             (0x2U << AFIO_PCF0_USART1_REMAP_Pos) /*!< 0x00000020 */
+#define AFIO_PCF0_USART2_REMAP_Pos           (4U)                              
+#define AFIO_PCF0_USART2_REMAP_Msk           (0x3U << AFIO_PCF0_USART2_REMAP_Pos) /*!< 0x00000030 */
+#define AFIO_PCF0_USART2_REMAP               AFIO_PCF0_USART2_REMAP_Msk        /*!< USART3_REMAP[1:0] bits (USART3 remapping) */
+#define AFIO_PCF0_USART2_REMAP_0             (0x1U << AFIO_PCF0_USART2_REMAP_Pos) /*!< 0x00000010 */
+#define AFIO_PCF0_USART2_REMAP_1             (0x2U << AFIO_PCF0_USART2_REMAP_Pos) /*!< 0x00000020 */
 
-/* USART2_REMAP configuration */
-#define AFIO_PCF0_USART1_REMAP_NOREMAP       0x00000000U                          /*!< No remap (TX/PB10, RX/PB11, CK/PB12, CTS/PB13, RTS/PB14) */
-#define AFIO_PCF0_USART1_REMAP_PARTIALREMAP_Pos (4U)                           
-#define AFIO_PCF0_USART1_REMAP_PARTIALREMAP_Msk (0x1U << AFIO_PCF0_USART1_REMAP_PARTIALREMAP_Pos) /*!< 0x00000010 */
-#define AFIO_PCF0_USART1_REMAP_PARTIALREMAP  AFIO_PCF0_USART1_REMAP_PARTIALREMAP_Msk /*!< Partial remap (TX/PC10, RX/PC11, CK/PC12, CTS/PB13, RTS/PB14) */
-#define AFIO_PCF0_USART1_REMAP_FULLREMAP_Pos (4U)                              
-#define AFIO_PCF0_USART1_REMAP_FULLREMAP_Msk (0x3U << AFIO_PCF0_USART1_REMAP_FULLREMAP_Pos) /*!< 0x00000030 */
-#define AFIO_PCF0_USART1_REMAP_FULLREMAP     AFIO_PCF0_USART1_REMAP_FULLREMAP_Msk /*!< Full remap (TX/PD8, RX/PD9, CK/PD10, CTS/PD11, RTS/PD12) */
+/* USART3_REMAP configuration */
+#define AFIO_PCF0_USART2_REMAP_NOREMAP       0x00000000U                          /*!< No remap (TX/PB10, RX/PB11, CK/PB12, CTS/PB13, RTS/PB14) */
+#define AFIO_PCF0_USART2_REMAP_PARTIALREMAP_Pos (4U)                           
+#define AFIO_PCF0_USART2_REMAP_PARTIALREMAP_Msk (0x1U << AFIO_PCF0_USART2_REMAP_PARTIALREMAP_Pos) /*!< 0x00000010 */
+#define AFIO_PCF0_USART2_REMAP_PARTIALREMAP  AFIO_PCF0_USART2_REMAP_PARTIALREMAP_Msk /*!< Partial remap (TX/PC10, RX/PC11, CK/PC12, CTS/PB13, RTS/PB14) */
+#define AFIO_PCF0_USART2_REMAP_FULLREMAP_Pos (4U)                              
+#define AFIO_PCF0_USART2_REMAP_FULLREMAP_Msk (0x3U << AFIO_PCF0_USART2_REMAP_FULLREMAP_Pos) /*!< 0x00000030 */
+#define AFIO_PCF0_USART2_REMAP_FULLREMAP     AFIO_PCF0_USART2_REMAP_FULLREMAP_Msk /*!< Full remap (TX/PD8, RX/PD9, CK/PD10, CTS/PD11, RTS/PD12) */
 
 #define AFIO_PCF0_TIMER0_REMAP_Pos             (6U)                              
 #define AFIO_PCF0_TIMER0_REMAP_Msk             (0x3U << AFIO_PCF0_TIMER0_REMAP_Pos) /*!< 0x000000C0 */
