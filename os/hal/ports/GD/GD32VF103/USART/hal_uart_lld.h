@@ -203,6 +203,16 @@
 #error "UART4 not present in the selected device"
 #endif
 
+#if GD32_UART_USE_UART4
+#if !GD32_HAS_UART4
+#error "UART4 not present in the selected device"
+#endif
+
+#if defined(GD32VF103) 
+#error "UART4 DMA access not supported in this platform"
+#endif
+#endif /* GD32_UART_USE_UART4 */
+
 #if !GD32_UART_USE_USART0 && !GD32_UART_USE_USART1 &&                     \
     !GD32_UART_USE_USART2 && !GD32_UART_USE_UART3 &&                      \
     !GD32_UART_USE_UART4  
