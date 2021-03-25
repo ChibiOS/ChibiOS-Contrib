@@ -268,24 +268,24 @@
 
 /* USART attributes.*/
 #if GD32_HAS_USART_01 || GD32_HAS_USART_012 || GD32_HAS_USART_01234
-    #define GD32_HAS_USART1                    TRUE
-    #define GD32_UART_USART1_RX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 4)
-    #define GD32_UART_USART1_TX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 3)
+    #define GD32_HAS_USART0                    TRUE
+    #define GD32_UART_USART0_RX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 4)
+    #define GD32_UART_USART0_TX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 3)
 
-    #define GD32_HAS_USART2                    TRUE
-    #define GD32_UART_USART2_RX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 5)
-    #define GD32_UART_USART2_TX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 6)
+    #define GD32_HAS_USART1                    TRUE
+    #define GD32_UART_USART1_RX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 5)
+    #define GD32_UART_USART1_TX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 6)
 #else
+    #define GD32_HAS_USART0                    FALSE
     #define GD32_HAS_USART1                    FALSE
-    #define GD32_HAS_USART2                    FALSE
 #endif
 
 #if GD32_HAS_USART_012 || GD32_HAS_USART_01234
-    #define GD32_HAS_USART3                    TRUE
-    #define GD32_UART_USART3_RX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 2)
-    #define GD32_UART_USART3_TX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 1)
+    #define GD32_HAS_USART2                    TRUE
+    #define GD32_UART_USART2_RX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 2)
+    #define GD32_UART_USART2_TX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 1)
 #else
-    #define GD32_HAS_USART3                    FALSE
+    #define GD32_HAS_USART2                    FALSE
 #endif
 
 #if GD32_HAS_USART_01234

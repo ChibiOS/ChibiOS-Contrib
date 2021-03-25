@@ -34,18 +34,18 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
+/** @brief USART0 serial driver identifier.*/
+#if GD32_SERIAL_USE_USART0 || defined(__DOXYGEN__)
+SerialDriver SD1;
+#endif
+
 /** @brief USART1 serial driver identifier.*/
 #if GD32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
-SerialDriver SD1;
+SerialDriver SD2;
 #endif
 
 /** @brief USART2 serial driver identifier.*/
 #if GD32_SERIAL_USE_USART2 || defined(__DOXYGEN__)
-SerialDriver SD2;
-#endif
-
-/** @brief USART3 serial driver identifier.*/
-#if GD32_SERIAL_USE_USART3 || defined(__DOXYGEN__)
 SerialDriver SD3;
 #endif
 
@@ -88,7 +88,7 @@ static void usart_init(SerialDriver *sdp, const SerialConfig *config) {
   USART_TypeDef *u = sdp->usart;
 
   /* Baud rate setting.*/
-  if (sdp->usart == USART1)
+  if (sdp->usart == USART0)
     fck = GD32_PCLK2 / config->speed;
   else
     fck = GD32_PCLK1 / config->speed;
@@ -207,8 +207,16 @@ static void serve_interrupt(SerialDriver *sdp) {
   }
 }
 
-#if GD32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_USART0 || defined(__DOXYGEN__)
 static void notify1(io_queue_t *qp) {
+
+  (void)qp;
+  USART0->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
+}
+#endif
+
+#if GD32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
+static void notify2(io_queue_t *qp) {
 
   (void)qp;
   USART1->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
@@ -216,18 +224,10 @@ static void notify1(io_queue_t *qp) {
 #endif
 
 #if GD32_SERIAL_USE_USART2 || defined(__DOXYGEN__)
-static void notify2(io_queue_t *qp) {
-
-  (void)qp;
-  USART2->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
-}
-#endif
-
-#if GD32_SERIAL_USE_USART3 || defined(__DOXYGEN__)
 static void notify3(io_queue_t *qp) {
 
   (void)qp;
-  USART3->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
+  USART2->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
 }
 #endif
 
@@ -251,6 +251,25 @@ static void notify5(io_queue_t *qp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
+#if GD32_SERIAL_USE_USART0 || defined(__DOXYGEN__)
+#if !defined(GD32_USART0_HANDLER)
+#error "GD32_USART0_HANDLER not defined"
+#endif
+/**
+ * @brief   USART0 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(GD32_USART0_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  serve_interrupt(&SD1);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
 #if GD32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
 #if !defined(GD32_USART1_HANDLER)
 #error "GD32_USART1_HANDLER not defined"
@@ -264,7 +283,7 @@ OSAL_IRQ_HANDLER(GD32_USART1_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  serve_interrupt(&SD1);
+  serve_interrupt(&SD2);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -280,25 +299,6 @@ OSAL_IRQ_HANDLER(GD32_USART1_HANDLER) {
  * @isr
  */
 OSAL_IRQ_HANDLER(GD32_USART2_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  serve_interrupt(&SD2);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif
-
-#if GD32_SERIAL_USE_USART3 || defined(__DOXYGEN__)
-#if !defined(GD32_USART3_HANDLER)
-#error "GD32_USART3_HANDLER not defined"
-#endif
-/**
- * @brief   USART3 interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_USART3_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -357,19 +357,19 @@ OSAL_IRQ_HANDLER(GD32_UART5_HANDLER) {
  */
 void sd_lld_init(void) {
 
-#if GD32_SERIAL_USE_USART1
+#if GD32_SERIAL_USE_USART0
   sdObjectInit(&SD1, NULL, notify1);
-  SD1.usart = USART1;
+  SD1.usart = USART0;
+#endif
+
+#if GD32_SERIAL_USE_USART1
+  sdObjectInit(&SD2, NULL, notify2);
+  SD2.usart = USART1;
 #endif
 
 #if GD32_SERIAL_USE_USART2
-  sdObjectInit(&SD2, NULL, notify2);
-  SD2.usart = USART2;
-#endif
-
-#if GD32_SERIAL_USE_USART3
   sdObjectInit(&SD3, NULL, notify3);
-  SD3.usart = USART3;
+  SD3.usart = USART2;
 #endif
 
 #if GD32_SERIAL_USE_UART4
@@ -399,22 +399,22 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
     config = &default_config;
 
   if (sdp->state == SD_STOP) {
-#if GD32_SERIAL_USE_USART1
+#if GD32_SERIAL_USE_USART0
     if (&SD1 == sdp) {
+      rccEnableUSART0(true);
+      eclicEnableVector(GD32_USART0_NUMBER, GD32_SERIAL_USART0_PRIORITY, GD32_SERIAL_USART0_TRIGGER);
+    }
+#endif
+#if GD32_SERIAL_USE_USART1
+    if (&SD2 == sdp) {
       rccEnableUSART1(true);
       eclicEnableVector(GD32_USART1_NUMBER, GD32_SERIAL_USART1_PRIORITY, GD32_SERIAL_USART1_TRIGGER);
     }
 #endif
 #if GD32_SERIAL_USE_USART2
-    if (&SD2 == sdp) {
+    if (&SD3 == sdp) {
       rccEnableUSART2(true);
       eclicEnableVector(GD32_USART2_NUMBER, GD32_SERIAL_USART2_PRIORITY, GD32_SERIAL_USART2_TRIGGER);
-    }
-#endif
-#if GD32_SERIAL_USE_USART3
-    if (&SD3 == sdp) {
-      rccEnableUSART3(true);
-      eclicEnableVector(GD32_USART3_NUMBER, GD32_SERIAL_USART3_PRIORITY, GD32_SERIAL_USART3_TRIGGER);
     }
 #endif
 #if GD32_SERIAL_USE_UART4
@@ -446,24 +446,24 @@ void sd_lld_stop(SerialDriver *sdp) {
 
   if (sdp->state == SD_READY) {
     usart_deinit(sdp->usart);
-#if GD32_SERIAL_USE_USART1
+#if GD32_SERIAL_USE_USART0
     if (&SD1 == sdp) {
+      rccDisableUSART0();
+      eclicDisableVector(GD32_USART0_NUMBER);
+      return;
+    }
+#endif
+#if GD32_SERIAL_USE_USART1
+    if (&SD2 == sdp) {
       rccDisableUSART1();
       eclicDisableVector(GD32_USART1_NUMBER);
       return;
     }
 #endif
 #if GD32_SERIAL_USE_USART2
-    if (&SD2 == sdp) {
+    if (&SD3 == sdp) {
       rccDisableUSART2();
       eclicDisableVector(GD32_USART2_NUMBER);
-      return;
-    }
-#endif
-#if GD32_SERIAL_USE_USART3
-    if (&SD3 == sdp) {
-      rccDisableUSART3();
-      eclicDisableVector(GD32_USART3_NUMBER);
       return;
     }
 #endif

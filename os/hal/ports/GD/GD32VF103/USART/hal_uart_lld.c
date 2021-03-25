@@ -30,6 +30,14 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+#define USART0_RX_DMA_CHANNEL                                               \
+  GD32_DMA_GETCHANNEL(GD32_UART_USART0_RX_DMA_STREAM,                     \
+                       GD32_USART0_RX_DMA_CHN)
+
+#define USART0_TX_DMA_CHANNEL                                               \
+  GD32_DMA_GETCHANNEL(GD32_UART_USART0_TX_DMA_STREAM,                     \
+                       GD32_USART0_TX_DMA_CHN)
+
 #define USART1_RX_DMA_CHANNEL                                               \
   GD32_DMA_GETCHANNEL(GD32_UART_USART1_RX_DMA_STREAM,                     \
                        GD32_USART1_RX_DMA_CHN)
@@ -45,14 +53,6 @@
 #define USART2_TX_DMA_CHANNEL                                               \
   GD32_DMA_GETCHANNEL(GD32_UART_USART2_TX_DMA_STREAM,                     \
                        GD32_USART2_TX_DMA_CHN)
-
-#define USART3_RX_DMA_CHANNEL                                               \
-  GD32_DMA_GETCHANNEL(GD32_UART_USART3_RX_DMA_STREAM,                     \
-                       GD32_USART3_RX_DMA_CHN)
-
-#define USART3_TX_DMA_CHANNEL                                               \
-  GD32_DMA_GETCHANNEL(GD32_UART_USART3_TX_DMA_STREAM,                     \
-                       GD32_USART3_TX_DMA_CHN)
 
 #define UART4_RX_DMA_CHANNEL                                                \
   GD32_DMA_GETCHANNEL(GD32_UART_UART4_RX_DMA_STREAM,                      \
@@ -70,30 +70,6 @@
   GD32_DMA_GETCHANNEL(GD32_UART_UART5_TX_DMA_STREAM,                      \
                        GD32_UART5_TX_DMA_CHN)
 
-#define USART6_RX_DMA_CHANNEL                                               \
-  GD32_DMA_GETCHANNEL(GD32_UART_USART6_RX_DMA_STREAM,                     \
-                       GD32_USART6_RX_DMA_CHN)
-
-#define USART6_TX_DMA_CHANNEL                                               \
-  GD32_DMA_GETCHANNEL(GD32_UART_USART6_TX_DMA_STREAM,                     \
-                       GD32_USART6_TX_DMA_CHN)
-
-#define UART7_RX_DMA_CHANNEL                                                \
-  GD32_DMA_GETCHANNEL(GD32_UART_UART7_RX_DMA_STREAM,                      \
-                       GD32_UART7_RX_DMA_CHN)
-
-#define UART7_TX_DMA_CHANNEL                                                \
-  GD32_DMA_GETCHANNEL(GD32_UART_UART7_TX_DMA_STREAM,                      \
-                       GD32_UART7_TX_DMA_CHN)
-
-#define UART8_RX_DMA_CHANNEL                                                \
-  GD32_DMA_GETCHANNEL(GD32_UART_UART8_RX_DMA_STREAM,                      \
-                       GD32_UART8_RX_DMA_CHN)
-
-#define UART8_TX_DMA_CHANNEL                                                \
-  GD32_DMA_GETCHANNEL(GD32_UART_UART8_TX_DMA_STREAM,                      \
-                       GD32_UART8_TX_DMA_CHN)
-
 #define GD32_UART45_CR2_CHECK_MASK                                         \
   (USART_CTL1_STB_0 | USART_CTL1_CKEN | USART_CTL1_CPL | USART_CTL1_CPH |   \
    USART_CTL1_CLEN)
@@ -106,18 +82,18 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
+/** @brief USART0 UART driver identifier.*/
+#if GD32_UART_USE_USART0 || defined(__DOXYGEN__)
+UARTDriver UARTD1;
+#endif
+
 /** @brief USART1 UART driver identifier.*/
 #if GD32_UART_USE_USART1 || defined(__DOXYGEN__)
-UARTDriver UARTD1;
+UARTDriver UARTD2;
 #endif
 
 /** @brief USART2 UART driver identifier.*/
 #if GD32_UART_USE_USART2 || defined(__DOXYGEN__)
-UARTDriver UARTD2;
-#endif
-
-/** @brief USART3 UART driver identifier.*/
-#if GD32_UART_USE_USART3 || defined(__DOXYGEN__)
 UARTDriver UARTD3;
 #endif
 
@@ -129,21 +105,6 @@ UARTDriver UARTD4;
 /** @brief UART5 UART driver identifier.*/
 #if GD32_UART_USE_UART5 || defined(__DOXYGEN__)
 UARTDriver UARTD5;
-#endif
-
-/** @brief USART6 UART driver identifier.*/
-#if GD32_UART_USE_USART6 || defined(__DOXYGEN__)
-UARTDriver UARTD6;
-#endif
-
-/** @brief UART7 UART driver identifier.*/
-#if GD32_UART_USE_UART7 || defined(__DOXYGEN__)
-UARTDriver UARTD7;
-#endif
-
-/** @brief UART8 UART driver identifier.*/
-#if GD32_UART_USE_UART8 || defined(__DOXYGEN__)
-UARTDriver UARTD8;
 #endif
 
 /*===========================================================================*/
@@ -230,22 +191,11 @@ static void usart_start(UARTDriver *uartp) {
   usart_stop(uartp);
 
   /* Baud rate setting.*/
-#if GD32_HAS_USART6
-  if ((uartp->usart == USART1) || (uartp->usart == USART6))
-#else
-  if (uartp->usart == USART1)
-#endif
+  if (uartp->usart == USART0)
     fck = GD32_PCLK2 / uartp->config->speed;
   else
     fck = GD32_PCLK1 / uartp->config->speed;
 
-  /* Correcting USARTDIV when oversampling by 8 instead of 16.
-     Fraction is still 4 bits wide, but only lower 3 bits used.
-     Mantissa is doubled, but Fraction is left the same.*/
-#if defined(USART_CTL0_OVER8)
-  if (uartp->config->ctl0 & USART_CTL0_OVER8)
-    fck = ((fck & ~7) * 2) | (fck & 7);
-#endif
   u->BAUD = fck;
 
   /* Resetting eventual pending status flags.*/
@@ -359,6 +309,25 @@ static void serve_usart_irq(UARTDriver *uartp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
+#if GD32_UART_USE_USART0 || defined(__DOXYGEN__)
+#if !defined(GD32_USART0_HANDLER)
+#error "GD32_USART0_HANDLER not defined"
+#endif
+/**
+ * @brief   USART0 IRQ handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(GD32_USART0_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  serve_usart_irq(&UARTD1);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* GD32_UART_USE_USART0 */
+
 #if GD32_UART_USE_USART1 || defined(__DOXYGEN__)
 #if !defined(GD32_USART1_HANDLER)
 #error "GD32_USART1_HANDLER not defined"
@@ -372,7 +341,7 @@ OSAL_IRQ_HANDLER(GD32_USART1_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  serve_usart_irq(&UARTD1);
+  serve_usart_irq(&UARTD2);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -391,30 +360,11 @@ OSAL_IRQ_HANDLER(GD32_USART2_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  serve_usart_irq(&UARTD2);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif /* GD32_UART_USE_USART2 */
-
-#if GD32_UART_USE_USART3 || defined(__DOXYGEN__)
-#if !defined(GD32_USART3_HANDLER)
-#error "GD32_USART3_HANDLER not defined"
-#endif
-/**
- * @brief   USART3 IRQ handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_USART3_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
   serve_usart_irq(&UARTD3);
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* GD32_UART_USE_USART3 */
+#endif /* GD32_UART_USE_USART2 */
 
 #if GD32_UART_USE_UART4 || defined(__DOXYGEN__)
 #if !defined(GD32_UART4_HANDLER)
@@ -465,27 +415,27 @@ OSAL_IRQ_HANDLER(GD32_UART5_HANDLER) {
  */
 void uart_lld_init(void) {
 
-#if GD32_UART_USE_USART1
+#if GD32_UART_USE_USART0
   uartObjectInit(&UARTD1);
-  UARTD1.usart   = USART1;
+  UARTD1.usart   = USART0;
   UARTD1.dmarxmode = GD32_DMA_CTL_ERRIE;
   UARTD1.dmatxmode = GD32_DMA_CTL_ERRIE;
   UARTD1.dmarx   = NULL;
   UARTD1.dmatx   = NULL;
 #endif
 
-#if GD32_UART_USE_USART2
+#if GD32_UART_USE_USART1
   uartObjectInit(&UARTD2);
-  UARTD2.usart   = USART2;
+  UARTD2.usart   = USART1;
   UARTD2.dmarxmode = GD32_DMA_CTL_ERRIE;
   UARTD2.dmatxmode = GD32_DMA_CTL_ERRIE;
   UARTD2.dmarx   = NULL;
   UARTD2.dmatx   = NULL;
 #endif
 
-#if GD32_UART_USE_USART3
+#if GD32_UART_USE_USART2
   uartObjectInit(&UARTD3);
-  UARTD3.usart   = USART3;
+  UARTD3.usart   = USART2;
   UARTD3.dmarxmode = GD32_DMA_CTL_ERRIE;
   UARTD3.dmatxmode = GD32_DMA_CTL_ERRIE;
   UARTD3.dmarx   = NULL;
@@ -521,8 +471,30 @@ void uart_lld_init(void) {
 void uart_lld_start(UARTDriver *uartp) {
 
   if (uartp->state == UART_STOP) {
-#if GD32_UART_USE_USART1
+#if GD32_UART_USE_USART0
     if (&UARTD1 == uartp) {
+      uartp->dmarx = dmaStreamAllocI(GD32_UART_USART0_RX_DMA_STREAM,
+                                     GD32_UART_USART0_IRQ_PRIORITY,
+                                     (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
+                                     (void *)uartp);
+      osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
+      uartp->dmatx = dmaStreamAllocI(GD32_UART_USART0_TX_DMA_STREAM,
+                                     GD32_UART_USART0_IRQ_PRIORITY,
+                                     (gd32_dmaisr_t)uart_lld_serve_tx_end_irq,
+                                     (void *)uartp);
+      osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
+
+      rccEnableUSART0(true);
+      eclicEnableVector(GD32_USART0_NUMBER, GD32_UART_USART0_IRQ_PRIORITY, GD32_UART_USART0_IRQ_TRIGGER);
+      uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(USART0_RX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_USART0_DMA_PRIORITY);
+      uartp->dmatxmode |= GD32_DMA_CTL_CHSEL(USART0_TX_DMA_CHANNEL) |
+                          GD32_DMA_CTL_PRIO(GD32_UART_USART0_DMA_PRIORITY);
+    }
+#endif
+
+#if GD32_UART_USE_USART1
+    if (&UARTD2 == uartp) {
       uartp->dmarx = dmaStreamAllocI(GD32_UART_USART1_RX_DMA_STREAM,
                                      GD32_UART_USART1_IRQ_PRIORITY,
                                      (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
@@ -544,7 +516,7 @@ void uart_lld_start(UARTDriver *uartp) {
 #endif
 
 #if GD32_UART_USE_USART2
-    if (&UARTD2 == uartp) {
+    if (&UARTD3 == uartp) {
       uartp->dmarx = dmaStreamAllocI(GD32_UART_USART2_RX_DMA_STREAM,
                                      GD32_UART_USART2_IRQ_PRIORITY,
                                      (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
@@ -562,28 +534,6 @@ void uart_lld_start(UARTDriver *uartp) {
                           GD32_DMA_CTL_PRIO(GD32_UART_USART2_DMA_PRIORITY);
       uartp->dmatxmode |= GD32_DMA_CTL_CHSEL(USART2_TX_DMA_CHANNEL) |
                           GD32_DMA_CTL_PRIO(GD32_UART_USART2_DMA_PRIORITY);
-    }
-#endif
-
-#if GD32_UART_USE_USART3
-    if (&UARTD3 == uartp) {
-      uartp->dmarx = dmaStreamAllocI(GD32_UART_USART3_RX_DMA_STREAM,
-                                     GD32_UART_USART3_IRQ_PRIORITY,
-                                     (gd32_dmaisr_t)uart_lld_serve_rx_end_irq,
-                                     (void *)uartp);
-      osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
-      uartp->dmatx = dmaStreamAllocI(GD32_UART_USART3_TX_DMA_STREAM,
-                                     GD32_UART_USART3_IRQ_PRIORITY,
-                                     (gd32_dmaisr_t)uart_lld_serve_tx_end_irq,
-                                     (void *)uartp);
-      osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
-
-      rccEnableUSART3(true);
-      eclicEnableVector(GD32_USART3_NUMBER, GD32_UART_USART3_IRQ_PRIORITY, GD32_UART_USART3_IRQ_TRIGGER);
-      uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(USART3_RX_DMA_CHANNEL) |
-                          GD32_DMA_CTL_PRIO(GD32_UART_USART3_DMA_PRIORITY);
-      uartp->dmatxmode |= GD32_DMA_CTL_CHSEL(USART3_TX_DMA_CHANNEL) |
-                          GD32_DMA_CTL_PRIO(GD32_UART_USART3_DMA_PRIORITY);
     }
 #endif
 
@@ -675,8 +625,16 @@ void uart_lld_stop(UARTDriver *uartp) {
     uartp->dmarx = NULL;
     uartp->dmatx = NULL;
 
-#if GD32_UART_USE_USART1
+#if GD32_UART_USE_USART0
     if (&UARTD1 == uartp) {
+      eclicDisableVector(GD32_USART0_NUMBER);
+      rccDisableUSART0();
+      return;
+    }
+#endif
+
+#if GD32_UART_USE_USART1
+    if (&UARTD2 == uartp) {
       eclicDisableVector(GD32_USART1_NUMBER);
       rccDisableUSART1();
       return;
@@ -684,17 +642,9 @@ void uart_lld_stop(UARTDriver *uartp) {
 #endif
 
 #if GD32_UART_USE_USART2
-    if (&UARTD2 == uartp) {
+    if (&UARTD3 == uartp) {
       eclicDisableVector(GD32_USART2_NUMBER);
       rccDisableUSART2();
-      return;
-    }
-#endif
-
-#if GD32_UART_USE_USART3
-    if (&UARTD3 == uartp) {
-      eclicDisableVector(GD32_USART3_NUMBER);
-      rccDisableUSART3();
       return;
     }
 #endif

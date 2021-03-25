@@ -710,8 +710,8 @@ typedef struct
 #define IWDG_BASE             (APB1PERIPH_BASE + 0x00003000U)
 #define SPI2_BASE             (APB1PERIPH_BASE + 0x00003800U)
 #define SPI3_BASE             (APB1PERIPH_BASE + 0x00003C00U)
-#define USART2_BASE           (APB1PERIPH_BASE + 0x00004400U)
-#define USART3_BASE           (APB1PERIPH_BASE + 0x00004800U)
+#define USART1_BASE           (APB1PERIPH_BASE + 0x00004400U)
+#define USART2_BASE           (APB1PERIPH_BASE + 0x00004800U)
 #define UART4_BASE            (APB1PERIPH_BASE + 0x00004C00U)
 #define UART5_BASE            (APB1PERIPH_BASE + 0x00005000U)
 #define I2C0_BASE             (APB1PERIPH_BASE + 0x00005400U)
@@ -732,7 +732,7 @@ typedef struct
 #define ADC2_BASE             (APB2PERIPH_BASE + 0x00002800U)
 #define TIM1_BASE             (APB2PERIPH_BASE + 0x00002C00U)
 #define SPI1_BASE             (APB2PERIPH_BASE + 0x00003000U)
-#define USART1_BASE           (APB2PERIPH_BASE + 0x00003800U)
+#define USART0_BASE           (APB2PERIPH_BASE + 0x00003800U)
 
 #define SDIO_BASE             (PERIPH_BASE + 0x00018000U)
 
@@ -798,8 +798,8 @@ typedef struct
 #define IWDG                ((IWDG_TypeDef *)IWDG_BASE)
 #define SPI2                ((SPI_TypeDef *)SPI2_BASE)
 #define SPI3                ((SPI_TypeDef *)SPI3_BASE)
+#define USART1              ((USART_TypeDef *)USART1_BASE)
 #define USART2              ((USART_TypeDef *)USART2_BASE)
-#define USART3              ((USART_TypeDef *)USART3_BASE)
 #define UART4               ((USART_TypeDef *)UART4_BASE)
 #define UART5               ((USART_TypeDef *)UART5_BASE)
 #define I2C0                ((I2C_TypeDef *)I2C0_BASE)
@@ -822,7 +822,7 @@ typedef struct
 #define ADC12_COMMON        ((ADC_Common_TypeDef *)ADC1_BASE)
 #define TIM1                ((TIM_TypeDef *)TIM1_BASE)
 #define SPI1                ((SPI_TypeDef *)SPI1_BASE)
-#define USART1              ((USART_TypeDef *)USART1_BASE)
+#define USART0              ((USART_TypeDef *)USART0_BASE)
 #define SDIO                ((SDIO_TypeDef *)SDIO_BASE)
 #define DMA0                ((DMA_TypeDef *)DMA0_BASE)
 #define DMA1                ((DMA_TypeDef *)DMA1_BASE)
@@ -1534,9 +1534,9 @@ typedef struct
 #define RCC_APB2RSTR_SPI1RST_Pos             (12U)                             
 #define RCC_APB2RSTR_SPI1RST_Msk             (0x1U << RCC_APB2RSTR_SPI1RST_Pos) /*!< 0x00001000 */
 #define RCC_APB2RSTR_SPI1RST                 RCC_APB2RSTR_SPI1RST_Msk          /*!< SPI 1 reset */
-#define RCC_APB2RSTR_USART1RST_Pos           (14U)                             
-#define RCC_APB2RSTR_USART1RST_Msk           (0x1U << RCC_APB2RSTR_USART1RST_Pos) /*!< 0x00004000 */
-#define RCC_APB2RSTR_USART1RST               RCC_APB2RSTR_USART1RST_Msk        /*!< USART1 reset */
+#define RCC_APB2RSTR_USART0RST_Pos           (14U)                             
+#define RCC_APB2RSTR_USART0RST_Msk           (0x1U << RCC_APB2RSTR_USART0RST_Pos) /*!< 0x00004000 */
+#define RCC_APB2RSTR_USART0RST               RCC_APB2RSTR_USART0RST_Msk        /*!< USART0 reset */
 
 
 #define RCC_APB2RSTR_IOPERST_Pos             (6U)                              
@@ -1556,9 +1556,9 @@ typedef struct
 #define RCC_APB1RSTR_WWDGRST_Pos             (11U)                             
 #define RCC_APB1RSTR_WWDGRST_Msk             (0x1U << RCC_APB1RSTR_WWDGRST_Pos) /*!< 0x00000800 */
 #define RCC_APB1RSTR_WWDGRST                 RCC_APB1RSTR_WWDGRST_Msk          /*!< Window Watchdog reset */
-#define RCC_APB1RSTR_USART2RST_Pos           (17U)                             
-#define RCC_APB1RSTR_USART2RST_Msk           (0x1U << RCC_APB1RSTR_USART2RST_Pos) /*!< 0x00020000 */
-#define RCC_APB1RSTR_USART2RST               RCC_APB1RSTR_USART2RST_Msk        /*!< USART 2 reset */
+#define RCC_APB1RSTR_USART1RST_Pos           (17U)                             
+#define RCC_APB1RSTR_USART1RST_Msk           (0x1U << RCC_APB1RSTR_USART1RST_Pos) /*!< 0x00020000 */
+#define RCC_APB1RSTR_USART1RST               RCC_APB1RSTR_USART1RST_Msk        /*!< USART 2 reset */
 #define RCC_APB1RSTR_I2C0RST_Pos             (21U)                             
 #define RCC_APB1RSTR_I2C0RST_Msk             (0x1U << RCC_APB1RSTR_I2C0RST_Pos) /*!< 0x00200000 */
 #define RCC_APB1RSTR_I2C0RST                 RCC_APB1RSTR_I2C0RST_Msk          /*!< I2C 1 reset */
@@ -1580,9 +1580,9 @@ typedef struct
 #define RCC_APB1RSTR_SPI2RST_Pos             (14U)                             
 #define RCC_APB1RSTR_SPI2RST_Msk             (0x1U << RCC_APB1RSTR_SPI2RST_Pos) /*!< 0x00004000 */
 #define RCC_APB1RSTR_SPI2RST                 RCC_APB1RSTR_SPI2RST_Msk          /*!< SPI 2 reset */
-#define RCC_APB1RSTR_USART3RST_Pos           (18U)                             
-#define RCC_APB1RSTR_USART3RST_Msk           (0x1U << RCC_APB1RSTR_USART3RST_Pos) /*!< 0x00040000 */
-#define RCC_APB1RSTR_USART3RST               RCC_APB1RSTR_USART3RST_Msk        /*!< USART 3 reset */
+#define RCC_APB1RSTR_USART2RST_Pos           (18U)                             
+#define RCC_APB1RSTR_USART2RST_Msk           (0x1U << RCC_APB1RSTR_USART2RST_Pos) /*!< 0x00040000 */
+#define RCC_APB1RSTR_USART2RST               RCC_APB1RSTR_USART2RST_Msk        /*!< USART 3 reset */
 #define RCC_APB1RSTR_I2C1RST_Pos             (22U)                             
 #define RCC_APB1RSTR_I2C1RST_Msk             (0x1U << RCC_APB1RSTR_I2C1RST_Pos) /*!< 0x00400000 */
 #define RCC_APB1RSTR_I2C1RST                 RCC_APB1RSTR_I2C1RST_Msk          /*!< I2C 2 reset */
@@ -1670,9 +1670,9 @@ typedef struct
 #define RCC_APB2ENR_SPI1EN_Pos               (12U)                             
 #define RCC_APB2ENR_SPI1EN_Msk               (0x1U << RCC_APB2ENR_SPI1EN_Pos)  /*!< 0x00001000 */
 #define RCC_APB2ENR_SPI1EN                   RCC_APB2ENR_SPI1EN_Msk            /*!< SPI 1 clock enable */
-#define RCC_APB2ENR_USART1EN_Pos             (14U)                             
-#define RCC_APB2ENR_USART1EN_Msk             (0x1U << RCC_APB2ENR_USART1EN_Pos) /*!< 0x00004000 */
-#define RCC_APB2ENR_USART1EN                 RCC_APB2ENR_USART1EN_Msk          /*!< USART1 clock enable */
+#define RCC_APB2ENR_USART0EN_Pos             (14U)                             
+#define RCC_APB2ENR_USART0EN_Msk             (0x1U << RCC_APB2ENR_USART0EN_Pos) /*!< 0x00004000 */
+#define RCC_APB2ENR_USART0EN                 RCC_APB2ENR_USART0EN_Msk          /*!< USART0 clock enable */
 
 
 #define RCC_APB2ENR_IOPEEN_Pos               (6U)                              
@@ -1692,9 +1692,9 @@ typedef struct
 #define RCC_APB1ENR_WWDGEN_Pos               (11U)                             
 #define RCC_APB1ENR_WWDGEN_Msk               (0x1U << RCC_APB1ENR_WWDGEN_Pos)  /*!< 0x00000800 */
 #define RCC_APB1ENR_WWDGEN                   RCC_APB1ENR_WWDGEN_Msk            /*!< Window Watchdog clock enable */
-#define RCC_APB1ENR_USART2EN_Pos             (17U)                             
-#define RCC_APB1ENR_USART2EN_Msk             (0x1U << RCC_APB1ENR_USART2EN_Pos) /*!< 0x00020000 */
-#define RCC_APB1ENR_USART2EN                 RCC_APB1ENR_USART2EN_Msk          /*!< USART 2 clock enable */
+#define RCC_APB1ENR_USART1EN_Pos             (17U)                             
+#define RCC_APB1ENR_USART1EN_Msk             (0x1U << RCC_APB1ENR_USART1EN_Pos) /*!< 0x00020000 */
+#define RCC_APB1ENR_USART1EN                 RCC_APB1ENR_USART1EN_Msk          /*!< USART 2 clock enable */
 #define RCC_APB1ENR_I2C0EN_Pos               (21U)                             
 #define RCC_APB1ENR_I2C0EN_Msk               (0x1U << RCC_APB1ENR_I2C0EN_Pos)  /*!< 0x00200000 */
 #define RCC_APB1ENR_I2C0EN                   RCC_APB1ENR_I2C0EN_Msk            /*!< I2C 1 clock enable */
@@ -1716,9 +1716,9 @@ typedef struct
 #define RCC_APB1ENR_SPI2EN_Pos               (14U)                             
 #define RCC_APB1ENR_SPI2EN_Msk               (0x1U << RCC_APB1ENR_SPI2EN_Pos)  /*!< 0x00004000 */
 #define RCC_APB1ENR_SPI2EN                   RCC_APB1ENR_SPI2EN_Msk            /*!< SPI 2 clock enable */
-#define RCC_APB1ENR_USART3EN_Pos             (18U)                             
-#define RCC_APB1ENR_USART3EN_Msk             (0x1U << RCC_APB1ENR_USART3EN_Pos) /*!< 0x00040000 */
-#define RCC_APB1ENR_USART3EN                 RCC_APB1ENR_USART3EN_Msk          /*!< USART 3 clock enable */
+#define RCC_APB1ENR_USART2EN_Pos             (18U)                             
+#define RCC_APB1ENR_USART2EN_Msk             (0x1U << RCC_APB1ENR_USART2EN_Pos) /*!< 0x00040000 */
+#define RCC_APB1ENR_USART2EN                 RCC_APB1ENR_USART2EN_Msk          /*!< USART 3 clock enable */
 #define RCC_APB1ENR_I2C1EN_Pos               (22U)                             
 #define RCC_APB1ENR_I2C1EN_Msk               (0x1U << RCC_APB1ENR_I2C1EN_Pos)  /*!< 0x00400000 */
 #define RCC_APB1ENR_I2C1EN                   RCC_APB1ENR_I2C1EN_Msk            /*!< I2C 2 clock enable */
@@ -2631,25 +2631,25 @@ typedef struct
 #define AFIO_PCF0_I2C0_REMAP                 AFIO_PCF0_I2C0_REMAP_Msk          /*!< I2C0 remapping */
 #define AFIO_PCF0_USART0_REMAP_Pos           (2U)                              
 #define AFIO_PCF0_USART0_REMAP_Msk           (0x1U << AFIO_PCF0_USART0_REMAP_Pos) /*!< 0x00000004 */
+#define AFIO_PCF0_USART0_REMAP               AFIO_PCF0_USART0_REMAP_Msk        /*!< USART0 remapping */
+#define AFIO_PCF0_USART0_REMAP_Pos           (3U)                              
+#define AFIO_PCF0_USART0_REMAP_Msk           (0x1U << AFIO_PCF0_USART0_REMAP_Pos) /*!< 0x00000008 */
 #define AFIO_PCF0_USART0_REMAP               AFIO_PCF0_USART0_REMAP_Msk        /*!< USART1 remapping */
-#define AFIO_PCF0_USART1_REMAP_Pos           (3U)                              
-#define AFIO_PCF0_USART1_REMAP_Msk           (0x1U << AFIO_PCF0_USART1_REMAP_Pos) /*!< 0x00000008 */
-#define AFIO_PCF0_USART1_REMAP               AFIO_PCF0_USART1_REMAP_Msk        /*!< USART2 remapping */
 
-#define AFIO_PCF0_USART2_REMAP_Pos           (4U)                              
-#define AFIO_PCF0_USART2_REMAP_Msk           (0x3U << AFIO_PCF0_USART2_REMAP_Pos) /*!< 0x00000030 */
-#define AFIO_PCF0_USART2_REMAP               AFIO_PCF0_USART2_REMAP_Msk        /*!< USART3_REMAP[1:0] bits (USART3 remapping) */
-#define AFIO_PCF0_USART2_REMAP_0             (0x1U << AFIO_PCF0_USART2_REMAP_Pos) /*!< 0x00000010 */
-#define AFIO_PCF0_USART2_REMAP_1             (0x2U << AFIO_PCF0_USART2_REMAP_Pos) /*!< 0x00000020 */
+#define AFIO_PCF0_USART1_REMAP_Pos           (4U)                              
+#define AFIO_PCF0_USART1_REMAP_Msk           (0x3U << AFIO_PCF0_USART1_REMAP_Pos) /*!< 0x00000030 */
+#define AFIO_PCF0_USART1_REMAP               AFIO_PCF0_USART1_REMAP_Msk        /*!< USART2_REMAP[1:0] bits (USART2 remapping) */
+#define AFIO_PCF0_USART1_REMAP_0             (0x1U << AFIO_PCF0_USART1_REMAP_Pos) /*!< 0x00000010 */
+#define AFIO_PCF0_USART1_REMAP_1             (0x2U << AFIO_PCF0_USART1_REMAP_Pos) /*!< 0x00000020 */
 
-/* USART3_REMAP configuration */
-#define AFIO_PCF0_USART2_REMAP_NOREMAP       0x00000000U                          /*!< No remap (TX/PB10, RX/PB11, CK/PB12, CTS/PB13, RTS/PB14) */
-#define AFIO_PCF0_USART2_REMAP_PARTIALREMAP_Pos (4U)                           
-#define AFIO_PCF0_USART2_REMAP_PARTIALREMAP_Msk (0x1U << AFIO_PCF0_USART2_REMAP_PARTIALREMAP_Pos) /*!< 0x00000010 */
-#define AFIO_PCF0_USART2_REMAP_PARTIALREMAP  AFIO_PCF0_USART2_REMAP_PARTIALREMAP_Msk /*!< Partial remap (TX/PC10, RX/PC11, CK/PC12, CTS/PB13, RTS/PB14) */
-#define AFIO_PCF0_USART2_REMAP_FULLREMAP_Pos (4U)                              
-#define AFIO_PCF0_USART2_REMAP_FULLREMAP_Msk (0x3U << AFIO_PCF0_USART2_REMAP_FULLREMAP_Pos) /*!< 0x00000030 */
-#define AFIO_PCF0_USART2_REMAP_FULLREMAP     AFIO_PCF0_USART2_REMAP_FULLREMAP_Msk /*!< Full remap (TX/PD8, RX/PD9, CK/PD10, CTS/PD11, RTS/PD12) */
+/* USART2_REMAP configuration */
+#define AFIO_PCF0_USART1_REMAP_NOREMAP       0x00000000U                          /*!< No remap (TX/PB10, RX/PB11, CK/PB12, CTS/PB13, RTS/PB14) */
+#define AFIO_PCF0_USART1_REMAP_PARTIALREMAP_Pos (4U)                           
+#define AFIO_PCF0_USART1_REMAP_PARTIALREMAP_Msk (0x1U << AFIO_PCF0_USART1_REMAP_PARTIALREMAP_Pos) /*!< 0x00000010 */
+#define AFIO_PCF0_USART1_REMAP_PARTIALREMAP  AFIO_PCF0_USART1_REMAP_PARTIALREMAP_Msk /*!< Partial remap (TX/PC10, RX/PC11, CK/PC12, CTS/PB13, RTS/PB14) */
+#define AFIO_PCF0_USART1_REMAP_FULLREMAP_Pos (4U)                              
+#define AFIO_PCF0_USART1_REMAP_FULLREMAP_Msk (0x3U << AFIO_PCF0_USART1_REMAP_FULLREMAP_Pos) /*!< 0x00000030 */
+#define AFIO_PCF0_USART1_REMAP_FULLREMAP     AFIO_PCF0_USART1_REMAP_FULLREMAP_Msk /*!< Full remap (TX/PD8, RX/PD9, CK/PD10, CTS/PD11, RTS/PD12) */
 
 #define AFIO_PCF0_TIMER0_REMAP_Pos             (6U)                              
 #define AFIO_PCF0_TIMER0_REMAP_Msk             (0x3U << AFIO_PCF0_TIMER0_REMAP_Pos) /*!< 0x000000C0 */
@@ -12855,59 +12855,59 @@ typedef struct
 
 
 /******************** USART Instances : Synchronous mode **********************/                                           
-#define IS_USART_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                     ((INSTANCE) == USART2) || \
-                                     ((INSTANCE) == USART3))
+#define IS_USART_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
+                                     ((INSTANCE) == USART1) || \
+                                     ((INSTANCE) == USART2))
 
 /******************** UART Instances : Asynchronous mode **********************/
-#define IS_UART_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
+#define IS_UART_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
+                                    ((INSTANCE) == USART1) || \
                                     ((INSTANCE) == USART2) || \
-                                    ((INSTANCE) == USART3) || \
                                     ((INSTANCE) == UART4)  || \
                                     ((INSTANCE) == UART5))
 
 /******************** UART Instances : Half-Duplex mode **********************/
-#define IS_UART_HALFDUPLEX_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
+#define IS_UART_HALFDUPLEX_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
+                                               ((INSTANCE) == USART1) || \
                                                ((INSTANCE) == USART2) || \
-                                               ((INSTANCE) == USART3) || \
                                                ((INSTANCE) == UART4)  || \
                                                ((INSTANCE) == UART5))
 
 /******************** UART Instances : LIN mode **********************/
-#define IS_UART_LIN_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
+#define IS_UART_LIN_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
+                                        ((INSTANCE) == USART1) || \
                                         ((INSTANCE) == USART2) || \
-                                        ((INSTANCE) == USART3) || \
                                         ((INSTANCE) == UART4)  || \
                                         ((INSTANCE) == UART5))
 
 /****************** UART Instances : Hardware Flow control ********************/                                    
-#define IS_UART_HWFLOW_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                           ((INSTANCE) == USART2) || \
-                                           ((INSTANCE) == USART3))
+#define IS_UART_HWFLOW_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
+                                           ((INSTANCE) == USART1) || \
+                                           ((INSTANCE) == USART2))
 
 /********************* UART Instances : Smard card mode ***********************/
-#define IS_SMARTCARD_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                         ((INSTANCE) == USART2) || \
-                                         ((INSTANCE) == USART3))
+#define IS_SMARTCARD_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
+                                         ((INSTANCE) == USART1) || \
+                                         ((INSTANCE) == USART2))
 
 /*********************** UART Instances : IRDA mode ***************************/
-#define IS_IRDA_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
+#define IS_IRDA_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
+                                    ((INSTANCE) == USART1) || \
                                     ((INSTANCE) == USART2) || \
-                                    ((INSTANCE) == USART3) || \
                                     ((INSTANCE) == UART4)  || \
                                     ((INSTANCE) == UART5))
 
 /***************** UART Instances : Multi-Processor mode **********************/
-#define IS_UART_MULTIPROCESSOR_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
+#define IS_UART_MULTIPROCESSOR_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
+                                                   ((INSTANCE) == USART1) || \
                                                    ((INSTANCE) == USART2) || \
-                                                   ((INSTANCE) == USART3) || \
                                                    ((INSTANCE) == UART4)  || \
                                                    ((INSTANCE) == UART5))
 
 /***************** UART Instances : DMA mode available **********************/
-#define IS_UART_DMA_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
+#define IS_UART_DMA_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
+                                        ((INSTANCE) == USART1) || \
                                         ((INSTANCE) == USART2) || \
-                                        ((INSTANCE) == USART3) || \
                                         ((INSTANCE) == UART4))
 
 /****************************** RTC Instances *********************************/
