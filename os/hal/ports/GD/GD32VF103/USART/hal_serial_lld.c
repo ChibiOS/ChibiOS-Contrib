@@ -16,7 +16,7 @@
 
 /**
  * @file    USART/hal_serial_lld.c
- * @brief   STM32 low level serial driver code.
+ * @brief   GD32 low level serial driver code.
  *
  * @addtogroup SERIAL
  * @{
@@ -59,21 +59,6 @@ SerialDriver SD4;
 SerialDriver SD5;
 #endif
 
-/** @brief USART6 serial driver identifier.*/
-#if GD32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
-SerialDriver SD6;
-#endif
-
-/** @brief UART7 serial driver identifier.*/
-#if GD32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
-SerialDriver SD7;
-#endif
-
-/** @brief UART8 serial driver identifier.*/
-#if GD32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
-SerialDriver SD8;
-#endif
-
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
@@ -103,22 +88,11 @@ static void usart_init(SerialDriver *sdp, const SerialConfig *config) {
   USART_TypeDef *u = sdp->usart;
 
   /* Baud rate setting.*/
-#if GD32_HAS_USART6
-  if ((sdp->usart == USART1) || (sdp->usart == USART6))
-#else
   if (sdp->usart == USART1)
-#endif
     fck = GD32_PCLK2 / config->speed;
   else
     fck = GD32_PCLK1 / config->speed;
 
-  /* Correcting USARTDIV when oversampling by 8 instead of 16.
-     Fraction is still 4 bits wide, but only lower 3 bits used.
-     Mantissa is doubled, but Fraction is left the same.*/
-#if defined(USART_CTL0_OVER8)
-  if (config->ctl0 & USART_CTL0_OVER8)
-    fck = ((fck & ~7) * 2) | (fck & 7);
-#endif
   u->BAUD = fck;
 
   /* Note that some bits are enforced.*/
@@ -273,30 +247,6 @@ static void notify5(io_queue_t *qp) {
 }
 #endif
 
-#if GD32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
-static void notify6(io_queue_t *qp) {
-
-  (void)qp;
-  USART6->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
-}
-#endif
-
-#if GD32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
-static void notify7(io_queue_t *qp) {
-
-  (void)qp;
-  UART7->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
-}
-#endif
-
-#if GD32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
-static void notify8(io_queue_t *qp) {
-
-  (void)qp;
-  UART8->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
-}
-#endif
-
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
@@ -396,63 +346,6 @@ OSAL_IRQ_HANDLER(GD32_UART5_HANDLER) {
 }
 #endif
 
-#if GD32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
-#if !defined(GD32_USART6_HANDLER)
-#error "GD32_USART6_HANDLER not defined"
-#endif
-/**
- * @brief   USART6 interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_USART6_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  serve_interrupt(&SD6);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif
-
-#if GD32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
-#if !defined(GD32_UART7_HANDLER)
-#error "GD32_UART7_HANDLER not defined"
-#endif
-/**
- * @brief   UART7 interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_UART7_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  serve_interrupt(&SD7);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif
-
-#if GD32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
-#if !defined(GD32_UART8_HANDLER)
-#error "GD32_UART8_HANDLER not defined"
-#endif
-/**
- * @brief   UART8 interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_UART8_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  serve_interrupt(&SD8);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif
-
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -487,21 +380,6 @@ void sd_lld_init(void) {
 #if GD32_SERIAL_USE_UART5
   sdObjectInit(&SD5, NULL, notify5);
   SD5.usart = UART5;
-#endif
-
-#if GD32_SERIAL_USE_USART6
-  sdObjectInit(&SD6, NULL, notify6);
-  SD6.usart = USART6;
-#endif
-
-#if GD32_SERIAL_USE_UART7
-  sdObjectInit(&SD7, NULL, notify7);
-  SD7.usart = UART7;
-#endif
-
-#if GD32_SERIAL_USE_UART8
-  sdObjectInit(&SD8, NULL, notify8);
-  SD8.usart = UART8;
 #endif
 }
 
@@ -549,24 +427,6 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
     if (&SD5 == sdp) {
       rccEnableUART5(true);
       eclicEnableVector(GD32_UART5_NUMBER, GD32_SERIAL_UART5_PRIORITY, GD32_SERIAL_UART5_TRIGGER);
-    }
-#endif
-#if GD32_SERIAL_USE_USART6
-    if (&SD6 == sdp) {
-      rccEnableUSART6(true);
-      eclicEnableVector(GD32_USART6_NUMBER, GD32_SERIAL_USART6_PRIORITY, GD32_SERIAL_USART6_TRIGGER);
-    }
-#endif
-#if GD32_SERIAL_USE_UART7
-    if (&SD7 == sdp) {
-      rccEnableUART7(true);
-      eclicEnableVector(GD32_UART7_NUMBER, GD32_SERIAL_UART7_PRIORITY, GD32_SERIAL_UART7_TRIGGER);
-    }
-#endif
-#if GD32_SERIAL_USE_UART8
-    if (&SD8 == sdp) {
-      rccEnableUART8(true);
-      eclicEnableVector(GD32_UART8_NUMBER, GD32_SERIAL_UART8_PRIORITY, GD32_SERIAL_UART8_TRIGGER);
     }
 #endif
   }
@@ -618,27 +478,6 @@ void sd_lld_stop(SerialDriver *sdp) {
     if (&SD5 == sdp) {
       rccDisableUART5();
       eclicDisableVector(GD32_UART5_NUMBER);
-      return;
-    }
-#endif
-#if GD32_SERIAL_USE_USART6
-    if (&SD6 == sdp) {
-      rccDisableUSART6();
-      eclicDisableVector(GD32_USART6_NUMBER);
-      return;
-    }
-#endif
-#if GD32_SERIAL_USE_UART7
-    if (&SD7 == sdp) {
-      rccDisableUART7();
-      eclicDisableVector(GD32_UART7_NUMBER);
-      return;
-    }
-#endif
-#if GD32_SERIAL_USE_UART8
-    if (&SD8 == sdp) {
-      rccDisableUART8();
-      eclicDisableVector(GD32_UART8_NUMBER);
       return;
     }
 #endif
