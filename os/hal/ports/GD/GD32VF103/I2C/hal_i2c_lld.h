@@ -121,13 +121,6 @@
 #define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 5)
 #define GD32_I2C_I2C2_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 4)
 
-/* Flag for the whole STM32F1XX family. */
-#if defined(STM32F10X_LD_VL) || defined(GD32VF103_MD_VL) || \
-    defined(STM32F10X_HD_VL) || defined(STM32F10X_LD)    || \
-    defined(GD32VF103_MD)    || defined(STM32F10X_HD)    || \
-    defined(STM32F10X_XL)    || defined(STM32F10X_CL)
-#define STM32F1XX_I2C
-#endif
 /** @} */
 
 /*===========================================================================*/

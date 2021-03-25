@@ -20,7 +20,7 @@
 
 /**
  * @file    I2C/hal_i2c_lld.c
- * @brief   STM32 I2C subsystem low level driver source.
+ * @brief   GD32 I2C subsystem low level driver source.
  *
  * @addtogroup I2C
  * @{
@@ -377,8 +377,6 @@ static void i2c_lld_serve_error_interrupt(I2CDriver *i2cp, uint16_t sr) {
 
   if (sr & I2C_STAT0_BERR) {                          /* Bus error.           */
     i2cp->errors |= I2C_BUS_ERROR;
-    /* Errata 2.4.6 for STM32F40x, Spurious Bus Error detection in
-       Master mode.*/
     i2cp->i2c->STAT0 &= ~I2C_STAT0_BERR;
   }
 
@@ -634,8 +632,6 @@ void i2c_lld_stop(I2CDriver *i2cp) {
 
 /**
  * @brief   Receives data via the I2C bus as master.
- * @details Number of receiving bytes must be more than 1 on STM32F1x. This is
- *          hardware restriction.
  *
  * @param[in] i2cp      pointer to the @p I2CDriver object
  * @param[in] addr      slave device address
@@ -661,10 +657,6 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   I2C_TypeDef *dp = i2cp->i2c;
   systime_t start, end;
   msg_t msg;
-
-#if defined(STM32F1XX_I2C)
-  osalDbgCheck(rxbytes > 1);
-#endif
 
   /* Resetting error flags for this transfer.*/
   i2cp->errors = I2C_NO_ERROR;
@@ -719,8 +711,6 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
 /**
  * @brief   Transmits data via the I2C bus as master.
- * @details Number of receiving bytes must be 0 or more than 1 on STM32F1x.
- *          This is hardware restriction.
  *
  * @param[in] i2cp      pointer to the @p I2CDriver object
  * @param[in] addr      slave device address
@@ -749,10 +739,6 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   I2C_TypeDef *dp = i2cp->i2c;
   systime_t start, end;
   msg_t msg;
-
-#if defined(STM32F1XX_I2C)
-  osalDbgCheck((rxbytes == 0) || ((rxbytes > 1) && (rxbuf != NULL)));
-#endif
 
   /* Resetting error flags for this transfer.*/
   i2cp->errors = I2C_NO_ERROR;
