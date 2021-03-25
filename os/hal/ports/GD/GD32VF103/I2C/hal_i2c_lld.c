@@ -50,14 +50,6 @@
   GD32_DMA_GETCHANNEL(GD32_I2C_I2C2_TX_DMA_STREAM,                        \
                        GD32_I2C2_TX_DMA_CHN)
 
-#define I2C3_RX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_I2C_I2C3_RX_DMA_STREAM,                        \
-                       GD32_I2C3_RX_DMA_CHN)
-
-#define I2C3_TX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_I2C_I2C3_TX_DMA_STREAM,                        \
-                       GD32_I2C3_TX_DMA_CHN)
-
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -100,11 +92,6 @@ I2CDriver I2CD1;
 /** @brief I2C2 driver identifier.*/
 #if GD32_I2C_USE_I2C2 || defined(__DOXYGEN__)
 I2CDriver I2CD2;
-#endif
-
-/** @brief I2C3 driver identifier.*/
-#if GD32_I2C_USE_I2C3 || defined(__DOXYGEN__)
-I2CDriver I2CD3;
 #endif
 
 /*===========================================================================*/
@@ -485,38 +472,6 @@ OSAL_IRQ_HANDLER(GD32_I2C2_ERROR_HANDLER) {
 }
 #endif /* GD32_I2C_USE_I2C2 */
 
-#if GD32_I2C_USE_I2C3 || defined(__DOXYGEN__)
-/**
- * @brief   I2C3 event interrupt handler.
- *
- * @notapi
- */
-OSAL_IRQ_HANDLER(GD32_I2C3_EVENT_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  i2c_lld_serve_event_interrupt(&I2CD3);
-
-  OSAL_IRQ_EPILOGUE();
-}
-
-/**
- * @brief   I2C3 error interrupt handler.
- *
- * @notapi
- */
-OSAL_IRQ_HANDLER(GD32_I2C3_ERROR_HANDLER) {
-  uint16_t sr = I2CD3.i2c->SR1;
-
-  OSAL_IRQ_PROLOGUE();
-
-  I2CD3.i2c->SR1 = ~(sr & I2C_ERROR_MASK);
-  i2c_lld_serve_error_interrupt(&I2CD3, sr);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif /* GD32_I2C_USE_I2C3 */
-
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -543,14 +498,6 @@ void i2c_lld_init(void) {
   I2CD2.dmarx  = NULL;
   I2CD2.dmatx  = NULL;
 #endif /* GD32_I2C_USE_I2C2 */
-
-#if GD32_I2C_USE_I2C3
-  i2cObjectInit(&I2CD3);
-  I2CD3.thread = NULL;
-  I2CD3.i2c    = I2C3;
-  I2CD3.dmarx  = NULL;
-  I2CD3.dmatx  = NULL;
-#endif /* GD32_I2C_USE_I2C3 */
 }
 
 /**
@@ -678,14 +625,6 @@ void i2c_lld_stop(I2CDriver *i2cp) {
       eclicDisableVector(I2C2_EV_IRQn);
       eclicDisableVector(I2C2_ER_IRQn);
       rccDisableI2C2();
-    }
-#endif
-
-#if GD32_I2C_USE_I2C3
-    if (&I2CD3 == i2cp) {
-      eclicDisableVector(I2C3_EV_IRQn);
-      eclicDisableVector(I2C3_ER_IRQn);
-      rccDisableI2C3();
     }
 #endif
   }
