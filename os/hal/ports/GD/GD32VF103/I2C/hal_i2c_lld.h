@@ -49,12 +49,12 @@
  * @{
  */
 /**
- * @brief   I2C1 driver enable switch.
- * @details If set to @p TRUE the support for I2C1 is included.
+ * @brief   I2C0 driver enable switch.
+ * @details If set to @p TRUE the support for I2C0 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_I2C_USE_I2C1) || defined(__DOXYGEN__)
-#define GD32_I2C_USE_I2C1                  FALSE
+#if !defined(GD32_I2C_USE_I2C0) || defined(__DOXYGEN__)
+#define GD32_I2C_USE_I2C0                  FALSE
 #endif
 
 /**
@@ -74,10 +74,10 @@
 #endif
 
 /**
- * @brief   I2C1 interrupt priority level setting.
+ * @brief   I2C0 interrupt priority level setting.
  */
-#if !defined(GD32_I2C_I2C1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_I2C_I2C1_IRQ_PRIORITY         10
+#if !defined(GD32_I2C_I2C0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C0_IRQ_PRIORITY         10
 #endif
 
 /**
@@ -88,13 +88,13 @@
 #endif
 
 /**
-* @brief   I2C1 DMA priority (0..3|lowest..highest).
+* @brief   I2C0 DMA priority (0..3|lowest..highest).
 * @note    The priority level is used for both the TX and RX DMA streams but
 *          because of the streams ordering the RX stream has always priority
 *          over the TX stream.
 */
-#if !defined(GD32_I2C_I2C1_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_I2C_I2C1_DMA_PRIORITY         1
+#if !defined(GD32_I2C_I2C0_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C0_DMA_PRIORITY         1
 #endif
 
 /**
@@ -116,8 +116,8 @@
 #define GD32_I2C_DMA_ERROR_HOOK(i2cp)      osalSysHalt("DMA failure")
 #endif
 
-#define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 6)
-#define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 5)
+#define GD32_I2C_I2C0_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 6)
+#define GD32_I2C_I2C0_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 5)
 #define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 4)
 #define GD32_I2C_I2C2_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 3)
 
@@ -128,21 +128,21 @@
 /*===========================================================================*/
 
 /** @brief  error checks */
-#if GD32_I2C_USE_I2C1 && !GD32_HAS_I2C1
-#error "I2C1 not present in the selected device"
+#if GD32_I2C_USE_I2C0 && !GD32_HAS_I2C0
+#error "I2C0 not present in the selected device"
 #endif
 
 #if GD32_I2C_USE_I2C2 && !GD32_HAS_I2C2
 #error "I2C2 not present in the selected device"
 #endif
 
-#if !GD32_I2C_USE_I2C1 && !GD32_I2C_USE_I2C2 
+#if !GD32_I2C_USE_I2C0 && !GD32_I2C_USE_I2C2 
 #error "I2C driver activated but no I2C peripheral assigned"
 #endif
 
-#if GD32_I2C_USE_I2C1 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_I2C_I2C1_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to I2C1"
+#if GD32_I2C_USE_I2C0 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_I2C_I2C0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to I2C0"
 #endif
 
 #if GD32_I2C_USE_I2C2 &&                                                   \
@@ -150,9 +150,9 @@
 #error "Invalid IRQ priority assigned to I2C2"
 #endif
 
-#if GD32_I2C_USE_I2C1 &&                                                   \
-    !GD32_DMA_IS_VALID_PRIORITY(GD32_I2C_I2C1_DMA_PRIORITY)
-#error "Invalid DMA priority assigned to I2C1"
+#if GD32_I2C_USE_I2C0 &&                                                   \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_I2C_I2C0_DMA_PRIORITY)
+#error "Invalid DMA priority assigned to I2C0"
 #endif
 
 #if GD32_I2C_USE_I2C2 &&                                                   \
@@ -297,7 +297,7 @@ struct I2CDriver {
 /*===========================================================================*/
 
 #if !defined(__DOXYGEN__)
-#if GD32_I2C_USE_I2C1
+#if GD32_I2C_USE_I2C0
 extern I2CDriver I2CD1;
 #endif
 

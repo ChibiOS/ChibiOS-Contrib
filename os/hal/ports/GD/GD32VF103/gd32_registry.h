@@ -182,11 +182,11 @@
 
 /* I2C attributes.*/
 #if GD32_HAS_I2C_0 || GD32_HAS_I2C_01
-    #define GD32_HAS_I2C1                      TRUE
-    #define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 6)
-    #define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 5)
+    #define GD32_HAS_I2C0                      TRUE
+    #define GD32_I2C_I2C0_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 6)
+    #define GD32_I2C_I2C0_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 5)
 #else
-    #define GD32_HAS_I2C1                      FALSE
+    #define GD32_HAS_I2C0                      FALSE
 #endif
 
 #if GD32_HAS_I2C_01

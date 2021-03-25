@@ -136,9 +136,9 @@
 #define GD32_HAS_GPIOK                     FALSE
 
 /* I2C attributes.*/
-#define GD32_HAS_I2C1                      TRUE
-#define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
-#define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
+#define GD32_HAS_I2C0                      TRUE
+#define GD32_I2C_I2C0_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
+#define GD32_I2C_I2C0_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
 
 #define GD32_HAS_I2C2                      TRUE
 #define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 5)
@@ -349,9 +349,9 @@
 #define GD32_HAS_GPIOK                     FALSE
 
 /* I2C attributes.*/
-#define GD32_HAS_I2C1                      TRUE
-#define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
-#define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
+#define GD32_HAS_I2C0                      TRUE
+#define GD32_I2C_I2C0_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
+#define GD32_I2C_I2C0_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
 
 #define GD32_HAS_I2C2                      FALSE
 #define GD32_HAS_I2C3                      FALSE
@@ -534,9 +534,9 @@
 #define GD32_HAS_GPIOK                     FALSE
 
 /* I2C attributes.*/
-#define GD32_HAS_I2C1                      TRUE
-#define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
-#define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
+#define GD32_HAS_I2C0                      TRUE
+#define GD32_I2C_I2C0_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
+#define GD32_I2C_I2C0_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
 
 #define GD32_HAS_I2C2                      TRUE
 #define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 5)
@@ -752,9 +752,9 @@
 #define GD32_HAS_GPIOK                     FALSE
 
 /* I2C attributes.*/
-#define GD32_HAS_I2C1                      TRUE
-#define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
-#define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
+#define GD32_HAS_I2C0                      TRUE
+#define GD32_I2C_I2C0_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
+#define GD32_I2C_I2C0_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
 
 #define GD32_HAS_I2C2                      TRUE
 #define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 5)
@@ -992,9 +992,9 @@
 #define GD32_HAS_GPIOK                     FALSE
 
 /* I2C attributes.*/
-#define GD32_HAS_I2C1                      TRUE
-#define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
-#define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
+#define GD32_HAS_I2C0                      TRUE
+#define GD32_I2C_I2C0_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
+#define GD32_I2C_I2C0_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
 
 #define GD32_HAS_I2C2                      TRUE
 #define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 5)
@@ -1252,9 +1252,9 @@
 #define GD32_HAS_GPIOK                     FALSE
 
 /* I2C attributes.*/
-#define GD32_HAS_I2C1                      TRUE
-#define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
-#define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
+#define GD32_HAS_I2C0                      TRUE
+#define GD32_I2C_I2C0_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 7)
+#define GD32_I2C_I2C0_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 6)
 
 #define GD32_HAS_I2C2                      TRUE
 #define GD32_I2C_I2C2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 5)
