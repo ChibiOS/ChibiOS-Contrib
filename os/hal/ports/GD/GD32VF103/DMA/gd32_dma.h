@@ -85,7 +85,7 @@
  * @return              An unique numeric stream identifier.
  */
 #define GD32_DMA_STREAM_ID(dma, stream)                                    \
-  ((((dma) - 1) * GD32_DMA0_NUM_CHANNELS) + ((stream) - 1))
+  ((((dma)) * GD32_DMA0_NUM_CHANNELS) + ((stream)))
 
 /**
  * @brief   Returns a DMA stream identifier mask.
