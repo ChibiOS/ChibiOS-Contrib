@@ -67,21 +67,21 @@
 #endif
 
 /**
+ * @brief   UART driver on UART3 enable switch.
+ * @details If set to @p TRUE the support for UART3 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(GD32_UART_USE_UART3) || defined(__DOXYGEN__)
+#define GD32_UART_USE_UART3                FALSE
+#endif
+
+/**
  * @brief   UART driver on UART4 enable switch.
  * @details If set to @p TRUE the support for UART4 is included.
  * @note    The default is @p FALSE.
  */
 #if !defined(GD32_UART_USE_UART4) || defined(__DOXYGEN__)
 #define GD32_UART_USE_UART4                FALSE
-#endif
-
-/**
- * @brief   UART driver on UART5 enable switch.
- * @details If set to @p TRUE the support for UART5 is included.
- * @note    The default is @p FALSE.
- */
-#if !defined(GD32_UART_USE_UART5) || defined(__DOXYGEN__)
-#define GD32_UART_USE_UART5                FALSE
 #endif
 
 /**
@@ -106,17 +106,17 @@
 #endif
 
 /**
+ * @brief   UART3 interrupt priority level setting.
+ */
+#if !defined(GD32_UART_UART3_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_UART3_IRQ_PRIORITY       12
+#endif
+
+/**
  * @brief   UART4 interrupt priority level setting.
  */
 #if !defined(GD32_UART_UART4_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_UART_UART4_IRQ_PRIORITY       12
-#endif
-
-/**
- * @brief   UART5 interrupt priority level setting.
- */
-#if !defined(GD32_UART_UART5_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_UART_UART5_IRQ_PRIORITY       12
 #endif
 
 /**
@@ -150,6 +150,16 @@
 #endif
 
 /**
+ * @brief   UART3 DMA priority (0..3|lowest..highest).
+ * @note    The priority level is used for both the TX and RX DMA channels but
+ *          because of the channels ordering the RX channel has always priority
+ *          over the TX channel.
+ */
+#if !defined(GD32_UART_UART3_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_UART_UART3_DMA_PRIORITY       0
+#endif
+
+/**
  * @brief   UART4 DMA priority (0..3|lowest..highest).
  * @note    The priority level is used for both the TX and RX DMA channels but
  *          because of the channels ordering the RX channel has always priority
@@ -157,16 +167,6 @@
  */
 #if !defined(GD32_UART_UART4_DMA_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_UART_UART4_DMA_PRIORITY       0
-#endif
-
-/**
- * @brief   UART5 DMA priority (0..3|lowest..highest).
- * @note    The priority level is used for both the TX and RX DMA channels but
- *          because of the channels ordering the RX channel has always priority
- *          over the TX channel.
- */
-#if !defined(GD32_UART_UART5_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_UART_UART5_DMA_PRIORITY       0
 #endif
 
 /**
@@ -195,17 +195,17 @@
 #error "USART2 not present in the selected device"
 #endif
 
+#if GD32_UART_USE_UART3 && !GD32_HAS_UART3
+#error "UART3 not present in the selected device"
+#endif
+
 #if GD32_UART_USE_UART4 && !GD32_HAS_UART4
 #error "UART4 not present in the selected device"
 #endif
 
-#if GD32_UART_USE_UART5 && !GD32_HAS_UART5
-#error "UART5 not present in the selected device"
-#endif
-
 #if !GD32_UART_USE_USART0 && !GD32_UART_USE_USART1 &&                     \
-    !GD32_UART_USE_USART2 && !GD32_UART_USE_UART4 &&                      \
-    !GD32_UART_USE_UART5  
+    !GD32_UART_USE_USART2 && !GD32_UART_USE_UART3 &&                      \
+    !GD32_UART_USE_UART4  
 #error "UART driver activated but no USART/UART peripheral assigned"
 #endif
 
@@ -224,14 +224,14 @@
 #error "Invalid IRQ priority assigned to USART2"
 #endif
 
+#if GD32_UART_USE_UART3 &&                                                 \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_UART_UART3_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to UART3"
+#endif
+
 #if GD32_UART_USE_UART4 &&                                                 \
     !OSAL_IRQ_IS_VALID_PRIORITY(GD32_UART_UART4_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to UART4"
-#endif
-
-#if GD32_UART_USE_UART5 &&                                                 \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_UART_UART5_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to UART5"
 #endif
 
 #if GD32_UART_USE_USART0 &&                                                \
@@ -249,14 +249,14 @@
 #error "Invalid DMA priority assigned to USART2"
 #endif
 
+#if GD32_UART_USE_UART3 &&                                                 \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_UART_UART3_DMA_PRIORITY)
+#error "Invalid DMA priority assigned to UART3"
+#endif
+
 #if GD32_UART_USE_UART4 &&                                                 \
     !GD32_DMA_IS_VALID_PRIORITY(GD32_UART_UART4_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to UART4"
-#endif
-
-#if GD32_UART_USE_UART5 &&                                                 \
-    !GD32_DMA_IS_VALID_PRIORITY(GD32_UART_UART5_DMA_PRIORITY)
-#error "Invalid DMA priority assigned to UART5"
 #endif
 
 #if !defined(GD32_DMA_REQUIRED)
@@ -440,11 +440,11 @@ extern UARTDriver UARTD2;
 extern UARTDriver UARTD3;
 #endif
 
-#if GD32_UART_USE_UART4 && !defined(__DOXYGEN__)
+#if GD32_UART_USE_UART3 && !defined(__DOXYGEN__)
 extern UARTDriver UARTD4;
 #endif
 
-#if GD32_UART_USE_UART5 && !defined(__DOXYGEN__)
+#if GD32_UART_USE_UART4 && !defined(__DOXYGEN__)
 extern UARTDriver UARTD5;
 #endif
 

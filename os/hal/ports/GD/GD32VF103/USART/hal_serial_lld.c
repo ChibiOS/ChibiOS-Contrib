@@ -49,13 +49,13 @@ SerialDriver SD2;
 SerialDriver SD3;
 #endif
 
-/** @brief UART4 serial driver identifier.*/
-#if GD32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
+/** @brief UART3 serial driver identifier.*/
+#if GD32_SERIAL_USE_UART3 || defined(__DOXYGEN__)
 SerialDriver SD4;
 #endif
 
-/** @brief UART5 serial driver identifier.*/
-#if GD32_SERIAL_USE_UART5 || defined(__DOXYGEN__)
+/** @brief UART4 serial driver identifier.*/
+#if GD32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
 SerialDriver SD5;
 #endif
 
@@ -231,19 +231,19 @@ static void notify3(io_queue_t *qp) {
 }
 #endif
 
-#if GD32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART3 || defined(__DOXYGEN__)
 static void notify4(io_queue_t *qp) {
 
   (void)qp;
-  UART4->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
+  UART3->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
 }
 #endif
 
-#if GD32_SERIAL_USE_UART5 || defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
 static void notify5(io_queue_t *qp) {
 
   (void)qp;
-  UART5->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
+  UART4->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
 }
 #endif
 
@@ -308,6 +308,25 @@ OSAL_IRQ_HANDLER(GD32_USART2_HANDLER) {
 }
 #endif
 
+#if GD32_SERIAL_USE_UART3 || defined(__DOXYGEN__)
+#if !defined(GD32_UART3_HANDLER)
+#error "GD32_UART3_HANDLER not defined"
+#endif
+/**
+ * @brief   UART3 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(GD32_UART3_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  serve_interrupt(&SD4);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
 #if GD32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
 #if !defined(GD32_UART4_HANDLER)
 #error "GD32_UART4_HANDLER not defined"
@@ -318,25 +337,6 @@ OSAL_IRQ_HANDLER(GD32_USART2_HANDLER) {
  * @isr
  */
 OSAL_IRQ_HANDLER(GD32_UART4_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  serve_interrupt(&SD4);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif
-
-#if GD32_SERIAL_USE_UART5 || defined(__DOXYGEN__)
-#if !defined(GD32_UART5_HANDLER)
-#error "GD32_UART5_HANDLER not defined"
-#endif
-/**
- * @brief   UART5 interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_UART5_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -372,14 +372,14 @@ void sd_lld_init(void) {
   SD3.usart = USART2;
 #endif
 
-#if GD32_SERIAL_USE_UART4
+#if GD32_SERIAL_USE_UART3
   sdObjectInit(&SD4, NULL, notify4);
-  SD4.usart = UART4;
+  SD4.usart = UART3;
 #endif
 
-#if GD32_SERIAL_USE_UART5
+#if GD32_SERIAL_USE_UART4
   sdObjectInit(&SD5, NULL, notify5);
-  SD5.usart = UART5;
+  SD5.usart = UART4;
 #endif
 }
 
@@ -417,16 +417,16 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
       eclicEnableVector(GD32_USART2_NUMBER, GD32_SERIAL_USART2_PRIORITY, GD32_SERIAL_USART2_TRIGGER);
     }
 #endif
-#if GD32_SERIAL_USE_UART4
+#if GD32_SERIAL_USE_UART3
     if (&SD4 == sdp) {
-      rccEnableUART4(true);
-      eclicEnableVector(GD32_UART4_NUMBER, GD32_SERIAL_UART4_PRIORITY, GD32_SERIAL_UART4_TRIGGER);
+      rccEnableUART3(true);
+      eclicEnableVector(GD32_UART3_NUMBER, GD32_SERIAL_UART3_PRIORITY, GD32_SERIAL_UART3_TRIGGER);
     }
 #endif
-#if GD32_SERIAL_USE_UART5
+#if GD32_SERIAL_USE_UART4
     if (&SD5 == sdp) {
-      rccEnableUART5(true);
-      eclicEnableVector(GD32_UART5_NUMBER, GD32_SERIAL_UART5_PRIORITY, GD32_SERIAL_UART5_TRIGGER);
+      rccEnableUART4(true);
+      eclicEnableVector(GD32_UART4_NUMBER, GD32_SERIAL_UART4_PRIORITY, GD32_SERIAL_UART4_TRIGGER);
     }
 #endif
   }
@@ -467,17 +467,17 @@ void sd_lld_stop(SerialDriver *sdp) {
       return;
     }
 #endif
-#if GD32_SERIAL_USE_UART4
+#if GD32_SERIAL_USE_UART3
     if (&SD4 == sdp) {
-      rccDisableUART4();
-      eclicDisableVector(GD32_UART4_NUMBER);
+      rccDisableUART3();
+      eclicDisableVector(GD32_UART3_NUMBER);
       return;
     }
 #endif
-#if GD32_SERIAL_USE_UART5
+#if GD32_SERIAL_USE_UART4
     if (&SD5 == sdp) {
-      rccDisableUART5();
-      eclicDisableVector(GD32_UART5_NUMBER);
+      rccDisableUART4();
+      eclicDisableVector(GD32_UART4_NUMBER);
       return;
     }
 #endif

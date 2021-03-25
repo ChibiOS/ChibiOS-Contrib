@@ -289,13 +289,13 @@
 #endif
 
 #if GD32_HAS_USART_01234
+    #define GD32_HAS_UART3                     TRUE
+    #define GD32_UART_UART3_RX_DMA_STREAM      GD32_DMA_STREAM_ID(1, 2)
+    #define GD32_UART_UART3_TX_DMA_STREAM      GD32_DMA_STREAM_ID(1, 4)
     #define GD32_HAS_UART4                     TRUE
-    #define GD32_UART_UART4_RX_DMA_STREAM      GD32_DMA_STREAM_ID(1, 2)
-    #define GD32_UART_UART4_TX_DMA_STREAM      GD32_DMA_STREAM_ID(1, 4)
-    #define GD32_HAS_UART5                     TRUE
 #else
+    #define GD32_HAS_UART3                     FALSE
     #define GD32_HAS_UART4                     FALSE
-    #define GD32_HAS_UART5                     FALSE
 #endif
 
 /* USB attributes.*/

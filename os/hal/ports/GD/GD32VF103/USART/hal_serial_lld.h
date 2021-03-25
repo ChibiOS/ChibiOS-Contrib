@@ -67,21 +67,21 @@
 #endif
 
 /**
+ * @brief   UART3 driver enable switch.
+ * @details If set to @p TRUE the support for UART3 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(GD32_SERIAL_USE_UART3) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USE_UART3              FALSE
+#endif
+
+/**
  * @brief   UART4 driver enable switch.
  * @details If set to @p TRUE the support for UART4 is included.
  * @note    The default is @p FALSE.
  */
 #if !defined(GD32_SERIAL_USE_UART4) || defined(__DOXYGEN__)
 #define GD32_SERIAL_USE_UART4              FALSE
-#endif
-
-/**
- * @brief   UART5 driver enable switch.
- * @details If set to @p TRUE the support for UART5 is included.
- * @note    The default is @p FALSE.
- */
-#if !defined(GD32_SERIAL_USE_UART5) || defined(__DOXYGEN__)
-#define GD32_SERIAL_USE_UART5              FALSE
 #endif
 
 /**
@@ -106,17 +106,17 @@
 #endif
 
 /**
+ * @brief   UART3 interrupt priority level setting.
+ */
+#if !defined(GD32_SERIAL_UART3_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_SERIAL_UART3_PRIORITY         12
+#endif
+
+/**
  * @brief   UART4 interrupt priority level setting.
  */
 #if !defined(GD32_SERIAL_UART4_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_SERIAL_UART4_PRIORITY         12
-#endif
-
-/**
- * @brief   UART5 interrupt priority level setting.
- */
-#if !defined(GD32_SERIAL_UART5_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_SERIAL_UART5_PRIORITY         12
 #endif
 /** @} */
 
@@ -136,17 +136,17 @@
 #error "USART2 not present in the selected device"
 #endif
 
+#if GD32_SERIAL_USE_UART3 && !GD32_HAS_UART3
+#error "UART3 not present in the selected device"
+#endif
+
 #if GD32_SERIAL_USE_UART4 && !GD32_HAS_UART4
 #error "UART4 not present in the selected device"
 #endif
 
-#if GD32_SERIAL_USE_UART5 && !GD32_HAS_UART5
-#error "UART5 not present in the selected device"
-#endif
-
 #if !GD32_SERIAL_USE_USART0 && !GD32_SERIAL_USE_USART1 &&                 \
-    !GD32_SERIAL_USE_USART2 && !GD32_SERIAL_USE_UART4  &&                 \
-    !GD32_SERIAL_USE_UART5
+    !GD32_SERIAL_USE_USART2 && !GD32_SERIAL_USE_UART3  &&                 \
+    !GD32_SERIAL_USE_UART4
 #error "SERIAL driver activated but no USART/UART peripheral assigned"
 #endif
 
@@ -165,14 +165,14 @@
 #error "Invalid IRQ priority assigned to USART2"
 #endif
 
+#if GD32_SERIAL_USE_UART3 &&                                               \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SERIAL_UART3_PRIORITY)
+#error "Invalid IRQ priority assigned to UART3"
+#endif
+
 #if GD32_SERIAL_USE_UART4 &&                                               \
     !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SERIAL_UART4_PRIORITY)
 #error "Invalid IRQ priority assigned to UART4"
-#endif
-
-#if GD32_SERIAL_USE_UART5 &&                                               \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SERIAL_UART5_PRIORITY)
-#error "Invalid IRQ priority assigned to UART5"
 #endif
 
 /*===========================================================================*/
@@ -253,10 +253,10 @@ extern SerialDriver SD2;
 #if GD32_SERIAL_USE_USART2 && !defined(__DOXYGEN__)
 extern SerialDriver SD3;
 #endif
-#if GD32_SERIAL_USE_UART4 && !defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART3 && !defined(__DOXYGEN__)
 extern SerialDriver SD4;
 #endif
-#if GD32_SERIAL_USE_UART5 && !defined(__DOXYGEN__)
+#if GD32_SERIAL_USE_UART4 && !defined(__DOXYGEN__)
 extern SerialDriver SD5;
 #endif
 

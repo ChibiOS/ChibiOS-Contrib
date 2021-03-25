@@ -712,8 +712,8 @@ typedef struct
 #define SPI3_BASE             (APB1PERIPH_BASE + 0x00003C00U)
 #define USART1_BASE           (APB1PERIPH_BASE + 0x00004400U)
 #define USART2_BASE           (APB1PERIPH_BASE + 0x00004800U)
-#define UART4_BASE            (APB1PERIPH_BASE + 0x00004C00U)
-#define UART5_BASE            (APB1PERIPH_BASE + 0x00005000U)
+#define UART3_BASE            (APB1PERIPH_BASE + 0x00004C00U)
+#define UART4_BASE            (APB1PERIPH_BASE + 0x00005000U)
 #define I2C0_BASE             (APB1PERIPH_BASE + 0x00005400U)
 #define I2C1_BASE             (APB1PERIPH_BASE + 0x5800)
 #define CAN1_BASE             (APB1PERIPH_BASE + 0x00006400U)
@@ -800,8 +800,8 @@ typedef struct
 #define SPI3                ((SPI_TypeDef *)SPI3_BASE)
 #define USART1              ((USART_TypeDef *)USART1_BASE)
 #define USART2              ((USART_TypeDef *)USART2_BASE)
+#define UART3               ((USART_TypeDef *)UART3_BASE)
 #define UART4               ((USART_TypeDef *)UART4_BASE)
-#define UART5               ((USART_TypeDef *)UART5_BASE)
 #define I2C0                ((I2C_TypeDef *)I2C0_BASE)
 #define I2C1                ((I2C_TypeDef *)I2C1_BASE)
 #define CAN1                ((CAN_TypeDef *)CAN1_BASE)
@@ -1600,12 +1600,12 @@ typedef struct
 #define RCC_APB1RSTR_SPI3RST_Pos             (15U)                             
 #define RCC_APB1RSTR_SPI3RST_Msk             (0x1U << RCC_APB1RSTR_SPI3RST_Pos) /*!< 0x00008000 */
 #define RCC_APB1RSTR_SPI3RST                 RCC_APB1RSTR_SPI3RST_Msk          /*!< SPI 3 reset */
-#define RCC_APB1RSTR_UART4RST_Pos            (19U)                             
-#define RCC_APB1RSTR_UART4RST_Msk            (0x1U << RCC_APB1RSTR_UART4RST_Pos) /*!< 0x00080000 */
-#define RCC_APB1RSTR_UART4RST                RCC_APB1RSTR_UART4RST_Msk         /*!< UART 4 reset */
-#define RCC_APB1RSTR_UART5RST_Pos            (20U)                             
-#define RCC_APB1RSTR_UART5RST_Msk            (0x1U << RCC_APB1RSTR_UART5RST_Pos) /*!< 0x00100000 */
-#define RCC_APB1RSTR_UART5RST                RCC_APB1RSTR_UART5RST_Msk         /*!< UART 5 reset */
+#define RCC_APB1RSTR_UART3RST_Pos            (19U)                             
+#define RCC_APB1RSTR_UART3RST_Msk            (0x1U << RCC_APB1RSTR_UART3RST_Pos) /*!< 0x00080000 */
+#define RCC_APB1RSTR_UART3RST                RCC_APB1RSTR_UART3RST_Msk         /*!< UART 4 reset */
+#define RCC_APB1RSTR_UART4RST_Pos            (20U)                             
+#define RCC_APB1RSTR_UART4RST_Msk            (0x1U << RCC_APB1RSTR_UART4RST_Pos) /*!< 0x00100000 */
+#define RCC_APB1RSTR_UART4RST                RCC_APB1RSTR_UART4RST_Msk         /*!< UART 5 reset */
 
 
 
@@ -1736,12 +1736,12 @@ typedef struct
 #define RCC_APB1ENR_SPI3EN_Pos               (15U)                             
 #define RCC_APB1ENR_SPI3EN_Msk               (0x1U << RCC_APB1ENR_SPI3EN_Pos)  /*!< 0x00008000 */
 #define RCC_APB1ENR_SPI3EN                   RCC_APB1ENR_SPI3EN_Msk            /*!< SPI 3 clock enable */
-#define RCC_APB1ENR_UART4EN_Pos              (19U)                             
-#define RCC_APB1ENR_UART4EN_Msk              (0x1U << RCC_APB1ENR_UART4EN_Pos) /*!< 0x00080000 */
-#define RCC_APB1ENR_UART4EN                  RCC_APB1ENR_UART4EN_Msk           /*!< UART 4 clock enable */
-#define RCC_APB1ENR_UART5EN_Pos              (20U)                             
-#define RCC_APB1ENR_UART5EN_Msk              (0x1U << RCC_APB1ENR_UART5EN_Pos) /*!< 0x00100000 */
-#define RCC_APB1ENR_UART5EN                  RCC_APB1ENR_UART5EN_Msk           /*!< UART 5 clock enable */
+#define RCC_APB1ENR_UART3EN_Pos              (19U)                             
+#define RCC_APB1ENR_UART3EN_Msk              (0x1U << RCC_APB1ENR_UART3EN_Pos) /*!< 0x00080000 */
+#define RCC_APB1ENR_UART3EN                  RCC_APB1ENR_UART3EN_Msk           /*!< UART 4 clock enable */
+#define RCC_APB1ENR_UART4EN_Pos              (20U)                             
+#define RCC_APB1ENR_UART4EN_Msk              (0x1U << RCC_APB1ENR_UART4EN_Pos) /*!< 0x00100000 */
+#define RCC_APB1ENR_UART4EN                  RCC_APB1ENR_UART4EN_Msk           /*!< UART 5 clock enable */
 
 
 
@@ -12863,22 +12863,22 @@ typedef struct
 #define IS_UART_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
                                     ((INSTANCE) == USART1) || \
                                     ((INSTANCE) == USART2) || \
-                                    ((INSTANCE) == UART4)  || \
-                                    ((INSTANCE) == UART5))
+                                    ((INSTANCE) == UART3)  || \
+                                    ((INSTANCE) == UART4))
 
 /******************** UART Instances : Half-Duplex mode **********************/
 #define IS_UART_HALFDUPLEX_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
                                                ((INSTANCE) == USART1) || \
                                                ((INSTANCE) == USART2) || \
-                                               ((INSTANCE) == UART4)  || \
-                                               ((INSTANCE) == UART5))
+                                               ((INSTANCE) == UART3)  || \
+                                               ((INSTANCE) == UART4))
 
 /******************** UART Instances : LIN mode **********************/
 #define IS_UART_LIN_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
                                         ((INSTANCE) == USART1) || \
                                         ((INSTANCE) == USART2) || \
-                                        ((INSTANCE) == UART4)  || \
-                                        ((INSTANCE) == UART5))
+                                        ((INSTANCE) == UART3)  || \
+                                        ((INSTANCE) == UART4))
 
 /****************** UART Instances : Hardware Flow control ********************/                                    
 #define IS_UART_HWFLOW_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
@@ -12894,21 +12894,21 @@ typedef struct
 #define IS_IRDA_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
                                     ((INSTANCE) == USART1) || \
                                     ((INSTANCE) == USART2) || \
-                                    ((INSTANCE) == UART4)  || \
-                                    ((INSTANCE) == UART5))
+                                    ((INSTANCE) == UART3)  || \
+                                    ((INSTANCE) == UART4))
 
 /***************** UART Instances : Multi-Processor mode **********************/
 #define IS_UART_MULTIPROCESSOR_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
                                                    ((INSTANCE) == USART1) || \
                                                    ((INSTANCE) == USART2) || \
-                                                   ((INSTANCE) == UART4)  || \
-                                                   ((INSTANCE) == UART5))
+                                                   ((INSTANCE) == UART3)  || \
+                                                   ((INSTANCE) == UART4))
 
 /***************** UART Instances : DMA mode available **********************/
 #define IS_UART_DMA_INSTANCE(INSTANCE) (((INSTANCE) == USART0) || \
                                         ((INSTANCE) == USART1) || \
                                         ((INSTANCE) == USART2) || \
-                                        ((INSTANCE) == UART4))
+                                        ((INSTANCE) == UART3))
 
 /****************************** RTC Instances *********************************/
 #define IS_RTC_ALL_INSTANCE(INSTANCE)  ((INSTANCE) == RTC)

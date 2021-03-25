@@ -1116,6 +1116,30 @@
 #define rccResetUSART2() rccResetAPB1(RCC_APB1RSTR_USART2RST)
 
 /**
+ * @brief   Enables the UART3 peripheral clock.
+ * @note    The @p lp parameter is ignored in this family.
+ *
+ * @param[in] lp        low power enable flag
+ *
+ * @api
+ */
+#define rccEnableUART3(lp) rccEnableAPB1(RCC_APB1ENR_UART3EN, lp)
+
+/**
+ * @brief   Disables the UART3 peripheral clock.
+ *
+ * @api
+ */
+#define rccDisableUART3() rccDisableAPB1(RCC_APB1ENR_UART3EN)
+
+/**
+ * @brief   Resets the UART3 peripheral.
+ *
+ * @api
+ */
+#define rccResetUART3() rccResetAPB1(RCC_APB1RSTR_UART3RST)
+
+/**
  * @brief   Enables the UART4 peripheral clock.
  * @note    The @p lp parameter is ignored in this family.
  *
@@ -1138,30 +1162,6 @@
  * @api
  */
 #define rccResetUART4() rccResetAPB1(RCC_APB1RSTR_UART4RST)
-
-/**
- * @brief   Enables the UART5 peripheral clock.
- * @note    The @p lp parameter is ignored in this family.
- *
- * @param[in] lp        low power enable flag
- *
- * @api
- */
-#define rccEnableUART5(lp) rccEnableAPB1(RCC_APB1ENR_UART5EN, lp)
-
-/**
- * @brief   Disables the UART5 peripheral clock.
- *
- * @api
- */
-#define rccDisableUART5() rccDisableAPB1(RCC_APB1ENR_UART5EN)
-
-/**
- * @brief   Resets the UART5 peripheral.
- *
- * @api
- */
-#define rccResetUART5() rccResetAPB1(RCC_APB1RSTR_UART5RST)
 /** @} */
 
 /**

@@ -240,8 +240,8 @@
 #define GD32_UART_USART2_RX_DMA_STREAM     GD32_DMA_STREAM_ID(1, 3)
 #define GD32_UART_USART2_TX_DMA_STREAM     GD32_DMA_STREAM_ID(1, 2)
 
+#define GD32_HAS_UART3                     FALSE
 #define GD32_HAS_UART4                     FALSE
-#define GD32_HAS_UART5                     FALSE
 #define GD32_HAS_USART6                    FALSE
 #define GD32_HAS_UART7                     FALSE
 #define GD32_HAS_UART8                     FALSE
@@ -425,8 +425,8 @@
 #define GD32_UART_USART1_TX_DMA_STREAM     GD32_DMA_STREAM_ID(1, 7)
 
 #define GD32_HAS_USART2                    FALSE
+#define GD32_HAS_UART3                     FALSE
 #define GD32_HAS_UART4                     FALSE
-#define GD32_HAS_UART5                     FALSE
 #define GD32_HAS_USART6                    FALSE
 #define GD32_HAS_UART7                     FALSE
 #define GD32_HAS_UART8                     FALSE
@@ -623,8 +623,8 @@
 #define GD32_UART_USART2_RX_DMA_STREAM     GD32_DMA_STREAM_ID(1, 3)
 #define GD32_UART_USART2_TX_DMA_STREAM     GD32_DMA_STREAM_ID(1, 2)
 
+#define GD32_HAS_UART3                     FALSE
 #define GD32_HAS_UART4                     FALSE
-#define GD32_HAS_UART5                     FALSE
 #define GD32_HAS_USART6                    FALSE
 #define GD32_HAS_UART7                     FALSE
 #define GD32_HAS_UART8                     FALSE
@@ -860,11 +860,11 @@
 #define GD32_UART_USART2_RX_DMA_STREAM     GD32_DMA_STREAM_ID(1, 3)
 #define GD32_UART_USART2_TX_DMA_STREAM     GD32_DMA_STREAM_ID(1, 2)
 
-#define GD32_HAS_UART4                     TRUE
-#define GD32_UART_UART4_RX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 3)
-#define GD32_UART_UART4_TX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 5)
+#define GD32_HAS_UART3                     TRUE
+#define GD32_UART_UART3_RX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 3)
+#define GD32_UART_UART3_TX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 5)
 
-#define GD32_HAS_UART5                     FALSE
+#define GD32_HAS_UART4                     FALSE
 #define GD32_HAS_USART6                    FALSE
 #define GD32_HAS_UART7                     FALSE
 #define GD32_HAS_UART8                     FALSE
@@ -1118,11 +1118,11 @@
 #define GD32_UART_USART2_RX_DMA_STREAM     GD32_DMA_STREAM_ID(1, 3)
 #define GD32_UART_USART2_TX_DMA_STREAM     GD32_DMA_STREAM_ID(1, 2)
 
-#define GD32_HAS_UART4                     TRUE
-#define GD32_UART_UART4_RX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 3)
-#define GD32_UART_UART4_TX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 5)
+#define GD32_HAS_UART3                     TRUE
+#define GD32_UART_UART3_RX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 3)
+#define GD32_UART_UART3_TX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 5)
 
-#define GD32_HAS_UART5                     FALSE
+#define GD32_HAS_UART4                     FALSE
 #define GD32_HAS_USART6                    FALSE
 #define GD32_HAS_UART7                     FALSE
 #define GD32_HAS_UART8                     FALSE
@@ -1356,11 +1356,11 @@
 #define GD32_UART_USART2_RX_DMA_STREAM     GD32_DMA_STREAM_ID(1, 3)
 #define GD32_UART_USART2_TX_DMA_STREAM     GD32_DMA_STREAM_ID(1, 2)
 
-#define GD32_HAS_UART4                     TRUE
-#define GD32_UART_UART4_RX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 3)
-#define GD32_UART_UART4_TX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 5)
+#define GD32_HAS_UART3                     TRUE
+#define GD32_UART_UART3_RX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 3)
+#define GD32_UART_UART3_TX_DMA_STREAM      GD32_DMA_STREAM_ID(2, 5)
 
-#define GD32_HAS_UART5                     TRUE
+#define GD32_HAS_UART4                     TRUE
 
 #define GD32_HAS_USART6                    FALSE
 #define GD32_HAS_UART7                     FALSE
