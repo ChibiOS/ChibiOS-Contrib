@@ -114,10 +114,6 @@
 #define GD32_DAC_DAC1_CH2_DMA_STREAM       GD32_DMA_STREAM_ID(0, 3)
 
 /* DMA attributes.*/
-#define GD32_ADVANCED_DMA                  FALSE
-#define GD32_DMA_SUPPORTS_DMAMUX           FALSE
-#define GD32_DMA_SUPPORTS_CSELR            FALSE
-
 #define GD32_DMA0_NUM_CHANNELS             7
 #define GD32_DMA0_CH0_HANDLER               vector30
 #define GD32_DMA0_CH1_HANDLER               vector31

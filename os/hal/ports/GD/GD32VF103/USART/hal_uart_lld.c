@@ -95,12 +95,12 @@
                        GD32_UART8_TX_DMA_CHN)
 
 #define GD32_UART45_CR2_CHECK_MASK                                         \
-  (USART_CR2_STOP_0 | USART_CR2_CLKEN | USART_CR2_CPOL | USART_CR2_CPHA |   \
-   USART_CR2_LBCL)
+  (USART_CTL1_STB_0 | USART_CTL1_CKEN | USART_CTL1_CPL | USART_CTL1_CPH |   \
+   USART_CTL1_CLEN)
 
 #define GD32_UART45_CR3_CHECK_MASK                                         \
-  (USART_CR3_CTSIE | USART_CR3_CTSE | USART_CR3_RTSE | USART_CR3_SCEN |     \
-   USART_CR3_NACK)
+  (USART_CTL2_CTSIE | USART_CTL2_CTSEN | USART_CTL2_RTSEN | USART_CTL2_SCEN |     \
+   USART_CTL2_NKEN)
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -157,22 +157,22 @@ UARTDriver UARTD8;
 /**
  * @brief   Status bits translation.
  *
- * @param[in] sr        USART SR register value
+ * @param[in] stat        USART STAT register value
  *
  * @return  The error flags.
  */
-static uartflags_t translate_errors(uint16_t sr) {
+static uartflags_t translate_errors(uint16_t stat) {
   uartflags_t sts = 0;
 
-  if (sr & USART_SR_ORE)
+  if (stat & USART_STAT_ORERR)
     sts |= UART_OVERRUN_ERROR;
-  if (sr & USART_SR_PE)
+  if (stat & USART_STAT_PERR)
     sts |= UART_PARITY_ERROR;
-  if (sr & USART_SR_FE)
+  if (stat & USART_STAT_FERR)
     sts |= UART_FRAMING_ERROR;
-  if (sr & USART_SR_NE)
+  if (stat & USART_STAT_NERR)
     sts |= UART_NOISE_ERROR;
-  if (sr & USART_SR_LBD)
+  if (stat & USART_STAT_LBDF)
     sts |= UART_BREAK_DETECTED;
   return sts;
 }
@@ -210,9 +210,9 @@ static void usart_stop(UARTDriver *uartp) {
   dmaStreamDisable(uartp->dmatx);
 
   /* Stops USART operations.*/
-  uartp->usart->CR1 = 0;
-  uartp->usart->CR2 = 0;
-  uartp->usart->CR3 = 0;
+  uartp->usart->CTL0 = 0;
+  uartp->usart->CTL1 = 0;
+  uartp->usart->CTL2 = 0;
 }
 
 /**
@@ -223,7 +223,7 @@ static void usart_stop(UARTDriver *uartp) {
  */
 static void usart_start(UARTDriver *uartp) {
   uint32_t fck;
-  uint16_t cr1;
+  uint16_t ctl0;
   USART_TypeDef *u = uartp->usart;
 
   /* Defensive programming, starting from a clean state.*/
@@ -242,27 +242,27 @@ static void usart_start(UARTDriver *uartp) {
   /* Correcting USARTDIV when oversampling by 8 instead of 16.
      Fraction is still 4 bits wide, but only lower 3 bits used.
      Mantissa is doubled, but Fraction is left the same.*/
-#if defined(USART_CR1_OVER8)
-  if (uartp->config->cr1 & USART_CR1_OVER8)
+#if defined(USART_CTL0_OVER8)
+  if (uartp->config->ctl0 & USART_CTL0_OVER8)
     fck = ((fck & ~7) * 2) | (fck & 7);
 #endif
-  u->BRR = fck;
+  u->BAUD = fck;
 
   /* Resetting eventual pending status flags.*/
-  (void)u->SR;  /* SR reset step 1.*/
-  (void)u->DR;  /* SR reset step 2.*/
-  u->SR = 0;
+  (void)u->STAT;  /* SR reset step 1.*/
+  (void)u->DATA;  /* SR reset step 2.*/
+  u->STAT = 0;
 
   /* Note that some bits are enforced because required for correct driver
      operations.*/
-  u->CR2 = uartp->config->cr2 | USART_CR2_LBDIE;
-  u->CR3 = uartp->config->cr3 | USART_CR3_DMAT | USART_CR3_DMAR |
-                                USART_CR3_EIE;
+  u->CTL1 = uartp->config->ctl1 | USART_CTL1_LBDIE;
+  u->CTL2 = uartp->config->ctl2 | USART_CTL2_DENT | USART_CTL2_DENR |
+                                USART_CTL2_ERRIE;
 
   /* Mustn't ever set TCIE here - if done, it causes an immediate
      interrupt.*/
-  cr1 = USART_CR1_UE | USART_CR1_PEIE | USART_CR1_TE | USART_CR1_RE;
-  u->CR1 = uartp->config->cr1 | cr1;
+  ctl0 = USART_CTL0_UEN | USART_CTL0_PERRIE | USART_CTL0_TEN | USART_CTL0_REN;
+  u->CTL0 = uartp->config->ctl0 | ctl0;
 
   /* Starting the receiver idle loop.*/
   uart_enter_rx_idle_loop(uartp);
@@ -327,30 +327,30 @@ static void uart_lld_serve_tx_end_irq(UARTDriver *uartp, uint32_t flags) {
  * @param[in] uartp     pointer to the @p UARTDriver object
  */
 static void serve_usart_irq(UARTDriver *uartp) {
-  uint16_t sr;
+  uint16_t stat;
   USART_TypeDef *u = uartp->usart;
-  uint32_t cr1 = u->CR1;
+  uint32_t ctl0 = u->CTL0;
 
-  sr = u->SR;   /* SR reset step 1.*/
-  (void)u->DR;  /* SR reset step 2.*/
+  stat = u->STAT;   /* SR reset step 1.*/
+  (void)u->DATA;  /* SR reset step 2.*/
 
-  if (sr & (USART_SR_LBD | USART_SR_ORE | USART_SR_NE |
-            USART_SR_FE  | USART_SR_PE)) {
-    u->SR = ~USART_SR_LBD;
-    _uart_rx_error_isr_code(uartp, translate_errors(sr));
+  if (stat & (USART_STAT_LBDF | USART_STAT_ORERR | USART_STAT_NERR |
+            USART_STAT_FERR  | USART_STAT_PERR)) {
+    u->STAT = ~USART_STAT_LBDF;
+    _uart_rx_error_isr_code(uartp, translate_errors(stat));
   }
 
-  if ((sr & USART_SR_TC) && (cr1 & USART_CR1_TCIE)) {
+  if ((stat & USART_STAT_TC) && (ctl0 & USART_CTL0_TCIE)) {
     /* TC interrupt cleared and disabled.*/
-    u->SR = ~USART_SR_TC;
-    u->CR1 = cr1 & ~USART_CR1_TCIE;
+    u->STAT = ~USART_STAT_TC;
+    u->CTL0 = ctl0 & ~USART_CTL0_TCIE;
 
     /* End of transmission, a callback is generated.*/
     _uart_tx2_isr_code(uartp);
   }
 
   /* Timeout interrupt sources are only checked if enabled in CR1.*/
-  if ((cr1 & USART_CR1_IDLEIE) && (sr & USART_SR_IDLE)) {
+  if ((ctl0 & USART_CTL0_IDLEIE) && (stat & USART_STAT_IDLEF)) {
     _uart_timeout_isr_code(uartp);
   }
 }
@@ -674,9 +674,9 @@ void uart_lld_start(UARTDriver *uartp) {
 #if GD32_UART_USE_UART4
     if (&UARTD4 == uartp) {
 
-      osalDbgAssert((uartp->config->cr2 & GD32_UART45_CR2_CHECK_MASK) == 0,
+      osalDbgAssert((uartp->config->ctl1 & GD32_UART45_CR2_CHECK_MASK) == 0,
                     "specified invalid bits in UART4 CR2 register settings");
-      osalDbgAssert((uartp->config->cr3 & GD32_UART45_CR3_CHECK_MASK) == 0,
+      osalDbgAssert((uartp->config->ctl2 & GD32_UART45_CR3_CHECK_MASK) == 0,
                     "specified invalid bits in UART4 CR3 register settings");
 
       uartp->dmarx = dmaStreamAllocI(GD32_UART_UART4_RX_DMA_STREAM,
@@ -702,9 +702,9 @@ void uart_lld_start(UARTDriver *uartp) {
 #if GD32_UART_USE_UART5
     if (&UARTD5 == uartp) {
 
-      osalDbgAssert((uartp->config->cr2 & GD32_UART45_CR2_CHECK_MASK) == 0,
+      osalDbgAssert((uartp->config->ctl1 & GD32_UART45_CR2_CHECK_MASK) == 0,
                     "specified invalid bits in UART5 CR2 register settings");
-      osalDbgAssert((uartp->config->cr3 & GD32_UART45_CR3_CHECK_MASK) == 0,
+      osalDbgAssert((uartp->config->ctl2 & GD32_UART45_CR3_CHECK_MASK) == 0,
                     "specified invalid bits in UART5 CR3 register settings");
 
       uartp->dmarx = dmaStreamAllocI(GD32_UART_UART5_RX_DMA_STREAM,
@@ -752,9 +752,9 @@ void uart_lld_start(UARTDriver *uartp) {
 #if GD32_UART_USE_UART7
     if (&UARTD7 == uartp) {
 
-      osalDbgAssert((uartp->config->cr2 & GD32_UART45_CR2_CHECK_MASK) == 0,
+      osalDbgAssert((uartp->config->ctl1 & GD32_UART45_CR2_CHECK_MASK) == 0,
                     "specified invalid bits in UART7 CR2 register settings");
-      osalDbgAssert((uartp->config->cr3 & GD32_UART45_CR3_CHECK_MASK) == 0,
+      osalDbgAssert((uartp->config->ctl2 & GD32_UART45_CR3_CHECK_MASK) == 0,
                     "specified invalid bits in UART7 CR3 register settings");
 
       uartp->dmarx = dmaStreamAllocI(GD32_UART_UART7_RX_DMA_STREAM,
@@ -780,9 +780,9 @@ void uart_lld_start(UARTDriver *uartp) {
 #if GD32_UART_USE_UART8
     if (&UARTD8 == uartp) {
 
-      osalDbgAssert((uartp->config->cr2 & GD32_UART45_CR2_CHECK_MASK) == 0,
+      osalDbgAssert((uartp->config->ctl1 & GD32_UART45_CR2_CHECK_MASK) == 0,
                     "specified invalid bits in UART8 CR2 register settings");
-      osalDbgAssert((uartp->config->cr3 & GD32_UART45_CR3_CHECK_MASK) == 0,
+      osalDbgAssert((uartp->config->ctl2 & GD32_UART45_CR3_CHECK_MASK) == 0,
                     "specified invalid bits in UART8 CR3 register settings");
 
       uartp->dmarx = dmaStreamAllocI(GD32_UART_UART8_RX_DMA_STREAM,
@@ -807,12 +807,12 @@ void uart_lld_start(UARTDriver *uartp) {
 
     /* Static DMA setup, the transfer size depends on the USART settings,
        it is 16 bits if M=1 and PCE=0 else it is 8 bits.*/
-    if ((uartp->config->cr1 & (USART_CR1_M | USART_CR1_PCE)) == USART_CR1_M) {
+    if ((uartp->config->ctl0 & (USART_CTL0_WL | USART_CTL0_PCEN)) == USART_CTL0_WL) {
       uartp->dmarxmode |= GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
       uartp->dmatxmode |= GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
     }
-    dmaStreamSetPeripheral(uartp->dmarx, &uartp->usart->DR);
-    dmaStreamSetPeripheral(uartp->dmatx, &uartp->usart->DR);
+    dmaStreamSetPeripheral(uartp->dmarx, &uartp->usart->DATA);
+    dmaStreamSetPeripheral(uartp->dmatx, &uartp->usart->DATA);
     uartp->rxbuf = 0;
   }
 
@@ -930,8 +930,8 @@ void uart_lld_start_send(UARTDriver *uartp, size_t n, const void *txbuf) {
 #else
   if (uartp->config->txend2_cb != NULL) {
 #endif
-    uartp->usart->SR = ~USART_SR_TC;
-    uartp->usart->CR1 |= USART_CR1_TCIE;
+    uartp->usart->STAT = ~USART_STAT_TC;
+    uartp->usart->CTL0 |= USART_CTL0_TCIE;
   }
 
   /* Starting transfer.*/

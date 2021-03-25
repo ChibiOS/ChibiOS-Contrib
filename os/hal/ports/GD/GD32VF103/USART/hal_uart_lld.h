@@ -614,17 +614,17 @@ typedef struct {
    */
   uint32_t                  speed;
   /**
-   * @brief Initialization value for the CR1 register.
+   * @brief Initialization value for the CTL0 register.
    */
-  uint16_t                  cr1;
+  uint16_t                  ctl0;
   /**
-   * @brief Initialization value for the CR2 register.
+   * @brief Initialization value for the CTL1 register.
    */
-  uint16_t                  cr2;
+  uint16_t                  ctl1;
   /**
-   * @brief Initialization value for the CR3 register.
+   * @brief Initialization value for the CTL2 register.
    */
-  uint16_t                  cr3;
+  uint16_t                  ctl2;
 } UARTConfig;
 
 /**

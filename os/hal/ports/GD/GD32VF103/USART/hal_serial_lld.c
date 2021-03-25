@@ -83,7 +83,7 @@ static const SerialConfig default_config =
 {
   SERIAL_DEFAULT_BITRATE,
   0,
-  USART_CR2_STOP1_BITS,
+  USART_CTL1_STB1_BITS,
   0
 };
 
@@ -115,25 +115,25 @@ static void usart_init(SerialDriver *sdp, const SerialConfig *config) {
   /* Correcting USARTDIV when oversampling by 8 instead of 16.
      Fraction is still 4 bits wide, but only lower 3 bits used.
      Mantissa is doubled, but Fraction is left the same.*/
-#if defined(USART_CR1_OVER8)
-  if (config->cr1 & USART_CR1_OVER8)
+#if defined(USART_CTL0_OVER8)
+  if (config->ctl0 & USART_CTL0_OVER8)
     fck = ((fck & ~7) * 2) | (fck & 7);
 #endif
-  u->BRR = fck;
+  u->BAUD = fck;
 
   /* Note that some bits are enforced.*/
-  u->CR2 = config->cr2 | USART_CR2_LBDIE;
-  u->CR3 = config->cr3 | USART_CR3_EIE;
-  u->CR1 = config->cr1 | USART_CR1_UE | USART_CR1_PEIE |
-                         USART_CR1_RXNEIE | USART_CR1_TE |
-                         USART_CR1_RE;
-  u->SR = 0;
-  (void)u->SR;  /* SR reset step 1.*/
-  (void)u->DR;  /* SR reset step 2.*/
+  u->CTL1 = config->ctl1 | USART_CTL1_LBDIE;
+  u->CTL2 = config->ctl2 | USART_CTL2_ERRIE;
+  u->CTL0 = config->ctl0 | USART_CTL0_UEN | USART_CTL0_PERRIE |
+                         USART_CTL0_RBNEIE | USART_CTL0_TEN |
+                         USART_CTL0_REN;
+  u->STAT = 0;
+  (void)u->STAT;  /* SR reset step 1.*/
+  (void)u->DATA;  /* SR reset step 2.*/
 
   /* Deciding mask to be applied on the data register on receive, this is
      required in order to mask out the parity bit.*/
-  if ((config->cr1 & (USART_CR1_M | USART_CR1_PCE)) == USART_CR1_PCE) {
+  if ((config->ctl0 & (USART_CTL0_WL | USART_CTL0_PCEN)) == USART_CTL0_PCEN) {
     sdp->rxmask = 0x7F;
   }
   else {
@@ -149,27 +149,27 @@ static void usart_init(SerialDriver *sdp, const SerialConfig *config) {
  */
 static void usart_deinit(USART_TypeDef *u) {
 
-  u->CR1 = 0;
-  u->CR2 = 0;
-  u->CR3 = 0;
+  u->CTL0 = 0;
+  u->CTL1 = 0;
+  u->CTL2 = 0;
 }
 
 /**
  * @brief   Error handling routine.
  *
  * @param[in] sdp       pointer to a @p SerialDriver object
- * @param[in] sr        USART SR register value
+ * @param[in] stat        USART STAT register value
  */
-static void set_error(SerialDriver *sdp, uint16_t sr) {
+static void set_error(SerialDriver *sdp, uint16_t stat) {
   eventflags_t sts = 0;
 
-  if (sr & USART_SR_ORE)
+  if (stat & USART_STAT_ORERR)
     sts |= SD_OVERRUN_ERROR;
-  if (sr & USART_SR_PE)
+  if (stat & USART_STAT_PERR)
     sts |= SD_PARITY_ERROR;
-  if (sr & USART_SR_FE)
+  if (stat & USART_STAT_FERR)
     sts |= SD_FRAMING_ERROR;
-  if (sr & USART_SR_NE)
+  if (stat & USART_STAT_NERR)
     sts |= SD_NOISE_ERROR;
   chnAddFlagsI(sdp, sts);
 }
@@ -181,53 +181,53 @@ static void set_error(SerialDriver *sdp, uint16_t sr) {
  */
 static void serve_interrupt(SerialDriver *sdp) {
   USART_TypeDef *u = sdp->usart;
-  uint16_t cr1 = u->CR1;
-  uint16_t sr = u->SR;
+  uint16_t ctl0 = u->CTL0;
+  uint16_t stat = u->STAT;
 
   /* Special case, LIN break detection.*/
-  if (sr & USART_SR_LBD) {
+  if (stat & USART_STAT_LBDF) {
     osalSysLockFromISR();
     chnAddFlagsI(sdp, SD_BREAK_DETECTED);
-    u->SR = ~USART_SR_LBD;
+    u->STAT = ~USART_STAT_LBDF;
     osalSysUnlockFromISR();
   }
 
   /* Data available.*/
   osalSysLockFromISR();
-  while (sr & (USART_SR_RXNE | USART_SR_ORE | USART_SR_NE | USART_SR_FE |
-               USART_SR_PE)) {
+  while (stat & (USART_STAT_RBNE | USART_STAT_ORERR | USART_STAT_NERR | USART_STAT_FERR |
+               USART_STAT_PERR)) {
     uint8_t b;
 
     /* Error condition detection.*/
-    if (sr & (USART_SR_ORE | USART_SR_NE | USART_SR_FE  | USART_SR_PE))
-      set_error(sdp, sr);
-    b = (uint8_t)u->DR & sdp->rxmask;
-    if (sr & USART_SR_RXNE)
+    if (stat & (USART_STAT_ORERR | USART_STAT_NERR | USART_STAT_FERR  | USART_STAT_PERR))
+      set_error(sdp, stat);
+    b = (uint8_t)u->DATA & sdp->rxmask;
+    if (stat & USART_STAT_RBNE)
       sdIncomingDataI(sdp, b);
-    sr = u->SR;
+    stat = u->STAT;
   }
   osalSysUnlockFromISR();
 
   /* Transmission buffer empty.*/
-  if ((cr1 & USART_CR1_TXEIE) && (sr & USART_SR_TXE)) {
+  if ((ctl0 & USART_CTL0_TBEIE) && (stat & USART_STAT_TBE)) {
     msg_t b;
     osalSysLockFromISR();
     b = oqGetI(&sdp->oqueue);
     if (b < MSG_OK) {
       chnAddFlagsI(sdp, CHN_OUTPUT_EMPTY);
-      u->CR1 = cr1 & ~USART_CR1_TXEIE;
+      u->CTL0 = ctl0 & ~USART_CTL0_TBEIE;
     }
     else
-      u->DR = b;
+      u->DATA = b;
     osalSysUnlockFromISR();
   }
 
   /* Physical transmission end.*/
-  if ((cr1 & USART_CR1_TCIE) && (sr & USART_SR_TC)) {
+  if ((ctl0 & USART_CTL0_TCIE) && (stat & USART_STAT_TC)) {
     osalSysLockFromISR();
     if (oqIsEmptyI(&sdp->oqueue)) {
       chnAddFlagsI(sdp, CHN_TRANSMISSION_END);
-      u->CR1 = cr1 & ~USART_CR1_TCIE;
+      u->CTL0 = ctl0 & ~USART_CTL0_TCIE;
     }
     osalSysUnlockFromISR();
   }
@@ -237,7 +237,7 @@ static void serve_interrupt(SerialDriver *sdp) {
 static void notify1(io_queue_t *qp) {
 
   (void)qp;
-  USART1->CR1 |= USART_CR1_TXEIE | USART_CR1_TCIE;
+  USART1->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
 }
 #endif
 
@@ -245,7 +245,7 @@ static void notify1(io_queue_t *qp) {
 static void notify2(io_queue_t *qp) {
 
   (void)qp;
-  USART2->CR1 |= USART_CR1_TXEIE | USART_CR1_TCIE;
+  USART2->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
 }
 #endif
 
@@ -253,7 +253,7 @@ static void notify2(io_queue_t *qp) {
 static void notify3(io_queue_t *qp) {
 
   (void)qp;
-  USART3->CR1 |= USART_CR1_TXEIE | USART_CR1_TCIE;
+  USART3->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
 }
 #endif
 
@@ -261,7 +261,7 @@ static void notify3(io_queue_t *qp) {
 static void notify4(io_queue_t *qp) {
 
   (void)qp;
-  UART4->CR1 |= USART_CR1_TXEIE | USART_CR1_TCIE;
+  UART4->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
 }
 #endif
 
@@ -269,7 +269,7 @@ static void notify4(io_queue_t *qp) {
 static void notify5(io_queue_t *qp) {
 
   (void)qp;
-  UART5->CR1 |= USART_CR1_TXEIE | USART_CR1_TCIE;
+  UART5->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
 }
 #endif
 
@@ -277,7 +277,7 @@ static void notify5(io_queue_t *qp) {
 static void notify6(io_queue_t *qp) {
 
   (void)qp;
-  USART6->CR1 |= USART_CR1_TXEIE | USART_CR1_TCIE;
+  USART6->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
 }
 #endif
 
@@ -285,7 +285,7 @@ static void notify6(io_queue_t *qp) {
 static void notify7(io_queue_t *qp) {
 
   (void)qp;
-  UART7->CR1 |= USART_CR1_TXEIE | USART_CR1_TCIE;
+  UART7->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
 }
 #endif
 
@@ -293,7 +293,7 @@ static void notify7(io_queue_t *qp) {
 static void notify8(io_queue_t *qp) {
 
   (void)qp;
-  UART8->CR1 |= USART_CR1_TXEIE | USART_CR1_TCIE;
+  UART8->CTL0 |= USART_CTL0_TBEIE | USART_CTL0_TCIE;
 }
 #endif
 

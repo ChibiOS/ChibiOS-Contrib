@@ -270,17 +270,17 @@ typedef struct {
   uint32_t                  speed;
   /* End of the mandatory fields.*/
   /**
-   * @brief Initialization value for the CR1 register.
+   * @brief Initialization value for the CTL0 register.
    */
-  uint16_t                  cr1;
+  uint16_t                  ctl0;
   /**
-   * @brief Initialization value for the CR2 register.
+   * @brief Initialization value for the CTL1 register.
    */
-  uint16_t                  cr2;
+  uint16_t                  ctl1;
   /**
-   * @brief Initialization value for the CR3 register.
+   * @brief Initialization value for the CTL2 register.
    */
-  uint16_t                  cr3;
+  uint16_t                  ctl2;
 } SerialConfig;
 
 /**
@@ -311,10 +311,10 @@ typedef struct {
 /*
  * Extra USARTs definitions here (missing from the ST header file).
  */
-#define USART_CR2_STOP1_BITS    (0 << 12)   /**< @brief CR2 1 stop bit value.*/
-#define USART_CR2_STOP0P5_BITS  (1 << 12)   /**< @brief CR2 0.5 stop bit value.*/
-#define USART_CR2_STOP2_BITS    (2 << 12)   /**< @brief CR2 2 stop bit value.*/
-#define USART_CR2_STOP1P5_BITS  (3 << 12)   /**< @brief CR2 1.5 stop bit value.*/
+#define USART_CTL1_STB1_BITS    (0 << 12)   /**< @brief CR2 1 stop bit value.*/
+#define USART_CTL1_STB0P5_BITS  (1 << 12)   /**< @brief CR2 0.5 stop bit value.*/
+#define USART_CTL1_STB2_BITS    (2 << 12)   /**< @brief CR2 2 stop bit value.*/
+#define USART_CTL1_STB1P5_BITS  (3 << 12)   /**< @brief CR2 1.5 stop bit value.*/
 
 /*===========================================================================*/
 /* External declarations.                                                    */
