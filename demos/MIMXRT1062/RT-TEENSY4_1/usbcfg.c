@@ -31,7 +31,7 @@ SerialUSBDriver SDU1;
  * USB Device Descriptor.
  */
 static const uint8_t vcom_device_descriptor_data[18] = {
-  USB_DESC_DEVICE       (0x0110,        /* bcdUSB (1.1).                    */
+  USB_DESC_DEVICE       (0x0200,        /* bcdUSB (2.0).                    */
                          0x02,          /* bDeviceClass (CDC).              */
                          0x00,          /* bDeviceSubClass.                 */
                          0x00,          /* bDeviceProtocol.                 */
@@ -121,12 +121,12 @@ static const uint8_t vcom_configuration_descriptor_data[67] = {
   /* Endpoint 1 Descriptor.*/
   USB_DESC_ENDPOINT     (USBD1_DATA_AVAILABLE_EP,       /* bEndpointAddress.*/
                          0x02,          /* bmAttributes (Bulk).             */
-                         0x0040,        /* wMaxPacketSize.                  */
+                         0x0200,        /* wMaxPacketSize.                  */
                          0x00),         /* bInterval.                       */
   /* Endpoint 1 Descriptor.*/
   USB_DESC_ENDPOINT     (USBD1_DATA_REQUEST_EP|0x80,    /* bEndpointAddress.*/
                          0x02,          /* bmAttributes (Bulk).             */
-                         0x0040,        /* wMaxPacketSize.                  */
+                         0x0200,        /* wMaxPacketSize.                  */
                          0x00)          /* bInterval.                       */
 };
 
@@ -226,8 +226,8 @@ static const USBEndpointConfig ep1config = {
   NULL,
   sduDataTransmitted,
   sduDataReceived,
-  0x0040,
-  0x0040,
+  0x0200,
+  0x0200,
   &ep1instate,
   &ep1outstate,
   2,
