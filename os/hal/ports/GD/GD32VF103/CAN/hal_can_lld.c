@@ -89,8 +89,8 @@ static void can_lld_set_filters(CANDriver* canp,
   if (canp == &CAND1) {
     rccEnableCAN1(true);
     /* Filters initialization.*/
-    canp->can->FMR = (canp->can->FMR & 0xFFFF0000) | CAN_FMR_FINIT;
-    canp->can->FMR = (canp->can->FMR & 0xFFFF0000) | (can2sb << 8) | CAN_FMR_FINIT;
+    canp->can->FCTL = (canp->can->FCTL & 0xFFFF0000) | CAN_FCTL_FLD;
+    canp->can->FCTL = (canp->can->FCTL & 0xFFFF0000) | (can2sb << 8) | CAN_FCTL_FLD;
   }
 #endif
 
@@ -98,10 +98,10 @@ static void can_lld_set_filters(CANDriver* canp,
     uint32_t i, fmask;
 
     /* All filters cleared.*/
-    canp->can->FA1R = 0;
-    canp->can->FM1R = 0;
-    canp->can->FS1R = 0;
-    canp->can->FFA1R = 0;
+    canp->can->FW = 0;
+    canp->can->FMCFG = 0;
+    canp->can->FSCFG = 0;
+    canp->can->FAFIFO = 0;
 
 #if GD32_CAN_USE_CAN1
     if (canp == &CAND1) {
@@ -116,14 +116,14 @@ static void can_lld_set_filters(CANDriver* canp,
     for (i = 0; i < num; i++) {
       fmask = 1 << cfp->filter;
       if (cfp->mode)
-        canp->can->FM1R |= fmask;
+        canp->can->FMCFG |= fmask;
       if (cfp->scale)
-        canp->can->FS1R |= fmask;
+        canp->can->FSCFG |= fmask;
       if (cfp->assignment)
-        canp->can->FFA1R |= fmask;
+        canp->can->FAFIFO |= fmask;
       canp->can->sFilterRegister[cfp->filter].FR1 = cfp->register1;
       canp->can->sFilterRegister[cfp->filter].FR2 = cfp->register2;
-      canp->can->FA1R |= fmask;
+      canp->can->FW |= fmask;
       cfp++;
     }
   }
@@ -138,18 +138,18 @@ static void can_lld_set_filters(CANDriver* canp,
       canp->can->sFilterRegister[can2sb].FR2 = 0;
     }
 #endif
-    canp->can->FM1R = 0;
-    canp->can->FFA1R = 0;
-    canp->can->FS1R = 1;
-    canp->can->FA1R = 1;
+    canp->can->FMCFG = 0;
+    canp->can->FAFIFO = 0;
+    canp->can->FSCFG = 1;
+    canp->can->FW = 1;
 #if GD32_CAN_USE_CAN2
     if (canp == &CAND1) {
-      canp->can->FS1R |= 1 << can2sb;
-      canp->can->FA1R |= 1 << can2sb;
+      canp->can->FSCFG |= 1 << can2sb;
+      canp->can->FW |= 1 << can2sb;
     }
 #endif
   }
-  canp->can->FMR &= ~CAN_FMR_FINIT;
+  canp->can->FCTL &= ~CAN_FCTL_FLD;
 
   /* Clock disabled, it will be enabled again in can_lld_start().*/
   /* Temporarily enabling CAN clock.*/
@@ -168,19 +168,19 @@ static void can_lld_set_filters(CANDriver* canp,
  * @notapi
  */
 static void can_lld_tx_handler(CANDriver *canp) {
-  uint32_t tsr;
+  uint32_t tstat;
   eventflags_t flags;
 
   /* Clearing IRQ sources.*/
-  tsr = canp->can->TSR;
-  canp->can->TSR = tsr;
+  tstat = canp->can->TSTAT;
+  canp->can->TSTAT = tstat;
 
   /* Flags to be signaled through the TX event source.*/
   flags = 0U;
 
   /* Checking mailbox 0.*/
-  if ((tsr & CAN_TSR_RQCP0) != 0U) {
-    if ((tsr & (CAN_TSR_ALST0 | CAN_TSR_TERR0)) != 0U) {
+  if ((tstat & CAN_TSTAT_MTF0) != 0U) {
+    if ((tstat & (CAN_TSTAT_MAL0 | CAN_TSTAT_MTE0)) != 0U) {
       flags |= CAN_MAILBOX_TO_MASK(1U) << 16U;
     }
     else {
@@ -189,8 +189,8 @@ static void can_lld_tx_handler(CANDriver *canp) {
   }
 
   /* Checking mailbox 1.*/
-  if ((tsr & CAN_TSR_RQCP1) != 0U) {
-    if ((tsr & (CAN_TSR_ALST1 | CAN_TSR_TERR1)) != 0U) {
+  if ((tstat & CAN_TSTAT_MTF1) != 0U) {
+    if ((tstat & (CAN_TSTAT_MAL1 | CAN_TSTAT_MTE1)) != 0U) {
       flags |= CAN_MAILBOX_TO_MASK(2U) << 16U;
     }
     else {
@@ -199,8 +199,8 @@ static void can_lld_tx_handler(CANDriver *canp) {
   }
 
   /* Checking mailbox 2.*/
-  if ((tsr & CAN_TSR_RQCP2) != 0U) {
-    if ((tsr & (CAN_TSR_ALST2 | CAN_TSR_TERR2)) != 0U) {
+  if ((tstat & CAN_TSTAT_MTF2) != 0U) {
+    if ((tstat & (CAN_TSTAT_MAL2 | CAN_TSTAT_MTE2)) != 0U) {
       flags |= CAN_MAILBOX_TO_MASK(3U) << 16U;
     }
     else {
@@ -220,17 +220,17 @@ static void can_lld_tx_handler(CANDriver *canp) {
  * @notapi
  */
 static void can_lld_rx0_handler(CANDriver *canp) {
-  uint32_t rf0r;
+  uint32_t rfifo0;
 
-  rf0r = canp->can->RF0R;
-  if ((rf0r & CAN_RF0R_FMP0) > 0) {
+  rfifo0 = canp->can->RFIFO0;
+  if ((rfifo0 & CAN_RFIFO0_RFL0) > 0) {
     /* No more receive events until the queue 0 has been emptied.*/
-    canp->can->IER &= ~CAN_IER_FMPIE0;
+    canp->can->INTEN &= ~CAN_INTEN_RFNEIE0;
     _can_rx_full_isr(canp, CAN_MAILBOX_TO_MASK(1U));
   }
-  if ((rf0r & CAN_RF0R_FOVR0) > 0) {
+  if ((rfifo0 & CAN_RFIFO0_RFO0) > 0) {
     /* Overflow events handling.*/
-    canp->can->RF0R = CAN_RF0R_FOVR0;
+    canp->can->RFIFO0 = CAN_RFIFO0_RFO0;
     _can_error_isr(canp, CAN_OVERFLOW_ERROR);
   }
 }
@@ -243,17 +243,17 @@ static void can_lld_rx0_handler(CANDriver *canp) {
  * @notapi
  */
 static void can_lld_rx1_handler(CANDriver *canp) {
-  uint32_t rf1r;
+  uint32_t rfifo1;
 
-  rf1r = canp->can->RF1R;
-  if ((rf1r & CAN_RF1R_FMP1) > 0) {
+  rfifo1 = canp->can->RFIFO1;
+  if ((rfifo1 & CAN_RFIFO1_RFL1) > 0) {
     /* No more receive events until the queue 0 has been emptied.*/
-    canp->can->IER &= ~CAN_IER_FMPIE1;
+    canp->can->INTEN &= ~CAN_INTEN_RFNEIE1;
     _can_rx_full_isr(canp, CAN_MAILBOX_TO_MASK(2U));
   }
-  if ((rf1r & CAN_RF1R_FOVR1) > 0) {
+  if ((rfifo1 & CAN_RFIFO1_RFO1) > 0) {
     /* Overflow events handling.*/
-    canp->can->RF1R = CAN_RF1R_FOVR1;
+    canp->can->RFIFO1 = CAN_RFIFO1_RFO1;
     _can_error_isr(canp, CAN_OVERFLOW_ERROR);
   }
 }
@@ -266,28 +266,28 @@ static void can_lld_rx1_handler(CANDriver *canp) {
  * @notapi
  */
 static void can_lld_sce_handler(CANDriver *canp) {
-  uint32_t msr;
+  uint32_t stat;
 
   /* Clearing IRQ sources.*/
-  msr = canp->can->MSR;
-  canp->can->MSR = msr;
+  stat = canp->can->STAT;
+  canp->can->STAT = stat;
 
   /* Wakeup event.*/
 #if CAN_USE_SLEEP_MODE
-  if (msr & CAN_MSR_WKUI) {
+  if (stat & CAN_STAT_WUIF) {
     canp->state = CAN_READY;
-    canp->can->MCR &= ~CAN_MCR_SLEEP;
+    canp->can->CTL &= ~CAN_CTL_SLPWMOD;
     _can_wakeup_isr(canp);
   }
 #endif /* CAN_USE_SLEEP_MODE */
   /* Error event.*/
-  if (msr & CAN_MSR_ERRI) {
+  if (stat & CAN_STAT_ERRIF) {
     eventflags_t flags;
-    uint32_t esr = canp->can->ESR;
+    uint32_t err = canp->can->ERR;
 
 #if GD32_CAN_REPORT_ALL_ERRORS
-    flags = (eventflags_t)(esr & 7);
-    if ((esr & CAN_ESR_LEC) > 0)
+    flags = (eventflags_t)(err & 7);
+    if ((err & CAN_ERR_ERRN) > 0)
       flags |= CAN_FRAMING_ERROR;
 #else
     flags = 0;
@@ -295,7 +295,7 @@ static void can_lld_sce_handler(CANDriver *canp) {
 
     /* The content of the ESR register is copied unchanged in the upper
        half word of the listener flags mask.*/
-    _can_error_isr(canp, flags | (eventflags_t)(esr << 16U));
+    _can_error_isr(canp, flags | (eventflags_t)(err << 16U));
   }
 }
 
@@ -558,23 +558,23 @@ void can_lld_start(CANDriver *canp) {
 #endif
 
   /* Configuring CAN. */
-  canp->can->MCR = CAN_MCR_INRQ;
-  while ((canp->can->MSR & CAN_MSR_INAK) == 0)
+  canp->can->CTL = CAN_CTL_IWMOD;
+  while ((canp->can->STAT & CAN_STAT_IWS) == 0)
     osalThreadSleepS(1);
-  canp->can->BTR = canp->config->btr;
-  canp->can->MCR = canp->config->mcr;
+  canp->can->BT = canp->config->bt;
+  canp->can->CTL = canp->config->ctl;
 
   /* Interrupt sources initialization.*/
 #if GD32_CAN_REPORT_ALL_ERRORS
-  canp->can->IER = CAN_IER_TMEIE  | CAN_IER_FMPIE0 | CAN_IER_FMPIE1 |
-                   CAN_IER_WKUIE  | CAN_IER_ERRIE  | CAN_IER_LECIE  |
-                   CAN_IER_BOFIE  | CAN_IER_EPVIE  | CAN_IER_EWGIE  |
-                   CAN_IER_FOVIE0 | CAN_IER_FOVIE1;
+  canp->can->INTEN = CAN_INTEN_TMEIE  | CAN_INTEN_RFNEIE0 | CAN_INTEN_RFNEIE1 |
+                   CAN_INTEN_WIE  | CAN_INTEN_ERRIE  | CAN_INTEN_ERRNIE  |
+                   CAN_INTEN_BOIE  | CAN_INTEN_PERRIE  | CAN_INTEN_WERRIE  |
+                   CAN_INTEN_RFOIE0 | CAN_INTEN_RFOIE1;
 #else
-  canp->can->IER = CAN_IER_TMEIE  | CAN_IER_FMPIE0 | CAN_IER_FMPIE1 |
-                   CAN_IER_WKUIE  | CAN_IER_ERRIE  |
-                   CAN_IER_BOFIE  | CAN_IER_EPVIE  | CAN_IER_EWGIE  |
-                   CAN_IER_FOVIE0 | CAN_IER_FOVIE1;
+  canp->can->INTEN = CAN_INTEN_TMEIE  | CAN_INTEN_RFNEIE0 | CAN_INTEN_RFNEIE1 |
+                   CAN_INTEN_WIE  | CAN_INTEN_ERRIE  |
+                   CAN_INTEN_BOIE  | CAN_INTEN_PERRIE  | CAN_INTEN_WERRIE  |
+                   CAN_INTEN_RFOIE0 | CAN_INTEN_RFOIE1;
 #endif
 }
 
@@ -591,8 +591,8 @@ void can_lld_stop(CANDriver *canp) {
   if (canp->state == CAN_READY) {
 #if GD32_CAN_USE_CAN1
     if (&CAND1 == canp) {
-      CAN1->MCR = 0x00010002;                   /* Register reset value.    */
-      CAN1->IER = 0x00000000;                   /* All sources disabled.    */
+      CAN1->CTL = 0x00010002;                   /* Register reset value.    */
+      CAN1->INTEN = 0x00000000;                   /* All sources disabled.    */
 #if GD32_CAN_USE_CAN2
       /* If CAND2 is stopped then CAN1 clock is stopped here.*/
       if (CAND2.state == CAN_STOP)
@@ -605,8 +605,8 @@ void can_lld_stop(CANDriver *canp) {
 
 #if GD32_CAN_USE_CAN2
     if (&CAND2 == canp) {
-      CAN2->MCR = 0x00010002;                   /* Register reset value.    */
-      CAN2->IER = 0x00000000;                   /* All sources disabled.    */
+      CAN2->CTL = 0x00010002;                   /* Register reset value.    */
+      CAN2->INTEN = 0x00000000;                   /* All sources disabled.    */
 #if GD32_CAN_USE_CAN1
       /* If CAND1 is stopped then CAN1 clock is stopped here.*/
       if (CAND1.state == CAN_STOP)
@@ -636,13 +636,13 @@ bool can_lld_is_tx_empty(CANDriver *canp, canmbx_t mailbox) {
 
   switch (mailbox) {
   case CAN_ANY_MAILBOX:
-    return (canp->can->TSR & CAN_TSR_TME) != 0;
+    return (canp->can->TSTAT & CAN_TSTAT_TME) != 0;
   case 1:
-    return (canp->can->TSR & CAN_TSR_TME0) != 0;
+    return (canp->can->TSTAT & CAN_TSTAT_TME0) != 0;
   case 2:
-    return (canp->can->TSR & CAN_TSR_TME1) != 0;
+    return (canp->can->TSTAT & CAN_TSTAT_TME1) != 0;
   case 3:
-    return (canp->can->TSR & CAN_TSR_TME2) != 0;
+    return (canp->can->TSTAT & CAN_TSTAT_TME2) != 0;
   default:
     return false;
   }
@@ -666,7 +666,7 @@ void can_lld_transmit(CANDriver *canp,
   /* Pointer to a free transmission mailbox.*/
   switch (mailbox) {
   case CAN_ANY_MAILBOX:
-    tmbp = &canp->can->sTxMailBox[(canp->can->TSR & CAN_TSR_CODE) >> 24];
+    tmbp = &canp->can->sTxMailBox[(canp->can->TSTAT & CAN_TSTAT_NUM) >> 24];
     break;
   case 1:
     tmbp = &canp->can->sTxMailBox[0];
@@ -684,13 +684,13 @@ void can_lld_transmit(CANDriver *canp,
   /* Preparing the message.*/
   if (ctfp->IDE)
     tir = ((uint32_t)ctfp->EID << 3) | ((uint32_t)ctfp->RTR << 1) |
-          CAN_TI0R_IDE;
+          CAN_TMI0_FF;
   else
     tir = ((uint32_t)ctfp->SID << 21) | ((uint32_t)ctfp->RTR << 1);
-  tmbp->TDTR = ctfp->DLC;
-  tmbp->TDLR = ctfp->data32[0];
-  tmbp->TDHR = ctfp->data32[1];
-  tmbp->TIR  = tir | CAN_TI0R_TXRQ;
+  tmbp->TMP = ctfp->DLC;
+  tmbp->DATA0 = ctfp->data32[0];
+  tmbp->DATA1 = ctfp->data32[1];
+  tmbp->TMI  = tir | CAN_TMI0_TEN;
 }
 
 /**
@@ -709,12 +709,12 @@ bool can_lld_is_rx_nonempty(CANDriver *canp, canmbx_t mailbox) {
 
   switch (mailbox) {
   case CAN_ANY_MAILBOX:
-    return ((canp->can->RF0R & CAN_RF0R_FMP0) != 0 ||
-            (canp->can->RF1R & CAN_RF1R_FMP1) != 0);
+    return ((canp->can->RFIFO0 & CAN_RFIFO0_RFL0) != 0 ||
+            (canp->can->RFIFO1 & CAN_RFIFO1_RFL1) != 0);
   case 1:
-    return (canp->can->RF0R & CAN_RF0R_FMP0) != 0;
+    return (canp->can->RFIFO0 & CAN_RFIFO0_RFL0) != 0;
   case 2:
-    return (canp->can->RF1R & CAN_RF1R_FMP1) != 0;
+    return (canp->can->RFIFO1 & CAN_RFIFO1_RFL1) != 0;
   default:
     return false;
   }
@@ -735,9 +735,9 @@ void can_lld_receive(CANDriver *canp,
   uint32_t rir, rdtr;
 
   if (mailbox == CAN_ANY_MAILBOX) {
-    if ((canp->can->RF0R & CAN_RF0R_FMP0) != 0)
+    if ((canp->can->RFIFO0 & CAN_RFIFO0_RFL0) != 0)
       mailbox = 1;
-    else if ((canp->can->RF1R & CAN_RF1R_FMP1) != 0)
+    else if ((canp->can->RFIFO1 & CAN_RFIFO1_RFL1) != 0)
       mailbox = 2;
     else {
       /* Should not happen, do nothing.*/
@@ -747,33 +747,33 @@ void can_lld_receive(CANDriver *canp,
   switch (mailbox) {
   case 1:
     /* Fetches the message.*/
-    rir  = canp->can->sFIFOMailBox[0].RIR;
-    rdtr = canp->can->sFIFOMailBox[0].RDTR;
-    crfp->data32[0] = canp->can->sFIFOMailBox[0].RDLR;
-    crfp->data32[1] = canp->can->sFIFOMailBox[0].RDHR;
+    rir  = canp->can->sFIFOMailBox[0].RFIFOMI;
+    rdtr = canp->can->sFIFOMailBox[0].RFIFOMP;
+    crfp->data32[0] = canp->can->sFIFOMailBox[0].RFIFOMDATA0;
+    crfp->data32[1] = canp->can->sFIFOMailBox[0].RFIFOMDATA1;
 
     /* Releases the mailbox.*/
-    canp->can->RF0R = CAN_RF0R_RFOM0;
+    canp->can->RFIFO0 = CAN_RFIFO0_RFD0;
 
     /* If the queue is empty re-enables the interrupt in order to generate
        events again.*/
-    if ((canp->can->RF0R & CAN_RF0R_FMP0) == 0)
-      canp->can->IER |= CAN_IER_FMPIE0;
+    if ((canp->can->RFIFO0 & CAN_RFIFO0_RFL0) == 0)
+      canp->can->INTEN |= CAN_INTEN_RFNEIE0;
     break;
   case 2:
     /* Fetches the message.*/
-    rir  = canp->can->sFIFOMailBox[1].RIR;
-    rdtr = canp->can->sFIFOMailBox[1].RDTR;
-    crfp->data32[0] = canp->can->sFIFOMailBox[1].RDLR;
-    crfp->data32[1] = canp->can->sFIFOMailBox[1].RDHR;
+    rir  = canp->can->sFIFOMailBox[1].RFIFOMI;
+    rdtr = canp->can->sFIFOMailBox[1].RFIFOMP;
+    crfp->data32[0] = canp->can->sFIFOMailBox[1].RFIFOMDATA0;
+    crfp->data32[1] = canp->can->sFIFOMailBox[1].RFIFOMDATA1;
 
     /* Releases the mailbox.*/
-    canp->can->RF1R = CAN_RF1R_RFOM1;
+    canp->can->RFIFO1 = CAN_RFIFO1_RFD1;
 
     /* If the queue is empty re-enables the interrupt in order to generate
        events again.*/
-    if ((canp->can->RF1R & CAN_RF1R_FMP1) == 0)
-      canp->can->IER |= CAN_IER_FMPIE1;
+    if ((canp->can->RFIFO1 & CAN_RFIFO1_RFL1) == 0)
+      canp->can->INTEN |= CAN_INTEN_RFNEIE1;
     break;
   default:
     /* Should not happen, do nothing.*/
@@ -803,7 +803,7 @@ void can_lld_receive(CANDriver *canp,
 void can_lld_abort(CANDriver *canp,
                    canmbx_t mailbox) {
 
-  canp->can->TSR = 128U << ((mailbox - 1U) * 8U);
+  canp->can->TSTAT = 128U << ((mailbox - 1U) * 8U);
 }
 
 #if CAN_USE_SLEEP_MODE || defined(__DOXYGEN__)
@@ -816,7 +816,7 @@ void can_lld_abort(CANDriver *canp,
  */
 void can_lld_sleep(CANDriver *canp) {
 
-  canp->can->MCR |= CAN_MCR_SLEEP;
+  canp->can->CTL |= CAN_CTL_SLPWMOD;
 }
 
 /**
@@ -828,7 +828,7 @@ void can_lld_sleep(CANDriver *canp) {
  */
 void can_lld_wakeup(CANDriver *canp) {
 
-  canp->can->MCR &= ~CAN_MCR_SLEEP;
+  canp->can->CTL &= ~CAN_CTL_SLPWMOD;
 }
 #endif /* CAN_USE_SLEEP_MODE */
 

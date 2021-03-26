@@ -35,10 +35,10 @@
  * The following macros from the ST header file are replaced with better
  * equivalents.
  */
-#undef CAN_BTR_BRP
-#undef CAN_BTR_TS1
-#undef CAN_BTR_TS2
-#undef CAN_BTR_SJW
+#undef CAN_BT_BAUDPSC
+#undef CAN_BT_BS1
+#undef CAN_BT_BS2
+#undef CAN_BT_SJW
 
 /**
  * @brief   This switch defines whether the driver implementation supports
@@ -60,10 +60,10 @@
  * @name    CAN registers helper macros
  * @{
  */
-#define CAN_BTR_BRP(n)              (n)         /**< @brief BRP field macro.*/
-#define CAN_BTR_TS1(n)              ((n) << 16) /**< @brief TS1 field macro.*/
-#define CAN_BTR_TS2(n)              ((n) << 20) /**< @brief TS2 field macro.*/
-#define CAN_BTR_SJW(n)              ((n) << 24) /**< @brief SJW field macro.*/
+#define CAN_BT_BAUDPSC(n)          (n)         /**< @brief BRP field macro.*/
+#define CAN_BT_BS1(n)              ((n) << 16) /**< @brief TS1 field macro.*/
+#define CAN_BT_BS2(n)              ((n) << 20) /**< @brief TS2 field macro.*/
+#define CAN_BT_SJW(n)              ((n) << 24) /**< @brief SJW field macro.*/
 
 #define CAN_IDE_STD                 0           /**< @brief Standard id.    */
 #define CAN_IDE_EXT                 1           /**< @brief Extended id.    */
@@ -250,19 +250,19 @@ typedef struct {
   uint32_t                  filter:16;
   /**
    * @brief   Filter mode.
-   * @note    This bit represent the CAN_FM1R register bit associated to this
+   * @note    This bit represent the CAN_FMCFG register bit associated to this
    *          filter (0=mask mode, 1=list mode).
    */
   uint32_t                  mode:1;
   /**
    * @brief   Filter scale.
-   * @note    This bit represent the CAN_FS1R register bit associated to this
+   * @note    This bit represent the CAN_FSCFG register bit associated to this
    *          filter (0=16 bits mode, 1=32 bits mode).
    */
   uint32_t                  scale:1;
   /**
    * @brief   Filter mode.
-   * @note    This bit represent the CAN_FFA1R register bit associated to this
+   * @note    This bit represent the CAN_FAFIFO register bit associated to this
    *          filter, must be set to zero in this version of the driver.
    */
   uint32_t                  assignment:1;
@@ -281,17 +281,17 @@ typedef struct {
  */
 typedef struct {
   /**
-   * @brief   CAN MCR register initialization data.
+   * @brief   CAN CTL register initialization data.
    * @note    Some bits in this register are enforced by the driver regardless
    *          their status in this field.
    */
-  uint32_t                  mcr;
+  uint32_t                  ctl;
   /**
-   * @brief   CAN BTR register initialization data.
+   * @brief   CAN BT register initialization data.
    * @note    Some bits in this register are enforced by the driver regardless
    *          their status in this field.
    */
-  uint32_t                  btr;
+  uint32_t                  bt;
 } CANConfig;
 
 /**
