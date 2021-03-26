@@ -185,7 +185,9 @@ AOPT =
 TOPT = -mthumb -DTHUMB
 
 # Define C warning options here
-CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes
+# The NXP SDK code produces plenty of unused-parameter warnings,
+# so turn these off for now:
+CWARN = -Wall -Wextra -Wundef -Wno-unused-parameter -Wstrict-prototypes
 
 # Define C++ warning options here
 CPPWARN = -Wall -Wextra -Wundef
