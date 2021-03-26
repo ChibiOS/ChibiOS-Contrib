@@ -23,150 +23,138 @@
  * @{
  */
 
-#ifndef KINETIS_REGISTRY_H_
-#define KINETIS_REGISTRY_H_
+#ifndef MIMXRT1062_REGISTRY_H_
+#define MIMXRT1062_REGISTRY_H_
 
-#if !defined(MK66F18) || defined(__DOXYGEN__)
-#define MK66F18 
+#if !defined(MIMXRT1062) || defined(__DOXYGEN__)
+#define MIMXRT1062 
 #endif
 
 /*===========================================================================*/
 /* Platform capabilities.                                                    */
 /*===========================================================================*/
 
-/**
- * @brief   Maximum system and core clock (f_SYS) frequency.
- */
-#define KINETIS_SYSCLK_MAX      180000000L
-
-/**
- * @brief   Maximum bus clock (f_BUS) frequency.
- */
-#define KINETIS_BUSCLK_MAX      60000000L
-
-/**
- * @brief   Maximum flash clock (f_FLASH) frequency.
- */
-#define KINETIS_FLASHCLK_MAX    28000000L
+/* See IMXRT1060RM, page 44, table 4-2: CM7 domain interrupt summary */
 
 /* ADC attributes.*/
-#define KINETIS_HAS_ADC0            TRUE
-#define KINETIS_ADC0_IRQ_VECTOR     VectorDC
-#define KINETIS_HAS_ADC1            TRUE
-#define KINETIS_ADC1_IRQ_VECTOR     Vector164
+#define MIMXRT1062_HAS_ADC0            TRUE
+#define MIMXRT1062_ADC0_IRQ_VECTOR     Vector14C
+#define MIMXRT1062_HAS_ADC1            TRUE
+#define MIMXRT1062_ADC1_IRQ_VECTOR     Vector150
 
 /* DAC attributes.*/
-#define KINETIS_HAS_DAC0            TRUE
-#define KINETIS_DAC0_IRQ_VECTOR     Vector120
-#define KINETIS_HAS_DAC1            TRUE
-#define KINETIS_DAC1_IRQ_VECTOR     Vector160
+/* IMXRT1060RM, page 3324, 65.11 DAC interrupts: This module has no interrupts. */
+#define MIMXRT1062_HAS_DAC0            TRUE
+#define MIMXRT1062_HAS_DAC1            TRUE
+#define MIMXRT1062_HAS_DAC2            TRUE
+#define MIMXRT1062_HAS_DAC3            TRUE
 
 /* DMA attributes.*/
-#define KINETIS_DMA0_IRQ_VECTOR     Vector40
-#define KINETIS_DMA1_IRQ_VECTOR     Vector44
-#define KINETIS_DMA2_IRQ_VECTOR     Vector48
-#define KINETIS_DMA3_IRQ_VECTOR     Vector4C
-#define KINETIS_DMA4_IRQ_VECTOR     Vector50
-#define KINETIS_DMA5_IRQ_VECTOR     Vector54
-#define KINETIS_DMA6_IRQ_VECTOR     Vector58
-#define KINETIS_DMA7_IRQ_VECTOR     Vector5C
-#define KINETIS_DMA8_IRQ_VECTOR     Vector60
-#define KINETIS_DMA9_IRQ_VECTOR     Vector64
-#define KINETIS_DMA10_IRQ_VECTOR     Vector68
-#define KINETIS_DMA11_IRQ_VECTOR     Vector6C
-#define KINETIS_DMA12_IRQ_VECTOR     Vector70
-#define KINETIS_DMA13_IRQ_VECTOR     Vector74
-#define KINETIS_DMA14_IRQ_VECTOR     Vector78
-#define KINETIS_DMA15_IRQ_VECTOR     Vector7C
-#define KINETIS_HAS_DMA_ERROR_IRQ   TRUE
-#define KINETIS_DMA_ERROR_IRQ_VECTOR Vector80
-
-/* EXT attributes.*/
-#define KINETIS_PORTA_IRQ_VECTOR    Vector12C
-#define KINETIS_PORTB_IRQ_VECTOR    Vector130
-#define KINETIS_PORTC_IRQ_VECTOR    Vector134
-#define KINETIS_PORTD_IRQ_VECTOR    Vector138
-#define KINETIS_PORTE_IRQ_VECTOR    Vector13C
-#define KINETIS_EXT_HAS_COMMON_CD_IRQ   FALSE
-#define KINETIS_EXT_HAS_COMMON_BCDE_IRQ FALSE
-#define KINETIS_GPIO_HAS_OPENDRAIN  TRUE
+#define MIMXRT1062_DMA0_IRQ_VECTOR     Vector40
+#define MIMXRT1062_DMA1_IRQ_VECTOR     Vector44 
+#define MIMXRT1062_DMA2_IRQ_VECTOR     Vector48
+#define MIMXRT1062_DMA3_IRQ_VECTOR     Vector4C
+#define MIMXRT1062_DMA4_IRQ_VECTOR     Vector50
+#define MIMXRT1062_DMA5_IRQ_VECTOR     Vector54
+#define MIMXRT1062_DMA6_IRQ_VECTOR     Vector58
+#define MIMXRT1062_DMA7_IRQ_VECTOR     Vector5C
+#define MIMXRT1062_DMA8_IRQ_VECTOR     Vector60
+#define MIMXRT1062_DMA9_IRQ_VECTOR     Vector64
+#define MIMXRT1062_DMA10_IRQ_VECTOR     Vector68
+#define MIMXRT1062_DMA11_IRQ_VECTOR     Vector6C
+#define MIMXRT1062_DMA12_IRQ_VECTOR     Vector70
+#define MIMXRT1062_DMA13_IRQ_VECTOR     Vector74
+#define MIMXRT1062_DMA14_IRQ_VECTOR     Vector78
+#define MIMXRT1062_DMA15_IRQ_VECTOR     Vector7C
+#define MIMXRT1062_HAS_DMA_ERROR_IRQ   TRUE
+#define MIMXRT1062_DMA_ERROR_IRQ_VECTOR Vector80
 
 /* I2C attributes.*/
-#define KINETIS_HAS_I2C0            TRUE
-#define KINETIS_I2C0_IRQ_VECTOR     VectorA0
-#define KINETIS_HAS_I2C1            TRUE
-#define KINETIS_I2C1_IRQ_VECTOR     VectorA4
+#define MIMXRT1062_HAS_I2C0            TRUE
+#define MIMXRT1062_I2C0_IRQ_VECTOR     VectorB0
+#define MIMXRT1062_I2C0_IS_LPI2C       TRUE
+#define MIMXRT1062_HAS_I2C1            TRUE
+#define MIMXRT1062_I2C1_IRQ_VECTOR     VectorB4
+#define MIMXRT1062_I2C1_IS_LPI2C       TRUE
+#define MIMXRT1062_HAS_I2C2            TRUE
+#define MIMXRT1062_I2C2_IRQ_VECTOR     VectorB8
+#define MIMXRT1062_I2C2_IS_LPI2C       TRUE
+#define MIMXRT1062_HAS_I2C3            TRUE
+#define MIMXRT1062_I2C3_IRQ_VECTOR     VectorBC
+#define MIMXRT1062_I2C3_IS_LPI2C       TRUE
 
 /* Serial attributes.*/
-#define KINETIS_HAS_SERIAL0         TRUE
-#define KINETIS_SERIAL0_IRQ_VECTOR  VectorBC
-#define KINETIS_HAS_SERIAL1         TRUE
-#define KINETIS_SERIAL1_IRQ_VECTOR  VectorC4
-#define KINETIS_HAS_SERIAL2         TRUE
-#define KINETIS_SERIAL2_IRQ_VECTOR  VectorCC
-#define KINETIS_HAS_SERIAL3         TRUE
-#define KINETIS_SERIAL3_IRQ_VECTOR  VectorD4
-#define KINETIS_HAS_SERIAL_ERROR_IRQ TRUE
-#define KINETIS_SERIAL0_ERROR_IRQ_VECTOR VectorC0
-#define KINETIS_SERIAL1_ERROR_IRQ_VECTOR VectorC8
-#define KINETIS_SERIAL2_ERROR_IRQ_VECTOR VectorD0
-#define KINETIS_SERIAL3_ERROR_IRQ_VECTOR VectorD8
-#define KINETIS_SERIAL0_IS_LPUART   FALSE
-#define KINETIS_SERIAL0_IS_UARTLP   FALSE
-#define KINETIS_SERIAL1_IS_LPUART   FALSE
-#define KINETIS_SERIAL1_IS_UARTLP   FALSE
-#define KINETIS_SERIAL2_IS_LPUART   FALSE
-#define KINETIS_SERIAL2_IS_UARTLP   FALSE
-#define KINETIS_SERIAL3_IS_LPUART   FALSE
-#define KINETIS_SERIAL3_IS_UARTLP   FALSE
+#define MIMXRT1062_HAS_SERIAL0         TRUE
+#define MIMXRT1062_SERIAL0_IRQ_VECTOR  Vector90
+#define MIMXRT1062_HAS_SERIAL1         TRUE
+#define MIMXRT1062_SERIAL1_IRQ_VECTOR  Vector94
+#define MIMXRT1062_HAS_SERIAL2         TRUE
+#define MIMXRT1062_SERIAL2_IRQ_VECTOR  Vector98
+#define MIMXRT1062_HAS_SERIAL3         TRUE
+#define MIMXRT1062_SERIAL3_IRQ_VECTOR  Vector9C
+#define MIMXRT1062_HAS_SERIAL4         TRUE
+#define MIMXRT1062_SERIAL4_IRQ_VECTOR  VectorA0
+#define MIMXRT1062_HAS_SERIAL5         TRUE
+#define MIMXRT1062_SERIAL5_IRQ_VECTOR  VectorA4
+#define MIMXRT1062_HAS_SERIAL6         TRUE
+#define MIMXRT1062_SERIAL6_IRQ_VECTOR  VectorA8
+#define MIMXRT1062_HAS_SERIAL7         TRUE
+#define MIMXRT1062_SERIAL7_IRQ_VECTOR  VectorAC
+#define MIMXRT1062_HAS_SERIAL_ERROR_IRQ FALSE
+#define MIMXRT1062_SERIAL0_IS_LPUART   TRUE
+#define MIMXRT1062_SERIAL0_IS_UARTLP   FALSE
+#define MIMXRT1062_SERIAL1_IS_LPUART   TRUE
+#define MIMXRT1062_SERIAL1_IS_UARTLP   FALSE
+#define MIMXRT1062_SERIAL2_IS_LPUART   TRUE
+#define MIMXRT1062_SERIAL2_IS_UARTLP   FALSE
+#define MIMXRT1062_SERIAL3_IS_LPUART   TRUE
+#define MIMXRT1062_SERIAL3_IS_UARTLP   FALSE
+#define MIMXRT1062_SERIAL4_IS_LPUART   TRUE
+#define MIMXRT1062_SERIAL4_IS_UARTLP   FALSE
+#define MIMXRT1062_SERIAL5_IS_LPUART   TRUE
+#define MIMXRT1062_SERIAL5_IS_UARTLP   FALSE
+#define MIMXRT1062_SERIAL6_IS_LPUART   TRUE
+#define MIMXRT1062_SERIAL6_IS_UARTLP   FALSE
+#define MIMXRT1062_SERIAL7_IS_LPUART   TRUE
+#define MIMXRT1062_SERIAL7_IS_UARTLP   FALSE
 
 /* SPI attributes.*/
-#define KINETIS_HAS_SPI0            TRUE
-#define KINETIS_SPI0_IRQ_VECTOR     VectorA8
-#define KINETIS_HAS_SPI1            TRUE
-#define KINETIS_SPI1_IRQ_VECTOR     VectorAC
-
-/* FlexTimer attributes.*/
-#define KINETIS_FTM0_CHANNELS 8
-#define KINETIS_FTM1_CHANNELS 2
-#define KINETIS_FTM2_CHANNELS 2
-#define KINETIS_FTM3_CHANNELS 8
-
-#define KINETIS_HAS_FTM0            TRUE
-#define KINETIS_FTM0_IRQ_VECTOR     VectorE8
-#define KINETIS_HAS_FTM1            TRUE
-#define KINETIS_FTM1_IRQ_VECTOR     VectorEC
-#define KINETIS_HAS_FTM2            TRUE
-#define KINETIS_FTM2_IRQ_VECTOR     VectorF0
-#define KINETIS_HAS_FTM3            TRUE
-#define KINETIS_FTM3_IRQ_VECTOR     Vector15C
+#define MIMXRT1062_HAS_SPI0            TRUE
+#define MIMXRT1062_SPI0_IRQ_VECTOR     VectorC0
+#define MIMXRT1062_SPI0_IS_LPSPI       TRUE
+#define MIMXRT1062_HAS_SPI1            TRUE
+#define MIMXRT1062_SPI1_IRQ_VECTOR     VectorC4
+#define MIMXRT1062_SPI1_IS_LPSPI       TRUE
+#define MIMXRT1062_HAS_SPI2            TRUE
+#define MIMXRT1062_SPI2_IRQ_VECTOR     VectorC8
+#define MIMXRT1062_SPI2_IS_LPSPI       TRUE
+#define MIMXRT1062_HAS_SPI3            TRUE
+#define MIMXRT1062_SPI3_IRQ_VECTOR     VectorCC
+#define MIMXRT1062_SPI3_IS_LPSPI       TRUE
 
 /* GPT attributes.*/
-#define KINETIS_HAS_PIT0            TRUE
-#define KINETIS_PIT0_IRQ_VECTOR     Vector100
-#define KINETIS_HAS_PIT1            TRUE
-#define KINETIS_PIT1_IRQ_VECTOR     Vector104
-#define KINETIS_HAS_PIT2            TRUE
-#define KINETIS_PIT2_IRQ_VECTOR     Vector108
-#define KINETIS_HAS_PIT3            TRUE
-#define KINETIS_PIT3_IRQ_VECTOR     Vector10C
-#define KINETIS_HAS_PIT_COMMON_IRQ  FALSE
+#define MIMXRT1062_HAS_PIT0            TRUE
+#define MIMXRT1062_HAS_PIT1            TRUE
+#define MIMXRT1062_HAS_PIT2            TRUE
+#define MIMXRT1062_HAS_PIT3            TRUE
+#define MIMXRT1062_HAS_PIT_COMMON_IRQ  TRUE
+#define MIMXRT1062_PIT_IRQ_VECTOR      Vector228
 
 /* USB attributes.*/
-#define KINETIS_HAS_USB             TRUE
-#define KINETIS_USB_IRQ_VECTOR      Vector114
-#define KINETIS_USB0_IS_USBOTG      TRUE
-#define KINETIS_HAS_USB_CLOCK_RECOVERY TRUE
-
-/* LPTMR attributes.*/
-#define KINETIS_LPTMR0_IRQ_VECTOR   Vector128
+#define MIMXRT1062_HAS_USB                TRUE
+#define MIMXRT1062_USB_OTG1_IRQ_VECTOR    Vector204
+#define MIMXRT1062_USB_OTG2_IRQ_VECTOR    Vector200
+#define MIMXRT1062_USB0_IS_USBOTG         TRUE
+#define MIMXRT1062_HAS_USB_CLOCK_RECOVERY TRUE
 
 /* SDHC (SDC, MMC, SDIO) attributes */
-#define KINETIS_HAS_SDHC            TRUE
-#define KINETIS_SDHC_IRQ_VECTOR     Vector184
+#define MIMXRT1062_HAS_SDHC0            TRUE
+#define MIMXRT1062_SDHC0_IRQ_VECTOR     Vector1F8
+#define MIMXRT1062_HAS_SDHC1            TRUE
+#define MIMXRT1062_SDHC1_IRQ_VECTOR     Vector1FC
 
 /** @} */
 
-#endif /* KINETIS_REGISTRY_H_ */
+#endif /* MIMXRT1062_REGISTRY_H_ */
 
 /** @} */
