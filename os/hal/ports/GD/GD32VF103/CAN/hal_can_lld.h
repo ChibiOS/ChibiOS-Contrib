@@ -105,14 +105,6 @@
 #endif
 
 /**
- * @brief   CAN3 driver enable switch.
- * @details If set to @p TRUE the support for CAN3 is included.
- */
-#if !defined(GD32_CAN_USE_CAN3) || defined(__DOXYGEN__)
-#define GD32_CAN_USE_CAN3                  FALSE
-#endif
-
-/**
  * @brief   CAN1 interrupt priority level setting.
  */
 #if !defined(GD32_CAN_CAN1_IRQ_PRIORITY) || defined(__DOXYGEN__)
@@ -128,14 +120,6 @@
 #endif
 /** @} */
 
-/**
- * @brief   CAN3 interrupt priority level setting.
- */
-#if !defined(GD32_CAN_CAN3_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_CAN_CAN3_IRQ_PRIORITY         11
-#endif
-/** @} */
-
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
@@ -148,16 +132,8 @@
 #error "GD32_HAS_CAN2 not defined in registry"
 #endif
 
-#if !defined(GD32_HAS_CAN3)
-#error "GD32_HAS_CAN3 not defined in registry"
-#endif
-
 #if (GD32_HAS_CAN1 | GD32_HAS_CAN2) && !defined(GD32_CAN_MAX_FILTERS)
 #error "GD32_CAN_MAX_FILTERS not defined in registry"
-#endif
-
-#if GD32_HAS_CAN3 && !defined(GD32_CAN3_MAX_FILTERS)
-#error "GD32_CAN3_MAX_FILTERS not defined in registry"
 #endif
 
 #if GD32_CAN_USE_CAN1 && !GD32_HAS_CAN1
@@ -168,11 +144,7 @@
 #error "CAN2 not present in the selected device"
 #endif
 
-#if GD32_CAN_USE_CAN3 && !GD32_HAS_CAN3
-#error "CAN2 not present in the selected device"
-#endif
-
-#if !GD32_CAN_USE_CAN1 && !GD32_CAN_USE_CAN2 && !GD32_CAN_USE_CAN3
+#if !GD32_CAN_USE_CAN1 && !GD32_CAN_USE_CAN2 
 #error "CAN driver activated but no CAN peripheral assigned"
 #endif
 
@@ -432,10 +404,6 @@ extern CANDriver CAND1;
 
 #if GD32_CAN_USE_CAN2 && !defined(__DOXYGEN__)
 extern CANDriver CAND2;
-#endif
-
-#if GD32_CAN_USE_CAN3 && !defined(__DOXYGEN__)
-extern CANDriver CAND3;
 #endif
 
 #ifdef __cplusplus

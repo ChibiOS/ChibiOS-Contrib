@@ -53,11 +53,6 @@ CANDriver CAND1;
 CANDriver CAND2;
 #endif
 
-/** @brief CAN3 driver identifier.*/
-#if GD32_CAN_USE_CAN3 || defined(__DOXYGEN__)
-CANDriver CAND3;
-#endif
-
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
@@ -99,14 +94,6 @@ static void can_lld_set_filters(CANDriver* canp,
   }
 #endif
 
-#if GD32_CAN_USE_CAN3
-  if (canp == &CAND3) {
-    rccEnableCAN3(true);
-    /* Filters initialization.*/
-    canp->can->FMR = (canp->can->FMR & 0xFFFF0000) | CAN_FMR_FINIT;
-  }
-#endif
-
   if (num > 0) {
     uint32_t i, fmask;
 
@@ -119,15 +106,6 @@ static void can_lld_set_filters(CANDriver* canp,
 #if GD32_CAN_USE_CAN1
     if (canp == &CAND1) {
       for (i = 0; i < GD32_CAN_MAX_FILTERS; i++) {
-        canp->can->sFilterRegister[i].FR1 = 0;
-        canp->can->sFilterRegister[i].FR2 = 0;
-      }
-    }
-#endif
-
-#if GD32_CAN_USE_CAN3
-    if (canp == &CAND3) {
-      for (i = 0; i < GD32_CAN3_MAX_FILTERS; i++) {
         canp->can->sFilterRegister[i].FR1 = 0;
         canp->can->sFilterRegister[i].FR2 = 0;
       }
@@ -178,11 +156,6 @@ static void can_lld_set_filters(CANDriver* canp,
 #if GD32_CAN_USE_CAN1
   if (canp == &CAND1) {
     rccDisableCAN1();
-  }
-#endif
-#if GD32_CAN_USE_CAN3
-  if (canp == &CAND3) {
-    rccDisableCAN3();
   }
 #endif
 }
@@ -512,97 +485,6 @@ OSAL_IRQ_HANDLER(GD32_CAN1_EWMC_HANDLER) {
 #endif /* !defined(GD32_CAN1_UNIFIED_HANDLER) */
 #endif /* GD32_CAN_USE_CAN2 */
 
-#if GD32_CAN_USE_CAN3 || defined(__DOXYGEN__)
-#if defined(GD32_CAN3_UNIFIED_HANDLER)
-/**
- * @brief   CAN1 unified interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_CAN3_UNIFIED_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  can_lld_tx_handler(&CAND3);
-  can_lld_rx0_handler(&CAND3);
-  can_lld_rx1_handler(&CAND3);
-  can_lld_sce_handler(&CAND3);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#else /* !defined(GD32_CAN3_UNIFIED_HANDLER) */
-
-#if !defined(GD32_CAN3_TX_HANDLER)
-#error "GD32_CAN3_TX_HANDLER not defined"
-#endif
-#if !defined(GD32_CAN3_RX0_HANDLER)
-#error "GD32_CAN3_RX0_HANDLER not defined"
-#endif
-#if !defined(GD32_CAN3_RX1_HANDLER)
-#error "GD32_CAN3_RX1_HANDLER not defined"
-#endif
-#if !defined(GD32_CAN3_EWMC_HANDLER)
-#error "GD32_CAN3_EWMC_HANDLER not defined"
-#endif
-
-/**
- * @brief   CAN3 TX interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_CAN3_TX_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  can_lld_tx_handler(&CAND3);
-
-  OSAL_IRQ_EPILOGUE();
-}
-
-/**
- * @brief   CAN3 RX0 interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_CAN3_RX0_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  can_lld_rx0_handler(&CAND3);
-
-  OSAL_IRQ_EPILOGUE();
-}
-
-/**
- * @brief   CAN1 RX3 interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_CAN3_RX1_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  can_lld_rx1_handler(&CAND3);
-
-  OSAL_IRQ_EPILOGUE();
-}
-
-/**
- * @brief   CAN1 SCE interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_CAN3_EWMC_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  can_lld_sce_handler(&CAND3);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif /* !defined(GD32_CAN0_UNIFIED_HANDLER) */
-#endif /* GD32_CAN_USE_CAN1 */
-
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -642,32 +524,12 @@ void can_lld_init(void) {
 #endif
 #endif
 
-#if GD32_CAN_USE_CAN3
-  /* Driver initialization.*/
-  canObjectInit(&CAND3);
-  CAND3.can = CAN3;
-#if defined(GD32_CAN3_UNIFIED_NUMBER)
-    eclicEnableVector(GD32_CAN3_UNIFIED_NUMBER, GD32_CAN_CAN3_IRQ_PRIORITY, GD32_CAN_CAN3_IRQ_TRIGGER);
-#else
-    eclicEnableVector(GD32_CAN3_TX_NUMBER, GD32_CAN_CAN3_IRQ_PRIORITY, GD32_CAN_CAN3_IRQ_TRIGGER);
-    eclicEnableVector(GD32_CAN3_RX0_NUMBER, GD32_CAN_CAN3_IRQ_PRIORITY, GD32_CAN_CAN3_IRQ_TRIGGER);
-    eclicEnableVector(GD32_CAN3_RX1_NUMBER, GD32_CAN_CAN3_IRQ_PRIORITY, GD32_CAN_CAN3_IRQ_TRIGGER);
-    eclicEnableVector(GD32_CAN3_EWMC_NUMBER, GD32_CAN_CAN3_IRQ_PRIORITY, GD32_CAN_CAN3_IRQ_TRIGGER);
-#endif
-#endif
-
   /* Filters initialization.*/
 #if GD32_CAN_USE_CAN1
 #if GD32_HAS_CAN2
   can_lld_set_filters(&CAND1, GD32_CAN_MAX_FILTERS / 2, 0, NULL);
 #else
   can_lld_set_filters(&CAND1, GD32_CAN_MAX_FILTERS, 0, NULL);
-#endif
-#endif
-
-#if GD32_HAS_CAN3
-#if GD32_CAN_USE_CAN3
-  can_lld_set_filters(&CAND3, GD32_CAN3_MAX_FILTERS, 0, NULL);
 #endif
 #endif
 }
@@ -692,12 +554,6 @@ void can_lld_start(CANDriver *canp) {
   if (&CAND2 == canp) {
     rccEnableCAN1(true);    /* CAN 2 requires CAN1, so enabling it first.*/
     rccEnableCAN2(true);
-  }
-#endif
-
-#if GD32_CAN_USE_CAN3
-  if (&CAND3 == canp) {
-    rccEnableCAN3(true);
   }
 #endif
 
@@ -759,14 +615,6 @@ void can_lld_stop(CANDriver *canp) {
         rccDisableCAN1();
       }
       rccDisableCAN2();
-    }
-#endif
-
-#if GD32_CAN_USE_CAN3
-    if (&CAND3 == canp) {
-      CAN3->MCR = 0x00010002;                   /* Register reset value.    */
-      CAN3->IER = 0x00000000;                   /* All sources disabled.    */
-      rccDisableCAN3();
     }
 #endif
   }
@@ -1011,17 +859,9 @@ void canSTM32SetFilters(CANDriver *canp, uint32_t can2sb,
 #if GD32_CAN_USE_CAN2
   osalDbgAssert(CAND2.state == CAN_STOP, "invalid state");
 #endif
-#if GD32_CAN_USE_CAN3
-  osalDbgAssert(CAND3.state == CAN_STOP, "invalid state");
-#endif
 
 #if GD32_CAN_USE_CAN1
   if (canp == &CAND1) {
-    can_lld_set_filters(canp, can2sb, num, cfp);
-  }
-#endif
-#if GD32_CAN_USE_CAN3
-  if (canp == &CAND3) {
     can_lld_set_filters(canp, can2sb, num, cfp);
   }
 #endif
