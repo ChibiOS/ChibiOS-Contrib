@@ -17,7 +17,7 @@
 
 /**
  * @file    USBHSv1/hal_usb_lld.h
- * @brief   KINETIS USB subsystem low level driver header.
+ * @brief   MIMXRT1062 USB subsystem low level driver header.
  *
  * @addtogroup USB
  * @{
@@ -28,6 +28,12 @@
 
 #if HAL_USE_USB || defined(__DOXYGEN__)
 
+#include "usb_device_config.h"
+#include "usb.h"
+#include "usb_device.h"
+#include "usb_device_dci.h"
+#include "usb_device_ehci.h"
+
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -35,7 +41,7 @@
 /**
  * @brief   Maximum endpoint address.
  */
-#define USB_MAX_ENDPOINTS                   15
+#define USB_MAX_ENDPOINTS                   7
 
 /**
  * @brief   Status stage handling method.
@@ -50,7 +56,7 @@
 /**
  * @brief   This device requires the address change after the status packet.
  */
-#define USB_SET_ADDRESS_MODE                USB_LATE_SET_ADDRESS
+#define USB_SET_ADDRESS_MODE                USB_EARLY_SET_ADDRESS
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -61,19 +67,23 @@
  * @details If set to @p TRUE the support for USB1 is included.
  * @note    The default is @p TRUE.
  */
-#if !defined(KINETIS_USB_USE_USB0) || defined(__DOXYGEN__)
-#define KINETIS_USB_USE_USB0                  FALSE
+#if !defined(MIMXRT1062_USB_USE_USB1) || defined(__DOXYGEN__)
+#define MIMXRT1062_USB_USE_USB1                  TRUE
+#endif
+
+#if !defined(MIMXRT1062_USB1_IS_USBOTG)
+#define MIMXRT1062_USB1_IS_USBOTG TRUE
 #endif
 
 /**
  * @brief   USB1 interrupt priority level setting.
  */
-#if !defined(KINETIS_USB_USB0_IRQ_PRIORITY)|| defined(__DOXYGEN__)
-#define KINETIS_USB_USB0_IRQ_PRIORITY      5
+#if !defined(MIMXRT1062_USB_USB1_IRQ_PRIORITY)|| defined(__DOXYGEN__)
+#define MIMXRT1062_USB_USB1_IRQ_PRIORITY      3
 #endif
 
-#if !defined(KINETIS_USB_ENDPOINTS) || defined(__DOXYGEN__)
-  #define KINETIS_USB_ENDPOINTS USB_MAX_ENDPOINTS+1
+#if !defined(MIMXRT1062_USB_ENDPOINTS) || defined(__DOXYGEN__)
+#define MIMXRT1062_USB_ENDPOINTS (USB_MAX_ENDPOINTS+1)
 #endif
 
 /**
@@ -87,21 +97,21 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if KINETIS_USB_USE_USB0 && !KINETIS_HAS_USB
+#if MIMXRT1062_USB_USE_USB1 && !MIMXRT1062_HAS_USB
 #error "USB not present in the selected device"
 #endif
 
-#if !KINETIS_USB_USE_USB0
+#if !MIMXRT1062_USB_USE_USB1
 #error "USB driver activated but no USB peripheral assigned"
 #endif
 
-#if KINETIS_USB_USE_USB0 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(KINETIS_USB_USB0_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to KINETIS_USB_USB0_IRQ_PRIORITY"
+#if MIMXRT1062_USB_USE_USB1 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(MIMXRT1062_USB_USB1_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to MIMXRT1062_USB_USB1_IRQ_PRIORITY"
 #endif
 
-#if !defined(KINETIS_USB_IRQ_VECTOR)
-#error "KINETIS_USB_IRQ_VECTOR not defined"
+#if !defined(MIMXRT1062_USB_OTG1_IRQ_VECTOR)
+#error "MIMXRT1062_USB_OTG1_IRQ_VECTOR not defined"
 #endif
 
 #if (USB_HOST_WAKEUP_DURATION < 2) || (USB_HOST_WAKEUP_DURATION > 15)
@@ -134,11 +144,6 @@ typedef struct {
    */
   thread_reference_t            thread;
 #endif
-  /* End of the mandatory fields.*/
-  /* */
-  bool                          odd_even;  /* ODD / EVEN */
-  /* */
-  bool                          data_bank; /* DATA0 / DATA1 */
 } USBInEndpointState;
 
 /**
@@ -164,14 +169,6 @@ typedef struct {
   thread_reference_t            thread;
 #endif
   /* End of the mandatory fields.*/
-  /**
-   * @brief   Number of packets to receive.
-   */
-  uint16_t                      rxpkts;
-  /* */
-  bool                          odd_even;  /* ODD / EVEN */
-  /* */
-  bool                          data_bank; /* DATA0 / DATA1 */
 } USBOutEndpointState;
 
 /**
@@ -363,7 +360,7 @@ struct USBDriver {
  *
  * @notapi
  */
-#define usb_lld_get_frame_number(usbp) ((USB0->FRMNUMH<<8)|USB0->FRMNUML)
+#define usb_lld_get_frame_number(usbp) ((USB1->FRMNUMH<<8)|USB1->FRMNUML)
 
 /**
  * @brief   Returns the exact size of a receive transaction.
@@ -388,7 +385,7 @@ struct USBDriver {
  * @api
  */
 #if !defined(usb_lld_connect_bus)
-#define usb_lld_connect_bus(usbp)   (USB0->CONTROL |= USBx_CONTROL_DPPULLUPNONOTG)
+#define usb_lld_connect_bus(usbp) do { usb_device_struct_t *dev_handle = (usb_device_struct_t *)handle; (void)USB_DeviceEhciControl((usb_device_ehci_state_struct_t *)(dev_handle->controllerHandle), kUSB_DeviceControlRun, NULL); } while (0)
 #endif
 
 /**
@@ -397,32 +394,27 @@ struct USBDriver {
  * @api
  */
 #if !defined(usb_lld_disconnect_bus)
-/* Writing to USB0->CONTROL causes an unhandled exception when USB module is not clocked. */
-#if KINETIS_USB0_IS_USBOTG
-#define usb_lld_disconnect_bus(usbp) if(SIM->SCGC4 & SIM_SCGC4_USBOTG) {USB0->CONTROL &= ~USBx_CONTROL_DPPULLUPNONOTG;} else {}
-#else /* KINETIS_USB0_IS_USBOTG */
-#define usb_lld_disconnect_bus(usbp) if(SIM->SCGC4 & SIM_SCGC4_USBFS) {USB0->CONTROL &= ~USBx_CONTROL_DPPULLUPNONOTG;} else {}
-#endif /* KINETIS_USB0_IS_USBOTG */
+#define usb_lld_disconnect_bus(usbp) do { usb_device_struct_t *dev_handle = (usb_device_struct_t *)handle; (void)USB_DeviceEhciControl((usb_device_ehci_state_struct_t *)(dev_handle->controllerHandle), kUSB_DeviceControlStop, NULL); } while (0)
 #endif
 
 /**
  * @brief   Start of host wake-up procedure.
+ * @todo    Test and wire up, if supported.
  *
  * @notapi
  */
 #define usb_lld_wakeup_host(usbp)                                     \
   do{                                                                 \
-    USB0->CTL |= USBx_CTL_RESUME;                                     \
-    osalThreadSleepMilliseconds(USB_HOST_WAKEUP_DURATION);            \
-    USB0->CTL &= ~USBx_CTL_RESUME;                                    \
   } while (false)
+
 
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if KINETIS_USB_USE_USB0 && !defined(__DOXYGEN__)
+#if MIMXRT1062_USB_USE_USB1 && !defined(__DOXYGEN__)
 extern USBDriver USBD1;
+extern usb_device_handle handle;
 #endif
 
 #ifdef __cplusplus

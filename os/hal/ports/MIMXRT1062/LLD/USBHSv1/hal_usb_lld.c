@@ -17,7 +17,10 @@
 
 /**
  * @file    USBHSv1/hal_usb_lld.c
- * @brief   KINETIS USB subsystem low level driver source.
+ * @brief   MIMXRT1062 USB subsystem low level driver source.
+ * @note page 2211 in https://www.pjrc.com/teensy/IMXRT1060RM_rev2.pdf
+ * @note page 2203: chapter 42 USB
+ * @note https://github.com/kylemanna/kinetis-sdk2/blob/master/docs/usb/MCUXpresso%20SDK%20USB%20Stack%20Device%20Reference%20Manual.pdf
  *
  * @addtogroup USB
  * @{
@@ -26,6 +29,20 @@
 #include <string.h>
 
 #include "hal.h"
+
+#include "usb_device_config.h"
+#include "usb.h"
+#include "usb_device.h"
+#include "usb_device_dci.h"
+#include "usb_device_ehci.h"
+#include "usb_phy.h"
+
+usb_device_handle handle;
+
+#include "printf_debug.h"
+
+#include "fsl_clock.h"
+
 
 #if HAL_USE_USB || defined(__DOXYGEN__)
 
@@ -37,8 +54,8 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-/** @brief USB0 driver identifier.*/
-#if KINETIS_USB_USE_USB0 || defined(__DOXYGEN__)
+/** @brief USB1 driver identifier.*/
+#if MIMXRT1062_USB_USE_USB1 || defined(__DOXYGEN__)
 USBDriver USBD1;
 #endif
 
@@ -77,308 +94,84 @@ static const USBEndpointConfig ep0config = {
   ep0setup_buffer
 };
 
-/*
- * Buffer Descriptor Table (BDT)
- */
-
-/*
- * Buffer Descriptor (BD)
- * */
-typedef struct {
-	uint32_t desc;
-	uint8_t* addr;
-} bd_t;
-
-/*
- * Buffer Descriptor fields - p.889
- */
-#define BDT_OWN		0x80
-#define BDT_DATA  0x40
-#define BDT_KEEP  0x20
-#define BDT_NINC  0x10
-#define BDT_DTS		0x08
-#define BDT_STALL	0x04
-
-#define BDT_DESC(bc, data)	(BDT_OWN | BDT_DTS | ((data&0x1)<<6) | ((bc) << 16))
-
-/*
- * BDT PID - p.891
- */
-#define BDT_PID_OUT   0x01
-#define BDT_PID_IN    0x09
-#define BDT_PID_SETUP 0x0D
-#define BDT_TOK_PID(n)	(((n)>>2)&0xF)
-
-/*
- * BDT index fields
- */
-#define DATA0 0
-#define DATA1 1
-
-#define RX   0
-#define TX   1
-
-#define EVEN 0
-#define ODD  1
-
-#define BDT_INDEX(endpoint, tx, odd) (((endpoint)<<2) | ((tx)<<1) | (odd))
-/*
- * Get RX-ed/TX-ed bytes count from BDT entry
- */
-#define BDT_BC(n) (((n)>>16)&0x3FF)
-
-/* The USB-FS needs 2 BDT entry per endpoint direction
- *    that adds to: 2*2*16 BDT entries for 16 bi-directional EP
- */
-static volatile bd_t _bdt[(KINETIS_USB_ENDPOINTS)*2*2] __attribute__((aligned(512)));
-
-/* FIXME later with dyn alloc
- * 16 EP
- *  2 directions per EP
- *  2 buffer per direction
- * => 64 buffers
- */
-static uint8_t _usbb[KINETIS_USB_ENDPOINTS*4][64] __attribute__((aligned(4)));
-static volatile uint8_t _usbbn=0;
-uint8_t* usb_alloc(uint8_t size)
-{
-  (void)size;
-  if(_usbbn < (KINETIS_USB_ENDPOINTS)*4)
-    return _usbb[_usbbn++];
-  while(1); /* Should not happen, ever */
-}
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-/* Called from locked ISR. */
-void usb_packet_transmit(USBDriver *usbp, usbep_t ep, size_t n)
-{
-  const USBEndpointConfig *epc = usbp->epc[ep];
-  USBInEndpointState *isp = epc->in_state;
-
-  bd_t *bd = (bd_t *)&_bdt[BDT_INDEX(ep, TX, isp->odd_even)];
-
-  if (n > (size_t)epc->in_maxsize)
-    n = (size_t)epc->in_maxsize;
-
-  /* Copy from buf to _usbb[] */
-  size_t i=0;
-  for(i=0;i<n;i++)
-    bd->addr[i] = isp->txbuf[i];
-
-  /* Update the Buffer status */
-  bd->desc = BDT_DESC(n, isp->data_bank);
-  /* Toggle the odd and data bits for next TX */
-  isp->data_bank ^= DATA1;
-  isp->odd_even ^= ODD;
+static uint8_t epaddr(usbep_t ep, uint8_t direction) {
+  return ep | (direction << USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_SHIFT);
 }
 
-/* Called from locked ISR. */
-void usb_packet_receive(USBDriver *usbp, usbep_t ep, size_t n)
-{
-  const USBEndpointConfig *epc = usbp->epc[ep];
-  USBOutEndpointState *osp = epc->out_state;
+static usb_status_t usb_device_callback(usb_device_handle handle, uint32_t callbackEvent, void *eventParam) {
+  (void)handle;
+  (void)eventParam;
 
-  bd_t *bd = (bd_t *)&_bdt[BDT_INDEX(ep, RX, osp->odd_even)];
+  USBDriver *usbp = &USBD1;
+  printf_debug("usb_device_callback(event=%d)", callbackEvent);
 
-  if (n > (size_t)epc->out_maxsize)
-    n = (size_t)epc->out_maxsize;
+  switch (callbackEvent) {
+  case kUSB_DeviceEventBusReset:
+    printf_debug("  bus reset");
+    _usb_reset(usbp);
+    break;
 
-  /* Copy from _usbb[] to buf  */
-  size_t i=0;
-  for(i=0;i<n;i++)
-    osp->rxbuf[i] = bd->addr[i];
+  case kUSB_DeviceEventSuspend:
+    printf_debug("  suspend");
+    _usb_suspend(usbp);
+    break;
 
-  /* Update the Buffer status
-   * Set current buffer to same DATA bank and then toggle.
-   * Since even/odd buffers are ping-pong and setup re-initialized them
-   * this should work correctly */
-  bd->desc = BDT_DESC(epc->out_maxsize, osp->data_bank);
-  osp->data_bank ^= DATA1;
-  usb_lld_start_out(usbp, ep);
+  case kUSB_DeviceEventResume:
+    printf_debug("  resume");
+    _usb_wakeup(usbp);
+    break;
+  }
+  
+  return kStatus_USB_Success;
 }
+
 
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*============================================================================*/
 
-#if KINETIS_USB_USE_USB0 || defined(__DOXYGEN__)
+#if MIMXRT1062_USB_USE_USB1 || defined(__DOXYGEN__)
+
 /**
  * @brief   USB interrupt handler.
+
+ * @note → page 2210, “Interrupts”
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(KINETIS_USB_IRQ_VECTOR) {
+OSAL_IRQ_HANDLER(MIMXRT1062_USB_OTG1_IRQ_VECTOR) {
   USBDriver *usbp = &USBD1;
-  uint8_t istat = USB0->ISTAT;
-
   OSAL_IRQ_PROLOGUE();
 
-  /* 04 - Bit2 - Start Of Frame token received */
-  if(istat & USBx_ISTAT_SOFTOK) {
+  // Do not print as long as SOF interrupt is enabled to avoid slowing down the
+  // application due to serial print latency:
+  //printf_debug("ISR\n");
+
+  // inlined from USB_DeviceEhciIsrFunction(handle) so that we can dispatch the
+  // SOF (start of frame) interrupt:
+  usb_device_struct_t *dev_handle = (usb_device_struct_t *)handle;
+  usb_device_ehci_state_struct_t *ehciState;
+  uint32_t status;
+
+  ehciState = (usb_device_ehci_state_struct_t *)(dev_handle->controllerHandle);
+
+  status = ehciState->registerBase->USBSTS;
+  status &= ehciState->registerBase->USBINTR;
+
+  USB_DeviceEhciIsrFunction(handle);
+
+  // Some ChibiOS components require the SOF interrupt, such as the USB serial.
+  if ((status & USBHS_USBSTS_SRI_MASK)) {
     _usb_isr_invoke_sof_cb(usbp);
-    USB0->ISTAT = USBx_ISTAT_SOFTOK;
   }
-
-  /* 08 - Bit3 - Token processing completed */
-  while(istat & USBx_ISTAT_TOKDNE) {
-    uint8_t stat = USB0->STAT;
-    uint8_t ep = stat >> 4;
-    if(ep > KINETIS_USB_ENDPOINTS) {
-      OSAL_IRQ_EPILOGUE();
-      return;
-    }
-    const USBEndpointConfig *epc = usbp->epc[ep];
-
-    /* Get the correct BDT entry */
-    uint8_t odd_even = (stat & USBx_STAT_ODD_MASK) >> USBx_STAT_ODD_SHIFT;
-    uint8_t tx_rx    = (stat & USBx_STAT_TX_MASK) >> USBx_STAT_TX_SHIFT;
-    bd_t *bd = (bd_t*)&_bdt[BDT_INDEX(ep,tx_rx,odd_even)];
-
-    /* Update the ODD/EVEN state for RX */
-    if(tx_rx == RX && epc->out_state != NULL)
-      epc->out_state->odd_even = odd_even;
-
-    switch(BDT_TOK_PID(bd->desc))
-    {
-      case BDT_PID_SETUP:                                              // SETUP
-      {
-        /* Clear receiving in the chibios state machine */
-        (usbp)->receiving &= ~1;
-        /* Call SETUP function (ChibiOS core), which prepares
-         * for send or receive and releases the buffer
-         */
-        _usb_isr_invoke_setup_cb(usbp, ep);
-        /* When a setup packet is received, tx is suspended,
-         * so it needs to be resumed here.
-         */
-        USB0->CTL &= ~USBx_CTL_TXSUSPENDTOKENBUSY;
-      } break;
-      case BDT_PID_IN:                                                 // IN
-      {
-        if(epc->in_state == NULL)
-          break;
-        /* Special case for SetAddress for EP0 */
-        if(ep == 0 && (((uint16_t)usbp->setup[0]<<8)|usbp->setup[1]) == 0x0500)
-        {
-          usbp->address = usbp->setup[2];
-          usb_lld_set_address(usbp);
-          _usb_isr_invoke_event_cb(usbp, USB_EVENT_ADDRESS);
-          usbp->state = USB_SELECTED;
-        }
-        uint16_t txed = BDT_BC(bd->desc);
-        epc->in_state->txcnt += txed;
-        if(epc->in_state->txcnt < epc->in_state->txsize)
-        {
-          epc->in_state->txbuf += txed;
-          osalSysLockFromISR();
-          usb_packet_transmit(usbp,ep,epc->in_state->txsize - epc->in_state->txcnt);
-          osalSysUnlockFromISR();
-        }
-        else
-        {
-          if(epc->in_cb != NULL)
-            _usb_isr_invoke_in_cb(usbp,ep);
-        }
-      } break;
-      case BDT_PID_OUT:                                                // OUT
-      {
-        if(epc->out_state == NULL)
-          break;
-        uint16_t rxed = BDT_BC(bd->desc);
-
-        osalSysLockFromISR();
-        usb_packet_receive(usbp,ep,rxed);
-        osalSysUnlockFromISR();
-        if(rxed)
-        {
-          epc->out_state->rxbuf += rxed;
-
-          /* Update transaction data */
-          epc->out_state->rxcnt              += rxed;
-          epc->out_state->rxsize             -= rxed;
-          epc->out_state->rxpkts             -= 1;
-
-          /* The transaction is completed if the specified number of packets
-             has been received or the current packet is a short packet.*/
-          if ((rxed < epc->out_maxsize) || (epc->out_state->rxpkts == 0))
-          {
-            if(epc->out_cb != NULL)
-              _usb_isr_invoke_out_cb(usbp, ep);
-          }
-        }
-      } break;
-      default:
-        break;
-    }
-    USB0->ISTAT = USBx_ISTAT_TOKDNE;
-    istat = USB0->ISTAT;
-  }
-
-  /* 01 - Bit0 - Valid USB Reset received */
-  if(istat & USBx_ISTAT_USBRST) {
-    _usb_reset(usbp);
-    USB0->ISTAT = USBx_ISTAT_USBRST;
-    OSAL_IRQ_EPILOGUE();
-    return;
-  }
-
-  /* 80 - Bit7 - STALL handshake received */
-  if(istat & USBx_ISTAT_STALL) {
-    USB0->ISTAT = USBx_ISTAT_STALL;
-  }
-
-  /* 02 - Bit1 - ERRSTAT condition triggered */
-  if(istat & USBx_ISTAT_ERROR) {
-    uint8_t err = USB0->ERRSTAT;
-    USB0->ERRSTAT = err;
-    USB0->ISTAT = USBx_ISTAT_ERROR;
-  }
-
-  /* 10 - Bit4 - Constant IDLE on USB bus detected */
-  if(istat & USBx_ISTAT_SLEEP) {
-    /* This seems to fire a few times before the device is
-     * configured - need to ignore those occurences somehow. */
-    /* The other option would be to only activate INTEN_SLEEPEN
-     * on CONFIGURED event, but that would need to be done in
-     * user firmware. */
-    if(usbp->state == USB_ACTIVE) {
-      _usb_suspend(usbp);
-      /* Enable interrupt on resume */
-      USB0->INTEN |= USBx_INTEN_RESUMEEN;
-    }
-
-    // low-power version (check!):
-    // enable wakeup interrupt on resume USB signaling
-    //  (check that it was a wakeup int with USBx_USBTRC0_USB_RESUME_INT)
-    //? USB0->USBTRC0 |= USBx_USBTRC0_USBRESMEN
-    // suspend the USB module
-    //? USB0->USBCTRL |= USBx_USBCTRL_SUSP;
-
-    USB0->ISTAT = USBx_ISTAT_SLEEP;
-  }
-
-  /* 20 - Bit5 - Resume - Only allowed in sleep=suspend mode */
-  if(istat & USBx_ISTAT_RESUME) {
-    /* Disable interrupt on resume (should be disabled
-     * during normal operation according to datasheet). */
-    USB0->INTEN &= ~USBx_INTEN_RESUMEEN;
-
-    // low power version (check!):
-    // desuspend the USB module
-    //? USB0->USBCTRL &= ~USBx_USBCTRL_SUSP;
-    // maybe also
-    //? USB0->CTL = USBx_CTL_USBENSOFEN;
-    _usb_wakeup(usbp);
-    USB0->ISTAT = USBx_ISTAT_RESUME;
-  }
-
-  /* 40 - Bit6 - ATTACH - used */
-
+  
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* KINETIS_USB_USE_USB0 */
+#endif /* MIMXRT1062_USB_USE_USB1 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -390,58 +183,39 @@ OSAL_IRQ_HANDLER(KINETIS_USB_IRQ_VECTOR) {
  * @notapi
  */
 void usb_lld_init(void) {
+  USBDriver *usbp = &USBD1;
+
   /* Driver initialization.*/
-  usbObjectInit(&USBD1);
+  usbObjectInit(usbp);
 
-#if KINETIS_USB_USE_USB0
+#if MIMXRT1062_USB_USE_USB1
+  /* USB PHY configuration */
+#ifndef BOARD_USB_PHY_D_CAL
+#define BOARD_USB_PHY_D_CAL (0x0CU)
+#endif
+#ifndef BOARD_USB_PHY_TXCAL45DP
+#define BOARD_USB_PHY_TXCAL45DP (0x06U)
+#endif
+#ifndef BOARD_USB_PHY_TXCAL45DM
+#define BOARD_USB_PHY_TXCAL45DM (0x06U)
+#endif
+  usb_phy_config_struct_t phyConfig = {
+    BOARD_USB_PHY_D_CAL, BOARD_USB_PHY_TXCAL45DP, BOARD_USB_PHY_TXCAL45DM,
+  };
+  uint32_t notUsed = 0;
 
-  /* Set USB clock source to MCGPLLCLK, MCGFLLCLK, USB1 PFD, or IRC48M */
-  SIM->SOPT2 |= SIM_SOPT2_USBSRC;
+  CLOCK_EnableUsbhs0PhyPllClock(kCLOCK_Usbphy480M, 480000000U);
+  CLOCK_EnableUsbhs0Clock(kCLOCK_Usb480M, 480000000U);
 
-#if defined(K20x5) || defined(K20x7) || defined(MK66F18)
+  USB_EhciPhyInit(kUSB_ControllerEhci0, notUsed, &phyConfig);
 
-#if KINETIS_MCG_MODE == KINETIS_MCG_MODE_FEI
-
-  /* MCGOUTCLK is the SYSCLK frequency, so don't divide for USB clock */
-  SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
-
-#elif KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE
-
-#if !defined(MK66F18)
-  /* Note:  We don't need this for MK66F18, we can use IRC48M clock for USB */
-  #define KINETIS_USBCLK_FREQUENCY 48000000UL
-  uint32_t i,j;
-  for(i=0; i < 2; i++) {
-    for(j=0; j < 8; j++) {
-      if((KINETIS_PLLCLK_FREQUENCY * (i+1)) == (KINETIS_USBCLK_FREQUENCY*(j+1))) {
-        SIM->CLKDIV2 = i | SIM_CLKDIV2_USBDIV(j);
-        goto usbfrac_match_found;
-      }
-    }
+  if (USB_DeviceInit(kUSB_ControllerEhci0, usb_device_callback, &handle) != kStatus_USB_Success) {
+    printf_debug("allocating handle failed");
+    return;
   }
-  usbfrac_match_found:
-  osalDbgAssert(i<2 && j <8,"USB Init error");
-#endif
+  printf_debug("handle allocated");
 
-#else /* KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE */
-#error USB clock setting not implemented for this KINETIS_MCG_MODE
-#endif /* KINETIS_MCG_MODE == ... */
-
-#if defined(MK66F18)
-  /* Switch from default MCGPLLCLK to IRC48M for USB */
-  SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
-  SIM->SOPT2 |= SIM_SOPT2_PLLFLLSEL_SET(3);
-#endif
-
-#elif defined(KL25) || defined (KL26) || defined(KL27)
-
-  /* No extra clock dividers for USB clock */
-
-#else /* defined(KL25) || defined (KL26) || defined(KL27) */
-#error USB driver not implemented for your MCU type
-#endif
-
-#endif /* KINETIS_USB_USE_USB0 */
+#endif /* MIMXRT1062_USB_USE_USB1 */
 }
 
 /**
@@ -452,67 +226,24 @@ void usb_lld_init(void) {
  * @notapi
  */
 void usb_lld_start(USBDriver *usbp) {
-  if (usbp->state == USB_STOP) {
-#if KINETIS_USB_USE_USB0
-    if (&USBD1 == usbp) {
-      /* Clear BDT */
-      uint8_t i;
-      for(i=0;i<KINETIS_USB_ENDPOINTS;i++) {
-        _bdt[i].desc=0;
-        _bdt[i].addr=0;
-      }
-
-#if defined(MK66F18)
-      /* Disable the USB current limiter */
-      SIM->USBPHYCTL |= SIM_USBPHYCTL_USBDISILIM;
-#endif
-
-      /* Enable Clock */
-#if KINETIS_USB0_IS_USBOTG
-      SIM->SCGC4 |= SIM_SCGC4_USBOTG;
-
-#else /* KINETIS_USB0_IS_USBOTG */
-      SIM->SCGC4 |= SIM_SCGC4_USBFS;
-#endif /* KINETIS_USB0_IS_USBOTG */
-
-#if KINETIS_HAS_USB_CLOCK_RECOVERY
-      USB0->CLK_RECOVER_IRC_EN |= USBx_CLK_RECOVER_IRC_EN_IRC_EN;
-      USB0->CLK_RECOVER_CTRL |= USBx_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN;
-#endif /* KINETIS_HAS_USB_CLOCK_RECOVERY */
-
-      /* Reset USB module, wait for completion */
-      USB0->USBTRC0 |= USBx_USBTRC0_USBRESET;
-      while ((USB0->USBTRC0 & USBx_USBTRC0_USBRESET));
-
-      /* Set BDT Address */
-      USB0->BDTPAGE1 = ((uint32_t)_bdt) >> 8;
-      USB0->BDTPAGE2 = ((uint32_t)_bdt) >> 16;
-      USB0->BDTPAGE3 = ((uint32_t)_bdt) >> 24;
-
-      /* Clear all ISR flags */
-      USB0->ISTAT = 0xFF;
-      USB0->ERRSTAT = 0xFF;
-#if KINETIS_USB0_IS_USBOTG
-      USB0->OTGISTAT = 0xFF;
-#endif /* KINETIS_USB0_IS_USBOTG */
-      USB0->USBTRC0 |= 0x40; //a hint was given that this is an undocumented interrupt bit
-
-      /* Enable USB */
-      USB0->CTL = USBx_CTL_ODDRST | USBx_CTL_USBENSOFEN;
-      USB0->USBCTRL = 0;
-
-      /* Enable reset interrupt */
-      USB0->INTEN |= USBx_INTEN_USBRSTEN;
-
-      /* Enable interrupt in NVIC */
-#if KINETIS_USB0_IS_USBOTG
-      nvicEnableVector(USB_OTG_IRQn, KINETIS_USB_USB0_IRQ_PRIORITY);
-#else /* KINETIS_USB0_IS_USBOTG */
-      nvicEnableVector(USB_IRQn, KINETIS_USB_USB0_IRQ_PRIORITY);
-#endif /* KINETIS_USB0_IS_USBOTG */
-    }
-#endif /* KINETIS_USB_USE_USB0 */
+  if (usbp->state != USB_STOP) {
+    printf_debug("already started!");
+    return; // already started
   }
+
+#if MIMXRT1062_USB_USE_USB1
+  if (usbp != &USBD1) {
+    return; // unknown usbp
+  }
+
+  printf_debug("  usb_lld_start() enter");
+
+  USB_DeviceRun(handle);
+  printf_debug("device running");
+
+  nvicEnableVector(USB_OTG1_IRQn, MIMXRT1062_USB_USB1_IRQ_PRIORITY);
+  printf_debug("interrupt enabled");
+#endif /* MIMXRT1062_USB_USE_USB1 */
 }
 
 /**
@@ -523,18 +254,97 @@ void usb_lld_start(USBDriver *usbp) {
  * @notapi
  */
 void usb_lld_stop(USBDriver *usbp) {
-  /* TODO: If in ready state then disables the USB clock.*/
   if (usbp->state == USB_STOP) {
-#if KINETIS_USB_USE_USB0
+#if MIMXRT1062_USB_USE_USB1
     if (&USBD1 == usbp) {
-#if KINETIS_USB0_IS_USBOTG
-      nvicDisableVector(USB_OTG_IRQn);
-#else /* KINETIS_USB0_IS_USBOTG */
-      nvicDisableVector(USB_IRQn);
-#endif /* KINETIS_USB0_IS_USBOTG */
+      printf_debug("usb_lld_stop()");
+      USB_DeviceStop(handle);
+      nvicDisableVector(USB_OTG1_IRQn);
     }
-#endif /* KINETIS_USB_USE_USB0 */
+#endif /* MIMXRT1062_USB_USE_USB1 */
   }
+}
+
+/**
+ * Called when the USB transfer completed
+ *
+ */
+static usb_status_t device_ep0_control_callback(usb_device_handle handle,
+						usb_device_endpoint_callback_message_struct_t *message,
+						void *callbackParam,
+						uint8_t direction) {
+  (void)handle;
+  (void)callbackParam;
+
+  USBDriver *usbp = &USBD1;
+  printf_debug("device_ep0_control_callback");
+  const uint8_t ep = 0;
+  const USBEndpointConfig *epc = usbp->epc[ep];
+  if (message->isSetup) {
+    printf_debug("setup message for endpoint 0");
+
+    /* Clear receiving in the chibios state machine */
+    (usbp)->receiving &= ~(1 << ep);
+    (usbp)->transmitting &= ~(1 << ep);
+
+    memcpy(usbp->setup, message->buffer, message->length);
+    
+    /* Call SETUP function (ChibiOS core), which prepares
+     * for send or receive and releases the buffer
+     */
+    if (epc->setup_cb != NULL) {
+      _usb_isr_invoke_setup_cb(usbp, ep);
+      // -> will call usb_lld_read_setup
+      // -> will call e.g. usb_lld_start_in
+    }
+    return kStatus_USB_Success;
+  }
+  printf_debug("transfer done: buffer %x, len=%d!", message->buffer, message->length);
+
+  if (message->length == USB_CANCELLED_TRANSFER_LENGTH) {
+    printf_debug("USB transfer cancelled");
+    return kStatus_USB_InvalidRequest;
+  }
+
+  if (direction == USB_OUT) {
+    printf_debug("    complete, OUT ep=%d (OUT), rxbuf=%x", ep, epc->out_state->rxbuf);
+    (usbp)->receiving &= ~(1 << ep);
+
+    USBOutEndpointState *osp = epc->out_state;
+    osp->rxcnt = message->length;
+
+    printf_debug("    received %d bytes", osp->rxcnt);
+
+    /* Endpoint Receive Complete Event */
+    /* Transfer Direction OUT */
+    if (epc->out_cb != NULL) {
+      printf_debug("    invoking out_cb for ep %d", ep);
+      _usb_isr_invoke_out_cb(usbp, ep);
+    }
+  } else if (direction == USB_IN) {
+    printf_debug("    complete, IN ep=%d (IN), txbuf=%x", ep, epc->in_state->txbuf);
+    (usbp)->transmitting &= ~(1 << ep);
+    /* Endpoint Transmit Complete Event */
+    /* Transfer Direction IN */
+    if (epc->in_cb != NULL) {
+      printf_debug("    invoking in_cb for ep %d", ep);
+      _usb_isr_invoke_in_cb(usbp, ep);
+    }
+  }
+
+  return kStatus_USB_Success;
+}
+
+static usb_status_t device_ep0_control_callback_in(usb_device_handle handle,
+						usb_device_endpoint_callback_message_struct_t *message,
+						void *callbackParam) {
+  return device_ep0_control_callback(handle, message, callbackParam, USB_IN);
+}
+
+static usb_status_t device_ep0_control_callback_out(usb_device_handle handle,
+						usb_device_endpoint_callback_message_struct_t *message,
+						void *callbackParam) {
+  return device_ep0_control_callback(handle, message, callbackParam, USB_OUT);
 }
 
 /**
@@ -545,38 +355,46 @@ void usb_lld_stop(USBDriver *usbp) {
  * @notapi
  */
 void usb_lld_reset(USBDriver *usbp) {
-  // FIXME, dyn alloc
-  _usbbn = 0;
-
-#if KINETIS_USB_USE_USB0
-
-  /* Reset BDT ODD/EVEN bits */
-  USB0->CTL = USBx_CTL_ODDRST;
-
-  /* EP0 initialization.*/
   usbp->epc[0] = &ep0config;
-  usb_lld_init_endpoint(usbp, 0);
+  
+  usb_device_endpoint_init_struct_t epInitStruct;
+  usb_device_endpoint_callback_struct_t epCallback;
+  usb_status_t status;
 
-  /* Clear all pending interrupts */
-  USB0->ERRSTAT = 0xFF;
-  USB0->ISTAT = 0xFF;
+  epCallback.callbackFn    = device_ep0_control_callback_in;
+  epCallback.callbackParam = NULL;
 
-  /* Set the address to zero during enumeration */
-  usbp->address = 0;
-  USB0->ADDR = 0;
+  /* ChibiOS handles zero-length transmissions (ZLT) in software, so disable the
+   * hardware functionality for it:
+   * https://github.com/ChibiOS/ChibiOS/blob/525f89f0e322bb410e0674e4945bf8196d92df65/os/hal/src/hal_usb.c#L891-L901
+   *
+   * See also:
+   * https://community.nxp.com/t5/MQX-Software-Solutions/MQX-USBHS-Control-Endpoint-Zero-Length-Termination/m-p/375730
+   */
+  epInitStruct.zlt             = 0; 
+  epInitStruct.transferType    = USB_ENDPOINT_CONTROL;
+  epInitStruct.interval        = 0;
+  epInitStruct.endpointAddress = epaddr(USB_CONTROL_ENDPOINT, USB_IN);
+  epInitStruct.maxPacketSize   = USB_CONTROL_MAX_PACKET_SIZE;
+  /* Initialize the control IN pipe */
+  status = USB_DeviceInitEndpoint(handle, &epInitStruct, &epCallback);
 
-  /* Enable other interrupts */
-  USB0->ERREN = 0xFF;
-  USB0->INTEN = USBx_INTEN_TOKDNEEN |
-    USBx_INTEN_SOFTOKEN |
-    USBx_INTEN_STALLEN |
-    USBx_INTEN_ERROREN |
-    USBx_INTEN_USBRSTEN |
-    USBx_INTEN_SLEEPEN;
+  if (kStatus_USB_Success != status) {
+    printf_debug("USB_DeviceInitEndpoint() failed: %d", status);
+    return;
+  }
 
-  /* "is this necessary?", Paul from PJRC */
-  USB0->CTL = USBx_CTL_USBENSOFEN;
-#endif /* KINETIS_USB_USE_USB0 */
+  epCallback.callbackFn    = device_ep0_control_callback_out;
+  epCallback.callbackParam = NULL;
+  epInitStruct.endpointAddress = epaddr(USB_CONTROL_ENDPOINT, USB_OUT);
+  /* Initialize the control OUT pipe */
+  status = USB_DeviceInitEndpoint(handle, &epInitStruct, &epCallback);
+
+  if (kStatus_USB_Success != status) {
+    (void)USB_DeviceDeinitEndpoint(handle, epInitStruct.endpointAddress);
+    printf_debug("USB_DeviceInitEndpoint() failed: %d", status);
+    return;
+  }
 }
 
 /**
@@ -588,10 +406,104 @@ void usb_lld_reset(USBDriver *usbp) {
  */
 void usb_lld_set_address(USBDriver *usbp) {
 
-#if KINETIS_USB_USE_USB0
-  USB0->ADDR = usbp->address&0x7F;
-#endif /* KINETIS_USB_USE_USB0 */
+#if MIMXRT1062_USB_USE_USB1
+  printf_debug("usb_lld_set_address(%d)", usbp->address);
+
+  usb_status_t error = kStatus_USB_InvalidRequest;
+  uint8_t state      = 0U;
+
+  USB_DeviceGetStatus(handle, kUSB_DeviceStatusDeviceState, &state);
+
+  printf_debug("  DeviceStatusDeviceState=%x", state);
+
+  if (((uint8_t)kUSB_DeviceStateAddressing != state) && ((uint8_t)kUSB_DeviceStateAddress != state) &&
+      ((uint8_t)kUSB_DeviceStateDefault != state) && ((uint8_t)kUSB_DeviceStateConfigured != state)) {
+    printf_debug("  invalid state!");
+    return;
+  }
+
+  if ((uint8_t)kUSB_DeviceStateAddressing != state) {
+    /* If the device address is not setting, pass the address and the device state will change to
+     * kUSB_DeviceStateAddressing internally. */
+    state = (uint8_t)(usbp->address & 0xFF);
+    error = USB_DeviceSetStatus(handle, kUSB_DeviceStatusAddress, &state);
+  } else {
+    /* If the device address is setting, set device address and the address will be write into the controller
+     * internally. */
+    error = USB_DeviceSetStatus(handle, kUSB_DeviceStatusAddress, NULL);
+    /* And then change the device state to kUSB_DeviceStateAddress. */
+    if (kStatus_USB_Success == error) {
+      state = (uint8_t)kUSB_DeviceStateAddress;
+      error = USB_DeviceSetStatus(handle, kUSB_DeviceStatusDeviceState, &state);
+    }
+  }
+#endif /* MIMXRT1062_USB_USE_USB1 */
 }
+
+/**
+ * Called when the USB transfer completed
+ *
+ */
+static usb_status_t device_epN_control_callback(usb_device_handle handle,
+						usb_device_endpoint_callback_message_struct_t *message,
+						void *callbackParam,
+						uint8_t direction) {
+  (void)handle;
+  USBDriver *usbp = &USBD1;
+  uint8_t ep = (uint8_t)((uint32_t)callbackParam & 0xFF);
+  printf_debug("device_epN_control_callback");
+  if (message->isSetup) {
+    printf_debug("discarding unexpected setup message for endpoint ep=%d", ep);
+    return kStatus_USB_Error;
+  }
+
+  if (message->length == USB_CANCELLED_TRANSFER_LENGTH) {
+    printf_debug("USB transfer cancelled");
+    return kStatus_USB_InvalidRequest;
+  }
+
+  printf_debug("transfer done: buffer %x, len=%d!", message->buffer, message->length);
+
+  const USBEndpointConfig *epc = usbp->epc[ep];
+
+  if (direction == USB_OUT) {
+    printf_debug("    complete, OUT ep=%d (OUT), rxbuf=%x", ep, epc->out_state->rxbuf);
+    (usbp)->receiving &= ~(1 << ep);
+
+    USBOutEndpointState *osp = epc->out_state;
+    osp->rxcnt = message->length;
+    printf_debug("    received %d bytes", osp->rxcnt);
+
+    /* Endpoint Receive Complete Event */
+    /* Transfer Direction OUT */
+    if (epc->out_cb != NULL) {
+      printf_debug("    invoking out_cb for ep %d", ep);
+      _usb_isr_invoke_out_cb(usbp, ep);
+    }
+  } else if (direction == USB_IN) {
+    printf_debug("    complete, IN ep=%d (IN), txbuf=%x", ep, epc->in_state->txbuf);
+    (usbp)->transmitting &= ~(1 << ep);
+    /* Endpoint Transmit Complete Event */
+    /* Transfer Direction IN */
+    if (epc->in_cb != NULL) {
+      printf_debug("    invoking in_cb for ep %d", ep);
+      _usb_isr_invoke_in_cb(usbp, ep);
+    }
+  }
+  return kStatus_USB_Success;
+}
+
+static usb_status_t device_epN_control_callback_out(usb_device_handle handle,
+						    usb_device_endpoint_callback_message_struct_t *message,
+						    void *callbackParam) {
+  return device_epN_control_callback(handle, message, callbackParam, USB_OUT);
+}
+
+static usb_status_t device_epN_control_callback_in(usb_device_handle handle,
+						    usb_device_endpoint_callback_message_struct_t *message,
+						    void *callbackParam) {
+  return device_epN_control_callback(handle, message, callbackParam, USB_IN);
+}  
 
 /**
  * @brief   Enables an endpoint.
@@ -603,51 +515,56 @@ void usb_lld_set_address(USBDriver *usbp) {
  */
 void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
 
-  if(ep > KINETIS_USB_ENDPOINTS)
+  if(ep > MIMXRT1062_USB_ENDPOINTS)
     return;
 
+  printf_debug("usb_lld_init_endpoint(ep=%d)", ep);
+
   const USBEndpointConfig *epc = usbp->epc[ep];
-  uint8_t mask=0;
 
-  if(epc->out_state != NULL)
-  {
-    /* OUT Endpoint */
-    epc->out_state->odd_even = EVEN;
-    epc->out_state->data_bank = DATA0;
-    /* RXe */
-    _bdt[BDT_INDEX(ep, RX, EVEN)].desc = BDT_DESC(epc->out_maxsize, DATA0);
-    _bdt[BDT_INDEX(ep, RX, EVEN)].addr = usb_alloc(epc->out_maxsize);
-    /* RXo */
-    _bdt[BDT_INDEX(ep, RX,  ODD)].desc = BDT_DESC(epc->out_maxsize, DATA1);
-    _bdt[BDT_INDEX(ep, RX,  ODD)].addr = usb_alloc(epc->out_maxsize);
-    /* Enable OUT direction */
-    mask |= USBx_ENDPTn_EPRXEN;
-  }
-  if(epc->in_state != NULL)
-  {
-    /* IN Endpoint */
-    epc->in_state->odd_even = EVEN;
-    epc->in_state->data_bank = DATA0;
-    /* TXe, not used yet */
-    _bdt[BDT_INDEX(ep, TX, EVEN)].desc = 0;
-    _bdt[BDT_INDEX(ep, TX, EVEN)].addr = usb_alloc(epc->in_maxsize);
-    /* TXo, not used yet */
-    _bdt[BDT_INDEX(ep, TX,  ODD)].desc = 0;
-    _bdt[BDT_INDEX(ep, TX,  ODD)].addr = usb_alloc(epc->in_maxsize);
-    /* Enable IN direction */
-    mask |= USBx_ENDPTn_EPTXEN;
+  if (epc->out_state == NULL && epc->in_state == NULL) {
+    printf_debug("  BUG: unknown endpoint type?!");
+    return;
   }
 
-  /* EPHSHK should be set for CTRL, BULK, INTR not for ISOC*/
-  if((epc->ep_mode & USB_EP_MODE_TYPE) != USB_EP_MODE_TYPE_ISOC)
-    mask |= USBx_ENDPTn_EPHSHK;
-  /* Endpoint is not a CTRL endpoint, disable SETUP transfers */
-  if((epc->ep_mode & USB_EP_MODE_TYPE) != USB_EP_MODE_TYPE_CTRL)
-    mask |= USBx_ENDPTn_EPCTLDIS;
+  usb_device_endpoint_init_struct_t epInitStruct;
+  usb_device_endpoint_callback_struct_t epCallback;
+  usb_status_t status;
 
-#if KINETIS_USB_USE_USB0
-  USB0->ENDPT[ep].V = mask;
-#endif /* KINETIS_USB_USE_USB0 */
+  epCallback.callbackFn    = device_epN_control_callback_in;
+  epCallback.callbackParam = (void*)((uint32_t)ep);
+
+  epInitStruct.transferType = epc->ep_mode;
+  epInitStruct.zlt = 0;
+  epInitStruct.interval = 0;
+  
+  if (epc->in_state != NULL) {
+    epInitStruct.endpointAddress = epaddr(ep, USB_IN);
+    epInitStruct.maxPacketSize   = epc->in_maxsize;
+    /* Initialize the endpoint IN pipe */
+    if ((status = USB_DeviceInitEndpoint(handle, &epInitStruct, &epCallback)) != kStatus_USB_Success) {
+      printf_debug("USB_DeviceInitEndpoint() failed: %d", status);
+      return;
+    }
+  }
+    
+  if (epc->out_state != NULL) {
+    epCallback.callbackFn    = device_epN_control_callback_out;
+
+    epInitStruct.endpointAddress = epaddr(ep, USB_OUT);
+    epInitStruct.maxPacketSize = epc->out_maxsize;
+    /* Initialize the endpoint OUT pipe */
+    if ((status = USB_DeviceInitEndpoint(handle, &epInitStruct, &epCallback)) != kStatus_USB_Success) {
+      USB_DeviceDeinitEndpoint(handle, USB_CONTROL_ENDPOINT | (USB_IN << USB_DESCRIPTOR_ENDPOINT_ADDRESS_DIRECTION_SHIFT));
+      printf_debug("USB_DeviceInitEndpoint() failed: %d", status);
+      return;
+    }
+  }
+
+  return;
+
+#if MIMXRT1062_USB_USE_USB1
+#endif /* MIMXRT1062_USB_USE_USB1 */
 }
 
 /**
@@ -659,11 +576,30 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
  */
 void usb_lld_disable_endpoints(USBDriver *usbp) {
   (void)usbp;
-  uint8_t i;
-#if KINETIS_USB_USE_USB0
-  for(i=1;i<KINETIS_USB_ENDPOINTS;i++)
-    USB0->ENDPT[i].V = 0;
-#endif /* KINETIS_USB_USE_USB0 */
+  printf_debug("TODO: usb_lld_disable_endpoints()");
+#if MIMXRT1062_USB_USE_USB1
+  // TODO: find active endpoints and disable
+  // USB_DeviceDeinitEndpoint(usb_device_handle handle, uint8_t endpointAddress);
+#endif /* MIMXRT1062_USB_USE_USB1 */
+}
+
+static usbepstatus_t usb_lld_get_status(USBDriver *usbp, usbep_t ep, uint8_t direction) {
+  (void)usbp;
+  /* The NXP USB middleware does not expose any API to query whether an endpoint
+   * was initialized, so we just always assume an endpoint is active: */
+  // TODO: maybe check if epCallback[].callbackFn != NULL?
+  usbepstatus_t epstatus = EP_STATUS_ACTIVE;
+  usb_status_t status;
+  usb_device_endpoint_status_struct_t endpointStatus;
+  endpointStatus.endpointAddress = epaddr(ep, direction);
+  if ((status = USB_DeviceGetStatus(handle, kUSB_DeviceStatusEndpoint, &endpointStatus)) != kStatus_USB_Success) {
+    printf_debug("USB_DeviceGetStatus() = %d", status);
+    return epstatus;
+  }
+  if (endpointStatus.endpointStatus == kUSB_DeviceEndpointStateStalled) {
+    return EP_STATUS_STALLED;
+  }
+  return epstatus;
 }
 
 /**
@@ -680,15 +616,12 @@ void usb_lld_disable_endpoints(USBDriver *usbp) {
  */
 usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep) {
   (void)usbp;
-#if KINETIS_USB_USE_USB0
   if(ep > USB_MAX_ENDPOINTS)
     return EP_STATUS_DISABLED;
-  if(!(USB0->ENDPT[ep].V & (USBx_ENDPTn_EPRXEN)))
-    return EP_STATUS_DISABLED;
-  else if(USB0->ENDPT[ep].V & USBx_ENDPTn_EPSTALL)
-    return EP_STATUS_STALLED;
-  return EP_STATUS_ACTIVE;
-#endif /* KINETIS_USB_USE_USB0 */
+#if MIMXRT1062_USB_USE_USB1
+  printf_debug("usb_lld_get_status_out(ep=%d)", ep);
+  return usb_lld_get_status(usbp, ep, USB_OUT);
+#endif /* MIMXRT1062_USB_USE_USB1 */
 }
 
 /**
@@ -705,15 +638,13 @@ usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep) {
  */
 usbepstatus_t usb_lld_get_status_in(USBDriver *usbp, usbep_t ep) {
   (void)usbp;
+
   if(ep > USB_MAX_ENDPOINTS)
     return EP_STATUS_DISABLED;
-#if KINETIS_USB_USE_USB0
-  if(!(USB0->ENDPT[ep].V & (USBx_ENDPTn_EPTXEN)))
-    return EP_STATUS_DISABLED;
-  else if(USB0->ENDPT[ep].V & USBx_ENDPTn_EPSTALL)
-    return EP_STATUS_STALLED;
-  return EP_STATUS_ACTIVE;
-#endif /* KINETIS_USB_USE_USB0 */
+#if MIMXRT1062_USB_USE_USB1
+  printf_debug("usb_lld_get_status_in(ep=%d)", ep);
+  return usb_lld_get_status(usbp, ep, USB_IN);
+#endif /* MIMXRT1062_USB_USE_USB1 */
 }
 
 /**
@@ -731,34 +662,12 @@ usbepstatus_t usb_lld_get_status_in(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 void usb_lld_read_setup(USBDriver *usbp, usbep_t ep, uint8_t *buf) {
-  /* Get the BDT entry */
-  USBOutEndpointState *os = usbp->epc[ep]->out_state;
-  bd_t *bd = (bd_t*)&_bdt[BDT_INDEX(ep, RX, os->odd_even)];
-  /* Copy the 8 bytes of data */
-  uint8_t n;
-  for (n = 0; n < 8; n++) {
-    buf[n] = bd->addr[n];
-  }
-  /* Release the buffer
-   * Setup packet is always DATA0
-   * Release the current DATA0 buffer
-   */
-  bd->desc = BDT_DESC(usbp->epc[ep]->out_maxsize,DATA0);
-  /* If DATA1 was expected, then the states are out of sync.
-   * So reset the other buffer too, and set it as DATA1.
-   * This should not happen in normal cases, but is possible in
-   * error situations. NOTE: it's possible that this is too late
-   * and the next packet has already been received and dropped, but
-   * there's nothing that we can do about that anymore at this point.
-   */
-  if (os->data_bank == DATA1)
-  {
-    bd_t *bd_next = (bd_t*)&_bdt[BDT_INDEX(ep, RX, os->odd_even^ODD)];
-    bd_next->desc = BDT_DESC(usbp->epc[ep]->out_maxsize,DATA1);
-  }
-  /* After a SETUP, both in and out are always DATA1 */
-  usbp->epc[ep]->in_state->data_bank = DATA1;
-  os->data_bank = DATA1;
+  (void)usbp;
+  (void)ep;
+  (void)buf;
+
+  // We already populated usbp->setup in device_ep0_control_callback(), so no
+  // extra steps are required in this function.
 }
 
 /**
@@ -770,13 +679,16 @@ void usb_lld_read_setup(USBDriver *usbp, usbep_t ep, uint8_t *buf) {
  * @notapi
  */
 void usb_lld_start_out(USBDriver *usbp, usbep_t ep) {
-  USBOutEndpointState *osp = usbp->epc[ep]->out_state;
-  /* Transfer initialization.*/
-  if (osp->rxsize == 0)         /* Special case for zero sized packets.*/
-    osp->rxpkts = 1;
-  else
-    osp->rxpkts = (uint16_t)((osp->rxsize + usbp->epc[ep]->out_maxsize - 1) /
-                             usbp->epc[ep]->out_maxsize);
+  const USBEndpointConfig *epc = usbp->epc[ep];
+  USBOutEndpointState *osp = epc->out_state;
+
+  printf_debug("  usb_lld_start_out(ep=%d) (receive)", ep);
+
+  if (osp->rxsize > epc->out_maxsize) {
+    osp->rxsize = epc->out_maxsize;
+  }
+
+  USB_DeviceRecvRequest(handle, epaddr(ep, USB_OUT), osp->rxbuf, osp->rxsize);
 }
 
 /**
@@ -789,23 +701,20 @@ void usb_lld_start_out(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 void usb_lld_start_in(USBDriver *usbp, usbep_t ep) {
-  if (ep == 0 && usbp->ep0state == USB_EP0_IN_SENDING_STS) {
-    /* When a status packet is about to be sent on endpoint 0 the
-     * next packet will be a setup packet, which means that the
-     * buffer we expect after this should be DATA0, and the following
-     * DATA1. Since no out packets should be in flight at this time
-     * it's safe to initialize the buffers according to the expectations
-     * here.
-     */
-    const USBEndpointConfig* epc = usbp->epc[ep];
-    bd_t * bd = (bd_t*)&_bdt[BDT_INDEX(ep, RX, epc->out_state->odd_even)];
-    bd_t *bd_next = (bd_t*)&_bdt[BDT_INDEX(ep, RX, epc->out_state->odd_even^ODD)];
+  const USBEndpointConfig *epc = usbp->epc[ep];
+  USBInEndpointState *isp = epc->in_state;
+  printf_debug("  usb_lld_start_in(ep=%d, txbuf=%x) (transmit)", ep, isp->txbuf);
 
-    bd->desc = BDT_DESC(usbp->epc[ep]->out_maxsize,DATA1);
-    bd_next->desc = BDT_DESC(usbp->epc[ep]->out_maxsize,DATA0);
-    epc->out_state->data_bank = DATA0;
-  }
-  usb_packet_transmit(usbp,ep,usbp->epc[ep]->in_state->txsize);
+  // Notably, at least with Linux, isp->txsize may exceed epc->in_maxsize, and
+  // capping it makes device enumeration fail.
+
+  // Silence a warning about a mismatch in const-correctness between ChibiOS and
+  // the NXP SDK: ChibiOS uses const for isp->txbuf (but not for rxbuf, of
+  // course), but the NXP SDK APIs do not use const at all.
+  uint32_t p = (uint32_t)isp->txbuf;
+  uint8_t *buf = (uint8_t*)p;
+  
+  USB_DeviceSendRequest(handle, epaddr(ep, USB_IN), buf, isp->txsize);
 }
 
 /**
@@ -818,9 +727,13 @@ void usb_lld_start_in(USBDriver *usbp, usbep_t ep) {
  */
 void usb_lld_stall_out(USBDriver *usbp, usbep_t ep) {
   (void)usbp;
-#if KINETIS_USB_USE_USB0
-  USB0->ENDPT[ep].V |= USBx_ENDPTn_EPSTALL;
-#endif /* KINETIS_USB_USE_USB0 */
+  printf_debug("usb_lld_stall_out(ep=%d)", ep);
+#if MIMXRT1062_USB_USE_USB1
+  usb_status_t status;
+  if ((status = USB_DeviceStallEndpoint(handle, epaddr(ep, USB_OUT))) != kStatus_USB_Success) {
+    printf_debug("  stalling failed: %d", status);
+  }
+#endif /* MIMXRT1062_USB_USE_USB1 */
 }
 
 /**
@@ -833,9 +746,14 @@ void usb_lld_stall_out(USBDriver *usbp, usbep_t ep) {
  */
 void usb_lld_stall_in(USBDriver *usbp, usbep_t ep) {
   (void)usbp;
-#if KINETIS_USB_USE_USB0
-  USB0->ENDPT[ep].V |= USBx_ENDPTn_EPSTALL;
-#endif /* KINETIS_USB_USE_USB0 */
+  printf_debug("usb_lld_stall_in(ep=%d)", ep);
+
+#if MIMXRT1062_USB_USE_USB1
+  usb_status_t status;
+  if ((status = USB_DeviceStallEndpoint(handle, epaddr(ep, USB_IN))) != kStatus_USB_Success) {
+    printf_debug("  stalling failed: %d", status);
+  }
+#endif /* MIMXRT1062_USB_USE_USB1 */
 }
 
 /**
@@ -848,9 +766,13 @@ void usb_lld_stall_in(USBDriver *usbp, usbep_t ep) {
  */
 void usb_lld_clear_out(USBDriver *usbp, usbep_t ep) {
   (void)usbp;
-#if KINETIS_USB_USE_USB0
-  USB0->ENDPT[ep].V &= ~USBx_ENDPTn_EPSTALL;
-#endif /* KINETIS_USB_USE_USB0 */
+  printf_debug("usb_lld_clear_out(ep=%d)", ep);
+#if MIMXRT1062_USB_USE_USB1
+  usb_status_t status;
+  if ((status = USB_DeviceUnstallEndpoint(handle, epaddr(ep, USB_OUT))) != kStatus_USB_Success) {
+    printf_debug("  unstalling failed: %d", status);
+  }
+#endif /* MIMXRT1062_USB_USE_USB1 */
 }
 
 /**
@@ -863,9 +785,13 @@ void usb_lld_clear_out(USBDriver *usbp, usbep_t ep) {
  */
 void usb_lld_clear_in(USBDriver *usbp, usbep_t ep) {
   (void)usbp;
-#if KINETIS_USB_USE_USB0
-  USB0->ENDPT[ep].V &= ~USBx_ENDPTn_EPSTALL;
-#endif /* KINETIS_USB_USE_USB0 */
+  printf_debug("usb_lld_clear_in(ep=%d)", ep);
+#if MIMXRT1062_USB_USE_USB1
+  usb_status_t status;
+  if ((status = USB_DeviceUnstallEndpoint(handle, epaddr(ep, USB_IN))) != kStatus_USB_Success) {
+    printf_debug("  unstalling failed: %d", status);
+  }
+#endif /* MIMXRT1062_USB_USE_USB1 */
 }
 
 #endif /* HAL_USE_USB */

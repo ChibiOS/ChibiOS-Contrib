@@ -193,6 +193,7 @@ static void USB_DeviceEhciSetDefaultState(usb_device_ehci_state_struct_t *ehciSt
     /* Enable USB Interrupt, USB Error Interrupt, Port Change detect Interrupt, USB-Reset Interrupt*/
     ehciState->registerBase->USBINTR =
         (USBHS_USBINTR_UE_MASK | USBHS_USBINTR_UEE_MASK | USBHS_USBINTR_PCE_MASK | USBHS_USBINTR_URE_MASK
+	 | USBHS_USBINTR_SRE_MASK
 #if (defined(USB_DEVICE_CONFIG_LOW_POWER_MODE) && (USB_DEVICE_CONFIG_LOW_POWER_MODE > 0U))
          | USBHS_USBINTR_SLE_MASK
 #endif /* USB_DEVICE_CONFIG_LOW_POWER_MODE */
