@@ -43,7 +43,11 @@
 /**
  * @brief   Maximum system clock frequency.
  */
+#if defined(GD32_ALLOW_OVERCLOCK)
 #define GD32_SYSCLK_MAX        120000000
+#else
+#define GD32_SYSCLK_MAX        108000000
+#endif
 
 /**
  * @brief   Maximum HSE clock frequency.
@@ -78,7 +82,11 @@
 /**
  * @brief   Maximum PLL output clock frequency.
  */
+#if defined(GD32_ALLOW_OVERCLOCK)
 #define GD32_PLLOUT_MAX        120000000
+#else
+#define GD32_PLLOUT_MAX        108000000
+#endif
 
 /**
  * @brief   Minimum PLL output clock frequency.
@@ -88,12 +96,20 @@
 /**
  * @brief   Maximum APB1 clock frequency.
  */
-#define GD32_PCLK1_MAX         36000000
+#if defined(GD32_ALLOW_OVERCLOCK)
+#define GD32_PCLK1_MAX         60000000
+#else
+#define GD32_PCLK1_MAX         54000000
+#endif
 
 /**
  * @brief   Maximum APB2 clock frequency.
  */
-#define GD32_PCLK2_MAX         72000000
+#if defined(GD32_ALLOW_OVERCLOCK)
+#define GD32_PCLK2_MAX        120000000
+#else
+#define GD32_PCLK2_MAX        108000000
+#endif
 
 /**
  * @brief   Maximum ADC clock frequency.
@@ -135,6 +151,8 @@
 #define GD32_ADCPRE_DIV4       (1 << 14)   /**< PPRE2 divided by 4.        */
 #define GD32_ADCPRE_DIV6       (2 << 14)   /**< PPRE2 divided by 6.        */
 #define GD32_ADCPRE_DIV8       (3 << 14)   /**< PPRE2 divided by 8.        */
+#define GD32_ADCPRE_DIV12    ((1 << 28) | (1 << 14))  /**< PPRE2 divided by 8.        */
+#define GD32_ADCPRE_DIV16    ((1 << 28) | (3 << 14))  /**< PPRE2 divided by 8.        */
 
 #define GD32_PLLSRC_HSI        (0 << 16)   /**< PLL clock source is HSI.   */
 #define GD32_PLLSRC_HSE        (1 << 16)   /**< PLL clock source is HSE.   */
@@ -558,6 +576,10 @@
 #define GD32_ADCCLK                (GD32_PCLK2 / 6)
 #elif GD32_ADCPRE == GD32_ADCPRE_DIV8
 #define GD32_ADCCLK                (GD32_PCLK2 / 8)
+#elif GD32_ADCPRE == GD32_ADCPRE_DIV12
+#define GD32_ADCCLK                (GD32_PCLK2 / 12)
+#elif GD32_ADCPRE == GD32_ADCPRE_DIV16
+#define GD32_ADCCLK                (GD32_PCLK2 / 16)
 #else
 #error "invalid GD32_ADCPRE value specified"
 #endif
