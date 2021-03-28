@@ -660,7 +660,7 @@ bool can_lld_is_tx_empty(CANDriver *canp, canmbx_t mailbox) {
 void can_lld_transmit(CANDriver *canp,
                       canmbx_t mailbox,
                       const CANTxFrame *ctfp) {
-  uint32_t tir;
+  uint32_t tmi;
   CAN_TxMailBox_TypeDef *tmbp;
 
   /* Pointer to a free transmission mailbox.*/
@@ -683,14 +683,14 @@ void can_lld_transmit(CANDriver *canp,
 
   /* Preparing the message.*/
   if (ctfp->IDE)
-    tir = ((uint32_t)ctfp->EID << 3) | ((uint32_t)ctfp->RTR << 1) |
+    tmi = ((uint32_t)ctfp->EID << 3) | ((uint32_t)ctfp->RTR << 1) |
           CAN_TMI0_FF;
   else
-    tir = ((uint32_t)ctfp->SID << 21) | ((uint32_t)ctfp->RTR << 1);
+    tmi = ((uint32_t)ctfp->SID << 21) | ((uint32_t)ctfp->RTR << 1);
   tmbp->TMP = ctfp->DLC;
-  tmbp->DATA0 = ctfp->data32[0];
-  tmbp->DATA1 = ctfp->data32[1];
-  tmbp->TMI  = tir | CAN_TMI0_TEN;
+  tmbp->TMDATA0 = ctfp->data32[0];
+  tmbp->TMDATA1 = ctfp->data32[1];
+  tmbp->TMI  = tmi | CAN_TMI0_TEN;
 }
 
 /**
@@ -732,7 +732,7 @@ bool can_lld_is_rx_nonempty(CANDriver *canp, canmbx_t mailbox) {
 void can_lld_receive(CANDriver *canp,
                      canmbx_t mailbox,
                      CANRxFrame *crfp) {
-  uint32_t rir, rdtr;
+  uint32_t rfifomi, rfifomp;
 
   if (mailbox == CAN_ANY_MAILBOX) {
     if ((canp->can->RFIFO0 & CAN_RFIFO0_RFL0) != 0)
@@ -747,8 +747,8 @@ void can_lld_receive(CANDriver *canp,
   switch (mailbox) {
   case 1:
     /* Fetches the message.*/
-    rir  = canp->can->sFIFOMailBox[0].RFIFOMI;
-    rdtr = canp->can->sFIFOMailBox[0].RFIFOMP;
+    rfifomi  = canp->can->sFIFOMailBox[0].RFIFOMI;
+    rfifomp = canp->can->sFIFOMailBox[0].RFIFOMP;
     crfp->data32[0] = canp->can->sFIFOMailBox[0].RFIFOMDATA0;
     crfp->data32[1] = canp->can->sFIFOMailBox[0].RFIFOMDATA1;
 
@@ -762,8 +762,8 @@ void can_lld_receive(CANDriver *canp,
     break;
   case 2:
     /* Fetches the message.*/
-    rir  = canp->can->sFIFOMailBox[1].RFIFOMI;
-    rdtr = canp->can->sFIFOMailBox[1].RFIFOMP;
+    rfifomi  = canp->can->sFIFOMailBox[1].RFIFOMI;
+    rfifomp = canp->can->sFIFOMailBox[1].RFIFOMP;
     crfp->data32[0] = canp->can->sFIFOMailBox[1].RFIFOMDATA0;
     crfp->data32[1] = canp->can->sFIFOMailBox[1].RFIFOMDATA1;
 
@@ -781,15 +781,15 @@ void can_lld_receive(CANDriver *canp,
   }
 
   /* Decodes the various fields in the RX frame.*/
-  crfp->RTR = (rir & CAN_RI0R_RTR) >> 1;
-  crfp->IDE = (rir & CAN_RI0R_IDE) >> 2;
+  crfp->RTR = (rfifomi & CAN_RFIFOMI0_FT) >> 1;
+  crfp->IDE = (rfifomi & CAN_RFIFOMI0_FF) >> 2;
   if (crfp->IDE)
-    crfp->EID = rir >> 3;
+    crfp->EID = rfifomi >> 3;
   else
-    crfp->SID = rir >> 21;
-  crfp->DLC = rdtr & CAN_RDT0R_DLC;
-  crfp->FMI = (uint8_t)(rdtr >> 8);
-  crfp->TIME = (uint16_t)(rdtr >> 16);
+    crfp->SID = rfifomi >> 21;
+  crfp->DLC = rfifomp & CAN_RFIFOMP0_DLENC;
+  crfp->FMI = (uint8_t)(rfifomp >> 8);
+  crfp->TIME = (uint16_t)(rfifomp >> 16);
 }
 
 /**

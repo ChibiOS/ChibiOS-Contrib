@@ -185,8 +185,8 @@ typedef struct
 {
   __IO uint32_t TMI;
   __IO uint32_t TMP;
-  __IO uint32_t DATA0;
-  __IO uint32_t DATA1;
+  __IO uint32_t TMDATA0;
+  __IO uint32_t TMDATA1;
 } CAN_TxMailBox_TypeDef;
 
 /** 
@@ -5602,33 +5602,33 @@ typedef struct
 #define CAN_TMP0_TS_Msk                   (0xFFFFU << CAN_TMP0_TS_Pos)   /*!< 0xFFFF0000 */
 #define CAN_TMP0_TS                       CAN_TMP0_TS_Msk                /*!< Message Time Stamp */
 
-/******************  Bit definition for CAN_DATA00 register  *******************/
-#define CAN_DATA00_DB0_Pos                  (0U)                              
-#define CAN_DATA00_DB0_Msk                  (0xFFU << CAN_DATA00_DB0_Pos)    /*!< 0x000000FF */
-#define CAN_DATA00_DB0                      CAN_DATA00_DB0_Msk               /*!< Data byte 0 */
-#define CAN_DATA00_DB1_Pos                  (8U)                              
-#define CAN_DATA00_DB1_Msk                  (0xFFU << CAN_DATA00_DB1_Pos)    /*!< 0x0000FF00 */
-#define CAN_DATA00_DB1                      CAN_DATA00_DB1_Msk               /*!< Data byte 1 */
-#define CAN_DATA00_DB2_Pos                  (16U)                             
-#define CAN_DATA00_DB2_Msk                  (0xFFU << CAN_DATA00_DB2_Pos)    /*!< 0x00FF0000 */
-#define CAN_DATA00_DB2                      CAN_DATA00_DB2_Msk               /*!< Data byte 2 */
-#define CAN_DATA00_DB3_Pos                  (24U)                             
-#define CAN_DATA00_DB3_Msk                  (0xFFU << CAN_DATA00_DB3_Pos)    /*!< 0xFF000000 */
-#define CAN_DATA00_DB3                      CAN_DATA00_DB3_Msk               /*!< Data byte 3 */
+/******************  Bit definition for CAN_TMDATA00 register  *******************/
+#define CAN_TMDATA00_DB0_Pos                  (0U)                              
+#define CAN_TMDATA00_DB0_Msk                  (0xFFU << CAN_TMDATA00_DB0_Pos)    /*!< 0x000000FF */
+#define CAN_TMDATA00_DB0                      CAN_TMDATA00_DB0_Msk               /*!< Data byte 0 */
+#define CAN_TMDATA00_DB1_Pos                  (8U)                              
+#define CAN_TMDATA00_DB1_Msk                  (0xFFU << CAN_TMDATA00_DB1_Pos)    /*!< 0x0000FF00 */
+#define CAN_TMDATA00_DB1                      CAN_TMDATA00_DB1_Msk               /*!< Data byte 1 */
+#define CAN_TMDATA00_DB2_Pos                  (16U)                             
+#define CAN_TMDATA00_DB2_Msk                  (0xFFU << CAN_TMDATA00_DB2_Pos)    /*!< 0x00FF0000 */
+#define CAN_TMDATA00_DB2                      CAN_TMDATA00_DB2_Msk               /*!< Data byte 2 */
+#define CAN_TMDATA00_DB3_Pos                  (24U)                             
+#define CAN_TMDATA00_DB3_Msk                  (0xFFU << CAN_TMDATA00_DB3_Pos)    /*!< 0xFF000000 */
+#define CAN_TMDATA00_DB3                      CAN_TMDATA00_DB3_Msk               /*!< Data byte 3 */
 
-/******************  Bit definition for CAN_DATA10 register  *******************/
-#define CAN_DATA10_DB4_Pos                  (0U)                              
-#define CAN_DATA10_DB4_Msk                  (0xFFU << CAN_DATA10_DB4_Pos)    /*!< 0x000000FF */
-#define CAN_DATA10_DB4                      CAN_DATA10_DB4_Msk               /*!< Data byte 4 */
-#define CAN_DATA10_DB5_Pos                  (8U)                              
-#define CAN_DATA10_DB5_Msk                  (0xFFU << CAN_DATA10_DB5_Pos)    /*!< 0x0000FF00 */
-#define CAN_DATA10_DB5                      CAN_DATA10_DB5_Msk               /*!< Data byte 5 */
-#define CAN_DATA10_DB6_Pos                  (16U)                             
-#define CAN_DATA10_DB6_Msk                  (0xFFU << CAN_DATA10_DB6_Pos)    /*!< 0x00FF0000 */
-#define CAN_DATA10_DB6                      CAN_DATA10_DB6_Msk               /*!< Data byte 6 */
-#define CAN_DATA10_DB7_Pos                  (24U)                             
-#define CAN_DATA10_DB7_Msk                  (0xFFU << CAN_DATA10_DB7_Pos)    /*!< 0xFF000000 */
-#define CAN_DATA10_DB7                      CAN_DATA10_DB7_Msk               /*!< Data byte 7 */
+/******************  Bit definition for CAN_TMDATA10 register  *******************/
+#define CAN_TMDATA10_DB4_Pos                  (0U)                              
+#define CAN_TMDATA10_DB4_Msk                  (0xFFU << CAN_TMDATA10_DB4_Pos)    /*!< 0x000000FF */
+#define CAN_TMDATA10_DB4                      CAN_TMDATA10_DB4_Msk               /*!< Data byte 4 */
+#define CAN_TMDATA10_DB5_Pos                  (8U)                              
+#define CAN_TMDATA10_DB5_Msk                  (0xFFU << CAN_TMDATA10_DB5_Pos)    /*!< 0x0000FF00 */
+#define CAN_TMDATA10_DB5                      CAN_TMDATA10_DB5_Msk               /*!< Data byte 5 */
+#define CAN_TMDATA10_DB6_Pos                  (16U)                             
+#define CAN_TMDATA10_DB6_Msk                  (0xFFU << CAN_TMDATA10_DB6_Pos)    /*!< 0x00FF0000 */
+#define CAN_TMDATA10_DB6                      CAN_TMDATA10_DB6_Msk               /*!< Data byte 6 */
+#define CAN_TMDATA10_DB7_Pos                  (24U)                             
+#define CAN_TMDATA10_DB7_Msk                  (0xFFU << CAN_TMDATA10_DB7_Pos)    /*!< 0xFF000000 */
+#define CAN_TMDATA10_DB7                      CAN_TMDATA10_DB7_Msk               /*!< Data byte 7 */
 
 /*******************  Bit definition for CAN_TMI0 register  *******************/
 #define CAN_TMI0_TEN_Pos                    (0U)                              
@@ -5658,33 +5658,33 @@ typedef struct
 #define CAN_TMP1_TS_Msk                   (0xFFFFU << CAN_TMP1_TS_Pos)   /*!< 0xFFFF0000 */
 #define CAN_TMP1_TS                       CAN_TMP1_TS_Msk                /*!< Message Time Stamp */
 
-/*******************  Bit definition for CAN_DATA00 register  ******************/
-#define CAN_DATA00_DB0_Pos                  (0U)                              
-#define CAN_DATA00_DB0_Msk                  (0xFFU << CAN_DATA00_DB0_Pos)    /*!< 0x000000FF */
-#define CAN_DATA00_DB0                      CAN_DATA00_DB0_Msk               /*!< Data byte 0 */
-#define CAN_DATA00_DB1_Pos                  (8U)                              
-#define CAN_DATA00_DB1_Msk                  (0xFFU << CAN_DATA00_DB1_Pos)    /*!< 0x0000FF00 */
-#define CAN_DATA00_DB1                      CAN_DATA00_DB1_Msk               /*!< Data byte 1 */
-#define CAN_DATA00_DB2_Pos                  (16U)                             
-#define CAN_DATA00_DB2_Msk                  (0xFFU << CAN_DATA00_DB2_Pos)    /*!< 0x00FF0000 */
-#define CAN_DATA00_DB2                      CAN_DATA00_DB2_Msk               /*!< Data byte 2 */
-#define CAN_DATA00_DB3_Pos                  (24U)                             
-#define CAN_DATA00_DB3_Msk                  (0xFFU << CAN_DATA00_DB3_Pos)    /*!< 0xFF000000 */
-#define CAN_DATA00_DB3                      CAN_DATA00_DB3_Msk               /*!< Data byte 3 */
+/*******************  Bit definition for CAN_TMDATA00 register  ******************/
+#define CAN_TMDATA00_DB0_Pos                  (0U)                              
+#define CAN_TMDATA00_DB0_Msk                  (0xFFU << CAN_TMDATA00_DB0_Pos)    /*!< 0x000000FF */
+#define CAN_TMDATA00_DB0                      CAN_TMDATA00_DB0_Msk               /*!< Data byte 0 */
+#define CAN_TMDATA00_DB1_Pos                  (8U)                              
+#define CAN_TMDATA00_DB1_Msk                  (0xFFU << CAN_TMDATA00_DB1_Pos)    /*!< 0x0000FF00 */
+#define CAN_TMDATA00_DB1                      CAN_TMDATA00_DB1_Msk               /*!< Data byte 1 */
+#define CAN_TMDATA00_DB2_Pos                  (16U)                             
+#define CAN_TMDATA00_DB2_Msk                  (0xFFU << CAN_TMDATA00_DB2_Pos)    /*!< 0x00FF0000 */
+#define CAN_TMDATA00_DB2                      CAN_TMDATA00_DB2_Msk               /*!< Data byte 2 */
+#define CAN_TMDATA00_DB3_Pos                  (24U)                             
+#define CAN_TMDATA00_DB3_Msk                  (0xFFU << CAN_TMDATA00_DB3_Pos)    /*!< 0xFF000000 */
+#define CAN_TMDATA00_DB3                      CAN_TMDATA00_DB3_Msk               /*!< Data byte 3 */
 
-/*******************  Bit definition for CAN_DATA11 register  ******************/
-#define CAN_DATA11_DB4_Pos                  (0U)                              
-#define CAN_DATA11_DB4_Msk                  (0xFFU << CAN_DATA11_DB4_Pos)    /*!< 0x000000FF */
-#define CAN_DATA11_DB4                      CAN_DATA11_DB4_Msk               /*!< Data byte 4 */
-#define CAN_DATA11_DB5_Pos                  (8U)                              
-#define CAN_DATA11_DB5_Msk                  (0xFFU << CAN_DATA11_DB5_Pos)    /*!< 0x0000FF00 */
-#define CAN_DATA11_DB5                      CAN_DATA11_DB5_Msk               /*!< Data byte 5 */
-#define CAN_DATA11_DB6_Pos                  (16U)                             
-#define CAN_DATA11_DB6_Msk                  (0xFFU << CAN_DATA11_DB6_Pos)    /*!< 0x00FF0000 */
-#define CAN_DATA11_DB6                      CAN_DATA11_DB6_Msk               /*!< Data byte 6 */
-#define CAN_DATA11_DB7_Pos                  (24U)                             
-#define CAN_DATA11_DB7_Msk                  (0xFFU << CAN_DATA11_DB7_Pos)    /*!< 0xFF000000 */
-#define CAN_DATA11_DB7                      CAN_DATA11_DB7_Msk               /*!< Data byte 7 */
+/*******************  Bit definition for CAN_TMDATA11 register  ******************/
+#define CAN_TMDATA11_DB4_Pos                  (0U)                              
+#define CAN_TMDATA11_DB4_Msk                  (0xFFU << CAN_TMDATA11_DB4_Pos)    /*!< 0x000000FF */
+#define CAN_TMDATA11_DB4                      CAN_TMDATA11_DB4_Msk               /*!< Data byte 4 */
+#define CAN_TMDATA11_DB5_Pos                  (8U)                              
+#define CAN_TMDATA11_DB5_Msk                  (0xFFU << CAN_TMDATA11_DB5_Pos)    /*!< 0x0000FF00 */
+#define CAN_TMDATA11_DB5                      CAN_TMDATA11_DB5_Msk               /*!< Data byte 5 */
+#define CAN_TMDATA11_DB6_Pos                  (16U)                             
+#define CAN_TMDATA11_DB6_Msk                  (0xFFU << CAN_TMDATA11_DB6_Pos)    /*!< 0x00FF0000 */
+#define CAN_TMDATA11_DB6                      CAN_TMDATA11_DB6_Msk               /*!< Data byte 6 */
+#define CAN_TMDATA11_DB7_Pos                  (24U)                             
+#define CAN_TMDATA11_DB7_Msk                  (0xFFU << CAN_TMDATA11_DB7_Pos)    /*!< 0xFF000000 */
+#define CAN_TMDATA11_DB7                      CAN_TMDATA11_DB7_Msk               /*!< Data byte 7 */
 
 /*******************  Bit definition for CAN_TMI2 register  *******************/
 #define CAN_TMI2_TEN_Pos                    (0U)                              
@@ -5714,139 +5714,139 @@ typedef struct
 #define CAN_TMP2_TS_Msk                   (0xFFFFU << CAN_TMP2_TS_Pos)   /*!< 0xFFFF0000 */
 #define CAN_TMP2_TS                       CAN_TMP2_TS_Msk                /*!< Message Time Stamp */
 
-/*******************  Bit definition for CAN_TDL2R register  ******************/
-#define CAN_TDL2R_DATA0_Pos                  (0U)                              
-#define CAN_TDL2R_DATA0_Msk                  (0xFFU << CAN_TDL2R_DATA0_Pos)    /*!< 0x000000FF */
-#define CAN_TDL2R_DATA0                      CAN_TDL2R_DATA0_Msk               /*!< Data byte 0 */
-#define CAN_TDL2R_DATA1_Pos                  (8U)                              
-#define CAN_TDL2R_DATA1_Msk                  (0xFFU << CAN_TDL2R_DATA1_Pos)    /*!< 0x0000FF00 */
-#define CAN_TDL2R_DATA1                      CAN_TDL2R_DATA1_Msk               /*!< Data byte 1 */
-#define CAN_TDL2R_DATA2_Pos                  (16U)                             
-#define CAN_TDL2R_DATA2_Msk                  (0xFFU << CAN_TDL2R_DATA2_Pos)    /*!< 0x00FF0000 */
-#define CAN_TDL2R_DATA2                      CAN_TDL2R_DATA2_Msk               /*!< Data byte 2 */
-#define CAN_TDL2R_DATA3_Pos                  (24U)                             
-#define CAN_TDL2R_DATA3_Msk                  (0xFFU << CAN_TDL2R_DATA3_Pos)    /*!< 0xFF000000 */
-#define CAN_TDL2R_DATA3                      CAN_TDL2R_DATA3_Msk               /*!< Data byte 3 */
+/*******************  Bit definition for CAN_TMDATA02 register  ******************/
+#define CAN_TMDATA02_DB0_Pos                  (0U)                              
+#define CAN_TMDATA02_DB0_Msk                  (0xFFU << CAN_TMDATA02_DB0_Pos)    /*!< 0x000000FF */
+#define CAN_TMDATA02_DB0                      CAN_TMDATA02_DB0_Msk               /*!< Data byte 0 */
+#define CAN_TMDATA02_DB1_Pos                  (8U)                              
+#define CAN_TMDATA02_DB1_Msk                  (0xFFU << CAN_TMDATA02_DB1_Pos)    /*!< 0x0000FF00 */
+#define CAN_TMDATA02_DB1                      CAN_TMDATA02_DB1_Msk               /*!< Data byte 1 */
+#define CAN_TMDATA02_DB2_Pos                  (16U)                             
+#define CAN_TMDATA02_DB2_Msk                  (0xFFU << CAN_TMDATA02_DB2_Pos)    /*!< 0x00FF0000 */
+#define CAN_TMDATA02_DB2                      CAN_TMDATA02_DB2_Msk               /*!< Data byte 2 */
+#define CAN_TMDATA02_DB3_Pos                  (24U)                             
+#define CAN_TMDATA02_DB3_Msk                  (0xFFU << CAN_TMDATA02_DB3_Pos)    /*!< 0xFF000000 */
+#define CAN_TMDATA02_DB3                      CAN_TMDATA02_DB3_Msk               /*!< Data byte 3 */
 
-/*******************  Bit definition for CAN_TDH2R register  ******************/
-#define CAN_TDH2R_DATA4_Pos                  (0U)                              
-#define CAN_TDH2R_DATA4_Msk                  (0xFFU << CAN_TDH2R_DATA4_Pos)    /*!< 0x000000FF */
-#define CAN_TDH2R_DATA4                      CAN_TDH2R_DATA4_Msk               /*!< Data byte 4 */
-#define CAN_TDH2R_DATA5_Pos                  (8U)                              
-#define CAN_TDH2R_DATA5_Msk                  (0xFFU << CAN_TDH2R_DATA5_Pos)    /*!< 0x0000FF00 */
-#define CAN_TDH2R_DATA5                      CAN_TDH2R_DATA5_Msk               /*!< Data byte 5 */
-#define CAN_TDH2R_DATA6_Pos                  (16U)                             
-#define CAN_TDH2R_DATA6_Msk                  (0xFFU << CAN_TDH2R_DATA6_Pos)    /*!< 0x00FF0000 */
-#define CAN_TDH2R_DATA6                      CAN_TDH2R_DATA6_Msk               /*!< Data byte 6 */
-#define CAN_TDH2R_DATA7_Pos                  (24U)                             
-#define CAN_TDH2R_DATA7_Msk                  (0xFFU << CAN_TDH2R_DATA7_Pos)    /*!< 0xFF000000 */
-#define CAN_TDH2R_DATA7                      CAN_TDH2R_DATA7_Msk               /*!< Data byte 7 */
+/*******************  Bit definition for CAN_TMDATA12 register  ******************/
+#define CAN_TMDATA12_DB4_Pos                  (0U)                              
+#define CAN_TMDATA12_DB4_Msk                  (0xFFU << CAN_TMDATA12_DB4_Pos)    /*!< 0x000000FF */
+#define CAN_TMDATA12_DB4                      CAN_TMDATA12_DB4_Msk               /*!< Data byte 4 */
+#define CAN_TMDATA12_DB5_Pos                  (8U)                              
+#define CAN_TMDATA12_DB5_Msk                  (0xFFU << CAN_TMDATA12_DB5_Pos)    /*!< 0x0000FF00 */
+#define CAN_TMDATA12_DB5                      CAN_TMDATA12_DB5_Msk               /*!< Data byte 5 */
+#define CAN_TMDATA12_DB6_Pos                  (16U)                             
+#define CAN_TMDATA12_DB6_Msk                  (0xFFU << CAN_TMDATA12_DB6_Pos)    /*!< 0x00FF0000 */
+#define CAN_TMDATA12_DB6                      CAN_TMDATA12_DB6_Msk               /*!< Data byte 6 */
+#define CAN_TMDATA12_DB7_Pos                  (24U)                             
+#define CAN_TMDATA12_DB7_Msk                  (0xFFU << CAN_TMDATA12_DB7_Pos)    /*!< 0xFF000000 */
+#define CAN_TMDATA12_DB7                      CAN_TMDATA12_DB7_Msk               /*!< Data byte 7 */
 
-/*******************  Bit definition for CAN_RI0R register  *******************/
-#define CAN_RI0R_RTR_Pos                     (1U)                              
-#define CAN_RI0R_RTR_Msk                     (0x1U << CAN_RI0R_RTR_Pos)        /*!< 0x00000002 */
-#define CAN_RI0R_RTR                         CAN_RI0R_RTR_Msk                  /*!< Remote Transmission Request */
-#define CAN_RI0R_IDE_Pos                     (2U)                              
-#define CAN_RI0R_IDE_Msk                     (0x1U << CAN_RI0R_IDE_Pos)        /*!< 0x00000004 */
-#define CAN_RI0R_IDE                         CAN_RI0R_IDE_Msk                  /*!< Identifier Extension */
-#define CAN_RI0R_EXID_Pos                    (3U)                              
-#define CAN_RI0R_EXID_Msk                    (0x3FFFFU << CAN_RI0R_EXID_Pos)   /*!< 0x001FFFF8 */
-#define CAN_RI0R_EXID                        CAN_RI0R_EXID_Msk                 /*!< Extended Identifier */
-#define CAN_RI0R_STID_Pos                    (21U)                             
-#define CAN_RI0R_STID_Msk                    (0x7FFU << CAN_RI0R_STID_Pos)     /*!< 0xFFE00000 */
-#define CAN_RI0R_STID                        CAN_RI0R_STID_Msk                 /*!< Standard Identifier or Extended Identifier */
+/*******************  Bit definition for CAN_RFIFOMI0 register  *******************/
+#define CAN_RFIFOMI0_FT_Pos                     (1U)                              
+#define CAN_RFIFOMI0_FT_Msk                     (0x1U << CAN_RFIFOMI0_FT_Pos)        /*!< 0x00000002 */
+#define CAN_RFIFOMI0_FT                         CAN_RFIFOMI0_FT_Msk                  /*!< Remote Transmission Request */
+#define CAN_RFIFOMI0_FF_Pos                     (2U)                              
+#define CAN_RFIFOMI0_FF_Msk                     (0x1U << CAN_RFIFOMI0_FF_Pos)        /*!< 0x00000004 */
+#define CAN_RFIFOMI0_FF                         CAN_RFIFOMI0_FF_Msk                  /*!< Identifier Extension */
+#define CAN_RFIFOMI0_EFID_Pos                    (3U)                              
+#define CAN_RFIFOMI0_EFID_Msk                    (0x3FFFFU << CAN_RFIFOMI0_EFID_Pos)   /*!< 0x001FFFF8 */
+#define CAN_RFIFOMI0_EFID                        CAN_RFIFOMI0_EFID_Msk                 /*!< Extended Identifier */
+#define CAN_RFIFOMI0_SFID_Pos                    (21U)                             
+#define CAN_RFIFOMI0_SFID_Msk                    (0x7FFU << CAN_RFIFOMI0_SFID_Pos)     /*!< 0xFFE00000 */
+#define CAN_RFIFOMI0_SFID                        CAN_RFIFOMI0_SFID_Msk                 /*!< Standard Identifier or Extended Identifier */
 
-/*******************  Bit definition for CAN_RDT0R register  ******************/
-#define CAN_RDT0R_DLC_Pos                    (0U)                              
-#define CAN_RDT0R_DLC_Msk                    (0xFU << CAN_RDT0R_DLC_Pos)       /*!< 0x0000000F */
-#define CAN_RDT0R_DLC                        CAN_RDT0R_DLC_Msk                 /*!< Data Length Code */
-#define CAN_RDT0R_FMI_Pos                    (8U)                              
-#define CAN_RDT0R_FMI_Msk                    (0xFFU << CAN_RDT0R_FMI_Pos)      /*!< 0x0000FF00 */
-#define CAN_RDT0R_FMI                        CAN_RDT0R_FMI_Msk                 /*!< Filter Match Index */
-#define CAN_RDT0R_TIME_Pos                   (16U)                             
-#define CAN_RDT0R_TIME_Msk                   (0xFFFFU << CAN_RDT0R_TIME_Pos)   /*!< 0xFFFF0000 */
-#define CAN_RDT0R_TIME                       CAN_RDT0R_TIME_Msk                /*!< Message Time Stamp */
+/*******************  Bit definition for CAN_RFIFOMP0 register  ******************/
+#define CAN_RFIFOMP0_DLENC_Pos                    (0U)                              
+#define CAN_RFIFOMP0_DLENC_Msk                    (0xFU << CAN_RFIFOMP0_DLENC_Pos)       /*!< 0x0000000F */
+#define CAN_RFIFOMP0_DLENC                        CAN_RFIFOMP0_DLENC_Msk                 /*!< Data Length Code */
+#define CAN_RFIFOMP0_FI_Pos                    (8U)                              
+#define CAN_RFIFOMP0_FI_Msk                    (0xFFU << CAN_RFIFOMP0_FI_Pos)      /*!< 0x0000FF00 */
+#define CAN_RFIFOMP0_FI                        CAN_RFIFOMP0_FI_Msk                 /*!< Filter Match Index */
+#define CAN_RFIFOMP0_TS_Pos                   (16U)                             
+#define CAN_RFIFOMP0_TS_Msk                   (0xFFFFU << CAN_RFIFOMP0_TS_Pos)   /*!< 0xFFFF0000 */
+#define CAN_RFIFOMP0_TS                       CAN_RFIFOMP0_TS_Msk                /*!< Message Time Stamp */
 
-/*******************  Bit definition for CAN_RDL0R register  ******************/
-#define CAN_RDL0R_DATA0_Pos                  (0U)                              
-#define CAN_RDL0R_DATA0_Msk                  (0xFFU << CAN_RDL0R_DATA0_Pos)    /*!< 0x000000FF */
-#define CAN_RDL0R_DATA0                      CAN_RDL0R_DATA0_Msk               /*!< Data byte 0 */
-#define CAN_RDL0R_DATA1_Pos                  (8U)                              
-#define CAN_RDL0R_DATA1_Msk                  (0xFFU << CAN_RDL0R_DATA1_Pos)    /*!< 0x0000FF00 */
-#define CAN_RDL0R_DATA1                      CAN_RDL0R_DATA1_Msk               /*!< Data byte 1 */
-#define CAN_RDL0R_DATA2_Pos                  (16U)                             
-#define CAN_RDL0R_DATA2_Msk                  (0xFFU << CAN_RDL0R_DATA2_Pos)    /*!< 0x00FF0000 */
-#define CAN_RDL0R_DATA2                      CAN_RDL0R_DATA2_Msk               /*!< Data byte 2 */
-#define CAN_RDL0R_DATA3_Pos                  (24U)                             
-#define CAN_RDL0R_DATA3_Msk                  (0xFFU << CAN_RDL0R_DATA3_Pos)    /*!< 0xFF000000 */
-#define CAN_RDL0R_DATA3                      CAN_RDL0R_DATA3_Msk               /*!< Data byte 3 */
+/*******************  Bit definition for CAN_RFIFOMDATA00 register  ******************/
+#define CAN_RFIFOMDATA00_DB0_Pos                  (0U)                              
+#define CAN_RFIFOMDATA00_DB0_Msk                  (0xFFU << CAN_RFIFOMDATA00_DB0_Pos)    /*!< 0x000000FF */
+#define CAN_RFIFOMDATA00_DB0                      CAN_RFIFOMDATA00_DB0_Msk               /*!< Data byte 0 */
+#define CAN_RFIFOMDATA00_DB1_Pos                  (8U)                              
+#define CAN_RFIFOMDATA00_DB1_Msk                  (0xFFU << CAN_RFIFOMDATA00_DB1_Pos)    /*!< 0x0000FF00 */
+#define CAN_RFIFOMDATA00_DB1                      CAN_RFIFOMDATA00_DB1_Msk               /*!< Data byte 1 */
+#define CAN_RFIFOMDATA00_DB2_Pos                  (16U)                             
+#define CAN_RFIFOMDATA00_DB2_Msk                  (0xFFU << CAN_RFIFOMDATA00_DB2_Pos)    /*!< 0x00FF0000 */
+#define CAN_RFIFOMDATA00_DB2                      CAN_RFIFOMDATA00_DB2_Msk               /*!< Data byte 2 */
+#define CAN_RFIFOMDATA00_DB3_Pos                  (24U)                             
+#define CAN_RFIFOMDATA00_DB3_Msk                  (0xFFU << CAN_RFIFOMDATA00_DB3_Pos)    /*!< 0xFF000000 */
+#define CAN_RFIFOMDATA00_DB3                      CAN_RFIFOMDATA00_DB3_Msk               /*!< Data byte 3 */
 
-/*******************  Bit definition for CAN_RDH0R register  ******************/
-#define CAN_RDH0R_DATA4_Pos                  (0U)                              
-#define CAN_RDH0R_DATA4_Msk                  (0xFFU << CAN_RDH0R_DATA4_Pos)    /*!< 0x000000FF */
-#define CAN_RDH0R_DATA4                      CAN_RDH0R_DATA4_Msk               /*!< Data byte 4 */
-#define CAN_RDH0R_DATA5_Pos                  (8U)                              
-#define CAN_RDH0R_DATA5_Msk                  (0xFFU << CAN_RDH0R_DATA5_Pos)    /*!< 0x0000FF00 */
-#define CAN_RDH0R_DATA5                      CAN_RDH0R_DATA5_Msk               /*!< Data byte 5 */
-#define CAN_RDH0R_DATA6_Pos                  (16U)                             
-#define CAN_RDH0R_DATA6_Msk                  (0xFFU << CAN_RDH0R_DATA6_Pos)    /*!< 0x00FF0000 */
-#define CAN_RDH0R_DATA6                      CAN_RDH0R_DATA6_Msk               /*!< Data byte 6 */
-#define CAN_RDH0R_DATA7_Pos                  (24U)                             
-#define CAN_RDH0R_DATA7_Msk                  (0xFFU << CAN_RDH0R_DATA7_Pos)    /*!< 0xFF000000 */
-#define CAN_RDH0R_DATA7                      CAN_RDH0R_DATA7_Msk               /*!< Data byte 7 */
+/*******************  Bit definition for CAN_RFIFOMDATA10 register  ******************/
+#define CAN_RFIFOMDATA10_DB4_Pos                  (0U)                              
+#define CAN_RFIFOMDATA10_DB4_Msk                  (0xFFU << CAN_RFIFOMDATA10_DB4_Pos)    /*!< 0x000000FF */
+#define CAN_RFIFOMDATA10_DB4                      CAN_RFIFOMDATA10_DB4_Msk               /*!< Data byte 4 */
+#define CAN_RFIFOMDATA10_DB5_Pos                  (8U)                              
+#define CAN_RFIFOMDATA10_DB5_Msk                  (0xFFU << CAN_RFIFOMDATA10_DB5_Pos)    /*!< 0x0000FF00 */
+#define CAN_RFIFOMDATA10_DB5                      CAN_RFIFOMDATA10_DB5_Msk               /*!< Data byte 5 */
+#define CAN_RFIFOMDATA10_DB6_Pos                  (16U)                             
+#define CAN_RFIFOMDATA10_DB6_Msk                  (0xFFU << CAN_RFIFOMDATA10_DB6_Pos)    /*!< 0x00FF0000 */
+#define CAN_RFIFOMDATA10_DB6                      CAN_RFIFOMDATA10_DB6_Msk               /*!< Data byte 6 */
+#define CAN_RFIFOMDATA10_DB7_Pos                  (24U)                             
+#define CAN_RFIFOMDATA10_DB7_Msk                  (0xFFU << CAN_RFIFOMDATA10_DB7_Pos)    /*!< 0xFF000000 */
+#define CAN_RFIFOMDATA10_DB7                      CAN_RFIFOMDATA10_DB7_Msk               /*!< Data byte 7 */
 
-/*******************  Bit definition for CAN_RI1R register  *******************/
-#define CAN_RI1R_RTR_Pos                     (1U)                              
-#define CAN_RI1R_RTR_Msk                     (0x1U << CAN_RI1R_RTR_Pos)        /*!< 0x00000002 */
-#define CAN_RI1R_RTR                         CAN_RI1R_RTR_Msk                  /*!< Remote Transmission Request */
-#define CAN_RI1R_IDE_Pos                     (2U)                              
-#define CAN_RI1R_IDE_Msk                     (0x1U << CAN_RI1R_IDE_Pos)        /*!< 0x00000004 */
-#define CAN_RI1R_IDE                         CAN_RI1R_IDE_Msk                  /*!< Identifier Extension */
-#define CAN_RI1R_EXID_Pos                    (3U)                              
-#define CAN_RI1R_EXID_Msk                    (0x3FFFFU << CAN_RI1R_EXID_Pos)   /*!< 0x001FFFF8 */
-#define CAN_RI1R_EXID                        CAN_RI1R_EXID_Msk                 /*!< Extended identifier */
-#define CAN_RI1R_STID_Pos                    (21U)                             
-#define CAN_RI1R_STID_Msk                    (0x7FFU << CAN_RI1R_STID_Pos)     /*!< 0xFFE00000 */
-#define CAN_RI1R_STID                        CAN_RI1R_STID_Msk                 /*!< Standard Identifier or Extended Identifier */
+/*******************  Bit definition for CAN_RFIFOMI1 register  *******************/
+#define CAN_RFIFOMI1_FT_Pos                     (1U)                              
+#define CAN_RFIFOMI1_FT_Msk                     (0x1U << CAN_RFIFOMI1_FT_Pos)        /*!< 0x00000002 */
+#define CAN_RFIFOMI1_FT                         CAN_RFIFOMI1_FT_Msk                  /*!< Remote Transmission Request */
+#define CAN_RFIFOMI1_FF_Pos                     (2U)                              
+#define CAN_RFIFOMI1_FF_Msk                     (0x1U << CAN_RFIFOMI1_FF_Pos)        /*!< 0x00000004 */
+#define CAN_RFIFOMI1_FF                         CAN_RFIFOMI1_FF_Msk                  /*!< Identifier Extension */
+#define CAN_RFIFOMI1_EFID_Pos                    (3U)                              
+#define CAN_RFIFOMI1_EFID_Msk                    (0x3FFFFU << CAN_RFIFOMI1_EFID_Pos)   /*!< 0x001FFFF8 */
+#define CAN_RFIFOMI1_EFID                        CAN_RFIFOMI1_EFID_Msk                 /*!< Extended identifier */
+#define CAN_RFIFOMI1_SFID_Pos                    (21U)                             
+#define CAN_RFIFOMI1_SFID_Msk                    (0x7FFU << CAN_RFIFOMI1_SFID_Pos)     /*!< 0xFFE00000 */
+#define CAN_RFIFOMI1_SFID                        CAN_RFIFOMI1_SFID_Msk                 /*!< Standard Identifier or Extended Identifier */
 
-/*******************  Bit definition for CAN_RDT1R register  ******************/
-#define CAN_RDT1R_DLC_Pos                    (0U)                              
-#define CAN_RDT1R_DLC_Msk                    (0xFU << CAN_RDT1R_DLC_Pos)       /*!< 0x0000000F */
-#define CAN_RDT1R_DLC                        CAN_RDT1R_DLC_Msk                 /*!< Data Length Code */
-#define CAN_RDT1R_FMI_Pos                    (8U)                              
-#define CAN_RDT1R_FMI_Msk                    (0xFFU << CAN_RDT1R_FMI_Pos)      /*!< 0x0000FF00 */
-#define CAN_RDT1R_FMI                        CAN_RDT1R_FMI_Msk                 /*!< Filter Match Index */
-#define CAN_RDT1R_TIME_Pos                   (16U)                             
-#define CAN_RDT1R_TIME_Msk                   (0xFFFFU << CAN_RDT1R_TIME_Pos)   /*!< 0xFFFF0000 */
-#define CAN_RDT1R_TIME                       CAN_RDT1R_TIME_Msk                /*!< Message Time Stamp */
+/*******************  Bit definition for CAN_RFIFOMP1 register  ******************/
+#define CAN_RFIFOMP1_DLENC_Pos                    (0U)                              
+#define CAN_RFIFOMP1_DLENC_Msk                    (0xFU << CAN_RFIFOMP1_DLENC_Pos)       /*!< 0x0000000F */
+#define CAN_RFIFOMP1_DLENC                        CAN_RFIFOMP1_DLENC_Msk                 /*!< Data Length Code */
+#define CAN_RFIFOMP1_FI_Pos                    (8U)                              
+#define CAN_RFIFOMP1_FI_Msk                    (0xFFU << CAN_RFIFOMP1_FI_Pos)      /*!< 0x0000FF00 */
+#define CAN_RFIFOMP1_FI                        CAN_RFIFOMP1_FI_Msk                 /*!< Filter Match Index */
+#define CAN_RFIFOMP1_TS_Pos                   (16U)                             
+#define CAN_RFIFOMP1_TS_Msk                   (0xFFFFU << CAN_RFIFOMP1_TS_Pos)   /*!< 0xFFFF0000 */
+#define CAN_RFIFOMP1_TS                       CAN_RFIFOMP1_TS_Msk                /*!< Message Time Stamp */
 
-/*******************  Bit definition for CAN_RDL1R register  ******************/
-#define CAN_RDL1R_DATA0_Pos                  (0U)                              
-#define CAN_RDL1R_DATA0_Msk                  (0xFFU << CAN_RDL1R_DATA0_Pos)    /*!< 0x000000FF */
-#define CAN_RDL1R_DATA0                      CAN_RDL1R_DATA0_Msk               /*!< Data byte 0 */
-#define CAN_RDL1R_DATA1_Pos                  (8U)                              
-#define CAN_RDL1R_DATA1_Msk                  (0xFFU << CAN_RDL1R_DATA1_Pos)    /*!< 0x0000FF00 */
-#define CAN_RDL1R_DATA1                      CAN_RDL1R_DATA1_Msk               /*!< Data byte 1 */
-#define CAN_RDL1R_DATA2_Pos                  (16U)                             
-#define CAN_RDL1R_DATA2_Msk                  (0xFFU << CAN_RDL1R_DATA2_Pos)    /*!< 0x00FF0000 */
-#define CAN_RDL1R_DATA2                      CAN_RDL1R_DATA2_Msk               /*!< Data byte 2 */
-#define CAN_RDL1R_DATA3_Pos                  (24U)                             
-#define CAN_RDL1R_DATA3_Msk                  (0xFFU << CAN_RDL1R_DATA3_Pos)    /*!< 0xFF000000 */
-#define CAN_RDL1R_DATA3                      CAN_RDL1R_DATA3_Msk               /*!< Data byte 3 */
+/*******************  Bit definition for CAN_RFIFOMDATA01 register  ******************/
+#define CAN_RFIFOMDATA01_DB0_Pos                  (0U)                              
+#define CAN_RFIFOMDATA01_DB0_Msk                  (0xFFU << CAN_RFIFOMDATA01_DB0_Pos)    /*!< 0x000000FF */
+#define CAN_RFIFOMDATA01_DB0                      CAN_RFIFOMDATA01_DB0_Msk               /*!< Data byte 0 */
+#define CAN_RFIFOMDATA01_DB1_Pos                  (8U)                              
+#define CAN_RFIFOMDATA01_DB1_Msk                  (0xFFU << CAN_RFIFOMDATA01_DB1_Pos)    /*!< 0x0000FF00 */
+#define CAN_RFIFOMDATA01_DB1                      CAN_RFIFOMDATA01_DB1_Msk               /*!< Data byte 1 */
+#define CAN_RFIFOMDATA01_DB2_Pos                  (16U)                             
+#define CAN_RFIFOMDATA01_DB2_Msk                  (0xFFU << CAN_RFIFOMDATA01_DB2_Pos)    /*!< 0x00FF0000 */
+#define CAN_RFIFOMDATA01_DB2                      CAN_RFIFOMDATA01_DB2_Msk               /*!< Data byte 2 */
+#define CAN_RFIFOMDATA01_DB3_Pos                  (24U)                             
+#define CAN_RFIFOMDATA01_DB3_Msk                  (0xFFU << CAN_RFIFOMDATA01_DB3_Pos)    /*!< 0xFF000000 */
+#define CAN_RFIFOMDATA01_DB3                      CAN_RFIFOMDATA01_DB3_Msk               /*!< Data byte 3 */
 
-/*******************  Bit definition for CAN_RDH1R register  ******************/
-#define CAN_RDH1R_DATA4_Pos                  (0U)                              
-#define CAN_RDH1R_DATA4_Msk                  (0xFFU << CAN_RDH1R_DATA4_Pos)    /*!< 0x000000FF */
-#define CAN_RDH1R_DATA4                      CAN_RDH1R_DATA4_Msk               /*!< Data byte 4 */
-#define CAN_RDH1R_DATA5_Pos                  (8U)                              
-#define CAN_RDH1R_DATA5_Msk                  (0xFFU << CAN_RDH1R_DATA5_Pos)    /*!< 0x0000FF00 */
-#define CAN_RDH1R_DATA5                      CAN_RDH1R_DATA5_Msk               /*!< Data byte 5 */
-#define CAN_RDH1R_DATA6_Pos                  (16U)                             
-#define CAN_RDH1R_DATA6_Msk                  (0xFFU << CAN_RDH1R_DATA6_Pos)    /*!< 0x00FF0000 */
-#define CAN_RDH1R_DATA6                      CAN_RDH1R_DATA6_Msk               /*!< Data byte 6 */
-#define CAN_RDH1R_DATA7_Pos                  (24U)                             
-#define CAN_RDH1R_DATA7_Msk                  (0xFFU << CAN_RDH1R_DATA7_Pos)    /*!< 0xFF000000 */
-#define CAN_RDH1R_DATA7                      CAN_RDH1R_DATA7_Msk               /*!< Data byte 7 */
+/*******************  Bit definition for CAN_RFIFOMDATA11 register  ******************/
+#define CAN_RFIFOMDATA11_DB4_Pos                  (0U)                              
+#define CAN_RFIFOMDATA11_DB4_Msk                  (0xFFU << CAN_RFIFOMDATA11_DB4_Pos)    /*!< 0x000000FF */
+#define CAN_RFIFOMDATA11_DB4                      CAN_RFIFOMDATA11_DB4_Msk               /*!< Data byte 4 */
+#define CAN_RFIFOMDATA11_DB5_Pos                  (8U)                              
+#define CAN_RFIFOMDATA11_DB5_Msk                  (0xFFU << CAN_RFIFOMDATA11_DB5_Pos)    /*!< 0x0000FF00 */
+#define CAN_RFIFOMDATA11_DB5                      CAN_RFIFOMDATA11_DB5_Msk               /*!< Data byte 5 */
+#define CAN_RFIFOMDATA11_DB6_Pos                  (16U)                             
+#define CAN_RFIFOMDATA11_DB6_Msk                  (0xFFU << CAN_RFIFOMDATA11_DB6_Pos)    /*!< 0x00FF0000 */
+#define CAN_RFIFOMDATA11_DB6                      CAN_RFIFOMDATA11_DB6_Msk               /*!< Data byte 6 */
+#define CAN_RFIFOMDATA11_DB7_Pos                  (24U)                             
+#define CAN_RFIFOMDATA11_DB7_Msk                  (0xFFU << CAN_RFIFOMDATA11_DB7_Pos)    /*!< 0xFF000000 */
+#define CAN_RFIFOMDATA11_DB7                      CAN_RFIFOMDATA11_DB7_Msk               /*!< Data byte 7 */
 
 /*!< CAN filter registers */
 /*******************  Bit definition for CAN_FCTL register  ********************/
