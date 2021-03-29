@@ -225,7 +225,7 @@ void i2s_lld_init(void) {
 #if GD32_I2S_USE_SPI1
   i2sObjectInit(&I2SD1);
   I2SD1.spi       = SPI1;
-  I2SD1.cfg       = GD32_I2S1_CFGR_CFG;
+  I2SD1.ctl       = GD32_I2S1_CFGR_CFG;
   I2SD1.dmarx     = NULL;
   I2SD1.dmatx     = NULL;
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
@@ -263,7 +263,7 @@ void i2s_lld_init(void) {
 #if GD32_I2S_USE_SPI2
   i2sObjectInit(&I2SD2);
   I2SD2.spi       = SPI2;
-  I2SD2.cfg       = GD32_I2S2_CFGR_CFG;
+  I2SD2.ctl       = GD32_I2S2_CFGR_CFG;
   I2SD2.dmarx     = NULL;
   I2SD2.dmatx     = NULL;
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE)
@@ -301,7 +301,7 @@ void i2s_lld_init(void) {
 #if GD32_I2S_USE_SPI3
   i2sObjectInit(&I2SD3);
   I2SD3.spi       = SPI3;
-  I2SD3.cfg       = GD32_I2S3_CFGR_CFG;
+  I2SD3.ctl       = GD32_I2S3_CFGR_CFG;
   I2SD3.dmarx     = NULL;
   I2SD3.dmatx     = NULL;
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE)
@@ -451,7 +451,7 @@ void i2s_lld_start(I2SDriver *i2sp) {
 
   /* I2S (re)configuration.*/
   i2sp->spi->I2SPSC   = i2sp->config->i2spsc;
-  i2sp->spi->I2SCTL = i2sp->config->i2sctl | i2sp->cfg | SPI_I2SCTL_I2SSEL;
+  i2sp->spi->I2SCTL = i2sp->config->i2sctl | i2sp->ctl | SPI_I2SCTL_I2SSEL;
 }
 
 /**
@@ -513,7 +513,7 @@ void i2s_lld_start_exchange(I2SDriver *i2sp) {
      10 (32)  X       32
      11 (NA)  X       NA
      */
-  if ((i2sp->config->i2scfgr & SPI_I2SCTL_DTLEN) != 0)
+  if ((i2sp->config->i2sctl & SPI_I2SCTL_DTLEN) != 0)
     size *= 2;
 
   /* RX DMA setup.*/

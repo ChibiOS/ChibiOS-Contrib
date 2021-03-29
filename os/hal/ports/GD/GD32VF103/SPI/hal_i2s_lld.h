@@ -308,11 +308,11 @@
   /* Pointer to the SPIx registers block.*/                                 \
   SPI_TypeDef               *spi;                                           \
   /* Calculated part of the I2SCFGR register.*/                             \
-  uint16_t                  cfg;                                            \
+  uint16_t                  ctl;                                            \
   /* Receive DMA stream or @p NULL.*/                                       \
-  const gd32_dma_stream_t  *dmarx;                                         \
+  const gd32_dma_stream_t  *dmarx;                                          \
   /* Transmit DMA stream or @p NULL.*/                                      \
-  const gd32_dma_stream_t  *dmatx;                                         \
+  const gd32_dma_stream_t  *dmatx;                                          \
   /* RX DMA mode bit mask.*/                                                \
   uint32_t                  rxdmamode;                                      \
   /* TX DMA mode bit mask.*/                                                \
@@ -330,11 +330,11 @@
            - I2SE                                                           \
            - I2SCFG                                                         \
    */                                                                       \
-  int16_t                   i2scfgr;                                        \
+  int16_t                   i2sctl;                                         \
   /* Configuration of the I2SPR register.                                   \
      NOTE: See the STM32 reference manual, this register is used for        \
            the I2S clock setup.*/                                           \
-  int16_t                   i2spr
+  int16_t                   i2spsc
 
 /*===========================================================================*/
 /* External declarations.                                                    */

@@ -72,33 +72,6 @@
 #endif
 
 /**
- * @brief   SPI4 driver enable switch.
- * @details If set to @p TRUE the support for SPI4 is included.
- * @note    The default is @p FALSE.
- */
-#if !defined(GD32_SPI_USE_SPI4) || defined(__DOXYGEN__)
-#define GD32_SPI_USE_SPI4                  FALSE
-#endif
-
-/**
- * @brief   SPI5 driver enable switch.
- * @details If set to @p TRUE the support for SPI5 is included.
- * @note    The default is @p FALSE.
- */
-#if !defined(GD32_SPI_USE_SPI5) || defined(__DOXYGEN__)
-#define GD32_SPI_USE_SPI5                  FALSE
-#endif
-
-/**
- * @brief   SPI6 driver enable switch.
- * @details If set to @p TRUE the support for SPI6 is included.
- * @note    The default is @p FALSE.
- */
-#if !defined(GD32_SPI_USE_SPI6) || defined(__DOXYGEN__)
-#define GD32_SPI_USE_SPI6                  FALSE
-#endif
-
-/**
  * @brief   SPI1 interrupt priority level setting.
  */
 #if !defined(GD32_SPI_SPI1_IRQ_PRIORITY) || defined(__DOXYGEN__)
@@ -117,27 +90,6 @@
  */
 #if !defined(GD32_SPI_SPI3_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_SPI_SPI3_IRQ_PRIORITY         10
-#endif
-
-/**
- * @brief   SPI4 interrupt priority level setting.
- */
-#if !defined(GD32_SPI_SPI4_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_SPI_SPI4_IRQ_PRIORITY         10
-#endif
-
-/**
- * @brief   SPI5 interrupt priority level setting.
- */
-#if !defined(GD32_SPI_SPI5_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_SPI_SPI5_IRQ_PRIORITY         10
-#endif
-
-/**
- * @brief   SPI6 interrupt priority level setting.
- */
-#if !defined(GD32_SPI_SPI6_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_SPI_SPI6_IRQ_PRIORITY         10
 #endif
 
 /**
@@ -171,36 +123,6 @@
 #endif
 
 /**
- * @brief   SPI4 DMA priority (0..3|lowest..highest).
- * @note    The priority level is used for both the TX and RX DMA streams but
- *          because of the streams ordering the RX stream has always priority
- *          over the TX stream.
- */
-#if !defined(GD32_SPI_SPI4_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_SPI_SPI4_DMA_PRIORITY         1
-#endif
-
-/**
- * @brief   SPI5 DMA priority (0..3|lowest..highest).
- * @note    The priority level is used for both the TX and RX DMA streams but
- *          because of the streams ordering the RX stream has always priority
- *          over the TX stream.
- */
-#if !defined(GD32_SPI_SPI5_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_SPI_SPI5_DMA_PRIORITY         1
-#endif
-
-/**
- * @brief   SPI6 DMA priority (0..3|lowest..highest).
- * @note    The priority level is used for both the TX and RX DMA streams but
- *          because of the streams ordering the RX stream has always priority
- *          over the TX stream.
- */
-#if !defined(GD32_SPI_SPI6_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_SPI_SPI6_DMA_PRIORITY         1
-#endif
-
-/**
  * @brief   SPI DMA error hook.
  */
 #if !defined(GD32_SPI_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
@@ -224,20 +146,7 @@
 #error "SPI3 not present in the selected device"
 #endif
 
-#if GD32_SPI_USE_SPI4 && !GD32_HAS_SPI4
-#error "SPI4 not present in the selected device"
-#endif
-
-#if GD32_SPI_USE_SPI5 && !GD32_HAS_SPI5
-#error "SPI5 not present in the selected device"
-#endif
-
-#if GD32_SPI_USE_SPI6 && !GD32_HAS_SPI6
-#error "SPI6 not present in the selected device"
-#endif
-
-#if !GD32_SPI_USE_SPI1 && !GD32_SPI_USE_SPI2 && !GD32_SPI_USE_SPI3 && \
-    !GD32_SPI_USE_SPI4 && !GD32_SPI_USE_SPI5 && !GD32_SPI_USE_SPI6
+#if !GD32_SPI_USE_SPI1 && !GD32_SPI_USE_SPI2 && !GD32_SPI_USE_SPI3 
 #error "SPI driver activated but no SPI peripheral assigned"
 #endif
 
@@ -256,21 +165,6 @@
 #error "Invalid IRQ priority assigned to SPI3"
 #endif
 
-#if GD32_SPI_USE_SPI4 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SPI_SPI4_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to SPI4"
-#endif
-
-#if GD32_SPI_USE_SPI5 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SPI_SPI5_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to SPI5"
-#endif
-
-#if GD32_SPI_USE_SPI6 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SPI_SPI6_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to SPI6"
-#endif
-
 #if GD32_SPI_USE_SPI1 &&                                                   \
     !GD32_DMA_IS_VALID_PRIORITY(GD32_SPI_SPI1_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to SPI1"
@@ -285,117 +179,6 @@
     !GD32_DMA_IS_VALID_PRIORITY(GD32_SPI_SPI3_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to SPI3"
 #endif
-
-#if GD32_SPI_USE_SPI4 &&                                                   \
-    !GD32_DMA_IS_VALID_PRIORITY(GD32_SPI_SPI4_DMA_PRIORITY)
-#error "Invalid DMA priority assigned to SPI4"
-#endif
-
-#if GD32_SPI_USE_SPI5 &&                                                   \
-    !GD32_DMA_IS_VALID_PRIORITY(GD32_SPI_SPI5_DMA_PRIORITY)
-#error "Invalid DMA priority assigned to SPI5"
-#endif
-
-#if GD32_SPI_USE_SPI6 &&                                                   \
-    !GD32_DMA_IS_VALID_PRIORITY(GD32_SPI_SPI6_DMA_PRIORITY)
-#error "Invalid DMA priority assigned to SPI6"
-#endif
-
-/* The following checks are only required when there is a DMA able to
-   reassign streams to different channels.*/
-#if GD32_ADVANCED_DMA
-/* Check on the presence of the DMA streams settings in mcuconf.h.*/
-#if GD32_SPI_USE_SPI1 && (!defined(GD32_SPI_SPI1_RX_DMA_STREAM) ||        \
-                           !defined(GD32_SPI_SPI1_TX_DMA_STREAM))
-#error "SPI1 DMA streams not defined"
-#endif
-
-#if GD32_SPI_USE_SPI2 && (!defined(GD32_SPI_SPI2_RX_DMA_STREAM) ||        \
-                           !defined(GD32_SPI_SPI2_TX_DMA_STREAM))
-#error "SPI2 DMA streams not defined"
-#endif
-
-#if GD32_SPI_USE_SPI3 && (!defined(GD32_SPI_SPI3_RX_DMA_STREAM) ||        \
-                           !defined(GD32_SPI_SPI3_TX_DMA_STREAM))
-#error "SPI3 DMA streams not defined"
-#endif
-
-#if GD32_SPI_USE_SPI4 && (!defined(GD32_SPI_SPI4_RX_DMA_STREAM) ||        \
-                           !defined(GD32_SPI_SPI4_TX_DMA_STREAM))
-#error "SPI4 DMA streams not defined"
-#endif
-
-#if GD32_SPI_USE_SPI5 && (!defined(GD32_SPI_SPI5_RX_DMA_STREAM) ||        \
-                           !defined(GD32_SPI_SPI5_TX_DMA_STREAM))
-#error "SPI5 DMA streams not defined"
-#endif
-
-#if GD32_SPI_USE_SPI6 && (!defined(GD32_SPI_SPI6_RX_DMA_STREAM) ||        \
-                           !defined(GD32_SPI_SPI6_TX_DMA_STREAM))
-#error "SPI6 DMA streams not defined"
-#endif
-
-/* Check on the validity of the assigned DMA channels.*/
-#if GD32_SPI_USE_SPI1 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI1_RX_DMA_STREAM, GD32_SPI1_RX_DMA_MSK)
-#error "invalid DMA stream associated to SPI1 RX"
-#endif
-
-#if GD32_SPI_USE_SPI1 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI1_TX_DMA_STREAM, GD32_SPI1_TX_DMA_MSK)
-#error "invalid DMA stream associated to SPI1 TX"
-#endif
-
-#if GD32_SPI_USE_SPI2 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI2_RX_DMA_STREAM, GD32_SPI2_RX_DMA_MSK)
-#error "invalid DMA stream associated to SPI2 RX"
-#endif
-
-#if GD32_SPI_USE_SPI2 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI2_TX_DMA_STREAM, GD32_SPI2_TX_DMA_MSK)
-#error "invalid DMA stream associated to SPI2 TX"
-#endif
-
-#if GD32_SPI_USE_SPI3 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI3_RX_DMA_STREAM, GD32_SPI3_RX_DMA_MSK)
-#error "invalid DMA stream associated to SPI3 RX"
-#endif
-
-#if GD32_SPI_USE_SPI3 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI3_TX_DMA_STREAM, GD32_SPI3_TX_DMA_MSK)
-#error "invalid DMA stream associated to SPI3 TX"
-#endif
-
-#if GD32_SPI_USE_SPI4 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI4_RX_DMA_STREAM, GD32_SPI4_RX_DMA_MSK)
-#error "invalid DMA stream associated to SPI4 RX"
-#endif
-
-#if GD32_SPI_USE_SPI4 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI4_TX_DMA_STREAM, GD32_SPI4_TX_DMA_MSK)
-#error "invalid DMA stream associated to SPI4 TX"
-#endif
-
-#if GD32_SPI_USE_SPI5 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI5_RX_DMA_STREAM, GD32_SPI5_RX_DMA_MSK)
-#error "invalid DMA stream associated to SPI5 RX"
-#endif
-
-#if GD32_SPI_USE_SPI5 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI5_TX_DMA_STREAM, GD32_SPI5_TX_DMA_MSK)
-#error "invalid DMA stream associated to SPI5 TX"
-#endif
-
-#if GD32_SPI_USE_SPI6 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI6_RX_DMA_STREAM, GD32_SPI6_RX_DMA_MSK)
-#error "invalid DMA stream associated to SPI6 RX"
-#endif
-
-#if GD32_SPI_USE_SPI6 &&                                                   \
-    !GD32_DMA_IS_VALID_ID(GD32_SPI_SPI6_TX_DMA_STREAM, GD32_SPI6_TX_DMA_MSK)
-#error "invalid DMA stream associated to SPI6 TX"
-#endif
-#endif /* GD32_ADVANCED_DMA */
 
 #if !defined(GD32_DMA_REQUIRED)
 #define GD32_DMA_REQUIRED
@@ -433,9 +216,9 @@
  */
 #define spi_lld_config_fields                                               \
   /* SPI CR1 register initialization data.*/                                \
-  uint16_t                  cr1;                                            \
+  uint16_t                  ctl0;                                            \
   /* SPI CR2 register initialization data.*/                                \
-  uint16_t                  cr2
+  uint16_t                  ctl1
 
 /*===========================================================================*/
 /* External declarations.                                                    */
@@ -451,18 +234,6 @@ extern SPIDriver SPID2;
 
 #if GD32_SPI_USE_SPI3 && !defined(__DOXYGEN__)
 extern SPIDriver SPID3;
-#endif
-
-#if GD32_SPI_USE_SPI4 && !defined(__DOXYGEN__)
-extern SPIDriver SPID4;
-#endif
-
-#if GD32_SPI_USE_SPI5 && !defined(__DOXYGEN__)
-extern SPIDriver SPID5;
-#endif
-
-#if GD32_SPI_USE_SPI6 && !defined(__DOXYGEN__)
-extern SPIDriver SPID6;
 #endif
 
 #ifdef __cplusplus

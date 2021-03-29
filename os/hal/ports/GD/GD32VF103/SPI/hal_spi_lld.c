@@ -54,30 +54,6 @@
   GD32_DMA_GETCHANNEL(GD32_SPI_SPI3_TX_DMA_STREAM,                        \
                        GD32_SPI3_TX_DMA_CHN)
 
-#define SPI4_RX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_SPI_SPI4_RX_DMA_STREAM,                        \
-                       GD32_SPI4_RX_DMA_CHN)
-
-#define SPI4_TX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_SPI_SPI4_TX_DMA_STREAM,                        \
-                       GD32_SPI4_TX_DMA_CHN)
-
-#define SPI5_RX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_SPI_SPI5_RX_DMA_STREAM,                        \
-                       GD32_SPI5_RX_DMA_CHN)
-
-#define SPI5_TX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_SPI_SPI5_TX_DMA_STREAM,                        \
-                       GD32_SPI5_TX_DMA_CHN)
-
-#define SPI6_RX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_SPI_SPI6_RX_DMA_STREAM,                        \
-                       GD32_SPI6_RX_DMA_CHN)
-
-#define SPI6_TX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_SPI_SPI6_TX_DMA_STREAM,                        \
-                       GD32_SPI6_TX_DMA_CHN)
-
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -95,21 +71,6 @@ SPIDriver SPID2;
 /** @brief SPI3 driver identifier.*/
 #if GD32_SPI_USE_SPI3 || defined(__DOXYGEN__)
 SPIDriver SPID3;
-#endif
-
-/** @brief SPI4 driver identifier.*/
-#if GD32_SPI_USE_SPI4 || defined(__DOXYGEN__)
-SPIDriver SPID4;
-#endif
-
-/** @brief SPI5 driver identifier.*/
-#if GD32_SPI_USE_SPI5 || defined(__DOXYGEN__)
-SPIDriver SPID5;
-#endif
-
-/** @brief SPI6 driver identifier.*/
-#if GD32_SPI_USE_SPI6 || defined(__DOXYGEN__)
-SPIDriver SPID6;
 #endif
 
 /*===========================================================================*/
@@ -249,60 +210,6 @@ void spi_lld_init(void) {
                     
                     GD32_DMA_CTL_ERRIE;
 #endif
-
-#if GD32_SPI_USE_SPI4
-  spiObjectInit(&SPID4);
-  SPID4.spi       = SPI4;
-  SPID4.dmarx     = NULL;
-  SPID4.dmatx     = NULL;
-  SPID4.rxdmamode = GD32_DMA_CTL_CHSEL(SPI4_RX_DMA_CHANNEL) |
-                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI4_DMA_PRIORITY) |
-                    GD32_DMA_CTL_DIR_P2M |
-                    GD32_DMA_CTL_FTFIE |
-                    
-                    GD32_DMA_CTL_ERRIE;
-  SPID4.txdmamode = GD32_DMA_CTL_CHSEL(SPI4_TX_DMA_CHANNEL) |
-                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI4_DMA_PRIORITY) |
-                    GD32_DMA_CTL_DIR_M2P |
-                    
-                    GD32_DMA_CTL_ERRIE;
-#endif
-
-#if GD32_SPI_USE_SPI5
-  spiObjectInit(&SPID5);
-  SPID5.spi       = SPI5;
-  SPID5.dmarx     = NULL;
-  SPID5.dmatx     = NULL;
-  SPID5.rxdmamode = GD32_DMA_CTL_CHSEL(SPI5_RX_DMA_CHANNEL) |
-                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI5_DMA_PRIORITY) |
-                    GD32_DMA_CTL_DIR_P2M |
-                    GD32_DMA_CTL_FTFIE |
-                    
-                    GD32_DMA_CTL_ERRIE;
-  SPID5.txdmamode = GD32_DMA_CTL_CHSEL(SPI5_TX_DMA_CHANNEL) |
-                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI5_DMA_PRIORITY) |
-                    GD32_DMA_CTL_DIR_M2P |
-                    
-                    GD32_DMA_CTL_ERRIE;
-#endif
-
-#if GD32_SPI_USE_SPI6
-  spiObjectInit(&SPID6);
-  SPID6.spi       = SPI6;
-  SPID6.dmarx     = NULL;
-  SPID6.dmatx     = NULL;
-  SPID6.rxdmamode = GD32_DMA_CTL_CHSEL(SPI6_RX_DMA_CHANNEL) |
-                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI6_DMA_PRIORITY) |
-                    GD32_DMA_CTL_DIR_P2M |
-                    GD32_DMA_CTL_FTFIE |
-                    
-                    GD32_DMA_CTL_ERRIE;
-  SPID6.txdmamode = GD32_DMA_CTL_CHSEL(SPI6_TX_DMA_CHANNEL) |
-                    GD32_DMA_CTL_PRIO(GD32_SPI_SPI6_DMA_PRIORITY) |
-                    GD32_DMA_CTL_DIR_M2P |
-                    
-                    GD32_DMA_CTL_ERRIE;
-#endif
 }
 
 /**
@@ -361,52 +268,6 @@ void spi_lld_start(SPIDriver *spip) {
       rccEnableSPI3(true);
     }
 #endif
-#if GD32_SPI_USE_SPI4
-    if (&SPID4 == spip) {
-      spip->dmarx = dmaStreamAllocI(GD32_SPI_SPI4_RX_DMA_STREAM,
-                                    GD32_SPI_SPI4_IRQ_PRIORITY,
-                                    (gd32_dmaisr_t)spi_lld_serve_rx_interrupt,
-                                    (void *)spip);
-      osalDbgAssert(spip->dmarx != NULL, "unable to allocate stream");
-      spip->dmatx = dmaStreamAllocI(GD32_SPI_SPI4_TX_DMA_STREAM,
-                                    GD32_SPI_SPI4_IRQ_PRIORITY,
-                                    (gd32_dmaisr_t)spi_lld_serve_tx_interrupt,
-                                    (void *)spip);
-      osalDbgAssert(spip->dmatx != NULL, "unable to allocate stream");
-      rccEnableSPI4(true);
-    }
-#endif
-#if GD32_SPI_USE_SPI5
-    if (&SPID5 == spip) {
-      spip->dmarx = dmaStreamAllocI(GD32_SPI_SPI5_RX_DMA_STREAM,
-                                    GD32_SPI_SPI5_IRQ_PRIORITY,
-                                    (gd32_dmaisr_t)spi_lld_serve_rx_interrupt,
-                                    (void *)spip);
-      osalDbgAssert(spip->dmarx != NULL, "unable to allocate stream");
-      spip->dmatx = dmaStreamAllocI(GD32_SPI_SPI5_TX_DMA_STREAM,
-                                    GD32_SPI_SPI5_IRQ_PRIORITY,
-                                    (gd32_dmaisr_t)spi_lld_serve_tx_interrupt,
-                                    (void *)spip);
-      osalDbgAssert(spip->dmatx != NULL, "unable to allocate stream");
-      rccEnableSPI5(true);
-    }
-#endif
-#if GD32_SPI_USE_SPI6
-    if (&SPID6 == spip) {
-      spip->dmarx = dmaStreamAllocI(GD32_SPI_SPI6_RX_DMA_STREAM,
-                                    GD32_SPI_SPI6_IRQ_PRIORITY,
-                                    (gd32_dmaisr_t)spi_lld_serve_rx_interrupt,
-                                    (void *)spip);
-      osalDbgAssert(spip->dmarx != NULL, "unable to allocate stream");
-      spip->dmatx = dmaStreamAllocI(GD32_SPI_SPI6_TX_DMA_STREAM,
-                                    GD32_SPI_SPI6_IRQ_PRIORITY,
-                                    (gd32_dmaisr_t)spi_lld_serve_tx_interrupt,
-                                    (void *)spip);
-      osalDbgAssert(spip->dmatx != NULL, "unable to allocate stream");
-      rccEnableSPI6(true);
-    }
-#endif
-
     /* DMA setup.*/
     dmaStreamSetPeripheral(spip->dmarx, &spip->spi->DATA);
     dmaStreamSetPeripheral(spip->dmatx, &spip->spi->DATA);
@@ -478,18 +339,6 @@ void spi_lld_stop(SPIDriver *spip) {
 #if GD32_SPI_USE_SPI3
     if (&SPID3 == spip)
       rccDisableSPI3();
-#endif
-#if GD32_SPI_USE_SPI4
-    if (&SPID4 == spip)
-      rccDisableSPI4();
-#endif
-#if GD32_SPI_USE_SPI5
-    if (&SPID5 == spip)
-      rccDisableSPI5();
-#endif
-#if GD32_SPI_USE_SPI6
-    if (&SPID6 == spip)
-      rccDisableSPI6();
 #endif
   }
 }
