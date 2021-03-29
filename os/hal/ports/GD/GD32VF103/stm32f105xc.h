@@ -448,45 +448,17 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CRH;
-  __IO uint32_t CRL;
-  __IO uint32_t PRLH;
-  __IO uint32_t PRLL;
+  __IO uint32_t INTEN;
+  __IO uint32_t CTL;
+  __IO uint32_t PSCH;
+  __IO uint32_t PSCL;
   __IO uint32_t DIVH;
   __IO uint32_t DIVL;
   __IO uint32_t CNTH;
   __IO uint32_t CNTL;
-  __IO uint32_t ALRH;
-  __IO uint32_t ALRL;
+  __IO uint32_t ALRMH;
+  __IO uint32_t ALRML;
 } RTC_TypeDef;
-
-/** 
-  * @brief SD host Interface
-  */
-
-typedef struct
-{
-  __IO uint32_t POWER;
-  __IO uint32_t CLKCR;
-  __IO uint32_t ARG;
-  __IO uint32_t CMD;
-  __I uint32_t RESPCMD;
-  __I uint32_t RESP1;
-  __I uint32_t RESP2;
-  __I uint32_t RESP3;
-  __I uint32_t RESP4;
-  __IO uint32_t DTIMER;
-  __IO uint32_t DLEN;
-  __IO uint32_t DCTRL;
-  __I uint32_t DCOUNT;
-  __I uint32_t STA;
-  __IO uint32_t ICR;
-  __IO uint32_t MASK;
-  uint32_t  RESERVED0[2];
-  __I uint32_t FIFOCNT;
-  uint32_t  RESERVED1[13];
-  __IO uint32_t FIFO;
-} SDIO_TypeDef;
 
 /** 
   * @brief Serial Peripheral Interface
@@ -5127,56 +5099,56 @@ typedef struct
 /*                                                                            */
 /******************************************************************************/
 
-/*******************  Bit definition for RTC_CRH register  ********************/
-#define RTC_CRH_SECIE_Pos                   (0U)                               
-#define RTC_CRH_SECIE_Msk                   (0x1U << RTC_CRH_SECIE_Pos)        /*!< 0x00000001 */
-#define RTC_CRH_SECIE                       RTC_CRH_SECIE_Msk                  /*!< Second Interrupt Enable */
-#define RTC_CRH_ALRIE_Pos                   (1U)                               
-#define RTC_CRH_ALRIE_Msk                   (0x1U << RTC_CRH_ALRIE_Pos)        /*!< 0x00000002 */
-#define RTC_CRH_ALRIE                       RTC_CRH_ALRIE_Msk                  /*!< Alarm Interrupt Enable */
-#define RTC_CRH_OWIE_Pos                    (2U)                               
-#define RTC_CRH_OWIE_Msk                    (0x1U << RTC_CRH_OWIE_Pos)         /*!< 0x00000004 */
-#define RTC_CRH_OWIE                        RTC_CRH_OWIE_Msk                   /*!< OverfloW Interrupt Enable */
+/*******************  Bit definition for RTC_INTEN register  ********************/
+#define RTC_INTEN_SCIE_Pos                   (0U)                               
+#define RTC_INTEN_SCIE_Msk                   (0x1U << RTC_INTEN_SCIE_Pos)        /*!< 0x00000001 */
+#define RTC_INTEN_SCIE                       RTC_INTEN_SCIE_Msk                  /*!< Second Interrupt Enable */
+#define RTC_INTEN_ALRMIE_Pos                   (1U)                               
+#define RTC_INTEN_ALRMIE_Msk                   (0x1U << RTC_INTEN_ALRMIE_Pos)        /*!< 0x00000002 */
+#define RTC_INTEN_ALRMIE                       RTC_INTEN_ALRMIE_Msk                  /*!< Alarm Interrupt Enable */
+#define RTC_INTEN_OVIE_Pos                    (2U)                               
+#define RTC_INTEN_OVIE_Msk                    (0x1U << RTC_INTEN_OVIE_Pos)         /*!< 0x00000004 */
+#define RTC_INTEN_OVIE                        RTC_INTEN_OVIE_Msk                   /*!< OverfloW Interrupt Enable */
 
-/*******************  Bit definition for RTC_CRL register  ********************/
-#define RTC_CRL_SECF_Pos                    (0U)                               
-#define RTC_CRL_SECF_Msk                    (0x1U << RTC_CRL_SECF_Pos)         /*!< 0x00000001 */
-#define RTC_CRL_SECF                        RTC_CRL_SECF_Msk                   /*!< Second Flag */
-#define RTC_CRL_ALRF_Pos                    (1U)                               
-#define RTC_CRL_ALRF_Msk                    (0x1U << RTC_CRL_ALRF_Pos)         /*!< 0x00000002 */
-#define RTC_CRL_ALRF                        RTC_CRL_ALRF_Msk                   /*!< Alarm Flag */
-#define RTC_CRL_OWF_Pos                     (2U)                               
-#define RTC_CRL_OWF_Msk                     (0x1U << RTC_CRL_OWF_Pos)          /*!< 0x00000004 */
-#define RTC_CRL_OWF                         RTC_CRL_OWF_Msk                    /*!< OverfloW Flag */
-#define RTC_CRL_RSF_Pos                     (3U)                               
-#define RTC_CRL_RSF_Msk                     (0x1U << RTC_CRL_RSF_Pos)          /*!< 0x00000008 */
-#define RTC_CRL_RSF                         RTC_CRL_RSF_Msk                    /*!< Registers Synchronized Flag */
-#define RTC_CRL_CNF_Pos                     (4U)                               
-#define RTC_CRL_CNF_Msk                     (0x1U << RTC_CRL_CNF_Pos)          /*!< 0x00000010 */
-#define RTC_CRL_CNF                         RTC_CRL_CNF_Msk                    /*!< Configuration Flag */
-#define RTC_CRL_RTOFF_Pos                   (5U)                               
-#define RTC_CRL_RTOFF_Msk                   (0x1U << RTC_CRL_RTOFF_Pos)        /*!< 0x00000020 */
-#define RTC_CRL_RTOFF                       RTC_CRL_RTOFF_Msk                  /*!< RTC operation OFF */
+/*******************  Bit definition for RTC_CTL register  ********************/
+#define RTC_CTL_SCIF_Pos                    (0U)                               
+#define RTC_CTL_SCIF_Msk                    (0x1U << RTC_CTL_SCIF_Pos)         /*!< 0x00000001 */
+#define RTC_CTL_SCIF                        RTC_CTL_SCIF_Msk                   /*!< Second Flag */
+#define RTC_CTL_ALRMIF_Pos                    (1U)                               
+#define RTC_CTL_ALRMIF_Msk                    (0x1U << RTC_CTL_ALRMIF_Pos)         /*!< 0x00000002 */
+#define RTC_CTL_ALRMIF                        RTC_CTL_ALRMIF_Msk                   /*!< Alarm Flag */
+#define RTC_CTL_OVIF_Pos                     (2U)                               
+#define RTC_CTL_OVIF_Msk                     (0x1U << RTC_CTL_OVIF_Pos)          /*!< 0x00000004 */
+#define RTC_CTL_OVIF                         RTC_CTL_OVIF_Msk                    /*!< OverfloW Flag */
+#define RTC_CTL_RSYNF_Pos                     (3U)                               
+#define RTC_CTL_RSYNF_Msk                     (0x1U << RTC_CTL_RSYNF_Pos)          /*!< 0x00000008 */
+#define RTC_CTL_RSYNF                         RTC_CTL_RSYNF_Msk                    /*!< Registers Synchronized Flag */
+#define RTC_CTL_CMF_Pos                     (4U)                               
+#define RTC_CTL_CMF_Msk                     (0x1U << RTC_CTL_CMF_Pos)          /*!< 0x00000010 */
+#define RTC_CTL_CMF                         RTC_CTL_CMF_Msk                    /*!< Configuration Flag */
+#define RTC_CTL_LWOFF_Pos                   (5U)                               
+#define RTC_CTL_LWOFF_Msk                   (0x1U << RTC_CTL_LWOFF_Pos)        /*!< 0x00000020 */
+#define RTC_CTL_LWOFF                       RTC_CTL_LWOFF_Msk                  /*!< RTC operation OFF */
 
-/*******************  Bit definition for RTC_PRLH register  *******************/
-#define RTC_PRLH_PRL_Pos                    (0U)                               
-#define RTC_PRLH_PRL_Msk                    (0xFU << RTC_PRLH_PRL_Pos)         /*!< 0x0000000F */
-#define RTC_PRLH_PRL                        RTC_PRLH_PRL_Msk                   /*!< RTC Prescaler Reload Value High */
+/*******************  Bit definition for RTC_PSCH register  *******************/
+#define RTC_PSCH_PSC_Pos                    (0U)                               
+#define RTC_PSCH_PSC_Msk                    (0xFU << RTC_PSCH_PSC_Pos)         /*!< 0x0000000F */
+#define RTC_PSCH_PSC                        RTC_PSCH_PSC_Msk                   /*!< RTC Prescaler Reload Value High */
 
-/*******************  Bit definition for RTC_PRLL register  *******************/
-#define RTC_PRLL_PRL_Pos                    (0U)                               
-#define RTC_PRLL_PRL_Msk                    (0xFFFFU << RTC_PRLL_PRL_Pos)      /*!< 0x0000FFFF */
-#define RTC_PRLL_PRL                        RTC_PRLL_PRL_Msk                   /*!< RTC Prescaler Reload Value Low */
+/*******************  Bit definition for RTC_PSCL register  *******************/
+#define RTC_PSCL_PSC_Pos                    (0U)                               
+#define RTC_PSCL_PSC_Msk                    (0xFFFFU << RTC_PSCL_PSC_Pos)      /*!< 0x0000FFFF */
+#define RTC_PSCL_PSC                        RTC_PSCL_PSC_Msk                   /*!< RTC Prescaler Reload Value Low */
 
 /*******************  Bit definition for RTC_DIVH register  *******************/
-#define RTC_DIVH_RTC_DIV_Pos                (0U)                               
-#define RTC_DIVH_RTC_DIV_Msk                (0xFU << RTC_DIVH_RTC_DIV_Pos)     /*!< 0x0000000F */
-#define RTC_DIVH_RTC_DIV                    RTC_DIVH_RTC_DIV_Msk               /*!< RTC Clock Divider High */
+#define RTC_DIVH_DIV_Pos                (0U)                               
+#define RTC_DIVH_DIV_Msk                (0xFU << RTC_DIVH_DIV_Pos)     /*!< 0x0000000F */
+#define RTC_DIVH_RTC_DIV                    RTC_DIVH_DIV_Msk               /*!< RTC Clock Divider High */
 
 /*******************  Bit definition for RTC_DIVL register  *******************/
-#define RTC_DIVL_RTC_DIV_Pos                (0U)                               
-#define RTC_DIVL_RTC_DIV_Msk                (0xFFFFU << RTC_DIVL_RTC_DIV_Pos)  /*!< 0x0000FFFF */
-#define RTC_DIVL_RTC_DIV                    RTC_DIVL_RTC_DIV_Msk               /*!< RTC Clock Divider Low */
+#define RTC_DIVL_DIV_Pos                (0U)                               
+#define RTC_DIVL_DIV_Msk                (0xFFFFU << RTC_DIVL_DIV_Pos)  /*!< 0x0000FFFF */
+#define RTC_DIVL_RTC_DIV                    RTC_DIVL_DIV_Msk               /*!< RTC Clock Divider Low */
 
 /*******************  Bit definition for RTC_CNTH register  *******************/
 #define RTC_CNTH_RTC_CNT_Pos                (0U)                               
@@ -5188,15 +5160,15 @@ typedef struct
 #define RTC_CNTL_RTC_CNT_Msk                (0xFFFFU << RTC_CNTL_RTC_CNT_Pos)  /*!< 0x0000FFFF */
 #define RTC_CNTL_RTC_CNT                    RTC_CNTL_RTC_CNT_Msk               /*!< RTC Counter Low */
 
-/*******************  Bit definition for RTC_ALRH register  *******************/
-#define RTC_ALRH_RTC_ALR_Pos                (0U)                               
-#define RTC_ALRH_RTC_ALR_Msk                (0xFFFFU << RTC_ALRH_RTC_ALR_Pos)  /*!< 0x0000FFFF */
-#define RTC_ALRH_RTC_ALR                    RTC_ALRH_RTC_ALR_Msk               /*!< RTC Alarm High */
+/*******************  Bit definition for RTC_ALRMH register  *******************/
+#define RTC_ALRMH_RTC_ALRM_Pos                (0U)                               
+#define RTC_ALRMH_RTC_ALRM_Msk                (0xFFFFU << RTC_ALRMH_RTC_ALRM_Pos)  /*!< 0x0000FFFF */
+#define RTC_ALRMH_RTC_ALRM                    RTC_ALRMH_RTC_ALRM_Msk               /*!< RTC Alarm High */
 
-/*******************  Bit definition for RTC_ALRL register  *******************/
-#define RTC_ALRL_RTC_ALR_Pos                (0U)                               
-#define RTC_ALRL_RTC_ALR_Msk                (0xFFFFU << RTC_ALRL_RTC_ALR_Pos)  /*!< 0x0000FFFF */
-#define RTC_ALRL_RTC_ALR                    RTC_ALRL_RTC_ALR_Msk               /*!< RTC Alarm Low */
+/*******************  Bit definition for RTC_ALRML register  *******************/
+#define RTC_ALRML_RTC_ALRM_Pos                (0U)                               
+#define RTC_ALRML_RTC_ALRM_Msk                (0xFFFFU << RTC_ALRML_RTC_ALRM_Pos)  /*!< 0x0000FFFF */
+#define RTC_ALRML_RTC_ALRM                    RTC_ALRML_RTC_ALRM_Msk               /*!< RTC Alarm Low */
 
 /******************************************************************************/
 /*                                                                            */

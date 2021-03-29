@@ -20,7 +20,7 @@
 
 /**
  * @file    RTC/hal_rtc_lld.c
- * @brief   STM32 RTC subsystem low level driver header.
+ * @brief   GD32 RTC subsystem low level driver header.
  *
  * @addtogroup RTC
  * @{
@@ -61,7 +61,7 @@ RTCDriver RTCD1;
  */
 static void rtc_apb1_sync(void) {
 
-  while ((RTC->CRL & RTC_CRL_RSF) == 0)
+  while ((RTC->CTL & RTC_CTL_RSYNF) == 0)
     ;
 }
 
@@ -73,7 +73,7 @@ static void rtc_apb1_sync(void) {
  */
 static void rtc_wait_write_completed(void) {
 
-  while ((RTC->CRL & RTC_CRL_RTOFF) == 0)
+  while ((RTC->CTL & RTC_CTL_LWOFF) == 0)
     ;
 }
 
@@ -88,7 +88,7 @@ static void rtc_wait_write_completed(void) {
 static void rtc_acquire_access(void) {
 
   rtc_wait_write_completed();
-  RTC->CRL |= RTC_CRL_CNF;
+  RTC->CTL |= RTC_CTL_CMF;
 }
 
 /**
@@ -98,7 +98,7 @@ static void rtc_acquire_access(void) {
  */
 static void rtc_release_access(void) {
 
-  RTC->CRL &= ~RTC_CRL_CNF;
+  RTC->CTL &= ~RTC_CTL_CMF;
 }
 
 /**
@@ -164,16 +164,16 @@ OSAL_IRQ_HANDLER(GD32_RTC1_HANDLER) {
   rtc_apb1_sync();
 
   /* Mask of all enabled and pending sources.*/
-  flags = RTCD1.rtc->CRH & RTCD1.rtc->CRL;
-  RTCD1.rtc->CRL &= ~(RTC_CRL_SECF | RTC_CRL_ALRF | RTC_CRL_OWF);
+  flags = RTCD1.rtc->INTEN & RTCD1.rtc->CTL;
+  RTCD1.rtc->CTL &= ~(RTC_CTL_SCIF | RTC_CTL_ALRMIF | RTC_CTL_OVIF);
 
-  if (flags & RTC_CRL_SECF)
+  if (flags & RTC_CTL_SCIF)
     RTCD1.callback(&RTCD1, RTC_EVENT_SECOND);
 
-  if (flags & RTC_CRL_ALRF)
+  if (flags & RTC_CTL_ALRMIF)
     RTCD1.callback(&RTCD1, RTC_EVENT_ALARM);
 
-  if (flags & RTC_CRL_OWF)
+  if (flags & RTC_CTL_OVIF)
     RTCD1.callback(&RTCD1, RTC_EVENT_OVERFLOW);
 
   OSAL_IRQ_EPILOGUE();
@@ -200,8 +200,8 @@ void rtc_lld_set_prescaler(void) {
   sts = osalSysGetStatusAndLockX();
 
   rtc_acquire_access();
-  RTC->PRLH = (uint16_t)((GD32_RTCCLK - 1) >> 16) & 0x000F;
-  RTC->PRLL = (uint16_t)(((GD32_RTCCLK - 1))      & 0xFFFF);
+  RTC->PSCH = (uint16_t)((GD32_RTCCLK - 1) >> 16) & 0x000F;
+  RTC->PSCL = (uint16_t)(((GD32_RTCCLK - 1))      & 0xFFFF);
   rtc_release_access();
 
   /* Leaving a reentrant critical zone.*/
@@ -223,14 +223,14 @@ void rtc_lld_init(void) {
 
   /* RSF bit must be cleared by software after an APB1 reset or an APB1 clock
      stop. Otherwise its value will not be actual. */
-  RTCD1.rtc->CRL &= ~RTC_CRL_RSF;
+  RTCD1.rtc->CTL &= ~RTC_CTL_RSYNF;
 
   /* Required because access to PRL.*/
   rtc_apb1_sync();
 
   /* All interrupts initially disabled.*/
   rtc_wait_write_completed();
-  RTCD1.rtc->CRH = 0;
+  RTCD1.rtc->INTEN = 0;
 
   /* Callback initially disabled.*/
   RTCD1.callback = NULL;
@@ -242,7 +242,7 @@ void rtc_lld_init(void) {
 /**
  * @brief   Set current time.
  * @note    Fractional part will be silently ignored. There is no possibility
- *          to change it on STM32F1xx platform.
+ *          to change it on GD32F1xx platform.
  * @note    The function can be called from any context.
  *
  * @param[in] rtcp      pointer to RTC driver structure
@@ -253,7 +253,7 @@ void rtc_lld_init(void) {
 void rtc_lld_set_time(RTCDriver *rtcp, const RTCDateTime *timespec) {
   time_t tv_sec = rtc_encode(timespec);
 
-  rtcSTM32SetSec(rtcp, tv_sec);
+  rtcGD32SetSec(rtcp, tv_sec);
 }
 
 /**
@@ -268,7 +268,7 @@ void rtc_lld_set_time(RTCDriver *rtcp, const RTCDateTime *timespec) {
 void rtc_lld_get_time(RTCDriver *rtcp, RTCDateTime *timespec) {
   uint32_t tv_sec, tv_msec;
 
-  rtcSTM32GetSecMsec(rtcp, &tv_sec, &tv_msec);
+  rtcGD32GetSecMsec(rtcp, &tv_sec, &tv_msec);
   rtc_decode(tv_sec, tv_msec, timespec);
 }
 
@@ -295,12 +295,12 @@ void rtc_lld_set_alarm(RTCDriver *rtcp,
 
   rtc_acquire_access();
   if (alarmspec != NULL) {
-    rtcp->rtc->ALRH = (uint16_t)(alarmspec->tv_sec >> 16);
-    rtcp->rtc->ALRL = (uint16_t)(alarmspec->tv_sec & 0xFFFF);
+    rtcp->rtc->ALRMH = (uint16_t)(alarmspec->tv_sec >> 16);
+    rtcp->rtc->ALRML = (uint16_t)(alarmspec->tv_sec & 0xFFFF);
   }
   else {
-    rtcp->rtc->ALRH = 0;
-    rtcp->rtc->ALRL = 0;
+    rtcp->rtc->ALRMH = 0;
+    rtcp->rtc->ALRML = 0;
   }
   rtc_release_access();
 
@@ -333,7 +333,7 @@ void rtc_lld_get_alarm(RTCDriver *rtcp,
   /* Required because access to ALR.*/
   rtc_apb1_sync();
 
-  alarmspec->tv_sec = ((rtcp->rtc->ALRH << 16) + rtcp->rtc->ALRL);
+  alarmspec->tv_sec = ((rtcp->rtc->ALRMH << 16) + rtcp->rtc->ALRML);
 
   /* Leaving a reentrant critical zone.*/
   osalSysRestoreStatusX(sts);
@@ -362,12 +362,12 @@ void rtc_lld_set_callback(RTCDriver *rtcp, rtccb_t callback) {
     rtcp->callback = callback;
 
     rtc_wait_write_completed();
-    rtcp->rtc->CRL &= ~(RTC_CRL_OWF | RTC_CRL_ALRF | RTC_CRL_SECF);
-    rtcp->rtc->CRH = RTC_CRH_OWIE | RTC_CRH_ALRIE | RTC_CRH_SECIE;
+    rtcp->rtc->CTL &= ~(RTC_CTL_OVIF | RTC_CTL_ALRMIF | RTC_CTL_SCIF);
+    rtcp->rtc->INTEN = RTC_INTEN_OVIE | RTC_INTEN_ALRMIE | RTC_INTEN_SCIE;
   }
   else {
     rtc_wait_write_completed();
-    rtcp->rtc->CRH = 0;
+    rtcp->rtc->INTEN = 0;
 
     /* Callback set to NULL only after disabling the IRQ sources.*/
     rtcp->callback = NULL;
@@ -388,7 +388,7 @@ void rtc_lld_set_callback(RTCDriver *rtcp, rtccb_t callback) {
  *
  * @api
  */
-void rtcSTM32GetSecMsec(RTCDriver *rtcp, uint32_t *tv_sec, uint32_t *tv_msec) {
+void rtcGD32GetSecMsec(RTCDriver *rtcp, uint32_t *tv_sec, uint32_t *tv_msec) {
   uint32_t time_frac;
   syssts_t sts;
 
@@ -425,7 +425,7 @@ void rtcSTM32GetSecMsec(RTCDriver *rtcp, uint32_t *tv_sec, uint32_t *tv_msec) {
  *
  * @api
  */
-void rtcSTM32SetSec(RTCDriver *rtcp, uint32_t tv_sec) {
+void rtcGD32SetSec(RTCDriver *rtcp, uint32_t tv_sec) {
   syssts_t sts;
 
   osalDbgCheck(NULL != rtcp);

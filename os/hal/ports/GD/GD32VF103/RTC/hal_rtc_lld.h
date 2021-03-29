@@ -20,7 +20,7 @@
 
 /**
  * @file    RTC/hal_rtc_lld.h
- * @brief   STM32 RTC subsystem low level driver header.
+ * @brief   GD32 RTC subsystem low level driver header.
  *
  * @addtogroup RTC
  * @{
@@ -139,8 +139,8 @@ extern "C" {
                          rtcalarm_t alarm_number,
                          RTCAlarm *alarmspec);
   void rtc_lld_set_callback(RTCDriver *rtcp, rtccb_t callback);
-  void rtcSTM32GetSecMsec(RTCDriver *rtcp, uint32_t *tv_sec, uint32_t *tv_msec);
-  void rtcSTM32SetSec(RTCDriver *rtcp, uint32_t tv_sec);
+  void rtcGD32GetSecMsec(RTCDriver *rtcp, uint32_t *tv_sec, uint32_t *tv_msec);
+  void rtcGD32SetSec(RTCDriver *rtcp, uint32_t tv_sec);
 #ifdef __cplusplus
 }
 #endif
