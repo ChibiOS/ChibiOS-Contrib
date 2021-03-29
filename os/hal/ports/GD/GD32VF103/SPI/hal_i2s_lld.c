@@ -30,14 +30,6 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define I2S1_RX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_I2S_SPI1_RX_DMA_STREAM,                        \
-                       GD32_SPI1_RX_DMA_CHN)
-
-#define I2S1_TX_DMA_CHANNEL                                                 \
-  GD32_DMA_GETCHANNEL(GD32_I2S_SPI1_TX_DMA_STREAM,                        \
-                       GD32_SPI1_TX_DMA_CHN)
-
 #define I2S2_RX_DMA_CHANNEL                                                 \
   GD32_DMA_GETCHANNEL(GD32_I2S_SPI2_RX_DMA_STREAM,                        \
                        GD32_SPI2_RX_DMA_CHN)
@@ -53,26 +45,6 @@
 #define I2S3_TX_DMA_CHANNEL                                                 \
   GD32_DMA_GETCHANNEL(GD32_I2S_SPI3_TX_DMA_STREAM,                        \
                        GD32_SPI3_TX_DMA_CHN)
-
-/*
- * Static I2S settings for I2S1.
- */
-#if !GD32_I2S_IS_MASTER(GD32_I2S_SPI1_MODE)
-#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
-#define GD32_I2S1_CFGR_CFG                 0
-#endif
-#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
-#define GD32_I2S1_CFGR_CFG                 SPI_I2SCTL_I2SOPMOD_0
-#endif
-#else /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI1_MODE) */
-#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
-#define GD32_I2S1_CFGR_CFG                 SPI_I2SCTL_I2SOPMOD_1
-#endif
-#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
-#define GD32_I2S1_CFGR_CFG                 (SPI_I2SCTL_I2SOPMOD_1 |         \
-                                             SPI_I2SCTL_I2SOPMOD_0)
-#endif
-#endif /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI1_MODE) */
 
 /*
  * Static I2S settings for I2S2.
@@ -118,11 +90,6 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-/** @brief I2S1 driver identifier.*/
-#if GD32_I2S_USE_SPI1 || defined(__DOXYGEN__)
-I2SDriver I2SD1;
-#endif
-
 /** @brief I2S2 driver identifier.*/
 #if GD32_I2S_USE_SPI2 || defined(__DOXYGEN__)
 I2SDriver I2SD2;
@@ -141,8 +108,7 @@ I2SDriver I2SD3;
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE) ||                            \
-    GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE) ||                            \
+#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE) ||                            \
     GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE) || defined(__DOXYGEN__)
 /**
  * @brief   Shared end-of-rx service routine.
@@ -221,44 +187,6 @@ static void i2s_lld_serve_tx_interrupt(I2SDriver *i2sp, uint32_t flags) {
  * @notapi
  */
 void i2s_lld_init(void) {
-
-#if GD32_I2S_USE_SPI1
-  i2sObjectInit(&I2SD1);
-  I2SD1.spi       = SPI1;
-  I2SD1.ctl       = GD32_I2S1_CFGR_CFG;
-  I2SD1.dmarx     = NULL;
-  I2SD1.dmatx     = NULL;
-#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
-  I2SD1.rxdmamode = GD32_DMA_CTL_CHSEL(I2S1_RX_DMA_CHANNEL) |
-                    GD32_DMA_CTL_PRIO(GD32_I2S_SPI1_DMA_PRIORITY) |
-                    GD32_DMA_CTL_PWIDTH_HWORD |
-                    GD32_DMA_CTL_MWIDTH_HWORD |
-                    GD32_DMA_CTL_DIR_P2M |
-                    GD32_DMA_CTL_MNAGA |
-                    GD32_DMA_CTL_CMEN |
-                    GD32_DMA_CTL_HTFIE |
-                    GD32_DMA_CTL_FTFIE |
-                    
-                    GD32_DMA_CTL_ERRIE;
-#else
-  I2SD1.rxdmamode = 0;
-#endif
-#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
-  I2SD1.txdmamode = GD32_DMA_CTL_CHSEL(I2S1_TX_DMA_CHANNEL) |
-                    GD32_DMA_CTL_PRIO(GD32_I2S_SPI1_DMA_PRIORITY) |
-                    GD32_DMA_CTL_PWIDTH_HWORD |
-                    GD32_DMA_CTL_MWIDTH_HWORD |
-                    GD32_DMA_CTL_DIR_M2P |
-                    GD32_DMA_CTL_MNAGA |
-                    GD32_DMA_CTL_CMEN |
-                    GD32_DMA_CTL_HTFIE |
-                    GD32_DMA_CTL_FTFIE |
-                    
-                    GD32_DMA_CTL_ERRIE;
-#else
-  I2SD1.txdmamode = 0;
-#endif
-#endif
 
 #if GD32_I2S_USE_SPI2
   i2sObjectInit(&I2SD2);
@@ -348,39 +276,6 @@ void i2s_lld_start(I2SDriver *i2sp) {
 
   /* If in stopped state then enables the SPI and DMA clocks.*/
   if (i2sp->state == I2S_STOP) {
-
-#if GD32_I2S_USE_SPI1
-    if (&I2SD1 == i2sp) {
-
-      /* Enabling I2S unit clock.*/
-      rccEnableSPI1(true);
-
-#if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
-      i2sp->dmarx = dmaStreamAllocI(GD32_I2S_SPI1_RX_DMA_STREAM,
-                                    GD32_I2S_SPI1_IRQ_PRIORITY,
-                                    (gd32_dmaisr_t)i2s_lld_serve_rx_interrupt,
-                                    (void *)i2sp);
-      osalDbgAssert(i2sp->dmarx != NULL, "unable to allocate stream");
-
-      /* CRs settings are done here because those never changes until
-         the driver is stopped.*/
-      i2sp->spi->CTL0 = 0;
-      i2sp->spi->CTL1 = SPI_CTL1_DMAREN;
-#endif
-#if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
-      i2sp->dmatx = dmaStreamAllocI(GD32_I2S_SPI1_TX_DMA_STREAM,
-                                    GD32_I2S_SPI1_IRQ_PRIORITY,
-                                    (gd32_dmaisr_t)i2s_lld_serve_tx_interrupt,
-                                    (void *)i2sp);
-      osalDbgAssert(i2sp->dmatx != NULL, "unable to allocate stream");
-
-      /* CRs settings are done here because those never changes until
-         the driver is stopped.*/
-      i2sp->spi->CTL0 = 0;
-      i2sp->spi->CTL1 = SPI_CTL1_DMATEN;
-#endif
-    }
-#endif
 
 #if GD32_I2S_USE_SPI2
     if (&I2SD2 == i2sp) {
@@ -476,11 +371,6 @@ void i2s_lld_stop(I2SDriver *i2sp) {
       dmaStreamFreeI(i2sp->dmatx);
       i2sp->dmatx = NULL;
     }
-
-#if GD32_I2S_USE_SPI1
-    if (&I2SD1 == i2sp)
-      rccDisableSPI1();
-#endif
 
 #if GD32_I2S_USE_SPI2
     if (&I2SD2 == i2sp)
