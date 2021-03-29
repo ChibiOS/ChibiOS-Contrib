@@ -200,29 +200,32 @@
 
 /* SPI attributes.*/
 #if GD32_HAS_SPI_0 || GD32_HAS_SPI_012
-    #define GD32_HAS_SPI1                      TRUE
-    #define GD32_SPI1_SUPPORTS_I2S             FALSE
-    #define GD32_SPI_SPI1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 1)
-    #define GD32_SPI_SPI1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 2)
+    #define GD32_HAS_SPI0                      TRUE
+    #define GD32_SPI0_SUPPORTS_I2S             FALSE
+    #define GD32_SPI_SPI0_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 1)
+    #define GD32_SPI_SPI0_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 2)
 #else
-    #define GD32_HAS_SPI1                      FALSE
+    #define GD32_HAS_SPI0                      FALSE
 #endif
 
 #if GD32_HAS_SPI_012
+    #define GD32_HAS_SPI1                      TRUE
+    #define GD32_SPI1_SUPPORTS_I2S             TRUE
+    #define GD32_SPI1_I2S_FULLDUPLEX           FALSE
+    #define GD32_SPI_SPI1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 3)
+    #define GD32_SPI_SPI1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 4)
+    #define GD32_I2S_SPI1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 3)
+    #define GD32_I2S_SPI1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 4)
     #define GD32_HAS_SPI2                      TRUE
     #define GD32_SPI2_SUPPORTS_I2S             TRUE
     #define GD32_SPI2_I2S_FULLDUPLEX           FALSE
-    #define GD32_SPI_SPI2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 3)
-    #define GD32_SPI_SPI2_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 4)
-    
-    #define GD32_HAS_SPI3                      TRUE
-    #define GD32_SPI3_SUPPORTS_I2S             TRUE
-    #define GD32_SPI3_I2S_FULLDUPLEX           FALSE
-    #define GD32_SPI_SPI3_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 0)
-    #define GD32_SPI_SPI3_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 1)
+    #define GD32_SPI_SPI2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 0)
+    #define GD32_SPI_SPI2_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 1)
+    #define GD32_I2S_SPI2_RX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 0)
+    #define GD32_I2S_SPI2_TX_DMA_STREAM        GD32_DMA_STREAM_ID(1, 1)
 #else
+    #define GD32_HAS_SPI1                      FALSE
     #define GD32_HAS_SPI2                      FALSE
-    #define GD32_HAS_SPI3                      FALSE
 #endif
 
 /* TIM attributes.*/

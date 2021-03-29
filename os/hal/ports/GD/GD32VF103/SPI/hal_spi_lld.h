@@ -45,6 +45,15 @@
  * @{
  */
 /**
+ * @brief   SPI0 driver enable switch.
+ * @details If set to @p TRUE the support for SPI0 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(GD32_SPI_USE_SPI0) || defined(__DOXYGEN__)
+#define GD32_SPI_USE_SPI0                  FALSE
+#endif
+
+/**
  * @brief   SPI1 driver enable switch.
  * @details If set to @p TRUE the support for SPI1 is included.
  * @note    The default is @p FALSE.
@@ -63,12 +72,10 @@
 #endif
 
 /**
- * @brief   SPI3 driver enable switch.
- * @details If set to @p TRUE the support for SPI3 is included.
- * @note    The default is @p FALSE.
+ * @brief   SPI0 interrupt priority level setting.
  */
-#if !defined(GD32_SPI_USE_SPI3) || defined(__DOXYGEN__)
-#define GD32_SPI_USE_SPI3                  FALSE
+#if !defined(GD32_SPI_SPI0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_SPI_SPI0_IRQ_PRIORITY         10
 #endif
 
 /**
@@ -86,10 +93,13 @@
 #endif
 
 /**
- * @brief   SPI3 interrupt priority level setting.
+ * @brief   SPI0 DMA priority (0..3|lowest..highest).
+ * @note    The priority level is used for both the TX and RX DMA streams but
+ *          because of the streams ordering the RX stream has always priority
+ *          over the TX stream.
  */
-#if !defined(GD32_SPI_SPI3_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_SPI_SPI3_IRQ_PRIORITY         10
+#if !defined(GD32_SPI_SPI0_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_SPI_SPI0_DMA_PRIORITY         1
 #endif
 
 /**
@@ -113,16 +123,6 @@
 #endif
 
 /**
- * @brief   SPI3 DMA priority (0..3|lowest..highest).
- * @note    The priority level is used for both the TX and RX DMA streams but
- *          because of the streams ordering the RX stream has always priority
- *          over the TX stream.
- */
-#if !defined(GD32_SPI_SPI3_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_SPI_SPI3_DMA_PRIORITY         1
-#endif
-
-/**
  * @brief   SPI DMA error hook.
  */
 #if !defined(GD32_SPI_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
@@ -134,6 +134,10 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
+#if GD32_SPI_USE_SPI0 && !GD32_HAS_SPI0
+#error "SPI0 not present in the selected device"
+#endif
+
 #if GD32_SPI_USE_SPI1 && !GD32_HAS_SPI1
 #error "SPI1 not present in the selected device"
 #endif
@@ -142,12 +146,13 @@
 #error "SPI2 not present in the selected device"
 #endif
 
-#if GD32_SPI_USE_SPI3 && !GD32_HAS_SPI3
-#error "SPI3 not present in the selected device"
+#if !GD32_SPI_USE_SPI0 && !GD32_SPI_USE_SPI1 && !GD32_SPI_USE_SPI2 
+#error "SPI driver activated but no SPI peripheral assigned"
 #endif
 
-#if !GD32_SPI_USE_SPI1 && !GD32_SPI_USE_SPI2 && !GD32_SPI_USE_SPI3 
-#error "SPI driver activated but no SPI peripheral assigned"
+#if GD32_SPI_USE_SPI0 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SPI_SPI0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to SPI0"
 #endif
 
 #if GD32_SPI_USE_SPI1 &&                                                   \
@@ -160,9 +165,9 @@
 #error "Invalid IRQ priority assigned to SPI2"
 #endif
 
-#if GD32_SPI_USE_SPI3 &&                                                   \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_SPI_SPI3_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to SPI3"
+#if GD32_SPI_USE_SPI0 &&                                                   \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_SPI_SPI0_DMA_PRIORITY)
+#error "Invalid DMA priority assigned to SPI0"
 #endif
 
 #if GD32_SPI_USE_SPI1 &&                                                   \
@@ -173,11 +178,6 @@
 #if GD32_SPI_USE_SPI2 &&                                                   \
     !GD32_DMA_IS_VALID_PRIORITY(GD32_SPI_SPI2_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to SPI2"
-#endif
-
-#if GD32_SPI_USE_SPI3 &&                                                   \
-    !GD32_DMA_IS_VALID_PRIORITY(GD32_SPI_SPI3_DMA_PRIORITY)
-#error "Invalid DMA priority assigned to SPI3"
 #endif
 
 #if !defined(GD32_DMA_REQUIRED)
@@ -224,15 +224,15 @@
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if GD32_SPI_USE_SPI1 && !defined(__DOXYGEN__)
+#if GD32_SPI_USE_SPI0 && !defined(__DOXYGEN__)
 extern SPIDriver SPID1;
 #endif
 
-#if GD32_SPI_USE_SPI2 && !defined(__DOXYGEN__)
+#if GD32_SPI_USE_SPI1 && !defined(__DOXYGEN__)
 extern SPIDriver SPID2;
 #endif
 
-#if GD32_SPI_USE_SPI3 && !defined(__DOXYGEN__)
+#if GD32_SPI_USE_SPI2 && !defined(__DOXYGEN__)
 extern SPIDriver SPID3;
 #endif
 
