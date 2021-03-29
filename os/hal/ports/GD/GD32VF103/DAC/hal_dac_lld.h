@@ -539,12 +539,6 @@ typedef struct {
    * @brief   DMA channel IRQ priority.
    */
   uint32_t                  dmairqprio;
-#if (GD32_DMA_SUPPORTS_DMAMUX == TRUE) || defined(__DOXYGEN__)
-  /**
-   * @brief   DMAMUX peripheral selector.
-   */
-  uint32_t                  peripheral;
-#endif
 } dacparams_t;
 
 /**
@@ -593,7 +587,7 @@ typedef enum {
   /* DAC data holding register mode.*/                                      \
   dacdhrmode_t              datamode;                                       \
   /* DAC control register lower 16 bits.*/                                  \
-  uint32_t                  cr
+  uint32_t                  ctl
 
 /**
  * @brief   Low level fields of the DAC group configuration structure.

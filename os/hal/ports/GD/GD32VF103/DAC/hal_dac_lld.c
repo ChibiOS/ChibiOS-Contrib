@@ -124,9 +124,6 @@ static const dacparams_t dac1_ch1_params = {
   .regshift     = 0U,
   .regmask      = 0xFFFF0000U,
   .dmastream    = GD32_DAC_DAC1_CH1_DMA_STREAM,
-#if GD32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = GD32_DMAMUX1_DAC1_CH1,
-#endif
   .dmamode      = GD32_DMA_CTL_CHSEL(DAC1_CH1_DMA_CHANNEL) |
                   GD32_DMA_CTL_PRIO(GD32_DAC_DAC1_CH1_DMA_PRIORITY) |
                   GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
@@ -143,9 +140,6 @@ static const dacparams_t dac1_ch2_params = {
   .regshift     = 16U,
   .regmask      = 0x0000FFFFU,
   .dmastream    = GD32_DAC_DAC1_CH2_DMA_STREAM,
-#if GD32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = GD32_DMAMUX1_DAC1_CH2,
-#endif
   .dmamode      = GD32_DMA_CTL_CHSEL(DAC1_CH2_DMA_CHANNEL) |
                   GD32_DMA_CTL_PRIO(GD32_DAC_DAC1_CH2_DMA_PRIORITY) |
                   GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
@@ -162,9 +156,6 @@ static const dacparams_t dac2_ch1_params = {
   .regshift     = 0U,
   .regmask      = 0xFFFF0000U,
   .dmastream    = GD32_DAC_DAC2_CH1_DMA_STREAM,
-#if GD32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = GD32_DMAMUX1_DAC2_CH1,
-#endif
   .dmamode      = GD32_DMA_CTL_CHSEL(DAC2_CH1_DMA_CHANNEL) |
                   GD32_DMA_CTL_PRIO(GD32_DAC_DAC2_CH1_DMA_PRIORITY) |
                   GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
@@ -181,9 +172,6 @@ static const dacparams_t dac2_ch2_params = {
   .regshift     = 16U,
   .regmask      = 0x0000FFFFU,
   .dmastream    = GD32_DAC_DAC2_CH2_DMA_STREAM,
-#if GD32_DMA_SUPPORTS_DMAMUX
-  .peripheral   = GD32_DMAMUX1_DAC2_CH2,
-#endif
   .dmamode      = GD32_DMA_CTL_CHSEL(DAC2_CH2_DMA_CHANNEL) |
                   GD32_DMA_CTL_PRIO(GD32_DAC_DAC2_CH2_DMA_PRIORITY) |
                   GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
@@ -433,23 +421,23 @@ void dac_lld_start(DACDriver *dacp) {
        zero.*/
 #if GD32_DAC_DUAL_MODE == FALSE
     {
-      uint32_t cr;
+      uint32_t ctl;
 
-      cr = dacp->params->dac->CR;
-      cr &= dacp->params->regmask;
-      cr |= (DAC_CR_EN1 | dacp->config->cr) << dacp->params->regshift;
-      dacp->params->dac->CR = cr;
+      ctl = dacp->params->dac->CTL;
+      ctl &= dacp->params->regmask;
+      ctl |= (DAC_CTL_DEN0 | dacp->config->ctl) << dacp->params->regshift;
+      dacp->params->dac->CTL = ctl;
       dac_lld_put_channel(dacp, channel, dacp->config->init);
     }
 #else
     if ((dacp->config->datamode == DAC_DHRM_12BIT_RIGHT_DUAL) ||
         (dacp->config->datamode == DAC_DHRM_12BIT_LEFT_DUAL) ||
         (dacp->config->datamode == DAC_DHRM_8BIT_RIGHT_DUAL)) {
-      dacp->params->dac->CR = DAC_CR_EN2 | (dacp->config->cr << 16) | DAC_CR_EN1 | dacp->config->cr;
+      dacp->params->dac->CTL = DAC_CTL_DEN1 | (dacp->config->ctl << 16) | DAC_CTL_DEN0 | dacp->config->ctl;
       dac_lld_put_channel(dacp, 1U, dacp->config->init);
     }
     else {
-      dacp->params->dac->CR = DAC_CR_EN1 | dacp->config->cr;
+      dacp->params->dac->CTL = DAC_CTL_DEN0 | dacp->config->ctl;
     }
     dac_lld_put_channel(dacp, channel, dacp->config->init);
 #endif
@@ -469,11 +457,11 @@ void dac_lld_stop(DACDriver *dacp) {
   if (dacp->state == DAC_READY) {
 
     /* Disabling DAC.*/
-    dacp->params->dac->CR &= dacp->params->regmask;
+    dacp->params->dac->CTL &= dacp->params->regmask;
 
 #if GD32_DAC_USE_DAC1_CH1
     if (&DACD1 == dacp) {
-      if ((dacp->params->dac->CR & DAC_CR_EN2) == 0U) {
+      if ((dacp->params->dac->CTL & DAC_CTL_DEN1) == 0U) {
         rccDisableDAC1();
       }
     }
@@ -481,7 +469,7 @@ void dac_lld_stop(DACDriver *dacp) {
 
 #if GD32_DAC_USE_DAC1_CH2
     if (&DACD2 == dacp) {
-      if ((dacp->params->dac->CR & DAC_CR_EN1) == 0U) {
+      if ((dacp->params->dac->CTL & DAC_CTL_DEN0) == 0U) {
         rccDisableDAC1();
       }
     }
@@ -489,7 +477,7 @@ void dac_lld_stop(DACDriver *dacp) {
 
 #if GD32_DAC_USE_DAC2_CH1
     if (&DACD3 == dacp) {
-      if ((dacp->params->dac->CR & DAC_CR_EN2) == 0U) {
+      if ((dacp->params->dac->CTL & DAC_CTL_DEN1) == 0U) {
         rccDisableDAC2();
       }
     }
@@ -497,7 +485,7 @@ void dac_lld_stop(DACDriver *dacp) {
 
 #if GD32_DAC_USE_DAC2_CH2
     if (&DACD4 == dacp) {
-      if ((dacp->params->dac->CR & DAC_CR_EN1) == 0U) {
+      if ((dacp->params->dac->CTL & DAC_CTL_DEN0) == 0U) {
         rccDisableDAC2();
       }
     }
@@ -505,7 +493,7 @@ void dac_lld_stop(DACDriver *dacp) {
 
 #if GD32_DAC_USE_DAC3_CH1
     if (&DACD5 == dacp) {
-      if ((dacp->params->dac->CR & DAC_CR_EN2) == 0U) {
+      if ((dacp->params->dac->CTL & DAC_CTL_DEN1) == 0U) {
         rccDisableDAC3();
       }
     }
@@ -513,7 +501,7 @@ void dac_lld_stop(DACDriver *dacp) {
 
 #if GD32_DAC_USE_DAC3_CH2
     if (&DACD6 == dacp) {
-      if ((dacp->params->dac->CR & DAC_CR_EN1) == 0U) {
+      if ((dacp->params->dac->CTL & DAC_CTL_DEN0) == 0U) {
         rccDisableDAC3();
       }
     }
@@ -521,7 +509,7 @@ void dac_lld_stop(DACDriver *dacp) {
 
 #if GD32_DAC_USE_DAC4_CH1
     if (&DACD7 == dacp) {
-      if ((dacp->params->dac->CR & DAC_CR_EN2) == 0U) {
+      if ((dacp->params->dac->CTL & DAC_CTL_DEN1) == 0U) {
         rccDisableDAC4();
       }
     }
@@ -529,7 +517,7 @@ void dac_lld_stop(DACDriver *dacp) {
 
 #if GD32_DAC_USE_DAC4_CH2
     if (&DACD8 == dacp) {
-      if ((dacp->params->dac->CR & DAC_CR_EN1) == 0U) {
+      if ((dacp->params->dac->CTL & DAC_CTL_DEN0) == 0U) {
         rccDisableDAC4();
       }
     }
@@ -557,15 +545,15 @@ void dac_lld_put_channel(DACDriver *dacp,
 #endif
     if (channel == 0U) {
 #if GD32_DAC_DUAL_MODE
-      dacp->params->dac->DHR12R1 = (uint32_t)sample;
+      dacp->params->dac->R12DH0 = (uint32_t)sample;
 #else
-      *(&dacp->params->dac->DHR12R1 + dacp->params->dataoffset) = (uint32_t)sample;
+      *(&dacp->params->dac->R12DH0 + dacp->params->dataoffset) = (uint32_t)sample;
 #endif
     }
 #if (GD32_HAS_DAC1_CH2 || GD32_HAS_DAC2_CH2 ||                            \
      GD32_HAS_DAC3_CH2 || GD32_HAS_DAC4_CH2)
     else {
-      dacp->params->dac->DHR12R2 = (uint32_t)sample;
+      dacp->params->dac->R12DH1 = (uint32_t)sample;
     }
 #endif
     break;
@@ -575,15 +563,15 @@ void dac_lld_put_channel(DACDriver *dacp,
 #endif
     if (channel == 0U) {
 #if GD32_DAC_DUAL_MODE
-      dacp->params->dac->DHR12L1 = (uint32_t)sample;
+      dacp->params->dac->L12DH0 = (uint32_t)sample;
 #else
-      *(&dacp->params->dac->DHR12L1 + dacp->params->dataoffset) = (uint32_t)sample;
+      *(&dacp->params->dac->L12DH0 + dacp->params->dataoffset) = (uint32_t)sample;
 #endif
     }
 #if (GD32_HAS_DAC1_CH2 || GD32_HAS_DAC2_CH2 ||                            \
      GD32_HAS_DAC3_CH2 || GD32_HAS_DAC4_CH2)
     else {
-      dacp->params->dac->DHR12L2 = (uint32_t)sample;
+      dacp->params->dac->L12DH1 = (uint32_t)sample;
     }
 #endif
     break;
@@ -593,15 +581,15 @@ void dac_lld_put_channel(DACDriver *dacp,
 #endif
     if (channel == 0U) {
 #if GD32_DAC_DUAL_MODE
-      dacp->params->dac->DHR8R1 = (uint32_t)sample;
+      dacp->params->dac->R8DH0 = (uint32_t)sample;
 #else
-      *(&dacp->params->dac->DHR8R1 + dacp->params->dataoffset) = (uint32_t)sample;
+      *(&dacp->params->dac->R8DH0 + dacp->params->dataoffset) = (uint32_t)sample;
 #endif
     }
 #if (GD32_HAS_DAC1_CH2 || GD32_HAS_DAC2_CH2 ||                            \
      GD32_HAS_DAC3_CH2 || GD32_HAS_DAC4_CH2)
     else {
-      dacp->params->dac->DHR8R2 = (uint32_t)sample;
+      dacp->params->dac->R8DH1 = (uint32_t)sample;
     }
 #endif
     break;
@@ -628,7 +616,7 @@ void dac_lld_put_channel(DACDriver *dacp,
  * @notapi
  */
 void dac_lld_start_conversion(DACDriver *dacp) {
-  uint32_t n, cr, dmamode;
+  uint32_t n, ctl, dmamode;
 
   /* Number of DMA operations per buffer.*/
   n = dacp->depth * dacp->grpp->num_channels;
@@ -649,7 +637,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
   case DAC_DHRM_12BIT_RIGHT:
     osalDbgAssert(dacp->grpp->num_channels == 1, "invalid number of channels");
 
-    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12R1 +
+    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->R12DH0 +
                                       dacp->params->dataoffset);
     dmamode = dacp->params->dmamode |
               GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
@@ -657,7 +645,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
   case DAC_DHRM_12BIT_LEFT:
     osalDbgAssert(dacp->grpp->num_channels == 1, "invalid number of channels");
 
-    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12L1 +
+    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->L12DH0 +
                                       dacp->params->dataoffset);
     dmamode = dacp->params->dmamode |
               GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
@@ -665,7 +653,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
   case DAC_DHRM_8BIT_RIGHT:
     osalDbgAssert(dacp->grpp->num_channels == 1, "invalid number of channels");
 
-    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR8R1 +
+    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->R8DH0 +
                                       dacp->params->dataoffset);
     dmamode = dacp->params->dmamode |
               GD32_DMA_CTL_PWIDTH_BYTE | GD32_DMA_CTL_MWIDTH_BYTE;
@@ -678,7 +666,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
   case DAC_DHRM_12BIT_RIGHT_DUAL:
     osalDbgAssert(dacp->grpp->num_channels == 2, "invalid number of channels");
 
-    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12RD);
+    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->R12DH);
     dmamode = dacp->params->dmamode |
               GD32_DMA_CTL_PWIDTH_WORD | GD32_DMA_CTL_MWIDTH_WORD;
     n /= 2;
@@ -686,7 +674,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
   case DAC_DHRM_12BIT_LEFT_DUAL:
     osalDbgAssert(dacp->grpp->num_channels == 2, "invalid number of channels");
 
-    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR12LD);
+    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->L12DH);
     dmamode = dacp->params->dmamode |
               GD32_DMA_CTL_PWIDTH_WORD | GD32_DMA_CTL_MWIDTH_WORD;
     n /= 2;
@@ -694,7 +682,7 @@ void dac_lld_start_conversion(DACDriver *dacp) {
   case DAC_DHRM_8BIT_RIGHT_DUAL:
     osalDbgAssert(dacp->grpp->num_channels == 1, "invalid number of channels");
 
-    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->DHR8RD);
+    dmaStreamSetPeripheral(dacp->dma, &dacp->params->dac->R8DH);
     dmamode = dacp->params->dmamode |
               GD32_DMA_CTL_PWIDTH_HWORD | GD32_DMA_CTL_MWIDTH_HWORD;
     n /= 2;
@@ -713,17 +701,17 @@ void dac_lld_start_conversion(DACDriver *dacp) {
   dmaStreamEnable(dacp->dma);
 
   /* DAC configuration.*/
-  cr = dacp->params->dac->CR;
+  ctl = dacp->params->dac->CTL;
 
 #if GD32_DAC_DUAL_MODE == FALSE
-  cr &= dacp->params->regmask;
-  cr |= (DAC_CR_DMAEN1 | (dacp->grpp->trigger << DAC_CR_TSEL1_Pos) | DAC_CR_TEN1 | DAC_CR_EN1 | dacp->config->cr) << dacp->params->regshift;
+  ctl &= dacp->params->regmask;
+  ctl |= (DAC_CTL_DDMAEN0 | (dacp->grpp->trigger << DAC_CTL_DTSEL0_Pos) | DAC_CTL_DTEN0 | DAC_CTL_DEN0 | dacp->config->ctl) << dacp->params->regshift;
 #else
-  cr = DAC_CR_DMAEN1 | (dacp->grpp->trigger << DAC_CR_TSEL1_Pos) | DAC_CR_TEN1 | DAC_CR_EN1 | dacp->config->cr
-                     | (dacp->grpp->trigger << DAC_CR_TSEL2_Pos) | DAC_CR_TEN2 | DAC_CR_EN2 | (dacp->config->cr << 16);
+  ctl = DAC_CTL_DDMAEN0 | (dacp->grpp->trigger << DAC_CTL_DTSEL0_Pos) | DAC_CTL_DTEN0 | DAC_CTL_DEN0 | dacp->config->ctl
+                     | (dacp->grpp->trigger << DAC_CTL_DTSEL1_Pos) | DAC_CTL_DTEN1 | DAC_CTL_DEN1 | (dacp->config->ctl << 16);
 #endif
 
-  dacp->params->dac->CR = cr;
+  dacp->params->dac->CTL = ctl;
 }
 
 /**
@@ -737,31 +725,31 @@ void dac_lld_start_conversion(DACDriver *dacp) {
  * @iclass
  */
 void dac_lld_stop_conversion(DACDriver *dacp) {
-  uint32_t cr;
+  uint32_t ctl;
 
   /* DMA channel disabled and released.*/
   dmaStreamDisable(dacp->dma);
   dmaStreamFreeI(dacp->dma);
   dacp->dma = NULL;
 
-  cr = dacp->params->dac->CR;
+  ctl = dacp->params->dac->CTL;
 
 #if GD32_DAC_DUAL_MODE == FALSE
-  cr &= dacp->params->regmask;
-  cr |= (DAC_CR_EN1 | dacp->config->cr) << dacp->params->regshift;
+  ctl &= dacp->params->regmask;
+  ctl |= (DAC_CTL_DEN0 | dacp->config->ctl) << dacp->params->regshift;
 #else
   if ((dacp->config->datamode == DAC_DHRM_12BIT_RIGHT_DUAL) ||
       (dacp->config->datamode == DAC_DHRM_12BIT_LEFT_DUAL) ||
       (dacp->config->datamode == DAC_DHRM_8BIT_RIGHT_DUAL)) {
-    cr = DAC_CR_EN2 | (dacp->config->cr << 16) |
-         DAC_CR_EN1 | dacp->config->cr;
+    ctl = DAC_CTL_DEN1 | (dacp->config->ctl << 16) |
+         DAC_CTL_DEN0 | dacp->config->ctl;
   }
   else {
-    cr = DAC_CR_EN1 | dacp->config->cr;
+    ctl = DAC_CTL_DEN0 | dacp->config->ctl;
   }
 #endif
 
-  dacp->params->dac->CR = cr;
+  dacp->params->dac->CTL = ctl;
 }
 
 #endif /* HAL_USE_DAC */
