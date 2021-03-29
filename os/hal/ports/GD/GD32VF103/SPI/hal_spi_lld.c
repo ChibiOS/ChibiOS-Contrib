@@ -408,12 +408,12 @@ void spi_lld_start(SPIDriver *spip) {
 #endif
 
     /* DMA setup.*/
-    dmaStreamSetPeripheral(spip->dmarx, &spip->spi->DR);
-    dmaStreamSetPeripheral(spip->dmatx, &spip->spi->DR);
+    dmaStreamSetPeripheral(spip->dmarx, &spip->spi->DATA);
+    dmaStreamSetPeripheral(spip->dmatx, &spip->spi->DATA);
   }
 
   /* Configuration-specific DMA setup.*/
-  if ((spip->config->cr1 & SPI_CR1_DFF) == 0) {
+  if ((spip->config->ctl0 & SPI_CTL0_FF16) == 0) {
     /* Frame width is 8 bits or smaller.*/
     spip->rxdmamode = (spip->rxdmamode & ~GD32_DMA_CTL_SIZE_MASK) |
                       GD32_DMA_CTL_PWIDTH_BYTE | GD32_DMA_CTL_MWIDTH_BYTE;
@@ -438,12 +438,12 @@ void spi_lld_start(SPIDriver *spip) {
   }
 
   /* SPI setup and enable.*/
-  spip->spi->CR1 &= ~SPI_CR1_SPE;
-  spip->spi->CR1  = spip->config->cr1 | SPI_CR1_MSTR | SPI_CR1_SSM |
-                    SPI_CR1_SSI;
-  spip->spi->CR2  = spip->config->cr2 | SPI_CR2_SSOE | SPI_CR2_RXDMAEN |
-                    SPI_CR2_TXDMAEN;
-  spip->spi->CR1 |= SPI_CR1_SPE;
+  spip->spi->CTL0 &= ~SPI_CTL0_SPIEN;
+  spip->spi->CTL0  = spip->config->ctl0 | SPI_CTL0_MSTMOD | SPI_CTL0_SWNSSEN |
+                    SPI_CTL0_SWNSS;
+  spip->spi->CTL1  = spip->config->ctl1 | SPI_CTL1_NSSDRV | SPI_CTL1_DMAREN |
+                    SPI_CTL1_DMATEN;
+  spip->spi->CTL0 |= SPI_CTL0_SPIEN;
 }
 
 /**
@@ -459,9 +459,9 @@ void spi_lld_stop(SPIDriver *spip) {
   if (spip->state == SPI_READY) {
 
     /* SPI disable.*/
-    spip->spi->CR1 &= ~SPI_CR1_SPE;
-    spip->spi->CR1  = 0;
-    spip->spi->CR2  = 0;
+    spip->spi->CTL0 &= ~SPI_CTL0_SPIEN;
+    spip->spi->CTL0  = 0;
+    spip->spi->CTL1  = 0;
     dmaStreamFreeI(spip->dmarx);
     dmaStreamFreeI(spip->dmatx);
     spip->dmarx = NULL;
@@ -668,10 +668,10 @@ void spi_lld_abort(SPIDriver *spip) {
  */
 uint16_t spi_lld_polled_exchange(SPIDriver *spip, uint16_t frame) {
 
-  spip->spi->DR = frame;
-  while ((spip->spi->SR & SPI_SR_RXNE) == 0)
+  spip->spi->DATA = frame;
+  while ((spip->spi->STAT & SPI_STAT_RBNE) == 0)
     ;
-  return spip->spi->DR;
+  return spip->spi->DATA;
 }
 
 #endif /* HAL_USE_SPI */

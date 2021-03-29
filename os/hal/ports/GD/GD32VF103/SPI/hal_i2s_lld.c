@@ -62,15 +62,15 @@
 #define GD32_I2S1_CFGR_CFG                 0
 #endif
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
-#define GD32_I2S1_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_0
+#define GD32_I2S1_CFGR_CFG                 SPI_I2SCTL_I2SOPMOD_0
 #endif
 #else /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI1_MODE) */
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
-#define GD32_I2S1_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_1
+#define GD32_I2S1_CFGR_CFG                 SPI_I2SCTL_I2SOPMOD_1
 #endif
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
-#define GD32_I2S1_CFGR_CFG                 (SPI_I2SCFGR_I2SCFG_1 |         \
-                                             SPI_I2SCFGR_I2SCFG_0)
+#define GD32_I2S1_CFGR_CFG                 (SPI_I2SCTL_I2SOPMOD_1 |         \
+                                             SPI_I2SCTL_I2SOPMOD_0)
 #endif
 #endif /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI1_MODE) */
 
@@ -82,15 +82,15 @@
 #define GD32_I2S2_CFGR_CFG                 0
 #endif
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE)
-#define GD32_I2S2_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_0
+#define GD32_I2S2_CFGR_CFG                 SPI_I2SCTL_I2SOPMOD_0
 #endif
 #else /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI2_MODE) */
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI2_MODE)
-#define GD32_I2S2_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_1
+#define GD32_I2S2_CFGR_CFG                 SPI_I2SCTL_I2SOPMOD_1
 #endif
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE)
-#define GD32_I2S2_CFGR_CFG                 (SPI_I2SCFGR_I2SCFG_1 |         \
-                                             SPI_I2SCFGR_I2SCFG_0)
+#define GD32_I2S2_CFGR_CFG                 (SPI_I2SCTL_I2SOPMOD_1 |         \
+                                             SPI_I2SCTL_I2SOPMOD_0)
 #endif
 #endif /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI2_MODE) */
 
@@ -102,15 +102,15 @@
 #define GD32_I2S3_CFGR_CFG                 0
 #endif
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE)
-#define GD32_I2S3_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_0
+#define GD32_I2S3_CFGR_CFG                 SPI_I2SCTL_I2SOPMOD_0
 #endif
 #else /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI3_MODE) */
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI3_MODE)
-#define GD32_I2S3_CFGR_CFG                 SPI_I2SCFGR_I2SCFG_1
+#define GD32_I2S3_CFGR_CFG                 SPI_I2SCTL_I2SOPMOD_1
 #endif
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI3_MODE)
-#define GD32_I2S3_CFGR_CFG                 (SPI_I2SCFGR_I2SCFG_1 |         \
-                                             SPI_I2SCFGR_I2SCFG_0)
+#define GD32_I2S3_CFGR_CFG                 (SPI_I2SCTL_I2SOPMOD_1 |         \
+                                             SPI_I2SCTL_I2SOPMOD_0)
 #endif
 #endif /* !GD32_I2S_IS_MASTER(GD32_I2S_SPI3_MODE) */
 
@@ -364,8 +364,8 @@ void i2s_lld_start(I2SDriver *i2sp) {
 
       /* CRs settings are done here because those never changes until
          the driver is stopped.*/
-      i2sp->spi->CR1 = 0;
-      i2sp->spi->CR2 = SPI_CR2_RXDMAEN;
+      i2sp->spi->CTL0 = 0;
+      i2sp->spi->CTL1 = SPI_CTL1_DMAREN;
 #endif
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI1_MODE)
       i2sp->dmatx = dmaStreamAllocI(GD32_I2S_SPI1_TX_DMA_STREAM,
@@ -376,8 +376,8 @@ void i2s_lld_start(I2SDriver *i2sp) {
 
       /* CRs settings are done here because those never changes until
          the driver is stopped.*/
-      i2sp->spi->CR1 = 0;
-      i2sp->spi->CR2 = SPI_CR2_TXDMAEN;
+      i2sp->spi->CTL0 = 0;
+      i2sp->spi->CTL1 = SPI_CTL1_DMATEN;
 #endif
     }
 #endif
@@ -397,8 +397,8 @@ void i2s_lld_start(I2SDriver *i2sp) {
 
       /* CRs settings are done here because those never changes until
          the driver is stopped.*/
-      i2sp->spi->CR1 = 0;
-      i2sp->spi->CR2 = SPI_CR2_RXDMAEN;
+      i2sp->spi->CTL0 = 0;
+      i2sp->spi->CTL1 = SPI_CTL1_DMAREN;
 #endif
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI2_MODE)
       i2sp->dmatx = dmaStreamAllocI(GD32_I2S_SPI2_TX_DMA_STREAM,
@@ -409,8 +409,8 @@ void i2s_lld_start(I2SDriver *i2sp) {
 
       /* CRs settings are done here because those never changes until
          the driver is stopped.*/
-      i2sp->spi->CR1 = 0;
-      i2sp->spi->CR2 = SPI_CR2_TXDMAEN;
+      i2sp->spi->CTL0 = 0;
+      i2sp->spi->CTL1 = SPI_CTL1_DMATEN;
 #endif
     }
 #endif
@@ -430,8 +430,8 @@ void i2s_lld_start(I2SDriver *i2sp) {
 
       /* CRs settings are done here because those never changes until
          the driver is stopped.*/
-      i2sp->spi->CR1 = 0;
-      i2sp->spi->CR2 = SPI_CR2_RXDMAEN;
+      i2sp->spi->CTL0 = 0;
+      i2sp->spi->CTL1 = SPI_CTL1_DMAREN;
 #endif
 #if GD32_I2S_TX_ENABLED(GD32_I2S_SPI3_MODE)
       i2sp->dmatx = dmaStreamAllocI(GD32_I2S_SPI3_TX_DMA_STREAM,
@@ -442,16 +442,16 @@ void i2s_lld_start(I2SDriver *i2sp) {
 
       /* CRs settings are done here because those never changes until
          the driver is stopped.*/
-      i2sp->spi->CR1 = 0;
-      i2sp->spi->CR2 = SPI_CR2_TXDMAEN;
+      i2sp->spi->CTL0 = 0;
+      i2sp->spi->CTL1 = SPI_CTL1_DMATEN;
 #endif
     }
 #endif
   }
 
   /* I2S (re)configuration.*/
-  i2sp->spi->I2SPR   = i2sp->config->i2spr;
-  i2sp->spi->I2SCFGR = i2sp->config->i2scfgr | i2sp->cfg | SPI_I2SCFGR_I2SMOD;
+  i2sp->spi->I2SPSC   = i2sp->config->i2spsc;
+  i2sp->spi->I2SCTL = i2sp->config->i2sctl | i2sp->cfg | SPI_I2SCTL_I2SSEL;
 }
 
 /**
@@ -467,7 +467,7 @@ void i2s_lld_stop(I2SDriver *i2sp) {
   if (i2sp->state == I2S_READY) {
 
     /* SPI disable.*/
-    i2sp->spi->CR2 = 0;
+    i2sp->spi->CTL1 = 0;
     if (NULL != i2sp->dmarx) {
       dmaStreamFreeI(i2sp->dmarx);
       i2sp->dmarx = NULL;
@@ -513,13 +513,13 @@ void i2s_lld_start_exchange(I2SDriver *i2sp) {
      10 (32)  X       32
      11 (NA)  X       NA
      */
-  if ((i2sp->config->i2scfgr & SPI_I2SCFGR_DATLEN) != 0)
+  if ((i2sp->config->i2scfgr & SPI_I2SCTL_DTLEN) != 0)
     size *= 2;
 
   /* RX DMA setup.*/
   if (NULL != i2sp->dmarx) {
     dmaStreamSetMode(i2sp->dmarx, i2sp->rxdmamode);
-    dmaStreamSetPeripheral(i2sp->dmarx, &i2sp->spi->DR);
+    dmaStreamSetPeripheral(i2sp->dmarx, &i2sp->spi->DATA);
     dmaStreamSetMemory0(i2sp->dmarx, i2sp->config->rx_buffer);
     dmaStreamSetTransactionSize(i2sp->dmarx, size);
     dmaStreamEnable(i2sp->dmarx);
@@ -528,14 +528,14 @@ void i2s_lld_start_exchange(I2SDriver *i2sp) {
   /* TX DMA setup.*/
   if (NULL != i2sp->dmatx) {
     dmaStreamSetMode(i2sp->dmatx, i2sp->txdmamode);
-    dmaStreamSetPeripheral(i2sp->dmatx, &i2sp->spi->DR);
+    dmaStreamSetPeripheral(i2sp->dmatx, &i2sp->spi->DATA);
     dmaStreamSetMemory0(i2sp->dmatx, i2sp->config->tx_buffer);
     dmaStreamSetTransactionSize(i2sp->dmatx, size);
     dmaStreamEnable(i2sp->dmatx);
   }
 
   /* Starting transfer.*/
-  i2sp->spi->I2SCFGR |= SPI_I2SCFGR_I2SE;
+  i2sp->spi->I2SCTL |= SPI_I2SCTL_I2SEN;
 }
 
 /**
@@ -555,11 +555,11 @@ void i2s_lld_stop_exchange(I2SDriver *i2sp) {
 
     /* From the RM: To switch off the I2S, by clearing I2SE, it is mandatory
        to wait for TXE = 1 and BSY = 0.*/
-    while ((i2sp->spi->SR & (SPI_SR_TXE | SPI_SR_BSY)) != SPI_SR_TXE)
+    while ((i2sp->spi->STAT & (SPI_STAT_TBE | SPI_STAT_TRANS)) != SPI_STAT_TBE)
       ;
 
     /* Stop SPI/I2S peripheral.*/
-    i2sp->spi->I2SCFGR &= ~SPI_I2SCFGR_I2SE;
+    i2sp->spi->I2SCTL &= ~SPI_I2SCTL_I2SEN;
   }
 
   /* Stop RX DMA, if enabled then draining the RX DR.*/
@@ -567,15 +567,15 @@ void i2s_lld_stop_exchange(I2SDriver *i2sp) {
     dmaStreamDisable(i2sp->dmarx);
 
     /* Waiting for some data to be present in RX DR.*/
-    while ((i2sp->spi->SR & SPI_SR_RXNE) != SPI_SR_RXNE)
+    while ((i2sp->spi->STAT & SPI_STAT_RBNE) != SPI_STAT_RBNE)
       ;
 
     /* Stop SPI/I2S peripheral.*/
-    i2sp->spi->I2SCFGR &= ~SPI_I2SCFGR_I2SE;
+    i2sp->spi->I2SCTL &= ~SPI_I2SCTL_I2SEN;
 
     /* Purging data in DR.*/
-    while ((i2sp->spi->SR & SPI_SR_RXNE) != 0)
-      (void) i2sp->spi->DR;
+    while ((i2sp->spi->STAT & SPI_STAT_RBNE) != 0)
+      (void) i2sp->spi->DATA;
   }
 }
 

@@ -466,15 +466,15 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CR1;
-  __IO uint32_t CR2;
-  __IO uint32_t SR;
-  __IO uint32_t DR;
-  __IO uint32_t CRCPR;
-  __IO uint32_t RXCRCR;
-  __IO uint32_t TXCRCR;
-  __IO uint32_t I2SCFGR;
-  __IO uint32_t I2SPR;
+  __IO uint32_t CTL0;
+  __IO uint32_t CTL1;
+  __IO uint32_t STAT;
+  __IO uint32_t DATA;
+  __IO uint32_t CRCPOLY;
+  __IO uint32_t RCRC;
+  __IO uint32_t TCRC;
+  __IO uint32_t I2SCTL;
+  __IO uint32_t I2SPSC;
 } SPI_TypeDef;
 
 /**
@@ -11681,169 +11681,178 @@ typedef struct
  */
 #define SPI_I2S_SUPPORT       /*!< I2S support */
 #define I2S2_I2S3_CLOCK_FEATURE
-/*******************  Bit definition for SPI_CR1 register  ********************/
-#define SPI_CR1_CPHA_Pos                    (0U)                               
-#define SPI_CR1_CPHA_Msk                    (0x1U << SPI_CR1_CPHA_Pos)         /*!< 0x00000001 */
-#define SPI_CR1_CPHA                        SPI_CR1_CPHA_Msk                   /*!< Clock Phase */
-#define SPI_CR1_CPOL_Pos                    (1U)                               
-#define SPI_CR1_CPOL_Msk                    (0x1U << SPI_CR1_CPOL_Pos)         /*!< 0x00000002 */
-#define SPI_CR1_CPOL                        SPI_CR1_CPOL_Msk                   /*!< Clock Polarity */
-#define SPI_CR1_MSTR_Pos                    (2U)                               
-#define SPI_CR1_MSTR_Msk                    (0x1U << SPI_CR1_MSTR_Pos)         /*!< 0x00000004 */
-#define SPI_CR1_MSTR                        SPI_CR1_MSTR_Msk                   /*!< Master Selection */
+/*******************  Bit definition for SPI_CTL0 register  ********************/
+#define SPI_CTL0_CKPH_Pos                    (0U)                               
+#define SPI_CTL0_CKPH_Msk                    (0x1U << SPI_CTL0_CKPH_Pos)         /*!< 0x00000001 */
+#define SPI_CTL0_CKPH                        SPI_CTL0_CKPH_Msk                   /*!< Clock Phase */
+#define SPI_CTL0_CKPL_Pos                    (1U)                               
+#define SPI_CTL0_CKPL_Msk                    (0x1U << SPI_CTL0_CKPL_Pos)         /*!< 0x00000002 */
+#define SPI_CTL0_CKPL                        SPI_CTL0_CKPL_Msk                   /*!< Clock Polarity */
+#define SPI_CTL0_MSTMOD_Pos                    (2U)                               
+#define SPI_CTL0_MSTMOD_Msk                    (0x1U << SPI_CTL0_MSTMOD_Pos)         /*!< 0x00000004 */
+#define SPI_CTL0_MSTMOD                        SPI_CTL0_MSTMOD_Msk                   /*!< Master Selection */
 
-#define SPI_CR1_BR_Pos                      (3U)                               
-#define SPI_CR1_BR_Msk                      (0x7U << SPI_CR1_BR_Pos)           /*!< 0x00000038 */
-#define SPI_CR1_BR                          SPI_CR1_BR_Msk                     /*!< BR[2:0] bits (Baud Rate Control) */
-#define SPI_CR1_BR_0                        (0x1U << SPI_CR1_BR_Pos)           /*!< 0x00000008 */
-#define SPI_CR1_BR_1                        (0x2U << SPI_CR1_BR_Pos)           /*!< 0x00000010 */
-#define SPI_CR1_BR_2                        (0x4U << SPI_CR1_BR_Pos)           /*!< 0x00000020 */
+#define SPI_CTL0_PSC_Pos                      (3U)                               
+#define SPI_CTL0_PSC_Msk                      (0x7U << SPI_CTL0_PSC_Pos)           /*!< 0x00000038 */
+#define SPI_CTL0_PSC                          SPI_CTL0_PSC_Msk                     /*!< BR[2:0] bits (Baud Rate Control) */
+#define SPI_CTL0_PSC_0                        (0x1U << SPI_CTL0_PSC_Pos)           /*!< 0x00000008 */
+#define SPI_CTL0_PSC_1                        (0x2U << SPI_CTL0_PSC_Pos)           /*!< 0x00000010 */
+#define SPI_CTL0_PSC_2                        (0x4U << SPI_CTL0_PSC_Pos)           /*!< 0x00000020 */
 
-#define SPI_CR1_SPE_Pos                     (6U)                               
-#define SPI_CR1_SPE_Msk                     (0x1U << SPI_CR1_SPE_Pos)          /*!< 0x00000040 */
-#define SPI_CR1_SPE                         SPI_CR1_SPE_Msk                    /*!< SPI Enable */
-#define SPI_CR1_LSBFIRST_Pos                (7U)                               
-#define SPI_CR1_LSBFIRST_Msk                (0x1U << SPI_CR1_LSBFIRST_Pos)     /*!< 0x00000080 */
-#define SPI_CR1_LSBFIRST                    SPI_CR1_LSBFIRST_Msk               /*!< Frame Format */
-#define SPI_CR1_SSI_Pos                     (8U)                               
-#define SPI_CR1_SSI_Msk                     (0x1U << SPI_CR1_SSI_Pos)          /*!< 0x00000100 */
-#define SPI_CR1_SSI                         SPI_CR1_SSI_Msk                    /*!< Internal slave select */
-#define SPI_CR1_SSM_Pos                     (9U)                               
-#define SPI_CR1_SSM_Msk                     (0x1U << SPI_CR1_SSM_Pos)          /*!< 0x00000200 */
-#define SPI_CR1_SSM                         SPI_CR1_SSM_Msk                    /*!< Software slave management */
-#define SPI_CR1_RXONLY_Pos                  (10U)                              
-#define SPI_CR1_RXONLY_Msk                  (0x1U << SPI_CR1_RXONLY_Pos)       /*!< 0x00000400 */
-#define SPI_CR1_RXONLY                      SPI_CR1_RXONLY_Msk                 /*!< Receive only */
-#define SPI_CR1_DFF_Pos                     (11U)                              
-#define SPI_CR1_DFF_Msk                     (0x1U << SPI_CR1_DFF_Pos)          /*!< 0x00000800 */
-#define SPI_CR1_DFF                         SPI_CR1_DFF_Msk                    /*!< Data Frame Format */
-#define SPI_CR1_CRCNEXT_Pos                 (12U)                              
-#define SPI_CR1_CRCNEXT_Msk                 (0x1U << SPI_CR1_CRCNEXT_Pos)      /*!< 0x00001000 */
-#define SPI_CR1_CRCNEXT                     SPI_CR1_CRCNEXT_Msk                /*!< Transmit CRC next */
-#define SPI_CR1_CRCEN_Pos                   (13U)                              
-#define SPI_CR1_CRCEN_Msk                   (0x1U << SPI_CR1_CRCEN_Pos)        /*!< 0x00002000 */
-#define SPI_CR1_CRCEN                       SPI_CR1_CRCEN_Msk                  /*!< Hardware CRC calculation enable */
-#define SPI_CR1_BIDIOE_Pos                  (14U)                              
-#define SPI_CR1_BIDIOE_Msk                  (0x1U << SPI_CR1_BIDIOE_Pos)       /*!< 0x00004000 */
-#define SPI_CR1_BIDIOE                      SPI_CR1_BIDIOE_Msk                 /*!< Output enable in bidirectional mode */
-#define SPI_CR1_BIDIMODE_Pos                (15U)                              
-#define SPI_CR1_BIDIMODE_Msk                (0x1U << SPI_CR1_BIDIMODE_Pos)     /*!< 0x00008000 */
-#define SPI_CR1_BIDIMODE                    SPI_CR1_BIDIMODE_Msk               /*!< Bidirectional data mode enable */
+#define SPI_CTL0_SPIEN_Pos                     (6U)                               
+#define SPI_CTL0_SPIEN_Msk                     (0x1U << SPI_CTL0_SPIEN_Pos)          /*!< 0x00000040 */
+#define SPI_CTL0_SPIEN                         SPI_CTL0_SPIEN_Msk                    /*!< SPI Enable */
+#define SPI_CTL0_LF_Pos                (7U)                               
+#define SPI_CTL0_LF_Msk                (0x1U << SPI_CTL0_LF_Pos)     /*!< 0x00000080 */
+#define SPI_CTL0_LF                    SPI_CTL0_LF_Msk               /*!< Frame Format */
+#define SPI_CTL0_SWNSS_Pos                     (8U)                               
+#define SPI_CTL0_SWNSS_Msk                     (0x1U << SPI_CTL0_SWNSS_Pos)          /*!< 0x00000100 */
+#define SPI_CTL0_SWNSS                         SPI_CTL0_SWNSS_Msk                    /*!< Internal slave select */
+#define SPI_CTL0_SWNSSEN_Pos                     (9U)                               
+#define SPI_CTL0_SWNSSEN_Msk                     (0x1U << SPI_CTL0_SWNSSEN_Pos)          /*!< 0x00000200 */
+#define SPI_CTL0_SWNSSEN                         SPI_CTL0_SWNSSEN_Msk                    /*!< Software slave management */
+#define SPI_CTL0_RO_Pos                  (10U)                              
+#define SPI_CTL0_RO_Msk                  (0x1U << SPI_CTL0_RO_Pos)       /*!< 0x00000400 */
+#define SPI_CTL0_RO                      SPI_CTL0_RO_Msk                 /*!< Receive only */
+#define SPI_CTL0_FF16_Pos                     (11U)                              
+#define SPI_CTL0_FF16_Msk                     (0x1U << SPI_CTL0_FF16_Pos)          /*!< 0x00000800 */
+#define SPI_CTL0_FF16                         SPI_CTL0_FF16_Msk                    /*!< Data Frame Format */
+#define SPI_CTL0_CRCNT_Pos                 (12U)                              
+#define SPI_CTL0_CRCNT_Msk                 (0x1U << SPI_CTL0_CRCNT_Pos)      /*!< 0x00001000 */
+#define SPI_CTL0_CRCNT                     SPI_CTL0_CRCNT_Msk                /*!< Transmit CRC next */
+#define SPI_CTL0_CRCEN_Pos                   (13U)                              
+#define SPI_CTL0_CRCEN_Msk                   (0x1U << SPI_CTL0_CRCEN_Pos)        /*!< 0x00002000 */
+#define SPI_CTL0_CRCEN                       SPI_CTL0_CRCEN_Msk                  /*!< Hardware CRC calculation enable */
+#define SPI_CTL0_BDOEN_Pos                  (14U)                              
+#define SPI_CTL0_BDOEN_Msk                  (0x1U << SPI_CTL0_BDOEN_Pos)       /*!< 0x00004000 */
+#define SPI_CTL0_BDOEN                      SPI_CTL0_BDOEN_Msk                 /*!< Output enable in bidirectional mode */
+#define SPI_CTL0_BDEN_Pos                (15U)                              
+#define SPI_CTL0_BDEN_Msk                (0x1U << SPI_CTL0_BDEN_Pos)     /*!< 0x00008000 */
+#define SPI_CTL0_BDEN                    SPI_CTL0_BDEN_Msk               /*!< Bidirectional data mode enable */
 
-/*******************  Bit definition for SPI_CR2 register  ********************/
-#define SPI_CR2_RXDMAEN_Pos                 (0U)                               
-#define SPI_CR2_RXDMAEN_Msk                 (0x1U << SPI_CR2_RXDMAEN_Pos)      /*!< 0x00000001 */
-#define SPI_CR2_RXDMAEN                     SPI_CR2_RXDMAEN_Msk                /*!< Rx Buffer DMA Enable */
-#define SPI_CR2_TXDMAEN_Pos                 (1U)                               
-#define SPI_CR2_TXDMAEN_Msk                 (0x1U << SPI_CR2_TXDMAEN_Pos)      /*!< 0x00000002 */
-#define SPI_CR2_TXDMAEN                     SPI_CR2_TXDMAEN_Msk                /*!< Tx Buffer DMA Enable */
-#define SPI_CR2_SSOE_Pos                    (2U)                               
-#define SPI_CR2_SSOE_Msk                    (0x1U << SPI_CR2_SSOE_Pos)         /*!< 0x00000004 */
-#define SPI_CR2_SSOE                        SPI_CR2_SSOE_Msk                   /*!< SS Output Enable */
-#define SPI_CR2_ERRIE_Pos                   (5U)                               
-#define SPI_CR2_ERRIE_Msk                   (0x1U << SPI_CR2_ERRIE_Pos)        /*!< 0x00000020 */
-#define SPI_CR2_ERRIE                       SPI_CR2_ERRIE_Msk                  /*!< Error Interrupt Enable */
-#define SPI_CR2_RXNEIE_Pos                  (6U)                               
-#define SPI_CR2_RXNEIE_Msk                  (0x1U << SPI_CR2_RXNEIE_Pos)       /*!< 0x00000040 */
-#define SPI_CR2_RXNEIE                      SPI_CR2_RXNEIE_Msk                 /*!< RX buffer Not Empty Interrupt Enable */
-#define SPI_CR2_TXEIE_Pos                   (7U)                               
-#define SPI_CR2_TXEIE_Msk                   (0x1U << SPI_CR2_TXEIE_Pos)        /*!< 0x00000080 */
-#define SPI_CR2_TXEIE                       SPI_CR2_TXEIE_Msk                  /*!< Tx buffer Empty Interrupt Enable */
+/*******************  Bit definition for SPI_CTL1 register  ********************/
+#define SPI_CTL1_DMAREN_Pos                  (0U)                               
+#define SPI_CTL1_DMAREN_Msk                  (0x1U << SPI_CTL1_DMAREN_Pos)      /*!< 0x00000001 */
+#define SPI_CTL1_DMAREN                      SPI_CTL1_DMAREN_Msk                /*!< Rx Buffer DMA Enable */
+#define SPI_CTL1_DMATEN_Pos                  (1U)                               
+#define SPI_CTL1_DMATEN_Msk                  (0x1U << SPI_CTL1_DMATEN_Pos)      /*!< 0x00000002 */
+#define SPI_CTL1_DMATEN                      SPI_CTL1_DMATEN_Msk                /*!< Tx Buffer DMA Enable */
+#define SPI_CTL1_NSSDRV_Pos                  (2U)                               
+#define SPI_CTL1_NSSDRV_Msk                  (0x1U << SPI_CTL1_NSSDRV_Pos)       /*!< 0x00000004 */
+#define SPI_CTL1_NSSDRV                      SPI_CTL1_NSSDRV_Msk                 /*!< SS Output Enable */
+#define SPI_CTL1_NSSP_Pos                    (3U)                               
+#define SPI_CTL1_NSSP_Msk                    (0x1U << SPI_CTL1_NSSP_Pos)         /*!< 0x00000004 */
+#define SPI_CTL1_NSSP                        SPI_CTL1_NSSP_Msk                   /*!< SS Output Enable */
+#define SPI_CTL1_TMOD_Pos                    (4U)                               
+#define SPI_CTL1_TMOD_Msk                    (0x1U << SPI_CTL1_TMOD_Pos)         /*!< 0x00000004 */
+#define SPI_CTL1_TMOD                        SPI_CTL1_TMOD_Msk                   /*!< SS Output Enable */
+#define SPI_CTL1_ERRIE_Pos                   (5U)                               
+#define SPI_CTL1_ERRIE_Msk                   (0x1U << SPI_CTL1_ERRIE_Pos)        /*!< 0x00000020 */
+#define SPI_CTL1_ERRIE                       SPI_CTL1_ERRIE_Msk                  /*!< Error Interrupt Enable */
+#define SPI_CTL1_RBNEIE_Pos                  (6U)                               
+#define SPI_CTL1_RBNEIE_Msk                  (0x1U << SPI_CTL1_RBNEIE_Pos)       /*!< 0x00000040 */
+#define SPI_CTL1_RBNEIE                      SPI_CTL1_RBNEIE_Msk                 /*!< RX buffer Not Empty Interrupt Enable */
+#define SPI_CTL1_TBEIE_Pos                   (7U)                               
+#define SPI_CTL1_TBEIE_Msk                   (0x1U << SPI_CTL1_TBEIE_Pos)        /*!< 0x00000080 */
+#define SPI_CTL1_TBEIE                       SPI_CTL1_TBEIE_Msk                  /*!< Tx buffer Empty Interrupt Enable */
 
-/********************  Bit definition for SPI_SR register  ********************/
-#define SPI_SR_RXNE_Pos                     (0U)                               
-#define SPI_SR_RXNE_Msk                     (0x1U << SPI_SR_RXNE_Pos)          /*!< 0x00000001 */
-#define SPI_SR_RXNE                         SPI_SR_RXNE_Msk                    /*!< Receive buffer Not Empty */
-#define SPI_SR_TXE_Pos                      (1U)                               
-#define SPI_SR_TXE_Msk                      (0x1U << SPI_SR_TXE_Pos)           /*!< 0x00000002 */
-#define SPI_SR_TXE                          SPI_SR_TXE_Msk                     /*!< Transmit buffer Empty */
-#define SPI_SR_CHSIDE_Pos                   (2U)                               
-#define SPI_SR_CHSIDE_Msk                   (0x1U << SPI_SR_CHSIDE_Pos)        /*!< 0x00000004 */
-#define SPI_SR_CHSIDE                       SPI_SR_CHSIDE_Msk                  /*!< Channel side */
-#define SPI_SR_UDR_Pos                      (3U)                               
-#define SPI_SR_UDR_Msk                      (0x1U << SPI_SR_UDR_Pos)           /*!< 0x00000008 */
-#define SPI_SR_UDR                          SPI_SR_UDR_Msk                     /*!< Underrun flag */
-#define SPI_SR_CRCERR_Pos                   (4U)                               
-#define SPI_SR_CRCERR_Msk                   (0x1U << SPI_SR_CRCERR_Pos)        /*!< 0x00000010 */
-#define SPI_SR_CRCERR                       SPI_SR_CRCERR_Msk                  /*!< CRC Error flag */
-#define SPI_SR_MODF_Pos                     (5U)                               
-#define SPI_SR_MODF_Msk                     (0x1U << SPI_SR_MODF_Pos)          /*!< 0x00000020 */
-#define SPI_SR_MODF                         SPI_SR_MODF_Msk                    /*!< Mode fault */
-#define SPI_SR_OVR_Pos                      (6U)                               
-#define SPI_SR_OVR_Msk                      (0x1U << SPI_SR_OVR_Pos)           /*!< 0x00000040 */
-#define SPI_SR_OVR                          SPI_SR_OVR_Msk                     /*!< Overrun flag */
-#define SPI_SR_BSY_Pos                      (7U)                               
-#define SPI_SR_BSY_Msk                      (0x1U << SPI_SR_BSY_Pos)           /*!< 0x00000080 */
-#define SPI_SR_BSY                          SPI_SR_BSY_Msk                     /*!< Busy flag */
+/********************  Bit definition for SPI_STAT register  ********************/
+#define SPI_STAT_RBNE_Pos                     (0U)                               
+#define SPI_STAT_RBNE_Msk                     (0x1U << SPI_STAT_RBNE_Pos)          /*!< 0x00000001 */
+#define SPI_STAT_RBNE                         SPI_STAT_RBNE_Msk                    /*!< Receive buffer Not Empty */
+#define SPI_STAT_TBE_Pos                      (1U)                               
+#define SPI_STAT_TBE_Msk                      (0x1U << SPI_STAT_TBE_Pos)           /*!< 0x00000002 */
+#define SPI_STAT_TBE                          SPI_STAT_TBE_Msk                     /*!< Transmit buffer Empty */
+#define SPI_STAT_I2SCH_Pos                   (2U)                               
+#define SPI_STAT_I2SCH_Msk                   (0x1U << SPI_STAT_I2SCH_Pos)        /*!< 0x00000004 */
+#define SPI_STAT_I2SCH                       SPI_STAT_I2SCH_Msk                  /*!< Channel side */
+#define SPI_STAT_TXURERR_Pos                      (3U)                               
+#define SPI_STAT_TXURERR_Msk                      (0x1U << SPI_STAT_TXURERR_Pos)           /*!< 0x00000008 */
+#define SPI_STAT_TXURERR                          SPI_STAT_TXURERR_Msk                     /*!< Underrun flag */
+#define SPI_STAT_CRCERR_Pos                   (4U)                               
+#define SPI_STAT_CRCERR_Msk                   (0x1U << SPI_STAT_CRCERR_Pos)        /*!< 0x00000010 */
+#define SPI_STAT_CRCERR                       SPI_STAT_CRCERR_Msk                  /*!< CRC Error flag */
+#define SPI_STAT_CONFERR_Pos                     (5U)                               
+#define SPI_STAT_CONFERR_Msk                     (0x1U << SPI_STAT_CONFERR_Pos)          /*!< 0x00000020 */
+#define SPI_STAT_CONFERR                         SPI_STAT_CONFERR_Msk                    /*!< Mode fault */
+#define SPI_STAT_RXORERR_Pos                      (6U)                               
+#define SPI_STAT_RXORERR_Msk                      (0x1U << SPI_STAT_RXORERR_Pos)           /*!< 0x00000040 */
+#define SPI_STAT_RXORERR                          SPI_STAT_RXORERR_Msk                     /*!< Overrun flag */
+#define SPI_STAT_TRANS_Pos                      (7U)                               
+#define SPI_STAT_TRANS_Msk                      (0x1U << SPI_STAT_TRANS_Pos)           /*!< 0x00000080 */
+#define SPI_STAT_TRANS                          SPI_STAT_TRANS_Msk                     /*!< Busy flag */
+#define SPI_STAT_FERR_Pos                      (8U)                               
+#define SPI_STAT_FERR_Msk                      (0x1U << SPI_STAT_FERR_Pos)           /*!< 0x00000080 */
+#define SPI_STAT_FERR                          SPI_STAT_FERR_Msk                     /*!< Busy flag */
 
 /********************  Bit definition for SPI_DR register  ********************/
-#define SPI_DR_DR_Pos                       (0U)                               
-#define SPI_DR_DR_Msk                       (0xFFFFU << SPI_DR_DR_Pos)         /*!< 0x0000FFFF */
-#define SPI_DR_DR                           SPI_DR_DR_Msk                      /*!< Data Register */
+#define SPI_DATA_SPI_DATA_Pos                       (0U)                               
+#define SPI_DATA_SPI_DATA_Msk                       (0xFFFFU << SPI_DATA_SPI_DATA_Pos)         /*!< 0x0000FFFF */
+#define SPI_DATA_SPI_DATA                           SPI_DATA_SPI_DATA_Msk                      /*!< Data Register */
 
-/*******************  Bit definition for SPI_CRCPR register  ******************/
-#define SPI_CRCPR_CRCPOLY_Pos               (0U)                               
-#define SPI_CRCPR_CRCPOLY_Msk               (0xFFFFU << SPI_CRCPR_CRCPOLY_Pos) /*!< 0x0000FFFF */
-#define SPI_CRCPR_CRCPOLY                   SPI_CRCPR_CRCPOLY_Msk              /*!< CRC polynomial register */
+/*******************  Bit definition for SPI_CRCPOLY register  ******************/
+#define SPI_CRCPOLY_CRCPOLY_Pos               (0U)                               
+#define SPI_CRCPOLY_CRCPOLY_Msk               (0xFFFFU << SPI_CRCPOLY_CRCPOLY_Pos) /*!< 0x0000FFFF */
+#define SPI_CRCPOLY_CRCPOLY                   SPI_CRCPOLY_CRCPOLY_Msk              /*!< CRC polynomial register */
 
 /******************  Bit definition for SPI_RXCRCR register  ******************/
-#define SPI_RXCRCR_RXCRC_Pos                (0U)                               
-#define SPI_RXCRCR_RXCRC_Msk                (0xFFFFU << SPI_RXCRCR_RXCRC_Pos)  /*!< 0x0000FFFF */
-#define SPI_RXCRCR_RXCRC                    SPI_RXCRCR_RXCRC_Msk               /*!< Rx CRC Register */
+#define SPI_RCRC_RCRC_Pos                (0U)                               
+#define SPI_RCRC_RCRC_Msk                (0xFFFFU << SPI_RCRC_RCRC_Pos)  /*!< 0x0000FFFF */
+#define SPI_RCRC_RCRC                    SPI_RCRC_RCRC_Msk               /*!< Rx CRC Register */
 
 /******************  Bit definition for SPI_TXCRCR register  ******************/
-#define SPI_TXCRCR_TXCRC_Pos                (0U)                               
-#define SPI_TXCRCR_TXCRC_Msk                (0xFFFFU << SPI_TXCRCR_TXCRC_Pos)  /*!< 0x0000FFFF */
-#define SPI_TXCRCR_TXCRC                    SPI_TXCRCR_TXCRC_Msk               /*!< Tx CRC Register */
+#define SPI_TCRC_TCRC_Pos                (0U)                               
+#define SPI_TCRC_TCRC_Msk                (0xFFFFU << SPI_TCRC_TCRC_Pos)  /*!< 0x0000FFFF */
+#define SPI_TCRC_TCRC                    SPI_TCRC_TCRC_Msk               /*!< Tx CRC Register */
 
-/******************  Bit definition for SPI_I2SCFGR register  *****************/
-#define SPI_I2SCFGR_CHLEN_Pos               (0U)                               
-#define SPI_I2SCFGR_CHLEN_Msk               (0x1U << SPI_I2SCFGR_CHLEN_Pos)    /*!< 0x00000001 */
-#define SPI_I2SCFGR_CHLEN                   SPI_I2SCFGR_CHLEN_Msk              /*!< Channel length (number of bits per audio channel) */
+/******************  Bit definition for SPI_I2SCTL register  *****************/
+#define SPI_I2SCTL_CHLEN_Pos               (0U)                               
+#define SPI_I2SCTL_CHLEN_Msk               (0x1U << SPI_I2SCTL_CHLEN_Pos)    /*!< 0x00000001 */
+#define SPI_I2SCTL_CHLEN                   SPI_I2SCTL_CHLEN_Msk              /*!< Channel length (number of bits per audio channel) */
 
-#define SPI_I2SCFGR_DATLEN_Pos              (1U)                               
-#define SPI_I2SCFGR_DATLEN_Msk              (0x3U << SPI_I2SCFGR_DATLEN_Pos)   /*!< 0x00000006 */
-#define SPI_I2SCFGR_DATLEN                  SPI_I2SCFGR_DATLEN_Msk             /*!< DATLEN[1:0] bits (Data length to be transferred) */
-#define SPI_I2SCFGR_DATLEN_0                (0x1U << SPI_I2SCFGR_DATLEN_Pos)   /*!< 0x00000002 */
-#define SPI_I2SCFGR_DATLEN_1                (0x2U << SPI_I2SCFGR_DATLEN_Pos)   /*!< 0x00000004 */
+#define SPI_I2SCTL_DTLEN_Pos              (1U)                               
+#define SPI_I2SCTL_DTLEN_Msk              (0x3U << SPI_I2SCTL_DTLEN_Pos)   /*!< 0x00000006 */
+#define SPI_I2SCTL_DTLEN                  SPI_I2SCTL_DTLEN_Msk             /*!< DATLEN[1:0] bits (Data length to be transferred) */
+#define SPI_I2SCTL_DTLEN_0                (0x1U << SPI_I2SCTL_DTLEN_Pos)   /*!< 0x00000002 */
+#define SPI_I2SCTL_DTLEN_1                (0x2U << SPI_I2SCTL_DTLEN_Pos)   /*!< 0x00000004 */
 
-#define SPI_I2SCFGR_CKPOL_Pos               (3U)                               
-#define SPI_I2SCFGR_CKPOL_Msk               (0x1U << SPI_I2SCFGR_CKPOL_Pos)    /*!< 0x00000008 */
-#define SPI_I2SCFGR_CKPOL                   SPI_I2SCFGR_CKPOL_Msk              /*!< steady state clock polarity */
+#define SPI_I2SCTL_CKPL_Pos               (3U)                               
+#define SPI_I2SCTL_CKPL_Msk               (0x1U << SPI_I2SCTL_CKPL_Pos)    /*!< 0x00000008 */
+#define SPI_I2SCTL_CKPL                   SPI_I2SCTL_CKPL_Msk              /*!< steady state clock polarity */
 
-#define SPI_I2SCFGR_I2SSTD_Pos              (4U)                               
-#define SPI_I2SCFGR_I2SSTD_Msk              (0x3U << SPI_I2SCFGR_I2SSTD_Pos)   /*!< 0x00000030 */
-#define SPI_I2SCFGR_I2SSTD                  SPI_I2SCFGR_I2SSTD_Msk             /*!< I2SSTD[1:0] bits (I2S standard selection) */
-#define SPI_I2SCFGR_I2SSTD_0                (0x1U << SPI_I2SCFGR_I2SSTD_Pos)   /*!< 0x00000010 */
-#define SPI_I2SCFGR_I2SSTD_1                (0x2U << SPI_I2SCFGR_I2SSTD_Pos)   /*!< 0x00000020 */
+#define SPI_I2SCTL_I2SSTD_Pos              (4U)                               
+#define SPI_I2SCTL_I2SSTD_Msk              (0x3U << SPI_I2SCTL_I2SSTD_Pos)   /*!< 0x00000030 */
+#define SPI_I2SCTL_I2SSTD                  SPI_I2SCTL_I2SSTD_Msk             /*!< I2SSTD[1:0] bits (I2S standard selection) */
+#define SPI_I2SCTL_I2SSTD_0                (0x1U << SPI_I2SCTL_I2SSTD_Pos)   /*!< 0x00000010 */
+#define SPI_I2SCTL_I2SSTD_1                (0x2U << SPI_I2SCTL_I2SSTD_Pos)   /*!< 0x00000020 */
 
-#define SPI_I2SCFGR_PCMSYNC_Pos             (7U)                               
-#define SPI_I2SCFGR_PCMSYNC_Msk             (0x1U << SPI_I2SCFGR_PCMSYNC_Pos)  /*!< 0x00000080 */
-#define SPI_I2SCFGR_PCMSYNC                 SPI_I2SCFGR_PCMSYNC_Msk            /*!< PCM frame synchronization */
+#define SPI_I2SCTL_PCMSMOD_Pos             (7U)                               
+#define SPI_I2SCTL_PCMSMOD_Msk             (0x1U << SPI_I2SCTL_PCMSMOD_Pos)  /*!< 0x00000080 */
+#define SPI_I2SCTL_PCMSMOD                 SPI_I2SCTL_PCMSMOD_Msk            /*!< PCM frame synchronization */
 
-#define SPI_I2SCFGR_I2SCFG_Pos              (8U)                               
-#define SPI_I2SCFGR_I2SCFG_Msk              (0x3U << SPI_I2SCFGR_I2SCFG_Pos)   /*!< 0x00000300 */
-#define SPI_I2SCFGR_I2SCFG                  SPI_I2SCFGR_I2SCFG_Msk             /*!< I2SCFG[1:0] bits (I2S configuration mode) */
-#define SPI_I2SCFGR_I2SCFG_0                (0x1U << SPI_I2SCFGR_I2SCFG_Pos)   /*!< 0x00000100 */
-#define SPI_I2SCFGR_I2SCFG_1                (0x2U << SPI_I2SCFGR_I2SCFG_Pos)   /*!< 0x00000200 */
+#define SPI_I2SCTL_I2SOPMOD_Pos              (8U)                               
+#define SPI_I2SCTL_I2SOPMOD_Msk              (0x3U << SPI_I2SCTL_I2SOPMOD_Pos)   /*!< 0x00000300 */
+#define SPI_I2SCTL_I2SOPMOD                  SPI_I2SCTL_I2SOPMOD_Msk             /*!< I2SCFG[1:0] bits (I2S configuration mode) */
+#define SPI_I2SCTL_I2SOPMOD_0                (0x1U << SPI_I2SCTL_I2SOPMOD_Pos)   /*!< 0x00000100 */
+#define SPI_I2SCTL_I2SOPMOD_1                (0x2U << SPI_I2SCTL_I2SOPMOD_Pos)   /*!< 0x00000200 */
 
-#define SPI_I2SCFGR_I2SE_Pos                (10U)                              
-#define SPI_I2SCFGR_I2SE_Msk                (0x1U << SPI_I2SCFGR_I2SE_Pos)     /*!< 0x00000400 */
-#define SPI_I2SCFGR_I2SE                    SPI_I2SCFGR_I2SE_Msk               /*!< I2S Enable */
-#define SPI_I2SCFGR_I2SMOD_Pos              (11U)                              
-#define SPI_I2SCFGR_I2SMOD_Msk              (0x1U << SPI_I2SCFGR_I2SMOD_Pos)   /*!< 0x00000800 */
-#define SPI_I2SCFGR_I2SMOD                  SPI_I2SCFGR_I2SMOD_Msk             /*!< I2S mode selection */
+#define SPI_I2SCTL_I2SEN_Pos                (10U)                              
+#define SPI_I2SCTL_I2SEN_Msk                (0x1U << SPI_I2SCTL_I2SEN_Pos)     /*!< 0x00000400 */
+#define SPI_I2SCTL_I2SEN                    SPI_I2SCTL_I2SEN_Msk               /*!< I2S Enable */
+#define SPI_I2SCTL_I2SSEL_Pos              (11U)                              
+#define SPI_I2SCTL_I2SSEL_Msk              (0x1U << SPI_I2SCTL_I2SSEL_Pos)   /*!< 0x00000800 */
+#define SPI_I2SCTL_I2SSEL                  SPI_I2SCTL_I2SSEL_Msk             /*!< I2S mode selection */
 
-/******************  Bit definition for SPI_I2SPR register  *******************/
-#define SPI_I2SPR_I2SDIV_Pos                (0U)                               
-#define SPI_I2SPR_I2SDIV_Msk                (0xFFU << SPI_I2SPR_I2SDIV_Pos)    /*!< 0x000000FF */
-#define SPI_I2SPR_I2SDIV                    SPI_I2SPR_I2SDIV_Msk               /*!< I2S Linear prescaler */
-#define SPI_I2SPR_ODD_Pos                   (8U)                               
-#define SPI_I2SPR_ODD_Msk                   (0x1U << SPI_I2SPR_ODD_Pos)        /*!< 0x00000100 */
-#define SPI_I2SPR_ODD                       SPI_I2SPR_ODD_Msk                  /*!< Odd factor for the prescaler */
-#define SPI_I2SPR_MCKOE_Pos                 (9U)                               
-#define SPI_I2SPR_MCKOE_Msk                 (0x1U << SPI_I2SPR_MCKOE_Pos)      /*!< 0x00000200 */
-#define SPI_I2SPR_MCKOE                     SPI_I2SPR_MCKOE_Msk                /*!< Master Clock Output Enable */
+/******************  Bit definition for SPI_I2SPSC register  *******************/
+#define SPI_I2SPSC_DIV_Pos                (0U)                               
+#define SPI_I2SPSC_DIV_Msk                (0xFFU << SPI_I2SPSC_DIV_Pos)    /*!< 0x000000FF */
+#define SPI_I2SPSC_DIV                    SPI_I2SPSC_DIV_Msk               /*!< I2S Linear prescaler */
+#define SPI_I2SPSC_OF_Pos                   (8U)                               
+#define SPI_I2SPSC_OF_Msk                   (0x1U << SPI_I2SPSC_OF_Pos)        /*!< 0x00000100 */
+#define SPI_I2SPSC_OF                       SPI_I2SPSC_OF_Msk                  /*!< Odd factor for the prescaler */
+#define SPI_I2SPSC_MCKOEN_Pos                 (9U)                               
+#define SPI_I2SPSC_MCKOEN_Msk                 (0x1U << SPI_I2SPSC_MCKOEN_Pos)      /*!< 0x00000200 */
+#define SPI_I2SPSC_MCKOEN                     SPI_I2SPSC_MCKOEN_Msk                /*!< Master Clock Output Enable */
 
 /******************************************************************************/
 /*                                                                            */
