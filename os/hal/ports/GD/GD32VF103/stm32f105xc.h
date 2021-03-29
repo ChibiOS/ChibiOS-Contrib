@@ -4513,79 +4513,77 @@ typedef struct
 #define DAC_CTL_DDMAEN1                       DAC_CTL_DDMAEN1_Msk                  /*!< DAC channel2 DMA enabled */
 
 
-/*****************  Bit definition for DAC_SWTRIGR register  ******************/
-#define DAC_SWTRIGR_SWTRIG1_Pos             (0U)                               
-#define DAC_SWTRIGR_SWTRIG1_Msk             (0x1U << DAC_SWTRIGR_SWTRIG1_Pos)  /*!< 0x00000001 */
-#define DAC_SWTRIGR_SWTRIG1                 DAC_SWTRIGR_SWTRIG1_Msk            /*!< DAC channel1 software trigger */
-#define DAC_SWTRIGR_SWTRIG2_Pos             (1U)                               
-#define DAC_SWTRIGR_SWTRIG2_Msk             (0x1U << DAC_SWTRIGR_SWTRIG2_Pos)  /*!< 0x00000002 */
-#define DAC_SWTRIGR_SWTRIG2                 DAC_SWTRIGR_SWTRIG2_Msk            /*!< DAC channel2 software trigger */
+/*****************  Bit definition for DAC_SWT register  ******************/
+#define DAC_SWT_SWTR0_Pos             (0U)                               
+#define DAC_SWT_SWTR0_Msk             (0x1U << DAC_SWT_SWTR0_Pos)  /*!< 0x00000001 */
+#define DAC_SWT_SWTR0                 DAC_SWT_SWTR0_Msk            /*!< DAC channel1 software trigger */
+#define DAC_SWT_SWTR1_Pos             (1U)                               
+#define DAC_SWT_SWTR1_Msk             (0x1U << DAC_SWT_SWTR1_Pos)  /*!< 0x00000002 */
+#define DAC_SWT_SWTR1                 DAC_SWT_SWTR1_Msk            /*!< DAC channel2 software trigger */
 
-/*****************  Bit definition for DAC_DHR12R1 register  ******************/
-#define DAC_DHR12R1_DACC1DHR_Pos            (0U)                               
-#define DAC_DHR12R1_DACC1DHR_Msk            (0xFFFU << DAC_DHR12R1_DACC1DHR_Pos) /*!< 0x00000FFF */
-#define DAC_DHR12R1_DACC1DHR                DAC_DHR12R1_DACC1DHR_Msk           /*!< DAC channel1 12-bit Right aligned data */
+/*****************  Bit definition for DAC_DAC0_R12DH register  ******************/
+#define DAC_DAC0_R12DH_DAC0_DH_Pos            (0U)                               
+#define DAC_DAC0_R12DH_DAC0_DH_Msk            (0xFFFU << DAC_DAC0_R12DH_DAC0_DH_Pos) /*!< 0x00000FFF */
+#define DAC_DAC0_R12DH_DAC0_DH                DAC_DAC0_R12DH_DAC0_DH_Msk           /*!< DAC channel1 12-bit Right aligned data */
 
-/*****************  Bit definition for DAC_DHR12L1 register  ******************/
-#define DAC_DHR12L1_DACC1DHR_Pos            (4U)                               
-#define DAC_DHR12L1_DACC1DHR_Msk            (0xFFFU << DAC_DHR12L1_DACC1DHR_Pos) /*!< 0x0000FFF0 */
-#define DAC_DHR12L1_DACC1DHR                DAC_DHR12L1_DACC1DHR_Msk           /*!< DAC channel1 12-bit Left aligned data */
+/*****************  Bit definition for DAC_DAC0_L12DH register  ******************/
+#define DAC_DAC0_L12DH_DAC0_DH_Pos            (4U)                               
+#define DAC_DAC0_L12DH_DAC0_DH_Msk            (0xFFFU << DAC_DAC0_L12DH_DAC0_DH_Pos) /*!< 0x0000FFF0 */
+#define DAC_DAC0_L12DH_DAC0_DH                DAC_DAC0_L12DH_DAC0_DH_Msk           /*!< DAC channel1 12-bit Left aligned data */
 
-/******************  Bit definition for DAC_DHR8R1 register  ******************/
-#define DAC_DHR8R1_DACC1DHR_Pos             (0U)                               
-#define DAC_DHR8R1_DACC1DHR_Msk             (0xFFU << DAC_DHR8R1_DACC1DHR_Pos) /*!< 0x000000FF */
-#define DAC_DHR8R1_DACC1DHR                 DAC_DHR8R1_DACC1DHR_Msk            /*!< DAC channel1 8-bit Right aligned data */
+/******************  Bit definition for DAC_DAC0_R8DH register  ******************/
+#define DAC_DAC0_R8DH_DAC0_DH_Pos             (0U)                               
+#define DAC_DAC0_R8DH_DAC0_DH_Msk             (0xFFU << DAC_DAC0_R8DH_DAC0_DH_Pos) /*!< 0x000000FF */
+#define DAC_DAC0_R8DH_DAC0_DH                 DAC_DAC0_R8DH_DAC0_DH_Msk            /*!< DAC channel1 8-bit Right aligned data */
 
-/*****************  Bit definition for DAC_DHR12R2 register  ******************/
-#define DAC_DHR12R2_DACC2DHR_Pos            (0U)                               
-#define DAC_DHR12R2_DACC2DHR_Msk            (0xFFFU << DAC_DHR12R2_DACC2DHR_Pos) /*!< 0x00000FFF */
-#define DAC_DHR12R2_DACC2DHR                DAC_DHR12R2_DACC2DHR_Msk           /*!< DAC channel2 12-bit Right aligned data */
+/*****************  Bit definition for DAC_DAC1_R12DH register  ******************/
+#define DAC_DAC1_R12DH_DAC1_DH_Pos            (0U)                               
+#define DAC_DAC1_R12DH_DAC1_DH_Msk            (0xFFFU << DAC_DAC1_R12DH_DAC1_DH_Pos) /*!< 0x00000FFF */
+#define DAC_DAC1_R12DH_DAC1_DH                DAC_DAC1_R12DH_DAC1_DH_Msk           /*!< DAC channel2 12-bit Right aligned data */
 
-/*****************  Bit definition for DAC_DHR12L2 register  ******************/
-#define DAC_DHR12L2_DACC2DHR_Pos            (4U)                               
-#define DAC_DHR12L2_DACC2DHR_Msk            (0xFFFU << DAC_DHR12L2_DACC2DHR_Pos) /*!< 0x0000FFF0 */
-#define DAC_DHR12L2_DACC2DHR                DAC_DHR12L2_DACC2DHR_Msk           /*!< DAC channel2 12-bit Left aligned data */
+/*****************  Bit definition for DAC_DAC1_L12DH register  ******************/
+#define DAC_DAC1_L12DH_DAC1_DH_Pos            (4U)                               
+#define DAC_DAC1_L12DH_DAC1_DH_Msk            (0xFFFU << DAC_DAC1_L12DH_DAC1_DH_Pos) /*!< 0x0000FFF0 */
+#define DAC_DAC1_L12DH_DAC1_DH                DAC_DAC1_L12DH_DAC1_DH_Msk           /*!< DAC channel2 12-bit Left aligned data */
 
-/******************  Bit definition for DAC_DHR8R2 register  ******************/
-#define DAC_DHR8R2_DACC2DHR_Pos             (0U)                               
-#define DAC_DHR8R2_DACC2DHR_Msk             (0xFFU << DAC_DHR8R2_DACC2DHR_Pos) /*!< 0x000000FF */
-#define DAC_DHR8R2_DACC2DHR                 DAC_DHR8R2_DACC2DHR_Msk            /*!< DAC channel2 8-bit Right aligned data */
+/******************  Bit definition for DAC_DAC1_R8DH register  ******************/
+#define DAC_DAC1_R8DH_DAC1_DH_Pos             (0U)                               
+#define DAC_DAC1_R8DH_DAC1_DH_Msk             (0xFFU << DAC_DAC1_R8DH_DAC1_DH_Pos) /*!< 0x000000FF */
+#define DAC_DAC1_R8DH_DAC1_DH                 DAC_DAC1_R8DH_DAC1_DH_Msk            /*!< DAC channel2 8-bit Right aligned data */
 
-/*****************  Bit definition for DAC_DHR12RD register  ******************/
-#define DAC_DHR12RD_DACC1DHR_Pos            (0U)                               
-#define DAC_DHR12RD_DACC1DHR_Msk            (0xFFFU << DAC_DHR12RD_DACC1DHR_Pos) /*!< 0x00000FFF */
-#define DAC_DHR12RD_DACC1DHR                DAC_DHR12RD_DACC1DHR_Msk           /*!< DAC channel1 12-bit Right aligned data */
-#define DAC_DHR12RD_DACC2DHR_Pos            (16U)                              
-#define DAC_DHR12RD_DACC2DHR_Msk            (0xFFFU << DAC_DHR12RD_DACC2DHR_Pos) /*!< 0x0FFF0000 */
-#define DAC_DHR12RD_DACC2DHR                DAC_DHR12RD_DACC2DHR_Msk           /*!< DAC channel2 12-bit Right aligned data */
+/*****************  Bit definition for DAC_DACC_R12DH register  ******************/
+#define DAC_DACC_R12DH_DAC0_DH_Pos            (0U)                               
+#define DAC_DACC_R12DH_DAC0_DH_Msk            (0xFFFU << DAC_DACC_R12DH_DAC0_DH_Pos) /*!< 0x00000FFF */
+#define DAC_DACC_R12DH_DAC0_DH                DAC_DACC_R12DH_DAC0_DH_Msk           /*!< DAC channel1 12-bit Right aligned data */
+#define DAC_DACC_R12DH_DAC1_DH_Pos            (16U)                              
+#define DAC_DACC_R12DH_DAC1_DH_Msk            (0xFFFU << DAC_DACC_R12DH_DAC1_DH_Pos) /*!< 0x0FFF0000 */
+#define DAC_DACC_R12DH_DAC1_DH                DAC_DACC_R12DH_DAC1_DH_Msk           /*!< DAC channel2 12-bit Right aligned data */
 
-/*****************  Bit definition for DAC_DHR12LD register  ******************/
-#define DAC_DHR12LD_DACC1DHR_Pos            (4U)                               
-#define DAC_DHR12LD_DACC1DHR_Msk            (0xFFFU << DAC_DHR12LD_DACC1DHR_Pos) /*!< 0x0000FFF0 */
-#define DAC_DHR12LD_DACC1DHR                DAC_DHR12LD_DACC1DHR_Msk           /*!< DAC channel1 12-bit Left aligned data */
-#define DAC_DHR12LD_DACC2DHR_Pos            (20U)                              
-#define DAC_DHR12LD_DACC2DHR_Msk            (0xFFFU << DAC_DHR12LD_DACC2DHR_Pos) /*!< 0xFFF00000 */
-#define DAC_DHR12LD_DACC2DHR                DAC_DHR12LD_DACC2DHR_Msk           /*!< DAC channel2 12-bit Left aligned data */
+/*****************  Bit definition for DAC_DACC_L12DH register  ******************/
+#define DAC_DACC_L12DH_DAC0_DH_Pos            (4U)                               
+#define DAC_DACC_L12DH_DAC0_DH_Msk            (0xFFFU << DAC_DACC_L12DH_DAC0_DH_Pos) /*!< 0x0000FFF0 */
+#define DAC_DACC_L12DH_DAC0_DH                DAC_DACC_L12DH_DAC0_DH_Msk           /*!< DAC channel1 12-bit Left aligned data */
+#define DAC_DACC_L12DH_DAC1_DH_Pos            (20U)                              
+#define DAC_DACC_L12DH_DAC1_DH_Msk            (0xFFFU << DAC_DACC_L12DH_DAC1_DH_Pos) /*!< 0xFFF00000 */
+#define DAC_DACC_L12DH_DAC1_DH                DAC_DACC_L12DH_DAC1_DH_Msk           /*!< DAC channel2 12-bit Left aligned data */
 
-/******************  Bit definition for DAC_DHR8RD register  ******************/
-#define DAC_DHR8RD_DACC1DHR_Pos             (0U)                               
-#define DAC_DHR8RD_DACC1DHR_Msk             (0xFFU << DAC_DHR8RD_DACC1DHR_Pos) /*!< 0x000000FF */
-#define DAC_DHR8RD_DACC1DHR                 DAC_DHR8RD_DACC1DHR_Msk            /*!< DAC channel1 8-bit Right aligned data */
-#define DAC_DHR8RD_DACC2DHR_Pos             (8U)                               
-#define DAC_DHR8RD_DACC2DHR_Msk             (0xFFU << DAC_DHR8RD_DACC2DHR_Pos) /*!< 0x0000FF00 */
-#define DAC_DHR8RD_DACC2DHR                 DAC_DHR8RD_DACC2DHR_Msk            /*!< DAC channel2 8-bit Right aligned data */
+/******************  Bit definition for DAC_DACC_R8DH register  ******************/
+#define DAC_DACC_R8DH_DAC0_DH_Pos             (0U)                               
+#define DAC_DACC_R8DH_DAC0_DH_Msk             (0xFFU << DAC_DACC_R8DH_DAC0_DH_Pos) /*!< 0x000000FF */
+#define DAC_DACC_R8DH_DAC0_DH                 DAC_DACC_R8DH_DAC0_DH_Msk            /*!< DAC channel1 8-bit Right aligned data */
+#define DAC_DACC_R8DH_DAC1_DH_Pos             (8U)                               
+#define DAC_DACC_R8DH_DAC1_DH_Msk             (0xFFU << DAC_DACC_R8DH_DAC1_DH_Pos) /*!< 0x0000FF00 */
+#define DAC_DACC_R8DH_DAC1_DH                 DAC_DACC_R8DH_DAC1_DH_Msk            /*!< DAC channel2 8-bit Right aligned data */
 
-/*******************  Bit definition for DAC_DOR1 register  *******************/
-#define DAC_DOR1_DACC1DOR_Pos               (0U)                               
-#define DAC_DOR1_DACC1DOR_Msk               (0xFFFU << DAC_DOR1_DACC1DOR_Pos)  /*!< 0x00000FFF */
-#define DAC_DOR1_DACC1DOR                   DAC_DOR1_DACC1DOR_Msk              /*!< DAC channel1 data output */
+/*******************  Bit definition for DAC_DAC0_DO register  *******************/
+#define DAC_DAC0_DO_DAC0_DO_Pos               (0U)                               
+#define DAC_DAC0_DO_DAC0_DO_Msk               (0xFFFU << DAC_DAC0_DO_DAC0_DO_Pos)  /*!< 0x00000FFF */
+#define DAC_DAC0_DO_DAC0_DO                   DAC_DAC0_DO_DAC0_DO_Msk              /*!< DAC channel1 data output */
 
-/*******************  Bit definition for DAC_DOR2 register  *******************/
-#define DAC_DOR2_DACC2DOR_Pos               (0U)                               
-#define DAC_DOR2_DACC2DOR_Msk               (0xFFFU << DAC_DOR2_DACC2DOR_Pos)  /*!< 0x00000FFF */
-#define DAC_DOR2_DACC2DOR                   DAC_DOR2_DACC2DOR_Msk              /*!< DAC channel2 data output */
-
-
+/*******************  Bit definition for DAC_DAC1_DO register  *******************/
+#define DAC_DAC1_DO_DAC1_DO_Pos               (0U)                               
+#define DAC_DAC1_DO_DAC1_DO_Msk               (0xFFFU << DAC_DAC1_DO_DAC1_DO_Pos)  /*!< 0x00000FFF */
+#define DAC_DAC1_DO_DAC1_DO                   DAC_DAC1_DO_DAC1_DO_Msk              /*!< DAC channel2 data output */
 
 /*****************************************************************************/
 /*                                                                           */
