@@ -307,9 +307,8 @@
 
 #define GD32_HAS_USB                       TRUE
 
-/* IWDG attributes.*/
-#define GD32_HAS_IWDG                      TRUE
-#define GD32_IWDG_IS_WINDOWED              FALSE
+/* FWDGT attributes.*/
+#define GD32_HAS_FWDGT                      TRUE
 
 /* FSMC attributes.*/
 #if GD32_HAS_EXMC

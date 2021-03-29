@@ -35,31 +35,22 @@
  * @name    RLR register definitions
  * @{
  */
-#define GD32_IWDG_RL_MASK                  (0x00000FFF << 0)
-#define GD32_IWDG_RL(n)                    ((n) << 0)
+#define GD32_FWDGT_RLD_MASK                  (0x00000FFF << 0)
+#define GD32_FWDGT_RLD(n)                    ((n) << 0)
 /** @} */
 
 /**
  * @name    PR register definitions
  * @{
  */
-#define GD32_IWDG_PR_MASK                  (7 << 0)
-#define GD32_IWDG_PR_4                     0U
-#define GD32_IWDG_PR_8                     1U
-#define GD32_IWDG_PR_16                    2U
-#define GD32_IWDG_PR_32                    3U
-#define GD32_IWDG_PR_64                    4U
-#define GD32_IWDG_PR_128                   5U
-#define GD32_IWDG_PR_256                   6U
-/** @} */
-
-/**
- * @name    WINR register definitions
- * @{
- */
-#define GD32_IWDG_WIN_MASK                 (0x00000FFF << 0)
-#define GD32_IWDG_WIN(n)                   ((n) << 0)
-#define GD32_IWDG_WIN_DISABLED             GD32_IWDG_WIN(0x00000FFF)
+#define GD32_FWDGT_PSC_MASK                  (7 << 0)
+#define GD32_FWDGT_PSC_4                     0U
+#define GD32_FWDGT_PSC_8                     1U
+#define GD32_FWDGT_PSC_16                    2U
+#define GD32_FWDGT_PSC_32                    3U
+#define GD32_FWDGT_PSC_64                    4U
+#define GD32_FWDGT_PSC_128                   5U
+#define GD32_FWDGT_PSC_256                   6U
 /** @} */
 
 /*===========================================================================*/
@@ -71,12 +62,12 @@
  * @{
  */
 /**
- * @brief   IWDG driver enable switch.
- * @details If set to @p TRUE the support for IWDG is included.
+ * @brief   FWDGT driver enable switch.
+ * @details If set to @p TRUE the support for FWDGT is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_WDG_USE_IWDG) || defined(__DOXYGEN__)
-#define GD32_WDG_USE_IWDG                  FALSE
+#if !defined(GD32_WDG_USE_FWDGT) || defined(__DOXYGEN__)
+#define GD32_WDG_USE_FWDGT                  FALSE
 #endif
 /** @} */
 
@@ -84,11 +75,11 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if GD32_WDG_USE_IWDG && !GD32_HAS_IWDG
-#error "IWDG not present in the selected device"
+#if GD32_WDG_USE_FWDGT && !GD32_HAS_FWDGT
+#error "FWDGT not present in the selected device"
 #endif
 
-#if !GD32_WDG_USE_IWDG
+#if !GD32_WDG_USE_FWDGT
 #error "WDG driver activated but no xWDG peripheral assigned"
 #endif
 
@@ -96,8 +87,8 @@
 #error "GD32_LSI_ENABLED not defined"
 #endif
 
-#if (GD32_WDG_USE_IWDG == TRUE) && (GD32_LSI_ENABLED == FALSE)
-#error "IWDG requires LSI clock"
+#if (GD32_WDG_USE_FWDGT == TRUE) && (GD32_LSI_ENABLED == FALSE)
+#error "FWDGT requires LSI clock"
 #endif
 
 /*===========================================================================*/
@@ -115,23 +106,15 @@ typedef struct WDGDriver WDGDriver;
  */
 typedef struct {
   /**
-   * @brief   Configuration of the IWDG_PR register.
+   * @brief   Configuration of the FWDGT_PSC register.
    * @details See the STM32 reference manual for details.
    */
-  uint32_t    pr;
+  uint32_t    psc;
   /**
-   * @brief   Configuration of the IWDG_RLR register.
+   * @brief   Configuration of the FWDGT_RLD register.
    * @details See the STM32 reference manual for details.
    */
-  uint32_t    rlr;
-#if GD32_IWDG_IS_WINDOWED || defined(__DOXYGEN__)
-  /**
-   * @brief   Configuration of the IWDG_WINR register.
-   * @details See the STM32 reference manual for details.
-   * @note    This field is not present in F1, F2, F4, L1 sub-families.
-   */
-  uint32_t    winr;
-#endif
+  uint32_t    rld;
 } WDGConfig;
 
 /**
@@ -148,9 +131,9 @@ struct WDGDriver {
   const WDGConfig           *config;
   /* End of the mandatory fields.*/
   /**
-   * @brief   Pointer to the IWDG registers block.
+   * @brief   Pointer to the FWDGT registers block.
    */
-  IWDG_TypeDef              *wdg;
+  FWDGT_TypeDef              *wdg;
 };
 
 /*===========================================================================*/
@@ -161,7 +144,7 @@ struct WDGDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if GD32_WDG_USE_IWDG && !defined(__DOXYGEN__)
+#if GD32_WDG_USE_FWDGT && !defined(__DOXYGEN__)
 extern WDGDriver WDGD1;
 #endif
 

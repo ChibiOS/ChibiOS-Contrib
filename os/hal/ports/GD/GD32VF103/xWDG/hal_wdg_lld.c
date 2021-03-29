@@ -30,20 +30,20 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define KR_KEY_RELOAD                       0xAAAAU
-#define KR_KEY_ENABLE                       0xCCCCU
-#define KR_KEY_WRITE                        0x5555U
-#define KR_KEY_PROTECT                      0x0000U
+#define CTL_CMD_RELOAD                       0xAAAAU
+#define CTL_CMD_ENABLE                       0xCCCCU
+#define CTL_CMD_WRITE                        0x5555U
+#define CTL_CMD_PROTECT                      0x0000U
 
-#if !defined(IWDG) && defined(IWDG1)
-#define IWDG                                IWDG1
+#if !defined(FWDGT) && defined(FWDGT1)
+#define FWDGT                                FWDGT1
 #endif
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-#if GD32_WDG_USE_IWDG || defined(__DOXYGEN__)
+#if GD32_WDG_USE_FWDGT || defined(__DOXYGEN__)
 WDGDriver WDGD1;
 #endif
 
@@ -70,9 +70,9 @@ WDGDriver WDGD1;
  */
 void wdg_lld_init(void) {
 
-#if GD32_WDG_USE_IWDG
+#if GD32_WDG_USE_FWDGT
   WDGD1.state = WDG_STOP;
-  WDGD1.wdg   = IWDG;
+  WDGD1.wdg   = FWDGT;
 #endif
 }
 
@@ -85,24 +85,19 @@ void wdg_lld_init(void) {
  */
 void wdg_lld_start(WDGDriver *wdgp) {
 
-  /* Enable IWDG and unlock for write.*/
-  wdgp->wdg->KR   = KR_KEY_ENABLE;
-  wdgp->wdg->KR   = KR_KEY_WRITE;
+  /* Enable FWDGT and unlock for write.*/
+  wdgp->wdg->CTL   = CTL_CMD_ENABLE;
+  wdgp->wdg->CTL   = CTL_CMD_WRITE;
 
   /* Write configuration.*/
-  wdgp->wdg->PR   = wdgp->config->pr;
-  wdgp->wdg->RLR  = wdgp->config->rlr;
+  wdgp->wdg->PSC   = wdgp->config->psc;
+  wdgp->wdg->RLD  = wdgp->config->rld;
 
   /* Wait the registers to be updated.*/
-  while (wdgp->wdg->SR != 0)
+  while (wdgp->wdg->STAT != 0)
     ;
 
-#if GD32_IWDG_IS_WINDOWED
-  /* This also triggers a refresh.*/
-  wdgp->wdg->WINR = wdgp->config->winr;
-#else
-  wdgp->wdg->KR   = KR_KEY_RELOAD;
-#endif
+  wdgp->wdg->CTL   = CTL_CMD_RELOAD;
 }
 
 /**
@@ -115,7 +110,7 @@ void wdg_lld_start(WDGDriver *wdgp) {
 void wdg_lld_stop(WDGDriver *wdgp) {
 
   osalDbgAssert(wdgp->state == WDG_STOP,
-                "IWDG cannot be stopped once activated");
+                "FWDGT cannot be stopped once activated");
 }
 
 /**
@@ -127,7 +122,7 @@ void wdg_lld_stop(WDGDriver *wdgp) {
  */
 void wdg_lld_reset(WDGDriver * wdgp) {
 
-  wdgp->wdg->KR = KR_KEY_RELOAD;
+  wdgp->wdg->CTL = CTL_CMD_RELOAD;
 }
 
 #endif /* HAL_USE_WDG == TRUE */

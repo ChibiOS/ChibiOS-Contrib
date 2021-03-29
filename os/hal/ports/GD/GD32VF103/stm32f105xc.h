@@ -404,11 +404,11 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t KR;           /*!< Key register,                                Address offset: 0x00 */
-  __IO uint32_t PR;           /*!< Prescaler register,                          Address offset: 0x04 */
-  __IO uint32_t RLR;          /*!< Reload register,                             Address offset: 0x08 */
-  __IO uint32_t SR;           /*!< Status register,                             Address offset: 0x0C */
-} IWDG_TypeDef;
+  __IO uint32_t CTL;           /*!< Key register,                                Address offset: 0x00 */
+  __IO uint32_t PSC;           /*!< Prescaler register,                          Address offset: 0x04 */
+  __IO uint32_t RLD;          /*!< Reload register,                             Address offset: 0x08 */
+  __IO uint32_t STAT;           /*!< Status register,                             Address offset: 0x0C */
+} FWDGT_TypeDef;
 
 /** 
   * @brief Power Control
@@ -679,7 +679,7 @@ typedef struct
 #define TIM7_BASE             (APB1PERIPH_BASE + 0x00001400U)
 //#define RTC_BASE              (APB1PERIPH_BASE + 0x00002800U)
 #define WWDG_BASE             (APB1PERIPH_BASE + 0x00002C00U)
-#define IWDG_BASE             (APB1PERIPH_BASE + 0x00003000U)
+#define FWDGT_BASE             (APB1PERIPH_BASE + 0x00003000U)
 #define SPI1_BASE             (APB1PERIPH_BASE + 0x00003800U)
 #define SPI2_BASE             (APB1PERIPH_BASE + 0x00003C00U)
 #define USART1_BASE           (APB1PERIPH_BASE + 0x00004400U)
@@ -767,7 +767,7 @@ typedef struct
 #define TIM7                ((TIM_TypeDef *)TIM7_BASE)
 #define RTC                 ((RTC_TypeDef *)RTC_BASE)
 #define WWDG                ((WWDG_TypeDef *)WWDG_BASE)
-#define IWDG                ((IWDG_TypeDef *)IWDG_BASE)
+#define FWDGT                ((FWDGT_TypeDef *)FWDGT_BASE)
 #define SPI1                ((SPI_TypeDef *)SPI1_BASE)
 #define SPI2                ((SPI_TypeDef *)SPI2_BASE)
 #define USART1              ((USART_TypeDef *)USART1_BASE)
@@ -1774,9 +1774,9 @@ typedef struct
 #define RCC_CSR_SFTRSTF_Pos                  (28U)                             
 #define RCC_CSR_SFTRSTF_Msk                  (0x1U << RCC_CSR_SFTRSTF_Pos)     /*!< 0x10000000 */
 #define RCC_CSR_SFTRSTF                      RCC_CSR_SFTRSTF_Msk               /*!< Software Reset flag */
-#define RCC_CSR_IWDGRSTF_Pos                 (29U)                             
-#define RCC_CSR_IWDGRSTF_Msk                 (0x1U << RCC_CSR_IWDGRSTF_Pos)    /*!< 0x20000000 */
-#define RCC_CSR_IWDGRSTF                     RCC_CSR_IWDGRSTF_Msk              /*!< Independent Watchdog reset flag */
+#define RCC_CSR_FWDGTRSTF_Pos                 (29U)                             
+#define RCC_CSR_FWDGTRSTF_Msk                 (0x1U << RCC_CSR_FWDGTRSTF_Pos)    /*!< 0x20000000 */
+#define RCC_CSR_FWDGTRSTF                     RCC_CSR_FWDGTRSTF_Msk              /*!< Independent Watchdog reset flag */
 #define RCC_CSR_WWDGRSTF_Pos                 (30U)                             
 #define RCC_CSR_WWDGRSTF_Msk                 (0x1U << RCC_CSR_WWDGRSTF_Pos)    /*!< 0x40000000 */
 #define RCC_CSR_WWDGRSTF                     RCC_CSR_WWDGRSTF_Msk              /*!< Window watchdog reset flag */
@@ -5172,35 +5172,35 @@ typedef struct
 
 /******************************************************************************/
 /*                                                                            */
-/*                        Independent WATCHDOG (IWDG)                         */
+/*                        FREE WATCHDOG TIMER (FWDGT)                         */
 /*                                                                            */
 /******************************************************************************/
 
-/*******************  Bit definition for IWDG_KR register  ********************/
-#define IWDG_KR_KEY_Pos                     (0U)                               
-#define IWDG_KR_KEY_Msk                     (0xFFFFU << IWDG_KR_KEY_Pos)       /*!< 0x0000FFFF */
-#define IWDG_KR_KEY                         IWDG_KR_KEY_Msk                    /*!< Key value (write only, read 0000h) */
+/*******************  Bit definition for FWDGT_CTL register  ********************/
+#define FWDGT_CTL_CMD_Pos                     (0U)                               
+#define FWDGT_CTL_CMD_Msk                     (0xFFFFU << FWDGT_CTL_CMD_Pos)       /*!< 0x0000FFFF */
+#define FWDGT_CTL_CMD                         FWDGT_CTL_CMD_Msk                    /*!< Key value (write only, read 0000h) */
 
-/*******************  Bit definition for IWDG_PR register  ********************/
-#define IWDG_PR_PR_Pos                      (0U)                               
-#define IWDG_PR_PR_Msk                      (0x7U << IWDG_PR_PR_Pos)           /*!< 0x00000007 */
-#define IWDG_PR_PR                          IWDG_PR_PR_Msk                     /*!< PR[2:0] (Prescaler divider) */
-#define IWDG_PR_PR_0                        (0x1U << IWDG_PR_PR_Pos)           /*!< 0x00000001 */
-#define IWDG_PR_PR_1                        (0x2U << IWDG_PR_PR_Pos)           /*!< 0x00000002 */
-#define IWDG_PR_PR_2                        (0x4U << IWDG_PR_PR_Pos)           /*!< 0x00000004 */
+/*******************  Bit definition for FWDGT_PSC register  ********************/
+#define FWDGT_PSC_PSC_Pos                      (0U)                               
+#define FWDGT_PSC_PSC_Msk                      (0x7U << FWDGT_PSC_PSC_Pos)           /*!< 0x00000007 */
+#define FWDGT_PSC_PSC                          FWDGT_PSC_PSC_Msk                     /*!< PR[2:0] (Prescaler divider) */
+#define FWDGT_PSC_PSC_0                        (0x1U << FWDGT_PSC_PSC_Pos)           /*!< 0x00000001 */
+#define FWDGT_PSC_PSC_1                        (0x2U << FWDGT_PSC_PSC_Pos)           /*!< 0x00000002 */
+#define FWDGT_PSC_PSC_2                        (0x4U << FWDGT_PSC_PSC_Pos)           /*!< 0x00000004 */
 
-/*******************  Bit definition for IWDG_RLR register  *******************/
-#define IWDG_RLR_RL_Pos                     (0U)                               
-#define IWDG_RLR_RL_Msk                     (0xFFFU << IWDG_RLR_RL_Pos)        /*!< 0x00000FFF */
-#define IWDG_RLR_RL                         IWDG_RLR_RL_Msk                    /*!< Watchdog counter reload value */
+/*******************  Bit definition for FWDGT_RLD register  *******************/
+#define FWDGT_RLD_RLD_Pos                     (0U)                               
+#define FWDGT_RLD_RLD_Msk                     (0xFFFU << FWDGT_RLD_RLD_Pos)        /*!< 0x00000FFF */
+#define FWDGT_RLD_RLD                         FWDGT_RLD_RLD_Msk                    /*!< Watchdog counter reload value */
 
-/*******************  Bit definition for IWDG_SR register  ********************/
-#define IWDG_SR_PVU_Pos                     (0U)                               
-#define IWDG_SR_PVU_Msk                     (0x1U << IWDG_SR_PVU_Pos)          /*!< 0x00000001 */
-#define IWDG_SR_PVU                         IWDG_SR_PVU_Msk                    /*!< Watchdog prescaler value update */
-#define IWDG_SR_RVU_Pos                     (1U)                               
-#define IWDG_SR_RVU_Msk                     (0x1U << IWDG_SR_RVU_Pos)          /*!< 0x00000002 */
-#define IWDG_SR_RVU                         IWDG_SR_RVU_Msk                    /*!< Watchdog counter reload value update */
+/*******************  Bit definition for FWDGT_STAT register  ********************/
+#define FWDGT_STAT_PUD_Pos                     (0U)                               
+#define FWDGT_STAT_PUD_Msk                     (0x1U << FWDGT_STAT_PUD_Pos)          /*!< 0x00000001 */
+#define FWDGT_STAT_PUD                         FWDGT_STAT_PUD_Msk                    /*!< Watchdog prescaler value update */
+#define FWDGT_STAT_RUD_Pos                     (1U)                               
+#define FWDGT_STAT_RUD_Msk                     (0x1U << FWDGT_STAT_RUD_Pos)          /*!< 0x00000002 */
+#define FWDGT_STAT_RUD                         FWDGT_STAT_RUD_Msk                    /*!< Watchdog counter reload value update */
 
 /******************************************************************************/
 /*                                                                            */
