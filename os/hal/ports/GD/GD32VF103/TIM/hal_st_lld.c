@@ -211,25 +211,17 @@ void st_lld_init(void) {
   GD32_ST_TIM->SWEVG    = TIM_EGR_UG;
   GD32_ST_TIM->CTL0    = TIM_CR1_CEN;
 
-//TODO
 #if !defined(GD32_SYSTICK_SUPPRESS_ISR)
   /* IRQ enabled.*/
   eclicEnableVector(ST_NUMBER, GD32_ST_IRQ_PRIORITY, GD32_ST_IRQ_TRIGGER);
 #endif
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */
 
-//TODO
 #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
-  /* Periodic systick mode, the Cortex-Mx internal systick timer is used
+  /* Periodic systick mode, the RISC-V MTIME internal systick timer is used
      in this mode.*/
-     RISCV_MTIMECMP = (SYSTICK_CK / OSAL_ST_FREQUENCY) - 1;
-     RISCV_MTIME = 0;
-  /*SysTick->LOAD = (SYSTICK_CK / OSAL_ST_FREQUENCY) - 1;
-  SysTick->VAL = 0;
-  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
-                  SysTick_CTRL_ENABLE_Msk |
-                  SysTick_CTRL_TICKINT_Msk;
-*/
+  SysTimer_SetCompareValue((SYSTICK_CK / OSAL_ST_FREQUENCY) - 1);
+  SysTimer_SetLoadValue(0);
   /* IRQ enabled.*/
   eclicEnableVector(HANDLER_SYSTICK, GD32_ST_IRQ_PRIORITY, GD32_ST_IRQ_TRIGGER);
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC */
@@ -241,8 +233,8 @@ void st_lld_init(void) {
 void st_lld_serve_interrupt(void) {
 #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
   /* Reload Timer */
-  RISCV_MTIMECMP = (SYSTICK_CK / OSAL_ST_FREQUENCY) - 1;
-  RISCV_MTIME = 0;
+  SysTimer_SetCompareValue((SYSTICK_CK / OSAL_ST_FREQUENCY) - 1);
+  SysTimer_SetLoadValue(0);
 #endif
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   uint32_t sr;
