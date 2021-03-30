@@ -243,9 +243,9 @@ void gd32_clock_init(void) {
 #endif
 
   /* Flash setup and final clock selection.   */
-  FLASH->ACR = GD32_FLASHBITS; /* Flash wait states depending on clock.    */
-  while ((FLASH->ACR & FLASH_ACR_LATENCY_Msk) !=
-         (GD32_FLASHBITS & FLASH_ACR_LATENCY_Msk)) {
+  FLASH->WS = GD32_FLASHBITS; /* Flash wait states depending on clock.    */
+  while ((FLASH->WS & FLASH_WS_WSCNT_Msk) !=
+         (GD32_FLASHBITS & FLASH_WS_WSCNT_Msk)) {
   }
 
   /* Switching to the configured clock source if it is different from HSI.*/

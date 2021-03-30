@@ -68,33 +68,33 @@ static const flash_descriptor_t efl_lld_descriptor = {
 
 static inline void gd32_flash_lock(EFlashDriver *eflp) {
 
-  eflp->flash->CR |= FLASH_CR_LOCK;
+  eflp->flash->CTL |= FLASH_CTL_LK;
 }
 
 static inline void gd32_flash_unlock(EFlashDriver *eflp) {
 
-  eflp->flash->KEYR |= FLASH_KEY1;
-  eflp->flash->KEYR |= FLASH_KEY2;
+  eflp->flash->KEY |= FLASH_KEY1;
+  eflp->flash->KEY |= FLASH_KEY2;
 }
 
 static inline void gd32_flash_enable_pgm(EFlashDriver *eflp) {
 
-  eflp->flash->CR |= FLASH_CR_PG;
+  eflp->flash->CTL |= FLASH_CTL_PG;
 }
 
 static inline void gd32_flash_disable_pgm(EFlashDriver *eflp) {
 
-  eflp->flash->CR &= ~FLASH_CR_PG;
+  eflp->flash->CTL &= ~FLASH_CTL_PG;
 }
 
 static inline void gd32_flash_clear_status(EFlashDriver *eflp) {
 
-  eflp->flash->SR = 0x0000001FU;
+  eflp->flash->STAT = 0x0000001FU;
 }
 
 static inline uint32_t gd32_flash_is_busy(EFlashDriver *eflp) {
 
-  return (eflp->flash->SR & FLASH_SR_BSY);
+  return (eflp->flash->STAT & FLASH_STAT_BUSY);
 }
 
 static inline void gd32_flash_wait_busy(EFlashDriver *eflp) {
@@ -105,17 +105,17 @@ static inline void gd32_flash_wait_busy(EFlashDriver *eflp) {
 }
 
 static inline flash_error_t gd32_flash_check_errors(EFlashDriver *eflp) {
-  uint32_t sr = eflp->flash->SR;
+  uint32_t sr = eflp->flash->STAT;
 
   /* Clearing error conditions.*/
-  eflp->flash->SR = sr & 0x0000001FU;
+  eflp->flash->STAT = sr & 0x0000001FU;
 
   /* Decoding relevant errors.*/
-  if ((sr & FLASH_SR_WRPRTERR) != 0U) {
+  if ((sr & FLASH_STAT_WPERR) != 0U) {
     return FLASH_ERROR_HW_FAILURE;
   }
 
-  if ((sr & FLASH_SR_PGERR) != 0U) {
+  if ((sr & FLASH_STAT_PGERR) != 0U) {
     return FLASH_ERROR_PROGRAM; /* There is no error on erase.*/
   }
 
@@ -152,7 +152,7 @@ void efl_lld_init(void) {
 void efl_lld_start(EFlashDriver *eflp) {
 
   gd32_flash_unlock(eflp);
-  FLASH->CR = 0x00000000U;
+  FLASH->CTL = 0x00000000U;
 }
 
 /**
@@ -370,14 +370,14 @@ flash_error_t efl_lld_start_erase_sector(void *instance,
   gd32_flash_clear_status(devp);
 
   /* Enable page erase.*/
-  devp->flash->CR |= FLASH_CR_PER;
+  devp->flash->CTL |= FLASH_CTL_PER;
 
   /* Set the page.*/
-  devp->flash->AR = (uint32_t)(efl_lld_descriptor.address +
+  devp->flash->ADDR = (uint32_t)(efl_lld_descriptor.address +
                          flashGetSectorOffset(getBaseFlash(devp), sector));
 
   /* Start the erase.*/
-  devp->flash->CR |= FLASH_CR_STRT;
+  devp->flash->CTL |= FLASH_CTL_START;
 
   return FLASH_NO_ERROR;
 }
@@ -408,8 +408,8 @@ flash_error_t efl_lld_query_erase(void *instance, uint32_t *wait_time) {
     if (gd32_flash_is_busy(devp) == 0U) {
 
       /* Disabling the various erase control bits.*/
-      devp->flash->CR &= ~(FLASH_CR_OPTER | FLASH_CR_OPTPG |
-                           FLASH_CR_MER | FLASH_CR_PER);
+      devp->flash->CTL &= ~(FLASH_CTL_OBER | FLASH_CTL_OBPG |
+                           FLASH_CTL_MER | FLASH_CTL_PER);
 
       /* Back to ready state.*/
       devp->state = FLASH_READY;
