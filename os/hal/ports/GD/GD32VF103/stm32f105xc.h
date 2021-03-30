@@ -477,34 +477,6 @@ typedef struct
   __IO uint32_t I2SPSC;
 } SPI_TypeDef;
 
-/**
-  * @brief TIM Timers
-  */
-typedef struct
-{
-  __IO uint32_t CR1;             /*!< TIM control register 1,                      Address offset: 0x00 */
-  __IO uint32_t CR2;             /*!< TIM control register 2,                      Address offset: 0x04 */
-  __IO uint32_t SMCR;            /*!< TIM slave Mode Control register,             Address offset: 0x08 */
-  __IO uint32_t DIER;            /*!< TIM DMA/interrupt enable register,           Address offset: 0x0C */
-  __IO uint32_t SR;              /*!< TIM status register,                         Address offset: 0x10 */
-  __IO uint32_t EGR;             /*!< TIM event generation register,               Address offset: 0x14 */
-  __IO uint32_t CCMR1;           /*!< TIM  capture/compare mode register 1,        Address offset: 0x18 */
-  __IO uint32_t CCMR2;           /*!< TIM  capture/compare mode register 2,        Address offset: 0x1C */
-  __IO uint32_t CCER;            /*!< TIM capture/compare enable register,         Address offset: 0x20 */
-  __IO uint32_t CNT;             /*!< TIM counter register,                        Address offset: 0x24 */
-  __IO uint32_t PSC;             /*!< TIM prescaler register,                      Address offset: 0x28 */
-  __IO uint32_t ARR;             /*!< TIM auto-reload register,                    Address offset: 0x2C */
-  __IO uint32_t RCR;             /*!< TIM  repetition counter register,            Address offset: 0x30 */
-  __IO uint32_t CCR1;            /*!< TIM capture/compare register 1,              Address offset: 0x34 */
-  __IO uint32_t CCR2;            /*!< TIM capture/compare register 2,              Address offset: 0x38 */
-  __IO uint32_t CCR3;            /*!< TIM capture/compare register 3,              Address offset: 0x3C */
-  __IO uint32_t CCR4;            /*!< TIM capture/compare register 4,              Address offset: 0x40 */
-  __IO uint32_t BDTR;            /*!< TIM break and dead-time register,            Address offset: 0x44 */
-  __IO uint32_t DCR;             /*!< TIM DMA control register,                    Address offset: 0x48 */
-  __IO uint32_t DMAR;            /*!< TIM DMA address for full transfer register,  Address offset: 0x4C */
-  __IO uint32_t OR;              /*!< TIM option register,                         Address offset: 0x50 */
-}TIM_TypeDef;
-
 
 /** 
   * @brief Universal Synchronous Asynchronous Receiver Transmitter
@@ -671,12 +643,12 @@ typedef struct
 #define APB2PERIPH_BASE       (PERIPH_BASE + 0x00010000U)
 #define AHBPERIPH_BASE        (PERIPH_BASE + 0x00020000U)
 
-#define TIM2_BASE             (APB1PERIPH_BASE + 0x00000000U)
-#define TIM3_BASE             (APB1PERIPH_BASE + 0x00000400U)
-#define TIM4_BASE             (APB1PERIPH_BASE + 0x00000800U)
-#define TIM5_BASE             (APB1PERIPH_BASE + 0x00000C00U)
-#define TIM6_BASE             (APB1PERIPH_BASE + 0x00001000U)
-#define TIM7_BASE             (APB1PERIPH_BASE + 0x00001400U)
+#define TIM1_BASE             (APB1PERIPH_BASE + 0x00000000U)
+#define TIM2_BASE             (APB1PERIPH_BASE + 0x00000400U)
+#define TIM3_BASE             (APB1PERIPH_BASE + 0x00000800U)
+#define TIM4_BASE             (APB1PERIPH_BASE + 0x00000C00U)
+#define TIM5_BASE             (APB1PERIPH_BASE + 0x00001000U)
+#define TIM6_BASE             (APB1PERIPH_BASE + 0x00001400U)
 //#define RTC_BASE              (APB1PERIPH_BASE + 0x00002800U)
 #define WWDG_BASE             (APB1PERIPH_BASE + 0x00002C00U)
 #define FWDGT_BASE             (APB1PERIPH_BASE + 0x00003000U)
@@ -702,7 +674,7 @@ typedef struct
 #define GPIOE_BASE            (APB2PERIPH_BASE + 0x00001800U)
 #define ADC1_BASE             (APB2PERIPH_BASE + 0x00002400U)
 #define ADC2_BASE             (APB2PERIPH_BASE + 0x00002800U)
-#define TIM1_BASE             (APB2PERIPH_BASE + 0x00002C00U)
+#define TIM0_BASE             (APB2PERIPH_BASE + 0x00002C00U)
 #define SPI0_BASE             (APB2PERIPH_BASE + 0x00003000U)
 #define USART0_BASE           (APB2PERIPH_BASE + 0x00003800U)
 
@@ -759,12 +731,12 @@ typedef struct
   * @{
   */  
 
+#define TIM1                ((TIM_TypeDef *)TIM1_BASE)
 #define TIM2                ((TIM_TypeDef *)TIM2_BASE)
 #define TIM3                ((TIM_TypeDef *)TIM3_BASE)
 #define TIM4                ((TIM_TypeDef *)TIM4_BASE)
 #define TIM5                ((TIM_TypeDef *)TIM5_BASE)
 #define TIM6                ((TIM_TypeDef *)TIM6_BASE)
-#define TIM7                ((TIM_TypeDef *)TIM7_BASE)
 #define RTC                 ((RTC_TypeDef *)RTC_BASE)
 #define WWDG                ((WWDG_TypeDef *)WWDG_BASE)
 #define FWDGT                ((FWDGT_TypeDef *)FWDGT_BASE)
@@ -792,7 +764,7 @@ typedef struct
 #define ADC1                ((ADC_TypeDef *)ADC1_BASE)
 #define ADC2                ((ADC_TypeDef *)ADC2_BASE)
 #define ADC12_COMMON        ((ADC_Common_TypeDef *)ADC1_BASE)
-#define TIM1                ((TIM_TypeDef *)TIM1_BASE)
+#define TIM0                ((TIM_TypeDef *)TIM0_BASE)
 #define SPI0                ((SPI_TypeDef *)SPI0_BASE)
 #define USART0              ((USART_TypeDef *)USART0_BASE)
 #define SDIO                ((SDIO_TypeDef *)SDIO_BASE)
@@ -1500,9 +1472,9 @@ typedef struct
 #define RCC_APB2RSTR_ADC2RST_Msk             (0x1U << RCC_APB2RSTR_ADC2RST_Pos) /*!< 0x00000400 */
 #define RCC_APB2RSTR_ADC2RST                 RCC_APB2RSTR_ADC2RST_Msk          /*!< ADC 2 interface reset */
 
-#define RCC_APB2RSTR_TIM1RST_Pos             (11U)                             
-#define RCC_APB2RSTR_TIM1RST_Msk             (0x1U << RCC_APB2RSTR_TIM1RST_Pos) /*!< 0x00000800 */
-#define RCC_APB2RSTR_TIM1RST                 RCC_APB2RSTR_TIM1RST_Msk          /*!< TIM1 Timer reset */
+#define RCC_APB2RSTR_TIM0RST_Pos             (11U)                             
+#define RCC_APB2RSTR_TIM0RST_Msk             (0x1U << RCC_APB2RSTR_TIM0RST_Pos) /*!< 0x00000800 */
+#define RCC_APB2RSTR_TIM0RST                 RCC_APB2RSTR_TIM0RST_Msk          /*!< TIM0 Timer reset */
 #define RCC_APB2RSTR_SPI1RST_Pos             (12U)                             
 #define RCC_APB2RSTR_SPI1RST_Msk             (0x1U << RCC_APB2RSTR_SPI1RST_Pos) /*!< 0x00001000 */
 #define RCC_APB2RSTR_SPI1RST                 RCC_APB2RSTR_SPI1RST_Msk          /*!< SPI 1 reset */
@@ -1519,12 +1491,12 @@ typedef struct
 
 
 /*****************  Bit definition for RCC_APB1RSTR register  *****************/
-#define RCC_APB1RSTR_TIM2RST_Pos             (0U)                              
-#define RCC_APB1RSTR_TIM2RST_Msk             (0x1U << RCC_APB1RSTR_TIM2RST_Pos) /*!< 0x00000001 */
-#define RCC_APB1RSTR_TIM2RST                 RCC_APB1RSTR_TIM2RST_Msk          /*!< Timer 2 reset */
-#define RCC_APB1RSTR_TIM3RST_Pos             (1U)                              
-#define RCC_APB1RSTR_TIM3RST_Msk             (0x1U << RCC_APB1RSTR_TIM3RST_Pos) /*!< 0x00000002 */
-#define RCC_APB1RSTR_TIM3RST                 RCC_APB1RSTR_TIM3RST_Msk          /*!< Timer 3 reset */
+#define RCC_APB1RSTR_TIM1RST_Pos             (0U)                              
+#define RCC_APB1RSTR_TIM1RST_Msk             (0x1U << RCC_APB1RSTR_TIM1RST_Pos) /*!< 0x00000001 */
+#define RCC_APB1RSTR_TIM1RST                 RCC_APB1RSTR_TIM1RST_Msk          /*!< Timer 2 reset */
+#define RCC_APB1RSTR_TIM2RST_Pos             (1U)                              
+#define RCC_APB1RSTR_TIM2RST_Msk             (0x1U << RCC_APB1RSTR_TIM2RST_Pos) /*!< 0x00000002 */
+#define RCC_APB1RSTR_TIM2RST                 RCC_APB1RSTR_TIM2RST_Msk          /*!< Timer 3 reset */
 #define RCC_APB1RSTR_WWDGRST_Pos             (11U)                             
 #define RCC_APB1RSTR_WWDGRST_Msk             (0x1U << RCC_APB1RSTR_WWDGRST_Pos) /*!< 0x00000800 */
 #define RCC_APB1RSTR_WWDGRST                 RCC_APB1RSTR_WWDGRST_Msk          /*!< Window Watchdog reset */
@@ -1546,9 +1518,9 @@ typedef struct
 #define RCC_APB1RSTR_PWRRST_Msk              (0x1U << RCC_APB1RSTR_PWRRST_Pos) /*!< 0x10000000 */
 #define RCC_APB1RSTR_PWRRST                  RCC_APB1RSTR_PWRRST_Msk           /*!< Power interface reset */
 
-#define RCC_APB1RSTR_TIM4RST_Pos             (2U)                              
-#define RCC_APB1RSTR_TIM4RST_Msk             (0x1U << RCC_APB1RSTR_TIM4RST_Pos) /*!< 0x00000004 */
-#define RCC_APB1RSTR_TIM4RST                 RCC_APB1RSTR_TIM4RST_Msk          /*!< Timer 4 reset */
+#define RCC_APB1RSTR_TIM3RST_Pos             (2U)                              
+#define RCC_APB1RSTR_TIM3RST_Msk             (0x1U << RCC_APB1RSTR_TIM3RST_Pos) /*!< 0x00000004 */
+#define RCC_APB1RSTR_TIM3RST                 RCC_APB1RSTR_TIM3RST_Msk          /*!< Timer 4 reset */
 #define RCC_APB1RSTR_SPI2RST_Pos             (14U)                             
 #define RCC_APB1RSTR_SPI2RST_Msk             (0x1U << RCC_APB1RSTR_SPI2RST_Pos) /*!< 0x00004000 */
 #define RCC_APB1RSTR_SPI2RST                 RCC_APB1RSTR_SPI2RST_Msk          /*!< SPI 2 reset */
@@ -1560,15 +1532,15 @@ typedef struct
 #define RCC_APB1RSTR_I2C1RST                 RCC_APB1RSTR_I2C1RST_Msk          /*!< I2C 2 reset */
 
 
-#define RCC_APB1RSTR_TIM5RST_Pos             (3U)                              
-#define RCC_APB1RSTR_TIM5RST_Msk             (0x1U << RCC_APB1RSTR_TIM5RST_Pos) /*!< 0x00000008 */
-#define RCC_APB1RSTR_TIM5RST                 RCC_APB1RSTR_TIM5RST_Msk          /*!< Timer 5 reset */
-#define RCC_APB1RSTR_TIM6RST_Pos             (4U)                              
-#define RCC_APB1RSTR_TIM6RST_Msk             (0x1U << RCC_APB1RSTR_TIM6RST_Pos) /*!< 0x00000010 */
-#define RCC_APB1RSTR_TIM6RST                 RCC_APB1RSTR_TIM6RST_Msk          /*!< Timer 6 reset */
-#define RCC_APB1RSTR_TIM7RST_Pos             (5U)                              
-#define RCC_APB1RSTR_TIM7RST_Msk             (0x1U << RCC_APB1RSTR_TIM7RST_Pos) /*!< 0x00000020 */
-#define RCC_APB1RSTR_TIM7RST                 RCC_APB1RSTR_TIM7RST_Msk          /*!< Timer 7 reset */
+#define RCC_APB1RSTR_TIM4RST_Pos             (3U)                              
+#define RCC_APB1RSTR_TIM4RST_Msk             (0x1U << RCC_APB1RSTR_TIM4RST_Pos) /*!< 0x00000008 */
+#define RCC_APB1RSTR_TIM4RST                 RCC_APB1RSTR_TIM4RST_Msk          /*!< Timer 5 reset */
+#define RCC_APB1RSTR_TIM5RST_Pos             (4U)                              
+#define RCC_APB1RSTR_TIM5RST_Msk             (0x1U << RCC_APB1RSTR_TIM5RST_Pos) /*!< 0x00000010 */
+#define RCC_APB1RSTR_TIM5RST                 RCC_APB1RSTR_TIM5RST_Msk          /*!< Timer 6 reset */
+#define RCC_APB1RSTR_TIM6RST_Pos             (5U)                              
+#define RCC_APB1RSTR_TIM6RST_Msk             (0x1U << RCC_APB1RSTR_TIM6RST_Pos) /*!< 0x00000020 */
+#define RCC_APB1RSTR_TIM6RST                 RCC_APB1RSTR_TIM6RST_Msk          /*!< Timer 7 reset */
 #define RCC_APB1RSTR_SPI3RST_Pos             (15U)                             
 #define RCC_APB1RSTR_SPI3RST_Msk             (0x1U << RCC_APB1RSTR_SPI3RST_Pos) /*!< 0x00008000 */
 #define RCC_APB1RSTR_SPI3RST                 RCC_APB1RSTR_SPI3RST_Msk          /*!< SPI 3 reset */
@@ -1636,9 +1608,9 @@ typedef struct
 #define RCC_APB2ENR_ADC2EN_Msk               (0x1U << RCC_APB2ENR_ADC2EN_Pos)  /*!< 0x00000400 */
 #define RCC_APB2ENR_ADC2EN                   RCC_APB2ENR_ADC2EN_Msk            /*!< ADC 2 interface clock enable */
 
-#define RCC_APB2ENR_TIM1EN_Pos               (11U)                             
-#define RCC_APB2ENR_TIM1EN_Msk               (0x1U << RCC_APB2ENR_TIM1EN_Pos)  /*!< 0x00000800 */
-#define RCC_APB2ENR_TIM1EN                   RCC_APB2ENR_TIM1EN_Msk            /*!< TIM1 Timer clock enable */
+#define RCC_APB2ENR_TIM0EN_Pos               (11U)                             
+#define RCC_APB2ENR_TIM0EN_Msk               (0x1U << RCC_APB2ENR_TIM0EN_Pos)  /*!< 0x00000800 */
+#define RCC_APB2ENR_TIM0EN                   RCC_APB2ENR_TIM0EN_Msk            /*!< TIM0 Timer clock enable */
 #define RCC_APB2ENR_SPI1EN_Pos               (12U)                             
 #define RCC_APB2ENR_SPI1EN_Msk               (0x1U << RCC_APB2ENR_SPI1EN_Pos)  /*!< 0x00001000 */
 #define RCC_APB2ENR_SPI1EN                   RCC_APB2ENR_SPI1EN_Msk            /*!< SPI 1 clock enable */
@@ -1655,12 +1627,12 @@ typedef struct
 
 
 /*****************  Bit definition for RCC_APB1ENR register  ******************/
-#define RCC_APB1ENR_TIM2EN_Pos               (0U)                              
-#define RCC_APB1ENR_TIM2EN_Msk               (0x1U << RCC_APB1ENR_TIM2EN_Pos)  /*!< 0x00000001 */
-#define RCC_APB1ENR_TIM2EN                   RCC_APB1ENR_TIM2EN_Msk            /*!< Timer 2 clock enabled*/
-#define RCC_APB1ENR_TIM3EN_Pos               (1U)                              
-#define RCC_APB1ENR_TIM3EN_Msk               (0x1U << RCC_APB1ENR_TIM3EN_Pos)  /*!< 0x00000002 */
-#define RCC_APB1ENR_TIM3EN                   RCC_APB1ENR_TIM3EN_Msk            /*!< Timer 3 clock enable */
+#define RCC_APB1ENR_TIM1EN_Pos               (0U)                              
+#define RCC_APB1ENR_TIM1EN_Msk               (0x1U << RCC_APB1ENR_TIM1EN_Pos)  /*!< 0x00000001 */
+#define RCC_APB1ENR_TIM1EN                   RCC_APB1ENR_TIM1EN_Msk            /*!< Timer 2 clock enabled*/
+#define RCC_APB1ENR_TIM2EN_Pos               (1U)                              
+#define RCC_APB1ENR_TIM2EN_Msk               (0x1U << RCC_APB1ENR_TIM2EN_Pos)  /*!< 0x00000002 */
+#define RCC_APB1ENR_TIM2EN                   RCC_APB1ENR_TIM2EN_Msk            /*!< Timer 3 clock enable */
 #define RCC_APB1ENR_WWDGEN_Pos               (11U)                             
 #define RCC_APB1ENR_WWDGEN_Msk               (0x1U << RCC_APB1ENR_WWDGEN_Pos)  /*!< 0x00000800 */
 #define RCC_APB1ENR_WWDGEN                   RCC_APB1ENR_WWDGEN_Msk            /*!< Window Watchdog clock enable */
@@ -1682,9 +1654,9 @@ typedef struct
 #define RCC_APB1ENR_PWREN_Msk                (0x1U << RCC_APB1ENR_PWREN_Pos)   /*!< 0x10000000 */
 #define RCC_APB1ENR_PWREN                    RCC_APB1ENR_PWREN_Msk             /*!< Power interface clock enable */
 
-#define RCC_APB1ENR_TIM4EN_Pos               (2U)                              
-#define RCC_APB1ENR_TIM4EN_Msk               (0x1U << RCC_APB1ENR_TIM4EN_Pos)  /*!< 0x00000004 */
-#define RCC_APB1ENR_TIM4EN                   RCC_APB1ENR_TIM4EN_Msk            /*!< Timer 4 clock enable */
+#define RCC_APB1ENR_TIM3EN_Pos               (2U)                              
+#define RCC_APB1ENR_TIM3EN_Msk               (0x1U << RCC_APB1ENR_TIM3EN_Pos)  /*!< 0x00000004 */
+#define RCC_APB1ENR_TIM3EN                   RCC_APB1ENR_TIM3EN_Msk            /*!< Timer 4 clock enable */
 #define RCC_APB1ENR_SPI2EN_Pos               (14U)                             
 #define RCC_APB1ENR_SPI2EN_Msk               (0x1U << RCC_APB1ENR_SPI2EN_Pos)  /*!< 0x00004000 */
 #define RCC_APB1ENR_SPI2EN                   RCC_APB1ENR_SPI2EN_Msk            /*!< SPI 2 clock enable */
@@ -1696,15 +1668,15 @@ typedef struct
 #define RCC_APB1ENR_I2C1EN                   RCC_APB1ENR_I2C1EN_Msk            /*!< I2C 2 clock enable */
 
 
-#define RCC_APB1ENR_TIM5EN_Pos               (3U)                              
-#define RCC_APB1ENR_TIM5EN_Msk               (0x1U << RCC_APB1ENR_TIM5EN_Pos)  /*!< 0x00000008 */
-#define RCC_APB1ENR_TIM5EN                   RCC_APB1ENR_TIM5EN_Msk            /*!< Timer 5 clock enable */
-#define RCC_APB1ENR_TIM6EN_Pos               (4U)                              
-#define RCC_APB1ENR_TIM6EN_Msk               (0x1U << RCC_APB1ENR_TIM6EN_Pos)  /*!< 0x00000010 */
-#define RCC_APB1ENR_TIM6EN                   RCC_APB1ENR_TIM6EN_Msk            /*!< Timer 6 clock enable */
-#define RCC_APB1ENR_TIM7EN_Pos               (5U)                              
-#define RCC_APB1ENR_TIM7EN_Msk               (0x1U << RCC_APB1ENR_TIM7EN_Pos)  /*!< 0x00000020 */
-#define RCC_APB1ENR_TIM7EN                   RCC_APB1ENR_TIM7EN_Msk            /*!< Timer 7 clock enable */
+#define RCC_APB1ENR_TIM4EN_Pos               (3U)                              
+#define RCC_APB1ENR_TIM4EN_Msk               (0x1U << RCC_APB1ENR_TIM4EN_Pos)  /*!< 0x00000008 */
+#define RCC_APB1ENR_TIM4EN                   RCC_APB1ENR_TIM4EN_Msk            /*!< Timer 5 clock enable */
+#define RCC_APB1ENR_TIM5EN_Pos               (4U)                              
+#define RCC_APB1ENR_TIM5EN_Msk               (0x1U << RCC_APB1ENR_TIM5EN_Pos)  /*!< 0x00000010 */
+#define RCC_APB1ENR_TIM5EN                   RCC_APB1ENR_TIM5EN_Msk            /*!< Timer 6 clock enable */
+#define RCC_APB1ENR_TIM6EN_Pos               (5U)                              
+#define RCC_APB1ENR_TIM6EN_Msk               (0x1U << RCC_APB1ENR_TIM6EN_Pos)  /*!< 0x00000020 */
+#define RCC_APB1ENR_TIM6EN                   RCC_APB1ENR_TIM6EN_Msk            /*!< Timer 7 clock enable */
 #define RCC_APB1ENR_SPI3EN_Pos               (15U)                             
 #define RCC_APB1ENR_SPI3EN_Msk               (0x1U << RCC_APB1ENR_SPI3EN_Pos)  /*!< 0x00008000 */
 #define RCC_APB1ENR_SPI3EN                   RCC_APB1ENR_SPI3EN_Msk            /*!< SPI 3 clock enable */
@@ -12311,18 +12283,18 @@ typedef struct
 #define DBGMCU_CR_DBG_WWDG_STOP_Pos         (9U)                               
 #define DBGMCU_CR_DBG_WWDG_STOP_Msk         (0x1U << DBGMCU_CR_DBG_WWDG_STOP_Pos) /*!< 0x00000200 */
 #define DBGMCU_CR_DBG_WWDG_STOP             DBGMCU_CR_DBG_WWDG_STOP_Msk        /*!< Debug Window Watchdog stopped when Core is halted */
-#define DBGMCU_CR_DBG_TIM1_STOP_Pos         (10U)                              
-#define DBGMCU_CR_DBG_TIM1_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM1_STOP_Pos) /*!< 0x00000400 */
+#define DBGMCU_CR_DBG_TIM0_STOP_Pos         (10U)                              
+#define DBGMCU_CR_DBG_TIM0_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM0_STOP_Pos) /*!< 0x00000400 */
+#define DBGMCU_CR_DBG_TIM0_STOP             DBGMCU_CR_DBG_TIM0_STOP_Msk        /*!< TIM0 counter stopped when core is halted */
+#define DBGMCU_CR_DBG_TIM1_STOP_Pos         (11U)                              
+#define DBGMCU_CR_DBG_TIM1_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM1_STOP_Pos) /*!< 0x00000800 */
 #define DBGMCU_CR_DBG_TIM1_STOP             DBGMCU_CR_DBG_TIM1_STOP_Msk        /*!< TIM1 counter stopped when core is halted */
-#define DBGMCU_CR_DBG_TIM2_STOP_Pos         (11U)                              
-#define DBGMCU_CR_DBG_TIM2_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM2_STOP_Pos) /*!< 0x00000800 */
+#define DBGMCU_CR_DBG_TIM2_STOP_Pos         (12U)                              
+#define DBGMCU_CR_DBG_TIM2_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM2_STOP_Pos) /*!< 0x00001000 */
 #define DBGMCU_CR_DBG_TIM2_STOP             DBGMCU_CR_DBG_TIM2_STOP_Msk        /*!< TIM2 counter stopped when core is halted */
-#define DBGMCU_CR_DBG_TIM3_STOP_Pos         (12U)                              
-#define DBGMCU_CR_DBG_TIM3_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM3_STOP_Pos) /*!< 0x00001000 */
+#define DBGMCU_CR_DBG_TIM3_STOP_Pos         (13U)                              
+#define DBGMCU_CR_DBG_TIM3_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM3_STOP_Pos) /*!< 0x00002000 */
 #define DBGMCU_CR_DBG_TIM3_STOP             DBGMCU_CR_DBG_TIM3_STOP_Msk        /*!< TIM3 counter stopped when core is halted */
-#define DBGMCU_CR_DBG_TIM4_STOP_Pos         (13U)                              
-#define DBGMCU_CR_DBG_TIM4_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM4_STOP_Pos) /*!< 0x00002000 */
-#define DBGMCU_CR_DBG_TIM4_STOP             DBGMCU_CR_DBG_TIM4_STOP_Msk        /*!< TIM4 counter stopped when core is halted */
 #define DBGMCU_CR_DBG_CAN1_STOP_Pos         (14U)                              
 #define DBGMCU_CR_DBG_CAN1_STOP_Msk         (0x1U << DBGMCU_CR_DBG_CAN1_STOP_Pos) /*!< 0x00004000 */
 #define DBGMCU_CR_DBG_CAN1_STOP             DBGMCU_CR_DBG_CAN1_STOP_Msk        /*!< Debug CAN1 stopped when Core is halted */
@@ -12332,27 +12304,18 @@ typedef struct
 #define DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT_Pos (16U)                             
 #define DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT_Msk (0x1U << DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT_Pos) /*!< 0x00010000 */
 #define DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT    DBGMCU_CR_DBG_I2C1_SMBUS_TIMEOUT_Msk /*!< SMBUS timeout mode stopped when Core is halted */
-#define DBGMCU_CR_DBG_TIM5_STOP_Pos         (18U)                              
-#define DBGMCU_CR_DBG_TIM5_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM5_STOP_Pos) /*!< 0x00040000 */
+#define DBGMCU_CR_DBG_TIM4_STOP_Pos         (18U)                              
+#define DBGMCU_CR_DBG_TIM4_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM4_STOP_Pos) /*!< 0x00040000 */
+#define DBGMCU_CR_DBG_TIM4_STOP             DBGMCU_CR_DBG_TIM4_STOP_Msk        /*!< TIM4 counter stopped when core is halted */
+#define DBGMCU_CR_DBG_TIM5_STOP_Pos         (19U)                              
+#define DBGMCU_CR_DBG_TIM5_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM5_STOP_Pos) /*!< 0x00080000 */
 #define DBGMCU_CR_DBG_TIM5_STOP             DBGMCU_CR_DBG_TIM5_STOP_Msk        /*!< TIM5 counter stopped when core is halted */
-#define DBGMCU_CR_DBG_TIM6_STOP_Pos         (19U)                              
-#define DBGMCU_CR_DBG_TIM6_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM6_STOP_Pos) /*!< 0x00080000 */
+#define DBGMCU_CR_DBG_TIM6_STOP_Pos         (20U)                              
+#define DBGMCU_CR_DBG_TIM6_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM6_STOP_Pos) /*!< 0x00100000 */
 #define DBGMCU_CR_DBG_TIM6_STOP             DBGMCU_CR_DBG_TIM6_STOP_Msk        /*!< TIM6 counter stopped when core is halted */
-#define DBGMCU_CR_DBG_TIM7_STOP_Pos         (20U)                              
-#define DBGMCU_CR_DBG_TIM7_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM7_STOP_Pos) /*!< 0x00100000 */
-#define DBGMCU_CR_DBG_TIM7_STOP             DBGMCU_CR_DBG_TIM7_STOP_Msk        /*!< TIM7 counter stopped when core is halted */
 #define DBGMCU_CR_DBG_CAN2_STOP_Pos         (21U)                              
 #define DBGMCU_CR_DBG_CAN2_STOP_Msk         (0x1U << DBGMCU_CR_DBG_CAN2_STOP_Pos) /*!< 0x00200000 */
 #define DBGMCU_CR_DBG_CAN2_STOP             DBGMCU_CR_DBG_CAN2_STOP_Msk        /*!< Debug CAN2 stopped when Core is halted */
-#define DBGMCU_CR_DBG_TIM9_STOP_Pos         (28U)                              
-#define DBGMCU_CR_DBG_TIM9_STOP_Msk         (0x1U << DBGMCU_CR_DBG_TIM9_STOP_Pos) /*!< 0x10000000 */
-#define DBGMCU_CR_DBG_TIM9_STOP             DBGMCU_CR_DBG_TIM9_STOP_Msk        /*!< Debug TIM9 stopped when Core is halted */
-#define DBGMCU_CR_DBG_TIM10_STOP_Pos        (29U)                              
-#define DBGMCU_CR_DBG_TIM10_STOP_Msk        (0x1U << DBGMCU_CR_DBG_TIM10_STOP_Pos) /*!< 0x20000000 */
-#define DBGMCU_CR_DBG_TIM10_STOP            DBGMCU_CR_DBG_TIM10_STOP_Msk       /*!< Debug TIM10 stopped when Core is halted */
-#define DBGMCU_CR_DBG_TIM11_STOP_Pos        (30U)                              
-#define DBGMCU_CR_DBG_TIM11_STOP_Msk        (0x1U << DBGMCU_CR_DBG_TIM11_STOP_Pos) /*!< 0x40000000 */
-#define DBGMCU_CR_DBG_TIM11_STOP            DBGMCU_CR_DBG_TIM11_STOP_Msk       /*!< Debug TIM11 stopped when Core is halted */
 
 /******************************************************************************/
 /*                                                                            */
@@ -12630,121 +12593,127 @@ typedef struct
 /****************************** START TIM Instances ***************************/
 /****************************** TIM Instances *********************************/
 #define IS_TIM_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
    ((INSTANCE) == TIM4)    || \
    ((INSTANCE) == TIM5)    || \
-   ((INSTANCE) == TIM6)    || \
-   ((INSTANCE) == TIM7))
+   ((INSTANCE) == TIM6))
 
-#define IS_TIM_ADVANCED_INSTANCE(INSTANCE)  ((INSTANCE) == TIM1)
+#define IS_TIM_ADVANCED_INSTANCE(INSTANCE)  ((INSTANCE) == TIM0)
 
 #define IS_TIM_CC1_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_CC2_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_CC3_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_CC4_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_CLOCKSOURCE_ETRMODE1_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_CLOCKSOURCE_ETRMODE2_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_CLOCKSOURCE_TIX_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_CLOCKSOURCE_ITRX_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_OCXREF_CLEAR_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_ENCODER_INTERFACE_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_XOR_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_MASTER_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
    ((INSTANCE) == TIM4)    || \
    ((INSTANCE) == TIM5)    || \
-   ((INSTANCE) == TIM6)    || \
-   ((INSTANCE) == TIM7))
+   ((INSTANCE) == TIM6))
 
 #define IS_TIM_SLAVE_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_DMABURST_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_BREAK_INSTANCE(INSTANCE)\
-  ((INSTANCE) == TIM1)
+  ((INSTANCE) == TIM0)
 
 #define IS_TIM_CCX_INSTANCE(INSTANCE, CHANNEL) \
-   ((((INSTANCE) == TIM1) &&                  \
+   ((((INSTANCE) == TIM0) &&                  \
+     (((CHANNEL) == TIM_CHANNEL_1) ||          \
+      ((CHANNEL) == TIM_CHANNEL_2) ||          \
+      ((CHANNEL) == TIM_CHANNEL_3) ||          \
+      ((CHANNEL) == TIM_CHANNEL_4)))           \
+    ||                                         \
+    (((INSTANCE) == TIM1) &&                   \
      (((CHANNEL) == TIM_CHANNEL_1) ||          \
       ((CHANNEL) == TIM_CHANNEL_2) ||          \
       ((CHANNEL) == TIM_CHANNEL_3) ||          \
@@ -12766,67 +12735,61 @@ typedef struct
      (((CHANNEL) == TIM_CHANNEL_1) ||          \
       ((CHANNEL) == TIM_CHANNEL_2) ||          \
       ((CHANNEL) == TIM_CHANNEL_3) ||          \
-      ((CHANNEL) == TIM_CHANNEL_4)))           \
-    ||                                         \
-    (((INSTANCE) == TIM5) &&                   \
-     (((CHANNEL) == TIM_CHANNEL_1) ||          \
-      ((CHANNEL) == TIM_CHANNEL_2) ||          \
-      ((CHANNEL) == TIM_CHANNEL_3) ||          \
       ((CHANNEL) == TIM_CHANNEL_4))))
 
 #define IS_TIM_CCXN_INSTANCE(INSTANCE, CHANNEL) \
-    (((INSTANCE) == TIM1) &&                    \
+    (((INSTANCE) == TIM0) &&                    \
      (((CHANNEL) == TIM_CHANNEL_1) ||           \
       ((CHANNEL) == TIM_CHANNEL_2) ||           \
       ((CHANNEL) == TIM_CHANNEL_3)))
 
 #define IS_TIM_COUNTER_MODE_SELECT_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_REPETITION_COUNTER_INSTANCE(INSTANCE)\
-  ((INSTANCE) == TIM1)
+  ((INSTANCE) == TIM0)
 
 #define IS_TIM_CLOCK_DIVISION_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
 
 #define IS_TIM_DMA_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
    ((INSTANCE) == TIM4)    || \
    ((INSTANCE) == TIM5)    || \
-   ((INSTANCE) == TIM6)    || \
-   ((INSTANCE) == TIM7))
+   ((INSTANCE) == TIM6))
     
 #define IS_TIM_DMA_CC_INSTANCE(INSTANCE)\
-  (((INSTANCE) == TIM1)    || \
+  (((INSTANCE) == TIM0)    || \
+   ((INSTANCE) == TIM1)    || \
    ((INSTANCE) == TIM2)    || \
    ((INSTANCE) == TIM3)    || \
-   ((INSTANCE) == TIM4)    || \
-   ((INSTANCE) == TIM5))
+   ((INSTANCE) == TIM4))
     
 #define IS_TIM_COMMUTATION_EVENT_INSTANCE(INSTANCE)\
-  ((INSTANCE) == TIM1)
+  ((INSTANCE) == TIM0)
 
-#define IS_TIM_ETR_INSTANCE(INSTANCE)  (((INSTANCE) == TIM1)    || \
+#define IS_TIM_ETR_INSTANCE(INSTANCE)  (((INSTANCE) == TIM0)    || \
+                                        ((INSTANCE) == TIM1)    || \
                                         ((INSTANCE) == TIM2)    || \
                                         ((INSTANCE) == TIM3)    || \
-                                        ((INSTANCE) == TIM4)    || \
-                                        ((INSTANCE) == TIM5))
+                                        ((INSTANCE) == TIM4))
 
-#define IS_TIM_HALL_SENSOR_INTERFACE_INSTANCE(INSTANCE) (((INSTANCE) == TIM1)    || \
+#define IS_TIM_HALL_SENSOR_INTERFACE_INSTANCE(INSTANCE) (((INSTANCE) == TIM0)    || \
+                                                         ((INSTANCE) == TIM1)    || \
                                                          ((INSTANCE) == TIM2)    || \
                                                          ((INSTANCE) == TIM3)    || \
-                                                         ((INSTANCE) == TIM4)    || \
-                                                         ((INSTANCE) == TIM5))
+                                                         ((INSTANCE) == TIM4))
 
 #define IS_TIM_32B_COUNTER_INSTANCE(INSTANCE)           0U
 
@@ -12925,16 +12888,16 @@ typedef struct
 #define DMA1_Channel3_5_IRQn    DMA1_Channel3_IRQn
 #define USBWakeUp_IRQn          USBFS_WKUP_IRQn
 #define CEC_IRQn                USBFS_WKUP_IRQn
-#define TIM1_BRK_TIM9_IRQn      TIM1_BRK_IRQn
-#define TIM1_BRK_TIM15_IRQn     TIM1_BRK_IRQn
-#define TIM9_IRQn               TIM1_BRK_IRQn
-#define TIM11_IRQn              TIM1_TRG_COM_IRQn
-#define TIM1_TRG_COM_TIM11_IRQn TIM1_TRG_COM_IRQn
-#define TIM1_TRG_COM_TIM17_IRQn TIM1_TRG_COM_IRQn
-#define TIM10_IRQn              TIM1_UP_IRQn
-#define TIM1_UP_TIM16_IRQn      TIM1_UP_IRQn
-#define TIM1_UP_TIM10_IRQn      TIM1_UP_IRQn
-#define TIM6_DAC_IRQn           TIM6_IRQn
+#define TIM0_BRK_TIM9_IRQn      TIM0_BRK_IRQn
+#define TIM0_BRK_TIM05_IRQn     TIM0_BRK_IRQn
+#define TIM9_IRQn               TIM0_BRK_IRQn
+#define TIM01_IRQn              TIM0_TRG_COM_IRQn
+#define TIM0_TRG_COM_TIM01_IRQn TIM0_TRG_COM_IRQn
+#define TIM0_TRG_COM_TIM07_IRQn TIM0_TRG_COM_IRQn
+#define TIM00_IRQn              TIM0_UP_IRQn
+#define TIM0_UP_TIM06_IRQn      TIM0_UP_IRQn
+#define TIM0_UP_TIM00_IRQn      TIM0_UP_IRQn
+#define TIM4_DAC_IRQn           TIM4_IRQn
 
 
 /* Aliases for __IRQHandler */
@@ -12946,16 +12909,16 @@ typedef struct
 #define DMA1_Channel3_5_IRQHandler    DMA1_Channel3_IRQHandler
 #define USBWakeUp_IRQHandler          USBFS_WKUP_IRQHandler
 #define CEC_IRQHandler                USBFS_WKUP_IRQHandler
-#define TIM1_BRK_TIM9_IRQHandler      TIM1_BRK_IRQHandler
-#define TIM1_BRK_TIM15_IRQHandler     TIM1_BRK_IRQHandler
-#define TIM9_IRQHandler               TIM1_BRK_IRQHandler
-#define TIM11_IRQHandler              TIM1_TRG_COM_IRQHandler
-#define TIM1_TRG_COM_TIM11_IRQHandler TIM1_TRG_COM_IRQHandler
-#define TIM1_TRG_COM_TIM17_IRQHandler TIM1_TRG_COM_IRQHandler
-#define TIM10_IRQHandler              TIM1_UP_IRQHandler
-#define TIM1_UP_TIM16_IRQHandler      TIM1_UP_IRQHandler
-#define TIM1_UP_TIM10_IRQHandler      TIM1_UP_IRQHandler
-#define TIM6_DAC_IRQHandler           TIM6_IRQHandler
+#define TIM0_BRK_TIM9_IRQHandler      TIM0_BRK_IRQHandler
+#define TIM0_BRK_TIM05_IRQHandler     TIM0_BRK_IRQHandler
+#define TIM9_IRQHandler               TIM0_BRK_IRQHandler
+#define TIM01_IRQHandler              TIM0_TRG_COM_IRQHandler
+#define TIM0_TRG_COM_TIM01_IRQHandler TIM0_TRG_COM_IRQHandler
+#define TIM0_TRG_COM_TIM07_IRQHandler TIM0_TRG_COM_IRQHandler
+#define TIM00_IRQHandler              TIM0_UP_IRQHandler
+#define TIM0_UP_TIM06_IRQHandler      TIM0_UP_IRQHandler
+#define TIM0_UP_TIM00_IRQHandler      TIM0_UP_IRQHandler
+#define TIM4_DAC_IRQHandler           TIM4_IRQHandler
 
 /**
   * @}

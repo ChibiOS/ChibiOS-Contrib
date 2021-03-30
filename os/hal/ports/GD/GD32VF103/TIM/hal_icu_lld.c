@@ -40,41 +40,41 @@
 
 /**
  * @brief   ICUD1 driver identifier.
- * @note    The driver ICUD1 allocates the complex timer TIM1 when enabled.
+ * @note    The driver ICUD1 allocates the complex timer TIM0 when enabled.
  */
-#if GD32_ICU_USE_TIM1 || defined(__DOXYGEN__)
+#if GD32_ICU_USE_TIM0 || defined(__DOXYGEN__)
 ICUDriver ICUD1;
 #endif
 
 /**
  * @brief   ICUD2 driver identifier.
- * @note    The driver ICUD1 allocates the timer TIM2 when enabled.
+ * @note    The driver ICUD1 allocates the timer TIM1 when enabled.
  */
-#if GD32_ICU_USE_TIM2 || defined(__DOXYGEN__)
+#if GD32_ICU_USE_TIM1 || defined(__DOXYGEN__)
 ICUDriver ICUD2;
 #endif
 
 /**
  * @brief   ICUD3 driver identifier.
- * @note    The driver ICUD1 allocates the timer TIM3 when enabled.
+ * @note    The driver ICUD1 allocates the timer TIM2 when enabled.
  */
-#if GD32_ICU_USE_TIM3 || defined(__DOXYGEN__)
+#if GD32_ICU_USE_TIM2 || defined(__DOXYGEN__)
 ICUDriver ICUD3;
 #endif
 
 /**
  * @brief   ICUD4 driver identifier.
- * @note    The driver ICUD4 allocates the timer TIM4 when enabled.
+ * @note    The driver ICUD4 allocates the timer TIM3 when enabled.
  */
-#if GD32_ICU_USE_TIM4 || defined(__DOXYGEN__)
+#if GD32_ICU_USE_TIM3 || defined(__DOXYGEN__)
 ICUDriver ICUD4;
 #endif
 
 /**
  * @brief   ICUD5 driver identifier.
- * @note    The driver ICUD5 allocates the timer TIM5 when enabled.
+ * @note    The driver ICUD5 allocates the timer TIM4 when enabled.
  */
-#if GD32_ICU_USE_TIM5 || defined(__DOXYGEN__)
+#if GD32_ICU_USE_TIM4 || defined(__DOXYGEN__)
 ICUDriver ICUD5;
 #endif
 
@@ -126,17 +126,17 @@ static bool icu_lld_wait_edge(ICUDriver *icup) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if GD32_ICU_USE_TIM1 || defined(__DOXYGEN__)
-#if !defined(GD32_TIM1_SUPPRESS_ISR)
-#if !defined(GD32_TIM1_UP_HANDLER)
-#error "GD32_TIM1_UP_HANDLER not defined"
+#if GD32_ICU_USE_TIM0 || defined(__DOXYGEN__)
+#if !defined(GD32_TIM0_SUPPRESS_ISR)
+#if !defined(GD32_TIM0_UP_HANDLER)
+#error "GD32_TIM0_UP_HANDLER not defined"
 #endif
 /**
- * @brief   TIM1 compare interrupt handler.
+ * @brief   TIM0 compare interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_TIM1_UP_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_TIM0_UP_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -145,19 +145,40 @@ OSAL_IRQ_HANDLER(GD32_TIM1_UP_HANDLER) {
   OSAL_IRQ_EPILOGUE();
 }
 
-#if !defined(GD32_TIM1_CC_HANDLER)
-#error "GD32_TIM1_CC_HANDLER not defined"
+#if !defined(GD32_TIM0_CC_HANDLER)
+#error "GD32_TIM0_CC_HANDLER not defined"
 #endif
 /**
- * @brief   TIM1 compare interrupt handler.
+ * @brief   TIM0 compare interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_TIM1_CC_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_TIM0_CC_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
   icu_lld_serve_interrupt(&ICUD1);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* !defined(GD32_TIM0_SUPPRESS_ISR) */
+#endif /* GD32_ICU_USE_TIM0 */
+
+#if GD32_ICU_USE_TIM1 || defined(__DOXYGEN__)
+#if !defined(GD32_TIM1_SUPPRESS_ISR)
+#if !defined(GD32_TIM1_HANDLER)
+#error "GD32_TIM1_HANDLER not defined"
+#endif
+/**
+ * @brief   TIM1 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(GD32_TIM1_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  icu_lld_serve_interrupt(&ICUD2);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -178,7 +199,7 @@ OSAL_IRQ_HANDLER(GD32_TIM2_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  icu_lld_serve_interrupt(&ICUD2);
+  icu_lld_serve_interrupt(&ICUD3);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -199,7 +220,7 @@ OSAL_IRQ_HANDLER(GD32_TIM3_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  icu_lld_serve_interrupt(&ICUD3);
+  icu_lld_serve_interrupt(&ICUD4);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -220,33 +241,12 @@ OSAL_IRQ_HANDLER(GD32_TIM4_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  icu_lld_serve_interrupt(&ICUD4);
+  icu_lld_serve_interrupt(&ICUD5);
 
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* !defined(GD32_TIM4_SUPPRESS_ISR) */
 #endif /* GD32_ICU_USE_TIM4 */
-
-#if GD32_ICU_USE_TIM5 || defined(__DOXYGEN__)
-#if !defined(GD32_TIM5_SUPPRESS_ISR)
-#if !defined(GD32_TIM5_HANDLER)
-#error "GD32_TIM5_HANDLER not defined"
-#endif
-/**
- * @brief   TIM5 interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_TIM5_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  icu_lld_serve_interrupt(&ICUD5);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif /* !defined(GD32_TIM5_SUPPRESS_ISR) */
-#endif /* GD32_ICU_USE_TIM5 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -259,34 +259,34 @@ OSAL_IRQ_HANDLER(GD32_TIM5_HANDLER) {
  */
 void icu_lld_init(void) {
 
-#if GD32_ICU_USE_TIM1
+#if GD32_ICU_USE_TIM0
   /* Driver initialization.*/
   icuObjectInit(&ICUD1);
-  ICUD1.tim = GD32_TIM1;
+  ICUD1.tim = GD32_TIM0;
+#endif
+
+#if GD32_ICU_USE_TIM1
+  /* Driver initialization.*/
+  icuObjectInit(&ICUD2);
+  ICUD2.tim = GD32_TIM1;
 #endif
 
 #if GD32_ICU_USE_TIM2
   /* Driver initialization.*/
-  icuObjectInit(&ICUD2);
-  ICUD2.tim = GD32_TIM2;
+  icuObjectInit(&ICUD3);
+  ICUD3.tim = GD32_TIM2;
 #endif
 
 #if GD32_ICU_USE_TIM3
   /* Driver initialization.*/
-  icuObjectInit(&ICUD3);
-  ICUD3.tim = GD32_TIM3;
+  icuObjectInit(&ICUD4);
+  ICUD4.tim = GD32_TIM3;
 #endif
 
 #if GD32_ICU_USE_TIM4
   /* Driver initialization.*/
-  icuObjectInit(&ICUD4);
-  ICUD4.tim = GD32_TIM4;
-#endif
-
-#if GD32_ICU_USE_TIM5
-  /* Driver initialization.*/
   icuObjectInit(&ICUD5);
-  ICUD5.tim = GD32_TIM5;
+  ICUD5.tim = GD32_TIM4;
 #endif
 }
 
@@ -306,24 +306,39 @@ void icu_lld_start(ICUDriver *icup) {
 
   if (icup->state == ICU_STOP) {
     /* Clock activation and timer reset.*/
-#if GD32_ICU_USE_TIM1
+#if GD32_ICU_USE_TIM0
     if (&ICUD1 == icup) {
-      rccEnableTIM1(true);
-      rccResetTIM1();
-#if !defined(GD32_TIM1_SUPPRESS_ISR)
-      eclicEnableVector(GD32_TIM1_UP_NUMBER, GD32_ICU_TIM1_IRQ_PRIORITY, GD32_ICU_TIM1_IRQ_TRIGGER);
-      eclicEnableVector(GD32_TIM1_CC_NUMBER, GD32_ICU_TIM1_IRQ_PRIORITY, GD32_ICU_TIM1_IRQ_TRIGGER);
+      rccEnableTIM0(true);
+      rccResetTIM0();
+#if !defined(GD32_TIM0_SUPPRESS_ISR)
+      eclicEnableVector(GD32_TIM0_UP_NUMBER, GD32_ICU_TIM0_IRQ_PRIORITY, GD32_ICU_TIM0_IRQ_TRIGGER);
+      eclicEnableVector(GD32_TIM0_CC_NUMBER, GD32_ICU_TIM0_IRQ_PRIORITY, GD32_ICU_TIM0_IRQ_TRIGGER);
 #endif
-#if defined(GD32_TIM1CLK)
-      icup->clock = GD32_TIM1CLK;
+#if defined(GD32_TIM0CLK)
+      icup->clock = GD32_TIM0CLK;
 #else
       icup->clock = GD32_TIMCLK2;
 #endif
     }
 #endif
 
-#if GD32_ICU_USE_TIM2
+#if GD32_ICU_USE_TIM1
     if (&ICUD2 == icup) {
+      rccEnableTIM1(true);
+      rccResetTIM1();
+#if !defined(GD32_TIM1_SUPPRESS_ISR)
+      eclicEnableVector(GD32_TIM1_NUMBER, GD32_ICU_TIM1_IRQ_PRIORITY, GD32_ICU_TIM1_IRQ_TRIGGER);
+#endif
+#if defined(GD32_TIM1CLK)
+      icup->clock = GD32_TIM1CLK;
+#else
+      icup->clock = GD32_TIMCLK1;
+#endif
+    }
+#endif
+
+#if GD32_ICU_USE_TIM2
+    if (&ICUD3 == icup) {
       rccEnableTIM2(true);
       rccResetTIM2();
 #if !defined(GD32_TIM2_SUPPRESS_ISR)
@@ -332,13 +347,13 @@ void icu_lld_start(ICUDriver *icup) {
 #if defined(GD32_TIM2CLK)
       icup->clock = GD32_TIM2CLK;
 #else
-      icup->clock = GD32_TIMCLK1;
+     icup->clock = GD32_TIMCLK1;
 #endif
     }
 #endif
 
 #if GD32_ICU_USE_TIM3
-    if (&ICUD3 == icup) {
+    if (&ICUD4 == icup) {
       rccEnableTIM3(true);
       rccResetTIM3();
 #if !defined(GD32_TIM3_SUPPRESS_ISR)
@@ -347,13 +362,13 @@ void icu_lld_start(ICUDriver *icup) {
 #if defined(GD32_TIM3CLK)
       icup->clock = GD32_TIM3CLK;
 #else
-     icup->clock = GD32_TIMCLK1;
+      icup->clock = GD32_TIMCLK1;
 #endif
     }
 #endif
 
 #if GD32_ICU_USE_TIM4
-    if (&ICUD4 == icup) {
+    if (&ICUD5 == icup) {
       rccEnableTIM4(true);
       rccResetTIM4();
 #if !defined(GD32_TIM4_SUPPRESS_ISR)
@@ -361,21 +376,6 @@ void icu_lld_start(ICUDriver *icup) {
 #endif
 #if defined(GD32_TIM4CLK)
       icup->clock = GD32_TIM4CLK;
-#else
-      icup->clock = GD32_TIMCLK1;
-#endif
-    }
-#endif
-
-#if GD32_ICU_USE_TIM5
-    if (&ICUD5 == icup) {
-      rccEnableTIM5(true);
-      rccResetTIM5();
-#if !defined(GD32_TIM5_SUPPRESS_ISR)
-      eclicEnableVector(GD32_TIM5_NUMBER, GD32_ICU_TIM5_IRQ_PRIORITY, GD32_ICU_TIM5_IRQ_TRIGGER);
-#endif
-#if defined(GD32_TIM5CLK)
-      icup->clock = GD32_TIM5CLK;
 #else
       icup->clock = GD32_TIMCLK1;
 #endif
@@ -476,18 +476,27 @@ void icu_lld_stop(ICUDriver *icup) {
     icup->tim->DMAINTEN = 0;                    /* All IRQs disabled.           */
     icup->tim->INTF   = 0;                    /* Clear eventual pending IRQs. */
 
-#if GD32_ICU_USE_TIM1
+#if GD32_ICU_USE_TIM0
     if (&ICUD1 == icup) {
+#if !defined(GD32_TIM0_SUPPRESS_ISR)
+      eclicDisableVector(GD32_TIM0_UP_NUMBER);
+      eclicDisableVector(GD32_TIM0_CC_NUMBER);
+#endif
+      rccDisableTIM0();
+    }
+#endif
+
+#if GD32_ICU_USE_TIM1
+    if (&ICUD2 == icup) {
 #if !defined(GD32_TIM1_SUPPRESS_ISR)
-      eclicDisableVector(GD32_TIM1_UP_NUMBER);
-      eclicDisableVector(GD32_TIM1_CC_NUMBER);
+      eclicDisableVector(GD32_TIM1_NUMBER);
 #endif
       rccDisableTIM1();
     }
 #endif
 
 #if GD32_ICU_USE_TIM2
-    if (&ICUD2 == icup) {
+    if (&ICUD3 == icup) {
 #if !defined(GD32_TIM2_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM2_NUMBER);
 #endif
@@ -496,7 +505,7 @@ void icu_lld_stop(ICUDriver *icup) {
 #endif
 
 #if GD32_ICU_USE_TIM3
-    if (&ICUD3 == icup) {
+    if (&ICUD4 == icup) {
 #if !defined(GD32_TIM3_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM3_NUMBER);
 #endif
@@ -505,20 +514,11 @@ void icu_lld_stop(ICUDriver *icup) {
 #endif
 
 #if GD32_ICU_USE_TIM4
-    if (&ICUD4 == icup) {
+    if (&ICUD5 == icup) {
 #if !defined(GD32_TIM4_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM4_NUMBER);
 #endif
       rccDisableTIM4();
-    }
-#endif
-
-#if GD32_ICU_USE_TIM5
-    if (&ICUD5 == icup) {
-#if !defined(GD32_TIM5_SUPPRESS_ISR)
-      eclicDisableVector(GD32_TIM5_NUMBER);
-#endif
-      rccDisableTIM5();
     }
 #endif
   }

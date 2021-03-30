@@ -46,8 +46,8 @@
  * @details If set to @p TRUE the support for GPTD1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_GPT_USE_TIM1) || defined(__DOXYGEN__)
-#define GD32_GPT_USE_TIM1                  FALSE
+#if !defined(GD32_GPT_USE_TIM0) || defined(__DOXYGEN__)
+#define GD32_GPT_USE_TIM0                  FALSE
 #endif
 
 /**
@@ -55,8 +55,8 @@
  * @details If set to @p TRUE the support for GPTD2 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_GPT_USE_TIM2) || defined(__DOXYGEN__)
-#define GD32_GPT_USE_TIM2                  FALSE
+#if !defined(GD32_GPT_USE_TIM1) || defined(__DOXYGEN__)
+#define GD32_GPT_USE_TIM1                  FALSE
 #endif
 
 /**
@@ -64,8 +64,8 @@
  * @details If set to @p TRUE the support for GPTD3 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_GPT_USE_TIM3) || defined(__DOXYGEN__)
-#define GD32_GPT_USE_TIM3                  FALSE
+#if !defined(GD32_GPT_USE_TIM2) || defined(__DOXYGEN__)
+#define GD32_GPT_USE_TIM2                  FALSE
 #endif
 
 /**
@@ -73,8 +73,8 @@
  * @details If set to @p TRUE the support for GPTD4 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_GPT_USE_TIM4) || defined(__DOXYGEN__)
-#define GD32_GPT_USE_TIM4                  FALSE
+#if !defined(GD32_GPT_USE_TIM3) || defined(__DOXYGEN__)
+#define GD32_GPT_USE_TIM3                  FALSE
 #endif
 
 /**
@@ -82,8 +82,8 @@
  * @details If set to @p TRUE the support for GPTD5 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_GPT_USE_TIM5) || defined(__DOXYGEN__)
-#define GD32_GPT_USE_TIM5                  FALSE
+#if !defined(GD32_GPT_USE_TIM4) || defined(__DOXYGEN__)
+#define GD32_GPT_USE_TIM4                  FALSE
 #endif
 
 /**
@@ -91,8 +91,8 @@
  * @details If set to @p TRUE the support for GPTD6 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_GPT_USE_TIM6) || defined(__DOXYGEN__)
-#define GD32_GPT_USE_TIM6                  FALSE
+#if !defined(GD32_GPT_USE_TIM5) || defined(__DOXYGEN__)
+#define GD32_GPT_USE_TIM5                  FALSE
 #endif
 
 /**
@@ -100,63 +100,67 @@
  * @details If set to @p TRUE the support for GPTD7 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_GPT_USE_TIM7) || defined(__DOXYGEN__)
-#define GD32_GPT_USE_TIM7                  FALSE
+#if !defined(GD32_GPT_USE_TIM6) || defined(__DOXYGEN__)
+#define GD32_GPT_USE_TIM6                  FALSE
 #endif
 
 /**
  * @brief   GPTD1 interrupt priority level setting.
+ */
+#if !defined(GD32_GPT_TIM0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_GPT_TIM0_IRQ_PRIORITY         7
+#endif
+
+/**
+ * @brief   GPTD2 interrupt priority level setting.
  */
 #if !defined(GD32_GPT_TIM1_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_GPT_TIM1_IRQ_PRIORITY         7
 #endif
 
 /**
- * @brief   GPTD2 interrupt priority level setting.
+ * @brief   GPTD3 interrupt priority level setting.
  */
 #if !defined(GD32_GPT_TIM2_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_GPT_TIM2_IRQ_PRIORITY         7
 #endif
 
 /**
- * @brief   GPTD3 interrupt priority level setting.
+ * @brief   GPTD4 interrupt priority level setting.
  */
 #if !defined(GD32_GPT_TIM3_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_GPT_TIM3_IRQ_PRIORITY         7
 #endif
 
 /**
- * @brief   GPTD4 interrupt priority level setting.
+ * @brief   GPTD5 interrupt priority level setting.
  */
 #if !defined(GD32_GPT_TIM4_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_GPT_TIM4_IRQ_PRIORITY         7
 #endif
 
 /**
- * @brief   GPTD5 interrupt priority level setting.
+ * @brief   GPTD6 interrupt priority level setting.
  */
 #if !defined(GD32_GPT_TIM5_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_GPT_TIM5_IRQ_PRIORITY         7
 #endif
 
 /**
- * @brief   GPTD6 interrupt priority level setting.
+ * @brief   GPTD7 interrupt priority level setting.
  */
 #if !defined(GD32_GPT_TIM6_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_GPT_TIM6_IRQ_PRIORITY         7
-#endif
-
-/**
- * @brief   GPTD7 interrupt priority level setting.
- */
-#if !defined(GD32_GPT_TIM7_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_GPT_TIM7_IRQ_PRIORITY         7
 #endif
 /** @} */
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+#if !defined(GD32_HAS_TIM0)
+#define GD32_HAS_TIM0                      FALSE
+#endif
 
 #if !defined(GD32_HAS_TIM1)
 #define GD32_HAS_TIM1                      FALSE
@@ -182,8 +186,8 @@
 #define GD32_HAS_TIM6                      FALSE
 #endif
 
-#if !defined(GD32_HAS_TIM7)
-#define GD32_HAS_TIM7                      FALSE
+#if GD32_GPT_USE_TIM0 && !GD32_HAS_TIM0
+#error "TIM0 not present in the selected device"
 #endif
 
 #if GD32_GPT_USE_TIM1 && !GD32_HAS_TIM1
@@ -210,21 +214,25 @@
 #error "TIM6 not present in the selected device"
 #endif
 
-#if GD32_GPT_USE_TIM7 && !GD32_HAS_TIM7
-#error "TIM7 not present in the selected device"
-#endif
-
-#if !GD32_GPT_USE_TIM1  && !GD32_GPT_USE_TIM2 &&                          \
-    !GD32_GPT_USE_TIM3  && !GD32_GPT_USE_TIM4 &&                          \
-    !GD32_GPT_USE_TIM5  && !GD32_GPT_USE_TIM6 &&                          \
-    !GD32_GPT_USE_TIM7  
+#if !GD32_GPT_USE_TIM0  && !GD32_GPT_USE_TIM1 &&                          \
+    !GD32_GPT_USE_TIM2  && !GD32_GPT_USE_TIM3 &&                          \
+    !GD32_GPT_USE_TIM4  && !GD32_GPT_USE_TIM5 &&                          \
+    !GD32_GPT_USE_TIM6  
     #error "GPT driver activated but no TIM peripheral assigned"
 #endif
 
 /* Checks on allocation of TIMx units.*/
+#if GD32_GPT_USE_TIM0
+#if defined(GD32_TIM0_IS_USED)
+#error "GPTD1 requires TIM0 but the timer is already used"
+#else
+#define GD32_TIM0_IS_USED
+#endif
+#endif
+
 #if GD32_GPT_USE_TIM1
 #if defined(GD32_TIM1_IS_USED)
-#error "GPTD1 requires TIM1 but the timer is already used"
+#error "GPTD2 requires TIM1 but the timer is already used"
 #else
 #define GD32_TIM1_IS_USED
 #endif
@@ -232,7 +240,7 @@
 
 #if GD32_GPT_USE_TIM2
 #if defined(GD32_TIM2_IS_USED)
-#error "GPTD2 requires TIM2 but the timer is already used"
+#error "GPTD3 requires TIM2 but the timer is already used"
 #else
 #define GD32_TIM2_IS_USED
 #endif
@@ -240,7 +248,7 @@
 
 #if GD32_GPT_USE_TIM3
 #if defined(GD32_TIM3_IS_USED)
-#error "GPTD3 requires TIM3 but the timer is already used"
+#error "GPTD4 requires TIM3 but the timer is already used"
 #else
 #define GD32_TIM3_IS_USED
 #endif
@@ -248,7 +256,7 @@
 
 #if GD32_GPT_USE_TIM4
 #if defined(GD32_TIM4_IS_USED)
-#error "GPTD4 requires TIM4 but the timer is already used"
+#error "GPTD5 requires TIM4 but the timer is already used"
 #else
 #define GD32_TIM4_IS_USED
 #endif
@@ -256,7 +264,7 @@
 
 #if GD32_GPT_USE_TIM5
 #if defined(GD32_TIM5_IS_USED)
-#error "GPTD5 requires TIM5 but the timer is already used"
+#error "GPTD6 requires TIM5 but the timer is already used"
 #else
 #define GD32_TIM5_IS_USED
 #endif
@@ -264,21 +272,18 @@
 
 #if GD32_GPT_USE_TIM6
 #if defined(GD32_TIM6_IS_USED)
-#error "GPTD6 requires TIM6 but the timer is already used"
+#error "GPTD7 requires TIM6 but the timer is already used"
 #else
 #define GD32_TIM6_IS_USED
 #endif
 #endif
 
-#if GD32_GPT_USE_TIM7
-#if defined(GD32_TIM7_IS_USED)
-#error "GPTD7 requires TIM7 but the timer is already used"
-#else
-#define GD32_TIM7_IS_USED
-#endif
+/* IRQ priority checks.*/
+#if GD32_GPT_USE_TIM0 && !defined(GD32_TIM0_SUPPRESS_ISR) &&              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_GPT_TIM0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to TIM0"
 #endif
 
-/* IRQ priority checks.*/
 #if GD32_GPT_USE_TIM1 && !defined(GD32_TIM1_SUPPRESS_ISR) &&              \
     !OSAL_IRQ_IS_VALID_PRIORITY(GD32_GPT_TIM1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM1"
@@ -289,12 +294,12 @@
 #error "Invalid IRQ priority assigned to TIM2"
 #endif
 
-#if GD32_GPT_USE_TIM3 && !defined(GD32_TIM3_SUPPRESS_ISR) &&              \
+#if GD32_GPT_USE_TIM3 && !defined(GD32_TIM_SUPPRESS_ISR) &&               \
     !OSAL_IRQ_IS_VALID_PRIORITY(GD32_GPT_TIM3_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM3"
 #endif
 
-#if GD32_GPT_USE_TIM4 && !defined(GD32_TIM_SUPPRESS_ISR) &&               \
+#if GD32_GPT_USE_TIM4 && !defined(GD32_TIM4_SUPPRESS_ISR) &&              \
     !OSAL_IRQ_IS_VALID_PRIORITY(GD32_GPT_TIM4_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM4"
 #endif
@@ -307,11 +312,6 @@
 #if GD32_GPT_USE_TIM6 && !defined(GD32_TIM6_SUPPRESS_ISR) &&              \
     !OSAL_IRQ_IS_VALID_PRIORITY(GD32_GPT_TIM6_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM6"
-#endif
-
-#if GD32_GPT_USE_TIM7 && !defined(GD32_TIM7_SUPPRESS_ISR) &&              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_GPT_TIM7_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to TIM7"
 #endif
 
 /*===========================================================================*/
@@ -433,31 +433,31 @@ struct GPTDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if GD32_GPT_USE_TIM1 && !defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM0 && !defined(__DOXYGEN__)
 extern GPTDriver GPTD1;
 #endif
 
-#if GD32_GPT_USE_TIM2 && !defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM1 && !defined(__DOXYGEN__)
 extern GPTDriver GPTD2;
 #endif
 
-#if GD32_GPT_USE_TIM3 && !defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM2 && !defined(__DOXYGEN__)
 extern GPTDriver GPTD3;
 #endif
 
-#if GD32_GPT_USE_TIM4 && !defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM3 && !defined(__DOXYGEN__)
 extern GPTDriver GPTD4;
 #endif
 
-#if GD32_GPT_USE_TIM5 && !defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM4 && !defined(__DOXYGEN__)
 extern GPTDriver GPTD5;
 #endif
 
-#if GD32_GPT_USE_TIM6 && !defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM5 && !defined(__DOXYGEN__)
 extern GPTDriver GPTD6;
 #endif
 
-#if GD32_GPT_USE_TIM7 && !defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM6 && !defined(__DOXYGEN__)
 extern GPTDriver GPTD7;
 #endif
 

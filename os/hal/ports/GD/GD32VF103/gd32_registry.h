@@ -231,43 +231,43 @@
 /* TIM attributes.*/
 #define GD32_TIM_MAX_CHANNELS              4
 
-#define GD32_HAS_TIM1                      TRUE
-#define GD32_TIM1_IS_32BITS                FALSE
-#define GD32_TIM1_CHANNELS                 4
+#define GD32_HAS_TIM0                      TRUE
+#define GD32_TIM0_IS_32BITS                FALSE
+#define GD32_TIM0_CHANNELS                 4
 
 #if GD32_HAS_TIM_12 || GD32_HAS_TIM_1234
+    #define GD32_HAS_TIM1                      TRUE
+    #define GD32_TIM1_IS_32BITS                FALSE
+    #define GD32_TIM1_CHANNELS                 4
+
     #define GD32_HAS_TIM2                      TRUE
     #define GD32_TIM2_IS_32BITS                FALSE
     #define GD32_TIM2_CHANNELS                 4
-
-    #define GD32_HAS_TIM3                      TRUE
-    #define GD32_TIM3_IS_32BITS                FALSE
-    #define GD32_TIM3_CHANNELS                 4
 #else
+    #define GD32_HAS_TIM1                      FALSE
     #define GD32_HAS_TIM2                      FALSE
-    #define GD32_HAS_TIM3                      FALSE
 #endif
 
 #if GD32_HAS_TIM_1234
+    #define GD32_HAS_TIM3                      TRUE
+    #define GD32_TIM3_IS_32BITS                FALSE
+    #define GD32_TIM3_CHANNELS                 4
+
     #define GD32_HAS_TIM4                      TRUE
     #define GD32_TIM4_IS_32BITS                FALSE
     #define GD32_TIM4_CHANNELS                 4
-
-    #define GD32_HAS_TIM5                      TRUE
-    #define GD32_TIM5_IS_32BITS                FALSE
-    #define GD32_TIM5_CHANNELS                 4
 #else
+    #define GD32_HAS_TIM3                      FALSE
     #define GD32_HAS_TIM4                      FALSE
-    #define GD32_HAS_TIM5                      FALSE
 #endif
+
+#define GD32_HAS_TIM5                      TRUE
+#define GD32_TIM5_IS_32BITS                FALSE
+#define GD32_TIM5_CHANNELS                 0
 
 #define GD32_HAS_TIM6                      TRUE
 #define GD32_TIM6_IS_32BITS                FALSE
 #define GD32_TIM6_CHANNELS                 0
-
-#define GD32_HAS_TIM7                      TRUE
-#define GD32_TIM7_IS_32BITS                FALSE
-#define GD32_TIM7_CHANNELS                 0
 
 /* USART attributes.*/
 #if GD32_HAS_USART_01 || GD32_HAS_USART_012 || GD32_HAS_USART_01234

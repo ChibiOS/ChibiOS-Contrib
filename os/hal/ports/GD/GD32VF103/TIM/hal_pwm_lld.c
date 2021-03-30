@@ -36,41 +36,41 @@
 
 /**
  * @brief   PWMD1 driver identifier.
- * @note    The driver PWMD1 allocates the complex timer TIM1 when enabled.
+ * @note    The driver PWMD1 allocates the complex timer TIM0 when enabled.
  */
-#if GD32_PWM_USE_TIM1 || defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM0 || defined(__DOXYGEN__)
 PWMDriver PWMD1;
 #endif
 
 /**
  * @brief   PWMD2 driver identifier.
- * @note    The driver PWMD2 allocates the timer TIM2 when enabled.
+ * @note    The driver PWMD2 allocates the timer TIM1 when enabled.
  */
-#if GD32_PWM_USE_TIM2 || defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM1 || defined(__DOXYGEN__)
 PWMDriver PWMD2;
 #endif
 
 /**
  * @brief   PWMD3 driver identifier.
- * @note    The driver PWMD3 allocates the timer TIM3 when enabled.
+ * @note    The driver PWMD3 allocates the timer TIM2 when enabled.
  */
-#if GD32_PWM_USE_TIM3 || defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM2 || defined(__DOXYGEN__)
 PWMDriver PWMD3;
 #endif
 
 /**
  * @brief   PWMD4 driver identifier.
- * @note    The driver PWMD4 allocates the timer TIM4 when enabled.
+ * @note    The driver PWMD4 allocates the timer TIM3 when enabled.
  */
-#if GD32_PWM_USE_TIM4 || defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM3 || defined(__DOXYGEN__)
 PWMDriver PWMD4;
 #endif
 
 /**
  * @brief   PWMD5 driver identifier.
- * @note    The driver PWMD5 allocates the timer TIM5 when enabled.
+ * @note    The driver PWMD5 allocates the timer TIM4 when enabled.
  */
-#if GD32_PWM_USE_TIM5 || defined(__DOXYGEN__)
+#if GD32_PWM_USE_TIM4 || defined(__DOXYGEN__)
 PWMDriver PWMD5;
 #endif
 
@@ -86,20 +86,20 @@ PWMDriver PWMD5;
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if GD32_PWM_USE_TIM1 || defined(__DOXYGEN__)
-#if !defined(GD32_TIM1_SUPPRESS_ISR)
-#if !defined(GD32_TIM1_UP_HANDLER)
-#error "GD32_TIM1_UP_HANDLER not defined"
+#if GD32_PWM_USE_TIM0 || defined(__DOXYGEN__)
+#if !defined(GD32_TIM0_SUPPRESS_ISR)
+#if !defined(GD32_TIM0_UP_HANDLER)
+#error "GD32_TIM0_UP_HANDLER not defined"
 #endif
 /**
- * @brief   TIM1 update interrupt handler.
+ * @brief   TIM0 update interrupt handler.
  * @note    It is assumed that this interrupt is only activated if the callback
  *          pointer is not equal to @p NULL in order to not perform an extra
  *          check in a potentially critical interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_TIM1_UP_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_TIM0_UP_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -108,22 +108,43 @@ OSAL_IRQ_HANDLER(GD32_TIM1_UP_HANDLER) {
   OSAL_IRQ_EPILOGUE();
 }
 
-#if !defined(GD32_TIM1_CC_HANDLER)
-#error "GD32_TIM1_CC_HANDLER not defined"
+#if !defined(GD32_TIM0_CC_HANDLER)
+#error "GD32_TIM0_CC_HANDLER not defined"
 #endif
 /**
- * @brief   TIM1 compare interrupt handler.
+ * @brief   TIM0 compare interrupt handler.
  * @note    It is assumed that the various sources are only activated if the
  *          associated callback pointer is not equal to @p NULL in order to not
  *          perform an extra check in a potentially critical interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_TIM1_CC_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_TIM0_CC_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
   pwm_lld_serve_interrupt(&PWMD1);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* !defined(GD32_TIM0_SUPPRESS_ISR) */
+#endif /* GD32_PWM_USE_TIM0 */
+
+#if GD32_PWM_USE_TIM1 || defined(__DOXYGEN__)
+#if !defined(GD32_TIM1_SUPPRESS_ISR)
+#if !defined(GD32_TIM1_HANDLER)
+#error "GD32_TIM1_HANDLER not defined"
+#endif
+/**
+ * @brief   TIM1 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(GD32_TIM1_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  pwm_lld_serve_interrupt(&PWMD2);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -144,7 +165,7 @@ OSAL_IRQ_HANDLER(GD32_TIM2_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  pwm_lld_serve_interrupt(&PWMD2);
+  pwm_lld_serve_interrupt(&PWMD3);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -165,7 +186,7 @@ OSAL_IRQ_HANDLER(GD32_TIM3_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  pwm_lld_serve_interrupt(&PWMD3);
+  pwm_lld_serve_interrupt(&PWMD4);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -186,33 +207,12 @@ OSAL_IRQ_HANDLER(GD32_TIM4_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  pwm_lld_serve_interrupt(&PWMD4);
+  pwm_lld_serve_interrupt(&PWMD5);
 
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* !defined(GD32_TIM4_SUPPRESS_ISR) */
 #endif /* GD32_PWM_USE_TIM4 */
-
-#if GD32_PWM_USE_TIM5 || defined(__DOXYGEN__)
-#if !defined(GD32_TIM5_SUPPRESS_ISR)
-#if !defined(GD32_TIM5_HANDLER)
-#error "GD32_TIM5_HANDLER not defined"
-#endif
-/**
- * @brief   TIM5 interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_TIM5_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  pwm_lld_serve_interrupt(&PWMD5);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif /* !defined(GD32_TIM5_SUPPRESS_ISR) */
-#endif /* GD32_PWM_USE_TIM5 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -225,39 +225,39 @@ OSAL_IRQ_HANDLER(GD32_TIM5_HANDLER) {
  */
 void pwm_lld_init(void) {
 
-#if GD32_PWM_USE_TIM1
+#if GD32_PWM_USE_TIM0
   /* Driver initialization.*/
   pwmObjectInit(&PWMD1);
-  PWMD1.channels = GD32_TIM1_CHANNELS;
-  PWMD1.tim = GD32_TIM1;
+  PWMD1.channels = GD32_TIM0_CHANNELS;
+  PWMD1.tim = GD32_TIM0;
+#endif
+
+#if GD32_PWM_USE_TIM1
+  /* Driver initialization.*/
+  pwmObjectInit(&PWMD2);
+  PWMD2.channels = GD32_TIM1_CHANNELS;
+  PWMD2.tim = GD32_TIM1;
 #endif
 
 #if GD32_PWM_USE_TIM2
   /* Driver initialization.*/
-  pwmObjectInit(&PWMD2);
-  PWMD2.channels = GD32_TIM2_CHANNELS;
-  PWMD2.tim = GD32_TIM2;
+  pwmObjectInit(&PWMD3);
+  PWMD3.channels = GD32_TIM2_CHANNELS;
+  PWMD3.tim = GD32_TIM2;
 #endif
 
 #if GD32_PWM_USE_TIM3
   /* Driver initialization.*/
-  pwmObjectInit(&PWMD3);
-  PWMD3.channels = GD32_TIM3_CHANNELS;
-  PWMD3.tim = GD32_TIM3;
+  pwmObjectInit(&PWMD4);
+  PWMD4.channels = GD32_TIM3_CHANNELS;
+  PWMD4.tim = GD32_TIM3;
 #endif
 
 #if GD32_PWM_USE_TIM4
   /* Driver initialization.*/
-  pwmObjectInit(&PWMD4);
-  PWMD4.channels = GD32_TIM4_CHANNELS;
-  PWMD4.tim = GD32_TIM4;
-#endif
-
-#if GD32_PWM_USE_TIM5
-  /* Driver initialization.*/
   pwmObjectInit(&PWMD5);
-  PWMD5.channels = GD32_TIM5_CHANNELS;
-  PWMD5.tim = GD32_TIM5;
+  PWMD5.channels = GD32_TIM4_CHANNELS;
+  PWMD5.tim = GD32_TIM4;
 #endif
 }
 
@@ -276,24 +276,39 @@ void pwm_lld_start(PWMDriver *pwmp) {
 
   if (pwmp->state == PWM_STOP) {
     /* Clock activation and timer reset.*/
-#if GD32_PWM_USE_TIM1
+#if GD32_PWM_USE_TIM0
     if (&PWMD1 == pwmp) {
-      rccEnableTIM1(true);
-      rccResetTIM1();
-#if !defined(GD32_TIM1_SUPPRESS_ISR)
-      eclicEnableVector(GD32_TIM1_UP_NUMBER, GD32_PWM_TIM1_IRQ_PRIORITY, GD32_PWM_TIM1_IRQ_TRIGGER);
-      eclicEnableVector(GD32_TIM1_CC_NUMBER, GD32_PWM_TIM1_IRQ_PRIORITY, GD32_PWM_TIM1_IRQ_TRIGGER);
+      rccEnableTIM0(true);
+      rccResetTIM0();
+#if !defined(GD32_TIM0_SUPPRESS_ISR)
+      eclicEnableVector(GD32_TIM0_UP_NUMBER, GD32_PWM_TIM0_IRQ_PRIORITY, GD32_PWM_TIM0_IRQ_TRIGGER);
+      eclicEnableVector(GD32_TIM0_CC_NUMBER, GD32_PWM_TIM0_IRQ_PRIORITY, GD32_PWM_TIM0_IRQ_TRIGGER);
 #endif
-#if defined(GD32_TIM1CLK)
-      pwmp->clock = GD32_TIM1CLK;
+#if defined(GD32_TIM0CLK)
+      pwmp->clock = GD32_TIM0CLK;
 #else
       pwmp->clock = GD32_TIMCLK2;
 #endif
     }
 #endif
 
-#if GD32_PWM_USE_TIM2
+#if GD32_PWM_USE_TIM1
     if (&PWMD2 == pwmp) {
+      rccEnableTIM1(true);
+      rccResetTIM1();
+#if !defined(GD32_TIM1_SUPPRESS_ISR)
+      eclicEnableVector(GD32_TIM1_NUMBER, GD32_PWM_TIM1_IRQ_PRIORITY, GD32_PWM_TIM1_IRQ_TRIGGER);
+#endif
+#if defined(GD32_TIM1CLK)
+      pwmp->clock = GD32_TIM1CLK;
+#else
+      pwmp->clock = GD32_TIMCLK1;
+#endif
+    }
+#endif
+
+#if GD32_PWM_USE_TIM2
+    if (&PWMD3 == pwmp) {
       rccEnableTIM2(true);
       rccResetTIM2();
 #if !defined(GD32_TIM2_SUPPRESS_ISR)
@@ -308,7 +323,7 @@ void pwm_lld_start(PWMDriver *pwmp) {
 #endif
 
 #if GD32_PWM_USE_TIM3
-    if (&PWMD3 == pwmp) {
+    if (&PWMD4 == pwmp) {
       rccEnableTIM3(true);
       rccResetTIM3();
 #if !defined(GD32_TIM3_SUPPRESS_ISR)
@@ -323,7 +338,7 @@ void pwm_lld_start(PWMDriver *pwmp) {
 #endif
 
 #if GD32_PWM_USE_TIM4
-    if (&PWMD4 == pwmp) {
+    if (&PWMD5 == pwmp) {
       rccEnableTIM4(true);
       rccResetTIM4();
 #if !defined(GD32_TIM4_SUPPRESS_ISR)
@@ -331,21 +346,6 @@ void pwm_lld_start(PWMDriver *pwmp) {
 #endif
 #if defined(GD32_TIM4CLK)
       pwmp->clock = GD32_TIM4CLK;
-#else
-      pwmp->clock = GD32_TIMCLK1;
-#endif
-    }
-#endif
-
-#if GD32_PWM_USE_TIM5
-    if (&PWMD5 == pwmp) {
-      rccEnableTIM5(true);
-      rccResetTIM5();
-#if !defined(GD32_TIM5_SUPPRESS_ISR)
-      eclicEnableVector(GD32_TIM5_NUMBER, GD32_PWM_TIM5_IRQ_PRIORITY, GD32_PWM_TIM5_IRQ_TRIGGER);
-#endif
-#if defined(GD32_TIM5CLK)
-      pwmp->clock = GD32_TIM5CLK;
 #else
       pwmp->clock = GD32_TIMCLK1;
 #endif
@@ -421,27 +421,7 @@ void pwm_lld_start(PWMDriver *pwmp) {
     ;
   }
 #if GD32_PWM_USE_ADVANCED
-#if GD32_PWM_USE_TIM1 
   if (&PWMD1 == pwmp) {
-#endif
-#if !GD32_PWM_USE_TIM1 
-  if (&PWMD8 == pwmp) {
-#endif
-#if GD32_PWM_USE_TIM1 
-  if ((&PWMD1 == pwmp) || (&PWMD8 == pwmp)) {
-#endif
-#if !GD32_PWM_USE_TIM1
-  if (&PWMD20 == pwmp) {
-#endif
-#if GD32_PWM_USE_TIM1
-  if ((&PWMD1 == pwmp) || (&PWMD20 == pwmp)) {
-#endif
-#if !GD32_PWM_USE_TIM1
-  if ((&PWMD8 == pwmp) || (&PWMD20 == pwmp)) {
-#endif
-#if GD32_PWM_USE_TIM1
-  if ((&PWMD1 == pwmp) || (&PWMD8 == pwmp) || (&PWMD20 == pwmp)) {
-#endif
     switch (pwmp->config->channels[0].mode & PWM_COMPLEMENTARY_OUTPUT_MASK) {
     case PWM_COMPLEMENTARY_OUTPUT_ACTIVE_LOW:
       ccer |= GD32_TIM_CCER_CC1NP;
@@ -490,7 +470,7 @@ void pwm_lld_start(PWMDriver *pwmp) {
   pwmp->tim->INTF    = 0;                     /* Clear pending IRQs.          */
   pwmp->tim->DMAINTEN  = pwmp->config->dmainten &   /* DMA-related DIER settings.   */
                      ~GD32_TIM_DIER_IRQ_MASK;
-#if GD32_PWM_USE_TIM1 
+#if GD32_PWM_USE_TIM0 
 #if GD32_PWM_USE_ADVANCED
   pwmp->tim->CCHP  = pwmp->config->cchp | GD32_TIM_BDTR_MOE;
 #else
@@ -516,22 +496,31 @@ void pwm_lld_stop(PWMDriver *pwmp) {
     pwmp->tim->CTL0  = 0;                    /* Timer disabled.              */
     pwmp->tim->DMAINTEN = 0;                    /* All IRQs disabled.           */
     pwmp->tim->INTF   = 0;                    /* Clear eventual pending IRQs. */
-#if GD32_PWM_USE_TIM1
+#if GD32_PWM_USE_TIM0
     pwmp->tim->CCHP  = 0;
 #endif
 
-#if GD32_PWM_USE_TIM1
+#if GD32_PWM_USE_TIM0
     if (&PWMD1 == pwmp) {
+#if !defined(GD32_TIM0_SUPPRESS_ISR)
+      eclicDisableVector(GD32_TIM0_UP_NUMBER);
+      eclicDisableVector(GD32_TIM0_CC_NUMBER);
+#endif
+      rccDisableTIM0();
+    }
+#endif
+
+#if GD32_PWM_USE_TIM1
+    if (&PWMD2 == pwmp) {
 #if !defined(GD32_TIM1_SUPPRESS_ISR)
-      eclicDisableVector(GD32_TIM1_UP_NUMBER);
-      eclicDisableVector(GD32_TIM1_CC_NUMBER);
+      eclicDisableVector(GD32_TIM1_NUMBER);
 #endif
       rccDisableTIM1();
     }
 #endif
 
 #if GD32_PWM_USE_TIM2
-    if (&PWMD2 == pwmp) {
+    if (&PWMD3 == pwmp) {
 #if !defined(GD32_TIM2_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM2_NUMBER);
 #endif
@@ -540,7 +529,7 @@ void pwm_lld_stop(PWMDriver *pwmp) {
 #endif
 
 #if GD32_PWM_USE_TIM3
-    if (&PWMD3 == pwmp) {
+    if (&PWMD4 == pwmp) {
 #if !defined(GD32_TIM3_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM3_NUMBER);
 #endif
@@ -549,20 +538,11 @@ void pwm_lld_stop(PWMDriver *pwmp) {
 #endif
 
 #if GD32_PWM_USE_TIM4
-    if (&PWMD4 == pwmp) {
+    if (&PWMD5 == pwmp) {
 #if !defined(GD32_TIM4_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM4_NUMBER);
 #endif
       rccDisableTIM4();
-    }
-#endif
-
-#if GD32_PWM_USE_TIM5
-    if (&PWMD5 == pwmp) {
-#if !defined(GD32_TIM5_SUPPRESS_ISR)
-      eclicDisableVector(GD32_TIM5_NUMBER);
-#endif
-      rccDisableTIM5();
     }
 #endif
   }
@@ -681,7 +661,7 @@ void pwm_lld_disable_channel_notification(PWMDriver *pwmp,
 }
 
 /**
- * @brief   Common TIM2...TIM5,TIM9 IRQ handler.
+ * @brief   Common TIM1...TIM4 IRQ handler.
  * @note    It is assumed that the various sources are only activated if the
  *          associated callback pointer is not equal to @p NULL in order to not
  *          perform an extra check in a potentially critical interrupt handler.

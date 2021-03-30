@@ -36,57 +36,57 @@
 
 /**
  * @brief   GPTD1 driver identifier.
- * @note    The driver GPTD1 allocates the complex timer TIM1 when enabled.
+ * @note    The driver GPTD1 allocates the complex timer TIM0 when enabled.
  */
-#if GD32_GPT_USE_TIM1 || defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM0 || defined(__DOXYGEN__)
 GPTDriver GPTD1;
 #endif
 
 /**
  * @brief   GPTD2 driver identifier.
- * @note    The driver GPTD2 allocates the timer TIM2 when enabled.
+ * @note    The driver GPTD2 allocates the timer TIM1 when enabled.
  */
-#if GD32_GPT_USE_TIM2 || defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM1 || defined(__DOXYGEN__)
 GPTDriver GPTD2;
 #endif
 
 /**
  * @brief   GPTD3 driver identifier.
- * @note    The driver GPTD3 allocates the timer TIM3 when enabled.
+ * @note    The driver GPTD3 allocates the timer TIM2 when enabled.
  */
-#if GD32_GPT_USE_TIM3 || defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM2 || defined(__DOXYGEN__)
 GPTDriver GPTD3;
 #endif
 
 /**
  * @brief   GPTD4 driver identifier.
- * @note    The driver GPTD4 allocates the timer TIM4 when enabled.
+ * @note    The driver GPTD4 allocates the timer TIM3 when enabled.
  */
-#if GD32_GPT_USE_TIM4 || defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM3 || defined(__DOXYGEN__)
 GPTDriver GPTD4;
 #endif
 
 /**
  * @brief   GPTD5 driver identifier.
- * @note    The driver GPTD5 allocates the timer TIM5 when enabled.
+ * @note    The driver GPTD5 allocates the timer TIM4 when enabled.
  */
-#if GD32_GPT_USE_TIM5 || defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM4 || defined(__DOXYGEN__)
 GPTDriver GPTD5;
 #endif
 
 /**
  * @brief   GPTD6 driver identifier.
- * @note    The driver GPTD6 allocates the timer TIM6 when enabled.
+ * @note    The driver GPTD6 allocates the timer TIM5 when enabled.
  */
-#if GD32_GPT_USE_TIM6 || defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM5 || defined(__DOXYGEN__)
 GPTDriver GPTD6;
 #endif
 
 /**
  * @brief   GPTD7 driver identifier.
- * @note    The driver GPTD7 allocates the timer TIM7 when enabled.
+ * @note    The driver GPTD7 allocates the timer TIM6 when enabled.
  */
-#if GD32_GPT_USE_TIM7 || defined(__DOXYGEN__)
+#if GD32_GPT_USE_TIM6 || defined(__DOXYGEN__)
 GPTDriver GPTD7;
 #endif
 
@@ -102,21 +102,42 @@ GPTDriver GPTD7;
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
+#if GD32_GPT_USE_TIM0 || defined(__DOXYGEN__)
+#if !defined(GD32_TIM0_SUPPRESS_ISR)
+#if !defined(GD32_TIM0_UP_HANDLER)
+#error "GD32_TIM0_UP_HANDLER not defined"
+#endif
+/**
+ * @brief   TIM0 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(GD32_TIM0_UP_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  gpt_lld_serve_interrupt(&GPTD1);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* !defined(GD32_TIM0_SUPPRESS_ISR) */
+#endif /* GD32_GPT_USE_TIM0 */
+
 #if GD32_GPT_USE_TIM1 || defined(__DOXYGEN__)
 #if !defined(GD32_TIM1_SUPPRESS_ISR)
-#if !defined(GD32_TIM1_UP_HANDLER)
-#error "GD32_TIM1_UP_HANDLER not defined"
+#if !defined(GD32_TIM1_HANDLER)
+#error "GD32_TIM1_HANDLER not defined"
 #endif
 /**
  * @brief   TIM1 interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_TIM1_UP_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_TIM1_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  gpt_lld_serve_interrupt(&GPTD1);
+  gpt_lld_serve_interrupt(&GPTD2);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -137,7 +158,7 @@ OSAL_IRQ_HANDLER(GD32_TIM2_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  gpt_lld_serve_interrupt(&GPTD2);
+  gpt_lld_serve_interrupt(&GPTD3);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -158,7 +179,7 @@ OSAL_IRQ_HANDLER(GD32_TIM3_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  gpt_lld_serve_interrupt(&GPTD3);
+  gpt_lld_serve_interrupt(&GPTD4);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -179,7 +200,7 @@ OSAL_IRQ_HANDLER(GD32_TIM4_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  gpt_lld_serve_interrupt(&GPTD4);
+  gpt_lld_serve_interrupt(&GPTD5);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -200,7 +221,7 @@ OSAL_IRQ_HANDLER(GD32_TIM5_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  gpt_lld_serve_interrupt(&GPTD5);
+  gpt_lld_serve_interrupt(&GPTD6);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -221,33 +242,12 @@ OSAL_IRQ_HANDLER(GD32_TIM6_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  gpt_lld_serve_interrupt(&GPTD6);
+  gpt_lld_serve_interrupt(&GPTD7);
 
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* !defined(GD32_TIM6_SUPPRESS_ISR) */
 #endif /* GD32_GPT_USE_TIM6 */
-
-#if GD32_GPT_USE_TIM7 || defined(__DOXYGEN__)
-#if !defined(GD32_TIM7_SUPPRESS_ISR)
-#if !defined(GD32_TIM7_HANDLER)
-#error "GD32_TIM7_HANDLER not defined"
-#endif
-/**
- * @brief   TIM7 interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_TIM7_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  gpt_lld_serve_interrupt(&GPTD7);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif /* !defined(GD32_TIM7_SUPPRESS_ISR) */
-#endif /* GD32_GPT_USE_TIM7 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -260,45 +260,45 @@ OSAL_IRQ_HANDLER(GD32_TIM7_HANDLER) {
  */
 void gpt_lld_init(void) {
 
+#if GD32_GPT_USE_TIM0
+  /* Driver initialization.*/
+  GPTD1.tim = GD32_TIM0;
+  gptObjectInit(&GPTD1);
+#endif
+
 #if GD32_GPT_USE_TIM1
   /* Driver initialization.*/
-  GPTD1.tim = GD32_TIM1;
-  gptObjectInit(&GPTD1);
+  GPTD2.tim = GD32_TIM1;
+  gptObjectInit(&GPTD2);
 #endif
 
 #if GD32_GPT_USE_TIM2
   /* Driver initialization.*/
-  GPTD2.tim = GD32_TIM2;
-  gptObjectInit(&GPTD2);
+  GPTD3.tim = GD32_TIM2;
+  gptObjectInit(&GPTD3);
 #endif
 
 #if GD32_GPT_USE_TIM3
   /* Driver initialization.*/
-  GPTD3.tim = GD32_TIM3;
-  gptObjectInit(&GPTD3);
+  GPTD4.tim = GD32_TIM3;
+  gptObjectInit(&GPTD4);
 #endif
 
 #if GD32_GPT_USE_TIM4
   /* Driver initialization.*/
-  GPTD4.tim = GD32_TIM4;
-  gptObjectInit(&GPTD4);
+  GPTD5.tim = GD32_TIM4;
+  gptObjectInit(&GPTD5);
 #endif
 
 #if GD32_GPT_USE_TIM5
   /* Driver initialization.*/
-  GPTD5.tim = GD32_TIM5;
-  gptObjectInit(&GPTD5);
+  GPTD6.tim = GD32_TIM5;
+  gptObjectInit(&GPTD6);
 #endif
 
 #if GD32_GPT_USE_TIM6
   /* Driver initialization.*/
-  GPTD6.tim = GD32_TIM6;
-  gptObjectInit(&GPTD6);
-#endif
-
-#if GD32_GPT_USE_TIM7
-  /* Driver initialization.*/
-  GPTD7.tim = GD32_TIM7;
+  GPTD7.tim = GD32_TIM6;
   gptObjectInit(&GPTD7);
 #endif
 }
@@ -315,23 +315,38 @@ void gpt_lld_start(GPTDriver *gptp) {
 
   if (gptp->state == GPT_STOP) {
     /* Clock activation.*/
-#if GD32_GPT_USE_TIM1
+#if GD32_GPT_USE_TIM0
     if (&GPTD1 == gptp) {
-      rccEnableTIM1(true);
-      rccResetTIM1();
-#if !defined(GD32_TIM1_SUPPRESS_ISR)
-      eclicEnableVector(GD32_TIM1_UP_NUMBER, GD32_GPT_TIM1_IRQ_PRIORITY, GD32_GPT_TIM1_IRQ_TRIGGER);
+      rccEnableTIM0(true);
+      rccResetTIM0();
+#if !defined(GD32_TIM0_SUPPRESS_ISR)
+      eclicEnableVector(GD32_TIM0_UP_NUMBER, GD32_GPT_TIM0_IRQ_PRIORITY, GD32_GPT_TIM0_IRQ_TRIGGER);
 #endif
-#if defined(GD32_TIM1CLK)
-      gptp->clock = GD32_TIM1CLK;
+#if defined(GD32_TIM0CLK)
+      gptp->clock = GD32_TIM0CLK;
 #else
       gptp->clock = GD32_TIMCLK2;
 #endif
     }
 #endif
 
-#if GD32_GPT_USE_TIM2
+#if GD32_GPT_USE_TIM1
     if (&GPTD2 == gptp) {
+      rccEnableTIM1(true);
+      rccResetTIM1();
+#if !defined(GD32_TIM1_SUPPRESS_ISR)
+      eclicEnableVector(GD32_TIM1_NUMBER, GD32_GPT_TIM1_IRQ_PRIORITY, GD32_GPT_TIM1_IRQ_TRIGGER);
+#endif
+#if defined(GD32_TIM1CLK)
+      gptp->clock = GD32_TIM1CLK;
+#else
+      gptp->clock = GD32_TIMCLK1;
+#endif
+    }
+#endif
+
+#if GD32_GPT_USE_TIM2
+    if (&GPTD3 == gptp) {
       rccEnableTIM2(true);
       rccResetTIM2();
 #if !defined(GD32_TIM2_SUPPRESS_ISR)
@@ -346,7 +361,7 @@ void gpt_lld_start(GPTDriver *gptp) {
 #endif
 
 #if GD32_GPT_USE_TIM3
-    if (&GPTD3 == gptp) {
+    if (&GPTD4 == gptp) {
       rccEnableTIM3(true);
       rccResetTIM3();
 #if !defined(GD32_TIM3_SUPPRESS_ISR)
@@ -361,7 +376,7 @@ void gpt_lld_start(GPTDriver *gptp) {
 #endif
 
 #if GD32_GPT_USE_TIM4
-    if (&GPTD4 == gptp) {
+    if (&GPTD5 == gptp) {
       rccEnableTIM4(true);
       rccResetTIM4();
 #if !defined(GD32_TIM4_SUPPRESS_ISR)
@@ -376,7 +391,7 @@ void gpt_lld_start(GPTDriver *gptp) {
 #endif
 
 #if GD32_GPT_USE_TIM5
-    if (&GPTD5 == gptp) {
+    if (&GPTD6 == gptp) {
       rccEnableTIM5(true);
       rccResetTIM5();
 #if !defined(GD32_TIM5_SUPPRESS_ISR)
@@ -391,7 +406,7 @@ void gpt_lld_start(GPTDriver *gptp) {
 #endif
 
 #if GD32_GPT_USE_TIM6
-    if (&GPTD6 == gptp) {
+    if (&GPTD7 == gptp) {
       rccEnableTIM6(true);
       rccResetTIM6();
 #if !defined(GD32_TIM6_SUPPRESS_ISR)
@@ -399,21 +414,6 @@ void gpt_lld_start(GPTDriver *gptp) {
 #endif
 #if defined(GD32_TIM6CLK)
       gptp->clock = GD32_TIM6CLK;
-#else
-      gptp->clock = GD32_TIMCLK1;
-#endif
-    }
-#endif
-
-#if GD32_GPT_USE_TIM7
-    if (&GPTD7 == gptp) {
-      rccEnableTIM7(true);
-      rccResetTIM7();
-#if !defined(GD32_TIM7_SUPPRESS_ISR)
-      eclicEnableVector(GD32_TIM7_NUMBER, GD32_GPT_TIM7_IRQ_PRIORITY, GD32_GPT_TIM7_IRQ_TRIGGER);
-#endif
-#if defined(GD32_TIM7CLK)
-      gptp->clock = GD32_TIM7CLK;
 #else
       gptp->clock = GD32_TIMCLK1;
 #endif
@@ -450,17 +450,26 @@ void gpt_lld_stop(GPTDriver *gptp) {
     gptp->tim->DMAINTEN = 0;                        /* All IRQs disabled.       */
     gptp->tim->INTF   = 0;                        /* Clear pending IRQs.      */
 
-#if GD32_GPT_USE_TIM1
+#if GD32_GPT_USE_TIM0
     if (&GPTD1 == gptp) {
+#if !defined(GD32_TIM0_SUPPRESS_ISR)
+      eclicDisableVector(GD32_TIM0_UP_NUMBER);
+#endif
+      rccDisableTIM0();
+    }
+#endif
+
+#if GD32_GPT_USE_TIM1
+    if (&GPTD2 == gptp) {
 #if !defined(GD32_TIM1_SUPPRESS_ISR)
-      eclicDisableVector(GD32_TIM1_UP_NUMBER);
+      eclicDisableVector(GD32_TIM1_NUMBER);
 #endif
       rccDisableTIM1();
     }
 #endif
 
 #if GD32_GPT_USE_TIM2
-    if (&GPTD2 == gptp) {
+    if (&GPTD3 == gptp) {
 #if !defined(GD32_TIM2_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM2_NUMBER);
 #endif
@@ -469,7 +478,7 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #endif
 
 #if GD32_GPT_USE_TIM3
-    if (&GPTD3 == gptp) {
+    if (&GPTD4 == gptp) {
 #if !defined(GD32_TIM3_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM3_NUMBER);
 #endif
@@ -478,7 +487,7 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #endif
 
 #if GD32_GPT_USE_TIM4
-    if (&GPTD4 == gptp) {
+    if (&GPTD5 == gptp) {
 #if !defined(GD32_TIM4_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM4_NUMBER);
 #endif
@@ -487,7 +496,7 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #endif
 
 #if GD32_GPT_USE_TIM5
-    if (&GPTD5 == gptp) {
+    if (&GPTD6 == gptp) {
 #if !defined(GD32_TIM5_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM5_NUMBER);
 #endif
@@ -496,20 +505,11 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #endif
 
 #if GD32_GPT_USE_TIM6
-    if (&GPTD6 == gptp) {
+    if (&GPTD7 == gptp) {
 #if !defined(GD32_TIM6_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM6_NUMBER);
 #endif
       rccDisableTIM6();
-    }
-#endif
-
-#if GD32_GPT_USE_TIM7
-    if (&GPTD7 == gptp) {
-#if !defined(GD32_TIM7_SUPPRESS_ISR)
-      eclicDisableVector(GD32_TIM7_NUMBER);
-#endif
-      rccDisableTIM7();
     }
 #endif
   }

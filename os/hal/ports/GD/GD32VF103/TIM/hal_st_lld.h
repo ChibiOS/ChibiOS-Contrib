@@ -66,6 +66,10 @@
 
 /* This has to go after transition to shared handlers is complete for all
    platforms.*/
+#if !defined(GD32_HAS_TIM1)
+#define GD32_HAS_TIM1                      FALSE
+#endif
+
 #if !defined(GD32_HAS_TIM2)
 #define GD32_HAS_TIM2                      FALSE
 #endif
@@ -77,15 +81,31 @@
 #if !defined(GD32_HAS_TIM4)
 #define GD32_HAS_TIM4                      FALSE
 #endif
-
-#if !defined(GD32_HAS_TIM5)
-#define GD32_HAS_TIM5                      FALSE
-#endif
 /**/
 
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
 
-#if GD32_ST_USE_TIMER == 2
+#if GD32_ST_USE_TIMER == 1
+
+#if defined(GD32_TIM1_IS_USED)
+#error "ST requires TIM1 but the timer is already used"
+#else
+#define GD32_TIM1_IS_USED
+#endif
+
+#if defined(GD32_TIM1_SUPPRESS_ISR)
+#define GD32_SYSTICK_SUPPRESS_ISR
+#endif
+
+#define GD32_ST_TIM                        GD32_TIM1
+#define ST_LLD_NUM_ALARMS                   GD32_TIM1_CHANNELS
+#define GD32_ST_USE_SYSTICK                FALSE
+#define GD32_ST_USE_TIM1                   TRUE
+#define GD32_ST_USE_TIM2                   FALSE
+#define GD32_ST_USE_TIM3                   FALSE
+#define GD32_ST_USE_TIM4                   FALSE
+
+#elif GD32_ST_USE_TIMER == 2
 
 #if defined(GD32_TIM2_IS_USED)
 #error "ST requires TIM2 but the timer is already used"
@@ -100,18 +120,10 @@
 #define GD32_ST_TIM                        GD32_TIM2
 #define ST_LLD_NUM_ALARMS                   GD32_TIM2_CHANNELS
 #define GD32_ST_USE_SYSTICK                FALSE
+#define GD32_ST_USE_TIM1                   FALSE
 #define GD32_ST_USE_TIM2                   TRUE
 #define GD32_ST_USE_TIM3                   FALSE
 #define GD32_ST_USE_TIM4                   FALSE
-#define GD32_ST_USE_TIM5                   FALSE
-#define GD32_ST_USE_TIM9                   FALSE
-#define GD32_ST_USE_TIM10                  FALSE
-#define GD32_ST_USE_TIM11                  FALSE
-#define GD32_ST_USE_TIM12                  FALSE
-#define GD32_ST_USE_TIM13                  FALSE
-#define GD32_ST_USE_TIM14                  FALSE
-#define GD32_ST_USE_TIM21                  FALSE
-#define GD32_ST_USE_TIM22                  FALSE
 
 #elif GD32_ST_USE_TIMER == 3
 
@@ -128,18 +140,10 @@
 #define GD32_ST_TIM                        GD32_TIM3
 #define ST_LLD_NUM_ALARMS                   GD32_TIM3_CHANNELS
 #define GD32_ST_USE_SYSTICK                FALSE
+#define GD32_ST_USE_TIM1                   FALSE
 #define GD32_ST_USE_TIM2                   FALSE
 #define GD32_ST_USE_TIM3                   TRUE
 #define GD32_ST_USE_TIM4                   FALSE
-#define GD32_ST_USE_TIM5                   FALSE
-#define GD32_ST_USE_TIM9                   FALSE
-#define GD32_ST_USE_TIM10                  FALSE
-#define GD32_ST_USE_TIM11                  FALSE
-#define GD32_ST_USE_TIM12                  FALSE
-#define GD32_ST_USE_TIM13                  FALSE
-#define GD32_ST_USE_TIM14                  FALSE
-#define GD32_ST_USE_TIM21                  FALSE
-#define GD32_ST_USE_TIM22                  FALSE
 
 #elif GD32_ST_USE_TIMER == 4
 
@@ -156,46 +160,10 @@
 #define GD32_ST_TIM                        GD32_TIM4
 #define ST_LLD_NUM_ALARMS                   GD32_TIM4_CHANNELS
 #define GD32_ST_USE_SYSTICK                FALSE
+#define GD32_ST_USE_TIM1                   FALSE
 #define GD32_ST_USE_TIM2                   FALSE
 #define GD32_ST_USE_TIM3                   FALSE
 #define GD32_ST_USE_TIM4                   TRUE
-#define GD32_ST_USE_TIM5                   FALSE
-#define GD32_ST_USE_TIM9                   FALSE
-#define GD32_ST_USE_TIM10                  FALSE
-#define GD32_ST_USE_TIM11                  FALSE
-#define GD32_ST_USE_TIM12                  FALSE
-#define GD32_ST_USE_TIM13                  FALSE
-#define GD32_ST_USE_TIM14                  FALSE
-#define GD32_ST_USE_TIM21                  FALSE
-#define GD32_ST_USE_TIM22                  FALSE
-
-#elif GD32_ST_USE_TIMER == 5
-
-#if defined(GD32_TIM5_IS_USED)
-#error "ST requires TIM5 but the timer is already used"
-#else
-#define GD32_TIM5_IS_USED
-#endif
-
-#if defined(GD32_TIM5_SUPPRESS_ISR)
-#define GD32_SYSTICK_SUPPRESS_ISR
-#endif
-
-#define GD32_ST_TIM                        GD32_TIM5
-#define ST_LLD_NUM_ALARMS                   GD32_TIM5_CHANNELS
-#define GD32_ST_USE_SYSTICK                FALSE
-#define GD32_ST_USE_TIM2                   FALSE
-#define GD32_ST_USE_TIM3                   FALSE
-#define GD32_ST_USE_TIM4                   FALSE
-#define GD32_ST_USE_TIM5                   TRUE
-#define GD32_ST_USE_TIM9                   FALSE
-#define GD32_ST_USE_TIM10                  FALSE
-#define GD32_ST_USE_TIM11                  FALSE
-#define GD32_ST_USE_TIM12                  FALSE
-#define GD32_ST_USE_TIM13                  FALSE
-#define GD32_ST_USE_TIM14                  FALSE
-#define GD32_ST_USE_TIM21                  FALSE
-#define GD32_ST_USE_TIM22                  FALSE
 #else
 #error "GD32_ST_USE_TIMER specifies an unsupported timer"
 #endif
@@ -213,18 +181,18 @@
 #elif OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
 
 #define GD32_ST_USE_SYSTICK                TRUE
+#define GD32_ST_USE_TIM1                   FALSE
 #define GD32_ST_USE_TIM2                   FALSE
 #define GD32_ST_USE_TIM3                   FALSE
 #define GD32_ST_USE_TIM4                   FALSE
-#define GD32_ST_USE_TIM5                   FALSE
 
 #else
 
 #define GD32_ST_USE_SYSTICK                FALSE
+#define GD32_ST_USE_TIM1                   FALSE
 #define GD32_ST_USE_TIM2                   FALSE
 #define GD32_ST_USE_TIM3                   FALSE
 #define GD32_ST_USE_TIM4                   FALSE
-#define GD32_ST_USE_TIM5                   FALSE
 #endif
 
 /*===========================================================================*/

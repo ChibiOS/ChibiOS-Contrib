@@ -331,26 +331,19 @@
 #define GD32_TIM_DCR_DBL(n)                ((n) << 8)
 /** @} */
 
-/**
- * @name    TIM16_OR register
- * @{
- */
-#define GD32_TIM16_OR_TI1_RMP_MASK         (3U << 6)
-#define GD32_TIM16_OR_TI1_RMP(n)           ((n) << 6)
-/** @} */
 
 
 /**
  * @name    TIM units references
  * @{
  */
+#define GD32_TIM0      ((gd32_tim_t *)TIM0_BASE)
 #define GD32_TIM1      ((gd32_tim_t *)TIM1_BASE)
 #define GD32_TIM2      ((gd32_tim_t *)TIM2_BASE)
 #define GD32_TIM3      ((gd32_tim_t *)TIM3_BASE)
 #define GD32_TIM4      ((gd32_tim_t *)TIM4_BASE)
 #define GD32_TIM5      ((gd32_tim_t *)TIM5_BASE)
 #define GD32_TIM6      ((gd32_tim_t *)TIM6_BASE)
-#define GD32_TIM7      ((gd32_tim_t *)TIM7_BASE)
 /** @} */
 
 /*===========================================================================*/

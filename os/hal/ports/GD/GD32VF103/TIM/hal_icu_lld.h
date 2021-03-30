@@ -46,8 +46,8 @@
  * @details If set to @p TRUE the support for ICUD1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_ICU_USE_TIM1) || defined(__DOXYGEN__)
-#define GD32_ICU_USE_TIM1                  FALSE
+#if !defined(GD32_ICU_USE_TIM0) || defined(__DOXYGEN__)
+#define GD32_ICU_USE_TIM0                  FALSE
 #endif
 
 /**
@@ -55,8 +55,8 @@
  * @details If set to @p TRUE the support for ICUD2 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_ICU_USE_TIM2) || defined(__DOXYGEN__)
-#define GD32_ICU_USE_TIM2                  FALSE
+#if !defined(GD32_ICU_USE_TIM1) || defined(__DOXYGEN__)
+#define GD32_ICU_USE_TIM1                  FALSE
 #endif
 
 /**
@@ -64,8 +64,8 @@
  * @details If set to @p TRUE the support for ICUD3 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_ICU_USE_TIM3) || defined(__DOXYGEN__)
-#define GD32_ICU_USE_TIM3                  FALSE
+#if !defined(GD32_ICU_USE_TIM2) || defined(__DOXYGEN__)
+#define GD32_ICU_USE_TIM2                  FALSE
 #endif
 
 /**
@@ -73,8 +73,8 @@
  * @details If set to @p TRUE the support for ICUD4 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_ICU_USE_TIM4) || defined(__DOXYGEN__)
-#define GD32_ICU_USE_TIM4                  FALSE
+#if !defined(GD32_ICU_USE_TIM3) || defined(__DOXYGEN__)
+#define GD32_ICU_USE_TIM3                  FALSE
 #endif
 
 /**
@@ -82,49 +82,53 @@
  * @details If set to @p TRUE the support for ICUD5 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_ICU_USE_TIM5) || defined(__DOXYGEN__)
-#define GD32_ICU_USE_TIM5                  FALSE
+#if !defined(GD32_ICU_USE_TIM4) || defined(__DOXYGEN__)
+#define GD32_ICU_USE_TIM4                  FALSE
 #endif
 
 /**
  * @brief   ICUD1 interrupt priority level setting.
+ */
+#if !defined(GD32_ICU_TIM0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_ICU_TIM0_IRQ_PRIORITY         7
+#endif
+
+/**
+ * @brief   ICUD2 interrupt priority level setting.
  */
 #if !defined(GD32_ICU_TIM1_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_ICU_TIM1_IRQ_PRIORITY         7
 #endif
 
 /**
- * @brief   ICUD2 interrupt priority level setting.
+ * @brief   ICUD3 interrupt priority level setting.
  */
 #if !defined(GD32_ICU_TIM2_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_ICU_TIM2_IRQ_PRIORITY         7
 #endif
 
 /**
- * @brief   ICUD3 interrupt priority level setting.
+ * @brief   ICUD4 interrupt priority level setting.
  */
 #if !defined(GD32_ICU_TIM3_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_ICU_TIM3_IRQ_PRIORITY         7
 #endif
 
 /**
- * @brief   ICUD4 interrupt priority level setting.
+ * @brief   ICUD5 interrupt priority level setting.
  */
 #if !defined(GD32_ICU_TIM4_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_ICU_TIM4_IRQ_PRIORITY         7
-#endif
-
-/**
- * @brief   ICUD5 interrupt priority level setting.
- */
-#if !defined(GD32_ICU_TIM5_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_ICU_TIM5_IRQ_PRIORITY         7
 #endif
 /** @} */
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+#if !defined(GD32_HAS_TIM0)
+#define GD32_HAS_TIM0                      FALSE
+#endif
 
 #if !defined(GD32_HAS_TIM1)
 #define GD32_HAS_TIM1                      FALSE
@@ -142,8 +146,8 @@
 #define GD32_HAS_TIM4                      FALSE
 #endif
 
-#if !defined(GD32_HAS_TIM5)
-#define GD32_HAS_TIM5                      FALSE
+#if GD32_ICU_USE_TIM0 && !GD32_HAS_TIM0
+#error "TIM0 not present in the selected device"
 #endif
 
 #if GD32_ICU_USE_TIM1 && !GD32_HAS_TIM1
@@ -162,20 +166,24 @@
 #error "TIM4 not present in the selected device"
 #endif
 
-#if GD32_ICU_USE_TIM5 && !GD32_HAS_TIM5
-#error "TIM5 not present in the selected device"
-#endif
-
-#if !GD32_ICU_USE_TIM1  && !GD32_ICU_USE_TIM2  &&                         \
-    !GD32_ICU_USE_TIM3  && !GD32_ICU_USE_TIM4  &&                         \
-    !GD32_ICU_USE_TIM5  
+#if !GD32_ICU_USE_TIM0  && !GD32_ICU_USE_TIM1  &&                         \
+    !GD32_ICU_USE_TIM2  && !GD32_ICU_USE_TIM3  &&                         \
+    !GD32_ICU_USE_TIM4  
 #error "ICU driver activated but no TIM peripheral assigned"
 #endif
 
 /* Checks on allocation of TIMx units.*/
+#if GD32_ICU_USE_TIM0
+#if defined(GD32_TIM0_IS_USED)
+#error "ICUD1 requires TIM0 but the timer is already used"
+#else
+#define GD32_TIM0_IS_USED
+#endif
+#endif
+
 #if GD32_ICU_USE_TIM1
 #if defined(GD32_TIM1_IS_USED)
-#error "ICUD1 requires TIM1 but the timer is already used"
+#error "ICUD2 requires TIM1 but the timer is already used"
 #else
 #define GD32_TIM1_IS_USED
 #endif
@@ -183,7 +191,7 @@
 
 #if GD32_ICU_USE_TIM2
 #if defined(GD32_TIM2_IS_USED)
-#error "ICUD2 requires TIM2 but the timer is already used"
+#error "ICUD3 requires TIM2 but the timer is already used"
 #else
 #define GD32_TIM2_IS_USED
 #endif
@@ -191,7 +199,7 @@
 
 #if GD32_ICU_USE_TIM3
 #if defined(GD32_TIM3_IS_USED)
-#error "ICUD3 requires TIM3 but the timer is already used"
+#error "ICUD4 requires TIM3 but the timer is already used"
 #else
 #define GD32_TIM3_IS_USED
 #endif
@@ -199,21 +207,18 @@
 
 #if GD32_ICU_USE_TIM4
 #if defined(GD32_TIM4_IS_USED)
-#error "ICUD4 requires TIM4 but the timer is already used"
+#error "ICUD5 requires TIM4 but the timer is already used"
 #else
 #define GD32_TIM4_IS_USED
 #endif
 #endif
 
-#if GD32_ICU_USE_TIM5
-#if defined(GD32_TIM5_IS_USED)
-#error "ICUD5 requires TIM5 but the timer is already used"
-#else
-#define GD32_TIM5_IS_USED
-#endif
+/* IRQ priority checks.*/
+#if GD32_ICU_USE_TIM0 && !defined(GD32_TIM0_SUPPRESS_ISR) &&              \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_ICU_TIM0_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to TIM0"
 #endif
 
-/* IRQ priority checks.*/
 #if GD32_ICU_USE_TIM1 && !defined(GD32_TIM1_SUPPRESS_ISR) &&              \
     !OSAL_IRQ_IS_VALID_PRIORITY(GD32_ICU_TIM1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM1"
@@ -232,11 +237,6 @@
 #if GD32_ICU_USE_TIM4 && !defined(GD32_TIM4_SUPPRESS_ISR) &&              \
     !OSAL_IRQ_IS_VALID_PRIORITY(GD32_ICU_TIM4_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIM4"
-#endif
-
-#if GD32_ICU_USE_TIM5 && !defined(GD32_TIM5_SUPPRESS_ISR) &&              \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_ICU_TIM5_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to TIM5"
 #endif
 
 /*===========================================================================*/
@@ -394,23 +394,23 @@ struct ICUDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if GD32_ICU_USE_TIM1 && !defined(__DOXYGEN__)
+#if GD32_ICU_USE_TIM0 && !defined(__DOXYGEN__)
 extern ICUDriver ICUD1;
 #endif
 
-#if GD32_ICU_USE_TIM2 && !defined(__DOXYGEN__)
+#if GD32_ICU_USE_TIM1 && !defined(__DOXYGEN__)
 extern ICUDriver ICUD2;
 #endif
 
-#if GD32_ICU_USE_TIM3 && !defined(__DOXYGEN__)
+#if GD32_ICU_USE_TIM2 && !defined(__DOXYGEN__)
 extern ICUDriver ICUD3;
 #endif
 
-#if GD32_ICU_USE_TIM4 && !defined(__DOXYGEN__)
+#if GD32_ICU_USE_TIM3 && !defined(__DOXYGEN__)
 extern ICUDriver ICUD4;
 #endif
 
-#if GD32_ICU_USE_TIM5 && !defined(__DOXYGEN__)
+#if GD32_ICU_USE_TIM4 && !defined(__DOXYGEN__)
 extern ICUDriver ICUD5;
 #endif
 
