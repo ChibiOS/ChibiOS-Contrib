@@ -1,29 +1,32 @@
-# List of all the template platform files.
+# Required platform files.
+PLATFORMSRC := ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/hal_lld.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/common/RISCV-ECLIC/eclic.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/gd32_isr.c \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/hal_efl_lld.c
+
+# Required include directories.
+PLATFORMINC := ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103 \
+               ${CHIBIOS_CONTRIB}/os/hal/ports/common/RISCV-ECLIC
+
+# Optional platform files.
 ifeq ($(USE_SMART_BUILD),yes)
 
 # Configuration files directory
-ifeq ($(CONFDIR),)
-  CONFDIR = .
+ifeq ($(HALCONFDIR),)
+  ifeq ($(CONFDIR),)
+    HALCONFDIR = .
+  else
+    HALCONFDIR := $(CONFDIR)
+  endif
 endif
 
-HALCONF := $(strip $(shell cat $(CONFDIR)/halconf.h | egrep -e "\#define"))
-
-PLATFORMSRC := ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/hal_lld.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/common/RISCV-ECLIC/eclic.c \
-               ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/gd32_isr.c
-
-else
-PLATFORMSRC = ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/hal_lld.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/common/RISCV-ECLIC/eclic.c \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/gd32_isr.c
-endif
-
-# Required include directories
-PLATFORMINC = ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103 \
-              ${CHIBIOS_CONTRIB}/os/hal/ports/common/RISCV-ECLIC
+HALCONF := $(strip $(shell cat $(HALCONFDIR)/halconf.h | egrep -e "\#define"))
 
 ifneq ($(findstring HAL_USE_ADC TRUE,$(HALCONF)),)
-PLATFORMSRC += $(CHIBIOS)/os/hal/ports/GD/GD32VF103/hal_adc_lld.c
+PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/GD/GD32VF103/hal_adc_lld.c
+endif
+else
+PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/GD/GD32VF103/hal_adc_lld.c
 endif
 
 # Drivers compatible with the platform.

@@ -35,8 +35,8 @@
  * @name    Triggers selection
  * @{
  */
-#define ADC_CR2_EXTSEL_SRC(n)   ((n) << 17) /**< @brief Trigger source.     */
-#define ADC_CR2_EXTSEL_SWSTART  (7 << 17)   /**< @brief Software trigger.   */
+#define ADC_CTL1_ETSRC_SRC(n)   ((n) << 17) /**< @brief Trigger source.     */
+#define ADC_CTL1_ETSRC_SWSTART  (7 << 17)   /**< @brief Software trigger.   */
 /** @} */
 
 /**
@@ -176,30 +176,30 @@ typedef enum {
 #define adc_lld_configuration_group_fields                                  \
   /* ADC CR1 register initialization data.                                  \
      NOTE: All the required bits must be defined into this field except     \
-           @p ADC_CR1_SCAN that is enforced inside the driver.*/            \
-  uint32_t                  cr1;                                            \
+           @p ADC_CTL0_SM that is enforced inside the driver.*/            \
+  uint32_t                  ctl0;                                            \
   /* ADC CR2 register initialization data.                                  \
      NOTE: All the required bits must be defined into this field except     \
-           @p ADC_CR2_DMA, @p ADC_CR2_CONT and @p ADC_CR2_ADON that are     \
+           @p ADC_CTL1_DMA, @p ADC_CTL1_CTN and @p ADC_CTL1_ADCON that are     \
            enforced inside the driver.*/                                    \
-  uint32_t                  cr2;                                            \
+  uint32_t                  ctl1;                                            \
   /* ADC SMPR1 register initialization data.                                \
      NOTE: In this field must be specified the sample times for channels    \
            10...17.*/                                                       \
-  uint32_t                  smpr1;                                          \
+  uint32_t                  sampt0;                                          \
   /* ADC SMPR2 register initialization data.                                \
      NOTE: In this field must be specified the sample times for channels    \
            0...9.*/                                                         \
-  uint32_t                  smpr2;                                          \
+  uint32_t                  sampt1;                                          \
   /* ADC SQR1 register initialization data.                                 \
      NOTE: Conversion group sequence 13...16 + sequence length.*/           \
-  uint32_t                  sqr1;                                           \
+  uint32_t                  rsq0;                                           \
   /* ADC SQR2 register initialization data.                                 \
      NOTE: Conversion group sequence 7...12.*/                              \
-  uint32_t                  sqr2;                                           \
+  uint32_t                  rsq1;                                           \
   /* ADC SQR3 register initialization data.                                 \
      NOTE: Conversion group sequence 1...6.*/                               \
-  uint32_t                  sqr3
+  uint32_t                  rsq2
 
 /**
  * @name    Sequences building helper macros
@@ -208,52 +208,52 @@ typedef enum {
 /**
  * @brief   Number of channels in a conversion sequence.
  */
-#define ADC_SQR1_NUM_CH(n)      (((n) - 1) << 20)
+#define ADC_RSQ0_NUM_CH(n)      (((n) - 1) << 20)
 
-#define ADC_SQR3_SQ1_N(n)       ((n) << 0)  /**< @brief 1st channel in seq. */
-#define ADC_SQR3_SQ2_N(n)       ((n) << 5)  /**< @brief 2nd channel in seq. */
-#define ADC_SQR3_SQ3_N(n)       ((n) << 10) /**< @brief 3rd channel in seq. */
-#define ADC_SQR3_SQ4_N(n)       ((n) << 15) /**< @brief 4th channel in seq. */
-#define ADC_SQR3_SQ5_N(n)       ((n) << 20) /**< @brief 5th channel in seq. */
-#define ADC_SQR3_SQ6_N(n)       ((n) << 25) /**< @brief 6th channel in seq. */
+#define ADC_RSQ2_RSQ1_N(n)       ((n) << 0)  /**< @brief 1st channel in seq. */
+#define ADC_RSQ2_RSQ2_N(n)       ((n) << 5)  /**< @brief 2nd channel in seq. */
+#define ADC_RSQ2_RSQ3_N(n)       ((n) << 10) /**< @brief 3rd channel in seq. */
+#define ADC_RSQ2_RSQ4_N(n)       ((n) << 15) /**< @brief 4th channel in seq. */
+#define ADC_RSQ2_RSQ5_N(n)       ((n) << 20) /**< @brief 5th channel in seq. */
+#define ADC_RSQ2_RSQ6_N(n)       ((n) << 25) /**< @brief 6th channel in seq. */
 
-#define ADC_SQR2_SQ7_N(n)       ((n) << 0)  /**< @brief 7th channel in seq. */
-#define ADC_SQR2_SQ8_N(n)       ((n) << 5)  /**< @brief 8th channel in seq. */
-#define ADC_SQR2_SQ9_N(n)       ((n) << 10) /**< @brief 9th channel in seq. */
-#define ADC_SQR2_SQ10_N(n)      ((n) << 15) /**< @brief 10th channel in seq.*/
-#define ADC_SQR2_SQ11_N(n)      ((n) << 20) /**< @brief 11th channel in seq.*/
-#define ADC_SQR2_SQ12_N(n)      ((n) << 25) /**< @brief 12th channel in seq.*/
+#define ADC_RSQ1_RSQ7_N(n)       ((n) << 0)  /**< @brief 7th channel in seq. */
+#define ADC_RSQ1_RSQ8_N(n)       ((n) << 5)  /**< @brief 8th channel in seq. */
+#define ADC_RSQ1_RSQ9_N(n)       ((n) << 10) /**< @brief 9th channel in seq. */
+#define ADC_RSQ1_RSQ10_N(n)      ((n) << 15) /**< @brief 10th channel in seq.*/
+#define ADC_RSQ1_RSQ11_N(n)      ((n) << 20) /**< @brief 11th channel in seq.*/
+#define ADC_RSQ1_RSQ12_N(n)      ((n) << 25) /**< @brief 12th channel in seq.*/
 
-#define ADC_SQR1_SQ13_N(n)      ((n) << 0)  /**< @brief 13th channel in seq.*/
-#define ADC_SQR1_SQ14_N(n)      ((n) << 5)  /**< @brief 14th channel in seq.*/
-#define ADC_SQR1_SQ15_N(n)      ((n) << 10) /**< @brief 15th channel in seq.*/
-#define ADC_SQR1_SQ16_N(n)      ((n) << 15) /**< @brief 16th channel in seq.*/
+#define ADC_RSQ0_RSQ13_N(n)      ((n) << 0)  /**< @brief 13th channel in seq.*/
+#define ADC_RSQ0_RSQ14_N(n)      ((n) << 5)  /**< @brief 14th channel in seq.*/
+#define ADC_RSQ0_RSQ15_N(n)      ((n) << 10) /**< @brief 15th channel in seq.*/
+#define ADC_RSQ0_RSQ16_N(n)      ((n) << 15) /**< @brief 16th channel in seq.*/
 /** @} */
 
 /**
  * @name    Sampling rate settings helper macros
  * @{
  */
-#define ADC_SMPR2_SMP_AN0(n)    ((n) << 0)  /**< @brief AN0 sampling time.  */
-#define ADC_SMPR2_SMP_AN1(n)    ((n) << 3)  /**< @brief AN1 sampling time.  */
-#define ADC_SMPR2_SMP_AN2(n)    ((n) << 6)  /**< @brief AN2 sampling time.  */
-#define ADC_SMPR2_SMP_AN3(n)    ((n) << 9)  /**< @brief AN3 sampling time.  */
-#define ADC_SMPR2_SMP_AN4(n)    ((n) << 12) /**< @brief AN4 sampling time.  */
-#define ADC_SMPR2_SMP_AN5(n)    ((n) << 15) /**< @brief AN5 sampling time.  */
-#define ADC_SMPR2_SMP_AN6(n)    ((n) << 18) /**< @brief AN6 sampling time.  */
-#define ADC_SMPR2_SMP_AN7(n)    ((n) << 21) /**< @brief AN7 sampling time.  */
-#define ADC_SMPR2_SMP_AN8(n)    ((n) << 24) /**< @brief AN8 sampling time.  */
-#define ADC_SMPR2_SMP_AN9(n)    ((n) << 27) /**< @brief AN9 sampling time.  */
+#define ADC_SAMPT1_SMP_SPT0(n)    ((n) << 0)  /**< @brief AN0 sampling time.  */
+#define ADC_SAMPT1_SMP_SPT1(n)    ((n) << 3)  /**< @brief AN1 sampling time.  */
+#define ADC_SAMPT1_SMP_SPT2(n)    ((n) << 6)  /**< @brief AN2 sampling time.  */
+#define ADC_SAMPT1_SMP_SPT3(n)    ((n) << 9)  /**< @brief AN3 sampling time.  */
+#define ADC_SAMPT1_SMP_SPT4(n)    ((n) << 12) /**< @brief AN4 sampling time.  */
+#define ADC_SAMPT1_SMP_SPT5(n)    ((n) << 15) /**< @brief AN5 sampling time.  */
+#define ADC_SAMPT1_SMP_SPT6(n)    ((n) << 18) /**< @brief AN6 sampling time.  */
+#define ADC_SAMPT1_SMP_SPT7(n)    ((n) << 21) /**< @brief AN7 sampling time.  */
+#define ADC_SAMPT1_SMP_SPT8(n)    ((n) << 24) /**< @brief AN8 sampling time.  */
+#define ADC_SAMPT1_SMP_SPT9(n)    ((n) << 27) /**< @brief AN9 sampling time.  */
 
-#define ADC_SMPR1_SMP_AN10(n)   ((n) << 0)  /**< @brief AN10 sampling time. */
-#define ADC_SMPR1_SMP_AN11(n)   ((n) << 3)  /**< @brief AN11 sampling time. */
-#define ADC_SMPR1_SMP_AN12(n)   ((n) << 6)  /**< @brief AN12 sampling time. */
-#define ADC_SMPR1_SMP_AN13(n)   ((n) << 9)  /**< @brief AN13 sampling time. */
-#define ADC_SMPR1_SMP_AN14(n)   ((n) << 12) /**< @brief AN14 sampling time. */
-#define ADC_SMPR1_SMP_AN15(n)   ((n) << 15) /**< @brief AN15 sampling time. */
-#define ADC_SMPR1_SMP_SENSOR(n) ((n) << 18) /**< @brief Temperature Sensor
+#define ADC_SAMPT0_SMP_SPT10(n)   ((n) << 0)  /**< @brief AN10 sampling time. */
+#define ADC_SAMPT0_SMP_SPT11(n)   ((n) << 3)  /**< @brief AN11 sampling time. */
+#define ADC_SAMPT0_SMP_SPT12(n)   ((n) << 6)  /**< @brief AN12 sampling time. */
+#define ADC_SAMPT0_SMP_SPT13(n)   ((n) << 9)  /**< @brief AN13 sampling time. */
+#define ADC_SAMPT0_SMP_SPT14(n)   ((n) << 12) /**< @brief AN14 sampling time. */
+#define ADC_SAMPT0_SMP_SPT15(n)   ((n) << 15) /**< @brief AN15 sampling time. */
+#define ADC_SAMPT0_SMP_SENSOR(n) ((n) << 18) /**< @brief Temperature Sensor
                                                  sampling time.             */
-#define ADC_SMPR1_SMP_VREF(n)   ((n) << 21) /**< @brief Voltage Reference
+#define ADC_SAMPT0_SMP_VREF(n)   ((n) << 21) /**< @brief Voltage Reference
                                                  sampling time.             */
 /** @} */
 

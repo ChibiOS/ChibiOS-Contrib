@@ -100,21 +100,21 @@ void adc_lld_init(void) {
 
   /* Temporary activation.*/
   rccEnableADC1(true);
-  ADC1->CR1 = 0;
-  ADC1->CR2 = ADC_CR2_ADON;
+  ADC1->CTL0 = 0;
+  ADC1->CTL1 = ADC_CTL1_ADCON;
 
   /* Reset calibration just to be safe.*/
-  ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_RSTCAL;
-  while ((ADC1->CR2 & ADC_CR2_RSTCAL) != 0)
+  ADC1->CTL1 = ADC_CTL1_ADCON | ADC_CTL1_RSTCLB;
+  while ((ADC1->CTL1 & ADC_CTL1_RSTCLB) != 0)
     ;
 
   /* Calibration.*/
-  ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_CAL;
-  while ((ADC1->CR2 & ADC_CR2_CAL) != 0)
+  ADC1->CTL1 = ADC_CTL1_ADCON | ADC_CTL1_CLB;
+  while ((ADC1->CTL1 & ADC_CTL1_CLB) != 0)
     ;
 
   /* Return the ADC in low power mode.*/
-  ADC1->CR2 = 0;
+  ADC1->CTL1 = 0;
   rccDisableADC1();
 #endif
 }
@@ -137,15 +137,15 @@ void adc_lld_start(ADCDriver *adcp) {
                                      (gd32_dmaisr_t)adc_lld_serve_rx_interrupt,
                                      (void *)adcp);
       osalDbgAssert(adcp->dmastp != NULL, "unable to allocate stream");
-      dmaStreamSetPeripheral(adcp->dmastp, &ADC1->DR);
+      dmaStreamSetPeripheral(adcp->dmastp, &ADC1->RDATA);
       rccEnableADC1(true);
     }
 #endif
 
     /* ADC setup, the calibration procedure has already been performed
        during initialization.*/
-    adcp->adc->CR1 = 0;
-    adcp->adc->CR2 = 0;
+    adcp->adc->CTL0 = 0;
+    adcp->adc->CTL1 = 0;
   }
 }
 
@@ -162,8 +162,8 @@ void adc_lld_stop(ADCDriver *adcp) {
   if (adcp->state == ADC_READY) {
 #if GD32_ADC_USE_ADC1
     if (&ADCD1 == adcp) {
-      ADC1->CR1 = 0;
-      ADC1->CR2 = 0;
+      ADC1->CTL0 = 0;
+      ADC1->CTL1 = 0;
 
       dmaStreamFreeI(adcp->dmastp);
       adcp->dmastp = NULL;
@@ -182,7 +182,7 @@ void adc_lld_stop(ADCDriver *adcp) {
  * @notapi
  */
 void adc_lld_start_conversion(ADCDriver *adcp) {
-  uint32_t mode, cr2;
+  uint32_t mode, ctl1;
   const ADCConversionGroup *grpp = adcp->grpp;
 
   /* DMA setup.*/
@@ -202,19 +202,19 @@ void adc_lld_start_conversion(ADCDriver *adcp) {
   dmaStreamEnable(adcp->dmastp);
 
   /* ADC setup.*/
-  adcp->adc->CR1   = grpp->cr1 | ADC_CR1_SCAN;
-  cr2 = grpp->cr2 | ADC_CR2_DMA | ADC_CR2_ADON;
-  if ((cr2 & (ADC_CR2_EXTTRIG | ADC_CR2_JEXTTRIG)) == 0)
-    cr2 |= ADC_CR2_CONT;
-  adcp->adc->CR2   = grpp->cr2 | cr2;
-  adcp->adc->SMPR1 = grpp->smpr1;
-  adcp->adc->SMPR2 = grpp->smpr2;
-  adcp->adc->SQR1  = grpp->sqr1;
-  adcp->adc->SQR2  = grpp->sqr2;
-  adcp->adc->SQR3  = grpp->sqr3;
+  adcp->adc->CTL0   = grpp->ctl0 | ADC_CTL0_SM;
+  ctl1 = grpp->ctl1 | ADC_CTL1_DMA | ADC_CTL1_ADCON;
+  if ((ctl1 & (ADC_CTL1_ETERC | ADC_CTL1_ETEIC)) == 0)
+    ctl1 |= ADC_CTL1_CTN;
+  adcp->adc->CTL1   = grpp->ctl1 | ctl1;
+  adcp->adc->SAMPT0 = grpp->sampt0;
+  adcp->adc->SAMPT1 = grpp->sampt1;
+  adcp->adc->RSQ0  = grpp->rsq0;
+  adcp->adc->RSQ1  = grpp->rsq1;
+  adcp->adc->RSQ2  = grpp->rsq2;
 
-  /* ADC start by writing ADC_CR2_ADON a second time.*/
-  adcp->adc->CR2   = cr2;
+  /* ADC start by writing ADC_CTL1_ADCON a second time.*/
+  adcp->adc->CTL1   = ctl1;
 }
 
 /**
@@ -227,7 +227,7 @@ void adc_lld_start_conversion(ADCDriver *adcp) {
 void adc_lld_stop_conversion(ADCDriver *adcp) {
 
   dmaStreamDisable(adcp->dmastp);
-  adcp->adc->CR2 = 0;
+  adcp->adc->CTL1 = 0;
 }
 
 #endif /* HAL_USE_ADC */
