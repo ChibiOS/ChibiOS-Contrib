@@ -406,22 +406,22 @@ void st_lld_init(void) {
 
   /* Initializing the counter in free running mode.*/
   GD32_ST_TIM->PSC    = (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1;
-  GD32_ST_TIM->ARR    = ST_ARR_INIT;
-  GD32_ST_TIM->CCMR1  = 0;
-  GD32_ST_TIM->CCR[0] = 0;
+  GD32_ST_TIM->CAR    = ST_ARR_INIT;
+  GD32_ST_TIM->CHCTL0  = 0;
+  GD32_ST_TIM->CHCV[0] = 0;
 #if ST_LLD_NUM_ALARMS > 1
-  GD32_ST_TIM->CCR[1] = 0;
+  GD32_ST_TIM->CHCV[1] = 0;
 #endif
 #if ST_LLD_NUM_ALARMS > 2
-  GD32_ST_TIM->CCR[2] = 0;
+  GD32_ST_TIM->CHCV[2] = 0;
 #endif
 #if ST_LLD_NUM_ALARMS > 3
-  GD32_ST_TIM->CCR[3] = 0;
+  GD32_ST_TIM->CHCV[3] = 0;
 #endif
-  GD32_ST_TIM->DIER   = 0;
-  GD32_ST_TIM->CR2    = 0;
-  GD32_ST_TIM->EGR    = TIM_EGR_UG;
-  GD32_ST_TIM->CR1    = TIM_CR1_CEN;
+  GD32_ST_TIM->DMAINTEN   = 0;
+  GD32_ST_TIM->CTL1    = 0;
+  GD32_ST_TIM->SWEVG    = TIM_EGR_UG;
+  GD32_ST_TIM->CTL0    = TIM_CR1_CEN;
 
 //TODO
 #if !defined(GD32_SYSTICK_SUPPRESS_ISR)
@@ -460,9 +460,9 @@ void st_lld_serve_interrupt(void) {
   uint32_t sr;
   gd32_tim_t *timp = GD32_ST_TIM;
 
-  sr  = timp->SR;
-  sr &= timp->DIER & GD32_TIM_DIER_IRQ_MASK;
-  timp->SR = ~sr;
+  sr  = timp->INTF;
+  sr &= timp->DMAINTEN & GD32_TIM_DIER_IRQ_MASK;
+  timp->INTF = ~sr;
 
   if ((sr & TIM_SR_CC1IF) != 0U)
 #endif

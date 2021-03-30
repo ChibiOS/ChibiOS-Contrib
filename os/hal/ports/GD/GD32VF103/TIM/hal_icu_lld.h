@@ -800,7 +800,7 @@ struct ICUDriver {
  * @notapi
  */
 #define icu_lld_are_notifications_enabled(icup)                             \
-  (bool)(((icup)->tim->DIER & GD32_TIM_DIER_IRQ_MASK) != 0)
+  (bool)(((icup)->tim->DMAINTEN & GD32_TIM_DIER_IRQ_MASK) != 0)
 
 /*===========================================================================*/
 /* External declarations.                                                    */

@@ -853,20 +853,20 @@ typedef struct {
    * @brief TIM CR2 register initialization data.
    * @note  The value of this field should normally be equal to zero.
    */
-  uint32_t                  cr2;
+  uint32_t                  ctl1;
 #if GD32_PWM_USE_ADVANCED || defined(__DOXYGEN__)
   /**
    * @brief TIM BDTR (break & dead-time) register initialization data.
    * @note  The value of this field should normally be equal to zero.
    */                                                                     \
-   uint32_t                 bdtr;
+   uint32_t                 cchp;
 #endif
    /**
     * @brief TIM DIER register initialization data.
     * @note  The value of this field should normally be equal to zero.
     * @note  Only the DMA-related bits can be specified in this field.
     */
-   uint32_t                 dier;
+   uint32_t                 dmainten;
 } PWMConfig;
 
 /**
@@ -928,7 +928,7 @@ struct PWMDriver {
  * @notapi
  */
 #define pwm_lld_change_period(pwmp, period)                                 \
-  ((pwmp)->tim->ARR = ((period) - 1))
+  ((pwmp)->tim->CAR = ((period) - 1))
 
 /*===========================================================================*/
 /* External declarations.                                                    */

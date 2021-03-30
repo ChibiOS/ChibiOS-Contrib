@@ -185,13 +185,13 @@ static bool icu_lld_wait_edge(ICUDriver *icup) {
   /* Polling the right bit depending on the input channel.*/
   if (icup->config->channel == ICU_CHANNEL_1) {
     /* Waiting for an edge.*/
-    while (((sr = icup->tim->SR) &
+    while (((sr = icup->tim->INTF) &
             (GD32_TIM_SR_CC1IF | GD32_TIM_SR_UIF)) == 0)
       ;
   }
   else {
     /* Waiting for an edge.*/
-    while (((sr = icup->tim->SR) &
+    while (((sr = icup->tim->INTF) &
             (GD32_TIM_SR_CC2IF | GD32_TIM_SR_UIF)) == 0)
       ;
   }
@@ -203,7 +203,7 @@ static bool icu_lld_wait_edge(ICUDriver *icup) {
   osalSysLock();
 
   /* Resetting all flags.*/
-  icup->tim->SR &= ~(GD32_TIM_SR_CC1IF |
+  icup->tim->INTF &= ~(GD32_TIM_SR_CC1IF |
                      GD32_TIM_SR_CC2IF |
                      GD32_TIM_SR_UIF);
 
@@ -772,79 +772,79 @@ void icu_lld_start(ICUDriver *icup) {
   }
   else {
     /* Driver re-configuration scenario, it must be stopped first.*/
-    icup->tim->CR1    = 0;                  /* Timer disabled.              */
-    icup->tim->CCR[0] = 0;                  /* Comparator 1 disabled.       */
-    icup->tim->CCR[1] = 0;                  /* Comparator 2 disabled.       */
+    icup->tim->CTL0    = 0;                  /* Timer disabled.              */
+    icup->tim->CHCV[0] = 0;                  /* Comparator 1 disabled.       */
+    icup->tim->CHCV[1] = 0;                  /* Comparator 2 disabled.       */
     icup->tim->CNT    = 0;                  /* Counter reset to zero.       */
   }
 
   /* Timer configuration.*/
-  icup->tim->SR   = 0;                      /* Clear eventual pending IRQs. */
-  icup->tim->DIER = icup->config->dier &    /* DMA-related DIER settings.   */
+  icup->tim->INTF   = 0;                      /* Clear eventual pending IRQs. */
+  icup->tim->DMAINTEN = icup->config->dmainten &    /* DMA-related DIER settings.   */
                     ~GD32_TIM_DIER_IRQ_MASK;
   psc = (icup->clock / icup->config->frequency) - 1;
   osalDbgAssert((psc <= 0xFFFF) &&
                 ((psc + 1) * icup->config->frequency) == icup->clock,
                 "invalid frequency");
   icup->tim->PSC = psc;
-  if (icup->config->arr == 0U) {
+  if (icup->config->car == 0U) {
     /* Zero is an invalid value and is turned in maximum value, also for
        legacy configurations compatibility.*/
-    icup->tim->ARR = 0xFFFFFFFFU;
+    icup->tim->CAR = 0xFFFFFFFFU;
   }
   else {
-    icup->tim->ARR = icup->config->arr;
+    icup->tim->CAR = icup->config->car;
   }
 
   if (icup->config->channel == ICU_CHANNEL_1) {
     /* Selected input 1.
        CCMR1_CC1S = 01 = CH1 Input on TI1.
        CCMR1_CC2S = 10 = CH2 Input on TI1.*/
-    icup->tim->CCMR1 = GD32_TIM_CCMR1_CC1S(1) | GD32_TIM_CCMR1_CC2S(2);
+    icup->tim->CHCTL0 = GD32_TIM_CCMR1_CC1S(1) | GD32_TIM_CCMR1_CC2S(2);
 
     /* SMCR_TS  = 101, input is TI1FP1.
        SMCR_SMS = 100, reset on rising edge.*/
-    icup->tim->SMCR  = GD32_TIM_SMCR_TS(5) | GD32_TIM_SMCR_SMS(4);
+    icup->tim->SMCFG  = GD32_TIM_SMCR_TS(5) | GD32_TIM_SMCR_SMS(4);
 
     /* The CCER settings depend on the selected trigger mode.
        ICU_INPUT_ACTIVE_HIGH: Active on rising edge, idle on falling edge.
        ICU_INPUT_ACTIVE_LOW:  Active on falling edge, idle on rising edge.*/
     if (icup->config->mode == ICU_INPUT_ACTIVE_HIGH)
-      icup->tim->CCER = GD32_TIM_CCER_CC1E |
+      icup->tim->CHCTL2 = GD32_TIM_CCER_CC1E |
                         GD32_TIM_CCER_CC2E | GD32_TIM_CCER_CC2P;
     else
-      icup->tim->CCER = GD32_TIM_CCER_CC1E | GD32_TIM_CCER_CC1P |
+      icup->tim->CHCTL2 = GD32_TIM_CCER_CC1E | GD32_TIM_CCER_CC1P |
                         GD32_TIM_CCER_CC2E;
 
     /* Direct pointers to the capture registers in order to make reading
        data faster from within callbacks.*/
-    icup->wccrp = &icup->tim->CCR[1];
-    icup->pccrp = &icup->tim->CCR[0];
+    icup->wccrp = &icup->tim->CHCV[1];
+    icup->pccrp = &icup->tim->CHCV[0];
   }
   else {
     /* Selected input 2.
        CCMR1_CC1S = 10 = CH1 Input on TI2.
        CCMR1_CC2S = 01 = CH2 Input on TI2.*/
-    icup->tim->CCMR1 = GD32_TIM_CCMR1_CC1S(2) | GD32_TIM_CCMR1_CC2S(1);
+    icup->tim->CHCTL0 = GD32_TIM_CCMR1_CC1S(2) | GD32_TIM_CCMR1_CC2S(1);
 
     /* SMCR_TS  = 110, input is TI2FP2.
        SMCR_SMS = 100, reset on rising edge.*/
-    icup->tim->SMCR  = GD32_TIM_SMCR_TS(6) | GD32_TIM_SMCR_SMS(4);
+    icup->tim->SMCFG  = GD32_TIM_SMCR_TS(6) | GD32_TIM_SMCR_SMS(4);
 
     /* The CCER settings depend on the selected trigger mode.
        ICU_INPUT_ACTIVE_HIGH: Active on rising edge, idle on falling edge.
        ICU_INPUT_ACTIVE_LOW:  Active on falling edge, idle on rising edge.*/
     if (icup->config->mode == ICU_INPUT_ACTIVE_HIGH)
-      icup->tim->CCER = GD32_TIM_CCER_CC1E | GD32_TIM_CCER_CC1P |
+      icup->tim->CHCTL2 = GD32_TIM_CCER_CC1E | GD32_TIM_CCER_CC1P |
                         GD32_TIM_CCER_CC2E;
     else
-      icup->tim->CCER = GD32_TIM_CCER_CC1E |
+      icup->tim->CHCTL2 = GD32_TIM_CCER_CC1E |
                         GD32_TIM_CCER_CC2E | GD32_TIM_CCER_CC2P;
 
     /* Direct pointers to the capture registers in order to make reading
        data faster from within callbacks.*/
-    icup->wccrp = &icup->tim->CCR[0];
-    icup->pccrp = &icup->tim->CCR[1];
+    icup->wccrp = &icup->tim->CHCV[0];
+    icup->pccrp = &icup->tim->CHCV[1];
   }
 }
 
@@ -859,9 +859,9 @@ void icu_lld_stop(ICUDriver *icup) {
 
   if (icup->state == ICU_READY) {
     /* Clock deactivation.*/
-    icup->tim->CR1  = 0;                    /* Timer disabled.              */
-    icup->tim->DIER = 0;                    /* All IRQs disabled.           */
-    icup->tim->SR   = 0;                    /* Clear eventual pending IRQs. */
+    icup->tim->CTL0  = 0;                    /* Timer disabled.              */
+    icup->tim->DMAINTEN = 0;                    /* All IRQs disabled.           */
+    icup->tim->INTF   = 0;                    /* Clear eventual pending IRQs. */
 
 #if GD32_ICU_USE_TIM1
     if (&ICUD1 == icup) {
@@ -991,11 +991,11 @@ void icu_lld_stop(ICUDriver *icup) {
 void icu_lld_start_capture(ICUDriver *icup) {
 
   /* Triggering an UG and clearing the IRQ status.*/
-  icup->tim->EGR |= GD32_TIM_EGR_UG;
-  icup->tim->SR = 0;
+  icup->tim->SWEVG |= GD32_TIM_EGR_UG;
+  icup->tim->INTF = 0;
 
   /* Timer is started.*/
-  icup->tim->CR1 = GD32_TIM_CR1_URS | GD32_TIM_CR1_CEN;
+  icup->tim->CTL0 = GD32_TIM_CR1_URS | GD32_TIM_CR1_CEN;
 }
 
 /**
@@ -1032,10 +1032,10 @@ bool icu_lld_wait_capture(ICUDriver *icup) {
 void icu_lld_stop_capture(ICUDriver *icup) {
 
   /* Timer stopped.*/
-  icup->tim->CR1   = 0;
+  icup->tim->CTL0   = 0;
 
   /* All interrupts disabled.*/
-  icup->tim->DIER &= ~GD32_TIM_DIER_IRQ_MASK;
+  icup->tim->DMAINTEN &= ~GD32_TIM_DIER_IRQ_MASK;
 }
 
 /**
@@ -1049,14 +1049,14 @@ void icu_lld_stop_capture(ICUDriver *icup) {
  * @notapi
  */
 void icu_lld_enable_notifications(ICUDriver *icup) {
-  uint32_t dier = icup->tim->DIER;
+  uint32_t dier = icup->tim->DMAINTEN;
 
   /* If interrupts were already enabled then the operation is skipped.
      This is done in order to avoid clearing the SR and risk losing
      pending interrupts.*/
   if ((dier & GD32_TIM_DIER_IRQ_MASK) == 0) {
     /* Previously triggered IRQs are ignored, status cleared.*/
-    icup->tim->SR = 0;
+    icup->tim->INTF = 0;
 
     if (icup->config->channel == ICU_CHANNEL_1) {
       /* Enabling periodic callback on CC1.*/
@@ -1081,7 +1081,7 @@ void icu_lld_enable_notifications(ICUDriver *icup) {
       dier |= GD32_TIM_DIER_UIE;
 
     /* One single atomic write.*/
-    icup->tim->DIER = dier;
+    icup->tim->DMAINTEN = dier;
   }
 }
 
@@ -1098,7 +1098,7 @@ void icu_lld_enable_notifications(ICUDriver *icup) {
 void icu_lld_disable_notifications(ICUDriver *icup) {
 
   /* All interrupts disabled.*/
-  icup->tim->DIER &= ~GD32_TIM_DIER_IRQ_MASK;
+  icup->tim->DMAINTEN &= ~GD32_TIM_DIER_IRQ_MASK;
 }
 
 /**
@@ -1111,9 +1111,9 @@ void icu_lld_disable_notifications(ICUDriver *icup) {
 void icu_lld_serve_interrupt(ICUDriver *icup) {
   uint32_t sr;
 
-  sr  = icup->tim->SR;
-  sr &= icup->tim->DIER & GD32_TIM_DIER_IRQ_MASK;
-  icup->tim->SR = ~sr;
+  sr  = icup->tim->INTF;
+  sr &= icup->tim->DMAINTEN & GD32_TIM_DIER_IRQ_MASK;
+  icup->tim->INTF = ~sr;
   if (icup->config->channel == ICU_CHANNEL_1) {
     if ((sr & GD32_TIM_SR_CC2IF) != 0)
       _icu_isr_invoke_width_cb(icup);

@@ -825,28 +825,18 @@ void pwm_lld_start(PWMDriver *pwmp) {
 
     /* All channels configured in PWM1 mode with preload enabled and will
        stay that way until the driver is stopped.*/
-    pwmp->tim->CCMR1 = GD32_TIM_CCMR1_OC1M(6) | GD32_TIM_CCMR1_OC1PE |
+    pwmp->tim->CHCTL0 = GD32_TIM_CCMR1_OC1M(6) | GD32_TIM_CCMR1_OC1PE |
                        GD32_TIM_CCMR1_OC2M(6) | GD32_TIM_CCMR1_OC2PE;
-    pwmp->tim->CCMR2 = GD32_TIM_CCMR2_OC3M(6) | GD32_TIM_CCMR2_OC3PE |
+    pwmp->tim->CHCTL1 = GD32_TIM_CCMR2_OC3M(6) | GD32_TIM_CCMR2_OC3PE |
                        GD32_TIM_CCMR2_OC4M(6) | GD32_TIM_CCMR2_OC4PE;
-#if GD32_TIM_MAX_CHANNELS > 4
-    pwmp->tim->CCMR3 = GD32_TIM_CCMR3_OC5M(6) | GD32_TIM_CCMR3_OC5PE |
-                       GD32_TIM_CCMR3_OC6M(6) | GD32_TIM_CCMR3_OC6PE;
-#endif
   }
   else {
     /* Driver re-configuration scenario, it must be stopped first.*/
-    pwmp->tim->CR1    = 0;                  /* Timer disabled.              */
-    pwmp->tim->CCR[0] = 0;                  /* Comparator 1 disabled.       */
-    pwmp->tim->CCR[1] = 0;                  /* Comparator 2 disabled.       */
-    pwmp->tim->CCR[2] = 0;                  /* Comparator 3 disabled.       */
-    pwmp->tim->CCR[3] = 0;                  /* Comparator 4 disabled.       */
-#if GD32_TIM_MAX_CHANNELS > 4
-    if (pwmp->channels > 4) {
-      pwmp->tim->CCXR[0] = 0;               /* Comparator 5 disabled.       */
-      pwmp->tim->CCXR[1] = 0;               /* Comparator 6 disabled.       */
-    }
-#endif
+    pwmp->tim->CTL0    = 0;                  /* Timer disabled.              */
+    pwmp->tim->CHCV[0] = 0;                  /* Comparator 1 disabled.       */
+    pwmp->tim->CHCV[1] = 0;                  /* Comparator 2 disabled.       */
+    pwmp->tim->CHCV[2] = 0;                  /* Comparator 3 disabled.       */
+    pwmp->tim->CHCV[3] = 0;                  /* Comparator 4 disabled.       */
     pwmp->tim->CNT  = 0;                    /* Counter reset to zero.       */
   }
 
@@ -856,8 +846,8 @@ void pwm_lld_start(PWMDriver *pwmp) {
                 ((psc + 1) * pwmp->config->frequency) == pwmp->clock,
                 "invalid frequency");
   pwmp->tim->PSC  = psc;
-  pwmp->tim->ARR  = pwmp->period - 1;
-  pwmp->tim->CR2  = pwmp->config->cr2;
+  pwmp->tim->CAR  = pwmp->period - 1;
+  pwmp->tim->CTL1  = pwmp->config->ctl1;
 
   /* Output enables and polarities setup.*/
   ccer = 0;
@@ -966,20 +956,20 @@ void pwm_lld_start(PWMDriver *pwmp) {
   }
 #endif /* GD32_PWM_USE_ADVANCED*/
 
-  pwmp->tim->CCER  = ccer;
-  pwmp->tim->EGR   = GD32_TIM_EGR_UG;      /* Update event.                */
-  pwmp->tim->SR    = 0;                     /* Clear pending IRQs.          */
-  pwmp->tim->DIER  = pwmp->config->dier &   /* DMA-related DIER settings.   */
+  pwmp->tim->CHCTL2  = ccer;
+  pwmp->tim->SWEVG   = GD32_TIM_EGR_UG;      /* Update event.                */
+  pwmp->tim->INTF    = 0;                     /* Clear pending IRQs.          */
+  pwmp->tim->DMAINTEN  = pwmp->config->dmainten &   /* DMA-related DIER settings.   */
                      ~GD32_TIM_DIER_IRQ_MASK;
 #if GD32_PWM_USE_TIM1 || GD32_PWM_USE_TIM8 || GD32_PWM_USE_TIM20
 #if GD32_PWM_USE_ADVANCED
-  pwmp->tim->BDTR  = pwmp->config->bdtr | GD32_TIM_BDTR_MOE;
+  pwmp->tim->CCHP  = pwmp->config->cchp | GD32_TIM_BDTR_MOE;
 #else
-  pwmp->tim->BDTR  = GD32_TIM_BDTR_MOE;
+  pwmp->tim->CCHP  = GD32_TIM_BDTR_MOE;
 #endif
 #endif
   /* Timer configured and started.*/
-  pwmp->tim->CR1   = GD32_TIM_CR1_ARPE | GD32_TIM_CR1_URS |
+  pwmp->tim->CTL0   = GD32_TIM_CR1_ARPE | GD32_TIM_CR1_URS |
                      GD32_TIM_CR1_CEN;
 }
 
@@ -994,11 +984,11 @@ void pwm_lld_stop(PWMDriver *pwmp) {
 
   /* If in ready state then disables the PWM clock.*/
   if (pwmp->state == PWM_READY) {
-    pwmp->tim->CR1  = 0;                    /* Timer disabled.              */
-    pwmp->tim->DIER = 0;                    /* All IRQs disabled.           */
-    pwmp->tim->SR   = 0;                    /* Clear eventual pending IRQs. */
+    pwmp->tim->CTL0  = 0;                    /* Timer disabled.              */
+    pwmp->tim->DMAINTEN = 0;                    /* All IRQs disabled.           */
+    pwmp->tim->INTF   = 0;                    /* Clear eventual pending IRQs. */
 #if GD32_PWM_USE_TIM1 || GD32_PWM_USE_TIM8 || GD32_PWM_USE_TIM20
-    pwmp->tim->BDTR  = 0;
+    pwmp->tim->CCHP  = 0;
 #endif
 
 #if GD32_PWM_USE_TIM1
@@ -1149,14 +1139,7 @@ void pwm_lld_enable_channel(PWMDriver *pwmp,
                             pwmcnt_t width) {
 
   /* Changing channel duty cycle on the fly.*/
-#if GD32_TIM_MAX_CHANNELS <= 4
-  pwmp->tim->CCR[channel] = width;
-#else
-  if (channel < 4)
-    pwmp->tim->CCR[channel] = width;
-  else
-    pwmp->tim->CCXR[channel - 4] = width;
-#endif
+  pwmp->tim->CHCV[channel] = width;
 }
 
 /**
@@ -1172,18 +1155,8 @@ void pwm_lld_enable_channel(PWMDriver *pwmp,
  * @notapi
  */
 void pwm_lld_disable_channel(PWMDriver *pwmp, pwmchannel_t channel) {
-
-#if GD32_TIM_MAX_CHANNELS <= 4
-  pwmp->tim->CCR[channel] = 0;
-  pwmp->tim->DIER &= ~(2 << channel);
-#else
-  if (channel < 4) {
-    pwmp->tim->CCR[channel] = 0;
-    pwmp->tim->DIER &= ~(2 << channel);
-  }
-  else
-    pwmp->tim->CCXR[channel - 4] = 0;
-#endif
+  pwmp->tim->CHCV[channel] = 0;
+  pwmp->tim->DMAINTEN &= ~(2 << channel);
 }
 
 /**
@@ -1196,13 +1169,13 @@ void pwm_lld_disable_channel(PWMDriver *pwmp, pwmchannel_t channel) {
  * @notapi
  */
 void pwm_lld_enable_periodic_notification(PWMDriver *pwmp) {
-  uint32_t dier = pwmp->tim->DIER;
+  uint32_t dier = pwmp->tim->DMAINTEN;
 
   /* If the IRQ is not already enabled care must be taken to clear it,
      it is probably already pending because the timer is running.*/
   if ((dier & GD32_TIM_DIER_UIE) == 0) {
-    pwmp->tim->SR   = ~GD32_TIM_SR_UIF;
-    pwmp->tim->DIER = dier | GD32_TIM_DIER_UIE;
+    pwmp->tim->INTF   = ~GD32_TIM_SR_UIF;
+    pwmp->tim->DMAINTEN = dier | GD32_TIM_DIER_UIE;
   }
 }
 
@@ -1217,7 +1190,7 @@ void pwm_lld_enable_periodic_notification(PWMDriver *pwmp) {
  */
 void pwm_lld_disable_periodic_notification(PWMDriver *pwmp) {
 
-  pwmp->tim->DIER &= ~GD32_TIM_DIER_UIE;
+  pwmp->tim->DMAINTEN &= ~GD32_TIM_DIER_UIE;
 }
 
 /**
@@ -1233,18 +1206,13 @@ void pwm_lld_disable_periodic_notification(PWMDriver *pwmp) {
  */
 void pwm_lld_enable_channel_notification(PWMDriver *pwmp,
                                          pwmchannel_t channel) {
-  uint32_t dier = pwmp->tim->DIER;
-
-#if GD32_TIM_MAX_CHANNELS > 4
-  /* Channels 4 and 5 do not support callbacks.*/
-  osalDbgAssert(channel < 4, "callback not supported");
-#endif
+  uint32_t dier = pwmp->tim->DMAINTEN;
 
   /* If the IRQ is not already enabled care must be taken to clear it,
      it is probably already pending because the timer is running.*/
   if ((dier & (2 << channel)) == 0) {
-    pwmp->tim->SR   = ~(2 << channel);
-    pwmp->tim->DIER = dier | (2 << channel);
+    pwmp->tim->INTF   = ~(2 << channel);
+    pwmp->tim->DMAINTEN = dier | (2 << channel);
   }
 }
 
@@ -1262,7 +1230,7 @@ void pwm_lld_enable_channel_notification(PWMDriver *pwmp,
 void pwm_lld_disable_channel_notification(PWMDriver *pwmp,
                                           pwmchannel_t channel) {
 
-  pwmp->tim->DIER &= ~(2 << channel);
+  pwmp->tim->DMAINTEN &= ~(2 << channel);
 }
 
 /**
@@ -1278,9 +1246,9 @@ void pwm_lld_disable_channel_notification(PWMDriver *pwmp,
 void pwm_lld_serve_interrupt(PWMDriver *pwmp) {
   uint32_t sr;
 
-  sr  = pwmp->tim->SR;
-  sr &= pwmp->tim->DIER & GD32_TIM_DIER_IRQ_MASK;
-  pwmp->tim->SR = ~sr;
+  sr  = pwmp->tim->INTF;
+  sr &= pwmp->tim->DMAINTEN & GD32_TIM_DIER_IRQ_MASK;
+  pwmp->tim->INTF = ~sr;
   if (((sr & GD32_TIM_SR_CC1IF) != 0) &&
       (pwmp->config->channels[0].callback != NULL))
     pwmp->config->channels[0].callback(pwmp);

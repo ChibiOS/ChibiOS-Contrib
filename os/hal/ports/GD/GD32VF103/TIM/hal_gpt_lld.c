@@ -883,11 +883,11 @@ void gpt_lld_start(GPTDriver *gptp) {
                 "invalid frequency");
 
   /* Timer configuration.*/
-  gptp->tim->CR1  = 0;                          /* Initially stopped.       */
-  gptp->tim->CR2  = gptp->config->cr2;
+  gptp->tim->CTL0  = 0;                          /* Initially stopped.       */
+  gptp->tim->CTL1  = gptp->config->ctl1;
   gptp->tim->PSC  = psc;                        /* Prescaler value.         */
-  gptp->tim->SR   = 0;                          /* Clear pending IRQs.      */
-  gptp->tim->DIER = gptp->config->dier &        /* DMA-related DIER bits.   */
+  gptp->tim->INTF   = 0;                          /* Clear pending IRQs.      */
+  gptp->tim->DMAINTEN = gptp->config->dmainten &        /* DMA-related DIER bits.   */
                     ~GD32_TIM_DIER_IRQ_MASK;
 }
 
@@ -901,9 +901,9 @@ void gpt_lld_start(GPTDriver *gptp) {
 void gpt_lld_stop(GPTDriver *gptp) {
 
   if (gptp->state == GPT_READY) {
-    gptp->tim->CR1  = 0;                        /* Timer disabled.          */
-    gptp->tim->DIER = 0;                        /* All IRQs disabled.       */
-    gptp->tim->SR   = 0;                        /* Clear pending IRQs.      */
+    gptp->tim->CTL0  = 0;                        /* Timer disabled.          */
+    gptp->tim->DMAINTEN = 0;                        /* All IRQs disabled.       */
+    gptp->tim->INTF   = 0;                        /* Clear pending IRQs.      */
 
 #if GD32_GPT_USE_TIM1
     if (&GPTD1 == gptp) {
@@ -1079,17 +1079,17 @@ void gpt_lld_stop(GPTDriver *gptp) {
  */
 void gpt_lld_start_timer(GPTDriver *gptp, gptcnt_t interval) {
 
-  gptp->tim->ARR = (uint32_t)(interval - 1U);   /* Time constant.           */
-  gptp->tim->EGR = GD32_TIM_EGR_UG;            /* Update event.            */
+  gptp->tim->CAR = (uint32_t)(interval - 1U);   /* Time constant.           */
+  gptp->tim->SWEVG = GD32_TIM_EGR_UG;            /* Update event.            */
   gptp->tim->CNT = 0;                           /* Reset counter.           */
 
   /* NOTE: After generating the UG event it takes several clock cycles before
      SR bit 0 goes to 1. This is why the clearing of CNT has been inserted
      before the clearing of SR, to give it some time.*/
-  gptp->tim->SR = 0;                            /* Clear pending IRQs.      */
+  gptp->tim->INTF = 0;                            /* Clear pending IRQs.      */
   if (NULL != gptp->config->callback)
-    gptp->tim->DIER |= GD32_TIM_DIER_UIE;      /* Update Event IRQ enabled.*/
-  gptp->tim->CR1 = GD32_TIM_CR1_ARPE | GD32_TIM_CR1_URS | GD32_TIM_CR1_CEN;
+    gptp->tim->DMAINTEN |= GD32_TIM_DIER_UIE;      /* Update Event IRQ enabled.*/
+  gptp->tim->CTL0 = GD32_TIM_CR1_ARPE | GD32_TIM_CR1_URS | GD32_TIM_CR1_CEN;
 }
 
 /**
@@ -1101,11 +1101,11 @@ void gpt_lld_start_timer(GPTDriver *gptp, gptcnt_t interval) {
  */
 void gpt_lld_stop_timer(GPTDriver *gptp) {
 
-  gptp->tim->CR1 = 0;                           /* Initially stopped.       */
-  gptp->tim->SR = 0;                            /* Clear pending IRQs.      */
+  gptp->tim->CTL0 = 0;                           /* Initially stopped.       */
+  gptp->tim->INTF = 0;                            /* Clear pending IRQs.      */
 
   /* All interrupts disabled.*/
-  gptp->tim->DIER &= ~GD32_TIM_DIER_IRQ_MASK;
+  gptp->tim->DMAINTEN &= ~GD32_TIM_DIER_IRQ_MASK;
 }
 
 /**
@@ -1121,13 +1121,13 @@ void gpt_lld_stop_timer(GPTDriver *gptp) {
  */
 void gpt_lld_polled_delay(GPTDriver *gptp, gptcnt_t interval) {
 
-  gptp->tim->ARR = (uint32_t)(interval - 1U);   /* Time constant.           */
-  gptp->tim->EGR = GD32_TIM_EGR_UG;            /* Update event.            */
-  gptp->tim->SR  = 0;                           /* Clear pending IRQs.      */
-  gptp->tim->CR1 = GD32_TIM_CR1_OPM | GD32_TIM_CR1_URS | GD32_TIM_CR1_CEN;
-  while (!(gptp->tim->SR & GD32_TIM_SR_UIF))
+  gptp->tim->CAR = (uint32_t)(interval - 1U);   /* Time constant.           */
+  gptp->tim->SWEVG = GD32_TIM_EGR_UG;            /* Update event.            */
+  gptp->tim->INTF  = 0;                           /* Clear pending IRQs.      */
+  gptp->tim->CTL0 = GD32_TIM_CR1_OPM | GD32_TIM_CR1_URS | GD32_TIM_CR1_CEN;
+  while (!(gptp->tim->INTF & GD32_TIM_SR_UIF))
     ;
-  gptp->tim->SR = 0;                            /* Clear pending IRQs.      */
+  gptp->tim->INTF = 0;                            /* Clear pending IRQs.      */
 }
 
 /**
@@ -1140,9 +1140,9 @@ void gpt_lld_polled_delay(GPTDriver *gptp, gptcnt_t interval) {
 void gpt_lld_serve_interrupt(GPTDriver *gptp) {
   uint32_t sr;
 
-  sr  = gptp->tim->SR;
-  sr &= gptp->tim->DIER & GD32_TIM_DIER_IRQ_MASK;
-  gptp->tim->SR = ~sr;
+  sr  = gptp->tim->INTF;
+  sr &= gptp->tim->DMAINTEN & GD32_TIM_DIER_IRQ_MASK;
+  gptp->tim->INTF = ~sr;
   if ((sr & GD32_TIM_SR_UIF) != 0) {
     _gpt_isr_invoke_cb(gptp);
   }

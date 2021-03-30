@@ -552,12 +552,12 @@ static inline systime_t st_lld_get_counter(void) {
  */
 static inline void st_lld_start_alarm(systime_t abstime) {
 
-  GD32_ST_TIM->CCR[0] = (uint32_t)abstime;
-  GD32_ST_TIM->SR     = 0;
+  GD32_ST_TIM->CHCV[0] = (uint32_t)abstime;
+  GD32_ST_TIM->INTF     = 0;
 #if ST_LLD_NUM_ALARMS == 1
-  GD32_ST_TIM->DIER   = GD32_TIM_DIER_CC1IE;
+  GD32_ST_TIM->DMAINTEN   = GD32_TIM_DIER_CC1IE;
 #else
-  GD32_ST_TIM->DIER  |= GD32_TIM_DIER_CC1IE;
+  GD32_ST_TIM->DMAINTEN  |= GD32_TIM_DIER_CC1IE;
 #endif
 }
 
@@ -569,9 +569,9 @@ static inline void st_lld_start_alarm(systime_t abstime) {
 static inline void st_lld_stop_alarm(void) {
 
 #if ST_LLD_NUM_ALARMS == 1
-  GD32_ST_TIM->DIER = 0U;
+  GD32_ST_TIM->DMAINTEN = 0U;
 #else
- GD32_ST_TIM->DIER &= ~GD32_TIM_DIER_CC1IE;
+ GD32_ST_TIM->DMAINTEN &= ~GD32_TIM_DIER_CC1IE;
 #endif
 }
 
@@ -584,7 +584,7 @@ static inline void st_lld_stop_alarm(void) {
  */
 static inline void st_lld_set_alarm(systime_t abstime) {
 
-  GD32_ST_TIM->CCR[0] = (uint32_t)abstime;
+  GD32_ST_TIM->CHCV[0] = (uint32_t)abstime;
 }
 
 /**
@@ -596,7 +596,7 @@ static inline void st_lld_set_alarm(systime_t abstime) {
  */
 static inline systime_t st_lld_get_alarm(void) {
 
-  return (systime_t)GD32_ST_TIM->CCR[0];
+  return (systime_t)GD32_ST_TIM->CHCV[0];
 }
 
 /**
@@ -610,7 +610,7 @@ static inline systime_t st_lld_get_alarm(void) {
  */
 static inline bool st_lld_is_alarm_active(void) {
 
-  return (bool)((GD32_ST_TIM->DIER & GD32_TIM_DIER_CC1IE) != 0);
+  return (bool)((GD32_ST_TIM->DMAINTEN & GD32_TIM_DIER_CC1IE) != 0);
 }
 
 #if (ST_LLD_NUM_ALARMS > 1) || defined(__DOXYGEN__)
@@ -629,9 +629,9 @@ static inline bool st_lld_is_alarm_active(void) {
 static inline void st_lld_start_alarm_n(unsigned alarm, systime_t abstime) {
 
 
-  GD32_ST_TIM->CCR[alarm] = (uint32_t)abstime;
-  GD32_ST_TIM->SR         = 0;
-  GD32_ST_TIM->DIER      |= (GD32_TIM_DIER_CC1IE << alarm);
+  GD32_ST_TIM->CHCV[alarm] = (uint32_t)abstime;
+  GD32_ST_TIM->INTF         = 0;
+  GD32_ST_TIM->DMAINTEN      |= (GD32_TIM_DIER_CC1IE << alarm);
 }
 
 /**
@@ -645,7 +645,7 @@ static inline void st_lld_start_alarm_n(unsigned alarm, systime_t abstime) {
  */
 static inline void st_lld_stop_alarm_n(unsigned alarm) {
 
-  GD32_ST_TIM->DIER &= ~(GD32_TIM_DIER_CC1IE << alarm);
+  GD32_ST_TIM->DMAINTEN &= ~(GD32_TIM_DIER_CC1IE << alarm);
 }
 
 /**
@@ -660,7 +660,7 @@ static inline void st_lld_stop_alarm_n(unsigned alarm) {
  */
 static inline void st_lld_set_alarm_n(unsigned alarm, systime_t abstime) {
 
-  GD32_ST_TIM->CCR[alarm] = (uint32_t)abstime;
+  GD32_ST_TIM->CHCV[alarm] = (uint32_t)abstime;
 }
 
 /**
@@ -675,7 +675,7 @@ static inline void st_lld_set_alarm_n(unsigned alarm, systime_t abstime) {
  */
 static inline systime_t st_lld_get_alarm_n(unsigned alarm) {
 
-  return (systime_t)GD32_ST_TIM->CCR[alarm];
+  return (systime_t)GD32_ST_TIM->CHCV[alarm];
 }
 
 /**
@@ -690,7 +690,7 @@ static inline systime_t st_lld_get_alarm_n(unsigned alarm) {
  */
 static inline bool st_lld_is_alarm_active_n(unsigned alarm) {
 
-  return (bool)((GD32_ST_TIM->DIER & (GD32_TIM_DIER_CC1IE << alarm)) != 0);
+  return (bool)((GD32_ST_TIM->DMAINTEN & (GD32_TIM_DIER_CC1IE << alarm)) != 0);
 }
 #endif /* ST_LLD_NUM_ALARMS > 1 */
 
