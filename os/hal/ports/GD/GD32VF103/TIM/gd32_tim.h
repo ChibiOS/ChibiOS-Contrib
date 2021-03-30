@@ -351,21 +351,6 @@
 #define GD32_TIM5      ((gd32_tim_t *)TIM5_BASE)
 #define GD32_TIM6      ((gd32_tim_t *)TIM6_BASE)
 #define GD32_TIM7      ((gd32_tim_t *)TIM7_BASE)
-#define GD32_TIM8      ((gd32_tim_t *)TIM8_BASE)
-#define GD32_TIM9      ((gd32_tim_t *)TIM9_BASE)
-#define GD32_TIM10     ((gd32_tim_t *)TIM10_BASE)
-#define GD32_TIM11     ((gd32_tim_t *)TIM11_BASE)
-#define GD32_TIM12     ((gd32_tim_t *)TIM12_BASE)
-#define GD32_TIM13     ((gd32_tim_t *)TIM13_BASE)
-#define GD32_TIM14     ((gd32_tim_t *)TIM14_BASE)
-#define GD32_TIM15     ((gd32_tim_t *)TIM15_BASE)
-#define GD32_TIM16     ((gd32_tim_t *)TIM16_BASE)
-#define GD32_TIM17     ((gd32_tim_t *)TIM17_BASE)
-#define GD32_TIM18     ((gd32_tim_t *)TIM18_BASE)
-#define GD32_TIM19     ((gd32_tim_t *)TIM19_BASE)
-#define GD32_TIM20     ((gd32_tim_t *)TIM20_BASE)
-#define GD32_TIM21     ((gd32_tim_t *)TIM21_BASE)
-#define GD32_TIM22     ((gd32_tim_t *)TIM22_BASE)
 /** @} */
 
 /*===========================================================================*/
