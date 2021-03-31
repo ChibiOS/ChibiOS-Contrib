@@ -51,7 +51,7 @@
 #define ST_HANDLER                          GD32_TIM1_HANDLER
 #define ST_NUMBER                           GD32_TIM1_NUMBER
 #define ST_CLOCK_SRC                        GD32_TIMCLK1
-#define ST_ENABLE_CLOCK()                   rccEnableTIM1(true)
+#define ST_ENABLE_CLOCK()                   rcuEnableTIM1(true)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM1_STOP
 
 #elif GD32_ST_USE_TIMER == 2
@@ -67,7 +67,7 @@
 #define ST_HANDLER                          GD32_TIM2_HANDLER
 #define ST_NUMBER                           GD32_TIM2_NUMBER
 #define ST_CLOCK_SRC                        GD32_TIMCLK1
-#define ST_ENABLE_CLOCK()                   rccEnableTIM2(true)
+#define ST_ENABLE_CLOCK()                   rcuEnableTIM2(true)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM2_STOP
 
 #elif GD32_ST_USE_TIMER == 3
@@ -83,7 +83,7 @@
 #define ST_HANDLER                          GD32_TIM3_HANDLER
 #define ST_NUMBER                           GD32_TIM3_NUMBER
 #define ST_CLOCK_SRC                        GD32_TIMCLK1
-#define ST_ENABLE_CLOCK()                   rccEnableTIM3(true)
+#define ST_ENABLE_CLOCK()                   rcuEnableTIM3(true)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM3_STOP
 
 #elif GD32_ST_USE_TIMER == 4
@@ -99,7 +99,7 @@
 #define ST_HANDLER                          GD32_TIM4_HANDLER
 #define ST_NUMBER                           GD32_TIM4_NUMBER
 #define ST_CLOCK_SRC                        GD32_TIMCLK1
-#define ST_ENABLE_CLOCK()                   rccEnableTIM4(true)
+#define ST_ENABLE_CLOCK()                   rcuEnableTIM4(true)
 #define ST_ENABLE_STOP()                    DBGMCU->CR |= DBGMCU_CR_DBG_TIM4_STOP
 
 #else

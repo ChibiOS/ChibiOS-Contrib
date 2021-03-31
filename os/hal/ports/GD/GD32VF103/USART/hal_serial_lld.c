@@ -401,31 +401,31 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
   if (sdp->state == SD_STOP) {
 #if GD32_SERIAL_USE_USART0
     if (&SD1 == sdp) {
-      rccEnableUSART0(true);
+      rcuEnableUSART0(true);
       eclicEnableVector(GD32_USART0_NUMBER, GD32_SERIAL_USART0_PRIORITY, GD32_SERIAL_USART0_TRIGGER);
     }
 #endif
 #if GD32_SERIAL_USE_USART1
     if (&SD2 == sdp) {
-      rccEnableUSART1(true);
+      rcuEnableUSART1(true);
       eclicEnableVector(GD32_USART1_NUMBER, GD32_SERIAL_USART1_PRIORITY, GD32_SERIAL_USART1_TRIGGER);
     }
 #endif
 #if GD32_SERIAL_USE_USART2
     if (&SD3 == sdp) {
-      rccEnableUSART2(true);
+      rcuEnableUSART2(true);
       eclicEnableVector(GD32_USART2_NUMBER, GD32_SERIAL_USART2_PRIORITY, GD32_SERIAL_USART2_TRIGGER);
     }
 #endif
 #if GD32_SERIAL_USE_UART3
     if (&SD4 == sdp) {
-      rccEnableUART3(true);
+      rcuEnableUART3(true);
       eclicEnableVector(GD32_UART3_NUMBER, GD32_SERIAL_UART3_PRIORITY, GD32_SERIAL_UART3_TRIGGER);
     }
 #endif
 #if GD32_SERIAL_USE_UART4
     if (&SD5 == sdp) {
-      rccEnableUART4(true);
+      rcuEnableUART4(true);
       eclicEnableVector(GD32_UART4_NUMBER, GD32_SERIAL_UART4_PRIORITY, GD32_SERIAL_UART4_TRIGGER);
     }
 #endif
@@ -448,35 +448,35 @@ void sd_lld_stop(SerialDriver *sdp) {
     usart_deinit(sdp->usart);
 #if GD32_SERIAL_USE_USART0
     if (&SD1 == sdp) {
-      rccDisableUSART0();
+      rcuDisableUSART0();
       eclicDisableVector(GD32_USART0_NUMBER);
       return;
     }
 #endif
 #if GD32_SERIAL_USE_USART1
     if (&SD2 == sdp) {
-      rccDisableUSART1();
+      rcuDisableUSART1();
       eclicDisableVector(GD32_USART1_NUMBER);
       return;
     }
 #endif
 #if GD32_SERIAL_USE_USART2
     if (&SD3 == sdp) {
-      rccDisableUSART2();
+      rcuDisableUSART2();
       eclicDisableVector(GD32_USART2_NUMBER);
       return;
     }
 #endif
 #if GD32_SERIAL_USE_UART3
     if (&SD4 == sdp) {
-      rccDisableUART3();
+      rcuDisableUART3();
       eclicDisableVector(GD32_UART3_NUMBER);
       return;
     }
 #endif
 #if GD32_SERIAL_USE_UART4
     if (&SD5 == sdp) {
-      rccDisableUART4();
+      rcuDisableUART4();
       eclicDisableVector(GD32_UART4_NUMBER);
       return;
     }

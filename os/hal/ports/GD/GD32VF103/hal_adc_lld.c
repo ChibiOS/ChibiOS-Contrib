@@ -99,7 +99,7 @@ void adc_lld_init(void) {
                   GD32_DMA_CTL_ERRIE;
 
   /* Temporary activation.*/
-  rccEnableADC1(true);
+  rcuEnableADC1(true);
   ADC1->CTL0 = 0;
   ADC1->CTL1 = ADC_CTL1_ADCON;
 
@@ -115,7 +115,7 @@ void adc_lld_init(void) {
 
   /* Return the ADC in low power mode.*/
   ADC1->CTL1 = 0;
-  rccDisableADC1();
+  rcuDisableADC1();
 #endif
 }
 
@@ -138,7 +138,7 @@ void adc_lld_start(ADCDriver *adcp) {
                                      (void *)adcp);
       osalDbgAssert(adcp->dmastp != NULL, "unable to allocate stream");
       dmaStreamSetPeripheral(adcp->dmastp, &ADC1->RDATA);
-      rccEnableADC1(true);
+      rcuEnableADC1(true);
     }
 #endif
 
@@ -168,7 +168,7 @@ void adc_lld_stop(ADCDriver *adcp) {
       dmaStreamFreeI(adcp->dmastp);
       adcp->dmastp = NULL;
 
-      rccDisableADC1();
+      rcuDisableADC1();
     }
 #endif
   }

@@ -281,7 +281,7 @@ void i2s_lld_start(I2SDriver *i2sp) {
     if (&I2SD2 == i2sp) {
 
       /* Enabling I2S unit clock.*/
-      rccEnableSPI1(true);
+      rcuEnableSPI1(true);
 
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI1_MODE)
       i2sp->dmarx = dmaStreamAllocI(GD32_I2S_SPI1_RX_DMA_STREAM,
@@ -314,7 +314,7 @@ void i2s_lld_start(I2SDriver *i2sp) {
     if (&I2SD3 == i2sp) {
 
       /* Enabling I2S unit clock.*/
-      rccEnableSPI2(true);
+      rcuEnableSPI2(true);
 
 #if GD32_I2S_RX_ENABLED(GD32_I2S_SPI2_MODE)
       i2sp->dmarx = dmaStreamAllocI(GD32_I2S_SPI2_RX_DMA_STREAM,
@@ -374,12 +374,12 @@ void i2s_lld_stop(I2SDriver *i2sp) {
 
 #if GD32_I2S_USE_SPI1
     if (&I2SD2 == i2sp)
-      rccDisableSPI1();
+      rcuDisableSPI1();
 #endif
 
 #if GD32_I2S_USE_SPI2
     if (&I2SD3 == i2sp)
-      rccDisableSPI2();
+      rcuDisableSPI2();
 #endif
   }
 }

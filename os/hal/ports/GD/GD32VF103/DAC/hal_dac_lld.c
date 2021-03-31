@@ -169,13 +169,13 @@ void dac_lld_start(DACDriver *dacp) {
     /* Enabling the clock source.*/
 #if GD32_DAC_USE_DAC1_CH1
     if (&DACD1 == dacp) {
-      rccEnableDAC1(true);
+      rcuEnableDAC1(true);
     }
 #endif
 
 #if GD32_DAC_USE_DAC1_CH2
     if (&DACD2 == dacp) {
-      rccEnableDAC1(true);
+      rcuEnableDAC1(true);
       channel = 1;
     }
 #endif
@@ -225,7 +225,7 @@ void dac_lld_stop(DACDriver *dacp) {
 #if GD32_DAC_USE_DAC1_CH1
     if (&DACD1 == dacp) {
       if ((dacp->params->dac->CTL & DAC_CTL_DEN1) == 0U) {
-        rccDisableDAC1();
+        rcuDisableDAC1();
       }
     }
 #endif
@@ -233,7 +233,7 @@ void dac_lld_stop(DACDriver *dacp) {
 #if GD32_DAC_USE_DAC1_CH2
     if (&DACD2 == dacp) {
       if ((dacp->params->dac->CTL & DAC_CTL_DEN0) == 0U) {
-        rccDisableDAC1();
+        rcuDisableDAC1();
       }
     }
 #endif

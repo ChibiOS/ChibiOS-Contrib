@@ -648,8 +648,8 @@ void usb_lld_start(USBDriver *usbp) {
 
   if (&USBD1 == usbp) {
     /* USBFS clock enable and reset.*/
-    rccEnableUSBFS(true);
-    rccResetUSBFS();
+    rcuEnableUSBFS(true);
+    rcuResetUSBFS();
 
     /* Enables IRQ vector.*/
     eclicEnableVector(GD32_USBFS_NUMBER, GD32_USB_USBFS_IRQ_PRIORITY, GD32_USB_USBFS_IRQ_TRIGGER);
@@ -724,7 +724,7 @@ void usb_lld_stop(USBDriver *usbp) {
 
     if (&USBD1 == usbp) {
       eclicDisableVector(GD32_USBFS_NUMBER);
-      rccDisableUSBFS();
+      rcuDisableUSBFS();
     }
   }
 }

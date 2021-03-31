@@ -444,7 +444,7 @@ typedef struct
   __IO uint32_t AHBRSTR;
   __IO uint32_t CFGR2;
 
-} RCC_TypeDef;
+} RCU_TypeDef;
 
 /** 
   * @brief Real-Time Clock
@@ -698,7 +698,7 @@ typedef struct
 #define DMA1_Channel2_BASE    (AHBPERIPH_BASE + 0x00000430U)
 #define DMA1_Channel3_BASE    (AHBPERIPH_BASE + 0x00000444U)
 #define DMA1_Channel4_BASE    (AHBPERIPH_BASE + 0x00000458U)
-#define RCC_BASE              (AHBPERIPH_BASE + 0x00001000U)
+//#define RCU_BASE              (AHBPERIPH_BASE + 0x00001000U)
 //#define CRC_BASE              (AHBPERIPH_BASE + 0x00003000U)
 
 #define FLASH_R_BASE          (AHBPERIPH_BASE + 0x00002000U) /*!< Flash registers base address */
@@ -786,7 +786,7 @@ typedef struct
 #define DMA1_Channel2       ((DMA_Channel_TypeDef *)DMA1_Channel2_BASE)
 #define DMA1_Channel3       ((DMA_Channel_TypeDef *)DMA1_Channel3_BASE)
 #define DMA1_Channel4       ((DMA_Channel_TypeDef *)DMA1_Channel4_BASE)
-#define RCC                 ((RCC_TypeDef *)RCC_BASE)
+#define RCU                 ((RCU_TypeDef *)RCU_BASE)
 #define CRC                 ((CRC_TypeDef *)CRC_BASE)
 #define FLASH               ((FLASH_TypeDef *)FLASH_R_BASE)
 #define OB                  ((OB_TypeDef *)OB_BASE)
@@ -1163,808 +1163,808 @@ typedef struct
 /*                                                                            */
 /******************************************************************************/
 
-/********************  Bit definition for RCC_CR register  ********************/
-#define RCC_CR_HSION_Pos                     (0U)                              
-#define RCC_CR_HSION_Msk                     (0x1U << RCC_CR_HSION_Pos)        /*!< 0x00000001 */
-#define RCC_CR_HSION                         RCC_CR_HSION_Msk                  /*!< Internal High Speed clock enable */
-#define RCC_CR_HSIRDY_Pos                    (1U)                              
-#define RCC_CR_HSIRDY_Msk                    (0x1U << RCC_CR_HSIRDY_Pos)       /*!< 0x00000002 */
-#define RCC_CR_HSIRDY                        RCC_CR_HSIRDY_Msk                 /*!< Internal High Speed clock ready flag */
-#define RCC_CR_HSITRIM_Pos                   (3U)                              
-#define RCC_CR_HSITRIM_Msk                   (0x1FU << RCC_CR_HSITRIM_Pos)     /*!< 0x000000F8 */
-#define RCC_CR_HSITRIM                       RCC_CR_HSITRIM_Msk                /*!< Internal High Speed clock trimming */
-#define RCC_CR_HSICAL_Pos                    (8U)                              
-#define RCC_CR_HSICAL_Msk                    (0xFFU << RCC_CR_HSICAL_Pos)      /*!< 0x0000FF00 */
-#define RCC_CR_HSICAL                        RCC_CR_HSICAL_Msk                 /*!< Internal High Speed clock Calibration */
-#define RCC_CR_HSEON_Pos                     (16U)                             
-#define RCC_CR_HSEON_Msk                     (0x1U << RCC_CR_HSEON_Pos)        /*!< 0x00010000 */
-#define RCC_CR_HSEON                         RCC_CR_HSEON_Msk                  /*!< External High Speed clock enable */
-#define RCC_CR_HSERDY_Pos                    (17U)                             
-#define RCC_CR_HSERDY_Msk                    (0x1U << RCC_CR_HSERDY_Pos)       /*!< 0x00020000 */
-#define RCC_CR_HSERDY                        RCC_CR_HSERDY_Msk                 /*!< External High Speed clock ready flag */
-#define RCC_CR_HSEBYP_Pos                    (18U)                             
-#define RCC_CR_HSEBYP_Msk                    (0x1U << RCC_CR_HSEBYP_Pos)       /*!< 0x00040000 */
-#define RCC_CR_HSEBYP                        RCC_CR_HSEBYP_Msk                 /*!< External High Speed clock Bypass */
-#define RCC_CR_CSSON_Pos                     (19U)                             
-#define RCC_CR_CSSON_Msk                     (0x1U << RCC_CR_CSSON_Pos)        /*!< 0x00080000 */
-#define RCC_CR_CSSON                         RCC_CR_CSSON_Msk                  /*!< Clock Security System enable */
-#define RCC_CR_PLLON_Pos                     (24U)                             
-#define RCC_CR_PLLON_Msk                     (0x1U << RCC_CR_PLLON_Pos)        /*!< 0x01000000 */
-#define RCC_CR_PLLON                         RCC_CR_PLLON_Msk                  /*!< PLL enable */
-#define RCC_CR_PLLRDY_Pos                    (25U)                             
-#define RCC_CR_PLLRDY_Msk                    (0x1U << RCC_CR_PLLRDY_Pos)       /*!< 0x02000000 */
-#define RCC_CR_PLLRDY                        RCC_CR_PLLRDY_Msk                 /*!< PLL clock ready flag */
+/********************  Bit definition for RCU_CR register  ********************/
+#define RCU_CR_HSION_Pos                     (0U)                              
+#define RCU_CR_HSION_Msk                     (0x1U << RCU_CR_HSION_Pos)        /*!< 0x00000001 */
+#define RCU_CR_HSION                         RCU_CR_HSION_Msk                  /*!< Internal High Speed clock enable */
+#define RCU_CR_HSIRDY_Pos                    (1U)                              
+#define RCU_CR_HSIRDY_Msk                    (0x1U << RCU_CR_HSIRDY_Pos)       /*!< 0x00000002 */
+#define RCU_CR_HSIRDY                        RCU_CR_HSIRDY_Msk                 /*!< Internal High Speed clock ready flag */
+#define RCU_CR_HSITRIM_Pos                   (3U)                              
+#define RCU_CR_HSITRIM_Msk                   (0x1FU << RCU_CR_HSITRIM_Pos)     /*!< 0x000000F8 */
+#define RCU_CR_HSITRIM                       RCU_CR_HSITRIM_Msk                /*!< Internal High Speed clock trimming */
+#define RCU_CR_HSICAL_Pos                    (8U)                              
+#define RCU_CR_HSICAL_Msk                    (0xFFU << RCU_CR_HSICAL_Pos)      /*!< 0x0000FF00 */
+#define RCU_CR_HSICAL                        RCU_CR_HSICAL_Msk                 /*!< Internal High Speed clock Calibration */
+#define RCU_CR_HSEON_Pos                     (16U)                             
+#define RCU_CR_HSEON_Msk                     (0x1U << RCU_CR_HSEON_Pos)        /*!< 0x00010000 */
+#define RCU_CR_HSEON                         RCU_CR_HSEON_Msk                  /*!< External High Speed clock enable */
+#define RCU_CR_HSERDY_Pos                    (17U)                             
+#define RCU_CR_HSERDY_Msk                    (0x1U << RCU_CR_HSERDY_Pos)       /*!< 0x00020000 */
+#define RCU_CR_HSERDY                        RCU_CR_HSERDY_Msk                 /*!< External High Speed clock ready flag */
+#define RCU_CR_HSEBYP_Pos                    (18U)                             
+#define RCU_CR_HSEBYP_Msk                    (0x1U << RCU_CR_HSEBYP_Pos)       /*!< 0x00040000 */
+#define RCU_CR_HSEBYP                        RCU_CR_HSEBYP_Msk                 /*!< External High Speed clock Bypass */
+#define RCU_CR_CSSON_Pos                     (19U)                             
+#define RCU_CR_CSSON_Msk                     (0x1U << RCU_CR_CSSON_Pos)        /*!< 0x00080000 */
+#define RCU_CR_CSSON                         RCU_CR_CSSON_Msk                  /*!< Clock Security System enable */
+#define RCU_CR_PLLON_Pos                     (24U)                             
+#define RCU_CR_PLLON_Msk                     (0x1U << RCU_CR_PLLON_Pos)        /*!< 0x01000000 */
+#define RCU_CR_PLLON                         RCU_CR_PLLON_Msk                  /*!< PLL enable */
+#define RCU_CR_PLLRDY_Pos                    (25U)                             
+#define RCU_CR_PLLRDY_Msk                    (0x1U << RCU_CR_PLLRDY_Pos)       /*!< 0x02000000 */
+#define RCU_CR_PLLRDY                        RCU_CR_PLLRDY_Msk                 /*!< PLL clock ready flag */
 
 /*
  * @brief Specific device feature definitions (not present on all devices in the STM32F1 serie)
  */
-#define RCC_PLL2_SUPPORT                                                       /*!< Support PLL2 */
+#define RCU_PLL2_SUPPORT                                                       /*!< Support PLL2 */
 
-#define RCC_CR_PLL2ON_Pos                    (26U)                             
-#define RCC_CR_PLL2ON_Msk                    (0x1U << RCC_CR_PLL2ON_Pos)       /*!< 0x04000000 */
-#define RCC_CR_PLL2ON                        RCC_CR_PLL2ON_Msk                 /*!< PLL2 enable */
-#define RCC_CR_PLL2RDY_Pos                   (27U)                             
-#define RCC_CR_PLL2RDY_Msk                   (0x1U << RCC_CR_PLL2RDY_Pos)      /*!< 0x08000000 */
-#define RCC_CR_PLL2RDY                       RCC_CR_PLL2RDY_Msk                /*!< PLL2 clock ready flag */
+#define RCU_CR_PLL2ON_Pos                    (26U)                             
+#define RCU_CR_PLL2ON_Msk                    (0x1U << RCU_CR_PLL2ON_Pos)       /*!< 0x04000000 */
+#define RCU_CR_PLL2ON                        RCU_CR_PLL2ON_Msk                 /*!< PLL2 enable */
+#define RCU_CR_PLL2RDY_Pos                   (27U)                             
+#define RCU_CR_PLL2RDY_Msk                   (0x1U << RCU_CR_PLL2RDY_Pos)      /*!< 0x08000000 */
+#define RCU_CR_PLL2RDY                       RCU_CR_PLL2RDY_Msk                /*!< PLL2 clock ready flag */
 
 /*
  * @brief Specific device feature definitions (not present on all devices in the STM32F1 serie)
  */
-#define RCC_PLLI2S_SUPPORT                                                     /*!< Support PLL3 (PLLI2S)*/
+#define RCU_PLLI2S_SUPPORT                                                     /*!< Support PLL3 (PLLI2S)*/
 
-#define RCC_CR_PLL3ON_Pos                    (28U)                             
-#define RCC_CR_PLL3ON_Msk                    (0x1U << RCC_CR_PLL3ON_Pos)       /*!< 0x10000000 */
-#define RCC_CR_PLL3ON                        RCC_CR_PLL3ON_Msk                 /*!< PLL3 enable */
-#define RCC_CR_PLL3RDY_Pos                   (29U)                             
-#define RCC_CR_PLL3RDY_Msk                   (0x1U << RCC_CR_PLL3RDY_Pos)      /*!< 0x20000000 */
-#define RCC_CR_PLL3RDY                       RCC_CR_PLL3RDY_Msk                /*!< PLL3 clock ready flag */
+#define RCU_CR_PLL3ON_Pos                    (28U)                             
+#define RCU_CR_PLL3ON_Msk                    (0x1U << RCU_CR_PLL3ON_Pos)       /*!< 0x10000000 */
+#define RCU_CR_PLL3ON                        RCU_CR_PLL3ON_Msk                 /*!< PLL3 enable */
+#define RCU_CR_PLL3RDY_Pos                   (29U)                             
+#define RCU_CR_PLL3RDY_Msk                   (0x1U << RCU_CR_PLL3RDY_Pos)      /*!< 0x20000000 */
+#define RCU_CR_PLL3RDY                       RCU_CR_PLL3RDY_Msk                /*!< PLL3 clock ready flag */
 
-/*******************  Bit definition for RCC_CFGR register  *******************/
+/*******************  Bit definition for RCU_CFGR register  *******************/
 /*!< SW configuration */
-#define RCC_CFGR_SW_Pos                      (0U)                              
-#define RCC_CFGR_SW_Msk                      (0x3U << RCC_CFGR_SW_Pos)         /*!< 0x00000003 */
-#define RCC_CFGR_SW                          RCC_CFGR_SW_Msk                   /*!< SW[1:0] bits (System clock Switch) */
-#define RCC_CFGR_SW_0                        (0x1U << RCC_CFGR_SW_Pos)         /*!< 0x00000001 */
-#define RCC_CFGR_SW_1                        (0x2U << RCC_CFGR_SW_Pos)         /*!< 0x00000002 */
+#define RCU_CFGR_SW_Pos                      (0U)                              
+#define RCU_CFGR_SW_Msk                      (0x3U << RCU_CFGR_SW_Pos)         /*!< 0x00000003 */
+#define RCU_CFGR_SW                          RCU_CFGR_SW_Msk                   /*!< SW[1:0] bits (System clock Switch) */
+#define RCU_CFGR_SW_0                        (0x1U << RCU_CFGR_SW_Pos)         /*!< 0x00000001 */
+#define RCU_CFGR_SW_1                        (0x2U << RCU_CFGR_SW_Pos)         /*!< 0x00000002 */
 
-#define RCC_CFGR_SW_HSI                      0x00000000U                       /*!< HSI selected as system clock */
-#define RCC_CFGR_SW_HSE                      0x00000001U                       /*!< HSE selected as system clock */
-#define RCC_CFGR_SW_PLL                      0x00000002U                       /*!< PLL selected as system clock */
+#define RCU_CFGR_SW_HSI                      0x00000000U                       /*!< HSI selected as system clock */
+#define RCU_CFGR_SW_HSE                      0x00000001U                       /*!< HSE selected as system clock */
+#define RCU_CFGR_SW_PLL                      0x00000002U                       /*!< PLL selected as system clock */
 
 /*!< SWS configuration */
-#define RCC_CFGR_SWS_Pos                     (2U)                              
-#define RCC_CFGR_SWS_Msk                     (0x3U << RCC_CFGR_SWS_Pos)        /*!< 0x0000000C */
-#define RCC_CFGR_SWS                         RCC_CFGR_SWS_Msk                  /*!< SWS[1:0] bits (System Clock Switch Status) */
-#define RCC_CFGR_SWS_0                       (0x1U << RCC_CFGR_SWS_Pos)        /*!< 0x00000004 */
-#define RCC_CFGR_SWS_1                       (0x2U << RCC_CFGR_SWS_Pos)        /*!< 0x00000008 */
+#define RCU_CFGR_SWS_Pos                     (2U)                              
+#define RCU_CFGR_SWS_Msk                     (0x3U << RCU_CFGR_SWS_Pos)        /*!< 0x0000000C */
+#define RCU_CFGR_SWS                         RCU_CFGR_SWS_Msk                  /*!< SWS[1:0] bits (System Clock Switch Status) */
+#define RCU_CFGR_SWS_0                       (0x1U << RCU_CFGR_SWS_Pos)        /*!< 0x00000004 */
+#define RCU_CFGR_SWS_1                       (0x2U << RCU_CFGR_SWS_Pos)        /*!< 0x00000008 */
 
-#define RCC_CFGR_SWS_HSI                     0x00000000U                       /*!< HSI oscillator used as system clock */
-#define RCC_CFGR_SWS_HSE                     0x00000004U                       /*!< HSE oscillator used as system clock */
-#define RCC_CFGR_SWS_PLL                     0x00000008U                       /*!< PLL used as system clock */
+#define RCU_CFGR_SWS_HSI                     0x00000000U                       /*!< HSI oscillator used as system clock */
+#define RCU_CFGR_SWS_HSE                     0x00000004U                       /*!< HSE oscillator used as system clock */
+#define RCU_CFGR_SWS_PLL                     0x00000008U                       /*!< PLL used as system clock */
 
 /*!< HPRE configuration */
-#define RCC_CFGR_HPRE_Pos                    (4U)                              
-#define RCC_CFGR_HPRE_Msk                    (0xFU << RCC_CFGR_HPRE_Pos)       /*!< 0x000000F0 */
-#define RCC_CFGR_HPRE                        RCC_CFGR_HPRE_Msk                 /*!< HPRE[3:0] bits (AHB prescaler) */
-#define RCC_CFGR_HPRE_0                      (0x1U << RCC_CFGR_HPRE_Pos)       /*!< 0x00000010 */
-#define RCC_CFGR_HPRE_1                      (0x2U << RCC_CFGR_HPRE_Pos)       /*!< 0x00000020 */
-#define RCC_CFGR_HPRE_2                      (0x4U << RCC_CFGR_HPRE_Pos)       /*!< 0x00000040 */
-#define RCC_CFGR_HPRE_3                      (0x8U << RCC_CFGR_HPRE_Pos)       /*!< 0x00000080 */
+#define RCU_CFGR_HPRE_Pos                    (4U)                              
+#define RCU_CFGR_HPRE_Msk                    (0xFU << RCU_CFGR_HPRE_Pos)       /*!< 0x000000F0 */
+#define RCU_CFGR_HPRE                        RCU_CFGR_HPRE_Msk                 /*!< HPRE[3:0] bits (AHB prescaler) */
+#define RCU_CFGR_HPRE_0                      (0x1U << RCU_CFGR_HPRE_Pos)       /*!< 0x00000010 */
+#define RCU_CFGR_HPRE_1                      (0x2U << RCU_CFGR_HPRE_Pos)       /*!< 0x00000020 */
+#define RCU_CFGR_HPRE_2                      (0x4U << RCU_CFGR_HPRE_Pos)       /*!< 0x00000040 */
+#define RCU_CFGR_HPRE_3                      (0x8U << RCU_CFGR_HPRE_Pos)       /*!< 0x00000080 */
 
-#define RCC_CFGR_HPRE_DIV1                   0x00000000U                       /*!< SYSCLK not divided */
-#define RCC_CFGR_HPRE_DIV2                   0x00000080U                       /*!< SYSCLK divided by 2 */
-#define RCC_CFGR_HPRE_DIV4                   0x00000090U                       /*!< SYSCLK divided by 4 */
-#define RCC_CFGR_HPRE_DIV8                   0x000000A0U                       /*!< SYSCLK divided by 8 */
-#define RCC_CFGR_HPRE_DIV16                  0x000000B0U                       /*!< SYSCLK divided by 16 */
-#define RCC_CFGR_HPRE_DIV64                  0x000000C0U                       /*!< SYSCLK divided by 64 */
-#define RCC_CFGR_HPRE_DIV128                 0x000000D0U                       /*!< SYSCLK divided by 128 */
-#define RCC_CFGR_HPRE_DIV256                 0x000000E0U                       /*!< SYSCLK divided by 256 */
-#define RCC_CFGR_HPRE_DIV512                 0x000000F0U                       /*!< SYSCLK divided by 512 */
+#define RCU_CFGR_HPRE_DIV1                   0x00000000U                       /*!< SYSCLK not divided */
+#define RCU_CFGR_HPRE_DIV2                   0x00000080U                       /*!< SYSCLK divided by 2 */
+#define RCU_CFGR_HPRE_DIV4                   0x00000090U                       /*!< SYSCLK divided by 4 */
+#define RCU_CFGR_HPRE_DIV8                   0x000000A0U                       /*!< SYSCLK divided by 8 */
+#define RCU_CFGR_HPRE_DIV16                  0x000000B0U                       /*!< SYSCLK divided by 16 */
+#define RCU_CFGR_HPRE_DIV64                  0x000000C0U                       /*!< SYSCLK divided by 64 */
+#define RCU_CFGR_HPRE_DIV128                 0x000000D0U                       /*!< SYSCLK divided by 128 */
+#define RCU_CFGR_HPRE_DIV256                 0x000000E0U                       /*!< SYSCLK divided by 256 */
+#define RCU_CFGR_HPRE_DIV512                 0x000000F0U                       /*!< SYSCLK divided by 512 */
 
 /*!< PPRE1 configuration */
-#define RCC_CFGR_PPRE1_Pos                   (8U)                              
-#define RCC_CFGR_PPRE1_Msk                   (0x7U << RCC_CFGR_PPRE1_Pos)      /*!< 0x00000700 */
-#define RCC_CFGR_PPRE1                       RCC_CFGR_PPRE1_Msk                /*!< PRE1[2:0] bits (APB1 prescaler) */
-#define RCC_CFGR_PPRE1_0                     (0x1U << RCC_CFGR_PPRE1_Pos)      /*!< 0x00000100 */
-#define RCC_CFGR_PPRE1_1                     (0x2U << RCC_CFGR_PPRE1_Pos)      /*!< 0x00000200 */
-#define RCC_CFGR_PPRE1_2                     (0x4U << RCC_CFGR_PPRE1_Pos)      /*!< 0x00000400 */
+#define RCU_CFGR_PPRE1_Pos                   (8U)                              
+#define RCU_CFGR_PPRE1_Msk                   (0x7U << RCU_CFGR_PPRE1_Pos)      /*!< 0x00000700 */
+#define RCU_CFGR_PPRE1                       RCU_CFGR_PPRE1_Msk                /*!< PRE1[2:0] bits (APB1 prescaler) */
+#define RCU_CFGR_PPRE1_0                     (0x1U << RCU_CFGR_PPRE1_Pos)      /*!< 0x00000100 */
+#define RCU_CFGR_PPRE1_1                     (0x2U << RCU_CFGR_PPRE1_Pos)      /*!< 0x00000200 */
+#define RCU_CFGR_PPRE1_2                     (0x4U << RCU_CFGR_PPRE1_Pos)      /*!< 0x00000400 */
 
-#define RCC_CFGR_PPRE1_DIV1                  0x00000000U                       /*!< HCLK not divided */
-#define RCC_CFGR_PPRE1_DIV2                  0x00000400U                       /*!< HCLK divided by 2 */
-#define RCC_CFGR_PPRE1_DIV4                  0x00000500U                       /*!< HCLK divided by 4 */
-#define RCC_CFGR_PPRE1_DIV8                  0x00000600U                       /*!< HCLK divided by 8 */
-#define RCC_CFGR_PPRE1_DIV16                 0x00000700U                       /*!< HCLK divided by 16 */
+#define RCU_CFGR_PPRE1_DIV1                  0x00000000U                       /*!< HCLK not divided */
+#define RCU_CFGR_PPRE1_DIV2                  0x00000400U                       /*!< HCLK divided by 2 */
+#define RCU_CFGR_PPRE1_DIV4                  0x00000500U                       /*!< HCLK divided by 4 */
+#define RCU_CFGR_PPRE1_DIV8                  0x00000600U                       /*!< HCLK divided by 8 */
+#define RCU_CFGR_PPRE1_DIV16                 0x00000700U                       /*!< HCLK divided by 16 */
 
 /*!< PPRE2 configuration */
-#define RCC_CFGR_PPRE2_Pos                   (11U)                             
-#define RCC_CFGR_PPRE2_Msk                   (0x7U << RCC_CFGR_PPRE2_Pos)      /*!< 0x00003800 */
-#define RCC_CFGR_PPRE2                       RCC_CFGR_PPRE2_Msk                /*!< PRE2[2:0] bits (APB2 prescaler) */
-#define RCC_CFGR_PPRE2_0                     (0x1U << RCC_CFGR_PPRE2_Pos)      /*!< 0x00000800 */
-#define RCC_CFGR_PPRE2_1                     (0x2U << RCC_CFGR_PPRE2_Pos)      /*!< 0x00001000 */
-#define RCC_CFGR_PPRE2_2                     (0x4U << RCC_CFGR_PPRE2_Pos)      /*!< 0x00002000 */
+#define RCU_CFGR_PPRE2_Pos                   (11U)                             
+#define RCU_CFGR_PPRE2_Msk                   (0x7U << RCU_CFGR_PPRE2_Pos)      /*!< 0x00003800 */
+#define RCU_CFGR_PPRE2                       RCU_CFGR_PPRE2_Msk                /*!< PRE2[2:0] bits (APB2 prescaler) */
+#define RCU_CFGR_PPRE2_0                     (0x1U << RCU_CFGR_PPRE2_Pos)      /*!< 0x00000800 */
+#define RCU_CFGR_PPRE2_1                     (0x2U << RCU_CFGR_PPRE2_Pos)      /*!< 0x00001000 */
+#define RCU_CFGR_PPRE2_2                     (0x4U << RCU_CFGR_PPRE2_Pos)      /*!< 0x00002000 */
 
-#define RCC_CFGR_PPRE2_DIV1                  0x00000000U                       /*!< HCLK not divided */
-#define RCC_CFGR_PPRE2_DIV2                  0x00002000U                       /*!< HCLK divided by 2 */
-#define RCC_CFGR_PPRE2_DIV4                  0x00002800U                       /*!< HCLK divided by 4 */
-#define RCC_CFGR_PPRE2_DIV8                  0x00003000U                       /*!< HCLK divided by 8 */
-#define RCC_CFGR_PPRE2_DIV16                 0x00003800U                       /*!< HCLK divided by 16 */
+#define RCU_CFGR_PPRE2_DIV1                  0x00000000U                       /*!< HCLK not divided */
+#define RCU_CFGR_PPRE2_DIV2                  0x00002000U                       /*!< HCLK divided by 2 */
+#define RCU_CFGR_PPRE2_DIV4                  0x00002800U                       /*!< HCLK divided by 4 */
+#define RCU_CFGR_PPRE2_DIV8                  0x00003000U                       /*!< HCLK divided by 8 */
+#define RCU_CFGR_PPRE2_DIV16                 0x00003800U                       /*!< HCLK divided by 16 */
 
 /*!< ADCPPRE configuration */
-#define RCC_CFGR_ADCPRE_Pos                  (14U)                             
-#define RCC_CFGR_ADCPRE_Msk                  (0x3U << RCC_CFGR_ADCPRE_Pos)     /*!< 0x0000C000 */
-#define RCC_CFGR_ADCPRE                      RCC_CFGR_ADCPRE_Msk               /*!< ADCPRE[1:0] bits (ADC prescaler) */
-#define RCC_CFGR_ADCPRE_0                    (0x1U << RCC_CFGR_ADCPRE_Pos)     /*!< 0x00004000 */
-#define RCC_CFGR_ADCPRE_1                    (0x2U << RCC_CFGR_ADCPRE_Pos)     /*!< 0x00008000 */
+#define RCU_CFGR_ADCPRE_Pos                  (14U)                             
+#define RCU_CFGR_ADCPRE_Msk                  (0x3U << RCU_CFGR_ADCPRE_Pos)     /*!< 0x0000C000 */
+#define RCU_CFGR_ADCPRE                      RCU_CFGR_ADCPRE_Msk               /*!< ADCPRE[1:0] bits (ADC prescaler) */
+#define RCU_CFGR_ADCPRE_0                    (0x1U << RCU_CFGR_ADCPRE_Pos)     /*!< 0x00004000 */
+#define RCU_CFGR_ADCPRE_1                    (0x2U << RCU_CFGR_ADCPRE_Pos)     /*!< 0x00008000 */
 
-#define RCC_CFGR_ADCPRE_DIV2                 0x00000000U                       /*!< PCLK2 divided by 2 */
-#define RCC_CFGR_ADCPRE_DIV4                 0x00004000U                       /*!< PCLK2 divided by 4 */
-#define RCC_CFGR_ADCPRE_DIV6                 0x00008000U                       /*!< PCLK2 divided by 6 */
-#define RCC_CFGR_ADCPRE_DIV8                 0x0000C000U                       /*!< PCLK2 divided by 8 */
+#define RCU_CFGR_ADCPRE_DIV2                 0x00000000U                       /*!< PCLK2 divided by 2 */
+#define RCU_CFGR_ADCPRE_DIV4                 0x00004000U                       /*!< PCLK2 divided by 4 */
+#define RCU_CFGR_ADCPRE_DIV6                 0x00008000U                       /*!< PCLK2 divided by 6 */
+#define RCU_CFGR_ADCPRE_DIV8                 0x0000C000U                       /*!< PCLK2 divided by 8 */
 
-#define RCC_CFGR_PLLSRC_Pos                  (16U)                             
-#define RCC_CFGR_PLLSRC_Msk                  (0x1U << RCC_CFGR_PLLSRC_Pos)     /*!< 0x00010000 */
-#define RCC_CFGR_PLLSRC                      RCC_CFGR_PLLSRC_Msk               /*!< PLL entry clock source */
+#define RCU_CFGR_PLLSRC_Pos                  (16U)                             
+#define RCU_CFGR_PLLSRC_Msk                  (0x1U << RCU_CFGR_PLLSRC_Pos)     /*!< 0x00010000 */
+#define RCU_CFGR_PLLSRC                      RCU_CFGR_PLLSRC_Msk               /*!< PLL entry clock source */
 
-#define RCC_CFGR_PLLXTPRE_Pos                (17U)                             
-#define RCC_CFGR_PLLXTPRE_Msk                (0x1U << RCC_CFGR_PLLXTPRE_Pos)   /*!< 0x00020000 */
-#define RCC_CFGR_PLLXTPRE                    RCC_CFGR_PLLXTPRE_Msk             /*!< HSE divider for PLL entry */
+#define RCU_CFGR_PLLXTPRE_Pos                (17U)                             
+#define RCU_CFGR_PLLXTPRE_Msk                (0x1U << RCU_CFGR_PLLXTPRE_Pos)   /*!< 0x00020000 */
+#define RCU_CFGR_PLLXTPRE                    RCU_CFGR_PLLXTPRE_Msk             /*!< HSE divider for PLL entry */
 
 /*!< PLLMUL configuration */
-#define RCC_CFGR_PLLMULL_Pos                 (18U)                             
-#define RCC_CFGR_PLLMULL_Msk                 (0xFU << RCC_CFGR_PLLMULL_Pos)    /*!< 0x003C0000 */
-#define RCC_CFGR_PLLMULL                     RCC_CFGR_PLLMULL_Msk              /*!< PLLMUL[3:0] bits (PLL multiplication factor) */
-#define RCC_CFGR_PLLMULL_0                   (0x1U << RCC_CFGR_PLLMULL_Pos)    /*!< 0x00040000 */
-#define RCC_CFGR_PLLMULL_1                   (0x2U << RCC_CFGR_PLLMULL_Pos)    /*!< 0x00080000 */
-#define RCC_CFGR_PLLMULL_2                   (0x4U << RCC_CFGR_PLLMULL_Pos)    /*!< 0x00100000 */
-#define RCC_CFGR_PLLMULL_3                   (0x8U << RCC_CFGR_PLLMULL_Pos)    /*!< 0x00200000 */
+#define RCU_CFGR_PLLMULL_Pos                 (18U)                             
+#define RCU_CFGR_PLLMULL_Msk                 (0xFU << RCU_CFGR_PLLMULL_Pos)    /*!< 0x003C0000 */
+#define RCU_CFGR_PLLMULL                     RCU_CFGR_PLLMULL_Msk              /*!< PLLMUL[3:0] bits (PLL multiplication factor) */
+#define RCU_CFGR_PLLMULL_0                   (0x1U << RCU_CFGR_PLLMULL_Pos)    /*!< 0x00040000 */
+#define RCU_CFGR_PLLMULL_1                   (0x2U << RCU_CFGR_PLLMULL_Pos)    /*!< 0x00080000 */
+#define RCU_CFGR_PLLMULL_2                   (0x4U << RCU_CFGR_PLLMULL_Pos)    /*!< 0x00100000 */
+#define RCU_CFGR_PLLMULL_3                   (0x8U << RCU_CFGR_PLLMULL_Pos)    /*!< 0x00200000 */
 
-#define RCC_CFGR_PLLXTPRE_PREDIV1            0x00000000U                       /*!< PREDIV1 clock not divided for PLL entry */
-#define RCC_CFGR_PLLXTPRE_PREDIV1_DIV2       0x00020000U                       /*!< PREDIV1 clock divided by 2 for PLL entry */
+#define RCU_CFGR_PLLXTPRE_PREDIV1            0x00000000U                       /*!< PREDIV1 clock not divided for PLL entry */
+#define RCU_CFGR_PLLXTPRE_PREDIV1_DIV2       0x00020000U                       /*!< PREDIV1 clock divided by 2 for PLL entry */
 
-#define RCC_CFGR_PLLMULL4_Pos                (19U)                             
-#define RCC_CFGR_PLLMULL4_Msk                (0x1U << RCC_CFGR_PLLMULL4_Pos)   /*!< 0x00080000 */
-#define RCC_CFGR_PLLMULL4                    RCC_CFGR_PLLMULL4_Msk             /*!< PLL input clock * 4 */
-#define RCC_CFGR_PLLMULL5_Pos                (18U)                             
-#define RCC_CFGR_PLLMULL5_Msk                (0x3U << RCC_CFGR_PLLMULL5_Pos)   /*!< 0x000C0000 */
-#define RCC_CFGR_PLLMULL5                    RCC_CFGR_PLLMULL5_Msk             /*!< PLL input clock * 5 */
-#define RCC_CFGR_PLLMULL6_Pos                (20U)                             
-#define RCC_CFGR_PLLMULL6_Msk                (0x1U << RCC_CFGR_PLLMULL6_Pos)   /*!< 0x00100000 */
-#define RCC_CFGR_PLLMULL6                    RCC_CFGR_PLLMULL6_Msk             /*!< PLL input clock * 6 */
-#define RCC_CFGR_PLLMULL7_Pos                (18U)                             
-#define RCC_CFGR_PLLMULL7_Msk                (0x5U << RCC_CFGR_PLLMULL7_Pos)   /*!< 0x00140000 */
-#define RCC_CFGR_PLLMULL7                    RCC_CFGR_PLLMULL7_Msk             /*!< PLL input clock * 7 */
-#define RCC_CFGR_PLLMULL8_Pos                (19U)                             
-#define RCC_CFGR_PLLMULL8_Msk                (0x3U << RCC_CFGR_PLLMULL8_Pos)   /*!< 0x00180000 */
-#define RCC_CFGR_PLLMULL8                    RCC_CFGR_PLLMULL8_Msk             /*!< PLL input clock * 8 */
-#define RCC_CFGR_PLLMULL9_Pos                (18U)                             
-#define RCC_CFGR_PLLMULL9_Msk                (0x7U << RCC_CFGR_PLLMULL9_Pos)   /*!< 0x001C0000 */
-#define RCC_CFGR_PLLMULL9                    RCC_CFGR_PLLMULL9_Msk             /*!< PLL input clock * 9 */
-#define RCC_CFGR_PLLMULL6_5                  0x00340000U                       /*!< PLL input clock * 6.5 */
+#define RCU_CFGR_PLLMULL4_Pos                (19U)                             
+#define RCU_CFGR_PLLMULL4_Msk                (0x1U << RCU_CFGR_PLLMULL4_Pos)   /*!< 0x00080000 */
+#define RCU_CFGR_PLLMULL4                    RCU_CFGR_PLLMULL4_Msk             /*!< PLL input clock * 4 */
+#define RCU_CFGR_PLLMULL5_Pos                (18U)                             
+#define RCU_CFGR_PLLMULL5_Msk                (0x3U << RCU_CFGR_PLLMULL5_Pos)   /*!< 0x000C0000 */
+#define RCU_CFGR_PLLMULL5                    RCU_CFGR_PLLMULL5_Msk             /*!< PLL input clock * 5 */
+#define RCU_CFGR_PLLMULL6_Pos                (20U)                             
+#define RCU_CFGR_PLLMULL6_Msk                (0x1U << RCU_CFGR_PLLMULL6_Pos)   /*!< 0x00100000 */
+#define RCU_CFGR_PLLMULL6                    RCU_CFGR_PLLMULL6_Msk             /*!< PLL input clock * 6 */
+#define RCU_CFGR_PLLMULL7_Pos                (18U)                             
+#define RCU_CFGR_PLLMULL7_Msk                (0x5U << RCU_CFGR_PLLMULL7_Pos)   /*!< 0x00140000 */
+#define RCU_CFGR_PLLMULL7                    RCU_CFGR_PLLMULL7_Msk             /*!< PLL input clock * 7 */
+#define RCU_CFGR_PLLMULL8_Pos                (19U)                             
+#define RCU_CFGR_PLLMULL8_Msk                (0x3U << RCU_CFGR_PLLMULL8_Pos)   /*!< 0x00180000 */
+#define RCU_CFGR_PLLMULL8                    RCU_CFGR_PLLMULL8_Msk             /*!< PLL input clock * 8 */
+#define RCU_CFGR_PLLMULL9_Pos                (18U)                             
+#define RCU_CFGR_PLLMULL9_Msk                (0x7U << RCU_CFGR_PLLMULL9_Pos)   /*!< 0x001C0000 */
+#define RCU_CFGR_PLLMULL9                    RCU_CFGR_PLLMULL9_Msk             /*!< PLL input clock * 9 */
+#define RCU_CFGR_PLLMULL6_5                  0x00340000U                       /*!< PLL input clock * 6.5 */
  
-#define RCC_CFGR_OTGFSPRE_Pos                (22U)                             
-#define RCC_CFGR_OTGFSPRE_Msk                (0x1U << RCC_CFGR_OTGFSPRE_Pos)   /*!< 0x00400000 */
-#define RCC_CFGR_OTGFSPRE                    RCC_CFGR_OTGFSPRE_Msk             /*!< USB OTG FS prescaler */
+#define RCU_CFGR_OTGFSPRE_Pos                (22U)                             
+#define RCU_CFGR_OTGFSPRE_Msk                (0x1U << RCU_CFGR_OTGFSPRE_Pos)   /*!< 0x00400000 */
+#define RCU_CFGR_OTGFSPRE                    RCU_CFGR_OTGFSPRE_Msk             /*!< USB OTG FS prescaler */
  
 /*!< MCO configuration */
-#define RCC_CFGR_MCO_Pos                     (24U)                             
-#define RCC_CFGR_MCO_Msk                     (0xFU << RCC_CFGR_MCO_Pos)        /*!< 0x0F000000 */
-#define RCC_CFGR_MCO                         RCC_CFGR_MCO_Msk                  /*!< MCO[3:0] bits (Microcontroller Clock Output) */
-#define RCC_CFGR_MCO_0                       (0x1U << RCC_CFGR_MCO_Pos)        /*!< 0x01000000 */
-#define RCC_CFGR_MCO_1                       (0x2U << RCC_CFGR_MCO_Pos)        /*!< 0x02000000 */
-#define RCC_CFGR_MCO_2                       (0x4U << RCC_CFGR_MCO_Pos)        /*!< 0x04000000 */
-#define RCC_CFGR_MCO_3                       (0x8U << RCC_CFGR_MCO_Pos)        /*!< 0x08000000 */
+#define RCU_CFGR_MCO_Pos                     (24U)                             
+#define RCU_CFGR_MCO_Msk                     (0xFU << RCU_CFGR_MCO_Pos)        /*!< 0x0F000000 */
+#define RCU_CFGR_MCO                         RCU_CFGR_MCO_Msk                  /*!< MCO[3:0] bits (Microcontroller Clock Output) */
+#define RCU_CFGR_MCO_0                       (0x1U << RCU_CFGR_MCO_Pos)        /*!< 0x01000000 */
+#define RCU_CFGR_MCO_1                       (0x2U << RCU_CFGR_MCO_Pos)        /*!< 0x02000000 */
+#define RCU_CFGR_MCO_2                       (0x4U << RCU_CFGR_MCO_Pos)        /*!< 0x04000000 */
+#define RCU_CFGR_MCO_3                       (0x8U << RCU_CFGR_MCO_Pos)        /*!< 0x08000000 */
 
-#define RCC_CFGR_MCO_NOCLOCK                 0x00000000U                       /*!< No clock */
-#define RCC_CFGR_MCO_SYSCLK                  0x04000000U                       /*!< System clock selected as MCO source */
-#define RCC_CFGR_MCO_HSI                     0x05000000U                       /*!< HSI clock selected as MCO source */
-#define RCC_CFGR_MCO_HSE                     0x06000000U                       /*!< HSE clock selected as MCO source */
-#define RCC_CFGR_MCO_PLLCLK_DIV2             0x07000000U                       /*!< PLL clock divided by 2 selected as MCO source */
-#define RCC_CFGR_MCO_PLL2CLK                 0x08000000U                       /*!< PLL2 clock selected as MCO source*/
-#define RCC_CFGR_MCO_PLL3CLK_DIV2            0x09000000U                       /*!< PLL3 clock divided by 2 selected as MCO source*/
-#define RCC_CFGR_MCO_EXT_HSE                 0x0A000000U                       /*!< XT1 external 3-25 MHz oscillator clock selected as MCO source */
-#define RCC_CFGR_MCO_PLL3CLK                 0x0B000000U                       /*!< PLL3 clock selected as MCO source */
+#define RCU_CFGR_MCO_NOCLOCK                 0x00000000U                       /*!< No clock */
+#define RCU_CFGR_MCO_SYSCLK                  0x04000000U                       /*!< System clock selected as MCO source */
+#define RCU_CFGR_MCO_HSI                     0x05000000U                       /*!< HSI clock selected as MCO source */
+#define RCU_CFGR_MCO_HSE                     0x06000000U                       /*!< HSE clock selected as MCO source */
+#define RCU_CFGR_MCO_PLLCLK_DIV2             0x07000000U                       /*!< PLL clock divided by 2 selected as MCO source */
+#define RCU_CFGR_MCO_PLL2CLK                 0x08000000U                       /*!< PLL2 clock selected as MCO source*/
+#define RCU_CFGR_MCO_PLL3CLK_DIV2            0x09000000U                       /*!< PLL3 clock divided by 2 selected as MCO source*/
+#define RCU_CFGR_MCO_EXT_HSE                 0x0A000000U                       /*!< XT1 external 3-25 MHz oscillator clock selected as MCO source */
+#define RCU_CFGR_MCO_PLL3CLK                 0x0B000000U                       /*!< PLL3 clock selected as MCO source */
 
  /* Reference defines */
- #define RCC_CFGR_MCOSEL                      RCC_CFGR_MCO
- #define RCC_CFGR_MCOSEL_0                    RCC_CFGR_MCO_0
- #define RCC_CFGR_MCOSEL_1                    RCC_CFGR_MCO_1
- #define RCC_CFGR_MCOSEL_2                    RCC_CFGR_MCO_2
- #define RCC_CFGR_MCOSEL_3                    RCC_CFGR_MCO_3
- #define RCC_CFGR_MCOSEL_NOCLOCK              RCC_CFGR_MCO_NOCLOCK
- #define RCC_CFGR_MCOSEL_SYSCLK               RCC_CFGR_MCO_SYSCLK
- #define RCC_CFGR_MCOSEL_HSI                  RCC_CFGR_MCO_HSI
- #define RCC_CFGR_MCOSEL_HSE                  RCC_CFGR_MCO_HSE
- #define RCC_CFGR_MCOSEL_PLL_DIV2             RCC_CFGR_MCO_PLLCLK_DIV2
- #define RCC_CFGR_MCOSEL_PLL2                 RCC_CFGR_MCO_PLL2CLK
- #define RCC_CFGR_MCOSEL_PLL3_DIV2            RCC_CFGR_MCO_PLL3CLK_DIV2
- #define RCC_CFGR_MCOSEL_EXT_HSE              RCC_CFGR_MCO_EXT_HSE
- #define RCC_CFGR_MCOSEL_PLL3CLK              RCC_CFGR_MCO_PLL3CLK
+ #define RCU_CFGR_MCOSEL                      RCU_CFGR_MCO
+ #define RCU_CFGR_MCOSEL_0                    RCU_CFGR_MCO_0
+ #define RCU_CFGR_MCOSEL_1                    RCU_CFGR_MCO_1
+ #define RCU_CFGR_MCOSEL_2                    RCU_CFGR_MCO_2
+ #define RCU_CFGR_MCOSEL_3                    RCU_CFGR_MCO_3
+ #define RCU_CFGR_MCOSEL_NOCLOCK              RCU_CFGR_MCO_NOCLOCK
+ #define RCU_CFGR_MCOSEL_SYSCLK               RCU_CFGR_MCO_SYSCLK
+ #define RCU_CFGR_MCOSEL_HSI                  RCU_CFGR_MCO_HSI
+ #define RCU_CFGR_MCOSEL_HSE                  RCU_CFGR_MCO_HSE
+ #define RCU_CFGR_MCOSEL_PLL_DIV2             RCU_CFGR_MCO_PLLCLK_DIV2
+ #define RCU_CFGR_MCOSEL_PLL2                 RCU_CFGR_MCO_PLL2CLK
+ #define RCU_CFGR_MCOSEL_PLL3_DIV2            RCU_CFGR_MCO_PLL3CLK_DIV2
+ #define RCU_CFGR_MCOSEL_EXT_HSE              RCU_CFGR_MCO_EXT_HSE
+ #define RCU_CFGR_MCOSEL_PLL3CLK              RCU_CFGR_MCO_PLL3CLK
 
-/*!<******************  Bit definition for RCC_CIR register  ********************/
-#define RCC_CIR_LSIRDYF_Pos                  (0U)                              
-#define RCC_CIR_LSIRDYF_Msk                  (0x1U << RCC_CIR_LSIRDYF_Pos)     /*!< 0x00000001 */
-#define RCC_CIR_LSIRDYF                      RCC_CIR_LSIRDYF_Msk               /*!< LSI Ready Interrupt flag */
-#define RCC_CIR_LSERDYF_Pos                  (1U)                              
-#define RCC_CIR_LSERDYF_Msk                  (0x1U << RCC_CIR_LSERDYF_Pos)     /*!< 0x00000002 */
-#define RCC_CIR_LSERDYF                      RCC_CIR_LSERDYF_Msk               /*!< LSE Ready Interrupt flag */
-#define RCC_CIR_HSIRDYF_Pos                  (2U)                              
-#define RCC_CIR_HSIRDYF_Msk                  (0x1U << RCC_CIR_HSIRDYF_Pos)     /*!< 0x00000004 */
-#define RCC_CIR_HSIRDYF                      RCC_CIR_HSIRDYF_Msk               /*!< HSI Ready Interrupt flag */
-#define RCC_CIR_HSERDYF_Pos                  (3U)                              
-#define RCC_CIR_HSERDYF_Msk                  (0x1U << RCC_CIR_HSERDYF_Pos)     /*!< 0x00000008 */
-#define RCC_CIR_HSERDYF                      RCC_CIR_HSERDYF_Msk               /*!< HSE Ready Interrupt flag */
-#define RCC_CIR_PLLRDYF_Pos                  (4U)                              
-#define RCC_CIR_PLLRDYF_Msk                  (0x1U << RCC_CIR_PLLRDYF_Pos)     /*!< 0x00000010 */
-#define RCC_CIR_PLLRDYF                      RCC_CIR_PLLRDYF_Msk               /*!< PLL Ready Interrupt flag */
-#define RCC_CIR_CSSF_Pos                     (7U)                              
-#define RCC_CIR_CSSF_Msk                     (0x1U << RCC_CIR_CSSF_Pos)        /*!< 0x00000080 */
-#define RCC_CIR_CSSF                         RCC_CIR_CSSF_Msk                  /*!< Clock Security System Interrupt flag */
-#define RCC_CIR_LSIRDYIE_Pos                 (8U)                              
-#define RCC_CIR_LSIRDYIE_Msk                 (0x1U << RCC_CIR_LSIRDYIE_Pos)    /*!< 0x00000100 */
-#define RCC_CIR_LSIRDYIE                     RCC_CIR_LSIRDYIE_Msk              /*!< LSI Ready Interrupt Enable */
-#define RCC_CIR_LSERDYIE_Pos                 (9U)                              
-#define RCC_CIR_LSERDYIE_Msk                 (0x1U << RCC_CIR_LSERDYIE_Pos)    /*!< 0x00000200 */
-#define RCC_CIR_LSERDYIE                     RCC_CIR_LSERDYIE_Msk              /*!< LSE Ready Interrupt Enable */
-#define RCC_CIR_HSIRDYIE_Pos                 (10U)                             
-#define RCC_CIR_HSIRDYIE_Msk                 (0x1U << RCC_CIR_HSIRDYIE_Pos)    /*!< 0x00000400 */
-#define RCC_CIR_HSIRDYIE                     RCC_CIR_HSIRDYIE_Msk              /*!< HSI Ready Interrupt Enable */
-#define RCC_CIR_HSERDYIE_Pos                 (11U)                             
-#define RCC_CIR_HSERDYIE_Msk                 (0x1U << RCC_CIR_HSERDYIE_Pos)    /*!< 0x00000800 */
-#define RCC_CIR_HSERDYIE                     RCC_CIR_HSERDYIE_Msk              /*!< HSE Ready Interrupt Enable */
-#define RCC_CIR_PLLRDYIE_Pos                 (12U)                             
-#define RCC_CIR_PLLRDYIE_Msk                 (0x1U << RCC_CIR_PLLRDYIE_Pos)    /*!< 0x00001000 */
-#define RCC_CIR_PLLRDYIE                     RCC_CIR_PLLRDYIE_Msk              /*!< PLL Ready Interrupt Enable */
-#define RCC_CIR_LSIRDYC_Pos                  (16U)                             
-#define RCC_CIR_LSIRDYC_Msk                  (0x1U << RCC_CIR_LSIRDYC_Pos)     /*!< 0x00010000 */
-#define RCC_CIR_LSIRDYC                      RCC_CIR_LSIRDYC_Msk               /*!< LSI Ready Interrupt Clear */
-#define RCC_CIR_LSERDYC_Pos                  (17U)                             
-#define RCC_CIR_LSERDYC_Msk                  (0x1U << RCC_CIR_LSERDYC_Pos)     /*!< 0x00020000 */
-#define RCC_CIR_LSERDYC                      RCC_CIR_LSERDYC_Msk               /*!< LSE Ready Interrupt Clear */
-#define RCC_CIR_HSIRDYC_Pos                  (18U)                             
-#define RCC_CIR_HSIRDYC_Msk                  (0x1U << RCC_CIR_HSIRDYC_Pos)     /*!< 0x00040000 */
-#define RCC_CIR_HSIRDYC                      RCC_CIR_HSIRDYC_Msk               /*!< HSI Ready Interrupt Clear */
-#define RCC_CIR_HSERDYC_Pos                  (19U)                             
-#define RCC_CIR_HSERDYC_Msk                  (0x1U << RCC_CIR_HSERDYC_Pos)     /*!< 0x00080000 */
-#define RCC_CIR_HSERDYC                      RCC_CIR_HSERDYC_Msk               /*!< HSE Ready Interrupt Clear */
-#define RCC_CIR_PLLRDYC_Pos                  (20U)                             
-#define RCC_CIR_PLLRDYC_Msk                  (0x1U << RCC_CIR_PLLRDYC_Pos)     /*!< 0x00100000 */
-#define RCC_CIR_PLLRDYC                      RCC_CIR_PLLRDYC_Msk               /*!< PLL Ready Interrupt Clear */
-#define RCC_CIR_CSSC_Pos                     (23U)                             
-#define RCC_CIR_CSSC_Msk                     (0x1U << RCC_CIR_CSSC_Pos)        /*!< 0x00800000 */
-#define RCC_CIR_CSSC                         RCC_CIR_CSSC_Msk                  /*!< Clock Security System Interrupt Clear */
+/*!<******************  Bit definition for RCU_CIR register  ********************/
+#define RCU_CIR_LSIRDYF_Pos                  (0U)                              
+#define RCU_CIR_LSIRDYF_Msk                  (0x1U << RCU_CIR_LSIRDYF_Pos)     /*!< 0x00000001 */
+#define RCU_CIR_LSIRDYF                      RCU_CIR_LSIRDYF_Msk               /*!< LSI Ready Interrupt flag */
+#define RCU_CIR_LSERDYF_Pos                  (1U)                              
+#define RCU_CIR_LSERDYF_Msk                  (0x1U << RCU_CIR_LSERDYF_Pos)     /*!< 0x00000002 */
+#define RCU_CIR_LSERDYF                      RCU_CIR_LSERDYF_Msk               /*!< LSE Ready Interrupt flag */
+#define RCU_CIR_HSIRDYF_Pos                  (2U)                              
+#define RCU_CIR_HSIRDYF_Msk                  (0x1U << RCU_CIR_HSIRDYF_Pos)     /*!< 0x00000004 */
+#define RCU_CIR_HSIRDYF                      RCU_CIR_HSIRDYF_Msk               /*!< HSI Ready Interrupt flag */
+#define RCU_CIR_HSERDYF_Pos                  (3U)                              
+#define RCU_CIR_HSERDYF_Msk                  (0x1U << RCU_CIR_HSERDYF_Pos)     /*!< 0x00000008 */
+#define RCU_CIR_HSERDYF                      RCU_CIR_HSERDYF_Msk               /*!< HSE Ready Interrupt flag */
+#define RCU_CIR_PLLRDYF_Pos                  (4U)                              
+#define RCU_CIR_PLLRDYF_Msk                  (0x1U << RCU_CIR_PLLRDYF_Pos)     /*!< 0x00000010 */
+#define RCU_CIR_PLLRDYF                      RCU_CIR_PLLRDYF_Msk               /*!< PLL Ready Interrupt flag */
+#define RCU_CIR_CSSF_Pos                     (7U)                              
+#define RCU_CIR_CSSF_Msk                     (0x1U << RCU_CIR_CSSF_Pos)        /*!< 0x00000080 */
+#define RCU_CIR_CSSF                         RCU_CIR_CSSF_Msk                  /*!< Clock Security System Interrupt flag */
+#define RCU_CIR_LSIRDYIE_Pos                 (8U)                              
+#define RCU_CIR_LSIRDYIE_Msk                 (0x1U << RCU_CIR_LSIRDYIE_Pos)    /*!< 0x00000100 */
+#define RCU_CIR_LSIRDYIE                     RCU_CIR_LSIRDYIE_Msk              /*!< LSI Ready Interrupt Enable */
+#define RCU_CIR_LSERDYIE_Pos                 (9U)                              
+#define RCU_CIR_LSERDYIE_Msk                 (0x1U << RCU_CIR_LSERDYIE_Pos)    /*!< 0x00000200 */
+#define RCU_CIR_LSERDYIE                     RCU_CIR_LSERDYIE_Msk              /*!< LSE Ready Interrupt Enable */
+#define RCU_CIR_HSIRDYIE_Pos                 (10U)                             
+#define RCU_CIR_HSIRDYIE_Msk                 (0x1U << RCU_CIR_HSIRDYIE_Pos)    /*!< 0x00000400 */
+#define RCU_CIR_HSIRDYIE                     RCU_CIR_HSIRDYIE_Msk              /*!< HSI Ready Interrupt Enable */
+#define RCU_CIR_HSERDYIE_Pos                 (11U)                             
+#define RCU_CIR_HSERDYIE_Msk                 (0x1U << RCU_CIR_HSERDYIE_Pos)    /*!< 0x00000800 */
+#define RCU_CIR_HSERDYIE                     RCU_CIR_HSERDYIE_Msk              /*!< HSE Ready Interrupt Enable */
+#define RCU_CIR_PLLRDYIE_Pos                 (12U)                             
+#define RCU_CIR_PLLRDYIE_Msk                 (0x1U << RCU_CIR_PLLRDYIE_Pos)    /*!< 0x00001000 */
+#define RCU_CIR_PLLRDYIE                     RCU_CIR_PLLRDYIE_Msk              /*!< PLL Ready Interrupt Enable */
+#define RCU_CIR_LSIRDYC_Pos                  (16U)                             
+#define RCU_CIR_LSIRDYC_Msk                  (0x1U << RCU_CIR_LSIRDYC_Pos)     /*!< 0x00010000 */
+#define RCU_CIR_LSIRDYC                      RCU_CIR_LSIRDYC_Msk               /*!< LSI Ready Interrupt Clear */
+#define RCU_CIR_LSERDYC_Pos                  (17U)                             
+#define RCU_CIR_LSERDYC_Msk                  (0x1U << RCU_CIR_LSERDYC_Pos)     /*!< 0x00020000 */
+#define RCU_CIR_LSERDYC                      RCU_CIR_LSERDYC_Msk               /*!< LSE Ready Interrupt Clear */
+#define RCU_CIR_HSIRDYC_Pos                  (18U)                             
+#define RCU_CIR_HSIRDYC_Msk                  (0x1U << RCU_CIR_HSIRDYC_Pos)     /*!< 0x00040000 */
+#define RCU_CIR_HSIRDYC                      RCU_CIR_HSIRDYC_Msk               /*!< HSI Ready Interrupt Clear */
+#define RCU_CIR_HSERDYC_Pos                  (19U)                             
+#define RCU_CIR_HSERDYC_Msk                  (0x1U << RCU_CIR_HSERDYC_Pos)     /*!< 0x00080000 */
+#define RCU_CIR_HSERDYC                      RCU_CIR_HSERDYC_Msk               /*!< HSE Ready Interrupt Clear */
+#define RCU_CIR_PLLRDYC_Pos                  (20U)                             
+#define RCU_CIR_PLLRDYC_Msk                  (0x1U << RCU_CIR_PLLRDYC_Pos)     /*!< 0x00100000 */
+#define RCU_CIR_PLLRDYC                      RCU_CIR_PLLRDYC_Msk               /*!< PLL Ready Interrupt Clear */
+#define RCU_CIR_CSSC_Pos                     (23U)                             
+#define RCU_CIR_CSSC_Msk                     (0x1U << RCU_CIR_CSSC_Pos)        /*!< 0x00800000 */
+#define RCU_CIR_CSSC                         RCU_CIR_CSSC_Msk                  /*!< Clock Security System Interrupt Clear */
 
-#define RCC_CIR_PLL2RDYF_Pos                 (5U)                              
-#define RCC_CIR_PLL2RDYF_Msk                 (0x1U << RCC_CIR_PLL2RDYF_Pos)    /*!< 0x00000020 */
-#define RCC_CIR_PLL2RDYF                     RCC_CIR_PLL2RDYF_Msk              /*!< PLL2 Ready Interrupt flag */
-#define RCC_CIR_PLL3RDYF_Pos                 (6U)                              
-#define RCC_CIR_PLL3RDYF_Msk                 (0x1U << RCC_CIR_PLL3RDYF_Pos)    /*!< 0x00000040 */
-#define RCC_CIR_PLL3RDYF                     RCC_CIR_PLL3RDYF_Msk              /*!< PLL3 Ready Interrupt flag */
-#define RCC_CIR_PLL2RDYIE_Pos                (13U)                             
-#define RCC_CIR_PLL2RDYIE_Msk                (0x1U << RCC_CIR_PLL2RDYIE_Pos)   /*!< 0x00002000 */
-#define RCC_CIR_PLL2RDYIE                    RCC_CIR_PLL2RDYIE_Msk             /*!< PLL2 Ready Interrupt Enable */
-#define RCC_CIR_PLL3RDYIE_Pos                (14U)                             
-#define RCC_CIR_PLL3RDYIE_Msk                (0x1U << RCC_CIR_PLL3RDYIE_Pos)   /*!< 0x00004000 */
-#define RCC_CIR_PLL3RDYIE                    RCC_CIR_PLL3RDYIE_Msk             /*!< PLL3 Ready Interrupt Enable */
-#define RCC_CIR_PLL2RDYC_Pos                 (21U)                             
-#define RCC_CIR_PLL2RDYC_Msk                 (0x1U << RCC_CIR_PLL2RDYC_Pos)    /*!< 0x00200000 */
-#define RCC_CIR_PLL2RDYC                     RCC_CIR_PLL2RDYC_Msk              /*!< PLL2 Ready Interrupt Clear */
-#define RCC_CIR_PLL3RDYC_Pos                 (22U)                             
-#define RCC_CIR_PLL3RDYC_Msk                 (0x1U << RCC_CIR_PLL3RDYC_Pos)    /*!< 0x00400000 */
-#define RCC_CIR_PLL3RDYC                     RCC_CIR_PLL3RDYC_Msk              /*!< PLL3 Ready Interrupt Clear */
+#define RCU_CIR_PLL2RDYF_Pos                 (5U)                              
+#define RCU_CIR_PLL2RDYF_Msk                 (0x1U << RCU_CIR_PLL2RDYF_Pos)    /*!< 0x00000020 */
+#define RCU_CIR_PLL2RDYF                     RCU_CIR_PLL2RDYF_Msk              /*!< PLL2 Ready Interrupt flag */
+#define RCU_CIR_PLL3RDYF_Pos                 (6U)                              
+#define RCU_CIR_PLL3RDYF_Msk                 (0x1U << RCU_CIR_PLL3RDYF_Pos)    /*!< 0x00000040 */
+#define RCU_CIR_PLL3RDYF                     RCU_CIR_PLL3RDYF_Msk              /*!< PLL3 Ready Interrupt flag */
+#define RCU_CIR_PLL2RDYIE_Pos                (13U)                             
+#define RCU_CIR_PLL2RDYIE_Msk                (0x1U << RCU_CIR_PLL2RDYIE_Pos)   /*!< 0x00002000 */
+#define RCU_CIR_PLL2RDYIE                    RCU_CIR_PLL2RDYIE_Msk             /*!< PLL2 Ready Interrupt Enable */
+#define RCU_CIR_PLL3RDYIE_Pos                (14U)                             
+#define RCU_CIR_PLL3RDYIE_Msk                (0x1U << RCU_CIR_PLL3RDYIE_Pos)   /*!< 0x00004000 */
+#define RCU_CIR_PLL3RDYIE                    RCU_CIR_PLL3RDYIE_Msk             /*!< PLL3 Ready Interrupt Enable */
+#define RCU_CIR_PLL2RDYC_Pos                 (21U)                             
+#define RCU_CIR_PLL2RDYC_Msk                 (0x1U << RCU_CIR_PLL2RDYC_Pos)    /*!< 0x00200000 */
+#define RCU_CIR_PLL2RDYC                     RCU_CIR_PLL2RDYC_Msk              /*!< PLL2 Ready Interrupt Clear */
+#define RCU_CIR_PLL3RDYC_Pos                 (22U)                             
+#define RCU_CIR_PLL3RDYC_Msk                 (0x1U << RCU_CIR_PLL3RDYC_Pos)    /*!< 0x00400000 */
+#define RCU_CIR_PLL3RDYC                     RCU_CIR_PLL3RDYC_Msk              /*!< PLL3 Ready Interrupt Clear */
 
-/*****************  Bit definition for RCC_APB2RSTR register  *****************/
-#define RCC_APB2RSTR_AFIORST_Pos             (0U)                              
-#define RCC_APB2RSTR_AFIORST_Msk             (0x1U << RCC_APB2RSTR_AFIORST_Pos) /*!< 0x00000001 */
-#define RCC_APB2RSTR_AFIORST                 RCC_APB2RSTR_AFIORST_Msk          /*!< Alternate Function I/O reset */
-#define RCC_APB2RSTR_IOPARST_Pos             (2U)                              
-#define RCC_APB2RSTR_IOPARST_Msk             (0x1U << RCC_APB2RSTR_IOPARST_Pos) /*!< 0x00000004 */
-#define RCC_APB2RSTR_IOPARST                 RCC_APB2RSTR_IOPARST_Msk          /*!< I/O port A reset */
-#define RCC_APB2RSTR_IOPBRST_Pos             (3U)                              
-#define RCC_APB2RSTR_IOPBRST_Msk             (0x1U << RCC_APB2RSTR_IOPBRST_Pos) /*!< 0x00000008 */
-#define RCC_APB2RSTR_IOPBRST                 RCC_APB2RSTR_IOPBRST_Msk          /*!< I/O port B reset */
-#define RCC_APB2RSTR_IOPCRST_Pos             (4U)                              
-#define RCC_APB2RSTR_IOPCRST_Msk             (0x1U << RCC_APB2RSTR_IOPCRST_Pos) /*!< 0x00000010 */
-#define RCC_APB2RSTR_IOPCRST                 RCC_APB2RSTR_IOPCRST_Msk          /*!< I/O port C reset */
-#define RCC_APB2RSTR_IOPDRST_Pos             (5U)                              
-#define RCC_APB2RSTR_IOPDRST_Msk             (0x1U << RCC_APB2RSTR_IOPDRST_Pos) /*!< 0x00000020 */
-#define RCC_APB2RSTR_IOPDRST                 RCC_APB2RSTR_IOPDRST_Msk          /*!< I/O port D reset */
-#define RCC_APB2RSTR_ADC1RST_Pos             (9U)                              
-#define RCC_APB2RSTR_ADC1RST_Msk             (0x1U << RCC_APB2RSTR_ADC1RST_Pos) /*!< 0x00000200 */
-#define RCC_APB2RSTR_ADC1RST                 RCC_APB2RSTR_ADC1RST_Msk          /*!< ADC 1 interface reset */
+/*****************  Bit definition for RCU_APB2RSTR register  *****************/
+#define RCU_APB2RSTR_AFIORST_Pos             (0U)                              
+#define RCU_APB2RSTR_AFIORST_Msk             (0x1U << RCU_APB2RSTR_AFIORST_Pos) /*!< 0x00000001 */
+#define RCU_APB2RSTR_AFIORST                 RCU_APB2RSTR_AFIORST_Msk          /*!< Alternate Function I/O reset */
+#define RCU_APB2RSTR_IOPARST_Pos             (2U)                              
+#define RCU_APB2RSTR_IOPARST_Msk             (0x1U << RCU_APB2RSTR_IOPARST_Pos) /*!< 0x00000004 */
+#define RCU_APB2RSTR_IOPARST                 RCU_APB2RSTR_IOPARST_Msk          /*!< I/O port A reset */
+#define RCU_APB2RSTR_IOPBRST_Pos             (3U)                              
+#define RCU_APB2RSTR_IOPBRST_Msk             (0x1U << RCU_APB2RSTR_IOPBRST_Pos) /*!< 0x00000008 */
+#define RCU_APB2RSTR_IOPBRST                 RCU_APB2RSTR_IOPBRST_Msk          /*!< I/O port B reset */
+#define RCU_APB2RSTR_IOPCRST_Pos             (4U)                              
+#define RCU_APB2RSTR_IOPCRST_Msk             (0x1U << RCU_APB2RSTR_IOPCRST_Pos) /*!< 0x00000010 */
+#define RCU_APB2RSTR_IOPCRST                 RCU_APB2RSTR_IOPCRST_Msk          /*!< I/O port C reset */
+#define RCU_APB2RSTR_IOPDRST_Pos             (5U)                              
+#define RCU_APB2RSTR_IOPDRST_Msk             (0x1U << RCU_APB2RSTR_IOPDRST_Pos) /*!< 0x00000020 */
+#define RCU_APB2RSTR_IOPDRST                 RCU_APB2RSTR_IOPDRST_Msk          /*!< I/O port D reset */
+#define RCU_APB2RSTR_ADC1RST_Pos             (9U)                              
+#define RCU_APB2RSTR_ADC1RST_Msk             (0x1U << RCU_APB2RSTR_ADC1RST_Pos) /*!< 0x00000200 */
+#define RCU_APB2RSTR_ADC1RST                 RCU_APB2RSTR_ADC1RST_Msk          /*!< ADC 1 interface reset */
 
-#define RCC_APB2RSTR_ADC2RST_Pos             (10U)                             
-#define RCC_APB2RSTR_ADC2RST_Msk             (0x1U << RCC_APB2RSTR_ADC2RST_Pos) /*!< 0x00000400 */
-#define RCC_APB2RSTR_ADC2RST                 RCC_APB2RSTR_ADC2RST_Msk          /*!< ADC 2 interface reset */
+#define RCU_APB2RSTR_ADC2RST_Pos             (10U)                             
+#define RCU_APB2RSTR_ADC2RST_Msk             (0x1U << RCU_APB2RSTR_ADC2RST_Pos) /*!< 0x00000400 */
+#define RCU_APB2RSTR_ADC2RST                 RCU_APB2RSTR_ADC2RST_Msk          /*!< ADC 2 interface reset */
 
-#define RCC_APB2RSTR_TIM0RST_Pos             (11U)                             
-#define RCC_APB2RSTR_TIM0RST_Msk             (0x1U << RCC_APB2RSTR_TIM0RST_Pos) /*!< 0x00000800 */
-#define RCC_APB2RSTR_TIM0RST                 RCC_APB2RSTR_TIM0RST_Msk          /*!< TIM0 Timer reset */
-#define RCC_APB2RSTR_SPI1RST_Pos             (12U)                             
-#define RCC_APB2RSTR_SPI1RST_Msk             (0x1U << RCC_APB2RSTR_SPI1RST_Pos) /*!< 0x00001000 */
-#define RCC_APB2RSTR_SPI1RST                 RCC_APB2RSTR_SPI1RST_Msk          /*!< SPI 1 reset */
-#define RCC_APB2RSTR_USART0RST_Pos           (14U)                             
-#define RCC_APB2RSTR_USART0RST_Msk           (0x1U << RCC_APB2RSTR_USART0RST_Pos) /*!< 0x00004000 */
-#define RCC_APB2RSTR_USART0RST               RCC_APB2RSTR_USART0RST_Msk        /*!< USART0 reset */
-
-
-#define RCC_APB2RSTR_IOPERST_Pos             (6U)                              
-#define RCC_APB2RSTR_IOPERST_Msk             (0x1U << RCC_APB2RSTR_IOPERST_Pos) /*!< 0x00000040 */
-#define RCC_APB2RSTR_IOPERST                 RCC_APB2RSTR_IOPERST_Msk          /*!< I/O port E reset */
+#define RCU_APB2RSTR_TIM0RST_Pos             (11U)                             
+#define RCU_APB2RSTR_TIM0RST_Msk             (0x1U << RCU_APB2RSTR_TIM0RST_Pos) /*!< 0x00000800 */
+#define RCU_APB2RSTR_TIM0RST                 RCU_APB2RSTR_TIM0RST_Msk          /*!< TIM0 Timer reset */
+#define RCU_APB2RSTR_SPI1RST_Pos             (12U)                             
+#define RCU_APB2RSTR_SPI1RST_Msk             (0x1U << RCU_APB2RSTR_SPI1RST_Pos) /*!< 0x00001000 */
+#define RCU_APB2RSTR_SPI1RST                 RCU_APB2RSTR_SPI1RST_Msk          /*!< SPI 1 reset */
+#define RCU_APB2RSTR_USART0RST_Pos           (14U)                             
+#define RCU_APB2RSTR_USART0RST_Msk           (0x1U << RCU_APB2RSTR_USART0RST_Pos) /*!< 0x00004000 */
+#define RCU_APB2RSTR_USART0RST               RCU_APB2RSTR_USART0RST_Msk        /*!< USART0 reset */
 
 
-
-
-/*****************  Bit definition for RCC_APB1RSTR register  *****************/
-#define RCC_APB1RSTR_TIM1RST_Pos             (0U)                              
-#define RCC_APB1RSTR_TIM1RST_Msk             (0x1U << RCC_APB1RSTR_TIM1RST_Pos) /*!< 0x00000001 */
-#define RCC_APB1RSTR_TIM1RST                 RCC_APB1RSTR_TIM1RST_Msk          /*!< Timer 2 reset */
-#define RCC_APB1RSTR_TIM2RST_Pos             (1U)                              
-#define RCC_APB1RSTR_TIM2RST_Msk             (0x1U << RCC_APB1RSTR_TIM2RST_Pos) /*!< 0x00000002 */
-#define RCC_APB1RSTR_TIM2RST                 RCC_APB1RSTR_TIM2RST_Msk          /*!< Timer 3 reset */
-#define RCC_APB1RSTR_WWDGRST_Pos             (11U)                             
-#define RCC_APB1RSTR_WWDGRST_Msk             (0x1U << RCC_APB1RSTR_WWDGRST_Pos) /*!< 0x00000800 */
-#define RCC_APB1RSTR_WWDGRST                 RCC_APB1RSTR_WWDGRST_Msk          /*!< Window Watchdog reset */
-#define RCC_APB1RSTR_USART1RST_Pos           (17U)                             
-#define RCC_APB1RSTR_USART1RST_Msk           (0x1U << RCC_APB1RSTR_USART1RST_Pos) /*!< 0x00020000 */
-#define RCC_APB1RSTR_USART1RST               RCC_APB1RSTR_USART1RST_Msk        /*!< USART 2 reset */
-#define RCC_APB1RSTR_I2C0RST_Pos             (21U)                             
-#define RCC_APB1RSTR_I2C0RST_Msk             (0x1U << RCC_APB1RSTR_I2C0RST_Pos) /*!< 0x00200000 */
-#define RCC_APB1RSTR_I2C0RST                 RCC_APB1RSTR_I2C0RST_Msk          /*!< I2C 1 reset */
-
-#define RCC_APB1RSTR_CAN1RST_Pos             (25U)                             
-#define RCC_APB1RSTR_CAN1RST_Msk             (0x1U << RCC_APB1RSTR_CAN1RST_Pos) /*!< 0x02000000 */
-#define RCC_APB1RSTR_CAN1RST                 RCC_APB1RSTR_CAN1RST_Msk          /*!< CAN1 reset */
-
-#define RCC_APB1RSTR_BKPRST_Pos              (27U)                             
-#define RCC_APB1RSTR_BKPRST_Msk              (0x1U << RCC_APB1RSTR_BKPRST_Pos) /*!< 0x08000000 */
-#define RCC_APB1RSTR_BKPRST                  RCC_APB1RSTR_BKPRST_Msk           /*!< Backup interface reset */
-#define RCC_APB1RSTR_PWRRST_Pos              (28U)                             
-#define RCC_APB1RSTR_PWRRST_Msk              (0x1U << RCC_APB1RSTR_PWRRST_Pos) /*!< 0x10000000 */
-#define RCC_APB1RSTR_PWRRST                  RCC_APB1RSTR_PWRRST_Msk           /*!< Power interface reset */
-
-#define RCC_APB1RSTR_TIM3RST_Pos             (2U)                              
-#define RCC_APB1RSTR_TIM3RST_Msk             (0x1U << RCC_APB1RSTR_TIM3RST_Pos) /*!< 0x00000004 */
-#define RCC_APB1RSTR_TIM3RST                 RCC_APB1RSTR_TIM3RST_Msk          /*!< Timer 4 reset */
-#define RCC_APB1RSTR_SPI2RST_Pos             (14U)                             
-#define RCC_APB1RSTR_SPI2RST_Msk             (0x1U << RCC_APB1RSTR_SPI2RST_Pos) /*!< 0x00004000 */
-#define RCC_APB1RSTR_SPI2RST                 RCC_APB1RSTR_SPI2RST_Msk          /*!< SPI 2 reset */
-#define RCC_APB1RSTR_USART2RST_Pos           (18U)                             
-#define RCC_APB1RSTR_USART2RST_Msk           (0x1U << RCC_APB1RSTR_USART2RST_Pos) /*!< 0x00040000 */
-#define RCC_APB1RSTR_USART2RST               RCC_APB1RSTR_USART2RST_Msk        /*!< USART 3 reset */
-#define RCC_APB1RSTR_I2C1RST_Pos             (22U)                             
-#define RCC_APB1RSTR_I2C1RST_Msk             (0x1U << RCC_APB1RSTR_I2C1RST_Pos) /*!< 0x00400000 */
-#define RCC_APB1RSTR_I2C1RST                 RCC_APB1RSTR_I2C1RST_Msk          /*!< I2C 2 reset */
-
-
-#define RCC_APB1RSTR_TIM4RST_Pos             (3U)                              
-#define RCC_APB1RSTR_TIM4RST_Msk             (0x1U << RCC_APB1RSTR_TIM4RST_Pos) /*!< 0x00000008 */
-#define RCC_APB1RSTR_TIM4RST                 RCC_APB1RSTR_TIM4RST_Msk          /*!< Timer 5 reset */
-#define RCC_APB1RSTR_TIM5RST_Pos             (4U)                              
-#define RCC_APB1RSTR_TIM5RST_Msk             (0x1U << RCC_APB1RSTR_TIM5RST_Pos) /*!< 0x00000010 */
-#define RCC_APB1RSTR_TIM5RST                 RCC_APB1RSTR_TIM5RST_Msk          /*!< Timer 6 reset */
-#define RCC_APB1RSTR_TIM6RST_Pos             (5U)                              
-#define RCC_APB1RSTR_TIM6RST_Msk             (0x1U << RCC_APB1RSTR_TIM6RST_Pos) /*!< 0x00000020 */
-#define RCC_APB1RSTR_TIM6RST                 RCC_APB1RSTR_TIM6RST_Msk          /*!< Timer 7 reset */
-#define RCC_APB1RSTR_SPI3RST_Pos             (15U)                             
-#define RCC_APB1RSTR_SPI3RST_Msk             (0x1U << RCC_APB1RSTR_SPI3RST_Pos) /*!< 0x00008000 */
-#define RCC_APB1RSTR_SPI3RST                 RCC_APB1RSTR_SPI3RST_Msk          /*!< SPI 3 reset */
-#define RCC_APB1RSTR_UART3RST_Pos            (19U)                             
-#define RCC_APB1RSTR_UART3RST_Msk            (0x1U << RCC_APB1RSTR_UART3RST_Pos) /*!< 0x00080000 */
-#define RCC_APB1RSTR_UART3RST                RCC_APB1RSTR_UART3RST_Msk         /*!< UART 4 reset */
-#define RCC_APB1RSTR_UART4RST_Pos            (20U)                             
-#define RCC_APB1RSTR_UART4RST_Msk            (0x1U << RCC_APB1RSTR_UART4RST_Pos) /*!< 0x00100000 */
-#define RCC_APB1RSTR_UART4RST                RCC_APB1RSTR_UART4RST_Msk         /*!< UART 5 reset */
-
-
-
-#define RCC_APB1RSTR_CAN2RST_Pos             (26U)                             
-#define RCC_APB1RSTR_CAN2RST_Msk             (0x1U << RCC_APB1RSTR_CAN2RST_Pos) /*!< 0x04000000 */
-#define RCC_APB1RSTR_CAN2RST                 RCC_APB1RSTR_CAN2RST_Msk          /*!< CAN2 reset */
-
-#define RCC_APB1RSTR_DACRST_Pos              (29U)                             
-#define RCC_APB1RSTR_DACRST_Msk              (0x1U << RCC_APB1RSTR_DACRST_Pos) /*!< 0x20000000 */
-#define RCC_APB1RSTR_DACRST                  RCC_APB1RSTR_DACRST_Msk           /*!< DAC interface reset */
-
-/******************  Bit definition for RCC_AHBENR register  ******************/
-#define RCC_AHBENR_DMA0EN_Pos                (0U)                              
-#define RCC_AHBENR_DMA0EN_Msk                (0x1U << RCC_AHBENR_DMA0EN_Pos)   /*!< 0x00000001 */
-#define RCC_AHBENR_DMA0EN                    RCC_AHBENR_DMA0EN_Msk             /*!< DMA0 clock enable */
-#define RCC_AHBENR_SRAMEN_Pos                (2U)                              
-#define RCC_AHBENR_SRAMEN_Msk                (0x1U << RCC_AHBENR_SRAMEN_Pos)   /*!< 0x00000004 */
-#define RCC_AHBENR_SRAMEN                    RCC_AHBENR_SRAMEN_Msk             /*!< SRAM interface clock enable */
-#define RCC_AHBENR_FLITFEN_Pos               (4U)                              
-#define RCC_AHBENR_FLITFEN_Msk               (0x1U << RCC_AHBENR_FLITFEN_Pos)  /*!< 0x00000010 */
-#define RCC_AHBENR_FLITFEN                   RCC_AHBENR_FLITFEN_Msk            /*!< FLITF clock enable */
-#define RCC_AHBENR_CRCEN_Pos                 (6U)                              
-#define RCC_AHBENR_CRCEN_Msk                 (0x1U << RCC_AHBENR_CRCEN_Pos)    /*!< 0x00000040 */
-#define RCC_AHBENR_CRCEN                     RCC_AHBENR_CRCEN_Msk              /*!< CRC clock enable */
-
-#define RCC_AHBENR_DMA1EN_Pos                (1U)                              
-#define RCC_AHBENR_DMA1EN_Msk                (0x1U << RCC_AHBENR_DMA1EN_Pos)   /*!< 0x00000002 */
-#define RCC_AHBENR_DMA1EN                    RCC_AHBENR_DMA1EN_Msk             /*!< DMA1 clock enable */
-
-
-#define RCC_AHBENR_OTGFSEN_Pos               (12U)                             
-#define RCC_AHBENR_OTGFSEN_Msk               (0x1U << RCC_AHBENR_OTGFSEN_Pos)  /*!< 0x00001000 */
-#define RCC_AHBENR_OTGFSEN                   RCC_AHBENR_OTGFSEN_Msk            /*!< USB OTG FS clock enable */
-
-/******************  Bit definition for RCC_APB2ENR register  *****************/
-#define RCC_APB2ENR_AFIOEN_Pos               (0U)                              
-#define RCC_APB2ENR_AFIOEN_Msk               (0x1U << RCC_APB2ENR_AFIOEN_Pos)  /*!< 0x00000001 */
-#define RCC_APB2ENR_AFIOEN                   RCC_APB2ENR_AFIOEN_Msk            /*!< Alternate Function I/O clock enable */
-#define RCC_APB2ENR_IOPAEN_Pos               (2U)                              
-#define RCC_APB2ENR_IOPAEN_Msk               (0x1U << RCC_APB2ENR_IOPAEN_Pos)  /*!< 0x00000004 */
-#define RCC_APB2ENR_IOPAEN                   RCC_APB2ENR_IOPAEN_Msk            /*!< I/O port A clock enable */
-#define RCC_APB2ENR_IOPBEN_Pos               (3U)                              
-#define RCC_APB2ENR_IOPBEN_Msk               (0x1U << RCC_APB2ENR_IOPBEN_Pos)  /*!< 0x00000008 */
-#define RCC_APB2ENR_IOPBEN                   RCC_APB2ENR_IOPBEN_Msk            /*!< I/O port B clock enable */
-#define RCC_APB2ENR_IOPCEN_Pos               (4U)                              
-#define RCC_APB2ENR_IOPCEN_Msk               (0x1U << RCC_APB2ENR_IOPCEN_Pos)  /*!< 0x00000010 */
-#define RCC_APB2ENR_IOPCEN                   RCC_APB2ENR_IOPCEN_Msk            /*!< I/O port C clock enable */
-#define RCC_APB2ENR_IOPDEN_Pos               (5U)                              
-#define RCC_APB2ENR_IOPDEN_Msk               (0x1U << RCC_APB2ENR_IOPDEN_Pos)  /*!< 0x00000020 */
-#define RCC_APB2ENR_IOPDEN                   RCC_APB2ENR_IOPDEN_Msk            /*!< I/O port D clock enable */
-#define RCC_APB2ENR_ADC1EN_Pos               (9U)                              
-#define RCC_APB2ENR_ADC1EN_Msk               (0x1U << RCC_APB2ENR_ADC1EN_Pos)  /*!< 0x00000200 */
-#define RCC_APB2ENR_ADC1EN                   RCC_APB2ENR_ADC1EN_Msk            /*!< ADC 1 interface clock enable */
-
-#define RCC_APB2ENR_ADC2EN_Pos               (10U)                             
-#define RCC_APB2ENR_ADC2EN_Msk               (0x1U << RCC_APB2ENR_ADC2EN_Pos)  /*!< 0x00000400 */
-#define RCC_APB2ENR_ADC2EN                   RCC_APB2ENR_ADC2EN_Msk            /*!< ADC 2 interface clock enable */
-
-#define RCC_APB2ENR_TIM0EN_Pos               (11U)                             
-#define RCC_APB2ENR_TIM0EN_Msk               (0x1U << RCC_APB2ENR_TIM0EN_Pos)  /*!< 0x00000800 */
-#define RCC_APB2ENR_TIM0EN                   RCC_APB2ENR_TIM0EN_Msk            /*!< TIM0 Timer clock enable */
-#define RCC_APB2ENR_SPI1EN_Pos               (12U)                             
-#define RCC_APB2ENR_SPI1EN_Msk               (0x1U << RCC_APB2ENR_SPI1EN_Pos)  /*!< 0x00001000 */
-#define RCC_APB2ENR_SPI1EN                   RCC_APB2ENR_SPI1EN_Msk            /*!< SPI 1 clock enable */
-#define RCC_APB2ENR_USART0EN_Pos             (14U)                             
-#define RCC_APB2ENR_USART0EN_Msk             (0x1U << RCC_APB2ENR_USART0EN_Pos) /*!< 0x00004000 */
-#define RCC_APB2ENR_USART0EN                 RCC_APB2ENR_USART0EN_Msk          /*!< USART0 clock enable */
-
-
-#define RCC_APB2ENR_IOPEEN_Pos               (6U)                              
-#define RCC_APB2ENR_IOPEEN_Msk               (0x1U << RCC_APB2ENR_IOPEEN_Pos)  /*!< 0x00000040 */
-#define RCC_APB2ENR_IOPEEN                   RCC_APB2ENR_IOPEEN_Msk            /*!< I/O port E clock enable */
+#define RCU_APB2RSTR_IOPERST_Pos             (6U)                              
+#define RCU_APB2RSTR_IOPERST_Msk             (0x1U << RCU_APB2RSTR_IOPERST_Pos) /*!< 0x00000040 */
+#define RCU_APB2RSTR_IOPERST                 RCU_APB2RSTR_IOPERST_Msk          /*!< I/O port E reset */
 
 
 
 
-/*****************  Bit definition for RCC_APB1ENR register  ******************/
-#define RCC_APB1ENR_TIM1EN_Pos               (0U)                              
-#define RCC_APB1ENR_TIM1EN_Msk               (0x1U << RCC_APB1ENR_TIM1EN_Pos)  /*!< 0x00000001 */
-#define RCC_APB1ENR_TIM1EN                   RCC_APB1ENR_TIM1EN_Msk            /*!< Timer 2 clock enabled*/
-#define RCC_APB1ENR_TIM2EN_Pos               (1U)                              
-#define RCC_APB1ENR_TIM2EN_Msk               (0x1U << RCC_APB1ENR_TIM2EN_Pos)  /*!< 0x00000002 */
-#define RCC_APB1ENR_TIM2EN                   RCC_APB1ENR_TIM2EN_Msk            /*!< Timer 3 clock enable */
-#define RCC_APB1ENR_WWDGEN_Pos               (11U)                             
-#define RCC_APB1ENR_WWDGEN_Msk               (0x1U << RCC_APB1ENR_WWDGEN_Pos)  /*!< 0x00000800 */
-#define RCC_APB1ENR_WWDGEN                   RCC_APB1ENR_WWDGEN_Msk            /*!< Window Watchdog clock enable */
-#define RCC_APB1ENR_USART1EN_Pos             (17U)                             
-#define RCC_APB1ENR_USART1EN_Msk             (0x1U << RCC_APB1ENR_USART1EN_Pos) /*!< 0x00020000 */
-#define RCC_APB1ENR_USART1EN                 RCC_APB1ENR_USART1EN_Msk          /*!< USART 2 clock enable */
-#define RCC_APB1ENR_I2C0EN_Pos               (21U)                             
-#define RCC_APB1ENR_I2C0EN_Msk               (0x1U << RCC_APB1ENR_I2C0EN_Pos)  /*!< 0x00200000 */
-#define RCC_APB1ENR_I2C0EN                   RCC_APB1ENR_I2C0EN_Msk            /*!< I2C 1 clock enable */
+/*****************  Bit definition for RCU_APB1RSTR register  *****************/
+#define RCU_APB1RSTR_TIM1RST_Pos             (0U)                              
+#define RCU_APB1RSTR_TIM1RST_Msk             (0x1U << RCU_APB1RSTR_TIM1RST_Pos) /*!< 0x00000001 */
+#define RCU_APB1RSTR_TIM1RST                 RCU_APB1RSTR_TIM1RST_Msk          /*!< Timer 2 reset */
+#define RCU_APB1RSTR_TIM2RST_Pos             (1U)                              
+#define RCU_APB1RSTR_TIM2RST_Msk             (0x1U << RCU_APB1RSTR_TIM2RST_Pos) /*!< 0x00000002 */
+#define RCU_APB1RSTR_TIM2RST                 RCU_APB1RSTR_TIM2RST_Msk          /*!< Timer 3 reset */
+#define RCU_APB1RSTR_WWDGRST_Pos             (11U)                             
+#define RCU_APB1RSTR_WWDGRST_Msk             (0x1U << RCU_APB1RSTR_WWDGRST_Pos) /*!< 0x00000800 */
+#define RCU_APB1RSTR_WWDGRST                 RCU_APB1RSTR_WWDGRST_Msk          /*!< Window Watchdog reset */
+#define RCU_APB1RSTR_USART1RST_Pos           (17U)                             
+#define RCU_APB1RSTR_USART1RST_Msk           (0x1U << RCU_APB1RSTR_USART1RST_Pos) /*!< 0x00020000 */
+#define RCU_APB1RSTR_USART1RST               RCU_APB1RSTR_USART1RST_Msk        /*!< USART 2 reset */
+#define RCU_APB1RSTR_I2C0RST_Pos             (21U)                             
+#define RCU_APB1RSTR_I2C0RST_Msk             (0x1U << RCU_APB1RSTR_I2C0RST_Pos) /*!< 0x00200000 */
+#define RCU_APB1RSTR_I2C0RST                 RCU_APB1RSTR_I2C0RST_Msk          /*!< I2C 1 reset */
 
-#define RCC_APB1ENR_CAN1EN_Pos               (25U)                             
-#define RCC_APB1ENR_CAN1EN_Msk               (0x1U << RCC_APB1ENR_CAN1EN_Pos)  /*!< 0x02000000 */
-#define RCC_APB1ENR_CAN1EN                   RCC_APB1ENR_CAN1EN_Msk            /*!< CAN1 clock enable */
+#define RCU_APB1RSTR_CAN1RST_Pos             (25U)                             
+#define RCU_APB1RSTR_CAN1RST_Msk             (0x1U << RCU_APB1RSTR_CAN1RST_Pos) /*!< 0x02000000 */
+#define RCU_APB1RSTR_CAN1RST                 RCU_APB1RSTR_CAN1RST_Msk          /*!< CAN1 reset */
 
-#define RCC_APB1ENR_BKPEN_Pos                (27U)                             
-#define RCC_APB1ENR_BKPEN_Msk                (0x1U << RCC_APB1ENR_BKPEN_Pos)   /*!< 0x08000000 */
-#define RCC_APB1ENR_BKPEN                    RCC_APB1ENR_BKPEN_Msk             /*!< Backup interface clock enable */
-#define RCC_APB1ENR_PWREN_Pos                (28U)                             
-#define RCC_APB1ENR_PWREN_Msk                (0x1U << RCC_APB1ENR_PWREN_Pos)   /*!< 0x10000000 */
-#define RCC_APB1ENR_PWREN                    RCC_APB1ENR_PWREN_Msk             /*!< Power interface clock enable */
+#define RCU_APB1RSTR_BKPRST_Pos              (27U)                             
+#define RCU_APB1RSTR_BKPRST_Msk              (0x1U << RCU_APB1RSTR_BKPRST_Pos) /*!< 0x08000000 */
+#define RCU_APB1RSTR_BKPRST                  RCU_APB1RSTR_BKPRST_Msk           /*!< Backup interface reset */
+#define RCU_APB1RSTR_PWRRST_Pos              (28U)                             
+#define RCU_APB1RSTR_PWRRST_Msk              (0x1U << RCU_APB1RSTR_PWRRST_Pos) /*!< 0x10000000 */
+#define RCU_APB1RSTR_PWRRST                  RCU_APB1RSTR_PWRRST_Msk           /*!< Power interface reset */
 
-#define RCC_APB1ENR_TIM3EN_Pos               (2U)                              
-#define RCC_APB1ENR_TIM3EN_Msk               (0x1U << RCC_APB1ENR_TIM3EN_Pos)  /*!< 0x00000004 */
-#define RCC_APB1ENR_TIM3EN                   RCC_APB1ENR_TIM3EN_Msk            /*!< Timer 4 clock enable */
-#define RCC_APB1ENR_SPI2EN_Pos               (14U)                             
-#define RCC_APB1ENR_SPI2EN_Msk               (0x1U << RCC_APB1ENR_SPI2EN_Pos)  /*!< 0x00004000 */
-#define RCC_APB1ENR_SPI2EN                   RCC_APB1ENR_SPI2EN_Msk            /*!< SPI 2 clock enable */
-#define RCC_APB1ENR_USART2EN_Pos             (18U)                             
-#define RCC_APB1ENR_USART2EN_Msk             (0x1U << RCC_APB1ENR_USART2EN_Pos) /*!< 0x00040000 */
-#define RCC_APB1ENR_USART2EN                 RCC_APB1ENR_USART2EN_Msk          /*!< USART 3 clock enable */
-#define RCC_APB1ENR_I2C1EN_Pos               (22U)                             
-#define RCC_APB1ENR_I2C1EN_Msk               (0x1U << RCC_APB1ENR_I2C1EN_Pos)  /*!< 0x00400000 */
-#define RCC_APB1ENR_I2C1EN                   RCC_APB1ENR_I2C1EN_Msk            /*!< I2C 2 clock enable */
-
-
-#define RCC_APB1ENR_TIM4EN_Pos               (3U)                              
-#define RCC_APB1ENR_TIM4EN_Msk               (0x1U << RCC_APB1ENR_TIM4EN_Pos)  /*!< 0x00000008 */
-#define RCC_APB1ENR_TIM4EN                   RCC_APB1ENR_TIM4EN_Msk            /*!< Timer 5 clock enable */
-#define RCC_APB1ENR_TIM5EN_Pos               (4U)                              
-#define RCC_APB1ENR_TIM5EN_Msk               (0x1U << RCC_APB1ENR_TIM5EN_Pos)  /*!< 0x00000010 */
-#define RCC_APB1ENR_TIM5EN                   RCC_APB1ENR_TIM5EN_Msk            /*!< Timer 6 clock enable */
-#define RCC_APB1ENR_TIM6EN_Pos               (5U)                              
-#define RCC_APB1ENR_TIM6EN_Msk               (0x1U << RCC_APB1ENR_TIM6EN_Pos)  /*!< 0x00000020 */
-#define RCC_APB1ENR_TIM6EN                   RCC_APB1ENR_TIM6EN_Msk            /*!< Timer 7 clock enable */
-#define RCC_APB1ENR_SPI3EN_Pos               (15U)                             
-#define RCC_APB1ENR_SPI3EN_Msk               (0x1U << RCC_APB1ENR_SPI3EN_Pos)  /*!< 0x00008000 */
-#define RCC_APB1ENR_SPI3EN                   RCC_APB1ENR_SPI3EN_Msk            /*!< SPI 3 clock enable */
-#define RCC_APB1ENR_UART3EN_Pos              (19U)                             
-#define RCC_APB1ENR_UART3EN_Msk              (0x1U << RCC_APB1ENR_UART3EN_Pos) /*!< 0x00080000 */
-#define RCC_APB1ENR_UART3EN                  RCC_APB1ENR_UART3EN_Msk           /*!< UART 4 clock enable */
-#define RCC_APB1ENR_UART4EN_Pos              (20U)                             
-#define RCC_APB1ENR_UART4EN_Msk              (0x1U << RCC_APB1ENR_UART4EN_Pos) /*!< 0x00100000 */
-#define RCC_APB1ENR_UART4EN                  RCC_APB1ENR_UART4EN_Msk           /*!< UART 5 clock enable */
+#define RCU_APB1RSTR_TIM3RST_Pos             (2U)                              
+#define RCU_APB1RSTR_TIM3RST_Msk             (0x1U << RCU_APB1RSTR_TIM3RST_Pos) /*!< 0x00000004 */
+#define RCU_APB1RSTR_TIM3RST                 RCU_APB1RSTR_TIM3RST_Msk          /*!< Timer 4 reset */
+#define RCU_APB1RSTR_SPI2RST_Pos             (14U)                             
+#define RCU_APB1RSTR_SPI2RST_Msk             (0x1U << RCU_APB1RSTR_SPI2RST_Pos) /*!< 0x00004000 */
+#define RCU_APB1RSTR_SPI2RST                 RCU_APB1RSTR_SPI2RST_Msk          /*!< SPI 2 reset */
+#define RCU_APB1RSTR_USART2RST_Pos           (18U)                             
+#define RCU_APB1RSTR_USART2RST_Msk           (0x1U << RCU_APB1RSTR_USART2RST_Pos) /*!< 0x00040000 */
+#define RCU_APB1RSTR_USART2RST               RCU_APB1RSTR_USART2RST_Msk        /*!< USART 3 reset */
+#define RCU_APB1RSTR_I2C1RST_Pos             (22U)                             
+#define RCU_APB1RSTR_I2C1RST_Msk             (0x1U << RCU_APB1RSTR_I2C1RST_Pos) /*!< 0x00400000 */
+#define RCU_APB1RSTR_I2C1RST                 RCU_APB1RSTR_I2C1RST_Msk          /*!< I2C 2 reset */
 
 
+#define RCU_APB1RSTR_TIM4RST_Pos             (3U)                              
+#define RCU_APB1RSTR_TIM4RST_Msk             (0x1U << RCU_APB1RSTR_TIM4RST_Pos) /*!< 0x00000008 */
+#define RCU_APB1RSTR_TIM4RST                 RCU_APB1RSTR_TIM4RST_Msk          /*!< Timer 5 reset */
+#define RCU_APB1RSTR_TIM5RST_Pos             (4U)                              
+#define RCU_APB1RSTR_TIM5RST_Msk             (0x1U << RCU_APB1RSTR_TIM5RST_Pos) /*!< 0x00000010 */
+#define RCU_APB1RSTR_TIM5RST                 RCU_APB1RSTR_TIM5RST_Msk          /*!< Timer 6 reset */
+#define RCU_APB1RSTR_TIM6RST_Pos             (5U)                              
+#define RCU_APB1RSTR_TIM6RST_Msk             (0x1U << RCU_APB1RSTR_TIM6RST_Pos) /*!< 0x00000020 */
+#define RCU_APB1RSTR_TIM6RST                 RCU_APB1RSTR_TIM6RST_Msk          /*!< Timer 7 reset */
+#define RCU_APB1RSTR_SPI3RST_Pos             (15U)                             
+#define RCU_APB1RSTR_SPI3RST_Msk             (0x1U << RCU_APB1RSTR_SPI3RST_Pos) /*!< 0x00008000 */
+#define RCU_APB1RSTR_SPI3RST                 RCU_APB1RSTR_SPI3RST_Msk          /*!< SPI 3 reset */
+#define RCU_APB1RSTR_UART3RST_Pos            (19U)                             
+#define RCU_APB1RSTR_UART3RST_Msk            (0x1U << RCU_APB1RSTR_UART3RST_Pos) /*!< 0x00080000 */
+#define RCU_APB1RSTR_UART3RST                RCU_APB1RSTR_UART3RST_Msk         /*!< UART 4 reset */
+#define RCU_APB1RSTR_UART4RST_Pos            (20U)                             
+#define RCU_APB1RSTR_UART4RST_Msk            (0x1U << RCU_APB1RSTR_UART4RST_Pos) /*!< 0x00100000 */
+#define RCU_APB1RSTR_UART4RST                RCU_APB1RSTR_UART4RST_Msk         /*!< UART 5 reset */
 
-#define RCC_APB1ENR_CAN2EN_Pos               (26U)                             
-#define RCC_APB1ENR_CAN2EN_Msk               (0x1U << RCC_APB1ENR_CAN2EN_Pos)  /*!< 0x04000000 */
-#define RCC_APB1ENR_CAN2EN                   RCC_APB1ENR_CAN2EN_Msk            /*!< CAN2 clock enable */
 
-#define RCC_APB1ENR_DACEN_Pos                (29U)                             
-#define RCC_APB1ENR_DACEN_Msk                (0x1U << RCC_APB1ENR_DACEN_Pos)   /*!< 0x20000000 */
-#define RCC_APB1ENR_DACEN                    RCC_APB1ENR_DACEN_Msk             /*!< DAC interface clock enable */
 
-/*******************  Bit definition for RCC_BDCR register  *******************/
-#define RCC_BDCR_LSEON_Pos                   (0U)                              
-#define RCC_BDCR_LSEON_Msk                   (0x1U << RCC_BDCR_LSEON_Pos)      /*!< 0x00000001 */
-#define RCC_BDCR_LSEON                       RCC_BDCR_LSEON_Msk                /*!< External Low Speed oscillator enable */
-#define RCC_BDCR_LSERDY_Pos                  (1U)                              
-#define RCC_BDCR_LSERDY_Msk                  (0x1U << RCC_BDCR_LSERDY_Pos)     /*!< 0x00000002 */
-#define RCC_BDCR_LSERDY                      RCC_BDCR_LSERDY_Msk               /*!< External Low Speed oscillator Ready */
-#define RCC_BDCR_LSEBYP_Pos                  (2U)                              
-#define RCC_BDCR_LSEBYP_Msk                  (0x1U << RCC_BDCR_LSEBYP_Pos)     /*!< 0x00000004 */
-#define RCC_BDCR_LSEBYP                      RCC_BDCR_LSEBYP_Msk               /*!< External Low Speed oscillator Bypass */
+#define RCU_APB1RSTR_CAN2RST_Pos             (26U)                             
+#define RCU_APB1RSTR_CAN2RST_Msk             (0x1U << RCU_APB1RSTR_CAN2RST_Pos) /*!< 0x04000000 */
+#define RCU_APB1RSTR_CAN2RST                 RCU_APB1RSTR_CAN2RST_Msk          /*!< CAN2 reset */
 
-#define RCC_BDCR_RTCSEL_Pos                  (8U)                              
-#define RCC_BDCR_RTCSEL_Msk                  (0x3U << RCC_BDCR_RTCSEL_Pos)     /*!< 0x00000300 */
-#define RCC_BDCR_RTCSEL                      RCC_BDCR_RTCSEL_Msk               /*!< RTCSEL[1:0] bits (RTC clock source selection) */
-#define RCC_BDCR_RTCSEL_0                    (0x1U << RCC_BDCR_RTCSEL_Pos)     /*!< 0x00000100 */
-#define RCC_BDCR_RTCSEL_1                    (0x2U << RCC_BDCR_RTCSEL_Pos)     /*!< 0x00000200 */
+#define RCU_APB1RSTR_DACRST_Pos              (29U)                             
+#define RCU_APB1RSTR_DACRST_Msk              (0x1U << RCU_APB1RSTR_DACRST_Pos) /*!< 0x20000000 */
+#define RCU_APB1RSTR_DACRST                  RCU_APB1RSTR_DACRST_Msk           /*!< DAC interface reset */
+
+/******************  Bit definition for RCU_AHBENR register  ******************/
+#define RCU_AHBENR_DMA0EN_Pos                (0U)                              
+#define RCU_AHBENR_DMA0EN_Msk                (0x1U << RCU_AHBENR_DMA0EN_Pos)   /*!< 0x00000001 */
+#define RCU_AHBENR_DMA0EN                    RCU_AHBENR_DMA0EN_Msk             /*!< DMA0 clock enable */
+#define RCU_AHBENR_SRAMEN_Pos                (2U)                              
+#define RCU_AHBENR_SRAMEN_Msk                (0x1U << RCU_AHBENR_SRAMEN_Pos)   /*!< 0x00000004 */
+#define RCU_AHBENR_SRAMEN                    RCU_AHBENR_SRAMEN_Msk             /*!< SRAM interface clock enable */
+#define RCU_AHBENR_FLITFEN_Pos               (4U)                              
+#define RCU_AHBENR_FLITFEN_Msk               (0x1U << RCU_AHBENR_FLITFEN_Pos)  /*!< 0x00000010 */
+#define RCU_AHBENR_FLITFEN                   RCU_AHBENR_FLITFEN_Msk            /*!< FLITF clock enable */
+#define RCU_AHBENR_CRCEN_Pos                 (6U)                              
+#define RCU_AHBENR_CRCEN_Msk                 (0x1U << RCU_AHBENR_CRCEN_Pos)    /*!< 0x00000040 */
+#define RCU_AHBENR_CRCEN                     RCU_AHBENR_CRCEN_Msk              /*!< CRC clock enable */
+
+#define RCU_AHBENR_DMA1EN_Pos                (1U)                              
+#define RCU_AHBENR_DMA1EN_Msk                (0x1U << RCU_AHBENR_DMA1EN_Pos)   /*!< 0x00000002 */
+#define RCU_AHBENR_DMA1EN                    RCU_AHBENR_DMA1EN_Msk             /*!< DMA1 clock enable */
+
+
+#define RCU_AHBENR_OTGFSEN_Pos               (12U)                             
+#define RCU_AHBENR_OTGFSEN_Msk               (0x1U << RCU_AHBENR_OTGFSEN_Pos)  /*!< 0x00001000 */
+#define RCU_AHBENR_OTGFSEN                   RCU_AHBENR_OTGFSEN_Msk            /*!< USB OTG FS clock enable */
+
+/******************  Bit definition for RCU_APB2ENR register  *****************/
+#define RCU_APB2ENR_AFIOEN_Pos               (0U)                              
+#define RCU_APB2ENR_AFIOEN_Msk               (0x1U << RCU_APB2ENR_AFIOEN_Pos)  /*!< 0x00000001 */
+#define RCU_APB2ENR_AFIOEN                   RCU_APB2ENR_AFIOEN_Msk            /*!< Alternate Function I/O clock enable */
+#define RCU_APB2ENR_IOPAEN_Pos               (2U)                              
+#define RCU_APB2ENR_IOPAEN_Msk               (0x1U << RCU_APB2ENR_IOPAEN_Pos)  /*!< 0x00000004 */
+#define RCU_APB2ENR_IOPAEN                   RCU_APB2ENR_IOPAEN_Msk            /*!< I/O port A clock enable */
+#define RCU_APB2ENR_IOPBEN_Pos               (3U)                              
+#define RCU_APB2ENR_IOPBEN_Msk               (0x1U << RCU_APB2ENR_IOPBEN_Pos)  /*!< 0x00000008 */
+#define RCU_APB2ENR_IOPBEN                   RCU_APB2ENR_IOPBEN_Msk            /*!< I/O port B clock enable */
+#define RCU_APB2ENR_IOPCEN_Pos               (4U)                              
+#define RCU_APB2ENR_IOPCEN_Msk               (0x1U << RCU_APB2ENR_IOPCEN_Pos)  /*!< 0x00000010 */
+#define RCU_APB2ENR_IOPCEN                   RCU_APB2ENR_IOPCEN_Msk            /*!< I/O port C clock enable */
+#define RCU_APB2ENR_IOPDEN_Pos               (5U)                              
+#define RCU_APB2ENR_IOPDEN_Msk               (0x1U << RCU_APB2ENR_IOPDEN_Pos)  /*!< 0x00000020 */
+#define RCU_APB2ENR_IOPDEN                   RCU_APB2ENR_IOPDEN_Msk            /*!< I/O port D clock enable */
+#define RCU_APB2ENR_ADC1EN_Pos               (9U)                              
+#define RCU_APB2ENR_ADC1EN_Msk               (0x1U << RCU_APB2ENR_ADC1EN_Pos)  /*!< 0x00000200 */
+#define RCU_APB2ENR_ADC1EN                   RCU_APB2ENR_ADC1EN_Msk            /*!< ADC 1 interface clock enable */
+
+#define RCU_APB2ENR_ADC2EN_Pos               (10U)                             
+#define RCU_APB2ENR_ADC2EN_Msk               (0x1U << RCU_APB2ENR_ADC2EN_Pos)  /*!< 0x00000400 */
+#define RCU_APB2ENR_ADC2EN                   RCU_APB2ENR_ADC2EN_Msk            /*!< ADC 2 interface clock enable */
+
+#define RCU_APB2ENR_TIM0EN_Pos               (11U)                             
+#define RCU_APB2ENR_TIM0EN_Msk               (0x1U << RCU_APB2ENR_TIM0EN_Pos)  /*!< 0x00000800 */
+#define RCU_APB2ENR_TIM0EN                   RCU_APB2ENR_TIM0EN_Msk            /*!< TIM0 Timer clock enable */
+#define RCU_APB2ENR_SPI1EN_Pos               (12U)                             
+#define RCU_APB2ENR_SPI1EN_Msk               (0x1U << RCU_APB2ENR_SPI1EN_Pos)  /*!< 0x00001000 */
+#define RCU_APB2ENR_SPI1EN                   RCU_APB2ENR_SPI1EN_Msk            /*!< SPI 1 clock enable */
+#define RCU_APB2ENR_USART0EN_Pos             (14U)                             
+#define RCU_APB2ENR_USART0EN_Msk             (0x1U << RCU_APB2ENR_USART0EN_Pos) /*!< 0x00004000 */
+#define RCU_APB2ENR_USART0EN                 RCU_APB2ENR_USART0EN_Msk          /*!< USART0 clock enable */
+
+
+#define RCU_APB2ENR_IOPEEN_Pos               (6U)                              
+#define RCU_APB2ENR_IOPEEN_Msk               (0x1U << RCU_APB2ENR_IOPEEN_Pos)  /*!< 0x00000040 */
+#define RCU_APB2ENR_IOPEEN                   RCU_APB2ENR_IOPEEN_Msk            /*!< I/O port E clock enable */
+
+
+
+
+/*****************  Bit definition for RCU_APB1ENR register  ******************/
+#define RCU_APB1ENR_TIM1EN_Pos               (0U)                              
+#define RCU_APB1ENR_TIM1EN_Msk               (0x1U << RCU_APB1ENR_TIM1EN_Pos)  /*!< 0x00000001 */
+#define RCU_APB1ENR_TIM1EN                   RCU_APB1ENR_TIM1EN_Msk            /*!< Timer 2 clock enabled*/
+#define RCU_APB1ENR_TIM2EN_Pos               (1U)                              
+#define RCU_APB1ENR_TIM2EN_Msk               (0x1U << RCU_APB1ENR_TIM2EN_Pos)  /*!< 0x00000002 */
+#define RCU_APB1ENR_TIM2EN                   RCU_APB1ENR_TIM2EN_Msk            /*!< Timer 3 clock enable */
+#define RCU_APB1ENR_WWDGEN_Pos               (11U)                             
+#define RCU_APB1ENR_WWDGEN_Msk               (0x1U << RCU_APB1ENR_WWDGEN_Pos)  /*!< 0x00000800 */
+#define RCU_APB1ENR_WWDGEN                   RCU_APB1ENR_WWDGEN_Msk            /*!< Window Watchdog clock enable */
+#define RCU_APB1ENR_USART1EN_Pos             (17U)                             
+#define RCU_APB1ENR_USART1EN_Msk             (0x1U << RCU_APB1ENR_USART1EN_Pos) /*!< 0x00020000 */
+#define RCU_APB1ENR_USART1EN                 RCU_APB1ENR_USART1EN_Msk          /*!< USART 2 clock enable */
+#define RCU_APB1ENR_I2C0EN_Pos               (21U)                             
+#define RCU_APB1ENR_I2C0EN_Msk               (0x1U << RCU_APB1ENR_I2C0EN_Pos)  /*!< 0x00200000 */
+#define RCU_APB1ENR_I2C0EN                   RCU_APB1ENR_I2C0EN_Msk            /*!< I2C 1 clock enable */
+
+#define RCU_APB1ENR_CAN1EN_Pos               (25U)                             
+#define RCU_APB1ENR_CAN1EN_Msk               (0x1U << RCU_APB1ENR_CAN1EN_Pos)  /*!< 0x02000000 */
+#define RCU_APB1ENR_CAN1EN                   RCU_APB1ENR_CAN1EN_Msk            /*!< CAN1 clock enable */
+
+#define RCU_APB1ENR_BKPEN_Pos                (27U)                             
+#define RCU_APB1ENR_BKPEN_Msk                (0x1U << RCU_APB1ENR_BKPEN_Pos)   /*!< 0x08000000 */
+#define RCU_APB1ENR_BKPEN                    RCU_APB1ENR_BKPEN_Msk             /*!< Backup interface clock enable */
+#define RCU_APB1ENR_PWREN_Pos                (28U)                             
+#define RCU_APB1ENR_PWREN_Msk                (0x1U << RCU_APB1ENR_PWREN_Pos)   /*!< 0x10000000 */
+#define RCU_APB1ENR_PWREN                    RCU_APB1ENR_PWREN_Msk             /*!< Power interface clock enable */
+
+#define RCU_APB1ENR_TIM3EN_Pos               (2U)                              
+#define RCU_APB1ENR_TIM3EN_Msk               (0x1U << RCU_APB1ENR_TIM3EN_Pos)  /*!< 0x00000004 */
+#define RCU_APB1ENR_TIM3EN                   RCU_APB1ENR_TIM3EN_Msk            /*!< Timer 4 clock enable */
+#define RCU_APB1ENR_SPI2EN_Pos               (14U)                             
+#define RCU_APB1ENR_SPI2EN_Msk               (0x1U << RCU_APB1ENR_SPI2EN_Pos)  /*!< 0x00004000 */
+#define RCU_APB1ENR_SPI2EN                   RCU_APB1ENR_SPI2EN_Msk            /*!< SPI 2 clock enable */
+#define RCU_APB1ENR_USART2EN_Pos             (18U)                             
+#define RCU_APB1ENR_USART2EN_Msk             (0x1U << RCU_APB1ENR_USART2EN_Pos) /*!< 0x00040000 */
+#define RCU_APB1ENR_USART2EN                 RCU_APB1ENR_USART2EN_Msk          /*!< USART 3 clock enable */
+#define RCU_APB1ENR_I2C1EN_Pos               (22U)                             
+#define RCU_APB1ENR_I2C1EN_Msk               (0x1U << RCU_APB1ENR_I2C1EN_Pos)  /*!< 0x00400000 */
+#define RCU_APB1ENR_I2C1EN                   RCU_APB1ENR_I2C1EN_Msk            /*!< I2C 2 clock enable */
+
+
+#define RCU_APB1ENR_TIM4EN_Pos               (3U)                              
+#define RCU_APB1ENR_TIM4EN_Msk               (0x1U << RCU_APB1ENR_TIM4EN_Pos)  /*!< 0x00000008 */
+#define RCU_APB1ENR_TIM4EN                   RCU_APB1ENR_TIM4EN_Msk            /*!< Timer 5 clock enable */
+#define RCU_APB1ENR_TIM5EN_Pos               (4U)                              
+#define RCU_APB1ENR_TIM5EN_Msk               (0x1U << RCU_APB1ENR_TIM5EN_Pos)  /*!< 0x00000010 */
+#define RCU_APB1ENR_TIM5EN                   RCU_APB1ENR_TIM5EN_Msk            /*!< Timer 6 clock enable */
+#define RCU_APB1ENR_TIM6EN_Pos               (5U)                              
+#define RCU_APB1ENR_TIM6EN_Msk               (0x1U << RCU_APB1ENR_TIM6EN_Pos)  /*!< 0x00000020 */
+#define RCU_APB1ENR_TIM6EN                   RCU_APB1ENR_TIM6EN_Msk            /*!< Timer 7 clock enable */
+#define RCU_APB1ENR_SPI3EN_Pos               (15U)                             
+#define RCU_APB1ENR_SPI3EN_Msk               (0x1U << RCU_APB1ENR_SPI3EN_Pos)  /*!< 0x00008000 */
+#define RCU_APB1ENR_SPI3EN                   RCU_APB1ENR_SPI3EN_Msk            /*!< SPI 3 clock enable */
+#define RCU_APB1ENR_UART3EN_Pos              (19U)                             
+#define RCU_APB1ENR_UART3EN_Msk              (0x1U << RCU_APB1ENR_UART3EN_Pos) /*!< 0x00080000 */
+#define RCU_APB1ENR_UART3EN                  RCU_APB1ENR_UART3EN_Msk           /*!< UART 4 clock enable */
+#define RCU_APB1ENR_UART4EN_Pos              (20U)                             
+#define RCU_APB1ENR_UART4EN_Msk              (0x1U << RCU_APB1ENR_UART4EN_Pos) /*!< 0x00100000 */
+#define RCU_APB1ENR_UART4EN                  RCU_APB1ENR_UART4EN_Msk           /*!< UART 5 clock enable */
+
+
+
+#define RCU_APB1ENR_CAN2EN_Pos               (26U)                             
+#define RCU_APB1ENR_CAN2EN_Msk               (0x1U << RCU_APB1ENR_CAN2EN_Pos)  /*!< 0x04000000 */
+#define RCU_APB1ENR_CAN2EN                   RCU_APB1ENR_CAN2EN_Msk            /*!< CAN2 clock enable */
+
+#define RCU_APB1ENR_DACEN_Pos                (29U)                             
+#define RCU_APB1ENR_DACEN_Msk                (0x1U << RCU_APB1ENR_DACEN_Pos)   /*!< 0x20000000 */
+#define RCU_APB1ENR_DACEN                    RCU_APB1ENR_DACEN_Msk             /*!< DAC interface clock enable */
+
+/*******************  Bit definition for RCU_BDCR register  *******************/
+#define RCU_BDCR_LSEON_Pos                   (0U)                              
+#define RCU_BDCR_LSEON_Msk                   (0x1U << RCU_BDCR_LSEON_Pos)      /*!< 0x00000001 */
+#define RCU_BDCR_LSEON                       RCU_BDCR_LSEON_Msk                /*!< External Low Speed oscillator enable */
+#define RCU_BDCR_LSERDY_Pos                  (1U)                              
+#define RCU_BDCR_LSERDY_Msk                  (0x1U << RCU_BDCR_LSERDY_Pos)     /*!< 0x00000002 */
+#define RCU_BDCR_LSERDY                      RCU_BDCR_LSERDY_Msk               /*!< External Low Speed oscillator Ready */
+#define RCU_BDCR_LSEBYP_Pos                  (2U)                              
+#define RCU_BDCR_LSEBYP_Msk                  (0x1U << RCU_BDCR_LSEBYP_Pos)     /*!< 0x00000004 */
+#define RCU_BDCR_LSEBYP                      RCU_BDCR_LSEBYP_Msk               /*!< External Low Speed oscillator Bypass */
+
+#define RCU_BDCR_RTCSEL_Pos                  (8U)                              
+#define RCU_BDCR_RTCSEL_Msk                  (0x3U << RCU_BDCR_RTCSEL_Pos)     /*!< 0x00000300 */
+#define RCU_BDCR_RTCSEL                      RCU_BDCR_RTCSEL_Msk               /*!< RTCSEL[1:0] bits (RTC clock source selection) */
+#define RCU_BDCR_RTCSEL_0                    (0x1U << RCU_BDCR_RTCSEL_Pos)     /*!< 0x00000100 */
+#define RCU_BDCR_RTCSEL_1                    (0x2U << RCU_BDCR_RTCSEL_Pos)     /*!< 0x00000200 */
 
 /*!< RTC congiguration */
-#define RCC_BDCR_RTCSEL_NOCLOCK              0x00000000U                       /*!< No clock */
-#define RCC_BDCR_RTCSEL_LSE                  0x00000100U                       /*!< LSE oscillator clock used as RTC clock */
-#define RCC_BDCR_RTCSEL_LSI                  0x00000200U                       /*!< LSI oscillator clock used as RTC clock */
-#define RCC_BDCR_RTCSEL_HSE                  0x00000300U                       /*!< HSE oscillator clock divided by 128 used as RTC clock */
+#define RCU_BDCR_RTCSEL_NOCLOCK              0x00000000U                       /*!< No clock */
+#define RCU_BDCR_RTCSEL_LSE                  0x00000100U                       /*!< LSE oscillator clock used as RTC clock */
+#define RCU_BDCR_RTCSEL_LSI                  0x00000200U                       /*!< LSI oscillator clock used as RTC clock */
+#define RCU_BDCR_RTCSEL_HSE                  0x00000300U                       /*!< HSE oscillator clock divided by 128 used as RTC clock */
 
-#define RCC_BDCR_RTCEN_Pos                   (15U)                             
-#define RCC_BDCR_RTCEN_Msk                   (0x1U << RCC_BDCR_RTCEN_Pos)      /*!< 0x00008000 */
-#define RCC_BDCR_RTCEN                       RCC_BDCR_RTCEN_Msk                /*!< RTC clock enable */
-#define RCC_BDCR_BDRST_Pos                   (16U)                             
-#define RCC_BDCR_BDRST_Msk                   (0x1U << RCC_BDCR_BDRST_Pos)      /*!< 0x00010000 */
-#define RCC_BDCR_BDRST                       RCC_BDCR_BDRST_Msk                /*!< Backup domain software reset  */
+#define RCU_BDCR_RTCEN_Pos                   (15U)                             
+#define RCU_BDCR_RTCEN_Msk                   (0x1U << RCU_BDCR_RTCEN_Pos)      /*!< 0x00008000 */
+#define RCU_BDCR_RTCEN                       RCU_BDCR_RTCEN_Msk                /*!< RTC clock enable */
+#define RCU_BDCR_BDRST_Pos                   (16U)                             
+#define RCU_BDCR_BDRST_Msk                   (0x1U << RCU_BDCR_BDRST_Pos)      /*!< 0x00010000 */
+#define RCU_BDCR_BDRST                       RCU_BDCR_BDRST_Msk                /*!< Backup domain software reset  */
 
-/*******************  Bit definition for RCC_CSR register  ********************/  
-#define RCC_CSR_LSION_Pos                    (0U)                              
-#define RCC_CSR_LSION_Msk                    (0x1U << RCC_CSR_LSION_Pos)       /*!< 0x00000001 */
-#define RCC_CSR_LSION                        RCC_CSR_LSION_Msk                 /*!< Internal Low Speed oscillator enable */
-#define RCC_CSR_LSIRDY_Pos                   (1U)                              
-#define RCC_CSR_LSIRDY_Msk                   (0x1U << RCC_CSR_LSIRDY_Pos)      /*!< 0x00000002 */
-#define RCC_CSR_LSIRDY                       RCC_CSR_LSIRDY_Msk                /*!< Internal Low Speed oscillator Ready */
-#define RCC_CSR_RMVF_Pos                     (24U)                             
-#define RCC_CSR_RMVF_Msk                     (0x1U << RCC_CSR_RMVF_Pos)        /*!< 0x01000000 */
-#define RCC_CSR_RMVF                         RCC_CSR_RMVF_Msk                  /*!< Remove reset flag */
-#define RCC_CSR_PINRSTF_Pos                  (26U)                             
-#define RCC_CSR_PINRSTF_Msk                  (0x1U << RCC_CSR_PINRSTF_Pos)     /*!< 0x04000000 */
-#define RCC_CSR_PINRSTF                      RCC_CSR_PINRSTF_Msk               /*!< PIN reset flag */
-#define RCC_CSR_PORRSTF_Pos                  (27U)                             
-#define RCC_CSR_PORRSTF_Msk                  (0x1U << RCC_CSR_PORRSTF_Pos)     /*!< 0x08000000 */
-#define RCC_CSR_PORRSTF                      RCC_CSR_PORRSTF_Msk               /*!< POR/PDR reset flag */
-#define RCC_CSR_SFTRSTF_Pos                  (28U)                             
-#define RCC_CSR_SFTRSTF_Msk                  (0x1U << RCC_CSR_SFTRSTF_Pos)     /*!< 0x10000000 */
-#define RCC_CSR_SFTRSTF                      RCC_CSR_SFTRSTF_Msk               /*!< Software Reset flag */
-#define RCC_CSR_FWDGTRSTF_Pos                 (29U)                             
-#define RCC_CSR_FWDGTRSTF_Msk                 (0x1U << RCC_CSR_FWDGTRSTF_Pos)    /*!< 0x20000000 */
-#define RCC_CSR_FWDGTRSTF                     RCC_CSR_FWDGTRSTF_Msk              /*!< Independent Watchdog reset flag */
-#define RCC_CSR_WWDGRSTF_Pos                 (30U)                             
-#define RCC_CSR_WWDGRSTF_Msk                 (0x1U << RCC_CSR_WWDGRSTF_Pos)    /*!< 0x40000000 */
-#define RCC_CSR_WWDGRSTF                     RCC_CSR_WWDGRSTF_Msk              /*!< Window watchdog reset flag */
-#define RCC_CSR_LPWRRSTF_Pos                 (31U)                             
-#define RCC_CSR_LPWRRSTF_Msk                 (0x1U << RCC_CSR_LPWRRSTF_Pos)    /*!< 0x80000000 */
-#define RCC_CSR_LPWRRSTF                     RCC_CSR_LPWRRSTF_Msk              /*!< Low-Power reset flag */
+/*******************  Bit definition for RCU_CSR register  ********************/  
+#define RCU_CSR_LSION_Pos                    (0U)                              
+#define RCU_CSR_LSION_Msk                    (0x1U << RCU_CSR_LSION_Pos)       /*!< 0x00000001 */
+#define RCU_CSR_LSION                        RCU_CSR_LSION_Msk                 /*!< Internal Low Speed oscillator enable */
+#define RCU_CSR_LSIRDY_Pos                   (1U)                              
+#define RCU_CSR_LSIRDY_Msk                   (0x1U << RCU_CSR_LSIRDY_Pos)      /*!< 0x00000002 */
+#define RCU_CSR_LSIRDY                       RCU_CSR_LSIRDY_Msk                /*!< Internal Low Speed oscillator Ready */
+#define RCU_CSR_RMVF_Pos                     (24U)                             
+#define RCU_CSR_RMVF_Msk                     (0x1U << RCU_CSR_RMVF_Pos)        /*!< 0x01000000 */
+#define RCU_CSR_RMVF                         RCU_CSR_RMVF_Msk                  /*!< Remove reset flag */
+#define RCU_CSR_PINRSTF_Pos                  (26U)                             
+#define RCU_CSR_PINRSTF_Msk                  (0x1U << RCU_CSR_PINRSTF_Pos)     /*!< 0x04000000 */
+#define RCU_CSR_PINRSTF                      RCU_CSR_PINRSTF_Msk               /*!< PIN reset flag */
+#define RCU_CSR_PORRSTF_Pos                  (27U)                             
+#define RCU_CSR_PORRSTF_Msk                  (0x1U << RCU_CSR_PORRSTF_Pos)     /*!< 0x08000000 */
+#define RCU_CSR_PORRSTF                      RCU_CSR_PORRSTF_Msk               /*!< POR/PDR reset flag */
+#define RCU_CSR_SFTRSTF_Pos                  (28U)                             
+#define RCU_CSR_SFTRSTF_Msk                  (0x1U << RCU_CSR_SFTRSTF_Pos)     /*!< 0x10000000 */
+#define RCU_CSR_SFTRSTF                      RCU_CSR_SFTRSTF_Msk               /*!< Software Reset flag */
+#define RCU_CSR_FWDGTRSTF_Pos                 (29U)                             
+#define RCU_CSR_FWDGTRSTF_Msk                 (0x1U << RCU_CSR_FWDGTRSTF_Pos)    /*!< 0x20000000 */
+#define RCU_CSR_FWDGTRSTF                     RCU_CSR_FWDGTRSTF_Msk              /*!< Independent Watchdog reset flag */
+#define RCU_CSR_WWDGRSTF_Pos                 (30U)                             
+#define RCU_CSR_WWDGRSTF_Msk                 (0x1U << RCU_CSR_WWDGRSTF_Pos)    /*!< 0x40000000 */
+#define RCU_CSR_WWDGRSTF                     RCU_CSR_WWDGRSTF_Msk              /*!< Window watchdog reset flag */
+#define RCU_CSR_LPWRRSTF_Pos                 (31U)                             
+#define RCU_CSR_LPWRRSTF_Msk                 (0x1U << RCU_CSR_LPWRRSTF_Pos)    /*!< 0x80000000 */
+#define RCU_CSR_LPWRRSTF                     RCU_CSR_LPWRRSTF_Msk              /*!< Low-Power reset flag */
 
-/*******************  Bit definition for RCC_AHBRSTR register  ****************/
-#define RCC_AHBRSTR_OTGFSRST_Pos             (12U)                             
-#define RCC_AHBRSTR_OTGFSRST_Msk             (0x1U << RCC_AHBRSTR_OTGFSRST_Pos) /*!< 0x00001000 */
-#define RCC_AHBRSTR_OTGFSRST                 RCC_AHBRSTR_OTGFSRST_Msk          /*!< USB OTG FS reset */
+/*******************  Bit definition for RCU_AHBRSTR register  ****************/
+#define RCU_AHBRSTR_OTGFSRST_Pos             (12U)                             
+#define RCU_AHBRSTR_OTGFSRST_Msk             (0x1U << RCU_AHBRSTR_OTGFSRST_Pos) /*!< 0x00001000 */
+#define RCU_AHBRSTR_OTGFSRST                 RCU_AHBRSTR_OTGFSRST_Msk          /*!< USB OTG FS reset */
 
-/*******************  Bit definition for RCC_CFGR2 register  ******************/
+/*******************  Bit definition for RCU_CFGR2 register  ******************/
 /*!< PREDIV1 configuration */
-#define RCC_CFGR2_PREDIV1_Pos                (0U)                              
-#define RCC_CFGR2_PREDIV1_Msk                (0xFU << RCC_CFGR2_PREDIV1_Pos)   /*!< 0x0000000F */
-#define RCC_CFGR2_PREDIV1                    RCC_CFGR2_PREDIV1_Msk             /*!< PREDIV1[3:0] bits */
-#define RCC_CFGR2_PREDIV1_0                  (0x1U << RCC_CFGR2_PREDIV1_Pos)   /*!< 0x00000001 */
-#define RCC_CFGR2_PREDIV1_1                  (0x2U << RCC_CFGR2_PREDIV1_Pos)   /*!< 0x00000002 */
-#define RCC_CFGR2_PREDIV1_2                  (0x4U << RCC_CFGR2_PREDIV1_Pos)   /*!< 0x00000004 */
-#define RCC_CFGR2_PREDIV1_3                  (0x8U << RCC_CFGR2_PREDIV1_Pos)   /*!< 0x00000008 */
+#define RCU_CFGR2_PREDIV1_Pos                (0U)                              
+#define RCU_CFGR2_PREDIV1_Msk                (0xFU << RCU_CFGR2_PREDIV1_Pos)   /*!< 0x0000000F */
+#define RCU_CFGR2_PREDIV1                    RCU_CFGR2_PREDIV1_Msk             /*!< PREDIV1[3:0] bits */
+#define RCU_CFGR2_PREDIV1_0                  (0x1U << RCU_CFGR2_PREDIV1_Pos)   /*!< 0x00000001 */
+#define RCU_CFGR2_PREDIV1_1                  (0x2U << RCU_CFGR2_PREDIV1_Pos)   /*!< 0x00000002 */
+#define RCU_CFGR2_PREDIV1_2                  (0x4U << RCU_CFGR2_PREDIV1_Pos)   /*!< 0x00000004 */
+#define RCU_CFGR2_PREDIV1_3                  (0x8U << RCU_CFGR2_PREDIV1_Pos)   /*!< 0x00000008 */
 
-#define RCC_CFGR2_PREDIV1_DIV1               0x00000000U                       /*!< PREDIV1 input clock not divided */
-#define RCC_CFGR2_PREDIV1_DIV2_Pos           (0U)                              
-#define RCC_CFGR2_PREDIV1_DIV2_Msk           (0x1U << RCC_CFGR2_PREDIV1_DIV2_Pos) /*!< 0x00000001 */
-#define RCC_CFGR2_PREDIV1_DIV2               RCC_CFGR2_PREDIV1_DIV2_Msk        /*!< PREDIV1 input clock divided by 2 */
-#define RCC_CFGR2_PREDIV1_DIV3_Pos           (1U)                              
-#define RCC_CFGR2_PREDIV1_DIV3_Msk           (0x1U << RCC_CFGR2_PREDIV1_DIV3_Pos) /*!< 0x00000002 */
-#define RCC_CFGR2_PREDIV1_DIV3               RCC_CFGR2_PREDIV1_DIV3_Msk        /*!< PREDIV1 input clock divided by 3 */
-#define RCC_CFGR2_PREDIV1_DIV4_Pos           (0U)                              
-#define RCC_CFGR2_PREDIV1_DIV4_Msk           (0x3U << RCC_CFGR2_PREDIV1_DIV4_Pos) /*!< 0x00000003 */
-#define RCC_CFGR2_PREDIV1_DIV4               RCC_CFGR2_PREDIV1_DIV4_Msk        /*!< PREDIV1 input clock divided by 4 */
-#define RCC_CFGR2_PREDIV1_DIV5_Pos           (2U)                              
-#define RCC_CFGR2_PREDIV1_DIV5_Msk           (0x1U << RCC_CFGR2_PREDIV1_DIV5_Pos) /*!< 0x00000004 */
-#define RCC_CFGR2_PREDIV1_DIV5               RCC_CFGR2_PREDIV1_DIV5_Msk        /*!< PREDIV1 input clock divided by 5 */
-#define RCC_CFGR2_PREDIV1_DIV6_Pos           (0U)                              
-#define RCC_CFGR2_PREDIV1_DIV6_Msk           (0x5U << RCC_CFGR2_PREDIV1_DIV6_Pos) /*!< 0x00000005 */
-#define RCC_CFGR2_PREDIV1_DIV6               RCC_CFGR2_PREDIV1_DIV6_Msk        /*!< PREDIV1 input clock divided by 6 */
-#define RCC_CFGR2_PREDIV1_DIV7_Pos           (1U)                              
-#define RCC_CFGR2_PREDIV1_DIV7_Msk           (0x3U << RCC_CFGR2_PREDIV1_DIV7_Pos) /*!< 0x00000006 */
-#define RCC_CFGR2_PREDIV1_DIV7               RCC_CFGR2_PREDIV1_DIV7_Msk        /*!< PREDIV1 input clock divided by 7 */
-#define RCC_CFGR2_PREDIV1_DIV8_Pos           (0U)                              
-#define RCC_CFGR2_PREDIV1_DIV8_Msk           (0x7U << RCC_CFGR2_PREDIV1_DIV8_Pos) /*!< 0x00000007 */
-#define RCC_CFGR2_PREDIV1_DIV8               RCC_CFGR2_PREDIV1_DIV8_Msk        /*!< PREDIV1 input clock divided by 8 */
-#define RCC_CFGR2_PREDIV1_DIV9_Pos           (3U)                              
-#define RCC_CFGR2_PREDIV1_DIV9_Msk           (0x1U << RCC_CFGR2_PREDIV1_DIV9_Pos) /*!< 0x00000008 */
-#define RCC_CFGR2_PREDIV1_DIV9               RCC_CFGR2_PREDIV1_DIV9_Msk        /*!< PREDIV1 input clock divided by 9 */
-#define RCC_CFGR2_PREDIV1_DIV10_Pos          (0U)                              
-#define RCC_CFGR2_PREDIV1_DIV10_Msk          (0x9U << RCC_CFGR2_PREDIV1_DIV10_Pos) /*!< 0x00000009 */
-#define RCC_CFGR2_PREDIV1_DIV10              RCC_CFGR2_PREDIV1_DIV10_Msk       /*!< PREDIV1 input clock divided by 10 */
-#define RCC_CFGR2_PREDIV1_DIV11_Pos          (1U)                              
-#define RCC_CFGR2_PREDIV1_DIV11_Msk          (0x5U << RCC_CFGR2_PREDIV1_DIV11_Pos) /*!< 0x0000000A */
-#define RCC_CFGR2_PREDIV1_DIV11              RCC_CFGR2_PREDIV1_DIV11_Msk       /*!< PREDIV1 input clock divided by 11 */
-#define RCC_CFGR2_PREDIV1_DIV12_Pos          (0U)                              
-#define RCC_CFGR2_PREDIV1_DIV12_Msk          (0xBU << RCC_CFGR2_PREDIV1_DIV12_Pos) /*!< 0x0000000B */
-#define RCC_CFGR2_PREDIV1_DIV12              RCC_CFGR2_PREDIV1_DIV12_Msk       /*!< PREDIV1 input clock divided by 12 */
-#define RCC_CFGR2_PREDIV1_DIV13_Pos          (2U)                              
-#define RCC_CFGR2_PREDIV1_DIV13_Msk          (0x3U << RCC_CFGR2_PREDIV1_DIV13_Pos) /*!< 0x0000000C */
-#define RCC_CFGR2_PREDIV1_DIV13              RCC_CFGR2_PREDIV1_DIV13_Msk       /*!< PREDIV1 input clock divided by 13 */
-#define RCC_CFGR2_PREDIV1_DIV14_Pos          (0U)                              
-#define RCC_CFGR2_PREDIV1_DIV14_Msk          (0xDU << RCC_CFGR2_PREDIV1_DIV14_Pos) /*!< 0x0000000D */
-#define RCC_CFGR2_PREDIV1_DIV14              RCC_CFGR2_PREDIV1_DIV14_Msk       /*!< PREDIV1 input clock divided by 14 */
-#define RCC_CFGR2_PREDIV1_DIV15_Pos          (1U)                              
-#define RCC_CFGR2_PREDIV1_DIV15_Msk          (0x7U << RCC_CFGR2_PREDIV1_DIV15_Pos) /*!< 0x0000000E */
-#define RCC_CFGR2_PREDIV1_DIV15              RCC_CFGR2_PREDIV1_DIV15_Msk       /*!< PREDIV1 input clock divided by 15 */
-#define RCC_CFGR2_PREDIV1_DIV16_Pos          (0U)                              
-#define RCC_CFGR2_PREDIV1_DIV16_Msk          (0xFU << RCC_CFGR2_PREDIV1_DIV16_Pos) /*!< 0x0000000F */
-#define RCC_CFGR2_PREDIV1_DIV16              RCC_CFGR2_PREDIV1_DIV16_Msk       /*!< PREDIV1 input clock divided by 16 */
+#define RCU_CFGR2_PREDIV1_DIV1               0x00000000U                       /*!< PREDIV1 input clock not divided */
+#define RCU_CFGR2_PREDIV1_DIV2_Pos           (0U)                              
+#define RCU_CFGR2_PREDIV1_DIV2_Msk           (0x1U << RCU_CFGR2_PREDIV1_DIV2_Pos) /*!< 0x00000001 */
+#define RCU_CFGR2_PREDIV1_DIV2               RCU_CFGR2_PREDIV1_DIV2_Msk        /*!< PREDIV1 input clock divided by 2 */
+#define RCU_CFGR2_PREDIV1_DIV3_Pos           (1U)                              
+#define RCU_CFGR2_PREDIV1_DIV3_Msk           (0x1U << RCU_CFGR2_PREDIV1_DIV3_Pos) /*!< 0x00000002 */
+#define RCU_CFGR2_PREDIV1_DIV3               RCU_CFGR2_PREDIV1_DIV3_Msk        /*!< PREDIV1 input clock divided by 3 */
+#define RCU_CFGR2_PREDIV1_DIV4_Pos           (0U)                              
+#define RCU_CFGR2_PREDIV1_DIV4_Msk           (0x3U << RCU_CFGR2_PREDIV1_DIV4_Pos) /*!< 0x00000003 */
+#define RCU_CFGR2_PREDIV1_DIV4               RCU_CFGR2_PREDIV1_DIV4_Msk        /*!< PREDIV1 input clock divided by 4 */
+#define RCU_CFGR2_PREDIV1_DIV5_Pos           (2U)                              
+#define RCU_CFGR2_PREDIV1_DIV5_Msk           (0x1U << RCU_CFGR2_PREDIV1_DIV5_Pos) /*!< 0x00000004 */
+#define RCU_CFGR2_PREDIV1_DIV5               RCU_CFGR2_PREDIV1_DIV5_Msk        /*!< PREDIV1 input clock divided by 5 */
+#define RCU_CFGR2_PREDIV1_DIV6_Pos           (0U)                              
+#define RCU_CFGR2_PREDIV1_DIV6_Msk           (0x5U << RCU_CFGR2_PREDIV1_DIV6_Pos) /*!< 0x00000005 */
+#define RCU_CFGR2_PREDIV1_DIV6               RCU_CFGR2_PREDIV1_DIV6_Msk        /*!< PREDIV1 input clock divided by 6 */
+#define RCU_CFGR2_PREDIV1_DIV7_Pos           (1U)                              
+#define RCU_CFGR2_PREDIV1_DIV7_Msk           (0x3U << RCU_CFGR2_PREDIV1_DIV7_Pos) /*!< 0x00000006 */
+#define RCU_CFGR2_PREDIV1_DIV7               RCU_CFGR2_PREDIV1_DIV7_Msk        /*!< PREDIV1 input clock divided by 7 */
+#define RCU_CFGR2_PREDIV1_DIV8_Pos           (0U)                              
+#define RCU_CFGR2_PREDIV1_DIV8_Msk           (0x7U << RCU_CFGR2_PREDIV1_DIV8_Pos) /*!< 0x00000007 */
+#define RCU_CFGR2_PREDIV1_DIV8               RCU_CFGR2_PREDIV1_DIV8_Msk        /*!< PREDIV1 input clock divided by 8 */
+#define RCU_CFGR2_PREDIV1_DIV9_Pos           (3U)                              
+#define RCU_CFGR2_PREDIV1_DIV9_Msk           (0x1U << RCU_CFGR2_PREDIV1_DIV9_Pos) /*!< 0x00000008 */
+#define RCU_CFGR2_PREDIV1_DIV9               RCU_CFGR2_PREDIV1_DIV9_Msk        /*!< PREDIV1 input clock divided by 9 */
+#define RCU_CFGR2_PREDIV1_DIV10_Pos          (0U)                              
+#define RCU_CFGR2_PREDIV1_DIV10_Msk          (0x9U << RCU_CFGR2_PREDIV1_DIV10_Pos) /*!< 0x00000009 */
+#define RCU_CFGR2_PREDIV1_DIV10              RCU_CFGR2_PREDIV1_DIV10_Msk       /*!< PREDIV1 input clock divided by 10 */
+#define RCU_CFGR2_PREDIV1_DIV11_Pos          (1U)                              
+#define RCU_CFGR2_PREDIV1_DIV11_Msk          (0x5U << RCU_CFGR2_PREDIV1_DIV11_Pos) /*!< 0x0000000A */
+#define RCU_CFGR2_PREDIV1_DIV11              RCU_CFGR2_PREDIV1_DIV11_Msk       /*!< PREDIV1 input clock divided by 11 */
+#define RCU_CFGR2_PREDIV1_DIV12_Pos          (0U)                              
+#define RCU_CFGR2_PREDIV1_DIV12_Msk          (0xBU << RCU_CFGR2_PREDIV1_DIV12_Pos) /*!< 0x0000000B */
+#define RCU_CFGR2_PREDIV1_DIV12              RCU_CFGR2_PREDIV1_DIV12_Msk       /*!< PREDIV1 input clock divided by 12 */
+#define RCU_CFGR2_PREDIV1_DIV13_Pos          (2U)                              
+#define RCU_CFGR2_PREDIV1_DIV13_Msk          (0x3U << RCU_CFGR2_PREDIV1_DIV13_Pos) /*!< 0x0000000C */
+#define RCU_CFGR2_PREDIV1_DIV13              RCU_CFGR2_PREDIV1_DIV13_Msk       /*!< PREDIV1 input clock divided by 13 */
+#define RCU_CFGR2_PREDIV1_DIV14_Pos          (0U)                              
+#define RCU_CFGR2_PREDIV1_DIV14_Msk          (0xDU << RCU_CFGR2_PREDIV1_DIV14_Pos) /*!< 0x0000000D */
+#define RCU_CFGR2_PREDIV1_DIV14              RCU_CFGR2_PREDIV1_DIV14_Msk       /*!< PREDIV1 input clock divided by 14 */
+#define RCU_CFGR2_PREDIV1_DIV15_Pos          (1U)                              
+#define RCU_CFGR2_PREDIV1_DIV15_Msk          (0x7U << RCU_CFGR2_PREDIV1_DIV15_Pos) /*!< 0x0000000E */
+#define RCU_CFGR2_PREDIV1_DIV15              RCU_CFGR2_PREDIV1_DIV15_Msk       /*!< PREDIV1 input clock divided by 15 */
+#define RCU_CFGR2_PREDIV1_DIV16_Pos          (0U)                              
+#define RCU_CFGR2_PREDIV1_DIV16_Msk          (0xFU << RCU_CFGR2_PREDIV1_DIV16_Pos) /*!< 0x0000000F */
+#define RCU_CFGR2_PREDIV1_DIV16              RCU_CFGR2_PREDIV1_DIV16_Msk       /*!< PREDIV1 input clock divided by 16 */
 
 /*!< PREDIV2 configuration */
-#define RCC_CFGR2_PREDIV2_Pos                (4U)                              
-#define RCC_CFGR2_PREDIV2_Msk                (0xFU << RCC_CFGR2_PREDIV2_Pos)   /*!< 0x000000F0 */
-#define RCC_CFGR2_PREDIV2                    RCC_CFGR2_PREDIV2_Msk             /*!< PREDIV2[3:0] bits */
-#define RCC_CFGR2_PREDIV2_0                  (0x1U << RCC_CFGR2_PREDIV2_Pos)   /*!< 0x00000010 */
-#define RCC_CFGR2_PREDIV2_1                  (0x2U << RCC_CFGR2_PREDIV2_Pos)   /*!< 0x00000020 */
-#define RCC_CFGR2_PREDIV2_2                  (0x4U << RCC_CFGR2_PREDIV2_Pos)   /*!< 0x00000040 */
-#define RCC_CFGR2_PREDIV2_3                  (0x8U << RCC_CFGR2_PREDIV2_Pos)   /*!< 0x00000080 */
+#define RCU_CFGR2_PREDIV2_Pos                (4U)                              
+#define RCU_CFGR2_PREDIV2_Msk                (0xFU << RCU_CFGR2_PREDIV2_Pos)   /*!< 0x000000F0 */
+#define RCU_CFGR2_PREDIV2                    RCU_CFGR2_PREDIV2_Msk             /*!< PREDIV2[3:0] bits */
+#define RCU_CFGR2_PREDIV2_0                  (0x1U << RCU_CFGR2_PREDIV2_Pos)   /*!< 0x00000010 */
+#define RCU_CFGR2_PREDIV2_1                  (0x2U << RCU_CFGR2_PREDIV2_Pos)   /*!< 0x00000020 */
+#define RCU_CFGR2_PREDIV2_2                  (0x4U << RCU_CFGR2_PREDIV2_Pos)   /*!< 0x00000040 */
+#define RCU_CFGR2_PREDIV2_3                  (0x8U << RCU_CFGR2_PREDIV2_Pos)   /*!< 0x00000080 */
 
-#define RCC_CFGR2_PREDIV2_DIV1               0x00000000U                       /*!< PREDIV2 input clock not divided */
-#define RCC_CFGR2_PREDIV2_DIV2_Pos           (4U)                              
-#define RCC_CFGR2_PREDIV2_DIV2_Msk           (0x1U << RCC_CFGR2_PREDIV2_DIV2_Pos) /*!< 0x00000010 */
-#define RCC_CFGR2_PREDIV2_DIV2               RCC_CFGR2_PREDIV2_DIV2_Msk        /*!< PREDIV2 input clock divided by 2 */
-#define RCC_CFGR2_PREDIV2_DIV3_Pos           (5U)                              
-#define RCC_CFGR2_PREDIV2_DIV3_Msk           (0x1U << RCC_CFGR2_PREDIV2_DIV3_Pos) /*!< 0x00000020 */
-#define RCC_CFGR2_PREDIV2_DIV3               RCC_CFGR2_PREDIV2_DIV3_Msk        /*!< PREDIV2 input clock divided by 3 */
-#define RCC_CFGR2_PREDIV2_DIV4_Pos           (4U)                              
-#define RCC_CFGR2_PREDIV2_DIV4_Msk           (0x3U << RCC_CFGR2_PREDIV2_DIV4_Pos) /*!< 0x00000030 */
-#define RCC_CFGR2_PREDIV2_DIV4               RCC_CFGR2_PREDIV2_DIV4_Msk        /*!< PREDIV2 input clock divided by 4 */
-#define RCC_CFGR2_PREDIV2_DIV5_Pos           (6U)                              
-#define RCC_CFGR2_PREDIV2_DIV5_Msk           (0x1U << RCC_CFGR2_PREDIV2_DIV5_Pos) /*!< 0x00000040 */
-#define RCC_CFGR2_PREDIV2_DIV5               RCC_CFGR2_PREDIV2_DIV5_Msk        /*!< PREDIV2 input clock divided by 5 */
-#define RCC_CFGR2_PREDIV2_DIV6_Pos           (4U)                              
-#define RCC_CFGR2_PREDIV2_DIV6_Msk           (0x5U << RCC_CFGR2_PREDIV2_DIV6_Pos) /*!< 0x00000050 */
-#define RCC_CFGR2_PREDIV2_DIV6               RCC_CFGR2_PREDIV2_DIV6_Msk        /*!< PREDIV2 input clock divided by 6 */
-#define RCC_CFGR2_PREDIV2_DIV7_Pos           (5U)                              
-#define RCC_CFGR2_PREDIV2_DIV7_Msk           (0x3U << RCC_CFGR2_PREDIV2_DIV7_Pos) /*!< 0x00000060 */
-#define RCC_CFGR2_PREDIV2_DIV7               RCC_CFGR2_PREDIV2_DIV7_Msk        /*!< PREDIV2 input clock divided by 7 */
-#define RCC_CFGR2_PREDIV2_DIV8_Pos           (4U)                              
-#define RCC_CFGR2_PREDIV2_DIV8_Msk           (0x7U << RCC_CFGR2_PREDIV2_DIV8_Pos) /*!< 0x00000070 */
-#define RCC_CFGR2_PREDIV2_DIV8               RCC_CFGR2_PREDIV2_DIV8_Msk        /*!< PREDIV2 input clock divided by 8 */
-#define RCC_CFGR2_PREDIV2_DIV9_Pos           (7U)                              
-#define RCC_CFGR2_PREDIV2_DIV9_Msk           (0x1U << RCC_CFGR2_PREDIV2_DIV9_Pos) /*!< 0x00000080 */
-#define RCC_CFGR2_PREDIV2_DIV9               RCC_CFGR2_PREDIV2_DIV9_Msk        /*!< PREDIV2 input clock divided by 9 */
-#define RCC_CFGR2_PREDIV2_DIV10_Pos          (4U)                              
-#define RCC_CFGR2_PREDIV2_DIV10_Msk          (0x9U << RCC_CFGR2_PREDIV2_DIV10_Pos) /*!< 0x00000090 */
-#define RCC_CFGR2_PREDIV2_DIV10              RCC_CFGR2_PREDIV2_DIV10_Msk       /*!< PREDIV2 input clock divided by 10 */
-#define RCC_CFGR2_PREDIV2_DIV11_Pos          (5U)                              
-#define RCC_CFGR2_PREDIV2_DIV11_Msk          (0x5U << RCC_CFGR2_PREDIV2_DIV11_Pos) /*!< 0x000000A0 */
-#define RCC_CFGR2_PREDIV2_DIV11              RCC_CFGR2_PREDIV2_DIV11_Msk       /*!< PREDIV2 input clock divided by 11 */
-#define RCC_CFGR2_PREDIV2_DIV12_Pos          (4U)                              
-#define RCC_CFGR2_PREDIV2_DIV12_Msk          (0xBU << RCC_CFGR2_PREDIV2_DIV12_Pos) /*!< 0x000000B0 */
-#define RCC_CFGR2_PREDIV2_DIV12              RCC_CFGR2_PREDIV2_DIV12_Msk       /*!< PREDIV2 input clock divided by 12 */
-#define RCC_CFGR2_PREDIV2_DIV13_Pos          (6U)                              
-#define RCC_CFGR2_PREDIV2_DIV13_Msk          (0x3U << RCC_CFGR2_PREDIV2_DIV13_Pos) /*!< 0x000000C0 */
-#define RCC_CFGR2_PREDIV2_DIV13              RCC_CFGR2_PREDIV2_DIV13_Msk       /*!< PREDIV2 input clock divided by 13 */
-#define RCC_CFGR2_PREDIV2_DIV14_Pos          (4U)                              
-#define RCC_CFGR2_PREDIV2_DIV14_Msk          (0xDU << RCC_CFGR2_PREDIV2_DIV14_Pos) /*!< 0x000000D0 */
-#define RCC_CFGR2_PREDIV2_DIV14              RCC_CFGR2_PREDIV2_DIV14_Msk       /*!< PREDIV2 input clock divided by 14 */
-#define RCC_CFGR2_PREDIV2_DIV15_Pos          (5U)                              
-#define RCC_CFGR2_PREDIV2_DIV15_Msk          (0x7U << RCC_CFGR2_PREDIV2_DIV15_Pos) /*!< 0x000000E0 */
-#define RCC_CFGR2_PREDIV2_DIV15              RCC_CFGR2_PREDIV2_DIV15_Msk       /*!< PREDIV2 input clock divided by 15 */
-#define RCC_CFGR2_PREDIV2_DIV16_Pos          (4U)                              
-#define RCC_CFGR2_PREDIV2_DIV16_Msk          (0xFU << RCC_CFGR2_PREDIV2_DIV16_Pos) /*!< 0x000000F0 */
-#define RCC_CFGR2_PREDIV2_DIV16              RCC_CFGR2_PREDIV2_DIV16_Msk       /*!< PREDIV2 input clock divided by 16 */
+#define RCU_CFGR2_PREDIV2_DIV1               0x00000000U                       /*!< PREDIV2 input clock not divided */
+#define RCU_CFGR2_PREDIV2_DIV2_Pos           (4U)                              
+#define RCU_CFGR2_PREDIV2_DIV2_Msk           (0x1U << RCU_CFGR2_PREDIV2_DIV2_Pos) /*!< 0x00000010 */
+#define RCU_CFGR2_PREDIV2_DIV2               RCU_CFGR2_PREDIV2_DIV2_Msk        /*!< PREDIV2 input clock divided by 2 */
+#define RCU_CFGR2_PREDIV2_DIV3_Pos           (5U)                              
+#define RCU_CFGR2_PREDIV2_DIV3_Msk           (0x1U << RCU_CFGR2_PREDIV2_DIV3_Pos) /*!< 0x00000020 */
+#define RCU_CFGR2_PREDIV2_DIV3               RCU_CFGR2_PREDIV2_DIV3_Msk        /*!< PREDIV2 input clock divided by 3 */
+#define RCU_CFGR2_PREDIV2_DIV4_Pos           (4U)                              
+#define RCU_CFGR2_PREDIV2_DIV4_Msk           (0x3U << RCU_CFGR2_PREDIV2_DIV4_Pos) /*!< 0x00000030 */
+#define RCU_CFGR2_PREDIV2_DIV4               RCU_CFGR2_PREDIV2_DIV4_Msk        /*!< PREDIV2 input clock divided by 4 */
+#define RCU_CFGR2_PREDIV2_DIV5_Pos           (6U)                              
+#define RCU_CFGR2_PREDIV2_DIV5_Msk           (0x1U << RCU_CFGR2_PREDIV2_DIV5_Pos) /*!< 0x00000040 */
+#define RCU_CFGR2_PREDIV2_DIV5               RCU_CFGR2_PREDIV2_DIV5_Msk        /*!< PREDIV2 input clock divided by 5 */
+#define RCU_CFGR2_PREDIV2_DIV6_Pos           (4U)                              
+#define RCU_CFGR2_PREDIV2_DIV6_Msk           (0x5U << RCU_CFGR2_PREDIV2_DIV6_Pos) /*!< 0x00000050 */
+#define RCU_CFGR2_PREDIV2_DIV6               RCU_CFGR2_PREDIV2_DIV6_Msk        /*!< PREDIV2 input clock divided by 6 */
+#define RCU_CFGR2_PREDIV2_DIV7_Pos           (5U)                              
+#define RCU_CFGR2_PREDIV2_DIV7_Msk           (0x3U << RCU_CFGR2_PREDIV2_DIV7_Pos) /*!< 0x00000060 */
+#define RCU_CFGR2_PREDIV2_DIV7               RCU_CFGR2_PREDIV2_DIV7_Msk        /*!< PREDIV2 input clock divided by 7 */
+#define RCU_CFGR2_PREDIV2_DIV8_Pos           (4U)                              
+#define RCU_CFGR2_PREDIV2_DIV8_Msk           (0x7U << RCU_CFGR2_PREDIV2_DIV8_Pos) /*!< 0x00000070 */
+#define RCU_CFGR2_PREDIV2_DIV8               RCU_CFGR2_PREDIV2_DIV8_Msk        /*!< PREDIV2 input clock divided by 8 */
+#define RCU_CFGR2_PREDIV2_DIV9_Pos           (7U)                              
+#define RCU_CFGR2_PREDIV2_DIV9_Msk           (0x1U << RCU_CFGR2_PREDIV2_DIV9_Pos) /*!< 0x00000080 */
+#define RCU_CFGR2_PREDIV2_DIV9               RCU_CFGR2_PREDIV2_DIV9_Msk        /*!< PREDIV2 input clock divided by 9 */
+#define RCU_CFGR2_PREDIV2_DIV10_Pos          (4U)                              
+#define RCU_CFGR2_PREDIV2_DIV10_Msk          (0x9U << RCU_CFGR2_PREDIV2_DIV10_Pos) /*!< 0x00000090 */
+#define RCU_CFGR2_PREDIV2_DIV10              RCU_CFGR2_PREDIV2_DIV10_Msk       /*!< PREDIV2 input clock divided by 10 */
+#define RCU_CFGR2_PREDIV2_DIV11_Pos          (5U)                              
+#define RCU_CFGR2_PREDIV2_DIV11_Msk          (0x5U << RCU_CFGR2_PREDIV2_DIV11_Pos) /*!< 0x000000A0 */
+#define RCU_CFGR2_PREDIV2_DIV11              RCU_CFGR2_PREDIV2_DIV11_Msk       /*!< PREDIV2 input clock divided by 11 */
+#define RCU_CFGR2_PREDIV2_DIV12_Pos          (4U)                              
+#define RCU_CFGR2_PREDIV2_DIV12_Msk          (0xBU << RCU_CFGR2_PREDIV2_DIV12_Pos) /*!< 0x000000B0 */
+#define RCU_CFGR2_PREDIV2_DIV12              RCU_CFGR2_PREDIV2_DIV12_Msk       /*!< PREDIV2 input clock divided by 12 */
+#define RCU_CFGR2_PREDIV2_DIV13_Pos          (6U)                              
+#define RCU_CFGR2_PREDIV2_DIV13_Msk          (0x3U << RCU_CFGR2_PREDIV2_DIV13_Pos) /*!< 0x000000C0 */
+#define RCU_CFGR2_PREDIV2_DIV13              RCU_CFGR2_PREDIV2_DIV13_Msk       /*!< PREDIV2 input clock divided by 13 */
+#define RCU_CFGR2_PREDIV2_DIV14_Pos          (4U)                              
+#define RCU_CFGR2_PREDIV2_DIV14_Msk          (0xDU << RCU_CFGR2_PREDIV2_DIV14_Pos) /*!< 0x000000D0 */
+#define RCU_CFGR2_PREDIV2_DIV14              RCU_CFGR2_PREDIV2_DIV14_Msk       /*!< PREDIV2 input clock divided by 14 */
+#define RCU_CFGR2_PREDIV2_DIV15_Pos          (5U)                              
+#define RCU_CFGR2_PREDIV2_DIV15_Msk          (0x7U << RCU_CFGR2_PREDIV2_DIV15_Pos) /*!< 0x000000E0 */
+#define RCU_CFGR2_PREDIV2_DIV15              RCU_CFGR2_PREDIV2_DIV15_Msk       /*!< PREDIV2 input clock divided by 15 */
+#define RCU_CFGR2_PREDIV2_DIV16_Pos          (4U)                              
+#define RCU_CFGR2_PREDIV2_DIV16_Msk          (0xFU << RCU_CFGR2_PREDIV2_DIV16_Pos) /*!< 0x000000F0 */
+#define RCU_CFGR2_PREDIV2_DIV16              RCU_CFGR2_PREDIV2_DIV16_Msk       /*!< PREDIV2 input clock divided by 16 */
 
 /*!< PLL2MUL configuration */
-#define RCC_CFGR2_PLL2MUL_Pos                (8U)                              
-#define RCC_CFGR2_PLL2MUL_Msk                (0xFU << RCC_CFGR2_PLL2MUL_Pos)   /*!< 0x00000F00 */
-#define RCC_CFGR2_PLL2MUL                    RCC_CFGR2_PLL2MUL_Msk             /*!< PLL2MUL[3:0] bits */
-#define RCC_CFGR2_PLL2MUL_0                  (0x1U << RCC_CFGR2_PLL2MUL_Pos)   /*!< 0x00000100 */
-#define RCC_CFGR2_PLL2MUL_1                  (0x2U << RCC_CFGR2_PLL2MUL_Pos)   /*!< 0x00000200 */
-#define RCC_CFGR2_PLL2MUL_2                  (0x4U << RCC_CFGR2_PLL2MUL_Pos)   /*!< 0x00000400 */
-#define RCC_CFGR2_PLL2MUL_3                  (0x8U << RCC_CFGR2_PLL2MUL_Pos)   /*!< 0x00000800 */
+#define RCU_CFGR2_PLL2MUL_Pos                (8U)                              
+#define RCU_CFGR2_PLL2MUL_Msk                (0xFU << RCU_CFGR2_PLL2MUL_Pos)   /*!< 0x00000F00 */
+#define RCU_CFGR2_PLL2MUL                    RCU_CFGR2_PLL2MUL_Msk             /*!< PLL2MUL[3:0] bits */
+#define RCU_CFGR2_PLL2MUL_0                  (0x1U << RCU_CFGR2_PLL2MUL_Pos)   /*!< 0x00000100 */
+#define RCU_CFGR2_PLL2MUL_1                  (0x2U << RCU_CFGR2_PLL2MUL_Pos)   /*!< 0x00000200 */
+#define RCU_CFGR2_PLL2MUL_2                  (0x4U << RCU_CFGR2_PLL2MUL_Pos)   /*!< 0x00000400 */
+#define RCU_CFGR2_PLL2MUL_3                  (0x8U << RCU_CFGR2_PLL2MUL_Pos)   /*!< 0x00000800 */
 
-#define RCC_CFGR2_PLL2MUL8_Pos               (9U)                              
-#define RCC_CFGR2_PLL2MUL8_Msk               (0x3U << RCC_CFGR2_PLL2MUL8_Pos)  /*!< 0x00000600 */
-#define RCC_CFGR2_PLL2MUL8                   RCC_CFGR2_PLL2MUL8_Msk            /*!< PLL2 input clock * 8 */
-#define RCC_CFGR2_PLL2MUL9_Pos               (8U)                              
-#define RCC_CFGR2_PLL2MUL9_Msk               (0x7U << RCC_CFGR2_PLL2MUL9_Pos)  /*!< 0x00000700 */
-#define RCC_CFGR2_PLL2MUL9                   RCC_CFGR2_PLL2MUL9_Msk            /*!< PLL2 input clock * 9 */
-#define RCC_CFGR2_PLL2MUL10_Pos              (11U)                             
-#define RCC_CFGR2_PLL2MUL10_Msk              (0x1U << RCC_CFGR2_PLL2MUL10_Pos) /*!< 0x00000800 */
-#define RCC_CFGR2_PLL2MUL10                  RCC_CFGR2_PLL2MUL10_Msk           /*!< PLL2 input clock * 10 */
-#define RCC_CFGR2_PLL2MUL11_Pos              (8U)                              
-#define RCC_CFGR2_PLL2MUL11_Msk              (0x9U << RCC_CFGR2_PLL2MUL11_Pos) /*!< 0x00000900 */
-#define RCC_CFGR2_PLL2MUL11                  RCC_CFGR2_PLL2MUL11_Msk           /*!< PLL2 input clock * 11 */
-#define RCC_CFGR2_PLL2MUL12_Pos              (9U)                              
-#define RCC_CFGR2_PLL2MUL12_Msk              (0x5U << RCC_CFGR2_PLL2MUL12_Pos) /*!< 0x00000A00 */
-#define RCC_CFGR2_PLL2MUL12                  RCC_CFGR2_PLL2MUL12_Msk           /*!< PLL2 input clock * 12 */
-#define RCC_CFGR2_PLL2MUL13_Pos              (8U)                              
-#define RCC_CFGR2_PLL2MUL13_Msk              (0xBU << RCC_CFGR2_PLL2MUL13_Pos) /*!< 0x00000B00 */
-#define RCC_CFGR2_PLL2MUL13                  RCC_CFGR2_PLL2MUL13_Msk           /*!< PLL2 input clock * 13 */
-#define RCC_CFGR2_PLL2MUL14_Pos              (10U)                             
-#define RCC_CFGR2_PLL2MUL14_Msk              (0x3U << RCC_CFGR2_PLL2MUL14_Pos) /*!< 0x00000C00 */
-#define RCC_CFGR2_PLL2MUL14                  RCC_CFGR2_PLL2MUL14_Msk           /*!< PLL2 input clock * 14 */
-#define RCC_CFGR2_PLL2MUL16_Pos              (9U)                              
-#define RCC_CFGR2_PLL2MUL16_Msk              (0x7U << RCC_CFGR2_PLL2MUL16_Pos) /*!< 0x00000E00 */
-#define RCC_CFGR2_PLL2MUL16                  RCC_CFGR2_PLL2MUL16_Msk           /*!< PLL2 input clock * 16 */
-#define RCC_CFGR2_PLL2MUL20_Pos              (8U)                              
-#define RCC_CFGR2_PLL2MUL20_Msk              (0xFU << RCC_CFGR2_PLL2MUL20_Pos) /*!< 0x00000F00 */
-#define RCC_CFGR2_PLL2MUL20                  RCC_CFGR2_PLL2MUL20_Msk           /*!< PLL2 input clock * 20 */
+#define RCU_CFGR2_PLL2MUL8_Pos               (9U)                              
+#define RCU_CFGR2_PLL2MUL8_Msk               (0x3U << RCU_CFGR2_PLL2MUL8_Pos)  /*!< 0x00000600 */
+#define RCU_CFGR2_PLL2MUL8                   RCU_CFGR2_PLL2MUL8_Msk            /*!< PLL2 input clock * 8 */
+#define RCU_CFGR2_PLL2MUL9_Pos               (8U)                              
+#define RCU_CFGR2_PLL2MUL9_Msk               (0x7U << RCU_CFGR2_PLL2MUL9_Pos)  /*!< 0x00000700 */
+#define RCU_CFGR2_PLL2MUL9                   RCU_CFGR2_PLL2MUL9_Msk            /*!< PLL2 input clock * 9 */
+#define RCU_CFGR2_PLL2MUL10_Pos              (11U)                             
+#define RCU_CFGR2_PLL2MUL10_Msk              (0x1U << RCU_CFGR2_PLL2MUL10_Pos) /*!< 0x00000800 */
+#define RCU_CFGR2_PLL2MUL10                  RCU_CFGR2_PLL2MUL10_Msk           /*!< PLL2 input clock * 10 */
+#define RCU_CFGR2_PLL2MUL11_Pos              (8U)                              
+#define RCU_CFGR2_PLL2MUL11_Msk              (0x9U << RCU_CFGR2_PLL2MUL11_Pos) /*!< 0x00000900 */
+#define RCU_CFGR2_PLL2MUL11                  RCU_CFGR2_PLL2MUL11_Msk           /*!< PLL2 input clock * 11 */
+#define RCU_CFGR2_PLL2MUL12_Pos              (9U)                              
+#define RCU_CFGR2_PLL2MUL12_Msk              (0x5U << RCU_CFGR2_PLL2MUL12_Pos) /*!< 0x00000A00 */
+#define RCU_CFGR2_PLL2MUL12                  RCU_CFGR2_PLL2MUL12_Msk           /*!< PLL2 input clock * 12 */
+#define RCU_CFGR2_PLL2MUL13_Pos              (8U)                              
+#define RCU_CFGR2_PLL2MUL13_Msk              (0xBU << RCU_CFGR2_PLL2MUL13_Pos) /*!< 0x00000B00 */
+#define RCU_CFGR2_PLL2MUL13                  RCU_CFGR2_PLL2MUL13_Msk           /*!< PLL2 input clock * 13 */
+#define RCU_CFGR2_PLL2MUL14_Pos              (10U)                             
+#define RCU_CFGR2_PLL2MUL14_Msk              (0x3U << RCU_CFGR2_PLL2MUL14_Pos) /*!< 0x00000C00 */
+#define RCU_CFGR2_PLL2MUL14                  RCU_CFGR2_PLL2MUL14_Msk           /*!< PLL2 input clock * 14 */
+#define RCU_CFGR2_PLL2MUL16_Pos              (9U)                              
+#define RCU_CFGR2_PLL2MUL16_Msk              (0x7U << RCU_CFGR2_PLL2MUL16_Pos) /*!< 0x00000E00 */
+#define RCU_CFGR2_PLL2MUL16                  RCU_CFGR2_PLL2MUL16_Msk           /*!< PLL2 input clock * 16 */
+#define RCU_CFGR2_PLL2MUL20_Pos              (8U)                              
+#define RCU_CFGR2_PLL2MUL20_Msk              (0xFU << RCU_CFGR2_PLL2MUL20_Pos) /*!< 0x00000F00 */
+#define RCU_CFGR2_PLL2MUL20                  RCU_CFGR2_PLL2MUL20_Msk           /*!< PLL2 input clock * 20 */
 
 /*!< PLL3MUL configuration */
-#define RCC_CFGR2_PLL3MUL_Pos                (12U)                             
-#define RCC_CFGR2_PLL3MUL_Msk                (0xFU << RCC_CFGR2_PLL3MUL_Pos)   /*!< 0x0000F000 */
-#define RCC_CFGR2_PLL3MUL                    RCC_CFGR2_PLL3MUL_Msk             /*!< PLL3MUL[3:0] bits */
-#define RCC_CFGR2_PLL3MUL_0                  (0x1U << RCC_CFGR2_PLL3MUL_Pos)   /*!< 0x00001000 */
-#define RCC_CFGR2_PLL3MUL_1                  (0x2U << RCC_CFGR2_PLL3MUL_Pos)   /*!< 0x00002000 */
-#define RCC_CFGR2_PLL3MUL_2                  (0x4U << RCC_CFGR2_PLL3MUL_Pos)   /*!< 0x00004000 */
-#define RCC_CFGR2_PLL3MUL_3                  (0x8U << RCC_CFGR2_PLL3MUL_Pos)   /*!< 0x00008000 */
+#define RCU_CFGR2_PLL3MUL_Pos                (12U)                             
+#define RCU_CFGR2_PLL3MUL_Msk                (0xFU << RCU_CFGR2_PLL3MUL_Pos)   /*!< 0x0000F000 */
+#define RCU_CFGR2_PLL3MUL                    RCU_CFGR2_PLL3MUL_Msk             /*!< PLL3MUL[3:0] bits */
+#define RCU_CFGR2_PLL3MUL_0                  (0x1U << RCU_CFGR2_PLL3MUL_Pos)   /*!< 0x00001000 */
+#define RCU_CFGR2_PLL3MUL_1                  (0x2U << RCU_CFGR2_PLL3MUL_Pos)   /*!< 0x00002000 */
+#define RCU_CFGR2_PLL3MUL_2                  (0x4U << RCU_CFGR2_PLL3MUL_Pos)   /*!< 0x00004000 */
+#define RCU_CFGR2_PLL3MUL_3                  (0x8U << RCU_CFGR2_PLL3MUL_Pos)   /*!< 0x00008000 */
 
-#define RCC_CFGR2_PLL3MUL8_Pos               (13U)                             
-#define RCC_CFGR2_PLL3MUL8_Msk               (0x3U << RCC_CFGR2_PLL3MUL8_Pos)  /*!< 0x00006000 */
-#define RCC_CFGR2_PLL3MUL8                   RCC_CFGR2_PLL3MUL8_Msk            /*!< PLL3 input clock * 8 */
-#define RCC_CFGR2_PLL3MUL9_Pos               (12U)                             
-#define RCC_CFGR2_PLL3MUL9_Msk               (0x7U << RCC_CFGR2_PLL3MUL9_Pos)  /*!< 0x00007000 */
-#define RCC_CFGR2_PLL3MUL9                   RCC_CFGR2_PLL3MUL9_Msk            /*!< PLL3 input clock * 9 */
-#define RCC_CFGR2_PLL3MUL10_Pos              (15U)                             
-#define RCC_CFGR2_PLL3MUL10_Msk              (0x1U << RCC_CFGR2_PLL3MUL10_Pos) /*!< 0x00008000 */
-#define RCC_CFGR2_PLL3MUL10                  RCC_CFGR2_PLL3MUL10_Msk           /*!< PLL3 input clock * 10 */
-#define RCC_CFGR2_PLL3MUL11_Pos              (12U)                             
-#define RCC_CFGR2_PLL3MUL11_Msk              (0x9U << RCC_CFGR2_PLL3MUL11_Pos) /*!< 0x00009000 */
-#define RCC_CFGR2_PLL3MUL11                  RCC_CFGR2_PLL3MUL11_Msk           /*!< PLL3 input clock * 11 */
-#define RCC_CFGR2_PLL3MUL12_Pos              (13U)                             
-#define RCC_CFGR2_PLL3MUL12_Msk              (0x5U << RCC_CFGR2_PLL3MUL12_Pos) /*!< 0x0000A000 */
-#define RCC_CFGR2_PLL3MUL12                  RCC_CFGR2_PLL3MUL12_Msk           /*!< PLL3 input clock * 12 */
-#define RCC_CFGR2_PLL3MUL13_Pos              (12U)                             
-#define RCC_CFGR2_PLL3MUL13_Msk              (0xBU << RCC_CFGR2_PLL3MUL13_Pos) /*!< 0x0000B000 */
-#define RCC_CFGR2_PLL3MUL13                  RCC_CFGR2_PLL3MUL13_Msk           /*!< PLL3 input clock * 13 */
-#define RCC_CFGR2_PLL3MUL14_Pos              (14U)                             
-#define RCC_CFGR2_PLL3MUL14_Msk              (0x3U << RCC_CFGR2_PLL3MUL14_Pos) /*!< 0x0000C000 */
-#define RCC_CFGR2_PLL3MUL14                  RCC_CFGR2_PLL3MUL14_Msk           /*!< PLL3 input clock * 14 */
-#define RCC_CFGR2_PLL3MUL16_Pos              (13U)                             
-#define RCC_CFGR2_PLL3MUL16_Msk              (0x7U << RCC_CFGR2_PLL3MUL16_Pos) /*!< 0x0000E000 */
-#define RCC_CFGR2_PLL3MUL16                  RCC_CFGR2_PLL3MUL16_Msk           /*!< PLL3 input clock * 16 */
-#define RCC_CFGR2_PLL3MUL20_Pos              (12U)                             
-#define RCC_CFGR2_PLL3MUL20_Msk              (0xFU << RCC_CFGR2_PLL3MUL20_Pos) /*!< 0x0000F000 */
-#define RCC_CFGR2_PLL3MUL20                  RCC_CFGR2_PLL3MUL20_Msk           /*!< PLL3 input clock * 20 */
+#define RCU_CFGR2_PLL3MUL8_Pos               (13U)                             
+#define RCU_CFGR2_PLL3MUL8_Msk               (0x3U << RCU_CFGR2_PLL3MUL8_Pos)  /*!< 0x00006000 */
+#define RCU_CFGR2_PLL3MUL8                   RCU_CFGR2_PLL3MUL8_Msk            /*!< PLL3 input clock * 8 */
+#define RCU_CFGR2_PLL3MUL9_Pos               (12U)                             
+#define RCU_CFGR2_PLL3MUL9_Msk               (0x7U << RCU_CFGR2_PLL3MUL9_Pos)  /*!< 0x00007000 */
+#define RCU_CFGR2_PLL3MUL9                   RCU_CFGR2_PLL3MUL9_Msk            /*!< PLL3 input clock * 9 */
+#define RCU_CFGR2_PLL3MUL10_Pos              (15U)                             
+#define RCU_CFGR2_PLL3MUL10_Msk              (0x1U << RCU_CFGR2_PLL3MUL10_Pos) /*!< 0x00008000 */
+#define RCU_CFGR2_PLL3MUL10                  RCU_CFGR2_PLL3MUL10_Msk           /*!< PLL3 input clock * 10 */
+#define RCU_CFGR2_PLL3MUL11_Pos              (12U)                             
+#define RCU_CFGR2_PLL3MUL11_Msk              (0x9U << RCU_CFGR2_PLL3MUL11_Pos) /*!< 0x00009000 */
+#define RCU_CFGR2_PLL3MUL11                  RCU_CFGR2_PLL3MUL11_Msk           /*!< PLL3 input clock * 11 */
+#define RCU_CFGR2_PLL3MUL12_Pos              (13U)                             
+#define RCU_CFGR2_PLL3MUL12_Msk              (0x5U << RCU_CFGR2_PLL3MUL12_Pos) /*!< 0x0000A000 */
+#define RCU_CFGR2_PLL3MUL12                  RCU_CFGR2_PLL3MUL12_Msk           /*!< PLL3 input clock * 12 */
+#define RCU_CFGR2_PLL3MUL13_Pos              (12U)                             
+#define RCU_CFGR2_PLL3MUL13_Msk              (0xBU << RCU_CFGR2_PLL3MUL13_Pos) /*!< 0x0000B000 */
+#define RCU_CFGR2_PLL3MUL13                  RCU_CFGR2_PLL3MUL13_Msk           /*!< PLL3 input clock * 13 */
+#define RCU_CFGR2_PLL3MUL14_Pos              (14U)                             
+#define RCU_CFGR2_PLL3MUL14_Msk              (0x3U << RCU_CFGR2_PLL3MUL14_Pos) /*!< 0x0000C000 */
+#define RCU_CFGR2_PLL3MUL14                  RCU_CFGR2_PLL3MUL14_Msk           /*!< PLL3 input clock * 14 */
+#define RCU_CFGR2_PLL3MUL16_Pos              (13U)                             
+#define RCU_CFGR2_PLL3MUL16_Msk              (0x7U << RCU_CFGR2_PLL3MUL16_Pos) /*!< 0x0000E000 */
+#define RCU_CFGR2_PLL3MUL16                  RCU_CFGR2_PLL3MUL16_Msk           /*!< PLL3 input clock * 16 */
+#define RCU_CFGR2_PLL3MUL20_Pos              (12U)                             
+#define RCU_CFGR2_PLL3MUL20_Msk              (0xFU << RCU_CFGR2_PLL3MUL20_Pos) /*!< 0x0000F000 */
+#define RCU_CFGR2_PLL3MUL20                  RCU_CFGR2_PLL3MUL20_Msk           /*!< PLL3 input clock * 20 */
 
-#define RCC_CFGR2_PREDIV1SRC_Pos             (16U)                             
-#define RCC_CFGR2_PREDIV1SRC_Msk             (0x1U << RCC_CFGR2_PREDIV1SRC_Pos) /*!< 0x00010000 */
-#define RCC_CFGR2_PREDIV1SRC                 RCC_CFGR2_PREDIV1SRC_Msk          /*!< PREDIV1 entry clock source */
-#define RCC_CFGR2_PREDIV1SRC_PLL2_Pos        (16U)                             
-#define RCC_CFGR2_PREDIV1SRC_PLL2_Msk        (0x1U << RCC_CFGR2_PREDIV1SRC_PLL2_Pos) /*!< 0x00010000 */
-#define RCC_CFGR2_PREDIV1SRC_PLL2            RCC_CFGR2_PREDIV1SRC_PLL2_Msk     /*!< PLL2 selected as PREDIV1 entry clock source */
-#define RCC_CFGR2_PREDIV1SRC_HSE             0x00000000U                       /*!< HSE selected as PREDIV1 entry clock source */
-#define RCC_CFGR2_I2S2SRC_Pos                (17U)                             
-#define RCC_CFGR2_I2S2SRC_Msk                (0x1U << RCC_CFGR2_I2S2SRC_Pos)   /*!< 0x00020000 */
-#define RCC_CFGR2_I2S2SRC                    RCC_CFGR2_I2S2SRC_Msk             /*!< I2S2 entry clock source */
-#define RCC_CFGR2_I2S3SRC_Pos                (18U)                             
-#define RCC_CFGR2_I2S3SRC_Msk                (0x1U << RCC_CFGR2_I2S3SRC_Pos)   /*!< 0x00040000 */
-#define RCC_CFGR2_I2S3SRC                    RCC_CFGR2_I2S3SRC_Msk             /*!< I2S3 clock source */
+#define RCU_CFGR2_PREDIV1SRC_Pos             (16U)                             
+#define RCU_CFGR2_PREDIV1SRC_Msk             (0x1U << RCU_CFGR2_PREDIV1SRC_Pos) /*!< 0x00010000 */
+#define RCU_CFGR2_PREDIV1SRC                 RCU_CFGR2_PREDIV1SRC_Msk          /*!< PREDIV1 entry clock source */
+#define RCU_CFGR2_PREDIV1SRC_PLL2_Pos        (16U)                             
+#define RCU_CFGR2_PREDIV1SRC_PLL2_Msk        (0x1U << RCU_CFGR2_PREDIV1SRC_PLL2_Pos) /*!< 0x00010000 */
+#define RCU_CFGR2_PREDIV1SRC_PLL2            RCU_CFGR2_PREDIV1SRC_PLL2_Msk     /*!< PLL2 selected as PREDIV1 entry clock source */
+#define RCU_CFGR2_PREDIV1SRC_HSE             0x00000000U                       /*!< HSE selected as PREDIV1 entry clock source */
+#define RCU_CFGR2_I2S2SRC_Pos                (17U)                             
+#define RCU_CFGR2_I2S2SRC_Msk                (0x1U << RCU_CFGR2_I2S2SRC_Pos)   /*!< 0x00020000 */
+#define RCU_CFGR2_I2S2SRC                    RCU_CFGR2_I2S2SRC_Msk             /*!< I2S2 entry clock source */
+#define RCU_CFGR2_I2S3SRC_Pos                (18U)                             
+#define RCU_CFGR2_I2S3SRC_Msk                (0x1U << RCU_CFGR2_I2S3SRC_Pos)   /*!< 0x00040000 */
+#define RCU_CFGR2_I2S3SRC                    RCU_CFGR2_I2S3SRC_Msk             /*!< I2S3 clock source */
 
  
 /******************************************************************************/
@@ -12846,10 +12846,10 @@ typedef struct
 #define IS_USB_ALL_INSTANCE(INSTANCE) ((INSTANCE) == USB_USBFS)
 
 
-#define RCC_HSE_MIN         3000000U
-#define RCC_HSE_MAX        25000000U
+#define RCU_HSE_MIN         3000000U
+#define RCU_HSE_MAX        25000000U
 
-#define RCC_MAX_FREQUENCY  72000000U
+#define RCU_MAX_FREQUENCY  72000000U
 
 /**
   * @}

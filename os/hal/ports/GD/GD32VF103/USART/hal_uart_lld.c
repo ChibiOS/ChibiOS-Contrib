@@ -484,7 +484,7 @@ void uart_lld_start(UARTDriver *uartp) {
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
-      rccEnableUSART0(true);
+      rcuEnableUSART0(true);
       eclicEnableVector(GD32_USART0_NUMBER, GD32_UART_USART0_IRQ_PRIORITY, GD32_UART_USART0_IRQ_TRIGGER);
       uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(USART0_RX_DMA_CHANNEL) |
                           GD32_DMA_CTL_PRIO(GD32_UART_USART0_DMA_PRIORITY);
@@ -506,7 +506,7 @@ void uart_lld_start(UARTDriver *uartp) {
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
-      rccEnableUSART1(true);
+      rcuEnableUSART1(true);
       eclicEnableVector(GD32_USART1_NUMBER, GD32_UART_USART1_IRQ_PRIORITY, GD32_UART_USART1_IRQ_TRIGGER);
       uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(USART1_RX_DMA_CHANNEL) |
                           GD32_DMA_CTL_PRIO(GD32_UART_USART1_DMA_PRIORITY);
@@ -528,7 +528,7 @@ void uart_lld_start(UARTDriver *uartp) {
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
-      rccEnableUSART2(true);
+      rcuEnableUSART2(true);
       eclicEnableVector(GD32_USART2_NUMBER, GD32_UART_USART2_IRQ_PRIORITY, GD32_UART_USART2_IRQ_TRIGGER);
       uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(USART2_RX_DMA_CHANNEL) |
                           GD32_DMA_CTL_PRIO(GD32_UART_USART2_DMA_PRIORITY);
@@ -556,7 +556,7 @@ void uart_lld_start(UARTDriver *uartp) {
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
-      rccEnableUART3(true);
+      rcuEnableUART3(true);
       eclicEnableVector(GD32_UART3_NUMBER, GD32_UART_UART3_IRQ_PRIORITY, GD32_UART_UART3_IRQ_TRIGGER);
       uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(UART3_RX_DMA_CHANNEL) |
                           GD32_DMA_CTL_PRIO(GD32_UART_UART3_DMA_PRIORITY);
@@ -584,7 +584,7 @@ void uart_lld_start(UARTDriver *uartp) {
                                      (void *)uartp);
       osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
 
-      rccEnableUART4(true);
+      rcuEnableUART4(true);
       eclicEnableVector(GD32_UART4_NUMBER, GD32_UART_UART4_IRQ_PRIORITY, GD32_UART_UART4_IRQ_TRIGGER);
       uartp->dmarxmode |= GD32_DMA_CTL_CHSEL(UART4_RX_DMA_CHANNEL) |
                           GD32_DMA_CTL_PRIO(GD32_UART_UART4_DMA_PRIORITY);
@@ -628,7 +628,7 @@ void uart_lld_stop(UARTDriver *uartp) {
 #if GD32_UART_USE_USART0
     if (&UARTD1 == uartp) {
       eclicDisableVector(GD32_USART0_NUMBER);
-      rccDisableUSART0();
+      rcuDisableUSART0();
       return;
     }
 #endif
@@ -636,7 +636,7 @@ void uart_lld_stop(UARTDriver *uartp) {
 #if GD32_UART_USE_USART1
     if (&UARTD2 == uartp) {
       eclicDisableVector(GD32_USART1_NUMBER);
-      rccDisableUSART1();
+      rcuDisableUSART1();
       return;
     }
 #endif
@@ -644,7 +644,7 @@ void uart_lld_stop(UARTDriver *uartp) {
 #if GD32_UART_USE_USART2
     if (&UARTD3 == uartp) {
       eclicDisableVector(GD32_USART2_NUMBER);
-      rccDisableUSART2();
+      rcuDisableUSART2();
       return;
     }
 #endif
@@ -652,7 +652,7 @@ void uart_lld_stop(UARTDriver *uartp) {
 #if GD32_UART_USE_UART3
     if (&UARTD4 == uartp) {
       eclicDisableVector(GD32_UART3_NUMBER);
-      rccDisableUART3();
+      rcuDisableUART3();
       return;
     }
 #endif
@@ -660,7 +660,7 @@ void uart_lld_stop(UARTDriver *uartp) {
 #if GD32_UART_USE_UART4
     if (&UARTD5 == uartp) {
       eclicDisableVector(GD32_UART4_NUMBER);
-      rccDisableUART4();
+      rcuDisableUART4();
       return;
     }
 #endif

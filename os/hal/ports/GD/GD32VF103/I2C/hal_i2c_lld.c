@@ -523,7 +523,7 @@ void i2c_lld_start(I2CDriver *i2cp) {
 
 #if GD32_I2C_USE_I2C0
     if (&I2CD1 == i2cp) {
-      rccResetI2C0();
+      rcuResetI2C0();
 
       i2cp->dmarx = dmaStreamAllocI(GD32_I2C_I2C0_RX_DMA_STREAM,
                                     GD32_I2C_I2C0_IRQ_PRIORITY,
@@ -536,7 +536,7 @@ void i2c_lld_start(I2CDriver *i2cp) {
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmatx != NULL, "unable to allocate stream");
 
-      rccEnableI2C0(true);
+      rcuEnableI2C0(true);
       eclicEnableVector(I2C0_EV_IRQn, GD32_I2C_I2C0_IRQ_PRIORITY, GD32_I2C_I2C0_IRQ_TRIGGER);
       eclicEnableVector(I2C0_ER_IRQn, GD32_I2C_I2C0_IRQ_PRIORITY, GD32_I2C_I2C0_IRQ_TRIGGER);
 
@@ -549,7 +549,7 @@ void i2c_lld_start(I2CDriver *i2cp) {
 
 #if GD32_I2C_USE_I2C1
     if (&I2CD2 == i2cp) {
-      rccResetI2C1();
+      rcuResetI2C1();
 
       i2cp->dmarx = dmaStreamAllocI(GD32_I2C_I2C1_RX_DMA_STREAM,
                                     GD32_I2C_I2C1_IRQ_PRIORITY,
@@ -562,7 +562,7 @@ void i2c_lld_start(I2CDriver *i2cp) {
                                     (void *)i2cp);
       osalDbgAssert(i2cp->dmatx != NULL, "unable to allocate stream");
 
-      rccEnableI2C1(true);
+      rcuEnableI2C1(true);
       eclicEnableVector(I2C0_EV_IRQn, GD32_I2C_I2C1_IRQ_PRIORITY, GD32_I2C_I2C1_IRQ_TRIGGER);
       eclicEnableVector(I2C0_ER_IRQn, GD32_I2C_I2C1_IRQ_PRIORITY, GD32_I2C_I2C1_IRQ_TRIGGER);
 
@@ -615,7 +615,7 @@ void i2c_lld_stop(I2CDriver *i2cp) {
     if (&I2CD1 == i2cp) {
       eclicDisableVector(I2C0_EV_IRQn);
       eclicDisableVector(I2C0_ER_IRQn);
-      rccDisableI2C0();
+      rcuDisableI2C0();
     }
 #endif
 
@@ -623,7 +623,7 @@ void i2c_lld_stop(I2CDriver *i2cp) {
     if (&I2CD2 == i2cp) {
       eclicDisableVector(I2C1_EV_IRQn);
       eclicDisableVector(I2C1_ER_IRQn);
-      rccDisableI2C1();
+      rcuDisableI2C1();
     }
 #endif
   }

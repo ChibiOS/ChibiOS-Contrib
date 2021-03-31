@@ -108,7 +108,7 @@
  * @{
  */
 /**
- * @brief   Disables the PWR/RCC initialization in the HAL.
+ * @brief   Disables the PWR/RCU initialization in the HAL.
  */
 #if !defined(GD32_NO_INIT) || defined(__DOXYGEN__)
 #define GD32_NO_INIT               FALSE
@@ -184,7 +184,7 @@
 #include "eclic.h"
 #include "gd32_isr.h"
 #include "gd32_dma.h"
-#include "gd32_rcc.h"
+#include "gd32_rcu.h"
 #include "gd32_tim.h"
 
 #ifdef __cplusplus

@@ -278,8 +278,8 @@ void pwm_lld_start(PWMDriver *pwmp) {
     /* Clock activation and timer reset.*/
 #if GD32_PWM_USE_TIM0
     if (&PWMD1 == pwmp) {
-      rccEnableTIM0(true);
-      rccResetTIM0();
+      rcuEnableTIM0(true);
+      rcuResetTIM0();
 #if !defined(GD32_TIM0_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM0_UP_NUMBER, GD32_PWM_TIM0_IRQ_PRIORITY, GD32_PWM_TIM0_IRQ_TRIGGER);
       eclicEnableVector(GD32_TIM0_CC_NUMBER, GD32_PWM_TIM0_IRQ_PRIORITY, GD32_PWM_TIM0_IRQ_TRIGGER);
@@ -294,8 +294,8 @@ void pwm_lld_start(PWMDriver *pwmp) {
 
 #if GD32_PWM_USE_TIM1
     if (&PWMD2 == pwmp) {
-      rccEnableTIM1(true);
-      rccResetTIM1();
+      rcuEnableTIM1(true);
+      rcuResetTIM1();
 #if !defined(GD32_TIM1_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM1_NUMBER, GD32_PWM_TIM1_IRQ_PRIORITY, GD32_PWM_TIM1_IRQ_TRIGGER);
 #endif
@@ -309,8 +309,8 @@ void pwm_lld_start(PWMDriver *pwmp) {
 
 #if GD32_PWM_USE_TIM2
     if (&PWMD3 == pwmp) {
-      rccEnableTIM2(true);
-      rccResetTIM2();
+      rcuEnableTIM2(true);
+      rcuResetTIM2();
 #if !defined(GD32_TIM2_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM2_NUMBER, GD32_PWM_TIM2_IRQ_PRIORITY, GD32_PWM_TIM2_IRQ_TRIGGER);
 #endif
@@ -324,8 +324,8 @@ void pwm_lld_start(PWMDriver *pwmp) {
 
 #if GD32_PWM_USE_TIM3
     if (&PWMD4 == pwmp) {
-      rccEnableTIM3(true);
-      rccResetTIM3();
+      rcuEnableTIM3(true);
+      rcuResetTIM3();
 #if !defined(GD32_TIM3_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM3_NUMBER, GD32_PWM_TIM3_IRQ_PRIORITY, GD32_PWM_TIM3_IRQ_TRIGGER);
 #endif
@@ -339,8 +339,8 @@ void pwm_lld_start(PWMDriver *pwmp) {
 
 #if GD32_PWM_USE_TIM4
     if (&PWMD5 == pwmp) {
-      rccEnableTIM4(true);
-      rccResetTIM4();
+      rcuEnableTIM4(true);
+      rcuResetTIM4();
 #if !defined(GD32_TIM4_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM4_NUMBER, GD32_PWM_TIM4_IRQ_PRIORITY, GD32_PWM_TIM4_IRQ_TRIGGER);
 #endif
@@ -506,7 +506,7 @@ void pwm_lld_stop(PWMDriver *pwmp) {
       eclicDisableVector(GD32_TIM0_UP_NUMBER);
       eclicDisableVector(GD32_TIM0_CC_NUMBER);
 #endif
-      rccDisableTIM0();
+      rcuDisableTIM0();
     }
 #endif
 
@@ -515,7 +515,7 @@ void pwm_lld_stop(PWMDriver *pwmp) {
 #if !defined(GD32_TIM1_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM1_NUMBER);
 #endif
-      rccDisableTIM1();
+      rcuDisableTIM1();
     }
 #endif
 
@@ -524,7 +524,7 @@ void pwm_lld_stop(PWMDriver *pwmp) {
 #if !defined(GD32_TIM2_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM2_NUMBER);
 #endif
-      rccDisableTIM2();
+      rcuDisableTIM2();
     }
 #endif
 
@@ -533,7 +533,7 @@ void pwm_lld_stop(PWMDriver *pwmp) {
 #if !defined(GD32_TIM3_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM3_NUMBER);
 #endif
-      rccDisableTIM3();
+      rcuDisableTIM3();
     }
 #endif
 
@@ -542,7 +542,7 @@ void pwm_lld_stop(PWMDriver *pwmp) {
 #if !defined(GD32_TIM4_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM4_NUMBER);
 #endif
-      rccDisableTIM4();
+      rcuDisableTIM4();
     }
 #endif
   }

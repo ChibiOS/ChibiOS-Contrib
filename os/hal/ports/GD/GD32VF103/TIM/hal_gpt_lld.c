@@ -317,8 +317,8 @@ void gpt_lld_start(GPTDriver *gptp) {
     /* Clock activation.*/
 #if GD32_GPT_USE_TIM0
     if (&GPTD1 == gptp) {
-      rccEnableTIM0(true);
-      rccResetTIM0();
+      rcuEnableTIM0(true);
+      rcuResetTIM0();
 #if !defined(GD32_TIM0_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM0_UP_NUMBER, GD32_GPT_TIM0_IRQ_PRIORITY, GD32_GPT_TIM0_IRQ_TRIGGER);
 #endif
@@ -332,8 +332,8 @@ void gpt_lld_start(GPTDriver *gptp) {
 
 #if GD32_GPT_USE_TIM1
     if (&GPTD2 == gptp) {
-      rccEnableTIM1(true);
-      rccResetTIM1();
+      rcuEnableTIM1(true);
+      rcuResetTIM1();
 #if !defined(GD32_TIM1_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM1_NUMBER, GD32_GPT_TIM1_IRQ_PRIORITY, GD32_GPT_TIM1_IRQ_TRIGGER);
 #endif
@@ -347,8 +347,8 @@ void gpt_lld_start(GPTDriver *gptp) {
 
 #if GD32_GPT_USE_TIM2
     if (&GPTD3 == gptp) {
-      rccEnableTIM2(true);
-      rccResetTIM2();
+      rcuEnableTIM2(true);
+      rcuResetTIM2();
 #if !defined(GD32_TIM2_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM2_NUMBER, GD32_GPT_TIM2_IRQ_PRIORITY, GD32_GPT_TIM2_IRQ_TRIGGER);
 #endif
@@ -362,8 +362,8 @@ void gpt_lld_start(GPTDriver *gptp) {
 
 #if GD32_GPT_USE_TIM3
     if (&GPTD4 == gptp) {
-      rccEnableTIM3(true);
-      rccResetTIM3();
+      rcuEnableTIM3(true);
+      rcuResetTIM3();
 #if !defined(GD32_TIM3_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM3_NUMBER, GD32_GPT_TIM3_IRQ_PRIORITY, GD32_GPT_TIM3_IRQ_TRIGGER);
 #endif
@@ -377,8 +377,8 @@ void gpt_lld_start(GPTDriver *gptp) {
 
 #if GD32_GPT_USE_TIM4
     if (&GPTD5 == gptp) {
-      rccEnableTIM4(true);
-      rccResetTIM4();
+      rcuEnableTIM4(true);
+      rcuResetTIM4();
 #if !defined(GD32_TIM4_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM4_NUMBER, GD32_GPT_TIM4_IRQ_PRIORITY, GD32_GPT_TIM4_IRQ_TRIGGER);
 #endif
@@ -392,8 +392,8 @@ void gpt_lld_start(GPTDriver *gptp) {
 
 #if GD32_GPT_USE_TIM5
     if (&GPTD6 == gptp) {
-      rccEnableTIM5(true);
-      rccResetTIM5();
+      rcuEnableTIM5(true);
+      rcuResetTIM5();
 #if !defined(GD32_TIM5_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM5_NUMBER, GD32_GPT_TIM5_IRQ_PRIORITY, GD32_GPT_TIM5_IRQ_TRIGGER);
 #endif
@@ -407,8 +407,8 @@ void gpt_lld_start(GPTDriver *gptp) {
 
 #if GD32_GPT_USE_TIM6
     if (&GPTD7 == gptp) {
-      rccEnableTIM6(true);
-      rccResetTIM6();
+      rcuEnableTIM6(true);
+      rcuResetTIM6();
 #if !defined(GD32_TIM6_SUPPRESS_ISR)
       eclicEnableVector(GD32_TIM6_NUMBER, GD32_GPT_TIM6_IRQ_PRIORITY, GD32_GPT_TIM6_IRQ_TRIGGER);
 #endif
@@ -455,7 +455,7 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #if !defined(GD32_TIM0_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM0_UP_NUMBER);
 #endif
-      rccDisableTIM0();
+      rcuDisableTIM0();
     }
 #endif
 
@@ -464,7 +464,7 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #if !defined(GD32_TIM1_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM1_NUMBER);
 #endif
-      rccDisableTIM1();
+      rcuDisableTIM1();
     }
 #endif
 
@@ -473,7 +473,7 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #if !defined(GD32_TIM2_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM2_NUMBER);
 #endif
-      rccDisableTIM2();
+      rcuDisableTIM2();
     }
 #endif
 
@@ -482,7 +482,7 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #if !defined(GD32_TIM3_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM3_NUMBER);
 #endif
-      rccDisableTIM3();
+      rcuDisableTIM3();
     }
 #endif
 
@@ -491,7 +491,7 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #if !defined(GD32_TIM4_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM4_NUMBER);
 #endif
-      rccDisableTIM4();
+      rcuDisableTIM4();
     }
 #endif
 
@@ -500,7 +500,7 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #if !defined(GD32_TIM5_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM5_NUMBER);
 #endif
-      rccDisableTIM5();
+      rcuDisableTIM5();
     }
 #endif
 
@@ -509,7 +509,7 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #if !defined(GD32_TIM6_SUPPRESS_ISR)
       eclicDisableVector(GD32_TIM6_NUMBER);
 #endif
-      rccDisableTIM6();
+      rcuDisableTIM6();
     }
 #endif
   }

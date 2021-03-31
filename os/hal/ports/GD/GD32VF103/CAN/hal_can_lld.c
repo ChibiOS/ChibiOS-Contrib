@@ -87,7 +87,7 @@ static void can_lld_set_filters(CANDriver* canp,
   /* Temporarily enabling CAN clock.*/
 #if GD32_CAN_USE_CAN1
   if (canp == &CAND1) {
-    rccEnableCAN1(true);
+    rcuEnableCAN1(true);
     /* Filters initialization.*/
     canp->can->FCTL = (canp->can->FCTL & 0xFFFF0000) | CAN_FCTL_FLD;
     canp->can->FCTL = (canp->can->FCTL & 0xFFFF0000) | (can2sb << 8) | CAN_FCTL_FLD;
@@ -155,7 +155,7 @@ static void can_lld_set_filters(CANDriver* canp,
   /* Temporarily enabling CAN clock.*/
 #if GD32_CAN_USE_CAN1
   if (canp == &CAND1) {
-    rccDisableCAN1();
+    rcuDisableCAN1();
   }
 #endif
 }
@@ -546,14 +546,14 @@ void can_lld_start(CANDriver *canp) {
   /* Clock activation.*/
 #if GD32_CAN_USE_CAN1
   if (&CAND1 == canp) {
-    rccEnableCAN1(true);
+    rcuEnableCAN1(true);
   }
 #endif
 
 #if GD32_CAN_USE_CAN2
   if (&CAND2 == canp) {
-    rccEnableCAN1(true);    /* CAN 2 requires CAN1, so enabling it first.*/
-    rccEnableCAN2(true);
+    rcuEnableCAN1(true);    /* CAN 2 requires CAN1, so enabling it first.*/
+    rcuEnableCAN2(true);
   }
 #endif
 
@@ -598,7 +598,7 @@ void can_lld_stop(CANDriver *canp) {
       if (CAND2.state == CAN_STOP)
 #endif
       {
-        rccDisableCAN1();
+        rcuDisableCAN1();
       }
     }
 #endif
@@ -612,9 +612,9 @@ void can_lld_stop(CANDriver *canp) {
       if (CAND1.state == CAN_STOP)
 #endif
       {
-        rccDisableCAN1();
+        rcuDisableCAN1();
       }
-      rccDisableCAN2();
+      rcuDisableCAN2();
     }
 #endif
   }

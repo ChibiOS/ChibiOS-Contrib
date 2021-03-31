@@ -235,7 +235,7 @@ void spi_lld_start(SPIDriver *spip) {
                                     (gd32_dmaisr_t)spi_lld_serve_tx_interrupt,
                                     (void *)spip);
       osalDbgAssert(spip->dmatx != NULL, "unable to allocate stream");
-      rccEnableSPI0(true);
+      rcuEnableSPI0(true);
     }
 #endif
 #if GD32_SPI_USE_SPI1
@@ -250,7 +250,7 @@ void spi_lld_start(SPIDriver *spip) {
                                     (gd32_dmaisr_t)spi_lld_serve_tx_interrupt,
                                     (void *)spip);
       osalDbgAssert(spip->dmatx != NULL, "unable to allocate stream");
-      rccEnableSPI1(true);
+      rcuEnableSPI1(true);
     }
 #endif
 #if GD32_SPI_USE_SPI2
@@ -265,7 +265,7 @@ void spi_lld_start(SPIDriver *spip) {
                                     (gd32_dmaisr_t)spi_lld_serve_tx_interrupt,
                                     (void *)spip);
       osalDbgAssert(spip->dmatx != NULL, "unable to allocate stream");
-      rccEnableSPI2(true);
+      rcuEnableSPI2(true);
     }
 #endif
     /* DMA setup.*/
@@ -330,15 +330,15 @@ void spi_lld_stop(SPIDriver *spip) {
 
 #if GD32_SPI_USE_SPI0
     if (&SPID1 == spip)
-      rccDisableSPI0();
+      rcuDisableSPI0();
 #endif
 #if GD32_SPI_USE_SPI1
     if (&SPID2 == spip)
-      rccDisableSPI1();
+      rcuDisableSPI1();
 #endif
 #if GD32_SPI_USE_SPI2
     if (&SPID3 == spip)
-      rccDisableSPI2();
+      rcuDisableSPI2();
 #endif
   }
 }

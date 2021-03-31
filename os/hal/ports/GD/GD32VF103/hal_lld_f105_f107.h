@@ -127,7 +127,7 @@
 /** @} */
 
 /**
- * @name    RCC_CFGR register bits definitions
+ * @name    RCU_CFGR register bits definitions
  * @{
  */
 #define GD32_SW_HSI            (0 << 0)    /**< SYSCLK source is HSI.      */
@@ -180,7 +180,7 @@
 /** @} */
 
 /**
- * @name    RCC_BDCR register bits definitions
+ * @name    RCU_BDCR register bits definitions
  * @{
  */
 #define GD32_RTCSEL_MASK       (3 << 8)    /**< RTC clock source mask.     */
@@ -192,7 +192,7 @@
 /** @} */
 
 /**
- * @name    RCC_CFGR2 register bits definitions
+ * @name    RCU_CFGR2 register bits definitions
  * @{
  */
 #define GD32_PREDIV1SRC_HSE    (0 << 16)   /**< PREDIV1 source is HSE.     */

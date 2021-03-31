@@ -31,13 +31,13 @@
 /*===========================================================================*/
 
 #if GD32_HAS_GPIOE
-#define APB2_EN_MASK  (RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN |            \
-                       RCC_APB2ENR_IOPCEN | RCC_APB2ENR_IOPDEN |            \
-                       RCC_APB2ENR_IOPEEN | RCC_APB2ENR_AFIOEN)
+#define APB2_EN_MASK  (RCU_APB2ENR_IOPAEN | RCU_APB2ENR_IOPBEN |            \
+                       RCU_APB2ENR_IOPCEN | RCU_APB2ENR_IOPDEN |            \
+                       RCU_APB2ENR_IOPEEN | RCU_APB2ENR_AFIOEN)
 #else
-#define APB2_EN_MASK  (RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN |            \
-                       RCC_APB2ENR_IOPCEN | RCC_APB2ENR_IOPDEN |            \
-                       RCC_APB2ENR_AFIOEN)
+#define APB2_EN_MASK  (RCU_APB2ENR_IOPAEN | RCU_APB2ENR_IOPBEN |            \
+                       RCU_APB2ENR_IOPCEN | RCU_APB2ENR_IOPDEN |            \
+                       RCU_APB2ENR_AFIOEN)
 #endif
 
 /*===========================================================================*/
@@ -88,7 +88,7 @@ void _pal_lld_init(const PALConfig *config) {
   /*
    * Enables the GPIO related clocks.
    */
-  rccEnableAPB2(APB2_EN_MASK, true);
+  rcuEnableAPB2(APB2_EN_MASK, true);
 
   /*
    * Initial GPIO setup.

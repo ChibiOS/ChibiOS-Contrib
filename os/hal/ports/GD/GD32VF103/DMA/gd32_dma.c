@@ -444,11 +444,11 @@ const gd32_dma_stream_t *dmaStreamAllocI(uint32_t id,
 
       /* Enabling DMA clocks required by the current streams set.*/
       if ((GD32_DMA0_STREAMS_MASK & mask) != 0U) {
-        rccEnableDMA0(true);
+        rcuEnableDMA0(true);
       }
 
       if ((GD32_DMA1_STREAMS_MASK & mask) != 0U) {
-        rccEnableDMA1(true);
+        rcuEnableDMA1(true);
       }
 
       /* Enables the associated IRQ vector if not already enabled and if a
@@ -540,10 +540,10 @@ void dmaStreamFreeI(const gd32_dma_stream_t *dmastp) {
 
   /* Shutting down clocks that are no more required, if any.*/
   if ((dma.allocated_mask & GD32_DMA0_STREAMS_MASK) == 0U) {
-    rccDisableDMA0();
+    rcuDisableDMA0();
   }
   if ((dma.allocated_mask & GD32_DMA1_STREAMS_MASK) == 0U) {
-    rccDisableDMA1();
+    rcuDisableDMA1();
   }
 }
 

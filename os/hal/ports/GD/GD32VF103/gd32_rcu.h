@@ -15,17 +15,17 @@
 */
 
 /**
- * @file    STM32F1xx/gd32_rcc.h
- * @brief   RCC helper driver header.
+ * @file    STM32F1xx/gd32_rcu.h
+ * @brief   RCU helper driver header.
  * @note    This file requires definitions from the ST header file
  *          @p stm32f10x.h.
  *
- * @addtogroup STM32F1xx_RCC
+ * @addtogroup STM32F1xx_RCU
  * @{
  */
 
-#ifndef GD32_RCC_H
-#define GD32_RCC_H
+#ifndef GD32_RCU_H
+#define GD32_RCU_H
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -48,7 +48,7 @@
 /*===========================================================================*/
 
 /**
- * @name    Generic RCC operations
+ * @name    Generic RCU operations
  * @{
  */
 /**
@@ -60,9 +60,9 @@
  *
  * @api
  */
-#define rccEnableAPB1(mask, lp) {                                           \
-  RCC->APB1ENR |= (mask);                                                   \
-  (void)RCC->APB1ENR;                                                       \
+#define rcuEnableAPB1(mask, lp) {                                           \
+  RCU->APB1ENR |= (mask);                                                   \
+  (void)RCU->APB1ENR;                                                       \
 }
 
 /**
@@ -73,9 +73,9 @@
  *
  * @api
  */
-#define rccDisableAPB1(mask) {                                              \
-  RCC->APB1ENR &= ~(mask);                                                  \
-  (void)RCC->APB1ENR;                                                       \
+#define rcuDisableAPB1(mask) {                                              \
+  RCU->APB1ENR &= ~(mask);                                                  \
+  (void)RCU->APB1ENR;                                                       \
 }
 
 /**
@@ -85,10 +85,10 @@
  *
  * @api
  */
-#define rccResetAPB1(mask) {                                                \
-  RCC->APB1RSTR |= (mask);                                                  \
-  RCC->APB1RSTR &= ~(mask);                                                 \
-  (void)RCC->APB1RSTR;                                                      \
+#define rcuResetAPB1(mask) {                                                \
+  RCU->APB1RSTR |= (mask);                                                  \
+  RCU->APB1RSTR &= ~(mask);                                                 \
+  (void)RCU->APB1RSTR;                                                      \
 }
 
 /**
@@ -100,9 +100,9 @@
  *
  * @api
  */
-#define rccEnableAPB2(mask, lp) {                                           \
-  RCC->APB2ENR |= (mask);                                                   \
-  (void)RCC->APB2ENR;                                                       \
+#define rcuEnableAPB2(mask, lp) {                                           \
+  RCU->APB2ENR |= (mask);                                                   \
+  (void)RCU->APB2ENR;                                                       \
 }
 
 /**
@@ -113,9 +113,9 @@
  *
  * @api
  */
-#define rccDisableAPB2(mask) {                                              \
-  RCC->APB2ENR &= ~(mask);                                                  \
-  (void)RCC->APB2ENR;                                                       \
+#define rcuDisableAPB2(mask) {                                              \
+  RCU->APB2ENR &= ~(mask);                                                  \
+  (void)RCU->APB2ENR;                                                       \
 }
 
 /**
@@ -125,10 +125,10 @@
  *
  * @api
  */
-#define rccResetAPB2(mask) {                                                \
-  RCC->APB2RSTR |= (mask);                                                  \
-  RCC->APB2RSTR &= ~(mask);                                                 \
-  (void)RCC->APB2RSTR;                                                      \
+#define rcuResetAPB2(mask) {                                                \
+  RCU->APB2RSTR |= (mask);                                                  \
+  RCU->APB2RSTR &= ~(mask);                                                 \
+  (void)RCU->APB2RSTR;                                                      \
 }
 
 /**
@@ -140,9 +140,9 @@
  *
  * @api
  */
-#define rccEnableAHB(mask, lp) {                                            \
-  RCC->AHBENR |= (mask);                                                    \
-  (void)RCC->AHBENR;                                                        \
+#define rcuEnableAHB(mask, lp) {                                            \
+  RCU->AHBENR |= (mask);                                                    \
+  (void)RCU->AHBENR;                                                        \
 }
 
 /**
@@ -153,9 +153,9 @@
  *
  * @api
  */
-#define rccDisableAHB(mask) {                                               \
-  RCC->AHBENR &= ~(mask);                                                   \
-  (void)RCC->AHBENR;                                                        \
+#define rcuDisableAHB(mask) {                                               \
+  RCU->AHBENR &= ~(mask);                                                   \
+  (void)RCU->AHBENR;                                                        \
 }
 
 /**
@@ -165,15 +165,15 @@
  *
  * @api
  */
-#define rccResetAHB(mask) {                                                 \
-  RCC->AHBRSTR |= (mask);                                                   \
-  RCC->AHBRSTR &= ~(mask);                                                  \
-  (void)RCC->AHBRSTR;                                                       \
+#define rcuResetAHB(mask) {                                                 \
+  RCU->AHBRSTR |= (mask);                                                   \
+  RCU->AHBRSTR &= ~(mask);                                                  \
+  (void)RCU->AHBRSTR;                                                       \
 }
 /** @} */
 
 /**
- * @name    ADC peripherals specific RCC operations
+ * @name    ADC peripherals specific RCU operations
  * @{
  */
 /**
@@ -184,25 +184,25 @@
  *
  * @api
  */
-#define rccEnableADC1(lp) rccEnableAPB2(RCC_APB2ENR_ADC1EN, lp)
+#define rcuEnableADC1(lp) rcuEnableAPB2(RCU_APB2ENR_ADC1EN, lp)
 
 /**
  * @brief   Disables the ADC1 peripheral clock.
  *
  * @api
  */
-#define rccDisableADC1() rccDisableAPB2(RCC_APB2ENR_ADC1EN)
+#define rcuDisableADC1() rcuDisableAPB2(RCU_APB2ENR_ADC1EN)
 
 /**
  * @brief   Resets the ADC1 peripheral.
  *
  * @api
  */
-#define rccResetADC1() rccResetAPB2(RCC_APB2RSTR_ADC1RST)
+#define rcuResetADC1() rcuResetAPB2(RCU_APB2RSTR_ADC1RST)
 /** @} */
 
 /**
- * @name    DAC peripheral specific RCC operations
+ * @name    DAC peripheral specific RCU operations
  * @{
  */
 /**
@@ -212,25 +212,25 @@
  *
  * @api
  */
-#define rccEnableDAC1(lp) rccEnableAPB1(RCC_APB1ENR_DACEN, lp)
+#define rcuEnableDAC1(lp) rcuEnableAPB1(RCU_APB1ENR_DACEN, lp)
 
 /**
  * @brief   Disables the DAC1 peripheral clock.
  *
  * @api
  */
-#define rccDisableDAC1() rccDisableAPB1(RCC_APB1ENR_DACEN)
+#define rcuDisableDAC1() rcuDisableAPB1(RCU_APB1ENR_DACEN)
 
 /**
  * @brief   Resets the DAC1 peripheral.
  *
  * @api
  */
-#define rccResetDAC1() rccResetAPB1(RCC_APB1RSTR_DACRST)
+#define rcuResetDAC1() rcuResetAPB1(RCU_APB1RSTR_DACRST)
 /** @} */
 
 /**
- * @name    Backup domain interface specific RCC operations
+ * @name    Backup domain interface specific RCU operations
  * @{
  */
 /**
@@ -241,32 +241,32 @@
  *
  * @api
  */
-#define rccEnableBKPInterface(lp) rccEnableAPB1((RCC_APB1ENR_BKPEN), lp)
+#define rcuEnableBKPInterface(lp) rcuEnableAPB1((RCU_APB1ENR_BKPEN), lp)
 
 /**
  * @brief   Disables BKP interface clock.
  *
  * @api
  */
-#define rccDisableBKPInterface() rccDisableAPB1(RCC_APB1ENR_BKPEN)
+#define rcuDisableBKPInterface() rcuDisableAPB1(RCU_APB1ENR_BKPEN)
 
 /**
  * @brief   Resets the Backup Domain interface.
  *
  * @api
  */
-#define rccResetBKPInterface() rccResetAPB1(RCC_APB1ENR_BKPRST)
+#define rcuResetBKPInterface() rcuResetAPB1(RCU_APB1ENR_BKPRST)
 
 /**
  * @brief   Resets the entire Backup Domain.
  *
  * @api
  */
-#define rccResetBKP() (RCC->BDCR |= RCC_BDCR_BDRST)
+#define rcuResetBKP() (RCU->BDCR |= RCU_BDCR_BDRST)
 /** @} */
 
 /**
- * @name    PWR interface specific RCC operations
+ * @name    PWR interface specific RCU operations
  * @{
  */
 /**
@@ -277,25 +277,25 @@
  *
  * @api
  */
-#define rccEnablePWRInterface(lp) rccEnableAPB1(RCC_APB1ENR_PWREN, lp)
+#define rcuEnablePWRInterface(lp) rcuEnableAPB1(RCU_APB1ENR_PWREN, lp)
 
 /**
  * @brief   Disables PWR interface clock.
  *
  * @api
  */
-#define rccDisablePWRInterface() rccDisableAPB1(RCC_APB1ENR_PWREN)
+#define rcuDisablePWRInterface() rcuDisableAPB1(RCU_APB1ENR_PWREN)
 
 /**
  * @brief   Resets the PWR interface.
  *
  * @api
  */
-#define rccResetPWRInterface() rccResetAPB1(RCC_APB1RSTR_PWRRST)
+#define rcuResetPWRInterface() rcuResetAPB1(RCU_APB1RSTR_PWRRST)
 /** @} */
 
 /**
- * @name    CAN peripherals specific RCC operations
+ * @name    CAN peripherals specific RCU operations
  * @{
  */
 /**
@@ -306,21 +306,21 @@
  *
  * @api
  */
-#define rccEnableCAN1(lp) rccEnableAPB1(RCC_APB1ENR_CAN1EN, lp)
+#define rcuEnableCAN1(lp) rcuEnableAPB1(RCU_APB1ENR_CAN1EN, lp)
 
 /**
  * @brief   Disables the CAN1 peripheral clock.
  *
  * @api
  */
-#define rccDisableCAN1() rccDisableAPB1(RCC_APB1ENR_CAN1EN)
+#define rcuDisableCAN1() rcuDisableAPB1(RCU_APB1ENR_CAN1EN)
 
 /**
  * @brief   Resets the CAN1 peripheral.
  *
  * @api
  */
-#define rccResetCAN1() rccResetAPB1(RCC_APB1RSTR_CAN1RST)
+#define rcuResetCAN1() rcuResetAPB1(RCU_APB1RSTR_CAN1RST)
 
 /**
  * @brief   Enables the CAN2 peripheral clock.
@@ -329,25 +329,25 @@
  *
  * @api
  */
-#define rccEnableCAN2(lp) rccEnableAPB1(RCC_APB1ENR_CAN2EN, lp)
+#define rcuEnableCAN2(lp) rcuEnableAPB1(RCU_APB1ENR_CAN2EN, lp)
 
 /**
  * @brief   Disables the CAN2 peripheral clock.
  *
  * @api
  */
-#define rccDisableCAN2() rccDisableAPB1(RCC_APB1ENR_CAN2EN)
+#define rcuDisableCAN2() rcuDisableAPB1(RCU_APB1ENR_CAN2EN)
 
 /**
  * @brief   Resets the CAN2 peripheral.
  *
  * @api
  */
-#define rccResetCAN2() rccResetAPB1(RCC_APB1RSTR_CAN2RST)
+#define rcuResetCAN2() rcuResetAPB1(RCU_APB1RSTR_CAN2RST)
 /** @} */
 
 /**
- * @name    DMA peripherals specific RCC operations
+ * @name    DMA peripherals specific RCU operations
  * @{
  */
 /**
@@ -358,14 +358,14 @@
  *
  * @api
  */
-#define rccEnableDMA0(lp) rccEnableAHB(RCC_AHBENR_DMA0EN, lp)
+#define rcuEnableDMA0(lp) rcuEnableAHB(RCU_AHBENR_DMA0EN, lp)
 
 /**
  * @brief   Disables the DMA0 peripheral clock.
  *
  * @api
  */
-#define rccDisableDMA0() rccDisableAHB(RCC_AHBENR_DMA0EN)
+#define rcuDisableDMA0() rcuDisableAHB(RCU_AHBENR_DMA0EN)
 
 /**
  * @brief   Resets the DMA0 peripheral.
@@ -373,7 +373,7 @@
  *
  * @api
  */
-#define rccResetDMA0()
+#define rcuResetDMA0()
 
 /**
  * @brief   Enables the DMA1 peripheral clock.
@@ -383,14 +383,14 @@
  *
  * @api
  */
-#define rccEnableDMA1(lp) rccEnableAHB(RCC_AHBENR_DMA1EN, lp)
+#define rcuEnableDMA1(lp) rcuEnableAHB(RCU_AHBENR_DMA1EN, lp)
 
 /**
  * @brief   Disables the DMA1 peripheral clock.
  *
  * @api
  */
-#define rccDisableDMA1() rccDisableAHB(RCC_AHBENR_DMA1EN)
+#define rcuDisableDMA1() rcuDisableAHB(RCU_AHBENR_DMA1EN)
 
 /**
  * @brief   Resets the DMA0 peripheral.
@@ -398,11 +398,11 @@
  *
  * @api
  */
-#define rccResetDMA1()
+#define rcuResetDMA1()
 /** @} */
 
 /**
- * @name    ETH peripheral specific RCC operations
+ * @name    ETH peripheral specific RCU operations
  * @{
  */
 /**
@@ -413,9 +413,9 @@
  *
  * @api
  */
-#define rccEnableETH(lp) rccEnableAHB(RCC_AHBENR_ETHMACEN |                 \
-                                      RCC_AHBENR_ETHMACTXEN |               \
-                                      RCC_AHBENR_ETHMACRXEN, lp)
+#define rcuEnableETH(lp) rcuEnableAHB(RCU_AHBENR_ETHMACEN |                 \
+                                      RCU_AHBENR_ETHMACTXEN |               \
+                                      RCU_AHBENR_ETHMACRXEN, lp)
 
 /**
  * @brief   Disables the ETH peripheral clock.
@@ -425,20 +425,20 @@
  *
  * @api
  */
-#define rccDisableETH() rccDisableAHB(RCC_AHBENR_ETHMACEN |                 \
-                                      RCC_AHBENR_ETHMACTXEN |               \
-                                      RCC_AHBENR_ETHMACRXEN)
+#define rcuDisableETH() rcuDisableAHB(RCU_AHBENR_ETHMACEN |                 \
+                                      RCU_AHBENR_ETHMACTXEN |               \
+                                      RCU_AHBENR_ETHMACRXEN)
 
 /**
  * @brief   Resets the ETH peripheral.
  *
  * @api
  */
-#define rccResetETH() rccResetAHB(RCC_AHBRSTR_ETHMACRST)
+#define rcuResetETH() rcuResetAHB(RCU_AHBRSTR_ETHMACRST)
 /** @} */
 
 /**
- * @name    I2C peripherals specific RCC operations
+ * @name    I2C peripherals specific RCU operations
  * @{
  */
 /**
@@ -449,21 +449,21 @@
  *
  * @api
  */
-#define rccEnableI2C0(lp) rccEnableAPB1(RCC_APB1ENR_I2C0EN, lp)
+#define rcuEnableI2C0(lp) rcuEnableAPB1(RCU_APB1ENR_I2C0EN, lp)
 
 /**
  * @brief   Disables the I2C0 peripheral clock.
  *
  * @api
  */
-#define rccDisableI2C0() rccDisableAPB1(RCC_APB1ENR_I2C0EN)
+#define rcuDisableI2C0() rcuDisableAPB1(RCU_APB1ENR_I2C0EN)
 
 /**
  * @brief   Resets the I2C0 peripheral.
  *
  * @api
  */
-#define rccResetI2C0() rccResetAPB1(RCC_APB1RSTR_I2C0RST)
+#define rcuResetI2C0() rcuResetAPB1(RCU_APB1RSTR_I2C0RST)
 
 /**
  * @brief   Enables the I2C1 peripheral clock.
@@ -473,25 +473,25 @@
  *
  * @api
  */
-#define rccEnableI2C1(lp) rccEnableAPB1(RCC_APB1ENR_I2C1EN, lp)
+#define rcuEnableI2C1(lp) rcuEnableAPB1(RCU_APB1ENR_I2C1EN, lp)
 
 /**
  * @brief   Disables the I2C1 peripheral clock.
  *
  * @api
  */
-#define rccDisableI2C1() rccDisableAPB1(RCC_APB1ENR_I2C1EN)
+#define rcuDisableI2C1() rcuDisableAPB1(RCU_APB1ENR_I2C1EN)
 
 /**
  * @brief   Resets the I2C1 peripheral.
  *
  * @api
  */
-#define rccResetI2C1() rccResetAPB1(RCC_APB1RSTR_I2C1RST)
+#define rcuResetI2C1() rcuResetAPB1(RCU_APB1RSTR_I2C1RST)
 /** @} */
 
 /**
- * @name    OTG peripherals specific RCC operations
+ * @name    OTG peripherals specific RCU operations
  * @{
  */
 /**
@@ -501,25 +501,25 @@
  *
  * @api
  */
-#define rccEnableUSBFS(lp) rccEnableAHB(RCC_AHBENR_OTGFSEN, lp)
+#define rcuEnableUSBFS(lp) rcuEnableAHB(RCU_AHBENR_OTGFSEN, lp)
 
 /**
  * @brief   Disables the USBFS peripheral clock.
  *
  * @api
  */
-#define rccDisableUSBFS() rccDisableAHB(RCC_AHBENR_OTGFSEN)
+#define rcuDisableUSBFS() rcuDisableAHB(RCU_AHBENR_OTGFSEN)
 
 /**
  * @brief   Resets the USBFS peripheral.
  *
  * @api
  */
-#define rccResetUSBFS() rccResetAHB(RCC_AHBRSTR_OTGFSRST)
+#define rcuResetUSBFS() rcuResetAHB(RCU_AHBRSTR_OTGFSRST)
 /** @} */
 
 /**
- * @name    SDIO peripheral specific RCC operations
+ * @name    SDIO peripheral specific RCU operations
  * @{
  */
 /**
@@ -530,14 +530,14 @@
  *
  * @api
  */
-#define rccEnableSDIO(lp) rccEnableAHB(RCC_AHBENR_SDIOEN, lp)
+#define rcuEnableSDIO(lp) rcuEnableAHB(RCU_AHBENR_SDIOEN, lp)
 
 /**
  * @brief   Disables the SDIO peripheral clock.
  *
  * @api
  */
-#define rccDisableSDIO() rccDisableAHB(RCC_AHBENR_SDIOEN)
+#define rcuDisableSDIO() rcuDisableAHB(RCU_AHBENR_SDIOEN)
 
 /**
  * @brief   Resets the SDIO peripheral.
@@ -545,11 +545,11 @@
  *
  * @api
  */
-#define rccResetSDIO()
+#define rcuResetSDIO()
 /** @} */
 
 /**
- * @name    SPI peripherals specific RCC operations
+ * @name    SPI peripherals specific RCU operations
  * @{
  */
 /**
@@ -560,21 +560,21 @@
  *
  * @api
  */
-#define rccEnableSPI1(lp) rccEnableAPB2(RCC_APB2ENR_SPI1EN, lp)
+#define rcuEnableSPI1(lp) rcuEnableAPB2(RCU_APB2ENR_SPI1EN, lp)
 
 /**
  * @brief   Disables the SPI1 peripheral clock.
  *
  * @api
  */
-#define rccDisableSPI1() rccDisableAPB2(RCC_APB2ENR_SPI1EN)
+#define rcuDisableSPI1() rcuDisableAPB2(RCU_APB2ENR_SPI1EN)
 
 /**
  * @brief   Resets the SPI1 peripheral.
  *
  * @api
  */
-#define rccResetSPI1() rccResetAPB2(RCC_APB2RSTR_SPI1RST)
+#define rcuResetSPI1() rcuResetAPB2(RCU_APB2RSTR_SPI1RST)
 
 /**
  * @brief   Enables the SPI2 peripheral clock.
@@ -584,21 +584,21 @@
  *
  * @api
  */
-#define rccEnableSPI2(lp) rccEnableAPB1(RCC_APB1ENR_SPI2EN, lp)
+#define rcuEnableSPI2(lp) rcuEnableAPB1(RCU_APB1ENR_SPI2EN, lp)
 
 /**
  * @brief   Disables the SPI2 peripheral clock.
  *
  * @api
  */
-#define rccDisableSPI2() rccDisableAPB1(RCC_APB1ENR_SPI2EN)
+#define rcuDisableSPI2() rcuDisableAPB1(RCU_APB1ENR_SPI2EN)
 
 /**
  * @brief   Resets the SPI2 peripheral.
  *
  * @api
  */
-#define rccResetSPI2() rccResetAPB1(RCC_APB1RSTR_SPI2RST)
+#define rcuResetSPI2() rcuResetAPB1(RCU_APB1RSTR_SPI2RST)
 
 /**
  * @brief   Enables the SPI3 peripheral clock.
@@ -608,25 +608,25 @@
  *
  * @api
  */
-#define rccEnableSPI3(lp) rccEnableAPB1(RCC_APB1ENR_SPI3EN, lp)
+#define rcuEnableSPI3(lp) rcuEnableAPB1(RCU_APB1ENR_SPI3EN, lp)
 
 /**
  * @brief   Disables the SPI3 peripheral clock.
  *
  * @api
  */
-#define rccDisableSPI3() rccDisableAPB1(RCC_APB1ENR_SPI3EN)
+#define rcuDisableSPI3() rcuDisableAPB1(RCU_APB1ENR_SPI3EN)
 
 /**
  * @brief   Resets the SPI3 peripheral.
  *
  * @api
  */
-#define rccResetSPI3() rccResetAPB1(RCC_APB1RSTR_SPI3RST)
+#define rcuResetSPI3() rcuResetAPB1(RCU_APB1RSTR_SPI3RST)
 /** @} */
 
 /**
- * @name    TIM peripherals specific RCC operations
+ * @name    TIM peripherals specific RCU operations
  * @{
  */
 /**
@@ -637,21 +637,21 @@
  *
  * @api
  */
-#define rccEnableTIM0(lp) rccEnableAPB2(RCC_APB2ENR_TIM0EN, lp)
+#define rcuEnableTIM0(lp) rcuEnableAPB2(RCU_APB2ENR_TIM0EN, lp)
 
 /**
  * @brief   Disables the TIM0 peripheral clock.
  *
  * @api
  */
-#define rccDisableTIM0() rccDisableAPB2(RCC_APB2ENR_TIM0EN)
+#define rcuDisableTIM0() rcuDisableAPB2(RCU_APB2ENR_TIM0EN)
 
 /**
  * @brief   Resets the TIM0 peripheral.
  *
  * @api
  */
-#define rccResetTIM0() rccResetAPB2(RCC_APB2RSTR_TIM0RST)
+#define rcuResetTIM0() rcuResetAPB2(RCU_APB2RSTR_TIM0RST)
 
 /**
  * @brief   Enables the TIM1 peripheral clock.
@@ -661,21 +661,21 @@
  *
  * @api
  */
-#define rccEnableTIM1(lp) rccEnableAPB1(RCC_APB1ENR_TIM1EN, lp)
+#define rcuEnableTIM1(lp) rcuEnableAPB1(RCU_APB1ENR_TIM1EN, lp)
 
 /**
  * @brief   Disables the TIM1 peripheral clock.
  *
  * @api
  */
-#define rccDisableTIM1() rccDisableAPB1(RCC_APB1ENR_TIM1EN)
+#define rcuDisableTIM1() rcuDisableAPB1(RCU_APB1ENR_TIM1EN)
 
 /**
  * @brief   Resets the TIM1 peripheral.
  *
  * @api
  */
-#define rccResetTIM1() rccResetAPB1(RCC_APB1RSTR_TIM1RST)
+#define rcuResetTIM1() rcuResetAPB1(RCU_APB1RSTR_TIM1RST)
 
 /**
  * @brief   Enables the TIM2 peripheral clock.
@@ -685,21 +685,21 @@
  *
  * @api
  */
-#define rccEnableTIM2(lp) rccEnableAPB1(RCC_APB1ENR_TIM2EN, lp)
+#define rcuEnableTIM2(lp) rcuEnableAPB1(RCU_APB1ENR_TIM2EN, lp)
 
 /**
  * @brief   Disables the TIM2 peripheral clock.
  *
  * @api
  */
-#define rccDisableTIM2() rccDisableAPB1(RCC_APB1ENR_TIM2EN)
+#define rcuDisableTIM2() rcuDisableAPB1(RCU_APB1ENR_TIM2EN)
 
 /**
  * @brief   Resets the TIM2 peripheral.
  *
  * @api
  */
-#define rccResetTIM2() rccResetAPB1(RCC_APB1RSTR_TIM2RST)
+#define rcuResetTIM2() rcuResetAPB1(RCU_APB1RSTR_TIM2RST)
 
 /**
  * @brief   Enables the TIM3 peripheral clock.
@@ -709,21 +709,21 @@
  *
  * @api
  */
-#define rccEnableTIM3(lp) rccEnableAPB1(RCC_APB1ENR_TIM3EN, lp)
+#define rcuEnableTIM3(lp) rcuEnableAPB1(RCU_APB1ENR_TIM3EN, lp)
 
 /**
  * @brief   Disables the TIM3 peripheral clock.
  *
  * @api
  */
-#define rccDisableTIM3() rccDisableAPB1(RCC_APB1ENR_TIM3EN)
+#define rcuDisableTIM3() rcuDisableAPB1(RCU_APB1ENR_TIM3EN)
 
 /**
  * @brief   Resets the TIM3 peripheral.
  *
  * @api
  */
-#define rccResetTIM3() rccResetAPB1(RCC_APB1RSTR_TIM3RST)
+#define rcuResetTIM3() rcuResetAPB1(RCU_APB1RSTR_TIM3RST)
 
 /**
  * @brief   Enables the TIM4 peripheral clock.
@@ -733,21 +733,21 @@
  *
  * @api
  */
-#define rccEnableTIM4(lp) rccEnableAPB1(RCC_APB1ENR_TIM4EN, lp)
+#define rcuEnableTIM4(lp) rcuEnableAPB1(RCU_APB1ENR_TIM4EN, lp)
 
 /**
  * @brief   Disables the TIM4 peripheral clock.
  *
  * @api
  */
-#define rccDisableTIM4() rccDisableAPB1(RCC_APB1ENR_TIM4EN)
+#define rcuDisableTIM4() rcuDisableAPB1(RCU_APB1ENR_TIM4EN)
 
 /**
  * @brief   Resets the TIM4 peripheral.
  *
  * @api
  */
-#define rccResetTIM4() rccResetAPB1(RCC_APB1RSTR_TIM4RST)
+#define rcuResetTIM4() rcuResetAPB1(RCU_APB1RSTR_TIM4RST)
 
 /**
  * @brief   Enables the TIM5 peripheral clock.
@@ -756,21 +756,21 @@
  *
  * @api
  */
-#define rccEnableTIM5(lp) rccEnableAPB1(RCC_APB1ENR_TIM5EN, lp)
+#define rcuEnableTIM5(lp) rcuEnableAPB1(RCU_APB1ENR_TIM5EN, lp)
 
 /**
  * @brief   Disables the TIM5 peripheral clock.
  *
  * @api
  */
-#define rccDisableTIM5() rccDisableAPB1(RCC_APB1ENR_TIM5EN)
+#define rcuDisableTIM5() rcuDisableAPB1(RCU_APB1ENR_TIM5EN)
 
 /**
  * @brief   Resets the TIM5 peripheral.
  *
  * @api
  */
-#define rccResetTIM5() rccResetAPB1(RCC_APB1RSTR_TIM5RST)
+#define rcuResetTIM5() rcuResetAPB1(RCU_APB1RSTR_TIM5RST)
 
 /**
  * @brief   Enables the TIM6 peripheral clock.
@@ -779,27 +779,27 @@
  *
  * @api
  */
-#define rccEnableTIM6(lp) rccEnableAPB1(RCC_APB1ENR_TIM6EN, lp)
+#define rcuEnableTIM6(lp) rcuEnableAPB1(RCU_APB1ENR_TIM6EN, lp)
 
 /**
  * @brief   Disables the TIM6 peripheral clock.
  *
  * @api
  */
-#define rccDisableTIM6() rccDisableAPB1(RCC_APB1ENR_TIM6EN)
+#define rcuDisableTIM6() rcuDisableAPB1(RCU_APB1ENR_TIM6EN)
 
 /**
  * @brief   Resets the TIM6 peripheral.
  *
  * @api
  */
-#define rccResetTIM6() rccResetAPB1(RCC_APB1RSTR_TIM6RST)
+#define rcuResetTIM6() rcuResetAPB1(RCU_APB1RSTR_TIM6RST)
 
 
 /** @} */
 
 /**
- * @name    USART/UART peripherals specific RCC operations
+ * @name    USART/UART peripherals specific RCU operations
  * @{
  */
 /**
@@ -810,21 +810,21 @@
  *
  * @api
  */
-#define rccEnableUSART0(lp) rccEnableAPB2(RCC_APB2ENR_USART0EN, lp)
+#define rcuEnableUSART0(lp) rcuEnableAPB2(RCU_APB2ENR_USART0EN, lp)
 
 /**
  * @brief   Disables the USART0 peripheral clock.
  *
  * @api
  */
-#define rccDisableUSART0() rccDisableAPB2(RCC_APB2ENR_USART0EN)
+#define rcuDisableUSART0() rcuDisableAPB2(RCU_APB2ENR_USART0EN)
 
 /**
  * @brief   Resets the USART0 peripheral.
  *
  * @api
  */
-#define rccResetUSART0() rccResetAPB2(RCC_APB2RSTR_USART0RST)
+#define rcuResetUSART0() rcuResetAPB2(RCU_APB2RSTR_USART0RST)
 
 /**
  * @brief   Enables the USART1 peripheral clock.
@@ -834,21 +834,21 @@
  *
  * @api
  */
-#define rccEnableUSART1(lp) rccEnableAPB1(RCC_APB1ENR_USART1EN, lp)
+#define rcuEnableUSART1(lp) rcuEnableAPB1(RCU_APB1ENR_USART1EN, lp)
 
 /**
  * @brief   Disables the USART1 peripheral clock.
  *
  * @api
  */
-#define rccDisableUSART1() rccDisableAPB1(RCC_APB1ENR_USART1EN)
+#define rcuDisableUSART1() rcuDisableAPB1(RCU_APB1ENR_USART1EN)
 
 /**
  * @brief   Resets the USART1 peripheral.
  *
  * @api
  */
-#define rccResetUSART1() rccResetAPB1(RCC_APB1RSTR_USART1RST)
+#define rcuResetUSART1() rcuResetAPB1(RCU_APB1RSTR_USART1RST)
 
 /**
  * @brief   Enables the USART2 peripheral clock.
@@ -858,21 +858,21 @@
  *
  * @api
  */
-#define rccEnableUSART2(lp) rccEnableAPB1(RCC_APB1ENR_USART2EN, lp)
+#define rcuEnableUSART2(lp) rcuEnableAPB1(RCU_APB1ENR_USART2EN, lp)
 
 /**
  * @brief   Disables the USART2 peripheral clock.
  *
  * @api
  */
-#define rccDisableUSART2() rccDisableAPB1(RCC_APB1ENR_USART2EN)
+#define rcuDisableUSART2() rcuDisableAPB1(RCU_APB1ENR_USART2EN)
 
 /**
  * @brief   Resets the USART2 peripheral.
  *
  * @api
  */
-#define rccResetUSART2() rccResetAPB1(RCC_APB1RSTR_USART2RST)
+#define rcuResetUSART2() rcuResetAPB1(RCU_APB1RSTR_USART2RST)
 
 /**
  * @brief   Enables the UART3 peripheral clock.
@@ -882,21 +882,21 @@
  *
  * @api
  */
-#define rccEnableUART3(lp) rccEnableAPB1(RCC_APB1ENR_UART3EN, lp)
+#define rcuEnableUART3(lp) rcuEnableAPB1(RCU_APB1ENR_UART3EN, lp)
 
 /**
  * @brief   Disables the UART3 peripheral clock.
  *
  * @api
  */
-#define rccDisableUART3() rccDisableAPB1(RCC_APB1ENR_UART3EN)
+#define rcuDisableUART3() rcuDisableAPB1(RCU_APB1ENR_UART3EN)
 
 /**
  * @brief   Resets the UART3 peripheral.
  *
  * @api
  */
-#define rccResetUART3() rccResetAPB1(RCC_APB1RSTR_UART3RST)
+#define rcuResetUART3() rcuResetAPB1(RCU_APB1RSTR_UART3RST)
 
 /**
  * @brief   Enables the UART4 peripheral clock.
@@ -906,25 +906,25 @@
  *
  * @api
  */
-#define rccEnableUART4(lp) rccEnableAPB1(RCC_APB1ENR_UART4EN, lp)
+#define rcuEnableUART4(lp) rcuEnableAPB1(RCU_APB1ENR_UART4EN, lp)
 
 /**
  * @brief   Disables the UART4 peripheral clock.
  *
  * @api
  */
-#define rccDisableUART4() rccDisableAPB1(RCC_APB1ENR_UART4EN)
+#define rcuDisableUART4() rcuDisableAPB1(RCU_APB1ENR_UART4EN)
 
 /**
  * @brief   Resets the UART4 peripheral.
  *
  * @api
  */
-#define rccResetUART4() rccResetAPB1(RCC_APB1RSTR_UART4RST)
+#define rcuResetUART4() rcuResetAPB1(RCU_APB1RSTR_UART4RST)
 /** @} */
 
 /**
- * @name    USB peripheral specific RCC operations
+ * @name    USB peripheral specific RCU operations
  * @{
  */
 /**
@@ -935,25 +935,25 @@
  *
  * @api
  */
-#define rccEnableUSB(lp) rccEnableAPB1(RCC_APB1ENR_USBEN, lp)
+#define rcuEnableUSB(lp) rcuEnableAPB1(RCU_APB1ENR_USBEN, lp)
 
 /**
  * @brief   Disables the USB peripheral clock
  *
  * @api
  */
-#define rccDisableUSB() rccDisableAPB1(RCC_APB1ENR_USBEN)
+#define rcuDisableUSB() rcuDisableAPB1(RCU_APB1ENR_USBEN)
 
 /**
  * @brief   Resets the USB peripheral.
  *
  * @api
  */
-#define rccResetUSB() rccResetAPB1(RCC_APB1RSTR_USBRST)
+#define rcuResetUSB() rcuResetAPB1(RCU_APB1RSTR_USBRST)
 /** @} */
 
 /**
- * @name    FSMC peripherals specific RCC operations
+ * @name    FSMC peripherals specific RCU operations
  * @{
  */
 /**
@@ -963,14 +963,14 @@
  *
  * @api
  */
-#define rccEnableFSMC(lp) rccEnableAHB(RCC_AHBENR_FSMCEN, lp)
+#define rcuEnableFSMC(lp) rcuEnableAHB(RCU_AHBENR_FSMCEN, lp)
 
 /**
  * @brief   Disables the FSMC peripheral clock.
  *
  * @api
  */
-#define rccDisableFSMC() rccDisableAHB(RCC_AHBENR_FSMCEN)
+#define rcuDisableFSMC() rcuDisableAHB(RCU_AHBENR_FSMCEN)
 /** @} */
 
 /*===========================================================================*/
@@ -984,6 +984,6 @@ extern "C" {
 }
 #endif
 
-#endif /* GD32_RCC_H */
+#endif /* GD32_RCU_H */
 
 /** @} */
