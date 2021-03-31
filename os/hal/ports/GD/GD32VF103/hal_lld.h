@@ -16,26 +16,14 @@
 */
 
 /**
- * @file    STM32F1xx/hal_lld.h
- * @brief   STM32F1xx HAL subsystem low level driver header.
+ * @file    GD32VF103/hal_lld.h
+ * @brief   GD32VF103 HAL subsystem low level driver header.
  * @pre     This module requires the following macros to be defined in the
  *          @p board.h file:
  *          - GD32_LSECLK.
  *          - GD32_LSE_BYPASS (optionally).
  *          - GD32_HSECLK.
  *          - GD32_HSE_BYPASS (optionally).
- *          .
- *          One of the following macros must also be defined:
- *          - STM32F100xB for Value Line Medium Density devices.
- *          - STM32F100xE for Value Line High Density devices.
- *          - STM32F101x6, STM32F102x6, STM32F103x6 for Performance
- *            Low Density devices.
- *          - STM32F101xB, STM32F102xB, STM32F103xB for Performance
- *            Medium Density devices.
- *          - STM32F101xE, STM32F103xE for Performance High Density devices.
- *          - STM32F101xG, STM32F103xG for Performance eXtra Density devices.
- *          - STM32F105xC, STM32F107xC for Connectivity Line devices.
- *          .
  *
  * @addtogroup HAL
  * @{
@@ -66,8 +54,7 @@
 /**
  * @brief   Sub-family identifier.
  */
-#if !defined(STM32F1XX) || !defined(GD32VF103) || defined(__DOXYGEN__)
-#define STM32F1XX
+#if !defined(GD32VF103) || defined(__DOXYGEN__)
 #define GD32VF103
 #endif
 /** @} */
@@ -81,18 +68,18 @@
 /** @} */
 
 /**
- * @name    PMU_CR register bits definitions
+ * @name    PMU_CTL register bits definitions
  * @{
  */
-#define GD32_PLS_MASK          (7 << 5)    /**< PLS bits mask.             */
-#define GD32_PLS_LEV0          (0 << 5)    /**< PVD level 0.               */
-#define GD32_PLS_LEV1          (1 << 5)    /**< PVD level 1.               */
-#define GD32_PLS_LEV2          (2 << 5)    /**< PVD level 2.               */
-#define GD32_PLS_LEV3          (3 << 5)    /**< PVD level 3.               */
-#define GD32_PLS_LEV4          (4 << 5)    /**< PVD level 4.               */
-#define GD32_PLS_LEV5          (5 << 5)    /**< PVD level 5.               */
-#define GD32_PLS_LEV6          (6 << 5)    /**< PVD level 6.               */
-#define GD32_PLS_LEV7          (7 << 5)    /**< PVD level 7.               */
+#define GD32_LVDT_MASK          (7 << 5)    /**< LVDT bits mask.            */
+#define GD32_LVDT_LEV0          (0 << 5)    /**< LVDT level 0.              */
+#define GD32_LVDT_LEV1          (1 << 5)    /**< LVDT level 1.              */
+#define GD32_LVDT_LEV2          (2 << 5)    /**< LVDT level 2.              */
+#define GD32_LVDT_LEV3          (3 << 5)    /**< LVDT level 3.              */
+#define GD32_LVDT_LEV4          (4 << 5)    /**< LVDT level 4.              */
+#define GD32_LVDT_LEV5          (5 << 5)    /**< LVDT level 5.              */
+#define GD32_LVDT_LEV6          (6 << 5)    /**< LVDT level 6.              */
+#define GD32_LVDT_LEV7          (7 << 5)    /**< LVDT level 7.              */
 /** @} */
 
 /*===========================================================================*/
@@ -124,8 +111,8 @@
 /**
  * @brief   Sets voltage level for programmable voltage detector.
  */
-#if !defined(GD32_PLS) || defined(__DOXYGEN__)
-#define GD32_PLS                   GD32_PLS_LEV0
+#if !defined(GD32_LVDT) || defined(__DOXYGEN__)
+#define GD32_LVDT                   GD32_LVDT_LEV0
 #endif
 
 /**

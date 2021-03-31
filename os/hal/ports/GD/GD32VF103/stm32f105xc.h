@@ -6,7 +6,7 @@
   * @date    31-March-2017
   * @brief   CMSIS Cortex-M3 Device Peripheral Access Layer Header File. 
   *          This file contains all the peripheral register's definitions, bits 
-  *          definitions and memory mapping for STM32F1xx devices.            
+  *          definitions and memory mapping for GD32VF103 devices.            
   *            
   *          This file contains:
   *           - Data structures and the address mapping for all peripherals
@@ -667,7 +667,7 @@ typedef struct
 #define CAN1_BASE             (APB1PERIPH_BASE + 0x00006400U)
 #define CAN2_BASE             (APB1PERIPH_BASE + 0x00006800U)
 //#define BKP_BASE              (APB1PERIPH_BASE + 0x00006C00U)
-#define PMU_BASE              (APB1PERIPH_BASE + 0x00007000U)
+//#define PMU_BASE              (APB1PERIPH_BASE + 0x00007000U)
 //#define DAC_BASE              (APB1PERIPH_BASE + 0x00007400U)
 //#define AFIO_BASE             (APB2PERIPH_BASE + 0x00000000U)
 //#define EXTI_BASE             (APB2PERIPH_BASE + 0x00000400U)
@@ -837,68 +837,68 @@ typedef struct
 /*                                                                            */
 /******************************************************************************/
 
-/********************  Bit definition for PMU_CR register  ********************/
-#define PMU_CR_LPDS_Pos                     (0U)                               
-#define PMU_CR_LPDS_Msk                     (0x1U << PMU_CR_LPDS_Pos)          /*!< 0x00000001 */
-#define PMU_CR_LPDS                         PMU_CR_LPDS_Msk                    /*!< Low-Power Deepsleep */
-#define PMU_CR_PDDS_Pos                     (1U)                               
-#define PMU_CR_PDDS_Msk                     (0x1U << PMU_CR_PDDS_Pos)          /*!< 0x00000002 */
-#define PMU_CR_PDDS                         PMU_CR_PDDS_Msk                    /*!< Power Down Deepsleep */
-#define PMU_CR_CWUF_Pos                     (2U)                               
-#define PMU_CR_CWUF_Msk                     (0x1U << PMU_CR_CWUF_Pos)          /*!< 0x00000004 */
-#define PMU_CR_CWUF                         PMU_CR_CWUF_Msk                    /*!< Clear Wakeup Flag */
-#define PMU_CR_CSBF_Pos                     (3U)                               
-#define PMU_CR_CSBF_Msk                     (0x1U << PMU_CR_CSBF_Pos)          /*!< 0x00000008 */
-#define PMU_CR_CSBF                         PMU_CR_CSBF_Msk                    /*!< Clear Standby Flag */
-#define PMU_CR_PVDE_Pos                     (4U)                               
-#define PMU_CR_PVDE_Msk                     (0x1U << PMU_CR_PVDE_Pos)          /*!< 0x00000010 */
-#define PMU_CR_PVDE                         PMU_CR_PVDE_Msk                    /*!< Power Voltage Detector Enable */
+/********************  Bit definition for PMU_CTL register  ********************/
+#define PMU_CTL_LDOLP_Pos                     (0U)                               
+#define PMU_CTL_LDOLP_Msk                     (0x1U << PMU_CTL_LDOLP_Pos)          /*!< 0x00000001 */
+#define PMU_CTL_LDOLP                         PMU_CTL_LDOLP_Msk                    /*!< Low-Power Deepsleep */
+#define PMU_CTL_STBMOD_Pos                     (1U)                               
+#define PMU_CTL_STBMOD_Msk                     (0x1U << PMU_CTL_STBMOD_Pos)          /*!< 0x00000002 */
+#define PMU_CTL_STBMOD                         PMU_CTL_STBMOD_Msk                    /*!< Power Down Deepsleep */
+#define PMU_CTL_WURST_Pos                     (2U)                               
+#define PMU_CTL_WURST_Msk                     (0x1U << PMU_CTL_WURST_Pos)          /*!< 0x00000004 */
+#define PMU_CTL_WURST                         PMU_CTL_WURST_Msk                    /*!< Clear Wakeup Flag */
+#define PMU_CTL_STBRST_Pos                     (3U)                               
+#define PMU_CTL_STBRST_Msk                     (0x1U << PMU_CTL_STBRST_Pos)          /*!< 0x00000008 */
+#define PMU_CTL_STBRST                         PMU_CTL_STBRST_Msk                    /*!< Clear Standby Flag */
+#define PMU_CTL_LVDEN_Pos                     (4U)                               
+#define PMU_CTL_LVDEN_Msk                     (0x1U << PMU_CTL_LVDEN_Pos)          /*!< 0x00000010 */
+#define PMU_CTL_LVDEN                         PMU_CTL_LVDEN_Msk                    /*!< Power Voltage Detector Enable */
 
-#define PMU_CR_PLS_Pos                      (5U)                               
-#define PMU_CR_PLS_Msk                      (0x7U << PMU_CR_PLS_Pos)           /*!< 0x000000E0 */
-#define PMU_CR_PLS                          PMU_CR_PLS_Msk                     /*!< PLS[2:0] bits (PVD Level Selection) */
-#define PMU_CR_PLS_0                        (0x1U << PMU_CR_PLS_Pos)           /*!< 0x00000020 */
-#define PMU_CR_PLS_1                        (0x2U << PMU_CR_PLS_Pos)           /*!< 0x00000040 */
-#define PMU_CR_PLS_2                        (0x4U << PMU_CR_PLS_Pos)           /*!< 0x00000080 */
+#define PMU_CTL_LVDT_Pos                      (5U)                               
+#define PMU_CTL_LVDT_Msk                      (0x7U << PMU_CTL_LVDT_Pos)           /*!< 0x000000E0 */
+#define PMU_CTL_LVDT                          PMU_CTL_LVDT_Msk                     /*!< PLS[2:0] bits (PVD Level Selection) */
+#define PMU_CTL_LVDT_0                        (0x1U << PMU_CTL_LVDT_Pos)           /*!< 0x00000020 */
+#define PMU_CTL_LVDT_1                        (0x2U << PMU_CTL_LVDT_Pos)           /*!< 0x00000040 */
+#define PMU_CTL_LVDT_2                        (0x4U << PMU_CTL_LVDT_Pos)           /*!< 0x00000080 */
 
 /*!< PVD level configuration */
-#define PMU_CR_PLS_LEV0                      0x00000000U                           /*!< PVD level 2.2V */
-#define PMU_CR_PLS_LEV1                      0x00000020U                           /*!< PVD level 2.3V */
-#define PMU_CR_PLS_LEV2                      0x00000040U                           /*!< PVD level 2.4V */
-#define PMU_CR_PLS_LEV3                      0x00000060U                           /*!< PVD level 2.5V */
-#define PMU_CR_PLS_LEV4                      0x00000080U                           /*!< PVD level 2.6V */
-#define PMU_CR_PLS_LEV5                      0x000000A0U                           /*!< PVD level 2.7V */
-#define PMU_CR_PLS_LEV6                      0x000000C0U                           /*!< PVD level 2.8V */
-#define PMU_CR_PLS_LEV7                      0x000000E0U                           /*!< PVD level 2.9V */
+#define PMU_CTL_LVDT_LEV0                      0x00000000U                           /*!< PVD level 2.2V */
+#define PMU_CTL_LVDT_LEV1                      0x00000020U                           /*!< PVD level 2.3V */
+#define PMU_CTL_LVDT_LEV2                      0x00000040U                           /*!< PVD level 2.4V */
+#define PMU_CTL_LVDT_LEV3                      0x00000060U                           /*!< PVD level 2.5V */
+#define PMU_CTL_LVDT_LEV4                      0x00000080U                           /*!< PVD level 2.6V */
+#define PMU_CTL_LVDT_LEV5                      0x000000A0U                           /*!< PVD level 2.7V */
+#define PMU_CTL_LVDT_LEV6                      0x000000C0U                           /*!< PVD level 2.8V */
+#define PMU_CTL_LVDT_LEV7                      0x000000E0U                           /*!< PVD level 2.9V */
 
 /* Legacy defines */
-#define PMU_CR_PLS_2V2                       PMU_CR_PLS_LEV0
-#define PMU_CR_PLS_2V3                       PMU_CR_PLS_LEV1
-#define PMU_CR_PLS_2V4                       PMU_CR_PLS_LEV2
-#define PMU_CR_PLS_2V5                       PMU_CR_PLS_LEV3
-#define PMU_CR_PLS_2V6                       PMU_CR_PLS_LEV4
-#define PMU_CR_PLS_2V7                       PMU_CR_PLS_LEV5
-#define PMU_CR_PLS_2V8                       PMU_CR_PLS_LEV6
-#define PMU_CR_PLS_2V9                       PMU_CR_PLS_LEV7
+#define PMU_CTL_LVDT_2V2                       PMU_CTL_LVDT_LEV0
+#define PMU_CTL_LVDT_2V3                       PMU_CTL_LVDT_LEV1
+#define PMU_CTL_LVDT_2V4                       PMU_CTL_LVDT_LEV2
+#define PMU_CTL_LVDT_2V5                       PMU_CTL_LVDT_LEV3
+#define PMU_CTL_LVDT_2V6                       PMU_CTL_LVDT_LEV4
+#define PMU_CTL_LVDT_2V7                       PMU_CTL_LVDT_LEV5
+#define PMU_CTL_LVDT_2V8                       PMU_CTL_LVDT_LEV6
+#define PMU_CTL_LVDT_2V9                       PMU_CTL_LVDT_LEV7
 
-#define PMU_CR_DBP_Pos                      (8U)                               
-#define PMU_CR_DBP_Msk                      (0x1U << PMU_CR_DBP_Pos)           /*!< 0x00000100 */
-#define PMU_CR_DBP                          PMU_CR_DBP_Msk                     /*!< Disable Backup Domain write protection */
+#define PMU_CTL_BKPWEN_Pos                      (8U)                               
+#define PMU_CTL_BKPWEN_Msk                      (0x1U << PMU_CTL_BKPWEN_Pos)           /*!< 0x00000100 */
+#define PMU_CTL_BKPWEN                          PMU_CTL_BKPWEN_Msk                     /*!< Disable Backup Domain write protection */
 
 
-/*******************  Bit definition for PMU_CSR register  ********************/
-#define PMU_CSR_WUF_Pos                     (0U)                               
-#define PMU_CSR_WUF_Msk                     (0x1U << PMU_CSR_WUF_Pos)          /*!< 0x00000001 */
-#define PMU_CSR_WUF                         PMU_CSR_WUF_Msk                    /*!< Wakeup Flag */
-#define PMU_CSR_SBF_Pos                     (1U)                               
-#define PMU_CSR_SBF_Msk                     (0x1U << PMU_CSR_SBF_Pos)          /*!< 0x00000002 */
-#define PMU_CSR_SBF                         PMU_CSR_SBF_Msk                    /*!< Standby Flag */
-#define PMU_CSR_PVDO_Pos                    (2U)                               
-#define PMU_CSR_PVDO_Msk                    (0x1U << PMU_CSR_PVDO_Pos)         /*!< 0x00000004 */
-#define PMU_CSR_PVDO                        PMU_CSR_PVDO_Msk                   /*!< PVD Output */
-#define PMU_CSR_EWUP_Pos                    (8U)                               
-#define PMU_CSR_EWUP_Msk                    (0x1U << PMU_CSR_EWUP_Pos)         /*!< 0x00000100 */
-#define PMU_CSR_EWUP                        PMU_CSR_EWUP_Msk                   /*!< Enable WKUP pin */
+/*******************  Bit definition for PMU_CS register  ********************/
+#define PMU_CS_WUF_Pos                     (0U)                               
+#define PMU_CS_WUF_Msk                     (0x1U << PMU_CS_WUF_Pos)          /*!< 0x00000001 */
+#define PMU_CS_WUF                         PMU_CS_WUF_Msk                    /*!< Wakeup Flag */
+#define PMU_CS_STBF_Pos                     (1U)                               
+#define PMU_CS_STBF_Msk                     (0x1U << PMU_CS_STBF_Pos)          /*!< 0x00000002 */
+#define PMU_CS_STBF                         PMU_CS_STBF_Msk                    /*!< Standby Flag */
+#define PMU_CS_LVDF_Pos                    (2U)                               
+#define PMU_CS_LVDF_Msk                    (0x1U << PMU_CS_LVDF_Pos)         /*!< 0x00000004 */
+#define PMU_CS_LVDF                        PMU_CS_LVDF_Msk                   /*!< PVD Output */
+#define PMU_CS_WUPEN_Pos                    (8U)                               
+#define PMU_CS_WUPEN_Msk                    (0x1U << PMU_CS_WUPEN_Pos)         /*!< 0x00000100 */
+#define PMU_CS_WUPEN                        PMU_CS_WUPEN_Msk                   /*!< Enable WKUP pin */
 
 /******************************************************************************/
 /*                                                                            */
@@ -12855,7 +12855,7 @@ typedef struct
   * @}
   */ 
 /******************************************************************************/
-/*  For a painless codes migration between the STM32F1xx device product       */
+/*  For a painless codes migration between the GD32VF103 device product       */
 /*  lines, the aliases defined below are put in place to overcome the         */
 /*  differences in the interrupt handlers and IRQn definitions.               */
 /*  No need to update developed interrupt code when moving across             */ 

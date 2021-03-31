@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    STM32F1xx/hal_lld.c
- * @brief   STM32F1xx HAL subsystem low level driver source.
+ * @file    GD32VF103/hal_lld.c
+ * @brief   GD32VF103 HAL subsystem low level driver source.
  *
  * @addtogroup HAL
  * @{
@@ -54,7 +54,7 @@ uint32_t SystemCoreClock = GD32_HCLK;
 static void hal_lld_backup_domain_init(void) {
 
   /* Backup domain access enabled and left open.*/
-  PMU->CTL |= PMU_CR_DBP;
+  PMU->CTL |= PMU_CTL_BKPWEN;
 
 #if HAL_USE_RTC
   /* Reset BKP domain if different clock source selected.*/
@@ -152,7 +152,7 @@ void hal_lld_init(void) {
 
   /* Programmable voltage detector enable.*/
 #if GD32_PVD_ENABLE
-  PMU->CTL |= PMU_CR_PVDE | (GD32_PLS & GD32_PLS_MASK);
+  PMU->CTL |= PMU_CTL_LVDEN | (GD32_LVDT & GD32_LVDT_MASK);
 #endif /* GD32_PVD_ENABLE */
 }
 
