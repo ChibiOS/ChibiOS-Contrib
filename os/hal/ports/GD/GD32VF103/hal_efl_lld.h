@@ -16,7 +16,7 @@
 
 /**
  * @file    hal_efl_lld.h
- * @brief   STM32F1xx Embedded Flash subsystem low level driver header.
+ * @brief   GD32VF103 Embedded Flash subsystem low level driver header.
  *
  * @addtogroup HAL_EFL
  * @{
@@ -36,7 +36,7 @@
 /*===========================================================================*/
 
 /**
- * @name    STM32F1xx configuration options
+ * @name    GD32VF103 configuration options
  * @{
  */
 /**

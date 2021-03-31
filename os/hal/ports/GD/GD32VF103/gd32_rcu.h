@@ -15,12 +15,12 @@
 */
 
 /**
- * @file    STM32F1xx/gd32_rcu.h
+ * @file    GD32VF103/gd32_rcu.h
  * @brief   RCU helper driver header.
  * @note    This file requires definitions from the ST header file
  *          @p stm32f10x.h.
  *
- * @addtogroup STM32F1xx_RCU
+ * @addtogroup GD32VF103_RCU
  * @{
  */
 

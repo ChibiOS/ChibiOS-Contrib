@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    STM32F1xx/hal_adc_lld.h
- * @brief   STM32F1xx ADC subsystem low level driver header.
+ * @file    GD32VF103/hal_adc_lld.h
+ * @brief   GD32VF103 ADC subsystem low level driver header.
  *
  * @addtogroup ADC
  * @{
