@@ -61,8 +61,8 @@
  * @api
  */
 #define rcuEnableAPB1(mask, lp) {                                           \
-  RCU->APB1ENR |= (mask);                                                   \
-  (void)RCU->APB1ENR;                                                       \
+  RCU->APB1EN |= (mask);                                                   \
+  (void)RCU->APB1EN;                                                       \
 }
 
 /**
@@ -74,8 +74,8 @@
  * @api
  */
 #define rcuDisableAPB1(mask) {                                              \
-  RCU->APB1ENR &= ~(mask);                                                  \
-  (void)RCU->APB1ENR;                                                       \
+  RCU->APB1EN &= ~(mask);                                                  \
+  (void)RCU->APB1EN;                                                       \
 }
 
 /**
@@ -86,9 +86,9 @@
  * @api
  */
 #define rcuResetAPB1(mask) {                                                \
-  RCU->APB1RSTR |= (mask);                                                  \
-  RCU->APB1RSTR &= ~(mask);                                                 \
-  (void)RCU->APB1RSTR;                                                      \
+  RCU->APB1RST |= (mask);                                                  \
+  RCU->APB1RST &= ~(mask);                                                 \
+  (void)RCU->APB1RST;                                                      \
 }
 
 /**
@@ -101,8 +101,8 @@
  * @api
  */
 #define rcuEnableAPB2(mask, lp) {                                           \
-  RCU->APB2ENR |= (mask);                                                   \
-  (void)RCU->APB2ENR;                                                       \
+  RCU->APB2EN |= (mask);                                                   \
+  (void)RCU->APB2EN;                                                       \
 }
 
 /**
@@ -114,8 +114,8 @@
  * @api
  */
 #define rcuDisableAPB2(mask) {                                              \
-  RCU->APB2ENR &= ~(mask);                                                  \
-  (void)RCU->APB2ENR;                                                       \
+  RCU->APB2EN &= ~(mask);                                                  \
+  (void)RCU->APB2EN;                                                       \
 }
 
 /**
@@ -126,9 +126,9 @@
  * @api
  */
 #define rcuResetAPB2(mask) {                                                \
-  RCU->APB2RSTR |= (mask);                                                  \
-  RCU->APB2RSTR &= ~(mask);                                                 \
-  (void)RCU->APB2RSTR;                                                      \
+  RCU->APB2RST |= (mask);                                                  \
+  RCU->APB2RST &= ~(mask);                                                 \
+  (void)RCU->APB2RST;                                                      \
 }
 
 /**
@@ -141,8 +141,8 @@
  * @api
  */
 #define rcuEnableAHB(mask, lp) {                                            \
-  RCU->AHBENR |= (mask);                                                    \
-  (void)RCU->AHBENR;                                                        \
+  RCU->AHBEN |= (mask);                                                    \
+  (void)RCU->AHBEN;                                                        \
 }
 
 /**
@@ -154,8 +154,8 @@
  * @api
  */
 #define rcuDisableAHB(mask) {                                               \
-  RCU->AHBENR &= ~(mask);                                                   \
-  (void)RCU->AHBENR;                                                        \
+  RCU->AHBEN &= ~(mask);                                                   \
+  (void)RCU->AHBEN;                                                        \
 }
 
 /**
@@ -166,9 +166,9 @@
  * @api
  */
 #define rcuResetAHB(mask) {                                                 \
-  RCU->AHBRSTR |= (mask);                                                   \
-  RCU->AHBRSTR &= ~(mask);                                                  \
-  (void)RCU->AHBRSTR;                                                       \
+  RCU->AHBRST |= (mask);                                                   \
+  RCU->AHBRST &= ~(mask);                                                  \
+  (void)RCU->AHBRST;                                                       \
 }
 /** @} */
 
@@ -262,7 +262,7 @@
  *
  * @api
  */
-#define rcuResetBKP() (RCU->BDCR |= RCU_BDCR_BDRST)
+#define rcuResetBKP() (RCU->BDCTL |= RCU_BDCR_BDRST)
 /** @} */
 
 /**

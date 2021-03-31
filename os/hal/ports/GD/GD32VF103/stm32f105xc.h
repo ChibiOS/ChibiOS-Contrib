@@ -430,20 +430,20 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CR;
-  __IO uint32_t CFGR;
-  __IO uint32_t CIR;
-  __IO uint32_t APB2RSTR;
-  __IO uint32_t APB1RSTR;
-  __IO uint32_t AHBENR;
-  __IO uint32_t APB2ENR;
-  __IO uint32_t APB1ENR;
-  __IO uint32_t BDCR;
-  __IO uint32_t CSR;
-
-  __IO uint32_t AHBRSTR;
-  __IO uint32_t CFGR2;
-
+  __IO uint32_t CTL;
+  __IO uint32_t CFG0;
+  __IO uint32_t INT;
+  __IO uint32_t APB2RST;
+  __IO uint32_t APB1RST;
+  __IO uint32_t AHBEN;
+  __IO uint32_t APB2EN;
+  __IO uint32_t APB1EN;
+  __IO uint32_t BDCTL;
+  __IO uint32_t RSTSCK;
+  __IO uint32_t AHBRST;
+  __IO uint32_t CFG1;
+  uint32_t RESERVED;
+  __IO uint32_t DSV;
 } RCU_TypeDef;
 
 /** 

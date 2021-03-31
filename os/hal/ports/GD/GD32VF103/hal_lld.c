@@ -54,41 +54,41 @@ uint32_t SystemCoreClock = GD32_HCLK;
 static void hal_lld_backup_domain_init(void) {
 
   /* Backup domain access enabled and left open.*/
-  PWR->CR |= PWR_CR_DBP;
+  PWR->CTL |= PWR_CR_DBP;
 
 #if HAL_USE_RTC
   /* Reset BKP domain if different clock source selected.*/
-  if ((RCU->BDCR & GD32_RTCSEL_MASK) != GD32_RTCSEL) {
+  if ((RCU->BDCTL & GD32_RTCSEL_MASK) != GD32_RTCSEL) {
     /* Backup domain reset.*/
-    RCU->BDCR = RCU_BDCR_BDRST;
-    RCU->BDCR = 0;
+    RCU->BDCTL = RCU_BDCR_BDRST;
+    RCU->BDCTL = 0;
   }
 
   /* If enabled then the LSE is started.*/
 #if GD32_LSE_ENABLED
 #if defined(GD32_LSE_BYPASS)
   /* LSE Bypass.*/
-  RCU->BDCR |= RCU_BDCR_LSEON | RCU_BDCR_LSEBYP;
+  RCU->BDCTL |= RCU_BDCR_LSEON | RCU_BDCR_LSEBYP;
 #else
   /* No LSE Bypass.*/
-  RCU->BDCR |= RCU_BDCR_LSEON;
+  RCU->BDCTL |= RCU_BDCR_LSEON;
 #endif
-  while ((RCU->BDCR & RCU_BDCR_LSERDY) == 0)
+  while ((RCU->BDCTL & RCU_BDCR_LSERDY) == 0)
     ;                                     /* Waits until LSE is stable.   */
 #endif /* GD32_LSE_ENABLED */
 
 #if GD32_RTCSEL != GD32_RTCSEL_NOCLOCK
   /* If the backup domain hasn't been initialized yet then proceed with
      initialization.*/
-  if ((RCU->BDCR & RCU_BDCR_RTCEN) == 0) {
+  if ((RCU->BDCTL & RCU_BDCR_RTCEN) == 0) {
     /* Selects clock source.*/
-    RCU->BDCR |= GD32_RTCSEL;
+    RCU->BDCTL |= GD32_RTCSEL;
 
     /* Prescaler value loaded in registers.*/
     rtc_lld_set_prescaler();
 
     /* RTC clock enabled.*/
-    RCU->BDCR |= RCU_BDCR_RTCEN;
+    RCU->BDCTL |= RCU_BDCR_RTCEN;
   }
 #endif /* GD32_RTCSEL != GD32_RTCSEL_NOCLOCK */
 #endif /* HAL_USE_RTC */
@@ -152,7 +152,7 @@ void hal_lld_init(void) {
 
   /* Programmable voltage detector enable.*/
 #if GD32_PVD_ENABLE
-  PWR->CR |= PWR_CR_PVDE | (GD32_PLS & GD32_PLS_MASK);
+  PWR->CTL |= PWR_CR_PVDE | (GD32_PLS & GD32_PLS_MASK);
 #endif /* GD32_PVD_ENABLE */
 }
 
@@ -173,72 +173,72 @@ void gd32_clock_init(void) {
 #if !GD32_NO_INIT
   /* HSI setup, it enforces the reset situation in order to handle possible
      problems with JTAG probes and re-initializations.*/
-  RCU->CR |= RCU_CR_HSION;                  /* Make sure HSI is ON.         */
-  while (!(RCU->CR & RCU_CR_HSIRDY))
+  RCU->CTL |= RCU_CR_HSION;                  /* Make sure HSI is ON.         */
+  while (!(RCU->CTL & RCU_CR_HSIRDY))
     ;                                       /* Wait until HSI is stable.    */
 
   /* HSI is selected as new source without touching the other fields in
      CFGR. Clearing the register has to be postponed after HSI is the
      new source.*/
-  RCU->CFGR &= ~RCU_CFGR_SW;                /* Reset SW, selecting HSI.     */
-  while ((RCU->CFGR & RCU_CFGR_SWS) != RCU_CFGR_SWS_HSI)
+  RCU->CFG0 &= ~RCU_CFGR_SW;                /* Reset SW, selecting HSI.     */
+  while ((RCU->CFG0 & RCU_CFGR_SWS) != RCU_CFGR_SWS_HSI)
     ;                                       /* Wait until HSI is selected.  */
 
   /* Registers finally cleared to reset values.*/
-  RCU->CR &= RCU_CR_HSITRIM | RCU_CR_HSION; /* CR Reset value.              */
-  RCU->CFGR = 0;                            /* CFGR reset value.            */
+  RCU->CTL &= RCU_CR_HSITRIM | RCU_CR_HSION; /* CR Reset value.              */
+  RCU->CFG0 = 0;                            /* CFGR reset value.            */
 
 #if GD32_HSE_ENABLED
 #if defined(GD32_HSE_BYPASS)
   /* HSE Bypass.*/
-  RCU->CR |= RCU_CR_HSEBYP;
+  RCU->CTL |= RCU_CR_HSEBYP;
 #endif
   /* HSE activation.*/
-  RCU->CR |= RCU_CR_HSEON;
-  while (!(RCU->CR & RCU_CR_HSERDY))
+  RCU->CTL |= RCU_CR_HSEON;
+  while (!(RCU->CTL & RCU_CR_HSERDY))
     ;                                       /* Waits until HSE is stable.   */
 #endif
 
 #if GD32_LSI_ENABLED
   /* LSI activation.*/
-  RCU->CSR |= RCU_CSR_LSION;
-  while ((RCU->CSR & RCU_CSR_LSIRDY) == 0)
+  RCU->RSTSCK |= RCU_CSR_LSION;
+  while ((RCU->RSTSCK & RCU_CSR_LSIRDY) == 0)
     ;                                       /* Waits until LSI is stable.   */
 #endif
 
   /* Settings of various dividers and multipliers in CFGR2.*/
-  /*RCU->CFGR2 = GD32_PLL3MUL | GD32_PLL2MUL | GD32_PREDIV2 |
+  /*RCU->CFG02 = GD32_PLL3MUL | GD32_PLL2MUL | GD32_PREDIV2 |
                GD32_PREDIV1 | GD32_PREDIV1SRC;*/
 
   /* PLL2 setup, if activated.*/
 #if GD32_ACTIVATE_PLL2
-  RCU->CR |= RCU_CR_PLL2ON;
-  while (!(RCU->CR & RCU_CR_PLL2RDY))
+  RCU->CTL |= RCU_CR_PLL2ON;
+  while (!(RCU->CTL & RCU_CR_PLL2RDY))
     ;                                        /* Waits until PLL2 is stable. */
 #endif
 
   /* PLL3 setup, if activated.*/
 #if GD32_ACTIVATE_PLL3
-  RCU->CR |= RCU_CR_PLL3ON;
-  while (!(RCU->CR & RCU_CR_PLL3RDY))
+  RCU->CTL |= RCU_CR_PLL3ON;
+  while (!(RCU->CTL & RCU_CR_PLL3RDY))
     ;                                        /* Waits until PLL3 is stable. */
 #endif
 
   /* PLL1 setup, if activated.*/
 //#if GD32_ACTIVATE_PLL1
 #if GD32_ACTIVATE_PLL
-  RCU->CFGR |= GD32_PLLMUL | GD32_PLLSRC;
-  RCU->CR   |= RCU_CR_PLLON;
-  while (!(RCU->CR & RCU_CR_PLLRDY))
+  RCU->CFG0 |= GD32_PLLMUL | GD32_PLLSRC;
+  RCU->CTL   |= RCU_CR_PLLON;
+  while (!(RCU->CTL & RCU_CR_PLLRDY))
     ;                           /* Waits until PLL1 is stable.              */
 #endif
 
   /* Clock settings.*/
 #if GD32_HAS_USBFS
-  RCU->CFGR = GD32_MCOSEL | GD32_USBPRE   | GD32_PLLMUL | GD32_PLLSRC |
+  RCU->CFG0 = GD32_MCOSEL | GD32_USBPRE   | GD32_PLLMUL | GD32_PLLSRC |
               GD32_ADCPRE | GD32_PPRE2    | GD32_PPRE1  | GD32_HPRE;
 #else
-  RCU->CFGR = GD32_MCO    |                  GD32_PLLMUL | GD32_PLLSRC |
+  RCU->CFG0 = GD32_MCO    |                  GD32_PLLMUL | GD32_PLLSRC |
               GD32_ADCPRE | GD32_PPRE2    | GD32_PPRE1  | GD32_HPRE;
 #endif
 
@@ -250,13 +250,13 @@ void gd32_clock_init(void) {
 
   /* Switching to the configured clock source if it is different from HSI.*/
 #if (GD32_SW != GD32_SW_HSI)
-  RCU->CFGR |= GD32_SW;        /* Switches on the selected clock source.   */
-  while ((RCU->CFGR & RCU_CFGR_SWS) != (GD32_SW << 2))
+  RCU->CFG0 |= GD32_SW;        /* Switches on the selected clock source.   */
+  while ((RCU->CFG0 & RCU_CFGR_SWS) != (GD32_SW << 2))
     ;
 #endif
 
 #if !GD32_HSI_ENABLED
-  RCU->CR &= ~RCU_CR_HSION;
+  RCU->CTL &= ~RCU_CR_HSION;
 #endif
 #endif /* !GD32_NO_INIT */
 }
