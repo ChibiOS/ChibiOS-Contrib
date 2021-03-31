@@ -420,9 +420,9 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CR;
-  __IO uint32_t CSR;
-} PWR_TypeDef;
+  __IO uint32_t CTL;
+  __IO uint32_t CS;
+} PMU_TypeDef;
 
 /** 
   * @brief Reset and Clock Control
@@ -667,7 +667,7 @@ typedef struct
 #define CAN1_BASE             (APB1PERIPH_BASE + 0x00006400U)
 #define CAN2_BASE             (APB1PERIPH_BASE + 0x00006800U)
 //#define BKP_BASE              (APB1PERIPH_BASE + 0x00006C00U)
-#define PWR_BASE              (APB1PERIPH_BASE + 0x00007000U)
+#define PMU_BASE              (APB1PERIPH_BASE + 0x00007000U)
 //#define DAC_BASE              (APB1PERIPH_BASE + 0x00007400U)
 //#define AFIO_BASE             (APB2PERIPH_BASE + 0x00000000U)
 //#define EXTI_BASE             (APB2PERIPH_BASE + 0x00000400U)
@@ -723,7 +723,7 @@ typedef struct
 #define USB_OTG_HOST_PORT_BASE               0x00000440U
 #define USB_OTG_HOST_CHANNEL_BASE            0x00000500U
 #define USB_OTG_HOST_CHANNEL_SIZE            0x00000020U
-#define USB_OTG_PWRCLKCTL_BASE                 0x00000E00U
+#define USB_OTG_PMUCLKCTL_BASE                 0x00000E00U
 #define USB_OTG_FIFO_BASE                    0x00001000U
 #define USB_OTG_FIFO_SIZE                    0x00001000U
 
@@ -755,7 +755,7 @@ typedef struct
 #define CAN1                ((CAN_TypeDef *)CAN1_BASE)
 #define CAN2                ((CAN_TypeDef *)CAN2_BASE)
 #define BKP                 ((BKP_TypeDef *)BKP_BASE)
-#define PWR                 ((PWR_TypeDef *)PWR_BASE)
+#define PMU                 ((PMU_TypeDef *)PMU_BASE)
 #define DAC1                ((DAC_TypeDef *)DAC_BASE)
 #define DAC                 ((DAC_TypeDef *)DAC_BASE) /* Kept for legacy purpose */
 #define AFIO                ((AFIO_TypeDef *)AFIO_BASE)
@@ -837,68 +837,68 @@ typedef struct
 /*                                                                            */
 /******************************************************************************/
 
-/********************  Bit definition for PWR_CR register  ********************/
-#define PWR_CR_LPDS_Pos                     (0U)                               
-#define PWR_CR_LPDS_Msk                     (0x1U << PWR_CR_LPDS_Pos)          /*!< 0x00000001 */
-#define PWR_CR_LPDS                         PWR_CR_LPDS_Msk                    /*!< Low-Power Deepsleep */
-#define PWR_CR_PDDS_Pos                     (1U)                               
-#define PWR_CR_PDDS_Msk                     (0x1U << PWR_CR_PDDS_Pos)          /*!< 0x00000002 */
-#define PWR_CR_PDDS                         PWR_CR_PDDS_Msk                    /*!< Power Down Deepsleep */
-#define PWR_CR_CWUF_Pos                     (2U)                               
-#define PWR_CR_CWUF_Msk                     (0x1U << PWR_CR_CWUF_Pos)          /*!< 0x00000004 */
-#define PWR_CR_CWUF                         PWR_CR_CWUF_Msk                    /*!< Clear Wakeup Flag */
-#define PWR_CR_CSBF_Pos                     (3U)                               
-#define PWR_CR_CSBF_Msk                     (0x1U << PWR_CR_CSBF_Pos)          /*!< 0x00000008 */
-#define PWR_CR_CSBF                         PWR_CR_CSBF_Msk                    /*!< Clear Standby Flag */
-#define PWR_CR_PVDE_Pos                     (4U)                               
-#define PWR_CR_PVDE_Msk                     (0x1U << PWR_CR_PVDE_Pos)          /*!< 0x00000010 */
-#define PWR_CR_PVDE                         PWR_CR_PVDE_Msk                    /*!< Power Voltage Detector Enable */
+/********************  Bit definition for PMU_CR register  ********************/
+#define PMU_CR_LPDS_Pos                     (0U)                               
+#define PMU_CR_LPDS_Msk                     (0x1U << PMU_CR_LPDS_Pos)          /*!< 0x00000001 */
+#define PMU_CR_LPDS                         PMU_CR_LPDS_Msk                    /*!< Low-Power Deepsleep */
+#define PMU_CR_PDDS_Pos                     (1U)                               
+#define PMU_CR_PDDS_Msk                     (0x1U << PMU_CR_PDDS_Pos)          /*!< 0x00000002 */
+#define PMU_CR_PDDS                         PMU_CR_PDDS_Msk                    /*!< Power Down Deepsleep */
+#define PMU_CR_CWUF_Pos                     (2U)                               
+#define PMU_CR_CWUF_Msk                     (0x1U << PMU_CR_CWUF_Pos)          /*!< 0x00000004 */
+#define PMU_CR_CWUF                         PMU_CR_CWUF_Msk                    /*!< Clear Wakeup Flag */
+#define PMU_CR_CSBF_Pos                     (3U)                               
+#define PMU_CR_CSBF_Msk                     (0x1U << PMU_CR_CSBF_Pos)          /*!< 0x00000008 */
+#define PMU_CR_CSBF                         PMU_CR_CSBF_Msk                    /*!< Clear Standby Flag */
+#define PMU_CR_PVDE_Pos                     (4U)                               
+#define PMU_CR_PVDE_Msk                     (0x1U << PMU_CR_PVDE_Pos)          /*!< 0x00000010 */
+#define PMU_CR_PVDE                         PMU_CR_PVDE_Msk                    /*!< Power Voltage Detector Enable */
 
-#define PWR_CR_PLS_Pos                      (5U)                               
-#define PWR_CR_PLS_Msk                      (0x7U << PWR_CR_PLS_Pos)           /*!< 0x000000E0 */
-#define PWR_CR_PLS                          PWR_CR_PLS_Msk                     /*!< PLS[2:0] bits (PVD Level Selection) */
-#define PWR_CR_PLS_0                        (0x1U << PWR_CR_PLS_Pos)           /*!< 0x00000020 */
-#define PWR_CR_PLS_1                        (0x2U << PWR_CR_PLS_Pos)           /*!< 0x00000040 */
-#define PWR_CR_PLS_2                        (0x4U << PWR_CR_PLS_Pos)           /*!< 0x00000080 */
+#define PMU_CR_PLS_Pos                      (5U)                               
+#define PMU_CR_PLS_Msk                      (0x7U << PMU_CR_PLS_Pos)           /*!< 0x000000E0 */
+#define PMU_CR_PLS                          PMU_CR_PLS_Msk                     /*!< PLS[2:0] bits (PVD Level Selection) */
+#define PMU_CR_PLS_0                        (0x1U << PMU_CR_PLS_Pos)           /*!< 0x00000020 */
+#define PMU_CR_PLS_1                        (0x2U << PMU_CR_PLS_Pos)           /*!< 0x00000040 */
+#define PMU_CR_PLS_2                        (0x4U << PMU_CR_PLS_Pos)           /*!< 0x00000080 */
 
 /*!< PVD level configuration */
-#define PWR_CR_PLS_LEV0                      0x00000000U                           /*!< PVD level 2.2V */
-#define PWR_CR_PLS_LEV1                      0x00000020U                           /*!< PVD level 2.3V */
-#define PWR_CR_PLS_LEV2                      0x00000040U                           /*!< PVD level 2.4V */
-#define PWR_CR_PLS_LEV3                      0x00000060U                           /*!< PVD level 2.5V */
-#define PWR_CR_PLS_LEV4                      0x00000080U                           /*!< PVD level 2.6V */
-#define PWR_CR_PLS_LEV5                      0x000000A0U                           /*!< PVD level 2.7V */
-#define PWR_CR_PLS_LEV6                      0x000000C0U                           /*!< PVD level 2.8V */
-#define PWR_CR_PLS_LEV7                      0x000000E0U                           /*!< PVD level 2.9V */
+#define PMU_CR_PLS_LEV0                      0x00000000U                           /*!< PVD level 2.2V */
+#define PMU_CR_PLS_LEV1                      0x00000020U                           /*!< PVD level 2.3V */
+#define PMU_CR_PLS_LEV2                      0x00000040U                           /*!< PVD level 2.4V */
+#define PMU_CR_PLS_LEV3                      0x00000060U                           /*!< PVD level 2.5V */
+#define PMU_CR_PLS_LEV4                      0x00000080U                           /*!< PVD level 2.6V */
+#define PMU_CR_PLS_LEV5                      0x000000A0U                           /*!< PVD level 2.7V */
+#define PMU_CR_PLS_LEV6                      0x000000C0U                           /*!< PVD level 2.8V */
+#define PMU_CR_PLS_LEV7                      0x000000E0U                           /*!< PVD level 2.9V */
 
 /* Legacy defines */
-#define PWR_CR_PLS_2V2                       PWR_CR_PLS_LEV0
-#define PWR_CR_PLS_2V3                       PWR_CR_PLS_LEV1
-#define PWR_CR_PLS_2V4                       PWR_CR_PLS_LEV2
-#define PWR_CR_PLS_2V5                       PWR_CR_PLS_LEV3
-#define PWR_CR_PLS_2V6                       PWR_CR_PLS_LEV4
-#define PWR_CR_PLS_2V7                       PWR_CR_PLS_LEV5
-#define PWR_CR_PLS_2V8                       PWR_CR_PLS_LEV6
-#define PWR_CR_PLS_2V9                       PWR_CR_PLS_LEV7
+#define PMU_CR_PLS_2V2                       PMU_CR_PLS_LEV0
+#define PMU_CR_PLS_2V3                       PMU_CR_PLS_LEV1
+#define PMU_CR_PLS_2V4                       PMU_CR_PLS_LEV2
+#define PMU_CR_PLS_2V5                       PMU_CR_PLS_LEV3
+#define PMU_CR_PLS_2V6                       PMU_CR_PLS_LEV4
+#define PMU_CR_PLS_2V7                       PMU_CR_PLS_LEV5
+#define PMU_CR_PLS_2V8                       PMU_CR_PLS_LEV6
+#define PMU_CR_PLS_2V9                       PMU_CR_PLS_LEV7
 
-#define PWR_CR_DBP_Pos                      (8U)                               
-#define PWR_CR_DBP_Msk                      (0x1U << PWR_CR_DBP_Pos)           /*!< 0x00000100 */
-#define PWR_CR_DBP                          PWR_CR_DBP_Msk                     /*!< Disable Backup Domain write protection */
+#define PMU_CR_DBP_Pos                      (8U)                               
+#define PMU_CR_DBP_Msk                      (0x1U << PMU_CR_DBP_Pos)           /*!< 0x00000100 */
+#define PMU_CR_DBP                          PMU_CR_DBP_Msk                     /*!< Disable Backup Domain write protection */
 
 
-/*******************  Bit definition for PWR_CSR register  ********************/
-#define PWR_CSR_WUF_Pos                     (0U)                               
-#define PWR_CSR_WUF_Msk                     (0x1U << PWR_CSR_WUF_Pos)          /*!< 0x00000001 */
-#define PWR_CSR_WUF                         PWR_CSR_WUF_Msk                    /*!< Wakeup Flag */
-#define PWR_CSR_SBF_Pos                     (1U)                               
-#define PWR_CSR_SBF_Msk                     (0x1U << PWR_CSR_SBF_Pos)          /*!< 0x00000002 */
-#define PWR_CSR_SBF                         PWR_CSR_SBF_Msk                    /*!< Standby Flag */
-#define PWR_CSR_PVDO_Pos                    (2U)                               
-#define PWR_CSR_PVDO_Msk                    (0x1U << PWR_CSR_PVDO_Pos)         /*!< 0x00000004 */
-#define PWR_CSR_PVDO                        PWR_CSR_PVDO_Msk                   /*!< PVD Output */
-#define PWR_CSR_EWUP_Pos                    (8U)                               
-#define PWR_CSR_EWUP_Msk                    (0x1U << PWR_CSR_EWUP_Pos)         /*!< 0x00000100 */
-#define PWR_CSR_EWUP                        PWR_CSR_EWUP_Msk                   /*!< Enable WKUP pin */
+/*******************  Bit definition for PMU_CSR register  ********************/
+#define PMU_CSR_WUF_Pos                     (0U)                               
+#define PMU_CSR_WUF_Msk                     (0x1U << PMU_CSR_WUF_Pos)          /*!< 0x00000001 */
+#define PMU_CSR_WUF                         PMU_CSR_WUF_Msk                    /*!< Wakeup Flag */
+#define PMU_CSR_SBF_Pos                     (1U)                               
+#define PMU_CSR_SBF_Msk                     (0x1U << PMU_CSR_SBF_Pos)          /*!< 0x00000002 */
+#define PMU_CSR_SBF                         PMU_CSR_SBF_Msk                    /*!< Standby Flag */
+#define PMU_CSR_PVDO_Pos                    (2U)                               
+#define PMU_CSR_PVDO_Msk                    (0x1U << PMU_CSR_PVDO_Pos)         /*!< 0x00000004 */
+#define PMU_CSR_PVDO                        PMU_CSR_PVDO_Msk                   /*!< PVD Output */
+#define PMU_CSR_EWUP_Pos                    (8U)                               
+#define PMU_CSR_EWUP_Msk                    (0x1U << PMU_CSR_EWUP_Pos)         /*!< 0x00000100 */
+#define PMU_CSR_EWUP                        PMU_CSR_EWUP_Msk                   /*!< Enable WKUP pin */
 
 /******************************************************************************/
 /*                                                                            */
@@ -1518,9 +1518,9 @@ typedef struct
 #define RCU_APB1RSTR_BKPRST_Pos              (27U)                             
 #define RCU_APB1RSTR_BKPRST_Msk              (0x1U << RCU_APB1RSTR_BKPRST_Pos) /*!< 0x08000000 */
 #define RCU_APB1RSTR_BKPRST                  RCU_APB1RSTR_BKPRST_Msk           /*!< Backup interface reset */
-#define RCU_APB1RSTR_PWRRST_Pos              (28U)                             
-#define RCU_APB1RSTR_PWRRST_Msk              (0x1U << RCU_APB1RSTR_PWRRST_Pos) /*!< 0x10000000 */
-#define RCU_APB1RSTR_PWRRST                  RCU_APB1RSTR_PWRRST_Msk           /*!< Power interface reset */
+#define RCU_APB1RSTR_PMURST_Pos              (28U)                             
+#define RCU_APB1RSTR_PMURST_Msk              (0x1U << RCU_APB1RSTR_PMURST_Pos) /*!< 0x10000000 */
+#define RCU_APB1RSTR_PMURST                  RCU_APB1RSTR_PMURST_Msk           /*!< Power interface reset */
 
 #define RCU_APB1RSTR_TIM3RST_Pos             (2U)                              
 #define RCU_APB1RSTR_TIM3RST_Msk             (0x1U << RCU_APB1RSTR_TIM3RST_Pos) /*!< 0x00000004 */
@@ -1654,9 +1654,9 @@ typedef struct
 #define RCU_APB1ENR_BKPEN_Pos                (27U)                             
 #define RCU_APB1ENR_BKPEN_Msk                (0x1U << RCU_APB1ENR_BKPEN_Pos)   /*!< 0x08000000 */
 #define RCU_APB1ENR_BKPEN                    RCU_APB1ENR_BKPEN_Msk             /*!< Backup interface clock enable */
-#define RCU_APB1ENR_PWREN_Pos                (28U)                             
-#define RCU_APB1ENR_PWREN_Msk                (0x1U << RCU_APB1ENR_PWREN_Pos)   /*!< 0x10000000 */
-#define RCU_APB1ENR_PWREN                    RCU_APB1ENR_PWREN_Msk             /*!< Power interface clock enable */
+#define RCU_APB1ENR_PMUEN_Pos                (28U)                             
+#define RCU_APB1ENR_PMUEN_Msk                (0x1U << RCU_APB1ENR_PMUEN_Pos)   /*!< 0x10000000 */
+#define RCU_APB1ENR_PMUEN                    RCU_APB1ENR_PMUEN_Msk             /*!< Power interface clock enable */
 
 #define RCU_APB1ENR_TIM3EN_Pos               (2U)                              
 #define RCU_APB1ENR_TIM3EN_Msk               (0x1U << RCU_APB1ENR_TIM3EN_Pos)  /*!< 0x00000004 */
@@ -1756,9 +1756,9 @@ typedef struct
 #define RCU_CSR_WWDGRSTF_Pos                 (30U)                             
 #define RCU_CSR_WWDGRSTF_Msk                 (0x1U << RCU_CSR_WWDGRSTF_Pos)    /*!< 0x40000000 */
 #define RCU_CSR_WWDGRSTF                     RCU_CSR_WWDGRSTF_Msk              /*!< Window watchdog reset flag */
-#define RCU_CSR_LPWRRSTF_Pos                 (31U)                             
-#define RCU_CSR_LPWRRSTF_Msk                 (0x1U << RCU_CSR_LPWRRSTF_Pos)    /*!< 0x80000000 */
-#define RCU_CSR_LPWRRSTF                     RCU_CSR_LPWRRSTF_Msk              /*!< Low-Power reset flag */
+#define RCU_CSR_LPMURSTF_Pos                 (31U)                             
+#define RCU_CSR_LPMURSTF_Msk                 (0x1U << RCU_CSR_LPMURSTF_Pos)    /*!< 0x80000000 */
+#define RCU_CSR_LPMURSTF                     RCU_CSR_LPMURSTF_Msk              /*!< Low-Power reset flag */
 
 /*******************  Bit definition for RCU_AHBRSTR register  ****************/
 #define RCU_AHBRSTR_OTGFSRST_Pos             (12U)                             

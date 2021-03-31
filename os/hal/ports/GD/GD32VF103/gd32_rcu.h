@@ -266,32 +266,32 @@
 /** @} */
 
 /**
- * @name    PWR interface specific RCU operations
+ * @name    PMU interface specific RCU operations
  * @{
  */
 /**
- * @brief   Enables the PWR interface clock.
+ * @brief   Enables the PMU interface clock.
  * @note    The @p lp parameter is ignored in this family.
  *
  * @param[in] lp        low power enable flag
  *
  * @api
  */
-#define rcuEnablePWRInterface(lp) rcuEnableAPB1(RCU_APB1ENR_PWREN, lp)
+#define rcuEnablePMUInterface(lp) rcuEnableAPB1(RCU_APB1ENR_PMUEN, lp)
 
 /**
- * @brief   Disables PWR interface clock.
+ * @brief   Disables PMU interface clock.
  *
  * @api
  */
-#define rcuDisablePWRInterface() rcuDisableAPB1(RCU_APB1ENR_PWREN)
+#define rcuDisablePMUInterface() rcuDisableAPB1(RCU_APB1ENR_PMUEN)
 
 /**
- * @brief   Resets the PWR interface.
+ * @brief   Resets the PMU interface.
  *
  * @api
  */
-#define rcuResetPWRInterface() rcuResetAPB1(RCU_APB1RSTR_PWRRST)
+#define rcuResetPMUInterface() rcuResetAPB1(RCU_APB1RSTR_PMURST)
 /** @} */
 
 /**

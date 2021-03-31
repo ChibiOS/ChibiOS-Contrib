@@ -54,7 +54,7 @@ uint32_t SystemCoreClock = GD32_HCLK;
 static void hal_lld_backup_domain_init(void) {
 
   /* Backup domain access enabled and left open.*/
-  PWR->CTL |= PWR_CR_DBP;
+  PMU->CTL |= PMU_CR_DBP;
 
 #if HAL_USE_RTC
   /* Reset BKP domain if different clock source selected.*/
@@ -135,8 +135,8 @@ void hal_lld_init(void) {
   rcuResetAPB1(0xFFFFFFFF);
   rcuResetAPB2(0xFFFFFFFF);
 
-  /* PWR and BD clocks enabled.*/
-  rcuEnablePWRInterface(true);
+  /* PMU and BD clocks enabled.*/
+  rcuEnablePMUInterface(true);
   rcuEnableBKPInterface(true);
 
   /* Initializes the backup domain.*/
@@ -152,7 +152,7 @@ void hal_lld_init(void) {
 
   /* Programmable voltage detector enable.*/
 #if GD32_PVD_ENABLE
-  PWR->CTL |= PWR_CR_PVDE | (GD32_PLS & GD32_PLS_MASK);
+  PMU->CTL |= PMU_CR_PVDE | (GD32_PLS & GD32_PLS_MASK);
 #endif /* GD32_PVD_ENABLE */
 }
 

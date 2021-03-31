@@ -81,7 +81,7 @@
 /** @} */
 
 /**
- * @name    PWR_CR register bits definitions
+ * @name    PMU_CR register bits definitions
  * @{
  */
 #define GD32_PLS_MASK          (7 << 5)    /**< PLS bits mask.             */
@@ -108,7 +108,7 @@
  * @{
  */
 /**
- * @brief   Disables the PWR/RCU initialization in the HAL.
+ * @brief   Disables the PMU/RCU initialization in the HAL.
  */
 #if !defined(GD32_NO_INIT) || defined(__DOXYGEN__)
 #define GD32_NO_INIT               FALSE
