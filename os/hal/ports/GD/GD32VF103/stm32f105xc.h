@@ -3103,7 +3103,7 @@ typedef struct
 /******************  Bit definition for AFIO_PCF1 register  ******************/
 #define AFIO_PCF1_EXMC_NADV_REMAP_Pos       (10U)                             
 #define AFIO_PCF1_EXMC_NADV_REMAP_Msk       (0x1U << AFIO_PCF1_EXMC_NADV_REMAP_Pos) /*!< 0x00000400 */
-#define AFIO_PCF1_EXMC_NADV_REMAP           AFIO_PCF1_EXMC_NADV_REMAP_Msk    /*!< FSMC NADV remapping */
+#define AFIO_PCF1_EXMC_NADV_REMAP           AFIO_PCF1_EXMC_NADV_REMAP_Msk    /*!< EXMC NADV remapping */
 
 /******************************************************************************/
 /*                                                                            */

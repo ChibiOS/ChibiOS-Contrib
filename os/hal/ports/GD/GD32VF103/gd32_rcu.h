@@ -953,24 +953,24 @@
 /** @} */
 
 /**
- * @name    FSMC peripherals specific RCU operations
+ * @name    EXMC peripherals specific RCU operations
  * @{
  */
 /**
- * @brief   Enables the FSMC peripheral clock.
+ * @brief   Enables the EXMC peripheral clock.
  *
  * @param[in] lp        low power enable flag
  *
  * @api
  */
-#define rcuEnableFSMC(lp) rcuEnableAHB(RCU_AHBENR_FSMCEN, lp)
+#define rcuEnableEXMC(lp) rcuEnableAHB(RCU_AHBENR_EXMCEN, lp)
 
 /**
- * @brief   Disables the FSMC peripheral clock.
+ * @brief   Disables the EXMC peripheral clock.
  *
  * @api
  */
-#define rcuDisableFSMC() rcuDisableAHB(RCU_AHBENR_FSMCEN)
+#define rcuDisableEXMC() rcuDisableAHB(RCU_AHBENR_EXMCEN)
 /** @} */
 
 /*===========================================================================*/

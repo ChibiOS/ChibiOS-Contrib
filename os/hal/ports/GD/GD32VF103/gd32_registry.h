@@ -310,11 +310,11 @@
 /* FWDGT attributes.*/
 #define GD32_HAS_FWDGT                      TRUE
 
-/* FSMC attributes.*/
+/* EXMC attributes.*/
 #if GD32_HAS_EXMC
-    #define GD32_HAS_FSMC                      TRUE
+    #define GD32_HAS_EXMC                      TRUE
 #else
-    #define GD32_HAS_FSMC                      FALSE
+    #define GD32_HAS_EXMC                      FALSE
 #endif
 
 /* CRC attributes.*/
