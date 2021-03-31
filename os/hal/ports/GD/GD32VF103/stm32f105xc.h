@@ -131,52 +131,52 @@ typedef struct
 typedef struct
 {
   uint32_t  RESERVED0;
-  __IO uint32_t DR1;
-  __IO uint32_t DR2;
-  __IO uint32_t DR3;
-  __IO uint32_t DR4;
-  __IO uint32_t DR5;
-  __IO uint32_t DR6;
-  __IO uint32_t DR7;
-  __IO uint32_t DR8;
-  __IO uint32_t DR9;
-  __IO uint32_t DR10;
-  __IO uint32_t RTCCR;
-  __IO uint32_t CR;
-  __IO uint32_t CSR;
+  __IO uint32_t DATA1;
+  __IO uint32_t DATA2;
+  __IO uint32_t DATA3;
+  __IO uint32_t DATA4;
+  __IO uint32_t DATA5;
+  __IO uint32_t DATA6;
+  __IO uint32_t DATA7;
+  __IO uint32_t DATA8;
+  __IO uint32_t DATA9;
+  __IO uint32_t DATA10;
+  __IO uint32_t OCTL;
+  __IO uint32_t TPCTL;
+  __IO uint32_t TPCS;
   uint32_t  RESERVED13[2];
-  __IO uint32_t DR11;
-  __IO uint32_t DR12;
-  __IO uint32_t DR13;
-  __IO uint32_t DR14;
-  __IO uint32_t DR15;
-  __IO uint32_t DR16;
-  __IO uint32_t DR17;
-  __IO uint32_t DR18;
-  __IO uint32_t DR19;
-  __IO uint32_t DR20;
-  __IO uint32_t DR21;
-  __IO uint32_t DR22;
-  __IO uint32_t DR23;
-  __IO uint32_t DR24;
-  __IO uint32_t DR25;
-  __IO uint32_t DR26;
-  __IO uint32_t DR27;
-  __IO uint32_t DR28;
-  __IO uint32_t DR29;
-  __IO uint32_t DR30;
-  __IO uint32_t DR31;
-  __IO uint32_t DR32;
-  __IO uint32_t DR33;
-  __IO uint32_t DR34;
-  __IO uint32_t DR35;
-  __IO uint32_t DR36;
-  __IO uint32_t DR37;
-  __IO uint32_t DR38;
-  __IO uint32_t DR39;
-  __IO uint32_t DR40;
-  __IO uint32_t DR41;
-  __IO uint32_t DR42;
+  __IO uint32_t DATA11;
+  __IO uint32_t DATA12;
+  __IO uint32_t DATA13;
+  __IO uint32_t DATA14;
+  __IO uint32_t DATA15;
+  __IO uint32_t DATA16;
+  __IO uint32_t DATA17;
+  __IO uint32_t DATA18;
+  __IO uint32_t DATA19;
+  __IO uint32_t DATA20;
+  __IO uint32_t DATA21;
+  __IO uint32_t DATA22;
+  __IO uint32_t DATA23;
+  __IO uint32_t DATA24;
+  __IO uint32_t DATA25;
+  __IO uint32_t DATA26;
+  __IO uint32_t DATA27;
+  __IO uint32_t DATA28;
+  __IO uint32_t DATA29;
+  __IO uint32_t DATA30;
+  __IO uint32_t DATA31;
+  __IO uint32_t DATA32;
+  __IO uint32_t DATA33;
+  __IO uint32_t DATA34;
+  __IO uint32_t DATA35;
+  __IO uint32_t DATA36;
+  __IO uint32_t DATA37;
+  __IO uint32_t DATA38;
+  __IO uint32_t DATA39;
+  __IO uint32_t DATA40;
+  __IO uint32_t DATA41;
+  __IO uint32_t DATA42;
 } BKP_TypeDef;
   
 /** 
@@ -907,255 +907,255 @@ typedef struct
 /******************************************************************************/
 
 /*******************  Bit definition for BKP_DR1 register  ********************/
-#define BKP_DR1_D_Pos                       (0U)                               
-#define BKP_DR1_D_Msk                       (0xFFFFU << BKP_DR1_D_Pos)         /*!< 0x0000FFFF */
-#define BKP_DR1_D                           BKP_DR1_D_Msk                      /*!< Backup data */
+#define BKP_DATA1_DATA_Pos                       (0U)                               
+#define BKP_DATA1_DATA_Msk                       (0xFFFFU << BKP_DATA1_DATA_Pos)         /*!< 0x0000FFFF */
+#define BKP_DATA1_DATA                           BKP_DATA1_DATA_Msk                      /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR2 register  ********************/
-#define BKP_DR2_D_Pos                       (0U)                               
-#define BKP_DR2_D_Msk                       (0xFFFFU << BKP_DR2_D_Pos)         /*!< 0x0000FFFF */
-#define BKP_DR2_D                           BKP_DR2_D_Msk                      /*!< Backup data */
+#define BKP_DATA2_DATA_Pos                       (0U)                               
+#define BKP_DATA2_DATA_Msk                       (0xFFFFU << BKP_DATA2_DATA_Pos)         /*!< 0x0000FFFF */
+#define BKP_DATA2_DATA                           BKP_DATA2_DATA_Msk                      /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR3 register  ********************/
-#define BKP_DR3_D_Pos                       (0U)                               
-#define BKP_DR3_D_Msk                       (0xFFFFU << BKP_DR3_D_Pos)         /*!< 0x0000FFFF */
-#define BKP_DR3_D                           BKP_DR3_D_Msk                      /*!< Backup data */
+#define BKP_DATA3_DATA_Pos                       (0U)                               
+#define BKP_DATA3_DATA_Msk                       (0xFFFFU << BKP_DATA3_DATA_Pos)         /*!< 0x0000FFFF */
+#define BKP_DATA3_DATA                           BKP_DATA3_DATA_Msk                      /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR4 register  ********************/
-#define BKP_DR4_D_Pos                       (0U)                               
-#define BKP_DR4_D_Msk                       (0xFFFFU << BKP_DR4_D_Pos)         /*!< 0x0000FFFF */
-#define BKP_DR4_D                           BKP_DR4_D_Msk                      /*!< Backup data */
+#define BKP_DATA4_DATA_Pos                       (0U)                               
+#define BKP_DATA4_DATA_Msk                       (0xFFFFU << BKP_DATA4_DATA_Pos)         /*!< 0x0000FFFF */
+#define BKP_DATA4_DATA                           BKP_DATA4_DATA_Msk                      /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR5 register  ********************/
-#define BKP_DR5_D_Pos                       (0U)                               
-#define BKP_DR5_D_Msk                       (0xFFFFU << BKP_DR5_D_Pos)         /*!< 0x0000FFFF */
-#define BKP_DR5_D                           BKP_DR5_D_Msk                      /*!< Backup data */
+#define BKP_DATA5_DATA_Pos                       (0U)                               
+#define BKP_DATA5_DATA_Msk                       (0xFFFFU << BKP_DATA5_DATA_Pos)         /*!< 0x0000FFFF */
+#define BKP_DATA5_DATA                           BKP_DATA5_DATA_Msk                      /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR6 register  ********************/
-#define BKP_DR6_D_Pos                       (0U)                               
-#define BKP_DR6_D_Msk                       (0xFFFFU << BKP_DR6_D_Pos)         /*!< 0x0000FFFF */
-#define BKP_DR6_D                           BKP_DR6_D_Msk                      /*!< Backup data */
+#define BKP_DATA6_DATA_Pos                       (0U)                               
+#define BKP_DATA6_DATA_Msk                       (0xFFFFU << BKP_DATA6_DATA_Pos)         /*!< 0x0000FFFF */
+#define BKP_DATA6_DATA                           BKP_DATA6_DATA_Msk                      /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR7 register  ********************/
-#define BKP_DR7_D_Pos                       (0U)                               
-#define BKP_DR7_D_Msk                       (0xFFFFU << BKP_DR7_D_Pos)         /*!< 0x0000FFFF */
-#define BKP_DR7_D                           BKP_DR7_D_Msk                      /*!< Backup data */
+#define BKP_DATA7_DATA_Pos                       (0U)                               
+#define BKP_DATA7_DATA_Msk                       (0xFFFFU << BKP_DATA7_DATA_Pos)         /*!< 0x0000FFFF */
+#define BKP_DATA7_DATA                           BKP_DATA7_DATA_Msk                      /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR8 register  ********************/
-#define BKP_DR8_D_Pos                       (0U)                               
-#define BKP_DR8_D_Msk                       (0xFFFFU << BKP_DR8_D_Pos)         /*!< 0x0000FFFF */
-#define BKP_DR8_D                           BKP_DR8_D_Msk                      /*!< Backup data */
+#define BKP_DATA8_DATA_Pos                       (0U)                               
+#define BKP_DATA8_DATA_Msk                       (0xFFFFU << BKP_DATA8_DATA_Pos)         /*!< 0x0000FFFF */
+#define BKP_DATA8_DATA                           BKP_DATA8_DATA_Msk                      /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR9 register  ********************/
-#define BKP_DR9_D_Pos                       (0U)                               
-#define BKP_DR9_D_Msk                       (0xFFFFU << BKP_DR9_D_Pos)         /*!< 0x0000FFFF */
-#define BKP_DR9_D                           BKP_DR9_D_Msk                      /*!< Backup data */
+#define BKP_DATA9_DATA_Pos                       (0U)                               
+#define BKP_DATA9_DATA_Msk                       (0xFFFFU << BKP_DATA9_DATA_Pos)         /*!< 0x0000FFFF */
+#define BKP_DATA9_DATA                           BKP_DATA9_DATA_Msk                      /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR10 register  *******************/
-#define BKP_DR10_D_Pos                      (0U)                               
-#define BKP_DR10_D_Msk                      (0xFFFFU << BKP_DR10_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR10_D                          BKP_DR10_D_Msk                     /*!< Backup data */
+#define BKP_DATA10_DATA_Pos                      (0U)                               
+#define BKP_DATA10_DATA_Msk                      (0xFFFFU << BKP_DATA10_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA10_DATA                          BKP_DATA10_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR11 register  *******************/
-#define BKP_DR11_D_Pos                      (0U)                               
-#define BKP_DR11_D_Msk                      (0xFFFFU << BKP_DR11_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR11_D                          BKP_DR11_D_Msk                     /*!< Backup data */
+#define BKP_DATA11_DATA_Pos                      (0U)                               
+#define BKP_DATA11_DATA_Msk                      (0xFFFFU << BKP_DATA11_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA11_DATA                          BKP_DATA11_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR12 register  *******************/
-#define BKP_DR12_D_Pos                      (0U)                               
-#define BKP_DR12_D_Msk                      (0xFFFFU << BKP_DR12_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR12_D                          BKP_DR12_D_Msk                     /*!< Backup data */
+#define BKP_DATA12_DATA_Pos                      (0U)                               
+#define BKP_DATA12_DATA_Msk                      (0xFFFFU << BKP_DATA12_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA12_DATA                          BKP_DATA12_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR13 register  *******************/
-#define BKP_DR13_D_Pos                      (0U)                               
-#define BKP_DR13_D_Msk                      (0xFFFFU << BKP_DR13_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR13_D                          BKP_DR13_D_Msk                     /*!< Backup data */
+#define BKP_DATA13_DATA_Pos                      (0U)                               
+#define BKP_DATA13_DATA_Msk                      (0xFFFFU << BKP_DATA13_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA13_DATA                          BKP_DATA13_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR14 register  *******************/
-#define BKP_DR14_D_Pos                      (0U)                               
-#define BKP_DR14_D_Msk                      (0xFFFFU << BKP_DR14_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR14_D                          BKP_DR14_D_Msk                     /*!< Backup data */
+#define BKP_DATA14_DATA_Pos                      (0U)                               
+#define BKP_DATA14_DATA_Msk                      (0xFFFFU << BKP_DATA14_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA14_DATA                          BKP_DATA14_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR15 register  *******************/
-#define BKP_DR15_D_Pos                      (0U)                               
-#define BKP_DR15_D_Msk                      (0xFFFFU << BKP_DR15_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR15_D                          BKP_DR15_D_Msk                     /*!< Backup data */
+#define BKP_DATA15_DATA_Pos                      (0U)                               
+#define BKP_DATA15_DATA_Msk                      (0xFFFFU << BKP_DATA15_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA15_DATA                          BKP_DATA15_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR16 register  *******************/
-#define BKP_DR16_D_Pos                      (0U)                               
-#define BKP_DR16_D_Msk                      (0xFFFFU << BKP_DR16_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR16_D                          BKP_DR16_D_Msk                     /*!< Backup data */
+#define BKP_DATA16_DATA_Pos                      (0U)                               
+#define BKP_DATA16_DATA_Msk                      (0xFFFFU << BKP_DATA16_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA16_DATA                          BKP_DATA16_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR17 register  *******************/
-#define BKP_DR17_D_Pos                      (0U)                               
-#define BKP_DR17_D_Msk                      (0xFFFFU << BKP_DR17_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR17_D                          BKP_DR17_D_Msk                     /*!< Backup data */
+#define BKP_DATA17_DATA_Pos                      (0U)                               
+#define BKP_DATA17_DATA_Msk                      (0xFFFFU << BKP_DATA17_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA17_DATA                          BKP_DATA17_DATA_Msk                     /*!< Backup data */
 
 /******************  Bit definition for BKP_DR18 register  ********************/
-#define BKP_DR18_D_Pos                      (0U)                               
-#define BKP_DR18_D_Msk                      (0xFFFFU << BKP_DR18_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR18_D                          BKP_DR18_D_Msk                     /*!< Backup data */
+#define BKP_DATA18_DATA_Pos                      (0U)                               
+#define BKP_DATA18_DATA_Msk                      (0xFFFFU << BKP_DATA18_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA18_DATA                          BKP_DATA18_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR19 register  *******************/
-#define BKP_DR19_D_Pos                      (0U)                               
-#define BKP_DR19_D_Msk                      (0xFFFFU << BKP_DR19_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR19_D                          BKP_DR19_D_Msk                     /*!< Backup data */
+#define BKP_DATA19_DATA_Pos                      (0U)                               
+#define BKP_DATA19_DATA_Msk                      (0xFFFFU << BKP_DATA19_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA19_DATA                          BKP_DATA19_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR20 register  *******************/
-#define BKP_DR20_D_Pos                      (0U)                               
-#define BKP_DR20_D_Msk                      (0xFFFFU << BKP_DR20_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR20_D                          BKP_DR20_D_Msk                     /*!< Backup data */
+#define BKP_DATA20_DATA_Pos                      (0U)                               
+#define BKP_DATA20_DATA_Msk                      (0xFFFFU << BKP_DATA20_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA20_DATA                          BKP_DATA20_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR21 register  *******************/
-#define BKP_DR21_D_Pos                      (0U)                               
-#define BKP_DR21_D_Msk                      (0xFFFFU << BKP_DR21_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR21_D                          BKP_DR21_D_Msk                     /*!< Backup data */
+#define BKP_DATA21_DATA_Pos                      (0U)                               
+#define BKP_DATA21_DATA_Msk                      (0xFFFFU << BKP_DATA21_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA21_DATA                          BKP_DATA21_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR22 register  *******************/
-#define BKP_DR22_D_Pos                      (0U)                               
-#define BKP_DR22_D_Msk                      (0xFFFFU << BKP_DR22_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR22_D                          BKP_DR22_D_Msk                     /*!< Backup data */
+#define BKP_DATA22_DATA_Pos                      (0U)                               
+#define BKP_DATA22_DATA_Msk                      (0xFFFFU << BKP_DATA22_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA22_DATA                          BKP_DATA22_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR23 register  *******************/
-#define BKP_DR23_D_Pos                      (0U)                               
-#define BKP_DR23_D_Msk                      (0xFFFFU << BKP_DR23_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR23_D                          BKP_DR23_D_Msk                     /*!< Backup data */
+#define BKP_DATA23_DATA_Pos                      (0U)                               
+#define BKP_DATA23_DATA_Msk                      (0xFFFFU << BKP_DATA23_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA23_DATA                          BKP_DATA23_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR24 register  *******************/
-#define BKP_DR24_D_Pos                      (0U)                               
-#define BKP_DR24_D_Msk                      (0xFFFFU << BKP_DR24_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR24_D                          BKP_DR24_D_Msk                     /*!< Backup data */
+#define BKP_DATA24_DATA_Pos                      (0U)                               
+#define BKP_DATA24_DATA_Msk                      (0xFFFFU << BKP_DATA24_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA24_DATA                          BKP_DATA24_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR25 register  *******************/
-#define BKP_DR25_D_Pos                      (0U)                               
-#define BKP_DR25_D_Msk                      (0xFFFFU << BKP_DR25_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR25_D                          BKP_DR25_D_Msk                     /*!< Backup data */
+#define BKP_DATA25_DATA_Pos                      (0U)                               
+#define BKP_DATA25_DATA_Msk                      (0xFFFFU << BKP_DATA25_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA25_DATA                          BKP_DATA25_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR26 register  *******************/
-#define BKP_DR26_D_Pos                      (0U)                               
-#define BKP_DR26_D_Msk                      (0xFFFFU << BKP_DR26_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR26_D                          BKP_DR26_D_Msk                     /*!< Backup data */
+#define BKP_DATA26_DATA_Pos                      (0U)                               
+#define BKP_DATA26_DATA_Msk                      (0xFFFFU << BKP_DATA26_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA26_DATA                          BKP_DATA26_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR27 register  *******************/
-#define BKP_DR27_D_Pos                      (0U)                               
-#define BKP_DR27_D_Msk                      (0xFFFFU << BKP_DR27_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR27_D                          BKP_DR27_D_Msk                     /*!< Backup data */
+#define BKP_DATA27_DATA_Pos                      (0U)                               
+#define BKP_DATA27_DATA_Msk                      (0xFFFFU << BKP_DATA27_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA27_DATA                          BKP_DATA27_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR28 register  *******************/
-#define BKP_DR28_D_Pos                      (0U)                               
-#define BKP_DR28_D_Msk                      (0xFFFFU << BKP_DR28_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR28_D                          BKP_DR28_D_Msk                     /*!< Backup data */
+#define BKP_DATA28_DATA_Pos                      (0U)                               
+#define BKP_DATA28_DATA_Msk                      (0xFFFFU << BKP_DATA28_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA28_DATA                          BKP_DATA28_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR29 register  *******************/
-#define BKP_DR29_D_Pos                      (0U)                               
-#define BKP_DR29_D_Msk                      (0xFFFFU << BKP_DR29_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR29_D                          BKP_DR29_D_Msk                     /*!< Backup data */
+#define BKP_DATA29_DATA_Pos                      (0U)                               
+#define BKP_DATA29_DATA_Msk                      (0xFFFFU << BKP_DATA29_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA29_DATA                          BKP_DATA29_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR30 register  *******************/
-#define BKP_DR30_D_Pos                      (0U)                               
-#define BKP_DR30_D_Msk                      (0xFFFFU << BKP_DR30_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR30_D                          BKP_DR30_D_Msk                     /*!< Backup data */
+#define BKP_DATA30_DATA_Pos                      (0U)                               
+#define BKP_DATA30_DATA_Msk                      (0xFFFFU << BKP_DATA30_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA30_DATA                          BKP_DATA30_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR31 register  *******************/
-#define BKP_DR31_D_Pos                      (0U)                               
-#define BKP_DR31_D_Msk                      (0xFFFFU << BKP_DR31_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR31_D                          BKP_DR31_D_Msk                     /*!< Backup data */
+#define BKP_DATA31_DATA_Pos                      (0U)                               
+#define BKP_DATA31_DATA_Msk                      (0xFFFFU << BKP_DATA31_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA31_DATA                          BKP_DATA31_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR32 register  *******************/
-#define BKP_DR32_D_Pos                      (0U)                               
-#define BKP_DR32_D_Msk                      (0xFFFFU << BKP_DR32_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR32_D                          BKP_DR32_D_Msk                     /*!< Backup data */
+#define BKP_DATA32_DATA_Pos                      (0U)                               
+#define BKP_DATA32_DATA_Msk                      (0xFFFFU << BKP_DATA32_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA32_DATA                          BKP_DATA32_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR33 register  *******************/
-#define BKP_DR33_D_Pos                      (0U)                               
-#define BKP_DR33_D_Msk                      (0xFFFFU << BKP_DR33_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR33_D                          BKP_DR33_D_Msk                     /*!< Backup data */
+#define BKP_DATA33_DATA_Pos                      (0U)                               
+#define BKP_DATA33_DATA_Msk                      (0xFFFFU << BKP_DATA33_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA33_DATA                          BKP_DATA33_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR34 register  *******************/
-#define BKP_DR34_D_Pos                      (0U)                               
-#define BKP_DR34_D_Msk                      (0xFFFFU << BKP_DR34_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR34_D                          BKP_DR34_D_Msk                     /*!< Backup data */
+#define BKP_DATA34_DATA_Pos                      (0U)                               
+#define BKP_DATA34_DATA_Msk                      (0xFFFFU << BKP_DATA34_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA34_DATA                          BKP_DATA34_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR35 register  *******************/
-#define BKP_DR35_D_Pos                      (0U)                               
-#define BKP_DR35_D_Msk                      (0xFFFFU << BKP_DR35_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR35_D                          BKP_DR35_D_Msk                     /*!< Backup data */
+#define BKP_DATA35_DATA_Pos                      (0U)                               
+#define BKP_DATA35_DATA_Msk                      (0xFFFFU << BKP_DATA35_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA35_DATA                          BKP_DATA35_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR36 register  *******************/
-#define BKP_DR36_D_Pos                      (0U)                               
-#define BKP_DR36_D_Msk                      (0xFFFFU << BKP_DR36_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR36_D                          BKP_DR36_D_Msk                     /*!< Backup data */
+#define BKP_DATA36_DATA_Pos                      (0U)                               
+#define BKP_DATA36_DATA_Msk                      (0xFFFFU << BKP_DATA36_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA36_DATA                          BKP_DATA36_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR37 register  *******************/
-#define BKP_DR37_D_Pos                      (0U)                               
-#define BKP_DR37_D_Msk                      (0xFFFFU << BKP_DR37_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR37_D                          BKP_DR37_D_Msk                     /*!< Backup data */
+#define BKP_DATA37_DATA_Pos                      (0U)                               
+#define BKP_DATA37_DATA_Msk                      (0xFFFFU << BKP_DATA37_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA37_DATA                          BKP_DATA37_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR38 register  *******************/
-#define BKP_DR38_D_Pos                      (0U)                               
-#define BKP_DR38_D_Msk                      (0xFFFFU << BKP_DR38_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR38_D                          BKP_DR38_D_Msk                     /*!< Backup data */
+#define BKP_DATA38_DATA_Pos                      (0U)                               
+#define BKP_DATA38_DATA_Msk                      (0xFFFFU << BKP_DATA38_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA38_DATA                          BKP_DATA38_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR39 register  *******************/
-#define BKP_DR39_D_Pos                      (0U)                               
-#define BKP_DR39_D_Msk                      (0xFFFFU << BKP_DR39_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR39_D                          BKP_DR39_D_Msk                     /*!< Backup data */
+#define BKP_DATA39_DATA_Pos                      (0U)                               
+#define BKP_DATA39_DATA_Msk                      (0xFFFFU << BKP_DATA39_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA39_DATA                          BKP_DATA39_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR40 register  *******************/
-#define BKP_DR40_D_Pos                      (0U)                               
-#define BKP_DR40_D_Msk                      (0xFFFFU << BKP_DR40_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR40_D                          BKP_DR40_D_Msk                     /*!< Backup data */
+#define BKP_DATA40_DATA_Pos                      (0U)                               
+#define BKP_DATA40_DATA_Msk                      (0xFFFFU << BKP_DATA40_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA40_DATA                          BKP_DATA40_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR41 register  *******************/
-#define BKP_DR41_D_Pos                      (0U)                               
-#define BKP_DR41_D_Msk                      (0xFFFFU << BKP_DR41_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR41_D                          BKP_DR41_D_Msk                     /*!< Backup data */
+#define BKP_DATA41_DATA_Pos                      (0U)                               
+#define BKP_DATA41_DATA_Msk                      (0xFFFFU << BKP_DATA41_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA41_DATA                          BKP_DATA41_DATA_Msk                     /*!< Backup data */
 
 /*******************  Bit definition for BKP_DR42 register  *******************/
-#define BKP_DR42_D_Pos                      (0U)                               
-#define BKP_DR42_D_Msk                      (0xFFFFU << BKP_DR42_D_Pos)        /*!< 0x0000FFFF */
-#define BKP_DR42_D                          BKP_DR42_D_Msk                     /*!< Backup data */
+#define BKP_DATA42_DATA_Pos                      (0U)                               
+#define BKP_DATA42_DATA_Msk                      (0xFFFFU << BKP_DATA42_DATA_Pos)        /*!< 0x0000FFFF */
+#define BKP_DATA42_DATA                          BKP_DATA42_DATA_Msk                     /*!< Backup data */
 
 #define RTC_BKP_NUMBER 42
 
-/******************  Bit definition for BKP_RTCCR register  *******************/
-#define BKP_RTCCR_CAL_Pos                   (0U)                               
-#define BKP_RTCCR_CAL_Msk                   (0x7FU << BKP_RTCCR_CAL_Pos)       /*!< 0x0000007F */
-#define BKP_RTCCR_CAL                       BKP_RTCCR_CAL_Msk                  /*!< Calibration value */
-#define BKP_RTCCR_CCO_Pos                   (7U)                               
-#define BKP_RTCCR_CCO_Msk                   (0x1U << BKP_RTCCR_CCO_Pos)        /*!< 0x00000080 */
-#define BKP_RTCCR_CCO                       BKP_RTCCR_CCO_Msk                  /*!< Calibration Clock Output */
-#define BKP_RTCCR_ASOE_Pos                  (8U)                               
-#define BKP_RTCCR_ASOE_Msk                  (0x1U << BKP_RTCCR_ASOE_Pos)       /*!< 0x00000100 */
-#define BKP_RTCCR_ASOE                      BKP_RTCCR_ASOE_Msk                 /*!< Alarm or Second Output Enable */
-#define BKP_RTCCR_ASOS_Pos                  (9U)                               
-#define BKP_RTCCR_ASOS_Msk                  (0x1U << BKP_RTCCR_ASOS_Pos)       /*!< 0x00000200 */
-#define BKP_RTCCR_ASOS                      BKP_RTCCR_ASOS_Msk                 /*!< Alarm or Second Output Selection */
+/******************  Bit definition for BKP_OCTL register  *******************/
+#define BKP_OCTL_RCCV_Pos                   (0U)                               
+#define BKP_OCTL_RCCV_Msk                   (0x7FU << BKP_OCTL_RCCV_Pos)       /*!< 0x0000007F */
+#define BKP_OCTL_RCCV                       BKP_OCTL_RCCV_Msk                  /*!< Calibration value */
+#define BKP_OCTL_COEN_Pos                   (7U)                               
+#define BKP_OCTL_COEN_Msk                   (0x1U << BKP_OCTL_COEN_Pos)        /*!< 0x00000080 */
+#define BKP_OCTL_COEN                       BKP_OCTL_COEN_Msk                  /*!< Calibration Clock Output */
+#define BKP_OCTL_ASOEN_Pos                  (8U)                               
+#define BKP_OCTL_ASOEN_Msk                  (0x1U << BKP_OCTL_ASOEN_Pos)       /*!< 0x00000100 */
+#define BKP_OCTL_ASOEN                      BKP_OCTL_ASOEN_Msk                 /*!< Alarm or Second Output Enable */
+#define BKP_OCTL_ROSEL_Pos                  (9U)                               
+#define BKP_OCTL_ROSEL_Msk                  (0x1U << BKP_OCTL_ROSEL_Pos)       /*!< 0x00000200 */
+#define BKP_OCTL_ROSEL                      BKP_OCTL_ROSEL_Msk                 /*!< Alarm or Second Output Selection */
 
-/********************  Bit definition for BKP_CR register  ********************/
-#define BKP_CR_TPE_Pos                      (0U)                               
-#define BKP_CR_TPE_Msk                      (0x1U << BKP_CR_TPE_Pos)           /*!< 0x00000001 */
-#define BKP_CR_TPE                          BKP_CR_TPE_Msk                     /*!< TAMPER pin enable */
-#define BKP_CR_TPAL_Pos                     (1U)                               
-#define BKP_CR_TPAL_Msk                     (0x1U << BKP_CR_TPAL_Pos)          /*!< 0x00000002 */
-#define BKP_CR_TPAL                         BKP_CR_TPAL_Msk                    /*!< TAMPER pin active level */
+/********************  Bit definition for BKP_TPCTL register  ********************/
+#define BKP_TPCTL_TPEN_Pos                      (0U)                               
+#define BKP_TPCTL_TPEN_Msk                      (0x1U << BKP_TPCTL_TPEN_Pos)           /*!< 0x00000001 */
+#define BKP_TPCTL_TPEN                          BKP_TPCTL_TPEN_Msk                     /*!< TAMPER pin enable */
+#define BKP_TPCTL_TPAL_Pos                     (1U)                               
+#define BKP_TPCTL_TPAL_Msk                     (0x1U << BKP_TPCTL_TPAL_Pos)          /*!< 0x00000002 */
+#define BKP_TPCTL_TPAL                         BKP_TPCTL_TPAL_Msk                    /*!< TAMPER pin active level */
 
-/*******************  Bit definition for BKP_CSR register  ********************/
-#define BKP_CSR_CTE_Pos                     (0U)                               
-#define BKP_CSR_CTE_Msk                     (0x1U << BKP_CSR_CTE_Pos)          /*!< 0x00000001 */
-#define BKP_CSR_CTE                         BKP_CSR_CTE_Msk                    /*!< Clear Tamper event */
-#define BKP_CSR_CTI_Pos                     (1U)                               
-#define BKP_CSR_CTI_Msk                     (0x1U << BKP_CSR_CTI_Pos)          /*!< 0x00000002 */
-#define BKP_CSR_CTI                         BKP_CSR_CTI_Msk                    /*!< Clear Tamper Interrupt */
-#define BKP_CSR_TPIE_Pos                    (2U)                               
-#define BKP_CSR_TPIE_Msk                    (0x1U << BKP_CSR_TPIE_Pos)         /*!< 0x00000004 */
-#define BKP_CSR_TPIE                        BKP_CSR_TPIE_Msk                   /*!< TAMPER Pin interrupt enable */
-#define BKP_CSR_TEF_Pos                     (8U)                               
-#define BKP_CSR_TEF_Msk                     (0x1U << BKP_CSR_TEF_Pos)          /*!< 0x00000100 */
-#define BKP_CSR_TEF                         BKP_CSR_TEF_Msk                    /*!< Tamper Event Flag */
-#define BKP_CSR_TIF_Pos                     (9U)                               
-#define BKP_CSR_TIF_Msk                     (0x1U << BKP_CSR_TIF_Pos)          /*!< 0x00000200 */
-#define BKP_CSR_TIF                         BKP_CSR_TIF_Msk                    /*!< Tamper Interrupt Flag */
+/*******************  Bit definition for BKP_TPCS register  ********************/
+#define BKP_TPCS_TER_Pos                     (0U)                               
+#define BKP_TPCS_TER_Msk                     (0x1U << BKP_TPCS_TER_Pos)          /*!< 0x00000001 */
+#define BKP_TPCS_TER                         BKP_TPCS_TER_Msk                    /*!< Clear Tamper event */
+#define BKP_TPCS_TIR_Pos                     (1U)                               
+#define BKP_TPCS_TIR_Msk                     (0x1U << BKP_TPCS_TIR_Pos)          /*!< 0x00000002 */
+#define BKP_TPCS_TIR                         BKP_TPCS_TIR_Msk                    /*!< Clear Tamper Interrupt */
+#define BKP_TPCS_TPIE_Pos                    (2U)                               
+#define BKP_TPCS_TPIE_Msk                    (0x1U << BKP_TPCS_TPIE_Pos)         /*!< 0x00000004 */
+#define BKP_TPCS_TPIE                        BKP_TPCS_TPIE_Msk                   /*!< TAMPER Pin interrupt enable */
+#define BKP_TPCS_TEF_Pos                     (8U)                               
+#define BKP_TPCS_TEF_Msk                     (0x1U << BKP_TPCS_TEF_Pos)          /*!< 0x00000100 */
+#define BKP_TPCS_TEF                         BKP_TPCS_TEF_Msk                    /*!< Tamper Event Flag */
+#define BKP_TPCS_TIF_Pos                     (9U)                               
+#define BKP_TPCS_TIF_Msk                     (0x1U << BKP_TPCS_TIF_Pos)          /*!< 0x00000200 */
+#define BKP_TPCS_TIF                         BKP_TPCS_TIF_Msk                    /*!< Tamper Interrupt Flag */
 
 /******************************************************************************/
 /*                                                                            */
