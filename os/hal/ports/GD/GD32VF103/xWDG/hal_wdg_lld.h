@@ -83,12 +83,12 @@
 #error "WDG driver activated but no xWDG peripheral assigned"
 #endif
 
-#if !defined(GD32_LSI_ENABLED)
-#error "GD32_LSI_ENABLED not defined"
+#if !defined(GD32_IRC40K_ENABLED)
+#error "GD32_IRC40K_ENABLED not defined"
 #endif
 
-#if (GD32_WDG_USE_FWDGT == TRUE) && (GD32_LSI_ENABLED == FALSE)
-#error "FWDGT requires LSI clock"
+#if (GD32_WDG_USE_FWDGT == TRUE) && (GD32_IRC40K_ENABLED == FALSE)
+#error "FWDGT requires IRC40K clock"
 #endif
 
 /*===========================================================================*/

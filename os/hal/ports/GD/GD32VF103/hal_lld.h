@@ -20,10 +20,10 @@
  * @brief   GD32VF103 HAL subsystem low level driver header.
  * @pre     This module requires the following macros to be defined in the
  *          @p board.h file:
- *          - GD32_LSECLK.
- *          - GD32_LSE_BYPASS (optionally).
- *          - GD32_HSECLK.
- *          - GD32_HSE_BYPASS (optionally).
+ *          - GD32_LXTALCLK.
+ *          - GD32_LXTAL_BYPASS (optionally).
+ *          - GD32_HXTALCLK.
+ *          - GD32_HXTAL_BYPASS (optionally).
  *
  * @addtogroup HAL
  * @{
@@ -63,8 +63,8 @@
  * @name    Internal clock sources
  * @{
  */
-#define GD32_HSICLK            8000000     /**< High speed internal clock. */
-#define GD32_LSICLK            40000       /**< Low speed internal clock.  */
+#define GD32_IRC8MCLK            8000000     /**< High speed internal clock. */
+#define GD32_IRC40KCLK            40000       /**< Low speed internal clock.  */
 /** @} */
 
 /**
@@ -116,31 +116,31 @@
 #endif
 
 /**
- * @brief   Enables or disables the HSI clock source.
+ * @brief   Enables or disables the IRC8M clock source.
  */
-#if !defined(GD32_HSI_ENABLED) || defined(__DOXYGEN__)
-#define GD32_HSI_ENABLED           TRUE
+#if !defined(GD32_IRC8M_ENABLED) || defined(__DOXYGEN__)
+#define GD32_IRC8M_ENABLED           TRUE
 #endif
 
 /**
- * @brief   Enables or disables the LSI clock source.
+ * @brief   Enables or disables the IRC40K clock source.
  */
-#if !defined(GD32_LSI_ENABLED) || defined(__DOXYGEN__)
-#define GD32_LSI_ENABLED           FALSE
+#if !defined(GD32_IRC40K_ENABLED) || defined(__DOXYGEN__)
+#define GD32_IRC40K_ENABLED           FALSE
 #endif
 
 /**
- * @brief   Enables or disables the HSE clock source.
+ * @brief   Enables or disables the HXTAL clock source.
  */
-#if !defined(GD32_HSE_ENABLED) || defined(__DOXYGEN__)
-#define GD32_HSE_ENABLED           TRUE
+#if !defined(GD32_HXTAL_ENABLED) || defined(__DOXYGEN__)
+#define GD32_HXTAL_ENABLED           TRUE
 #endif
 
 /**
- * @brief   Enables or disables the LSE clock source.
+ * @brief   Enables or disables the LXTAL clock source.
  */
-#if !defined(GD32_LSE_ENABLED) || defined(__DOXYGEN__)
-#define GD32_LSE_ENABLED           FALSE
+#if !defined(GD32_LXTAL_ENABLED) || defined(__DOXYGEN__)
+#define GD32_LXTAL_ENABLED           FALSE
 #endif
 /** @} */
 
