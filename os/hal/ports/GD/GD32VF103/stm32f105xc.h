@@ -1306,8 +1306,8 @@ typedef struct
 #define RCU_CFG0_PLLMF_2                   (0x4U << RCU_CFG0_PLLMF_Pos)    /*!< 0x00100000 */
 #define RCU_CFG0_PLLMF_3                   (0x8U << RCU_CFG0_PLLMF_Pos)    /*!< 0x00200000 */
 
-#define RCU_CFG0_PREDV0_LSB_PREDIV1            0x00000000U                       /*!< PREDIV1 clock not divided for PLL entry */
-#define RCU_CFG0_PREDV0_LSB_PREDIV1_DIV2       0x00020000U                       /*!< PREDIV1 clock divided by 2 for PLL entry */
+#define RCU_CFG0_PREDV0_LSB_PREDV0            0x00000000U                       /*!< PREDV0 clock not divided for PLL entry */
+#define RCU_CFG0_PREDV0_LSB_PREDV0_DIV2       0x00020000U                       /*!< PREDV0 clock divided by 2 for PLL entry */
 
 #define RCU_CFG0_PLLMF4_Pos                (19U)                             
 #define RCU_CFG0_PLLMF4_Msk                (0x1U << RCU_CFG0_PLLMF4_Pos)   /*!< 0x00080000 */

@@ -36,7 +36,7 @@
  * @brief   CMSIS system core clock variable.
  * @note    It is declared in system_stm32f10x.h.
  */
-uint32_t SystemCoreClock = GD32_HCLK;
+//uint32_t SystemCoreClock = GD32_HCLK;
 
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
@@ -98,28 +98,6 @@ static void hal_lld_backup_domain_init(void) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if defined(GD32_DMA_REQUIRED) || defined(__DOXYGEN__)
-#if defined(GD32_DMA1_CH35_HANDLER) || defined(__DOXYGEN__)
-/**
- * @brief   DMA1 streams 4 and 5 shared ISR.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_DMA1_CH35_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  /* Check on channel 4 of DMA1.*/
-  dmaServeInterrupt(GD32_DMA1_STREAM3);
-
-  /* Check on channel 5 of DMA1.*/
-  dmaServeInterrupt(GD32_DMA1_STREAM4);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif /* defined(GD32_DMA1_CH35_HANDLER) */
-#endif /* defined(GD32_DMA_REQUIRED) */
-
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -164,7 +142,6 @@ void hal_lld_init(void) {
  * @special
  */
 
-#if defined(GD32VF103) //TODO whole family
 /*
  * Clocks initialization for the CL sub-family.
  */
@@ -207,30 +184,29 @@ void gd32_clock_init(void) {
 #endif
 
   /* Settings of various dividers and multipliers in CFGR2.*/
-  /*RCU->CFG02 = GD32_PLL3MUL | GD32_PLL2MUL | GD32_PREDIV2 |
-               GD32_PREDIV1 | GD32_PREDIV1SRC;*/
+  RCU->CFG1 = GD32_PLL2MF | GD32_PLL1MF | GD32_PREDV1 |
+               GD32_PREDV0 | GD32_PREDV0SEL;
+
+  /* PLL1 setup, if activated.*/
+#if GD32_ACTIVATE_PLL1
+  RCU->CTL |= RCU_CTL_PLL1EN;
+  while (!(RCU->CTL & RCU_CTL_PLL1STB))
+    ;                                        /* Waits until PLL1 is stable. */
+#endif
 
   /* PLL2 setup, if activated.*/
 #if GD32_ACTIVATE_PLL2
-  RCU->CTL |= RCU_CTL_PLL1EN;
-  while (!(RCU->CTL & RCU_CTL_PLL1STB))
+  RCU->CTL |= RCU_CTL_PLL2EN;
+  while (!(RCU->CTL & RCU_CTL_PLL2STB))
     ;                                        /* Waits until PLL2 is stable. */
 #endif
 
-  /* PLL3 setup, if activated.*/
-#if GD32_ACTIVATE_PLL3
-  RCU->CTL |= RCU_CTL_PLL2EN;
-  while (!(RCU->CTL & RCU_CTL_PLL2STB))
-    ;                                        /* Waits until PLL3 is stable. */
-#endif
-
-  /* PLL1 setup, if activated.*/
-//#if GD32_ACTIVATE_PLL1
+  /* PLL setup, if activated.*/
 #if GD32_ACTIVATE_PLL
   RCU->CFG0 |= GD32_PLLMF | GD32_PLLSEL;
   RCU->CTL   |= RCU_CTL_PLLEN;
   while (!(RCU->CTL & RCU_CTL_PLLSTB))
-    ;                           /* Waits until PLL1 is stable.              */
+    ;                           /* Waits until PLL is stable.              */
 #endif
 
   /* Clock settings.*/
@@ -260,8 +236,5 @@ void gd32_clock_init(void) {
 #endif
 #endif /* !GD32_NO_INIT */
 }
-#else
-void gd32_clock_init(void) {}
-#endif
 
 /** @} */

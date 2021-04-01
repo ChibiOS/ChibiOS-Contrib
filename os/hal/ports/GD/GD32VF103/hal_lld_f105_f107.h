@@ -43,17 +43,21 @@
 /**
  * @brief   Maximum system clock frequency.
  */
-#define GD32_SYSCLK_MAX        72000000
+#if defined(GD32_ALLOW_120MHZ_SYSCLK)
+#define GD32_SYSCLK_MAX        120000000
+#else
+#define GD32_SYSCLK_MAX        108000000
+#endif
 
 /**
  * @brief   Maximum HXTAL clock frequency.
  */
-#define GD32_HXTALCLK_MAX        50000000
+#define GD32_HXTALCLK_MAX        25000000
 
 /**
  * @brief   Minimum HXTAL clock frequency.
  */
-#define GD32_HXTALCLK_MIN        1000000
+#define GD32_HXTALCLK_MIN         3000000
 
 /**
  * @brief   Maximum LXTAL clock frequency.
@@ -66,54 +70,66 @@
 #define GD32_LXTALCLK_MIN        32768
 
 /**
- * @brief   Maximum PLLs input clock frequency.
+ * @brief   Maximum PLL input clock frequency.
  */
-#define GD32_PLL1IN_MAX        12000000
+#define GD32_PLLIN_MAX        12000000
 
 /**
- * @brief   Minimum PLL1 input clock frequency.
+ * @brief   Minimum PLL input clock frequency.
  */
-#define GD32_PLL1IN_MIN        3000000
+#define GD32_PLLIN_MIN        3000000
 
 /**
  * @brief   Maximum PLL1 input clock frequency.
  */
-#define GD32_PLL23IN_MAX       5000000
+#define GD32_PLL12IN_MAX       5000000
 
 /**
- * @brief   Minimum PLL2 and PLL3 input clock frequency.
+ * @brief   Minimum PLL1 and PLL2 input clock frequency.
  */
-#define GD32_PLL23IN_MIN       3000000
+#define GD32_PLL12IN_MIN       3000000
 
 /**
- * @brief   Maximum PLL1 VCO clock frequency.
+ * @brief   Maximum PLL output clock frequency.
  */
-#define GD32_PLL1VCO_MAX       144000000
+#if defined(GD32_ALLOW_120MHZ_SYSCLK)
+#define GD32_PLLOUT_MAX        120000000
+#else
+#define GD32_PLLOUT_MAX        108000000
+#endif
 
 /**
- * @brief   Minimum PLL1 VCO clock frequency.
+ * @brief   Minimum PLL output clock frequency.
  */
-#define GD32_PLL1VCO_MIN       36000000
+#define GD32_PLLOUT_MIN        16000000
 
 /**
- * @brief   Maximum PLL2 and PLL3 VCO clock frequency.
+ * @brief   Maximum PLL1 and PLL2 VCO clock frequency.
  */
-#define GD32_PLL23VCO_MAX      148000000
+#define GD32_PLL12VCO_MAX      148000000
 
 /**
- * @brief   Minimum PLL2 and PLL3 VCO clock frequency.
+ * @brief   Minimum PLL1 and PLL2 VCO clock frequency.
  */
-#define GD32_PLL23VCO_MIN      80000000
+#define GD32_PLL12VCO_MIN      80000000
 
 /**
  * @brief   Maximum APB1 clock frequency.
  */
-#define GD32_PCLK1_MAX         36000000
+#if defined(GD32_ALLOW_120MHZ_SYSCLK)
+#define GD32_PCLK1_MAX         60000000
+#else
+#define GD32_PCLK1_MAX         54000000
+#endif
 
 /**
  * @brief   Maximum APB2 clock frequency.
  */
-#define GD32_PCLK2_MAX         72000000
+#if defined(GD32_ALLOW_120MHZ_SYSCLK)
+#define GD32_PCLK2_MAX        120000000
+#else
+#define GD32_PCLK2_MAX        108000000
+#endif
 
 /**
  * @brief   Maximum ADC clock frequency.
@@ -160,23 +176,27 @@
 #define GD32_ADCPSC_DIV4       (1 << 14)   /**< PPRE2 divided by 4.        */
 #define GD32_ADCPSC_DIV6       (2 << 14)   /**< PPRE2 divided by 6.        */
 #define GD32_ADCPSC_DIV8       (3 << 14)   /**< PPRE2 divided by 8.        */
+#define GD32_ADCPSC_DIV12    ((1 << 28) | (1 << 14))  /**< PPRE2 divided by 12.        */
+#define GD32_ADCPSC_DIV16    ((1 << 28) | (3 << 14))  /**< PPRE2 divided by 16.        */
 
 #define GD32_PLLSEL_IRC8M        (0 << 16)   /**< PLL clock source is IRC8M.   */
-#define GD32_PLLSEL_PREDIV1    (1 << 16)   /**< PLL clock source is
-                                                 PREDIV1.                   */
+#define GD32_PLLSEL_PREDV0    (1 << 16)   /**< PLL clock source is
+                                                 PREDV0.                   */
 
-#define GD32_USBFSPRE_DIV2     (1 << 22)   /**< HCLK*2 divided by 2.       */
-#define GD32_USBFSPRE_DIV3     (0 << 22)   /**< HCLK*2 divided by 3.       */
+#define GD32_USBFSPRE_DIV2     (1 << 22)     /**< PLLOUT divided by 2.       */
+#define GD32_USBFSPRE_DIV3     (0 << 22)     /**< PLLOUT divided by 3.       */
+#define GD32_USBFSPSC_DIV2P5     (2 << 22)   /**< PLLOUT divided by 2.5.     */
+#define GD32_USBFSPSC_DIV2       (3 << 22)   /**< PLLOUT divided by 2.       */
 
 #define GD32_CKOUT0SEL_NOCLOCK    (0 << 24)   /**< No clock on MCO pin.       */
 #define GD32_CKOUT0SEL_SYSCLK     (4 << 24)   /**< SYSCLK on MCO pin.         */
 #define GD32_CKOUT0SEL_IRC8M        (5 << 24)   /**< IRC8M clock on MCO pin.      */
 #define GD32_CKOUT0SEL_HXTAL        (6 << 24)   /**< HXTAL clock on MCO pin.      */
 #define GD32_CKOUT0SEL_PLLDIV2    (7 << 24)   /**< PLL/2 clock on MCO pin.    */
-#define GD32_CKOUT0SEL_PLL2       (8 << 24)   /**< PLL2 clock on MCO pin.     */
-#define GD32_CKOUT0SEL_PLL3DIV2   (9 << 24)   /**< PLL3/2 clock on MCO pin.   */
+#define GD32_CKOUT0SEL_PLL1       (8 << 24)   /**< PLL1 clock on MCO pin.     */
+#define GD32_CKOUT0SEL_PLL2DIV2   (9 << 24)   /**< PLL2/2 clock on MCO pin.   */
 #define GD32_CKOUT0SEL_XT1        (10 << 24)  /**< XT1 clock on MCO pin.      */
-#define GD32_CKOUT0SEL_PLL3       (11 << 24)  /**< PLL3 clock on MCO pin.     */
+#define GD32_CKOUT0SEL_PLL2       (11 << 24)  /**< PLL2 clock on MCO pin.     */
 /** @} */
 
 /**
@@ -195,8 +215,8 @@
  * @name    RCU_CFG02 register bits definitions
  * @{
  */
-#define GD32_PREDIV1SRC_HXTAL    (0 << 16)   /**< PREDIV1 source is HXTAL.     */
-#define GD32_PREDIV1SRC_PLL2   (1 << 16)   /**< PREDIV1 source is PLL2.    */
+#define GD32_PREDV0SEL_HXTAL    (0 << 16)   /**< PREDV0 source is HXTAL.     */
+#define GD32_PREDV0SEL_PLL1   (1 << 16)   /**< PREDV0 source is PLL1.    */
 /** @} */
 
 /*===========================================================================*/
@@ -210,7 +230,7 @@
 /**
  * @brief   Main clock source selection.
  * @note    The default value is calculated for a 72MHz system clock from
- *          a 25MHz crystal using both PLL and PLL2.
+ *          a 8MHz crystal using both PLL and PLL2.
  */
 #if !defined(GD32_SCS) || defined(__DOXYGEN__)
 #define GD32_SCS                    GD32_SCS_PLL
@@ -219,73 +239,73 @@
 /**
  * @brief   Clock source for the PLL.
  * @note    The default value is calculated for a 72MHz system clock from
- *          a 25MHz crystal using both PLL and PLL2.
+ *          a 8MHz crystal using both PLL and PLL2.
  */
 #if !defined(GD32_PLLSEL) || defined(__DOXYGEN__)
-#define GD32_PLLSEL                GD32_PLLSEL_PREDIV1
+#define GD32_PLLSEL                GD32_PLLSEL_PREDV0
 #endif
 
 /**
- * @brief   PREDIV1 clock source.
+ * @brief   PREDV0 clock source.
  * @note    The default value is calculated for a 72MHz system clock from
- *          a 25MHz crystal using both PLL and PLL2.
+ *          a 8MHz crystal using both PLL and PLL2.
  */
-#if !defined(GD32_PREDIV1SRC) || defined(__DOXYGEN__)
-#define GD32_PREDIV1SRC            GD32_PREDIV1SRC_HXTAL
+#if !defined(GD32_PREDV0SEL) || defined(__DOXYGEN__)
+#define GD32_PREDV0SEL            GD32_PREDV0SEL_HXTAL
 #endif
 
 /**
- * @brief   PREDIV1 division factor.
+ * @brief   PREDV0 division factor.
  * @note    The allowed range is 1...16.
  * @note    The default value is calculated for a 72MHz system clock from
- *          a 25MHz crystal using both PLL and PLL2.
+ *          a 8MHz crystal using both PLL and PLL2.
  */
-#if !defined(GD32_PREDIV1_VALUE) || defined(__DOXYGEN__)
-#define GD32_PREDIV1_VALUE         5
+#if !defined(GD32_PREDV0_VALUE) || defined(__DOXYGEN__)
+#define GD32_PREDV0_VALUE         2
 #endif
 
 /**
  * @brief   PLL multiplier value.
- * @note    The allowed range is 4...9.
+ * @note    The allowed range is 4...32.
  * @note    The default value is calculated for a 72MHz system clock from
- *          a 25MHz crystal using both PLL and PLL2.
+ *          a 8MHz crystal using both PLL and PLL2.
  */
 #if !defined(GD32_PLLMF_VALUE) || defined(__DOXYGEN__)
-#define GD32_PLLMF_VALUE          9
+#define GD32_PLLMF_VALUE          18
 #endif
 
 /**
- * @brief   PREDIV2 division factor.
+ * @brief   PREDV1 division factor.
  * @note    The allowed range is 1...16.
  * @note    The default value is calculated for a 72MHz system clock from
- *          a 25MHz crystal using both PLL and PLL2.
+ *          a 8MHz crystal using both PLL and PLL2.
  */
-#if !defined(GD32_PREDIV2_VALUE) || defined(__DOXYGEN__)
-#define GD32_PREDIV2_VALUE         5
+#if !defined(GD32_PREDV1_VALUE) || defined(__DOXYGEN__)
+#define GD32_PREDV1_VALUE         5
+#endif
+
+/**
+ * @brief   PLL1 multiplier value.
+ * @note    The default value is calculated for a 72MHz system clock from
+ *          a 8MHz crystal using both PLL and PLL2.
+ */
+#if !defined(GD32_PLL1MF_VALUE) || defined(__DOXYGEN__)
+#define GD32_PLL1MF_VALUE         8
 #endif
 
 /**
  * @brief   PLL2 multiplier value.
- * @note    The default value is calculated for a 72MHz system clock from
- *          a 25MHz crystal using both PLL and PLL2.
- */
-#if !defined(GD32_PLL2MUL_VALUE) || defined(__DOXYGEN__)
-#define GD32_PLL2MUL_VALUE         8
-#endif
-
-/**
- * @brief   PLL3 multiplier value.
  * @note    The default value is calculated for a 50MHz clock from
- *          a 25MHz crystal.
+ *          a 8MHz crystal.
  */
-#if !defined(GD32_PLL3MUL_VALUE) || defined(__DOXYGEN__)
-#define GD32_PLL3MUL_VALUE         10
+#if !defined(GD32_PLL2MF_VALUE) || defined(__DOXYGEN__)
+#define GD32_PLL2MF_VALUE         10
 #endif
 
 /**
  * @brief   AHB prescaler value.
  * @note    The default value is calculated for a 72MHz system clock from
- *          a 25MHz crystal using both PLL and PLL2.
+ *          a 8MHz crystal using both PLL and PLL2.
  */
 #if !defined(GD32_AHBPSC) || defined(__DOXYGEN__)
 #define GD32_AHBPSC                  GD32_AHBPSC_DIV1
@@ -302,7 +322,7 @@
  * @brief   APB2 prescaler value.
  */
 #if !defined(GD32_APB2PSC) || defined(__DOXYGEN__)
-#define GD32_APB2PSC                 GD32_APB2PSC_DIV2
+#define GD32_APB2PSC                 GD32_APB2PSC_DIV1
 #endif
 
 /**
@@ -320,10 +340,10 @@
 #endif
 
 /**
- * @brief   OTG prescaler initialization.
+ * @brief   USBFS prescaler initialization.
  */
 #if !defined(GD32_USBFSPRE) || defined(__DOXYGEN__)
-#define GD32_USBFSPRE              GD32_USBFSPRE_DIV3
+#define GD32_USBFSPRE              GD32_USBFSPRE_DIV1P5
 #endif
 
 /**
@@ -337,14 +357,14 @@
  * @brief   MCO pin setting.
  */
 #if !defined(GD32_CKOUT0SEL) || defined(__DOXYGEN__)
-#define GD32_CKOUT0SEL                   GD32_CKOUT0SEL_NOCLOCK
+#define GD32_CKOUT0SEL              GD32_CKOUT0SEL_NOCLOCK
 #endif
 
 /**
  * @brief   RTC clock source.
  */
 #if !defined(GD32_RTCSEL) || defined(__DOXYGEN__)
-#define GD32_RTCSEL                   GD32_RTCSEL_HXTALDIV
+#define GD32_RTCSEL                   GD32_RTCSEL_NOCLOCK
 #endif
 /** @} */
 
@@ -398,15 +418,15 @@
 #error "HXTAL not enabled, required by GD32_SCS"
 #endif
 
-#if (GD32_SCS == GD32_SCS_PLL) && (GD32_PLLSEL == GD32_PLLSEL_PREDIV1)
+#if (GD32_SCS == GD32_SCS_PLL) && (GD32_PLLSEL == GD32_PLLSEL_PREDV0)
 #error "HXTAL not enabled, required by GD32_SCS and GD32_PLLSEL"
 #endif
 
 #if (GD32_CKOUT0SEL == GD32_CKOUT0SEL_HXTAL) ||                                   \
     (((GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLLDIV2) ||                             \
+      (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLL1) ||                                \
       (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLL2) ||                                \
-      (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLL3) ||                                \
-      (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLL3DIV2)) &&                           \
+      (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLL2DIV2)) &&                           \
      (GD32_PLLSEL == GD32_PLLSEL_HXTAL)) ||                                 \
     (GD32_CKOUT0SEL == GD32_CKOUT0SEL_XT1)
 #error "HXTAL not enabled, required by GD32_CKOUT0SEL"
@@ -451,11 +471,22 @@
 
 #endif /* !GD32_LXTAL_ENABLED */
 
-/* PLL1 activation conditions.*/
+/* PLL activation conditions.*/
 #if GD32_USBFS_CLOCK_REQUIRED ||                                             \
     (GD32_SCS == GD32_SCS_PLL) ||                                           \
     (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLLDIV2) ||                               \
     defined(__DOXYGEN__)
+/**
+ * @brief   PLL activation flag.
+ */
+#define GD32_ACTIVATE_PLL         TRUE
+#else
+#define GD32_ACTIVATE_PLL         FALSE
+#endif
+
+/* PLL1 activation conditions.*/
+#if ((GD32_PREDV0SEL == GD32_PREDV0SEL_PLL1) && GD32_ACTIVATE_PLL) || \
+    (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLL1) || defined(__DOXYGEN__)
 /**
  * @brief   PLL1 activation flag.
  */
@@ -465,8 +496,10 @@
 #endif
 
 /* PLL2 activation conditions.*/
-#if ((GD32_PREDIV1SRC == GD32_PREDIV1SRC_PLL2) && GD32_ACTIVATE_PLL1) || \
-    (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLL2) || defined(__DOXYGEN__)
+#if GD32_I2S_CLOCK_REQUIRED ||                                             \
+    (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLL2DIV2) ||                              \
+    (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLL2) ||                                  \
+    defined(__DOXYGEN__)
 /**
  * @brief   PLL2 activation flag.
  */
@@ -475,92 +508,113 @@
 #define GD32_ACTIVATE_PLL2         FALSE
 #endif
 
-/* PLL3 activation conditions.*/
-#if GD32_I2S_CLOCK_REQUIRED ||                                             \
-    (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLL3DIV2) ||                              \
-    (GD32_CKOUT0SEL == GD32_CKOUT0SEL_PLL3) ||                                  \
-    defined(__DOXYGEN__)
 /**
- * @brief   PLL3 activation flag.
+ * @brief   PREDV0 field.
  */
-#define GD32_ACTIVATE_PLL3         TRUE
+#if (GD32_PREDV0_VALUE >= 1) && (GD32_PREDV0_VALUE <= 16) ||            \
+    defined(__DOXYGEN__)
+#define GD32_PREDV0               ((GD32_PREDV0_VALUE - 1) << 0)
 #else
-#define GD32_ACTIVATE_PLL3         FALSE
+#error "invalid GD32_PREDV0_VALUE value specified"
 #endif
 
 /**
- * @brief   PREDIV1 field.
+ * @brief   PREDV1 field.
  */
-#if (GD32_PREDIV1_VALUE >= 1) && (GD32_PREDIV1_VALUE <= 16) ||            \
+#if (GD32_PREDV1_VALUE >= 1) && (GD32_PREDV1_VALUE <= 16) ||            \
     defined(__DOXYGEN__)
-#define GD32_PREDIV1               ((GD32_PREDIV1_VALUE - 1) << 0)
+#define GD32_PREDV1               ((GD32_PREDV1_VALUE - 1) << 4)
 #else
-#error "invalid GD32_PREDIV1_VALUE value specified"
-#endif
-
-/**
- * @brief   PREDIV2 field.
- */
-#if (GD32_PREDIV2_VALUE >= 1) && (GD32_PREDIV2_VALUE <= 16) ||            \
-    defined(__DOXYGEN__)
-#define GD32_PREDIV2               ((GD32_PREDIV2_VALUE - 1) << 4)
-#else
-#error "invalid GD32_PREDIV2_VALUE value specified"
+#error "invalid GD32_PREDV1_VALUE value specified"
 #endif
 
 /**
  * @brief   PLLMUL field.
  */
-/*#if ((GD32_PLLMF_VALUE >= 4) && (GD32_PLLMF_VALUE <= 9)) ||             \
+ //TODO
+/*#if GD32_PLLMF_VALUE == 6.5
+    #define GD32_PLLMF 13 << 18*/
+#if ((GD32_PLLMF_VALUE >= 2) && (GD32_PLLMF_VALUE <= 16)) ||            \
     defined(__DOXYGEN__)
-#define GD32_PLLMF                ((GD32_PLLMF_VALUE - 2) << 18)
+    #define GD32_PLLMF                ((GD32_PLLMF_VALUE - 2) << 18)
+#elif ((GD32_PLLMF_VALUE >= 17) && (GD32_PLLMF_VALUE <= 32))
+    #define GD32_PLLMF                ((1 << 29) | ((GD32_PLLMF_VALUE - 17) << 18))
 #else
 #error "invalid GD32_PLLMF_VALUE value specified"
-#endif*/
-
-/**
- * @brief   PLL2MUL field.
- */
-#if ((GD32_PLL2MUL_VALUE >= 8) && (GD32_PLL2MUL_VALUE <= 14)) ||          \
-    defined(__DOXYGEN__)
-#define GD32_PLL2MUL               ((GD32_PLL2MUL_VALUE - 2) << 8)
-#elif (GD32_PLL2MUL_VALUE == 16)
-#define GD32_PLL2MUL               (14 << 8)
-#elif (GD32_PLL2MUL_VALUE == 20)
-#define GD32_PLL2MUL               (15 << 8)
-#else
-#error "invalid GD32_PLL2MUL_VALUE value specified"
 #endif
 
 /**
- * @brief   PLL3MUL field.
+ * @brief   PLL1MF field.
  */
-#if ((GD32_PLL3MUL_VALUE >= 8) && (GD32_PLL3MUL_VALUE <= 14)) ||          \
+#if ((GD32_PLL1MF_VALUE >= 8) && (GD32_PLL1MF_VALUE <= 14)) ||          \
     defined(__DOXYGEN__)
-#define GD32_PLL3MUL               ((GD32_PLL3MUL_VALUE - 2) << 12)
-#elif (GD32_PLL3MUL_VALUE == 16)
-#define GD32_PLL3MUL               (14 << 12)
-#elif (GD32_PLL3MUL_VALUE == 20)
-#define GD32_PLL3MUL               (15 << 12)
+#define GD32_PLL1MF               ((GD32_PLL1MF_VALUE - 2) << 8)
+#elif (GD32_PLL1MF_VALUE == 16)
+#define GD32_PLL1MF               (14 << 8)
+#elif (GD32_PLL1MF_VALUE == 20)
+#define GD32_PLL1MF               (15 << 8)
 #else
-#error "invalid GD32_PLL3MUL_VALUE value specified"
+#error "invalid GD32_PLL1MF_VALUE value specified"
 #endif
+
+/**
+ * @brief   PLL2MF field.
+ */
+#if ((GD32_PLL2MF_VALUE >= 8) && (GD32_PLL2MF_VALUE <= 14)) ||          \
+    defined(__DOXYGEN__)
+#define GD32_PLL2MF               ((GD32_PLL2MF_VALUE - 2) << 12)
+#elif (GD32_PLL2MF_VALUE == 16)
+#define GD32_PLL2MF               (14 << 12)
+#elif (GD32_PLL2MF_VALUE == 20)
+#define GD32_PLL2MF               (15 << 12)
+#else
+#error "invalid GD32_PLL2MF_VALUE value specified"
+#endif
+
+/**
+ * @brief   PLL1 input frequency.
+ */
+#define GD32_PLL1CLKIN             (GD32_HXTALCLK / GD32_PREDV1_VALUE)
+
+/* PLL1 input frequency range check.*/
+#if (GD32_PLL1CLKIN < GD32_PLL12IN_MIN) ||                                \
+    (GD32_PLL1CLKIN > GD32_PLL12IN_MAX)
+#error "GD32_PLL1CLKIN outside acceptable range (GD32_PLL12IN_MIN...GD32_PLL12IN_MAX)"
+#endif
+
+
+/**
+ * @brief   PLL2 output clock frequency.
+ */
+#define GD32_PLL1CLKOUT            (GD32_PLL1CLKIN * GD32_PLL1MF_VALUE)
+
+/**
+ * @brief   PLL2 VCO clock frequency.
+ */
+#define GD32_PLL1VCO               (GD32_PLL1CLKOUT * 2)
+
+/* PLL2 output frequency range check.*/
+#if (GD32_PLL1VCO < GD32_PLL12VCO_MIN) ||                                 \
+    (GD32_PLL1VCO > GD32_PLL12VCO_MAX)
+#error "GD32_PLL1VCO outside acceptable range (GD32_PLL12VCO_MIN...GD32_PLL12VCO_MAX)"
+#endif
+
 
 /**
  * @brief   PLL2 input frequency.
  */
-#define GD32_PLL2CLKIN             (GD32_HXTALCLK / GD32_PREDIV2_VALUE)
+#define GD32_PLL2CLKIN             (GD32_HXTALCLK / GD32_PREDV1_VALUE)
 
 /* PLL2 input frequency range check.*/
-#if (GD32_PLL2CLKIN < GD32_PLL23IN_MIN) ||                                \
-    (GD32_PLL2CLKIN > GD32_PLL23IN_MAX)
-#error "GD32_PLL2CLKIN outside acceptable range (GD32_PLL23IN_MIN...GD32_PLL23IN_MAX)"
+#if (GD32_PLL2CLKIN < GD32_PLL12IN_MIN) ||                                \
+    (GD32_PLL2CLKIN > GD32_PLL12IN_MAX)
+#error "GD32_PLL2CLKIN outside acceptable range (GD32_PLL12IN_MIN...GD32_PLL12IN_MAX)"
 #endif
 
 /**
  * @brief   PLL2 output clock frequency.
  */
-#define GD32_PLL2CLKOUT            (GD32_PLL2CLKIN * GD32_PLL2MUL_VALUE)
+#define GD32_PLL2CLKOUT            (GD32_PLL2CLKIN * GD32_PLL2MF_VALUE)
 
 /**
  * @brief   PLL2 VCO clock frequency.
@@ -568,63 +622,37 @@
 #define GD32_PLL2VCO               (GD32_PLL2CLKOUT * 2)
 
 /* PLL2 output frequency range check.*/
-#if (GD32_PLL2VCO < GD32_PLL23VCO_MIN) ||                                 \
-    (GD32_PLL2VCO > GD32_PLL23VCO_MAX)
-#error "GD32_PLL2VCO outside acceptable range (GD32_PLL23VCO_MIN...GD32_PLL23VCO_MAX)"
+#if (GD32_PLL2VCO < GD32_PLL12VCO_MIN) ||                                 \
+    (GD32_PLL2VCO > GD32_PLL12VCO_MAX)
+#error "GD32_PLL2CLKOUT outside acceptable range (GD32_PLL12VCO_MIN...GD32_PLL12VCO_MAX)"
 #endif
 
 /**
- * @brief   PLL3 input frequency.
+ * @brief   PREDV0 input frequency.
  */
-#define GD32_PLL3CLKIN             (GD32_HXTALCLK / GD32_PREDIV2_VALUE)
-
-/* PLL3 input frequency range check.*/
-#if (GD32_PLL3CLKIN < GD32_PLL23IN_MIN) ||                                \
-    (GD32_PLL3CLKIN > GD32_PLL23IN_MAX)
-#error "GD32_PLL3CLKIN outside acceptable range (GD32_PLL23IN_MIN...GD32_PLL23IN_MAX)"
-#endif
-
-/**
- * @brief   PLL3 output clock frequency.
- */
-#define GD32_PLL3CLKOUT            (GD32_PLL3CLKIN * GD32_PLL3MUL_VALUE)
-
-/**
- * @brief   PLL3 VCO clock frequency.
- */
-#define GD32_PLL3VCO               (GD32_PLL3CLKOUT * 2)
-
-/* PLL3 output frequency range check.*/
-#if (GD32_PLL3VCO < GD32_PLL23VCO_MIN) ||                                 \
-    (GD32_PLL3VCO > GD32_PLL23VCO_MAX)
-#error "GD32_PLL3CLKOUT outside acceptable range (GD32_PLL23VCO_MIN...GD32_PLL23VCO_MAX)"
-#endif
-
-/**
- * @brief   PREDIV1 input frequency.
- */
-#if (GD32_PREDIV1SRC == GD32_PREDIV1SRC_HXTAL) || defined(__DOXYGEN__)
-#define GD32_PREDIV1CLK            GD32_HXTALCLK
-#elif GD32_PREDIV1SRC == GD32_PREDIV1SRC_PLL2
-#define GD32_PREDIV1CLK            GD32_PLL2CLKOUT
+#if (GD32_PREDV0SEL == GD32_PREDV0SEL_HXTAL) || defined(__DOXYGEN__)
+#define GD32_PREDV0CLK            GD32_HXTALCLK
+#elif GD32_PREDV0SEL == GD32_PREDV0SEL_PLL1
+#define GD32_PREDV0CLK            GD32_PLL1CLKOUT
 #else
-#error "invalid GD32_PREDIV1SRC value specified"
+#error "invalid GD32_PREDV0SEL value specified"
 #endif
 
 /**
  * @brief   PLL input clock frequency.
  */
-#if (GD32_PLLSEL == GD32_PLLSEL_PREDIV1) || defined(__DOXYGEN__)
-#define GD32_PLLCLKIN              (GD32_PREDIV1CLK / GD32_PREDIV1_VALUE)
+#if (GD32_PLLSEL == GD32_PLLSEL_PREDV0) || defined(__DOXYGEN__)
+#define GD32_PLLCLKIN              (GD32_PREDV0CLK / GD32_PREDV0_VALUE)
 #elif GD32_PLLSEL == GD32_PLLSEL_IRC8M
 #define GD32_PLLCLKIN              (GD32_IRC8MCLK / 2)
 #else
 #error "invalid GD32_PLLSEL value specified"
 #endif
 
+
 /* PLL input frequency range check.*/
-#if (GD32_PLLCLKIN < GD32_PLL1IN_MIN) || (GD32_PLLCLKIN > GD32_PLL1IN_MAX)
-#error "GD32_PLLCLKIN outside acceptable range (GD32_PLL1IN_MIN...GD32_PLL1IN_MAX)"
+#if (GD32_PLLCLKIN < GD32_PLLIN_MIN) || (GD32_PLLCLKIN > GD32_PLLIN_MAX)
+#error "GD32_PLLCLKIN outside acceptable range (GD32_PLLIN_MIN...GD32_PLLIN_MAX)"
 #endif
 
 /**
@@ -632,14 +660,10 @@
  */
 #define GD32_PLLCLKOUT             (GD32_PLLCLKIN * GD32_PLLMF_VALUE)
 
-/**
- * @brief   PLL VCO clock frequency.
- */
-#define GD32_PLLVCO                (GD32_PLLCLKOUT * 2)
 
 /* PLL output frequency range check.*/
-#if (GD32_PLLVCO < GD32_PLL1VCO_MIN) || (GD32_PLLVCO > GD32_PLL1VCO_MAX)
-#error "GD32_PLLVCO outside acceptable range (GD32_PLL1VCO_MIN...GD32_PLL1VCO_MAX)"
+#if (GD32_PLLCLKOUT < GD32_PLLOUT_MIN) || (GD32_PLLCLKOUT > GD32_PLLOUT_MAX)
+#error "GD32_PLLCLKOUT outside acceptable range (GD32_PLLOUT_MIN...GD32_PLLOUT_MAX)"
 #endif
 
 /**
@@ -760,6 +784,10 @@
 #define GD32_ADCCLK                (GD32_PCLK2 / 6)
 #elif GD32_ADCPSC == GD32_ADCPSC_DIV8
 #define GD32_ADCCLK                (GD32_PCLK2 / 8)
+#elif GD32_ADCPSC == GD32_ADCPSC_DIV12
+#define GD32_ADCCLK                (GD32_PCLK2 / 12)
+#elif GD32_ADCPSC == GD32_ADCPSC_DIV16
+#define GD32_ADCCLK                (GD32_PCLK2 / 16)
 #else
 #error "invalid GD32_ADCPSC value specified"
 #endif
@@ -770,14 +798,18 @@
 #endif
 
 /**
- * @brief   OTG frequency.
+ * @brief   USB frequency.
  */
-#if (GD32_USBFSPRE == GD32_USBFSPRE_DIV3) || defined(__DOXYGEN__)
-#define GD32_USBFSCLK              (GD32_PLLVCO / 3)
-#elif (GD32_USBFSPRE == GD32_USBFSPRE_DIV2)
-#define GD32_USBFSCLK              (GD32_PLLVCO / 2)
+#if (GD32_USBFSPSC == GD32_USBFSPSC_DIV1P5) || defined(__DOXYGEN__)
+#define GD32_USBFSCLK                ((GD32_PLLCLKOUT * 2) / 3)
+#elif (GD32_USBFSPSC == GD32_USBFSPSC_DIV1)
+#define GD32_USBFSCLK                GD32_PLLCLKOUT
+#elif (GD32_USBFSPSC == GD32_USBFSPSC_DIV2)
+#define GD32_USBFSCLK                GD32_PLLCLKOUT / 2
+#elif (GD32_USBFSPSC == GD32_USBFSPSC_DIV2P5)
+#define GD32_USBFSCLK                ((GD32_PLLCLKOUT * 2) / 5)
 #else
-#error "invalid GD32_USBFSPRE value specified"
+#error "invalid GD32_USBFSPSC value specified"
 #endif
 
 /**
@@ -790,7 +822,7 @@
 #endif
 
 /**
- * @brief   Timers 1, 8 clock.
+ * @brief   Timers 1 clock.
  */
 #if (GD32_APB2PSC == GD32_APB2PSC_DIV1) || defined(__DOXYGEN__)
 #define GD32_TIMCLK2               (GD32_PCLK2 * 1)
