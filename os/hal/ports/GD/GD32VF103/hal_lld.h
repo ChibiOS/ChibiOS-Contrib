@@ -155,8 +155,7 @@
 #include "gd32_registry.h"
 #include "stm32f105xc.h"
 
-//#include "hal_lld_f103.h"
-#include "hal_lld_f105_f107.h"
+#include "hal_lld_gd32vf103.h"
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
