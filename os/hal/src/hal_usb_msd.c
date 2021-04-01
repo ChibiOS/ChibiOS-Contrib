@@ -38,8 +38,6 @@
 #define MSD_CBW_SIGNATURE               0x43425355
 #define MSD_CSW_SIGNATURE               0x53425355
 
-#define MSD_THD_PRIO                    NORMALPRIO
-
 #define CBW_FLAGS_RESERVED_MASK         0b01111111
 #define CBW_LUN_RESERVED_MASK           0b11110000
 #define CBW_CMD_LEN_RESERVED_MASK       0b11000000
@@ -284,7 +282,8 @@ bool msd_request_hook(USBDriver *usbp) {
   } else if (usbp->setup[0] == (USB_RTYPE_TYPE_CLASS | USB_RTYPE_RECIPIENT_INTERFACE | USB_RTYPE_DIR_DEV2HOST)
     && usbp->setup[1] == MSD_REQ_GET_MAX_LUN) {
     /* Return the maximum supported LUN. */
-    usbSetupTransfer(usbp, 0, 1, NULL);
+    static uint8_t zero = 0;
+    usbSetupTransfer(usbp, &zero, 1, NULL);
     return true;
     /* OR */
     /* Return false to stall to indicate that we don't support LUN */

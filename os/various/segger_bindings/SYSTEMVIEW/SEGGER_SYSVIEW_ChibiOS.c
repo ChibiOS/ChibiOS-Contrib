@@ -102,7 +102,7 @@ void SYSVIEW_ChibiOS_SendTaskInfo(const void *_tp) {
   memset(&TaskInfo, 0, sizeof(TaskInfo));
   TaskInfo.TaskID     = (U32)tp;
   TaskInfo.sName      = tp->name;
-  TaskInfo.Prio       = (U32)tp->prio;
+  TaskInfo.Prio       = (U32)tp->hdr.pqueue.prio;
 #if (CH_DBG_ENABLE_STACK_CHECK == TRUE) || (CH_CFG_USE_DYNAMIC == TRUE)
   TaskInfo.StackBase  = (U32)tp->wabase;
   TaskInfo.StackSize  = (U32)tp->ctx.sp - (U32)tp->wabase;

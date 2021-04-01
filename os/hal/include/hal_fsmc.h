@@ -38,6 +38,8 @@
  */
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
+     defined(STM32F722xx) || defined(STM32F723xx) || \
+     defined(STM32F732xx) || defined(STM32F733xx) || \
      defined(STM32F745xx) || defined(STM32F746xx) || \
      defined(STM32F756xx) || defined(STM32F767xx) || \
      defined(STM32F769xx) || defined(STM32F777xx) || \
@@ -321,7 +323,7 @@ struct FSMCDriver {
   #if STM32_NAND_USE_NAND1
   FSMC_NAND_TypeDef         *nand1;
   #endif
-  #if STM32_NAND_USE_NAND1
+  #if STM32_NAND_USE_NAND2
   FSMC_NAND_TypeDef         *nand2;
   #endif
 #endif

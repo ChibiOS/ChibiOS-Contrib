@@ -63,6 +63,9 @@
 #define FSMCNAND_TIME_HOLD        ((uint32_t) 1) //(5nS)
 #define FSMCNAND_TIME_HIZ         ((uint32_t) 4) //(20nS)
 
+#define NAND_DIES_COUNT           1
+#define NAND_LOGUNS_COUNT         1
+#define NAND_PLANES_COUNT         1
 #define NAND_BLOCKS_COUNT         8192
 #define NAND_PAGE_DATA_SIZE       2048
 #define NAND_PAGE_SPARE_SIZE      64
@@ -134,15 +137,17 @@ static bitmap_t badblock_map = {
  *
  */
 static const NANDConfig nandcfg = {
-    NAND_BLOCKS_COUNT,
-    NAND_PAGE_DATA_SIZE,
-    NAND_PAGE_SPARE_SIZE,
-    NAND_PAGES_PER_BLOCK,
-    NAND_ROW_WRITE_CYCLES,
-    NAND_COL_WRITE_CYCLES,
-    /* stm32 specific fields */
-    ((FSMCNAND_TIME_HIZ << 24) | (FSMCNAND_TIME_HOLD << 16) | \
-                                 (FSMCNAND_TIME_WAIT << 8) | FSMCNAND_TIME_SET)
+  .dies = NAND_DIES_COUNT,
+  .loguns = NAND_LOGUNS_COUNT,
+  .planes = NAND_PLANES_COUNT,
+  .blocks = NAND_BLOCKS_COUNT,
+  .page_data_size = NAND_PAGE_DATA_SIZE,
+  .page_spare_size = NAND_PAGE_SPARE_SIZE,
+  .pages_per_block = NAND_PAGES_PER_BLOCK,
+  .rowcycles = NAND_ROW_WRITE_CYCLES,
+  .colcycles = NAND_COL_WRITE_CYCLES,
+  .pmem = ((FSMCNAND_TIME_HIZ << 24) | (FSMCNAND_TIME_HOLD << 16) | \
+          (FSMCNAND_TIME_WAIT << 8) | FSMCNAND_TIME_SET)
 };
 
 static volatile uint32_t BackgroundThdCnt = 0;
@@ -186,8 +191,8 @@ static bool is_erased(NANDDriver *dp, size_t block){
   size_t i = 0;
 
   for (page=0; page<NAND.config->pages_per_block; page++){
-    nandReadPageData(dp, block, page, nand_buf, NAND.config->page_data_size, NULL);
-    nandReadPageSpare(dp, block, page, &nand_buf[2048], NAND.config->page_spare_size);
+    nandReadPageData(dp, 0, 0, 0, block, page, nand_buf, NAND.config->page_data_size, NULL);
+    nandReadPageSpare(dp, 0, 0, 0, block, page, &nand_buf[2048], NAND.config->page_spare_size);
     for (i=0; i<sizeof(nand_buf); i++) {
       if (nand_buf[i] != 0xFF)
         return false;
@@ -230,7 +235,7 @@ static void kill_block(NANDDriver *nandp, uint32_t block){
   uint8_t op_status;
 
   /* This test requires good block.*/
-  osalDbgCheck(!nandIsBad(nandp, block));
+  osalDbgCheck(!nandIsBad(nandp, 0, 0, 0, block));
 
   while(true){
     op_status = nandErase(&NAND, block);
@@ -243,16 +248,16 @@ static void kill_block(NANDDriver *nandp, uint32_t block){
 
     for (page=0; page<nandp->config->pages_per_block; page++){
       memset(nand_buf, 0, NAND_PAGE_SIZE);
-      op_status = nandWritePageWhole(nandp, block, page, nand_buf, NAND_PAGE_SIZE);
+      op_status = nandWritePageWhole(nandp, 0, 0, 0, block, page, nand_buf, NAND_PAGE_SIZE);
       if (0 != (op_status & 1)){
-        nandReadPageWhole(nandp, block, page, nand_buf, NAND_PAGE_SIZE);
+        nandReadPageWhole(nandp, 0, 0, 0, block, page, nand_buf, NAND_PAGE_SIZE);
         for (i=0; i<NAND_PAGE_SIZE; i++){
           if (nand_buf[i] != 0)
             osalSysHalt("Block successfully killed");
         }
       }
 
-      nandReadPageWhole(nandp, block, page, nand_buf, NAND_PAGE_SIZE);
+      nandReadPageWhole(nandp, 0, 0, 0, block, page, nand_buf, NAND_PAGE_SIZE);
       for (i=0; i<NAND_PAGE_SIZE; i++){
         if (nand_buf[i] != 0)
           osalSysHalt("Page write failed, but write operation report success");
@@ -333,17 +338,17 @@ static void ecc_test(NANDDriver *nandp, uint32_t block){
   ecc_result_t ecc_result = ECC_NO_ERROR;
 
   /* This test requires good block.*/
-  osalDbgCheck(!nandIsBad(nandp, block));
+  osalDbgCheck(!nandIsBad(nandp, 0, 0, 0, block, 0));
   if (!is_erased(nandp, block))
-    nandErase(&NAND, block);
+    nandErase(&NAND, 0, 0, 0, block);
 
   pattern_fill();
 
   /*** Correctable errors ***/
-  op_status = nandWritePageData(nandp, block, 0,
+  op_status = nandWritePageData(nandp, 0, 0, 0, block, 0,
                 nand_buf, nandp->config->page_data_size, &ecc_ref);
   osalDbgCheck(0 == (op_status & 1)); /* operation failed */
-  nandReadPageData(nandp, block, 0,
+  nandReadPageData(nandp, 0, 0, 0, block, 0,
                   nand_buf, nandp->config->page_data_size, &ecc_broken);
   ecc_result = parse_ecc(ecclen, ecc_ref, ecc_broken, &corrupted);
   osalDbgCheck(ECC_NO_ERROR == ecc_result); /* unexpected error */
@@ -352,7 +357,7 @@ static void ecc_test(NANDDriver *nandp, uint32_t block){
   byte = 0;
   bit = 7;
   invert_bit(nand_buf, byte, bit);
-  op_status = nandWritePageData(nandp, block, 1,
+  op_status = nandWritePageData(nandp, 0, 0, 0, block, 1,
                 nand_buf, nandp->config->page_data_size, &ecc_broken);
   osalDbgCheck(0 == (op_status & 1)); /* operation failed */
   invert_bit(nand_buf, byte, bit);
@@ -364,7 +369,7 @@ static void ecc_test(NANDDriver *nandp, uint32_t block){
   byte = 2047;
   bit = 0;
   invert_bit(nand_buf, byte, bit);
-  op_status = nandWritePageData(nandp, block, 2,
+  op_status = nandWritePageData(nandp, 0, 0, 0, block, 2,
                 nand_buf, nandp->config->page_data_size, &ecc_broken);
   osalDbgCheck(0 == (op_status & 1)); /* operation failed */
   invert_bit(nand_buf, byte, bit);
@@ -376,7 +381,7 @@ static void ecc_test(NANDDriver *nandp, uint32_t block){
   byte = 1027;
   bit = 3;
   invert_bit(nand_buf, byte, bit);
-  op_status = nandWritePageData(nandp, block, 3,
+  op_status = nandWritePageData(nandp, 0, 0, 0, block, 3,
                 nand_buf, nandp->config->page_data_size, &ecc_broken);
   osalDbgCheck(0 == (op_status & 1)); /* operation failed */
   invert_bit(nand_buf, byte, bit);
@@ -388,7 +393,7 @@ static void ecc_test(NANDDriver *nandp, uint32_t block){
   byte = 1027;
   invert_bit(nand_buf, byte, 3);
   invert_bit(nand_buf, byte, 4);
-  op_status = nandWritePageData(nandp, block, 4,
+  op_status = nandWritePageData(nandp, 0, 0, 0, block, 4,
                 nand_buf, nandp->config->page_data_size, &ecc_broken);
   osalDbgCheck(0 == (op_status & 1)); /* operation failed */
   invert_bit(nand_buf, byte, 3);
@@ -397,7 +402,7 @@ static void ecc_test(NANDDriver *nandp, uint32_t block){
   osalDbgCheck(ECC_UNCORRECTABLE_ERROR == ecc_result); /* This error must be NOT correctable */
 
   /*** make clean ***/
-  nandErase(&NAND, block);
+  nandErase(&NAND, 0, 0, 0, block);
 }
 
 /*
@@ -421,9 +426,9 @@ static void general_test (NANDDriver *nandp, size_t first,
   /* perform basic checks */
   for (block=first; block<last; block++){
     red_led_toggle();
-    if (!nandIsBad(nandp, block)){
+    if (!nandIsBad(nandp, 0, 0, 0, block, 0)){
       if (!is_erased(nandp, block)){
-        op_status = nandErase(nandp, block);
+        op_status = nandErase(nandp, 0, 0, 0, block);
         osalDbgCheck(0 == (op_status & 1)); /* operation failed */
       }
     }
@@ -431,18 +436,18 @@ static void general_test (NANDDriver *nandp, size_t first,
 
   /* check fail status */
   for (block=first; block<last; block++){
-    if (!nandIsBad(nandp, block)){
+    if (!nandIsBad(nandp, 0, 0, 0, block, 0)){
       if (!is_erased(nandp, block)){
-        op_status = nandErase(nandp, block);
+        op_status = nandErase(nandp, 0, 0, 0, block);
         osalDbgCheck(0 == (op_status & 1)); /* operation failed */
       }
       pattern_fill();
-      op_status = nandWritePageData(nandp, block, 0,
+      op_status = nandWritePageData(nandp, 0, 0, 0, block, 0,
                     nand_buf, nandp->config->page_data_size, &wecc);
       osalDbgCheck(0 == (op_status & 1));
 
       pattern_fill();
-      op_status = nandWritePageData(nandp, block, 0,
+      op_status = nandWritePageData(nandp, 0, 0, 0, block, 0,
                     nand_buf, nandp->config->page_data_size, &wecc);
       /* operation must failed here because of write in unerased space */
       osalDbgCheck(1 == (op_status & 1));
@@ -452,18 +457,18 @@ static void general_test (NANDDriver *nandp, size_t first,
   /* write block with pattern, read it back and compare */
   for (block=first; block<last; block++){
     red_led_toggle();
-    if (!nandIsBad(nandp, block)){
+    if (!nandIsBad(nandp, 0, 0, 0, block, 0)){
       for (page=0; page<nandp->config->pages_per_block; page++){
         pattern_fill();
 
         chTMStartMeasurementX(&tmu_write_data);
-        op_status = nandWritePageData(nandp, block, page,
+        op_status = nandWritePageData(nandp, 0, 0, 0, block, page,
                       nand_buf, nandp->config->page_data_size, &wecc);
         chTMStopMeasurementX(&tmu_write_data);
         osalDbgCheck(0 == (op_status & 1)); /* operation failed */
 
         chTMStartMeasurementX(&tmu_write_spare);
-        op_status = nandWritePageSpare(nandp, block, page,
+        op_status = nandWritePageSpare(nandp, 0, 0, 0, block, page,
                       nand_buf + nandp->config->page_data_size,
                       nandp->config->page_spare_size);
         chTMStopMeasurementX(&tmu_write_spare);
@@ -474,13 +479,13 @@ static void general_test (NANDDriver *nandp, size_t first,
           memset(nand_buf, 0, NAND_PAGE_SIZE);
 
           chTMStartMeasurementX(&tmu_read_data);
-          nandReadPageData(nandp, block, page,
+          nandReadPageData(nandp, 0, 0, 0, block, page,
                       nand_buf, nandp->config->page_data_size, &recc);
           chTMStopMeasurementX(&tmu_read_data);
           osalDbgCheck(0 == (recc ^ wecc)); /* ECC error detected */
 
           chTMStartMeasurementX(&tmu_read_spare);
-          nandReadPageSpare(nandp, block, page,
+          nandReadPageSpare(nandp, 0, 0, 0, block, page,
                       nand_buf + nandp->config->page_data_size,
                       nandp->config->page_spare_size);
           chTMStopMeasurementX(&tmu_read_spare);
@@ -491,13 +496,13 @@ static void general_test (NANDDriver *nandp, size_t first,
 
       /* make clean */
       chTMStartMeasurementX(&tmu_erase);
-      op_status = nandErase(nandp, block);
+      op_status = nandErase(nandp, 0, 0, 0, block);
       chTMStopMeasurementX(&tmu_erase);
       osalDbgCheck(0 == (op_status & 1)); /* operation failed */
 
       status = is_erased(nandp, block);
       osalDbgCheck(true == status); /* blocks was not erased successfully */
-    }/* if (!nandIsBad(nandp, block)){ */
+    }/* if (!nandIsBad(nandp, 0, 0, 0, block)){ */
   }
   red_led_off();
 }

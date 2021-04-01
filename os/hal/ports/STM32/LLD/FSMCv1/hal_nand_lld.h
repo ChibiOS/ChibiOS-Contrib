@@ -140,6 +140,18 @@ typedef void (*nandisrhandler_t)(NANDDriver *nandp);
  */
 typedef struct {
   /**
+   * @brief   Number of dies in NAND device.
+   */
+  uint32_t                  dies;
+  /**
+   * @brief   Number of logical units in NAND device.
+   */
+  uint32_t                  loguns;
+  /**
+   * @brief   Number of planes in NAND device.
+   */
+  uint32_t                  planes;
+  /**
    * @brief   Number of erase blocks in NAND device.
    */
   uint32_t                  blocks;
@@ -232,15 +244,15 @@ struct NANDDriver {
   /**
    * @brief     Memory mapping for data.
    */
-  uint16_t                  *map_data;
+  uint8_t                  *map_data;
   /**
    * @brief     Memory mapping for commands.
    */
-  uint16_t                  *map_cmd;
+  uint8_t                  *map_cmd;
   /**
    * @brief     Memory mapping for addresses.
    */
-  uint16_t                  *map_addr;
+  uint8_t                  *map_addr;
   /**
    * @brief   Pointer to bad block map.
    * @details One bit per block. All memory allocation is user's responsibility.
@@ -279,6 +291,7 @@ extern "C" {
                 size_t datalen, uint8_t *addr, size_t addrlen, uint32_t *ecc);
   uint8_t nand_lld_read_status(NANDDriver *nandp);
   void nand_lld_reset(NANDDriver *nandp);
+  uint32_t nand_lld_read_id(NANDDriver *nandp);
 #ifdef __cplusplus
 }
 #endif
