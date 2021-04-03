@@ -2,15 +2,14 @@
 # Build global options
 # NOTE: Can be overridden externally.
 #
-
 # Compiler options here.
 ifeq ($(USE_OPT),)
-  USE_OPT = -ggdb -g3 -gdwarf-3 -gstrict-dwarf -fomit-frame-pointer -falign-functions=16
+  USE_OPT = -Og -ggdb3 -g3 -gdwarf-3 -gstrict-dwarf -fomit-frame-pointer -falign-functions=16 -pedantic
 endif
 
 # C specific options here (added to USE_OPT).
 ifeq ($(USE_COPT),)
-  USE_COPT = 
+  USE_COPT =
 endif
 
 # C++ specific options here (added to USE_OPT).
@@ -25,7 +24,7 @@ endif
 
 # Linker extra options here.
 ifeq ($(USE_LDOPT),)
-  USE_LDOPT = 
+  USE_LDOPT =
 endif
 
 # Enable this if you want link time optimizations (LTO).
@@ -89,7 +88,7 @@ PROJECT = ch
 MCU  = cortex-m0
 
 # Imported source files and paths.
-BASE_PATH       := ../../../../../../..
+BASE_PATH       := $(shell pwd)/../../../../../../..
 CHIBIOS         := $(BASE_PATH)/ChibiOS/ChibiOS
 CHIBIOS_CONTRIB := $(BASE_PATH)/ChibiOS/ChibiOS-Contrib
 CONFDIR         := ./cfg
@@ -101,19 +100,24 @@ include $(CHIBIOS)/os/license/license.mk
 # Startup files.
 include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_NUC123.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/os/hal/hal.mk
+#include $(CHIBIOS)/os/hal/hal.mk
+include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/NUMICRO/NUC123/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/NUTINY-SDK-NUC123-V2.0/board.mk
-include $(CHIBIOS)/os/hal/osal/os-less/ARMCMx/osal.mk
+include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
-#include $(CHIBIOS)/os/rt/rt.mk
-#include $(CHIBIOS)/os/common/ports/ARMv7-M/compilers/GCC/mk/port.mk
+include $(CHIBIOS)/os/rt/rt.mk
+include $(CHIBIOS)/test/rt/rt_test.mk
+include $(CHIBIOS)/test/lib/test.mk
+include $(CHIBIOS)/test/oslib/oslib_test.mk
+#include $(CHIBIOS)/os/common/ports/ARMv6-M/compilers/GCC/mk/port.mk
+include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v6m.mk
 # Auto-build files in ./source recursively.
 include $(CHIBIOS)/tools/mk/autobuild.mk
 # Other files (optional).
-#include $(CHIBIOS)/test/lib/test.mk
-#include $(CHIBIOS)/test/rt/rt_test.mk
-#include $(CHIBIOS)/test/oslib/oslib_test.mk
+include $(CHIBIOS)/os/hal/lib/streams/streams.mk
+include $(CHIBIOS)/os/various/shell/shell.mk
+include $(CHIBIOS)/os/hal/lib/complex/mfs/hal_mfs.mk
 
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD_CONTRIB)/NUC123xD4xx0.ld
@@ -122,6 +126,7 @@ LDSCRIPT= $(STARTUPLD_CONTRIB)/NUC123xD4xx0.ld
 # setting.
 CSRC = $(ALLCSRC) \
        $(TESTSRC) \
+       shcfg.c    \
        main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
@@ -152,7 +157,7 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS =
+UDEFS = -DSHELL_CONFIG_FILE
 
 # Define ASM defines here
 UADEFS =
@@ -186,17 +191,12 @@ include $(RULESPATH)/rules.mk
 # Custom rules
 #
 
-OPENOCD:=$(shell readlink -f `which openocd`)
+READLINK:=greadlink
+OPENOCD:=$(shell $(READLINK) -f `which openocd`)
 OPENOCDPATH:=$(shell dirname $(OPENOCD))/../share/openocd
 
-install-openocd-config:
-	rm $(OPENOCDPATH)/scripts/target/numicroM0.cfg && cp $(CHIBIOS_CONTRIB)/ext/numicroM0.cfg $(OPENOCDPATH)/scripts/target/
-
-connect:
-	openocd -f ../scripts/interface/nulink.cfg -f ../scripts/target/numicroM0.cfg
-
 flash: $(BUILDDIR)/$(PROJECT).elf
-	openocd -f ../scripts/interface/nulink.cfg -f ../scripts/target/numicroM0.cfg -c "program $< reset exit"
+	openocd -f ../scripts/interface/nulink.cfg -f ../scripts/target/numicro.cfg -c "program $< reset exit"
 
 #
 # Custom rules
