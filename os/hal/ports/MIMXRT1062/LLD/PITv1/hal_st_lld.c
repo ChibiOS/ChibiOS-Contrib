@@ -24,6 +24,8 @@
 
 #include "hal.h"
 
+#include "clock_config.h"
+
 #if (OSAL_ST_MODE != OSAL_ST_MODE_NONE) || defined(__DOXYGEN__)
 
 /*===========================================================================*/
@@ -73,16 +75,6 @@ OSAL_IRQ_HANDLER(SysTick_Handler) {
 /* Driver exported functions.                                                */
 /*===========================================================================*/
 
-// ARM SysTick is used for most Ardiuno timing functions, delay(), millis(),
-// micros().  SysTick can run from either the ARM core clock, or from an
-// "external" clock.  NXP documents it as "24 MHz XTALOSC can be the external
-// clock source of SYSTICK" (RT1052 ref manual, rev 1, page 411).  However,
-// NXP actually hid an undocumented divide-by-240 circuit in the hardware, so
-// the external clock is really 100 kHz.  We use this clock rather than the
-// ARM clock, to allow SysTick to maintain correct timing even when we change
-// the ARM clock to run at different speeds.
-#define SYSTICK_EXT_FREQ 100000
-
 /**
  * @brief   Low level ST driver initialization.
  *
@@ -90,11 +82,22 @@ OSAL_IRQ_HANDLER(SysTick_Handler) {
  */
 void st_lld_init(void) {
 #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
-  /* Periodic systick mode, the Cortex-Mx internal systick timer is used
-     in this mode.*/
-  SysTick->LOAD = (SYSTICK_EXT_FREQ / OSAL_ST_FREQUENCY) - 1;
+
+  /* Periodic systick mode, the Cortex-M7 internal systick timer is used in this
+     mode.
+
+     Contrary to the Teensy 4 Arduino startup code, we use the internal 600 MHz
+     ARM clock instead of the external 100 kHz clock. They use the external
+     clock to make switching CPU frequencies easier, but this ChibiOS port does
+     not support switching CPU frequencies at all. When we want to add support,
+     we will just need to adjust the SysTick configuration accordingly.
+
+     Using the faster clock allows users to increase the CH_CFG_ST_FREQUENCY for
+     finer grained tick duration and thereby minimum sleep duration when using
+     chThdSleep: 10μs instead of 100μs. */
+  SysTick->LOAD = (BOARD_BOOTCLOCKRUN_CORE_CLOCK / OSAL_ST_FREQUENCY) - 1;
   SysTick->VAL = 0;
-  SysTick->CTRL = SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
+  SysTick->CTRL = SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
 
   /* IRQ enabled.*/
   nvicSetSystemHandlerPriority(HANDLER_SYSTICK, MIMXRT1062_ST_IRQ_PRIORITY);
