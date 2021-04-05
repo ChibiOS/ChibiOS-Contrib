@@ -158,7 +158,7 @@ OSAL_IRQ_HANDLER(vector29) {
 }
 #endif
 
-#if !defined(GD32_DISABLE_EXTI15_10_HANDLER)
+#if !defined(GD32_DISABLE_EXTI10_15_HANDLER)
 /**
  * @brief   EXTI[10]...EXTI[15] interrupt handler.
  *
@@ -224,7 +224,7 @@ void irqInit(void) {
   eclicEnableVector(EXTI2_IRQn, GD32_IRQ_EXTI2_PRIORITY, GD32_IRQ_EXTI2_TRIGGER);
   eclicEnableVector(EXTI3_IRQn, GD32_IRQ_EXTI3_PRIORITY, GD32_IRQ_EXTI3_TRIGGER);
   eclicEnableVector(EXTI4_IRQn, GD32_IRQ_EXTI4_PRIORITY, GD32_IRQ_EXTI4_TRIGGER);
-  eclicEnableVector(EXTI15_10_IRQn, GD32_IRQ_EXTI15_10_PRIORITY, GD32_IRQ_EXTI15_10_TRIGGER);
+  eclicEnableVector(EXTI10_15_IRQn, GD32_IRQ_EXTI10_15_PRIORITY, GD32_IRQ_EXTI10_15_TRIGGER);
 #endif
 }
 
@@ -241,7 +241,7 @@ void irqDeinit(void) {
   eclicDisableVector(EXTI2_IRQn);
   eclicDisableVector(EXTI3_IRQn);
   eclicDisableVector(EXTI4_IRQn);
-  eclicDisableVector(EXTI15_10_IRQn);
+  eclicDisableVector(EXTI10_15_IRQn);
 #endif
 }
 
