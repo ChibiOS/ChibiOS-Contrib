@@ -553,6 +553,30 @@
  * @{
  */
 /**
+ * @brief   Enables the SPI0 peripheral clock.
+ * @note    The @p lp parameter is ignored in this family.
+ *
+ * @param[in] lp        low power enable flag
+ *
+ * @api
+ */
+#define rcuEnableSPI0(lp) rcuEnableAPB2(RCU_APB2ENR_SPI0EN, lp)
+
+/**
+ * @brief   Disables the SPI0 peripheral clock.
+ *
+ * @api
+ */
+#define rcuDisableSPI0() rcuDisableAPB2(RCU_APB2ENR_SPI0EN)
+
+/**
+ * @brief   Resets the SPI0 peripheral.
+ *
+ * @api
+ */
+#define rcuResetSPI0() rcuResetAPB2(RCU_APB2RST_SPI0RST)
+
+/**
  * @brief   Enables the SPI1 peripheral clock.
  * @note    The @p lp parameter is ignored in this family.
  *
@@ -560,21 +584,21 @@
  *
  * @api
  */
-#define rcuEnableSPI1(lp) rcuEnableAPB2(RCU_APB2ENR_SPI1EN, lp)
+#define rcuEnableSPI1(lp) rcuEnableAPB1(RCU_APB1ENR_SPI1EN, lp)
 
 /**
  * @brief   Disables the SPI1 peripheral clock.
  *
  * @api
  */
-#define rcuDisableSPI1() rcuDisableAPB2(RCU_APB2ENR_SPI1EN)
+#define rcuDisableSPI1() rcuDisableAPB1(RCU_APB1ENR_SPI1EN)
 
 /**
  * @brief   Resets the SPI1 peripheral.
  *
  * @api
  */
-#define rcuResetSPI1() rcuResetAPB2(RCU_APB2RST_SPI0RST)
+#define rcuResetSPI1() rcuResetAPB1(RCU_APB1RSTR_SPI1RST)
 
 /**
  * @brief   Enables the SPI2 peripheral clock.
@@ -599,30 +623,6 @@
  * @api
  */
 #define rcuResetSPI2() rcuResetAPB1(RCU_APB1RSTR_SPI2RST)
-
-/**
- * @brief   Enables the SPI3 peripheral clock.
- * @note    The @p lp parameter is ignored in this family.
- *
- * @param[in] lp        low power enable flag
- *
- * @api
- */
-#define rcuEnableSPI3(lp) rcuEnableAPB1(RCU_APB1ENR_SPI3EN, lp)
-
-/**
- * @brief   Disables the SPI3 peripheral clock.
- *
- * @api
- */
-#define rcuDisableSPI3() rcuDisableAPB1(RCU_APB1ENR_SPI3EN)
-
-/**
- * @brief   Resets the SPI3 peripheral.
- *
- * @api
- */
-#define rcuResetSPI3() rcuResetAPB1(RCU_APB1RSTR_SPI3RST)
 /** @} */
 
 /**

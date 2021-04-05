@@ -1380,9 +1380,9 @@ typedef struct
 #define RCU_APB1RSTR_TIM3RST_Pos             (2U)                              
 #define RCU_APB1RSTR_TIM3RST_Msk             (0x1U << RCU_APB1RSTR_TIM3RST_Pos) /*!< 0x00000004 */
 #define RCU_APB1RSTR_TIM3RST                 RCU_APB1RSTR_TIM3RST_Msk          /*!< Timer 4 reset */
-#define RCU_APB1RSTR_SPI2RST_Pos             (14U)                             
-#define RCU_APB1RSTR_SPI2RST_Msk             (0x1U << RCU_APB1RSTR_SPI2RST_Pos) /*!< 0x00004000 */
-#define RCU_APB1RSTR_SPI2RST                 RCU_APB1RSTR_SPI2RST_Msk          /*!< SPI 2 reset */
+#define RCU_APB1RSTR_SPI1RST_Pos             (14U)                             
+#define RCU_APB1RSTR_SPI1RST_Msk             (0x1U << RCU_APB1RSTR_SPI1RST_Pos) /*!< 0x00004000 */
+#define RCU_APB1RSTR_SPI1RST                 RCU_APB1RSTR_SPI1RST_Msk          /*!< SPI 2 reset */
 #define RCU_APB1RSTR_USART2RST_Pos           (18U)                             
 #define RCU_APB1RSTR_USART2RST_Msk           (0x1U << RCU_APB1RSTR_USART2RST_Pos) /*!< 0x00040000 */
 #define RCU_APB1RSTR_USART2RST               RCU_APB1RSTR_USART2RST_Msk        /*!< USART 3 reset */
@@ -1400,9 +1400,9 @@ typedef struct
 #define RCU_APB1RSTR_TIM6RST_Pos             (5U)                              
 #define RCU_APB1RSTR_TIM6RST_Msk             (0x1U << RCU_APB1RSTR_TIM6RST_Pos) /*!< 0x00000020 */
 #define RCU_APB1RSTR_TIM6RST                 RCU_APB1RSTR_TIM6RST_Msk          /*!< Timer 7 reset */
-#define RCU_APB1RSTR_SPI3RST_Pos             (15U)                             
-#define RCU_APB1RSTR_SPI3RST_Msk             (0x1U << RCU_APB1RSTR_SPI3RST_Pos) /*!< 0x00008000 */
-#define RCU_APB1RSTR_SPI3RST                 RCU_APB1RSTR_SPI3RST_Msk          /*!< SPI 3 reset */
+#define RCU_APB1RSTR_SPI2RST_Pos             (15U)                             
+#define RCU_APB1RSTR_SPI2RST_Msk             (0x1U << RCU_APB1RSTR_SPI2RST_Pos) /*!< 0x00008000 */
+#define RCU_APB1RSTR_SPI2RST                 RCU_APB1RSTR_SPI2RST_Msk          /*!< SPI 3 reset */
 #define RCU_APB1RSTR_UART3RST_Pos            (19U)                             
 #define RCU_APB1RSTR_UART3RST_Msk            (0x1U << RCU_APB1RSTR_UART3RST_Pos) /*!< 0x00080000 */
 #define RCU_APB1RSTR_UART3RST                RCU_APB1RSTR_UART3RST_Msk         /*!< UART 4 reset */
@@ -1470,9 +1470,9 @@ typedef struct
 #define RCU_APB2ENR_TIM0EN_Pos               (11U)                             
 #define RCU_APB2ENR_TIM0EN_Msk               (0x1U << RCU_APB2ENR_TIM0EN_Pos)  /*!< 0x00000800 */
 #define RCU_APB2ENR_TIM0EN                   RCU_APB2ENR_TIM0EN_Msk            /*!< TIM0 Timer clock enable */
-#define RCU_APB2ENR_SPI1EN_Pos               (12U)                             
-#define RCU_APB2ENR_SPI1EN_Msk               (0x1U << RCU_APB2ENR_SPI1EN_Pos)  /*!< 0x00001000 */
-#define RCU_APB2ENR_SPI1EN                   RCU_APB2ENR_SPI1EN_Msk            /*!< SPI 1 clock enable */
+#define RCU_APB2ENR_SPI0EN_Pos               (12U)                             
+#define RCU_APB2ENR_SPI0EN_Msk               (0x1U << RCU_APB2ENR_SPI0EN_Pos)  /*!< 0x00001000 */
+#define RCU_APB2ENR_SPI0EN                   RCU_APB2ENR_SPI0EN_Msk            /*!< SPI 1 clock enable */
 #define RCU_APB2ENR_USART0EN_Pos             (14U)                             
 #define RCU_APB2ENR_USART0EN_Msk             (0x1U << RCU_APB2ENR_USART0EN_Pos) /*!< 0x00004000 */
 #define RCU_APB2ENR_USART0EN                 RCU_APB2ENR_USART0EN_Msk          /*!< USART0 clock enable */
@@ -1516,9 +1516,9 @@ typedef struct
 #define RCU_APB1ENR_TIM3EN_Pos               (2U)                              
 #define RCU_APB1ENR_TIM3EN_Msk               (0x1U << RCU_APB1ENR_TIM3EN_Pos)  /*!< 0x00000004 */
 #define RCU_APB1ENR_TIM3EN                   RCU_APB1ENR_TIM3EN_Msk            /*!< Timer 4 clock enable */
-#define RCU_APB1ENR_SPI2EN_Pos               (14U)                             
-#define RCU_APB1ENR_SPI2EN_Msk               (0x1U << RCU_APB1ENR_SPI2EN_Pos)  /*!< 0x00004000 */
-#define RCU_APB1ENR_SPI2EN                   RCU_APB1ENR_SPI2EN_Msk            /*!< SPI 2 clock enable */
+#define RCU_APB1ENR_SPI1EN_Pos               (14U)                             
+#define RCU_APB1ENR_SPI1EN_Msk               (0x1U << RCU_APB1ENR_SPI1EN_Pos)  /*!< 0x00004000 */
+#define RCU_APB1ENR_SPI1EN                   RCU_APB1ENR_SPI1EN_Msk            /*!< SPI 2 clock enable */
 #define RCU_APB1ENR_USART2EN_Pos             (18U)                             
 #define RCU_APB1ENR_USART2EN_Msk             (0x1U << RCU_APB1ENR_USART2EN_Pos) /*!< 0x00040000 */
 #define RCU_APB1ENR_USART2EN                 RCU_APB1ENR_USART2EN_Msk          /*!< USART 3 clock enable */
@@ -1536,9 +1536,9 @@ typedef struct
 #define RCU_APB1ENR_TIM6EN_Pos               (5U)                              
 #define RCU_APB1ENR_TIM6EN_Msk               (0x1U << RCU_APB1ENR_TIM6EN_Pos)  /*!< 0x00000020 */
 #define RCU_APB1ENR_TIM6EN                   RCU_APB1ENR_TIM6EN_Msk            /*!< Timer 7 clock enable */
-#define RCU_APB1ENR_SPI3EN_Pos               (15U)                             
-#define RCU_APB1ENR_SPI3EN_Msk               (0x1U << RCU_APB1ENR_SPI3EN_Pos)  /*!< 0x00008000 */
-#define RCU_APB1ENR_SPI3EN                   RCU_APB1ENR_SPI3EN_Msk            /*!< SPI 3 clock enable */
+#define RCU_APB1ENR_SPI2EN_Pos               (15U)                             
+#define RCU_APB1ENR_SPI2EN_Msk               (0x1U << RCU_APB1ENR_SPI2EN_Pos)  /*!< 0x00008000 */
+#define RCU_APB1ENR_SPI2EN                   RCU_APB1ENR_SPI2EN_Msk            /*!< SPI 3 clock enable */
 #define RCU_APB1ENR_UART3EN_Pos              (19U)                             
 #define RCU_APB1ENR_UART3EN_Msk              (0x1U << RCU_APB1ENR_UART3EN_Pos) /*!< 0x00080000 */
 #define RCU_APB1ENR_UART3EN                  RCU_APB1ENR_UART3EN_Msk           /*!< UART 4 clock enable */
@@ -2428,7 +2428,7 @@ typedef struct
 /******************  Bit definition for AFIO_PCF0 register  *******************/
 #define AFIO_PCF0_SPI0_REMAP_Pos             (0U)                              
 #define AFIO_PCF0_SPI0_REMAP_Msk             (0x1U << AFIO_PCF0_SPI0_REMAP_Pos) /*!< 0x00000001 */
-#define AFIO_PCF0_SPI0_REMAP                 AFIO_PCF0_SPI0_REMAP_Msk          /*!< SPI1 remapping */
+#define AFIO_PCF0_SPI0_REMAP                 AFIO_PCF0_SPI0_REMAP_Msk          /*!< SPI0 remapping */
 #define AFIO_PCF0_I2C0_REMAP_Pos             (1U)                              
 #define AFIO_PCF0_I2C0_REMAP_Msk             (0x1U << AFIO_PCF0_I2C0_REMAP_Pos) /*!< 0x00000002 */
 #define AFIO_PCF0_I2C0_REMAP                 AFIO_PCF0_I2C0_REMAP_Msk          /*!< I2C0 remapping */
@@ -2553,10 +2553,10 @@ typedef struct
 #define AFIO_PCF0_CAN1_REMAP_Msk             (0x1U << AFIO_PCF0_CAN1_REMAP_Pos) /*!< 0x00400000 */
 #define AFIO_PCF0_CAN1_REMAP                 AFIO_PCF0_CAN1_REMAP_Msk          /*!< CAN2_REMAP bit (CAN2 I/O remapping) */
 
-/*!< SPI3_REMAP configuration */
+/*!< SPI2_REMAP configuration */
 #define AFIO_PCF0_SPI2_REMAP_Pos             (28U)                             
 #define AFIO_PCF0_SPI2_REMAP_Msk             (0x1U << AFIO_PCF0_SPI2_REMAP_Pos) /*!< 0x10000000 */
-#define AFIO_PCF0_SPI2_REMAP                 AFIO_PCF0_SPI2_REMAP_Msk          /*!< SPI3_REMAP bit (SPI3 remapping) */
+#define AFIO_PCF0_SPI2_REMAP                 AFIO_PCF0_SPI2_REMAP_Msk          /*!< SPI2_REMAP bit (SPI2 remapping) */
 
 /*!< TIM2ITR1_IREMAP configuration */
 #define AFIO_PCF0_TIM1ITR1_IREMAP_Pos        (29U)                             
