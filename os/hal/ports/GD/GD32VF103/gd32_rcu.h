@@ -177,28 +177,28 @@
  * @{
  */
 /**
- * @brief   Enables the ADC1 peripheral clock.
+ * @brief   Enables the ADC0 peripheral clock.
  * @note    The @p lp parameter is ignored in this family.
  *
  * @param[in] lp        low power enable flag
  *
  * @api
  */
-#define rcuEnableADC1(lp) rcuEnableAPB2(RCU_APB2ENR_ADC1EN, lp)
+#define rcuEnableADC0(lp) rcuEnableAPB2(RCU_APB2ENR_ADC0EN, lp)
 
 /**
- * @brief   Disables the ADC1 peripheral clock.
+ * @brief   Disables the ADC0 peripheral clock.
  *
  * @api
  */
-#define rcuDisableADC1() rcuDisableAPB2(RCU_APB2ENR_ADC1EN)
+#define rcuDisableADC0() rcuDisableAPB2(RCU_APB2ENR_ADC0EN)
 
 /**
- * @brief   Resets the ADC1 peripheral.
+ * @brief   Resets the ADC0 peripheral.
  *
  * @api
  */
-#define rcuResetADC1() rcuResetAPB2(RCU_APB2RSTR_ADC1RST)
+#define rcuResetADC0() rcuResetAPB2(RCU_APB2RSTR_ADC0RST)
 /** @} */
 
 /**

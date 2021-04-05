@@ -117,11 +117,11 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t STAT;               /*!< ADC status register,    used for ADC multimode (bits common to several ADC instances). Address offset: ADC1 base address         */
-  __IO uint32_t CTL0;              /*!< ADC control register 1, used for ADC multimode (bits common to several ADC instances). Address offset: ADC1 base address + 0x04  */
-  __IO uint32_t CTL1;              /*!< ADC control register 2, used for ADC multimode (bits common to several ADC instances). Address offset: ADC1 base address + 0x08  */
+  __IO uint32_t STAT;               /*!< ADC status register,    used for ADC multimode (bits common to several ADC instances). Address offset: ADC0 base address         */
+  __IO uint32_t CTL0;              /*!< ADC control register 1, used for ADC multimode (bits common to several ADC instances). Address offset: ADC0 base address + 0x04  */
+  __IO uint32_t CTL1;              /*!< ADC control register 2, used for ADC multimode (bits common to several ADC instances). Address offset: ADC0 base address + 0x08  */
   uint32_t  RESERVED[16];
-  __IO uint32_t RDATA;               /*!< ADC data register,      used for ADC multimode (bits common to several ADC instances). Address offset: ADC1 base address + 0x4C  */
+  __IO uint32_t RDATA;               /*!< ADC data register,      used for ADC multimode (bits common to several ADC instances). Address offset: ADC0 base address + 0x4C  */
 } ADC_Common_TypeDef;
 
 /** 
@@ -676,8 +676,8 @@ typedef struct
 #define GPIOC_BASE            (APB2PERIPH_BASE + 0x00001000U)
 #define GPIOD_BASE            (APB2PERIPH_BASE + 0x00001400U)
 #define GPIOE_BASE            (APB2PERIPH_BASE + 0x00001800U)
-#define ADC1_BASE             (APB2PERIPH_BASE + 0x00002400U)
-#define ADC2_BASE             (APB2PERIPH_BASE + 0x00002800U)
+#define ADC0_BASE             (APB2PERIPH_BASE + 0x00002400U)
+#define ADC1_BASE             (APB2PERIPH_BASE + 0x00002800U)
 #define TIM0_BASE             (APB2PERIPH_BASE + 0x00002C00U)
 #define SPI0_BASE             (APB2PERIPH_BASE + 0x00003000U)
 #define USART0_BASE           (APB2PERIPH_BASE + 0x00003800U)
@@ -764,9 +764,9 @@ typedef struct
 #define GPIOC               ((GPIO_TypeDef *)GPIOC_BASE)
 #define GPIOD               ((GPIO_TypeDef *)GPIOD_BASE)
 #define GPIOE               ((GPIO_TypeDef *)GPIOE_BASE)
+#define ADC0                ((ADC_TypeDef *)ADC0_BASE)
 #define ADC1                ((ADC_TypeDef *)ADC1_BASE)
-#define ADC2                ((ADC_TypeDef *)ADC2_BASE)
-#define ADC12_COMMON        ((ADC_Common_TypeDef *)ADC1_BASE)
+#define ADC02_COMMON        ((ADC_Common_TypeDef *)ADC0_BASE)
 #define TIM0                ((TIM_TypeDef *)TIM0_BASE)
 #define SPI0                ((SPI_TypeDef *)SPI0_BASE)
 #define USART0              ((USART_TypeDef *)USART0_BASE)
@@ -1455,13 +1455,13 @@ typedef struct
 #define RCU_APB2RSTR_IOPDRST_Pos             (5U)                              
 #define RCU_APB2RSTR_IOPDRST_Msk             (0x1U << RCU_APB2RSTR_IOPDRST_Pos) /*!< 0x00000020 */
 #define RCU_APB2RSTR_IOPDRST                 RCU_APB2RSTR_IOPDRST_Msk          /*!< I/O port D reset */
-#define RCU_APB2RSTR_ADC1RST_Pos             (9U)                              
-#define RCU_APB2RSTR_ADC1RST_Msk             (0x1U << RCU_APB2RSTR_ADC1RST_Pos) /*!< 0x00000200 */
-#define RCU_APB2RSTR_ADC1RST                 RCU_APB2RSTR_ADC1RST_Msk          /*!< ADC 1 interface reset */
+#define RCU_APB2RSTR_ADC0RST_Pos             (9U)                              
+#define RCU_APB2RSTR_ADC0RST_Msk             (0x1U << RCU_APB2RSTR_ADC0RST_Pos) /*!< 0x00000200 */
+#define RCU_APB2RSTR_ADC0RST                 RCU_APB2RSTR_ADC0RST_Msk          /*!< ADC 1 interface reset */
 
-#define RCU_APB2RSTR_ADC2RST_Pos             (10U)                             
-#define RCU_APB2RSTR_ADC2RST_Msk             (0x1U << RCU_APB2RSTR_ADC2RST_Pos) /*!< 0x00000400 */
-#define RCU_APB2RSTR_ADC2RST                 RCU_APB2RSTR_ADC2RST_Msk          /*!< ADC 2 interface reset */
+#define RCU_APB2RSTR_ADC1RST_Pos             (10U)                             
+#define RCU_APB2RSTR_ADC1RST_Msk             (0x1U << RCU_APB2RSTR_ADC1RST_Pos) /*!< 0x00000400 */
+#define RCU_APB2RSTR_ADC1RST                 RCU_APB2RSTR_ADC1RST_Msk          /*!< ADC 2 interface reset */
 
 #define RCU_APB2RSTR_TIM0RST_Pos             (11U)                             
 #define RCU_APB2RSTR_TIM0RST_Msk             (0x1U << RCU_APB2RSTR_TIM0RST_Pos) /*!< 0x00000800 */
@@ -1591,13 +1591,13 @@ typedef struct
 #define RCU_APB2ENR_IOPDEN_Pos               (5U)                              
 #define RCU_APB2ENR_IOPDEN_Msk               (0x1U << RCU_APB2ENR_IOPDEN_Pos)  /*!< 0x00000020 */
 #define RCU_APB2ENR_IOPDEN                   RCU_APB2ENR_IOPDEN_Msk            /*!< I/O port D clock enable */
-#define RCU_APB2ENR_ADC1EN_Pos               (9U)                              
-#define RCU_APB2ENR_ADC1EN_Msk               (0x1U << RCU_APB2ENR_ADC1EN_Pos)  /*!< 0x00000200 */
-#define RCU_APB2ENR_ADC1EN                   RCU_APB2ENR_ADC1EN_Msk            /*!< ADC 1 interface clock enable */
+#define RCU_APB2ENR_ADC0EN_Pos               (9U)                              
+#define RCU_APB2ENR_ADC0EN_Msk               (0x1U << RCU_APB2ENR_ADC0EN_Pos)  /*!< 0x00000200 */
+#define RCU_APB2ENR_ADC0EN                   RCU_APB2ENR_ADC0EN_Msk            /*!< ADC 1 interface clock enable */
 
-#define RCU_APB2ENR_ADC2EN_Pos               (10U)                             
-#define RCU_APB2ENR_ADC2EN_Msk               (0x1U << RCU_APB2ENR_ADC2EN_Pos)  /*!< 0x00000400 */
-#define RCU_APB2ENR_ADC2EN                   RCU_APB2ENR_ADC2EN_Msk            /*!< ADC 2 interface clock enable */
+#define RCU_APB2ENR_ADC1EN_Pos               (10U)                             
+#define RCU_APB2ENR_ADC1EN_Msk               (0x1U << RCU_APB2ENR_ADC1EN_Pos)  /*!< 0x00000400 */
+#define RCU_APB2ENR_ADC1EN                   RCU_APB2ENR_ADC1EN_Msk            /*!< ADC 2 interface clock enable */
 
 #define RCU_APB2ENR_TIM0EN_Pos               (11U)                             
 #define RCU_APB2ENR_TIM0EN_Msk               (0x1U << RCU_APB2ENR_TIM0EN_Pos)  /*!< 0x00000800 */
@@ -12495,14 +12495,14 @@ typedef struct
   */
 
 /****************************** ADC Instances *********************************/
-#define IS_ADC_ALL_INSTANCE(INSTANCE) (((INSTANCE) == ADC1) || \
-                                       ((INSTANCE) == ADC2))
+#define IS_ADC_ALL_INSTANCE(INSTANCE) (((INSTANCE) == ADC0) || \
+                                       ((INSTANCE) == ADC1))
 
-#define IS_ADC_COMMON_INSTANCE(INSTANCE) ((INSTANCE) == ADC12_COMMON)
+#define IS_ADC_COMMON_INSTANCE(INSTANCE) ((INSTANCE) == ADC02_COMMON)
 
-#define IS_ADC_MULTIMODE_MASTER_INSTANCE(INSTANCE) ((INSTANCE) == ADC1)
+#define IS_ADC_MULTIMODE_MASTER_INSTANCE(INSTANCE) ((INSTANCE) == ADC0)
 
-#define IS_ADC_DMA_CAPABILITY_INSTANCE(INSTANCE) ((INSTANCE) == ADC1)
+#define IS_ADC_DMA_CAPABILITY_INSTANCE(INSTANCE) ((INSTANCE) == ADC0)
 
 /****************************** CAN Instances *********************************/   
 #define IS_CAN_ALL_INSTANCE(INSTANCE) (((INSTANCE) == CAN1) || \
@@ -12850,7 +12850,7 @@ typedef struct
 /******************************************************************************/
 
 /* Aliases for __IRQn */
-#define ADC1_IRQn               ADC1_2_IRQn
+#define ADC0_IRQn               ADC0_2_IRQn
 #define USB_LP_CAN1_RX0_IRQn    CAN1_RX0_IRQn
 #define USB_LP_IRQn             CAN1_RX0_IRQn
 #define USB_HP_CAN1_TX_IRQn     CAN1_TX_IRQn
@@ -12871,7 +12871,7 @@ typedef struct
 
 
 /* Aliases for __IRQHandler */
-#define ADC1_IRQHandler               ADC1_2_IRQHandler
+#define ADC0_IRQHandler               ADC0_2_IRQHandler
 #define USB_LP_CAN1_RX0_IRQHandler    CAN1_RX0_IRQHandler
 #define USB_LP_IRQHandler             CAN1_RX0_IRQHandler
 #define USB_HP_CAN1_TX_IRQHandler     CAN1_TX_IRQHandler

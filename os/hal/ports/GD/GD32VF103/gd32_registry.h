@@ -98,8 +98,8 @@
  * @{
  */
 /* ADC attributes.*/
+#define GD32_HAS_ADC0                      TRUE
 #define GD32_HAS_ADC1                      TRUE
-#define GD32_HAS_ADC2                      TRUE
 
 /* CAN attributes.*/
 #define GD32_HAS_CAN0                      TRUE
@@ -143,7 +143,7 @@
 #define GD32_DMA1_CH4_NUMBER                79
 
 /* EXTI attributes.*/
-#define GD32_EXTI_NUM_LINES                19
+#define GD32_EXTI_NUM_LINES                15
 #define GD32_EXTI_IMR_MASK                 0x00000000U
 
 /* Flash attributes.*/

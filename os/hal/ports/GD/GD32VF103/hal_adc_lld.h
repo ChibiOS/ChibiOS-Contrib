@@ -86,26 +86,26 @@
  * @{
  */
 /**
- * @brief   ADC1 driver enable switch.
- * @details If set to @p TRUE the support for ADC1 is included.
+ * @brief   ADC0 driver enable switch.
+ * @details If set to @p TRUE the support for ADC0 is included.
  * @note    The default is @p TRUE.
  */
-#if !defined(GD32_ADC_USE_ADC1) || defined(__DOXYGEN__)
-#define GD32_ADC_USE_ADC1                  FALSE
+#if !defined(GD32_ADC_USE_ADC0) || defined(__DOXYGEN__)
+#define GD32_ADC_USE_ADC0                  FALSE
 #endif
 
 /**
- * @brief   ADC1 DMA priority (0..3|lowest..highest).
+ * @brief   ADC0 DMA priority (0..3|lowest..highest).
  */
-#if !defined(GD32_ADC_ADC1_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_ADC_ADC1_DMA_PRIORITY         2
+#if !defined(GD32_ADC_ADC0_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_ADC_ADC0_DMA_PRIORITY         2
 #endif
 
 /**
- * @brief   ADC1 interrupt priority level setting.
+ * @brief   ADC0 interrupt priority level setting.
  */
-#if !defined(GD32_ADC_ADC1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_ADC_ADC1_IRQ_PRIORITY         5
+#if !defined(GD32_ADC_ADC0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_ADC_ADC0_IRQ_PRIORITY         5
 #endif
 /** @} */
 
@@ -113,11 +113,11 @@
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
-#if GD32_ADC_USE_ADC1 && !GD32_HAS_ADC1
-#error "ADC1 not present in the selected device"
+#if GD32_ADC_USE_ADC0 && !GD32_HAS_ADC0
+#error "ADC0 not present in the selected device"
 #endif
 
-#if !GD32_ADC_USE_ADC1
+#if !GD32_ADC_USE_ADC0
 #error "ADC driver activated but no ADC peripheral assigned"
 #endif
 
@@ -261,7 +261,7 @@ typedef enum {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if GD32_ADC_USE_ADC1 && !defined(__DOXYGEN__)
+#if GD32_ADC_USE_ADC0 && !defined(__DOXYGEN__)
 extern ADCDriver ADCD1;
 #endif
 

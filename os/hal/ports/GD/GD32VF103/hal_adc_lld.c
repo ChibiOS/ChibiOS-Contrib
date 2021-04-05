@@ -34,8 +34,8 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-/** @brief ADC1 driver identifier.*/
-#if GD32_ADC_USE_ADC1 || defined(__DOXYGEN__)
+/** @brief ADC0 driver identifier.*/
+#if GD32_ADC_USE_ADC0 || defined(__DOXYGEN__)
 ADCDriver ADCD1;
 #endif
 
@@ -88,34 +88,34 @@ static void adc_lld_serve_rx_interrupt(ADCDriver *adcp, uint32_t flags) {
  */
 void adc_lld_init(void) {
 
-#if GD32_ADC_USE_ADC1
+#if GD32_ADC_USE_ADC0
   /* Driver initialization.*/
   adcObjectInit(&ADCD1);
-  ADCD1.adc = ADC1;
+  ADCD1.adc = ADC0;
   ADCD1.dmastp  = NULL;
-  ADCD1.dmamode = GD32_DMA_CTL_PRIO(GD32_ADC_ADC1_DMA_PRIORITY) |
+  ADCD1.dmamode = GD32_DMA_CTL_PRIO(GD32_ADC_ADC0_DMA_PRIORITY) |
                   GD32_DMA_CTL_MWIDTH_HWORD | GD32_DMA_CTL_PWIDTH_HWORD |
                   GD32_DMA_CTL_MNAGA        | GD32_DMA_CTL_FTFIE        |
                   GD32_DMA_CTL_ERRIE;
 
   /* Temporary activation.*/
-  rcuEnableADC1(true);
-  ADC1->CTL0 = 0;
-  ADC1->CTL1 = ADC_CTL1_ADCON;
+  rcuEnableADC0(true);
+  ADC0->CTL0 = 0;
+  ADC0->CTL1 = ADC_CTL1_ADCON;
 
   /* Reset calibration just to be safe.*/
-  ADC1->CTL1 = ADC_CTL1_ADCON | ADC_CTL1_RSTCLB;
-  while ((ADC1->CTL1 & ADC_CTL1_RSTCLB) != 0)
+  ADC0->CTL1 = ADC_CTL1_ADCON | ADC_CTL1_RSTCLB;
+  while ((ADC0->CTL1 & ADC_CTL1_RSTCLB) != 0)
     ;
 
   /* Calibration.*/
-  ADC1->CTL1 = ADC_CTL1_ADCON | ADC_CTL1_CLB;
-  while ((ADC1->CTL1 & ADC_CTL1_CLB) != 0)
+  ADC0->CTL1 = ADC_CTL1_ADCON | ADC_CTL1_CLB;
+  while ((ADC0->CTL1 & ADC_CTL1_CLB) != 0)
     ;
 
   /* Return the ADC in low power mode.*/
-  ADC1->CTL1 = 0;
-  rcuDisableADC1();
+  ADC0->CTL1 = 0;
+  rcuDisableADC0();
 #endif
 }
 
@@ -130,15 +130,15 @@ void adc_lld_start(ADCDriver *adcp) {
 
   /* If in stopped state then enables the ADC and DMA clocks.*/
   if (adcp->state == ADC_STOP) {
-#if GD32_ADC_USE_ADC1
+#if GD32_ADC_USE_ADC0
     if (&ADCD1 == adcp) {
       adcp->dmastp = dmaStreamAllocI(GD32_DMA_STREAM_ID(1, 1),
-                                     GD32_ADC_ADC1_IRQ_PRIORITY,
+                                     GD32_ADC_ADC0_IRQ_PRIORITY,
                                      (gd32_dmaisr_t)adc_lld_serve_rx_interrupt,
                                      (void *)adcp);
       osalDbgAssert(adcp->dmastp != NULL, "unable to allocate stream");
-      dmaStreamSetPeripheral(adcp->dmastp, &ADC1->RDATA);
-      rcuEnableADC1(true);
+      dmaStreamSetPeripheral(adcp->dmastp, &ADC0->RDATA);
+      rcuEnableADC0(true);
     }
 #endif
 
@@ -160,15 +160,15 @@ void adc_lld_stop(ADCDriver *adcp) {
 
   /* If in ready state then disables the ADC clock.*/
   if (adcp->state == ADC_READY) {
-#if GD32_ADC_USE_ADC1
+#if GD32_ADC_USE_ADC0
     if (&ADCD1 == adcp) {
-      ADC1->CTL0 = 0;
-      ADC1->CTL1 = 0;
+      ADC0->CTL0 = 0;
+      ADC0->CTL1 = 0;
 
       dmaStreamFreeI(adcp->dmastp);
       adcp->dmastp = NULL;
 
-      rcuDisableADC1();
+      rcuDisableADC0();
     }
 #endif
   }
