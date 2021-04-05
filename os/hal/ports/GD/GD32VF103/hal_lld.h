@@ -32,9 +32,6 @@
 #ifndef HAL_LLD_H
 #define HAL_LLD_H
 
-#define STRING2(x) #x
-#define STRING(x) STRING2(x)
-
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
@@ -153,7 +150,7 @@
 
 
 #include "gd32_registry.h"
-#include "stm32f105xc.h"
+#include "gd32vf103.h"
 
 #include "hal_lld_gd32vf103.h"
 

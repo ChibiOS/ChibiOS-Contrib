@@ -1,21 +1,4 @@
 /**
-  ******************************************************************************
-  * @file    stm32f105xc.h
-  * @author  MCD Application Team
-  * @version V4.2.0
-  * @date    31-March-2017
-  * @brief   CMSIS Cortex-M3 Device Peripheral Access Layer Header File. 
-  *          This file contains all the peripheral register's definitions, bits 
-  *          definitions and memory mapping for GD32VF103 devices.            
-  *            
-  *          This file contains:
-  *           - Data structures and the address mapping for all peripherals
-  *           - Peripheral's registers declarations and bits definition
-  *           - Macros to access peripheral�s registers hardware
-  *  
-  ******************************************************************************
-  * @attention
-  *
   * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
@@ -43,47 +26,14 @@
   ******************************************************************************
   */
 
-
-/** @addtogroup CMSIS
-  * @{
-  */
-
-/** @addtogroup stm32f105xc
-  * @{
-  */
-    
-#ifndef __STM32F105xC_H
-#define __STM32F105xC_H
+#ifndef __GD32VF103_H
+#define __GD32VF103_H
 
 #ifdef __cplusplus
  extern "C" {
 #endif 
 
-/** @addtogroup Configuration_section_for_CMSIS
-  * @{
-  */
-/**
-  * @brief Configuration of the Cortex-M3 Processor and Core Peripherals 
- */
-
-/**
-  * @}
-  */
-
-/** @addtogroup Peripheral_interrupt_number_definition
-  * @{
-  */
-
-/**
- * @brief STM32F10x Interrupt Number Definition, according to the selected device 
- *        in @ref Library_configuration_section 
- */
-
 #include <stdint.h>
-
-/** @addtogroup Peripheral_registers_structures
-  * @{
-  */   
 
 /** 
   * @brief Analog to Digital Converter  
@@ -517,9 +467,7 @@ typedef struct
   */
 
 
-//#define FLASH_BASE            0x08000000U /*!< FLASH base address in the alias region */
 #define FLASH_BANK1_END       0x0803FFFFU /*!< FLASH END address of bank1 */
-//#define SRAM_BASE             0x20000000U /*!< SRAM base address in the alias region */
 #define PERIPH_BASE           0x40000000U /*!< Peripheral base address in the alias region */
 
 #define SRAM_BB_BASE          0x22000000U /*!< SRAM base address in the bit-band region */
@@ -537,7 +485,6 @@ typedef struct
 #define TIM4_BASE             (APB1PERIPH_BASE + 0x00000C00U)
 #define TIM5_BASE             (APB1PERIPH_BASE + 0x00001000U)
 #define TIM6_BASE             (APB1PERIPH_BASE + 0x00001400U)
-//#define RTC_BASE              (APB1PERIPH_BASE + 0x00002800U)
 #define WWDG_BASE             (APB1PERIPH_BASE + 0x00002C00U)
 #define FWDGT_BASE             (APB1PERIPH_BASE + 0x00003000U)
 #define SPI1_BASE             (APB1PERIPH_BASE + 0x00003800U)
@@ -550,11 +497,6 @@ typedef struct
 #define I2C1_BASE             (APB1PERIPH_BASE + 0x5800)
 #define CAN0_BASE             (APB1PERIPH_BASE + 0x00006400U)
 #define CAN1_BASE             (APB1PERIPH_BASE + 0x00006800U)
-//#define BKP_BASE              (APB1PERIPH_BASE + 0x00006C00U)
-//#define PMU_BASE              (APB1PERIPH_BASE + 0x00007000U)
-//#define DAC_BASE              (APB1PERIPH_BASE + 0x00007400U)
-//#define AFIO_BASE             (APB2PERIPH_BASE + 0x00000000U)
-//#define EXTI_BASE             (APB2PERIPH_BASE + 0x00000400U)
 #define GPIOA_BASE            (APB2PERIPH_BASE + 0x00000800U)
 #define GPIOB_BASE            (APB2PERIPH_BASE + 0x00000C00U)
 #define GPIOC_BASE            (APB2PERIPH_BASE + 0x00001000U)
@@ -582,13 +524,10 @@ typedef struct
 #define DMA1_Channel2_BASE    (AHBPERIPH_BASE + 0x00000430U)
 #define DMA1_Channel3_BASE    (AHBPERIPH_BASE + 0x00000444U)
 #define DMA1_Channel4_BASE    (AHBPERIPH_BASE + 0x00000458U)
-//#define RCU_BASE              (AHBPERIPH_BASE + 0x00001000U)
-//#define CRC_BASE              (AHBPERIPH_BASE + 0x00003000U)
 
 #define FLASH_R_BASE          (AHBPERIPH_BASE + 0x00002000U) /*!< Flash registers base address */
 #define FLASHSIZE_BASE        0x1FFFF7E0U    /*!< FLASH Size register base address */
 #define UID_BASE              0x1FFFF7E8U    /*!< Unique device ID register base address */
-//#define OB_BASE               0x1FFFF800U    /*!< Flash Option Bytes base address */
 
 
 
@@ -11636,8 +11575,6 @@ typedef struct
   }
 #endif /* __cplusplus */
   
-#endif /* __STM32F105xC_H */
-  
-  
-  
+#endif /* __GD32VF103_H */
+
   /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
