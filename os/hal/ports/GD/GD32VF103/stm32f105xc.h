@@ -1408,8 +1408,6 @@ typedef struct
 #define RCU_APB1RST_UART4RST_Msk            (0x1U << RCU_APB1RST_UART4RST_Pos) /*!< 0x00100000 */
 #define RCU_APB1RST_UART4RST                RCU_APB1RST_UART4RST_Msk         /*!< UART 5 reset */
 
-
-
 #define RCU_APB1RST_CAN1RST_Pos             (26U)                             
 #define RCU_APB1RST_CAN1RST_Msk             (0x1U << RCU_APB1RST_CAN1RST_Pos) /*!< 0x04000000 */
 #define RCU_APB1RST_CAN1RST                 RCU_APB1RST_CAN1RST_Msk          /*!< CAN1 reset */
@@ -1418,28 +1416,31 @@ typedef struct
 #define RCU_APB1RST_DACRST_Msk              (0x1U << RCU_APB1RST_DACRST_Pos) /*!< 0x20000000 */
 #define RCU_APB1RST_DACRST                  RCU_APB1RST_DACRST_Msk           /*!< DAC interface reset */
 
-/******************  Bit definition for RCU_AHBENR register  ******************/
-#define RCU_AHBENR_DMA0EN_Pos                (0U)                              
-#define RCU_AHBENR_DMA0EN_Msk                (0x1U << RCU_AHBENR_DMA0EN_Pos)   /*!< 0x00000001 */
-#define RCU_AHBENR_DMA0EN                    RCU_AHBENR_DMA0EN_Msk             /*!< DMA0 clock enable */
-#define RCU_AHBENR_SRAMEN_Pos                (2U)                              
-#define RCU_AHBENR_SRAMEN_Msk                (0x1U << RCU_AHBENR_SRAMEN_Pos)   /*!< 0x00000004 */
-#define RCU_AHBENR_SRAMEN                    RCU_AHBENR_SRAMEN_Msk             /*!< SRAM interface clock enable */
-#define RCU_AHBENR_FLITFEN_Pos               (4U)                              
-#define RCU_AHBENR_FLITFEN_Msk               (0x1U << RCU_AHBENR_FLITFEN_Pos)  /*!< 0x00000010 */
-#define RCU_AHBENR_FLITFEN                   RCU_AHBENR_FLITFEN_Msk            /*!< FLITF clock enable */
-#define RCU_AHBENR_CRCEN_Pos                 (6U)                              
-#define RCU_AHBENR_CRCEN_Msk                 (0x1U << RCU_AHBENR_CRCEN_Pos)    /*!< 0x00000040 */
-#define RCU_AHBENR_CRCEN                     RCU_AHBENR_CRCEN_Msk              /*!< CRC clock enable */
+/******************  Bit definition for RCU_AHBEN register  ******************/
+#define RCU_AHBEN_DMA0EN_Pos                (0U)                              
+#define RCU_AHBEN_DMA0EN_Msk                (0x1U << RCU_AHBEN_DMA0EN_Pos)   /*!< 0x00000001 */
+#define RCU_AHBEN_DMA0EN                    RCU_AHBEN_DMA0EN_Msk             /*!< DMA0 clock enable */
+#define RCU_AHBEN_SRAMSPEN_Pos                (2U)                              
+#define RCU_AHBEN_SRAMSPEN_Msk                (0x1U << RCU_AHBEN_SRAMSPEN_Pos)   /*!< 0x00000004 */
+#define RCU_AHBEN_SRAMSPEN                    RCU_AHBEN_SRAMSPEN_Msk             /*!< SRAM interface clock enable */
+#define RCU_AHBEN_FMCSPEN_Pos               (4U)                              
+#define RCU_AHBEN_FMCSPEN_Msk               (0x1U << RCU_AHBEN_FMCSPEN_Pos)  /*!< 0x00000010 */
+#define RCU_AHBEN_FMCSPEN                   RCU_AHBEN_FMCSPEN_Msk            /*!< FLITF clock enable */
+#define RCU_AHBEN_CRCEN_Pos                 (6U)                              
+#define RCU_AHBEN_CRCEN_Msk                 (0x1U << RCU_AHBEN_CRCEN_Pos)    /*!< 0x00000040 */
+#define RCU_AHBEN_CRCEN                     RCU_AHBEN_CRCEN_Msk              /*!< CRC clock enable */
 
-#define RCU_AHBENR_DMA1EN_Pos                (1U)                              
-#define RCU_AHBENR_DMA1EN_Msk                (0x1U << RCU_AHBENR_DMA1EN_Pos)   /*!< 0x00000002 */
-#define RCU_AHBENR_DMA1EN                    RCU_AHBENR_DMA1EN_Msk             /*!< DMA1 clock enable */
+#define RCU_AHBEN_DMA1EN_Pos                (1U)                              
+#define RCU_AHBEN_DMA1EN_Msk                (0x1U << RCU_AHBEN_DMA1EN_Pos)   /*!< 0x00000002 */
+#define RCU_AHBEN_DMA1EN                    RCU_AHBEN_DMA1EN_Msk             /*!< DMA1 clock enable */
 
+#define RCU_AHBEN_EXMCEN_Pos               (8U)                             
+#define RCU_AHBEN_EXMCEN_Msk               (0x1U << RCU_AHBEN_USBFSEN_Pos)  /*!< 0x00001000 */
+#define RCU_AHBEN_EXMCEN                   RCU_AHBEN_USBFSEN_Msk            /*!< USB OTG FS clock enable */
 
-#define RCU_AHBENR_OTGFSEN_Pos               (12U)                             
-#define RCU_AHBENR_OTGFSEN_Msk               (0x1U << RCU_AHBENR_OTGFSEN_Pos)  /*!< 0x00001000 */
-#define RCU_AHBENR_OTGFSEN                   RCU_AHBENR_OTGFSEN_Msk            /*!< USB OTG FS clock enable */
+#define RCU_AHBEN_USBFSEN_Pos               (12U)                             
+#define RCU_AHBEN_USBFSEN_Msk               (0x1U << RCU_AHBEN_USBFSEN_Pos)  /*!< 0x00001000 */
+#define RCU_AHBEN_USBFSEN                   RCU_AHBEN_USBFSEN_Msk            /*!< USB OTG FS clock enable */
 
 /******************  Bit definition for RCU_APB2ENR register  *****************/
 #define RCU_APB2ENR_AFIOEN_Pos               (0U)                              

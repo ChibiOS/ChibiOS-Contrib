@@ -358,14 +358,14 @@
  *
  * @api
  */
-#define rcuEnableDMA0(lp) rcuEnableAHB(RCU_AHBENR_DMA0EN, lp)
+#define rcuEnableDMA0(lp) rcuEnableAHB(RCU_AHBEN_DMA0EN, lp)
 
 /**
  * @brief   Disables the DMA0 peripheral clock.
  *
  * @api
  */
-#define rcuDisableDMA0() rcuDisableAHB(RCU_AHBENR_DMA0EN)
+#define rcuDisableDMA0() rcuDisableAHB(RCU_AHBEN_DMA0EN)
 
 /**
  * @brief   Resets the DMA0 peripheral.
@@ -383,14 +383,14 @@
  *
  * @api
  */
-#define rcuEnableDMA1(lp) rcuEnableAHB(RCU_AHBENR_DMA1EN, lp)
+#define rcuEnableDMA1(lp) rcuEnableAHB(RCU_AHBEN_DMA1EN, lp)
 
 /**
  * @brief   Disables the DMA1 peripheral clock.
  *
  * @api
  */
-#define rcuDisableDMA1() rcuDisableAHB(RCU_AHBENR_DMA1EN)
+#define rcuDisableDMA1() rcuDisableAHB(RCU_AHBEN_DMA1EN)
 
 /**
  * @brief   Resets the DMA0 peripheral.
@@ -465,14 +465,14 @@
  *
  * @api
  */
-#define rcuEnableUSBFS(lp) rcuEnableAHB(RCU_AHBENR_OTGFSEN, lp)
+#define rcuEnableUSBFS(lp) rcuEnableAHB(RCU_AHBEN_USBFSEN, lp)
 
 /**
  * @brief   Disables the USBFS peripheral clock.
  *
  * @api
  */
-#define rcuDisableUSBFS() rcuDisableAHB(RCU_AHBENR_OTGFSEN)
+#define rcuDisableUSBFS() rcuDisableAHB(RCU_AHBEN_USBFSEN)
 
 /**
  * @brief   Resets the USBFS peripheral.
@@ -897,14 +897,14 @@
  *
  * @api
  */
-#define rcuEnableEXMC(lp) rcuEnableAHB(RCU_AHBENR_EXMCEN, lp)
+#define rcuEnableEXMC(lp) rcuEnableAHB(RCU_AHBEN_EXMCEN, lp)
 
 /**
  * @brief   Disables the EXMC peripheral clock.
  *
  * @api
  */
-#define rcuDisableEXMC() rcuDisableAHB(RCU_AHBENR_EXMCEN)
+#define rcuDisableEXMC() rcuDisableAHB(RCU_AHBEN_EXMCEN)
 /** @} */
 
 /*===========================================================================*/
