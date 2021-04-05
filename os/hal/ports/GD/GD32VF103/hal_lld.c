@@ -58,9 +58,9 @@ static void hal_lld_backup_domain_init(void) {
 
 #if HAL_USE_RTC
   /* Reset BKP domain if different clock source selected.*/
-  if ((RCU->BDCTL & GD32_RTCSEL_MASK) != GD32_RTCSEL) {
+  if ((RCU->BDCTL & GD32_RTCSRC_MASK) != GD32_RTCSRC) {
     /* Backup domain reset.*/
-    RCU->BDCTL = RCU_BDCR_BDRST;
+    RCU->BDCTL = RCU_BDCTL_BKPRST;
     RCU->BDCTL = 0;
   }
 
@@ -68,29 +68,29 @@ static void hal_lld_backup_domain_init(void) {
 #if GD32_LXTAL_ENABLED
 #if defined(GD32_LXTAL_BYPASS)
   /* LXTAL Bypass.*/
-  RCU->BDCTL |= RCU_BDCR_LXTALON | RCU_BDCR_LXTALBYP;
+  RCU->BDCTL |= RCU_BDCTL_LXTALEN | RCU_BDCTL_LXTALBPS;
 #else
   /* No LXTAL Bypass.*/
-  RCU->BDCTL |= RCU_BDCR_LXTALON;
+  RCU->BDCTL |= RCU_BDCTL_LXTALEN;
 #endif
-  while ((RCU->BDCTL & RCU_BDCR_LXTALRDY) == 0)
+  while ((RCU->BDCTL & RCU_BDCTL_LXTALSTB) == 0)
     ;                                     /* Waits until LXTAL is stable.   */
 #endif /* GD32_LXTAL_ENABLED */
 
-#if GD32_RTCSEL != GD32_RTCSEL_NOCLOCK
+#if GD32_RTCSRC != GD32_RTCSRC_NOCLOCK
   /* If the backup domain hasn't been initialized yet then proceed with
      initialization.*/
-  if ((RCU->BDCTL & RCU_BDCR_RTCEN) == 0) {
+  if ((RCU->BDCTL & RCU_BDCTL_RTCEN) == 0) {
     /* Selects clock source.*/
-    RCU->BDCTL |= GD32_RTCSEL;
+    RCU->BDCTL |= GD32_RTCSRC;
 
     /* Prescaler value loaded in registers.*/
     rtc_lld_set_prescaler();
 
     /* RTC clock enabled.*/
-    RCU->BDCTL |= RCU_BDCR_RTCEN;
+    RCU->BDCTL |= RCU_BDCTL_RTCEN;
   }
-#endif /* GD32_RTCSEL != GD32_RTCSEL_NOCLOCK */
+#endif /* GD32_RTCSRC != GD32_RTCSRC_NOCLOCK */
 #endif /* HAL_USE_RTC */
 }
 
@@ -178,8 +178,8 @@ void gd32_clock_init(void) {
 
 #if GD32_IRC40K_ENABLED
   /* IRC40K activation.*/
-  RCU->RSTSCK |= RCU_CSR_IRC40KON;
-  while ((RCU->RSTSCK & RCU_CSR_IRC40KRDY) == 0)
+  RCU->RSTSCK |= RCU_RSTSCK_IRC40KEN;
+  while ((RCU->RSTSCK & RCU_RSTSCK_IRC40KSTB) == 0)
     ;                                       /* Waits until IRC40K is stable.   */
 #endif
 

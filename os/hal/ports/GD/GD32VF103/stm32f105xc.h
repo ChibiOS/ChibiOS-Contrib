@@ -1442,182 +1442,178 @@ typedef struct
 #define RCU_AHBEN_USBFSEN_Msk               (0x1U << RCU_AHBEN_USBFSEN_Pos)  /*!< 0x00001000 */
 #define RCU_AHBEN_USBFSEN                   RCU_AHBEN_USBFSEN_Msk            /*!< USB OTG FS clock enable */
 
-/******************  Bit definition for RCU_APB2ENR register  *****************/
-#define RCU_APB2ENR_AFIOEN_Pos               (0U)                              
-#define RCU_APB2ENR_AFIOEN_Msk               (0x1U << RCU_APB2ENR_AFIOEN_Pos)  /*!< 0x00000001 */
-#define RCU_APB2ENR_AFIOEN                   RCU_APB2ENR_AFIOEN_Msk            /*!< Alternate Function I/O clock enable */
-#define RCU_APB2ENR_IOPAEN_Pos               (2U)                              
-#define RCU_APB2ENR_IOPAEN_Msk               (0x1U << RCU_APB2ENR_IOPAEN_Pos)  /*!< 0x00000004 */
-#define RCU_APB2ENR_IOPAEN                   RCU_APB2ENR_IOPAEN_Msk            /*!< I/O port A clock enable */
-#define RCU_APB2ENR_IOPBEN_Pos               (3U)                              
-#define RCU_APB2ENR_IOPBEN_Msk               (0x1U << RCU_APB2ENR_IOPBEN_Pos)  /*!< 0x00000008 */
-#define RCU_APB2ENR_IOPBEN                   RCU_APB2ENR_IOPBEN_Msk            /*!< I/O port B clock enable */
-#define RCU_APB2ENR_IOPCEN_Pos               (4U)                              
-#define RCU_APB2ENR_IOPCEN_Msk               (0x1U << RCU_APB2ENR_IOPCEN_Pos)  /*!< 0x00000010 */
-#define RCU_APB2ENR_IOPCEN                   RCU_APB2ENR_IOPCEN_Msk            /*!< I/O port C clock enable */
-#define RCU_APB2ENR_IOPDEN_Pos               (5U)                              
-#define RCU_APB2ENR_IOPDEN_Msk               (0x1U << RCU_APB2ENR_IOPDEN_Pos)  /*!< 0x00000020 */
-#define RCU_APB2ENR_IOPDEN                   RCU_APB2ENR_IOPDEN_Msk            /*!< I/O port D clock enable */
-#define RCU_APB2ENR_ADC0EN_Pos               (9U)                              
-#define RCU_APB2ENR_ADC0EN_Msk               (0x1U << RCU_APB2ENR_ADC0EN_Pos)  /*!< 0x00000200 */
-#define RCU_APB2ENR_ADC0EN                   RCU_APB2ENR_ADC0EN_Msk            /*!< ADC 1 interface clock enable */
+/******************  Bit definition for RCU_APB2EN register  *****************/
+#define RCU_APB2EN_AFEN_Pos               (0U)                              
+#define RCU_APB2EN_AFEN_Msk               (0x1U << RCU_APB2EN_AFEN_Pos)  /*!< 0x00000001 */
+#define RCU_APB2EN_AFEN                   RCU_APB2EN_AFEN_Msk            /*!< Alternate Function I/O clock enable */
+#define RCU_APB2EN_PAEN_Pos               (2U)                              
+#define RCU_APB2EN_PAEN_Msk               (0x1U << RCU_APB2EN_PAEN_Pos)  /*!< 0x00000004 */
+#define RCU_APB2EN_PAEN                   RCU_APB2EN_PAEN_Msk            /*!< I/O port A clock enable */
+#define RCU_APB2EN_PBEN_Pos               (3U)                              
+#define RCU_APB2EN_PBEN_Msk               (0x1U << RCU_APB2EN_PBEN_Pos)  /*!< 0x00000008 */
+#define RCU_APB2EN_PBEN                   RCU_APB2EN_PBEN_Msk            /*!< I/O port B clock enable */
+#define RCU_APB2EN_PCEN_Pos               (4U)                              
+#define RCU_APB2EN_PCEN_Msk               (0x1U << RCU_APB2EN_PCEN_Pos)  /*!< 0x00000010 */
+#define RCU_APB2EN_PCEN                   RCU_APB2EN_PCEN_Msk            /*!< I/O port C clock enable */
+#define RCU_APB2EN_PDEN_Pos               (5U)                              
+#define RCU_APB2EN_PDEN_Msk               (0x1U << RCU_APB2EN_PDEN_Pos)  /*!< 0x00000020 */
+#define RCU_APB2EN_PDEN                   RCU_APB2EN_PDEN_Msk            /*!< I/O port D clock enable */
+#define RCU_APB2EN_ADC0EN_Pos               (9U)                              
+#define RCU_APB2EN_ADC0EN_Msk               (0x1U << RCU_APB2EN_ADC0EN_Pos)  /*!< 0x00000200 */
+#define RCU_APB2EN_ADC0EN                   RCU_APB2EN_ADC0EN_Msk            /*!< ADC 1 interface clock enable */
 
-#define RCU_APB2ENR_ADC1EN_Pos               (10U)                             
-#define RCU_APB2ENR_ADC1EN_Msk               (0x1U << RCU_APB2ENR_ADC1EN_Pos)  /*!< 0x00000400 */
-#define RCU_APB2ENR_ADC1EN                   RCU_APB2ENR_ADC1EN_Msk            /*!< ADC 2 interface clock enable */
+#define RCU_APB2EN_ADC1EN_Pos               (10U)                             
+#define RCU_APB2EN_ADC1EN_Msk               (0x1U << RCU_APB2EN_ADC1EN_Pos)  /*!< 0x00000400 */
+#define RCU_APB2EN_ADC1EN                   RCU_APB2EN_ADC1EN_Msk            /*!< ADC 2 interface clock enable */
 
-#define RCU_APB2ENR_TIM0EN_Pos               (11U)                             
-#define RCU_APB2ENR_TIM0EN_Msk               (0x1U << RCU_APB2ENR_TIM0EN_Pos)  /*!< 0x00000800 */
-#define RCU_APB2ENR_TIM0EN                   RCU_APB2ENR_TIM0EN_Msk            /*!< TIM0 Timer clock enable */
-#define RCU_APB2ENR_SPI0EN_Pos               (12U)                             
-#define RCU_APB2ENR_SPI0EN_Msk               (0x1U << RCU_APB2ENR_SPI0EN_Pos)  /*!< 0x00001000 */
-#define RCU_APB2ENR_SPI0EN                   RCU_APB2ENR_SPI0EN_Msk            /*!< SPI 1 clock enable */
-#define RCU_APB2ENR_USART0EN_Pos             (14U)                             
-#define RCU_APB2ENR_USART0EN_Msk             (0x1U << RCU_APB2ENR_USART0EN_Pos) /*!< 0x00004000 */
-#define RCU_APB2ENR_USART0EN                 RCU_APB2ENR_USART0EN_Msk          /*!< USART0 clock enable */
+#define RCU_APB2EN_TIMER0EN_Pos               (11U)                             
+#define RCU_APB2EN_TIMER0EN_Msk               (0x1U << RCU_APB2EN_TIMER0EN_Pos)  /*!< 0x00000800 */
+#define RCU_APB2EN_TIMER0EN                   RCU_APB2EN_TIMER0EN_Msk            /*!< TIM0 Timer clock enable */
+#define RCU_APB2EN_SPI0EN_Pos               (12U)                             
+#define RCU_APB2EN_SPI0EN_Msk               (0x1U << RCU_APB2EN_SPI0EN_Pos)  /*!< 0x00001000 */
+#define RCU_APB2EN_SPI0EN                   RCU_APB2EN_SPI0EN_Msk            /*!< SPI 1 clock enable */
+#define RCU_APB2EN_USART0EN_Pos             (14U)                             
+#define RCU_APB2EN_USART0EN_Msk             (0x1U << RCU_APB2EN_USART0EN_Pos) /*!< 0x00004000 */
+#define RCU_APB2EN_USART0EN                 RCU_APB2EN_USART0EN_Msk          /*!< USART0 clock enable */
 
+#define RCU_APB2EN_PEEN_Pos               (6U)                              
+#define RCU_APB2EN_PEEN_Msk               (0x1U << RCU_APB2EN_PEEN_Pos)  /*!< 0x00000040 */
+#define RCU_APB2EN_PEEN                   RCU_APB2EN_PEEN_Msk            /*!< I/O port E clock enable */
 
-#define RCU_APB2ENR_IOPEEN_Pos               (6U)                              
-#define RCU_APB2ENR_IOPEEN_Msk               (0x1U << RCU_APB2ENR_IOPEEN_Pos)  /*!< 0x00000040 */
-#define RCU_APB2ENR_IOPEEN                   RCU_APB2ENR_IOPEEN_Msk            /*!< I/O port E clock enable */
+/*****************  Bit definition for RCU_APB1EN register  ******************/
+#define RCU_APB1EN_TIMER1EN_Pos               (0U)                              
+#define RCU_APB1EN_TIMER1EN_Msk               (0x1U << RCU_APB1EN_TIMER1EN_Pos)  /*!< 0x00000001 */
+#define RCU_APB1EN_TIMER1EN                   RCU_APB1EN_TIMER1EN_Msk            /*!< Timer 2 clock enabled*/
+#define RCU_APB1EN_TIMER2EN_Pos               (1U)                              
+#define RCU_APB1EN_TIMER2EN_Msk               (0x1U << RCU_APB1EN_TIMER2EN_Pos)  /*!< 0x00000002 */
+#define RCU_APB1EN_TIMER2EN                   RCU_APB1EN_TIMER2EN_Msk            /*!< Timer 3 clock enable */
+#define RCU_APB1EN_WWDGTEN_Pos               (11U)                             
+#define RCU_APB1EN_WWDGTEN_Msk               (0x1U << RCU_APB1EN_WWDGTEN_Pos)  /*!< 0x00000800 */
+#define RCU_APB1EN_WWDGTEN                   RCU_APB1EN_WWDGTEN_Msk            /*!< Window Watchdog clock enable */
+#define RCU_APB1EN_USART1EN_Pos             (17U)                             
+#define RCU_APB1EN_USART1EN_Msk             (0x1U << RCU_APB1EN_USART1EN_Pos) /*!< 0x00020000 */
+#define RCU_APB1EN_USART1EN                 RCU_APB1EN_USART1EN_Msk          /*!< USART 2 clock enable */
+#define RCU_APB1EN_I2C0EN_Pos               (21U)                             
+#define RCU_APB1EN_I2C0EN_Msk               (0x1U << RCU_APB1EN_I2C0EN_Pos)  /*!< 0x00200000 */
+#define RCU_APB1EN_I2C0EN                   RCU_APB1EN_I2C0EN_Msk            /*!< I2C 1 clock enable */
 
+#define RCU_APB1EN_CAN0EN_Pos               (25U)                             
+#define RCU_APB1EN_CAN0EN_Msk               (0x1U << RCU_APB1EN_CAN0EN_Pos)  /*!< 0x02000000 */
+#define RCU_APB1EN_CAN0EN                   RCU_APB1EN_CAN0EN_Msk            /*!< CAN0 clock enable */
 
+#define RCU_APB1EN_BKPIEN_Pos                (27U)                             
+#define RCU_APB1EN_BKPIEN_Msk                (0x1U << RCU_APB1EN_BKPIEN_Pos)   /*!< 0x08000000 */
+#define RCU_APB1EN_BKPIEN                    RCU_APB1EN_BKPIEN_Msk             /*!< Backup interface clock enable */
+#define RCU_APB1EN_PMUEN_Pos                (28U)                             
+#define RCU_APB1EN_PMUEN_Msk                (0x1U << RCU_APB1EN_PMUEN_Pos)   /*!< 0x10000000 */
+#define RCU_APB1EN_PMUEN                    RCU_APB1EN_PMUEN_Msk             /*!< Power interface clock enable */
 
-
-/*****************  Bit definition for RCU_APB1ENR register  ******************/
-#define RCU_APB1ENR_TIM1EN_Pos               (0U)                              
-#define RCU_APB1ENR_TIM1EN_Msk               (0x1U << RCU_APB1ENR_TIM1EN_Pos)  /*!< 0x00000001 */
-#define RCU_APB1ENR_TIM1EN                   RCU_APB1ENR_TIM1EN_Msk            /*!< Timer 2 clock enabled*/
-#define RCU_APB1ENR_TIM2EN_Pos               (1U)                              
-#define RCU_APB1ENR_TIM2EN_Msk               (0x1U << RCU_APB1ENR_TIM2EN_Pos)  /*!< 0x00000002 */
-#define RCU_APB1ENR_TIM2EN                   RCU_APB1ENR_TIM2EN_Msk            /*!< Timer 3 clock enable */
-#define RCU_APB1ENR_WWDGEN_Pos               (11U)                             
-#define RCU_APB1ENR_WWDGEN_Msk               (0x1U << RCU_APB1ENR_WWDGEN_Pos)  /*!< 0x00000800 */
-#define RCU_APB1ENR_WWDGEN                   RCU_APB1ENR_WWDGEN_Msk            /*!< Window Watchdog clock enable */
-#define RCU_APB1ENR_USART1EN_Pos             (17U)                             
-#define RCU_APB1ENR_USART1EN_Msk             (0x1U << RCU_APB1ENR_USART1EN_Pos) /*!< 0x00020000 */
-#define RCU_APB1ENR_USART1EN                 RCU_APB1ENR_USART1EN_Msk          /*!< USART 2 clock enable */
-#define RCU_APB1ENR_I2C0EN_Pos               (21U)                             
-#define RCU_APB1ENR_I2C0EN_Msk               (0x1U << RCU_APB1ENR_I2C0EN_Pos)  /*!< 0x00200000 */
-#define RCU_APB1ENR_I2C0EN                   RCU_APB1ENR_I2C0EN_Msk            /*!< I2C 1 clock enable */
-
-#define RCU_APB1ENR_CAN0EN_Pos               (25U)                             
-#define RCU_APB1ENR_CAN0EN_Msk               (0x1U << RCU_APB1ENR_CAN0EN_Pos)  /*!< 0x02000000 */
-#define RCU_APB1ENR_CAN0EN                   RCU_APB1ENR_CAN0EN_Msk            /*!< CAN0 clock enable */
-
-#define RCU_APB1ENR_BKPEN_Pos                (27U)                             
-#define RCU_APB1ENR_BKPEN_Msk                (0x1U << RCU_APB1ENR_BKPEN_Pos)   /*!< 0x08000000 */
-#define RCU_APB1ENR_BKPEN                    RCU_APB1ENR_BKPEN_Msk             /*!< Backup interface clock enable */
-#define RCU_APB1ENR_PMUEN_Pos                (28U)                             
-#define RCU_APB1ENR_PMUEN_Msk                (0x1U << RCU_APB1ENR_PMUEN_Pos)   /*!< 0x10000000 */
-#define RCU_APB1ENR_PMUEN                    RCU_APB1ENR_PMUEN_Msk             /*!< Power interface clock enable */
-
-#define RCU_APB1ENR_TIM3EN_Pos               (2U)                              
-#define RCU_APB1ENR_TIM3EN_Msk               (0x1U << RCU_APB1ENR_TIM3EN_Pos)  /*!< 0x00000004 */
-#define RCU_APB1ENR_TIM3EN                   RCU_APB1ENR_TIM3EN_Msk            /*!< Timer 4 clock enable */
-#define RCU_APB1ENR_SPI1EN_Pos               (14U)                             
-#define RCU_APB1ENR_SPI1EN_Msk               (0x1U << RCU_APB1ENR_SPI1EN_Pos)  /*!< 0x00004000 */
-#define RCU_APB1ENR_SPI1EN                   RCU_APB1ENR_SPI1EN_Msk            /*!< SPI 2 clock enable */
-#define RCU_APB1ENR_USART2EN_Pos             (18U)                             
-#define RCU_APB1ENR_USART2EN_Msk             (0x1U << RCU_APB1ENR_USART2EN_Pos) /*!< 0x00040000 */
-#define RCU_APB1ENR_USART2EN                 RCU_APB1ENR_USART2EN_Msk          /*!< USART 3 clock enable */
-#define RCU_APB1ENR_I2C1EN_Pos               (22U)                             
-#define RCU_APB1ENR_I2C1EN_Msk               (0x1U << RCU_APB1ENR_I2C1EN_Pos)  /*!< 0x00400000 */
-#define RCU_APB1ENR_I2C1EN                   RCU_APB1ENR_I2C1EN_Msk            /*!< I2C 2 clock enable */
+#define RCU_APB1EN_TIMER3EN_Pos               (2U)                              
+#define RCU_APB1EN_TIMER3EN_Msk               (0x1U << RCU_APB1EN_TIMER3EN_Pos)  /*!< 0x00000004 */
+#define RCU_APB1EN_TIMER3EN                   RCU_APB1EN_TIMER3EN_Msk            /*!< Timer 4 clock enable */
+#define RCU_APB1EN_SPI1EN_Pos               (14U)                             
+#define RCU_APB1EN_SPI1EN_Msk               (0x1U << RCU_APB1EN_SPI1EN_Pos)  /*!< 0x00004000 */
+#define RCU_APB1EN_SPI1EN                   RCU_APB1EN_SPI1EN_Msk            /*!< SPI 2 clock enable */
+#define RCU_APB1EN_USART2EN_Pos             (18U)                             
+#define RCU_APB1EN_USART2EN_Msk             (0x1U << RCU_APB1EN_USART2EN_Pos) /*!< 0x00040000 */
+#define RCU_APB1EN_USART2EN                 RCU_APB1EN_USART2EN_Msk          /*!< USART 3 clock enable */
+#define RCU_APB1EN_I2C1EN_Pos               (22U)                             
+#define RCU_APB1EN_I2C1EN_Msk               (0x1U << RCU_APB1EN_I2C1EN_Pos)  /*!< 0x00400000 */
+#define RCU_APB1EN_I2C1EN                   RCU_APB1EN_I2C1EN_Msk            /*!< I2C 2 clock enable */
 
 
-#define RCU_APB1ENR_TIM4EN_Pos               (3U)                              
-#define RCU_APB1ENR_TIM4EN_Msk               (0x1U << RCU_APB1ENR_TIM4EN_Pos)  /*!< 0x00000008 */
-#define RCU_APB1ENR_TIM4EN                   RCU_APB1ENR_TIM4EN_Msk            /*!< Timer 5 clock enable */
-#define RCU_APB1ENR_TIM5EN_Pos               (4U)                              
-#define RCU_APB1ENR_TIM5EN_Msk               (0x1U << RCU_APB1ENR_TIM5EN_Pos)  /*!< 0x00000010 */
-#define RCU_APB1ENR_TIM5EN                   RCU_APB1ENR_TIM5EN_Msk            /*!< Timer 6 clock enable */
-#define RCU_APB1ENR_TIM6EN_Pos               (5U)                              
-#define RCU_APB1ENR_TIM6EN_Msk               (0x1U << RCU_APB1ENR_TIM6EN_Pos)  /*!< 0x00000020 */
-#define RCU_APB1ENR_TIM6EN                   RCU_APB1ENR_TIM6EN_Msk            /*!< Timer 7 clock enable */
-#define RCU_APB1ENR_SPI2EN_Pos               (15U)                             
-#define RCU_APB1ENR_SPI2EN_Msk               (0x1U << RCU_APB1ENR_SPI2EN_Pos)  /*!< 0x00008000 */
-#define RCU_APB1ENR_SPI2EN                   RCU_APB1ENR_SPI2EN_Msk            /*!< SPI 3 clock enable */
-#define RCU_APB1ENR_UART3EN_Pos              (19U)                             
-#define RCU_APB1ENR_UART3EN_Msk              (0x1U << RCU_APB1ENR_UART3EN_Pos) /*!< 0x00080000 */
-#define RCU_APB1ENR_UART3EN                  RCU_APB1ENR_UART3EN_Msk           /*!< UART 4 clock enable */
-#define RCU_APB1ENR_UART4EN_Pos              (20U)                             
-#define RCU_APB1ENR_UART4EN_Msk              (0x1U << RCU_APB1ENR_UART4EN_Pos) /*!< 0x00100000 */
-#define RCU_APB1ENR_UART4EN                  RCU_APB1ENR_UART4EN_Msk           /*!< UART 5 clock enable */
+#define RCU_APB1EN_TIMER4EN_Pos               (3U)                              
+#define RCU_APB1EN_TIMER4EN_Msk               (0x1U << RCU_APB1EN_TIMER4EN_Pos)  /*!< 0x00000008 */
+#define RCU_APB1EN_TIMER4EN                   RCU_APB1EN_TIMER4EN_Msk            /*!< Timer 5 clock enable */
+#define RCU_APB1EN_TIMER5EN_Pos               (4U)                              
+#define RCU_APB1EN_TIMER5EN_Msk               (0x1U << RCU_APB1EN_TIMER5EN_Pos)  /*!< 0x00000010 */
+#define RCU_APB1EN_TIMER5EN                   RCU_APB1EN_TIMER5EN_Msk            /*!< Timer 6 clock enable */
+#define RCU_APB1EN_TIMER6EN_Pos               (5U)                              
+#define RCU_APB1EN_TIMER6EN_Msk               (0x1U << RCU_APB1EN_TIMER6EN_Pos)  /*!< 0x00000020 */
+#define RCU_APB1EN_TIMER6EN                   RCU_APB1EN_TIMER6EN_Msk            /*!< Timer 7 clock enable */
+#define RCU_APB1EN_SPI2EN_Pos               (15U)                             
+#define RCU_APB1EN_SPI2EN_Msk               (0x1U << RCU_APB1EN_SPI2EN_Pos)  /*!< 0x00008000 */
+#define RCU_APB1EN_SPI2EN                   RCU_APB1EN_SPI2EN_Msk            /*!< SPI 3 clock enable */
+#define RCU_APB1EN_UART3EN_Pos              (19U)                             
+#define RCU_APB1EN_UART3EN_Msk              (0x1U << RCU_APB1EN_UART3EN_Pos) /*!< 0x00080000 */
+#define RCU_APB1EN_UART3EN                  RCU_APB1EN_UART3EN_Msk           /*!< UART 4 clock enable */
+#define RCU_APB1EN_UART4EN_Pos              (20U)                             
+#define RCU_APB1EN_UART4EN_Msk              (0x1U << RCU_APB1EN_UART4EN_Pos) /*!< 0x00100000 */
+#define RCU_APB1EN_UART4EN                  RCU_APB1EN_UART4EN_Msk           /*!< UART 5 clock enable */
 
 
 
-#define RCU_APB1ENR_CAN1EN_Pos               (26U)                             
-#define RCU_APB1ENR_CAN1EN_Msk               (0x1U << RCU_APB1ENR_CAN1EN_Pos)  /*!< 0x04000000 */
-#define RCU_APB1ENR_CAN1EN                   RCU_APB1ENR_CAN1EN_Msk            /*!< CAN1 clock enable */
+#define RCU_APB1EN_CAN1EN_Pos               (26U)                             
+#define RCU_APB1EN_CAN1EN_Msk               (0x1U << RCU_APB1EN_CAN1EN_Pos)  /*!< 0x04000000 */
+#define RCU_APB1EN_CAN1EN                   RCU_APB1EN_CAN1EN_Msk            /*!< CAN1 clock enable */
 
-#define RCU_APB1ENR_DACEN_Pos                (29U)                             
-#define RCU_APB1ENR_DACEN_Msk                (0x1U << RCU_APB1ENR_DACEN_Pos)   /*!< 0x20000000 */
-#define RCU_APB1ENR_DACEN                    RCU_APB1ENR_DACEN_Msk             /*!< DAC interface clock enable */
+#define RCU_APB1EN_DACEN_Pos                (29U)                             
+#define RCU_APB1EN_DACEN_Msk                (0x1U << RCU_APB1EN_DACEN_Pos)   /*!< 0x20000000 */
+#define RCU_APB1EN_DACEN                    RCU_APB1EN_DACEN_Msk             /*!< DAC interface clock enable */
 
-/*******************  Bit definition for RCU_BDCR register  *******************/
-#define RCU_BDCR_LXTALON_Pos                   (0U)                              
-#define RCU_BDCR_LXTALON_Msk                   (0x1U << RCU_BDCR_LXTALON_Pos)      /*!< 0x00000001 */
-#define RCU_BDCR_LXTALON                       RCU_BDCR_LXTALON_Msk                /*!< External Low Speed oscillator enable */
-#define RCU_BDCR_LXTALRDY_Pos                  (1U)                              
-#define RCU_BDCR_LXTALRDY_Msk                  (0x1U << RCU_BDCR_LXTALRDY_Pos)     /*!< 0x00000002 */
-#define RCU_BDCR_LXTALRDY                      RCU_BDCR_LXTALRDY_Msk               /*!< External Low Speed oscillator Ready */
-#define RCU_BDCR_LXTALBYP_Pos                  (2U)                              
-#define RCU_BDCR_LXTALBYP_Msk                  (0x1U << RCU_BDCR_LXTALBYP_Pos)     /*!< 0x00000004 */
-#define RCU_BDCR_LXTALBYP                      RCU_BDCR_LXTALBYP_Msk               /*!< External Low Speed oscillator Bypass */
+/*******************  Bit definition for RCU_BDCTL register  *******************/
+#define RCU_BDCTL_LXTALEN_Pos                   (0U)                              
+#define RCU_BDCTL_LXTALEN_Msk                   (0x1U << RCU_BDCTL_LXTALEN_Pos)      /*!< 0x00000001 */
+#define RCU_BDCTL_LXTALEN                       RCU_BDCTL_LXTALEN_Msk                /*!< External Low Speed oscillator enable */
+#define RCU_BDCTL_LXTALSTB_Pos                  (1U)                              
+#define RCU_BDCTL_LXTALSTB_Msk                  (0x1U << RCU_BDCTL_LXTALSTB_Pos)     /*!< 0x00000002 */
+#define RCU_BDCTL_LXTALSTB                      RCU_BDCTL_LXTALSTB_Msk               /*!< External Low Speed oscillator Ready */
+#define RCU_BDCTL_LXTALBPS_Pos                  (2U)                              
+#define RCU_BDCTL_LXTALBPS_Msk                  (0x1U << RCU_BDCTL_LXTALBPS_Pos)     /*!< 0x00000004 */
+#define RCU_BDCTL_LXTALBPS                      RCU_BDCTL_LXTALBPS_Msk               /*!< External Low Speed oscillator Bypass */
 
-#define RCU_BDCR_RTCSEL_Pos                  (8U)                              
-#define RCU_BDCR_RTCSEL_Msk                  (0x3U << RCU_BDCR_RTCSEL_Pos)     /*!< 0x00000300 */
-#define RCU_BDCR_RTCSEL                      RCU_BDCR_RTCSEL_Msk               /*!< RTCSEL[1:0] bits (RTC clock source selection) */
-#define RCU_BDCR_RTCSEL_0                    (0x1U << RCU_BDCR_RTCSEL_Pos)     /*!< 0x00000100 */
-#define RCU_BDCR_RTCSEL_1                    (0x2U << RCU_BDCR_RTCSEL_Pos)     /*!< 0x00000200 */
+#define RCU_BDCTL_RTCSRC_Pos                  (8U)                              
+#define RCU_BDCTL_RTCSRC_Msk                  (0x3U << RCU_BDCTL_RTCSRC_Pos)     /*!< 0x00000300 */
+#define RCU_BDCTL_RTCSRC                      RCU_BDCTL_RTCSRC_Msk               /*!< RTCSEL[1:0] bits (RTC clock source selection) */
+#define RCU_BDCTL_RTCSRC_0                    (0x1U << RCU_BDCTL_RTCSRC_Pos)     /*!< 0x00000100 */
+#define RCU_BDCTL_RTCSRC_1                    (0x2U << RCU_BDCTL_RTCSRC_Pos)     /*!< 0x00000200 */
 
 /*!< RTC congiguration */
-#define RCU_BDCR_RTCSEL_NOCLOCK              0x00000000U                       /*!< No clock */
-#define RCU_BDCR_RTCSEL_LXTAL                  0x00000100U                       /*!< LXTAL oscillator clock used as RTC clock */
-#define RCU_BDCR_RTCSEL_IRC40K                  0x00000200U                       /*!< IRC40K oscillator clock used as RTC clock */
-#define RCU_BDCR_RTCSEL_HXTAL                  0x00000300U                       /*!< HXTAL oscillator clock divided by 128 used as RTC clock */
+#define RCU_BDCTL_RTCSRC_NOCLOCK              0x00000000U                       /*!< No clock */
+#define RCU_BDCTL_RTCSRC_LXTAL                  0x00000100U                       /*!< LXTAL oscillator clock used as RTC clock */
+#define RCU_BDCTL_RTCSRC_IRC40K                  0x00000200U                       /*!< IRC40K oscillator clock used as RTC clock */
+#define RCU_BDCTL_RTCSRC_HXTAL                  0x00000300U                       /*!< HXTAL oscillator clock divided by 128 used as RTC clock */
 
-#define RCU_BDCR_RTCEN_Pos                   (15U)                             
-#define RCU_BDCR_RTCEN_Msk                   (0x1U << RCU_BDCR_RTCEN_Pos)      /*!< 0x00008000 */
-#define RCU_BDCR_RTCEN                       RCU_BDCR_RTCEN_Msk                /*!< RTC clock enable */
-#define RCU_BDCR_BDRST_Pos                   (16U)                             
-#define RCU_BDCR_BDRST_Msk                   (0x1U << RCU_BDCR_BDRST_Pos)      /*!< 0x00010000 */
-#define RCU_BDCR_BDRST                       RCU_BDCR_BDRST_Msk                /*!< Backup domain software reset  */
+#define RCU_BDCTL_RTCEN_Pos                   (15U)                             
+#define RCU_BDCTL_RTCEN_Msk                   (0x1U << RCU_BDCTL_RTCEN_Pos)      /*!< 0x00008000 */
+#define RCU_BDCTL_RTCEN                       RCU_BDCTL_RTCEN_Msk                /*!< RTC clock enable */
+#define RCU_BDCTL_BKPRST_Pos                   (16U)                             
+#define RCU_BDCTL_BKPRST_Msk                   (0x1U << RCU_BDCTL_BKPRST_Pos)      /*!< 0x00010000 */
+#define RCU_BDCTL_BKPRST                       RCU_BDCTL_BKPRST_Msk                /*!< Backup domain software reset  */
 
-/*******************  Bit definition for RCU_CSR register  ********************/  
-#define RCU_CSR_IRC40KON_Pos                    (0U)                              
-#define RCU_CSR_IRC40KON_Msk                    (0x1U << RCU_CSR_IRC40KON_Pos)       /*!< 0x00000001 */
-#define RCU_CSR_IRC40KON                        RCU_CSR_IRC40KON_Msk                 /*!< Internal Low Speed oscillator enable */
-#define RCU_CSR_IRC40KRDY_Pos                   (1U)                              
-#define RCU_CSR_IRC40KRDY_Msk                   (0x1U << RCU_CSR_IRC40KRDY_Pos)      /*!< 0x00000002 */
-#define RCU_CSR_IRC40KRDY                       RCU_CSR_IRC40KRDY_Msk                /*!< Internal Low Speed oscillator Ready */
-#define RCU_CSR_RMVF_Pos                     (24U)                             
-#define RCU_CSR_RMVF_Msk                     (0x1U << RCU_CSR_RMVF_Pos)        /*!< 0x01000000 */
-#define RCU_CSR_RMVF                         RCU_CSR_RMVF_Msk                  /*!< Remove reset flag */
-#define RCU_CSR_PINRSTF_Pos                  (26U)                             
-#define RCU_CSR_PINRSTF_Msk                  (0x1U << RCU_CSR_PINRSTF_Pos)     /*!< 0x04000000 */
-#define RCU_CSR_PINRSTF                      RCU_CSR_PINRSTF_Msk               /*!< PIN reset flag */
-#define RCU_CSR_PORRSTF_Pos                  (27U)                             
-#define RCU_CSR_PORRSTF_Msk                  (0x1U << RCU_CSR_PORRSTF_Pos)     /*!< 0x08000000 */
-#define RCU_CSR_PORRSTF                      RCU_CSR_PORRSTF_Msk               /*!< POR/PDR reset flag */
-#define RCU_CSR_SFTRSTF_Pos                  (28U)                             
-#define RCU_CSR_SFTRSTF_Msk                  (0x1U << RCU_CSR_SFTRSTF_Pos)     /*!< 0x10000000 */
-#define RCU_CSR_SFTRSTF                      RCU_CSR_SFTRSTF_Msk               /*!< Software Reset flag */
-#define RCU_CSR_FWDGTRSTF_Pos                 (29U)                             
-#define RCU_CSR_FWDGTRSTF_Msk                 (0x1U << RCU_CSR_FWDGTRSTF_Pos)    /*!< 0x20000000 */
-#define RCU_CSR_FWDGTRSTF                     RCU_CSR_FWDGTRSTF_Msk              /*!< Independent Watchdog reset flag */
-#define RCU_CSR_WWDGRSTF_Pos                 (30U)                             
-#define RCU_CSR_WWDGRSTF_Msk                 (0x1U << RCU_CSR_WWDGRSTF_Pos)    /*!< 0x40000000 */
-#define RCU_CSR_WWDGRSTF                     RCU_CSR_WWDGRSTF_Msk              /*!< Window watchdog reset flag */
-#define RCU_CSR_LPMURSTF_Pos                 (31U)                             
-#define RCU_CSR_LPMURSTF_Msk                 (0x1U << RCU_CSR_LPMURSTF_Pos)    /*!< 0x80000000 */
-#define RCU_CSR_LPMURSTF                     RCU_CSR_LPMURSTF_Msk              /*!< Low-Power reset flag */
+/*******************  Bit definition for RCU_RSTSCK register  ********************/  
+#define RCU_RSTSCK_IRC40KEN_Pos                    (0U)                              
+#define RCU_RSTSCK_IRC40KEN_Msk                    (0x1U << RCU_RSTSCK_IRC40KEN_Pos)       /*!< 0x00000001 */
+#define RCU_RSTSCK_IRC40KEN                        RCU_RSTSCK_IRC40KEN_Msk                 /*!< Internal Low Speed oscillator enable */
+#define RCU_RSTSCK_IRC40KSTB_Pos                   (1U)                              
+#define RCU_RSTSCK_IRC40KSTB_Msk                   (0x1U << RCU_RSTSCK_IRC40KSTB_Pos)      /*!< 0x00000002 */
+#define RCU_RSTSCK_IRC40KSTB                       RCU_RSTSCK_IRC40KSTB_Msk                /*!< Internal Low Speed oscillator Ready */
+#define RCU_RSTSCK_RSTCF_Pos                     (24U)                             
+#define RCU_RSTSCK_RSTCF_Msk                     (0x1U << RCU_RSTSCK_RSTCF_Pos)        /*!< 0x01000000 */
+#define RCU_RSTSCK_RSTCF                         RCU_RSTSCK_RSTCF_Msk                  /*!< Remove reset flag */
+#define RCU_RSTSCK_EPRSTF_Pos                  (26U)                             
+#define RCU_RSTSCK_EPRSTF_Msk                  (0x1U << RCU_RSTSCK_EPRSTF_Pos)     /*!< 0x04000000 */
+#define RCU_RSTSCK_EPRSTF                      RCU_RSTSCK_EPRSTF_Msk               /*!< PIN reset flag */
+#define RCU_RSTSCK_PORRSTF_Pos                  (27U)                             
+#define RCU_RSTSCK_PORRSTF_Msk                  (0x1U << RCU_RSTSCK_PORRSTF_Pos)     /*!< 0x08000000 */
+#define RCU_RSTSCK_PORRSTF                      RCU_RSTSCK_PORRSTF_Msk               /*!< POR/PDR reset flag */
+#define RCU_RSTSCK_SWRSTF_Pos                  (28U)                             
+#define RCU_RSTSCK_SWRSTF_Msk                  (0x1U << RCU_RSTSCK_SWRSTF_Pos)     /*!< 0x10000000 */
+#define RCU_RSTSCK_SWRSTF                      RCU_RSTSCK_SWRSTF_Msk               /*!< Software Reset flag */
+#define RCU_RSTSCK_FWDGTRSTF_Pos                 (29U)                             
+#define RCU_RSTSCK_FWDGTRSTF_Msk                 (0x1U << RCU_RSTSCK_FWDGTRSTF_Pos)    /*!< 0x20000000 */
+#define RCU_RSTSCK_FWDGTRSTF                     RCU_RSTSCK_FWDGTRSTF_Msk              /*!< Independent Watchdog reset flag */
+#define RCU_RSTSCK_WWDGTRSTF_Pos                 (30U)                             
+#define RCU_RSTSCK_WWDGTRSTF_Msk                 (0x1U << RCU_RSTSCK_WWDGTRSTF_Pos)    /*!< 0x40000000 */
+#define RCU_RSTSCK_WWDGTRSTF                     RCU_RSTSCK_WWDGTRSTF_Msk              /*!< Window watchdog reset flag */
+#define RCU_RSTSCK_LPRSTF_Pos                 (31U)                             
+#define RCU_RSTSCK_LPRSTF_Msk                 (0x1U << RCU_RSTSCK_LPRSTF_Pos)    /*!< 0x80000000 */
+#define RCU_RSTSCK_LPRSTF                     RCU_RSTSCK_LPRSTF_Msk              /*!< Low-Power reset flag */
 
-/*******************  Bit definition for RCU_AHBRSTR register  ****************/
-#define RCU_AHBRSTR_OTGFSRST_Pos             (12U)                             
-#define RCU_AHBRSTR_OTGFSRST_Msk             (0x1U << RCU_AHBRSTR_OTGFSRST_Pos) /*!< 0x00001000 */
-#define RCU_AHBRSTR_OTGFSRST                 RCU_AHBRSTR_OTGFSRST_Msk          /*!< USB OTG FS reset */
+/*******************  Bit definition for RCU_AHBRST register  ****************/
+#define RCU_AHBRST_USBFSRST_Pos             (12U)                             
+#define RCU_AHBRST_USBFSRST_Msk             (0x1U << RCU_AHBRST_USBFSRST_Pos) /*!< 0x00001000 */
+#define RCU_AHBRST_USBFSRST                 RCU_AHBRST_USBFSRST_Msk          /*!< USB OTG FS reset */
 
 /*******************  Bit definition for RCU_CFGR2 register  ******************/
 /*!< PREDIV1 configuration */

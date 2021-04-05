@@ -200,14 +200,14 @@
 /** @} */
 
 /**
- * @name    RCU_BDCR register bits definitions
+ * @name    RCU_BDCTL register bits definitions
  * @{
  */
-#define GD32_RTCSEL_MASK       (3 << 8)    /**< RTC clock source mask.     */
-#define GD32_RTCSEL_NOCLOCK    (0 << 8)    /**< No clock.                  */
-#define GD32_RTCSEL_LXTAL        (1 << 8)    /**< LXTAL used as RTC clock.     */
-#define GD32_RTCSEL_IRC40K        (2 << 8)    /**< IRC40K used as RTC clock.     */
-#define GD32_RTCSEL_HXTALDIV     (3 << 8)    /**< HXTAL divided by 128 used as
+#define GD32_RTCSRC_MASK       (3 << 8)    /**< RTC clock source mask.     */
+#define GD32_RTCSRC_NOCLOCK    (0 << 8)    /**< No clock.                  */
+#define GD32_RTCSRC_LXTAL        (1 << 8)    /**< LXTAL used as RTC clock.     */
+#define GD32_RTCSRC_IRC40K        (2 << 8)    /**< IRC40K used as RTC clock.     */
+#define GD32_RTCSRC_HXTALDIV     (3 << 8)    /**< HXTAL divided by 128 used as
                                                  RTC clock.                 */
 /** @} */
 
@@ -363,8 +363,8 @@
 /**
  * @brief   RTC clock source.
  */
-#if !defined(GD32_RTCSEL) || defined(__DOXYGEN__)
-#define GD32_RTCSEL                   GD32_RTCSEL_NOCLOCK
+#if !defined(GD32_RTCSRC) || defined(__DOXYGEN__)
+#define GD32_RTCSRC                   GD32_RTCSRC_NOCLOCK
 #endif
 /** @} */
 
@@ -432,8 +432,8 @@
 #error "HXTAL not enabled, required by GD32_CKOUT0SEL"
 #endif
 
-#if GD32_RTCSEL == GD32_RTCSEL_HXTALDIV
-#error "HXTAL not enabled, required by GD32_RTCSEL"
+#if GD32_RTCSRC == GD32_RTCSRC_HXTALDIV
+#error "HXTAL not enabled, required by GD32_RTCSRC"
 #endif
 
 #endif /* !GD32_HXTAL_ENABLED */
@@ -444,8 +444,8 @@
 #if GD32_IRC40K_ENABLED
 #else /* !GD32_IRC40K_ENABLED */
 
-#if GD32_RTCSEL == GD32_RTCSEL_IRC40K
-#error "IRC40K not enabled, required by GD32_RTCSEL"
+#if GD32_RTCSRC == GD32_RTCSRC_IRC40K
+#error "IRC40K not enabled, required by GD32_RTCSRC"
 #endif
 
 #endif /* !GD32_IRC40K_ENABLED */
@@ -465,8 +465,8 @@
 
 #else /* !GD32_LXTAL_ENABLED */
 
-#if GD32_RTCSEL == GD32_RTCSEL_LXTAL
-#error "LXTAL not enabled, required by GD32_RTCSEL"
+#if GD32_RTCSRC == GD32_RTCSRC_LXTAL
+#error "LXTAL not enabled, required by GD32_RTCSRC"
 #endif
 
 #endif /* !GD32_LXTAL_ENABLED */
@@ -761,13 +761,13 @@
 /**
  * @brief   RTC clock.
  */
-#if (GD32_RTCSEL == GD32_RTCSEL_LXTAL) || defined(__DOXYGEN__)
+#if (GD32_RTCSRC == GD32_RTCSRC_LXTAL) || defined(__DOXYGEN__)
 #define GD32_RTCCLK                GD32_LXTALCLK
-#elif GD32_RTCSEL == GD32_RTCSEL_IRC40K
+#elif GD32_RTCSRC == GD32_RTCSRC_IRC40K
 #define GD32_RTCCLK                GD32_IRC40KCLK
-#elif GD32_RTCSEL == GD32_RTCSEL_HXTALDIV
+#elif GD32_RTCSRC == GD32_RTCSRC_HXTALDIV
 #define GD32_RTCCLK                (GD32_HXTALCLK / 128)
-#elif GD32_RTCSEL == GD32_RTCSEL_NOCLOCK
+#elif GD32_RTCSRC == GD32_RTCSRC_NOCLOCK
 #define GD32_RTCCLK                0
 #else
 #error "invalid source selected for RTC clock"

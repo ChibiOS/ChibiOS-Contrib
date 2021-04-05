@@ -31,13 +31,13 @@
 /*===========================================================================*/
 
 #if GD32_HAS_GPIOE
-#define APB2_EN_MASK  (RCU_APB2ENR_IOPAEN | RCU_APB2ENR_IOPBEN |            \
-                       RCU_APB2ENR_IOPCEN | RCU_APB2ENR_IOPDEN |            \
-                       RCU_APB2ENR_IOPEEN | RCU_APB2ENR_AFIOEN)
+#define APB2_EN_MASK  (RCU_APB2EN_PAEN | RCU_APB2EN_PBEN |            \
+                       RCU_APB2EN_PCEN | RCU_APB2EN_PDEN |            \
+                       RCU_APB2EN_PEEN | RCU_APB2EN_AFEN)
 #else
-#define APB2_EN_MASK  (RCU_APB2ENR_IOPAEN | RCU_APB2ENR_IOPBEN |            \
-                       RCU_APB2ENR_IOPCEN | RCU_APB2ENR_IOPDEN |            \
-                       RCU_APB2ENR_AFIOEN)
+#define APB2_EN_MASK  (RCU_APB2EN_PAEN | RCU_APB2EN_PBEN |            \
+                       RCU_APB2EN_PCEN | RCU_APB2EN_PDEN |            \
+                       RCU_APB2EN_AFEN)
 #endif
 
 /*===========================================================================*/
