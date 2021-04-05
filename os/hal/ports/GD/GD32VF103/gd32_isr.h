@@ -160,6 +160,13 @@
 #endif
 
 /**
+ * @brief   EXTI9..5 interrupt priority level setting.
+ */
+#if !defined(GD32_IRQ_EXTI5_9_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_IRQ_EXTI5_9_PRIORITY          6
+#endif
+
+/**
  * @brief   EXTI15..10 interrupt priority level setting.
  */
 #if !defined(GD32_IRQ_EXTI10_15_PRIORITY) || defined(__DOXYGEN__)
@@ -183,6 +190,7 @@
 #define GD32_IRQ_EXTI2_TRIGGER           ECLIC_TRIGGER_DEFAULT
 #define GD32_IRQ_EXTI3_TRIGGER           ECLIC_TRIGGER_DEFAULT
 #define GD32_IRQ_EXTI4_TRIGGER           ECLIC_TRIGGER_DEFAULT
+#define GD32_IRQ_EXTI5_9_TRIGGER         ECLIC_TRIGGER_DEFAULT
 #define GD32_IRQ_EXTI10_15_TRIGGER       ECLIC_TRIGGER_DEFAULT
 
 #define GD32_GPT_TIM0_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
