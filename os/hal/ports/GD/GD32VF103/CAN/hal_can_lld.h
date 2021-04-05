@@ -89,6 +89,14 @@
 #endif
 
 /**
+ * @brief   CAN0 driver enable switch.
+ * @details If set to @p TRUE the support for CAN0 is included.
+ */
+#if !defined(GD32_CAN_USE_CAN0) || defined(__DOXYGEN__)
+#define GD32_CAN_USE_CAN0                  FALSE
+#endif
+
+/**
  * @brief   CAN1 driver enable switch.
  * @details If set to @p TRUE the support for CAN1 is included.
  */
@@ -97,12 +105,12 @@
 #endif
 
 /**
- * @brief   CAN2 driver enable switch.
- * @details If set to @p TRUE the support for CAN2 is included.
+ * @brief   CAN0 interrupt priority level setting.
  */
-#if !defined(GD32_CAN_USE_CAN2) || defined(__DOXYGEN__)
-#define GD32_CAN_USE_CAN2                  FALSE
+#if !defined(GD32_CAN_CAN0_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_CAN_CAN0_IRQ_PRIORITY         11
 #endif
+/** @} */
 
 /**
  * @brief   CAN1 interrupt priority level setting.
@@ -112,44 +120,36 @@
 #endif
 /** @} */
 
-/**
- * @brief   CAN2 interrupt priority level setting.
- */
-#if !defined(GD32_CAN_CAN2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_CAN_CAN2_IRQ_PRIORITY         11
-#endif
-/** @} */
-
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+#if !defined(GD32_HAS_CAN0)
+#error "GD32_HAS_CAN0 not defined in registry"
+#endif
 
 #if !defined(GD32_HAS_CAN1)
 #error "GD32_HAS_CAN1 not defined in registry"
 #endif
 
-#if !defined(GD32_HAS_CAN2)
-#error "GD32_HAS_CAN2 not defined in registry"
+#if (GD32_HAS_CAN0 | GD32_HAS_CAN1) && !defined(GD32_CAN_MAX_FILTERS)
+#error "GD32_CAN_MAX_FILTERS not defined in registry"
 #endif
 
-#if (GD32_HAS_CAN1 | GD32_HAS_CAN2) && !defined(GD32_CAN_MAX_FILTERS)
-#error "GD32_CAN_MAX_FILTERS not defined in registry"
+#if GD32_CAN_USE_CAN0 && !GD32_HAS_CAN0
+#error "CAN0 not present in the selected device"
 #endif
 
 #if GD32_CAN_USE_CAN1 && !GD32_HAS_CAN1
 #error "CAN1 not present in the selected device"
 #endif
 
-#if GD32_CAN_USE_CAN2 && !GD32_HAS_CAN2
-#error "CAN2 not present in the selected device"
-#endif
-
-#if !GD32_CAN_USE_CAN1 && !GD32_CAN_USE_CAN2 
+#if !GD32_CAN_USE_CAN0 && !GD32_CAN_USE_CAN1 
 #error "CAN driver activated but no CAN peripheral assigned"
 #endif
 
-#if !GD32_CAN_USE_CAN1 && GD32_CAN_USE_CAN2
-#error "CAN2 requires CAN1, it cannot operate independently"
+#if !GD32_CAN_USE_CAN0 && GD32_CAN_USE_CAN1
+#error "CAN1 requires CAN0, it cannot operate independently"
 #endif
 
 #if CAN_USE_SLEEP_MODE && !CAN_SUPPORTS_SLEEP
@@ -398,11 +398,11 @@ struct CANDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if GD32_CAN_USE_CAN1 && !defined(__DOXYGEN__)
+#if GD32_CAN_USE_CAN0 && !defined(__DOXYGEN__)
 extern CANDriver CAND1;
 #endif
 
-#if GD32_CAN_USE_CAN2 && !defined(__DOXYGEN__)
+#if GD32_CAN_USE_CAN1 && !defined(__DOXYGEN__)
 extern CANDriver CAND2;
 #endif
 

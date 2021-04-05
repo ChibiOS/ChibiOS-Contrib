@@ -299,8 +299,31 @@
  * @{
  */
 /**
- * @brief   Enables the CAN1 peripheral clock.
+ * @brief   Enables the CAN0 peripheral clock.
  * @note    The @p lp parameter is ignored in this family.
+ *
+ * @param[in] lp        low power enable flag
+ *
+ * @api
+ */
+#define rcuEnableCAN0(lp) rcuEnableAPB1(RCU_APB1ENR_CAN0EN, lp)
+
+/**
+ * @brief   Disables the CAN0 peripheral clock.
+ *
+ * @api
+ */
+#define rcuDisableCAN0() rcuDisableAPB1(RCU_APB1ENR_CAN0EN)
+
+/**
+ * @brief   Resets the CAN0 peripheral.
+ *
+ * @api
+ */
+#define rcuResetCAN0() rcuResetAPB1(RCU_APB1RSTR_CAN0RST)
+
+/**
+ * @brief   Enables the CAN1 peripheral clock.
  *
  * @param[in] lp        low power enable flag
  *
@@ -321,29 +344,6 @@
  * @api
  */
 #define rcuResetCAN1() rcuResetAPB1(RCU_APB1RSTR_CAN1RST)
-
-/**
- * @brief   Enables the CAN2 peripheral clock.
- *
- * @param[in] lp        low power enable flag
- *
- * @api
- */
-#define rcuEnableCAN2(lp) rcuEnableAPB1(RCU_APB1ENR_CAN2EN, lp)
-
-/**
- * @brief   Disables the CAN2 peripheral clock.
- *
- * @api
- */
-#define rcuDisableCAN2() rcuDisableAPB1(RCU_APB1ENR_CAN2EN)
-
-/**
- * @brief   Resets the CAN2 peripheral.
- *
- * @api
- */
-#define rcuResetCAN2() rcuResetAPB1(RCU_APB1RSTR_CAN2RST)
 /** @} */
 
 /**

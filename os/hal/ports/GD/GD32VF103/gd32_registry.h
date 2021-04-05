@@ -102,8 +102,8 @@
 #define GD32_HAS_ADC2                      TRUE
 
 /* CAN attributes.*/
+#define GD32_HAS_CAN0                      TRUE
 #define GD32_HAS_CAN1                      TRUE
-#define GD32_HAS_CAN2                      TRUE
 #define GD32_CAN_MAX_FILTERS               28
 
 /* DAC attributes.*/

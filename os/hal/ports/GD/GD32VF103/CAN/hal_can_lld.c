@@ -33,9 +33,9 @@
 /*
  * Addressing differences in the headers, they seem unable to agree on names.
  */
-#if GD32_CAN_USE_CAN1
-#if !defined(CAN1)
-#define CAN1 CAN
+#if GD32_CAN_USE_CAN0
+#if !defined(CAN0)
+#define CAN0 CAN
 #endif
 #endif
 
@@ -43,13 +43,13 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-/** @brief CAN1 driver identifier.*/
-#if GD32_CAN_USE_CAN1 || defined(__DOXYGEN__)
+/** @brief CAN0 driver identifier.*/
+#if GD32_CAN_USE_CAN0 || defined(__DOXYGEN__)
 CANDriver CAND1;
 #endif
 
-/** @brief CAN2 driver identifier.*/
-#if GD32_CAN_USE_CAN2 || defined(__DOXYGEN__)
+/** @brief CAN1 driver identifier.*/
+#if GD32_CAN_USE_CAN1 || defined(__DOXYGEN__)
 CANDriver CAND2;
 #endif
 
@@ -64,7 +64,7 @@ CANDriver CAND2;
  * @brief   Programs the filters of CAN 1 and CAN 2.
  *
  * @param[in] canp      pointer to the @p CANDriver object
- * @param[in] can2sb    number of the first filter assigned to CAN2
+ * @param[in] can2sb    number of the first filter assigned to CAN1
  * @param[in] num       number of entries in the filters array, if zero then
  *                      a default filter is programmed
  * @param[in] cfp       pointer to the filters array, can be @p NULL if
@@ -77,17 +77,17 @@ static void can_lld_set_filters(CANDriver* canp,
                                 uint32_t num,
                                 const CANFilter *cfp) {
 
-#if GD32_CAN_USE_CAN2
+#if GD32_CAN_USE_CAN1
   if (canp == &CAND2) {
-    /* Set handle to CAN1, because CAN1 manages the filters of CAN2.*/
+    /* Set handle to CAN0, because CAN0 manages the filters of CAN1.*/
     canp = &CAND1;
   }
 #endif
 
   /* Temporarily enabling CAN clock.*/
-#if GD32_CAN_USE_CAN1
+#if GD32_CAN_USE_CAN0
   if (canp == &CAND1) {
-    rcuEnableCAN1(true);
+    rcuEnableCAN0(true);
     /* Filters initialization.*/
     canp->can->FCTL = (canp->can->FCTL & 0xFFFF0000) | CAN_FCTL_FLD;
     canp->can->FCTL = (canp->can->FCTL & 0xFFFF0000) | (can2sb << 8) | CAN_FCTL_FLD;
@@ -103,7 +103,7 @@ static void can_lld_set_filters(CANDriver* canp,
     canp->can->FSCFG = 0;
     canp->can->FAFIFO = 0;
 
-#if GD32_CAN_USE_CAN1
+#if GD32_CAN_USE_CAN0
     if (canp == &CAND1) {
       for (i = 0; i < GD32_CAN_MAX_FILTERS; i++) {
         canp->can->sFilterRegister[i].FR1 = 0;
@@ -132,7 +132,7 @@ static void can_lld_set_filters(CANDriver* canp,
        CANs.*/
     canp->can->sFilterRegister[0].FR1 = 0;
     canp->can->sFilterRegister[0].FR2 = 0;
-#if GD32_CAN_USE_CAN2
+#if GD32_CAN_USE_CAN1
     if (canp == &CAND1) {
       canp->can->sFilterRegister[can2sb].FR1 = 0;
       canp->can->sFilterRegister[can2sb].FR2 = 0;
@@ -142,7 +142,7 @@ static void can_lld_set_filters(CANDriver* canp,
     canp->can->FAFIFO = 0;
     canp->can->FSCFG = 1;
     canp->can->FW = 1;
-#if GD32_CAN_USE_CAN2
+#if GD32_CAN_USE_CAN1
     if (canp == &CAND1) {
       canp->can->FSCFG |= 1 << can2sb;
       canp->can->FW |= 1 << can2sb;
@@ -153,9 +153,9 @@ static void can_lld_set_filters(CANDriver* canp,
 
   /* Clock disabled, it will be enabled again in can_lld_start().*/
   /* Temporarily enabling CAN clock.*/
-#if GD32_CAN_USE_CAN1
+#if GD32_CAN_USE_CAN0
   if (canp == &CAND1) {
-    rcuDisableCAN1();
+    rcuDisableCAN0();
   }
 #endif
 }
@@ -303,10 +303,10 @@ static void can_lld_sce_handler(CANDriver *canp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if GD32_CAN_USE_CAN1 || defined(__DOXYGEN__)
+#if GD32_CAN_USE_CAN0 || defined(__DOXYGEN__)
 #if defined(GD32_CAN0_UNIFIED_HANDLER)
 /**
- * @brief   CAN1 unified interrupt handler.
+ * @brief   CAN0 unified interrupt handler.
  *
  * @isr
  */
@@ -337,7 +337,7 @@ OSAL_IRQ_HANDLER(GD32_CAN0_UNIFIED_HANDLER) {
 #endif
 
 /**
- * @brief   CAN1 TX interrupt handler.
+ * @brief   CAN0 TX interrupt handler.
  *
  * @isr
  */
@@ -351,7 +351,7 @@ OSAL_IRQ_HANDLER(GD32_CAN0_TX_HANDLER) {
 }
 
 /**
- * @brief   CAN1 RX0 interrupt handler.
+ * @brief   CAN0 RX0 interrupt handler.
  *
  * @isr
  */
@@ -365,7 +365,7 @@ OSAL_IRQ_HANDLER(GD32_CAN0_RX0_HANDLER) {
 }
 
 /**
- * @brief   CAN1 RX1 interrupt handler.
+ * @brief   CAN0 RX1 interrupt handler.
  *
  * @isr
  */
@@ -379,7 +379,7 @@ OSAL_IRQ_HANDLER(GD32_CAN0_RX1_HANDLER) {
 }
 
 /**
- * @brief   CAN1 SCE interrupt handler.
+ * @brief   CAN0 SCE interrupt handler.
  *
  * @isr
  */
@@ -392,16 +392,16 @@ OSAL_IRQ_HANDLER(GD32_CAN0_EWMC_HANDLER) {
   OSAL_IRQ_EPILOGUE();
 }
 #endif /* !defined(GD32_CAN0_UNIFIED_HANDLER) */
-#endif /* GD32_CAN_USE_CAN1 */
+#endif /* GD32_CAN_USE_CAN0 */
 
-#if GD32_CAN_USE_CAN2 || defined(__DOXYGEN__)
-#if defined(GD32_CAN1_UNIFIED_HANDLER)
+#if GD32_CAN_USE_CAN1 || defined(__DOXYGEN__)
+#if defined(GD32_CAN0_UNIFIED_HANDLER)
 /**
- * @brief   CAN1 unified interrupt handler.
+ * @brief   CAN0 unified interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_CAN1_UNIFIED_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_CAN0_UNIFIED_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -412,7 +412,7 @@ OSAL_IRQ_HANDLER(GD32_CAN1_UNIFIED_HANDLER) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#else /* !defined(GD32_CAN1_UNIFIED_HANDLER) */
+#else /* !defined(GD32_CAN0_UNIFIED_HANDLER) */
 
 #if !defined(GD32_CAN0_TX_HANDLER)
 #error "GD32_CAN0_TX_HANDLER not defined"
@@ -428,11 +428,11 @@ OSAL_IRQ_HANDLER(GD32_CAN1_UNIFIED_HANDLER) {
 #endif
 
 /**
- * @brief   CAN2 TX interrupt handler.
+ * @brief   CAN1 TX interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_CAN1_TX_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_CAN0_TX_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -442,11 +442,11 @@ OSAL_IRQ_HANDLER(GD32_CAN1_TX_HANDLER) {
 }
 
 /**
- * @brief   CAN2 RX0 interrupt handler.
+ * @brief   CAN1 RX0 interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_CAN1_RX0_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_CAN0_RX0_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -456,11 +456,11 @@ OSAL_IRQ_HANDLER(GD32_CAN1_RX0_HANDLER) {
 }
 
 /**
- * @brief   CAN2 RX1 interrupt handler.
+ * @brief   CAN1 RX1 interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_CAN1_RX1_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_CAN0_RX1_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -470,11 +470,11 @@ OSAL_IRQ_HANDLER(GD32_CAN1_RX1_HANDLER) {
 }
 
 /**
- * @brief   CAN2 SCE interrupt handler.
+ * @brief   CAN1 SCE interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(GD32_CAN1_EWMC_HANDLER) {
+OSAL_IRQ_HANDLER(GD32_CAN0_EWMC_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -482,8 +482,8 @@ OSAL_IRQ_HANDLER(GD32_CAN1_EWMC_HANDLER) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* !defined(GD32_CAN1_UNIFIED_HANDLER) */
-#endif /* GD32_CAN_USE_CAN2 */
+#endif /* !defined(GD32_CAN0_UNIFIED_HANDLER) */
+#endif /* GD32_CAN_USE_CAN1 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -496,10 +496,24 @@ OSAL_IRQ_HANDLER(GD32_CAN1_EWMC_HANDLER) {
  */
 void can_lld_init(void) {
 
-#if GD32_CAN_USE_CAN1
+#if GD32_CAN_USE_CAN0
   /* Driver initialization.*/
   canObjectInit(&CAND1);
-  CAND1.can = CAN1;
+  CAND1.can = CAN0;
+#if defined(GD32_CAN0_UNIFIED_NUMBER)
+    eclicEnableVector(GD32_CAN0_UNIFIED_NUMBER, GD32_CAN_CAN0_IRQ_PRIORITY, GD32_CAN_CAN0_IRQ_TRIGGER);
+#else
+    eclicEnableVector(GD32_CAN0_TX_NUMBER, GD32_CAN_CAN0_IRQ_PRIORITY, GD32_CAN_CAN0_IRQ_TRIGGER);
+    eclicEnableVector(GD32_CAN0_RX0_NUMBER, GD32_CAN_CAN0_IRQ_PRIORITY, GD32_CAN_CAN0_IRQ_TRIGGER);
+    eclicEnableVector(GD32_CAN0_RX1_NUMBER, GD32_CAN_CAN0_IRQ_PRIORITY, GD32_CAN_CAN0_IRQ_TRIGGER);
+    eclicEnableVector(GD32_CAN0_EWMC_NUMBER, GD32_CAN_CAN0_IRQ_PRIORITY, GD32_CAN_CAN0_IRQ_TRIGGER);
+#endif
+#endif
+
+#if GD32_CAN_USE_CAN1
+  /* Driver initialization.*/
+  canObjectInit(&CAND2);
+  CAND2.can = CAN1;
 #if defined(GD32_CAN0_UNIFIED_NUMBER)
     eclicEnableVector(GD32_CAN0_UNIFIED_NUMBER, GD32_CAN_CAN1_IRQ_PRIORITY, GD32_CAN_CAN1_IRQ_TRIGGER);
 #else
@@ -510,23 +524,9 @@ void can_lld_init(void) {
 #endif
 #endif
 
-#if GD32_CAN_USE_CAN2
-  /* Driver initialization.*/
-  canObjectInit(&CAND2);
-  CAND2.can = CAN2;
-#if defined(GD32_CAN1_UNIFIED_NUMBER)
-    eclicEnableVector(GD32_CAN1_UNIFIED_NUMBER, GD32_CAN_CAN2_IRQ_PRIORITY, GD32_CAN_CAN2_IRQ_TRIGGER);
-#else
-    eclicEnableVector(GD32_CAN1_TX_NUMBER, GD32_CAN_CAN2_IRQ_PRIORITY, GD32_CAN_CAN2_IRQ_TRIGGER);
-    eclicEnableVector(GD32_CAN1_RX0_NUMBER, GD32_CAN_CAN2_IRQ_PRIORITY, GD32_CAN_CAN2_IRQ_TRIGGER);
-    eclicEnableVector(GD32_CAN1_RX1_NUMBER, GD32_CAN_CAN2_IRQ_PRIORITY, GD32_CAN_CAN2_IRQ_TRIGGER);
-    eclicEnableVector(GD32_CAN1_EWMC_NUMBER, GD32_CAN_CAN2_IRQ_PRIORITY, GD32_CAN_CAN2_IRQ_TRIGGER);
-#endif
-#endif
-
   /* Filters initialization.*/
-#if GD32_CAN_USE_CAN1
-#if GD32_HAS_CAN2
+#if GD32_CAN_USE_CAN0
+#if GD32_HAS_CAN1
   can_lld_set_filters(&CAND1, GD32_CAN_MAX_FILTERS / 2, 0, NULL);
 #else
   can_lld_set_filters(&CAND1, GD32_CAN_MAX_FILTERS, 0, NULL);
@@ -544,16 +544,16 @@ void can_lld_init(void) {
 void can_lld_start(CANDriver *canp) {
 
   /* Clock activation.*/
-#if GD32_CAN_USE_CAN1
+#if GD32_CAN_USE_CAN0
   if (&CAND1 == canp) {
-    rcuEnableCAN1(true);
+    rcuEnableCAN0(true);
   }
 #endif
 
-#if GD32_CAN_USE_CAN2
+#if GD32_CAN_USE_CAN1
   if (&CAND2 == canp) {
-    rcuEnableCAN1(true);    /* CAN 2 requires CAN1, so enabling it first.*/
-    rcuEnableCAN2(true);
+    rcuEnableCAN0(true);    /* CAN 2 requires CAN0, so enabling it first.*/
+    rcuEnableCAN1(true);
   }
 #endif
 
@@ -589,32 +589,32 @@ void can_lld_stop(CANDriver *canp) {
 
   /* If in ready state then disables the CAN peripheral.*/
   if (canp->state == CAN_READY) {
-#if GD32_CAN_USE_CAN1
+#if GD32_CAN_USE_CAN0
     if (&CAND1 == canp) {
-      CAN1->CTL = 0x00010002;                   /* Register reset value.    */
-      CAN1->INTEN = 0x00000000;                   /* All sources disabled.    */
-#if GD32_CAN_USE_CAN2
-      /* If CAND2 is stopped then CAN1 clock is stopped here.*/
+      CAN0->CTL = 0x00010002;                   /* Register reset value.    */
+      CAN0->INTEN = 0x00000000;                   /* All sources disabled.    */
+#if GD32_CAN_USE_CAN1
+      /* If CAND2 is stopped then CAN0 clock is stopped here.*/
       if (CAND2.state == CAN_STOP)
 #endif
       {
-        rcuDisableCAN1();
+        rcuDisableCAN0();
       }
     }
 #endif
 
-#if GD32_CAN_USE_CAN2
-    if (&CAND2 == canp) {
-      CAN2->CTL = 0x00010002;                   /* Register reset value.    */
-      CAN2->INTEN = 0x00000000;                   /* All sources disabled.    */
 #if GD32_CAN_USE_CAN1
-      /* If CAND1 is stopped then CAN1 clock is stopped here.*/
+    if (&CAND2 == canp) {
+      CAN1->CTL = 0x00010002;                   /* Register reset value.    */
+      CAN1->INTEN = 0x00000000;                   /* All sources disabled.    */
+#if GD32_CAN_USE_CAN0
+      /* If CAND1 is stopped then CAN0 clock is stopped here.*/
       if (CAND1.state == CAN_STOP)
 #endif
       {
-        rcuDisableCAN1();
+        rcuDisableCAN0();
       }
-      rcuDisableCAN2();
+      rcuDisableCAN1();
     }
 #endif
   }
@@ -837,7 +837,7 @@ void can_lld_wakeup(CANDriver *canp) {
  * @note    This is an STM32-specific API.
  *
  * @param[in] canp      pointer to the @p CANDriver object
- * @param[in] can2sb    number of the first filter assigned to CAN2
+ * @param[in] can2sb    number of the first filter assigned to CAN1
  * @param[in] num       number of entries in the filters array, if zero then
  *                      a default filter is programmed
  * @param[in] cfp       pointer to the filters array, can be @p NULL if
@@ -848,19 +848,19 @@ void can_lld_wakeup(CANDriver *canp) {
 void canSTM32SetFilters(CANDriver *canp, uint32_t can2sb,
                         uint32_t num, const CANFilter *cfp) {
 
-#if GD32_CAN_USE_CAN2
+#if GD32_CAN_USE_CAN1
   osalDbgCheck((can2sb <= GD32_CAN_MAX_FILTERS) &&
                (num <= GD32_CAN_MAX_FILTERS));
 #endif
 
-#if GD32_CAN_USE_CAN1
+#if GD32_CAN_USE_CAN0
   osalDbgAssert(CAND1.state == CAN_STOP, "invalid state");
 #endif
-#if GD32_CAN_USE_CAN2
+#if GD32_CAN_USE_CAN1
   osalDbgAssert(CAND2.state == CAN_STOP, "invalid state");
 #endif
 
-#if GD32_CAN_USE_CAN1
+#if GD32_CAN_USE_CAN0
   if (canp == &CAND1) {
     can_lld_set_filters(canp, can2sb, num, cfp);
   }

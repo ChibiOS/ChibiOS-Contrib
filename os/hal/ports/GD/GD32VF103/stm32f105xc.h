@@ -664,8 +664,8 @@ typedef struct
 #define UART4_BASE            (APB1PERIPH_BASE + 0x00005000U)
 #define I2C0_BASE             (APB1PERIPH_BASE + 0x00005400U)
 #define I2C1_BASE             (APB1PERIPH_BASE + 0x5800)
-#define CAN1_BASE             (APB1PERIPH_BASE + 0x00006400U)
-#define CAN2_BASE             (APB1PERIPH_BASE + 0x00006800U)
+#define CAN0_BASE             (APB1PERIPH_BASE + 0x00006400U)
+#define CAN1_BASE             (APB1PERIPH_BASE + 0x00006800U)
 //#define BKP_BASE              (APB1PERIPH_BASE + 0x00006C00U)
 //#define PMU_BASE              (APB1PERIPH_BASE + 0x00007000U)
 //#define DAC_BASE              (APB1PERIPH_BASE + 0x00007400U)
@@ -752,8 +752,8 @@ typedef struct
 #define UART4               ((USART_TypeDef *)UART4_BASE)
 #define I2C0                ((I2C_TypeDef *)I2C0_BASE)
 #define I2C1                ((I2C_TypeDef *)I2C1_BASE)
+#define CAN0                ((CAN_TypeDef *)CAN0_BASE)
 #define CAN1                ((CAN_TypeDef *)CAN1_BASE)
-#define CAN2                ((CAN_TypeDef *)CAN2_BASE)
 #define BKP                 ((BKP_TypeDef *)BKP_BASE)
 #define PMU                 ((PMU_TypeDef *)PMU_BASE)
 #define DAC1                ((DAC_TypeDef *)DAC_BASE)
@@ -1499,9 +1499,9 @@ typedef struct
 #define RCU_APB1RSTR_I2C0RST_Msk             (0x1U << RCU_APB1RSTR_I2C0RST_Pos) /*!< 0x00200000 */
 #define RCU_APB1RSTR_I2C0RST                 RCU_APB1RSTR_I2C0RST_Msk          /*!< I2C 1 reset */
 
-#define RCU_APB1RSTR_CAN1RST_Pos             (25U)                             
-#define RCU_APB1RSTR_CAN1RST_Msk             (0x1U << RCU_APB1RSTR_CAN1RST_Pos) /*!< 0x02000000 */
-#define RCU_APB1RSTR_CAN1RST                 RCU_APB1RSTR_CAN1RST_Msk          /*!< CAN1 reset */
+#define RCU_APB1RSTR_CAN0RST_Pos             (25U)                             
+#define RCU_APB1RSTR_CAN0RST_Msk             (0x1U << RCU_APB1RSTR_CAN0RST_Pos) /*!< 0x02000000 */
+#define RCU_APB1RSTR_CAN0RST                 RCU_APB1RSTR_CAN0RST_Msk          /*!< CAN0 reset */
 
 #define RCU_APB1RSTR_BKPRST_Pos              (27U)                             
 #define RCU_APB1RSTR_BKPRST_Msk              (0x1U << RCU_APB1RSTR_BKPRST_Pos) /*!< 0x08000000 */
@@ -1545,9 +1545,9 @@ typedef struct
 
 
 
-#define RCU_APB1RSTR_CAN2RST_Pos             (26U)                             
-#define RCU_APB1RSTR_CAN2RST_Msk             (0x1U << RCU_APB1RSTR_CAN2RST_Pos) /*!< 0x04000000 */
-#define RCU_APB1RSTR_CAN2RST                 RCU_APB1RSTR_CAN2RST_Msk          /*!< CAN2 reset */
+#define RCU_APB1RSTR_CAN1RST_Pos             (26U)                             
+#define RCU_APB1RSTR_CAN1RST_Msk             (0x1U << RCU_APB1RSTR_CAN1RST_Pos) /*!< 0x04000000 */
+#define RCU_APB1RSTR_CAN1RST                 RCU_APB1RSTR_CAN1RST_Msk          /*!< CAN1 reset */
 
 #define RCU_APB1RSTR_DACRST_Pos              (29U)                             
 #define RCU_APB1RSTR_DACRST_Msk              (0x1U << RCU_APB1RSTR_DACRST_Pos) /*!< 0x20000000 */
@@ -1635,9 +1635,9 @@ typedef struct
 #define RCU_APB1ENR_I2C0EN_Msk               (0x1U << RCU_APB1ENR_I2C0EN_Pos)  /*!< 0x00200000 */
 #define RCU_APB1ENR_I2C0EN                   RCU_APB1ENR_I2C0EN_Msk            /*!< I2C 1 clock enable */
 
-#define RCU_APB1ENR_CAN1EN_Pos               (25U)                             
-#define RCU_APB1ENR_CAN1EN_Msk               (0x1U << RCU_APB1ENR_CAN1EN_Pos)  /*!< 0x02000000 */
-#define RCU_APB1ENR_CAN1EN                   RCU_APB1ENR_CAN1EN_Msk            /*!< CAN1 clock enable */
+#define RCU_APB1ENR_CAN0EN_Pos               (25U)                             
+#define RCU_APB1ENR_CAN0EN_Msk               (0x1U << RCU_APB1ENR_CAN0EN_Pos)  /*!< 0x02000000 */
+#define RCU_APB1ENR_CAN0EN                   RCU_APB1ENR_CAN0EN_Msk            /*!< CAN0 clock enable */
 
 #define RCU_APB1ENR_BKPEN_Pos                (27U)                             
 #define RCU_APB1ENR_BKPEN_Msk                (0x1U << RCU_APB1ENR_BKPEN_Pos)   /*!< 0x08000000 */
@@ -1681,9 +1681,9 @@ typedef struct
 
 
 
-#define RCU_APB1ENR_CAN2EN_Pos               (26U)                             
-#define RCU_APB1ENR_CAN2EN_Msk               (0x1U << RCU_APB1ENR_CAN2EN_Pos)  /*!< 0x04000000 */
-#define RCU_APB1ENR_CAN2EN                   RCU_APB1ENR_CAN2EN_Msk            /*!< CAN2 clock enable */
+#define RCU_APB1ENR_CAN1EN_Pos               (26U)                             
+#define RCU_APB1ENR_CAN1EN_Msk               (0x1U << RCU_APB1ENR_CAN1EN_Pos)  /*!< 0x04000000 */
+#define RCU_APB1ENR_CAN1EN                   RCU_APB1ENR_CAN1EN_Msk            /*!< CAN1 clock enable */
 
 #define RCU_APB1ENR_DACEN_Pos                (29U)                             
 #define RCU_APB1ENR_DACEN_Msk                (0x1U << RCU_APB1ENR_DACEN_Pos)   /*!< 0x20000000 */
@@ -5781,7 +5781,7 @@ typedef struct
 #define CAN_FCTL_FLD                        CAN_FCTL_FLD_Msk                 /*!< Filter Init Mode */
 #define CAN_FCTL_HBC1F_Pos                   (8U)                              
 #define CAN_FCTL_HBC1F_Msk                   (0x3FU << CAN_FCTL_HBC1F_Pos)     /*!< 0x00003F00 */
-#define CAN_FCTL_HBC1F                       CAN_FCTL_HBC1F_Msk                /*!< CAN2 start bank */
+#define CAN_FCTL_HBC1F                       CAN_FCTL_HBC1F_Msk                /*!< CAN1 start bank */
 
 /*******************  Bit definition for CAN_FMCFG register  *******************/
 #define CAN_FMCFG_FMOD_Pos                     (0U)                              
