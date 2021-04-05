@@ -56,49 +56,49 @@
 #endif
 
 /**
- * @brief   DAC1 CH1 driver enable switch.
- * @details If set to @p TRUE the support for DAC1 channel 1 is included.
+ * @brief   DAC CH1 driver enable switch.
+ * @details If set to @p TRUE the support for DAC channel 1 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_DAC_USE_DAC1_CH1) || defined(__DOXYGEN__)
-#define GD32_DAC_USE_DAC1_CH1              FALSE
+#if !defined(GD32_DAC_USE_DAC_CH1) || defined(__DOXYGEN__)
+#define GD32_DAC_USE_DAC_CH1              FALSE
 #endif
 
 /**
- * @brief   DAC1 CH2 driver enable switch.
- * @details If set to @p TRUE the support for DAC1 channel 2 is included.
+ * @brief   DAC CH2 driver enable switch.
+ * @details If set to @p TRUE the support for DAC channel 2 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(GD32_DAC_USE_DAC1_CH2) || defined(__DOXYGEN__)
-#define GD32_DAC_USE_DAC1_CH2              FALSE
+#if !defined(GD32_DAC_USE_DAC_CH2) || defined(__DOXYGEN__)
+#define GD32_DAC_USE_DAC_CH2              FALSE
 #endif
 
 /**
- * @brief   DAC1 CH1 interrupt priority level setting.
+ * @brief   DAC CH1 interrupt priority level setting.
  */
-#if !defined(GD32_DAC_DAC1_CH1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_DAC_DAC1_CH1_IRQ_PRIORITY     10
+#if !defined(GD32_DAC_DAC_CH1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_DAC_DAC_CH1_IRQ_PRIORITY     10
 #endif
 
 /**
- * @brief   DAC1 CH2 interrupt priority level setting.
+ * @brief   DAC CH2 interrupt priority level setting.
  */
-#if !defined(GD32_DAC_DAC1_CH2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_DAC_DAC1_CH2_IRQ_PRIORITY     10
+#if !defined(GD32_DAC_DAC_CH2_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_DAC_DAC_CH2_IRQ_PRIORITY     10
 #endif
 
 /**
- * @brief   DAC1 CH1 DMA priority (0..3|lowest..highest).
+ * @brief   DAC CH1 DMA priority (0..3|lowest..highest).
  */
-#if !defined(GD32_DAC_DAC1_CH1_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_DAC_DAC1_CH1_DMA_PRIORITY     2
+#if !defined(GD32_DAC_DAC_CH1_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_DAC_DAC_CH1_DMA_PRIORITY     2
 #endif
 
 /**
- * @brief   DAC1 CH2 DMA priority (0..3|lowest..highest).
+ * @brief   DAC CH2 DMA priority (0..3|lowest..highest).
  */
-#if !defined(GD32_DAC_DAC1_CH2_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_DAC_DAC1_CH2_DMA_PRIORITY     2
+#if !defined(GD32_DAC_DAC_CH2_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_DAC_DAC_CH2_DMA_PRIORITY     2
 #endif
 /** @} */
 
@@ -107,48 +107,48 @@
 /*===========================================================================*/
 
 /* Handling missing registry keys.*/
-#if !defined(GD32_HAS_DAC1_CH1)
-#define GD32_HAS_DAC1_CH1                  FALSE
+#if !defined(GD32_HAS_DAC_CH1)
+#define GD32_HAS_DAC_CH1                  FALSE
 #endif
-#if !defined(GD32_HAS_DAC1_CH2)
-#define GD32_HAS_DAC1_CH2                  FALSE
-#endif
-
-#if GD32_DAC_USE_DAC1_CH1 && !GD32_HAS_DAC1_CH1
-#error "DAC1 CH1 not present in the selected device"
+#if !defined(GD32_HAS_DAC_CH2)
+#define GD32_HAS_DAC_CH2                  FALSE
 #endif
 
-#if GD32_DAC_USE_DAC1_CH2 && !GD32_HAS_DAC1_CH2
-#error "DAC1 CH2 not present in the selected device"
+#if GD32_DAC_USE_DAC_CH1 && !GD32_HAS_DAC_CH1
+#error "DAC CH1 not present in the selected device"
 #endif
 
-#if GD32_DAC_USE_DAC1_CH2 && GD32_DAC_DUAL_MODE
+#if GD32_DAC_USE_DAC_CH2 && !GD32_HAS_DAC_CH2
+#error "DAC CH2 not present in the selected device"
+#endif
+
+#if GD32_DAC_USE_DAC_CH2 && GD32_DAC_DUAL_MODE
 #error "DACx CH2 cannot be used independently in dual mode"
 #endif
 
-#if !GD32_DAC_USE_DAC1_CH1 && !GD32_DAC_USE_DAC1_CH2
+#if !GD32_DAC_USE_DAC_CH1 && !GD32_DAC_USE_DAC_CH2
 #error "DAC driver activated but no DAC peripheral assigned"
 #endif
 
-#if GD32_DAC_USE_DAC1_CH1 &&                                               \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_DAC_DAC1_CH1_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to DAC1 CH1"
+#if GD32_DAC_USE_DAC_CH1 &&                                               \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_DAC_DAC_CH1_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to DAC CH1"
 #endif
 
-#if GD32_DAC_USE_DAC1_CH2 &&                                               \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_DAC_DAC1_CH2_IRQ_PRIORITY)
-#error "Invalid IRQ priority assigned to DAC1 CH2"
+#if GD32_DAC_USE_DAC_CH2 &&                                               \
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_DAC_DAC_CH2_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to DAC CH2"
 #endif
 
 
-#if GD32_DAC_USE_DAC1_CH1 &&                                               \
-    !GD32_DMA_IS_VALID_PRIORITY(GD32_DAC_DAC1_CH1_DMA_PRIORITY)
-#error "Invalid DMA priority assigned to DAC1 CH1"
+#if GD32_DAC_USE_DAC_CH1 &&                                               \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_DAC_DAC_CH1_DMA_PRIORITY)
+#error "Invalid DMA priority assigned to DAC CH1"
 #endif
 
-#if GD32_DAC_USE_DAC1_CH2 &&                                               \
-    !GD32_DMA_IS_VALID_PRIORITY(GD32_DAC_DAC1_CH2_DMA_PRIORITY)
-#error "Invalid DMA priority assigned to DAC1 CH2"
+#if GD32_DAC_USE_DAC_CH2 &&                                               \
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_DAC_DAC_CH2_DMA_PRIORITY)
+#error "Invalid DMA priority assigned to DAC CH2"
 #endif
 
 #if !defined(GD32_DMA_REQUIRED)
@@ -273,11 +273,11 @@ typedef enum {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if GD32_DAC_USE_DAC1_CH1 && !defined(__DOXYGEN__)
+#if GD32_DAC_USE_DAC_CH1 && !defined(__DOXYGEN__)
 extern DACDriver DACD1;
 #endif
 
-#if GD32_DAC_USE_DAC1_CH2 && !GD32_DAC_DUAL_MODE && !defined(__DOXYGEN__)
+#if GD32_DAC_USE_DAC_CH2 && !GD32_DAC_DUAL_MODE && !defined(__DOXYGEN__)
 extern DACDriver DACD2;
 #endif
 

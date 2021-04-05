@@ -107,11 +107,11 @@
 #define GD32_CAN_MAX_FILTERS               28
 
 /* DAC attributes.*/
-#define GD32_HAS_DAC1_CH1                  TRUE
-#define GD32_DAC_DAC1_CH1_DMA_STREAM       GD32_DMA_STREAM_ID(0, 2)
+#define GD32_HAS_DAC_CH1                  TRUE
+#define GD32_DAC_DAC_CH1_DMA_STREAM       GD32_DMA_STREAM_ID(1, 2)
 
-#define GD32_HAS_DAC1_CH2                  TRUE
-#define GD32_DAC_DAC1_CH2_DMA_STREAM       GD32_DMA_STREAM_ID(0, 3)
+#define GD32_HAS_DAC_CH2                  TRUE
+#define GD32_DAC_DAC_CH2_DMA_STREAM       GD32_DMA_STREAM_ID(2, 3)
 
 /* DMA attributes.*/
 #define GD32_DMA0_NUM_CHANNELS             7

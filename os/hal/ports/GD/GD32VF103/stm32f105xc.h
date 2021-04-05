@@ -756,8 +756,7 @@ typedef struct
 #define CAN1                ((CAN_TypeDef *)CAN1_BASE)
 #define BKP                 ((BKP_TypeDef *)BKP_BASE)
 #define PMU                 ((PMU_TypeDef *)PMU_BASE)
-#define DAC1                ((DAC_TypeDef *)DAC_BASE)
-#define DAC                 ((DAC_TypeDef *)DAC_BASE) /* Kept for legacy purpose */
+#define DAC                ((DAC_TypeDef *)DAC_BASE)
 #define AFIO                ((AFIO_TypeDef *)AFIO_BASE)
 #define EXTI                ((EXTI_TypeDef *)EXTI_BASE)
 #define GPIOA               ((GPIO_TypeDef *)GPIOA_BASE)
@@ -12513,7 +12512,7 @@ typedef struct
 #define IS_CRC_ALL_INSTANCE(INSTANCE) ((INSTANCE) == CRC)
 
 /****************************** DAC Instances *********************************/
-#define IS_DAC_ALL_INSTANCE(INSTANCE) ((INSTANCE) == DAC1)
+#define IS_DAC_ALL_INSTANCE(INSTANCE) ((INSTANCE) == DAC)
 
 /****************************** DMA Instances *********************************/
 #define IS_DMA_ALL_INSTANCE(INSTANCE) (((INSTANCE) == DMA0_Channel0) || \

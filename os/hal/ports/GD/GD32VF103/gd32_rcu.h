@@ -206,27 +206,27 @@
  * @{
  */
 /**
- * @brief   Enables the DAC1 peripheral clock.
+ * @brief   Enables the DAC peripheral clock.
  *
  * @param[in] lp        low power enable flag
  *
  * @api
  */
-#define rcuEnableDAC1(lp) rcuEnableAPB1(RCU_APB1ENR_DACEN, lp)
+#define rcuEnableDAC(lp) rcuEnableAPB1(RCU_APB1ENR_DACEN, lp)
 
 /**
- * @brief   Disables the DAC1 peripheral clock.
+ * @brief   Disables the DAC peripheral clock.
  *
  * @api
  */
-#define rcuDisableDAC1() rcuDisableAPB1(RCU_APB1ENR_DACEN)
+#define rcuDisableDAC() rcuDisableAPB1(RCU_APB1ENR_DACEN)
 
 /**
- * @brief   Resets the DAC1 peripheral.
+ * @brief   Resets the DAC peripheral.
  *
  * @api
  */
-#define rcuResetDAC1() rcuResetAPB1(RCU_APB1RSTR_DACRST)
+#define rcuResetDAC() rcuResetAPB1(RCU_APB1RSTR_DACRST)
 /** @} */
 
 /**

@@ -30,18 +30,13 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-/* Because ST headers naming inconsistencies.*/
-#if !defined(DAC1)
-#define DAC1 DAC
-#endif
+#define DAC_CH1_DMA_CHANNEL                                                \
+  GD32_DMA_GETCHANNEL(GD32_DAC_DAC_CH1_DMA_STREAM,                       \
+                       GD32_DAC_CH1_DMA_CHN)
 
-#define DAC1_CH1_DMA_CHANNEL                                                \
-  GD32_DMA_GETCHANNEL(GD32_DAC_DAC1_CH1_DMA_STREAM,                       \
-                       GD32_DAC1_CH1_DMA_CHN)
-
-#define DAC1_CH2_DMA_CHANNEL                                                \
-  GD32_DMA_GETCHANNEL(GD32_DAC_DAC1_CH2_DMA_STREAM,                       \
-                       GD32_DAC1_CH2_DMA_CHN)
+#define DAC_CH2_DMA_CHANNEL                                                \
+  GD32_DMA_GETCHANNEL(GD32_DAC_DAC_CH2_DMA_STREAM,                       \
+                       GD32_DAC_CH2_DMA_CHN)
 
 #define CHANNEL_DATA_OFFSET 3U
 
@@ -49,13 +44,13 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-/** @brief DAC1 CH1 driver identifier.*/
-#if GD32_DAC_USE_DAC1_CH1 || defined(__DOXYGEN__)
+/** @brief DAC CH1 driver identifier.*/
+#if GD32_DAC_USE_DAC_CH1 || defined(__DOXYGEN__)
 DACDriver DACD1;
 #endif
 
-/** @brief DAC1 CH2 driver identifier.*/
-#if (GD32_DAC_USE_DAC1_CH2 && !GD32_DAC_DUAL_MODE) || defined(__DOXYGEN__)
+/** @brief DAC CH2 driver identifier.*/
+#if (GD32_DAC_USE_DAC_CH2 && !GD32_DAC_DUAL_MODE) || defined(__DOXYGEN__)
 DACDriver DACD2;
 #endif
 
@@ -63,35 +58,35 @@ DACDriver DACD2;
 /* Driver local variables.                                                   */
 /*===========================================================================*/
 
-#if GD32_DAC_USE_DAC1_CH1 == TRUE
+#if GD32_DAC_USE_DAC_CH1 == TRUE
 static const dacparams_t dac1_ch1_params = {
-  .dac          = DAC1,
+  .dac          = DAC,
   .dataoffset   = 0U,
   .regshift     = 0U,
   .regmask      = 0xFFFF0000U,
-  .dmastream    = GD32_DAC_DAC1_CH1_DMA_STREAM,
-  .dmamode      = GD32_DMA_CTL_CHSEL(DAC1_CH1_DMA_CHANNEL) |
-                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC1_CH1_DMA_PRIORITY) |
+  .dmastream    = GD32_DAC_DAC_CH1_DMA_STREAM,
+  .dmamode      = GD32_DMA_CTL_CHSEL(DAC_CH1_DMA_CHANNEL) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC_CH1_DMA_PRIORITY) |
                   GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
                   GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
                   GD32_DMA_CTL_FTFIE,
-  .dmairqprio   = GD32_DAC_DAC1_CH1_IRQ_PRIORITY
+  .dmairqprio   = GD32_DAC_DAC_CH1_IRQ_PRIORITY
 };
 #endif
 
-#if GD32_DAC_USE_DAC1_CH2 == TRUE
+#if GD32_DAC_USE_DAC_CH2 == TRUE
 static const dacparams_t dac1_ch2_params = {
-  .dac          = DAC1,
+  .dac          = DAC,
   .dataoffset   = CHANNEL_DATA_OFFSET,
   .regshift     = 16U,
   .regmask      = 0x0000FFFFU,
-  .dmastream    = GD32_DAC_DAC1_CH2_DMA_STREAM,
-  .dmamode      = GD32_DMA_CTL_CHSEL(DAC1_CH2_DMA_CHANNEL) |
-                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC1_CH2_DMA_PRIORITY) |
+  .dmastream    = GD32_DAC_DAC_CH2_DMA_STREAM,
+  .dmamode      = GD32_DMA_CTL_CHSEL(DAC_CH2_DMA_CHANNEL) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC_CH2_DMA_PRIORITY) |
                   GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
                   GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
                   GD32_DMA_CTL_FTFIE,
-  .dmairqprio   = GD32_DAC_DAC1_CH2_IRQ_PRIORITY
+  .dmairqprio   = GD32_DAC_DAC_CH2_IRQ_PRIORITY
 };
 #endif
 
@@ -139,13 +134,13 @@ static void dac_lld_serve_tx_interrupt(DACDriver *dacp, uint32_t flags) {
  */
 void dac_lld_init(void) {
 
-#if GD32_DAC_USE_DAC1_CH1
+#if GD32_DAC_USE_DAC_CH1
   dacObjectInit(&DACD1);
   DACD1.params  = &dac1_ch1_params;
   DACD1.dma = NULL;
 #endif
 
-#if GD32_DAC_USE_DAC1_CH2
+#if GD32_DAC_USE_DAC_CH2
   dacObjectInit(&DACD2);
   DACD2.params  = &dac1_ch2_params;
   DACD2.dma = NULL;
@@ -167,15 +162,15 @@ void dac_lld_start(DACDriver *dacp) {
     dacchannel_t channel = 0;
 
     /* Enabling the clock source.*/
-#if GD32_DAC_USE_DAC1_CH1
+#if GD32_DAC_USE_DAC_CH1
     if (&DACD1 == dacp) {
-      rcuEnableDAC1(true);
+      rcuEnableDAC(true);
     }
 #endif
 
-#if GD32_DAC_USE_DAC1_CH2
+#if GD32_DAC_USE_DAC_CH2
     if (&DACD2 == dacp) {
-      rcuEnableDAC1(true);
+      rcuEnableDAC(true);
       channel = 1;
     }
 #endif
@@ -222,18 +217,18 @@ void dac_lld_stop(DACDriver *dacp) {
     /* Disabling DAC.*/
     dacp->params->dac->CTL &= dacp->params->regmask;
 
-#if GD32_DAC_USE_DAC1_CH1
+#if GD32_DAC_USE_DAC_CH1
     if (&DACD1 == dacp) {
       if ((dacp->params->dac->CTL & DAC_CTL_DEN1) == 0U) {
-        rcuDisableDAC1();
+        rcuDisableDAC();
       }
     }
 #endif
 
-#if GD32_DAC_USE_DAC1_CH2
+#if GD32_DAC_USE_DAC_CH2
     if (&DACD2 == dacp) {
       if ((dacp->params->dac->CTL & DAC_CTL_DEN0) == 0U) {
-        rcuDisableDAC1();
+        rcuDisableDAC();
       }
     }
 #endif
@@ -265,7 +260,7 @@ void dac_lld_put_channel(DACDriver *dacp,
       *(&dacp->params->dac->R12DH0 + dacp->params->dataoffset) = (uint32_t)sample;
 #endif
     }
-#if (GD32_HAS_DAC1_CH2)
+#if (GD32_HAS_DAC_CH2)
     else {
       dacp->params->dac->R12DH1 = (uint32_t)sample;
     }
@@ -282,7 +277,7 @@ void dac_lld_put_channel(DACDriver *dacp,
       *(&dacp->params->dac->L12DH0 + dacp->params->dataoffset) = (uint32_t)sample;
 #endif
     }
-#if (GD32_HAS_DAC1_CH2)
+#if (GD32_HAS_DAC_CH2)
     else {
       dacp->params->dac->L12DH1 = (uint32_t)sample;
     }
@@ -299,7 +294,7 @@ void dac_lld_put_channel(DACDriver *dacp,
       *(&dacp->params->dac->R8DH0 + dacp->params->dataoffset) = (uint32_t)sample;
 #endif
     }
-#if (GD32_HAS_DAC1_CH2)
+#if (GD32_HAS_DAC_CH2)
     else {
       dacp->params->dac->R8DH1 = (uint32_t)sample;
     }
