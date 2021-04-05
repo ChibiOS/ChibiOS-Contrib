@@ -15,10 +15,10 @@
 */
 
 /**
- * @file    GD32F1xx/gd32_isr.c
- * @brief   GD32F1xx ISR handler code.
+ * @file    GD32VF103/gd32_isr.c
+ * @brief   GD32VF103 ISR handler code.
  *
- * @addtogroup GD32F1xx_ISR
+ * @addtogroup GD32VF103_ISR
  * @{
  */
 
