@@ -198,7 +198,7 @@
  *
  * @api
  */
-#define rcuResetADC0() rcuResetAPB2(RCU_APB2RSTR_ADC0RST)
+#define rcuResetADC0() rcuResetAPB2(RCU_APB2RST_ADC0RST)
 /** @} */
 
 /**
@@ -574,7 +574,7 @@
  *
  * @api
  */
-#define rcuResetSPI1() rcuResetAPB2(RCU_APB2RSTR_SPI1RST)
+#define rcuResetSPI1() rcuResetAPB2(RCU_APB2RST_SPI0RST)
 
 /**
  * @brief   Enables the SPI2 peripheral clock.
@@ -651,7 +651,7 @@
  *
  * @api
  */
-#define rcuResetTIM0() rcuResetAPB2(RCU_APB2RSTR_TIM0RST)
+#define rcuResetTIM0() rcuResetAPB2(RCU_APB2RST_TIMER0RST)
 
 /**
  * @brief   Enables the TIM1 peripheral clock.
@@ -824,7 +824,7 @@
  *
  * @api
  */
-#define rcuResetUSART0() rcuResetAPB2(RCU_APB2RSTR_USART0RST)
+#define rcuResetUSART0() rcuResetAPB2(RCU_APB2RST_USART0RST)
 
 /**
  * @brief   Enables the USART1 peripheral clock.

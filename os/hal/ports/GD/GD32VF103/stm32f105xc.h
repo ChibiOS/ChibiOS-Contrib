@@ -1235,132 +1235,116 @@ typedef struct
 #define RCU_CFG0_CKOUT0SEL_EXT_HXTAL                 0x0A000000U                       /*!< XT1 external 3-25 MHz oscillator clock selected as MCO source */
 #define RCU_CFG0_CKOUT0SEL_CK_PLL2                 0x0B000000U                       /*!< PLL3 clock selected as MCO source */
 
- /* Reference defines */
- /*define RCU_CFG0_CKOUT0SELSEL                      RCU_CFG0_CKOUT0SEL
- #define RCU_CFG0_CKOUT0SELSEL_0                    RCU_CFG0_CKOUT0SEL_0
- #define RCU_CFG0_CKOUT0SELSEL_1                    RCU_CFG0_CKOUT0SEL_1
- #define RCU_CFG0_CKOUT0SELSEL_2                    RCU_CFG0_CKOUT0SEL_2
- #define RCU_CFG0_CKOUT0SELSEL_3                    RCU_CFG0_CKOUT0SEL_3
- #define RCU_CFG0_CKOUT0SELSEL_NOCLOCK              RCU_CFG0_CKOUT0SEL_NOCLOCK
- #define RCU_CFG0_CKOUT0SELSEL_SYSCLK               RCU_CFG0_CKOUT0SEL_SYSCLK
- #define RCU_CFG0_CKOUT0SELSEL_IRC8M                  RCU_CFG0_CKOUT0SEL_IRC8M
- #define RCU_CFG0_CKOUT0SELSEL_HXTAL                  RCU_CFG0_CKOUT0SEL_HXTAL
- #define RCU_CFG0_CKOUT0SELSEL_PLL_DIV2             RCU_CFG0_CKOUT0SEL_CK_PLL_DIV2
- #define RCU_CFG0_CKOUT0SELSEL_PLL2                 RCU_CFG0_CKOUT0SEL_CK_PLL1
- #define RCU_CFG0_CKOUT0SELSEL_PLL3_DIV2            RCU_CFG0_CKOUT0SEL_CK_PLL2_DIV2
- #define RCU_CFG0_CKOUT0SELSEL_EXT_HXTAL              RCU_CFG0_CKOUT0SEL_EXT_HXTAL
- #define RCU_CFG0_CKOUT0SELSEL_PLL3CLK              RCU_CFG0_CKOUT0SEL_CK_PLL2*/
+/*!<******************  Bit definition for RCU_INT register  ********************/
+#define RCU_INT_IRC40KSTBIF_Pos                  (0U)                              
+#define RCU_INT_IRC40KSTBIF_Msk                  (0x1U << RCU_INT_IRC40KSTBIF_Pos)     /*!< 0x00000001 */
+#define RCU_INT_IRC40KSTBIF                      RCU_INT_IRC40KSTBIF_Msk               /*!< IRC40K Ready Interrupt flag */
+#define RCU_INT_LXTALSTBIF_Pos                  (1U)                              
+#define RCU_INT_LXTALSTBIF_Msk                  (0x1U << RCU_INT_LXTALSTBIF_Pos)     /*!< 0x00000002 */
+#define RCU_INT_LXTALSTBIF                      RCU_INT_LXTALSTBIF_Msk               /*!< LXTAL Ready Interrupt flag */
+#define RCU_INT_IRC8MSTBIF_Pos                  (2U)                              
+#define RCU_INT_IRC8MSTBIF_Msk                  (0x1U << RCU_INT_IRC8MSTBIF_Pos)     /*!< 0x00000004 */
+#define RCU_INT_IRC8MSTBIF                      RCU_INT_IRC8MSTBIF_Msk               /*!< IRC8M Ready Interrupt flag */
+#define RCU_INT_HXTALSTBIF_Pos                  (3U)                              
+#define RCU_INT_HXTALSTBIF_Msk                  (0x1U << RCU_INT_HXTALSTBIF_Pos)     /*!< 0x00000008 */
+#define RCU_INT_HXTALSTBIF                      RCU_INT_HXTALSTBIF_Msk               /*!< HXTAL Ready Interrupt flag */
+#define RCU_INT_PLLSTBIF_Pos                  (4U)                              
+#define RCU_INT_PLLSTBIF_Msk                  (0x1U << RCU_INT_PLLSTBIF_Pos)     /*!< 0x00000010 */
+#define RCU_INT_PLLSTBIF                      RCU_INT_PLLSTBIF_Msk               /*!< PLL Ready Interrupt flag */
+#define RCU_INT_CKMIF_Pos                     (7U)                              
+#define RCU_INT_CKMIF_Msk                     (0x1U << RCU_INT_CKMIF_Pos)        /*!< 0x00000080 */
+#define RCU_INT_CKMIF                         RCU_INT_CKMIF_Msk                  /*!< Clock Security System Interrupt flag */
+#define RCU_INT_IRC40KSTBIE_Pos                 (8U)                              
+#define RCU_INT_IRC40KSTBIE_Msk                 (0x1U << RCU_INT_IRC40KSTBIE_Pos)    /*!< 0x00000100 */
+#define RCU_INT_IRC40KSTBIE                     RCU_INT_IRC40KSTBIE_Msk              /*!< IRC40K Ready Interrupt Enable */
+#define RCU_INT_LXTALSTBIE_Pos                 (9U)                              
+#define RCU_INT_LXTALSTBIE_Msk                 (0x1U << RCU_INT_LXTALSTBIE_Pos)    /*!< 0x00000200 */
+#define RCU_INT_LXTALSTBIE                     RCU_INT_LXTALSTBIE_Msk              /*!< LXTAL Ready Interrupt Enable */
+#define RCU_INT_IRC8MSTBIE_Pos                 (10U)                             
+#define RCU_INT_IRC8MSTBIE_Msk                 (0x1U << RCU_INT_IRC8MSTBIE_Pos)    /*!< 0x00000400 */
+#define RCU_INT_IRC8MSTBIE                     RCU_INT_IRC8MSTBIE_Msk              /*!< IRC8M Ready Interrupt Enable */
+#define RCU_INT_HXTALSTBIE_Pos                 (11U)                             
+#define RCU_INT_HXTALSTBIE_Msk                 (0x1U << RCU_INT_HXTALSTBIE_Pos)    /*!< 0x00000800 */
+#define RCU_INT_HXTALSTBIE                     RCU_INT_HXTALSTBIE_Msk              /*!< HXTAL Ready Interrupt Enable */
+#define RCU_INT_PLLSTBIE_Pos                 (12U)                             
+#define RCU_INT_PLLSTBIE_Msk                 (0x1U << RCU_INT_PLLSTBIE_Pos)    /*!< 0x00001000 */
+#define RCU_INT_PLLSTBIE                     RCU_INT_PLLSTBIE_Msk              /*!< PLL Ready Interrupt Enable */
+#define RCU_INT_IRC40KSTBIC_Pos                  (16U)                             
+#define RCU_INT_IRC40KSTBIC_Msk                  (0x1U << RCU_INT_IRC40KSTBIC_Pos)     /*!< 0x00010000 */
+#define RCU_INT_IRC40KSTBIC                      RCU_INT_IRC40KSTBIC_Msk               /*!< IRC40K Ready Interrupt Clear */
+#define RCU_INT_LXTALSTBIC_Pos                  (17U)                             
+#define RCU_INT_LXTALSTBIC_Msk                  (0x1U << RCU_INT_LXTALSTBIC_Pos)     /*!< 0x00020000 */
+#define RCU_INT_LXTALSTBIC                      RCU_INT_LXTALSTBIC_Msk               /*!< LXTAL Ready Interrupt Clear */
+#define RCU_INT_IRC8MSTBIC_Pos                  (18U)                             
+#define RCU_INT_IRC8MSTBIC_Msk                  (0x1U << RCU_INT_IRC8MSTBIC_Pos)     /*!< 0x00040000 */
+#define RCU_INT_IRC8MSTBIC                      RCU_INT_IRC8MSTBIC_Msk               /*!< IRC8M Ready Interrupt Clear */
+#define RCU_INT_HXTALSTBIC_Pos                  (19U)                             
+#define RCU_INT_HXTALSTBIC_Msk                  (0x1U << RCU_INT_HXTALSTBIC_Pos)     /*!< 0x00080000 */
+#define RCU_INT_HXTALSTBIC                      RCU_INT_HXTALSTBIC_Msk               /*!< HXTAL Ready Interrupt Clear */
+#define RCU_INT_PLLSTBIC_Pos                  (20U)                             
+#define RCU_INT_PLLSTBIC_Msk                  (0x1U << RCU_INT_PLLSTBIC_Pos)     /*!< 0x00100000 */
+#define RCU_INT_PLLSTBIC                      RCU_INT_PLLSTBIC_Msk               /*!< PLL Ready Interrupt Clear */
+#define RCU_INT_CKMIC_Pos                     (23U)                             
+#define RCU_INT_CKMIC_Msk                     (0x1U << RCU_INT_CKMIC_Pos)        /*!< 0x00800000 */
+#define RCU_INT_CKMIC                         RCU_INT_CKMIC_Msk                  /*!< Clock Security System Interrupt Clear */
 
-/*!<******************  Bit definition for RCU_CIR register  ********************/
-#define RCU_CIR_IRC40KRDYF_Pos                  (0U)                              
-#define RCU_CIR_IRC40KRDYF_Msk                  (0x1U << RCU_CIR_IRC40KRDYF_Pos)     /*!< 0x00000001 */
-#define RCU_CIR_IRC40KRDYF                      RCU_CIR_IRC40KRDYF_Msk               /*!< IRC40K Ready Interrupt flag */
-#define RCU_CIR_LXTALRDYF_Pos                  (1U)                              
-#define RCU_CIR_LXTALRDYF_Msk                  (0x1U << RCU_CIR_LXTALRDYF_Pos)     /*!< 0x00000002 */
-#define RCU_CIR_LXTALRDYF                      RCU_CIR_LXTALRDYF_Msk               /*!< LXTAL Ready Interrupt flag */
-#define RCU_CIR_IRC8MRDYF_Pos                  (2U)                              
-#define RCU_CIR_IRC8MRDYF_Msk                  (0x1U << RCU_CIR_IRC8MRDYF_Pos)     /*!< 0x00000004 */
-#define RCU_CIR_IRC8MRDYF                      RCU_CIR_IRC8MRDYF_Msk               /*!< IRC8M Ready Interrupt flag */
-#define RCU_CIR_HXTALRDYF_Pos                  (3U)                              
-#define RCU_CIR_HXTALRDYF_Msk                  (0x1U << RCU_CIR_HXTALRDYF_Pos)     /*!< 0x00000008 */
-#define RCU_CIR_HXTALRDYF                      RCU_CIR_HXTALRDYF_Msk               /*!< HXTAL Ready Interrupt flag */
-#define RCU_CIR_PLLRDYF_Pos                  (4U)                              
-#define RCU_CIR_PLLRDYF_Msk                  (0x1U << RCU_CIR_PLLRDYF_Pos)     /*!< 0x00000010 */
-#define RCU_CIR_PLLRDYF                      RCU_CIR_PLLRDYF_Msk               /*!< PLL Ready Interrupt flag */
-#define RCU_CIR_CSSF_Pos                     (7U)                              
-#define RCU_CIR_CSSF_Msk                     (0x1U << RCU_CIR_CSSF_Pos)        /*!< 0x00000080 */
-#define RCU_CIR_CSSF                         RCU_CIR_CSSF_Msk                  /*!< Clock Security System Interrupt flag */
-#define RCU_CIR_IRC40KRDYIE_Pos                 (8U)                              
-#define RCU_CIR_IRC40KRDYIE_Msk                 (0x1U << RCU_CIR_IRC40KRDYIE_Pos)    /*!< 0x00000100 */
-#define RCU_CIR_IRC40KRDYIE                     RCU_CIR_IRC40KRDYIE_Msk              /*!< IRC40K Ready Interrupt Enable */
-#define RCU_CIR_LXTALRDYIE_Pos                 (9U)                              
-#define RCU_CIR_LXTALRDYIE_Msk                 (0x1U << RCU_CIR_LXTALRDYIE_Pos)    /*!< 0x00000200 */
-#define RCU_CIR_LXTALRDYIE                     RCU_CIR_LXTALRDYIE_Msk              /*!< LXTAL Ready Interrupt Enable */
-#define RCU_CIR_IRC8MRDYIE_Pos                 (10U)                             
-#define RCU_CIR_IRC8MRDYIE_Msk                 (0x1U << RCU_CIR_IRC8MRDYIE_Pos)    /*!< 0x00000400 */
-#define RCU_CIR_IRC8MRDYIE                     RCU_CIR_IRC8MRDYIE_Msk              /*!< IRC8M Ready Interrupt Enable */
-#define RCU_CIR_HXTALRDYIE_Pos                 (11U)                             
-#define RCU_CIR_HXTALRDYIE_Msk                 (0x1U << RCU_CIR_HXTALRDYIE_Pos)    /*!< 0x00000800 */
-#define RCU_CIR_HXTALRDYIE                     RCU_CIR_HXTALRDYIE_Msk              /*!< HXTAL Ready Interrupt Enable */
-#define RCU_CIR_PLLRDYIE_Pos                 (12U)                             
-#define RCU_CIR_PLLRDYIE_Msk                 (0x1U << RCU_CIR_PLLRDYIE_Pos)    /*!< 0x00001000 */
-#define RCU_CIR_PLLRDYIE                     RCU_CIR_PLLRDYIE_Msk              /*!< PLL Ready Interrupt Enable */
-#define RCU_CIR_IRC40KRDYC_Pos                  (16U)                             
-#define RCU_CIR_IRC40KRDYC_Msk                  (0x1U << RCU_CIR_IRC40KRDYC_Pos)     /*!< 0x00010000 */
-#define RCU_CIR_IRC40KRDYC                      RCU_CIR_IRC40KRDYC_Msk               /*!< IRC40K Ready Interrupt Clear */
-#define RCU_CIR_LXTALRDYC_Pos                  (17U)                             
-#define RCU_CIR_LXTALRDYC_Msk                  (0x1U << RCU_CIR_LXTALRDYC_Pos)     /*!< 0x00020000 */
-#define RCU_CIR_LXTALRDYC                      RCU_CIR_LXTALRDYC_Msk               /*!< LXTAL Ready Interrupt Clear */
-#define RCU_CIR_IRC8MRDYC_Pos                  (18U)                             
-#define RCU_CIR_IRC8MRDYC_Msk                  (0x1U << RCU_CIR_IRC8MRDYC_Pos)     /*!< 0x00040000 */
-#define RCU_CIR_IRC8MRDYC                      RCU_CIR_IRC8MRDYC_Msk               /*!< IRC8M Ready Interrupt Clear */
-#define RCU_CIR_HXTALRDYC_Pos                  (19U)                             
-#define RCU_CIR_HXTALRDYC_Msk                  (0x1U << RCU_CIR_HXTALRDYC_Pos)     /*!< 0x00080000 */
-#define RCU_CIR_HXTALRDYC                      RCU_CIR_HXTALRDYC_Msk               /*!< HXTAL Ready Interrupt Clear */
-#define RCU_CIR_PLLRDYC_Pos                  (20U)                             
-#define RCU_CIR_PLLRDYC_Msk                  (0x1U << RCU_CIR_PLLRDYC_Pos)     /*!< 0x00100000 */
-#define RCU_CIR_PLLRDYC                      RCU_CIR_PLLRDYC_Msk               /*!< PLL Ready Interrupt Clear */
-#define RCU_CIR_CSSC_Pos                     (23U)                             
-#define RCU_CIR_CSSC_Msk                     (0x1U << RCU_CIR_CSSC_Pos)        /*!< 0x00800000 */
-#define RCU_CIR_CSSC                         RCU_CIR_CSSC_Msk                  /*!< Clock Security System Interrupt Clear */
+#define RCU_INT_PLL1STBIF_Pos                 (5U)                              
+#define RCU_INT_PLL1STBIF_Msk                 (0x1U << RCU_INT_PLL1STBIF_Pos)    /*!< 0x00000020 */
+#define RCU_INT_PLL1STBIF                     RCU_INT_PLL1STBIF_Msk              /*!< PLL2 Ready Interrupt flag */
+#define RCU_INT_PLL2STBIF_Pos                 (6U)                              
+#define RCU_INT_PLL2STBIF_Msk                 (0x1U << RCU_INT_PLL2STBIF_Pos)    /*!< 0x00000040 */
+#define RCU_INT_PLL2STBIF                     RCU_INT_PLL2STBIF_Msk              /*!< PLL3 Ready Interrupt flag */
+#define RCU_INT_PLL1STBIE_Pos                (13U)                             
+#define RCU_INT_PLL1STBIE_Msk                (0x1U << RCU_INT_PLL1STBIE_Pos)   /*!< 0x00002000 */
+#define RCU_INT_PLL1STBIE                    RCU_INT_PLL1STBIE_Msk             /*!< PLL2 Ready Interrupt Enable */
+#define RCU_INT_PLL2STBIE_Pos                (14U)                             
+#define RCU_INT_PLL2STBIE_Msk                (0x1U << RCU_INT_PLL2STBIE_Pos)   /*!< 0x00004000 */
+#define RCU_INT_PLL2STBIE                    RCU_INT_PLL2STBIE_Msk             /*!< PLL3 Ready Interrupt Enable */
+#define RCU_INT_PLL1STBIC_Pos                 (21U)                             
+#define RCU_INT_PLL1STBIC_Msk                 (0x1U << RCU_INT_PLL1STBIC_Pos)    /*!< 0x00200000 */
+#define RCU_INT_PLL1STBIC                     RCU_INT_PLL1STBIC_Msk              /*!< PLL2 Ready Interrupt Clear */
+#define RCU_INT_PLL2STBIC_Pos                 (22U)                             
+#define RCU_INT_PLL2STBIC_Msk                 (0x1U << RCU_INT_PLL2STBIC_Pos)    /*!< 0x00400000 */
+#define RCU_INT_PLL2STBIC                     RCU_INT_PLL2STBIC_Msk              /*!< PLL3 Ready Interrupt Clear */
 
-#define RCU_CIR_PLL2RDYF_Pos                 (5U)                              
-#define RCU_CIR_PLL2RDYF_Msk                 (0x1U << RCU_CIR_PLL2RDYF_Pos)    /*!< 0x00000020 */
-#define RCU_CIR_PLL2RDYF                     RCU_CIR_PLL2RDYF_Msk              /*!< PLL2 Ready Interrupt flag */
-#define RCU_CIR_PLL3RDYF_Pos                 (6U)                              
-#define RCU_CIR_PLL3RDYF_Msk                 (0x1U << RCU_CIR_PLL3RDYF_Pos)    /*!< 0x00000040 */
-#define RCU_CIR_PLL3RDYF                     RCU_CIR_PLL3RDYF_Msk              /*!< PLL3 Ready Interrupt flag */
-#define RCU_CIR_PLL2RDYIE_Pos                (13U)                             
-#define RCU_CIR_PLL2RDYIE_Msk                (0x1U << RCU_CIR_PLL2RDYIE_Pos)   /*!< 0x00002000 */
-#define RCU_CIR_PLL2RDYIE                    RCU_CIR_PLL2RDYIE_Msk             /*!< PLL2 Ready Interrupt Enable */
-#define RCU_CIR_PLL3RDYIE_Pos                (14U)                             
-#define RCU_CIR_PLL3RDYIE_Msk                (0x1U << RCU_CIR_PLL3RDYIE_Pos)   /*!< 0x00004000 */
-#define RCU_CIR_PLL3RDYIE                    RCU_CIR_PLL3RDYIE_Msk             /*!< PLL3 Ready Interrupt Enable */
-#define RCU_CIR_PLL2RDYC_Pos                 (21U)                             
-#define RCU_CIR_PLL2RDYC_Msk                 (0x1U << RCU_CIR_PLL2RDYC_Pos)    /*!< 0x00200000 */
-#define RCU_CIR_PLL2RDYC                     RCU_CIR_PLL2RDYC_Msk              /*!< PLL2 Ready Interrupt Clear */
-#define RCU_CIR_PLL3RDYC_Pos                 (22U)                             
-#define RCU_CIR_PLL3RDYC_Msk                 (0x1U << RCU_CIR_PLL3RDYC_Pos)    /*!< 0x00400000 */
-#define RCU_CIR_PLL3RDYC                     RCU_CIR_PLL3RDYC_Msk              /*!< PLL3 Ready Interrupt Clear */
+/*****************  Bit definition for RCU_APB2RST register  *****************/
+#define RCU_APB2RST_AFRST_Pos             (0U)                              
+#define RCU_APB2RST_AFRST_Msk             (0x1U << RCU_APB2RST_AFRST_Pos) /*!< 0x00000001 */
+#define RCU_APB2RST_AFRST                 RCU_APB2RST_AFRST_Msk          /*!< Alternate Function I/O reset */
+#define RCU_APB2RST_PARST_Pos             (2U)                              
+#define RCU_APB2RST_PARST_Msk             (0x1U << RCU_APB2RST_PARST_Pos) /*!< 0x00000004 */
+#define RCU_APB2RST_PARST                 RCU_APB2RST_PARST_Msk          /*!< I/O port A reset */
+#define RCU_APB2RST_PBRST_Pos             (3U)                              
+#define RCU_APB2RST_PBRST_Msk             (0x1U << RCU_APB2RST_PBRST_Pos) /*!< 0x00000008 */
+#define RCU_APB2RST_PBRST                 RCU_APB2RST_PBRST_Msk          /*!< I/O port B reset */
+#define RCU_APB2RST_PCRST_Pos             (4U)                              
+#define RCU_APB2RST_PCRST_Msk             (0x1U << RCU_APB2RST_PCRST_Pos) /*!< 0x00000010 */
+#define RCU_APB2RST_PCRST                 RCU_APB2RST_PCRST_Msk          /*!< I/O port C reset */
+#define RCU_APB2RST_PDRST_Pos             (5U)                              
+#define RCU_APB2RST_PDRST_Msk             (0x1U << RCU_APB2RST_PDRST_Pos) /*!< 0x00000020 */
+#define RCU_APB2RST_PDRST                 RCU_APB2RST_PDRST_Msk          /*!< I/O port D reset */
+#define RCU_APB2RST_ADC0RST_Pos             (9U)                              
+#define RCU_APB2RST_ADC0RST_Msk             (0x1U << RCU_APB2RST_ADC0RST_Pos) /*!< 0x00000200 */
+#define RCU_APB2RST_ADC0RST                 RCU_APB2RST_ADC0RST_Msk          /*!< ADC 1 interface reset */
 
-/*****************  Bit definition for RCU_APB2RSTR register  *****************/
-#define RCU_APB2RSTR_AFIORST_Pos             (0U)                              
-#define RCU_APB2RSTR_AFIORST_Msk             (0x1U << RCU_APB2RSTR_AFIORST_Pos) /*!< 0x00000001 */
-#define RCU_APB2RSTR_AFIORST                 RCU_APB2RSTR_AFIORST_Msk          /*!< Alternate Function I/O reset */
-#define RCU_APB2RSTR_IOPARST_Pos             (2U)                              
-#define RCU_APB2RSTR_IOPARST_Msk             (0x1U << RCU_APB2RSTR_IOPARST_Pos) /*!< 0x00000004 */
-#define RCU_APB2RSTR_IOPARST                 RCU_APB2RSTR_IOPARST_Msk          /*!< I/O port A reset */
-#define RCU_APB2RSTR_IOPBRST_Pos             (3U)                              
-#define RCU_APB2RSTR_IOPBRST_Msk             (0x1U << RCU_APB2RSTR_IOPBRST_Pos) /*!< 0x00000008 */
-#define RCU_APB2RSTR_IOPBRST                 RCU_APB2RSTR_IOPBRST_Msk          /*!< I/O port B reset */
-#define RCU_APB2RSTR_IOPCRST_Pos             (4U)                              
-#define RCU_APB2RSTR_IOPCRST_Msk             (0x1U << RCU_APB2RSTR_IOPCRST_Pos) /*!< 0x00000010 */
-#define RCU_APB2RSTR_IOPCRST                 RCU_APB2RSTR_IOPCRST_Msk          /*!< I/O port C reset */
-#define RCU_APB2RSTR_IOPDRST_Pos             (5U)                              
-#define RCU_APB2RSTR_IOPDRST_Msk             (0x1U << RCU_APB2RSTR_IOPDRST_Pos) /*!< 0x00000020 */
-#define RCU_APB2RSTR_IOPDRST                 RCU_APB2RSTR_IOPDRST_Msk          /*!< I/O port D reset */
-#define RCU_APB2RSTR_ADC0RST_Pos             (9U)                              
-#define RCU_APB2RSTR_ADC0RST_Msk             (0x1U << RCU_APB2RSTR_ADC0RST_Pos) /*!< 0x00000200 */
-#define RCU_APB2RSTR_ADC0RST                 RCU_APB2RSTR_ADC0RST_Msk          /*!< ADC 1 interface reset */
+#define RCU_APB2RST_ADC1RST_Pos             (10U)                             
+#define RCU_APB2RST_ADC1RST_Msk             (0x1U << RCU_APB2RST_ADC1RST_Pos) /*!< 0x00000400 */
+#define RCU_APB2RST_ADC1RST                 RCU_APB2RST_ADC1RST_Msk          /*!< ADC 2 interface reset */
 
-#define RCU_APB2RSTR_ADC1RST_Pos             (10U)                             
-#define RCU_APB2RSTR_ADC1RST_Msk             (0x1U << RCU_APB2RSTR_ADC1RST_Pos) /*!< 0x00000400 */
-#define RCU_APB2RSTR_ADC1RST                 RCU_APB2RSTR_ADC1RST_Msk          /*!< ADC 2 interface reset */
-
-#define RCU_APB2RSTR_TIM0RST_Pos             (11U)                             
-#define RCU_APB2RSTR_TIM0RST_Msk             (0x1U << RCU_APB2RSTR_TIM0RST_Pos) /*!< 0x00000800 */
-#define RCU_APB2RSTR_TIM0RST                 RCU_APB2RSTR_TIM0RST_Msk          /*!< TIM0 Timer reset */
-#define RCU_APB2RSTR_SPI1RST_Pos             (12U)                             
-#define RCU_APB2RSTR_SPI1RST_Msk             (0x1U << RCU_APB2RSTR_SPI1RST_Pos) /*!< 0x00001000 */
-#define RCU_APB2RSTR_SPI1RST                 RCU_APB2RSTR_SPI1RST_Msk          /*!< SPI 1 reset */
-#define RCU_APB2RSTR_USART0RST_Pos           (14U)                             
-#define RCU_APB2RSTR_USART0RST_Msk           (0x1U << RCU_APB2RSTR_USART0RST_Pos) /*!< 0x00004000 */
-#define RCU_APB2RSTR_USART0RST               RCU_APB2RSTR_USART0RST_Msk        /*!< USART0 reset */
+#define RCU_APB2RST_TIMER0RST_Pos             (11U)                             
+#define RCU_APB2RST_TIMER0RST_Msk             (0x1U << RCU_APB2RST_TIMER0RST_Pos) /*!< 0x00000800 */
+#define RCU_APB2RST_TIMER0RST                 RCU_APB2RST_TIMER0RST_Msk          /*!< TIM0 Timer reset */
+#define RCU_APB2RST_SPI0RST_Pos             (12U)                             
+#define RCU_APB2RST_SPI0RST_Msk             (0x1U << RCU_APB2RST_SPI0RST_Pos) /*!< 0x00001000 */
+#define RCU_APB2RST_SPI0RST                 RCU_APB2RST_SPI0RST_Msk          /*!< SPI 1 reset */
+#define RCU_APB2RST_USART0RST_Pos           (14U)                             
+#define RCU_APB2RST_USART0RST_Msk           (0x1U << RCU_APB2RST_USART0RST_Pos) /*!< 0x00004000 */
+#define RCU_APB2RST_USART0RST               RCU_APB2RST_USART0RST_Msk        /*!< USART0 reset */
 
 
-#define RCU_APB2RSTR_IOPERST_Pos             (6U)                              
-#define RCU_APB2RSTR_IOPERST_Msk             (0x1U << RCU_APB2RSTR_IOPERST_Pos) /*!< 0x00000040 */
-#define RCU_APB2RSTR_IOPERST                 RCU_APB2RSTR_IOPERST_Msk          /*!< I/O port E reset */
+#define RCU_APB2RST_PERST_Pos             (6U)                              
+#define RCU_APB2RST_PERST_Msk             (0x1U << RCU_APB2RST_PERST_Pos) /*!< 0x00000040 */
+#define RCU_APB2RST_PERST                 RCU_APB2RST_PERST_Msk          /*!< I/O port E reset */
 
 
 
