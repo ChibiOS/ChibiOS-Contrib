@@ -31,11 +31,11 @@
 /*===========================================================================*/
 
 #define DAC_CH1_DMA_CHANNEL                                                \
-  GD32_DMA_GETCHANNEL(GD32_DAC_DAC_CH1_DMA_STREAM,                       \
+  GD32_DMA_GETCHANNEL(GD32_DAC_CH1_DMA_STREAM,                       \
                        GD32_DAC_CH1_DMA_CHN)
 
 #define DAC_CH2_DMA_CHANNEL                                                \
-  GD32_DMA_GETCHANNEL(GD32_DAC_DAC_CH2_DMA_STREAM,                       \
+  GD32_DMA_GETCHANNEL(GD32_DAC_CH2_DMA_STREAM,                       \
                        GD32_DAC_CH2_DMA_CHN)
 
 #define CHANNEL_DATA_OFFSET 3U
@@ -64,13 +64,13 @@ static const dacparams_t dac1_ch1_params = {
   .dataoffset   = 0U,
   .regshift     = 0U,
   .regmask      = 0xFFFF0000U,
-  .dmastream    = GD32_DAC_DAC_CH1_DMA_STREAM,
+  .dmastream    = GD32_DAC_CH1_DMA_STREAM,
   .dmamode      = GD32_DMA_CTL_CHSEL(DAC_CH1_DMA_CHANNEL) |
-                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC_CH1_DMA_PRIORITY) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_CH1_DMA_PRIORITY) |
                   GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
                   GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
                   GD32_DMA_CTL_FTFIE,
-  .dmairqprio   = GD32_DAC_DAC_CH1_IRQ_PRIORITY
+  .dmairqprio   = GD32_DAC_CH1_IRQ_PRIORITY
 };
 #endif
 
@@ -80,13 +80,13 @@ static const dacparams_t dac1_ch2_params = {
   .dataoffset   = CHANNEL_DATA_OFFSET,
   .regshift     = 16U,
   .regmask      = 0x0000FFFFU,
-  .dmastream    = GD32_DAC_DAC_CH2_DMA_STREAM,
+  .dmastream    = GD32_DAC_CH2_DMA_STREAM,
   .dmamode      = GD32_DMA_CTL_CHSEL(DAC_CH2_DMA_CHANNEL) |
-                  GD32_DMA_CTL_PRIO(GD32_DAC_DAC_CH2_DMA_PRIORITY) |
+                  GD32_DMA_CTL_PRIO(GD32_DAC_CH2_DMA_PRIORITY) |
                   GD32_DMA_CTL_MNAGA | GD32_DMA_CTL_CMEN | GD32_DMA_CTL_DIR_M2P |
                   GD32_DMA_CTL_ERRIE | GD32_DMA_CTL_HTFIE |
                   GD32_DMA_CTL_FTFIE,
-  .dmairqprio   = GD32_DAC_DAC_CH2_IRQ_PRIORITY
+  .dmairqprio   = GD32_DAC_CH2_IRQ_PRIORITY
 };
 #endif
 

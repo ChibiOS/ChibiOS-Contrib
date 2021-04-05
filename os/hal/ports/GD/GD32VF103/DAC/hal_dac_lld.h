@@ -76,29 +76,29 @@
 /**
  * @brief   DAC CH1 interrupt priority level setting.
  */
-#if !defined(GD32_DAC_DAC_CH1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_DAC_DAC_CH1_IRQ_PRIORITY     10
+#if !defined(GD32_DAC_CH1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_DAC_CH1_IRQ_PRIORITY     10
 #endif
 
 /**
  * @brief   DAC CH2 interrupt priority level setting.
  */
-#if !defined(GD32_DAC_DAC_CH2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_DAC_DAC_CH2_IRQ_PRIORITY     10
+#if !defined(GD32_DAC_CH2_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_DAC_CH2_IRQ_PRIORITY     10
 #endif
 
 /**
  * @brief   DAC CH1 DMA priority (0..3|lowest..highest).
  */
-#if !defined(GD32_DAC_DAC_CH1_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_DAC_DAC_CH1_DMA_PRIORITY     2
+#if !defined(GD32_DAC_CH1_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_DAC_CH1_DMA_PRIORITY     2
 #endif
 
 /**
  * @brief   DAC CH2 DMA priority (0..3|lowest..highest).
  */
-#if !defined(GD32_DAC_DAC_CH2_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define GD32_DAC_DAC_CH2_DMA_PRIORITY     2
+#if !defined(GD32_DAC_CH2_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define GD32_DAC_CH2_DMA_PRIORITY     2
 #endif
 /** @} */
 
@@ -131,23 +131,23 @@
 #endif
 
 #if GD32_DAC_USE_DAC_CH1 &&                                               \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_DAC_DAC_CH1_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_DAC_CH1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to DAC CH1"
 #endif
 
 #if GD32_DAC_USE_DAC_CH2 &&                                               \
-    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_DAC_DAC_CH2_IRQ_PRIORITY)
+    !OSAL_IRQ_IS_VALID_PRIORITY(GD32_DAC_CH2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to DAC CH2"
 #endif
 
 
 #if GD32_DAC_USE_DAC_CH1 &&                                               \
-    !GD32_DMA_IS_VALID_PRIORITY(GD32_DAC_DAC_CH1_DMA_PRIORITY)
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_DAC_CH1_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to DAC CH1"
 #endif
 
 #if GD32_DAC_USE_DAC_CH2 &&                                               \
-    !GD32_DMA_IS_VALID_PRIORITY(GD32_DAC_DAC_CH2_DMA_PRIORITY)
+    !GD32_DMA_IS_VALID_PRIORITY(GD32_DAC_CH2_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to DAC CH2"
 #endif
 
