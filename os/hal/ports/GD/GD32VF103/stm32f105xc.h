@@ -313,12 +313,12 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t IMR;
-  __IO uint32_t EMR;
-  __IO uint32_t RTSR;
-  __IO uint32_t FTSR;
-  __IO uint32_t SWIER;
-  __IO uint32_t PR;
+  __IO uint32_t INTEN;
+  __IO uint32_t EVEN;
+  __IO uint32_t RTEN;
+  __IO uint32_t FTEN;
+  __IO uint32_t SWIEV;
+  __IO uint32_t PD;
 } EXTI_TypeDef;
 
 /** 

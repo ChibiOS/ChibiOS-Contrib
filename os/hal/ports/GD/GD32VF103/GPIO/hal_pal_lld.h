@@ -404,7 +404,7 @@ typedef uint32_t iopadid_t;
  * @notapi
  */
 #define pal_lld_ispadeventenabled(port, pad)                                \
-  (bool)((EXTI->IMR & (1U << (uint32_t)pad)) != 0U)
+  (bool)((EXTI->INTEN & (1U << (uint32_t)pad)) != 0U)
 
 #if !defined(__DOXYGEN__)
 extern const PALConfig pal_default_config;

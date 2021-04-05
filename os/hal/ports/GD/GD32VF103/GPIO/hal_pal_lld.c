@@ -201,8 +201,8 @@ void _pal_lld_enablepadevent(ioportid_t port,
   /* Multiple channel setting of the same channel not allowed, first disable
      it. This is done because on STM32 the same channel cannot be mapped on
      multiple ports.*/
-  osalDbgAssert(((EXTI->RTSR & padmask) == 0U) &&
-                ((EXTI->FTSR & padmask) == 0U), "channel already in use");
+  osalDbgAssert(((EXTI->RTEN & padmask) == 0U) &&
+                ((EXTI->FTEN & padmask) == 0U), "channel already in use");
 
   /* Index and mask of the SYSCFG CR register to be used.*/
   cridx  = (uint32_t)pad >> 2U;
@@ -218,17 +218,17 @@ void _pal_lld_enablepadevent(ioportid_t port,
 
   /* Programming edge registers.*/
   if (mode & PAL_EVENT_MODE_RISING_EDGE)
-    EXTI->RTSR |= padmask;
+    EXTI->RTEN |= padmask;
   else
-    EXTI->RTSR &= ~padmask;
+    EXTI->RTEN &= ~padmask;
   if (mode & PAL_EVENT_MODE_FALLING_EDGE)
-    EXTI->FTSR |= padmask;
+    EXTI->FTEN |= padmask;
   else
-    EXTI->FTSR &= ~padmask;
+    EXTI->FTEN &= ~padmask;
 
   /* Programming interrupt and event registers.*/
-  EXTI->IMR |= padmask;
-  EXTI->EMR &= ~padmask;
+  EXTI->INTEN |= padmask;
+  EXTI->EVEN &= ~padmask;
 }
 
 /**
@@ -243,8 +243,8 @@ void _pal_lld_enablepadevent(ioportid_t port,
 void _pal_lld_disablepadevent(ioportid_t port, iopadid_t pad) {
   uint32_t padmask, rtsr1, ftsr1;
 
-  rtsr1 = EXTI->RTSR;
-  ftsr1 = EXTI->FTSR;
+  rtsr1 = EXTI->RTEN;
+  ftsr1 = EXTI->FTEN;
 
   /* Mask of the pad.*/
   padmask = 1U << (uint32_t)pad;
@@ -266,11 +266,11 @@ void _pal_lld_disablepadevent(ioportid_t port, iopadid_t pad) {
     osalDbgAssert(crport == portidx, "channel mapped on different port");
 
     /* Disabling channel.*/
-    EXTI->IMR  &= ~padmask;
-    EXTI->EMR  &= ~padmask;
-    EXTI->RTSR  = rtsr1 & ~padmask;
-    EXTI->FTSR  = ftsr1 & ~padmask;
-    EXTI->PR    = padmask;
+    EXTI->INTEN  &= ~padmask;
+    EXTI->EVEN  &= ~padmask;
+    EXTI->RTEN  = rtsr1 & ~padmask;
+    EXTI->FTEN  = ftsr1 & ~padmask;
+    EXTI->PD    = padmask;
 
 #if PAL_USE_CALLBACKS || PAL_USE_WAIT
   /* Callback cleared and/or thread reset.*/

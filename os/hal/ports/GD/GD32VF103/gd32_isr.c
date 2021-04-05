@@ -40,10 +40,10 @@
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-#define exti_serve_irq(pr, channel)                                            \
+#define exti_serve_irq(pd, channel)                                            \
   {                                                                            \
                                                                                \
-    if ((pr) & (1U << (channel))) {                                            \
+    if ((pd) & (1U << (channel))) {                                            \
       _pal_isr_code(channel);                                                  \
     }                                                                          \
   }
@@ -60,15 +60,15 @@
  * @isr
  */
 OSAL_IRQ_HANDLER(vector25) {
-  uint32_t pr;
+  uint32_t pd;
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & (1U << 0);
-  EXTI->PR = pr;
+  pd = EXTI->PD;
+  pd &= EXTI->INTEN & (1U << 0);
+  EXTI->PD = pd;
 
-  exti_serve_irq(pr, 0);
+  exti_serve_irq(pd, 0);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -81,15 +81,15 @@ OSAL_IRQ_HANDLER(vector25) {
  * @isr
  */
 OSAL_IRQ_HANDLER(vector26) {
-  uint32_t pr;
+  uint32_t pd;
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & (1U << 1);
-  EXTI->PR = pr;
+  pd = EXTI->PD;
+  pd &= EXTI->INTEN & (1U << 1);
+  EXTI->PD = pd;
 
-  exti_serve_irq(pr, 1);
+  exti_serve_irq(pd, 1);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -102,15 +102,15 @@ OSAL_IRQ_HANDLER(vector26) {
  * @isr
  */
 OSAL_IRQ_HANDLER(vector27) {
-  uint32_t pr;
+  uint32_t pd;
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & (1U << 2);
-  EXTI->PR = pr;
+  pd = EXTI->PD;
+  pd &= EXTI->INTEN & (1U << 2);
+  EXTI->PD = pd;
 
-  exti_serve_irq(pr, 2);
+  exti_serve_irq(pd, 2);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -123,15 +123,15 @@ OSAL_IRQ_HANDLER(vector27) {
  * @isr
  */
 OSAL_IRQ_HANDLER(vector28) {
-  uint32_t pr;
+  uint32_t pd;
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & (1U << 3);
-  EXTI->PR = pr;
+  pd = EXTI->PD;
+  pd &= EXTI->INTEN & (1U << 3);
+  EXTI->PD = pd;
 
-  exti_serve_irq(pr, 3);
+  exti_serve_irq(pd, 3);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -144,67 +144,42 @@ OSAL_IRQ_HANDLER(vector28) {
  * @isr
  */
 OSAL_IRQ_HANDLER(vector29) {
-  uint32_t pr;
+  uint32_t pd;
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & (1U << 4);
-  EXTI->PR = pr;
+  pd = EXTI->PD;
+  pd &= EXTI->INTEN & (1U << 4);
+  EXTI->PD = pd;
 
-  exti_serve_irq(pr, 4);
+  exti_serve_irq(pd, 4);
 
   OSAL_IRQ_EPILOGUE();
 }
 #endif
 
-#if !defined(GD32_DISABLE_EXTI5_9_HANDLER)
-/**
- * @brief   EXTI[5]...EXTI[9] interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(Vector9C) {
-  uint32_t pr;
-
-  OSAL_IRQ_PROLOGUE();
-
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & ((1U << 5) | (1U << 6) | (1U << 7) | (1U << 8) | (1U << 9));
-  EXTI->PR = pr;
-
-  exti_serve_irq(pr, 5);
-  exti_serve_irq(pr, 6);
-  exti_serve_irq(pr, 7);
-  exti_serve_irq(pr, 8);
-  exti_serve_irq(pr, 9);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif
-
-#if !defined(GD32_DISABLE_EXTI10_15_HANDLER)
+#if !defined(GD32_DISABLE_EXTI15_10_HANDLER)
 /**
  * @brief   EXTI[10]...EXTI[15] interrupt handler.
  *
  * @isr
  */
 OSAL_IRQ_HANDLER(vector59) {
-  uint32_t pr;
+  uint32_t pd;
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & ((1U << 10) | (1U << 11) | (1U << 12) | (1U << 13) |
+  pd = EXTI->PD;
+  pd &= EXTI->INTEN & ((1U << 10) | (1U << 11) | (1U << 12) | (1U << 13) |
                      (1U << 14) | (1U << 15));
-  EXTI->PR = pr;
+  EXTI->PD = pd;
 
-  exti_serve_irq(pr, 10);
-  exti_serve_irq(pr, 11);
-  exti_serve_irq(pr, 12);
-  exti_serve_irq(pr, 13);
-  exti_serve_irq(pr, 14);
-  exti_serve_irq(pr, 15);
+  exti_serve_irq(pd, 10);
+  exti_serve_irq(pd, 11);
+  exti_serve_irq(pd, 12);
+  exti_serve_irq(pd, 13);
+  exti_serve_irq(pd, 14);
+  exti_serve_irq(pd, 15);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -249,8 +224,7 @@ void irqInit(void) {
   eclicEnableVector(EXTI2_IRQn, GD32_IRQ_EXTI2_PRIORITY, GD32_IRQ_EXTI2_TRIGGER);
   eclicEnableVector(EXTI3_IRQn, GD32_IRQ_EXTI3_PRIORITY, GD32_IRQ_EXTI3_TRIGGER);
   eclicEnableVector(EXTI4_IRQn, GD32_IRQ_EXTI4_PRIORITY, GD32_IRQ_EXTI4_TRIGGER);
-  eclicEnableVector(EXTI5_9_IRQn, GD32_IRQ_EXTI5_9_PRIORITY, GD32_IRQ_EXTI5_9_TRIGGER);
-  eclicEnableVector(EXTI10_15_IRQn, GD32_IRQ_EXTI10_15_PRIORITY, GD32_IRQ_EXTI10_15_TRIGGER);
+  eclicEnableVector(EXTI15_10_IRQn, GD32_IRQ_EXTI15_10_PRIORITY, GD32_IRQ_EXTI15_10_TRIGGER);
 #endif
 }
 
@@ -267,8 +241,7 @@ void irqDeinit(void) {
   eclicDisableVector(EXTI2_IRQn);
   eclicDisableVector(EXTI3_IRQn);
   eclicDisableVector(EXTI4_IRQn);
-  eclicDisableVector(EXTI5_9_IRQn);
-  eclicDisableVector(EXTI10_15_IRQn);
+  eclicDisableVector(EXTI15_10_IRQn);
 #endif
 }
 
