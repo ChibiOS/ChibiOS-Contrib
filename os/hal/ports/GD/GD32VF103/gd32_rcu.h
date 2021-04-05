@@ -226,7 +226,7 @@
  *
  * @api
  */
-#define rcuResetDAC() rcuResetAPB1(RCU_APB1RSTR_DACRST)
+#define rcuResetDAC() rcuResetAPB1(RCU_APB1RST_DACRST)
 /** @} */
 
 /**
@@ -291,7 +291,7 @@
  *
  * @api
  */
-#define rcuResetPMUInterface() rcuResetAPB1(RCU_APB1RSTR_PMURST)
+#define rcuResetPMUInterface() rcuResetAPB1(RCU_APB1RST_PMURST)
 /** @} */
 
 /**
@@ -320,7 +320,7 @@
  *
  * @api
  */
-#define rcuResetCAN0() rcuResetAPB1(RCU_APB1RSTR_CAN0RST)
+#define rcuResetCAN0() rcuResetAPB1(RCU_APB1RST_CAN0RST)
 
 /**
  * @brief   Enables the CAN1 peripheral clock.
@@ -343,7 +343,7 @@
  *
  * @api
  */
-#define rcuResetCAN1() rcuResetAPB1(RCU_APB1RSTR_CAN1RST)
+#define rcuResetCAN1() rcuResetAPB1(RCU_APB1RST_CAN1RST)
 /** @} */
 
 /**
@@ -402,42 +402,6 @@
 /** @} */
 
 /**
- * @name    ETH peripheral specific RCU operations
- * @{
- */
-/**
- * @brief   Enables the ETH peripheral clock.
- * @note    The @p lp parameter is ignored in this family.
- *
- * @param[in] lp        low power enable flag
- *
- * @api
- */
-#define rcuEnableETH(lp) rcuEnableAHB(RCU_AHBENR_ETHMACEN |                 \
-                                      RCU_AHBENR_ETHMACTXEN |               \
-                                      RCU_AHBENR_ETHMACRXEN, lp)
-
-/**
- * @brief   Disables the ETH peripheral clock.
- * @note    The @p lp parameter is ignored in this family.
- *
- * @param[in] lp        low power enable flag
- *
- * @api
- */
-#define rcuDisableETH() rcuDisableAHB(RCU_AHBENR_ETHMACEN |                 \
-                                      RCU_AHBENR_ETHMACTXEN |               \
-                                      RCU_AHBENR_ETHMACRXEN)
-
-/**
- * @brief   Resets the ETH peripheral.
- *
- * @api
- */
-#define rcuResetETH() rcuResetAHB(RCU_AHBRSTR_ETHMACRST)
-/** @} */
-
-/**
  * @name    I2C peripherals specific RCU operations
  * @{
  */
@@ -463,7 +427,7 @@
  *
  * @api
  */
-#define rcuResetI2C0() rcuResetAPB1(RCU_APB1RSTR_I2C0RST)
+#define rcuResetI2C0() rcuResetAPB1(RCU_APB1RST_I2C0RST)
 
 /**
  * @brief   Enables the I2C1 peripheral clock.
@@ -487,7 +451,7 @@
  *
  * @api
  */
-#define rcuResetI2C1() rcuResetAPB1(RCU_APB1RSTR_I2C1RST)
+#define rcuResetI2C1() rcuResetAPB1(RCU_APB1RST_I2C1RST)
 /** @} */
 
 /**
@@ -516,36 +480,6 @@
  * @api
  */
 #define rcuResetUSBFS() rcuResetAHB(RCU_AHBRSTR_OTGFSRST)
-/** @} */
-
-/**
- * @name    SDIO peripheral specific RCU operations
- * @{
- */
-/**
- * @brief   Enables the SDIO peripheral clock.
- * @note    The @p lp parameter is ignored in this family.
- *
- * @param[in] lp        low power enable flag
- *
- * @api
- */
-#define rcuEnableSDIO(lp) rcuEnableAHB(RCU_AHBENR_SDIOEN, lp)
-
-/**
- * @brief   Disables the SDIO peripheral clock.
- *
- * @api
- */
-#define rcuDisableSDIO() rcuDisableAHB(RCU_AHBENR_SDIOEN)
-
-/**
- * @brief   Resets the SDIO peripheral.
- * @note    Not supported in this family, does nothing.
- *
- * @api
- */
-#define rcuResetSDIO()
 /** @} */
 
 /**
@@ -598,7 +532,7 @@
  *
  * @api
  */
-#define rcuResetSPI1() rcuResetAPB1(RCU_APB1RSTR_SPI1RST)
+#define rcuResetSPI1() rcuResetAPB1(RCU_APB1RST_SPI1RST)
 
 /**
  * @brief   Enables the SPI2 peripheral clock.
@@ -622,7 +556,7 @@
  *
  * @api
  */
-#define rcuResetSPI2() rcuResetAPB1(RCU_APB1RSTR_SPI2RST)
+#define rcuResetSPI2() rcuResetAPB1(RCU_APB1RST_SPI2RST)
 /** @} */
 
 /**
@@ -675,7 +609,7 @@
  *
  * @api
  */
-#define rcuResetTIM1() rcuResetAPB1(RCU_APB1RSTR_TIM1RST)
+#define rcuResetTIM1() rcuResetAPB1(RCU_APB1RST_TIMER1RST)
 
 /**
  * @brief   Enables the TIM2 peripheral clock.
@@ -699,7 +633,7 @@
  *
  * @api
  */
-#define rcuResetTIM2() rcuResetAPB1(RCU_APB1RSTR_TIM2RST)
+#define rcuResetTIM2() rcuResetAPB1(RCU_APB1RST_TIMER2RST)
 
 /**
  * @brief   Enables the TIM3 peripheral clock.
@@ -723,7 +657,7 @@
  *
  * @api
  */
-#define rcuResetTIM3() rcuResetAPB1(RCU_APB1RSTR_TIM3RST)
+#define rcuResetTIM3() rcuResetAPB1(RCU_APB1RST_TIMER3RST)
 
 /**
  * @brief   Enables the TIM4 peripheral clock.
@@ -747,7 +681,7 @@
  *
  * @api
  */
-#define rcuResetTIM4() rcuResetAPB1(RCU_APB1RSTR_TIM4RST)
+#define rcuResetTIM4() rcuResetAPB1(RCU_APB1RST_TIMER4RST)
 
 /**
  * @brief   Enables the TIM5 peripheral clock.
@@ -770,7 +704,7 @@
  *
  * @api
  */
-#define rcuResetTIM5() rcuResetAPB1(RCU_APB1RSTR_TIM5RST)
+#define rcuResetTIM5() rcuResetAPB1(RCU_APB1RST_TIMER5RST)
 
 /**
  * @brief   Enables the TIM6 peripheral clock.
@@ -793,7 +727,7 @@
  *
  * @api
  */
-#define rcuResetTIM6() rcuResetAPB1(RCU_APB1RSTR_TIM6RST)
+#define rcuResetTIM6() rcuResetAPB1(RCU_APB1RST_TIMER6RST)
 
 
 /** @} */
@@ -848,7 +782,7 @@
  *
  * @api
  */
-#define rcuResetUSART1() rcuResetAPB1(RCU_APB1RSTR_USART1RST)
+#define rcuResetUSART1() rcuResetAPB1(RCU_APB1RST_USART1RST)
 
 /**
  * @brief   Enables the USART2 peripheral clock.
@@ -872,7 +806,7 @@
  *
  * @api
  */
-#define rcuResetUSART2() rcuResetAPB1(RCU_APB1RSTR_USART2RST)
+#define rcuResetUSART2() rcuResetAPB1(RCU_APB1RST_USART2RST)
 
 /**
  * @brief   Enables the UART3 peripheral clock.
@@ -896,7 +830,7 @@
  *
  * @api
  */
-#define rcuResetUART3() rcuResetAPB1(RCU_APB1RSTR_UART3RST)
+#define rcuResetUART3() rcuResetAPB1(RCU_APB1RST_UART3RST)
 
 /**
  * @brief   Enables the UART4 peripheral clock.
@@ -920,7 +854,7 @@
  *
  * @api
  */
-#define rcuResetUART4() rcuResetAPB1(RCU_APB1RSTR_UART4RST)
+#define rcuResetUART4() rcuResetAPB1(RCU_APB1RST_UART4RST)
 /** @} */
 
 /**
@@ -949,7 +883,7 @@
  *
  * @api
  */
-#define rcuResetUSB() rcuResetAPB1(RCU_APB1RSTR_USBRST)
+#define rcuResetUSB() rcuResetAPB1(RCU_APB1RST_USBRST)
 /** @} */
 
 /**

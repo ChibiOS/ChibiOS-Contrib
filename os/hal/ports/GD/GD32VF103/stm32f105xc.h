@@ -1347,78 +1347,76 @@ typedef struct
 #define RCU_APB2RST_PERST                 RCU_APB2RST_PERST_Msk          /*!< I/O port E reset */
 
 
+/*****************  Bit definition for RCU_APB1RST register  *****************/
+#define RCU_APB1RST_TIMER1RST_Pos             (0U)                              
+#define RCU_APB1RST_TIMER1RST_Msk             (0x1U << RCU_APB1RST_TIMER1RST_Pos) /*!< 0x00000001 */
+#define RCU_APB1RST_TIMER1RST                 RCU_APB1RST_TIMER1RST_Msk          /*!< Timer 2 reset */
+#define RCU_APB1RST_TIMER2RST_Pos             (1U)                              
+#define RCU_APB1RST_TIMER2RST_Msk             (0x1U << RCU_APB1RST_TIMER2RST_Pos) /*!< 0x00000002 */
+#define RCU_APB1RST_TIMER2RST                 RCU_APB1RST_TIMER2RST_Msk          /*!< Timer 3 reset */
+#define RCU_APB1RST_WWDGTRST_Pos             (11U)                             
+#define RCU_APB1RST_WWDGTRST_Msk             (0x1U << RCU_APB1RST_WWDGTRST_Pos) /*!< 0x00000800 */
+#define RCU_APB1RST_WWDGTRST                 RCU_APB1RST_WWDGTRST_Msk          /*!< Window Watchdog reset */
+#define RCU_APB1RST_USART1RST_Pos           (17U)                             
+#define RCU_APB1RST_USART1RST_Msk           (0x1U << RCU_APB1RST_USART1RST_Pos) /*!< 0x00020000 */
+#define RCU_APB1RST_USART1RST               RCU_APB1RST_USART1RST_Msk        /*!< USART 2 reset */
+#define RCU_APB1RST_I2C0RST_Pos             (21U)                             
+#define RCU_APB1RST_I2C0RST_Msk             (0x1U << RCU_APB1RST_I2C0RST_Pos) /*!< 0x00200000 */
+#define RCU_APB1RST_I2C0RST                 RCU_APB1RST_I2C0RST_Msk          /*!< I2C 1 reset */
+
+#define RCU_APB1RST_CAN0RST_Pos             (25U)                             
+#define RCU_APB1RST_CAN0RST_Msk             (0x1U << RCU_APB1RST_CAN0RST_Pos) /*!< 0x02000000 */
+#define RCU_APB1RST_CAN0RST                 RCU_APB1RST_CAN0RST_Msk          /*!< CAN0 reset */
+
+#define RCU_APB1RST_BKPIRST_Pos              (27U)                             
+#define RCU_APB1RST_BKPIRST_Msk              (0x1U << RCU_APB1RST_BKPIRST_Pos) /*!< 0x08000000 */
+#define RCU_APB1RST_BKPIRST                  RCU_APB1RST_BKPIRST_Msk           /*!< Backup interface reset */
+#define RCU_APB1RST_PMURST_Pos              (28U)                             
+#define RCU_APB1RST_PMURST_Msk              (0x1U << RCU_APB1RST_PMURST_Pos) /*!< 0x10000000 */
+#define RCU_APB1RST_PMURST                  RCU_APB1RST_PMURST_Msk           /*!< Power interface reset */
+
+#define RCU_APB1RST_TIMER3RST_Pos             (2U)                              
+#define RCU_APB1RST_TIMER3RST_Msk             (0x1U << RCU_APB1RST_TIMER3RST_Pos) /*!< 0x00000004 */
+#define RCU_APB1RST_TIMER3RST                 RCU_APB1RST_TIMER3RST_Msk          /*!< Timer 4 reset */
+#define RCU_APB1RST_SPI1RST_Pos             (14U)                             
+#define RCU_APB1RST_SPI1RST_Msk             (0x1U << RCU_APB1RST_SPI1RST_Pos) /*!< 0x00004000 */
+#define RCU_APB1RST_SPI1RST                 RCU_APB1RST_SPI1RST_Msk          /*!< SPI 2 reset */
+#define RCU_APB1RST_USART2RST_Pos           (18U)                             
+#define RCU_APB1RST_USART2RST_Msk           (0x1U << RCU_APB1RST_USART2RST_Pos) /*!< 0x00040000 */
+#define RCU_APB1RST_USART2RST               RCU_APB1RST_USART2RST_Msk        /*!< USART 3 reset */
+#define RCU_APB1RST_I2C1RST_Pos             (22U)                             
+#define RCU_APB1RST_I2C1RST_Msk             (0x1U << RCU_APB1RST_I2C1RST_Pos) /*!< 0x00400000 */
+#define RCU_APB1RST_I2C1RST                 RCU_APB1RST_I2C1RST_Msk          /*!< I2C 2 reset */
 
 
-/*****************  Bit definition for RCU_APB1RSTR register  *****************/
-#define RCU_APB1RSTR_TIM1RST_Pos             (0U)                              
-#define RCU_APB1RSTR_TIM1RST_Msk             (0x1U << RCU_APB1RSTR_TIM1RST_Pos) /*!< 0x00000001 */
-#define RCU_APB1RSTR_TIM1RST                 RCU_APB1RSTR_TIM1RST_Msk          /*!< Timer 2 reset */
-#define RCU_APB1RSTR_TIM2RST_Pos             (1U)                              
-#define RCU_APB1RSTR_TIM2RST_Msk             (0x1U << RCU_APB1RSTR_TIM2RST_Pos) /*!< 0x00000002 */
-#define RCU_APB1RSTR_TIM2RST                 RCU_APB1RSTR_TIM2RST_Msk          /*!< Timer 3 reset */
-#define RCU_APB1RSTR_WWDGRST_Pos             (11U)                             
-#define RCU_APB1RSTR_WWDGRST_Msk             (0x1U << RCU_APB1RSTR_WWDGRST_Pos) /*!< 0x00000800 */
-#define RCU_APB1RSTR_WWDGRST                 RCU_APB1RSTR_WWDGRST_Msk          /*!< Window Watchdog reset */
-#define RCU_APB1RSTR_USART1RST_Pos           (17U)                             
-#define RCU_APB1RSTR_USART1RST_Msk           (0x1U << RCU_APB1RSTR_USART1RST_Pos) /*!< 0x00020000 */
-#define RCU_APB1RSTR_USART1RST               RCU_APB1RSTR_USART1RST_Msk        /*!< USART 2 reset */
-#define RCU_APB1RSTR_I2C0RST_Pos             (21U)                             
-#define RCU_APB1RSTR_I2C0RST_Msk             (0x1U << RCU_APB1RSTR_I2C0RST_Pos) /*!< 0x00200000 */
-#define RCU_APB1RSTR_I2C0RST                 RCU_APB1RSTR_I2C0RST_Msk          /*!< I2C 1 reset */
-
-#define RCU_APB1RSTR_CAN0RST_Pos             (25U)                             
-#define RCU_APB1RSTR_CAN0RST_Msk             (0x1U << RCU_APB1RSTR_CAN0RST_Pos) /*!< 0x02000000 */
-#define RCU_APB1RSTR_CAN0RST                 RCU_APB1RSTR_CAN0RST_Msk          /*!< CAN0 reset */
-
-#define RCU_APB1RSTR_BKPRST_Pos              (27U)                             
-#define RCU_APB1RSTR_BKPRST_Msk              (0x1U << RCU_APB1RSTR_BKPRST_Pos) /*!< 0x08000000 */
-#define RCU_APB1RSTR_BKPRST                  RCU_APB1RSTR_BKPRST_Msk           /*!< Backup interface reset */
-#define RCU_APB1RSTR_PMURST_Pos              (28U)                             
-#define RCU_APB1RSTR_PMURST_Msk              (0x1U << RCU_APB1RSTR_PMURST_Pos) /*!< 0x10000000 */
-#define RCU_APB1RSTR_PMURST                  RCU_APB1RSTR_PMURST_Msk           /*!< Power interface reset */
-
-#define RCU_APB1RSTR_TIM3RST_Pos             (2U)                              
-#define RCU_APB1RSTR_TIM3RST_Msk             (0x1U << RCU_APB1RSTR_TIM3RST_Pos) /*!< 0x00000004 */
-#define RCU_APB1RSTR_TIM3RST                 RCU_APB1RSTR_TIM3RST_Msk          /*!< Timer 4 reset */
-#define RCU_APB1RSTR_SPI1RST_Pos             (14U)                             
-#define RCU_APB1RSTR_SPI1RST_Msk             (0x1U << RCU_APB1RSTR_SPI1RST_Pos) /*!< 0x00004000 */
-#define RCU_APB1RSTR_SPI1RST                 RCU_APB1RSTR_SPI1RST_Msk          /*!< SPI 2 reset */
-#define RCU_APB1RSTR_USART2RST_Pos           (18U)                             
-#define RCU_APB1RSTR_USART2RST_Msk           (0x1U << RCU_APB1RSTR_USART2RST_Pos) /*!< 0x00040000 */
-#define RCU_APB1RSTR_USART2RST               RCU_APB1RSTR_USART2RST_Msk        /*!< USART 3 reset */
-#define RCU_APB1RSTR_I2C1RST_Pos             (22U)                             
-#define RCU_APB1RSTR_I2C1RST_Msk             (0x1U << RCU_APB1RSTR_I2C1RST_Pos) /*!< 0x00400000 */
-#define RCU_APB1RSTR_I2C1RST                 RCU_APB1RSTR_I2C1RST_Msk          /*!< I2C 2 reset */
-
-
-#define RCU_APB1RSTR_TIM4RST_Pos             (3U)                              
-#define RCU_APB1RSTR_TIM4RST_Msk             (0x1U << RCU_APB1RSTR_TIM4RST_Pos) /*!< 0x00000008 */
-#define RCU_APB1RSTR_TIM4RST                 RCU_APB1RSTR_TIM4RST_Msk          /*!< Timer 5 reset */
-#define RCU_APB1RSTR_TIM5RST_Pos             (4U)                              
-#define RCU_APB1RSTR_TIM5RST_Msk             (0x1U << RCU_APB1RSTR_TIM5RST_Pos) /*!< 0x00000010 */
-#define RCU_APB1RSTR_TIM5RST                 RCU_APB1RSTR_TIM5RST_Msk          /*!< Timer 6 reset */
-#define RCU_APB1RSTR_TIM6RST_Pos             (5U)                              
-#define RCU_APB1RSTR_TIM6RST_Msk             (0x1U << RCU_APB1RSTR_TIM6RST_Pos) /*!< 0x00000020 */
-#define RCU_APB1RSTR_TIM6RST                 RCU_APB1RSTR_TIM6RST_Msk          /*!< Timer 7 reset */
-#define RCU_APB1RSTR_SPI2RST_Pos             (15U)                             
-#define RCU_APB1RSTR_SPI2RST_Msk             (0x1U << RCU_APB1RSTR_SPI2RST_Pos) /*!< 0x00008000 */
-#define RCU_APB1RSTR_SPI2RST                 RCU_APB1RSTR_SPI2RST_Msk          /*!< SPI 3 reset */
-#define RCU_APB1RSTR_UART3RST_Pos            (19U)                             
-#define RCU_APB1RSTR_UART3RST_Msk            (0x1U << RCU_APB1RSTR_UART3RST_Pos) /*!< 0x00080000 */
-#define RCU_APB1RSTR_UART3RST                RCU_APB1RSTR_UART3RST_Msk         /*!< UART 4 reset */
-#define RCU_APB1RSTR_UART4RST_Pos            (20U)                             
-#define RCU_APB1RSTR_UART4RST_Msk            (0x1U << RCU_APB1RSTR_UART4RST_Pos) /*!< 0x00100000 */
-#define RCU_APB1RSTR_UART4RST                RCU_APB1RSTR_UART4RST_Msk         /*!< UART 5 reset */
+#define RCU_APB1RST_TIMER4RST_Pos             (3U)                              
+#define RCU_APB1RST_TIMER4RST_Msk             (0x1U << RCU_APB1RST_TIMER4RST_Pos) /*!< 0x00000008 */
+#define RCU_APB1RST_TIMER4RST                 RCU_APB1RST_TIMER4RST_Msk          /*!< Timer 5 reset */
+#define RCU_APB1RST_TIMER5RST_Pos             (4U)                              
+#define RCU_APB1RST_TIMER5RST_Msk             (0x1U << RCU_APB1RST_TIMER5RST_Pos) /*!< 0x00000010 */
+#define RCU_APB1RST_TIMER5RST                 RCU_APB1RST_TIMER5RST_Msk          /*!< Timer 6 reset */
+#define RCU_APB1RST_TIMER6RST_Pos             (5U)                              
+#define RCU_APB1RST_TIMER6RST_Msk             (0x1U << RCU_APB1RST_TIMER6RST_Pos) /*!< 0x00000020 */
+#define RCU_APB1RST_TIMER6RST                 RCU_APB1RST_TIMER6RST_Msk          /*!< Timer 7 reset */
+#define RCU_APB1RST_SPI2RST_Pos             (15U)                             
+#define RCU_APB1RST_SPI2RST_Msk             (0x1U << RCU_APB1RST_SPI2RST_Pos) /*!< 0x00008000 */
+#define RCU_APB1RST_SPI2RST                 RCU_APB1RST_SPI2RST_Msk          /*!< SPI 3 reset */
+#define RCU_APB1RST_UART3RST_Pos            (19U)                             
+#define RCU_APB1RST_UART3RST_Msk            (0x1U << RCU_APB1RST_UART3RST_Pos) /*!< 0x00080000 */
+#define RCU_APB1RST_UART3RST                RCU_APB1RST_UART3RST_Msk         /*!< UART 4 reset */
+#define RCU_APB1RST_UART4RST_Pos            (20U)                             
+#define RCU_APB1RST_UART4RST_Msk            (0x1U << RCU_APB1RST_UART4RST_Pos) /*!< 0x00100000 */
+#define RCU_APB1RST_UART4RST                RCU_APB1RST_UART4RST_Msk         /*!< UART 5 reset */
 
 
 
-#define RCU_APB1RSTR_CAN1RST_Pos             (26U)                             
-#define RCU_APB1RSTR_CAN1RST_Msk             (0x1U << RCU_APB1RSTR_CAN1RST_Pos) /*!< 0x04000000 */
-#define RCU_APB1RSTR_CAN1RST                 RCU_APB1RSTR_CAN1RST_Msk          /*!< CAN1 reset */
+#define RCU_APB1RST_CAN1RST_Pos             (26U)                             
+#define RCU_APB1RST_CAN1RST_Msk             (0x1U << RCU_APB1RST_CAN1RST_Pos) /*!< 0x04000000 */
+#define RCU_APB1RST_CAN1RST                 RCU_APB1RST_CAN1RST_Msk          /*!< CAN1 reset */
 
-#define RCU_APB1RSTR_DACRST_Pos              (29U)                             
-#define RCU_APB1RSTR_DACRST_Msk              (0x1U << RCU_APB1RSTR_DACRST_Pos) /*!< 0x20000000 */
-#define RCU_APB1RSTR_DACRST                  RCU_APB1RSTR_DACRST_Msk           /*!< DAC interface reset */
+#define RCU_APB1RST_DACRST_Pos              (29U)                             
+#define RCU_APB1RST_DACRST_Msk              (0x1U << RCU_APB1RST_DACRST_Pos) /*!< 0x20000000 */
+#define RCU_APB1RST_DACRST                  RCU_APB1RST_DACRST_Msk           /*!< DAC interface reset */
 
 /******************  Bit definition for RCU_AHBENR register  ******************/
 #define RCU_AHBENR_DMA0EN_Pos                (0U)                              
