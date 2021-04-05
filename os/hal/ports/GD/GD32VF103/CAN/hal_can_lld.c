@@ -304,25 +304,6 @@ static void can_lld_sce_handler(CANDriver *canp) {
 /*===========================================================================*/
 
 #if GD32_CAN_USE_CAN0 || defined(__DOXYGEN__)
-#if defined(GD32_CAN0_UNIFIED_HANDLER)
-/**
- * @brief   CAN0 unified interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_CAN0_UNIFIED_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  can_lld_tx_handler(&CAND1);
-  can_lld_rx0_handler(&CAND1);
-  can_lld_rx1_handler(&CAND1);
-  can_lld_sce_handler(&CAND1);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#else /* !defined(GD32_CAN0_UNIFIED_HANDLER) */
-
 #if !defined(GD32_CAN0_TX_HANDLER)
 #error "GD32_CAN0_TX_HANDLER not defined"
 #endif
@@ -391,29 +372,9 @@ OSAL_IRQ_HANDLER(GD32_CAN0_EWMC_HANDLER) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* !defined(GD32_CAN0_UNIFIED_HANDLER) */
 #endif /* GD32_CAN_USE_CAN0 */
 
 #if GD32_CAN_USE_CAN1 || defined(__DOXYGEN__)
-#if defined(GD32_CAN0_UNIFIED_HANDLER)
-/**
- * @brief   CAN0 unified interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(GD32_CAN0_UNIFIED_HANDLER) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  can_lld_tx_handler(&CAND2);
-  can_lld_rx0_handler(&CAND2);
-  can_lld_rx1_handler(&CAND2);
-  can_lld_sce_handler(&CAND2);
-
-  OSAL_IRQ_EPILOGUE();
-}
-#else /* !defined(GD32_CAN0_UNIFIED_HANDLER) */
-
 #if !defined(GD32_CAN0_TX_HANDLER)
 #error "GD32_CAN0_TX_HANDLER not defined"
 #endif
@@ -482,7 +443,6 @@ OSAL_IRQ_HANDLER(GD32_CAN0_EWMC_HANDLER) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* !defined(GD32_CAN0_UNIFIED_HANDLER) */
 #endif /* GD32_CAN_USE_CAN1 */
 
 /*===========================================================================*/
@@ -500,28 +460,20 @@ void can_lld_init(void) {
   /* Driver initialization.*/
   canObjectInit(&CAND1);
   CAND1.can = CAN0;
-#if defined(GD32_CAN0_UNIFIED_NUMBER)
-    eclicEnableVector(GD32_CAN0_UNIFIED_NUMBER, GD32_CAN_CAN0_IRQ_PRIORITY, GD32_CAN_CAN0_IRQ_TRIGGER);
-#else
     eclicEnableVector(GD32_CAN0_TX_NUMBER, GD32_CAN_CAN0_IRQ_PRIORITY, GD32_CAN_CAN0_IRQ_TRIGGER);
     eclicEnableVector(GD32_CAN0_RX0_NUMBER, GD32_CAN_CAN0_IRQ_PRIORITY, GD32_CAN_CAN0_IRQ_TRIGGER);
     eclicEnableVector(GD32_CAN0_RX1_NUMBER, GD32_CAN_CAN0_IRQ_PRIORITY, GD32_CAN_CAN0_IRQ_TRIGGER);
     eclicEnableVector(GD32_CAN0_EWMC_NUMBER, GD32_CAN_CAN0_IRQ_PRIORITY, GD32_CAN_CAN0_IRQ_TRIGGER);
-#endif
 #endif
 
 #if GD32_CAN_USE_CAN1
   /* Driver initialization.*/
   canObjectInit(&CAND2);
   CAND2.can = CAN1;
-#if defined(GD32_CAN0_UNIFIED_NUMBER)
-    eclicEnableVector(GD32_CAN0_UNIFIED_NUMBER, GD32_CAN_CAN1_IRQ_PRIORITY, GD32_CAN_CAN1_IRQ_TRIGGER);
-#else
     eclicEnableVector(GD32_CAN0_TX_NUMBER, GD32_CAN_CAN1_IRQ_PRIORITY, GD32_CAN_CAN1_IRQ_TRIGGER);
     eclicEnableVector(GD32_CAN0_RX0_NUMBER, GD32_CAN_CAN1_IRQ_PRIORITY, GD32_CAN_CAN1_IRQ_TRIGGER);
     eclicEnableVector(GD32_CAN0_RX1_NUMBER, GD32_CAN_CAN1_IRQ_PRIORITY, GD32_CAN_CAN1_IRQ_TRIGGER);
     eclicEnableVector(GD32_CAN0_EWMC_NUMBER, GD32_CAN_CAN1_IRQ_PRIORITY, GD32_CAN_CAN1_IRQ_TRIGGER);
-#endif
 #endif
 
   /* Filters initialization.*/
