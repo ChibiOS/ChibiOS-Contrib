@@ -174,30 +174,30 @@ typedef enum {
  * @brief   Low level fields of the ADC configuration structure.
  */
 #define adc_lld_configuration_group_fields                                  \
-  /* ADC CR1 register initialization data.                                  \
+  /* ADC CTL0 register initialization data.                                  \
      NOTE: All the required bits must be defined into this field except     \
            @p ADC_CTL0_SM that is enforced inside the driver.*/            \
   uint32_t                  ctl0;                                            \
-  /* ADC CR2 register initialization data.                                  \
+  /* ADC CTL1 register initialization data.                                  \
      NOTE: All the required bits must be defined into this field except     \
            @p ADC_CTL1_DMA, @p ADC_CTL1_CTN and @p ADC_CTL1_ADCON that are     \
            enforced inside the driver.*/                                    \
   uint32_t                  ctl1;                                            \
-  /* ADC SMPR1 register initialization data.                                \
+  /* ADC SAMPT0 register initialization data.                                \
      NOTE: In this field must be specified the sample times for channels    \
            10...17.*/                                                       \
   uint32_t                  sampt0;                                          \
-  /* ADC SMPR2 register initialization data.                                \
+  /* ADC SAMPT1 register initialization data.                                \
      NOTE: In this field must be specified the sample times for channels    \
            0...9.*/                                                         \
   uint32_t                  sampt1;                                          \
-  /* ADC SQR1 register initialization data.                                 \
+  /* ADC RSQ0 register initialization data.                                 \
      NOTE: Conversion group sequence 13...16 + sequence length.*/           \
   uint32_t                  rsq0;                                           \
-  /* ADC SQR2 register initialization data.                                 \
+  /* ADC RSQ1 register initialization data.                                 \
      NOTE: Conversion group sequence 7...12.*/                              \
   uint32_t                  rsq1;                                           \
-  /* ADC SQR3 register initialization data.                                 \
+  /* ADC RSQ2 register initialization data.                                 \
      NOTE: Conversion group sequence 1...6.*/                               \
   uint32_t                  rsq2
 
