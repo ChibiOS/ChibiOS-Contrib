@@ -37,31 +37,37 @@
 /*
  * HAL driver system settings.
  */
-/*#define GD32_NO_INIT                       FALSE
+#define GD32_NO_INIT                       FALSE
 #define GD32_IRC8M_ENABLED                 TRUE
 #define GD32_IRC40K_ENABLED                FALSE
 #define GD32_HXTAL_ENABLED                 TRUE
-#define GD32_LXTAL_ENABLED                 FALSE
+#define GD32_LXTAL_ENABLED                 TRUE
 #define GD32_SCS                           GD32_SCS_PLL
 #define GD32_PLLSEL                        GD32_PLLSEL_PREDV0
 #define GD32_PREDV0SEL                     GD32_PREDV0SEL_HXTAL
-#define GD32_PREDV0_VALUE                  1
-#define GD32_PLLMF_VALUE                   10
-#define GD32_PREDV1_VALUE                  3
-#define GD32_PLL1MF_VALUE                  10
-#define GD32_PLL2MF_VALUE                  10
+#define GD32_PREDV0_VALUE                  2
+#define GD32_PLLMF_VALUE                   18
+#define GD32_PREDV1_VALUE                  2
+#define GD32_PLL1MF_VALUE                  14
+#define GD32_PLL2MF_VALUE                  13
 #define GD32_AHBPSC                        GD32_AHBPSC_DIV1
 #define GD32_APB1PSC                       GD32_APB1PSC_DIV2
 #define GD32_APB2PSC                       GD32_APB2PSC_DIV1
-#define GD32_ADCPSC                        GD32_ADCPSC_DIV16
+#define GD32_ADCPSC                        GD32_ADCPSC_DIV6
 #define GD32_USB_CLOCK_REQUIRED            TRUE
-#define GD32_USBFSPSC                      GD32_USBFSPSC_DIV2P5
+#define GD32_USBFSPSC                      GD32_USBFSPSC_DIV1P5
 #define GD32_I2S_CLOCK_REQUIRED            FALSE
 #define GD32_CKOUT0SEL                     GD32_CKOUT0SEL_NOCLOCK
-#define GD32_RTCSRC                        GD32_RTCSRC_HXTALDIV
+#define GD32_RTCSRC                        GD32_RTCSRC_LXTAL
 #define GD32_PVD_ENABLE                    FALSE
 #define GD32_LVDT                          GD32_LVDT_LEV0
-*/
+
+/*
+ * ECLIC system settings.
+ */
+#define ECLIC_TRIGGER_DEFAULT              ECLIC_POSTIVE_EDGE_TRIGGER
+#define ECLIC_DMA_TRIGGER                  ECLIC_TRIGGER_DEFAULT
+
 /*
  * IRQ system settings.
  */
@@ -72,10 +78,13 @@
 #define GD32_IRQ_EXTI4_PRIORITY            6
 #define GD32_IRQ_EXTI5_9_PRIORITY          6
 #define GD32_IRQ_EXTI10_15_PRIORITY        6
-#define GD32_IRQ_EXTI16_PRIORITY           6
-#define GD32_IRQ_EXTI17_PRIORITY           6
-#define GD32_IRQ_EXTI18_PRIORITY           6
-#define GD32_IRQ_EXTI19_PRIORITY           6
+#define GD32_IRQ_EXTI0_TRIGGER             ECLIC_TRIGGER_DEFAULT
+#define GD32_IRQ_EXTI1_TRIGGER             ECLIC_TRIGGER_DEFAULT
+#define GD32_IRQ_EXTI2_TRIGGER             ECLIC_TRIGGER_DEFAULT
+#define GD32_IRQ_EXTI3_TRIGGER             ECLIC_TRIGGER_DEFAULT
+#define GD32_IRQ_EXTI4_TRIGGER             ECLIC_TRIGGER_DEFAULT
+#define GD32_IRQ_EXTI5_9_TRIGGER           ECLIC_TRIGGER_DEFAULT
+#define GD32_IRQ_EXTI10_15_TRIGGER         ECLIC_TRIGGER_DEFAULT
 
 /*
  * ADC driver system settings.
@@ -91,6 +100,8 @@
 #define GD32_CAN_CAN0_IRQ_PRIORITY         11
 #define GD32_CAN_USE_CAN1                  FALSE
 #define GD32_CAN_CAN1_IRQ_PRIORITY         11
+#define GD32_CAN_CAN0_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_CAN_CAN1_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
 
 /*
  * DAC driver system settings.
@@ -111,6 +122,13 @@
 #define GD32_GPT_TIM2_IRQ_PRIORITY         7
 #define GD32_GPT_TIM3_IRQ_PRIORITY         7
 #define GD32_GPT_TIM4_IRQ_PRIORITY         7
+#define GD32_GPT_TIM0_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_GPT_TIM1_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_GPT_TIM2_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_GPT_TIM3_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_GPT_TIM4_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_GPT_TIM5_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_GPT_TIM6_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
 
 /*
  * I2S driver system settings.
@@ -122,6 +140,7 @@
 #define GD32_I2S_SPI1_DMA_PRIORITY         1
 #define GD32_I2S_SPI2_DMA_PRIORITY         1
 #define GD32_I2S_DMA_ERROR_HOOK(i2sp)      osalSysHalt("DMA failure")
+
 /*
  * I2C driver system settings.
  */
@@ -130,6 +149,8 @@
 #define GD32_I2C_BUSY_TIMEOUT              50
 #define GD32_I2C_I2C0_IRQ_PRIORITY         10
 #define GD32_I2C_I2C1_IRQ_PRIORITY         5
+#define GD32_I2C_I2C0_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_I2C_I2C1_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
 #define GD32_I2C_I2C0_DMA_PRIORITY         2
 #define GD32_I2C_I2C1_DMA_PRIORITY         2
 #define GD32_I2C_DMA_ERROR_HOOK(i2cp)      osalSysHalt("DMA failure")
@@ -147,6 +168,11 @@
 #define GD32_ICU_TIM2_IRQ_PRIORITY         7
 #define GD32_ICU_TIM3_IRQ_PRIORITY         7
 #define GD32_ICU_TIM4_IRQ_PRIORITY         7
+#define GD32_ICU_TIM0_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_ICU_TIM1_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_ICU_TIM2_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_ICU_TIM3_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_ICU_TIM4_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
 
 /*
  * PWM driver system settings.
@@ -161,27 +187,36 @@
 #define GD32_PWM_TIM2_IRQ_PRIORITY         7
 #define GD32_PWM_TIM3_IRQ_PRIORITY         7
 #define GD32_PWM_TIM4_IRQ_PRIORITY         7
-#define GD32_PWM_TIM5_IRQ_PRIORITY         7
-#define GD32_PWM_TIM8_IRQ_PRIORITY         7
+#define GD32_PWM_TIM0_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_PWM_TIM1_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_PWM_TIM2_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_PWM_TIM3_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_PWM_TIM4_IRQ_TRIGGER          ECLIC_TRIGGER_DEFAULT
 
 /*
  * RTC driver system settings.
  */
 #define GD32_RTC_IRQ_PRIORITY              15
+#define GD32_RTC_IRQ_TRIGGER               ECLIC_TRIGGER_DEFAULT
 
 /*
  * SERIAL driver system settings.
  */
+#define GD32_SERIAL_USE_USART0             FALSE
 #define GD32_SERIAL_USE_USART1             FALSE
 #define GD32_SERIAL_USE_USART2             FALSE
-#define GD32_SERIAL_USE_USART3             FALSE
+#define GD32_SERIAL_USE_UART3              FALSE
 #define GD32_SERIAL_USE_UART4              FALSE
-#define GD32_SERIAL_USE_UART5              FALSE
+#define GD32_SERIAL_USART0_PRIORITY        12
 #define GD32_SERIAL_USART1_PRIORITY        12
 #define GD32_SERIAL_USART2_PRIORITY        12
-#define GD32_SERIAL_USART3_PRIORITY        12
+#define GD32_SERIAL_UART3_PRIORITY         12
 #define GD32_SERIAL_UART4_PRIORITY         12
-#define GD32_SERIAL_UART5_PRIORITY         12
+#define GD32_SERIAL_USART0_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#define GD32_SERIAL_USART1_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#define GD32_SERIAL_USART2_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#define GD32_SERIAL_UART3_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#define GD32_SERIAL_UART4_TRIGGER          ECLIC_TRIGGER_DEFAULT
 
 /*
  * SPI driver system settings.
@@ -201,6 +236,7 @@
  * ST driver system settings.
  */
 #define GD32_ST_IRQ_PRIORITY               9
+#define GD32_ST_IRQ_TRIGGER                ECLIC_TRIGGER_DEFAULT
 #define GD32_ST_USE_TIMER                  1
 
 /*
@@ -209,20 +245,32 @@
 #define GD32_UART_USE_USART0               FALSE
 #define GD32_UART_USE_USART1               FALSE
 #define GD32_UART_USE_USART2               FALSE
+#define GD32_UART_USE_UART3                FALSE
+#define GD32_UART_USE_UART4                FALSE
 #define GD32_UART_USART0_IRQ_PRIORITY      13
 #define GD32_UART_USART1_IRQ_PRIORITY      13
 #define GD32_UART_USART2_IRQ_PRIORITY      13
+#define GD32_UART_UART3_IRQ_PRIORITY       13
+#define GD32_UART_UART4_IRQ_PRIORITY       13
+#define GD32_UART_USART0_IRQ_TRIGGER       ECLIC_TRIGGER_DEFAULT
+#define GD32_UART_USART1_IRQ_TRIGGER       ECLIC_TRIGGER_DEFAULT
+#define GD32_UART_USART2_IRQ_TRIGGER       ECLIC_TRIGGER_DEFAULT
+#define GD32_UART_UART3_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
+#define GD32_UART_UART4_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
 #define GD32_UART_USART0_DMA_PRIORITY      0
 #define GD32_UART_USART1_DMA_PRIORITY      0
-#define GD32_UART_USART2_DMA_PRIORITY      3
+#define GD32_UART_USART2_DMA_PRIORITY      0
+#define GD32_UART_UART3_DMA_PRIORITY       0
+#define GD32_UART_UART4_DMA_PRIORITY       0
 #define GD32_UART_DMA_ERROR_HOOK(uartp)    osalSysHalt("DMA failure")
 
 /*
  * USB driver system settings.
  */
 #define GD32_USB_USE_USBFS                 TRUE
-#define GD32_USB_USBFS_IRQ_PRIORITY         5
-#define GD32_USB_USBFS_RX_FIFO_SIZE         256
+#define GD32_USB_USBFS_IRQ_PRIORITY        5
+#define GD32_USB_USBFS_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#define GD32_USB_USBFS_RX_FIFO_SIZE        256
 
 /*
  * WDG driver system settings.
