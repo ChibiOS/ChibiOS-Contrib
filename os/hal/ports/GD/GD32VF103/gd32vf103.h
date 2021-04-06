@@ -486,7 +486,6 @@ typedef struct
 #define TIM5_BASE             (APB1PERIPH_BASE + 0x00001000U)
 #define TIM6_BASE             (APB1PERIPH_BASE + 0x00001400U)
 #define WWDG_BASE             (APB1PERIPH_BASE + 0x00002C00U)
-#define FWDGT_BASE             (APB1PERIPH_BASE + 0x00003000U)
 #define SPI1_BASE             (APB1PERIPH_BASE + 0x00003800U)
 #define SPI2_BASE             (APB1PERIPH_BASE + 0x00003C00U)
 #define USART1_BASE           (APB1PERIPH_BASE + 0x00004400U)
