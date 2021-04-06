@@ -42,20 +42,27 @@
 /*
  * IO pins assignments
  */
-#define GPIOA_GREEN_LED         1
-#define GPIOA_BLUE_LED          2
-#define GPIOC_RED_LED           13
+#define PIN_GREEN_LED         1
+#define PIN_BLUE_LED          2
+#define PIN_RED_LED           13
 
-#define GPIOA_DISPLAY_MISO      6
-#define GPIOA_DISPLAY_MOSI      7
-#define GPIOA_DISPLAY_SCK       5
-#define GPIOB_DISPLAY_CS        2
-#define GPIOB_DISPLAY_DC        0
-#define GPIOB_DISPLAY_RST       1
+#define PIN_DISPLAY_MISO      6
+#define PIN_DISPLAY_MOSI      7
+#define PIN_DISPLAY_SCK       5
+#define PIN_DISPLAY_CS        2
+#define PIN_DISPLAY_DC        0
+#define PIN_DISPLAY_RST       1
 
-#define GPIOD_OSC_IN            0
-#define GPIOD_OSC_OUT           1
+#define LINE_GREEN_LED         PAL_LINE(GPIOA, PIN_GREEN_LED)
+#define LINE_BLUE_LED          PAL_LINE(GPIOA, PIN_BLUE_LED)
+#define LINE_RED_LED           PAL_LINE(GPIOA, PIN_RED_LED)
 
+#define LINE_DISPLAY_MISO      PAL_LINE(GPIOA, PIN_DISPLAY_MISO)
+#define LINE_DISPLAY_MOSI      PAL_LINE(GPIOA, PIN_DISPLAY_MOSI)
+#define LINE_DISPLAY_SCK       PAL_LINE(GPIOA, PIN_DISPLAY_SCK)
+#define LINE_DISPLAY_CS        PAL_LINE(GPIOB, PIN_DISPLAY_CS)
+#define LINE_DISPLAY_DC        PAL_LINE(GPIOB, PIN_DISPLAY_DC)
+#define LINE_DISPLAY_RST       PAL_LINE(GPIOB, PIN_DISPLAY_RST)
 /*
  * I/O ports initial setup, this configuration is established soon after reset
  * in the initialization code.
@@ -114,20 +121,10 @@
 /*
  * Port D setup.
  * Everything input with pull-up except:
- * PD0  - Normal input (XTAL).
- * PD1  - Normal input (XTAL).
  */
-#define VAL_GPIODCRL            0x88888844      /*  PD7...PD0 */
+#define VAL_GPIODCRL            0x88888888      /*  PD7...PD0 */
 #define VAL_GPIODCRH            0x88888888      /* PD15...PD8 */
 #define VAL_GPIODODR            0xFFFFFFFF
-
-/*
- * Port E setup.
- * Everything input with pull-up except:
- */
-#define VAL_GPIOECRL            0x88888888      /*  PE7...PE0 */
-#define VAL_GPIOECRH            0x88888888      /* PE15...PE8 */
-#define VAL_GPIOEODR            0xFFFFFFFF
 
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
