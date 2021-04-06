@@ -229,10 +229,10 @@
 #define GD32_PLLSEL_PREDV0    (1 << 16)   /**< PLL clock source is
                                                  PREDV0.                   */
 
-#define GD32_USBFSPRE_DIV2     (1 << 22)     /**< PLLOUT divided by 2.       */
-#define GD32_USBFSPRE_DIV3     (0 << 22)     /**< PLLOUT divided by 3.       */
-#define GD32_USBFSPSC_DIV2P5     (2 << 22)   /**< PLLOUT divided by 2.5.     */
-#define GD32_USBFSPSC_DIV2       (3 << 22)   /**< PLLOUT divided by 2.       */
+#define GD32_USBFSPSC_DIV1       (1 << 22)     /**< PLLOUT divided by 1.       */
+#define GD32_USBFSPSC_DIV1P5     (0 << 22)     /**< PLLOUT divided by 1.5.       */
+#define GD32_USBFSPSC_DIV2       (3 << 22)     /**< PLLOUT divided by 2.       */
+#define GD32_USBFSPSC_DIV2P5     (2 << 22)     /**< PLLOUT divided by 2.5.     */
 
 #define GD32_CKOUT0SEL_NOCLOCK    (0 << 24)   /**< No clock on MCO pin.       */
 #define GD32_CKOUT0SEL_SYSCLK     (4 << 24)   /**< SYSCLK on MCO pin.         */
@@ -385,7 +385,7 @@
  *          a 8MHz crystal using both PLL and PLL2.
  */
 #if !defined(GD32_PREDV1_VALUE) || defined(__DOXYGEN__)
-#define GD32_PREDV1_VALUE         5
+#define GD32_PREDV1_VALUE         2
 #endif
 
 /**
@@ -394,16 +394,16 @@
  *          a 8MHz crystal using both PLL and PLL2.
  */
 #if !defined(GD32_PLL1MF_VALUE) || defined(__DOXYGEN__)
-#define GD32_PLL1MF_VALUE         8
+#define GD32_PLL1MF_VALUE         14
 #endif
 
 /**
  * @brief   PLL2 multiplier value.
- * @note    The default value is calculated for a 50MHz clock from
+ * @note    The default value is calculated for a 72MHz clock from
  *          a 8MHz crystal.
  */
 #if !defined(GD32_PLL2MF_VALUE) || defined(__DOXYGEN__)
-#define GD32_PLL2MF_VALUE         10
+#define GD32_PLL2MF_VALUE         13
 #endif
 
 /**
@@ -433,7 +433,7 @@
  * @brief   ADC prescaler value.
  */
 #if !defined(GD32_ADCPSC) || defined(__DOXYGEN__)
-#define GD32_ADCPSC                GD32_ADCPSC_DIV4
+#define GD32_ADCPSC                GD32_ADCPSC_DIV6
 #endif
 
 /**
@@ -446,8 +446,8 @@
 /**
  * @brief   USBFS prescaler initialization.
  */
-#if !defined(GD32_USBFSPRE) || defined(__DOXYGEN__)
-#define GD32_USBFSPRE              GD32_USBFSPRE_DIV1P5
+#if !defined(GD32_USBFSPSC) || defined(__DOXYGEN__)
+#define GD32_USBFSPSC              GD32_USBFSPSC_DIV1P5
 #endif
 
 /**
@@ -686,16 +686,16 @@
 
 
 /**
- * @brief   PLL2 output clock frequency.
+ * @brief   PLL1 output clock frequency.
  */
 #define GD32_PLL1CLKOUT            (GD32_PLL1CLKIN * GD32_PLL1MF_VALUE)
 
 /**
- * @brief   PLL2 VCO clock frequency.
+ * @brief   PLL1 VCO clock frequency.
  */
 #define GD32_PLL1VCO               (GD32_PLL1CLKOUT * 2)
 
-/* PLL2 output frequency range check.*/
+/* PLL1 output frequency range check.*/
 #if (GD32_PLL1VCO < GD32_PLL12VCO_MIN) ||                                 \
     (GD32_PLL1VCO > GD32_PLL12VCO_MAX)
 #error "GD32_PLL1VCO outside acceptable range (GD32_PLL12VCO_MIN...GD32_PLL12VCO_MAX)"
