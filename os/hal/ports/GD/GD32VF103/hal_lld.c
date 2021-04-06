@@ -32,6 +32,11 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
+/**
+ * @brief   NMSIS system core clock variable.
+ * @note    It is declared in system_gd32vf103.h.
+ */
+uint32_t SystemCoreClock = GD32_HCLK;
 
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
