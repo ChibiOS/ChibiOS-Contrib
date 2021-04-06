@@ -172,72 +172,71 @@
 #if !defined(GD32_IRQ_EXTI10_15_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_IRQ_EXTI10_15_PRIORITY        6
 #endif
+
+/**
+ * @brief   EXTI0 interrupt trigger setting.
+ */
+#if !defined(GD32_IRQ_EXTI0_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_IRQ_EXTI0_TRIGGER            ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   EXTI1 interrupt trigger setting.
+ */
+#if !defined(GD32_IRQ_EXTI1_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_IRQ_EXTI1_TRIGGER            ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   EXTI2 interrupt trigger setting.
+ */
+#if !defined(GD32_IRQ_EXTI2_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_IRQ_EXTI2_TRIGGER            ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   EXTI3 interrupt trigger setting.
+ */
+#if !defined(GD32_IRQ_EXTI3_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_IRQ_EXTI3_TRIGGER            ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   EXTI4 interrupt trigger setting.
+ */
+#if !defined(GD32_IRQ_EXTI4_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_IRQ_EXTI4_TRIGGER            ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   EXTI9..5 interrupt trigger setting.
+ */
+#if !defined(GD32_IRQ_EXTI5_9_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_IRQ_EXTI5_9_TRIGGER          ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   EXTI15..10 interrupt trigger setting.
+ */
+#if !defined(GD32_IRQ_EXTI10_15_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_IRQ_EXTI10_15_TRIGGER        ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   Default ELIC interrupt trigger setting, applied to all 
+ *          interrupt sources that do not define a different trigger.
+ */
+#if !defined(ECLIC_TRIGGER_DEFAULT) || defined(__DOXYGEN__)
+#define ECLIC_TRIGGER_DEFAULT            ECLIC_POSTIVE_EDGE_TRIGGER
+#endif
+
+/**
+ * @brief   Default DMA interrupt trigger setting.
+ */
+#if !defined(ECLIC_DMA_TRIGGER) || defined(__DOXYGEN__)
+#define ECLIC_DMA_TRIGGER                ECLIC_TRIGGER_DEFAULT
+#endif
 /** @} */
-
-#define ECLIC_TRIGGER_DEFAULT             ECLIC_POSTIVE_EDGE_TRIGGER
-#define ECLIC_DMA_TRIGGER                 ECLIC_TRIGGER_DEFAULT
-
-#define GD32_CAN_CAN0_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_CAN_CAN1_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-
-#define GD32_I2C_I2C0_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_I2C_I2C1_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_I2C_I2C3_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-
-#define GD32_IRQ_EXTI0_TRIGGER           ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_EXTI1_TRIGGER           ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_EXTI2_TRIGGER           ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_EXTI3_TRIGGER           ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_EXTI4_TRIGGER           ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_EXTI5_9_TRIGGER         ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_EXTI10_15_TRIGGER       ECLIC_TRIGGER_DEFAULT
-
-#define GD32_GPT_TIM0_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_GPT_TIM1_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_GPT_TIM2_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_GPT_TIM3_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_GPT_TIM4_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_GPT_TIM5_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_GPT_TIM6_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-
-#define GD32_ICU_TIM0_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_ICU_TIM1_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_ICU_TIM2_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_ICU_TIM3_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_ICU_TIM4_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-
-#define GD32_IRQ_TIM0_CC_TRIGGER         ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_TIM0_UP_TRIGGER         ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_TIM1_TRIGGER            ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_TIM2_TRIGGER            ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_TIM3_TRIGGER            ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_TIM4_TRIGGER            ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_TIM5_TRIGGER            ECLIC_TRIGGER_DEFAULT
-#define GD32_IRQ_TIM6_TRIGGER            ECLIC_TRIGGER_DEFAULT
-
-#define GD32_PWM_TIM0_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_PWM_TIM1_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_PWM_TIM2_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_PWM_TIM3_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_PWM_TIM4_IRQ_TRIGGER        ECLIC_TRIGGER_DEFAULT
-
-#define GD32_ST_IRQ_TRIGGER              ECLIC_TRIGGER_DEFAULT
-
-#define GD32_RTC_IRQ_TRIGGER             ECLIC_TRIGGER_DEFAULT
-
-#define GD32_SERIAL_USART0_TRIGGER       ECLIC_TRIGGER_DEFAULT
-#define GD32_SERIAL_USART1_TRIGGER       ECLIC_TRIGGER_DEFAULT
-#define GD32_SERIAL_USART2_TRIGGER       ECLIC_TRIGGER_DEFAULT
-#define GD32_SERIAL_UART3_TRIGGER        ECLIC_TRIGGER_DEFAULT
-#define GD32_SERIAL_UART4_TRIGGER        ECLIC_TRIGGER_DEFAULT
-
-#define GD32_UART_UART3_IRQ_TRIGGER      ECLIC_TRIGGER_DEFAULT
-#define GD32_UART_UART4_IRQ_TRIGGER      ECLIC_TRIGGER_DEFAULT
-#define GD32_UART_USART0_IRQ_TRIGGER     ECLIC_TRIGGER_DEFAULT
-#define GD32_UART_USART1_IRQ_TRIGGER     ECLIC_TRIGGER_DEFAULT
-#define GD32_UART_USART2_IRQ_TRIGGER     ECLIC_TRIGGER_DEFAULT
-
-#define GD32_USB_USBFS_IRQ_TRIGGER       ECLIC_TRIGGER_DEFAULT
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */

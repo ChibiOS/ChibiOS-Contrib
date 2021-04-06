@@ -50,6 +50,13 @@
 #endif
 
 /**
+ * @brief   SysTick timer IRQ priority.
+ */
+#if !defined(GD32_ST_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_ST_IRQ_TRIGGER               ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
  * @brief   TIMx unit (by number) to be used for free running operations.
  * @note    You must select a 32 bits timer if a 32 bits @p systick_t type
  *          is required.

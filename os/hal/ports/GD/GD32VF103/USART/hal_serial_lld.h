@@ -118,6 +118,41 @@
 #if !defined(GD32_SERIAL_UART4_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_SERIAL_UART4_PRIORITY         12
 #endif
+
+/**
+ * @brief   USART0 interrupt trigger setting.
+ */
+#if !defined(GD32_SERIAL_USART0_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USART0_TRIGGER        ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   USART1 interrupt trigger setting.
+ */
+#if !defined(GD32_SERIAL_USART1_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USART1_TRIGGER        ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   USART2 interrupt trigger setting.
+ */
+#if !defined(GD32_SERIAL_USART2_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_SERIAL_USART2_TRIGGER        ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   UART3 interrupt trigger setting.
+ */
+#if !defined(GD32_SERIAL_UART3_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_SERIAL_UART3_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   UART4 interrupt trigger setting.
+ */
+#if !defined(GD32_SERIAL_UART4_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_SERIAL_UART4_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
 /** @} */
 
 /*===========================================================================*/

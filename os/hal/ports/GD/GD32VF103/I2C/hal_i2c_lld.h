@@ -88,6 +88,20 @@
 #endif
 
 /**
+ * @brief   I2C0 interrupt trigger setting.
+ */
+#if !defined(GD32_I2C_I2C0_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C0_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   I2C1 interrupt trigger setting.
+ */
+#if !defined(GD32_I2C_I2C1_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_I2C_I2C1_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
 * @brief   I2C0 DMA priority (0..3|lowest..highest).
 * @note    The priority level is used for both the TX and RX DMA streams but
 *          because of the streams ordering the RX stream has always priority

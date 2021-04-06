@@ -120,6 +120,41 @@
 #if !defined(GD32_ICU_TIM4_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_ICU_TIM4_IRQ_PRIORITY         7
 #endif
+
+/**
+ * @brief   ICUD1 interrupt trigger setting.
+ */
+#if !defined(GD32_ICU_TIM0_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_ICU_TIM0_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   ICUD2 interrupt trigger setting.
+ */
+#if !defined(GD32_ICU_TIM1_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_ICU_TIM1_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   ICUD3 interrupt trigger setting.
+ */
+#if !defined(GD32_ICU_TIM2_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_ICU_TIM2_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   ICUD4 interrupt trigger setting.
+ */
+#if !defined(GD32_ICU_TIM3_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_ICU_TIM3_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   ICUD5 interrupt trigger setting.
+ */
+#if !defined(GD32_ICU_TIM4_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_ICU_TIM4_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
 /** @} */
 
 /*===========================================================================*/

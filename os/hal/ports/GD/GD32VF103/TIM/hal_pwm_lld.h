@@ -170,6 +170,41 @@
 #if !defined(GD32_PWM_TIM4_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_PWM_TIM4_IRQ_PRIORITY         7
 #endif
+
+/**
+ * @brief   PWMD1 interrupt trigger setting.
+ */
+#if !defined(GD32_PWM_TIM0_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM0_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   PWMD2 interrupt trigger setting.
+ */
+#if !defined(GD32_PWM_TIM1_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM1_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   PWMD3 interrupt trigger setting.
+ */
+#if !defined(GD32_PWM_TIM2_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM2_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   PWMD4 interrupt trigger setting.
+ */
+#if !defined(GD32_PWM_TIM3_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM3_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   PWMD5 interrupt trigger setting.
+ */
+#if !defined(GD32_PWM_TIM4_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_PWM_TIM4_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
 /** @} */
 
 /*===========================================================================*/

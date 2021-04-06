@@ -120,6 +120,41 @@
 #endif
 
 /**
+ * @brief   USART0 interrupt trigger setting.
+ */
+#if !defined(GD32_UART_USART0_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_UART_USART0_IRQ_TRIGGER      ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   USART1 interrupt trigger setting.
+ */
+#if !defined(GD32_UART_USART1_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_UART_USART1_IRQ_TRIGGER      ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   USART2 interrupt trigger setting.
+ */
+#if !defined(GD32_UART_USART2_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_UART_USART2_IRQ_TRIGGER      ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   UART3 interrupt trigger setting.
+ */
+#if !defined(GD32_UART_UART3_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_UART_UART3_IRQ_TRIGGER       ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   UART4 interrupt trigger setting.
+ */
+#if !defined(GD32_UART_UART4_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_UART_UART4_IRQ_TRIGGER       ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
  * @brief   USART0 DMA priority (0..3|lowest..highest).
  * @note    The priority level is used for both the TX and RX DMA channels but
  *          because of the channels ordering the RX channel has always priority

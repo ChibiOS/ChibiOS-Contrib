@@ -152,6 +152,55 @@
 #if !defined(GD32_GPT_TIM6_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_GPT_TIM6_IRQ_PRIORITY         7
 #endif
+
+/**
+ * @brief   GPTD1 interrupt trigger setting.
+ */
+#if !defined(GD32_GPT_TIM0_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_GPT_TIM0_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   GPTD2 interrupt trigger setting.
+ */
+#if !defined(GD32_GPT_TIM1_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_GPT_TIM1_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   GPTD3 interrupt trigger setting.
+ */
+#if !defined(GD32_GPT_TIM2_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_GPT_TIM2_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   GPTD4 interrupt trigger setting.
+ */
+#if !defined(GD32_GPT_TIM3_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_GPT_TIM3_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   GPTD5 interrupt trigger setting.
+ */
+#if !defined(GD32_GPT_TIM4_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_GPT_TIM4_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   GPTD6 interrupt trigger setting.
+ */
+#if !defined(GD32_GPT_TIM5_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_GPT_TIM5_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
+ * @brief   GPTD7 interrupt trigger setting.
+ */
+#if !defined(GD32_GPT_TIM6_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_GPT_TIM6_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
 /** @} */
 
 /*===========================================================================*/

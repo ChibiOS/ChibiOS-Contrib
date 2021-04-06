@@ -66,6 +66,7 @@
  * RTC driver system settings.
  */
 #define GD32_RTC_IRQ_PRIORITY      15
+#define GD32_RTC_IRQ_TRIGGER       ECLIC_TRIGGER_DEFAULT
 /** @} */
 
 /*===========================================================================*/

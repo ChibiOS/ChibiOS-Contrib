@@ -69,6 +69,13 @@
 #endif
 
 /**
+ * @brief   USBFS interrupt trigger setting.
+ */
+#if !defined(GD32_USB_USBFS_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_USB_USBFS_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+
+/**
  * @brief   USBFS RX shared FIFO size.
  * @note    Must be a multiple of 4.
  */

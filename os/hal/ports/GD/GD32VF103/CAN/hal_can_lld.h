@@ -118,6 +118,21 @@
 #if !defined(GD32_CAN_CAN1_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define GD32_CAN_CAN1_IRQ_PRIORITY         11
 #endif
+ 
+/**
+ * @brief   CAN0 interrupt trigger setting.
+ */
+#if !defined(GD32_CAN_CAN0_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_CAN_CAN0_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
+/** @} */
+
+/**
+ * @brief   CAN1 interrupt trigger setting.
+ */
+#if !defined(GD32_CAN_CAN1_IRQ_TRIGGER) || defined(__DOXYGEN__)
+#define GD32_CAN_CAN1_IRQ_TRIGGER         ECLIC_TRIGGER_DEFAULT
+#endif
 /** @} */
 
 /*===========================================================================*/
