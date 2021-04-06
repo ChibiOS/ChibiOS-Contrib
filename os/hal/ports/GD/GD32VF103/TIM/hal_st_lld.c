@@ -119,6 +119,7 @@
 #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
 
 #define ST_HANDLER                          vector7
+#define ST_NUMBER                           7
 
 #if defined(GD32_CORE_CK)
 #define SYSTICK_CK                          GD32_CORE_CK
@@ -223,7 +224,7 @@ void st_lld_init(void) {
   SysTimer_SetCompareValue((SYSTICK_CK / OSAL_ST_FREQUENCY) - 1);
   SysTimer_SetLoadValue(0);
   /* IRQ enabled.*/
-  eclicEnableVector(HANDLER_SYSTICK, GD32_ST_IRQ_PRIORITY, GD32_ST_IRQ_TRIGGER);
+  eclicEnableVector(ST_NUMBER, GD32_ST_IRQ_PRIORITY, GD32_ST_IRQ_TRIGGER);
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC */
 }
 
