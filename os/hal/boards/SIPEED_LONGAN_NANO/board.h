@@ -26,7 +26,7 @@
  */
 #define BOARD_GD32VF103
 #define BOARD_NAME              "Sipeed Longan Nano GD32VF103CBT6"
-#define BOARD_OTG_NOVBUSSENS
+#define BOARD_USBFS_NOVBUSSENS
 
 /*
  * Board frequencies.
