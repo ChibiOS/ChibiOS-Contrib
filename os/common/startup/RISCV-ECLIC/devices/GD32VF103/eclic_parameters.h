@@ -1,8 +1,6 @@
 /*
     ChibiOS - Copyright (C) 2021 Stefan Kerkmann
 
-
-
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
@@ -26,6 +24,10 @@
 /**@} */
 #ifndef _ECLIC_PARAMETERS_H_
 #define _ECLIC_PARAMETERS_H_
+
+/* Not defined because FPU isn't present. GCC produces alot 
+of warnings if -Wundef is present, therefore this define. */
+#define __riscv_flen 0
 
 #include "gd32vf103.h"
 
