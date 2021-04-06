@@ -27,59 +27,114 @@
 
 #if defined(GD32VF103TB) || defined(GD32VF103T8)
 
-#define GD32_HAS_TIM_1234                   TRUE
+#define GD32_HAS_TIM_12                     TRUE
+#define GD32_HAS_TIM_34                     TRUE
 #define GD32_HAS_USART_01                   TRUE
+#define GD32_HAS_USART_2                    FALSE
+#define GD32_HAS_USART_34                   FALSE
 #define GD32_HAS_I2C_0                      TRUE
+#define GD32_HAS_I2C_1                      FALSE
 #define GD32_HAS_SPI_0                      TRUE
+#define GD32_HAS_SPI_12                     FALSE
 #define GD32_HAS_GPIO_AB                    TRUE
+#define GD32_HAS_GPIO_CD                    FALSE
+#define GD32_HAS_GPIO_E                     FALSE
+#define GD32_HAS_EXMC                       FALSE
 
 #elif defined(GD32VF103T6) || defined(GD32VF103T4)
 
 #define GD32_HAS_TIM_12                     TRUE
+#define GD32_HAS_TIM_34                     FALSE
 #define GD32_HAS_USART_01                   TRUE
+#define GD32_HAS_USART_2                    FALSE
+#define GD32_HAS_USART_34                   FALSE
 #define GD32_HAS_I2C_0                      TRUE
+#define GD32_HAS_I2C_1                      FALSE
 #define GD32_HAS_SPI_0                      TRUE
+#define GD32_HAS_SPI_12                     FALSE
 #define GD32_HAS_GPIO_AB                    TRUE
+#define GD32_HAS_GPIO_CD                    FALSE
+#define GD32_HAS_GPIO_E                     FALSE
+#define GD32_HAS_EXMC                       FALSE
 
 #elif defined(GD32VF103CB) || defined(GD32VF103C8)
 
-#define GD32_HAS_TIM_1234                   TRUE
-#define GD32_HAS_USART_012                  TRUE
-#define GD32_HAS_I2C_01                     TRUE
-#define GD32_HAS_SPI_012                    TRUE
+#define GD32_HAS_TIM_12                     TRUE
+#define GD32_HAS_TIM_34                     TRUE
+#define GD32_HAS_USART_01                   TRUE
+#define GD32_HAS_USART_2                    TRUE
+#define GD32_HAS_USART_34                   FALSE
+#define GD32_HAS_I2C_0                      TRUE
+#define GD32_HAS_I2C_1                      TRUE
+#define GD32_HAS_SPI_0                      TRUE
+#define GD32_HAS_SPI_12                     TRUE
 #define GD32_HAS_GPIO_AB                    TRUE
+#define GD32_HAS_GPIO_CD                    FALSE
+#define GD32_HAS_GPIO_E                     FALSE
+#define GD32_HAS_EXMC                       FALSE
 
 #elif defined(GD32VF103C6) || defined(GD32VF103C4)
 
 #define GD32_HAS_TIM_12                     TRUE
+#define GD32_HAS_TIM_34                     FALSE
 #define GD32_HAS_USART_01                   TRUE
+#define GD32_HAS_USART_2                    FALSE
+#define GD32_HAS_USART_34                   FALSE
 #define GD32_HAS_I2C_0                      TRUE
+#define GD32_HAS_I2C_1                      FALSE
 #define GD32_HAS_SPI_0                      TRUE
+#define GD32_HAS_SPI_12                     FALSE
 #define GD32_HAS_GPIO_AB                    TRUE
+#define GD32_HAS_GPIO_CD                    FALSE
+#define GD32_HAS_GPIO_E                     FALSE
+#define GD32_HAS_EXMC                       FALSE
 
 #elif defined(GD32VF103RB) || defined(GD32VF103R8)
 
-#define GD32_HAS_TIM_1234                   TRUE
-#define GD32_HAS_USART_01234                TRUE
-#define GD32_HAS_I2C_01                     TRUE
-#define GD32_HAS_SPI_012                    TRUE
-#define GD32_HAS_GPIO_ABCD                  TRUE
+#define GD32_HAS_TIM_12                     TRUE
+#define GD32_HAS_TIM_34                     TRUE
+#define GD32_HAS_USART_01                   TRUE
+#define GD32_HAS_USART_2                    TRUE
+#define GD32_HAS_USART_34                   TRUE
+#define GD32_HAS_I2C_0                      TRUE
+#define GD32_HAS_I2C_1                      TRUE
+#define GD32_HAS_SPI_0                      TRUE
+#define GD32_HAS_SPI_12                     TRUE
+#define GD32_HAS_GPIO_AB                    TRUE
+#define GD32_HAS_GPIO_CD                    TRUE
+#define GD32_HAS_GPIO_E                     FALSE
+#define GD32_HAS_EXMC                       FALSE
 
 #elif defined(GD32VF103R6) || defined(GD32VF103R4)
 
 #define GD32_HAS_TIM_12                     TRUE
+#define GD32_HAS_TIM_34                     FALSE
 #define GD32_HAS_USART_01                   TRUE
+#define GD32_HAS_USART_2                    FALSE
+#define GD32_HAS_USART_34                   FALSE
 #define GD32_HAS_I2C_0                      TRUE
+#define GD32_HAS_I2C_1                      FALSE
 #define GD32_HAS_SPI_0                      TRUE
-#define GD32_HAS_GPIO_ABCD                  TRUE
+#define GD32_HAS_SPI_12                     FALSE
+#define GD32_HAS_GPIO_AB                    TRUE
+#define GD32_HAS_GPIO_CD                    TRUE
+#define GD32_HAS_GPIO_E                     FALSE
+#define GD32_HAS_EXMC                       FALSE
 
 #elif defined(GD32VF103VB) || defined(GD32VF103V8)
 
-#define GD32_HAS_TIM_1234                   TRUE
-#define GD32_HAS_USART_01234                TRUE
-#define GD32_HAS_I2C_01                     TRUE
-#define GD32_HAS_SPI_012                    TRUE
-#define GD32_HAS_GPIO_ABCDE                 TRUE
+#define GD32_HAS_TIM_12                     TRUE
+#define GD32_HAS_TIM_34                     TRUE
+#define GD32_HAS_USART_01                   TRUE
+#define GD32_HAS_USART_2                    TRUE
+#define GD32_HAS_USART_34                   TRUE
+#define GD32_HAS_I2C_0                      TRUE
+#define GD32_HAS_I2C_1                      TRUE
+#define GD32_HAS_SPI_0                      TRUE
+#define GD32_HAS_SPI_12                     TRUE
+#define GD32_HAS_GPIO_AB                    TRUE
+#define GD32_HAS_GPIO_CD                    TRUE
+#define GD32_HAS_GPIO_E                     TRUE
 #define GD32_HAS_EXMC                       TRUE
 
 #else
@@ -154,7 +209,7 @@
 #endif
 
 /* GPIO attributes.*/
-#if GD32_HAS_GPIO_AB || GD32_HAS_GPIO_ABCD || GD32_HAS_GPIO_ABCDE
+#if GD32_HAS_GPIO_AB 
     #define GD32_HAS_GPIOA                     TRUE
     #define GD32_HAS_GPIOB                     TRUE
 #else
@@ -162,7 +217,7 @@
     #define GD32_HAS_GPIOB                     FALSE
 #endif
 
-#if GD32_HAS_GPIO_ABCD || GD32_HAS_GPIO_ABCDE
+#if GD32_HAS_GPIO_CD
     #define GD32_HAS_GPIOC                     TRUE
     #define GD32_HAS_GPIOD                     TRUE
 #else
@@ -170,14 +225,14 @@
     #define GD32_HAS_GPIOD                     FALSE
 #endif
 
-#if GD32_HAS_GPIO_ABCDE
+#if GD32_HAS_GPIO_E
     #define GD32_HAS_GPIOE                     TRUE
 #else
     #define GD32_HAS_GPIOE                     FALSE
 #endif
 
 /* I2C attributes.*/
-#if GD32_HAS_I2C_0 || GD32_HAS_I2C_01
+#if GD32_HAS_I2C_0 
     #define GD32_HAS_I2C0                      TRUE
     #define GD32_I2C_I2C0_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 6)
     #define GD32_I2C_I2C0_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 5)
@@ -185,7 +240,7 @@
     #define GD32_HAS_I2C0                      FALSE
 #endif
 
-#if GD32_HAS_I2C_01
+#if GD32_HAS_I2C_1
     #define GD32_HAS_I2C1                      TRUE
     #define GD32_I2C_I2C1_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 4)
     #define GD32_I2C_I2C1_TX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 3)
@@ -199,7 +254,7 @@
 #define GD32_RTC_IS_CALENDAR               FALSE
 
 /* SPI attributes.*/
-#if GD32_HAS_SPI_0 || GD32_HAS_SPI_012
+#if GD32_HAS_SPI_0 
     #define GD32_HAS_SPI0                      TRUE
     #define GD32_SPI0_SUPPORTS_I2S             FALSE
     #define GD32_SPI_SPI0_RX_DMA_STREAM        GD32_DMA_STREAM_ID(0, 1)
@@ -208,7 +263,7 @@
     #define GD32_HAS_SPI0                      FALSE
 #endif
 
-#if GD32_HAS_SPI_012
+#if GD32_HAS_SPI_12
     #define GD32_HAS_SPI1                      TRUE
     #define GD32_SPI1_SUPPORTS_I2S             TRUE
     #define GD32_SPI1_I2S_FULLDUPLEX           FALSE
@@ -235,7 +290,7 @@
 #define GD32_TIM0_IS_32BITS                FALSE
 #define GD32_TIM0_CHANNELS                 4
 
-#if GD32_HAS_TIM_12 || GD32_HAS_TIM_1234
+#if GD32_HAS_TIM_12 
     #define GD32_HAS_TIM1                      TRUE
     #define GD32_TIM1_IS_32BITS                FALSE
     #define GD32_TIM1_CHANNELS                 4
@@ -248,7 +303,7 @@
     #define GD32_HAS_TIM2                      FALSE
 #endif
 
-#if GD32_HAS_TIM_1234
+#if GD32_HAS_TIM_34
     #define GD32_HAS_TIM3                      TRUE
     #define GD32_TIM3_IS_32BITS                FALSE
     #define GD32_TIM3_CHANNELS                 4
@@ -270,7 +325,7 @@
 #define GD32_TIM6_CHANNELS                 0
 
 /* USART attributes.*/
-#if GD32_HAS_USART_01 || GD32_HAS_USART_012 || GD32_HAS_USART_01234
+#if GD32_HAS_USART_01 
     #define GD32_HAS_USART0                    TRUE
     #define GD32_UART_USART0_RX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 4)
     #define GD32_UART_USART0_TX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 3)
@@ -283,7 +338,7 @@
     #define GD32_HAS_USART1                    FALSE
 #endif
 
-#if GD32_HAS_USART_012 || GD32_HAS_USART_01234
+#if GD32_HAS_USART_2 
     #define GD32_HAS_USART2                    TRUE
     #define GD32_UART_USART2_RX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 2)
     #define GD32_UART_USART2_TX_DMA_STREAM     GD32_DMA_STREAM_ID(0, 1)
@@ -291,7 +346,7 @@
     #define GD32_HAS_USART2                    FALSE
 #endif
 
-#if GD32_HAS_USART_01234
+#if GD32_HAS_USART_34
     #define GD32_HAS_UART3                     TRUE
     #define GD32_UART_UART3_RX_DMA_STREAM      GD32_DMA_STREAM_ID(1, 2)
     #define GD32_UART_UART3_TX_DMA_STREAM      GD32_DMA_STREAM_ID(1, 4)
