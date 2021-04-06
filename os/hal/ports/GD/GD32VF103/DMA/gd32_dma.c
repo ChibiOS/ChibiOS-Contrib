@@ -19,7 +19,7 @@
  * @brief   DMA helper driver code.
  *
  * @addtogroup GD32_DMA
- * @details DMA sharing helper driver. In the STM32 the DMA streams are a
+ * @details DMA sharing helper driver. In the GD32 the DMA streams are a
  *          shared resource, this driver allows to allocate and free DMA
  *          streams at runtime in order to allow all the other device
  *          drivers to coordinate the access to the resource.
@@ -377,7 +377,7 @@ OSAL_IRQ_HANDLER(GD32_DMA1_CH4_HANDLER) {
 /*===========================================================================*/
 
 /**
- * @brief   STM32 DMA helper initialization.
+ * @brief   GD32 DMA helper initialization.
  *
  * @init
  */

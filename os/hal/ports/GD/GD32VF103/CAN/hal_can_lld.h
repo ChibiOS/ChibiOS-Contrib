@@ -16,7 +16,7 @@
 
 /**
  * @file    CAN/hal_can_lld.h
- * @brief   STM32 CAN subsystem low level driver header.
+ * @brief   GD32 CAN subsystem low level driver header.
  *
  * @addtogroup CAN
  * @{
@@ -241,7 +241,7 @@ typedef struct {
 
 /**
  * @brief   CAN filter.
- * @note    Refer to the STM32 reference manual for info about filters.
+ * @note    Refer to the GD32 reference manual for info about filters.
  */
 typedef struct {
   /**
@@ -426,7 +426,7 @@ extern "C" {
   void can_lld_sleep(CANDriver *canp);
   void can_lld_wakeup(CANDriver *canp);
 #endif /* CAN_USE_SLEEP_MODE */
-  void canSTM32SetFilters(CANDriver *canp, uint32_t can2sb,
+  void canGD32SetFilters(CANDriver *canp, uint32_t can2sb,
                           uint32_t num, const CANFilter *cfp);
 #ifdef __cplusplus
 }

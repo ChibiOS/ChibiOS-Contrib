@@ -107,12 +107,12 @@ typedef struct WDGDriver WDGDriver;
 typedef struct {
   /**
    * @brief   Configuration of the FWDGT_PSC register.
-   * @details See the STM32 reference manual for details.
+   * @details See the GD32 reference manual for details.
    */
   uint32_t    psc;
   /**
    * @brief   Configuration of the FWDGT_RLD register.
-   * @details See the STM32 reference manual for details.
+   * @details See the GD32 reference manual for details.
    */
   uint32_t    rld;
 } WDGConfig;

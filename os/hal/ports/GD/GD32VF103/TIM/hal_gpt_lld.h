@@ -16,7 +16,7 @@
 
 /**
  * @file    TIM/hal_gpt_lld.h
- * @brief   STM32 GPT subsystem low level driver header.
+ * @brief   GD32 GPT subsystem low level driver header.
  *
  * @addtogroup GPT
  * @{

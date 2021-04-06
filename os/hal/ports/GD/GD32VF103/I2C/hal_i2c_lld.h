@@ -20,7 +20,7 @@
 
 /**
  * @file    I2C/hal_i2c_lld.h
- * @brief   STM32 I2C subsystem low level driver header.
+ * @brief   GD32 I2C subsystem low level driver header.
  *
  * @addtogroup I2C
  * @{

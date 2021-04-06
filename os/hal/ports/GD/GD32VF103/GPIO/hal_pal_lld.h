@@ -16,7 +16,7 @@
 
 /**
  * @file    GPIO/hal_pal_lld.h
- * @brief   STM32 PAL low level driver header.
+ * @brief   GD32 PAL low level driver header.
  *
  * @addtogroup PAL
  * @{
@@ -32,16 +32,16 @@
 /*===========================================================================*/
 
 /**
- * @name    STM32-specific I/O mode flags
+ * @name    GD32-specific I/O mode flags
  * @{
  */
 /**
- * @brief   STM32 specific alternate push-pull output mode.
+ * @brief   GD32 specific alternate push-pull output mode.
  */
 #define PAL_MODE_GD32_ALTERNATE_PUSHPULL   16
 
 /**
- * @brief   STM32 specific alternate open-drain output mode.
+ * @brief   GD32 specific alternate open-drain output mode.
  */
 #define PAL_MODE_GD32_ALTERNATE_OPENDRAIN  17
 /** @} */
@@ -111,7 +111,7 @@ typedef struct {
 } gd32_gpio_setup_t;
 
 /**
- * @brief   STM32 GPIO static initializer.
+ * @brief   GD32 GPIO static initializer.
  * @details An instance of this structure must be passed to @p palInit() at
  *          system startup time in order to initialize the digital I/O
  *          subsystem. This represents only the initial setup, specific pads
@@ -167,7 +167,7 @@ typedef uint32_t iopadid_t;
 
 /*===========================================================================*/
 /* I/O Ports Identifiers.                                                    */
-/* The low level driver wraps the definitions already present in the STM32   */
+/* The low level driver wraps the definitions already present in the GD32   */
 /* firmware library.                                                         */
 /*===========================================================================*/
 

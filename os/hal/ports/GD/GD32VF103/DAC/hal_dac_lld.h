@@ -16,7 +16,7 @@
 
 /**
  * @file    DAC/hal_dac_lld.h
- * @brief   STM32 DAC subsystem low level driver header.
+ * @brief   GD32 DAC subsystem low level driver header.
  *
  * @addtogroup DAC
  * @{

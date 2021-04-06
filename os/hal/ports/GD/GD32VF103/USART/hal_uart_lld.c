@@ -16,7 +16,7 @@
 
 /**
  * @file    USART/hal_uart_lld.c
- * @brief   STM32 low level UART driver code.
+ * @brief   GD32 low level UART driver code.
  *
  * @addtogroup UART
  * @{

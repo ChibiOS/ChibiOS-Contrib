@@ -16,7 +16,7 @@
 
 /**
  * @file    OTG/hal_usb_lld.c
- * @brief   STM32 USB subsystem low level driver source.
+ * @brief   GD32 USB subsystem low level driver source.
  *
  * @addtogroup USB
  * @{

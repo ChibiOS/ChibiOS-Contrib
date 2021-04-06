@@ -18,7 +18,7 @@
  * @file    GD32VF103/gd32_rcu.h
  * @brief   RCU helper driver header.
  * @note    This file requires definitions from the ST header file
- *          @p stm32f10x.h.
+ *          @p gd32vf103.h.
  *
  * @addtogroup GD32VF103_RCU
  * @{

@@ -16,7 +16,7 @@
 
 /**
  * @file    SPI/hal_i2s_lld.h
- * @brief   STM32 I2S subsystem low level driver header.
+ * @brief   GD32 I2S subsystem low level driver header.
  *
  * @addtogroup I2S
  * @{
@@ -230,8 +230,8 @@
  * @brief   Low level fields of the I2S configuration structure.
  */
 #define i2s_lld_config_fields                                               \
-  /* Configuration of the I2SCFGR register.                                 \
-     NOTE: See the STM32 reference manual, this register is used for        \
+  /* Configuration of the I2SCTL register.                                 \
+     NOTE: See the GD32 reference manual, this register is used for        \
            the I2S configuration, the following bits must not be            \
            specified because handled directly by the driver:                \
            - I2SMOD                                                         \
@@ -239,8 +239,8 @@
            - I2SCFG                                                         \
    */                                                                       \
   int16_t                   i2sctl;                                         \
-  /* Configuration of the I2SPR register.                                   \
-     NOTE: See the STM32 reference manual, this register is used for        \
+  /* Configuration of the I2SPSC register.                                   \
+     NOTE: See the GD32 reference manual, this register is used for        \
            the I2S clock setup.*/                                           \
   int16_t                   i2spsc
 

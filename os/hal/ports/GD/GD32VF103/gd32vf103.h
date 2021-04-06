@@ -2940,7 +2940,7 @@ typedef struct
 /******************************************************************************/
 
 /*
- * @brief Specific device feature definitions (not present on all devices in the STM32F1 family)
+ * @brief Specific device feature definitions (not present on all devices in the GD32VF103 family)
  */
 #define ADC_MULTIMODE_SUPPORT                          /*!< ADC feature available only on specific devices: multimode available on devices with several ADC instances */
 
@@ -10721,7 +10721,7 @@ typedef struct
 /*                                                                            */
 /******************************************************************************/
 /*
- * @brief Specific device feature definitions (not present on all devices in the STM32F1 serie)
+ * @brief Specific device feature definitions (not present on all devices in the GD32VF103 serie)
  */
 #define SPI_I2S_SUPPORT       /*!< I2S support */
 #define I2S2_I2S3_CLOCK_FEATURE

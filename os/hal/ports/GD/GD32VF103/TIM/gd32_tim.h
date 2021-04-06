@@ -16,8 +16,8 @@
 
 /**
  * @file    TIM/gd32_tim.h
- * @brief   STM32 TIM units common header.
- * @note    This file requires definitions from the ST STM32 header file.
+ * @brief   GD32 TIM units common header.
+ * @note    This file requires definitions from the GD32 header file.
  *
  * @addtogroup GD32_TIM
  * @{
@@ -359,7 +359,7 @@
 /*===========================================================================*/
 
 /**
- * @brief   STM32 TIM registers block.
+ * @brief   GD32 TIM registers block.
  * @note    This is the most general known form, not all timers have
  *          necessarily all registers and bits.
  */

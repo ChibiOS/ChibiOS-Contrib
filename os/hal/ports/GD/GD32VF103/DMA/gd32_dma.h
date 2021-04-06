@@ -17,9 +17,7 @@
 /**
  * @file    DMA/gd32_dma.h
  * @brief   DMA helper driver header.
- * @note    This driver uses the new naming convention used for the STM32F2xx
- *          so the "DMA channels" are referred as "DMA streams".
- *
+
  * @addtogroup GD32_DMA
  * @{
  */
@@ -45,7 +43,7 @@
 
 /**
  * @brief   Returns the request line associated to the specified stream.
- * @note    In some STM32 manuals the request line is named confusingly
+ * @note    In some GD32 manuals the request line is named confusingly
  *          channel.
  *
  * @param[in] id        the unique numeric stream identifier
@@ -223,7 +221,7 @@
 typedef void (*gd32_dmaisr_t)(void *p, uint32_t flags);
 
 /**
- * @brief   STM32 DMA stream descriptor structure.
+ * @brief   GD32 DMA stream descriptor structure.
  */
 typedef struct {
   DMA_TypeDef           *dma;           /**< @brief Associated DMA.         */

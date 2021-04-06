@@ -16,7 +16,7 @@
 
 /**
  * @file    USART/hal_serial_lld.h
- * @brief   STM32 low level serial driver header.
+ * @brief   GD32 low level serial driver header.
  *
  * @addtogroup SERIAL
  * @{
@@ -180,7 +180,7 @@
 /*===========================================================================*/
 
 /**
- * @brief   STM32 Serial Driver configuration structure.
+ * @brief   GD32 Serial Driver configuration structure.
  * @details An instance of this structure must be passed to @p sdStart()
  *          in order to configure and start a serial driver operations.
  * @note    This structure content is architecture dependent, each driver

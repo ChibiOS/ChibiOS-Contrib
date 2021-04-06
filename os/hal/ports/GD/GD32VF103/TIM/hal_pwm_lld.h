@@ -16,7 +16,7 @@
 
 /**
  * @file    TIM/hal_pwm_lld.h
- * @brief   STM32 PWM subsystem low level driver header.
+ * @brief   GD32 PWM subsystem low level driver header.
  *
  * @addtogroup PWM
  * @{
@@ -39,24 +39,24 @@
 #define PWM_CHANNELS                            GD32_TIM_MAX_CHANNELS
 
 /**
- * @name    STM32-specific PWM complementary output mode macros
+ * @name    GD32-specific PWM complementary output mode macros
  * @{
  */
 /**
  * @brief   Complementary output modes mask.
- * @note    This is an STM32-specific setting.
+ * @note    This is an GD32-specific setting.
  */
 #define PWM_COMPLEMENTARY_OUTPUT_MASK           0xF0
 
 /**
  * @brief   Complementary output not driven.
- * @note    This is an STM32-specific setting.
+ * @note    This is an GD32-specific setting.
  */
 #define PWM_COMPLEMENTARY_OUTPUT_DISABLED       0x00
 
 /**
  * @brief   Complementary output, active is logic level one.
- * @note    This is an STM32-specific setting.
+ * @note    This is an GD32-specific setting.
  * @note    This setting is only available if the configuration option
  *          @p GD32_PWM_USE_ADVANCED is set to TRUE and only for advanced
  *          timer TIM0.
@@ -65,7 +65,7 @@
 
 /**
  * @brief   Complementary output, active is logic level zero.
- * @note    This is an STM32-specific setting.
+ * @note    This is an GD32-specific setting.
  * @note    This setting is only available if the configuration option
  *          @p GD32_PWM_USE_ADVANCED is set to TRUE and only for advanced
  *          timer TIM0.

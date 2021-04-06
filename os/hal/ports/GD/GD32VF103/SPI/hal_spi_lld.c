@@ -16,7 +16,7 @@
 
 /**
  * @file    SPI/hal_spi_lld.c
- * @brief   STM32 SPI subsystem low level driver source.
+ * @brief   GD32 SPI subsystem low level driver source.
  *
  * @addtogroup SPI
  * @{
@@ -353,7 +353,7 @@ void spi_lld_stop(SPIDriver *spip) {
  */
 void spi_lld_select(SPIDriver *spip) {
 
-  /* No implementation on STM32.*/
+  /* No implementation on GD32.*/
 }
 
 /**
@@ -366,7 +366,7 @@ void spi_lld_select(SPIDriver *spip) {
  */
 void spi_lld_unselect(SPIDriver *spip) {
 
-  /* No implementation on STM32.*/
+  /* No implementation on GD32.*/
 }
 #endif
 

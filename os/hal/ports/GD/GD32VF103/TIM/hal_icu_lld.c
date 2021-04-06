@@ -20,7 +20,7 @@
 
 /**
  * @file    TIM/hal_icu_lld.c
- * @brief   STM32 ICU subsystem low level driver header.
+ * @brief   GD32 ICU subsystem low level driver header.
  *
  * @addtogroup ICU
  * @{

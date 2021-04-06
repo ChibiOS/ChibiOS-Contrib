@@ -194,7 +194,7 @@
  */
 #define GD32_SCS_IRC8M            (0 << 0)    /**< SYSCLK source is IRC8M.      */
 #define GD32_SCS_HXTAL            (1 << 0)    /**< SYSCLK source is HXTAL.      */
-#define GD32_SCS_PLL            (2 << 0)    /**< SYSCLK source is PLL.      */
+#define GD32_SCS_PLL              (2 << 0)    /**< SYSCLK source is PLL.      */
 
 #define GD32_AHBPSC_DIV1         (0 << 4)    /**< SYSCLK divided by 1.       */
 #define GD32_AHBPSC_DIV2         (8 << 4)    /**< SYSCLK divided by 2.       */
@@ -222,10 +222,10 @@
 #define GD32_ADCPSC_DIV4       (1 << 14)   /**< PPRE2 divided by 4.        */
 #define GD32_ADCPSC_DIV6       (2 << 14)   /**< PPRE2 divided by 6.        */
 #define GD32_ADCPSC_DIV8       (3 << 14)   /**< PPRE2 divided by 8.        */
-#define GD32_ADCPSC_DIV12    ((1 << 28) | (1 << 14))  /**< PPRE2 divided by 12.        */
-#define GD32_ADCPSC_DIV16    ((1 << 28) | (3 << 14))  /**< PPRE2 divided by 16.        */
+#define GD32_ADCPSC_DIV12      ((1 << 28) | (1 << 14))  /**< PPRE2 divided by 12.        */
+#define GD32_ADCPSC_DIV16      ((1 << 28) | (3 << 14))  /**< PPRE2 divided by 16.        */
 
-#define GD32_PLLSEL_IRC8M        (0 << 16)   /**< PLL clock source is IRC8M.   */
+#define GD32_PLLSEL_IRC8M     (0 << 16)   /**< PLL clock source is IRC8M.   */
 #define GD32_PLLSEL_PREDV0    (1 << 16)   /**< PLL clock source is
                                                  PREDV0.                   */
 

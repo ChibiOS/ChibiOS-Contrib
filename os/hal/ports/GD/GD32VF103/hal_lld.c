@@ -32,11 +32,6 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-/**
- * @brief   CMSIS system core clock variable.
- * @note    It is declared in system_stm32f10x.h.
- */
-//uint32_t SystemCoreClock = GD32_HCLK;
 
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
@@ -135,7 +130,7 @@ void hal_lld_init(void) {
 }
 
 /**
- * @brief   STM32 clocks and PLL initialization.
+ * @brief   GD32 clocks and PLL initialization.
  * @note    All the involved constants come from the file @p board.h.
  * @note    This function should be invoked just after the system reset.
  *

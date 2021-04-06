@@ -16,7 +16,7 @@
 
 /**
  * @file    CAN/hal_can_lld.c
- * @brief   STM32 CAN subsystem low level driver source.
+ * @brief   GD32 CAN subsystem low level driver source.
  *
  * @addtogroup CAN
  * @{
@@ -786,7 +786,7 @@ void can_lld_wakeup(CANDriver *canp) {
 
 /**
  * @brief   Programs the filters.
- * @note    This is an STM32-specific API.
+ * @note    This is an GD32-specific API.
  *
  * @param[in] canp      pointer to the @p CANDriver object
  * @param[in] can2sb    number of the first filter assigned to CAN1
@@ -797,7 +797,7 @@ void can_lld_wakeup(CANDriver *canp) {
  *
  * @api
  */
-void canSTM32SetFilters(CANDriver *canp, uint32_t can2sb,
+void canGD32SetFilters(CANDriver *canp, uint32_t can2sb,
                         uint32_t num, const CANFilter *cfp) {
 
 #if GD32_CAN_USE_CAN1

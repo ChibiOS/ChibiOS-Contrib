@@ -16,7 +16,7 @@
 
 /**
  * @file    GPIO/hal_pal_lld.c
- * @brief   STM32 PAL low level driver code.
+ * @brief   GD32 PAL low level driver code.
  *
  * @addtogroup PAL
  * @{
@@ -68,10 +68,10 @@ palevent_t _pal_events[16];
 /*===========================================================================*/
 
 /**
- * @brief   STM32 I/O ports configuration.
+ * @brief   GD32 I/O ports configuration.
  * @details Ports A-D(E) clocks enabled, AFIO clock enabled.
  *
- * @param[in] config    the STM32 ports configuration
+ * @param[in] config    the GD32 ports configuration
  *
  * @notapi
  */
@@ -199,7 +199,7 @@ void _pal_lld_enablepadevent(ioportid_t port,
   padmask = 1U << (uint32_t)pad;
 
   /* Multiple channel setting of the same channel not allowed, first disable
-     it. This is done because on STM32 the same channel cannot be mapped on
+     it. This is done because on GD32 the same channel cannot be mapped on
      multiple ports.*/
   osalDbgAssert(((EXTI->RTEN & padmask) == 0U) &&
                 ((EXTI->FTEN & padmask) == 0U), "channel already in use");
