@@ -1,5 +1,6 @@
 /*
-    ChibiOS - Copyright (C) 2020 Patrick Seidel, Stefan Kerkmann
+    ChibiOS - Copyright (C) 2020 Patrick Seidel
+    ChibiOS - Copyright (C) 2021 Stefan Kerkmann
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
