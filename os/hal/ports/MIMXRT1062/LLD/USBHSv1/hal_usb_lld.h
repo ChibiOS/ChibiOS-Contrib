@@ -43,6 +43,10 @@
  */
 #define USB_MAX_ENDPOINTS                   7
 
+#if USB_DEVICE_CONFIG_ENDPOINTS != USB_MAX_ENDPOINTS
+#error "Mismatch: USB_DEVICE_CONFIG_ENDPOINTS != USB_MAX_ENDPOINTS"
+#endif
+
 /**
  * @brief   Status stage handling method.
  */
