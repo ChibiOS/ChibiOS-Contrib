@@ -49,8 +49,10 @@
 #define NUC123_EFL_CMD_CHIPERASE 0x26UL /* Undocumented */
 
 #if ((NUC123_CONFIG_ENABLED == FALSE) || (NUC123_EFL_ACCESS_CONFIG == TRUE)) && \
-    (NUC123_EFL_ACCESS_APROM == TRUE) && (NUC123_EFL_ACCESS_DATAFLASH == TRUE)
+    (NUC123_EFL_ACCESS_APROM == TRUE) || (NUC123_EFL_ACCESS_DATAFLASH == TRUE)
 #define NUC123_EFL_DYNAMICALLY_CHECK_CONFIG TRUE
+#else
+#define NUC123_EFL_DYNAMICALLY_CHECK_CONFIG FALSE
 #endif
 
 /*===========================================================================*/
@@ -166,7 +168,7 @@ void efl_lld_start(EFlashDriver* eflp)
     FMC->FATCON |= FMC_FATCON_MFOM_Msk;
 #endif
 
-#if (NUC123_EFL_ACCESS_APROM == TRUE) || (NUC123_EFL_ACCESS_DATAFLASH == TRUE)
+#if (NUC123_EFL_ACCESS_APROM == TRUE)
     ispcon |= FMC_ISPCON_APUEN_Msk;
 #endif
 
@@ -200,7 +202,7 @@ void efl_lld_stop(EFlashDriver* eflp)
     ispcon &= ~FMC_ISPCON_ISPEN_Msk;
       /* Disables the peripheral.*/
 
-#if (NUC123_EFL_ACCESS_APROM == TRUE) || (NUC123_EFL_ACCESS_DATAFLASH == TRUE)
+#if (NUC123_EFL_ACCESS_APROM == TRUE)
     ispcon &= ~FMC_ISPCON_APUEN_Msk;
 #endif
 #if (NUC123_EFL_ACCESS_LDROM == TRUE)
@@ -261,7 +263,7 @@ const flash_descriptor_t* efl_lld_get_descriptor(void* instance)
 #else
 
   dataflash_size = NUC123_CONFIG_DATAFLASH_SIZE;
-  dfbaddr = NUC123_DFBADDR;
+  dfbaddr = (void *)NUC123_DFBADDR;
 
 #endif
 
