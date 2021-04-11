@@ -222,5 +222,6 @@ extern void USB_EPnBufferOffset(uint32_t wEPNum, uint32_t wAddr);
 extern void USB_ReturntoNormal(void);
 extern void USB_ResetEvent(void);
 extern void USB_WakeupEvent(void);
+extern void USB_SuspendEvent(void);
 
 #endif  /* __USBHW_H__ */

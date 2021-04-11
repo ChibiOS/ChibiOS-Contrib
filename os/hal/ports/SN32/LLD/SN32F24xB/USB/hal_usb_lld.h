@@ -28,6 +28,7 @@
 #if (HAL_USE_USB == TRUE) || defined(__DOXYGEN__)
 
 #include "sn32_usb.h"
+#include "usbhw.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -362,7 +363,9 @@ struct USBDriver {
  *
  * @notapi
  */
-#define usb_lld_wakeup_host(usbp)
+#define usb_lld_wakeup_host(usbp) { \
+    USB_RemoteWakeUp();             \
+}
 
 /*===========================================================================*/
 /* External declarations.                                                    */

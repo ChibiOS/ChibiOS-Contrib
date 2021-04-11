@@ -362,3 +362,31 @@ void USB_WakeupEvent(void)
     __USB_CLRINSTS(mskBUS_WAKEUP);  //** Clear BUS_WAKEUP
 }
 
+/*****************************************************************************
+* Function      : USB_SuspendEvent
+* Description   : puts MCU in sleep mode
+* Input         : None
+* Output        : None
+* Return        : None
+* Note          : None
+*****************************************************************************/
+void USB_SuspendEvent(void)
+{
+    __USB_PHY_DISABLE;
+    SN_USB->INTEN = 0;
+    //** switch ILRC
+    SN_SYS0->CLKCFG = 0x01;
+    //** check ILRC status
+    while((SN_SYS0->CLKCFG & 0x10) != 0x10);
+    //** switch SYSCLK / 4 DO NOT set SYSCLK / 1 or SYSCLK / 2!!!!
+    SN_SYS0->AHBCP = 2;
+    //** disable IHRC
+    SN_SYS0->ANBCTRL = 0;
+    SN_USB->INTEN = (mskBUS_IE|mskUSB_IE|mskEPnACK_EN|mskBUSWK_IE);
+    SN_USB->INTEN |= mskEP1_NAK_EN;
+    SN_USB->INTEN |= mskEP2_NAK_EN;
+    SN_USB->INTEN |= mskEP3_NAK_EN;
+    SN_USB->INTEN |= mskEP4_NAK_EN;
+    SN_USB->INTEN |= mskUSB_SOF_IE;
+    SN_PMU->CTRL = 0x04;
+}

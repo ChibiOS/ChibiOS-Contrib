@@ -213,6 +213,12 @@ static void usb_lld_serve_interrupt(USBDriver *usbp)
             /* Suspend */
             __USB_CLRINSTS(mskBUS_SUSPEND);
             _usb_suspend(usbp);
+            //USB suspend will put MCU in sleep mode with lower clock
+            //and disable execution of user code allowing only interrupt to execute
+            //keeping it here just for reference on how to could be done
+            //not necessary for remote wakeup to work
+            //uncomment if want to experiment with suspend mode
+            //USB_SuspendEvent();
         }
         else if(iwIntFlag & mskBUS_RESUME)
         {
