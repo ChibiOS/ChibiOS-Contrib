@@ -263,10 +263,8 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
   case I2C_EV6_MASTER_REC_MODE_SELECTED:
     dp->CTL1 &= ~I2C_CTL1_EVIE;
 	  /* Clear address flags before dma enable */
-    if (event & (I2C_STAT0_ADDSEND | I2C_STAT0_ADD10SEND)){
-      (void)dp->STAT0;
-      (void)dp->STAT1;
-    }
+    (void)dp->STAT0;
+    (void)dp->STAT1;
     dmaStreamEnable(i2cp->dmarx);
     dp->CTL1 |= I2C_CTL1_DMALST;                 /* Needed in receiver mode. */
     if (dmaStreamGetTransactionSize(i2cp->dmarx) < 2)
@@ -275,10 +273,8 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
   case I2C_EV6_MASTER_TRA_MODE_SELECTED:
     dp->CTL1 &= ~I2C_CTL1_EVIE;
     /* Clear address flags before dma enable */
-    if (event & (I2C_STAT0_ADDSEND | I2C_STAT0_ADD10SEND)){
-      (void)dp->STAT0;
-      (void)dp->STAT1;
-    }
+    (void)dp->STAT0;
+    (void)dp->STAT1;
     dmaStreamEnable(i2cp->dmatx);
     break;
   case I2C_EV8_2_MASTER_BYTE_TRANSMITTED:
