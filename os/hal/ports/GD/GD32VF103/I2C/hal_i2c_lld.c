@@ -263,11 +263,8 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
   case I2C_EV6_MASTER_REC_MODE_SELECTED:
     dp->CTL1 &= ~I2C_CTL1_EVIE;
 	  /* Clear address flags before dma enable */
-    if (event & (I2C_STAT0_ADDSEND | I2C_STAT0_ADD10SEND)){
-      (void)dp->STAT0;
-      (void)dp->STAT1;
-    }
-    dp->CTL1 |= I2C_CTL1_DMAON;
+    (void)dp->STAT0;
+    (void)dp->STAT1;
     dmaStreamEnable(i2cp->dmarx);
     dp->CTL1 |= I2C_CTL1_DMALST;                 /* Needed in receiver mode. */
     if (dmaStreamGetTransactionSize(i2cp->dmarx) < 2)
@@ -276,11 +273,8 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
   case I2C_EV6_MASTER_TRA_MODE_SELECTED:
     dp->CTL1 &= ~I2C_CTL1_EVIE;
     /* Clear address flags before dma enable */
-    if (event & (I2C_STAT0_ADDSEND | I2C_STAT0_ADD10SEND)){
-      (void)dp->STAT0;
-      (void)dp->STAT1;
-    }
-    dp->CTL1 |= I2C_CTL1_DMAON;
+    (void)dp->STAT0;
+    (void)dp->STAT1;
     dmaStreamEnable(i2cp->dmatx);
     break;
   case I2C_EV8_2_MASTER_BYTE_TRANSMITTED:
@@ -302,6 +296,11 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
   if (event & (I2C_STAT0_ADDSEND | I2C_STAT0_ADD10SEND)){
     (void)dp->STAT0;
     (void)dp->STAT1;
+  }
+
+  /* Errata 2.4.6 for STM32F40x, Spurious Bus Error detection in Master mode.*/
+  if (event & I2C_STAT0_BERR) {
+    dp->STAT0 &= ~I2C_STAT0_BERR;
   }
 }
 
@@ -582,9 +581,7 @@ void i2c_lld_start(I2CDriver *i2cp) {
   /* Reset i2c peripheral.*/
   dp->CTL0 = I2C_CTL0_SRESET;
   dp->CTL0 = 0;
-  dp->CTL1 = 0;
-  dp->STAT0 = 0;
-  dp->CTL1 = I2C_CTL1_ERRIE;
+  dp->CTL1 = I2C_CTL1_ERRIE | I2C_CTL1_DMAON;
   /* Setup I2C parameters.*/
   i2c_lld_set_clock(i2cp);
   i2c_lld_set_opmode(i2cp);
