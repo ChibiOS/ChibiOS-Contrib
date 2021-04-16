@@ -56,26 +56,34 @@
 
 # Disable Interrupts globally.
 .macro DISABLE_MIE
-    csrc CSR_MSTATUS, MSTATUS_MIE
+    csrc  CSR_MSTATUS, MSTATUS_MIE
+    fence iorw, iorw
+    fence.i
 .endm
 
 # Enable Interrupts globally.
 .macro ENABLE_MIE
-    csrs CSR_MSTATUS, MSTATUS_MIE
+    csrs  CSR_MSTATUS, MSTATUS_MIE
+    fence iorw, iorw
+    fence.i
 .endm
 
 # Clear previous machine interrupt enable bit in mstatus (mstatus.mpie).
 # On machine return (mret) mstatus.mie is assigned this value.
 # Clearing this bit disables interrupts when leaving interrupt processing mode.
 .macro DISABLE_MPIE
-    li a0, MSTATUS_MPIE
-    csrc CSR_MSTATUS, a0
+    li    a0, MSTATUS_MPIE
+    csrc  CSR_MSTATUS, a0
+    fence iorw, iorw
+    fence.i
 .endm
 
 # Set previous machine interrupt enable bit in mstatus (mstatus.mpie).
 .macro ENABLE_MPIE
-    li a0, MSTATUS_MPIE
-    csrs CSR_MSTATUS, a0
+    li    a0, MSTATUS_MPIE
+    csrs  CSR_MSTATUS, a0
+    fence iorw, iorw
+    fence.i
 .endm
 
 # --------------------------------------------------------------------------

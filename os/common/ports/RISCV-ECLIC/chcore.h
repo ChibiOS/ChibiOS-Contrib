@@ -377,7 +377,9 @@ static inline void port_init(void) {}
  * @return              The interrupts status.
  */
 static inline syssts_t port_get_irq_status(void) {
-  return (syssts_t)__RV_CSR_READ(CSR_MSTATUS);
+  syssts_t mstatus = __RV_CSR_READ(CSR_MSTATUS);
+  __RWMB();
+  return mstatus;
 }
 
 /**
@@ -399,7 +401,9 @@ static inline bool port_irq_enabled(syssts_t sts) { return sts & MSTATUS_MIE; }
  * @retval true         running in ISR mode.
  */
 static inline bool port_is_isr_context(void) {
-  return __RV_CSR_READ(CSR_MSUBM) & MSUBM_TYP;
+  bool is_irq_context = (__RV_CSR_READ(CSR_MSUBM) & MSUBM_TYP) != 0;
+  __RWMB();
+  return is_irq_context;
 }
 
 /**
@@ -407,14 +411,22 @@ static inline bool port_is_isr_context(void) {
  * @details Usually this function just disables interrupts but may perform more
  *          actions.
  */
-static inline void port_lock(void) { __disable_irq(); }
+static inline void port_lock(void) {
+  __disable_irq(); 
+  __RWMB();
+  __FENCE_I();
+}
 
 /**
  * @brief   Kernel-unlock action.
  * @details Usually this function just enables interrupts but may perform more
  *          actions.
  */
-static inline void port_unlock(void) { __enable_irq(); }
+static inline void port_unlock(void) {
+  __enable_irq();
+  __RWMB();
+  __FENCE_I();
+}
 
 /**
  * @brief   Kernel-lock action from an interrupt handler.
@@ -436,18 +448,18 @@ static inline void port_unlock_from_isr(void) { port_unlock(); }
  * @brief   Disables all the interrupt sources.
  * @note    Of course non-maskable interrupt sources are not included.
  */
-static inline void port_disable(void) { __disable_irq(); }
+static inline void port_disable(void) { port_lock(); }
 
 /**
  * @brief   Disables the interrupt sources below kernel-level priority.
  * @note    Interrupt sources above kernel level remains enabled.
  */
-static inline void port_suspend(void) { __disable_irq(); }
+static inline void port_suspend(void) { port_lock(); }
 
 /**
  * @brief   Enables all the interrupt sources.
  */
-static inline void port_enable(void) { __enable_irq(); }
+static inline void port_enable(void) { port_unlock(); }
 
 /**
  * @details The function is meant to return when an interrupt becomes pending.
