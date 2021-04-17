@@ -56,34 +56,12 @@
 
 # Disable Interrupts globally.
 .macro DISABLE_MIE
-    csrc  CSR_MSTATUS, MSTATUS_MIE
-    fence iorw, iorw
-    fence.i
+    csrc CSR_MSTATUS, MSTATUS_MIE
 .endm
 
 # Enable Interrupts globally.
 .macro ENABLE_MIE
-    csrs  CSR_MSTATUS, MSTATUS_MIE
-    fence iorw, iorw
-    fence.i
-.endm
-
-# Clear previous machine interrupt enable bit in mstatus (mstatus.mpie).
-# On machine return (mret) mstatus.mie is assigned this value.
-# Clearing this bit disables interrupts when leaving interrupt processing mode.
-.macro DISABLE_MPIE
-    li    a0, MSTATUS_MPIE
-    csrc  CSR_MSTATUS, a0
-    fence iorw, iorw
-    fence.i
-.endm
-
-# Set previous machine interrupt enable bit in mstatus (mstatus.mpie).
-.macro ENABLE_MPIE
-    li    a0, MSTATUS_MPIE
-    csrs  CSR_MSTATUS, a0
-    fence iorw, iorw
-    fence.i
+    csrs CSR_MSTATUS, MSTATUS_MIE
 .endm
 
 # --------------------------------------------------------------------------
@@ -183,6 +161,31 @@
 .option pop
 
 # --------------------------------------------------------------------------
+# Start a thread by invoking its work function.
+# 
+# Threads execution starts here, the code leaves the system critical zone
+# and then jumps into the thread function passed in register S0. The
+# register S1 contains the thread parameter. The function chThdExit() is
+# called on thread function return.
+# --------------------------------------------------------------------------
+.globl  _port_thread_start
+_port_thread_start:
+#if CH_DBG_SYSTEM_STATE_CHECK
+    jal     ra, _dbg_check_unlock
+#endif
+#if CH_DBG_STATISTICS
+    jal     ra, _stats_stop_measure_crit_thd
+#endif
+    ENABLE_MIE
+    mv      a0, s1
+    jalr    ra, s0
+    li      a0, 0              # MSG_OK
+    jal     ra, chThdExit
+
+_zombies:
+       j       _zombies
+
+# --------------------------------------------------------------------------
 # Performs a context switch between two threads.
 # a0 = ntp, a1 = otp
 # --------------------------------------------------------------------------
@@ -242,31 +245,6 @@ _port_switch:
 .option pop
 
 # --------------------------------------------------------------------------
-# Start a thread by invoking its work function.
-# 
-# Threads execution starts here, the code leaves the system critical zone
-# and then jumps into the thread function passed in register S0. The
-# register S1 contains the thread parameter. The function chThdExit() is
-# called on thread function return.
-# --------------------------------------------------------------------------
-.globl  _port_thread_start
-_port_thread_start:
-#if CH_DBG_SYSTEM_STATE_CHECK
-    jal     ra, _dbg_check_unlock
-#endif
-#if CH_DBG_STATISTICS
-    jal     ra, _stats_stop_measure_crit_thd
-#endif
-    ENABLE_MIE
-    mv      a0, s1
-    jalr    ra, s0
-    li      a0, 0              # MSG_OK
-    jal     ra, chThdExit
-
-_zombies:
-       j       _zombies
-
-# --------------------------------------------------------------------------
 # IRQ entry point
 # --------------------------------------------------------------------------
 .section .text
@@ -293,8 +271,20 @@ _irq_handler:
     la      a0, _port_switch_from_isr
     csrw    mepc, a0
 
+    # Interrupt handling and context restoring is handled differently in nucleisys cores.
+    # mstatus.mpie and mstatus.mpp are mirror fields of mcause.mpie and mcause.mpp.
+    # Therefore we directly set the bits in mcause and not mstatus.
+    # See https://doc.nucleisys.com/nuclei_spec/isa/core_csr.html#mcause
+
     # Context switch is a critical section, so disable interrupts on return.
-    DISABLE_MPIE
+    # Clear mcause.mpie.
+    li a0, 0x8000000
+    csrc mcause, a0
+
+    # Set previous privelege mode to machine mode to enforce it on return.
+    # Set mcause.mpp to 0x3 (== machine mode).
+    li a0, 0x30000000
+    csrs mcause, a0
 
     mret
 
@@ -331,15 +321,12 @@ _port_switch_from_isr:
     jal     ra, _stats_stop_measure_crit_thd
 #endif
 
-    # Enable interrupts after leaving the interrupt handler
-    ENABLE_MPIE
-
 .globl _port_exit_from_isr
 _port_exit_from_isr:
     # Restore caller registers and csr registers from the thread stack
     RESTORE_CONTEXT
 
-    # Leave machine mode and return to address stored in mepc
+    # Leave interrupt handling and return to address stored in mepc.
     mret
 
 .option pop
