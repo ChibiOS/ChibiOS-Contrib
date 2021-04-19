@@ -20,7 +20,7 @@ ifeq ($(HALCONFDIR),)
   endif
 endif
 
-HALCONF := $(strip $(shell cat $(HALCONFDIR)/halconf.h | egrep -e "\#define"))
+HALCONF := $(strip $(shell cat $(HALCONFDIR)/halconf.h $(HALCONFDIR)/halconf_community.h | egrep -e "\#define"))
 
 ifneq ($(findstring HAL_USE_ADC TRUE,$(HALCONF)),)
 PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/GD/GD32VF103/hal_adc_lld.c
@@ -31,6 +31,7 @@ endif
 
 # Drivers compatible with the platform.
 include ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/CAN/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/CRC/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/DAC/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/DMA/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/GD/GD32VF103/GPIO/driver.mk
