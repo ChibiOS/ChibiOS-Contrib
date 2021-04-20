@@ -226,19 +226,11 @@ uint32_t crc_lld_calc(CRCDriver *crcp, size_t n, const void *buf) {
   crc_lld_start_calc(crcp, n, buf);
   (void) osalThreadSuspendS(&crcp->thread);
 #else
-  /**
-   * BUG: Only peform byte writes to DR reg if reflect_data is disabled.
-   * The GD32 hardware unit seems to incorrectly calculate CRCs when all
-   * of the following is true: reflect_data(rev_in) is 0, dma is disable, and
-   * you are writing more than a byte into the DR register.
-   */
-  if (crcp->config->reflect_data != 0) {
     while(n > 3) {
       _crc_lld_calc_word(crcp, *(uint32_t*)buf);
       buf+=4;
       n-=4;
     }
-  }
   osalDbgAssert(n == 0, "GD32 CRC Unit only supports WORD accesses");
 #endif
   return crcp->crc->DATA ^ crcp->config->final_val;
