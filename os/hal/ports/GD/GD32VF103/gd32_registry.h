@@ -161,6 +161,17 @@
 #define GD32_HAS_CAN1                      TRUE
 #define GD32_CAN_MAX_FILTERS               28
 
+/* CRC attributes.*/
+#define GD32_HAS_CRC                       TRUE
+#define GD32_CRC_PROGRAMMABLE              FALSE
+
+/* STM32 compatibility define. */
+#if GD32_CRC_USE_CRC0 == TRUE 
+#define STM32_CRC_USE_CRC1 TRUE
+#else
+#define STM32_CRC_USE_CRC1 FALSE
+#endif
+
 /* DAC attributes.*/
 #define GD32_HAS_DAC_CH1                  TRUE
 #define GD32_DAC_CH1_DMA_STREAM           GD32_DMA_STREAM_ID(1, 2)

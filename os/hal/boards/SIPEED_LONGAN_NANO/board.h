@@ -55,7 +55,7 @@
 
 #define LINE_GREEN_LED         PAL_LINE(GPIOA, PIN_GREEN_LED)
 #define LINE_BLUE_LED          PAL_LINE(GPIOA, PIN_BLUE_LED)
-#define LINE_RED_LED           PAL_LINE(GPIOA, PIN_RED_LED)
+#define LINE_RED_LED           PAL_LINE(GPIOC, PIN_RED_LED)
 
 #define LINE_DISPLAY_MISO      PAL_LINE(GPIOA, PIN_DISPLAY_MISO)
 #define LINE_DISPLAY_MOSI      PAL_LINE(GPIOA, PIN_DISPLAY_MOSI)
@@ -113,9 +113,10 @@
 /*
  * Port C setup.
  * Everything input with pull-up except:
+ * C13 - RED LED - Push Pull output 50MHz
  */
 #define VAL_GPIOCCRL            0x88888888      /*  PC7...PC0 */
-#define VAL_GPIOCCRH            0x88888888      /* PC15...PC8 */
+#define VAL_GPIOCCRH            0x88388888      /* PC15...PC8 */
 #define VAL_GPIOCODR            0xFFFFFFFF
 
 /*
