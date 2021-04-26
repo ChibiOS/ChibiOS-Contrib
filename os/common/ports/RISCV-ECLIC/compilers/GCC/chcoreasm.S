@@ -103,6 +103,13 @@
 # registers and status csr registers from stack.
 # --------------------------------------------------------------------------
 .macro RESTORE_CONTEXT
+    LOAD t0, 17*REGBYTES(sp)
+    csrw CSR_MEPC, t0
+    LOAD t0, 18*REGBYTES(sp)
+    csrw CSR_MCAUSE, t0
+    LOAD t0, 19*REGBYTES(sp)
+    csrw CSR_MSUBM, t0
+    
     LOAD ra, 0*REGBYTES(sp)
     LOAD tp, 1*REGBYTES(sp)
     LOAD t0, 2*REGBYTES(sp)
@@ -120,13 +127,6 @@
     LOAD t4, 14*REGBYTES(sp)
     LOAD t5, 15*REGBYTES(sp)
     LOAD t6, 16*REGBYTES(sp)
-
-    LOAD t0, 17*REGBYTES(sp)
-    csrw CSR_MEPC, t0
-    LOAD t0, 18*REGBYTES(sp)
-    csrw CSR_MCAUSE, t0
-    LOAD t0, 19*REGBYTES(sp)
-    csrw CSR_MSUBM, t0
 
     # De-allocate the stack space
     addi sp, sp, 20*REGBYTES
