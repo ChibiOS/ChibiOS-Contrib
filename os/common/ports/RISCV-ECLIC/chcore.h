@@ -287,7 +287,10 @@ struct port_context {
  * @details This macro must be inserted at the end of all IRQ handlers
  *          enabled to invoke system APIs.
  */
-#define PORT_IRQ_EPILOGUE() return chSchIsPreemptionRequired();
+#define PORT_IRQ_EPILOGUE() port_lock_from_isr(); \
+                            bool is_preemption_required = ((__RV_CSR_READ(CSR_MSUBM) & MSUBM_PTYP) == 0) && chSchIsPreemptionRequired(); \
+                            port_unlock_from_isr(); \
+                            return is_preemption_required;
 
 /**
  * @brief   IRQ handler function declaration.
