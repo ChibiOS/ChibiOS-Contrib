@@ -183,15 +183,17 @@ struct port_extctx {
   uint32_t a3;
   uint32_t a4;
   uint32_t a5;
+  uint32_t mepc;
+  uint32_t mcause;
+  uint32_t msubm;
+#if !defined(__riscv_32e)
   uint32_t a6;
   uint32_t a7;
   uint32_t t3;
   uint32_t t4;
   uint32_t t5;
   uint32_t t6;
-  uint32_t mepc;
-  uint32_t mcause;
-  uint32_t msubm;
+#endif
 };
 
 /**
@@ -205,6 +207,7 @@ struct port_intctx {
   uint32_t ra;
   uint32_t s0;
   uint32_t s1;
+#if !defined(__riscv_32e)
   uint32_t s2;
   uint32_t s3;
   uint32_t s4;
@@ -215,6 +218,9 @@ struct port_intctx {
   uint32_t s9;
   uint32_t s10;
   uint32_t s11;
+  uint32_t padding_2[2];
+#endif
+  uint32_t padding_1;
 };
 
 /**
@@ -287,10 +293,14 @@ struct port_context {
  * @details This macro must be inserted at the end of all IRQ handlers
  *          enabled to invoke system APIs.
  */
-#define PORT_IRQ_EPILOGUE() port_lock_from_isr(); \
-                            bool is_preemption_required = ((__RV_CSR_READ(CSR_MSUBM) & MSUBM_PTYP) == 0) && chSchIsPreemptionRequired(); \
-                            port_unlock_from_isr(); \
-                            return is_preemption_required;
+#define PORT_IRQ_EPILOGUE() do {                                                                          \
+                            port_lock_from_isr();                                                         \
+                            /* Check if we are the tail of a possible interrupt chain. */                 \
+                            bool is_preemption_required = ((__RV_CSR_READ(CSR_MSUBM) & MSUBM_PTYP) == 0)  \
+                                  && chSchIsPreemptionRequired();                                         \
+                            port_unlock_from_isr();                                                       \
+                            return is_preemption_required;                                                \
+                            } while(0)
 
 /**
  * @brief   IRQ handler function declaration.
@@ -402,7 +412,8 @@ static inline bool port_irq_enabled(syssts_t sts) { return sts & MSTATUS_MIE; }
  * @retval true         running in ISR mode.
  */
 static inline bool port_is_isr_context(void) {
-  return __RV_CSR_READ(CSR_MSUBM) & MSUBM_TYP;
+  /* msubm.typ == 1 is interrupt handling mode. */
+  return __RV_CSR_READ(CSR_MSUBM) & (0x1 << 6);
 }
 
 /**

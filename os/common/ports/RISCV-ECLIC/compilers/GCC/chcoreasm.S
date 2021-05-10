@@ -70,14 +70,18 @@
 # --------------------------------------------------------------------------
 .macro SAVE_CONTEXT
     # Allocate stack space for context saving 
+#if !defined(__riscv_32e)
     addi sp, sp, -20*REGBYTES
+#else
+    addi sp, sp, -14*REGBYTES
+#endif /* __riscv_32e */
     
     # Store CSR mepc to stack using pushmepc
-    csrrwi  zero, CSR_PUSHMEPC, 17
+    csrrwi  zero, CSR_PUSHMEPC, 11
     # Store CSR mcause to stack using pushmcause
-    csrrwi  zero, CSR_PUSHMCAUSE, 18
+    csrrwi  zero, CSR_PUSHMCAUSE, 12
     # Store CSR msubm to stack using pushmsub
-    csrrwi  zero, CSR_PUSHMSUBM, 19
+    csrrwi  zero, CSR_PUSHMSUBM, 13
 
     STORE ra, 0*REGBYTES(sp)
     STORE tp, 1*REGBYTES(sp)
@@ -90,12 +94,14 @@
     STORE a3, 8*REGBYTES(sp)
     STORE a4, 9*REGBYTES(sp)
     STORE a5, 10*REGBYTES(sp)
-    STORE a6, 11*REGBYTES(sp)
-    STORE a7, 12*REGBYTES(sp)
-    STORE t3, 13*REGBYTES(sp)
-    STORE t4, 14*REGBYTES(sp)
-    STORE t5, 15*REGBYTES(sp)
-    STORE t6, 16*REGBYTES(sp)
+#if !defined(__riscv_32e)
+    STORE a6, 14*REGBYTES(sp)
+    STORE a7, 15*REGBYTES(sp)
+    STORE t3, 16*REGBYTES(sp)
+    STORE t4, 17*REGBYTES(sp)
+    STORE t5, 18*REGBYTES(sp)
+    STORE t6, 19*REGBYTES(sp)
+#endif
 .endm
 
 # --------------------------------------------------------------------------
@@ -103,11 +109,11 @@
 # registers and status csr registers from stack.
 # --------------------------------------------------------------------------
 .macro RESTORE_CONTEXT
-    LOAD t0, 17*REGBYTES(sp)
+    LOAD t0, 11*REGBYTES(sp)
     csrw CSR_MEPC, t0
-    LOAD t0, 18*REGBYTES(sp)
+    LOAD t0, 12*REGBYTES(sp)
     csrw CSR_MCAUSE, t0
-    LOAD t0, 19*REGBYTES(sp)
+    LOAD t0, 13*REGBYTES(sp)
     csrw CSR_MSUBM, t0
     
     LOAD ra, 0*REGBYTES(sp)
@@ -121,15 +127,19 @@
     LOAD a3, 8*REGBYTES(sp)
     LOAD a4, 9*REGBYTES(sp)
     LOAD a5, 10*REGBYTES(sp)
-    LOAD a6, 11*REGBYTES(sp)
-    LOAD a7, 12*REGBYTES(sp)
-    LOAD t3, 13*REGBYTES(sp)
-    LOAD t4, 14*REGBYTES(sp)
-    LOAD t5, 15*REGBYTES(sp)
-    LOAD t6, 16*REGBYTES(sp)
-
+#if !defined(__riscv_32e)
+    LOAD a6, 14*REGBYTES(sp)
+    LOAD a7, 15*REGBYTES(sp)
+    LOAD t3, 16*REGBYTES(sp)
+    LOAD t4, 17*REGBYTES(sp)
+    LOAD t5, 18*REGBYTES(sp)
+    LOAD t6, 19*REGBYTES(sp)
+    
     # De-allocate the stack space
     addi sp, sp, 20*REGBYTES
+#else
+    addi sp, sp, 14*REGBYTES
+#endif /* __riscv_32e */
 .endm
 
 # --------------------------------------------------------------------------
@@ -138,7 +148,7 @@
 .section .trap, "ax"
 .option push
 .option norelax
-.align 4
+.align 6
 .globl _start_trap
     _start_trap:
     # Save the caller saving registers (context)
@@ -196,14 +206,20 @@ _zombies:
 .type _port_switch,@function
 _port_switch:
     # OLD THREAD CONTEXT SAVE BEGIN
-    # Allocate space for port_intctx structure on the threading stack
-    addi sp, sp, -13*REGBYTES
+    # Allocate space for port_intctx structure on the threading stack.
+    # The stackpointer is 16 byte aligned to be compliant with risc-v abi.
+#if !defined(__riscv_32e)
+    addi sp, sp, -16*REGBYTES
+#else
+    addi sp, sp, -4*REGBYTES
+#endif
 
     # Store callee save registers
-    STORE      ra, 0*REGBYTES(sp)
-    STORE      s0, 1*REGBYTES(sp)
-    STORE      s1, 2*REGBYTES(sp)
-    STORE      s2, 3*REGBYTES(sp)
+    STORE      ra,  0*REGBYTES(sp)
+    STORE      s0,  1*REGBYTES(sp)
+    STORE      s1,  2*REGBYTES(sp)
+#if !defined(__riscv_32e)
+    STORE      s2,  3*REGBYTES(sp)
     STORE      s3,  4*REGBYTES(sp)
     STORE      s4,  5*REGBYTES(sp)
     STORE      s5,  6*REGBYTES(sp)
@@ -213,6 +229,7 @@ _port_switch:
     STORE      s9,  10*REGBYTES(sp)
     STORE      s10, 11*REGBYTES(sp)
     STORE      s11, 12*REGBYTES(sp)
+#endif
 
     # Store stackpointer in otp->ctx
     STORE      sp, CONTEXT_OFFSET(a1)
@@ -222,10 +239,11 @@ _port_switch:
     # Load stackpointer from ntp->ctx
     LOAD       sp, CONTEXT_OFFSET(a0)
 
-    LOAD      ra, 0*REGBYTES(sp)
-    LOAD      s0, 1*REGBYTES(sp)
-    LOAD      s1, 2*REGBYTES(sp)
-    LOAD      s2, 3*REGBYTES(sp)
+    LOAD      ra,  0*REGBYTES(sp)
+    LOAD      s0,  1*REGBYTES(sp)
+    LOAD      s1,  2*REGBYTES(sp)
+#if !defined(__riscv_32e)
+    LOAD      s2,  3*REGBYTES(sp)
     LOAD      s3,  4*REGBYTES(sp)
     LOAD      s4,  5*REGBYTES(sp)
     LOAD      s5,  6*REGBYTES(sp)
@@ -237,7 +255,10 @@ _port_switch:
     LOAD      s11, 12*REGBYTES(sp)
 
     # De-allocate space on the threading stack
-    addi sp, sp, 13*REGBYTES
+    addi sp, sp, 16*REGBYTES
+#else
+    addi sp, sp, 4*REGBYTES
+#endif
     # NEW THREAD CONTEXT RESTORE END
 
     # Jump to return address loaded into ra
@@ -250,7 +271,7 @@ _port_switch:
 .section .text
 .option push
 .option norelax
-.align 4
+.align 2
 .globl _irq_handler
 _irq_handler:
     # Save all caller registers and csr registers on the thread stack
