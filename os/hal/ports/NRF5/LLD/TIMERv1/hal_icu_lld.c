@@ -83,50 +83,6 @@ ICUDriver ICUD5;
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 /**
- * @brief     Returns pulse width.
- * @details   The time is defined as number of ticks.
- *
- * @param[in] icup      Pointer to the ICUDriver object.
- * @param[in] channel   The timer channel that fired the interrupt.
- * @param[in] compare   Content of the CC register.
- * @return              The number of ticks.
- *
- * @notapi
- */
-static icucnt_t get_time_width(const ICUDriver *icup,
-                                uint8_t channel,
-                                icucnt_t compare) {
-
-  const ICUChannel *chp = &icup->channel[channel];
-
-  /* Note! there is no overflow check because it handles under the hood of
-     unsigned subtraction math.*/
-  return compare - chp->last_idle;
-}
-
-/**
- * @brief     Returns pulse period.
- * @details   The time is defined as number of ticks.
- *
- * @param[in] icup      Pointer to the ICUDriver object.
- * @param[in] channel   The timer channel that fired the interrupt.
- * @param[in] compare   Content of the CC register.
- * @return              The number of ticks.
- *
- * @notapi
- */
-static icucnt_t get_time_period(const ICUDriver *icup,
-                                 uint8_t channel,
-                                 icucnt_t compare) {
-
-  const ICUChannel *chp = &icup->channel[channel];
-
-  /* Note! there is no overflow check because it handles under the hood of
-     unsigned subtraction math.*/
-  return compare - chp->last_idle;
-}
-
-/**
  * @brief   ICU width event.
  *
  * @param[in] icup      Pointer to the @p ICUDriver object
@@ -134,15 +90,12 @@ static icucnt_t get_time_period(const ICUDriver *icup,
  *
  * @notapi
  */
-static void _isr_invoke_width_cb(ICUDriver *icup, uint8_t channel) {
+static inline void _isr_invoke_width_cb(ICUDriver *icup, uint8_t channel) {
   ICUChannel *chp = &icup->channel[channel];
-  icucnt_t compare = icup->timer->CC[channel+2];
-  chp->last_active = compare;
-  if (ICU_CH_ACTIVE == chp->state) {
-    icup->result.width = get_time_width(icup, channel, compare);
+  if (chp->state == ICU_CH_ACTIVE) {
+    icup->result.width = icup->timer->CC[channel+2] - chp->last_idle;
     if ((icup->state == ICU_ACTIVE) && (icup->config->width_cb != NULL))
       icup->config->width_cb(icup);
-    chp->state = ICU_CH_IDLE;
   }
 }
 
@@ -154,15 +107,21 @@ static void _isr_invoke_width_cb(ICUDriver *icup, uint8_t channel) {
  *
  * @notapi
  */
-static void _isr_invoke_period_cb(ICUDriver *icup, uint8_t channel) {
+static inline void _isr_invoke_period_cb(ICUDriver *icup, uint8_t channel) {
   ICUChannel *chp = &icup->channel[channel];
-  icucnt_t compare = (uint32_t)icup->timer->CC[channel];
-  icup->result.period = get_time_period(icup, channel, compare);
-  chp->last_idle = compare;
-  chp->state = ICU_CH_ACTIVE;
-  if ((icup->state == ICU_ACTIVE) && (icup->config->period_cb != NULL))
-      icup->config->period_cb(icup);
-  icup->state = ICU_ACTIVE;
+  icucnt_t compare = (uint32_t) icup->timer->CC[channel];
+  if (chp->state == ICU_CH_ACTIVE) {
+	  icup->result.period = compare - chp->last_idle;
+	  chp->last_idle = compare;
+  } else {
+	  chp->state = ICU_CH_ACTIVE;
+  }
+  if (icup->state == ICU_ACTIVE) {
+	  if (icup->config->period_cb != NULL)
+	      icup->config->period_cb(icup);
+  } else {
+	  icup->state = ICU_ACTIVE;
+  }
   /* Set overflow timeout */
   icup->timer->CC[channel] = compare + ICU_WAIT_TIMEOUT;
 }
@@ -176,19 +135,21 @@ void icu_lld_serve_gpiote_interrupt(ICUDriver *icup) {
   uint8_t ch;
   for (ch=0; ch<ICU_CHANNELS; ch++) {
 	const ICUChannelConfig *cfg_channel = &icup->config->iccfgp[ch];
+	if (cfg_channel == NULL || cfg_channel->mode == ICU_INPUT_DISABLED) continue;
+
 	const uint8_t *gpiote_channel = cfg_channel->gpiote_channel;
 
 	/* Period event */
 	if (NRF_GPIOTE->INTENSET & (1 << gpiote_channel[0]) && NRF_GPIOTE->EVENTS_IN[gpiote_channel[0]]) {
-	  _isr_invoke_period_cb(icup, ch);
 	  NRF_GPIOTE->EVENTS_IN[gpiote_channel[0]] = 0;
 	  (void) NRF_GPIOTE->EVENTS_IN[gpiote_channel[0]];
+	  _isr_invoke_period_cb(icup, ch);
 	}
 	/* Width event */
 	if (NRF_GPIOTE->INTENSET & (1 << gpiote_channel[1]) && NRF_GPIOTE->EVENTS_IN[gpiote_channel[1]]) {
-	  _isr_invoke_width_cb(icup, ch);
 	  NRF_GPIOTE->EVENTS_IN[gpiote_channel[1]] = 0;
 	  (void) NRF_GPIOTE->EVENTS_IN[gpiote_channel[1]];
+	  _isr_invoke_width_cb(icup, ch);
 	}
   }
 }
@@ -198,7 +159,7 @@ void icu_lld_serve_gpiote_interrupt(ICUDriver *icup) {
  *
  * @param[in] icup     Pointer to the @p ICUDriver object
  */
-void icu_lld_serve_interrupt(ICUDriver *icup) {
+void icu_lld_serve_timer_interrupt(ICUDriver *icup) {
   uint8_t ch;
   for (ch=0; ch<ICU_CHANNELS; ch++) {
 	/* Clear overflow events  */
@@ -224,34 +185,51 @@ void icu_lld_serve_interrupt(ICUDriver *icup) {
  * @note        GPIO Line[1] -> GPIOTE channel[1] will detect end edge.
  */
 static void start_channels(ICUDriver *icup) {
-
   /* Set each input channel that is used as: a normal input capture channel. */
 #if NRF5_ICU_USE_GPIOTE_PPI
   uint8_t channel;
   for (channel = 0; channel<ICU_CHANNELS; channel++) {
 	const ICUChannelConfig *cfg_channel = &icup->config->iccfgp[channel];
-	if (cfg_channel->mode == ICU_INPUT_DISABLED) continue;
+	if (cfg_channel == NULL || cfg_channel->mode == ICU_INPUT_DISABLED) continue;
 
 	const uint32_t gpio_pin0 = PAL_PAD(cfg_channel->ioline[0]);
 	const uint32_t gpio_pin1 = PAL_PAD(cfg_channel->ioline[1]);
-	osalDbgAssert((gpio_pin0 < 32) &&
-	              (gpio_pin1 < 32) &&
-				  (gpio_pin0 != gpio_pin1),
-	               "invalid Line configuration");
 
 	/* NRF52832 GPIOTE channels 0..7 */
 	const uint8_t *gpiote_channel = cfg_channel->gpiote_channel;
-	osalDbgAssert((gpiote_channel[0] < 8) &&
-	              (gpiote_channel[1] < 8) &&
-				  (gpiote_channel[0] != gpiote_channel[1]),
-	               "invalid GPIOTE configuration");
+
+	// nRF52832 Rev 1 Errata 3.45 [155] GPIOTE: IN event may occur more than once on input edge
+	*(volatile uint32_t *)(NRF_GPIOTE_BASE + 0x600 + (4 * 0)) = 1;
+	*(volatile uint32_t *)(NRF_GPIOTE_BASE + 0x600 + (4 * 1)) = 1;
+
+	/* Clear GPIOTE events */
+	NRF_GPIOTE->INTENCLR = (GPIOTE_INTENCLR_PORT_Clear << GPIOTE_INTENCLR_PORT_Pos) |
+						   (1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
+	NRF_GPIOTE->EVENTS_PORT = 1;
+
+	/* Set GPIOTE channels */
+	if (cfg_channel->mode == ICU_INPUT_ACTIVE_HIGH) {
+	  NRF_GPIOTE->CONFIG[gpiote_channel[0]] =
+    	(GPIOTE_CONFIG_MODE_Disabled << GPIOTE_CONFIG_MODE_Pos) |
+	    ((gpio_pin0 << GPIOTE_CONFIG_PSEL_Pos) & GPIOTE_CONFIG_PSEL_Msk) |
+	    ((GPIOTE_CONFIG_POLARITY_LoToHi << GPIOTE_CONFIG_POLARITY_Pos) & GPIOTE_CONFIG_POLARITY_Msk);
+	  NRF_GPIOTE->CONFIG[gpiote_channel[1]] =
+    	(GPIOTE_CONFIG_MODE_Disabled << GPIOTE_CONFIG_MODE_Pos) |
+	    ((gpio_pin1 << GPIOTE_CONFIG_PSEL_Pos) & GPIOTE_CONFIG_PSEL_Msk) |
+	    ((GPIOTE_CONFIG_POLARITY_HiToLo << GPIOTE_CONFIG_POLARITY_Pos) & GPIOTE_CONFIG_POLARITY_Msk);
+	} else {
+	  NRF_GPIOTE->CONFIG[gpiote_channel[0]] =
+    	(GPIOTE_CONFIG_MODE_Disabled << GPIOTE_CONFIG_MODE_Pos) |
+	    ((gpio_pin0 << GPIOTE_CONFIG_PSEL_Pos) & GPIOTE_CONFIG_PSEL_Msk) |
+	    ((GPIOTE_CONFIG_POLARITY_HiToLo << GPIOTE_CONFIG_POLARITY_Pos) & GPIOTE_CONFIG_POLARITY_Msk);
+	  NRF_GPIOTE->CONFIG[gpiote_channel[1]] =
+    	(GPIOTE_CONFIG_MODE_Disabled << GPIOTE_CONFIG_MODE_Pos) |
+	    ((gpio_pin1 << GPIOTE_CONFIG_PSEL_Pos) & GPIOTE_CONFIG_PSEL_Msk) |
+	    ((GPIOTE_CONFIG_POLARITY_LoToHi << GPIOTE_CONFIG_POLARITY_Pos) & GPIOTE_CONFIG_POLARITY_Msk);
+	}
 
 	/* NRF52832 PPI channels 0..19 */
 	const uint8_t *ppi_channel    = cfg_channel->ppi_channel;
-	osalDbgAssert((gpiote_channel[0] < 20) &&
-	              (gpiote_channel[1] < 20) &&
-				  (gpiote_channel[0] != gpiote_channel[1]),
-	               "invalid PPI configuration");
 
 	/* Program PPI events for period */
 	NRF_PPI->CH[ppi_channel[0]].EEP = (uint32_t) &NRF_GPIOTE->EVENTS_IN[gpiote_channel[0]];
@@ -260,38 +238,52 @@ static void start_channels(ICUDriver *icup) {
 	/* Program PPI events for width */
 	NRF_PPI->CH[ppi_channel[1]].EEP = (uint32_t) &NRF_GPIOTE->EVENTS_IN[gpiote_channel[1]];
 	NRF_PPI->CH[ppi_channel[1]].TEP = (uint32_t) &icup->timer->TASKS_CAPTURE[channel+2];
+  }
+#endif
 
-	/* Disable GPIOTE interrupts */
-	NRF_GPIOTE->INTENCLR = (GPIOTE_INTENCLR_PORT_Clear << GPIOTE_INTENCLR_PORT_Pos) |
-							(1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
-	NRF_GPIOTE->EVENTS_PORT = 1;
+}
+
+/**
+ * @brief   Stops every channel.
+ *
+ * @param[in]   icup     Pointer to the @p ICUDriver object
+ *
+ * @note        GPIO Line[0] -> GPIOTE channel[0] will detect start edge.
+ * @note        GPIO Line[1] -> GPIOTE channel[1] will detect end edge.
+ */
+static void stop_channels(ICUDriver *icup) {
+#if NRF5_ICU_USE_GPIOTE_PPI
+  uint8_t channel;
+  for (channel = 0; channel<ICU_CHANNELS; channel++) {
+	const ICUChannelConfig *cfg_channel = &icup->config->iccfgp[channel];
+	if (cfg_channel == NULL || cfg_channel->mode == ICU_INPUT_DISABLED) continue;
+
+	const uint8_t *gpiote_channel = cfg_channel->gpiote_channel;
+	const uint8_t *ppi_channel = cfg_channel->ppi_channel;
+
+	/* Disable PPI channels */
+	NRF_PPI->CHENCLR = (1 << ppi_channel[0]) | (1 << ppi_channel[1]);
+
+	/* Disable PPI events for period */
+	NRF_PPI->CH[ppi_channel[0]].EEP = (uint32_t) 0;
+	NRF_PPI->CH[ppi_channel[0]].TEP = (uint32_t) 0;
+
+	/* Disable PPI events for width */
+	NRF_PPI->CH[ppi_channel[1]].EEP = (uint32_t) 0;
+	NRF_PPI->CH[ppi_channel[1]].TEP = (uint32_t) 0;
 
 	/* Clear GPIOTE channels */
-	NRF_GPIOTE->CONFIG[gpiote_channel[0]] &= ~(GPIOTE_CONFIG_PSEL_Msk | GPIOTE_CONFIG_POLARITY_Msk);
-	NRF_GPIOTE->CONFIG[gpiote_channel[1]] &= ~(GPIOTE_CONFIG_PSEL_Msk | GPIOTE_CONFIG_POLARITY_Msk);
+	NRF_GPIOTE->CONFIG[gpiote_channel[0]] = 0;
+	NRF_GPIOTE->CONFIG[gpiote_channel[1]] = 0;
 
-	/* Set GPIOTE channels */
-	if (cfg_channel->mode == ICU_INPUT_ACTIVE_HIGH) {
-	  NRF_GPIOTE->CONFIG[gpiote_channel[0]] =
-    	(GPIOTE_CONFIG_MODE_Event << GPIOTE_CONFIG_MODE_Pos) |
-	    ((gpio_pin0 << GPIOTE_CONFIG_PSEL_Pos) & GPIOTE_CONFIG_PSEL_Msk) |
-	    ((GPIOTE_CONFIG_POLARITY_LoToHi << GPIOTE_CONFIG_POLARITY_Pos) & GPIOTE_CONFIG_POLARITY_Msk);
-	  NRF_GPIOTE->CONFIG[gpiote_channel[1]] =
-    	(GPIOTE_CONFIG_MODE_Event << GPIOTE_CONFIG_MODE_Pos) |
-	    ((gpio_pin1 << GPIOTE_CONFIG_PSEL_Pos) & GPIOTE_CONFIG_PSEL_Msk) |
-	    ((GPIOTE_CONFIG_POLARITY_HiToLo << GPIOTE_CONFIG_POLARITY_Pos) & GPIOTE_CONFIG_POLARITY_Msk);
-	} else {
-	  NRF_GPIOTE->CONFIG[gpiote_channel[0]] =
-    	(GPIOTE_CONFIG_MODE_Event << GPIOTE_CONFIG_MODE_Pos) |
-	    ((gpio_pin0 << GPIOTE_CONFIG_PSEL_Pos) & GPIOTE_CONFIG_PSEL_Msk) |
-	    ((GPIOTE_CONFIG_POLARITY_HiToLo << GPIOTE_CONFIG_POLARITY_Pos)
-	     & GPIOTE_CONFIG_POLARITY_Msk);
-	  NRF_GPIOTE->CONFIG[gpiote_channel[1]] =
-    	(GPIOTE_CONFIG_MODE_Event << GPIOTE_CONFIG_MODE_Pos) |
-	    ((gpio_pin1 << GPIOTE_CONFIG_PSEL_Pos) & GPIOTE_CONFIG_PSEL_Msk) |
-	    ((GPIOTE_CONFIG_POLARITY_LoToHi << GPIOTE_CONFIG_POLARITY_Pos)
-	     & GPIOTE_CONFIG_POLARITY_Msk);
-	}
+	const uint32_t gpio_pin0 = PAL_PAD(cfg_channel->ioline[0]);
+	const uint32_t gpio_pin1 = PAL_PAD(cfg_channel->ioline[1]);
+
+	/* Disable GPIO sense */
+	NRF_P0->PIN_CNF[gpio_pin0] = ((NRF_P0->PIN_CNF[gpio_pin0] & ~(GPIO_PIN_CNF_SENSE_Msk << GPIO_PIN_CNF_SENSE_Pos)) |
+									(GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos));
+	NRF_P0->PIN_CNF[gpio_pin1] = ((NRF_P0->PIN_CNF[gpio_pin1] & ~(GPIO_PIN_CNF_SENSE_Msk << GPIO_PIN_CNF_SENSE_Pos)) |
+									(GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos));
   }
 #endif
 
@@ -300,6 +292,17 @@ static void start_channels(ICUDriver *icup) {
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
+
+#if NRF5_ICU_USE_GPIOTE_PPI
+/**
+ * @brief   GPIOTE events interrupt handler.
+ * @note    It is assumed that the various sources are only activated if the
+ *          associated callback pointer is not equal to @p NULL in order to not
+ *          perform an extra check in a potentially critical interrupt handler.
+ *
+ * @isr     moved to nrf52_isr.c
+ */
+#endif /* NRF5_ICU_USE_GPIOTE_PPI */
 
 #if NRF5_ICU_USE_TIMER0
 /**
@@ -314,7 +317,7 @@ OSAL_IRQ_HANDLER(Vector60) {
 
   OSAL_IRQ_PROLOGUE();
 
-  icu_lld_serve_interrupt(&ICUD1);
+  icu_lld_serve_timer_interrupt(&ICUD1);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -333,7 +336,7 @@ OSAL_IRQ_HANDLER(Vector64) {
 
   OSAL_IRQ_PROLOGUE();
 
-  icu_lld_serve_interrupt(&ICUD2);
+  icu_lld_serve_timer_interrupt(&ICUD2);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -352,7 +355,7 @@ OSAL_IRQ_HANDLER(Vector68) {
 
   OSAL_IRQ_PROLOGUE();
 
-  icu_lld_serve_interrupt(&ICUD3);
+  icu_lld_serve_timer_interrupt(&ICUD3);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -371,7 +374,7 @@ OSAL_IRQ_HANDLER(VectorA8) {
 
   OSAL_IRQ_PROLOGUE();
 
-  icu_lld_serve_interrupt(&ICUD4);
+  icu_lld_serve_timer_interrupt(&ICUD4);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -390,7 +393,7 @@ OSAL_IRQ_HANDLER(VectorAC) {
 
   OSAL_IRQ_PROLOGUE();
 
-  icu_lld_serve_interrupt(&ICUD5);
+  icu_lld_serve_timer_interrupt(&ICUD5);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -445,7 +448,6 @@ void icu_lld_init(void) {
  * @notapi
  */
 void icu_lld_start(ICUDriver *icup) {
-  size_t ch;
   osalDbgAssert((&icup->config->iccfgp[0] != NULL) ||
                 (&icup->config->iccfgp[1] != NULL),
                  "invalid input configuration");
@@ -490,9 +492,38 @@ void icu_lld_start(ICUDriver *icup) {
   (void) icup->timer->EVENTS_COMPARE[2];
   (void) icup->timer->EVENTS_COMPARE[3];
 
-    /* Enable GPIOTE and TIMER interrupt vectors.*/
+/* Enable GPIOTE and TIMER interrupt vectors.*/
 #if NRF5_ICU_USE_GPIOTE_PPI
-    nvicEnableVector(GPIOTE_IRQn, NRF5_ICU_GPIOTE_IRQ_PRIORITY);
+  uint8_t channel;
+  for (channel = 0; channel<ICU_CHANNELS; channel++) {
+	const ICUChannelConfig *cfg_channel = &icup->config->iccfgp[channel];
+	if (cfg_channel == NULL || cfg_channel->mode == ICU_INPUT_DISABLED) continue;
+
+	const uint32_t gpio_pin0 = PAL_PAD(cfg_channel->ioline[0]);
+	const uint32_t gpio_pin1 = PAL_PAD(cfg_channel->ioline[1]);
+	osalDbgAssert((gpio_pin0 < 32) &&
+	              (gpio_pin1 < 32) &&
+				  (gpio_pin0 != gpio_pin1),
+	               "invalid Line configuration");
+
+	/* NRF52832 GPIOTE channels 0..7 */
+	const uint8_t *gpiote_channel = cfg_channel->gpiote_channel;
+	osalDbgAssert((gpiote_channel[0] < 8) &&
+	              (gpiote_channel[1] < 8) &&
+				  (gpiote_channel[0] != gpiote_channel[1]),
+	               "invalid GPIOTE configuration");
+
+	/* NRF52832 PPI channels 0..19 */
+	osalDbgAssert((gpiote_channel[0] < 20) &&
+	              (gpiote_channel[1] < 20) &&
+				  (gpiote_channel[0] != gpiote_channel[1]),
+	               "invalid PPI configuration");
+  }
+
+  /* Set GPIOTE & PPI channels */
+  start_channels(icup);
+
+  nvicEnableVector(GPIOTE_IRQn, NRF5_ICU_GPIOTE_IRQ_PRIORITY);
 #endif
 #if NRF5_ICU_USE_TIMER0
     if (&ICUD1 == icup) {
@@ -520,14 +551,6 @@ void icu_lld_start(ICUDriver *icup) {
     }
 #endif
 
-  /* clean channel structures and set pointers to channel configs */
-  for (ch=0; ch<ICU_CHANNELS; ch++) {
-    icup->channel[ch].last_active = 0;
-    icup->channel[ch].last_idle = 0;
-    icup->channel[ch].state = ICU_CH_IDLE;
-  }
-  /* Set GPIOTE & PPI channels */
-  start_channels(icup);
 }
 
 /**
@@ -542,33 +565,35 @@ void icu_lld_stop(ICUDriver *icup) {
   if (icup->state == ICU_READY) {
     /* Timer stop.*/
 	icup->timer->TASKS_STOP = 1;
+	icup->timer->TASKS_SHUTDOWN = 1;
 
 #if NRF5_ICU_USE_GPIOTE_PPI
 	uint8_t channel;
 	for (channel = 0; channel<ICU_CHANNELS; channel++) {
 	  const ICUChannelConfig *cfg_channel = &icup->config->iccfgp[channel];
-	  if (cfg_channel == NULL) continue;
 
-	  const uint8_t *gpiote_channel = cfg_channel->gpiote_channel;
-	  const uint8_t *ppi_channel = cfg_channel->ppi_channel;
+	  if (cfg_channel == NULL || cfg_channel->mode == ICU_INPUT_DISABLED) continue;
 
 	  /* Disable Timer interrupt */
 	  icup->timer->INTENCLR = 1 << (TIMER_INTENCLR_COMPARE0_Pos + channel);
 
-	  /* Disable GPIOTE interrupts */
-	  NRF_GPIOTE->INTENCLR = (1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
+	  /* Disable GPIOTE interrupt */
+	  const uint8_t *gpiote_channel = cfg_channel->gpiote_channel;
+	  NRF_GPIOTE->INTENCLR = (GPIOTE_INTENCLR_PORT_Clear << GPIOTE_INTENCLR_PORT_Pos) |
+			  	  	  	  	 (1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
+	  NRF_GPIOTE->EVENTS_PORT = 0;
+	  (void) NRF_GPIOTE->EVENTS_PORT;
 
-	  /* Disable PPI channels */
-	  NRF_PPI->CHENCLR = ((1 << ppi_channel[0]) | (1 << ppi_channel[1]));
-
-	  /* Clear GPIOTE channels */
-	  NRF_GPIOTE->CONFIG[gpiote_channel[0]] &= ~(GPIOTE_CONFIG_PSEL_Msk | GPIOTE_CONFIG_POLARITY_Msk);
-	  NRF_GPIOTE->CONFIG[gpiote_channel[1]] &= ~(GPIOTE_CONFIG_PSEL_Msk | GPIOTE_CONFIG_POLARITY_Msk);
+	  NRF_GPIOTE->EVENTS_IN[gpiote_channel[0]] = 0;
+	  NRF_GPIOTE->EVENTS_IN[gpiote_channel[1]] = 0;
+	  (void) NRF_GPIOTE->EVENTS_IN[gpiote_channel[0]];
+	  (void) NRF_GPIOTE->EVENTS_IN[gpiote_channel[1]];
 	}
-#endif
 
-#if NRF5_ICU_USE_GPIOTE_PPI
-    nvicDisableVector(GPIOTE_IRQn);
+	nvicDisableVector(GPIOTE_IRQn);
+
+	/* Stop GPIOTE & PPI channels */
+	stop_channels(icup);
 #endif
 #if NRF5_ICU_USE_TIMER0
     if (&ICUD1 == icup) {
@@ -606,28 +631,49 @@ void icu_lld_stop(ICUDriver *icup) {
  * @notapi
  */
 void icu_lld_start_capture(ICUDriver *icup) {
+  uint8_t channel;
+
   /* Clear and start Timer */
   icup->timer->TASKS_CLEAR = 1;
   icup->timer->TASKS_START = 1;
 
 #if NRF5_ICU_USE_GPIOTE_PPI
-  uint8_t channel;
   for (channel = 0; channel<ICU_CHANNELS; channel++) {
 	const ICUChannelConfig *cfg_channel = &icup->config->iccfgp[channel];
-	if (cfg_channel == NULL) continue;
+
+	if (cfg_channel == NULL || cfg_channel->mode == ICU_INPUT_DISABLED) continue;
 
 	const uint8_t *gpiote_channel = cfg_channel->gpiote_channel;
-	const uint8_t *ppi_channel = cfg_channel->ppi_channel;
+	const uint8_t *ppi_channel    = cfg_channel->ppi_channel;
+
+	/* clean channel structures and set pointers to channel configs */
+	icup->channel[channel].last_active = 0;
+	icup->channel[channel].last_idle = 0;
+	icup->channel[channel].state = ICU_CH_IDLE;
 
 	/* Enable interrupt for overflow events */
 	icup->timer->CC[channel] = ICU_WAIT_TIMEOUT;
 	icup->timer->INTENSET = 1 << (TIMER_INTENSET_COMPARE0_Pos + channel);
 
-	/* Enable PPI channels */
-	NRF_PPI->CHENSET = ((1 << ppi_channel[0]) | (1 << ppi_channel[1]));
+	/* Disable GPIOTE interrupts */
+	NRF_GPIOTE->INTENCLR = (GPIOTE_INTENCLR_PORT_Clear << GPIOTE_INTENCLR_PORT_Pos) |
+							(1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
+	NRF_GPIOTE->EVENTS_PORT = 1;
 
-	/* Enable GPIOTE interrupt */
-	NRF_GPIOTE->INTENSET = (1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
+	/* Clear GPIOTE events */
+	NRF_GPIOTE->EVENTS_IN[gpiote_channel[0]] = 0;
+	NRF_GPIOTE->EVENTS_IN[gpiote_channel[1]] = 0;
+	(void) NRF_GPIOTE->EVENTS_IN[gpiote_channel[0]];
+	(void) NRF_GPIOTE->EVENTS_IN[gpiote_channel[1]];
+
+	/* Set GPIOTE channels */
+	NRF_GPIOTE->CONFIG[gpiote_channel[0]] = (NRF_GPIOTE->CONFIG[gpiote_channel[0]] & ~GPIOTE_CONFIG_MODE_Msk) |
+										  	(GPIOTE_CONFIG_MODE_Event << GPIOTE_CONFIG_MODE_Pos);
+	NRF_GPIOTE->CONFIG[gpiote_channel[1]] = (NRF_GPIOTE->CONFIG[gpiote_channel[1]] & ~GPIOTE_CONFIG_MODE_Msk) |
+			  	  	  	  	  	  	  	  	(GPIOTE_CONFIG_MODE_Event << GPIOTE_CONFIG_MODE_Pos);
+
+	/* Enable PPI channels */
+	NRF_PPI->CHENSET = (1 << ppi_channel[0]) | (1 << ppi_channel[1]);
   }
 #endif
 }
@@ -671,7 +717,8 @@ void icu_lld_stop_capture(ICUDriver *icup) {
 	uint8_t channel;
 	for (channel = 0; channel<ICU_CHANNELS; channel++) {
 	  const ICUChannelConfig *cfg_channel = &icup->config->iccfgp[channel];
-	  if (cfg_channel == NULL) continue;
+
+	  if (cfg_channel == NULL || cfg_channel->mode == ICU_INPUT_DISABLED) continue;
 
 	  const uint8_t *gpiote_channel = cfg_channel->gpiote_channel;
 	  const uint8_t *ppi_channel = cfg_channel->ppi_channel;
@@ -679,11 +726,19 @@ void icu_lld_stop_capture(ICUDriver *icup) {
 	  /* Disable Timer interrupt for overflow events */
 	  icup->timer->INTENCLR = 1 << (TIMER_INTENCLR_COMPARE0_Pos + channel);
 
-	  /* Disable GPIOTE interrupt */
-	  NRF_GPIOTE->INTENCLR = (1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
-
 	  /* Disable PPI channels */
-	  NRF_PPI->CHENCLR = ((1 << ppi_channel[0]) | (1 << ppi_channel[1]));
+	  NRF_PPI->CHENCLR = (1 << ppi_channel[0]) | (1 << ppi_channel[1]);
+
+	  /* Disable GPIOTE interrupts */
+	  NRF_GPIOTE->INTENCLR = (GPIOTE_INTENCLR_PORT_Clear << GPIOTE_INTENCLR_PORT_Pos) |
+								(1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
+	  NRF_GPIOTE->EVENTS_PORT = 1;
+
+	  /* Disable GPIOTE channels */
+	  NRF_GPIOTE->CONFIG[gpiote_channel[0]] = (NRF_GPIOTE->CONFIG[gpiote_channel[0]] & ~GPIOTE_CONFIG_MODE_Msk) |
+			  	  	  	  	  	  	  	  	  (GPIOTE_CONFIG_MODE_Disabled << GPIOTE_CONFIG_MODE_Pos);
+	  NRF_GPIOTE->CONFIG[gpiote_channel[1]] = (NRF_GPIOTE->CONFIG[gpiote_channel[1]] & ~GPIOTE_CONFIG_MODE_Msk) |
+			  	  	  	  	  	  	  	  	  (GPIOTE_CONFIG_MODE_Disabled << GPIOTE_CONFIG_MODE_Pos);
 	}
 #endif
 }
@@ -703,15 +758,16 @@ void icu_lld_enable_notifications(ICUDriver *icup) {
 	uint8_t channel;
 	for (channel = 0; channel<ICU_CHANNELS; channel++) {
 	  const ICUChannelConfig *cfg_channel = &icup->config->iccfgp[channel];
-	  if (cfg_channel == NULL) continue;
 
-	  const uint8_t *gpiote_channel = cfg_channel->gpiote_channel;
+	  if (cfg_channel == NULL || cfg_channel->mode == ICU_INPUT_DISABLED) continue;
 
 	  /* Enable Timer interrupt */
 	  icup->timer->INTENSET = 1 << (TIMER_INTENSET_COMPARE0_Pos + channel);
 
 	  /* Enable GPIOTE interrupt */
-	  NRF_GPIOTE->INTENSET = (1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
+	  const uint8_t *gpiote_channel = cfg_channel->gpiote_channel;
+	  NRF_GPIOTE->INTENSET = (GPIOTE_INTENSET_PORT_Set << GPIOTE_INTENSET_PORT_Pos) |
+			  	  	  	  	 (1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
 	}
 #endif
 }
@@ -732,7 +788,8 @@ void icu_lld_disable_notifications(ICUDriver *icup) {
 	uint8_t channel;
 	for (channel = 0; channel<ICU_CHANNELS; channel++) {
 	  const ICUChannelConfig *cfg_channel = &icup->config->iccfgp[channel];
-	  if (cfg_channel == NULL) continue;
+
+	  if (cfg_channel == NULL || cfg_channel->mode == ICU_INPUT_DISABLED) continue;
 
 	  const uint8_t *gpiote_channel = cfg_channel->gpiote_channel;
 
@@ -740,7 +797,9 @@ void icu_lld_disable_notifications(ICUDriver *icup) {
 	  icup->timer->INTENCLR = 1 << (TIMER_INTENCLR_COMPARE0_Pos + channel);
 
 	  /* Disable GPIOTE interrupt */
-	  NRF_GPIOTE->INTENCLR = (1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
+	  NRF_GPIOTE->INTENCLR = (GPIOTE_INTENCLR_PORT_Clear << GPIOTE_INTENCLR_PORT_Pos) |
+			  	  	  	  	 (1 << gpiote_channel[0]) | (1 << gpiote_channel[1]);
+	  NRF_GPIOTE->EVENTS_PORT = 1;
 	}
 #endif
 

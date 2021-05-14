@@ -181,7 +181,7 @@ static uint32_t addr_conv(uint8_t const* p_addr) {
 }
 
 static thread_t *rfEvtThread_p;
-static THD_WORKING_AREA(waRFEvtThread, 64);
+static THD_WORKING_AREA(waRFEvtThread, 128);
 static THD_FUNCTION(rfEvtThread, arg) {
     (void)arg;
 
@@ -207,7 +207,7 @@ static THD_FUNCTION(rfEvtThread, arg) {
 }
 
 static thread_t *rfIntThread_p;
-static THD_WORKING_AREA(waRFIntThread, 64);
+static THD_WORKING_AREA(waRFIntThread, 128);
 static THD_FUNCTION(rfIntThread, arg) {
     (void)arg;
 
@@ -239,7 +239,6 @@ static THD_FUNCTION(rfIntThread, arg) {
 }
 
 static void serve_radio_interrupt(RFDriver *rfp) {
-	(void) rfp;
     if ((NRF_RADIO->INTENSET & RADIO_INTENSET_READY_Msk) && NRF_RADIO->EVENTS_READY) {
         NRF_RADIO->EVENTS_READY = 0;
         (void) NRF_RADIO->EVENTS_READY;
@@ -268,7 +267,6 @@ OSAL_IRQ_HANDLER(Vector44) {
 }
 
 static void set_rf_payload_format_esb_dpl(RFDriver *rfp, uint32_t payload_length) {
-	(void)payload_length;
 #if (NRF52_MAX_PAYLOAD_LENGTH <= 32)
     // Using 6 bits for length
     NRF_RADIO->PCNF0 = (0 << RADIO_PCNF0_S0LEN_Pos) |
@@ -398,14 +396,13 @@ static void reset_fifo(void) {
 }
 
 static void init_fifo(void) {
-	uint8_t i;
     reset_fifo();
 
-    for (i = 0; i < NRF52_TX_FIFO_SIZE; i++) {
+    for (int i = 0; i < NRF52_TX_FIFO_SIZE; i++) {
         tx_fifo.p_payload[i] = &tx_fifo_payload[i];
     }
 
-    for (i = 0; i < NRF52_RX_FIFO_SIZE; i++) {
+    for (int i = 0; i < NRF52_RX_FIFO_SIZE; i++) {
         rx_fifo.p_payload[i] = &rx_fifo_payload[i];
     }
 }
@@ -776,23 +773,29 @@ static void on_radio_disabled_rx_ack(RFDriver *rfp) {
 }
 
 nrf52_error_t radio_disable(void) {
-    RFD1.state = NRF52_STATE_IDLE;
+	NRF_RADIO->SHORTS = 0;
+	NRF_RADIO->INTENCLR = 0xFFFFFFFF;
+
+    nvicDisableVector(RADIO_IRQn);
+
+	NRF_RADIO->EVENTS_DISABLED = 0;
+	(void) NRF_RADIO->EVENTS_DISABLED;
+
+    NRF_RADIO->TASKS_STOP = 1;
+	NRF_RADIO->TASKS_DISABLE = 1;
+
+	RFD1.state = NRF52_STATE_IDLE;
 
     // Clear PPI
     NRF_PPI->CHENCLR = (1 << NRF52_RADIO_PPI_TIMER_START) |
                        (1 << NRF52_RADIO_PPI_TIMER_STOP)  |
-                       (1 << NRF52_RADIO_PPI_RX_TIMEOUT);
+                       (1 << NRF52_RADIO_PPI_RX_TIMEOUT)  |
+					   (1 << NRF52_RADIO_PPI_TX_START);
 
     reset_fifo();
 
     memset(rx_pipe_info, 0, sizeof(rx_pipe_info));
     memset(pids, 0, sizeof(pids));
-
-    // Disable the radio
-    NRF_RADIO->SHORTS = RADIO_SHORTS_READY_START_Enabled << RADIO_SHORTS_READY_START_Pos |
-                        RADIO_SHORTS_END_DISABLE_Enabled << RADIO_SHORTS_END_DISABLE_Pos;
-
-    nvicDisableVector(RADIO_IRQn);
 
     // Terminate interrupts handle thread
     chThdTerminate(rfIntThread_p);

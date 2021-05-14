@@ -59,7 +59,21 @@ OSAL_IRQ_HANDLER(Vector58) {
   OSAL_IRQ_PROLOGUE();
 
 #if (HAL_USE_ICU && NRF5_ICU_USE_GPIOTE_PPI)
+#if NRF5_ICU_USE_TIMER0
   icu_lld_serve_gpiote_interrupt(&ICUD1);
+#endif
+#if NRF5_ICU_USE_TIMER1
+  icu_lld_serve_gpiote_interrupt(&ICUD2);
+#endif
+#if NRF5_ICU_USE_TIMER2
+  icu_lld_serve_gpiote_interrupt(&ICUD3);
+#endif
+#if NRF5_ICU_USE_TIMER3
+  icu_lld_serve_gpiote_interrupt(&ICUD4);
+#endif
+#if NRF5_ICU_USE_TIMER4
+  icu_lld_serve_gpiote_interrupt(&ICUD5);
+#endif
 #endif
 
 #if (HAL_USE_PAL && (PAL_USE_WAIT || PAL_USE_CALLBACKS))

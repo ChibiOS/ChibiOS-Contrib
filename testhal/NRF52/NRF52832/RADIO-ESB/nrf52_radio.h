@@ -36,8 +36,8 @@
 #define NRF52_RADIO_USE_TIMER4            	FALSE               /**< TIMER4 will be used by the module. */
 
 #define NRF52_RADIO_IRQ_PRIORITY			3                   /**< RADIO interrupt priority. */
-#define NRF52_RADIO_INTTHD_PRIORITY         (NORMALPRIO+2)      /**< Interrupts handle thread priority. */
-#define NRF52_RADIO_EVTTHD_PRIORITY         (NORMALPRIO+1)      /**< Events handle thread priority */
+#define NRF52_RADIO_INTTHD_PRIORITY         (NORMALPRIO+4)      /**< Interrupts handle thread priority. */
+#define NRF52_RADIO_EVTTHD_PRIORITY         (NORMALPRIO+3)      /**< Events handle thread priority */
 
 #define NRF52_RADIO_PPI_TIMER_START         10                  /**< The PPI channel used for timer start. */
 #define NRF52_RADIO_PPI_TIMER_STOP          11                  /**< The PPI channel used for timer stop. */

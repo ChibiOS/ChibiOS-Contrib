@@ -28,7 +28,7 @@
  * @brief   Number of ICU channels per ICU driver.
  */
 #define ICU_CHANNELS                            2 /* max channels */
-#define ICU_WAIT_TIMEOUT						( 0xFFFF ) /* first edge wait timeout */
+#define ICU_WAIT_TIMEOUT						( 0xFFFFFFFF ) /* first edge wait timeout */
 
 #define ICU_FREQUENCY_16MHZ  16000000 /** @brief   16MHz */
 #define ICU_FREQUENCY_8MHZ    8000000 /** @brief    8MHz */
