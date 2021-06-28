@@ -32,3 +32,8 @@ https://github.com/alexclewontin
 
 Ein Terakawa aka a_p_u_r_o
 https://github.com/elfmimi
+
+Stefan Kerkmann aka KarlK90
+https://github.com/KarlK90
+RISC-V ECLIC port
+GD32VF103 Platform port

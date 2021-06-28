@@ -18,6 +18,5 @@ PLATFORMINC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/ports/MIMXRT1062/LLD/USBHSv1 \
                        ${CHIBIOS_CONTRIB}/ext/nxp-middleware-usb/include \
                        ${CHIBIOS_CONTRIB}/ext/nxp-middleware-usb/device \
                        ${CHIBIOS_CONTRIB}/ext/nxp-middleware-usb/phy \
-                       ${CHIBIOS_CONTRIB}/ext/nxp-middleware-usb/output/npw/device_config/ehci \
                        ${CHIBIOS_CONTRIB}/ext/mcux-sdk/components/osa \
                        ${CHIBIOS_CONTRIB}/ext/mcux-sdk/components/lists
