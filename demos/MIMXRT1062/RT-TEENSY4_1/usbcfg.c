@@ -316,13 +316,28 @@ static void sof_handler(USBDriver *usbp) {
   osalSysUnlockFromISR();
 }
 
+extern semaphore_t scls;
+
+bool requests_hook(USBDriver *usbp) {
+  const bool result = sduRequestsHook(usbp);
+
+  if ((usbp->setup[0] & USB_RTYPE_TYPE_MASK) == USB_RTYPE_TYPE_CLASS &&
+      usbp->setup[1] == CDC_SET_CONTROL_LINE_STATE) {
+    osalSysLockFromISR();
+    chSemResetI(&scls, 0);
+    osalSysUnlockFromISR();
+  }
+
+  return result;
+}
+
 /*
  * USB driver configuration.
  */
 const USBConfig usbcfg = {
   usb_event,
   get_descriptor,
-  sduRequestsHook,
+  requests_hook,
   sof_handler
 };
 

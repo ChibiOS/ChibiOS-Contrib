@@ -15,6 +15,7 @@
 */
 
 #include "ch.h"
+#include "chthreads.h"
 #include "hal.h"
 #include "ch_test.h"
 #include "rt_test_root.h"
@@ -92,6 +93,8 @@ void printf_debug(const char *format, ...)
   va_end(args);
 }
 
+semaphore_t scls;
+
 /*
  * Application entry point.
  */
@@ -107,6 +110,8 @@ int main(void) {
   halInit();
   chSysInit();
 
+  chSemObjectInit(&scls, 0);
+  
   /*
    * Activates MYSERIAL with 115200 baud.
    */
@@ -152,6 +157,11 @@ int main(void) {
 
   while (true) {
     if (SDU1.config->usbp->state == USB_ACTIVE) {
+      // Wait until sduRequestsHook CDC_SET_CONTROL_LINE_STATE happens, then
+      // sleep for a certain time to give the app a chance to configure flags.
+      chSemWait(&scls);
+      chThdSleepMilliseconds(100);
+
       chprintf((BaseSequentialStream*)MYSERIAL, "Starting serial-over-USB CDC Shell\r\n");
       thread_t *shelltp = chThdCreateFromHeap(NULL, SHELL_WA_SIZE, "shell", NORMALPRIO + 1, shellThread, (void *)&shell_cfg1);
       chThdWait(shelltp); /* Waiting termination.             */
