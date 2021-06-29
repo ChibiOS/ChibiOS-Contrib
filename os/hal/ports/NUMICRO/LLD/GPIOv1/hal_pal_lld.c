@@ -85,6 +85,12 @@ OSAL_IRQ_HANDLER(NUC123_GPIOCDF_HANDLER){
  *
  * @notapi
  */
+#if defined(PAL_NEW_INIT)
+void _pal_lld_init(void) {
+  /* Set DeBounce conditions */
+  GPIO->DBNCECON = 0x04u;
+}
+#else
 void _pal_lld_init(const PALConfig *config) {
 
   /* (void)config; */
@@ -143,15 +149,8 @@ void _pal_lld_init(const PALConfig *config) {
 
   /* Set DeBounce conditions */
   GPIO->DBNCECON = 0x04u;
-
-  /* Enable External Crystal Oscillator pins */
-  SYS->GPF_MFP |= SYS_GPF_MFP_PF0_XT1_OUT | SYS_GPF_MFP_PF1_XT1_IN;
-
-/*   SYS->GPD_MFP |= SYS_GPD_MFP_PD10_CLKO; */
-
-  /* Enable UART1 data pins */
-  SYS->GPB_MFP |= SYS_GPB_MFP_PB1_UART0_TXD | SYS_GPB_MFP_PB0_UART0_RXD;
 }
+#endif
 
 /**
  * @brief   Pads mode setup.
@@ -171,23 +170,24 @@ void _pal_lld_setgroupmode(ioportid_t port,
 
   uint32_t nucMode = 0;
 
-  if (mode == PAL_MODE_INPUT || mode == PAL_MODE_INPUT_PULLUP)
+  if (mode == PAL_MODE_INPUT)
       nucMode = GPIO_PMD_INPUT;
   else if (mode == PAL_MODE_OUTPUT_OPENDRAIN)
       nucMode = GPIO_PMD_OPEN_DRAIN;
   else if (mode == PAL_MODE_OUTPUT_PUSHPULL)
       nucMode = GPIO_PMD_OUTPUT;
-  else
+  else /* mode == PAL_MODE_INPUT_PULLUP */
       nucMode = GPIO_PMD_QUASI;
 
-  /*  GPIO_SetMode(port, mask, nucMode); */
   for (uint32_t i = 0; i < PAL_IOPORTS_WIDTH; i++) {
-  /*  for (uint32_t i = 0; i < GPIO_PINSPERPORT_MAX; i++) { */
     if (mask & (1 << i)) {
       port->PMD = (port->PMD & ~(0x03ul << (i << 1))) | (nucMode << (i << 1));
     }
   }
 
+  if (nucMode == GPIO_PMD_QUASI) {
+    port->DOUT |= (uint32_t)(uint16_t)mask;
+  }
 }
 
 #endif /* HAL_USE_PAL == TRUE */
