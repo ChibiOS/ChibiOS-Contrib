@@ -173,14 +173,18 @@
  * @brief   Enables or disables PLL
  */
 #if !defined(NUC123_PLL_ENABLED) || defined(__DOXYGEN__)
-#define NUC123_PLL_ENABLED FALSE
+#define NUC123_PLL_ENABLED TRUE
 #endif
 
 /**
  * @brief   Core clock speed.
  */
 #if !defined(NUC123_HCLK) || defined(__DOXYGEN__)
+#if NUC123_PLL_ENABLED
 #define NUC123_HCLK 72000000UL
+#else
+#define NUC123_HCLK __HIRC
+#endif
 #endif
 
 /**

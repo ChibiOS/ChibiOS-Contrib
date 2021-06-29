@@ -85,7 +85,7 @@ void SystemCoreClockUpdate(void) /* Get Core Clock Frequency      */
     if (PllReg & 0x00080000ul) {
       pllFIN = __HIRC; /* Use HXT for PLL clock */
     } else {
-      pllFIN = __HXT; /* Use HXT for PLL clock */
+      pllFIN = NUC123_HSECLK; /* Use HXT for PLL clock */
     }
 
     if (PllReg & CLK_PLLCON_BP_Msk) {
@@ -114,7 +114,7 @@ void SystemCoreClockUpdate(void) /* Get Core Clock Frequency      */
   /* Pick Clock Source */
   switch (CLK->CLKSEL0 & CLK_CLKSEL0_HCLK_S_Msk) {
   case 0: /* External HF Xtal */
-    clkFreq = __HXT;
+    clkFreq = NUC123_HSECLK;
     break;
   case 1: /* PLL clock / 2 */
     clkFreq = PllClock >> 1;
@@ -157,7 +157,7 @@ static inline uint32_t get_pll_clock_freq(void)
     if (PllReg & NUC123_PLLSRC_HSI) {
       pllFIN = __HIRC; /* Use HXT for PLL clock */
     } else {
-      pllFIN = __HXT; /* Use HXT for PLL clock */
+      pllFIN = NUC123_HSECLK; /* Use HXT for PLL clock */
     }
 
     if (PllReg & CLK_PLLCON_BP_Msk) {
@@ -245,6 +245,7 @@ static void set_HCLK(uint32_t clkSource, uint32_t clkDivider)
   }
 }
 
+#if NUC123_PLL_ENABLED
 static uint32_t enable_pll(uint32_t pllSrc, uint32_t pllFreq)
 {
   /* Disable PLL first to avoid unstable when setting PLL. */
@@ -325,7 +326,7 @@ static uint32_t enable_pll(uint32_t pllSrc, uint32_t pllFreq)
   switch (pllSrc) {
   case NUC123_PLLSRC_HSE:
     NR      = 2;
-    clkCalc = __HXT;
+    clkCalc = NUC123_HSECLK;
     break;
   case NUC123_PLLSRC_HSI:
     NR      = 4;
@@ -416,7 +417,7 @@ static uint32_t set_core_clock(uint32_t clkCore)
 
   /* Is HXT stable ? */
   if (CLK->CLKSTATUS & CLK_CLKSTATUS_XTL12M_STB_Msk) {
-    /* Use __HXT as PLL source */
+    /* Use NUC123_HSECLK as PLL source */
     clkCore = enable_pll(NUC123_PLLSRC_HSE, (2 * clkCore));
   } else {
     /* Use __HIRC as PLL source */
@@ -437,6 +438,7 @@ static uint32_t set_core_clock(uint32_t clkCore)
   /* Return actual HCLK frequency is PLL frequency divide 2 */
   return (clkCore >> 1);
 }
+#endif
 
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
@@ -473,12 +475,11 @@ void NUC123_clock_init(void)
   set_HCLK(NUC123_HCLKSRC_HSI, CLK_CLKDIV_HCLK(1));
 
 #if NUC123_HSE_ENABLED
-
+  /* SYS->GPF_MFP |= (SYS_GPF_MFP_PF0_XT1_OUT | SYS_GPF_MFP_PF1_XT1_IN); */
   SYS->GPF_MFP |= (SYS_GPF_MFP_GPF_MFP0_Msk | SYS_GPF_MFP_GPF_MFP1_Msk);
 
   CLK->PWRCON |= CLK_PWRCON_XTL12M_EN_Msk;
   wait_for_clock_ready(CLK_CLKSTATUS_XTL12M_STB_Msk);
-
 #endif /* NUC123_HSE_ENABLED */
 
 #if NUC123_LSI_ENABLED
@@ -486,8 +487,9 @@ void NUC123_clock_init(void)
   wait_for_clock_ready(CLK_CLKSTATUS_IRC10K_STB_Msk);
 #endif /* NUC123_LSI_ENABLED */
 
+#if NUC123_PLL_ENABLED
   set_core_clock(NUC123_HCLK);
-  SystemCoreClock = NUC123_HCLK;
+#endif /* NUC123_PLL_ENABLED */
 
   LOCKREG();
 }
