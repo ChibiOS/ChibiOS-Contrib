@@ -30,6 +30,10 @@ MEMORY
   flash1   : org = 0x00000400, len = 0x10
   flash2   : org = 0x00000410, len = 512k - 0x410
   flash3   : org = 0x10000000, len = 128k   /* FlexNVM */
+  flash4   : org = 0x00000000, len = 0
+  flash5   : org = 0x00000000, len = 0
+  flash6   : org = 0x00000000, len = 0
+  flash7   : org = 0x00000000, len = 0
   ram0     : org = 0x1FFF0000, len = 64k    /* SRAM_L (code RAM) */
   ram1     : org = 0x20000000, len = 192k   /* SRAM_U (data RAM) */
   ram2     : org = 0x14000000, len = 4k     /* FlexRAM */
