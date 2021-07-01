@@ -270,6 +270,10 @@ uint32_t crc_lld_calc(CRCDriver *crcp, size_t n, const void *buf) {
    * you are writing more than a byte into the DR register.
    */
   if (crcp->config->reflect_data != 0) {
+#if STM32_CRC_PROGRAMMABLE == TRUE
+    /* set default bit reversal done by word */
+    crcp->crc->CR |= CRC_CR_REV_IN_1 | CRC_CR_REV_IN_0;
+#endif
     while(n > 3) {
       _crc_lld_calc_word(crcp, *(uint32_t*)buf);
       buf+=4;
@@ -287,11 +291,18 @@ uint32_t crc_lld_calc(CRCDriver *crcp, size_t n, const void *buf) {
    * you are writing more than a byte into the DR register.
    */
   if (crcp->config->reflect_data != 0) {
+    /* use bit reversal done by half-word if we are going to write tailing halfword */
+    crcp->crc->CR = (crcp->crc->CR & ~CRC_CR_REV_IN_Msk) | CRC_CR_REV_IN_1;
     while(n > 1) {
       _crc_lld_calc_halfword(crcp, *(uint16_t*)buf);
       buf+=2;
       n-=2;
     }
+  }
+
+  /* use bit reversal done by byte if we are going to write tailing byte */
+  if (crcp->config->reflect_data != 0) {
+    crcp->crc->CR = (crcp->crc->CR & ~CRC_CR_REV_IN_Msk) | CRC_CR_REV_IN_0;
   }
 
   while(n > 0) {
