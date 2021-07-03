@@ -157,9 +157,9 @@ void efl_lld_stop(EFlashDriver *eflp) {
  * @notapi
  */
 const flash_descriptor_t *efl_lld_get_descriptor(void *instance) {
-  EFlashDriver *devp = (EFlashDriver *)instance;
+  (void)instance;
 
-  return devp->descriptor;
+  return &flash_descriptor;
 }
 
 /**
