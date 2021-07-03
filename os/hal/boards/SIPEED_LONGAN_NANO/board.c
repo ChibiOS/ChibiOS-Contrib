@@ -44,4 +44,6 @@ void __early_init(void) {
  * Board-specific initialization code.
  */
 void boardInit(void) {
+    /* Free B4 pin by disabling JTAG NJTRST. */
+    AFIO->PCF0 |= AFIO_PCF0_SWJ_CFG_NOJNTRST;
 }
