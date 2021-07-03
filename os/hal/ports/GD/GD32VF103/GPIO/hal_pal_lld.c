@@ -215,7 +215,7 @@ void _pal_lld_enablepadevent(ioportid_t port,
   portidx = (((uint32_t)port - (uint32_t)GPIOA) >> 10U) & 0xFU;
 
   /* Port selection in SYSCFG.*/
-  AFIO->EXTICR[cridx] = (AFIO->EXTICR[cridx] & crmask) | (portidx << croff);
+  AFIO->EXTISS[cridx] = (AFIO->EXTISS[cridx] & crmask) | (portidx << croff);
 
   /* Programming edge registers.*/
   if (mode & PAL_EVENT_MODE_RISING_EDGE)
@@ -262,7 +262,7 @@ void _pal_lld_disablepadevent(ioportid_t port, iopadid_t pad) {
        0x400 intervals in memory space. So far this is true for all devices.*/
     portidx = (((uint32_t)port - (uint32_t)GPIOA) >> 10U) & 0xFU;
 
-    crport = (AFIO->EXTICR[cridx] >> croff) & 0xFU;
+    crport = (AFIO->EXTISS[cridx] >> croff) & 0xFU;
 
     osalDbgAssert(crport == portidx, "channel mapped on different port");
 
