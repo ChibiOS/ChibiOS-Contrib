@@ -327,11 +327,11 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t EVCR;
-  __IO uint32_t MAPR;
-  __IO uint32_t EXTICR[4];
+  __IO uint32_t EC;
+  __IO uint32_t PCF0;
+  __IO uint32_t EXTISS[4];
   uint32_t RESERVED0;
-  __IO uint32_t MAPR2;  
+  __IO uint32_t PCF1;  
 } AFIO_TypeDef;
 /** 
   * @brief Inter Integrated Circuit Interface
