@@ -1,5 +1,5 @@
 /*
-    ChibiOS - 2015 Stephen Caudle
+    Copyright (C) 2015 Stephen Caudle
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,6 +12,8 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+    @andru added NRF52 support
 */
 
 /**
@@ -39,7 +41,7 @@
 
 /**
  * @brief   GPTD1 driver identifier.
- * @note    The driver GPTD1 allocates the complex timer TIM1 when enabled.
+ * @note    The driver GPTD1 allocates the complex timer TIM0 when enabled.
  */
 #if NRF5_GPT_USE_TIMER0 || defined(__DOXYGEN__)
 GPTDriver GPTD1;
@@ -47,7 +49,7 @@ GPTDriver GPTD1;
 
 /**
  * @brief   GPTD2 driver identifier.
- * @note    The driver GPTD2 allocates the timer TIM2 when enabled.
+ * @note    The driver GPTD2 allocates the timer TIM1 when enabled.
  */
 #if NRF5_GPT_USE_TIMER1 || defined(__DOXYGEN__)
 GPTDriver GPTD2;
@@ -55,10 +57,28 @@ GPTDriver GPTD2;
 
 /**
  * @brief   GPTD3 driver identifier.
- * @note    The driver GPTD3 allocates the timer TIM3 when enabled.
+ * @note    The driver GPTD3 allocates the timer TIM2 when enabled.
  */
 #if NRF5_GPT_USE_TIMER2 || defined(__DOXYGEN__)
 GPTDriver GPTD3;
+#endif
+
+#if NRF_SERIES == 52
+/**
+ * @brief   GPTD4 driver identifier.
+ * @note    The driver GPTD4 allocates the timer TIM3 when enabled.
+ */
+#if NRF5_GPT_USE_TIMER3 || defined(__DOXYGEN__)
+GPTDriver GPTD4;
+#endif
+
+/**
+ * @brief   GPTD5 driver identifier.
+ * @note    The driver GPTD5 allocates the timer TIM4 when enabled.
+ */
+#if NRF5_GPT_USE_TIMER4 || defined(__DOXYGEN__)
+GPTDriver GPTD5;
+#endif
 #endif
 
 /*===========================================================================*/
@@ -69,7 +89,7 @@ GPTDriver GPTD3;
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-static uint8_t prescaler(uint16_t freq)
+static uint8_t prescaler(uint32_t freq)
 {
   uint8_t i;
   static const gptfreq_t frequencies[] = {
@@ -107,7 +127,8 @@ static void gpt_lld_serve_interrupt(GPTDriver *gptp) {
 #endif
   if (gptp->state == GPT_ONESHOT)
     gptp->state = GPT_READY;                 /* Back in GPT_READY state.     */
-  gptp->config->callback(gptp);
+  if (gptp->config->callback != NULL)
+    gptp->config->callback(gptp);
 }
 
 /*===========================================================================*/
@@ -162,6 +183,40 @@ OSAL_IRQ_HANDLER(Vector68) {
 }
 #endif /* NRF5_GPT_USE_TIMER2 */
 
+#if NRF_SERIES == 52
+#if NRF5_GPT_USE_TIMER3
+/**
+ * @brief   TIMER3 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(VectorA8) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  gpt_lld_serve_interrupt(&GPTD4);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* NRF5_GPT_USE_TIMER3 */
+
+#if NRF5_GPT_USE_TIMER4
+/**
+ * @brief   TIMER4 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(VectorAC) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  gpt_lld_serve_interrupt(&GPTD5);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* NRF5_GPT_USE_TIMER4 */
+#endif
+
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -189,6 +244,20 @@ void gpt_lld_init(void) {
   /* Driver initialization.*/
   GPTD3.tim = NRF_TIMER2;
   gptObjectInit(&GPTD3);
+#endif
+
+#if NRF_SERIES == 52
+#if NRF5_GPT_USE_TIMER3
+  /* Driver initialization.*/
+  GPTD4.tim = NRF_TIMER3;
+  gptObjectInit(&GPTD4);
+#endif
+
+#if NRF5_GPT_USE_TIMER4
+  /* Driver initialization.*/
+  GPTD5.tim = NRF_TIMER4;
+  gptObjectInit(&GPTD5);
+#endif
 #endif
 }
 
@@ -220,6 +289,16 @@ void gpt_lld_start(GPTDriver *gptp) {
     if (&GPTD3 == gptp)
       nvicEnableVector(TIMER2_IRQn, NRF5_GPT_TIMER2_IRQ_PRIORITY);
 #endif
+#if NRF_SERIES == 52
+#if NRF5_GPT_USE_TIMER3
+    if (&GPTD4 == gptp)
+      nvicEnableVector(TIMER3_IRQn, NRF5_GPT_TIMER3_IRQ_PRIORITY);
+#endif
+#if NRF5_GPT_USE_TIMER4
+    if (&GPTD5 == gptp)
+      nvicEnableVector(TIMER4_IRQn, NRF5_GPT_TIMER4_IRQ_PRIORITY);
+#endif
+#endif
   }
 
   /* Prescaler value calculation.*/
@@ -238,7 +317,15 @@ void gpt_lld_start(GPTDriver *gptp) {
       tim->BITMODE = TIMER_BITMODE_BITMODE_16Bit << TIMER_BITMODE_BITMODE_Pos;
       break;
 
-#if NRF5_GPT_USE_TIMER0
+#if (NRF_SERIES == 51) && NRF5_GPT_USE_TIMER0
+    case 24:
+      tim->BITMODE = TIMER_BITMODE_BITMODE_24Bit << TIMER_BITMODE_BITMODE_Pos;
+      break;
+
+    case 32:
+      tim->BITMODE = TIMER_BITMODE_BITMODE_32Bit << TIMER_BITMODE_BITMODE_Pos;
+      break;
+#else
     case 24:
       tim->BITMODE = TIMER_BITMODE_BITMODE_24Bit << TIMER_BITMODE_BITMODE_Pos;
       break;
@@ -264,7 +351,7 @@ void gpt_lld_start(GPTDriver *gptp) {
 void gpt_lld_stop(GPTDriver *gptp) {
 
   if (gptp->state == GPT_READY) {
-    gptp->tim->TASKS_SHUTDOWN = 1;
+    gptp->tim->TASKS_STOP = 1;
 
 #if NRF5_GPT_USE_TIMER0
     if (&GPTD1 == gptp)
@@ -277,6 +364,16 @@ void gpt_lld_stop(GPTDriver *gptp) {
 #if NRF5_GPT_USE_TIMER2
     if (&GPTD3 == gptp)
       nvicDisableVector(TIMER2_IRQn);
+#endif
+#if NRF_SERIES == 52
+#if NRF5_GPT_USE_TIMER3
+    if (&GPTD4 == gptp)
+      nvicDisableVector(TIMER3_IRQn);
+#endif
+#if NRF5_GPT_USE_TIMER4
+    if (&GPTD5 == gptp)
+      nvicDisableVector(TIMER4_IRQn);
+#endif
 #endif
     gptp->tim->INTENCLR = TIMER_INTENSET_COMPARE0_Msk << gptp->cc_int;
   }

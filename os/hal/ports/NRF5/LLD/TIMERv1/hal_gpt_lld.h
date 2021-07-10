@@ -12,6 +12,8 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+    @andru added NRF52 support
 */
 
 /**
@@ -66,6 +68,26 @@
 #define NRF5_GPT_USE_TIMER2                  FALSE
 #endif
 
+#if NRF_SERIES == 52
+/**
+ * @brief   GPTD4 driver enable switch.
+ * @details If set to @p TRUE the support for GPTD4 is included.
+ * @note    The default is @p TRUE.
+ */
+#if !defined(NRF5_GPT_USE_TIMER3) || defined(__DOXYGEN__)
+#define NRF5_GPT_USE_TIMER3                  FALSE
+#endif
+
+/**
+ * @brief   GPTD5 driver enable switch.
+ * @details If set to @p TRUE the support for GPTD5 is included.
+ * @note    The default is @p TRUE.
+ */
+#if !defined(NRF5_GPT_USE_TIMER4) || defined(__DOXYGEN__)
+#define NRF5_GPT_USE_TIMER4                  FALSE
+#endif
+#endif
+
 /**
  * @brief   GPTD1 interrupt priority level setting.
  */
@@ -88,13 +110,39 @@
 #endif
 /** @} */
 
+#if NRF_SERIES == 52
+/**
+ * @brief   GPTD4 interrupt priority level setting.
+ */
+#if !defined(NRF5_GPT_TIMER3_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_GPT_TIMER3_IRQ_PRIORITY         3
+#endif
+/** @} */
+
+/**
+ * @brief   GPTD5 interrupt priority level setting.
+ */
+#if !defined(NRF5_GPT_TIMER4_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define NRF5_GPT_TIMER4_IRQ_PRIORITY         3
+#endif
+/** @} */
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
 
+#if NRF_SERIES == 52
+#if !NRF5_GPT_USE_TIMER0 && !NRF5_GPT_USE_TIMER1 &&                         \
+    !NRF5_GPT_USE_TIMER2 && !NRF5_GPT_USE_TIMER3 &&                         \
+	!NRF5_GPT_USE_TIMER4
+#error "GPT driver activated but no TIMER peripheral assigned"
+#endif
+#else
 #if !NRF5_GPT_USE_TIMER0 && !NRF5_GPT_USE_TIMER1 &&                         \
     !NRF5_GPT_USE_TIMER2
 #error "GPT driver activated but no TIMER peripheral assigned"
+#endif
 #endif
 
 #if NRF5_GPT_USE_TIMER0 &&                                                   \
@@ -110,6 +158,18 @@
 #if NRF5_GPT_USE_TIMER2 &&                                                   \
     !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_GPT_TIMER2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to TIMER2"
+#endif
+
+#if NRF_SERIES == 52
+#if NRF5_GPT_USE_TIMER3 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_GPT_TIMER3_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to TIMER3"
+#endif
+
+#if NRF5_GPT_USE_TIMER4 &&                                                   \
+    !OSAL_IRQ_IS_VALID_PRIORITY(NRF5_GPT_TIMER4_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to TIMER4"
+#endif
 #endif
 
 /*===========================================================================*/
@@ -159,7 +219,6 @@ typedef struct {
   /**
    * @brief The timer resolution in bits (8/16/24/32)
    * @note  The default value of this field is 16 bits
-   * @note  The 24 and 32 bit modes are only valid for TIMER0
    */
   uint8_t                  resolution;
 } GPTConfig;
@@ -241,6 +300,16 @@ extern GPTDriver GPTD2;
 
 #if NRF5_GPT_USE_TIMER2 && !defined(__DOXYGEN__)
 extern GPTDriver GPTD3;
+#endif
+
+#if NRF_SERIES == 52
+#if NRF5_GPT_USE_TIMER3 && !defined(__DOXYGEN__)
+extern GPTDriver GPTD4;
+#endif
+
+#if NRF5_GPT_USE_TIMER4 && !defined(__DOXYGEN__)
+extern GPTDriver GPTD5;
+#endif
 #endif
 
 #ifdef __cplusplus
