@@ -66,10 +66,16 @@ static void nrf52_flash_lock(void *instance) {
   devp->flash->CONFIG = (NVMC_CONFIG_WEN_Ren << NVMC_CONFIG_WEN_Pos) & NVMC_CONFIG_WEN_Msk;
 }
 
-static void nrf52_flash_unlock(void *instance) {
+static void nrf52_flash_write_unlock(void *instance) {
   EFlashDriver *devp = (EFlashDriver *)instance;
 
   devp->flash->CONFIG = (NVMC_CONFIG_WEN_Wen << NVMC_CONFIG_WEN_Pos) & NVMC_CONFIG_WEN_Msk;
+}
+
+static void nrf52_flash_erase_unlock(void *instance) {
+  EFlashDriver *devp = (EFlashDriver *)instance;
+
+  devp->flash->CONFIG = (NVMC_CONFIG_WEN_Een << NVMC_CONFIG_WEN_Pos) & NVMC_CONFIG_WEN_Msk;
 }
 
 static flash_error_t nrf52_flash_wait_busy(EFlashDriver *devp) {
@@ -87,15 +93,9 @@ static flash_error_t nrf52_flash_program_word(EFlashDriver *devp,
                                                 uint32_t wdata) {
   nrf52_flash_wait_busy(devp);
 
-  nrf52_flash_unlock(devp);
-
-  nrf52_flash_wait_busy(devp);
-
   *(volatile uint32_t*)address = wdata;
 
   nrf52_flash_wait_busy(devp);
-
-  nrf52_flash_lock(devp);
 
   if( *(volatile uint32_t*)address != wdata ) {
     return FLASH_ERROR_PROGRAM;
@@ -250,7 +250,7 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
 
   devp->state = FLASH_PGM;
 
-  nrf52_flash_unlock(devp);
+  nrf52_flash_write_unlock(devp);
 
   while(n > 3) {
     wdata = (*(uint32_t*)pp);
@@ -316,7 +316,8 @@ flash_error_t efl_lld_start_erase_all(void *instance) {
   devp->state = FLASH_ERASE;
 
   nrf52_flash_wait_busy(devp);
-  nrf52_flash_unlock(devp);
+
+  nrf52_flash_erase_unlock(devp);
 
   nrf52_flash_wait_busy(devp);
 
@@ -361,7 +362,8 @@ flash_error_t efl_lld_start_erase_sector(void *instance,
   devp->state = FLASH_ERASE;
 
   nrf52_flash_wait_busy(devp);
-  nrf52_flash_unlock(devp);
+
+  nrf52_flash_erase_unlock(devp);
 
   nrf52_flash_wait_busy(devp);
 
