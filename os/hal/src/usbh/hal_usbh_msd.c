@@ -205,7 +205,7 @@ static void _msd_unload(usbh_baseclassdriver_t *drv) {
 /*===========================================================================*/
 
 /* USB Bulk Only Transport SCSI Command block wrapper */
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint32_t dCBWSignature;
 	uint32_t dCBWTag;
 	uint32_t dCBWDataTransferLength;
@@ -219,7 +219,7 @@ typedef PACKED_STRUCT {
 #define MSD_CBWFLAGS_H2D						0x00
 
 /* USB Bulk Only Transport SCSI Command status wrapper */
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint32_t dCSWSignature;
 	uint32_t dCSWTag;
 	uint32_t dCSWDataResidue;
@@ -405,7 +405,7 @@ static msd_bot_result_t _msd_bot_transaction(msd_transaction_t *tran, USBHMassSt
 
 /* Request sense */
 #define SCSI_CMD_REQUEST_SENSE 					0x03
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t byte[18];
 } scsi_sense_response_t;
 
@@ -439,7 +439,7 @@ typedef PACKED_STRUCT {
 
 /* Inquiry */
 #define SCSI_CMD_INQUIRY 						0x12
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t peripheral;
 	uint8_t removable;
 	uint8_t version;
@@ -455,14 +455,14 @@ typedef PACKED_STRUCT {
 
 /* Read Capacity 10 */
 #define SCSI_CMD_READ_CAPACITY_10				0x25
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint32_t last_block_addr;
 	uint32_t block_size;
 } scsi_readcapacity10_response_t;
 
 /* Start/Stop Unit */
 #define SCSI_CMD_START_STOP_UNIT				0x1B
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t op_code;
 	uint8_t lun_immed;
 	uint8_t res1;
