@@ -178,7 +178,7 @@ typedef enum {
 } usbh_uvc_ctrl_vs_interface_controls_t;
 
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t bLength;
 	uint8_t bDescriptorType;
 	uint8_t bDescriptorSubType;
@@ -192,7 +192,7 @@ typedef PACKED_STRUCT {
 	uint8_t bCopyProtect;
 } usbh_uvc_format_mjpeg_t;
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint8_t  bDescriptorSubType;
@@ -209,7 +209,7 @@ typedef PACKED_STRUCT {
 } usbh_uvc_frame_mjpeg_t;
 
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t bLength;
 	uint8_t bDescriptorType;
 	uint8_t bDescriptorSubType;
@@ -225,7 +225,7 @@ typedef PACKED_STRUCT {
 	uint32_t dwFrameInterval[0];
 } usbh_uvc_frame_uncompressed_t;
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint8_t  bDescriptorSubType;
@@ -240,7 +240,7 @@ typedef PACKED_STRUCT {
 	uint8_t  bCopyProtect;
 } usbh_uvc_format_uncompressed;
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
     uint16_t bmHint;
     uint8_t bFormatIndex;
     uint8_t bFrameIndex;
@@ -267,14 +267,14 @@ typedef PACKED_STRUCT {
  * 	segment. This behavior is required for frame-based payload formats (e.g., DV) and is optional
  * 	for stream-based payload formats (e.g., MPEG-2 TS). For stream-based formats, support for this
  * 	bit must be indicated via the bmFramingInfofield of the Video Probe and Commitcontrols
- * 	(see section 4.3.1.1, “Video Probe and Commit Controls”).
+ * 	(see section 4.3.1.1, ï¿½Video Probe and Commit Controlsï¿½).
  *
  * D1: End of Frame.
  *  This bit is set if the following payload data marks the end of the current video or still image
  *  frame (for framebased formats), or to indicate the end of a codec-specific segment
  *  (for stream-based formats). This behavior is optional for all payload formats.
  *  For stream-based formats, support for this bit must be indicated via the bmFramingInfofield
- *  of the Video Probe and CommitControls (see section 4.3.1.1, “Video Probe and Commit Controls”).
+ *  of the Video Probe and CommitControls (see section 4.3.1.1, ï¿½Video Probe and Commit Controlsï¿½).
  *
  * D2: Presentation Time.
  *  This bit is set if the dwPresentationTimefield is being sent as part of the header.
