@@ -1738,6 +1738,16 @@ typedef struct {                                    /*!< SN_CT16B1 Structure    
       __IO uint32_t  MR23IE     :  1;               /*!< Enable generating an interrupt when MR23 matches TC                   */
       __IO uint32_t  MR23RST    :  1;               /*!< Enable reset TC when MR23 matches TC                                  */
       __IO uint32_t  MR23STOP   :  1;               /*!< Stop TC and PC and clear CEN bit when MR23 matches TC                 */
+      /* 
+       * WARNING: 
+       * 
+       * This is just a temporary fix to make the code compile. MR24IE doesn't exist in hardware but will always read as 0.
+       * 
+       * As soon as the 268 is split off from the 248 code, the three MR24 lines below must be removed!
+       */ 
+      __IO uint32_t  MR24IE     :  1;               /*!< Enable generating an interrupt when MR2$ matches TC                   */ 
+      __IO uint32_t  MR24RST    :  1;               /*!< Enable reset TC when MR24 matches TC                                  */ 
+      __IO uint32_t  MR24STOP   :  1;               /*!< Stop TC and PC and clear CEN bit when MR24 matches TC                 */ 
     } MCTRL3_b;                                     /*!< BitSize                                                               */
   };
   __IO uint32_t  MR0;                               /*!< Offset:0x20 CT16Bn MR0 Register                                       */
