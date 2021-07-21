@@ -72,9 +72,13 @@ typedef enum {
   CRC_COMPLETE               /* Asynchronous operation complete.           */
 } crcstate_t;
 
+#if STM32_CRC_USE_CRC1 == TRUE
 #include "hal_crc_lld.h"
-#include "crcsw.h" /* Include software LL driver */
+#endif
 
+#if CRCSW_USE_CRC1 == TRUE
+#include "crcsw.h" /* Include software LL driver */
+#endif
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
