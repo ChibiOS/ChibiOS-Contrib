@@ -133,7 +133,7 @@ void adc_lld_start(ADCDriver *adcp) {
   if (adcp->state == ADC_STOP) {
 #if GD32_ADC_USE_ADC0
     if (&ADCD1 == adcp) {
-      adcp->dmastp = dmaStreamAllocI(GD32_DMA_STREAM_ID(1, 1),
+      adcp->dmastp = dmaStreamAllocI(GD32_DMA_STREAM_ID(0, 0),
                                      GD32_ADC_ADC0_IRQ_PRIORITY,
                                      (gd32_dmaisr_t)adc_lld_serve_rx_interrupt,
                                      (void *)adcp);
