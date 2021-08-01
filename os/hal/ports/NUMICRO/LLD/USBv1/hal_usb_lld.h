@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2020 Alex Lewontin
+    Copyright (C) 2021 Ein Terakawa
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -35,7 +36,15 @@
  * @brief   Maximum endpoint address.
  * @details This value does not include the endpoint 0 which is always present.
 */
+#if defined(NUC123xxxANx)
+#if NUC123_USB_WORKAROUND
+#define USB_MAX_ENDPOINTS 3
+#else
 #define USB_MAX_ENDPOINTS 2
+#endif
+#else
+#define USB_MAX_ENDPOINTS 3
+#endif
 
 /**
  * @brief   Status stage handling method.
