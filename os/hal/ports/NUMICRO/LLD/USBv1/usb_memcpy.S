@@ -122,8 +122,8 @@ offset:
   str     r5, [r4, #16]
 
 offset_loop:
-  ldrb r6, [r0, #0]
-  strb r6, [r1, #0]
+  ldrb r6, [r1, #0]
+  strb r6, [r0, #0]
   adds r0, r0, #1
   adds r1, r1, #1
   subs r2, r2, #1
