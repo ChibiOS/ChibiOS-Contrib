@@ -47,7 +47,7 @@ check_alignment:
   bne.n   unaligned
 
 aligned:
-/* r0: src, r1: dest, r2: num, r3: #3 */
+/* r0: dest, r1: src, r2: num, r3: #3 */
   movs    r4, r2
 
   bics    r4, r3
@@ -79,8 +79,8 @@ leftover_check:
   adds    r0, r0, r6
 
 /*
- * r0: src
- * r1: dest
+ * r0: dest
+ * r1: src
  * r2 is 1, 2, or 3 (# of bytes left)
  * r3: #3
  * r4: &USBD
