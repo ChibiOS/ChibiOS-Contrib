@@ -210,7 +210,7 @@ static void usb_serve_out_endpoint(uint32_t epn)
 {
   USBDriver *const usbp = &USBD1;
   uint32_t mxpld = HW_OUT_EP(epn)->MXPLD;
-  uint32_t rxsize_actual = min(mxpld, usbp->epc[epn]->out_state->rxcnt - usbp->epc[epn]->out_state->rxsize);
+  uint32_t rxsize_actual = min(mxpld, usbp->epc[epn]->out_state->rxsize - usbp->epc[epn]->out_state->rxcnt);
 
   usb_memcpy(usbp->epc[epn]->out_state->rxbuf +
                  usbp->epc[epn]->out_state->rxcnt,
