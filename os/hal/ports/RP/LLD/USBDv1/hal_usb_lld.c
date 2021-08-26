@@ -215,7 +215,7 @@ uint32_t usb_prepare_out_ep_buffer(USBDriver *usbp, usbep_t ep, uint8_t buffer_i
       buf_ctrl |= USB_BUFFER_BUFFER0_LAST;
     }
     /* PID */
-    buf_ctrl |= iesp->next_pid ? USB_BUFFER_BUFFER1_DATA_PID : USB_BUFFER_BUFFER0_DATA_PID;
+    buf_ctrl |= iesp->next_pid ? USB_BUFFER_BUFFER0_DATA_PID : 0;
     iesp->next_pid ^= 1U;
 
     buf_ctrl |= USB_BUFFER_BUFFER0_AVAILABLE |
@@ -274,7 +274,7 @@ static uint32_t usb_prepare_in_ep_buffer(USBDriver *usbp, usbep_t ep, uint8_t bu
   buf_len = epcp->in_maxsize < iesp->txsize - iesp->txlast ?
             epcp->in_maxsize : iesp->txsize - iesp->txlast;
 
-  if (buf_len > 0) {
+  if (buf_len >= 0) {
     iesp->txlast += buf_len;
 
     if (iesp->txsize <= iesp->txlast) {
@@ -282,7 +282,7 @@ static uint32_t usb_prepare_in_ep_buffer(USBDriver *usbp, usbep_t ep, uint8_t bu
       buf_ctrl |= USB_BUFFER_BUFFER0_LAST;
     }
     /* PID */
-    buf_ctrl |= iesp->next_pid ? USB_BUFFER_BUFFER1_DATA_PID : USB_BUFFER_BUFFER0_DATA_PID;
+    buf_ctrl |= iesp->next_pid ? USB_BUFFER_BUFFER0_DATA_PID : 0;
     iesp->next_pid ^= 1U;
 
     /* Copy data into hardware buffer */
@@ -342,7 +342,7 @@ static void usb_prepare_in_ep(USBDriver *usbp, usbep_t ep) {
     EP_CTRL(ep).IN = ep_ctrl;
   }
 
-  BUF_CTRL(ep).IN |= buf_ctrl;
+  BUF_CTRL(ep).IN = buf_ctrl;
 }
 
 /**
@@ -429,6 +429,7 @@ OSAL_IRQ_HANDLER(RP_USBCTRL_IRQ_HANDLER) {
     cmd_send(CMD_SETUP, 0);
 #endif
     USB->CLR.SIESTATUS = USB_SIE_STATUS_SETUP_REC;
+    usbp->epc[0]->in_state->next_pid = 1U;
     _usb_isr_invoke_setup_cb(usbp, 0);
 
     reset_ep0(usbp);
