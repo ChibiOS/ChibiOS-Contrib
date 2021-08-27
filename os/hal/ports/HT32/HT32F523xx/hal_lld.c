@@ -54,7 +54,8 @@ void ht32_clock_init(void) {
     // Enable backup domain. Needed for USB
     CKCU->LPCR = CKCU_LPCR_BKISO;
     CKCU->APBCCR1 |= CKCU_APBCCR1_BKPREN;
-    while (PWRCU->BAKTEST != 0x27);
+    while (PWRCU->BAKTEST != 0x27)
+        ;
 
 #if HT32_CKCU_SW == CKCU_GCCR_SW_HSE
     // Enable HSE
