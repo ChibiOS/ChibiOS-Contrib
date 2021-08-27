@@ -50,12 +50,12 @@
 /**
  * @brief   Address ack handling
  */
-#define USB_SET_ADDRESS_ACK_HANDLING        USB_SET_ADDRESS_ACK_HW
+#define USB_SET_ADDRESS_ACK_HANDLING        USB_SET_ADDRESS_ACK_SW
 
 /**
  * @brief   This device requires the address change after the status packet.
  */
-#define USB_SET_ADDRESS_MODE                USB_EARLY_SET_ADDRESS
+#define USB_SET_ADDRESS_MODE                USB_LATE_SET_ADDRESS
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */

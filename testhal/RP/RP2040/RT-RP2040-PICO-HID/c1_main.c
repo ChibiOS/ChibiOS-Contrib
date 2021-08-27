@@ -20,24 +20,49 @@
 #ifdef USB_DEBUG
 
 #include "rp_fifo.h"
-
 #include "chprintf.h"
+#include "chmtx.h"
+
+mutex_t mtx;
 
 uint8_t remained_data = 0;
 
+#define BUFFER_LEN 32
+
+uint32_t buffer[BUFFER_LEN] = {
+  0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U,
+  0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U};
+uint8_t current_buffer_index = 0;
+uint8_t next_buffer_index = 0;
+uint8_t remained_len = 0;
+
 void process_command(uint32_t data) {
-  if (remained_data > 0) {
-    remained_data -= 1;
-    chprintf((BaseSequentialStream *)&SIOD0, "0x%X\r\n", data);
-  } else {
-    uint8_t cmd = (data & 0xFF000000) >> 24;
-    uint8_t length = (data & 0xFF0000) >> 16;
-    if (length > 0) {
-      remained_data = length;
-    }
-    chprintf((BaseSequentialStream *)&SIOD0, "%X\r\n", cmd);
+  //chMtxLock(&mtx);
+
+  buffer[next_buffer_index] = data;
+  next_buffer_index += 1;
+  if (next_buffer_index >= BUFFER_LEN) {
+    next_buffer_index = 0;
   }
+  remained_len += 1;
+
+  //chMtxUnlock(&mtx);
 }
+
+#define CMD_RESET 0x0F
+#define CMD_SETUP 0x01
+#define CMD_READ_SETUP 0x02
+#define CMD_SET_ADDR 0x03
+#define CMD_START_IN 0x04
+#define CMD_START_OUT 0x05
+#define CMD_BUFF_STATUS 0x06
+#define CMD_EP_DONE 0x07
+#define CMD_DATA_ERROR 0x09
+#define CMD_PREP_IN_EP  0x0A
+#define CMD_PREP_OUT_EP 0x0B
+#define CMD_SET_ADDR_HW 0x0C
+#define CMD_EP_NEXT 0x0D
+
 #endif // USB_DEBUG
 
 /**
@@ -56,6 +81,8 @@ void c1_main(void) {
   chSysUnlock();
 
 #ifdef USB_DEBUG
+  chMtxObjectInit(&mtx);
+  //chSemObjectInit(&buff_sem, 0);
   /*
    * Setting up GPIOs.
    */
@@ -77,6 +104,57 @@ void c1_main(void) {
    * sleeping in a loop (re)spawning a shell.
    */
   while (true) {
-    chThdSleepMilliseconds(200);
+#ifdef USB_DEBUG
+    chMtxLock(&mtx);
+    if (remained_len > 0) {
+      const uint32_t data = buffer[current_buffer_index];
+      current_buffer_index += 1;
+      if (current_buffer_index >= BUFFER_LEN) {
+        current_buffer_index = 0;
+      }
+      remained_len -= 1;
+
+      if (remained_data > 0) {
+        remained_data -= 1;
+        chprintf((BaseSequentialStream *)&SIOD0, "0x%X", data);
+        if (remained_data) {
+          chprintf((BaseSequentialStream *)&SIOD0, ", ");
+        } else {
+          chprintf((BaseSequentialStream *)&SIOD0, "\r\n");
+        }
+      } else {
+        uint8_t cmd = (data & 0xFF000000) >> 24;
+        uint8_t length = (data & 0xFF0000) >> 16;
+        if (length > 0) {
+          remained_data = length;
+        }
+        const char *text = NULL;
+        switch (cmd) {
+          case CMD_RESET: text = "Reset\r\n"; break;
+          case CMD_SETUP: text = "Setup req\r\n"; break;
+          case CMD_READ_SETUP: text = "Read setup data: "; break;
+          case CMD_SET_ADDR: text = "Set address: "; break;
+          case CMD_START_IN: text = "Start in: "; break;
+          case CMD_START_OUT: text = "Start out: "; break;
+          case CMD_EP_DONE: text = "Endpoint done: "; break;
+          case CMD_BUFF_STATUS: text = "Buffer status: "; break;
+          case CMD_PREP_IN_EP: text = "Prepare IN endpoint: "; break;
+          case CMD_PREP_OUT_EP: text = "Prepare OUT endpoint: "; break;
+          case CMD_SET_ADDR_HW: text = "Set address to hw: "; break;
+          case CMD_DATA_ERROR: text = "Data error\r\n"; break;
+          default:
+            break;
+        }
+        if (text) {
+          chprintf((BaseSequentialStream *)&SIOD0, text);
+        } else {
+          chprintf((BaseSequentialStream *)&SIOD0, "%X\r\n", cmd);
+        }
+      }
+    }
+    chMtxUnlock(&mtx);
+#else
+    chThdSleepMilliseconds(50);
+#endif // USB_DEBUG
   }
 }

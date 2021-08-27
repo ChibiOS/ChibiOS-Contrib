@@ -17,13 +17,9 @@
 #include "ch.h"
 #include "hal.h"
 
-//#include "chprintf.h"
-
 #include "usbcfg.h"
 
 #define LED_GREEN_PIN  25U
-
-//semaphore_t blinker_sem;
 
 /*
  * Green LED blinker thread, times are in milliseconds.
@@ -34,8 +30,7 @@ static THD_FUNCTION(Thread1, arg) {
   (void)arg;
   chRegSetThreadName("blinker");
   while (true) {
-    //chSemWait(&blinker_sem);
-    systime_t time = USBD1.state == USB_ACTIVE ? 125 : 1000;
+    systime_t time = USBD1.state == USB_ACTIVE ? 250 : 1000;
     chThdSleepMilliseconds(time);
     palToggleLine(LED_GREEN_PIN);
   }
@@ -45,12 +40,6 @@ static THD_FUNCTION(Thread1, arg) {
  * Application entry point.
  */
 int main(void) {
-
-  /*
-   * Shared objects initialization.
-   */
-  //chSemObjectInit(&blinker_sem, 0);
-
   /*
    * System initializations.
    * - HAL initialization, this also initializes the configured device drivers
@@ -61,21 +50,9 @@ int main(void) {
   halInit();
   chSysInit();
 
-/*
-  palSetLineMode(0U, PAL_MODE_ALTERNATE_UART);
-  palSetLineMode(1U, PAL_MODE_ALTERNATE_UART);
-*/
-  /*
-   * Activates the UART0 SIO driver using the default configuration.
-   */
-  /*
-  sioStart(&SIOD0, NULL);
-  sioStartOperation(&SIOD0, NULL);
-*/
   /*
    * Initializes a USB HID driver.
    */
-  
   hidObjectInit(&UHD1);
   hidStart(&UHD1, &usbhidcfg);
 
@@ -84,8 +61,6 @@ int main(void) {
    * Note, a delay is inserted in order to not have to disconnect the cable
    * after a reset.
    */
-  //chprintf((BaseSequentialStream *)&SIOD0, "-- Start usb connection\r\n");
-
   usbDisconnectBus(usbhidcfg.usbp);
   chThdSleepMilliseconds(1000);
   usbStart(usbhidcfg.usbp, &usbcfg);
@@ -101,15 +76,11 @@ int main(void) {
    */
   chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
 
-  //BaseSequentialStream *chp = &SIOD0;
-  //chprintf((BaseSequentialStream *)&SIOD0, "-- Started in c0\r\n");
-
   /*
    * Normal main() thread activity, in this demo it does nothing except
    * sleeping in a loop.
    */
   while (true) {
-/*
     if (usbhidcfg.usbp->state == USB_ACTIVE) {
       uint8_t report;
       size_t n = hidGetReport(0, &report, sizeof(report));
@@ -118,7 +89,6 @@ int main(void) {
       if (n > 0)
         hidSetReport(0, &report, n);
     }
-*/
     chThdSleepMilliseconds(500);
   }
 }
