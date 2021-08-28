@@ -96,7 +96,7 @@ USBDriver USBD1;
  * @note    It is an union because IN and OUT endpoints are never used at the
  *          same time for EP0.
  */
-static union {
+static struct {
   /**
    * @brief   IN EP0 state.
    */
@@ -395,7 +395,7 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
       /* Transfer complete */
       _usb_isr_invoke_in_cb(usbp, ep);
 
-      reset_endpoint(usbp, ep, true);
+      iesp->active = iesp->stalled = false;
     }
   } else {
     /* OUT endpoint */
@@ -421,7 +421,7 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
       /* Transifer complete */
       _usb_isr_invoke_out_cb(usbp, ep);
 
-      reset_endpoint(usbp, ep, false);
+      oesp->active = oesp->stalled = false;
     } else {
       /* Receive remained data */
       usb_prepare_out_ep(usbp, ep);
@@ -505,7 +505,7 @@ OSAL_IRQ_HANDLER(RP_USBCTRL_IRQ_HANDLER) {
     for (uint8_t i = 0; buf_status && i < 32; i++) {
       if (buf_status & bit) {
         /* Clear flag */
-        USB->SET.BUFSTATUS = bit;
+        USB->CLR.BUFSTATUS = bit;
 #ifdef USB_DEBUG
         //cmd_send(CMD_BUFF_STATUS, 1);
         //data_send(((i >> 1U) << 16) | (i & 1U));
@@ -664,7 +664,7 @@ void usb_lld_reset(USBDriver *usbp) {
  */
 void usb_lld_set_address(USBDriver *usbp) {
   /* Set address to hardware here. */
-  USB->DEVADDRCTRL |= USB_ADDR_ENDP0_ADDRESS_Msk & (usbp->address << USB_ADDR_ENDP0_ADDRESS_Pos);
+  USB->DEVADDRCTRL = USB_ADDR_ENDP0_ADDRESS_Msk & (usbp->address << USB_ADDR_ENDP0_ADDRESS_Pos);
 
 #ifdef USB_DEBUG
   cmd_send(CMD_SET_ADDR, 1);
