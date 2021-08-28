@@ -716,10 +716,10 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
     epcp->in_state->hw_buf = (uint8_t*)&USB_DPSRAM->DATA[buf_offset];
     epcp->in_state->buf_size = buf_size;
 
-    EP_CTRL(ep).IN |= USB_EP_EN |
+    EP_CTRL(ep).IN = USB_EP_EN |
                       (epcp->ep_mode << USB_EP_TYPE_Pos) |
-                      buf_offset;
-    BUF_CTRL(ep).IN |= buf_ctrl;
+                      ((uint8_t*)epcp->in_state->hw_buf - (uint8_t*)USB_DPSRAM);
+    BUF_CTRL(ep).IN = buf_ctrl;
   }
 
   if (epcp->out_state) {
@@ -738,10 +738,10 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
     epcp->out_state->hw_buf = (uint8_t*)&USB_DPSRAM->DATA[buf_offset];
     epcp->out_state->buf_size = buf_size;
 
-    EP_CTRL(ep).OUT |= USB_EP_EN |
+    EP_CTRL(ep).OUT = USB_EP_EN |
                        (epcp->ep_mode << USB_EP_TYPE_Pos) |
-                       buf_offset;
-    BUF_CTRL(ep).OUT |= buf_ctrl;
+                       ((uint8_t*)epcp->out_state->hw_buf - (uint8_t*)USB_DPSRAM);
+    BUF_CTRL(ep).OUT = buf_ctrl;
   }
 }
 
