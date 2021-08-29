@@ -76,5 +76,6 @@
 #define RP_USB_USE_USBD1                    TRUE
 #define RP_USB_FORCE_VBUS_DETECT            TRUE
 #define RP_USB_USE_SOF_INTR                 FALSE
+#define RP_USB_USE_ERROR_DATA_SEQ_INTR      TRUE
 
 #endif /* MCUCONF_H */

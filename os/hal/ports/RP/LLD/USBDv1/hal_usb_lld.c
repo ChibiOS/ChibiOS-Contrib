@@ -523,12 +523,14 @@ OSAL_IRQ_HANDLER(RP_USBCTRL_IRQ_HANDLER) {
     }
   }
 
+#if RP_USB_USE_ERROR_DATA_SEQ_INTR == TRUE
   if (ints & USB_INTE_ERROR_DATA_SEQ) {
 #ifdef USB_DEBUG
     cmd_send(CMD_DATA_ERROR, 0);
 #endif
     USB->CLR.SIESTATUS = USB_SIE_STATUS_DATA_SEQ_ERROR;
   }
+#endif /* RP_USB_USE_ERROR_DATA_SEQ_INTR */
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -606,8 +608,10 @@ void usb_lld_start(USBDriver *usbp) {
                   USB_INTE_DEV_RESUME_FROM_HOST |
                   USB_INTE_DEV_SUSPEND |
                   USB_INTE_BUS_RESET |
-                  USB_INTE_BUFF_STATUS |
-                  USB_INTE_ERROR_DATA_SEQ;
+                  USB_INTE_BUFF_STATUS;
+#if RP_USB_USE_ERROR_DATA_SEQ_INTR == TRUE
+      USB->INTE |= USB_INTE_ERROR_DATA_SEQ;
+#endif /* RP_USB_USE_ERROR_DATA_SEQ_INTR */
 #if RP_USB_USE_SOF_INTR == TRUE
       USB->INTE |= USB_INTE_DEV_SOF;
 #endif /* RP_USB_USE_SOF_INTR */
