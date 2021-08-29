@@ -181,6 +181,7 @@ static void reset_ep0(USBDriver *usbp) {
   usbp->epc[0]->in_state->stalled = false;
 }
 
+#if 0
 /**
  * @brief   Reset specified endpoint.
  */
@@ -203,6 +204,7 @@ static void reset_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
     }
   }
 }
+#endif
 
 /**
  * @brief   Prepare buffer for receiving data.
@@ -395,7 +397,7 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
       /* Transfer complete */
       _usb_isr_invoke_in_cb(usbp, ep);
 
-      reset_endpoint(usbp, ep, true);
+      //reset_endpoint(usbp, ep, true);
     }
   } else {
     /* OUT endpoint */
@@ -421,7 +423,7 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
       /* Transifer complete */
       _usb_isr_invoke_out_cb(usbp, ep);
 
-      reset_endpoint(usbp, ep, false);
+      //reset_endpoint(usbp, ep, false);
     } else {
       /* Receive remained data */
       usb_prepare_out_ep(usbp, ep);
@@ -486,6 +488,7 @@ OSAL_IRQ_HANDLER(RP_USBCTRL_IRQ_HANDLER) {
     _usb_wakeup(usbp);
   }
 
+#if RP_USB_USE_SOF_INTR == TRUE
   /* SOF handling.*/
   if (ints & USB_INTS_DEV_SOF) {
     _usb_isr_invoke_sof_cb(usbp);
@@ -493,6 +496,7 @@ OSAL_IRQ_HANDLER(RP_USBCTRL_IRQ_HANDLER) {
     /* Clear SOF flag by reading SOF_RD */
     (void)USB->SOFRD;
   }
+#endif /* RP_USB_USE_SOF_INTR */
 
   /* Endpoint events handling.*/
   if (ints & USB_INTS_BUFF_STATUS) {
