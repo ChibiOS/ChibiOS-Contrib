@@ -584,14 +584,14 @@ void usb_lld_start(USBDriver *usbp) {
       /* Force VBUS detect so the device thinks it is plugged into a host */
       USB->PWR = USB_USB_PWR_VBUS_DETECT_OVERRIDE_EN | USB_USB_PWR_VBUS_DETECT;
 #else
-#ifdef usb_vbus_detect
+#if RP_USE_EXTERNAL_VBUS_DETECT == TRUE
       /* If VBUS is detected by pin without USB VBUS DET pin,
        * define usb_vbus_detect which returns true if VBUS is enabled.
        */
-      if (usb_vbus_detect) {
+      if (usb_vbus_detect()) {
         USB->PWR = USB_USB_PWR_VBUS_DETECT_OVERRIDE_EN | USB_USB_PWR_VBUS_DETECT;
       }
-#endif /* usb_vbus_detect */
+#endif /* RP_USE_EXTERNAL_VBUS_DETECT */
 #endif /* RP_USB_FORCE_VBUS_DETECT */
 
       /* Reset procedure enforced on driver start.*/

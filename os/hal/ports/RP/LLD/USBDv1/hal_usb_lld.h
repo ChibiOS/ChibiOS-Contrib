@@ -33,10 +33,6 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#if !defined(RP_USB_USE_USBD1)
-#error "RP_USB_USE_USBD1 not defined in registry"
-#endif
-
 /**
  * @brief   Maximum endpoint address.
  */
@@ -56,6 +52,56 @@
  * @brief   This device requires the address change after the status packet.
  */
 #define USB_SET_ADDRESS_MODE                USB_LATE_SET_ADDRESS
+
+/*===========================================================================*/
+/* Driver pre-compile time settings.                                         */
+/*===========================================================================*/
+
+/**
+ * @brief USBD1 driver enable switch.
+ */
+#if !defined(RP_USB_USE_USBD1) || defined(__DOXYGEN__)
+#define RP_USB_USE_USBD1                    FALSE
+#endif
+
+/**
+ * @brief Force to set VBUS detect register.
+ * @details If you want to use non VBUS DETECT pin for this purpose,
+            set this flag to FALSE and define bool usb_vbus_detect(void) function
+            which returns true to force VBUS DETECT.
+            See RP_USE_EXTERNAL_VBUS_DETECT.
+ */
+#if !defined(RP_USB_FORCE_VBUS_DETECT) || defined(__DOXYGEN__)
+#define RP_USB_FORCE_VBUS_DETECT            TRUE
+#endif
+
+/**
+ * @brief Use custom VBUS detection.
+   @details If RP_USB_FORCE_VBUS_DETECT is FALSE, this flag can be TRUE
+            to detect custom function to detect VBUS.
+ */
+#if !defined(RP_USE_EXTERNAL_VBUS_DETECT) || defined(__DOXYGEN__)
+#define RP_USE_EXTERNAL_VBUS_DETECT         FALSE
+#endif
+
+#if RP_USE_EXTERNAL_VBUS_DETECT == TRUE
+extern bool usb_vbus_detect(void);
+#endif
+
+/**
+ * @brief Enables the SOF interrupt.
+ */
+#if !defined(RP_USB_USE_SOF_INTR) || defined(__DOXYGEN__)
+#define RP_USB_USE_SOF_INTR                 FALSE
+#endif
+
+/**
+ * @brief Enables the error data sequence interrupt.
+ * @details This flag is useful if you develop low level driver.
+ */
+#if !defined(RP_USB_USE_ERROR_DATA_SEQ_INTR) || defined(__DOXYGEN__)
+#define RP_USB_USE_ERROR_DATA_SEQ_INTR      FALSE
+#endif
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
