@@ -96,7 +96,7 @@ USBDriver USBD1;
  * @note    It is an union because IN and OUT endpoints are never used at the
  *          same time for EP0.
  */
-static union {
+static struct {
   /**
    * @brief   IN EP0 state.
    */
@@ -210,32 +210,20 @@ static void reset_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
  * @brief   Prepare buffer for receiving data.
  */
 uint32_t usb_prepare_out_ep_buffer(USBDriver *usbp, usbep_t ep, uint8_t buffer_index) {
-  uint16_t buf_len;
   uint32_t buf_ctrl = 0;
   const USBEndpointConfig *epcp = usbp->epc[ep];
   USBOutEndpointState *oesp = usbp->epc[ep]->out_state;
 
-  buf_len = epcp->out_maxsize < oesp->rxsize ? epcp->out_maxsize : oesp->rxsize;
-
-  if (!(buf_len == 0 && buffer_index == 1)) {
-    /* Host only? */
-    //if ((oesp->rxpkts == 1 && buffer_index == 0) ||
-    //    (oesp->rxpkts == 2 && buffer_index == 1)) {
-      /* Last buffer */
-      //buf_ctrl |= USB_BUFFER_BUFFER0_LAST;
-    //}
     /* PID */
     buf_ctrl |= oesp->next_pid ? USB_BUFFER_BUFFER0_DATA_PID : 0;
     oesp->next_pid ^= 1U;
 
-    buf_ctrl |= USB_BUFFER_BUFFER0_AVAILABLE |
-                buf_len;
+    buf_ctrl |= USB_BUFFER_BUFFER0_AVAILABLE | epcp->out_maxsize;
 
     oesp->active = true;
     if (buffer_index) {
       buf_ctrl = buf_ctrl << 16;
     }
-  }
 
   return buf_ctrl;
 }
@@ -397,7 +385,7 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
       /* Transfer complete */
       _usb_isr_invoke_in_cb(usbp, ep);
 
-      //reset_endpoint(usbp, ep, true);
+      iesp->active = iesp->stalled = false;
     }
   } else {
     /* OUT endpoint */
@@ -422,8 +410,9 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
 #endif
       /* Transifer complete */
       _usb_isr_invoke_out_cb(usbp, ep);
+      usb_prepare_out_ep(usbp, ep);
 
-      //reset_endpoint(usbp, ep, false);
+      oesp->active = oesp->stalled = false;
     } else {
       /* Receive remained data */
       usb_prepare_out_ep(usbp, ep);
@@ -509,7 +498,7 @@ OSAL_IRQ_HANDLER(RP_USBCTRL_IRQ_HANDLER) {
     for (uint8_t i = 0; buf_status && i < 32; i++) {
       if (buf_status & bit) {
         /* Clear flag */
-        USB->SET.BUFSTATUS = bit;
+        USB->CLR.BUFSTATUS = bit;
 #ifdef USB_DEBUG
         //cmd_send(CMD_BUFF_STATUS, 1);
         //data_send(((i >> 1U) << 16) | (i & 1U));
@@ -672,7 +661,7 @@ void usb_lld_reset(USBDriver *usbp) {
  */
 void usb_lld_set_address(USBDriver *usbp) {
   /* Set address to hardware here. */
-  USB->DEVADDRCTRL |= USB_ADDR_ENDP0_ADDRESS_Msk & (usbp->address << USB_ADDR_ENDP0_ADDRESS_Pos);
+  USB->DEVADDRCTRL = USB_ADDR_ENDP0_ADDRESS_Msk & (usbp->address << USB_ADDR_ENDP0_ADDRESS_Pos);
 
 #ifdef USB_DEBUG
   cmd_send(CMD_SET_ADDR, 1);
@@ -702,6 +691,7 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
     epcp->in_state->hw_buf = (uint8_t*)&USB_DPSRAM->EP0BUF0;
     epcp->in_state->buf_size = 64;
     USB->SET.SIECTRL = USB_EP_BUFFER_IRQ_EN;
+    BUF_CTRL(0).OUT = USB_BUFFER_BUFFER0_AVAILABLE;
     epcp->in_state->next_pid = 1U;
     epcp->in_state->active = false;
     epcp->in_state->stalled = false;
@@ -731,10 +721,10 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
   }
 
   if (epcp->out_state) {
-    buf_ctrl = 0;
+    buf_ctrl = USB_BUFFER_BUFFER0_AVAILABLE | epcp->out_maxsize;
     epcp->out_state->active = false;
     epcp->out_state->stalled = false;
-    epcp->out_state->next_pid = 0U;
+    epcp->out_state->next_pid = 1U;
 
     if (epcp->ep_mode == USB_EP_MODE_TYPE_ISOC) {
       buf_size = usb_isochronous_buffer_size(epcp->in_maxsize);
@@ -746,7 +736,7 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
     epcp->out_state->hw_buf = (uint8_t*)&USB_DPSRAM->DATA[buf_offset];
     epcp->out_state->buf_size = buf_size;
 
-    EP_CTRL(ep).OUT = USB_EP_EN |
+    EP_CTRL(ep).OUT = USB_EP_EN | USB_EP_BUFFER_IRQ_EN |
                        (epcp->ep_mode << USB_EP_TYPE_Pos) |
                        ((uint8_t*)epcp->out_state->hw_buf - (uint8_t*)USB_DPSRAM);
     BUF_CTRL(ep).OUT = buf_ctrl;
@@ -882,8 +872,6 @@ void usb_lld_start_out(USBDriver *usbp, usbep_t ep) {
   cmd_send(CMD_START_OUT, 1);
   data_send((ep << 24) | oesp->rxsize | (oesp->rxpkts << 16));
 #endif
-  /* Prepare OUT endpoint. */
-  usb_prepare_out_ep(usbp, ep);
 }
 
 /**
