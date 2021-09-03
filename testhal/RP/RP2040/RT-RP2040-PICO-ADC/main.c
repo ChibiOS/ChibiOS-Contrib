@@ -25,6 +25,10 @@
 
 #define LED_GREEN_PIN  25U
 
+#define ADC_CH0_PIN  26U
+#define ADC_CH1_PIN  27U
+#define ADC_CH2_PIN  28U
+
 /*
  * Green LED blinker thread, times are in milliseconds.
  */
@@ -44,7 +48,7 @@ static THD_FUNCTION(Thread1, arg) {
  */
 void adc_end_callback(ADCDriver *adcp) {
   (void)adcp;
-  chprintf((BaseSequentialStream *)&SIOD0, "ADC end cb\r\n");
+  //chprintf((BaseSequentialStream *)&SIOD0, "ADC end cb\r\n");
 }
 
 /*
@@ -80,6 +84,9 @@ int main(void) {
    */
   palSetLineMode(LED_GREEN_PIN, PAL_MODE_OUTPUT_PUSHPULL | PAL_RP_PAD_DRIVE12);
 
+  // Set pin to ADC.
+  palSetLineMode(ADC_CH0_PIN, PAL_MODE_INPUT_ANALOG);
+
   /*
    * Creates the blinker thread.
    */
@@ -92,30 +99,32 @@ int main(void) {
   };
 
   const ADCConversionGroup adcConvGroup = {
-    true,                 // circular
+    false,                 // circular
     2,                    // num_channels
     &adc_end_callback,    // end_cb
     &adc_error_callback,  // error_cb
-    RP_ADC_CH0 | RP_ADC_CH1, // channel_mask
+    RP_ADC_CH0 | RP_ADC_CH4, // channel_mask
   };
 
   adcStart(&ADCD1, &adcConfig);
 
   /* Enable temperature sensor. */
-  //adcRPEnableTS(&ADCD1);
+  adcRPEnableTS(&ADCD1);
 
-  adcsample_t buf[2] = {0, 0};
+  adcsample_t buf[4] = {0, 0, 0, 0};
 
-  adcStartConversion(&ADCD1, &adcConvGroup, (adcsample_t *)&buf, 1);
-
-  chThdSleepMilliseconds(500);
-  chprintf((BaseSequentialStream *)&SIOD0, "buf[0]: %d\r\n", buf[0]);
-  chprintf((BaseSequentialStream *)&SIOD0, "buf[1]: %d\r\n", buf[1]);
+  chprintf((BaseSequentialStream *)&SIOD0, "--\r\n");
+  chThdSleepMilliseconds(100);
+  adcStartConversion(&ADCD1, &adcConvGroup, (adcsample_t *)&buf, 2);
   /*
    * Normal main() thread activity, in this demo it does nothing except
    * sleeping in a loop.
    */
   while (true) {
     chThdSleepMilliseconds(500);
+    chprintf((BaseSequentialStream *)&SIOD0, "buf: %d, %d, %d, %d\r\n", buf[0], buf[1], buf[2], buf[3]);
+    if (!adcConvGroup.circular) {
+      adcStartConversion(&ADCD1, &adcConvGroup, (adcsample_t *)&buf, 2);
+    }
   }
 }

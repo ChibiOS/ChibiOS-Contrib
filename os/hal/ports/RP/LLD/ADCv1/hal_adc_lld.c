@@ -72,9 +72,10 @@ static void set_channel(ADCDriver *adcp, uint8_t channel) {
 static uint8_t get_next_channel_number_from_mask(uint8_t mask, uint8_t current) {
   for (uint8_t i = 0; mask > 0; i++) {
     if (mask & 0x01) {
-      if (i > current) {
+      if (!current) {
         return i;
       }
+      current--;
     }
     mask >>= 1U;
   }
@@ -112,16 +113,30 @@ OSAL_IRQ_HANDLER(RP_ADC_IRQ_FIFO_HANDLER) {
     adcp->current_buffer_position += 1;
 
     size_t bufferSize = adcp->depth * adcp->grpp->num_channels;
-    size_t currentChannel = adcp->current_buffer_position % adcp->grpp->num_channels;
-    size_t currentIteration = adcp->current_buffer_position / adcp->grpp->num_channels;
-    
-    if (adcp->grpp->circular && currentChannel == 0 && currentIteration == adcp->depth / 2) {
+
+    adcp->current_channel += 1;
+    if (adcp->current_channel >= adcp->grpp->num_channels) {
+      adcp->current_channel = 0;
+      adcp->current_iteration += 1;
+    }
+
+    if (adcp->grpp->circular && adcp->current_channel == 0 &&
+        adcp->current_iteration == adcp->depth / 2) {
       _adc_isr_half_code(adcp);
     }
     if (adcp->current_buffer_position == bufferSize) {
       _adc_isr_full_code(adcp);
+
+      if (adcp->grpp->circular) {
+        adcp->current_buffer_position = 0;
+        adcp->current_channel = 0;
+        adcp->current_iteration = 0;
+        set_channel(adcp, get_first_channel(adcp));
+        RP_ADC_START_ONCE;
+      }
     } else {
-      set_channel(adcp, get_next_channel_number_from_mask(adcp->grpp->channel_mask, currentChannel));
+      set_channel(adcp, get_next_channel_number_from_mask(
+                adcp->grpp->channel_mask, adcp->current_channel));
       RP_ADC_START_ONCE;
     }
 
@@ -178,6 +193,8 @@ void adc_lld_start(ADCDriver *adcp) {
 #if RP_ADC_USE_ADC1 == TRUE
     if (&ADCD1 == adcp) {
       adcp->current_buffer_position = 0;
+      adcp->current_channel = 0;
+      adcp->current_iteration = 0;
 
       /* Clear control flags. */
       adcp->adc->CS = 0;
@@ -187,7 +204,7 @@ void adc_lld_start(ADCDriver *adcp) {
                        ((adcp->config->div_frac << ADC_DIV_FRAC_Pos) & ADC_DIV_FRAC_Msk);
 
       /* Enable FIFO. */
-      fcs |= ADC_FCS_EN;
+      fcs = ADC_FCS_EN;
 
       /* Set DREQ/IRQ threshold. */
       fcs |= 1U << ADC_FCS_THRESH_Pos;

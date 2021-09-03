@@ -107,7 +107,11 @@ typedef uint32_t adcerror_t;
   /* ADC register. */                                                       \
   ADC_TypeDef               *adc;                                           \
   /* Current index in the buffer. */                                        \
-  size_t                    current_buffer_position;
+  size_t                    current_buffer_position;                        \
+  /* Current channel index. */                                              \
+  size_t                    current_channel;                                \
+  /* Current iteration in the depth. */                                     \
+  size_t                    current_iteration;
 
 /**
  * @brief   Low level fields of the ADC configuration structure.
