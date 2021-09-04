@@ -1,12 +1,12 @@
-/******************** (C) COPYRIGHT 2013 SONiX *******************************
+/******************** (C) COPYRIGHT 2017 SONiX *******************************
 * COMPANY:			SONiX
-* DATE:					2013/12
+* DATE:					2017/07
 * AUTHOR:				SA1
-* IC:						SN32F240/230/220
+* IC:						SN32F240B
 * DESCRIPTION:	Flash related functions.
 *____________________________________________________________________________
 * REVISION	Date				User		Description
-* 1.0				2013/12/17	SA1			First release
+* 1.0				2017/07/07	SA1			First release
 *
 *____________________________________________________________________________
 * THE PRESENT SOFTWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
@@ -32,7 +32,6 @@ uint32_t wFLASH_PGRAM[2];
 
 
 /*_____ F U N C T I O N S __________________________________________________*/
-
 /*****************************************************************************
 * Function		: FLASH_EraseSector
 * Description	: Erase assigned sector address in Flash ROM
@@ -41,13 +40,18 @@ uint32_t wFLASH_PGRAM[2];
 * Return		: None
 * Note			: None
 *****************************************************************************/
-void FLASH_EraseSector (uint32_t adr)
+FLASH_Status FLASH_EraseSector (uint32_t adr)
 {
- 	SN_FLASH->CTRL = FLASH_PER;					// Page Erase Enabled
-	SN_FLASH->ADDR = adr;									// Page Address  
-	SN_FLASH->CTRL |= FLASH_STARTE;				// Start Erase
+ 	SN_FLASH->CTRL = FLASH_PER;						// Page Erase Enabled
+	SN_FLASH->ADDR = adr;									// Page Address
 
-	while ((SN_FLASH->STATUS & FLASH_BUSY) == FLASH_BUSY);
+	FLASH_WAIT_FOR_DONE
+	
+	SN_FLASH->CTRL |= FLASH_START;				// Start Erase
+
+	FLASH_WAIT_FOR_DONE
+
+	return (FLASH_OKAY);
 }
 
 
@@ -56,35 +60,78 @@ void FLASH_EraseSector (uint32_t adr)
 * Description	: Program assigned page in Flash ROM
 * Input			: adr - Page start address (word-alignment) of Flash
 *				  		sz - Content size to be programmed (Bytes)
-*				  		pBuf - pointer to the Source data
+*				  		Data - the Source data
 * Output		: None
-* Return		: OK or FAIL
+* Return		: FLASH_OKAY or FLASH_FAIL
 * Note			: None
 *****************************************************************************/
-uint32_t FLASH_ProgramPage (uint32_t adr, uint32_t sz, uint8_t *pBuf)
+FLASH_Status FLASH_ProgramPage (uint32_t adr, uint32_t sz, uint16_t Data)
 {
+	SN_FLASH->CTRL = FLASH_PG;                  // Programming Enabled
+	SN_FLASH->ADDR = adr;
+
+	FLASH_WAIT_FOR_DONE
+	
+	*(uint32_t*)adr = Data;
+	
 	while (sz){
 
-		SN_FLASH->CTRL = FLASH_PG;													// Programming Enabled
-		SN_FLASH->ADDR = adr;
-		SN_FLASH->DATA = *((uint32_t *)pBuf);
+		SN_FLASH->DATA = *((uint32_t *)adr);
 
-		__nop();__nop();__nop();__nop();__nop();__nop();    //Must add to avoid Hard Fault!!!!!!
-
-		while ((SN_FLASH->STATUS & FLASH_BUSY) == FLASH_BUSY);
-
-		// Check for Errors
-		if ((SN_FLASH->STATUS & FLASH_PGERR) == FLASH_PGERR) {
-			SN_FLASH->STATUS &= ~FLASH_PGERR;
-			return (FAIL);
-		}
+		FLASH_WAIT_FOR_DONE
 
 		// Go to next Word
 		adr += 4;
-		pBuf += 4;
 		sz  -= 4;
 	}
+	
+	// Check for Errors
+	if ((SN_FLASH->STATUS & FLASH_ERR) == FLASH_ERR) {
+		SN_FLASH->STATUS = 0;
+		return (FLASH_FAIL);
+	}
 
-	return (OK);
+	SN_FLASH->CTRL |= FLASH_START;				// Start Program
+
+	FLASH_WAIT_FOR_DONE
+
+	// Check for Errors
+	if ((SN_FLASH->STATUS & FLASH_ERR) == FLASH_ERR) {
+		SN_FLASH->STATUS = 0;
+		return (FLASH_FAIL);
+	}
+
+	return (FLASH_OKAY);
 }
 
+/*****************************************************************************
+* Function		: FLASH_ProgramHalfWord
+* Description	: Program a half word at a specified address
+* Input			: adr - Page start address (word-alignment) of Flash
+*				  		Data - the Source data
+* Output		: None
+* Return		: FLASH_OKAY or FLASH_ERR
+* Note			: None
+*****************************************************************************/
+FLASH_Status FLASH_ProgramHalfWord(uint32_t adr, uint16_t Data) {
+    FLASH_Status status = FLASH_ProgramPage(adr, 2, Data);
+
+    return status;
+}
+
+/*****************************************************************************
+* Function		: FLASH_Checksum
+* Description	: Calculate Checksum in Flash ROM
+* Input			: None
+* Output		: Checksum of User ROM
+* Return		: None
+* Note			: None
+*****************************************************************************/
+uint16_t FLASH_Checksum (void)
+{
+ 	SN_FLASH->CTRL = FLASH_CHK;
+
+	FLASH_WAIT_FOR_DONE
+	
+	return	(uint16_t) (SN_FLASH->CHKSUM);
+}
