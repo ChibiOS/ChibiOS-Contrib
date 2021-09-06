@@ -20,6 +20,10 @@ SECTIONS
 {
     .vectors : ALIGN(4)
     {
+        KEEP (*(SORT_NONE(.crt0)))
+        /* For 65 to 128 interrupts, the vector table must be 512 byte aligned.
+         * See: https://doc.nucleisys.com/nuclei_spec/isa/core_csr.html#mtvt */
+        . = ALIGN(512);
         KEEP (*(SORT_NONE(.vectors)))
     } > VECTORS_FLASH AT > VECTORS_FLASH_LMA
 
