@@ -217,8 +217,6 @@ typedef struct {
   volatile uint32_t         tx_len;
   uint8_t                   *rx_buf;
   volatile uint32_t         rx_len;
-  uint8_t                   tx_dummy;
-  uint8_t                   rx_dummy;
 } spi_xfer_info_t;
 
 /*===========================================================================*/
@@ -231,18 +229,13 @@ typedef struct {
 #define spi_lld_driver_fields                                               \
   /* Pointer to the SPIx registers block.*/                                 \
   SPI_TypeDef               *spi ;                                          \
-  spi_xfer_info_t           g_spi_xfer_info
+  spi_xfer_info_t           xfer;                                           \
+  uint16_t                  fifo_len
 
 /**
  * @brief   Low level fields of the SPI configuration structure.
  */
 #define spi_lld_config_fields                                               \
-  /* Enable SPI interrupts. */                                              \
-  uint8_t                   SPI_IT;                                         \
-  /* SPI Transfer & receive. */                                             \
-  uint16_t                  SPI_TransferMode;                               \
-  /* SPI serial data transfer. */                                           \
-  uint16_t                  SPI_DataSize;                                   \
   /* SPI_Clock_Polarity. */                                                 \
   uint16_t                  SPI_CPOL;                                       \
   /* SPI_Clock_Phase. */                                                    \
@@ -250,10 +243,6 @@ typedef struct {
   /* SPI In order to avoid TX FIFO underflow or */                          \
   /* RX FIFO overflow, SPI_BaudRatePrescaler needs to bigger. */            \
   uint16_t                  SPI_BaudRatePrescaler;                          \
-  /* SPI Frame Format . */                                                  \
-  uint16_t                  SPI_FrameFormat;                                \
-  /* SPI specifies the slave select line. */                                \
-  uint32_t                  SPI_NSS
 
 /*===========================================================================*/
 /* External declarations.                                                    */

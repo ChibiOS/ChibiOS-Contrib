@@ -141,7 +141,7 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
   uint32_t tx_limit, rx_limit;
 
   if ((dp->INTR_STAT & I2C_INTR_TX_ABRT) != RESET) {
-    i2cp->g_i2c_xfer_info.tx_abrt_source = (uint32_t)dp->TX_ABRT_SOURCE;
+    i2cp->xfer.tx_abrt_source = (uint32_t)dp->TX_ABRT_SOURCE;
     /* Disable all interrupt except STOP_DET interrupt.*/
     dp->INTR_MASK = I2C_INTR_STOP_DET;
     goto tx_aborted;
@@ -150,10 +150,10 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
   if ((dp->INTR_STAT & I2C_INTR_RX_FULL) != RESET) {
     while ((dp->STATUS & I2C_STATUS_RFNE) != RESET) {
       read_rx = (uint16_t)(dp->DATA_CMD);
-      if (i2cp->g_i2c_xfer_info.rx_len) {
-        *i2cp->g_i2c_xfer_info.rx_buf = read_rx;
-        i2cp->g_i2c_xfer_info.rx_buf++;
-        i2cp->g_i2c_xfer_info.rx_len--;
+      if (i2cp->xfer.rx_len) {
+        *i2cp->xfer.rx_buf = read_rx;
+        i2cp->xfer.rx_buf++;
+        i2cp->xfer.rx_len--;
       }
     }
   }
@@ -162,25 +162,25 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
     tx_limit = 8 - (uint8_t)(dp->TXFLR);
     rx_limit = 8 - (uint8_t)(dp->RXFLR);
     while ((tx_limit > 0) && (rx_limit > 0)) {
-      if ((i2cp->g_i2c_xfer_info.tx_len +
-           i2cp->g_i2c_xfer_info.rx_cmd_len) == 0) {
+      if ((i2cp->xfer.tx_len +
+           i2cp->xfer.rx_cmd_len) == 0) {
         /* Disable TX Empty Interrupt.*/
         dp->INTR_MASK &= ~I2C_INTR_TX_EMPTY;
         break;
       }
       cmd = 0;
-      if ((i2cp->g_i2c_xfer_info.tx_len +
-           i2cp->g_i2c_xfer_info.rx_cmd_len) == 1) {
+      if ((i2cp->xfer.tx_len +
+           i2cp->xfer.rx_cmd_len) == 1) {
         cmd |= I2C_DATA_CMD_STOP;
       }
-      if (i2cp->g_i2c_xfer_info.tx_len != 0) {
-        dp->DATA_CMD = (cmd | *i2cp->g_i2c_xfer_info.tx_buf);
-        i2cp->g_i2c_xfer_info.tx_buf++;
-        i2cp->g_i2c_xfer_info.tx_len--;
+      if (i2cp->xfer.tx_len != 0) {
+        dp->DATA_CMD = (cmd | *i2cp->xfer.tx_buf);
+        i2cp->xfer.tx_buf++;
+        i2cp->xfer.tx_len--;
       }
-      else if (i2cp->g_i2c_xfer_info.rx_cmd_len != 0) {
+      else if (i2cp->xfer.rx_cmd_len != 0) {
         dp->DATA_CMD = (cmd | I2C_DATA_CMD_READ);
-        i2cp->g_i2c_xfer_info.rx_cmd_len--;
+        i2cp->xfer.rx_cmd_len--;
         rx_limit--;
       }
       tx_limit--;
@@ -193,18 +193,18 @@ tx_aborted:
     (void)dp->CLR_INTR;
     /* Disable all interrupt.*/
     dp->INTR_MASK &= ~(0xFFFF);
-    if (i2cp->g_i2c_xfer_info.tx_abrt_source) {
+    if (i2cp->xfer.tx_abrt_source) {
       /* Bus error.*/
-      if (i2cp->g_i2c_xfer_info.tx_abrt_source &
+      if (i2cp->xfer.tx_abrt_source &
           I2C_TX_ABRT_SOURCE_SLV_ARBLOST) {
         i2cp->errors |= I2C_BUS_ERROR;
       }
       /* Arbitration lost.*/
-      if (i2cp->g_i2c_xfer_info.tx_abrt_source & I2C_TX_ABRT_SOURCE_LOST) {
+      if (i2cp->xfer.tx_abrt_source & I2C_TX_ABRT_SOURCE_LOST) {
         i2cp->errors |= I2C_ARBITRATION_LOST;
       }
       /* Acknowledge fail.*/
-      if (i2cp->g_i2c_xfer_info.tx_abrt_source &
+      if (i2cp->xfer.tx_abrt_source &
           (I2C_TX_ABRT_SOURCE_7B_ADDR_NOACK | I2C_TX_ABRT_SOURCE_10ADDR1_NOACK |
            I2C_TX_ABRT_SOURCE_10ADDR2_NOACK | I2C_TX_ABRT_SOURCE_TXDATA_NOACK |
            I2C_TX_ABRT_SOURCE_GCALL_NOACK | I2C_TX_ABRT_SOURCE_DEVICE_NOACK |
@@ -212,16 +212,16 @@ tx_aborted:
         i2cp->errors |= I2C_ACK_FAILURE;
       }
       /* Overrun.*/
-      if (i2cp->g_i2c_xfer_info.tx_abrt_source &
+      if (i2cp->xfer.tx_abrt_source &
           I2C_TX_ABRT_SOURCE_DEVICE_WRITE) {
         i2cp->errors |= I2C_OVERRUN;
       }
       /* SMBus Timeout.*/
-      if (i2cp->g_i2c_xfer_info.tx_abrt_source &
+      if (i2cp->xfer.tx_abrt_source &
           I2C_TX_ABRT_SOURCE_SDA_STUCK_AT_LOW) {
         i2cp->errors |= I2C_TIMEOUT;
       }
-      if (i2cp->g_i2c_xfer_info.tx_abrt_source != I2C_NO_ERROR) {
+      if (i2cp->xfer.tx_abrt_source != I2C_NO_ERROR) {
         _i2c_wakeup_error_isr(i2cp);
       }
     }
@@ -345,11 +345,11 @@ void i2c_lld_start(I2CDriver *i2cp) {
  */
 void i2c_lld_stop(I2CDriver *i2cp) {
 
-  i2cp->g_i2c_xfer_info.tx_len = 0;
-  i2cp->g_i2c_xfer_info.rx_len = 0;
-  i2cp->g_i2c_xfer_info.tx_buf = NULL;
-  i2cp->g_i2c_xfer_info.rx_buf = NULL;
-  i2cp->g_i2c_xfer_info.tx_abrt_source = 0;
+  i2cp->xfer.tx_len = 0;
+  i2cp->xfer.rx_len = 0;
+  i2cp->xfer.tx_buf = NULL;
+  i2cp->xfer.rx_buf = NULL;
+  i2cp->xfer.tx_abrt_source = 0;
 
   /* If not in stopped state then disables the I2C clock.*/
   if (i2cp->state != I2C_STOP) {
@@ -407,14 +407,14 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   /* Resetting error flags for this transfer.*/
   i2cp->errors = I2C_NO_ERROR;
 
-  i2cp->g_i2c_xfer_info.tx_buf = NULL;
-  i2cp->g_i2c_xfer_info.tx_len = 0;
+  i2cp->xfer.tx_buf = NULL;
+  i2cp->xfer.tx_len = 0;
 
-  i2cp->g_i2c_xfer_info.rx_buf = rxbuf;
-  i2cp->g_i2c_xfer_info.rx_len = rxbytes;
-  i2cp->g_i2c_xfer_info.rx_cmd_len = rxbytes;
+  i2cp->xfer.rx_buf = rxbuf;
+  i2cp->xfer.rx_len = rxbytes;
+  i2cp->xfer.rx_cmd_len = rxbytes;
 
-  i2cp->g_i2c_xfer_info.tx_abrt_source = 0x00;
+  i2cp->xfer.tx_abrt_source = 0x00;
 
   /* set slave address.*/
   dp->TAR = (uint32_t)addr;
@@ -482,14 +482,14 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   /* Resetting error flags for this transfer.*/
   i2cp->errors = I2C_NO_ERROR;
 
-  i2cp->g_i2c_xfer_info.tx_buf = txbuf;
-  i2cp->g_i2c_xfer_info.tx_len = txbytes;
+  i2cp->xfer.tx_buf = txbuf;
+  i2cp->xfer.tx_len = txbytes;
 
-  i2cp->g_i2c_xfer_info.rx_buf = rxbuf;
-  i2cp->g_i2c_xfer_info.rx_len = rxbytes;
-  i2cp->g_i2c_xfer_info.rx_cmd_len = rxbytes;
+  i2cp->xfer.rx_buf = rxbuf;
+  i2cp->xfer.rx_len = rxbytes;
+  i2cp->xfer.rx_cmd_len = rxbytes;
 
-  i2cp->g_i2c_xfer_info.tx_abrt_source = 0x00;
+  i2cp->xfer.tx_abrt_source = 0x00;
 
   /* set slave address.*/
   dp->TAR = (uint32_t)addr;
