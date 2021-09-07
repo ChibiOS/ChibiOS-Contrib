@@ -358,7 +358,7 @@ struct UARTDriver {
    * @brief Default receive buffer while into @p UART_RX_IDLE state.
    */
   volatile uint16_t         rxbuf;
-  uart_xfer_info_t  g_uart_xfer_info;
+  uart_xfer_info_t          xfer;
 };
 
 /*===========================================================================*/

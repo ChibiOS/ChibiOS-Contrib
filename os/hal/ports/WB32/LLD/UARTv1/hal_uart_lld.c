@@ -87,8 +87,8 @@ static uartflags_t translate_errors(uint16_t sr) {
  */
 static void uart_enter_rx_idle_loop(UARTDriver *uartp) {
 
-  uartp->g_uart_xfer_info.rx_len = 1;
-  uartp->g_uart_xfer_info.rx_buf = (uint8_t *)&uartp->rxbuf;
+  uartp->xfer.rx_len = 1;
+  uartp->xfer.rx_buf = (uint8_t *)&uartp->rxbuf;
 
   uartp->uart->IER |= UART_IER_RDAIE;
 }
@@ -163,11 +163,11 @@ static void serve_uart_irq(UARTDriver *uartp) {
     while ((u->USR & UART_USR_RFNE) != RESET) {
       rbyte = (uint16_t)u->RBR;
 
-      if (uartp->g_uart_xfer_info.rx_len) {
-        *uartp->g_uart_xfer_info.rx_buf = rbyte;
-        uartp->g_uart_xfer_info.rx_buf++;
-        uartp->g_uart_xfer_info.rx_len--;
-        if (uartp->g_uart_xfer_info.rx_len == 0) {
+      if (uartp->xfer.rx_len) {
+        *uartp->xfer.rx_buf = rbyte;
+        uartp->xfer.rx_buf++;
+        uartp->xfer.rx_len--;
+        if (uartp->xfer.rx_len == 0) {
           if (uartp->rxstate == UART_RX_IDLE) {
             /* Receiver in idle state, a callback is generated,
                if enabled, for each received character and then the
@@ -186,12 +186,12 @@ static void serve_uart_irq(UARTDriver *uartp) {
   else if (int_id == UART_IIR_INTID_RDA) { /* Receive One Byte.*/
     rbyte = (uint16_t)u->RBR;
 
-    if (uartp->g_uart_xfer_info.rx_len) {
-      *uartp->g_uart_xfer_info.rx_buf = rbyte;
-      uartp->g_uart_xfer_info.rx_buf++;
-      uartp->g_uart_xfer_info.rx_len--;
+    if (uartp->xfer.rx_len) {
+      *uartp->xfer.rx_buf = rbyte;
+      uartp->xfer.rx_buf++;
+      uartp->xfer.rx_len--;
 
-      if (uartp->g_uart_xfer_info.rx_len == 0) {
+      if (uartp->xfer.rx_len == 0) {
         if (uartp->rxstate == UART_RX_IDLE) {
           /* Receiver in idle state, a callback is generated, if enabled,
              for each received character and then the driver stays in the
@@ -206,11 +206,11 @@ static void serve_uart_irq(UARTDriver *uartp) {
   }
   /* Send One Byte.*/
   else if (int_id == UART_IIR_INTID_THRE) {
-    if (uartp->g_uart_xfer_info.tx_len) {
-      u->THR = (uint16_t)*uartp->g_uart_xfer_info.tx_buf;
-      uartp->g_uart_xfer_info.tx_buf++;
-      uartp->g_uart_xfer_info.tx_len--;
-      if (uartp->g_uart_xfer_info.tx_len == 0) {
+    if (uartp->xfer.tx_len) {
+      u->THR = (uint16_t)*uartp->xfer.tx_buf;
+      uartp->xfer.tx_buf++;
+      uartp->xfer.tx_len--;
+      if (uartp->xfer.tx_len == 0) {
         /* A callback is generated, if enabled, after a completed
            transfer.*/
         _uart_tx1_isr_code(uartp);
@@ -373,11 +373,11 @@ void uart_lld_start(UARTDriver *uartp) {
 void uart_lld_stop(UARTDriver *uartp) {
 
   if (uartp->state == UART_READY) {
-    uartp->g_uart_xfer_info.tx_len = 0;
-    uartp->g_uart_xfer_info.rx_len = 0;
-    uartp->g_uart_xfer_info.tx_buf = NULL;
-    uartp->g_uart_xfer_info.rx_buf = NULL;
-    uartp->g_uart_xfer_info.tx_abrt_source = 0;
+    uartp->xfer.tx_len = 0;
+    uartp->xfer.rx_len = 0;
+    uartp->xfer.tx_buf = NULL;
+    uartp->xfer.rx_buf = NULL;
+    uartp->xfer.tx_abrt_source = 0;
 
     uart_stop(uartp);
 
@@ -420,8 +420,8 @@ void uart_lld_stop(UARTDriver *uartp) {
  */
 void uart_lld_start_send(UARTDriver *uartp, size_t n, const void *txbuf) {
 
-  uartp->g_uart_xfer_info.tx_len = n;
-  uartp->g_uart_xfer_info.tx_buf = txbuf;
+  uartp->xfer.tx_len = n;
+  uartp->xfer.tx_buf = txbuf;
 
   uartp->uart->IER |= UART_IER_THREIE;
 }
@@ -441,7 +441,7 @@ size_t uart_lld_stop_send(UARTDriver *uartp) {
 
   uartp->uart->IER &= ~(UART_IER_THREIE);
 
-  return (size_t)(uartp->g_uart_xfer_info.tx_len);
+  return (size_t)(uartp->xfer.tx_len);
 }
 
 /**
@@ -457,8 +457,8 @@ size_t uart_lld_stop_send(UARTDriver *uartp) {
  */
 void uart_lld_start_receive(UARTDriver *uartp, size_t n, void *rxbuf) {
 
-  uartp->g_uart_xfer_info.rx_len = n;
-  uartp->g_uart_xfer_info.rx_buf = rxbuf;
+  uartp->xfer.rx_len = n;
+  uartp->xfer.rx_buf = rxbuf;
 
   uartp->uart->IER |= UART_IER_RDAIE;
 }
@@ -477,7 +477,7 @@ void uart_lld_start_receive(UARTDriver *uartp, size_t n, void *rxbuf) {
 size_t uart_lld_stop_receive(UARTDriver *uartp) {
   uartp->uart->IER &= ~(UART_IER_RDAIE);
 
-  return (size_t)(uartp->g_uart_xfer_info.rx_len);
+  return (size_t)(uartp->xfer.rx_len);
 }
 
 #endif /* HAL_USE_UART */

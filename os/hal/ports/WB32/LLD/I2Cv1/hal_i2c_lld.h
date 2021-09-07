@@ -206,7 +206,7 @@ struct I2CDriver {
   /**
    * @brief   Data processing.
    */
-  i2c_xfer_info_t           g_i2c_xfer_info;
+  i2c_xfer_info_t           xfer;
   /**
    * @brief   Pointer to the I2Cx registers block.
    */

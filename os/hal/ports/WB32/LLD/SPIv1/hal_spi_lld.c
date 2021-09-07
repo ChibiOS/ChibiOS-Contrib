@@ -30,6 +30,11 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+#define aa_min(a, b)  (((a) < (b)) ? (a) : (b))
+#define aa_max(a, b)  (((a) > (b)) ? (a) : (b))
+
+#define aa_min3(a, b, c)  (aa_min(a, aa_min(b, c)))
+
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -58,9 +63,6 @@ SPIDriver SPIDS2;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
-static const uint16_t dummytx = 0xFFFFU;
-static uint16_t dummyrx;
-
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
@@ -74,50 +76,47 @@ static uint16_t dummyrx;
  */
 static void spi_lld_serve_event_interrupt(SPIDriver *spip) {
   SPI_TypeDef *spi = spip->spi;
-  uint16_t rx_byte, tx_byte;
+  uint32_t irq_status = spi->ISR;
+  uint16_t rx_byte;
+  uint16_t tx_byte;
+  uint32_t rx_max = aa_min(spip->xfer.rx_len, spi->RXFLR);
 
-  if (spi->ISR & SPI_IT_RXF) {
-    while (spi->SR & SPI_SR_RFNE) {
-      rx_byte = (uint16_t)spi->DR;
-      if (spip->g_spi_xfer_info.rx_len) {
-        spip->g_spi_xfer_info.rx_len--;
-        *spip->g_spi_xfer_info.rx_buf = rx_byte;
-        if (!spip->g_spi_xfer_info.rx_dummy) {
-          spip->g_spi_xfer_info.rx_buf++;
-        }
-      }
-      if (spip->g_spi_xfer_info.rx_len == RESET) {
-        break;
-      }
-    }
-    if (spip->g_spi_xfer_info.rx_len == RESET) {
-      spip->g_spi_xfer_info.rx_dummy = FALSE;
-      /* Disable the selected SPI interrupt.*/
-      spi->IER &= ~SPI_IT_RXF;
-      /* Portable SPI ISR code defined in the high level driver.*/
-      _spi_isr_code(spip);
+  while (rx_max--) {
+    rx_byte = (uint16_t)spi->DR;
+    spip->xfer.rx_len--;
+    if (spip->xfer.rx_buf != NULL) {
+      *spip->xfer.rx_buf = rx_byte;
+      spip->xfer.rx_buf++;
     }
   }
+  if (!spip->xfer.rx_len) {
+    spi->IER = 0x00;
+    /* Portable SPI ISR code defined in the high level driver.*/
+    _spi_isr_code(spip);
+  }
+  else if (spip->xfer.rx_len <= spi->RXFTLR) {
+    spi->RXFTLR = spip->xfer.rx_len - 1;
+  }
 
-  if (spi->ISR & SPI_IT_TXE) {
-    while (spi->SR & SPI_SR_TFNF) {
-      if (spip->g_spi_xfer_info.tx_len) {
-        spip->g_spi_xfer_info.tx_len--;
-        tx_byte = *spip->g_spi_xfer_info.tx_buf;
+  if (irq_status & SPI_IT_TXE) {
+    uint32_t tx_room = spip->fifo_len - spi->TXFLR;
+    uint32_t rxtx_gap = spip->fifo_len -
+                        (spip->xfer.rx_len - spip->xfer.tx_len);
+    uint32_t tx_max = aa_min3(spip->xfer.tx_len, tx_room, rxtx_gap);
+    while (tx_max--) {
+      spip->xfer.tx_len--;
+      if (spip->xfer.tx_buf == NULL) {
+        spi->DR = 0xFFFFU;
+      }
+      else {
+        tx_byte = *spip->xfer.tx_buf;
         spi->DR = tx_byte;
-        if (!spip->g_spi_xfer_info.tx_dummy) {
-          spip->g_spi_xfer_info.tx_buf++;
-        }
-      }
-      if (spip->g_spi_xfer_info.tx_len == RESET) {
-        break;
+        spip->xfer.tx_buf++;
       }
     }
-    if (spip->g_spi_xfer_info.tx_len == RESET) {
-      spip->g_spi_xfer_info.tx_dummy = FALSE;
-      /* Disable the selected SPI interrupt.*/
+
+    if (!spip->xfer.tx_len)
       spi->IER &= ~SPI_IT_TXE;
-    }
   }
 }
 
@@ -253,7 +252,7 @@ void spi_lld_start(SPIDriver *spip) {
       nvicEnableVector(QSPI_IRQn, WB32_SPI_QSPI_IRQ_PRIORITY);
 
       spip->spi->BAUDR = spip->config->SPI_BaudRatePrescaler;
-      spip->spi->SER |= spip->config->SPI_NSS;
+      spip->spi->SER |= SPI_NSS_0;
     }
 #endif
 #if WB32_SPI_USE_SPIM2
@@ -266,7 +265,7 @@ void spi_lld_start(SPIDriver *spip) {
       nvicEnableVector(SPIM2_IRQn, WB32_SPI_SPIM2_IRQ_PRIORITY);
 
       spip->spi->BAUDR = spip->config->SPI_BaudRatePrescaler;
-      spip->spi->SER |= spip->config->SPI_NSS;
+      spip->spi->SER |= SPI_NSS_0;
     }
 #endif
 #if WB32_SPI_USE_SPIS1
@@ -294,11 +293,27 @@ void spi_lld_start(SPIDriver *spip) {
   osalDbgAssert(spip->config->circular != FALSE, "unsupported circular");
 #endif
 
-  spip->spi->CR0 = (spip->config->SPI_DataSize | spip->config->SPI_FrameFormat |
-                    spip->config->SPI_CPHA | spip->config->SPI_CPOL |
-                    spip->config->SPI_TransferMode);
+  spip->spi->CR0 = (SPI_CR0_DFS_8BITS |
+                    SPI_CR0_FRF_SPI |
+                    SPI_CR0_TMOD_TX_AND_RX |
+                    spip->config->SPI_CPHA |
+                    spip->config->SPI_CPOL );
 
-  spip->spi->TXFTLR = 2;
+  /* Try to detect the FIFO depth if not set by interface driver,
+     the depth could be from 2 to 256 from HW spec.*/
+  if (!spip->fifo_len) {
+    uint32_t fifo;
+
+    for (fifo = 1; fifo < 256; fifo++) {
+      spip->spi->TXFTLR = fifo;
+      if (fifo != spip->spi->TXFTLR)
+        break;
+    }
+    spip->fifo_len = (fifo == 1) ? 0 : fifo;
+  }
+
+  spip->spi->TXFTLR = 0;
+  spip->spi->RXFTLR = 0;
 
   /* Disable all SPI interrupt.*/
   spip->spi->IER &= ~0xFF;
@@ -395,17 +410,21 @@ void spi_lld_unselect(SPIDriver *spip) {
  * @notapi
  */
 void spi_lld_ignore(SPIDriver *spip, size_t n) {
+  size_t level;
 
-  spip->g_spi_xfer_info.tx_dummy = TRUE;
-  spip->g_spi_xfer_info.rx_dummy = TRUE;
+  if (n == 0) return;
 
-  spip->g_spi_xfer_info.tx_buf = (uint8_t *)&dummytx;
-  spip->g_spi_xfer_info.rx_buf = (uint8_t *)&dummyrx;
+  spip->xfer.tx_buf = NULL;
+  spip->xfer.rx_buf = NULL;
 
-  spip->g_spi_xfer_info.tx_len = n;
-  spip->g_spi_xfer_info.rx_len = n;
+  spip->xfer.tx_len = n;
+  spip->xfer.rx_len = n;
 
-  spip->spi->IER |= (spip->config->SPI_IT);
+  level = aa_min(n, spip->fifo_len / 2);
+  spip->spi->TXFTLR = level;
+  spip->spi->RXFTLR = level - 1;
+
+  spip->spi->IER |= (SPI_IT_TXE | SPI_IT_RXF);
   spip->spi->SPIENR = 0x01;
 }
 
@@ -428,16 +447,21 @@ void spi_lld_exchange(SPIDriver *spip,
                       size_t n,
                       const void *txbuf,
                       void *rxbuf) {
+  size_t level;
 
-  spip->g_spi_xfer_info.tx_buf = txbuf;
-  spip->g_spi_xfer_info.tx_len = n;
-  spip->g_spi_xfer_info.tx_dummy = FALSE;
+  if (n == 0) return;
 
-  spip->g_spi_xfer_info.rx_buf = rxbuf;
-  spip->g_spi_xfer_info.rx_len = n;
-  spip->g_spi_xfer_info.rx_dummy = FALSE;
+  spip->xfer.tx_buf = txbuf;
+  spip->xfer.tx_len = n;
 
-  spip->spi->IER |= (spip->config->SPI_IT);
+  spip->xfer.rx_buf = rxbuf;
+  spip->xfer.rx_len = n;
+
+  level = aa_min(n, spip->fifo_len / 2);
+  spip->spi->TXFTLR = level;
+  spip->spi->RXFTLR = level - 1;
+
+  spip->spi->IER |= (SPI_IT_TXE | SPI_IT_RXF);
   spip->spi->SPIENR = 0x01;
 }
 
@@ -455,16 +479,21 @@ void spi_lld_exchange(SPIDriver *spip,
  * @notapi
  */
 void spi_lld_send(SPIDriver *spip, size_t n, const void *txbuf) {
+  size_t level;
 
-  spip->g_spi_xfer_info.tx_buf = txbuf;
-  spip->g_spi_xfer_info.tx_len = n;
-  spip->g_spi_xfer_info.tx_dummy = FALSE;
+  if (n == 0) return;
 
-  spip->g_spi_xfer_info.rx_buf = (uint8_t *)&dummyrx;
-  spip->g_spi_xfer_info.rx_len = n;
-  spip->g_spi_xfer_info.rx_dummy = TRUE;
+  spip->xfer.tx_buf = txbuf;
+  spip->xfer.tx_len = n;
 
-  spip->spi->IER |= (spip->config->SPI_IT);
+  spip->xfer.rx_buf = NULL;
+  spip->xfer.rx_len = n;
+
+  level = aa_min(n, spip->fifo_len / 2);
+  spip->spi->TXFTLR = level;
+  spip->spi->RXFTLR = level - 1;
+
+  spip->spi->IER |= (SPI_IT_TXE | SPI_IT_RXF);
   spip->spi->SPIENR = 0x01;
 }
 
@@ -482,16 +511,21 @@ void spi_lld_send(SPIDriver *spip, size_t n, const void *txbuf) {
  * @notapi
  */
 void spi_lld_receive(SPIDriver *spip, size_t n, void *rxbuf) {
+  size_t level;
 
-  spip->g_spi_xfer_info.tx_buf = (const uint8_t *)&dummytx;
-  spip->g_spi_xfer_info.tx_len = n;
-  spip->g_spi_xfer_info.tx_dummy = TRUE;
+  if (n == 0) return;
 
-  spip->g_spi_xfer_info.rx_buf = rxbuf;
-  spip->g_spi_xfer_info.rx_len = n;
-  spip->g_spi_xfer_info.rx_dummy = FALSE;
+  spip->xfer.tx_buf = NULL;
+  spip->xfer.tx_len = n;
 
-  spip->spi->IER |= (spip->config->SPI_IT);
+  spip->xfer.rx_buf = rxbuf;
+  spip->xfer.rx_len = n;
+
+  level = aa_min(n, spip->fifo_len / 2);
+  spip->spi->TXFTLR = level;
+  spip->spi->RXFTLR = level - 1;
+
+  spip->spi->IER |= (SPI_IT_TXE | SPI_IT_RXF);
   spip->spi->SPIENR = 0x01;
 }
 
