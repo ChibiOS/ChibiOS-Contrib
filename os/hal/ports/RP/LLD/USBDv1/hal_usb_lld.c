@@ -83,7 +83,7 @@ void data_send(uint32_t data) {
 /**
  * @brief   USB1 driver identifier.
  */
-#if (RP_USB_USE_USBD1 == TRUE) || defined(__DOXYGEN__)
+#if (RP_USB_USE_USBD0 == TRUE) || defined(__DOXYGEN__)
 USBDriver USBD1;
 #endif
 
@@ -424,7 +424,7 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
 /* Driver interrupt handlers and threads.                                    */
 /*===========================================================================*/
 
-#if RP_USB_USE_USBD1 || defined(__DOXYGEN__)
+#if RP_USB_USE_USBD0 || defined(__DOXYGEN__)
 
 /**
  * @brief   USB low priority interrupt handler.
@@ -524,7 +524,7 @@ OSAL_IRQ_HANDLER(RP_USBCTRL_IRQ_HANDLER) {
   OSAL_IRQ_EPILOGUE();
 }
 
-#endif /* RP_USB_USE_USBD1 */
+#endif /* RP_USB_USE_USBD0 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -536,7 +536,7 @@ OSAL_IRQ_HANDLER(RP_USBCTRL_IRQ_HANDLER) {
  * @notapi
  */
 void usb_lld_init(void) {
-#if RP_USB_USE_USBD1 == TRUE
+#if RP_USB_USE_USBD0 == TRUE
   /* Driver initialization.*/
   usbObjectInit(&USBD1);
 
@@ -553,7 +553,7 @@ void usb_lld_init(void) {
  * @notapi
  */
 void usb_lld_start(USBDriver *usbp) {
-#if RP_USB_USE_USBD1 == TRUE
+#if RP_USB_USE_USBD0 == TRUE
 #ifdef USB_DEBUG
   chMtxObjectInit(&cmtx);
 #endif
@@ -606,7 +606,7 @@ void usb_lld_start(USBDriver *usbp) {
 #endif /* RP_USB_USE_SOF_INTR */
 
       /* Enable USB interrupt. */
-      nvicEnableVector(RP_USBCTRL_IRQ_NUMBER, 2);
+      nvicEnableVector(RP_USBCTRL_IRQ_NUMBER, RP_IRQ_USB0_PRIORITY);
 
       /* Present full speed device by enabling pull up on DP */
       USB->SET.SIECTRL = USB_SIE_CTRL_PULLUP_EN;
@@ -623,7 +623,7 @@ void usb_lld_start(USBDriver *usbp) {
  * @notapi
  */
 void usb_lld_stop(USBDriver *usbp) {
-#if RP_USB_USE_USBD1 == TRUE
+#if RP_USB_USE_USBD0 == TRUE
   if (&USBD1 == usbp) {
     if (usbp->state == USB_READY) {
       /* Disable interrupt */

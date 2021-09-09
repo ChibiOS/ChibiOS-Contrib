@@ -60,8 +60,8 @@
 /**
  * @brief USBD1 driver enable switch.
  */
-#if !defined(RP_USB_USE_USBD1) || defined(__DOXYGEN__)
-#define RP_USB_USE_USBD1                    FALSE
+#if !defined(RP_USB_USE_USBD0) || defined(__DOXYGEN__)
+#define RP_USB_USE_USBD0                    FALSE
 #endif
 
 /**
@@ -101,6 +101,10 @@ extern bool usb_vbus_detect(void);
  */
 #if !defined(RP_USB_USE_ERROR_DATA_SEQ_INTR) || defined(__DOXYGEN__)
 #define RP_USB_USE_ERROR_DATA_SEQ_INTR      FALSE
+#endif
+
+#if !defined(RP_IRQ_USB0_PRIORITY)
+#error "RP_IRQ_USB0_PRIORITY not defined in mcuconf.h"
 #endif
 
 /*===========================================================================*/
@@ -441,7 +445,7 @@ struct USBDriver {
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if RP_USB_USE_USBD1 && !defined(__DOXYGEN__)
+#if RP_USB_USE_USBD0 && !defined(__DOXYGEN__)
 extern USBDriver USBD1;
 #endif
 
