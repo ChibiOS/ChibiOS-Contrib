@@ -103,7 +103,7 @@
 
 #include "riscv_encoding.h"
 
-.text
+.section .crt0, "ax"
 .global _start
 .type _start, @function
 _start:
