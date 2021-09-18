@@ -24,6 +24,7 @@ include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/PITv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/SDHCv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/I2Cv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/ADCv1/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/KINETIS/LLD/USBHSv1/driver.mk
 
 # Shared variables
 ALLCSRC += $(PLATFORMSRC_CONTRIB)
