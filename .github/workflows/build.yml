@@ -2,9 +2,9 @@ name: build tests
 
 on:
   push:
-    branches: [ chibios-20.3.x ]
+    branches: [ chibios-21.6.x ]
   pull_request:
-    branches: [ chibios-20.3.x ]
+    branches: [ chibios-21.6.x ]
 
 jobs:
   build:
@@ -58,3 +58,7 @@ jobs:
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/NUMICRO
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/NUMICRO
+    - name: build RP
+      run: |
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/RP
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/RP
