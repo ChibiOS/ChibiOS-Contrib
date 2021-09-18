@@ -25,11 +25,11 @@ jobs:
     - name: decompress ChibiOS ext resources
       run: |
         cd $CH_PATH/ext
-        for i in *.7z; do 7z x -y $i; done
+        for i in *.7z; do 7z x -y "$i"; done
     - name: decompress ChibiOS-Contrib ext resources
       run: |
         cd $CHC_PATH/ext
-        for i in *.7z; do 7z x -y $i; done
+        for i in *.7z; do 7z x -y "$i"; done
     - name: build STM32
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/STM32
