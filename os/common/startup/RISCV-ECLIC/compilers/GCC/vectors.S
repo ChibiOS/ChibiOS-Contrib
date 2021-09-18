@@ -37,14 +37,11 @@
 /*===========================================================================*/
 
 #if !defined(__DOXYGEN__)
-.section vectors, "a", %progbits
+.section .vectors, "a", %progbits
 .globl vector_base
 .type vector_base, %object
 .option push
 .option norelax
-# For 65 to 128 interrupts, the base address must have 512 byte alignment. 
-# https://doc.nucleisys.com/nuclei_spec/isa/core_csr.html#mtvt
-.align 9
 vector_base:
     .word vector0
     .word vector1

@@ -85,21 +85,21 @@ static const USBEndpointConfig ep0config = {
  * Buffer Descriptor (BD)
  * */
 typedef struct {
-	uint32_t desc;
-	uint8_t* addr;
+  uint32_t desc;
+  uint8_t* addr;
 } bd_t;
 
 /*
  * Buffer Descriptor fields - p.889
  */
-#define BDT_OWN		0x80
+#define BDT_OWN   0x80
 #define BDT_DATA  0x40
 #define BDT_KEEP  0x20
 #define BDT_NINC  0x10
-#define BDT_DTS		0x08
-#define BDT_STALL	0x04
+#define BDT_DTS   0x08
+#define BDT_STALL 0x04
 
-#define BDT_DESC(bc, data)	(BDT_OWN | BDT_DTS | ((data&0x1)<<6) | ((bc) << 16))
+#define BDT_DESC(bc, data)  (BDT_OWN | BDT_DTS | ((data&0x1)<<6) | ((bc) << 16))
 
 /*
  * BDT PID - p.891
@@ -107,7 +107,7 @@ typedef struct {
 #define BDT_PID_OUT   0x01
 #define BDT_PID_IN    0x09
 #define BDT_PID_SETUP 0x0D
-#define BDT_TOK_PID(n)	(((n)>>2)&0xF)
+#define BDT_TOK_PID(n)  (((n)>>2)&0xF)
 
 /*
  * BDT index fields
@@ -398,7 +398,7 @@ void usb_lld_init(void) {
   /* Set USB clock source to MCGPLLCLK, MCGFLLCLK, USB1 PFD, or IRC48M */
   SIM->SOPT2 |= SIM_SOPT2_USBSRC;
 
-#if defined(K20x5) || defined(K20x7) || defined(MK66F18)
+#if defined(K20x5) || defined(K20x7) || defined(K64F) || defined(MK66F18)
 
 #if KINETIS_MCG_MODE == KINETIS_MCG_MODE_FEI
 

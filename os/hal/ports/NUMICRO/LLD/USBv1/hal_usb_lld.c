@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2020 Alex Lewontin
+    Copyright (C) 2021 Ein Terakawa
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -47,6 +48,13 @@
  * abandoned, and some more sophisticated scheme for allocating hardware
  * endpoints adopted.
  */
+/*
+ * Solution to overcome the above mentioned shortcoming has been found.
+ * That is to map Control-IN to endpoint 5 and Control-OUT to endpoint 6.
+ * It is safe to assume interrupts for Control-IN and Control-OUT are not going
+ * to occur at the same time. Because control transfers do not overwrap.
+ * Other endpoints 0 1 2 3 4 and 7 can be assigned in whatever combination.
+ */
 
 #if HAL_USE_USB || defined(__DOXYGEN__)
 
@@ -54,7 +62,7 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define NUC123_USB_HW_ENDPOINTS 6
+#define NUC123_USB_HW_ENDPOINTS 8
 
 #define NUC123_USBD_CFG_OUT (1UL << USBD_CFG_STATE_Pos)
 #define NUC123_USBD_CFG_IN  (2UL << USBD_CFG_STATE_Pos)
@@ -136,12 +144,27 @@ static uint32_t sram_free_dword_offset = 1UL;
  * @name    Endpoint number convenience macros
  * @{
  */
-#define HW_OUT_EPN(lepn)   (2 * (lepn))
-#define HW_IN_EPN(lepn)    (HW_OUT_EPN(lepn) + 1)
-#define HW_EP(hwepn)       ((USBD->EP) + (hwepn))
-#define HW_OUT_EP(lepn)    (HW_EP(HW_OUT_EPN(lepn)))
-#define HW_IN_EP(lepn)     (HW_EP(HW_IN_EPN(lepn)))
+#if NUC123_USB_WORKAROUND
+// As work-around we map Control-OUT to EP6 and Control-IN to EP5 .
+#define _HW_OUT_EPN(lepn)   (2 * (((lepn)+3)%4))
+#define _HW_IN_EPN(lepn)    ((2 * (((lepn)+2)%4))+1)
+#define LOGICAL_EPN(hwepn) ((((hwepn) + 3) / 2) % 4)
+#else
+#if defined(NUC123xxxANx)
+// without workaround we use EP0 EP1 EP2 EP3 EP4 and EP7 for NUC123(AN)
+#define _HW_OUT_EPN(lepn)   (2 * (lepn))
+#define _HW_IN_EPN(lepn)    (2 * (((lepn)+3)%4) + 1)
+#define LOGICAL_EPN(hwepn) (((hwepn)+1)%8 / 2)
+#else
+#define _HW_OUT_EPN(lepn)   (2 * (lepn))
+#define _HW_IN_EPN(lepn)    (2 * (lepn) + 1)
 #define LOGICAL_EPN(hwepn) ((hwepn) / 2)
+#endif
+#endif
+
+#define _HW_EP(hwepn)       ((USBD->EP) + (hwepn))
+#define HW_OUT_EP(lepn)    (_HW_EP(_HW_OUT_EPN(lepn)))
+#define HW_IN_EP(lepn)     (_HW_EP(_HW_IN_EPN(lepn)))
 /** @} */
 
 /**
@@ -322,53 +345,60 @@ static void usb_lld_serve_interrupt(USBDriver* usbp)
     if (intsts & USBD_INTSTS_EPEVT0_Msk) {
       /* Clear event flag */
       USBD->INTSTS = USBD_INTSTS_EPEVT0_Msk;
-
-      usb_serve_out_endpoint(0);
+      usb_serve_out_endpoint(LOGICAL_EPN(0));
     }
 
     if (intsts & USBD_INTSTS_EPEVT1_Msk) {
       /* Clear event flag */
       USBD->INTSTS = (USBD_INTSTS_EPEVT1_Msk);
-
-      usb_serve_in_endpoint(0);
+      usb_serve_in_endpoint(LOGICAL_EPN(1));
     }
 
     if (intsts & USBD_INTSTS_EPEVT2_Msk) {
       /* Clear event flag */
       USBD->INTSTS = (USBD_INTSTS_EPEVT2_Msk);
-      usb_serve_out_endpoint(1);
+      usb_serve_out_endpoint(LOGICAL_EPN(2));
     }
 
     if (intsts & USBD_INTSTS_EPEVT3_Msk) {
       /* Clear event flag */
       USBD->INTSTS = (USBD_INTSTS_EPEVT3_Msk);
-      usb_serve_in_endpoint(1);
+      usb_serve_in_endpoint(LOGICAL_EPN(3));
     }
 
     if (intsts & USBD_INTSTS_EPEVT4_Msk) {
       /* Clear event flag */
       USBD->INTSTS = (USBD_INTSTS_EPEVT4_Msk);
-      usb_serve_out_endpoint(2);
+      usb_serve_out_endpoint(LOGICAL_EPN(4));
     }
 
+#if NUC123_USB_WORKAROUND
     if (intsts & USBD_INTSTS_EPEVT5_Msk) {
       /* Clear event flag */
-      /* TODO: when the EP5/6 confusion bug is resolved, remove the EP6 mask here */
+      /* in NUC123(AN) EP5-IN event also false triggers EP6 */
       USBD->INTSTS = (USBD_INTSTS_EPEVT5_Msk | USBD_INTSTS_EPEVT6_Msk);
-      usb_serve_in_endpoint(2);
+      usb_serve_in_endpoint(LOGICAL_EPN(5));
+      intsts &= ~USBD_INTSTS_EPEVT6_Msk;
     }
+#else
+    if (intsts & USBD_INTSTS_EPEVT5_Msk) {
+      /* Clear event flag */
+      USBD->INTSTS = (USBD_INTSTS_EPEVT5_Msk);
+      usb_serve_in_endpoint(LOGICAL_EPN(5));
+    }
+#endif
 
-#if 0
+#if NUC123_USB_HW_ENDPOINTS > 6
     if (intsts & USBD_INTSTS_EPEVT6_Msk) {
       /* Clear event flag */
       USBD->INTSTS = (USBD_INTSTS_EPEVT6_Msk);
-      usb_serve_out_endpoint(3);
+      usb_serve_out_endpoint(LOGICAL_EPN(6));
     }
 
     if (intsts & USBD_INTSTS_EPEVT7_Msk) {
       /* Clear event flag */
       USBD->INTSTS = (USBD_INTSTS_EPEVT7_Msk);
-      usb_serve_in_endpoint(3);
+      usb_serve_in_endpoint(LOGICAL_EPN(7));
     }
 #endif
   }
@@ -605,9 +635,11 @@ void usb_lld_init_endpoint(USBDriver* usbp, usbep_t ep)
  */
 void usb_lld_disable_endpoints(USBDriver* usbp)
 {
-  for (uint8_t i = 2; i < NUC123_USB_HW_ENDPOINTS; ++i) {
-    USBD->EP[i].CFGP |= USBD_CFGP_CLRRDY_Msk;
-    USBD->EP[i].CFG &= ~USBD_CFG_STATE_Msk;
+  for (uint8_t i = 0; i < NUC123_USB_HW_ENDPOINTS; ++i) {
+    if (LOGICAL_EPN(i) != 0) {
+      USBD->EP[i].CFGP |= USBD_CFGP_CLRRDY_Msk;
+      USBD->EP[i].CFG &= ~USBD_CFG_STATE_Msk;
+    }
   }
 
   sram_free_dword_offset = 1UL +
