@@ -12,6 +12,7 @@ HALCONF := $(strip $(shell cat $(CONFDIR)/halconf.h $(CONFDIR)/halconf_community
 else
 endif
 
+include ${CHIBIOS_CONTRIB}/os/hal/ports/RP/LLD/ADCv1/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/RP/LLD/USBDv1/driver.mk
 
 # Shared variables
