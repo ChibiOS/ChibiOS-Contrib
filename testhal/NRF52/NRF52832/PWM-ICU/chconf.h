@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2006..2020 Giovanni Di Sirio
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -29,7 +29,27 @@
 #define CHCONF_H
 
 #define _CHIBIOS_RT_CONF_
-#define _CHIBIOS_RT_CONF_VER_6_1_
+#define _CHIBIOS_RT_CONF_VER_7_0_
+
+/*===========================================================================*/
+/**
+ * @name System settings
+ * @{
+ */
+/*===========================================================================*/
+
+/**
+ * @brief   Handling of instances.
+ * @note    If enabled then threads assigned to various instances can
+ *          interact each other using the same synchronization objects.
+ *          If disabled then each OS instance is a separate world, no
+ *          direct interactions are handled by the OS.
+ */
+#if !defined(CH_CFG_SMP_MODE)
+#define CH_CFG_SMP_MODE                     FALSE
+#endif
+
+/** @} */
 
 /*===========================================================================*/
 /**
@@ -40,7 +60,7 @@
 
 /**
  * @brief   System time counter resolution.
- * @note    Allowed values are 16 or 32 bits.
+ * @note    Allowed values are 16, 32 or 64 bits.
  */
 #if !defined(CH_CFG_ST_RESOLUTION)
 #define CH_CFG_ST_RESOLUTION                32
@@ -52,7 +72,7 @@
  *          setting also defines the system tick time unit.
  */
 #if !defined(CH_CFG_ST_FREQUENCY)
-#define CH_CFG_ST_FREQUENCY                 1000
+#define CH_CFG_ST_FREQUENCY                 10000
 #endif
 
 /**
@@ -80,7 +100,7 @@
  *          this value.
  */
 #if !defined(CH_CFG_ST_TIMEDELTA)
-#define CH_CFG_ST_TIMEDELTA                 0
+#define CH_CFG_ST_TIMEDELTA                 2
 #endif
 
 /** @} */
@@ -157,7 +177,18 @@
  * @note    The default is @p TRUE.
  */
 #if !defined(CH_CFG_USE_TM)
-#define CH_CFG_USE_TM                       TRUE
+#define CH_CFG_USE_TM                       FALSE
+#endif
+
+/**
+ * @brief   Time Stamps APIs.
+ * @details If enabled then the time time stamps APIs are included in
+ *          the kernel.
+ *
+ * @note    The default is @p TRUE.
+ */
+#if !defined(CH_CFG_USE_TIMESTAMP)
+#define CH_CFG_USE_TIMESTAMP                TRUE
 #endif
 
 /**
@@ -566,7 +597,7 @@
  * @note    The default is @p CH_DBG_TRACE_MASK_DISABLED.
  */
 #if !defined(CH_DBG_TRACE_MASK)
-#define CH_DBG_TRACE_MASK                   CH_DBG_TRACE_MASK_DISABLED
+#define CH_DBG_TRACE_MASK                   CH_DBG_TRACE_MASK_ALL
 #endif
 
 /**
@@ -589,7 +620,7 @@
  *          @p panic_msg variable set to @p NULL.
  */
 #if !defined(CH_DBG_ENABLE_STACK_CHECK)
-#define CH_DBG_ENABLE_STACK_CHECK           FALSE
+#define CH_DBG_ENABLE_STACK_CHECK           TRUE
 #endif
 
 /**
@@ -601,7 +632,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(CH_DBG_FILL_THREADS)
-#define CH_DBG_FILL_THREADS                 FALSE
+#define CH_DBG_FILL_THREADS                 TRUE
 #endif
 
 /**
@@ -631,7 +662,7 @@
  * @details User fields added to the end of the @p ch_system_t structure.
  */
 #define CH_CFG_SYSTEM_EXTRA_FIELDS                                          \
-  /* Add threads custom fields here.*/
+  /* Add system custom fields here.*/
 
 /**
  * @brief   System initialization hook.
@@ -639,7 +670,23 @@
  *          just before interrupts are enabled globally.
  */
 #define CH_CFG_SYSTEM_INIT_HOOK() {                                         \
-  /* Add threads initialization code here.*/                                \
+  /* Add system initialization code here.*/                                 \
+}
+
+/**
+ * @brief   OS instance structure extension.
+ * @details User fields added to the end of the @p os_instance_t structure.
+ */
+#define CH_CFG_OS_INSTANCE_EXTRA_FIELDS                                     \
+  /* Add OS instance custom fields here.*/
+
+/**
+ * @brief   OS instance initialization hook.
+ *
+ * @param[in] oip       pointer to the @p os_instance_t structure
+ */
+#define CH_CFG_OS_INSTANCE_INIT_HOOK(oip) {                                 \
+  /* Add OS instance initialization code here.*/                            \
 }
 
 /**
@@ -655,6 +702,8 @@
  *
  * @note    It is invoked from within @p _thread_init() and implicitly from all
  *          the threads creation APIs.
+ *
+ * @param[in] tp        pointer to the @p thread_t structure
  */
 #define CH_CFG_THREAD_INIT_HOOK(tp) {                                       \
   /* Add threads initialization code here.*/                                \
@@ -663,6 +712,8 @@
 /**
  * @brief   Threads finalization hook.
  * @details User finalization code added to the @p chThdExit() API.
+ *
+ * @param[in] tp        pointer to the @p thread_t structure
  */
 #define CH_CFG_THREAD_EXIT_HOOK(tp) {                                       \
   /* Add threads finalization code here.*/                                  \
@@ -671,6 +722,9 @@
 /**
  * @brief   Context switch hook.
  * @details This hook is invoked just before switching between threads.
+ *
+ * @param[in] ntp       thread being switched in
+ * @param[in] otp       thread being switched out
  */
 #define CH_CFG_CONTEXT_SWITCH_HOOK(ntp, otp) {                              \
   /* Context switch code here.*/                                            \
@@ -745,6 +799,13 @@
   /* Trace code here.*/                                                     \
 }
 
+/**
+ * @brief   Runtime Faults Collection Unit hook.
+ * @details This hook is invoked each time new faults are collected and stored.
+ */
+#define CH_CFG_RUNTIME_FAULTS_HOOK(mask) {                                  \
+  /* Faults handling code here.*/                                           \
+}
 
 /** @} */
 
