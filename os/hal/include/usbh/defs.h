@@ -26,11 +26,9 @@
 
 #ifdef __IAR_SYSTEMS_ICC__
 #define PACKED_STRUCT PACKED_VAR struct
-#else
-#define PACKED_STRUCT struct PACKED_VAR
 #endif
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint16_t bcdUSB;
@@ -49,7 +47,7 @@ typedef PACKED_STRUCT {
 #define USBH_DT_DEVICE                   0x01
 #define USBH_DT_DEVICE_SIZE              18
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint16_t wTotalLength;
@@ -62,7 +60,7 @@ typedef PACKED_STRUCT {
 #define USBH_DT_CONFIG                   0x02
 #define USBH_DT_CONFIG_SIZE              9
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint16_t wData[1];
@@ -70,7 +68,7 @@ typedef PACKED_STRUCT {
 #define USBH_DT_STRING                   0x03
 #define USBH_DT_STRING_SIZE              2
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint8_t  bInterfaceNumber;
@@ -84,7 +82,7 @@ typedef PACKED_STRUCT {
 #define USBH_DT_INTERFACE                0x04
 #define USBH_DT_INTERFACE_SIZE           9
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t	bLength;
 	uint8_t	bDescriptorType;
 	uint8_t	bEndpointAddress;
@@ -95,7 +93,7 @@ typedef PACKED_STRUCT {
 #define USBH_DT_ENDPOINT                 0x05
 #define USBH_DT_ENDPOINT_SIZE            7
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t  bLength;
 	uint8_t  bDescriptorType;
 	uint8_t  bFirstInterface;
@@ -108,7 +106,7 @@ typedef PACKED_STRUCT {
 #define USBH_DT_INTERFACE_ASSOCIATION    	0x0b
 #define USBH_DT_INTERFACE_ASSOCIATION_SIZE	8
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t  bDescLength;
 	uint8_t  bDescriptorType;
 	uint8_t  bNbrPorts;
@@ -120,7 +118,7 @@ typedef PACKED_STRUCT {
 #define USBH_DT_HUB				    	0x29
 #define USBH_DT_HUB_SIZE		    	(7 + 4)
 
-typedef PACKED_STRUCT {
+typedef __PACKED_STRUCT {
 	uint8_t  bmRequestType;
 	uint8_t  bRequest;
 	uint16_t wValue;
