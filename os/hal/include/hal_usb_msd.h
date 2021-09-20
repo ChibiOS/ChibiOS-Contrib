@@ -87,7 +87,7 @@ typedef enum {
  * @brief   Represents command block wrapper structure.
  * @details See USB Mass Storage Class Specification.
  */
-typedef struct PACKED_VAR {
+typedef __PACKED_STRUCT {
   uint32_t  signature;
   uint32_t  tag;
   uint32_t  data_len;
@@ -101,7 +101,7 @@ typedef struct PACKED_VAR {
  * @brief   Represents command status wrapper structure.
  * @details See USB Mass Storage Class Specification.
  */
-typedef struct PACKED_VAR {
+typedef __PACKED_STRUCT {
   uint32_t  signature;
   uint32_t  tag;
   uint32_t  data_residue;

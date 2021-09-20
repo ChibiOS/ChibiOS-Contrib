@@ -62,6 +62,7 @@ static const UARTConfig uart_cfg = {
   UART_STORM_BAUDRATE,
   0,
   0,
+  0,
   0
 };
 
