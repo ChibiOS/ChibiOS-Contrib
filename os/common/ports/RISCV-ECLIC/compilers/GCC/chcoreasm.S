@@ -334,7 +334,7 @@ _port_switch_from_isr:
     jal     ra, _dbg_check_lock
 #endif
     # Calls _port_switch at the end of the function
-    jal     ra, chSchDoReschedule
+    jal     ra, chSchDoPreemption
 #if CH_DBG_SYSTEM_STATE_CHECK
     jal     ra, _dbg_check_unlock
 #endif

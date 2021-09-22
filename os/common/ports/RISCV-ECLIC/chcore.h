@@ -78,7 +78,12 @@
 /**
  * @brief   Name of the implemented architecture.
  */
-#define PORT_ARCHITECTURE_NAME "RISC-V RV32IMAC"
+#define PORT_ARCHITECTURE_NAME          "RISC-V"
+
+/**
+ * @brief   Name of the architecture variant.
+ */
+#define PORT_CORE_VARIANT_NAME          "RV32IMAC"
 
 /**
  * @brief   Compiler name and version.
@@ -382,7 +387,7 @@ bool _port_irq_epilogue(void);
 /**
  * @brief   Port-related initialization code.
  */
-static inline void port_init(void) {}
+static inline void port_init(os_instance_t *oip){}
 
 /**
  * @brief   Returns a word encoding the current interrupts status.
