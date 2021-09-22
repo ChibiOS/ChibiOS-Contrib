@@ -732,7 +732,7 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
     } else {
       buf_size = 64;
     }
-    buf_offset = usb_buffer_next_offset(usbp, buf_offset, false);
+    buf_offset = usb_buffer_next_offset(usbp, buf_size, false);
     epcp->out_state->hw_buf = (uint8_t*)&USB_DPSRAM->DATA[buf_offset];
     epcp->out_state->buf_size = buf_size;
 
