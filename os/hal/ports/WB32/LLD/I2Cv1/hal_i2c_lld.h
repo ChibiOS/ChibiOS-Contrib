@@ -137,31 +137,21 @@ typedef struct {
   uint32_t                  tx_abrt_source;
 } i2c_xfer_info_t;
 
+typedef enum {
+  OPMODE_I2C = 1,
+  OPMODE_SMBUS_DEVICE = 2,
+  OPMODE_SMBUS_HOST = 3,
+} i2copmode_t;
+
 /**
  * @brief   Type of I2C driver configuration structure.
  */
 typedef struct {
   /* End of the mandatory fields.*/
-  /* specifies the I2C interrupt source.*/
-  uint16_t                  i2c_it;
-  /* Specifies the I2C mode.*/
-  uint32_t                  op_mode;
-  /* In host mode set the slave address */
-  uint32_t                  target_address;
-  /* The Transmit FIFO threshold to set.*/
-  uint8_t                   tx_fifo_threshold;
-  /* The Receive FIFO threshold to set.*/
-  uint8_t                   rx_fifo_threshold;
-  /* tHIGH = (ss_scl_hcnt + FS_SPKLEN + 7) / PCLK2.*/
-  uint32_t                  ss_scl_hcnt;
-  /* tLOW = (ss_scl_lcnt + 1) / PCLK2.*/
-  uint32_t                  ss_scl_lcnt;
-  /* fs_spklen / PCLK2.*/
-  uint32_t                  fs_spklen;
-  /* tSU;DAT = sda_setup / PCLK2.*/
-  uint32_t                  sda_setup;
-  /* tHD;DAT = sda_hold / PCLK2.*/
-  uint32_t                  sda_hold;
+  i2copmode_t     op_mode;       /**< @brief Specifies the I2C mode.        */
+  uint32_t        clock_speed;   /**< @brief Specifies the clock frequency.
+                                      @note Must be set to a value lower
+                                      than 400kHz.                          */
 } I2CConfig;
 
 /**
