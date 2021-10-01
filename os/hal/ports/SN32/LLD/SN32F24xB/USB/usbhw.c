@@ -11,9 +11,15 @@
 
 #include "usbhw.h"
 
+const uint32_t wUSB_EPnOffset[5] = {
+    0, EP1_BUFFER_OFFSET_VALUE, 
+    EP2_BUFFER_OFFSET_VALUE, EP3_BUFFER_OFFSET_VALUE,
+    EP4_BUFFER_OFFSET_VALUE};
 
-volatile uint32_t wUSB_EPnOffset[5];
-volatile uint32_t wUSB_EPnMaxPacketSize[5];
+const uint32_t wUSB_EPnMaxPacketSize[5] = {
+    USB_EP0_PACKET_SIZE, USB_EP1_PACKET_SIZE, 
+    USB_EP2_PACKET_SIZE, USB_EP3_PACKET_SIZE,
+    USB_EP4_PACKET_SIZE};
 
 /*****************************************************************************
 * Description :Setting USB for different Power domain
@@ -39,7 +45,6 @@ volatile uint32_t wUSB_EPnMaxPacketSize[5];
 *****************************************************************************/
 void USB_Init(void)
 {
-    volatile uint32_t *pRam;
     uint32_t  wTmp;
 
     /* Initialize clock and Enable USB PHY. */
@@ -52,23 +57,7 @@ void USB_Init(void)
     USB_EPnBufferOffset(2, EP2_BUFFER_OFFSET_VALUE);
     USB_EPnBufferOffset(3, EP3_BUFFER_OFFSET_VALUE);
     USB_EPnBufferOffset(4, EP4_BUFFER_OFFSET_VALUE);
-
-    /* Copy EP1~EP4 RAM Start address to array(wUSB_EPnOffset).*/
-    pRam = &wUSB_EPnOffset[0];
-    *(pRam+0) =  0;
-    *(pRam+1) =  EP1_BUFFER_OFFSET_VALUE;
-    *(pRam+2) =  EP2_BUFFER_OFFSET_VALUE;
-    *(pRam+3) =  EP3_BUFFER_OFFSET_VALUE;
-    *(pRam+4) =  EP4_BUFFER_OFFSET_VALUE;
-
-    /* Initialize EP0~EP4 package size to array(wUSB_EPnPacketsize).*/
-    pRam = &wUSB_EPnMaxPacketSize[0];
-    *(pRam+0) = USB_EP0_PACKET_SIZE;
-    *(pRam+1) = USB_EP1_PACKET_SIZE;
-    *(pRam+2) = USB_EP2_PACKET_SIZE;
-    *(pRam+3) = USB_EP3_PACKET_SIZE;
-    *(pRam+4) = USB_EP4_PACKET_SIZE;
-
+    
     /* Enable the USB Interrupt */
     SN_USB->INTEN = (mskBUS_IE|mskUSB_IE|mskEPnACK_EN|mskBUSWK_IE);
     SN_USB->INTEN |= mskEP1_NAK_EN;
