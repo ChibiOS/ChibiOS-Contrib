@@ -3,10 +3,10 @@
 * DATE:					2017/07
 * AUTHOR:				SA1
 * IC:						SN32F240B
-* DESCRIPTION:	SysTick related functions.
+* DESCRIPTION:	PMU related functions.
 *____________________________________________________________________________
 * REVISION	Date				User		Description
-* 1.0				2017/07/07	SA1			First release
+*	1.0				2017/07/07	SA1			1. First release
 *
 *____________________________________________________________________________
 * THE PRESENT SOFTWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
@@ -18,7 +18,7 @@
 *****************************************************************************/
 
 /*_____ I N C L U D E S ____________________________________________________*/
-#include "SysTick.h"
+#include <SN32F240B.h>
 
 
 /*_____ D E C L A R A T I O N S ____________________________________________*/
@@ -31,41 +31,21 @@
 
 
 /*_____ F U N C T I O N S __________________________________________________*/
-/*****************************************************************************
-* Function		: SysTick_Init
-* Description	: Initialization of SysTick timer
-* Input			: None
-* Output		: None
-* Return		: None
-* Note			: None
-*****************************************************************************/
-void	SysTick_Init (void)
+
+/***************************************************************************************************
+* Function		: PMU_Setting
+* Description	: Setting and enter specified Low power mode
+* Input				: mode - specified Low power mode (PMU_SLEEP, PMU_DEEP_SLEEP, PMU_DEEP_PWR_DOWN)
+* Output			: None
+* Return			: None
+* Note				: None
+****************************************************************************************************/
+void PMU_Setting(uint16_t mode)
 {
-	SystemCoreClockUpdate();
-	
-	__SYSTICK_SET_TIMER_PERIOD(10);			//RELOAD = (system tick clock frequency กั 10 ms)/1000 -1
 
-	__SYSTICK_CLEAR_COUNTER_AND_FLAG;
+	SN_PMU->CTRL = mode;
 
-#if SYSTICK_IRQ == INTERRUPT_METHOD
-	SysTick->CTRL = 0x7;			//Enable SysTick timer and interrupt
-#else
-	SysTick->CTRL = 0x5;			//Enable SysTick timer ONLY
-#endif	
+	__WFI();
+
+	SN_PMU->CTRL = 0x0;
 }
-
-
-/*****************************************************************************
-* Function		: SysTick_Handler
-* Description	: ISR of SysTick interrupt
-* Input			: None
-* Output		: None
-* Return		: None
-* Note			: None
-*****************************************************************************/
-__irq void SysTick_Handler(void)
-{
-	__SYSTICK_CLEAR_COUNTER_AND_FLAG;
-}
-
-

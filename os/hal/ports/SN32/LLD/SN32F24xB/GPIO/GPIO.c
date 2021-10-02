@@ -1,13 +1,12 @@
-/******************** (C) COPYRIGHT 2014 SONiX *******************************
+/******************** (C) COPYRIGHT 2017 SONiX *******************************
 * COMPANY:			SONiX
-* DATE:					2014/02
+* DATE:					2017/07
 * AUTHOR:				SA1
-* IC:						SN32F240/230/220
+* IC:						SN32F240B
 * DESCRIPTION:	GPIO related functions.
 *____________________________________________________________________________
 * REVISION	Date				User		Description
-*	1.0				2013/12/17	SA1			1. First release
-*	1.1				2014/02/27	SA1			1. Fix error in GPIO_Interrupt.
+*	1.0				2017/07/07	SA1			1. First release
 *
 *____________________________________________________________________________
 * THE PRESENT SOFTWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
@@ -43,9 +42,9 @@
 *****************************************************************************/
 void GPIO_Init (void)
 {
-	//P2.0 as Input Pull-down
+	//P2.0 as Input
 	GPIO_Mode			(GPIO_PORT2, GPIO_PIN0, GPIO_MODE_INPUT);
-	GPIO_Config		(GPIO_PORT2, GPIO_PIN0, GPIO_CFG_PULL_DOWN);
+	//P2.0 need to add External Pull-down Resistors for Demo rising edge trigger
 	//P2.0 as rising edge
 	GPIO_P2Trigger(GPIO_PIN0,	GPIO_IS_EDGE, GPIO_IBS_EDGE_TRIGGER, GPIO_IEV_RISING_EDGE);
 	GPIO_Interrupt(GPIO_PORT2, GPIO_PIN0,	GPIO_IE_EN);	
@@ -57,16 +56,16 @@ void GPIO_Init (void)
 	GPIO_P2Trigger(GPIO_PIN1,	GPIO_IS_EDGE, GPIO_IBS_EDGE_TRIGGER, GPIO_IEV_FALLING_EDGE);
 	GPIO_Interrupt(GPIO_PORT2, GPIO_PIN1,	GPIO_IE_EN);	
 	
-	//P2.2 as Input Repeater-mode
+	//P2.2 as Input Pull-up
 	GPIO_Mode			(GPIO_PORT2, GPIO_PIN2, GPIO_MODE_INPUT);
-	GPIO_Config		(GPIO_PORT2, GPIO_PIN2, GPIO_CFG_REPEATER_MODE);	
+	GPIO_Config		(GPIO_PORT2, GPIO_PIN2, GPIO_CFG_PULL_UP);	
 	//P2.2 as both edge
 	GPIO_P2Trigger(GPIO_PIN2,	GPIO_IS_EDGE, GPIO_IBS_BOTH_EDGE_TRIGGER, GPIO_IEV_RISING_EDGE);
 	GPIO_Interrupt(GPIO_PORT2, GPIO_PIN2,	GPIO_IE_EN);	
 	
-	//P2.3 as Input Pull-down
+	//P2.3 as Input
 	GPIO_Mode			(GPIO_PORT2, GPIO_PIN3, GPIO_MODE_INPUT);
-	GPIO_Config		(GPIO_PORT2, GPIO_PIN3, GPIO_CFG_PULL_DOWN);	
+	//P2.3 need to add External Pull-down Resistors for Demo high level trigger
 	//P2.3 as high level
 	GPIO_P2Trigger(GPIO_PIN3,	GPIO_IS_EVENT, GPIO_IBS_EDGE_TRIGGER, GPIO_IEV_RISING_EDGE);
 	GPIO_Interrupt(GPIO_PORT2, GPIO_PIN3,	GPIO_IE_EN);	
@@ -103,28 +102,28 @@ void GPIO_Mode(uint32_t port_number, uint32_t pin_number, uint32_t mode)
 				wGpiomode&=~(1<<(uint32_t) pin_number);				
 				wGpiomode|=(mode<<(uint32_t) pin_number);
 				SN_GPIO0->MODE=wGpiomode;				
-				wGpiomode=SN_GPIO0->MODE;		//for checlk
+				wGpiomode=SN_GPIO0->MODE;		//for check
 			break;
 			case 1:
 				wGpiomode=(uint32_t)SN_GPIO1->MODE;
 				wGpiomode&=~(1<<(uint32_t) pin_number);				
 				wGpiomode|=(mode<<(uint32_t) pin_number);
 				SN_GPIO1->MODE=wGpiomode;				
-				wGpiomode=SN_GPIO1->MODE;		//for checlk
+				wGpiomode=SN_GPIO1->MODE;		//for check
 			break;
 			case 2:
 				wGpiomode=(uint32_t)SN_GPIO2->MODE;
 				wGpiomode&=~(1<<(uint32_t) pin_number);				
 				wGpiomode|=(mode<<(uint32_t) pin_number);
 				SN_GPIO2->MODE=wGpiomode;				
-				wGpiomode=SN_GPIO2->MODE;		//for checlk
+				wGpiomode=SN_GPIO2->MODE;		//for check
 			break;
 			case 3:
 				wGpiomode=(uint32_t)SN_GPIO3->MODE;
 				wGpiomode&=~(1<<(uint32_t) pin_number);				
 				wGpiomode|=(mode<<(uint32_t) pin_number);
 				SN_GPIO3->MODE=wGpiomode;				
-				wGpiomode=SN_GPIO3->MODE;		//for checlk
+				wGpiomode=SN_GPIO3->MODE;		//for check
 			break;
 			default:
 			break;		
@@ -350,9 +349,9 @@ void GPIO_Interrupt(uint32_t port_number, uint32_t pin_number, uint32_t enable)
 			NVIC_EnableIRQ(P0_IRQn);
 			break;
 		case 1:
+			SN_GPIO1->IC=0xFFFF;
 			SN_GPIO1->IE&=~(1<<pin_number);
 			SN_GPIO1->IE|=(enable<<pin_number);
-			SN_GPIO1->IC=0xFFFF;
 			NVIC_ClearPendingIRQ(P1_IRQn);
 			NVIC_EnableIRQ(P1_IRQn);
 			break;
@@ -384,7 +383,7 @@ void GPIO_Interrupt(uint32_t port_number, uint32_t pin_number, uint32_t enable)
 * Function		: GPIO_int_clr
 * Description	: set clear interrupt
 * Input			: port_number - GPIO0, GPIO1, GPIO2, GPIO3
-							pin_number	- GPIO_PIN0, 1, 2, ...,15 	
+							pin_number	- GPIO_PIN0, 1, 2, ...,11 	
 * Output		: None
 * Return		: None
 * Note			: None
@@ -413,7 +412,7 @@ void GPIO_IntClr(uint32_t port_number, uint32_t pin_number)
 * Function		: GPIO_Config
 * Description	: set GPIO as pull-up, pull-down, inactive or repeater
 * Input			: port_number - GPIO0, GPIO1, GPIO2, GPIO3
-							pin_number	- GPIO_PIN0, 1, 2, ...,15 
+							pin_number	- GPIO_PIN0, 1, 2, ...,11 
 							value				-	0: Pull-up enable 
 														1: Pull-down enable
 														2: Inactive
@@ -452,46 +451,10 @@ void GPIO_Config(uint32_t port_number, uint32_t pin_number, uint32_t value)
 }
 
 /*****************************************************************************
-* Function		: GPIO_OpenDrain
-* Description	: set Open drain
-* Input			: port_number - GPIO0, GPIO1, GPIO2, GPIO3
-							pin_number	- GPIO_PIN0, 1, 2, ...,15 
-							value				-	0: disable
-														1: enable
-* Output		: None
-* Return		: None
-* Note			: None
-*****************************************************************************/
-void GPIO_OpenDrain(uint32_t port_number, uint32_t pin_number, uint32_t value)
-{
-	switch(port_number)
-	{
-		case 0:
-			SN_GPIO0->ODCTRL&=~(1<<pin_number);
-			SN_GPIO0->ODCTRL|=(value<<pin_number);
-			break;
-		case 1:
-			SN_GPIO1->ODCTRL=~(1<<pin_number);
-			SN_GPIO1->ODCTRL|=(value<<pin_number);
-			break;
-		case 2:
-			SN_GPIO2->ODCTRL=~(1<<pin_number);
-			SN_GPIO2->ODCTRL|=(value<<pin_number);
-			break;
-		case 3:
-			SN_GPIO3->ODCTRL=~(1<<pin_number);
-			SN_GPIO3->ODCTRL|=(value<<pin_number);
-			break;
-		default:
-			break;
-	}	
-}
-
-/*****************************************************************************
 * Function		: GPIO_IntStatus
 * Description	: Check GPIO interrupt status
 * Input			: port_number - GPIO0, GPIO1, GPIO2, GPIO3
-							pin_number	- GPIO_PIN0, 1, 2, ...,15 
+							pin_number	- GPIO_PIN0, 1, 2, ...,11 
 * Output		: None
 * Return		: 0 or 1
 * Note			: None
@@ -583,18 +546,18 @@ __irq void P0_IRQHandler(void)
 	{
 		GPIO_IntClr(GPIO_PORT0,GPIO_PIN12);
 	}
-		else if(GPIO_IntStatus(GPIO_PORT0,GPIO_PIN13)==1)
+	else if(GPIO_IntStatus(GPIO_PORT0,GPIO_PIN13)==1)
 	{
 		GPIO_IntClr(GPIO_PORT0,GPIO_PIN13);
-	}
-		else if(GPIO_IntStatus(GPIO_PORT0,GPIO_PIN14)==1)
+	}	
+	else if(GPIO_IntStatus(GPIO_PORT0,GPIO_PIN14)==1)
 	{
 		GPIO_IntClr(GPIO_PORT0,GPIO_PIN14);
 	}
-		else if(GPIO_IntStatus(GPIO_PORT0,GPIO_PIN15)==1)
+	else if(GPIO_IntStatus(GPIO_PORT0,GPIO_PIN15)==1)
 	{
 		GPIO_IntClr(GPIO_PORT0,GPIO_PIN15);
-	}	
+	}		
 }
 
 /*****************************************************************************
@@ -658,19 +621,19 @@ __irq	void P1_IRQHandler(void)
 	else if(GPIO_IntStatus(GPIO_PORT1,GPIO_PIN12)==1)
 	{
 		GPIO_IntClr(GPIO_PORT1,GPIO_PIN12);
-	}	
+	}
 	else if(GPIO_IntStatus(GPIO_PORT1,GPIO_PIN13)==1)
 	{
 		GPIO_IntClr(GPIO_PORT1,GPIO_PIN13);
-	}	
+	}
 	else if(GPIO_IntStatus(GPIO_PORT1,GPIO_PIN14)==1)
 	{
 		GPIO_IntClr(GPIO_PORT1,GPIO_PIN14);
-	}	
+	}
 	else if(GPIO_IntStatus(GPIO_PORT1,GPIO_PIN15)==1)
 	{
 		GPIO_IntClr(GPIO_PORT1,GPIO_PIN15);
-	}		
+	}
 }
 
 /*****************************************************************************
@@ -759,19 +722,7 @@ __irq	void P2_IRQHandler(void)
 *****************************************************************************/
 __irq	void P3_IRQHandler(void)
 {
-	if (GPIO_IntStatus(GPIO_PORT3,GPIO_PIN0)==1)
-	{
-		GPIO_IntClr(GPIO_PORT3,GPIO_PIN0);
-	}
-	else if(GPIO_IntStatus(GPIO_PORT3,GPIO_PIN1)==1)
-	{
-		GPIO_IntClr(GPIO_PORT3,GPIO_PIN1);
-	}
-	else if(GPIO_IntStatus(GPIO_PORT3,GPIO_PIN2)==1)
-	{
-		GPIO_IntClr(GPIO_PORT3,GPIO_PIN2);
-	}
-	else if(GPIO_IntStatus(GPIO_PORT3,GPIO_PIN3)==1)
+	if(GPIO_IntStatus(GPIO_PORT3,GPIO_PIN3)==1)
 	{
 		GPIO_IntClr(GPIO_PORT3,GPIO_PIN3);
 	}
@@ -806,22 +757,6 @@ __irq	void P3_IRQHandler(void)
 	else if(GPIO_IntStatus(GPIO_PORT3,GPIO_PIN11)==1)
 	{
 		GPIO_IntClr(GPIO_PORT3,GPIO_PIN11);
-	}
-	else if(GPIO_IntStatus(GPIO_PORT3,GPIO_PIN12)==1)
-	{
-		GPIO_IntClr(GPIO_PORT3,GPIO_PIN12);
-	}
-	else if(GPIO_IntStatus(GPIO_PORT3,GPIO_PIN13)==1)
-	{
-		GPIO_IntClr(GPIO_PORT3,GPIO_PIN13);
-	}
-	else if(GPIO_IntStatus(GPIO_PORT3,GPIO_PIN14)==1)
-	{
-		GPIO_IntClr(GPIO_PORT3,GPIO_PIN14);
-	}
-	else if(GPIO_IntStatus(GPIO_PORT3,GPIO_PIN15)==1)
-	{
-		GPIO_IntClr(GPIO_PORT3,GPIO_PIN15);
 	}
 }
 

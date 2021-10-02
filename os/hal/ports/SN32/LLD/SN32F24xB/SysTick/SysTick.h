@@ -1,5 +1,5 @@
-#ifndef __SN32F240_SYSTICK_H
-#define __SN32F240_SYSTICK_H
+#ifndef __SN32F240B_SYSTICK_H
+#define __SN32F240B_SYSTICK_H
 
 
 /*_____ I N C L U D E S ____________________________________________________*/
@@ -20,4 +20,4 @@
 /*_____ D E C L A R A T I O N S ____________________________________________*/
 void SysTick_Init(void);
 
-#endif	/*__SN32F240_SYSTICK_H*/
+#endif	/*__SN32F240B_SYSTICK_H*/

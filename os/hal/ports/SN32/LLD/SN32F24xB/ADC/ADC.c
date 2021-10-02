@@ -1,19 +1,19 @@
-/******************** (C) COPYRIGHT 2013 SONiX *******************************
+/******************** (C) COPYRIGHT 2017 SONiX *******************************
 * COMPANY:			SONiX
-* DATE:					2013/12
+* DATE:					2017/07
 * AUTHOR:				SA1
-* IC:						SN32F240/230/220
+* IC:						SN32F240B
 * DESCRIPTION:	ADC related functions.
 *____________________________________________________________________________
 * REVISION	Date				User		Description
-* 1.0				2013/12/17	SA1			First release
+* 1.0				2017/07/07	SA1			First release
 *
 *____________________________________________________________________________
 * THE PRESENT SOFTWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
 * WITH CODING INFORMATION REGARDING THEIR PRODUCTS TIME TO MARKET.
-* SONiX SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT OR CONSEQUENTIAL
+* SONiX SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT OR CONSEQUENTIAL 
 * DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE CONTENT OF SUCH SOFTWARE
-* AND/OR THE USE MADE BY CUSTOMERS OF THE CODING INFORMATION CONTAINED HEREIN
+* AND/OR THE USE MADE BY CUSTOMERS OF THE CODING INFORMATION CONTAINED HEREIN 
 * IN CONNECTION WITH THEIR PRODUCTS.
 *****************************************************************************/
 
@@ -45,43 +45,31 @@ uint8_t	bADC_StartConv;
 *****************************************************************************/
 void ADC_Init(void)
 {
-	SN_SYS1->AHBCLKEN |= (0x01 << 11);									//Enables HCLK for ADC
-
-	//Set ADC PCLK
-	SN_SYS1->APBCP0 |= (0x00 << 16);										//ADC PCLK = HCLK/1
-	//SN_SYS1->APBCP0 |= (0x01 << 16);									//ADC PCLK = HCLK/2
-	//SN_SYS1->APBCP0 |= (0x02 << 16);									//ADC PCLK = HCLK/4
-	//SN_SYS1->APBCP0 |= (0x03 << 16);									//ADC PCLK = HCLK/8
-	//SN_SYS1->APBCP0 |= (0x04 << 16);									//ADC PCLK = HCLK/16
-
+	SN_SYS1->AHBCLKEN_b.ADCCLKEN = 1;										//Enables HCLK for ADC
+	
 	SN_ADC->ADM_b.ADENB = ADC_ADENB_EN;									//Enable ADC
-
+	
 	UT_DelayNx10us(10);																	//Delay 100us
+	
+	SN_ADC->ADM_b.AVREFHSEL = ADC_AVREFHSEL_INTERNAL;		//Set ADC high reference voltage source from internal reference
+	
+	SN_ADC->ADM_b.VHS = ADC_VHS_VDD;										//Set ADC high reference voltage source as VDD
+	
+	SN_ADC->ADM_b.GCHS = ADC_GCHS_EN;										//Enable ADC global channel	
+	
+	SN_ADC->ADM_b.ADLEN = ADC_ADLEN_12BIT;							//Set ADC resolution = 12-bit			
 
-	SN_ADC->ADM_b.AVREFHSEL = ADC_AVREFHSEL_INTERNAL;		//Set ADC high reference voltage source from internal VDD
-
-	SN_ADC->ADM_b.GCHS = ADC_GCHS_EN;										//Enable ADC global channel
-
-	SN_ADC->ADM_b.ADLEN = ADC_ADLEN_12BIT;							//Set ADC resolution = 12-bit
-
-	SN_ADC->ADM_b.ADCKS = ADC_ADCKS_DIV32;							//ADC_CLK = ADC_PCLK/32
-
-	#if ADC_FUNCTION_TYPE == ADC_TYPE
-
+	SN_ADC->ADM_b.ADCKS = ADC_ADCKS_DIV1;							//ADC_CLK = ADC_PCLK/1
+	//SN_ADC->ADM_b.ADCKS = ADC_ADCKS_DIV2;							//ADC_CLK = ADC_PCLK/2
+	//SN_ADC->ADM_b.ADCKS = ADC_ADCKS_DIV4;							//ADC_CLK = ADC_PCLK/4
+	//SN_ADC->ADM_b.ADCKS = ADC_ADCKS_DIV8;							//ADC_CLK = ADC_PCLK/8
+	//SN_ADC->ADM_b.ADCKS = ADC_ADCKS_DIV16;							//ADC_CLK = ADC_PCLK/16
+	//SN_ADC->ADM_b.ADCKS = ADC_ADCKS_DIV32;							//ADC_CLK = ADC_PCLK/32
+	
 	SN_ADC->ADM_b.CHS = ADC_CHS_AIN1;										//Set P2.1 as ADC input channel
-
-	SN_ADC->IE |= ADC_IE_AIN1;													//Enable ADC channel P2.1 interrupt
-
-	#endif
-
-	#if ADC_FUNCTION_TYPE == TS_TYPE
-
-	SN_ADC->ADM_b.TSENB = ADC_TSENB_EN;									//Enable Temperature Sensor
-	SN_ADC->ADM_b.CHS = ADC_CHS_TS;											//Set P2.14 as Temperature Sensor channel
-	SN_ADC->IE |= ADC_IE_TS;														//Enable Temperature Sensor interrupt
-
-	#endif
-
+	
+	SN_ADC->IE |= ADC_IE_AIN1;													//Enable ADC channel P2.1 interrupt															
+	
 	ADC_NvicEnable();																		//Enable ADC NVIC interrupt
 }
 

@@ -1,18 +1,15 @@
-#ifndef __SN32F240_ADC_H
-#define __SN32F240_ADC_H
+#ifndef __SN32F240B_ADC_H
+#define __SN32F240B_ADC_H
 
 /*_____ I N C L U D E S ____________________________________________________*/
 #include <SN32F240B.h>
 
 /*_____ D E F I N I T I O N S ______________________________________________*/
-//ADC function Type
-#define	ADC_FUNCTION_TYPE				ADC_TYPE			//ADC_TYPE, TS_TYPE
-#define	ADC_TYPE								0						//ADC function
-#define	TS_TYPE									1						//Temperature Sensor function
-
-//Temperature sensor enable bit
-#define ADC_TSENB_DIS						0x0
-#define ADC_TSENB_EN						0x1
+//ADC Internal Reference Voltage level
+#define	ADC_VHS_INTERNAL_2V			0
+#define	ADC_VHS_INTERNAL_3V			1
+#define	ADC_VHS_INTERNAL_4P5V		2
+#define	ADC_VHS_VDD							7
 
 //ADC high reference voltage source select bit
 #define ADC_AVREFHSEL_INTERNAL	0x0
@@ -57,25 +54,32 @@
 #define ADC_CHS_AIN11						0xB					//P2.11
 #define ADC_CHS_AIN12						0xC					//P2.12
 #define ADC_CHS_AIN13						0xD					//P2.13
-#define ADC_CHS_TS							0xE					//Temperature Sensor
+#define ADC_CHS_AIN14						0xE					//P2.14
+#define ADC_CHS_AIN15						0xF					//P2.15
+#define ADC_CHS_AIN16						0x10				//Internal Ref. Voltage
+#define ADC_CHS_AIN17						0x11				//VDD
+#define ADC_CHS_AIN18						0x12				//VSS				
 
 //ADC Interrupt Enable register(ADC_IE)
-#define ADC_IE_AIN0							0x0001
-#define ADC_IE_AIN1							0x0002
-#define ADC_IE_AIN2							0x0004
-#define ADC_IE_AIN3							0x0008
-#define ADC_IE_AIN4							0x0010
-#define ADC_IE_AIN5							0x0020
-#define ADC_IE_AIN6							0x0040
-#define ADC_IE_AIN7							0x0080
-#define ADC_IE_AIN8							0x0100
-#define ADC_IE_AIN9							0x0200
-#define ADC_IE_AIN10						0x0400
-#define ADC_IE_AIN11						0x0800
-#define ADC_IE_AIN12						0x1000
-#define ADC_IE_AIN13						0x2000
-#define ADC_IE_TS								0x4000
-
+#define ADC_IE_AIN0							0x00001
+#define ADC_IE_AIN1							0x00002
+#define ADC_IE_AIN2							0x00004
+#define ADC_IE_AIN3							0x00008
+#define ADC_IE_AIN4							0x00010
+#define ADC_IE_AIN5							0x00020
+#define ADC_IE_AIN6							0x00040
+#define ADC_IE_AIN7							0x00080
+#define ADC_IE_AIN8							0x00100
+#define ADC_IE_AIN9							0x00200
+#define ADC_IE_AIN10						0x00400
+#define ADC_IE_AIN11						0x00800
+#define ADC_IE_AIN12						0x01000
+#define ADC_IE_AIN13						0x02000
+#define ADC_IE_AIN14						0x04000
+#define ADC_IE_AIN15						0x08000
+#define ADC_IE_AIN16						0x10000
+#define ADC_IE_AIN17						0x20000
+#define ADC_IE_AIN18						0x40000
 
 //ADC Raw Interrupt Status register(ADC_RIS)
 #define mskADC_IF_AIN0					(0x1<<0)		//P2.0
@@ -92,10 +96,14 @@
 #define mskADC_IF_AIN11					(0x1<<11)		//P2.11
 #define mskADC_IF_AIN12					(0x1<<12)		//P2.12
 #define mskADC_IF_AIN13					(0x1<<13)		//P2.13
-#define mskADC_IF_TS						(0x1<<14)		//Temperature Sensor
+#define mskADC_IF_AIN14					(0x1<<14)		//P2.14
+#define mskADC_IF_AIN15					(0x1<<15)		//P2.15
+#define mskADC_IF_AIN16					(0x1<<16)		//Internal Ref. Voltage
+#define mskADC_IF_AIN17					(0x1<<17)		//VDD
+#define mskADC_IF_AIN18					(0x1<<18)		//VSS
 
 /*_____ M A C R O S ________________________________________________________*/
-
+											
 
 
 /*_____ D E C L A R A T I O N S ____________________________________________*/
@@ -106,4 +114,4 @@ uint16_t ADC_Read(void);
 void ADC_NvicEnable(void);
 void ADC_NvicDisable(void);
 
-#endif	/*__SN32F240_ADC_H*/
+#endif	/*__SN32F240B_ADC_H*/
