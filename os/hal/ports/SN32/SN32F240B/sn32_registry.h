@@ -72,15 +72,15 @@
 #define SN32_I2C0_GLOBAL_NUMBER    I2C0_IRQn
 
 /*
- * USART units.
+ * UART units.
  */
-#define SN32_USART0_HANDLER        Vector70
-#define SN32_USART1_HANDLER        Vector74
-#define SN32_USART2_HANDLER        Vector78
+#define SN32_UART0_HANDLER        Vector70
+#define SN32_UART1_HANDLER        Vector74
+#define SN32_UART2_HANDLER        Vector78
 
-#define SN32_USART0_NUMBER         UART0_IRQn
-#define SN32_USART1_NUMBER         UART1_IRQn
-#define SN32_USART2_NUMBER         UART2_IRQn
+#define SN32_UART0_NUMBER         UART0_IRQn
+#define SN32_UART1_NUMBER         UART1_IRQn
+#define SN32_UART2_NUMBER         UART2_IRQn
 
 /*
  * CT16 units.
