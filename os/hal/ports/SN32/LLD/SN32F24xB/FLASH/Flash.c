@@ -105,16 +105,16 @@ FLASH_Status FLASH_ProgramPage (uint32_t adr, uint32_t sz, uint16_t Data)
 }
 
 /*****************************************************************************
-* Function		: FLASH_ProgramHalfWord
-* Description	: Program a half word at a specified address
+* Function		: FLASH_ProgramWord
+* Description	: Program a word at a specified address
 * Input			: adr - Page start address (word-alignment) of Flash
 *				  		Data - the Source data
 * Output		: None
 * Return		: FLASH_OKAY or FLASH_ERR
 * Note			: None
 *****************************************************************************/
-FLASH_Status FLASH_ProgramHalfWord(uint32_t adr, uint16_t Data) {
-    FLASH_Status status = FLASH_ProgramPage(adr, 2, Data);
+FLASH_Status FLASH_ProgramWord(uint32_t adr, uint16_t Data) {
+    FLASH_Status status = FLASH_ProgramPage(adr, 4, Data);
 
     return status;
 }
