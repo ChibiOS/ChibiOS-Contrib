@@ -32,7 +32,6 @@
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
-#define SN32_USB_IRQ_VECTOR    Vector44
 #define SN32_USB_PMA_SIZE      256
 
 /*===========================================================================*/
@@ -618,7 +617,7 @@ void handleNAK(USBDriver *usbp, usbep_t ep) {
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(SN32_USB_IRQ_VECTOR) {
+OSAL_IRQ_HANDLER(SN32_USB_HANDLER) {
 
     OSAL_IRQ_PROLOGUE();
     usb_lld_serve_interrupt(&USBD1);
@@ -654,7 +653,7 @@ void usb_lld_start(USBDriver *usbp) {
         #if PLATFORM_USB_USE_USB1 == TRUE
         if (&USBD1 == usbp) {
             USB_Init();
-            nvicEnableVector(USB_IRQn, 14);
+            nvicEnableVector(SN32_USB_NUMBER, 14);
         }
         #endif
     }
