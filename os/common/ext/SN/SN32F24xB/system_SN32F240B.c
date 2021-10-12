@@ -144,22 +144,44 @@ void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
 		case 7:	AHB_prescaler = 128;break;
 		default: break;
 	}
-	SystemCoreClock /= AHB_prescaler;
 
+	SystemCoreClock /= AHB_prescaler;
+}
+/**
+ * Initialize the Flash controller
+ *
+ * @param  none
+ * @return none
+ *
+ * @brief  Update the Flash power control.
+ */
+void FlashClockUpdate (void)
+{
 	//;;;;;;;;; Need for SN32F240B Begin
 	if (SystemCoreClock > 24000000)
-	{
 		SN_FLASH->LPCTRL = 0x5AFA0005;
-	}
 	else if (SystemCoreClock > 12000000)
 		SN_FLASH->LPCTRL = 0x5AFA0003;
-	else
+	else if (SystemCoreClock > 8000)
 		SN_FLASH->LPCTRL = 0x5AFA0000;
+	else  //Slow mode required for SystemCoreClock <= 8000
+		SlowModeSwitch();
 	//;;;;;;;;; Need for SN32F240B End
-
-	return;
 }
-
+/**
+ * Switch System to Slow Mode
+ * @param  none
+ * @return none
+ *
+ * @brief  Special init required for SystemCoreClock <= 8000
+ */
+void SlowModeSwitch (void)
+{
+	SN_SYS0->CLKCFG_b.SYSCLKSEL = 1; //Switch to ILRC
+	SN_SYS0->AHBCP_b.AHBPRE =0x2; //8kHz only for now
+	SystemCoreClockUpdate();
+	SN_FLASH->LPCTRL = 0x5AFA0002;
+}
 /**
  * Initialize the system
  *
@@ -175,7 +197,6 @@ void SystemInit (void)
 
 	#if SYS0_CLKCFG_VAL == IHRC48			//IHRC=48MHz
 
-        SN_FLASH->LPCTRL = 0x5AFA0004;
         SN_FLASH->LPCTRL = 0x5AFA0005;
 
         SN_SYS0->ANBCTRL = 0x1;

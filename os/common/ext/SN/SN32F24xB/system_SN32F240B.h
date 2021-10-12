@@ -57,6 +57,25 @@ extern void SystemInit (void);
  */
 extern void SystemCoreClockUpdate (void);
 
+/**
+ * Initialize the Flash controller
+ *
+ * @param  none
+ * @return none
+ *
+ * @brief  Update the Flash power control.
+ */
+extern void FlashClockUpdate (void);
+
+/**
+ * Switch System to Slow Mode
+ * @param  none
+ * @return none
+ *
+ * @brief  Special init required for SystemCoreClock <= 8000
+ */
+extern void SlowModeSwitch (void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -58,6 +58,7 @@
  */
 void sn32_clock_init(void) {
   SystemCoreClockUpdate();
+  FlashClockUpdate();
 }
 
 /**
