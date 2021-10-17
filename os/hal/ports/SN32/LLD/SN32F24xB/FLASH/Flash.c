@@ -20,13 +20,10 @@
 /*_____ I N C L U D E S ____________________________________________________*/
 #include "Flash.h"
 
-
 /*_____ D E C L A R A T I O N S ____________________________________________*/
-uint32_t wFLASH_PGRAM[2];
-
 
 /*_____ D E F I N I T I O N S ______________________________________________*/
-
+#define SN32_JUMPLOADER_SIZE 0x200
 
 /*_____ M A C R O S ________________________________________________________*/
 
@@ -42,6 +39,10 @@ uint32_t wFLASH_PGRAM[2];
 *****************************************************************************/
 FLASH_Status FLASH_EraseSector (uint32_t adr)
 {
+    // never touch the jumploader
+    if (adr < SN32_JUMPLOADER_SIZE)
+        return FLASH_FAIL;
+
  	SN_FLASH->CTRL = FLASH_PER;						// Page Erase Enabled
 	SN_FLASH->ADDR = adr;									// Page Address
 
@@ -65,8 +66,12 @@ FLASH_Status FLASH_EraseSector (uint32_t adr)
 * Return		: FLASH_OKAY or FLASH_FAIL
 * Note			: None
 *****************************************************************************/
-FLASH_Status FLASH_ProgramPage (uint32_t adr, uint32_t sz, uint16_t Data)
+FLASH_Status FLASH_ProgramPage (uint32_t adr, uint32_t sz, uint32_t Data)
 {
+    // never touch the jumploader
+    if (adr < SN32_JUMPLOADER_SIZE)
+        return FLASH_FAIL;
+
 	SN_FLASH->CTRL = FLASH_PG;                  // Programming Enabled
 	SN_FLASH->ADDR = adr;
 
@@ -74,9 +79,9 @@ FLASH_Status FLASH_ProgramPage (uint32_t adr, uint32_t sz, uint16_t Data)
 	
 	*(uint32_t*)adr = Data;
 	
-	while (sz){
+	while (sz) {
 
-		SN_FLASH->DATA = *((uint32_t *)adr);
+		SN_FLASH->DATA = Data;
 
 		FLASH_WAIT_FOR_DONE
 
@@ -113,7 +118,7 @@ FLASH_Status FLASH_ProgramPage (uint32_t adr, uint32_t sz, uint16_t Data)
 * Return		: FLASH_OKAY or FLASH_ERR
 * Note			: None
 *****************************************************************************/
-FLASH_Status FLASH_ProgramWord(uint32_t adr, uint16_t Data) {
+FLASH_Status FLASH_ProgramDWord(uint32_t adr, uint32_t Data) {
     FLASH_Status status = FLASH_ProgramPage(adr, 4, Data);
 
     return status;
