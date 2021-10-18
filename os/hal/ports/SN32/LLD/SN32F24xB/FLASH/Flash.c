@@ -40,8 +40,7 @@
 FLASH_Status FLASH_EraseSector (uint32_t adr)
 {
     // never touch the jumploader
-    if (adr < SN32_JUMPLOADER_SIZE)
-        return FLASH_FAIL;
+    if (adr < SN32_JUMPLOADER_SIZE) return FLASH_FAIL;
 
  	SN_FLASH->CTRL = FLASH_PER;						// Page Erase Enabled
 	SN_FLASH->ADDR = adr;									// Page Address
@@ -69,8 +68,7 @@ FLASH_Status FLASH_EraseSector (uint32_t adr)
 FLASH_Status FLASH_ProgramPage (uint32_t adr, uint32_t sz, uint32_t Data)
 {
     // never touch the jumploader
-    if (adr < SN32_JUMPLOADER_SIZE)
-        return FLASH_FAIL;
+    if (adr < SN32_JUMPLOADER_SIZE) return FLASH_FAIL;
 
 	SN_FLASH->CTRL = FLASH_PG;                  // Programming Enabled
 	SN_FLASH->ADDR = adr;
