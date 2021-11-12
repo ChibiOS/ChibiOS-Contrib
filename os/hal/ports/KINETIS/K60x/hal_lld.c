@@ -82,6 +82,11 @@ const uint8_t _cfm[0x10] = {
  */
 void hal_lld_init(void) {
 
+#if defined(K64F)
+  /* Disable the MPU by default */
+  SYSMPU->CESR &= ~SYSMPU_CESR_VLD;
+#endif
+
 }
 
 /**
@@ -216,7 +221,9 @@ void k60x_clock_init(void) {
                  SIM_CLKDIV1_OUTDIV2(KINETIS_CLKDIV1_OUTDIV2-1) |
                  SIM_CLKDIV1_OUTDIV4(KINETIS_CLKDIV1_OUTDIV4-1);
   SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
-  SIM->SOPT2 = SIM_SOPT2_PLLFLLSEL_IRC48M; /* FIXME ? Why this? */
+
+  /* Configure peripherals to use MCGPLLCLK */
+  SIM->SOPT2 = SIM_SOPT2_PLLFLLSEL_MCGPLL;
 
   /* Switch to PLL as clock source */
   MCG->C1 = MCG_C1_CLKS(0);
