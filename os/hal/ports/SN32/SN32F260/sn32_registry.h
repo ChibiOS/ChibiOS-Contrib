@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    sn32_registry.h
+ * @file    SN32F260/sn32_registry.h
  * @brief   SN32F26x capabilities registry.
  *
  * @addtogroup HAL
@@ -25,14 +25,9 @@
 #ifndef SN32_REGISTRY_H
 #define SN32_REGISTRY_H
 
-// There is some usage of SN32F24xx in:
-// - qmk_firmware/tmk_core/protocol/chibios/main.c
-// - qmk_firmware/tmk_core/common/chibios/suspend.c
-// - qmk_firmware/tmk_core/common/chibios/sleep_led.c
-// But it is me not really clear what this does.
-// SN32F24x and SN32F24xB both have this defines, so also define it here I guess
-#if !defined(SN32F24xx) || defined(__DOXYGEN__)
-#define SN32F24xx
+/* Common identifier of all SN32F2xx devices.*/
+#if !defined(SN32F2xx) || defined(__DOXYGEN__)
+#define SN32F2xx
 #endif
 
 /*===========================================================================*/
@@ -43,6 +38,11 @@
  * @name    SN32F26x capabilities
  * @{
  */
+
+/* Common identifier of all SN32F26x devices.*/
+#if !defined(SN32F260) || defined(__DOXYGEN__)
+#define SN32F260
+#endif
 
 /*
  * ST unit

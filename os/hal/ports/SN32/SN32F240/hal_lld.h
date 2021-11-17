@@ -35,7 +35,7 @@
  * @name    Platform identification macros
  * @{
  */
-#define PLATFORM_NAME           "SN32F240x"
+#define PLATFORM_NAME           "SN32F24x"
 /** @} */
 
 /*===========================================================================*/
