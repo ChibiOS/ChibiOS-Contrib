@@ -429,8 +429,8 @@ void usb_lld_init(void) {
 
 #if defined(K64F)
   /* Switch from default MCGPLLCLK to IRC48M for USB */
-  SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
-  SIM->SOPT2 |= SIM_SOPT2_PLLFLLSEL_IRC48M;
+  //SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
+  //SIM->SOPT2 |= SIM_SOPT2_PLLFLLSEL_IRC48M;
 #endif
 
 #if defined(MK66F18)
