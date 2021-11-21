@@ -57,7 +57,22 @@ void CT16B0_Init (void)
 	//SN_SYS1->APBCP0_b.CT16B0PRE = 0x03;						//PCLK = HCLK/8
 	//SN_SYS1->APBCP0_b.CT16B0PRE = 0x04;						//PCLK = HCLK/16
 }
+/*****************************************************************************
+* Function		: CT16B0_ResetTimer
+* Description	: Reset of CT16B0 timer
+* Input			: None
+* Output		: None
+* Return		: None
+* Note			: None
+*****************************************************************************/
+void CT16B0_ResetTimer (void)
+{
+	//Set CT16B0 as the up-counting mode.
+	SN_CT16B0->TMRCTRL = (mskCT16_CRST);
 
+    // Wait until timer reset done.
+    while (SN_CT16B0->TMRCTRL & mskCT16_CRST);
+}
 /*****************************************************************************
 * Function		: CT16B0_NvicEnable
 * Description	: Enable CT16B0 timer interrupt
