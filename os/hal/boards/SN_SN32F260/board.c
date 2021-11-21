@@ -43,8 +43,6 @@ const PALConfig pal_default_config = {
 };
 #endif
 
-static int flag __attribute__((section(".flag"))) __attribute__((__used__)) = 0xAAAA5555;
-
 /**
  * @brief   Early initialization code.
  * @details This initialization must be performed just after stack setup
@@ -53,21 +51,6 @@ static int flag __attribute__((section(".flag"))) __attribute__((__used__)) = 0x
 void __early_init(void) {
   sn32_clock_init();
 }
-
-// void Reset_Handler(void) {
-//     setPinOutput(C4);
-//     setPinInputHigh(A0);
-//     if (readPin(A0) == 0) {
-//         asm ("mov %%sp, %0; bx %1;"
-//                 :
-//                 : "r"(0x200006C8), "r"(0x1fff0009)
-//                 : );
-//     }
-//     asm ("mov %%sp, %0; bx %1;"
-//             :
-//             : "r"(0x200006C8), "r"(0x7801)
-//             : );
-// }
 
 /**
  * @brief   Board-specific initialization code.
