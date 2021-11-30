@@ -101,6 +101,10 @@ void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode) {
   port->OSPEEDR = (ospeedr & 0x3) * 0x55555555U;
   port->PUPDR = (pupdr & 0x3) * 0x55555555U;
 
+#ifdef WB32_GPIO_CURRENT
+  port->CURRENT = (WB32_GPIO_CURRENT & 0x03) * 0x55555555U;
+#endif
+
   tmp = altr * 0x11111111U;
   port->AFRL = tmp;
   port->AFRH = tmp;
