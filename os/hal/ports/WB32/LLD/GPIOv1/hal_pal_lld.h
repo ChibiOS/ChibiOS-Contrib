@@ -44,6 +44,11 @@
 #undef PAL_MODE_OUTPUT_PUSHPULL
 #undef PAL_MODE_OUTPUT_OPENDRAIN
 
+/* GPIO drive current, Value range 0-3 */
+#ifndef WB32_GPIO_CURRENT
+#define WB32_GPIO_CURRENT 0x03
+#endif
+
 /**
  * @name    WB32-specific I/O mode flags
  * @{
