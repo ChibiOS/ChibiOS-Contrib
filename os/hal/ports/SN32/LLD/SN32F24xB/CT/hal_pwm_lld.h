@@ -219,7 +219,7 @@ struct PWMDriver {
 /*===========================================================================*/
 
 /**
- * @brief   Changes the period the PWM peripheral.
+ * @brief   Changes the period of the PWM peripheral.
  * @details This function changes the period of a PWM unit that has already
  *          been activated using @p pwmStart().
  * @pre     The PWM unit must have been activated using @p pwmStart().
@@ -241,6 +241,22 @@ struct PWMDriver {
 #define pwm_lld_change_period(pwmp, period)                                 \
   ((pwmp)->ct->MR23 = ((period) - 1))
 #endif
+
+/**
+ * @brief   Changes the timer counter of the PWM peripheral.
+ * @details This function changes the timer counter of a PWM unit that has
+ *          already been activated using @p pwmStart().
+ * @pre     The PWM unit must have been activated using @p pwmStart().
+ * @post    The PWM unit timer counter is changed to the new value.
+ * @note    The function overrides the TC value of the PWM peripheral
+ *
+ * @param[in] pwmp      pointer to a @p PWMDriver object
+ * @param[in] counter   new timer counter value in bits
+ *
+ * @notapi
+ */
+#define pwm_lld_change_counter(pwmp, counter)                                 \
+  ((pwmp)->ct->TC = (counter))
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/

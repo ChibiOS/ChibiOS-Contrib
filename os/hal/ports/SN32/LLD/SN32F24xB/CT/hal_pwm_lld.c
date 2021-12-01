@@ -451,7 +451,7 @@ void pwm_lld_start(PWMDriver *pwmp) {
 
 #if SN32_PWM_USE_ONESHOT || defined(__DOXYGEN__)
   pwmp->ct->MCTRL3 |= mskCT16_MR24STOP_EN;
-#else
+#elif !defined(SN32_PWM_NO_RESET)
   pwmp->ct->MCTRL3 |= mskCT16_MR24RST_EN;
 #endif
 #else
@@ -459,7 +459,7 @@ void pwm_lld_start(PWMDriver *pwmp) {
 
 #if SN32_PWM_USE_ONESHOT || defined(__DOXYGEN__)
   pwmp->ct->MCTRL3 |= mskCT16_MR23STOP_EN;
-#else
+#elif !defined(SN32_PWM_NO_RESET)
   pwmp->ct->MCTRL3 |= mskCT16_MR23RST_EN;
 #endif
 #endif
