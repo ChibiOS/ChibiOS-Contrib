@@ -71,10 +71,10 @@
 #define PAL_WB32_ALTERNATE(n)                  ((n) << 7U)
 
 #define PAL_WB32_CURRENT_MASK                  (3U << 11U)
-#define PAL_WB32_CURRENT_LEVE0                 (0U << 11U)
-#define PAL_WB32_CURRENT_LEVE1                 (1U << 11U)
-#define PAL_WB32_CURRENT_LEVE2                 (2U << 11U)
-#define PAL_WB32_CURRENT_LEVE3                 (3U << 11U)
+#define PAL_WB32_CURRENT_LEVEL0                 (0U << 11U)
+#define PAL_WB32_CURRENT_LEVEL1                 (1U << 11U)
+#define PAL_WB32_CURRENT_LEVEL2                 (2U << 11U)
+#define PAL_WB32_CURRENT_LEVEL3                 (3U << 11U)
 
 /**
  * @brief   Alternate function.
