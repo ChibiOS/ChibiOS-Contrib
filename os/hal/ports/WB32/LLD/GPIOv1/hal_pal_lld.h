@@ -44,11 +44,6 @@
 #undef PAL_MODE_OUTPUT_PUSHPULL
 #undef PAL_MODE_OUTPUT_OPENDRAIN
 
-/* GPIO drive current, Value range 0-3 */
-#ifndef WB32_GPIO_CURRENT
-#define WB32_GPIO_CURRENT 0x03
-#endif
-
 /**
  * @name    WB32-specific I/O mode flags
  * @{
@@ -74,6 +69,12 @@
 
 #define PAL_WB32_ALTERNATE_MASK                (15U << 7U)
 #define PAL_WB32_ALTERNATE(n)                  ((n) << 7U)
+
+#define PAL_WB32_CURRENT_MASK                  (3U << 11U)
+#define PAL_WB32_CURRENT_LEVE0                 (0U << 11U)
+#define PAL_WB32_CURRENT_LEVE1                 (1U << 11U)
+#define PAL_WB32_CURRENT_LEVE2                 (2U << 11U)
+#define PAL_WB32_CURRENT_LEVE3                 (3U << 11U)
 
 /**
  * @brief   Alternate function.
