@@ -30,6 +30,22 @@ jobs:
       run: |
         cd $CHC_PATH/ext
         for i in *.7z; do 7z x -y $i; done
+    - name: setup vars (for Pico)
+      run: |
+        echo "CH_P_VER=master" >> $GITHUB_ENV
+        echo "CHC_P_PATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+    - name: download Chibios (for Pico)
+      run: |
+        curl -L https://github.com/ChibiOS/ChibiOS/archive/$CH_P_VER.tar.gz | tar xz
+        echo "CH_P_PATH=$GITHUB_WORKSPACE/ChibiOS-$CH_P_VER" >> $GITHUB_ENV
+    - name: decompress ChibiOS ext resources (for Pico)
+      run: |
+        cd $CH_P_PATH/ext
+        for i in *.7z; do 7z x -y "$i"; done
+    - name: decompress ChibiOS-Contrib ext resources (for Pico)
+      run: |
+        cd $CHC_P_PATH/ext
+        for i in *.7z; do 7z x -y "$i"; done
     - name: build STM32
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/STM32
@@ -60,5 +76,5 @@ jobs:
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/NUMICRO
     - name: build RP
       run: |
-        $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/RP
-        $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/RP
+        $CHC_P_PATH/tools/chbuild.sh $CHC_P_PATH/testhal/RP
+        $CHC_P_PATH/tools/chbuild.sh $CHC_P_PATH/demos/RP
