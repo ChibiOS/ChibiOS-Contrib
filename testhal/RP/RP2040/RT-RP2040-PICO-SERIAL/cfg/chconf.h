@@ -29,7 +29,7 @@
 #define CHCONF_H
 
 #define _CHIBIOS_RT_CONF_
-#define _CHIBIOS_RT_CONF_VER_7_0_
+#define _CHIBIOS_RT_CONF_VER_8_0_
 
 /*===========================================================================*/
 /**
@@ -835,6 +835,14 @@
 /* Port-specific settings (override port settings defaulted in chcore.h).    */
 /*===========================================================================*/
 
+#ifdef USB_DEBUG
+#include <stdint.h>
+
+extern void process_command(uint32_t message);
+
+#define PORT_HANDLE_FIFO_MESSAGE(core, message)    \
+  if (core == 0U) { process_command(message); }
+#endif /* USB_DEBUG */
 
 #endif  /* CHCONF_H */
 
