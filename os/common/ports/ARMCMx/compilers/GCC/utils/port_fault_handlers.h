@@ -17,8 +17,6 @@
 #ifndef FAULT_HANDLERS_v7m_H_
 #define FAULT_HANDLERS_v7m_H_
 
-#include <stdbool.h>
-
 struct decoded_fault_registers {
 	struct general {
 		bool bus_fault_on_ivt_read;
