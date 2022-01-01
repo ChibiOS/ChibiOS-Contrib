@@ -1,6 +1,7 @@
 #ifndef FAULT_HANDLERS_H_
 #define FAULT_HANDLERS_H_
 
+#include <ch.h>
 #include "port_fault_handlers.h"
 
 /*
