@@ -16,7 +16,6 @@
 
 #include "hal.h"
 #include "shcfg.h"
-#include "chtrace.h"
 
 
 const SerialConfig shell_serial_cfg = {
@@ -63,7 +62,7 @@ int main(void)
    */
   OnboardLED_Off();
 
-  chDbgSuspendTrace(CH_DBG_TRACE_MASK_SWITCH);
+  chTraceSuspend(CH_DBG_TRACE_MASK_SWITCH);
 
   /*
    * Activates the serial driver.
