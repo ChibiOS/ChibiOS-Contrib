@@ -2,7 +2,7 @@
 /  FatFs - Configuration file
 /---------------------------------------------------------------------------*/
 
-#define FFCONF_DEF 86606	/* Revision ID */
+#define FFCONF_DEF 86631	/* Revision ID */
 
 /*---------------------------------------------------------------------------/
 / Function Configurations
@@ -178,6 +178,16 @@
 /  type of optical media. When FF_MAX_SS is larger than FF_MIN_SS, FatFs is configured
 /  for variable sector size mode and disk_ioctl() function needs to implement
 /  GET_SECTOR_SIZE command. */
+
+
+#define FF_LBA64		0
+/* This option switches support for 64-bit LBA. (0:Disable or 1:Enable)
+/  To enable the 64-bit LBA, also exFAT needs to be enabled. (FF_FS_EXFAT == 1) */
+
+
+#define FF_MIN_GPT		0x10000000
+/* Minimum number of sectors to switch GPT as partitioning format in f_mkfs and
+/  f_fdisk function. 0x100000000 max. This option has no effect when FF_LBA64 == 0. */
 
 
 #define FF_USE_TRIM		0
