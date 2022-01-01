@@ -14,7 +14,7 @@
     limitations under the License.
 */
 
-#include <ch.h>
+#include "ch.h"
 #include "fault_handlers.h"
 #include <hal.h>
 #include <string.h>
