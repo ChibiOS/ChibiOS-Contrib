@@ -16,6 +16,7 @@
 
 #include "hal.h"
 #include "shcfg.h"
+#include "chtrace.h"
 
 
 const SerialConfig shell_serial_cfg = {

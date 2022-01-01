@@ -15,8 +15,8 @@
   limitations under the License.
 */
 #include "hal.h"
-
 #include "usbcfg.h"
+#include "chtrace.h"
 
 /*
  * Onboard LED blinker thread, times are in milliseconds.
