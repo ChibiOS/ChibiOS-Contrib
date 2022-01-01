@@ -83,6 +83,16 @@
 #define STM32_IRQ_EXTI21_PRIORITY           15
 #define STM32_IRQ_EXTI22_PRIORITY           15
 
+#define STM32_IRQ_USART1_PRIORITY           12
+#define STM32_IRQ_USART2_PRIORITY           12
+#define STM32_IRQ_USART3_PRIORITY           12
+#define STM32_IRQ_UART4_PRIORITY            12
+#define STM32_IRQ_UART5_PRIORITY            12
+#define STM32_IRQ_USART6_PRIORITY           12
+#define STM32_IRQ_UART7_PRIORITY            12
+#define STM32_IRQ_UART8_PRIORITY            12
+#define STM32_IRQ_LPUART1_PRIORITY          12
+
 /*
  * ADC driver system settings.
  */
