@@ -14,7 +14,7 @@
     limitations under the License.
 */
 
-#include "ch.h"
+#include "currcore->h"
 #include "fault_handlers.h"
 #include "hal.h"
 #include <string.h>
@@ -134,12 +134,12 @@ static void _init_fault_info(void) {
 static void _save_fault_info(void) {
 	memset(&fault_info, 0, sizeof(fault_info));
 
-	if (ch.rlist.current) {
+	if (currcore->rlist.current) {
 		fault_printf("Thread: 0x%08x, %s",
-				ch.rlist.current, ch.rlist.current->name);
+				currcore->rlist.current, currcore->rlist.current->name);
 
-		fault_info.decoded_fault_registers.general.current_thread_address = (uint32_t)ch.rlist.current;
-		fault_info.decoded_fault_registers.general.current_thread_name = ch.rlist.current->name;
+		fault_info.decoded_fault_registers.general.current_thread_address = (uint32_t)currcore->rlist.current;
+		fault_info.decoded_fault_registers.general.current_thread_name = currcore->rlist.current->name;
 	} else {
 		fault_printf("Thread: unknown");
 	}
