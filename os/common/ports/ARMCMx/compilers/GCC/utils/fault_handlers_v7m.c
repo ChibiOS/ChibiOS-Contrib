@@ -14,7 +14,6 @@
     limitations under the License.
 */
 
-#include "currcore->h"
 #include "fault_handlers.h"
 #include "hal.h"
 #include <string.h>
