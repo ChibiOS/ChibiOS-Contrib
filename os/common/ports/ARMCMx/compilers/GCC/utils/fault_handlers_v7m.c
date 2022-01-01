@@ -14,7 +14,6 @@
     limitations under the License.
 */
 
-#include "ch.h"
 #include "fault_handlers.h"
 #include <hal.h>
 #include <string.h>
@@ -130,6 +129,8 @@ static void _init_fault_info(void) {
 			sizeof(fault_info.decoded_info_string) - 1, 0);
 #endif
 }
+
+#include "ch.h"
 
 static void _save_fault_info(void) {
 	memset(&fault_info, 0, sizeof(fault_info));
