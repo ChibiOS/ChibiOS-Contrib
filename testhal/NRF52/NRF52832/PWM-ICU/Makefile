@@ -100,7 +100,7 @@ include $(CHIBIOS_CONTRIB)/os/hal/boards/NRF52-E73-2G4M04S/board.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
-include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
+include $(CHIBIOS)/os/common/ports/ARMv7-M/compilers/GCC/mk/port.mk
 # Other files (optional).
 #include $(CHIBIOS)/test/rt/test.mk
 
