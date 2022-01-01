@@ -152,6 +152,19 @@
 #define CH_CFG_HARDENING_LEVEL              0
 #endif
 
+/**
+ * @brief   Kernel hardening level.
+ * @details This option is the level of functional-safety checks enabled
+ *          in the kerkel. The meaning is:
+ *          - 0: No checks, maximum performance.
+ *          - 1: Reasonable checks.
+ *          - 2: All checks.
+ *          .
+ */
+#if !defined(CH_CFG_HARDENING_LEVEL)
+#define CH_CFG_HARDENING_LEVEL              0
+#endif
+
 /** @} */
 
 /*===========================================================================*/
@@ -191,6 +204,17 @@
  */
 #if !defined(CH_CFG_USE_TM)
 #define CH_CFG_USE_TM                       TRUE
+#endif
+
+/**
+ * @brief   Time Stamps APIs.
+ * @details If enabled then the time time stamps APIs are included in
+ *          the kernel.
+ *
+ * @note    The default is @p TRUE.
+ */
+#if !defined(CH_CFG_USE_TIMESTAMP)
+#define CH_CFG_USE_TIMESTAMP                TRUE
 #endif
 
 /**
