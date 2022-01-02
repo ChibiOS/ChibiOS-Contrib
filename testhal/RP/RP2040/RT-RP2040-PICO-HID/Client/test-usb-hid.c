@@ -61,7 +61,7 @@ static struct usb_hid_out_report_s *usb_hid_out_report =
   (struct usb_hid_out_report_s *) (&usb_hid_out_report_buf[1]);
 
 static int usb_hid_fd;
-//static uint8_t wkup_pb_old_value = 0;
+static uint8_t wkup_pb_old_value = 0;
 
 static void
 read_in_report ()
@@ -141,7 +141,7 @@ usb_hid_init (const char *dev_name)
   else
     {
       printf ("Report Descriptor:\n");
-      for (i = 0; i < (unsigned)rpt_desc.size; i++)
+      for (i = 0; i < rpt_desc.size; i++)
 	printf ("%02hhx ", rpt_desc.value[i]);
       puts ("\n");
     }

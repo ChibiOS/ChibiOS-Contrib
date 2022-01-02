@@ -89,7 +89,7 @@ PROJECT = ch
 MCU  = cortex-m0plus
 
 # Imported source files and paths.
-CHIBIOS  := ../../../../../ChibiOS-pico
+CHIBIOS  := ../../../../../ChibiOS
 CONFDIR  := ./cfg
 BUILDDIR := ./build
 DEPDIR   := ./.dep
