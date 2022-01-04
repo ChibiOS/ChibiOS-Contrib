@@ -94,12 +94,14 @@ void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode) {
   uint32_t ospeedr = (mode & PAL_WB32_OSPEED_MASK) >> 3;
   uint32_t pupdr = (mode & PAL_WB32_PUPDR_MASK) >> 5;
   uint32_t altr = (mode & PAL_WB32_ALTERNATE_MASK) >> 7;
+  uint32_t current = (mode & PAL_WB32_CURRENT_MASK) >> 11;
 
   port->CFGMSK = ~mask;
   port->MODER = (moder & 0x3) * 0x55555555U;
   port->OTYPER = (otyper & 0x1) * 0xFFFFFFFFU;
   port->OSPEEDR = (ospeedr & 0x3) * 0x55555555U;
   port->PUPDR = (pupdr & 0x3) * 0x55555555U;
+  port->CURRENT = (current & 0x03) * 0x55555555U;
 
   tmp = altr * 0x11111111U;
   port->AFRL = tmp;
