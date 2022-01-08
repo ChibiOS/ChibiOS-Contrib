@@ -82,5 +82,24 @@ REGION_ALIAS("BSS_RAM", ram0);
 /* RAM region to be used for the default heap.*/
 REGION_ALIAS("HEAP_RAM", ram0);
 
+/* Custom vectors section with 512 byte alignment.
+
+   The default ChibiOS linker script aligns to 1024 bytes, because that is the worse
+   case alignment requirement for STM32 chips.
+   See https://forum.chibios.org/viewtopic.php?t=5554
+
+   However the sonix-keyboard-bootloader expects the ISR vector table to be at 0x200.
+   This is not possible if the alignment is 1024 bytes.
+
+   By adding this custom section with 512 byte alignment before the inclusion of
+   the rules.ld defaults, the linker will use this section for .vectors objects. */
+SECTIONS
+{
+    .vectors_512_aligned : ALIGN(512)
+    {
+        KEEP(*(.vectors))
+    } > VECTORS_FLASH AT > VECTORS_FLASH_LMA
+}
+
 /* Generic rules inclusion.*/
 INCLUDE rules.ld
