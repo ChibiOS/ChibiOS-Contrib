@@ -74,7 +74,7 @@
 #define SYS0_CLKCFG_VAL		0
 #endif
 #ifndef AHB_PRESCALAR
-#define AHB_PRESCALAR 		0x2
+#define AHB_PRESCALAR 		0x0
 #endif
 #ifndef CLKOUT_SEL_VAL
 #define CLKOUT_SEL_VAL 		0x0
