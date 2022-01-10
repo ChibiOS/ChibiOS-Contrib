@@ -18,19 +18,19 @@
 #define _BOARD_H_
 
 /*
- * Setup for Generic SN32F240B Board
+ * Setup for Generic SN32F240 Board
  */
 
 /*
  * Board identifier.
  */
-#define BOARD_GENERIC_SN32_F240B
-#define BOARD_NAME "SN32F240B"
+#define BOARD_GENERIC_SN32_F240
+#define BOARD_NAME "SN32F240"
 
 /*
  * MCU type as defined in the SN32 header.
  */
-#define SN32F240B
+#define SN32F240
 
 /*
  * IO pins assignments.
@@ -95,6 +95,10 @@
 #define GPIOD_PIN9 9U
 #define GPIOD_PIN10 10U
 #define GPIOD_PIN11 11U
+#define GPIOD_PIN12 12U
+#define GPIOD_PIN13 13U
+#define GPIOD_PIN14 14U
+#define GPIOD_PIN15 15U
 
 /*
  * I/O ports initial setup, this configuration is established soon after reset
@@ -225,7 +229,11 @@
     | PIN_MODE_INPUT(GPIOD_PIN8) \
     | PIN_MODE_INPUT(GPIOD_PIN9) \
     | PIN_MODE_INPUT(GPIOD_PIN10) \
-    | PIN_MODE_INPUT(GPIOD_PIN11) )
+    | PIN_MODE_INPUT(GPIOD_PIN11) \
+    | PIN_MODE_INPUT(GPIOD_PIN12) \
+    | PIN_MODE_INPUT(GPIOD_PIN13) \
+    | PIN_MODE_INPUT(GPIOD_PIN14) \
+    | PIN_MODE_INPUT(GPIOD_PIN15) )
 #define VAL_GPIOD_CFG \
     ( PIN_CFG_SCHMITT_EN(GPIOD_PIN3) \
     | PIN_CFG_SCHMITT_EN(GPIOD_PIN4) \
@@ -235,7 +243,11 @@
     | PIN_CFG_SCHMITT_EN(GPIOD_PIN8) \
     | PIN_CFG_SCHMITT_EN(GPIOD_PIN9) \
     | PIN_CFG_SCHMITT_EN(GPIOD_PIN10) \
-    | PIN_CFG_SCHMITT_EN(GPIOD_PIN11) )
+    | PIN_CFG_SCHMITT_EN(GPIOD_PIN11) \
+    | PIN_CFG_SCHMITT_EN(GPIOD_PIN12) \
+    | PIN_CFG_SCHMITT_EN(GPIOD_PIN13) \
+    | PIN_CFG_SCHMITT_EN(GPIOD_PIN14) \
+    | PIN_CFG_SCHMITT_EN(GPIOD_PIN15) )
 
 #if !defined(_FROM_ASM_)
 #    ifdef __cplusplus

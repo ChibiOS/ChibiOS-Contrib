@@ -24,11 +24,11 @@ else
 endif
 
 # Drivers compatible with the platform.
-include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F24xB/GPIO/driver.mk
-include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F24xB/USB/driver.mk
-include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F24xB/CT/driver.mk
-include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F24xB/FLASH/driver.mk
-include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F24xB/SysTick/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F2xx/GPIO/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F2xx/USB/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F2xx/CT/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F2xx/FLASH/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F2xx/SysTick/driver.mk
 
 
 # include $(CHIBIOS)/os/hal/ports/SN32/LLD/TIM/driver.mk

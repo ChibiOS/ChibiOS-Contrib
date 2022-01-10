@@ -15,13 +15,13 @@
 */
 
 /**
- * @file    SN32F26x/cmparams.h
- * @brief   ARM Cortex-M0 parameters for the SN32F26x.
+ * @file    SN32F29x/cmparams.h
+ * @brief   ARM Cortex-M0 parameters for the SN32F29x.
  *
- * @defgroup ARMCMx_SN32F26x SN32F26x Specific Parameters
+ * @defgroup ARMCMx_SN32F29x SN32F29x Specific Parameters
  * @ingroup ARMCMx_SPECIFIC
  * @details This file contains the Cortex-M0 specific parameters for the
- *          SN32F26x platform.
+ *          SN32F29x platform.
  * @{
  */
 
@@ -59,7 +59,7 @@
 /* Including the device CMSIS header. Note, we are not using the definitions
    from this header because we need this file to be usable also from
    assembler source files. We verify that the info matches instead.*/
-#include "SN32F260.h"
+#include "SN32F290.h"
 
 /*lint -save -e9029 [10.4] Signedness comes from external files, it is
   unpredictable but gives no problems.*/

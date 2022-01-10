@@ -18,7 +18,7 @@
 #define _BOARD_H_
 
 /*
- * Setup for Generic STM32_F303 Board
+ * Setup for Generic SN32F260 Board
  */
 
 /*
@@ -28,9 +28,9 @@
 #define BOARD_NAME "SN32F260"
 
 /*
- * MCU type as defined in the ST header.
+ * MCU type as defined in the SN32 header.
  */
-#define system_SN32F260
+#define SN32F260
 
 /*
  * IO pins assignments.
