@@ -95,16 +95,36 @@
 */
 
 
+#ifndef SYS0_CLKCFG_VAL
 #define SYS0_CLKCFG_VAL		0
+#endif
+#ifndef EHS_FREQ
 #define EHS_FREQ					16
+#endif
+#ifndef PLL_ENABLE
 #define PLL_ENABLE				0
+#endif
+#ifndef PLL_MSEL
 #define PLL_MSEL					1
+#endif
+#ifndef PLL_PSEL
 #define PLL_PSEL					0
+#endif
+#ifndef PLL_CLKIN
 #define PLL_CLKIN					0
+#endif
+#ifndef AHB_PRESCALAR
 #define AHB_PRESCALAR 		0x0
+#endif
+#ifndef AHB_1P5PRESCALAR
 #define AHB_1P5PRESCALAR 	0x0
+#endif
+#ifndef CLKOUT_SEL_VAL
 #define CLKOUT_SEL_VAL 		0x0
+#endif
+#ifndef CLKOUT_PRESCALAR
 #define CLKOUT_PRESCALAR 	0x0
+#endif
 
 /*
 //-------- <<< end of configuration section >>> ------------------------------
@@ -114,12 +134,21 @@
 /*----------------------------------------------------------------------------
   DEFINES
  *----------------------------------------------------------------------------*/
+#ifndef IHRC
 #define	IHRC			0
+#endif
+#ifndef ILRC
 #define	ILRC			1
+#endif
+#ifndef EHSXTAL
 #define EHSXTAL		2
+#endif
+#ifndef ELSXTAL
 #define ELSXTAL		3
+#endif
+#ifndef PLL
 #define PLL				4
-
+#endif
 
 /*----------------------------------------------------------------------------
   Define clocks
