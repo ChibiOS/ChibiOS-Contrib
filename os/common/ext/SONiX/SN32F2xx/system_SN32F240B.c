@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <system_SN32F2xx.h>
 #include <mcuconf.h>
-
+#include <sn32_sys1.h>
 
 
 /*
@@ -122,7 +122,7 @@ void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
 	{
 		case 0:		//IHRC
 			if(SN_SYS0->ANBCTRL == 1)
-				SystemCoreClock = __IHRC48_FREQ;
+			SystemCoreClock = __IHRC48_FREQ;
 			break;
 		case 1:		//ILRC
 			SystemCoreClock = __ILRC_FREQ;
@@ -212,11 +212,9 @@ void SystemInit (void)
 	#endif
 
 	SN_SYS0->AHBCP_b.AHBPRE = AHB_PRESCALAR;
-
-	#if (CLKOUT_SEL_VAL > 0)			//CLKOUT
-        SN_SYS1->AHBCLKEN_b.CLKOUTSEL = CLKOUT_SEL_VAL;
-        SN_SYS1->APBCP1_b.CLKOUTPRE = CLKOUT_PRESCALAR;
-	#endif
+  
+  sys1EnableCLKOUT(CLKOUT_SEL_VAL);
+  sys1SelectCLKOUTPRE(CLKOUT_PRESCALAR);
 #endif //(SYS_CLOCK_SETUP)
 
 }

@@ -18,9 +18,7 @@
 *****************************************************************************/
 
 /*_____ I N C L U D E S ____________________________________________________*/
-#include <SN32F2xx.h>
-#include "CT16.h"
-#include "CT16B0.h"
+#include "sn32_ct.h"
 
 
 /*_____ D E C L A R A T I O N S ____________________________________________*/
@@ -48,7 +46,7 @@ void	CT16B0_NvicDisable (void);
 void CT16B0_Init (void)
 {
 	//Enable P_CLOCK for CT16B0.
-	__CT16B0_ENABLE;
+	sys1EnableCT16B0();
 
 	//CT16B0 PCLK prescalar setting
 	// SN_SYS1->APBCP1_b.CT16B0PRE = 0x00;							//PCLK = HCLK/1

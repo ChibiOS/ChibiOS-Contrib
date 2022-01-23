@@ -46,6 +46,7 @@
  * @name    PLATFORM configuration options
  * @{
  */
+#define SN32_HCLK         SystemCoreClock
 /** @} */
 
 /*===========================================================================*/

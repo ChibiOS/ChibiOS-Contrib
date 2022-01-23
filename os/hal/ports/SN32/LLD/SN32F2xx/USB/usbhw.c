@@ -8,7 +8,7 @@
  *------------------------------------------------------------------------------*/
 #include <SN32F2xx.h>
 #include "SN32F200_Def.h"
-
+#include <sn32_sys1.h>
 #include "usbhw.h"
 
 const uint32_t wUSB_EPnOffset[5] = {
@@ -50,7 +50,7 @@ void USB_Init(void)
     /* Initialize clock and Enable USB PHY. */
     SystemInit();
     SystemCoreClockUpdate();
-    SN_SYS1->AHBCLKEN |= mskUSBCLK_EN;  // Enable USBCLKEN
+    sys1EnableUSB();  // Enable USB Clock
 
     /* Initialize USB EP1~EP4 RAM Start address base on 64-bytes. */
     USB_EPnBufferOffset(1, EP1_BUFFER_OFFSET_VALUE);

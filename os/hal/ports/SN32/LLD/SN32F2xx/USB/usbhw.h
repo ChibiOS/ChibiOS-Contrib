@@ -26,22 +26,6 @@
 /* USB SOF interrupt */
 #define SOF_IE                      DISABLE
 
-/* AHB Clock Enable register <SYS1_AHBCLKEN> */
-#define mskP0CLK_EN                 (0x1<<0)
-#define mskP1CLK_EN                 (0x1<<1)
-#define mskP2CLK_EN                 (0x1<<2)
-#define mskP3CLK_EN                 (0x1<<3)
-#define mskUSBCLK_EN                (0x1<<4)
-#define mskCT16B0CLK_EN             (0x1<<6)
-#define mskCT16B1CLK_EN             (0x1<<7)
-#define mskADCCLK_EN                (0x1<<11)
-#define mskSPI0CLK_EN               (0x1<<12)
-#define mskUART0CLK_EN              (0x1<<16)
-#define mskUART1CLK_EN              (0x1<<17)
-#define mskUART2CLK_EN              (0x1<<18)
-#define mskI2C0CLK_EN               (0x1<<21)
-#define mskWDTCLK_EN                (0x1<<24)
-
 /* USB Interrupt Enable Bit Definitions <USB_INTEN> */
 #define mskEP1_NAK_EN               (0x1<<0)
 #define mskEP2_NAK_EN               (0x1<<1)
