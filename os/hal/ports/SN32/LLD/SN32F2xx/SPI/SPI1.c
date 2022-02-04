@@ -1,13 +1,13 @@
 /******************** (C) COPYRIGHT 2014 SONiX *******************************
-* COMPANY:			SONiX
-* DATE:					2014/05
-* AUTHOR:				SA1
-* IC:				SN32F240/230/220
-* DESCRIPTION:	SPI1 related functions.
+* COMPANY:            SONiX
+* DATE:                    2014/05
+* AUTHOR:                SA1
+* IC:                SN32F240/230/220
+* DESCRIPTION:    SPI1 related functions.
 *____________________________________________________________________________
-*	REVISION	Date				User		Description
-*	1.0				2013/12/17	SA1			1. First release
-*	1.1				2014/05/23	SA1			1. Add __SSP1_DATA_FETCH_HIGH_SPEED macro
+* REVISION    Date                User        Description
+* 1.0                2013/12/17    SA1            1. First release
+*    1.1                2014/05/23    SA1            1. Add __SSP1_DATA_FETCH_HIGH_SPEED macro
 *
 *____________________________________________________________________________
 * THE PRESENT SOFTWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
@@ -19,7 +19,6 @@
 *****************************************************************************/
 
 /*_____ I N C L U D E S ____________________________________________________*/
-#include <SN32F2xx.h>
 #include "SPI.h"
 
 
@@ -35,86 +34,100 @@
 /*_____ F U N C T I O N S __________________________________________________*/
 
 /*****************************************************************************
-* Function		: SPI1_Init
-* Description	: Initialization of SPI1 init
-* Input			: None
-* Output		: None
-* Return		: None
-* Note			: None
+* Function        : SPI1_Init
+* Description    : Initialization of SPI1 init
+* Input            : None
+* Output        : None
+* Return        : None
+* Note            : None
 *****************************************************************************/
-void SPI1_Init(void)
-{
-	//Enable HCLK for SSP1
-	SN_SYS1->AHBCLKEN |= (0x1 << 13);								//Enable clock for SSP1.
+void SPI1_Init() {
+    sys1EnableSPI1();
+    SN_SPI1->CTRL0_b.DL             = SPI_DL_8;
 
-	//SSP1 PCLK
-	SN_SYS1->APBCP0 |= (0x00 << 24); 								//PCLK = HCLK/1
-	//SN_SYS1->APBCP0 |= (0x01 << 24);							//PCLK = HCLK/2
-	//SN_SYS1->APBCP0 |= (0x02 << 24);							//PCLK = HCLK/4
-	//SN_SYS1->APBCP0 |= (0x03 << 24);							//PCLK = HCLK/8
-	//SN_SYS1->APBCP0 |= (0x04 << 24);							//PCLK = HCLK/16
+#ifdef SN32_SPI_SLAVE_MODE
+    SN_SPI1->CTRL0_b.MS             = SPI_MS_SLAVE_MODE;
+    SN_SPI1->CTRL0_b.SDODIS         = SPI_SDODIS_EN;
+#else
+    SN_SPI1->CTRL0_b.MS             = SPI_MS_MASTER_MODE;
+#endif
 
-	//SSP1 setting
-	SN_SSP1->CTRL0_b.DL = SSP_DL_8;									//3 ~ 16 Data length
-	SN_SSP1->CTRL0_b.FORMAT = SSP_FORMAT_SPI_MODE;	//Interface format
-	SN_SSP1->CTRL0_b.MS = SSP_MS_MASTER_MODE;				//Master/Slave selection bit
-	SN_SSP1->CTRL0_b.LOOPBACK = SSP_LOOPBACK_DIS; 	//Loop back mode
-	SN_SSP1->CTRL0_b.SDODIS = SSP_SDODIS_EN; 				//Slave data output
+    SN_SPI1->CTRL0_b.LOOPBACK       = SPI_LOOPBACK_DIS;
 
-	SN_SSP1->CLKDIV_b.DIV = (SSP_DIV/2) - 1;				//SSPn clock divider
+#ifdef SN32_SPI_RXFIFO_THRESHOLD
+    SN_SPI1->CTRL0_b.RXFIFOTH       = SN32_SPI_TXFIFO_THRESHOLD;
+#endif
 
-	//SSP1 SPI mode
-	SN_SSP1->CTRL1 = SSP_CPHA_FALLING_EDGE|					//Clock phase for edge sampling
-									 SSP_CPOL_SCK_IDLE_LOW|					//Clock polarity selection bit
-									 SSP_MLSB_MSB;									//MSB/LSB selection bit
+#ifdef SN32_SPI_TXFIFO_THRESHOLD
+    SN_SPI1->CTRL0_b.TXFIFOTH       = SN32_SPI_TXFIFO_THRESHOLD;
+#endif
 
-	//SSP1 SEL1 Setting
-	SN_SSP1->CTRL0_b.SELDIS = SSP_SELDIS_DIS; 			//Auto-SEL disable bit
-	SN_GPIO3->MODE_b.MODE6=1;												//SEL1(P3.6) is outout high
-	__SPI1_SET_SEL1;
+#ifdef SN32_SPI_CLKDIV
+    SN_SPI1->CLKDIV_b.DIV           = SN32_SPI_CLKDIV;
+#else
+    SN_SPI1->CLKDIV_b.DIV           = (SPI_DIV / 2) - 1;
+#endif
 
-	//SSP1 Fifo reset
-	__SPI1_FIFO_RESET;
+    SN_SPI1->CTRL1_b.CPHA           = SPI_CPHA_FALLING_EDGE;
+    SN_SPI1->CTRL1_b.CPOL           = SPI_CPOL_SCK_IDLE_LOW;
+    SN_SPI1->CTRL1_b.MLSB           = SPI_MLSB_MSB;
 
-	//SSP1 interrupt disable
-	NVIC_DisableIRQ(SSP1_IRQn);
+#ifdef SN32_SPI_AUTOSEL
+    SN_SPI1->CTRL0_b.SELDIS         = SN32_SPI_AUTOSEL;
+#endif
 
-	//__SSP1_DATA_FETCH_HIGH_SPEED;									//Enable if Freq. of SCK > 6MHz
+    __SPI1_FIFO_RESET;
 
-	//SSP1 enable
-	SN_SSP1->CTRL0_b.SSPEN  = SSP_SSPEN_EN;    			//SSP enable bit
+    uint32_t spiClock = (SN32_HCLK / ((2 * SN_SPI1->CLKDIV_b.DIV) + 2));
+    if (spiClock > 6000000) {
+        __SPI1_DATA_FETCH_HIGH_SPEED;
+    }
+
+    NVIC_DisableIRQ(SN32_SPI1_NUMBER);
 }
 
 /*****************************************************************************
-* Function		: SPI1_Enable
-* Description	: SPI1 enable setting
-* Input			: None
-* Output		: None
-* Return		: None
-* Note			: None
+* Function        : SPI1_Enable
+* Description    : SPI1 enable setting
+* Input            : None
+* Output        : None
+* Return        : None
+* Note            : None
 *****************************************************************************/
-void SPI1_Enable(void)
-{
-	//Enable HCLK for SSP1
-	SN_SYS1->AHBCLKEN |= (0x1 << 13);								//Enable clock for SSP0.
+void SPI1_Enable() {
+    sys1EnableSPI1();
 
-	SN_SSP1->CTRL0_b.SSPEN  = SSP_SSPEN_EN;    			//SSP enable bit
-	__SPI1_FIFO_RESET;
+    SN_SPI1->CTRL0_b.SPIEN = SPI_SPIEN_EN;
+
+    __SPI1_FIFO_RESET;
 }
 
 /*****************************************************************************
-* Function		: SPI1_Disable
-* Description	: SPI1 disable setting
-* Input			: None
-* Output		: None
-* Return		: None
-* Note			: None
+* Function        : SPI1_Disable
+* Description    : SPI1 disable setting
+* Input            : None
+* Output        : None
+* Return        : None
+* Note            : None
 *****************************************************************************/
-void SPI1_Disable(void)
-{
-	 SN_SSP1->CTRL0_b.SSPEN  = SSP_SSPEN_DIS;    		//SSP disable bit
+void SPI1_Disable() {
+    SN_SPI1->CTRL0_b.SPIEN = SPI_SPIEN_DIS;
 
-	//Disable HCLK for SSP1
-	SN_SYS1->AHBCLKEN &=~ (0x1 << 13);							//Disable clock for SSP0.
+    //Disable HCLK for SSP1
+    sys1DisableSPI1();
 }
 
+void SPI1_Write1(uint8_t data) {
+    while (SN_SPI1->STAT_b.TX_FULL);
+    SN_SPI1->DATA = data;
+}
+
+void SPI1_Write(uint8_t *data, uint8_t len) {
+    for (uint8_t i = 0; i < len; i++) {
+        SPI1_Write1(data[i]);
+    }
+}
+
+void SPI1_Write_End() {
+    while (!SN_SPI1->STAT_b.TX_EMPTY);
+}
