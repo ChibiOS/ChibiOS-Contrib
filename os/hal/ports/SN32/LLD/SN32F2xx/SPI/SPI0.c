@@ -96,9 +96,11 @@ void SPI0_Init() {
 *****************************************************************************/
 void SPI0_Enable() {
     sys1EnableSPI0();
-
+#if defined(SN32F260)
+    SN_SPI0->CTRL0_b.SSPEN = SPI_SPIEN_EN;
+#else
     SN_SPI0->CTRL0_b.SPIEN = SPI_SPIEN_EN;
-
+#endif
     __SPI0_FIFO_RESET;
 }
 
@@ -111,8 +113,11 @@ void SPI0_Enable() {
 * Note            : None
 *****************************************************************************/
 void SPI0_Disable() {
+#if defined(SN32F260)
+    SN_SPI0->CTRL0_b.SSPEN = SPI_SPIEN_DIS;
+#else
     SN_SPI0->CTRL0_b.SPIEN = SPI_SPIEN_DIS;
-
+#endif
     //Disable HCLK for SSP0
     sys1DisableSPI0();
 }

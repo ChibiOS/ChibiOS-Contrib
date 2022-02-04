@@ -169,9 +169,13 @@ Base Address: 0x4001 C000 (SPI0)
 #define __SPI1_SET_SEL0               (SN_GPIO2->DATA_b.DATA10 = 1)
 
 //SPI Data Fetch speed (High: SCK>6MHz)
+#if defined(SN32F260)
+#define __SPI0_DATA_FETCH_HIGH_SPEED  (SN_SPI0->DF = SPI_DF_EN)
+#define __SPI1_DATA_FETCH_HIGH_SPEED  (SN_SPI1->DF = SPI_DF_EN)
+#else
 #define __SPI0_DATA_FETCH_HIGH_SPEED  (SN_SPI0->DFDLY = SPI_DF_EN)
 #define __SPI1_DATA_FETCH_HIGH_SPEED  (SN_SPI1->DFDLY = SPI_DF_EN)
-
+#endif
 
 /*_____ D E C L A R A T I O N S ____________________________________________*/
 extern void SPI0_Init(void);
