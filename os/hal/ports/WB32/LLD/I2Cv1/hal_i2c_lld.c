@@ -107,24 +107,50 @@ static void i2c_lld_abort_operation(I2CDriver *i2cp) {
  */
 static void i2c_lld_configuration(I2CDriver *i2cp) {
   I2C_TypeDef *dp = i2cp->i2c;
-  const I2CConfig *cfg = i2cp->config;
+  float tclk, tval;
+  uint32_t con_reg;
+  i2copmode_t opmode = i2cp->config->op_mode;
+  int32_t clock_speed = i2cp->config->clock_speed;
 
-  osalDbgCheck((i2cp != NULL) && (dp != NULL) && (cfg != NULL));
+  osalDbgCheck((i2cp != NULL) &&
+               (clock_speed > 0) &&
+               (clock_speed <= 400000));
 
-  dp->INTR_MASK |= (uint16_t)cfg->i2c_it;
+  con_reg = I2C_CON_SLAVE_DISABLE | I2C_CON_RESTART_EN | I2C_CON_MASTER_MODE;
 
-  dp->CON = (uint32_t)cfg->op_mode;
+  dp->TX_TL = 0;
+  dp->RX_TL = 0;
 
-  dp->TAR = (uint32_t)cfg->target_address;
+  switch (opmode) {
+    case OPMODE_I2C:
+      break;
+    case OPMODE_SMBUS_DEVICE:
+      osalDbgAssert(false, "SMBUS_DEVICE mode is not supported");
+      break;
+    case OPMODE_SMBUS_HOST:
+      osalDbgAssert(false, "SMBUS_HOST mode is not supported");
+      break;
+  }
 
-  dp->TX_TL = (uint8_t)cfg->tx_fifo_threshold;
-  dp->RX_TL = (uint8_t)cfg->rx_fifo_threshold;
+  dp->FS_SPKLEN = (uint32_t)(WB32_PCLK2 / 1000000 * 0.02); // 20ns
+  dp->SDA_HOLD = (uint32_t)(WB32_PCLK2 / 1000000 * 0.31);  // 310ns
+  tclk = (float)1000000 / (clock_speed << 1);
+  tval = (float)WB32_PCLK2 / 1000000 * tclk;
 
-  dp->SS_SCL_HCNT = (uint32_t)cfg->ss_scl_hcnt;
-  dp->SS_SCL_LCNT = (uint32_t)cfg->ss_scl_lcnt;
-  dp->FS_SPKLEN = (uint32_t)cfg->fs_spklen;
-  dp->SDA_SETUP = (uint32_t)cfg->sda_setup;
-  dp->SDA_HOLD = (uint32_t)cfg->sda_hold;
+  if (clock_speed <= 100000) {
+    con_reg |= I2C_CON_SPEED_STANDARD;
+    dp->SDA_SETUP = (uint32_t)(WB32_PCLK2 / 1000000 * 0.25); // 250ns
+    dp->SS_SCL_HCNT = (uint32_t)(tval - 7 - dp->FS_SPKLEN);
+    dp->SS_SCL_LCNT = (uint32_t)(tval - 1);
+  }
+  else if (clock_speed <= 400000) {
+    con_reg |= I2C_CON_SPEED_FAST;
+    dp->SDA_SETUP = (uint32_t)(WB32_PCLK2 / 1000000 * 0.15); // 150ns
+    dp->FS_SCL_HCNT = (uint32_t)(tval - 7 - dp->FS_SPKLEN);
+    dp->FS_SCL_LCNT = (uint32_t)(tval - 1);
+  }
+
+  dp->CON = con_reg;
 }
 
 /**
@@ -427,7 +453,8 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   /* Disable all I2C interrupt.*/
   dp->INTR_MASK &= ~(0xFFFF);
   /* Enable the selected I2C interrupt.*/
-  dp->INTR_MASK |= (i2cp->config->i2c_it);
+  dp->INTR_MASK |= I2C_INTR_TX_EMPTY | I2C_INTR_TX_ABRT |
+                   I2C_INTR_STOP_DET | I2C_INTR_RX_FULL;
 
   /* Waits for the operation completion or a timeout.*/
   msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
@@ -502,7 +529,8 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   /* Disable all I2C interrupt.*/
   dp->INTR_MASK &= ~(0xFFFF);
   /* Enable the selected I2C interrupt.*/
-  dp->INTR_MASK |= (i2cp->config->i2c_it);
+  dp->INTR_MASK |= I2C_INTR_TX_EMPTY | I2C_INTR_TX_ABRT |
+                   I2C_INTR_STOP_DET | I2C_INTR_RX_FULL;
 
   /* Waits for the operation completion or a timeout.*/
   msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
