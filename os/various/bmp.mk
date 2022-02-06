@@ -17,9 +17,11 @@ GDB_BREAK         ?= main                        # Function to break at when sta
 
 BMP_GDB           ?= /dev/ttyBmpGdb              # Device file for the Black Magic GDB devic
 
+FLASH_MARKER      ?= $(strip $(GDB_PROGRAM)).flash
+
 all: $(GDB_PROGRAM)
 
-flash: $(GDB_PROGRAM)
+$(FLASH_MARKER): $(GDB_PROGRAM)
 	$(GDB) $(GDB_PROGRAM) -nx --batch                  \
 		-ex 'target extended-remote $(BMP_GDB)'    \
 		-ex 'monitor swdp_scan'                    \
@@ -27,31 +29,37 @@ flash: $(GDB_PROGRAM)
 		-ex 'load'                                 \
 		-ex 'compare-sections'                     \
 		-ex 'kill'
+	touch $(FLASH_MARKER)
 
-debug: $(GDB_PROGRAM)
+flash: $(FLASH_MARKER)
+
+debug: flash
 	$(GDB) $(GDB_PROGRAM) -nx                          \
 		-ex 'target extended-remote $(BMP_GDB)'    \
 		-ex 'monitor swdp_scan'                    \
 		-ex 'attach 1'                             \
-		-ex 'load'                                 \
 		-ex 'compare-sections'			   \
 		-ex 'set mem inaccessible-by-default off'  \
 		-ex 'break $(GDB_BREAK)'                   \
-		-ex 'c'
+		-ex 'set confirm off'                      \
+		-ex 'run'                                  \
+		-ex 'set confirm off'                      \
+		-ex 'set pagination on'
 
-debug-tui: $(GDB_PROGRAM)
+debug-tui: flash
 	$(GDB) $(GDB_PROGRAM) -nx                         \
 		-ex 'target extended-remote $(BMP_GDB)'   \
 		-ex 'monitor swdp_scan'                   \
 		-ex 'attach 1'                            \
-		-ex 'load'                                \
 		-ex 'compare-sections'                    \
 		-ex 'set mem inaccessible-by-default off' \
 		-ex 'set pagination off'                  \
 		-ex 'focus cmd'	                          \
 		-ex 'layout src'                          \
 		-ex 'break $(GDB_BREAK)'                  \
-		-ex 'c'					  \
-		-ex 'set pagination on'                    
+		-ex 'set confirm off'                     \
+		-ex 'run'                                 \
+		-ex 'set confirm off'                     \
+		-ex 'set pagination on'
 
 .PHONY: all flash debug debug-tui
