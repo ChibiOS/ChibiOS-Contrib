@@ -228,13 +228,13 @@ void MK66F18_clock_init(void) {
 #define MCG_C6_VDIV0 MCG_C6_VDIV0_SET
 #if 1 /* PJRC_HSRUN */
   // if we need faster than the crystal, turn on the PLL
-
+#if F_CPU > 120000000
   SMC->PMCTRL = SMC_PMCTRL_RUNM_SET(3); // enter HSRUN mode
   #define SMC_PMSTAT_HSRUN		((uint8_t)0x80)
   while (SMC->PMSTAT != SMC_PMSTAT_HSRUN)
     ; // wait for HSRUN
-
-                #if F_CPU == 256000000
+#endif
+    #if F_CPU == 256000000
         //See table in 27.4.6 MCG Control 6 Register (MCG_C6)
         //16 -> Multiply factor 32. 32*8MHz =256MHz
         MCG_C5 = MCG_C5_PRDIV0(0);
