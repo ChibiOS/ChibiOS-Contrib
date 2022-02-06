@@ -78,6 +78,9 @@ const EepromDevice *EepromFindDevice(uint8_t id) {
  * @note      Fucntion allways successfully open file. All checking makes
  *            in read/write functions.
  */
+#ifdef __cplusplus
+extern "C"
+#endif
 EepromFileStream *EepromFileOpen(EepromFileStream *efs,
                                  const EepromFileConfig *eepcfg,
                                  const EepromDevice *eepdev) {

@@ -116,6 +116,9 @@ typedef struct {
 
 const EepromDevice *EepromFindDevice(uint8_t id);
 
+#ifdef __cplusplus
+extern "C"
+#endif
 EepromFileStream *EepromFileOpen(EepromFileStream *efs,
                                  const EepromFileConfig *eepcfg,
                                  const EepromDevice *eepdev);
