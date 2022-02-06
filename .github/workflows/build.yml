@@ -2,9 +2,9 @@ name: build tests
 
 on:
   push:
-    branches: [ chibios-21.11.x-dev ]
+    branches: [ chibios-21.11.x ]
   pull_request:
-    branches: [ chibios-21.11.x-dev ]
+    branches: [ chibios-21.11.x ]
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
         release: '10-2020-q4'
     - name: setup vars
       run: |
-        echo "CH_VER=master" >> $GITHUB_ENV
+        echo "CH_VER=stable_21.11.x" >> $GITHUB_ENV
         echo "CHC_PATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
     - name: download Chibios
       run: |
