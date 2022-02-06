@@ -110,7 +110,7 @@ typedef enum {
  * @brief   Represents SCSI sense data structure.
  * @details See SCSI specification.
  */
-typedef struct PACKED_VAR {
+typedef struct {
   uint8_t byte[18];
 } scsi_sense_response_t;
 
@@ -118,7 +118,7 @@ typedef struct PACKED_VAR {
  * @brief   Represents SCSI inquiry response structure.
  * @details See SCSI specification.
  */
-typedef struct PACKED_VAR {
+typedef struct {
   uint8_t peripheral;
   uint8_t removable;
   uint8_t version;
@@ -136,7 +136,7 @@ typedef struct PACKED_VAR {
  * @brief   Represents SCSI unit serial number inquiry response structure.
  * @details See SCSI specification.
  */
-typedef struct PACKED_VAR {
+typedef struct {
   uint8_t peripheral;
   uint8_t page_code;
   uint8_t reserved;
@@ -147,7 +147,7 @@ typedef struct PACKED_VAR {
  * @brief   Represents SCSI mode sense (6) request structure.
  * @details See SCSI specification.
  */
-typedef struct PACKED_VAR {
+typedef struct {
   uint8_t   byte[6];
 } scsi_mode_sense6_request_t;
 
@@ -155,7 +155,7 @@ typedef struct PACKED_VAR {
  * @brief   Represents SCSI mode sense (6) response structure.
  * @details See SCSI specification.
  */
-typedef struct PACKED_VAR{
+typedef struct {
   uint8_t   byte[4];
 } scsi_mode_sense6_response_t;
 
@@ -163,7 +163,7 @@ typedef struct PACKED_VAR{
  * @brief   Represents SCSI read capacity (10) response structure.
  * @details See SCSI specification.
  */
-typedef struct PACKED_VAR {
+typedef struct {
   uint32_t last_block_addr;
   uint32_t block_size;
 } scsi_read_capacity10_response_t;
@@ -172,7 +172,7 @@ typedef struct PACKED_VAR {
  * @brief   Represents SCSI read format capacity response structure.
  * @details See SCSI specification.
  */
-typedef struct PACKED_VAR {
+typedef struct {
   uint8_t header[4];
   uint8_t blocknum[4];
   uint8_t blocklen[4];

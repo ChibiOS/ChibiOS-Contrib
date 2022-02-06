@@ -94,7 +94,7 @@ include $(CHIBIOS_CONTRIB)/os/hal/boards/NRF51-DK/board.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
-include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v6m.mk
+include $(CHIBIOS)/os/common/ports/ARMv6-M/compilers/GCC/mk/port.mk
 
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD_CONTRIB)/NRF51822.ld

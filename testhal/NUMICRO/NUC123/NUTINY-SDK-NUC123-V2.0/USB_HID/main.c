@@ -15,7 +15,6 @@
   limitations under the License.
 */
 #include "hal.h"
-
 #include "usbcfg.h"
 
 /*
@@ -56,7 +55,7 @@ int main(void)
    */
   OnboardLED_Off();
 
-  chDbgSuspendTrace(CH_DBG_TRACE_MASK_SWITCH);
+  chTraceSuspend(CH_DBG_TRACE_MASK_SWITCH);
   /*
    * Initializes a USB HID driver.
    */
