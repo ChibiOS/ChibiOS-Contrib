@@ -78,6 +78,9 @@ const EepromDevice *EepromFindDevice(uint8_t id) {
  * @note      Fucntion allways successfully open file. All checking makes
  *            in read/write functions.
  */
+#ifdef __cplusplus
+extern "C"
+#endif
 EepromFileStream *EepromFileOpen(EepromFileStream *efs,
                                  const EepromFileConfig *eepcfg,
                                  const EepromDevice *eepdev) {
@@ -132,7 +135,7 @@ size_t EepromWriteWord(EepromFileStream *efs, uint32_t data) {
   return fileStreamWrite(efs, (uint8_t *)&data, sizeof(data));
 }
 
-msg_t eepfs_getsize(void *ip) {
+msg_t eepfs_getsize(void *ip, fileoffset_t *offset) {
 
   uint32_t h, l;
 
@@ -144,7 +147,7 @@ msg_t eepfs_getsize(void *ip) {
   return  h - l;
 }
 
-msg_t eepfs_getposition(void *ip) {
+msg_t eepfs_getposition(void *ip, fileoffset_t *offset) {
 
   osalDbgCheck((ip != NULL) && (((EepromFileStream *)ip)->vmt != NULL));
 
@@ -157,7 +160,7 @@ msg_t eepfs_lseek(void *ip, fileoffset_t offset) {
 
   osalDbgCheck((ip != NULL) && (((EepromFileStream *)ip)->vmt != NULL));
 
-  size = eepfs_getsize(ip);
+  size = eepfs_getsize(ip, NULL);
   if (offset > size)
     offset = size;
   ((EepromFileStream *)ip)->position = offset;

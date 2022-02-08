@@ -116,6 +116,9 @@ typedef struct {
 
 const EepromDevice *EepromFindDevice(uint8_t id);
 
+#ifdef __cplusplus
+extern "C"
+#endif
 EepromFileStream *EepromFileOpen(EepromFileStream *efs,
                                  const EepromFileConfig *eepcfg,
                                  const EepromDevice *eepdev);
@@ -127,8 +130,8 @@ size_t EepromWriteByte(EepromFileStream *efs, uint8_t data);
 size_t EepromWriteHalfword(EepromFileStream *efs, uint16_t data);
 size_t EepromWriteWord(EepromFileStream *efs, uint32_t data);
 
-msg_t eepfs_getsize(void *ip);
-msg_t eepfs_getposition(void *ip);
+msg_t eepfs_getsize(void *ip, fileoffset_t *offset);
+msg_t eepfs_getposition(void *ip, fileoffset_t *offset);
 msg_t eepfs_lseek(void *ip, fileoffset_t offset);
 msg_t eepfs_close(void *ip);
 msg_t eepfs_geterror(void *ip);
