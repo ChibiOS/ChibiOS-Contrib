@@ -302,9 +302,9 @@ static size_t read(void *ip, uint8_t *bp, size_t n) {
   if (n == 1) {
     uint8_t __buf[2];
     /* if NOT last byte of file requested */
-    if ((eepfs_getposition(ip) + 1) < eepfs_getsize(ip)) {
+    if ((eepfs_getposition(ip, NULL) + 1) < eepfs_getsize(ip, NULL)) {
       if (read(ip, __buf, 2) == 2) {
-        eepfs_lseek(ip, (eepfs_getposition(ip) + 1));
+        eepfs_lseek(ip, (eepfs_getposition(ip, NULL) + 1));
         bp[0] = __buf[0];
         return 1;
       }
@@ -312,9 +312,9 @@ static size_t read(void *ip, uint8_t *bp, size_t n) {
         return 0;
     }
     else {
-      eepfs_lseek(ip, (eepfs_getposition(ip) - 1));
+      eepfs_lseek(ip, (eepfs_getposition(ip, NULL) - 1));
       if (read(ip, __buf, 2) == 2) {
-        eepfs_lseek(ip, (eepfs_getposition(ip) + 2));
+        eepfs_lseek(ip, (eepfs_getposition(ip, NULL) + 2));
         bp[0] = __buf[1];
         return 1;
       }
