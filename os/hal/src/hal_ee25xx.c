@@ -264,8 +264,8 @@ static msg_t ll_eeprom_write(const SPIEepromFileConfig *eepcfg, uint32_t offset,
  */
 static size_t __clamp_size(void *ip, size_t n) {
 
-  if (((size_t)eepfs_getposition(ip) + n) > (size_t)eepfs_getsize(ip))
-    return eepfs_getsize(ip) - eepfs_getposition(ip);
+  if (((size_t)eepfs_getposition(ip, NULL) + n) > (size_t)eepfs_getsize(ip, NULL))
+    return eepfs_getsize(ip, NULL) - eepfs_getposition(ip, NULL);
   else
     return n;
 }
@@ -280,10 +280,10 @@ static msg_t __fitted_write(void *ip, const uint8_t *data, size_t len, uint32_t 
   osalDbgAssert(len > 0, "len must be greater than 0");
 
   status = ll_eeprom_write(((SPIEepromFileStream *)ip)->cfg,
-                           eepfs_getposition(ip), data, len);
+                           eepfs_getposition(ip, NULL), data, len);
   if (status == MSG_OK) {
     *written += len;
-    eepfs_lseek(ip, eepfs_getposition(ip) + len);
+    eepfs_lseek(ip, eepfs_getposition(ip, NULL) + len);
   }
   return status;
 }
@@ -315,8 +315,8 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
     return 0;
 
   pagesize  = cfg->pagesize;
-  firstpage = (cfg->barrier_low + eepfs_getposition(ip)) / pagesize;
-  lastpage  = ((cfg->barrier_low + eepfs_getposition(ip) + n) - 1) / pagesize;
+  firstpage = (cfg->barrier_low + eepfs_getposition(ip, NULL)) / pagesize;
+  lastpage  = ((cfg->barrier_low + eepfs_getposition(ip, NULL) + n) - 1) / pagesize;
 
   /* data fits in single page */
   if (firstpage == lastpage) {
@@ -327,7 +327,7 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
   
   else {
     /* write first piece of data to first page boundary */
-    len =  ((firstpage + 1) * pagesize) - eepfs_getposition(ip);
+    len =  ((firstpage + 1) * pagesize) - eepfs_getposition(ip, NULL);
     len -= cfg->barrier_low;
     if (__fitted_write(ip, bp, len, &written) != MSG_OK)
       return written;
@@ -373,11 +373,11 @@ static size_t read(void *ip, uint8_t *bp, size_t n) {
 
   /* call low level function */
   status = ll_eeprom_read(((SPIEepromFileStream *)ip)->cfg,
-                          eepfs_getposition(ip), bp, n);
+                          eepfs_getposition(ip, NULL), bp, n);
   if (status != MSG_OK)
     return 0;
   else {
-    eepfs_lseek(ip, (eepfs_getposition(ip) + n));
+    eepfs_lseek(ip, (eepfs_getposition(ip, NULL) + n));
     return n;
   }
 }

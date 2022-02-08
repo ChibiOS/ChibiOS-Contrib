@@ -189,8 +189,8 @@ static msg_t eeprom_write(const I2CEepromFileConfig *eepcfg, uint32_t offset,
  */
 static size_t __clamp_size(void *ip, size_t n) {
 
-  if (((size_t)eepfs_getposition(ip) + n) > (size_t)eepfs_getsize(ip))
-    return eepfs_getsize(ip) - eepfs_getposition(ip);
+  if (((size_t)eepfs_getposition(ip, NULL) + n) > (size_t)eepfs_getsize(ip, NULL))
+    return eepfs_getsize(ip, NULL) - eepfs_getposition(ip, NULL);
   else
     return n;
 }
@@ -205,10 +205,10 @@ static msg_t __fitted_write(void *ip, const uint8_t *data, size_t len, uint32_t 
   osalDbgAssert(len > 0, "len must be greater than 0");
 
   status = eeprom_write(((I2CEepromFileStream *)ip)->cfg,
-                        eepfs_getposition(ip), data, len);
+                        eepfs_getposition(ip, NULL), data, len);
   if (status == MSG_OK) {
     *written += len;
-    eepfs_lseek(ip, eepfs_getposition(ip) + len);
+    eepfs_lseek(ip, eepfs_getposition(ip, NULL) + len);
   }
 
   return status;
@@ -240,9 +240,9 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
 
   pagesize  =  ((EepromFileStream *)ip)->cfg->pagesize;
   firstpage = (((EepromFileStream *)ip)->cfg->barrier_low +
-               eepfs_getposition(ip)) / pagesize;
+               eepfs_getposition(ip, NULL)) / pagesize;
   lastpage  = (((EepromFileStream *)ip)->cfg->barrier_low +
-               eepfs_getposition(ip) + n - 1) / pagesize;
+               eepfs_getposition(ip, NULL) + n - 1) / pagesize;
 
   /* data fits in single page */
   if (firstpage == lastpage) {
@@ -253,7 +253,7 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
 
   else {
     /* write first piece of data to first page boundary */
-    len =  ((firstpage + 1) * pagesize) - eepfs_getposition(ip);
+    len =  ((firstpage + 1) * pagesize) - eepfs_getposition(ip, NULL);
     len -= ((EepromFileStream *)ip)->cfg->barrier_low;
     if (__fitted_write(ip, bp, len, &written) != MSG_OK)
       return written;
@@ -302,9 +302,9 @@ static size_t read(void *ip, uint8_t *bp, size_t n) {
   if (n == 1) {
     uint8_t __buf[2];
     /* if NOT last byte of file requested */
-    if ((eepfs_getposition(ip) + 1) < eepfs_getsize(ip)) {
+    if ((eepfs_getposition(ip, NULL) + 1) < eepfs_getsize(ip, NULL)) {
       if (read(ip, __buf, 2) == 2) {
-        eepfs_lseek(ip, (eepfs_getposition(ip) + 1));
+        eepfs_lseek(ip, (eepfs_getposition(ip, NULL) + 1));
         bp[0] = __buf[0];
         return 1;
       }
@@ -312,9 +312,9 @@ static size_t read(void *ip, uint8_t *bp, size_t n) {
         return 0;
     }
     else {
-      eepfs_lseek(ip, (eepfs_getposition(ip) - 1));
+      eepfs_lseek(ip, (eepfs_getposition(ip, NULL) - 1));
       if (read(ip, __buf, 2) == 2) {
-        eepfs_lseek(ip, (eepfs_getposition(ip) + 2));
+        eepfs_lseek(ip, (eepfs_getposition(ip, NULL) + 2));
         bp[0] = __buf[1];
         return 1;
       }
@@ -326,11 +326,11 @@ static size_t read(void *ip, uint8_t *bp, size_t n) {
 
   /* call low level function */
   status  = eeprom_read(((I2CEepromFileStream *)ip)->cfg,
-                        eepfs_getposition(ip), bp, n);
+                        eepfs_getposition(ip, NULL), bp, n);
   if (status != MSG_OK)
     return 0;
   else {
-    eepfs_lseek(ip, (eepfs_getposition(ip) + n));
+    eepfs_lseek(ip, (eepfs_getposition(ip, NULL) + n));
     return n;
   }
 }
