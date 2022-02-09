@@ -65,6 +65,13 @@
 #if !defined(PLATFORM_USB_USE_USB1) || defined(__DOXYGEN__)
 #define PLATFORM_USB_USE_USB1                  TRUE
 #endif
+
+/**
+ * @brief   USB interrupt priority level setting.
+ */
+#if !defined(SN32_USB_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define SN32_USB_IRQ_PRIORITY                3
+#endif
 /** @} */
 
 /*===========================================================================*/

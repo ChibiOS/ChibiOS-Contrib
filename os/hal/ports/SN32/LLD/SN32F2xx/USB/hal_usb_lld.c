@@ -653,7 +653,7 @@ void usb_lld_start(USBDriver *usbp) {
         #if PLATFORM_USB_USE_USB1 == TRUE
         if (&USBD1 == usbp) {
             USB_Init();
-            nvicEnableVector(SN32_USB_NUMBER, 14);
+            nvicEnableVector(SN32_USB_NUMBER, SN32_USB_IRQ_PRIORITY);
         }
         #endif
     }

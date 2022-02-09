@@ -61,7 +61,7 @@
  * @brief   PWMD1 interrupt priority level setting.
  */
 #if !defined(SN32_PWM_CT16B1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define SN32_PWM_CT16B1_IRQ_PRIORITY         3
+#define SN32_PWM_CT16B1_IRQ_PRIORITY         2
 #endif
 /** @} */
 
