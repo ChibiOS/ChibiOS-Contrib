@@ -118,10 +118,12 @@ static void serve_interrupt(I2CDriver *i2cp) {
     /* Transmission phase. */
     if (dp->INTRSTAT & I2C_IC_INTR_STAT_R_TX_EMPTY_Msk) {
       if (i2cp->txbytes) {
-        dp->DATACMD = (uint32_t)i2cp->txbuf[i2cp->txindex] |
-                      (i2cp->txbytes == 1 ? I2C_IC_DATA_CMD_STOP : 0);
-        i2cp->txindex++;
-        i2cp->txbytes--;
+        while (i2cp->txbytes && (dp->TXFLR & I2C_IC_TXFLR_TXFLR_Msk) < 16) {
+          dp->DATACMD = (uint32_t)i2cp->txbuf[i2cp->txindex] |
+                        (i2cp->txbytes == 1 ? I2C_IC_DATA_CMD_STOP : 0);
+          i2cp->txindex++;
+          i2cp->txbytes--;
+        }
 
         if (i2cp->txbytes == 0U) {
           // Disable TX_EMPTY irq
