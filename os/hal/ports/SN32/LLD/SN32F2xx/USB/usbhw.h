@@ -4,34 +4,15 @@
 #ifndef __USBHW_H__
 #define __USBHW_H__
 
-/* USB Remote Wakeup I/O Define */
-/* USB Remote Wakeup I/O Port Define, Default P1.5 */
-#define REMOTE_WAKEUP_IO_P0         DISABLE
-#define REMOTE_WAKEUP_IO_P1         ENABLE
-#define REMOTE_WAKEUP_IO_P2         DISABLE
-#define REMOTE_WAKEUP_IO_P3         DISABLE
-
-/* USB Remote Wakeup I/O Bit Define */
-#define REMOTE_WAKEUP_IO_P0_BIT     0x0000
-#define REMOTE_WAKEUP_IO_P1_BIT     0x0020
-#define REMOTE_WAKEUP_IO_P2_BIT     0x0000
-#define REMOTE_WAKEUP_IO_P3_BIT     0x0000
-
-/* USB EPn NAK interrupt */
-#define EP1_NAK_IE                  DISABLE
-#define EP2_NAK_IE                  DISABLE
-#define EP3_NAK_IE                  DISABLE
-#define EP4_NAK_IE                  DISABLE
-
-/* USB SOF interrupt */
-#define SOF_IE                      DISABLE
-
 /* USB Interrupt Enable Bit Definitions <USB_INTEN> */
 #define mskEP1_NAK_EN               (0x1<<0)
 #define mskEP2_NAK_EN               (0x1<<1)
 #define mskEP3_NAK_EN               (0x1<<2)
 #define mskEP4_NAK_EN               (0x1<<3)
-#define mskEPnACK_EN                (0x1<<4)
+#define mskEP5_NAK_EN               (0x1<<4)
+#define mskEP6_NAK_EN               (0x1<<5)
+#define mskEPnACK_EN                (0x1<<6)
+
 #define mskBUSWK_IE                 (0x1<<28)
 #define mskUSB_IE                   (0x1<<29)
 #define mskUSB_SOF_IE               (0x1<<30)
@@ -42,10 +23,17 @@
 #define mskEP2_NAK                  (0x1<<1)
 #define mskEP3_NAK                  (0x1<<2)
 #define mskEP4_NAK                  (0x1<<3)
+#define mskEP5_NAK                  (0x1<<4)
+#define mskEP6_NAK                  (0x1<<5)
+
 #define mskEP1_ACK                  (0x1<<8)
 #define mskEP2_ACK                  (0x1<<9)
 #define mskEP3_ACK                  (0x1<<10)
 #define mskEP4_ACK                  (0x1<<11)
+#define mskEP5_ACK                  (0x1<<12)
+#define mskEP6_ACK                  (0x1<<13)
+
+
 #define mskERR_TIMEOUT              (0x1<<17)
 #define mskERR_SETUP                (0x1<<18)
 #define mskEP0_OUT_STALL            (0x1<<19)
@@ -68,6 +56,9 @@
 #define mskEP2_DIR                  (0x1<<1)
 #define mskEP3_DIR                  (0x1<<2)
 #define mskEP4_DIR                  (0x1<<3)
+#define mskEP5_DIR                  (0x1<<4)
+#define mskEP6_DIR                  (0x1<<5)
+
 #define mskDIS_PDEN                 (0x1<<26)
 #define mskESD_EN                   (0x1<<27)
 #define mskSIE_EN                   (0x1<<28)
@@ -108,8 +99,8 @@
 
 /* Rx & Tx Packet Length Definitions */
 #define PKT_LNGTH_MASK              0x000003FF
-/* nUsb_Status Register Definitions */
 
+/* nUsb_Status Register Definitions */
 #define mskBUSRESET                 (0x1<<0)
 #define mskBUSSUSPEND               (0x1<<1)
 #define mskBUSRESUME                (0x1<<2)
@@ -130,82 +121,6 @@
 #define mskINITREPEAT               (0x1<<17)
 #define mskREMOTE_WAKEUP_ACT        (0x1<<18)
 
-//ISP KERNEL MODE
-#define RETURN_KERNEL_0 0x5AA555AA
-#define RETURN_KERNEL_1 0xCC3300FF
-/*********Marco function***************/
-
-//USB device address set
-#define __USB_SETADDRESS(addr)      (SN_USB->ADDR = addr)
-//USB INT status register clear
-#define __USB_CLRINSTS(Clrflag)     (SN_USB->INSTSC = Clrflag)
-//USB EP0_IN token set STALL
-#define __USB_EP0INSTALL_EN         (SN_USB->EP0CTL |= mskEP0_IN_STALL_EN)
-//USB EP0_OUT token set STALL
-#define __USB_EP0OUTSTALL_EN        (SN_USB->EP0CTL |= mskEP0_OUT_STALL_EN)
-//USB bus driver J state
-#define __USB_JSTATE_DRIVER         (SN_USB->SGCTL = (mskBUS_DRVEN|mskBUS_J_STATE))
-//USB bus driver K state
-#define __USB_KSTATE_DRIVER         (SN_USB->SGCTL = (mskBUS_DRVEN|mskBUS_K_STATE))
-//USB PHY set enable
-#define __USB_PHY_ENABLE            (SN_USB->CFG |= (mskESD_EN|mskPHY_EN))
-//USB PHY set Disable
-#define __USB_PHY_DISABLE           (SN_USB->CFG &= ~(mskESD_EN|mskPHY_EN))
-
 /***************************************/
-
-/* TODO: orgaize better since this is MCU dependent:
- * 240b has 1+4 EPs/256 Bytes USB SRAM
- * 240 has  1+6 EPs/512 Bytes USB SRAM
- * 260 has  1+4 EPs/256 Bytes USB SRAM
- * */
-// USB EPn Buffer Offset Register
-#define EP1_BUFFER_OFFSET_VALUE                 0x40
-#define EP2_BUFFER_OFFSET_VALUE                 0x80
-#define EP3_BUFFER_OFFSET_VALUE                 0xC0
-#define EP4_BUFFER_OFFSET_VALUE                 0xE0
-
-/* USB Endpoint Max Packet Size */
-#define USB_EP0_PACKET_SIZE                     64  // only 8, 64
-#define USB_EP1_PACKET_SIZE                     0x40
-#define USB_EP2_PACKET_SIZE                     0x40
-#define USB_EP3_PACKET_SIZE                     0x20
-#define USB_EP4_PACKET_SIZE                     0x20
-
-/* USB Endpoint Direction */
-#define USB_DIRECTION_OUT                       0
-#define USB_DIRECTION_IN                        1
-
-/* USB Endpoint Address */
-#define USB_EP0                                 0x0
-#define USB_EP1                                 0x1
-#define USB_EP2                                 0x2
-#define USB_EP3                                 0x3
-#define USB_EP4                                 0x4
-
-
-extern const uint32_t wUSB_EPnOffset[];
-extern const uint32_t wUSB_EPnMaxPacketSize[];
-
-/* USB Hardware Functions */
-extern void USB_Init(void);
-extern void USB_ClrEPnToggle(uint32_t wEPNum);
-extern void USB_EPnDisable(uint32_t wEPNum);
-extern void USB_EPnNak(uint32_t wEPNum);
-extern void USB_EPnAck(uint32_t wEPNum, uint8_t bBytecnt);
-extern void USB_EPnStall(uint32_t wEPNum);
-extern _Bool USB_EPnEnabled(uint32_t wEPNum);
-extern _Bool USB_EPnStalled(uint32_t wEPNum);
-
-extern void USB_RemoteWakeUp(void);
-extern void USB_DelayJstate(void);
-extern void USB_DelayKstate(void);
-extern void USB_EPnBufferOffset(uint32_t wEPNum, uint32_t wAddr);
-
-/* USB IRQ Functions*/
-extern void USB_ReturntoNormal(void);
-extern void USB_ResetEvent(void);
-extern void USB_WakeupEvent(void);
-extern void USB_SuspendEvent(void);
 
 #endif  /* __USBHW_H__ */

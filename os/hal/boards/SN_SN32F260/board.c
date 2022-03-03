@@ -58,7 +58,3 @@ void __early_init(void) {
 void boardInit(void) {
   SN_SYS0->SWDCTRL_b.SWDDIS = 1; // Disable SWD
 }
-
-void restart_usb_driver(USBDriver *usbp) {
-    // Do nothing. Restarting the USB driver on these boards breaks it.
-}
