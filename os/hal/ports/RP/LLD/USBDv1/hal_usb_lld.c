@@ -176,6 +176,9 @@ static uint16_t usb_buffer_next_offset(USBDriver *usbp, uint16_t size, bool is_d
  * @brief   Reset endpoint 0.
  */
 static void reset_ep0(USBDriver *usbp) {
+  usbp->epc[0]->out_state->next_pid = 1U;
+  usbp->epc[0]->out_state->active = false;
+  usbp->epc[0]->out_state->stalled = false;
   usbp->epc[0]->in_state->next_pid = 1U;
   usbp->epc[0]->in_state->active = false;
   usbp->epc[0]->in_state->stalled = false;
@@ -385,7 +388,8 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
       /* Transfer complete */
       _usb_isr_invoke_in_cb(usbp, ep);
 
-      iesp->active = iesp->stalled = false;
+      iesp->active = false;
+      iesp->stalled = false;
     }
   } else {
     /* OUT endpoint */
@@ -403,16 +407,17 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
     oesp->rxpkts -= 1;
 
     /* Short packet or all packetes have been received. */
-    if (oesp->rxpkts <= 0 || n <= epcp->out_maxsize) {
+    if (oesp->rxpkts == 0 || n < epcp->out_maxsize) {
 #ifdef USB_DEBUG
       cmd_send(CMD_EP_DONE, 1);
       data_send(ep);
 #endif
+
+      oesp->active = false;
+      oesp->stalled = false;
+
       /* Transifer complete */
       _usb_isr_invoke_out_cb(usbp, ep);
-      usb_prepare_out_ep(usbp, ep);
-
-      oesp->active = oesp->stalled = false;
     } else {
       /* Receive remained data */
       usb_prepare_out_ep(usbp, ep);
@@ -432,25 +437,21 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
  * @isr
  */
 OSAL_IRQ_HANDLER(RP_USBCTRL_IRQ_HANDLER) {
-  uint32_t ints;
-  USBDriver *usbp = &USBD1;
-
   OSAL_IRQ_PROLOGUE();
 
-  ints = USB->INTS;
+  USBDriver *usbp = &USBD1;
+  uint32_t ints = USB->INTS;
 
   /* USB setup packet handling. */
   if (ints & USB_INTS_SETUP_REQ) {
 #ifdef USB_DEBUG
-    //cmd_send(CMD_SETUP, 0);
+    cmd_send(CMD_SETUP, 0);
 #endif
     USB->CLR.SIESTATUS = USB_SIE_STATUS_SETUP_REC;
 
-    usbp->epc[0]->in_state->next_pid = 1U;
+    reset_ep0(usbp);
 
     _usb_isr_invoke_setup_cb(usbp, 0);
-
-    reset_ep0(usbp);
   }
 
   /* USB bus reset condition handling. */
@@ -563,7 +564,8 @@ void usb_lld_start(USBDriver *usbp) {
       hal_lld_peripheral_reset(RESETS_ALLREG_USBCTRL);
       hal_lld_peripheral_unreset(RESETS_ALLREG_USBCTRL);
 
-      /* Clear any previous state in dpram */
+      /* Clear any previos state in dpram and hw regs */
+      memset(USB, 0, sizeof(*USB));
       memset(USB_DPSRAM, 0, sizeof(*USB_DPSRAM));
 
       /* Mux the controller to the onboard usb phy */
@@ -868,6 +870,7 @@ void usb_lld_start_out(USBDriver *usbp, usbep_t ep) {
                              usbp->epc[ep]->out_maxsize);
   }
 
+  usb_prepare_out_ep(usbp, ep);
 #ifdef USB_DEBUG
   cmd_send(CMD_START_OUT, 1);
   data_send((ep << 24) | oesp->rxsize | (oesp->rxpkts << 16));
