@@ -34,9 +34,9 @@
 /*
  * Board identifier.
  */
-#define WB32F3G71x9
-#if !defined(WB32F3G71xx)
-  #define WB32F3G71xx
+#define WB32FQ95xC
+#if !defined(WB32FQ95xx)
+  #define WB32FQ95xx
 #endif
 
 /*===========================================================================*/
