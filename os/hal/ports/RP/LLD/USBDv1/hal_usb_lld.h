@@ -135,7 +135,7 @@ typedef struct {
 #endif
   /* End of the mandatory fields.*/
   /**
-   * @brief   Last received size of data.
+   * @brief   Size of the last transmitted packet.
    */
   size_t                        txlast;
   /**
