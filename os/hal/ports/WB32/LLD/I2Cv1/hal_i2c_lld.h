@@ -82,8 +82,8 @@
 #define WB32_I2C_I2C2_IRQ_PRIORITY             10
 #endif
 
-#if defined(WB32F3G71xx)
-#define WB32F3G71xx_I2C
+#if defined(WB32F3G71xx) || defined(WB32FQ95xx)
+#define WB32_I2C
 #endif
 /** @} */
 
