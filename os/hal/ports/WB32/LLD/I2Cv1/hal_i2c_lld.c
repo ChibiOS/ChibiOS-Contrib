@@ -400,7 +400,7 @@ void i2c_lld_stop(I2CDriver *i2cp) {
 
 /**
  * @brief   Receives data via the I2C bus as master.
- * @details Number of receiving bytes must be more than 1 on WB32F3G71x.
+ * @details Number of receiving bytes must be more than 1.
  *          This is hardware restriction.
  *
  * @param[in] i2cp      pointer to the @p I2CDriver object
@@ -427,7 +427,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   I2C_TypeDef *dp = i2cp->i2c;
   msg_t msg;
 
-#if defined(WB32F3G71xx_I2C)
+#if defined(WB32_I2C)
   osalDbgCheck(rxbytes > 0);
 #endif
   /* Resetting error flags for this transfer.*/
@@ -472,7 +472,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
 /**
  * @brief   Transmits data via the I2C bus as master.
- * @details Number of receiving bytes must be 0 or more than 1 on WB32F3G71x.
+ * @details Number of receiving bytes must be 0 or more than 1.
  *          This is hardware restriction.
  *
  * @param[in] i2cp      pointer to the @p I2CDriver object
@@ -503,7 +503,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   I2C_TypeDef *dp = i2cp->i2c;
   __IO msg_t msg;
 
-#if defined(WB32F3G71xx_I2C)
+#if defined(WB32_I2C)
   osalDbgCheck((rxbytes == 0) || ((rxbytes > 0) && (rxbuf != NULL)));
 #endif
   /* Resetting error flags for this transfer.*/

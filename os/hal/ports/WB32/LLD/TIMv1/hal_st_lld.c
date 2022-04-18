@@ -52,7 +52,7 @@
 #define ST_NUMBER                              WB32_TIM2_NUMBER
 #define ST_CLOCK_SRC                           WB32_TIMCLK1
 #define ST_ENABLE_CLOCK()                      rccEnableTIM2()
-#if defined(WB32F3G71xx)
+#if defined(WB32F3G71xx) || defined(WB32FQ95xx)
 #define ST_ENABLE_STOP()                       DBGMCU->CR |= DBGMCU_CR_DBG_TIM2_STOP
 #endif
 
@@ -70,7 +70,7 @@
 #define ST_NUMBER                              WB32_TIM3_NUMBER
 #define ST_CLOCK_SRC                           WB32_TIMCLK1
 #define ST_ENABLE_CLOCK()                      rccEnableTIM3()
-#if defined(WB32F3G71xx)
+#if defined(WB32F3G71xx) || defined(WB32FQ95xx)
 #define ST_ENABLE_STOP()                       DBGMCU->CR |= DBGMCU_CR_DBG_TIM3_STOP
 #endif
 
@@ -88,7 +88,7 @@
 #define ST_NUMBER                              WB32_TIM4_NUMBER
 #define ST_CLOCK_SRC                           WB32_TIMCLK1
 #define ST_ENABLE_CLOCK()                      rccEnableTIM4()
-#if defined(WB32F3G71xx)
+#if defined(WB32F3G71xx) || defined(WB32FQ95xx)
 #define ST_ENABLE_STOP()                       DBGMCU->CR |= DBGMCU_CR_DBG_TIM4_STOP
 #endif
 
