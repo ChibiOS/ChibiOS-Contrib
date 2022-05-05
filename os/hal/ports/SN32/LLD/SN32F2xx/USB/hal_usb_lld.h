@@ -1,12 +1,12 @@
 /*
-    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2006..2016 Giovanni Di Sirio
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
         http://www.apache.org/licenses/LICENSE-2.0
-    
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,8 +15,8 @@
 */
 
 /**
- * @file    USBv1/hal_usb_lld.h
- * @brief   RP2040 USB subsystem low level driver header.
+ * @file    hal_usb_lld.h
+ * @brief   PLATFORM USB subsystem low level driver header.
  *
  * @addtogroup USB
  * @{
@@ -25,9 +25,9 @@
 #ifndef HAL_USB_LLD_H
 #define HAL_USB_LLD_H
 
-#if HAL_USE_USB || defined(__DOXYGEN__)
+#if (HAL_USE_USB == TRUE) || defined(__DOXYGEN__)
 
-#include "rp2040_usb.h"
+#include "sn32_usb.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -36,7 +36,7 @@
 /**
  * @brief   Maximum endpoint address.
  */
-#define USB_MAX_ENDPOINTS                   USB_ENDOPOINTS_NUMBER
+#define USB_MAX_ENDPOINTS                   USB_ENDPOINTS_NUMBER
 
 /**
  * @brief   Status stage handling method.
@@ -44,68 +44,50 @@
 #define USB_EP0_STATUS_STAGE                USB_EP0_STATUS_STAGE_SW
 
 /**
- * @brief   Address ack handling
- */
-#define USB_SET_ADDRESS_ACK_HANDLING        USB_SET_ADDRESS_ACK_SW
-
-/**
  * @brief   This device requires the address change after the status packet.
  */
 #define USB_SET_ADDRESS_MODE                USB_LATE_SET_ADDRESS
+
+/**
+ * @brief   Method for set address acknowledge.
+ */
+#define USB_SET_ADDRESS_ACK_HANDLING        USB_SET_ADDRESS_ACK_SW
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
 /**
- * @brief USBD1 driver enable switch.
+ * @name    PLATFORM configuration options
+ * @{
  */
-#if !defined(RP_USB_USE_USBD0) || defined(__DOXYGEN__)
-#define RP_USB_USE_USBD0                    FALSE
+/**
+ * @brief   USB driver enable switch.
+ * @details If set to @p TRUE the support for USB1 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(SN32_USB_USE_USB1) || defined(__DOXYGEN__)
+#define SN32_USB_USE_USB1                  TRUE
 #endif
 
 /**
- * @brief Force to set VBUS detect register.
- * @details If you want to use non VBUS DETECT pin for this purpose,
-            set this flag to FALSE and define bool usb_vbus_detect(void) function
-            which returns true to force VBUS DETECT.
-            See RP_USE_EXTERNAL_VBUS_DETECT.
+ * @brief   USB interrupt priority level setting.
  */
-#if !defined(RP_USB_FORCE_VBUS_DETECT) || defined(__DOXYGEN__)
-#define RP_USB_FORCE_VBUS_DETECT            TRUE
+#if !defined(SN32_USB_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define SN32_USB_IRQ_PRIORITY                3
 #endif
 
 /**
- * @brief Use custom VBUS detection.
-   @details If RP_USB_FORCE_VBUS_DETECT is FALSE, this flag can be TRUE
-            to detect custom function to detect VBUS.
+ * @brief   Host wake-up procedure duration.
  */
-#if !defined(RP_USE_EXTERNAL_VBUS_DETECT) || defined(__DOXYGEN__)
-#define RP_USE_EXTERNAL_VBUS_DETECT         FALSE
+#if !defined(SN32_USB_HOST_WAKEUP_DURATION) || defined(__DOXYGEN__)
+#define SN32_USB_HOST_WAKEUP_DURATION        2
 #endif
+/** @} */
 
-#if RP_USE_EXTERNAL_VBUS_DETECT == TRUE
-extern bool usb_vbus_detect(void);
-#endif
-
-/**
- * @brief Enables the SOF interrupt.
- */
-#if !defined(RP_USB_USE_SOF_INTR) || defined(__DOXYGEN__)
-#define RP_USB_USE_SOF_INTR                 FALSE
-#endif
-
-/**
- * @brief Enables the error data sequence interrupt.
- * @details This flag is useful if you develop low level driver.
- */
-#if !defined(RP_USB_USE_ERROR_DATA_SEQ_INTR) || defined(__DOXYGEN__)
-#define RP_USB_USE_ERROR_DATA_SEQ_INTR      FALSE
-#endif
-
-#if !defined(RP_IRQ_USB0_PRIORITY)
-#error "RP_IRQ_USB0_PRIORITY not defined in mcuconf.h"
-#endif
+/*===========================================================================*/
+/* Derived constants and error checks.                                       */
+/*===========================================================================*/
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
@@ -138,26 +120,6 @@ typedef struct {
    * @brief   Size of the last transmitted packet.
    */
   size_t                        txlast;
-  /**
-   * @brief   Endpoint is active.
-   */
-  bool                          active;
-  /**
-   * @brief   Endpoint is stalled.
-   */
-  bool                          stalled;
-  /**
-   * @brief   Data PID used by next transfer.
-   */
-  uint8_t                       next_pid;
-  /**
-   * @brief   Buffer in the hardware.
-   */
-  uint8_t                       *hw_buf;
-  /**
-   * @brief   Buffer size.
-   */
-  uint16_t                      buf_size;
 } USBInEndpointState;
 
 /**
@@ -187,26 +149,6 @@ typedef struct {
    * @brief   Number of packets to receive.
    */
   uint16_t                      rxpkts;
-  /**
-   * @brief   Endpoint is active.
-   */
-  bool                          active;
-  /**
-   * @brief   Endpoint is stalled.
-   */
-  bool                          stalled;
-  /**
-   * @brief   Data PID used by next transfer.
-   */
-  uint8_t                       next_pid;
-  /**
-   * @brief   Buffer in the hardware.
-   */
-  uint8_t                       *hw_buf;
-  /**
-   * @brief   Buffer size.
-   */
-  uint16_t                      buf_size;
 } USBOutEndpointState;
 
 /**
@@ -231,37 +173,50 @@ typedef struct {
   usbepcallback_t               setup_cb;
   /**
    * @brief   IN endpoint notification callback.
-   * @details This field must be set to @p NULL if callback is not required.
+   * @details This field must be set to @p NULL if the IN endpoint is not
+   *          used.
    */
   usbepcallback_t               in_cb;
   /**
    * @brief   OUT endpoint notification callback.
-   * @details This field must be set to @p NULL if callback is not required.
+   * @details This field must be set to @p NULL if the OUT endpoint is not
+   *          used.
    */
   usbepcallback_t               out_cb;
   /**
    * @brief   IN endpoint maximum packet size.
-   * @details This field must be set to zero if the IN endpoint is not used.
+   * @details This field must be set to zero if the IN endpoint is not
+   *          used.
    */
   uint16_t                      in_maxsize;
   /**
    * @brief   OUT endpoint maximum packet size.
-   * @details This field must be set to zero if the OUT endpoint is not used.
+   * @details This field must be set to zero if the OUT endpoint is not
+   *          used.
    */
   uint16_t                      out_maxsize;
   /**
    * @brief   @p USBEndpointState associated to the IN endpoint.
-   * @details This field must be set to @p NULL if the IN endpoint is not
-   *          used.
+   * @details This structure maintains the state of the IN endpoint.
    */
   USBInEndpointState            *in_state;
   /**
    * @brief   @p USBEndpointState associated to the OUT endpoint.
-   * @details This field must be set to @p NULL if the OUT endpoint is not
-   *          used.
+   * @details This structure maintains the state of the OUT endpoint.
    */
   USBOutEndpointState           *out_state;
   /* End of the mandatory fields.*/
+  /**
+   * @brief   Reserved field, not currently used.
+   * @note    Initialize this field to 1 in order to be forward compatible.
+   */
+  uint16_t                      ep_buffers;
+  /**
+   * @brief   Pointer to a buffer for setup packets.
+   * @details Setup packets require a dedicated 8-bytes buffer, set this
+   *          field to @p NULL for non-control endpoints.
+   */
+  uint8_t                       *setup_buf;
 } USBEndpointConfig;
 
 /**
@@ -298,7 +253,7 @@ struct USBDriver {
   /**
    * @brief   Driver state.
    */
-  usbstate_t state;
+  usbstate_t                    state;
   /**
    * @brief   Current configuration data.
    */
@@ -370,9 +325,9 @@ struct USBDriver {
 #endif
   /* End of the mandatory fields.*/
   /**
-   * @brief   Next offset of buffer.
+   * @brief   Pointer to the next address in the packet memory.
    */
-  uint16_t                      noffset;
+  uint32_t                      pmnext;
 };
 
 /*===========================================================================*/
@@ -387,8 +342,7 @@ struct USBDriver {
  *
  * @notapi
  */
-#define usb_lld_get_frame_number(usbp)                                      \
-  (USB->SOFRD & USB_SOF_RD_COUNT_Msk)
+#define usb_lld_get_frame_number(usbp) (SN32_USB->FRMNO & mskFRAME_NO)
 
 /**
  * @brief   Returns the exact size of a receive transaction.
@@ -412,24 +366,21 @@ struct USBDriver {
  *
  * @api
  */
-#if !defined(usb_lld_connect_bus)
 #define usb_lld_connect_bus(usbp)                                           \
   do {                                                                      \
-    USB->SET.SIECTRL = USB_SIE_CTRL_PULLUP_EN;                              \
+    SN32_USB->CFG |= mskDPPU_EN;                                            \
   } while (false)
-#endif
 
 /**
  * @brief   Disconnect the USB device.
  *
  * @api
  */
-#if !defined(usb_lld_disconnect_bus)
 #define usb_lld_disconnect_bus(usbp)                                        \
   do {                                                                      \
-    USB->CLR.SIECTRL = USB_SIE_CTRL_PULLUP_EN;                              \
+    SN32_USB->CFG &= ~mskDPPU_EN;                                           \
   } while (false)
-#endif
+
 
 /**
  * @brief   Start of host wake-up procedure.
@@ -438,41 +389,47 @@ struct USBDriver {
  */
 #define usb_lld_wakeup_host(usbp)                                           \
   do {                                                                      \
-    USB->SET.SIECTRL = USB_SIE_CTRL_RESUME;                                 \
+    SN32_USB->SGCTL = (mskBUS_DRVEN|mskBUS_K_STATE);                        \
+    osalThreadSleepMilliseconds(SN32_USB_HOST_WAKEUP_DURATION);             \
+    SN32_USB->SGCTL &= ~mskBUS_DRVEN;                                       \
   } while (false)
 
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if RP_USB_USE_USBD0 && !defined(__DOXYGEN__)
+#if (SN32_USB_USE_USB1 == TRUE) && !defined(__DOXYGEN__)
 extern USBDriver USBD1;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void usb_lld_init(void);
-  void usb_lld_start(USBDriver *usbp);
-  void usb_lld_stop(USBDriver *usbp);
-  void usb_lld_reset(USBDriver *usbp);
-  void usb_lld_set_address(USBDriver *usbp);
-  void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep);
-  void usb_lld_disable_endpoints(USBDriver *usbp);
-  usbepstatus_t usb_lld_get_status_in(USBDriver *usbp, usbep_t ep);
-  usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep);
-  void usb_lld_read_setup(USBDriver *usbp, usbep_t ep, uint8_t *buf);
-  void usb_lld_start_out(USBDriver *usbp, usbep_t ep);
-  void usb_lld_start_in(USBDriver *usbp, usbep_t ep);
-  void usb_lld_stall_out(USBDriver *usbp, usbep_t ep);
-  void usb_lld_stall_in(USBDriver *usbp, usbep_t ep);
-  void usb_lld_clear_out(USBDriver *usbp, usbep_t ep);
-  void usb_lld_clear_in(USBDriver *usbp, usbep_t ep);
+    void usb_lld_init(void);
+    void usb_lld_start(USBDriver *usbp);
+    void usb_lld_stop(USBDriver *usbp);
+    void usb_lld_reset(USBDriver *usbp);
+    void usb_lld_set_address(USBDriver *usbp);
+    void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep);
+    void usb_lld_disable_endpoints(USBDriver *usbp);
+    usbepstatus_t usb_lld_get_status_in(USBDriver *usbp, usbep_t ep);
+    usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep);
+    void usb_lld_read_setup(USBDriver *usbp, usbep_t ep, uint8_t *buf);
+    void usb_lld_prepare_receive(USBDriver *usbp, usbep_t ep);
+    void usb_lld_prepare_transmit(USBDriver *usbp, usbep_t ep);
+    void usb_lld_start_out(USBDriver *usbp, usbep_t ep);
+    void usb_lld_start_in(USBDriver *usbp, usbep_t ep);
+    void usb_lld_stall_out(USBDriver *usbp, usbep_t ep);
+    void usb_lld_stall_in(USBDriver *usbp, usbep_t ep);
+    void usb_lld_clear_out(USBDriver *usbp, usbep_t ep);
+    void usb_lld_clear_in(USBDriver *usbp, usbep_t ep);
+    void handleACK(USBDriver* usbp, usbep_t ep);
+    void handleNAK(USBDriver* usbp, usbep_t ep);
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* HAL_USE_USB */
+#endif /* HAL_USE_USB == TRUE */
 
 #endif /* HAL_USB_LLD_H */
 
