@@ -164,5 +164,11 @@
 #define WB32_USB_USB1_IRQ_PRIORITY          13
 #define WB32_USB_HOST_WAKEUP_DURATION       10
 
+/*
+ * ADC driver system settings.
+ */
+#define WB32_ADC_USE_ADC1                   FALSE
+#define WB32_ADC_ADC1_DMA_PRIORITY          2
+#define WB32_ADC_ADC1_IRQ_PRIORITY          6
 
 #endif /* MCUCONF_H */
