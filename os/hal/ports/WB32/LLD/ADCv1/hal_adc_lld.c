@@ -104,8 +104,8 @@ void adc_lld_init(void) {
   ADCD1.dmamode.src_addr_inc    = WB32_DMAC_SRC_ADDR_NOC;
   ADCD1.dmamode.dst_addr_inc    = WB32_DMAC_DST_ADDR_INC;
   ADCD1.dmamode.trf_tfc         = WB32_DMAC_TRF_TFC_P2MD;
-  ADCD1.dmamode.src_master_if   = WB32_DMAC_DST_MASTER_IF_APB;
-  ADCD1.dmamode.dst_master_if   = WB32_DMAC_SRC_MASTER_IF_AHB;
+  ADCD1.dmamode.src_master_if   = WB32_DMAC_SRC_MASTER_IF_APB;
+  ADCD1.dmamode.dst_master_if   = WB32_DMAC_DST_MASTER_IF_AHB;
   ADCD1.dmamode.src_auto_reload = WB32_DMAC_SRC_AUTO_RELOAD_DIS;
   ADCD1.dmamode.dst_auto_reload = WB32_DMAC_DST_AUTO_RELOAD_EN;
   ADCD1.dmamode.ch_priority     = WB32_ADC_ADC1_DMA_PRIORITY;
