@@ -227,8 +227,8 @@
 /** @defgroup DMAC_DestinationMasterInterface 
   * @{
   */
-#define WB32_DMAC_SRC_MASTER_IF_APB                          (0x0U << 23)
-#define WB32_DMAC_SRC_MASTER_IF_AHB                          (0x1U << 23)
+#define WB32_DMAC_SRC_MASTER_IF_APB                          (0x0U << 25)
+#define WB32_DMAC_SRC_MASTER_IF_AHB                          (0x1U << 25)
 /**
   * @}
   */
@@ -236,8 +236,8 @@
 /** @defgroup DMAC_SourceMasterInterface 
   * @{
   */
-#define WB32_DMAC_DST_MASTER_IF_APB                          (0x0U << 25)
-#define WB32_DMAC_DST_MASTER_IF_AHB                          (0x1U << 25)
+#define WB32_DMAC_DST_MASTER_IF_APB                          (0x0U << 23)
+#define WB32_DMAC_DST_MASTER_IF_AHB                          (0x1U << 23)
 /**
   * @}
   */
