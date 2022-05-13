@@ -175,9 +175,9 @@ typedef enum {
   /* Pointer to the ADCx registers block.*/                                 \
   ADC_TypeDef               *adc;                                           \
   /* Pointer to associated DMA channel.*/                                   \
-  const wb32_dma_stream_t  *dmastp;                                         \
+  const wb32_dma_stream_t   *dmastp;                                        \
   /* DMA mode bit mask.*/                                                   \
-  wb32_dmac_chinit_t        dmamode
+  uint32_t                  dmamode                                         \
 
 /**
  * @brief   Low level fields of the ADC configuration structure.

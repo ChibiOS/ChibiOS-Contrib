@@ -340,13 +340,31 @@
   * @{
   */
 /* The following definitions is only used for DMAC1. */
-#define WB32_DMAC_HWHIF_TIM1_CH1_TIM2_UP_TIM3_CH3            0
-#define WB32_DMAC_HWHIF_TIM1_CH4_TIM1_TRIG_TIM1_COM_TIM4_CH2 1
-#define WB32_DMAC_HWHIF_TIM1_UP_TIM2_CH1_TIM4_CH3            2
-#define WB32_DMAC_HWHIF_TIM1_CH3_TIM3_CH1_TIM3_TRIG          3
-#define WB32_DMAC_HWHIF_TIM2_CH3_TIM4_CH1                    4
-#define WB32_DMAC_HWHIF_TIM2_CH2_TIM2_CH4_TIM4_UP            5
-#define WB32_DMAC_HWHIF_TIM3_CH4_TIM3_UP_TIM1_CH2            6
+#define WB32_DMAC_HWHIF_TIM1_UP                              2
+#define WB32_DMAC_HWHIF_TIM1_COM                             1
+#define WB32_DMAC_HWHIF_TIM1_CH1                             0
+#define WB32_DMAC_HWHIF_TIM1_CH2                             6
+#define WB32_DMAC_HWHIF_TIM1_CH3                             3
+#define WB32_DMAC_HWHIF_TIM1_CH4                             1
+#define WB32_DMAC_HWHIF_TIM1_TRIG                            1
+
+#define WB32_DMAC_HWHIF_TIM2_UP                              0
+#define WB32_DMAC_HWHIF_TIM2_CH1                             2
+#define WB32_DMAC_HWHIF_TIM2_CH2                             5
+#define WB32_DMAC_HWHIF_TIM2_CH3                             4
+#define WB32_DMAC_HWHIF_TIM2_CH4                             5
+
+#define WB32_DMAC_HWHIF_TIM3_UP                              6
+#define WB32_DMAC_HWHIF_TIM3_CH1                             3
+#define WB32_DMAC_HWHIF_TIM3_CH3                             0
+#define WB32_DMAC_HWHIF_TIM3_CH4                             6
+#define WB32_DMAC_HWHIF_TIM3_TRIG                            3
+
+#define WB32_DMAC_HWHIF_TIM4_UP                              5
+#define WB32_DMAC_HWHIF_TIM4_CH1                             4
+#define WB32_DMAC_HWHIF_TIM4_CH2                             1
+#define WB32_DMAC_HWHIF_TIM4_CH3                             2
+
 #define WB32_DMAC_HWHIF_QSPI_RX                              7
 #define WB32_DMAC_HWHIF_QSPI_TX                              8
 #define WB32_DMAC_HWHIF_SPIS1_RX                             9
@@ -369,6 +387,37 @@
 #define WB32_DMAC_HWHIF_I2C1_TX                              9
 #define WB32_DMAC_HWHIF_I2C2_RX                              10
 #define WB32_DMAC_HWHIF_I2C2_TX                              11
+/**
+  * @}
+  */
+
+/** @defgroup DMAC configuration parameters for use simple config. 
+  * @{
+  */
+#define WB32_DMA_CHCFG_SIZE_MASK                             (0x1FFU)
+#define WB32_DMA_CHCFG_EN                                    (0x01U << 0)
+#define WB32_DMA_CHCFG_TCIE                                  (0x01U << 1)
+#define WB32_DMA_CHCFG_HTIE                                  (0x01U << 2)
+#define WB32_DMA_CHCFG_TEIE                                  (0x01U << 3)
+#define WB32_DMA_CHCFG_DIR_MASK                              (0x03U << 4)
+#define WB32_DMA_CHCFG_DIR_M2M                               (0x00U << 4)
+#define WB32_DMA_CHCFG_DIR_M2P                               (0x01U << 4)
+#define WB32_DMA_CHCFG_DIR_P2M                               (0x02U << 4)
+#define WB32_DMA_CHCFG_CIRC                                  (0x01U << 6)
+#define WB32_DMA_CHCFG_PINC                                  (0x01U << 7)
+#define WB32_DMA_CHCFG_MINC                                  (0x01U << 8)
+#define WB32_DMA_CHCFG_PSIZE_MASK                            (0x03U << 9)
+#define WB32_DMA_CHCFG_PSIZE_BYTE                            (0x00U << 9)
+#define WB32_DMA_CHCFG_PSIZE_HWORD                           (0x01U << 9)
+#define WB32_DMA_CHCFG_PSIZE_WORD                            (0x02U << 9)
+#define WB32_DMA_CHCFG_MSIZE_MASK                            (0x03U << 11)
+#define WB32_DMA_CHCFG_MSIZE_BYTE                            (0x00U << 11)
+#define WB32_DMA_CHCFG_MSIZE_HWORD                           (0x01U << 11)
+#define WB32_DMA_CHCFG_MSIZE_WORD                            (0x02U << 11)
+#define WB32_DMA_CHCFG_PL_MASK                               (0x07U << 13)
+#define WB32_DMA_CHCFG_PL(n)                                 ((n) << 13)
+#define WB32_DMA_CHCFG_HWHIF_MASK                            (0xFFU << 16)
+#define WB32_DMA_CHCFG_HWHIF(n)                              ((n) << 16)
 /**
   * @}
   */
@@ -554,7 +603,55 @@ typedef struct {
  *
  * @special
  */
-#define dmaStreamSetMode(dmastp, mode) {                                     \
+#define dmaStreamSetMode(dmastp, mode) {                                                              \
+    switch ((uint32_t)(mode) & WB32_DMA_CHCFG_DIR_MASK) {                                             \
+        case WB32_DMA_CHCFG_DIR_M2M: /* M2M */                                                        \
+          (dmastp)->dmac->Ch[(dmastp)->channel].CFGL = WB32_DMAC_TRF_TFC_M2MD |                       \
+                                                       WB32_DMAC_SRC_MASTER_IF_AHB |                  \
+                                                       WB32_DMAC_DST_MASTER_IF_AHB |                  \
+                                                       (((mode) & WB32_DMA_CHCFG_PSIZE_MASK) >> 5) |  \
+                                                       (((mode) & WB32_DMA_CHCFG_MSIZE_MASK) >> 10) | \
+                                                       ((!((mode) & WB32_DMA_CHCFG_PINC)) << 10) |    \
+                                                       ((!((mode) & WB32_DMA_CHCFG_MINC)) << 8);      \
+          (dmastp)->dmac->Ch[(dmastp)->channel].CFGH = (1U << 2);                                     \
+          break;                                                                                      \
+        case WB32_DMA_CHCFG_DIR_M2P: /* M2P */                                                        \
+          (dmastp)->dmac->Ch[(dmastp)->channel].CTLL = WB32_DMAC_TRF_TFC_M2PD |                       \
+                                                       WB32_DMAC_SRC_MASTER_IF_AHB |                  \
+                                                       WB32_DMAC_DST_MASTER_IF_APB |                  \
+                                                       (((mode) & WB32_DMA_CHCFG_MSIZE_MASK) >> 7) |  \
+                                                       (((mode) & WB32_DMA_CHCFG_PSIZE_MASK) >> 8) |  \
+                                                       ((!((mode) & WB32_DMA_CHCFG_MINC)) << 10) |    \
+                                                       ((!((mode) & WB32_DMA_CHCFG_PINC)) << 8);      \
+          (dmastp)->dmac->Ch[(dmastp)->channel].CFGH = (((mode) & WB32_DMA_CHCFG_HWHIF_MASK) >> 5) |  \
+                                                       (1U << 2);                                     \
+          break;                                                                                      \
+        case WB32_DMA_CHCFG_DIR_P2M: /* P2M */                                                        \
+          (dmastp)->dmac->Ch[(dmastp)->channel].CTLL = WB32_DMAC_TRF_TFC_P2MD |                       \
+                                                       WB32_DMAC_SRC_MASTER_IF_APB |                  \
+                                                       WB32_DMAC_DST_MASTER_IF_AHB |                  \
+                                                       (((mode) & WB32_DMA_CHCFG_PSIZE_MASK) >> 5) |  \
+                                                       (((mode) & WB32_DMA_CHCFG_MSIZE_MASK) >> 10) | \
+                                                       ((!((mode) & WB32_DMA_CHCFG_PINC)) << 10) |    \
+                                                       ((!((mode) & WB32_DMA_CHCFG_MINC)) << 8);      \
+          (dmastp)->dmac->Ch[(dmastp)->channel].CFGH = (((mode) & WB32_DMA_CHCFG_HWHIF_MASK) >> 9) |  \
+                                                       (1U << 2);                                     \
+          break;                                                                                      \
+    }                                                                                                 \
+    (dmastp)->dmac->Ch[(dmastp)->channel].CFGL = (((mode) & WB32_DMA_CHCFG_PL_MASK) >> 8) |           \
+                                                 (((mode) & WB32_DMA_CHCFG_CIRC) << 24) |             \
+                                                 (((mode) & WB32_DMA_CHCFG_CIRC) << 25);              \
+    if ((mode) & (WB32_DMA_CHCFG_TCIE | WB32_DMA_CHCFG_HTIE)) {                                       \
+      (dmastp)->dmac->Ch[(dmastp)->channel].CTLL |= WB32_DMAC_INTERRUPT_EN;                           \
+      dmaStreamEnableInterrupt(dmastp, WB32_DMAC_IT_TFR);                                             \
+    }                                                                                                 \
+    if ((mode) & WB32_DMA_CHCFG_TEIE) {                                                               \
+      (dmastp)->dmac->Ch[(dmastp)->channel].CTLL |= WB32_DMAC_INTERRUPT_EN;                           \
+      dmaStreamEnableInterrupt(dmastp, WB32_DMAC_IT_ERR);                                             \
+    }                                                                                                 \
+  }
+
+#define dmaStreamSetModeI(dmastp, mode) {                                    \
     (dmastp)->dmac->Ch[(dmastp)->channel].CTLL = (mode).interrupt |          \
                                                  (mode).dst_width |          \
                                                  (mode).src_width |          \
@@ -579,6 +676,7 @@ typedef struct {
                                                  ((mode).src_hwhif << 7) |   \
                                                  ((mode).dst_hwhif << 11);   \
   }
+
 
 /**
  * @brief   DMA stream enable interrupt configuration.

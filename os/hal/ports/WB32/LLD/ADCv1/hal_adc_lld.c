@@ -96,31 +96,15 @@ void adc_lld_init(void) {
 #if WB32_ADC_USE_ADC1
   /* Driver initialization.*/
   adcObjectInit(&ADCD1);
-  ADCD1.adc                     = ADC;
-  ADCD1.dmastp                  = NULL;
-  ADCD1.dmamode.interrupt       = WB32_DMAC_INTERRUPT_EN;
-  ADCD1.dmamode.src_width       = WB32_DMAC_SRC_WIDTH_HWORD;
-  ADCD1.dmamode.dst_width       = WB32_DMAC_DST_WIDTH_HWORD;
-  ADCD1.dmamode.src_addr_inc    = WB32_DMAC_SRC_ADDR_NOC;
-  ADCD1.dmamode.dst_addr_inc    = WB32_DMAC_DST_ADDR_INC;
-  ADCD1.dmamode.trf_tfc         = WB32_DMAC_TRF_TFC_P2MD;
-  ADCD1.dmamode.src_master_if   = WB32_DMAC_SRC_MASTER_IF_APB;
-  ADCD1.dmamode.dst_master_if   = WB32_DMAC_DST_MASTER_IF_AHB;
-  ADCD1.dmamode.src_auto_reload = WB32_DMAC_SRC_AUTO_RELOAD_DIS;
-  ADCD1.dmamode.dst_auto_reload = WB32_DMAC_DST_AUTO_RELOAD_EN;
-  ADCD1.dmamode.ch_priority     = WB32_ADC_ADC1_DMA_PRIORITY;
-  ADCD1.dmamode.src_hwhif       = WB32_DMAC_HWHIF_ADC_Regular;
-  ADCD1.dmamode.src_hifs        = WB32_DMAC_SRC_HIFS_HW;
-  ADCD1.dmamode.dst_hifs        = WB32_DMAC_DST_HIFS_HW;
-  ADCD1.dmamode.fc_mode         = WB32_DMAC_FC_MODE0;
-  ADCD1.dmamode.fifo_mode       = WB32_DMAC_FIFO_MODE0;
-  ADCD1.dmamode.dst_hifp        = WB32_DMAC_DST_HIFP_HIGH;
-  ADCD1.dmamode.src_hifp        = WB32_DMAC_SRC_HIFP_HIGH;
-  ADCD1.dmamode.src_trs_len     = WB32_DMAC_SRC_TRS_LEN_1;
-  ADCD1.dmamode.dst_trs_len     = WB32_DMAC_DST_TRS_LEN_1;
-  ADCD1.dmamode.dst_hwhif       = 0;
-  ADCD1.dmamode.brs_maxlen      = 0;
-  ADCD1.dmamode.prot_ctl        = 1;
+  ADCD1.adc     = ADC;
+  ADCD1.dmastp  = NULL;
+  ADCD1.dmamode = WB32_DMA_CHCFG_HWHIF(WB32_DMAC_HWHIF_ADC_Regular) | \
+                  WB32_DMA_CHCFG_PL(WB32_ADC_ADC1_DMA_PRIORITY) | \
+                  WB32_DMA_CHCFG_PSIZE_HWORD | \
+                  WB32_DMA_CHCFG_MSIZE_HWORD | \
+                  WB32_DMA_CHCFG_DIR_P2M | \
+                  WB32_DMA_CHCFG_MINC | \
+                  WB32_DMA_CHCFG_CIRC;
 
   /* Temporary activation.*/
   rccEnableADC();
@@ -232,19 +216,18 @@ void adc_lld_stop(ADCDriver *adcp) {
  * @notapi
  */
 void adc_lld_start_conversion(ADCDriver *adcp) {
-  uint32_t cr2, tmpreg1 = 0;
-  wb32_dmac_chinit_t mode;
-  const ADCConversionGroup *grpp = adcp->grpp;
+  uint32_t cr2, mode;
+  uint32_t tmpreg1                  = 0;
+  const    ADCConversionGroup *grpp = adcp->grpp;
 
   /* DMA setup.*/
   mode = adcp->dmamode;
   if (grpp->circular) {
-    mode.dst_auto_reload = WB32_DMAC_DST_AUTO_RELOAD_EN;
+    mode |= WB32_DMA_CHCFG_CIRC;
     if (adcp->depth > 1) {
       /* If circular buffer depth > 1, then the half transfer interrupt
          is enabled in order to allow streaming processing.*/
-      mode.interrupt = WB32_DMAC_INTERRUPT_EN;
-      dmaStreamEnableInterrupt(adcp->dmastp, WB32_DMAC_IT_TFR);
+      mode |= WB32_DMA_CHCFG_TCIE;
     }
   }
   dmaStreamSetDestination(adcp->dmastp, adcp->samples);
