@@ -24,11 +24,13 @@ endif #ifeq ($(USE_SMART_BUILD), yes)
 
 # Drivers compatible with the platform.
 include ${CHIBIOS_CONTRIB}/os/hal/ports/WB32/LLD/GPIOv1/driver.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/DMAv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/TIMv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/I2Cv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/UARTv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/SPIv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/USBv1/driver.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/ADCv1/driver.mk
 
 # Shared variables
 ALLCSRC += $(PLATFORMSRC_CONTRIB)

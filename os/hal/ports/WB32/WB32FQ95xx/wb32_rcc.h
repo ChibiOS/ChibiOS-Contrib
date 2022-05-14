@@ -133,8 +133,8 @@
  * @api
  */
 #define rccEnableAHB(mask) {                                                \
-    RCC->AHBENR |= (mask);                                                  \
-    (void)RCC->AHBENR;                                                      \
+    RCC->AHBENR1 |= (mask);                                                 \
+    (void)RCC->AHBENR1;                                                     \
   }
 
 /**
@@ -145,8 +145,8 @@
  * @api
  */
 #define rccDisableAHB(mask) {                                               \
-    RCC->AHBENR &= ~(mask);                                                 \
-    (void)RCC->AHBENR;                                                      \
+    RCC->AHBENR1 &= ~(mask);                                                \
+    (void)RCC->AHBENR1;                                                     \
   }
 
 /**
@@ -157,8 +157,8 @@
  * @api
  */
 #define rccResetAHB(mask) {                                                 \
-    RCC->AHBRSTR |= (mask);                                                 \
-    RCC->AHBRSTR &= ~(mask);                                                \
+    RCC->AHBRSTR1 |= (mask);                                                \
+    RCC->AHBRSTR1 &= ~(mask);                                               \
     (void)RCC->AHBRSTR;                                                     \
   }
 /** @} */
@@ -500,6 +500,93 @@
  * @api
  */
 #define rccResetUART3() rccResetAPB2(RCC_APB2RSTR_UART3RST)
+/** @} */
+
+
+/**
+ * @name    ADC peripherals specific RCC operations
+ * @{
+ */
+/**
+ * @brief   Enables the ADC peripheral clock.
+ *
+ * @api
+ */
+#define rccEnableADC() rccEnableAPB1(RCC_APB1ENR_ADCEN)
+
+/**
+ * @brief   Disables the ADC peripheral clock.
+ *
+ * @api
+ */
+#define rccDisableADC() rccDisableAPB1(RCC_APB1ENR_ADCEN)
+
+/**
+ * @brief   Resets the ADC peripheral.
+ *
+ * @api
+ */
+#define rccResetADC() rccResetAPB1(RCC_APB1RSTR_ADCRST)
+/** @} */
+
+
+/**
+ * @name    DMAC peripherals specific RCC operations
+ * @{
+ */
+/**
+ * @brief   Enables the DMAC1 peripheral clock.
+ *
+ * @api
+ */
+#define rccEnableDMAC1() do {                                               \
+    rccEnableAHB(RCC_AHBENR1_DMAC1BREN);                                    \
+    rccEnableAPB1(RCC_APB1ENR_DMAC1EN);                                     \
+  } while (false)
+
+/**
+ * @brief   Disables the DMAC1 peripheral clock.
+ *
+ * @api
+ */
+#define rccDisableDMAC1() do {                                              \
+    rccDisableAHB(RCC_AHBENR1_DMAC1BREN);                                   \
+    rccDisableAPB1(RCC_APB1ENR_DMAC1EN);                                    \
+  } while (false)
+
+/**
+ * @brief   Resets the DMAC1 peripheral.
+ *
+ * @api
+ */
+#define rccResetDMAC1() rccResetAPB1(RCC_APB1RSTR_DMAC1RST)
+
+/**
+ * @brief   Enables the DMAC2 peripheral clock.
+ *
+ * @api
+ */
+#define rccEnableDMAC2() do {                                               \
+    rccEnableAHB(RCC_AHBENR1_DMAC2BREN);                                    \
+    rccEnableAPB2(RCC_APB2ENR_DMAC2EN);                                     \
+  } while (false)
+
+/**
+ * @brief   Disables the DMAC2 peripheral clock.
+ *
+ * @api
+ */
+#define rccDisableDMAC2() do {                                              \
+    rccDisableAHB(RCC_AHBENR1_DMAC2BREN);                                   \
+    rccDisableAPB2(RCC_APB2ENR_DMAC2EN);                                    \
+  } while (false)
+
+/**
+ * @brief   Resets the DMAC2 peripheral.
+ *
+ * @api
+ */
+#define rccResetDMAC2() rccResetAPB2(RCC_APB2RSTR_DMAC2RST)
 /** @} */
 
 /*===========================================================================*/
