@@ -77,7 +77,8 @@ int main(void)
 
   eflStart(&EFLD1, NULL);
   EFLD1.bank = NUC123_EFL_BANK_DATAFLASH;
-  mfsObjectInit(&mfsd);
+  mfs_nocache_buffer_t __nocache_mfsbuf1;
+  mfsObjectInit(&mfsd, &__nocache_mfsbuf1);
   mfsStart(&mfsd, &mfsd_config);
 
   /*
