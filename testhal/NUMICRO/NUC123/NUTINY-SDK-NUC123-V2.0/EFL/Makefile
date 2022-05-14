@@ -191,8 +191,7 @@ include $(RULESPATH)/rules.mk
 # Custom rules
 #
 
-READLINK:=greadlink
-OPENOCD:=$(shell $(READLINK) -f `which openocd`)
+OPENOCD:=$(shell readlink -f `which openocd`)
 OPENOCDPATH:=$(shell dirname $(OPENOCD))/../share/openocd
 
 flash: $(BUILDDIR)/$(PROJECT).elf
