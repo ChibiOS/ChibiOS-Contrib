@@ -82,6 +82,11 @@ const uint8_t _cfm[0x10] = {
  */
 void hal_lld_init(void) {
 
+#if defined(K64F)
+  /* Disable the MPU by default */
+  SYSMPU->CESR &= ~SYSMPU_CESR_VLD;
+#endif
+
 }
 
 /**
@@ -181,9 +186,9 @@ void k60x_clock_init(void) {
   /*
    * Now in FBE mode
    */
-  #define KINETIS_PLLIN_FREQUENCY 2000000UL
+  #define KINETIS_PLLIN_FREQUENCY 4000000UL
   /*
-   * Config PLL input for 2 MHz
+   * Config PLL input for 4 MHz
    * TODO: Make sure KINETIS_XTAL_FREQUENCY >= 2Mhz && <= 50Mhz
    */
   MCG->C5 = MCG_C5_PRDIV0((KINETIS_XTAL_FREQUENCY/KINETIS_PLLIN_FREQUENCY) - 1);
@@ -215,8 +220,10 @@ void k60x_clock_init(void) {
   SIM->CLKDIV1 = SIM_CLKDIV1_OUTDIV1(KINETIS_CLKDIV1_OUTDIV1-1) |
                  SIM_CLKDIV1_OUTDIV2(KINETIS_CLKDIV1_OUTDIV2-1) |
                  SIM_CLKDIV1_OUTDIV4(KINETIS_CLKDIV1_OUTDIV4-1);
-  SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
-  SIM->SOPT2 = SIM_SOPT2_PLLFLLSEL_IRC48M; /* FIXME ? Why this? */
+  SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(4) | SIM_CLKDIV2_USBFRAC;
+
+  /* Configure peripherals to use MCGPLLCLK */
+  SIM->SOPT2 = SIM_SOPT2_PLLFLLSEL_MCGPLL;
 
   /* Switch to PLL as clock source */
   MCG->C1 = MCG_C1_CLKS(0);

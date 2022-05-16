@@ -120,6 +120,21 @@
 #endif
 
 /**
+ * @brief   Clock divider for FlexBus clock (OUTDIV3).
+ * @note    The allowed range is 1..16
+ * @note    The default value is calculated for a 48 MHz clock
+ *          from a 96 MHz PLL output.
+ */
+#if !defined(KINETIS_CLKDIV1_OUTDIV3) || defined(__DOXYGEN__)
+  #if defined(KINETIS_FLEXBUSCLK_FREQUENCY) && KINETIS_FLEXBUSCLK_FREQUENCY > 0
+    #define KINETIS_CLKDIV1_OUTDIV3     (KINETIS_PLLCLK_FREQUENCY/KINETIS_FLEXBUSCLK_FREQUENCY)
+  #else
+    /* If no FlexBus frequency provided, use bus speed divider */
+    #define KINETIS_CLKDIV1_OUTDIV3     KINETIS_CLKDIV1_OUTDIV2
+  #endif
+#endif
+
+/**
  * @brief   Clock divider for flash clock (OUTDIV4).
  * @note    The allowed range is 1..16
  * @note    The default value is calculated for a 24 MHz flash clock
@@ -226,6 +241,11 @@
 #if !(defined(KINETIS_CLKDIV1_OUTDIV2) && \
       KINETIS_CLKDIV1_OUTDIV2 >= 1 && KINETIS_CLKDIV1_OUTDIV2 <= 16)
 #error KINETIS_CLKDIV1_OUTDIV2 must be 1 through 16
+#endif
+
+#if !(defined(KINETIS_CLKDIV1_OUTDIV3) && \
+      KINETIS_CLKDIV1_OUTDIV3 >= 1 && KINETIS_CLKDIV1_OUTDIV3 <= 16)
+#error KINETIS_CLKDIV1_OUTDIV3 must be 1 through 16
 #endif
 
 #if !(defined(KINETIS_CLKDIV1_OUTDIV4) && \

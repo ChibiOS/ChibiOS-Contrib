@@ -407,7 +407,7 @@ void usb_lld_init(void) {
 
 #elif KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE
 
-#if !defined(MK66F18)
+#if !defined(MK66F18) && !defined(K64F)
   /* Note:  We don't need this for MK66F18, we can use IRC48M clock for USB */
   #define KINETIS_USBCLK_FREQUENCY 48000000UL
   uint32_t i,j;
@@ -426,6 +426,12 @@ void usb_lld_init(void) {
 #else /* KINETIS_MCG_MODE == KINETIS_MCG_MODE_PEE */
 #error USB clock setting not implemented for this KINETIS_MCG_MODE
 #endif /* KINETIS_MCG_MODE == ... */
+
+#if defined(K64F)
+  /* Switch from default MCGPLLCLK to IRC48M for USB */
+  //SIM->CLKDIV2 = SIM_CLKDIV2_USBDIV(0);
+  //SIM->SOPT2 |= SIM_SOPT2_PLLFLLSEL_IRC48M;
+#endif
 
 #if defined(MK66F18)
   /* Switch from default MCGPLLCLK to IRC48M for USB */

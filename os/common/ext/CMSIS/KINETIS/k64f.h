@@ -278,13 +278,12 @@ typedef enum IRQn {
  * @{
  */
 
-#define __MPU_PRESENT                  0         /**< Defines if an MPU is present or not */
+#define __MPU_PRESENT                  1         /**< Defines if an MPU is present or not */
 #define __NVIC_PRIO_BITS               4         /**< Number of priority bits implemented in the NVIC */
 #define __Vendor_SysTickConfig         0         /**< Vendor specific implementation of SysTickConfig is defined */
 #define __FPU_PRESENT                  1         /**< Defines if an FPU is present or not */
 
 #include "core_cm4.h"                  /* Core Peripheral Access Layer */
-/* #include "system_MK64F12.h"         /+ Device specific configuration file */
 
 /*!
  * @}
@@ -5108,15 +5107,15 @@ typedef struct {
 
 
 /* ----------------------------------------------------------------------------
-   -- MPU Peripheral Access Layer
+   -- SYSMPU Peripheral Access Layer
    ---------------------------------------------------------------------------- */
 
 /*!
- * @addtogroup MPU_Peripheral_Access_Layer MPU Peripheral Access Layer
+ * @addtogroup SYSMPU_Peripheral_Access_Layer SYSMPU Peripheral Access Layer
  * @{
  */
 
-/** MPU - Register Layout Typedef */
+/** SYSMPU - Register Layout Typedef */
 typedef struct {
   __IO uint32_t CESR;                              /**< Control/Error Status Register, offset: 0x0 */
        uint8_t RESERVED_0[12];
@@ -5128,170 +5127,170 @@ typedef struct {
   __IO uint32_t WORD[12][4];                       /**< Region Descriptor n, Word 0..Region Descriptor n, Word 3, array offset: 0x400, array step: index*0x10, index2*0x4 */
        uint8_t RESERVED_2[832];
   __IO uint32_t RGDAAC[12];                        /**< Region Descriptor Alternate Access Control n, array offset: 0x800, array step: 0x4 */
-} MPU_TypeDef;
+} SYSMPU_TypeDef;
 
 /* ----------------------------------------------------------------------------
-   -- MPU Register Masks
+   -- SYSMPU Register Masks
    ---------------------------------------------------------------------------- */
 
 /*!
- * @addtogroup MPU_Register_Masks MPU Register Masks
+ * @addtogroup SYSMPU_Register_Masks SYSMPU Register Masks
  * @{
  */
 
 /*! @name CESR - Control/Error Status Register */
-#define MPU_CESR_VLD                             (0x1U)
-#define MPU_CESR_NRGD_MASK                       (0xF00U)
-#define MPU_CESR_NRGD_SHIFT                      (8U)
-#define MPU_CESR_NRGD(x)                         (((uint32_t)(((uint32_t)(x)) << MPU_CESR_NRGD_SHIFT)) & MPU_CESR_NRGD_MASK)
-#define MPU_CESR_NSP_MASK                        (0xF000U)
-#define MPU_CESR_NSP_SHIFT                       (12U)
-#define MPU_CESR_NSP(x)                          (((uint32_t)(((uint32_t)(x)) << MPU_CESR_NSP_SHIFT)) & MPU_CESR_NSP_MASK)
-#define MPU_CESR_HRL_MASK                        (0xF0000U)
-#define MPU_CESR_HRL_SHIFT                       (16U)
-#define MPU_CESR_HRL(x)                          (((uint32_t)(((uint32_t)(x)) << MPU_CESR_HRL_SHIFT)) & MPU_CESR_HRL_MASK)
-#define MPU_CESR_SPERR_MASK                      (0xF8000000U)
-#define MPU_CESR_SPERR_SHIFT                     (27U)
-#define MPU_CESR_SPERR(x)                        (((uint32_t)(((uint32_t)(x)) << MPU_CESR_SPERR_SHIFT)) & MPU_CESR_SPERR_MASK)
+#define SYSMPU_CESR_VLD                          (0x1U)
+#define SYSMPU_CESR_NRGD_MASK                    (0xF00U)
+#define SYSMPU_CESR_NRGD_SHIFT                   (8U)
+#define SYSMPU_CESR_NRGD(x)                      (((uint32_t)(((uint32_t)(x)) << SYSMPU_CESR_NRGD_SHIFT)) & SYSMPU_CESR_NRGD_MASK)
+#define SYSMPU_CESR_NSP_MASK                     (0xF000U)
+#define SYSMPU_CESR_NSP_SHIFT                    (12U)
+#define SYSMPU_CESR_NSP(x)                       (((uint32_t)(((uint32_t)(x)) << SYSMPU_CESR_NSP_SHIFT)) & SYSMPU_CESR_NSP_MASK)
+#define SYSMPU_CESR_HRL_MASK                     (0xF0000U)
+#define SYSMPU_CESR_HRL_SHIFT                    (16U)
+#define SYSMPU_CESR_HRL(x)                       (((uint32_t)(((uint32_t)(x)) << SYSMPU_CESR_HRL_SHIFT)) & SYSMPU_CESR_HRL_MASK)
+#define SYSMPU_CESR_SPERR_MASK                   (0xF8000000U)
+#define SYSMPU_CESR_SPERR_SHIFT                  (27U)
+#define SYSMPU_CESR_SPERR(x)                     (((uint32_t)(((uint32_t)(x)) << SYSMPU_CESR_SPERR_SHIFT)) & SYSMPU_CESR_SPERR_MASK)
 
-/* The count of MPU_EAR */
-#define MPU_EAR_COUNT                            (5U)
+/* The count of SYSMPU_EAR */
+#define SYSMPU_EAR_COUNT                         (5U)
 
 /*! @name EDR - Error Detail Register, slave port n */
-#define MPU_EDR_ERW                              (0x1U)
-#define MPU_EDR_EATTR_MASK                       (0xEU)
-#define MPU_EDR_EATTR_SHIFT                      (1U)
-#define MPU_EDR_EATTR(x)                         (((uint32_t)(((uint32_t)(x)) << MPU_EDR_EATTR_SHIFT)) & MPU_EDR_EATTR_MASK)
-#define MPU_EDR_EMN_MASK                         (0xF0U)
-#define MPU_EDR_EMN_SHIFT                        (4U)
-#define MPU_EDR_EMN(x)                           (((uint32_t)(((uint32_t)(x)) << MPU_EDR_EMN_SHIFT)) & MPU_EDR_EMN_MASK)
-#define MPU_EDR_EPID_MASK                        (0xFF00U)
-#define MPU_EDR_EPID_SHIFT                       (8U)
-#define MPU_EDR_EPID(x)                          (((uint32_t)(((uint32_t)(x)) << MPU_EDR_EPID_SHIFT)) & MPU_EDR_EPID_MASK)
-#define MPU_EDR_EACD_MASK                        (0xFFFF0000U)
-#define MPU_EDR_EACD_SHIFT                       (16U)
-#define MPU_EDR_EACD(x)                          (((uint32_t)(((uint32_t)(x)) << MPU_EDR_EACD_SHIFT)) & MPU_EDR_EACD_MASK)
+#define SYSMPU_EDR_ERW                           (0x1U)
+#define SYSMPU_EDR_EATTR_MASK                    (0xEU)
+#define SYSMPU_EDR_EATTR_SHIFT                   (1U)
+#define SYSMPU_EDR_EATTR(x)                      (((uint32_t)(((uint32_t)(x)) << SYSMPU_EDR_EATTR_SHIFT)) & SYSMPU_EDR_EATTR_MASK)
+#define SYSMPU_EDR_EMN_MASK                      (0xF0U)
+#define SYSMPU_EDR_EMN_SHIFT                     (4U)
+#define SYSMPU_EDR_EMN(x)                        (((uint32_t)(((uint32_t)(x)) << SYSMPU_EDR_EMN_SHIFT)) & SYSMPU_EDR_EMN_MASK)
+#define SYSMPU_EDR_EPID_MASK                     (0xFF00U)
+#define SYSMPU_EDR_EPID_SHIFT                    (8U)
+#define SYSMPU_EDR_EPID(x)                       (((uint32_t)(((uint32_t)(x)) << SYSMPU_EDR_EPID_SHIFT)) & SYSMPU_EDR_EPID_MASK)
+#define SYSMPU_EDR_EACD_MASK                     (0xFFFF0000U)
+#define SYSMPU_EDR_EACD_SHIFT                    (16U)
+#define SYSMPU_EDR_EACD(x)                       (((uint32_t)(((uint32_t)(x)) << SYSMPU_EDR_EACD_SHIFT)) & SYSMPU_EDR_EACD_MASK)
 
-/* The count of MPU_EDR */
-#define MPU_EDR_COUNT                            (5U)
+/* The count of SYSMPU_EDR */
+#define SYSMPU_EDR_COUNT                         (5U)
 
 /*! @name WORD - Region Descriptor n, Word 0..Region Descriptor n, Word 3 */
-#define MPU_WORD_VLD                             (0x1U)
-#define MPU_WORD_M0UM_MASK                       (0x7U)
-#define MPU_WORD_M0UM_SHIFT                      (0U)
-#define MPU_WORD_M0UM(x)                         (((uint32_t)(((uint32_t)(x)) << MPU_WORD_M0UM_SHIFT)) & MPU_WORD_M0UM_MASK)
-#define MPU_WORD_M0SM_MASK                       (0x18U)
-#define MPU_WORD_M0SM_SHIFT                      (3U)
-#define MPU_WORD_M0SM(x)                         (((uint32_t)(((uint32_t)(x)) << MPU_WORD_M0SM_SHIFT)) & MPU_WORD_M0SM_MASK)
-#define MPU_WORD_M0PE                            (0x20U)
-#define MPU_WORD_ENDADDR_MASK                    (0xFFFFFFE0U)
-#define MPU_WORD_ENDADDR_SHIFT                   (5U)
-#define MPU_WORD_ENDADDR(x)                      (((uint32_t)(((uint32_t)(x)) << MPU_WORD_ENDADDR_SHIFT)) & MPU_WORD_ENDADDR_MASK)
-#define MPU_WORD_SRTADDR_MASK                    (0xFFFFFFE0U)
-#define MPU_WORD_SRTADDR_SHIFT                   (5U)
-#define MPU_WORD_SRTADDR(x)                      (((uint32_t)(((uint32_t)(x)) << MPU_WORD_SRTADDR_SHIFT)) & MPU_WORD_SRTADDR_MASK)
-#define MPU_WORD_M1UM_MASK                       (0x1C0U)
-#define MPU_WORD_M1UM_SHIFT                      (6U)
-#define MPU_WORD_M1UM(x)                         (((uint32_t)(((uint32_t)(x)) << MPU_WORD_M1UM_SHIFT)) & MPU_WORD_M1UM_MASK)
-#define MPU_WORD_M1SM_MASK                       (0x600U)
-#define MPU_WORD_M1SM_SHIFT                      (9U)
-#define MPU_WORD_M1SM(x)                         (((uint32_t)(((uint32_t)(x)) << MPU_WORD_M1SM_SHIFT)) & MPU_WORD_M1SM_MASK)
-#define MPU_WORD_M1PE                            (0x800U)
-#define MPU_WORD_M2UM_MASK                       (0x7000U)
-#define MPU_WORD_M2UM_SHIFT                      (12U)
-#define MPU_WORD_M2UM(x)                         (((uint32_t)(((uint32_t)(x)) << MPU_WORD_M2UM_SHIFT)) & MPU_WORD_M2UM_MASK)
-#define MPU_WORD_M2SM_MASK                       (0x18000U)
-#define MPU_WORD_M2SM_SHIFT                      (15U)
-#define MPU_WORD_M2SM(x)                         (((uint32_t)(((uint32_t)(x)) << MPU_WORD_M2SM_SHIFT)) & MPU_WORD_M2SM_MASK)
-#define MPU_WORD_PIDMASK_MASK                    (0xFF0000U)
-#define MPU_WORD_PIDMASK_SHIFT                   (16U)
-#define MPU_WORD_PIDMASK(x)                      (((uint32_t)(((uint32_t)(x)) << MPU_WORD_PIDMASK_SHIFT)) & MPU_WORD_PIDMASK_MASK)
-#define MPU_WORD_M2PE                            (0x20000U)
-#define MPU_WORD_M3UM_MASK                       (0x1C0000U)
-#define MPU_WORD_M3UM_SHIFT                      (18U)
-#define MPU_WORD_M3UM(x)                         (((uint32_t)(((uint32_t)(x)) << MPU_WORD_M3UM_SHIFT)) & MPU_WORD_M3UM_MASK)
-#define MPU_WORD_M3SM_MASK                       (0x600000U)
-#define MPU_WORD_M3SM_SHIFT                      (21U)
-#define MPU_WORD_M3SM(x)                         (((uint32_t)(((uint32_t)(x)) << MPU_WORD_M3SM_SHIFT)) & MPU_WORD_M3SM_MASK)
-#define MPU_WORD_M3PE                            (0x800000U)
-#define MPU_WORD_PID_MASK                        (0xFF000000U)
-#define MPU_WORD_PID_SHIFT                       (24U)
-#define MPU_WORD_PID(x)                          (((uint32_t)(((uint32_t)(x)) << MPU_WORD_PID_SHIFT)) & MPU_WORD_PID_MASK)
-#define MPU_WORD_M4WE                            (0x1000000U)
-#define MPU_WORD_M4RE                            (0x2000000U)
-#define MPU_WORD_M5WE                            (0x4000000U)
-#define MPU_WORD_M5RE                            (0x8000000U)
-#define MPU_WORD_M6WE                            (0x10000000U)
-#define MPU_WORD_M6RE                            (0x20000000U)
-#define MPU_WORD_M7WE                            (0x40000000U)
-#define MPU_WORD_M7RE                            (0x80000000U)
+#define SYSMPU_WORD_VLD                          (0x1U)
+#define SYSMPU_WORD_M0UM_MASK                    (0x7U)
+#define SYSMPU_WORD_M0UM_SHIFT                   (0U)
+#define SYSMPU_WORD_M0UM(x)                      (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_M0UM_SHIFT)) & SYSMPU_WORD_M0UM_MASK)
+#define SYSMPU_WORD_M0SM_MASK                    (0x18U)
+#define SYSMPU_WORD_M0SM_SHIFT                   (3U)
+#define SYSMPU_WORD_M0SM(x)                      (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_M0SM_SHIFT)) & SYSMPU_WORD_M0SM_MASK)
+#define SYSMPU_WORD_M0PE                         (0x20U)
+#define SYSMPU_WORD_ENDADDR_MASK                 (0xFFFFFFE0U)
+#define SYSMPU_WORD_ENDADDR_SHIFT                (5U)
+#define SYSMPU_WORD_ENDADDR(x)                   (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_ENDADDR_SHIFT)) & SYSMPU_WORD_ENDADDR_MASK)
+#define SYSMPU_WORD_SRTADDR_MASK                 (0xFFFFFFE0U)
+#define SYSMPU_WORD_SRTADDR_SHIFT                (5U)
+#define SYSMPU_WORD_SRTADDR(x)                   (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_SRTADDR_SHIFT)) & SYSMPU_WORD_SRTADDR_MASK)
+#define SYSMPU_WORD_M1UM_MASK                    (0x1C0U)
+#define SYSMPU_WORD_M1UM_SHIFT                   (6U)
+#define SYSMPU_WORD_M1UM(x)                      (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_M1UM_SHIFT)) & SYSMPU_WORD_M1UM_MASK)
+#define SYSMPU_WORD_M1SM_MASK                    (0x600U)
+#define SYSMPU_WORD_M1SM_SHIFT                   (9U)
+#define SYSMPU_WORD_M1SM(x)                      (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_M1SM_SHIFT)) & SYSMPU_WORD_M1SM_MASK)
+#define SYSMPU_WORD_M1PE                         (0x800U)
+#define SYSMPU_WORD_M2UM_MASK                    (0x7000U)
+#define SYSMPU_WORD_M2UM_SHIFT                   (12U)
+#define SYSMPU_WORD_M2UM(x)                      (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_M2UM_SHIFT)) & SYSMPU_WORD_M2UM_MASK)
+#define SYSMPU_WORD_M2SM_MASK                    (0x18000U)
+#define SYSMPU_WORD_M2SM_SHIFT                   (15U)
+#define SYSMPU_WORD_M2SM(x)                      (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_M2SM_SHIFT)) & SYSMPU_WORD_M2SM_MASK)
+#define SYSMPU_WORD_PIDMASK_MASK                 (0xFF0000U)
+#define SYSMPU_WORD_PIDMASK_SHIFT                (16U)
+#define SYSMPU_WORD_PIDMASK(x)                   (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_PIDMASK_SHIFT)) & SYSMPU_WORD_PIDMASK_MASK)
+#define SYSMPU_WORD_M2PE                         (0x20000U)
+#define SYSMPU_WORD_M3UM_MASK                    (0x1C0000U)
+#define SYSMPU_WORD_M3UM_SHIFT                   (18U)
+#define SYSMPU_WORD_M3UM(x)                      (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_M3UM_SHIFT)) & SYSMPU_WORD_M3UM_MASK)
+#define SYSMPU_WORD_M3SM_MASK                    (0x600000U)
+#define SYSMPU_WORD_M3SM_SHIFT                   (21U)
+#define SYSMPU_WORD_M3SM(x)                      (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_M3SM_SHIFT)) & SYSMPU_WORD_M3SM_MASK)
+#define SYSMPU_WORD_M3PE                         (0x800000U)
+#define SYSMPU_WORD_PID_MASK                     (0xFF000000U)
+#define SYSMPU_WORD_PID_SHIFT                    (24U)
+#define SYSMPU_WORD_PID(x)                       (((uint32_t)(((uint32_t)(x)) << SYSMPU_WORD_PID_SHIFT)) & SYSMPU_WORD_PID_MASK)
+#define SYSMPU_WORD_M4WE                         (0x1000000U)
+#define SYSMPU_WORD_M4RE                         (0x2000000U)
+#define SYSMPU_WORD_M5WE                         (0x4000000U)
+#define SYSMPU_WORD_M5RE                         (0x8000000U)
+#define SYSMPU_WORD_M6WE                         (0x10000000U)
+#define SYSMPU_WORD_M6RE                         (0x20000000U)
+#define SYSMPU_WORD_M7WE                         (0x40000000U)
+#define SYSMPU_WORD_M7RE                         (0x80000000U)
 
-/* The count of MPU_WORD */
-#define MPU_WORD_COUNT                           (12U)
+/* The count of SYSMPU_WORD */
+#define SYSMPU_WORD_COUNT                        (12U)
 
-/* The count of MPU_WORD */
-#define MPU_WORD_COUNT2                          (4U)
+/* The count of SYSMPU_WORD */
+#define SYSMPU_WORD_COUNT2                       (4U)
 
 /*! @name RGDAAC - Region Descriptor Alternate Access Control n */
-#define MPU_RGDAAC_M0UM_MASK                     (0x7U)
-#define MPU_RGDAAC_M0UM_SHIFT                    (0U)
-#define MPU_RGDAAC_M0UM(x)                       (((uint32_t)(((uint32_t)(x)) << MPU_RGDAAC_M0UM_SHIFT)) & MPU_RGDAAC_M0UM_MASK)
-#define MPU_RGDAAC_M0SM_MASK                     (0x18U)
-#define MPU_RGDAAC_M0SM_SHIFT                    (3U)
-#define MPU_RGDAAC_M0SM(x)                       (((uint32_t)(((uint32_t)(x)) << MPU_RGDAAC_M0SM_SHIFT)) & MPU_RGDAAC_M0SM_MASK)
-#define MPU_RGDAAC_M0PE                          (0x20U)
-#define MPU_RGDAAC_M1UM_MASK                     (0x1C0U)
-#define MPU_RGDAAC_M1UM_SHIFT                    (6U)
-#define MPU_RGDAAC_M1UM(x)                       (((uint32_t)(((uint32_t)(x)) << MPU_RGDAAC_M1UM_SHIFT)) & MPU_RGDAAC_M1UM_MASK)
-#define MPU_RGDAAC_M1SM_MASK                     (0x600U)
-#define MPU_RGDAAC_M1SM_SHIFT                    (9U)
-#define MPU_RGDAAC_M1SM(x)                       (((uint32_t)(((uint32_t)(x)) << MPU_RGDAAC_M1SM_SHIFT)) & MPU_RGDAAC_M1SM_MASK)
-#define MPU_RGDAAC_M1PE                          (0x800U)
-#define MPU_RGDAAC_M2UM_MASK                     (0x7000U)
-#define MPU_RGDAAC_M2UM_SHIFT                    (12U)
-#define MPU_RGDAAC_M2UM(x)                       (((uint32_t)(((uint32_t)(x)) << MPU_RGDAAC_M2UM_SHIFT)) & MPU_RGDAAC_M2UM_MASK)
-#define MPU_RGDAAC_M2SM_MASK                     (0x18000U)
-#define MPU_RGDAAC_M2SM_SHIFT                    (15U)
-#define MPU_RGDAAC_M2SM(x)                       (((uint32_t)(((uint32_t)(x)) << MPU_RGDAAC_M2SM_SHIFT)) & MPU_RGDAAC_M2SM_MASK)
-#define MPU_RGDAAC_M2PE                          (0x20000U)
-#define MPU_RGDAAC_M3UM_MASK                     (0x1C0000U)
-#define MPU_RGDAAC_M3UM_SHIFT                    (18U)
-#define MPU_RGDAAC_M3UM(x)                       (((uint32_t)(((uint32_t)(x)) << MPU_RGDAAC_M3UM_SHIFT)) & MPU_RGDAAC_M3UM_MASK)
-#define MPU_RGDAAC_M3SM_MASK                     (0x600000U)
-#define MPU_RGDAAC_M3SM_SHIFT                    (21U)
-#define MPU_RGDAAC_M3SM(x)                       (((uint32_t)(((uint32_t)(x)) << MPU_RGDAAC_M3SM_SHIFT)) & MPU_RGDAAC_M3SM_MASK)
-#define MPU_RGDAAC_M3PE                          (0x800000U)
-#define MPU_RGDAAC_M4WE                          (0x1000000U)
-#define MPU_RGDAAC_M4RE                          (0x2000000U)
-#define MPU_RGDAAC_M5WE                          (0x4000000U)
-#define MPU_RGDAAC_M5RE                          (0x8000000U)
-#define MPU_RGDAAC_M6WE                          (0x10000000U)
-#define MPU_RGDAAC_M6RE                          (0x20000000U)
-#define MPU_RGDAAC_M7WE                          (0x40000000U)
-#define MPU_RGDAAC_M7RE                          (0x80000000U)
+#define SYSMPU_RGDAAC_M0UM_MASK                  (0x7U)
+#define SYSMPU_RGDAAC_M0UM_SHIFT                 (0U)
+#define SYSMPU_RGDAAC_M0UM(x)                    (((uint32_t)(((uint32_t)(x)) << SYSMPU_RGDAAC_M0UM_SHIFT)) & SYSMPU_RGDAAC_M0UM_MASK)
+#define SYSMPU_RGDAAC_M0SM_MASK                  (0x18U)
+#define SYSMPU_RGDAAC_M0SM_SHIFT                 (3U)
+#define SYSMPU_RGDAAC_M0SM(x)                    (((uint32_t)(((uint32_t)(x)) << SYSMPU_RGDAAC_M0SM_SHIFT)) & SYSMPU_RGDAAC_M0SM_MASK)
+#define SYSMPU_RGDAAC_M0PE                       (0x20U)
+#define SYSMPU_RGDAAC_M1UM_MASK                  (0x1C0U)
+#define SYSMPU_RGDAAC_M1UM_SHIFT                 (6U)
+#define SYSMPU_RGDAAC_M1UM(x)                    (((uint32_t)(((uint32_t)(x)) << SYSMPU_RGDAAC_M1UM_SHIFT)) & SYSMPU_RGDAAC_M1UM_MASK)
+#define SYSMPU_RGDAAC_M1SM_MASK                  (0x600U)
+#define SYSMPU_RGDAAC_M1SM_SHIFT                 (9U)
+#define SYSMPU_RGDAAC_M1SM(x)                    (((uint32_t)(((uint32_t)(x)) << SYSMPU_RGDAAC_M1SM_SHIFT)) & SYSMPU_RGDAAC_M1SM_MASK)
+#define SYSMPU_RGDAAC_M1PE                       (0x800U)
+#define SYSMPU_RGDAAC_M2UM_MASK                  (0x7000U)
+#define SYSMPU_RGDAAC_M2UM_SHIFT                 (12U)
+#define SYSMPU_RGDAAC_M2UM(x)                    (((uint32_t)(((uint32_t)(x)) << SYSMPU_RGDAAC_M2UM_SHIFT)) & SYSMPU_RGDAAC_M2UM_MASK)
+#define SYSMPU_RGDAAC_M2SM_MASK                  (0x18000U)
+#define SYSMPU_RGDAAC_M2SM_SHIFT                 (15U)
+#define SYSMPU_RGDAAC_M2SM(x)                    (((uint32_t)(((uint32_t)(x)) << SYSMPU_RGDAAC_M2SM_SHIFT)) & SYSMPU_RGDAAC_M2SM_MASK)
+#define SYSMPU_RGDAAC_M2PE                       (0x20000U)
+#define SYSMPU_RGDAAC_M3UM_MASK                  (0x1C0000U)
+#define SYSMPU_RGDAAC_M3UM_SHIFT                 (18U)
+#define SYSMPU_RGDAAC_M3UM(x)                    (((uint32_t)(((uint32_t)(x)) << SYSMPU_RGDAAC_M3UM_SHIFT)) & SYSMPU_RGDAAC_M3UM_MASK)
+#define SYSMPU_RGDAAC_M3SM_MASK                  (0x600000U)
+#define SYSMPU_RGDAAC_M3SM_SHIFT                 (21U)
+#define SYSMPU_RGDAAC_M3SM(x)                    (((uint32_t)(((uint32_t)(x)) << SYSMPU_RGDAAC_M3SM_SHIFT)) & SYSMPU_RGDAAC_M3SM_MASK)
+#define SYSMPU_RGDAAC_M3PE                       (0x800000U)
+#define SYSMPU_RGDAAC_M4WE                       (0x1000000U)
+#define SYSMPU_RGDAAC_M4RE                       (0x2000000U)
+#define SYSMPU_RGDAAC_M5WE                       (0x4000000U)
+#define SYSMPU_RGDAAC_M5RE                       (0x8000000U)
+#define SYSMPU_RGDAAC_M6WE                       (0x10000000U)
+#define SYSMPU_RGDAAC_M6RE                       (0x20000000U)
+#define SYSMPU_RGDAAC_M7WE                       (0x40000000U)
+#define SYSMPU_RGDAAC_M7RE                       (0x80000000U)
 
-/* The count of MPU_RGDAAC */
-#define MPU_RGDAAC_COUNT                         (12U)
+/* The count of SYSMPU_RGDAAC */
+#define SYSMPU_RGDAAC_COUNT                      (12U)
 
 
 /*!
  * @}
- */ /* end of group MPU_Register_Masks */
+ */ /* end of group SYSMPU_Register_Masks */
 
 
-/* MPU - Peripheral instance base addresses */
-/** Peripheral MPU base address */
-#define MPU_BASE                                 (0x4000D000u)
-/** Peripheral MPU base pointer */
-#define MPU                                      ((MPU_TypeDef *)MPU_BASE)
-/** Array initializer of MPU peripheral base addresses */
-#define MPU_BASE_ADDRS                           { MPU_BASE }
-/** Array initializer of MPU peripheral base pointers */
-#define MPU_BASE_PTRS                            { MPU }
+/* SYSMPU - Peripheral instance base addresses */
+/** Peripheral SYSMPU base address */
+#define SYSMPU_BASE                              (0x4000D000u)
+/** Peripheral SYSMPU base pointer */
+#define SYSMPU                                   ((SYSMPU_TypeDef *)SYSMPU_BASE)
+/** Array initializer of SYSMPU peripheral base addresses */
+#define SYSMPU_BASE_ADDRS                        { SYSMPU_BASE }
+/** Array initializer of SYSMPU peripheral base pointers */
+#define SYSMPU_BASE_PTRS                         { SYSMPU }
 
 /*!
  * @}
- */ /* end of group MPU_Peripheral_Access_Layer */
+ */ /* end of group SYSMPU_Peripheral_Access_Layer */
 
 
 /* ----------------------------------------------------------------------------
