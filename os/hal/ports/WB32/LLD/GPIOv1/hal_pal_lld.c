@@ -96,6 +96,12 @@ void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode) {
   uint32_t altr = (mode & PAL_WB32_ALTERNATE_MASK) >> 7;
   uint32_t current = (mode & PAL_WB32_CURRENT_MASK) >> 11;
 
+#ifdef SPI_SCK_PIN
+  if ((PAL_PORT(SPI_SCK_PIN) == port) && (PAL_PORT_BIT(PAL_PAD(SPI_SCK_PIN)) & mask)) {
+    current |= (PAL_WB32_CURRENT_LEVEL3 >> 11);
+  }
+#endif
+
   port->CFGMSK = ~mask;
   port->MODER = (moder & 0x3) * 0x55555555U;
   port->OTYPER = (otyper & 0x1) * 0xFFFFFFFFU;
