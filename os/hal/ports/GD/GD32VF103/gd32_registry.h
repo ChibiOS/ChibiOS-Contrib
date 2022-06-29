@@ -215,8 +215,19 @@
 /* Flash attributes.*/
 #define GD32_FLASH_NUMBER_OF_BANKS         1
 #define GD32_FLASH_SECTOR_SIZE             1024U
+
+#if defined(GD32VF103T4) || defined(GD32VF103R4) || defined(GD32VF103C4)
+#define GD32_FLASH_SECTORS_PER_BANK             16
+#elif defined(GD32VF103C6) || defined(GD32VF103T6) || defined(GD32VF103R6)
+#define GD32_FLASH_SECTORS_PER_BANK             32
+#elif defined(GD32VF103C8) || defined(GD32VF103T8) || defined(GD32VF103R8) || defined(GD32VF103V8)
+#define GD32_FLASH_SECTORS_PER_BANK             64
+#elif defined(GD32VF103TB) || defined(GD32VF103VB) || defined(GD32VF103CB) || defined(GD32VF103RB)
+#define GD32_FLASH_SECTORS_PER_BANK             128
+#endif
+
 #if !defined(GD32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
-#define GD32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
+#define GD32_FLASH_SECTORS_PER_BANK             128 /* Maximum, can be redefined.*/
 #endif
 
 /* GPIO attributes.*/
