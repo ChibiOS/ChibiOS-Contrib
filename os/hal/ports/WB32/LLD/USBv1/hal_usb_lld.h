@@ -472,7 +472,7 @@ struct USBDriver {
     WB32_USB->POWER |= USB_POWER_RESUME;                                    \
     osalThreadSleepMilliseconds(WB32_USB_HOST_WAKEUP_DURATION);             \
     WB32_USB->POWER &= ~USB_POWER_RESUME;                                   \
-    _usb_wakeup(&USBD1);                                                    \
+    _usb_wakeup(usbp);                                                      \
   } while (false)
 
 /*===========================================================================*/
