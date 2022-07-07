@@ -69,6 +69,13 @@
 #define WB32_HAS_EXTI15_10                     TRUE
 #define WB32_EXTI_NUM_LINES                    19
 
+/* Flash attributes.*/
+#define WB32_FLASH_NUMBER_OF_BANKS             1
+#define WB32_FLASH_SECTOR_SIZE                 256U
+#if !defined(WB32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
+#define WB32_FLASH_SECTORS_PER_BANK            1024 /* Maximum, can be redefined.*/
+#endif
+
 /* DMAC1 attributes */
 #define WB32_HAS_DMAC                          TRUE
 #define WB32_HAS_DMAC1                         TRUE
