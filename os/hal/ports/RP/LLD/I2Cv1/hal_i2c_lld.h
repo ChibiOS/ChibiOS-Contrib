@@ -140,21 +140,17 @@ struct I2CDriver {
    */
   size_t                    rxbytes;
   /**
-   * @brief     Next index of data in TX buffer.
+   * @brief     Send restart on next transmission.
    */
-  size_t                    txindex;
-  /**
-   * @brief     Next index of RX buffer.
-   */
-  size_t                    rxindex;
+  bool                      send_restart;
   /**
    * @brief     Buffer for TX.
    */
-  const uint8_t             *txbuf;
+  const uint8_t             *txptr;
   /**
    * @brief     Buffer for RX.
    */
-  uint8_t                   *rxbuf;
+  uint8_t                   *rxptr;
 };
 
 /*===========================================================================*/
