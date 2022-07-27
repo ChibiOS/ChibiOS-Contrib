@@ -945,8 +945,24 @@ typedef struct
   #warning Not supported compiler type
 #endif
 
-
-
+static const uint32_t flash_size_code_map[16] = {
+  0x80000,    /* 512kB */
+  0x8000,     /* 32kB */
+  0x60000,    /* 384kB */
+  0x40000,    /* 256kB */
+  0x20000,    /* 128kB */
+  0x8000,     /* 32kB */
+  0x18000,    /* 96kB */
+  0x10000,    /* 64kB */
+  0x8000,     /* 32kB */
+  0x8000,     /* 32kB */
+  0x8000,     /* 32kB */
+  0x8000,     /* 32kB */
+  0x8000,     /* 32kB */
+  0x8000,     /* 32kB */
+  0x8000,     /* 32kB */
+  0x30000,    /* 192kB */
+};
 
 /* ================================================================================ */
 /* ================              Peripheral memory map             ================ */
@@ -957,6 +973,9 @@ typedef struct
 
 #define SRAM_BB_BASE              ((uint32_t)0x22000000UL)          /*!< SRAM base address in the bit-band region */
 #define PERIPH_BB_BASE            ((uint32_t)0x42000000UL)          /*!< Peripheral base address in the bit-band region */
+
+#define SYS_MEMSE                 ((uint32_t)0x40016404UL)
+#define FLASH_SIZE                flash_size_code_map[(*((volatile uint32_t *)(SYS_MEMSE))) & 0xFU]
 
 #define APB1PERIPH_BASE       PERIPH_BASE
 #define APB2PERIPH_BASE       (PERIPH_BASE + 0x08000)

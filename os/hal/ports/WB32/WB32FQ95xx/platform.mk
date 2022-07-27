@@ -1,7 +1,8 @@
 # Required platform files.
 PLATFORMSRC_CONTRIB := $(CHIBIOS)/os/hal/ports/common/ARMCMx/nvic.c \
                        $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/WB32FQ95xx/hal_lld.c \
-                       $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/WB32FQ95xx/wb32_isr.c
+                       $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/WB32FQ95xx/wb32_isr.c \
+                       $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/WB32FQ95xx/hal_efl_lld.c
 
 # Required include directories.
 PLATFORMINC_CONTRIB := $(CHIBIOS)/os/hal/ports/common/ARMCMx \
