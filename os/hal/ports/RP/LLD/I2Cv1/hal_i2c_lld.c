@@ -1,4 +1,6 @@
 /*
+    ChibiOS - Copyright (C) 2022 Stefan Kerkmann
+    ChibiOS - Copyright (C) 2021 Hanya
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,140 +54,276 @@ I2CDriver I2CD2;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
+#define I2C_OVERRUN_ERRORS \
+  (I2C_IC_INTR_STAT_M_RX_OVER | I2C_IC_INTR_STAT_M_RX_UNDER | \
+   I2C_IC_INTR_STAT_M_TX_OVER)
+
+#define I2C_ERROR_INTERRUPTS \
+  (I2C_IC_INTR_MASK_M_TX_ABRT | I2C_IC_INTR_MASK_M_TX_OVER | \
+   I2C_IC_INTR_MASK_M_RX_OVER | I2C_IC_INTR_MASK_M_RX_UNDER)
+
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
 /**
- * @brief    Calculates and set up clock settings.
+ * @brief    Calculates the waiting time which is 10 times the SCL period duration.
  */
-static void setup_frequency(I2CDriver *i2cp) {
-  I2C_TypeDef *dp = i2cp->i2c;
-  //                [us]    SS   FS  FS+
-  //  MIN_SCL_LOWtime_FS:  4.7  1.3  0.5
-  // MIN_SCL_HIGHtime_FS:  4.0  0.6  0.26
-  //             max tSP:    -  0.05 0.05
-  //         min tSU:DAT: 0.25  0.1  0.05
-  //             tHD:DAT:  0    0    0
-
-  uint32_t minLowfs, minHighfs;
+static sysinterval_t i2c_lld_get_wait_time(I2CDriver *i2cp){
   uint32_t baudrate = i2cp->config->baudrate;
-  if (baudrate <= 100000) {
-    // ns
-    minLowfs = 4700;
-    minHighfs = 4000;
-  } else if (baudrate <= 400000) {
-    minLowfs = 1300;
-    minHighfs = 600;
+  if (baudrate <= 100000U) {
+    return OSAL_US2I(100);
+  } else if (baudrate <= 400000U) {
+    return OSAL_US2I(25);
   } else {
-    minLowfs = 500;
-    minHighfs = 260;
+    return OSAL_US2I(10);
   }
-
-  uint32_t sys_clk = halClockGetPointX(clk_sys) / 100000;
-  //uint32_t lcntfs = (minLowfs * sys_clk) / 10000 + 1;
-  uint32_t hcntfs = (minHighfs * sys_clk) / 10000 + 1;
-  uint32_t lcntfs = (minLowfs * hcntfs) / ((10000000 / baudrate) * 100 - minLowfs) + 1;
-
-  uint32_t sdahd;
-  if (baudrate < 1000000) {
-    //sdahd = (sys_clk * 300) * (1/1e9) ;
-    sdahd = (sys_clk * 3) / 100 + 1;
-  } else {
-    //sdahd = (sys_clk * 120) * (1/1e9);
-    sdahd = (sys_clk * 3) / 250 + 1;
-  }
-
-  dp->ENABLE = 0;
-
-  /* Always Fast Mode */
-  dp->FSSCLHCNT = hcntfs - 7;
-  dp->FSSCLLCNT = lcntfs - 1;
-  dp->FSSPKLEN = 2;
-
-  dp->SDAHOLD |= (sdahd << I2C_IC_SDA_HOLD_IC_SDA_TX_HOLD_Pos) & I2C_IC_SDA_HOLD_IC_SDA_TX_HOLD;
-
-  //dp->ENABLE = 1;
 }
 
 /**
- * @brief   Interrupt processing.
+ * @brief    Tries to disable the I2C peripheral.
  */
-static void serve_interrupt(I2CDriver *i2cp) {
+static msg_t i2c_lld_disable(I2CDriver *i2cp) {
   I2C_TypeDef *dp = i2cp->i2c;
+  systime_t start, end;
 
-  if (i2cp->state == I2C_ACTIVE_TX) {
-    /* Transmission phase. */
-    if (dp->INTRSTAT & I2C_IC_INTR_STAT_R_TX_EMPTY_Msk) {
-      if (i2cp->txbytes) {
-        while (i2cp->txbytes && (dp->TXFLR & I2C_IC_TXFLR_TXFLR_Msk) < 16) {
-          dp->DATACMD = (uint32_t)i2cp->txbuf[i2cp->txindex] |
-                        (i2cp->txbytes == 1 ? I2C_IC_DATA_CMD_STOP : 0);
-          i2cp->txindex++;
-          i2cp->txbytes--;
-        }
+  /* Calculating the time window for the timeout on the enable condition.*/
+  start = osalOsGetSystemTimeX();
+  end = osalTimeAddX(start, i2c_lld_get_wait_time(i2cp));
 
-        if (i2cp->txbytes == 0U) {
-          // Disable TX_EMPTY irq
-          dp->CLR.CON = I2C_IC_CON_TX_EMPTY_CTRL;
-          dp->CLR.INTRMASK = I2C_IC_INTR_MASK_M_TX_EMPTY;
-        }
-        return;
-      }
-    }
-  } else {
-    /* Receive phase. */
-    if (dp->INTRSTAT & I2C_IC_INTR_STAT_R_RX_FULL_Msk) {
-      /* Read out received data. */
-      i2cp->rxbuf[i2cp->rxindex] = (uint8_t)dp->DATACMD;
-      i2cp->rxindex++;
-      i2cp->rxbytes--;
-      if (i2cp->rxbytes > 0) {
-        // Set to master read
-        dp->DATACMD = I2C_IC_DATA_CMD_CMD |
-                      (i2cp->rxbytes == 1 ? I2C_IC_DATA_CMD_STOP : 0);
-        return;
-      }
+  dp->ENABLE &= ~I2C_IC_ENABLE_ENABLE;
+  while ((dp->ENABLESTATUS & I2C_IC_ENABLE_STATUS_IC_EN) != 0U) {
+    if (!osalTimeIsInRangeX(osalOsGetSystemTimeX(), start, end)) {
+      return MSG_TIMEOUT;
     }
   }
 
-  if (dp->INTRSTAT & I2C_IC_INTR_STAT_R_STOP_DET) {
+  return MSG_OK;
+}
+
+/**
+ * @brief    Aborts any ongoing transmission of the I2C peripheral.
+ */
+static msg_t i2c_lld_abort_transmission(I2CDriver *i2cp) {
+  I2C_TypeDef *dp = i2cp->i2c;
+  systime_t start, end;
+
+  /* Calculating the time window for the timeout on the abort condition.*/
+  start = osalOsGetSystemTimeX();
+  end = osalTimeAddX(start, i2c_lld_get_wait_time(i2cp));
+
+  /* Disable all interrupts as a pre-caution. */
+  dp->INTRMASK = 0U;
+  /* Enable peripheral to issue abort. */
+  dp->ENABLE |= I2C_IC_ENABLE_ENABLE;
+  /* Issue abort. */
+  dp->ENABLE |= I2C_IC_ENABLE_ABORT;
+
+  /* Wait for transmission the be aborted */
+  while((dp->RAWINTRSTAT & I2C_IC_INTR_STAT_M_TX_ABRT) == 0U) {
+    if (!osalTimeIsInRangeX(osalOsGetSystemTimeX(), start, end)) {
+      return MSG_TIMEOUT;
+    }
+  }
+
+  (void)dp->CLRTXABRT;
+  return MSG_OK;
+}
+
+/**
+ * @brief    Handles transmission errors by waking the sleeping thread
+ *           and setting the error reasons.
+ */
+void i2c_lld_handle_errors(I2CDriver *i2cp) {
+    I2C_TypeDef *dp = i2cp->i2c;
+
+    if (dp->TXABRTSOURCE & I2C_IC_TX_ABRT_SOURCE_ARB_LOST) {
+      i2cp->errors |= I2C_ARBITRATION_LOST;
+    }
+
+    if (dp->RAWINTRSTAT & I2C_OVERRUN_ERRORS) {
+      i2cp->errors |= I2C_OVERRUN;
+    }
+
+    /* Disable all interrupts. */
+    dp->INTRMASK = 0U;
+    (void)dp->CLRINTR;
+    (void)dp->CLRTXABRT;
+    _i2c_wakeup_error_isr(i2cp);
+}
+
+/**
+ * @brief    Calculates and set up clock settings.
+ */
+static void i2c_lld_setup_frequency(I2CDriver *i2cp) {
+  I2C_TypeDef *dp = i2cp->i2c;
+  /*                [us]    SS   FS  FS+
+   *  MIN_SCL_LOWtime_FS:  4.7  1.3  0.5
+   * MIN_SCL_HIGHtime_FS:  4.0  0.6  0.26
+   *             max tSP:    -  0.05 0.05
+   *         min tSU:DAT: 0.25  0.1  0.05
+   *             tHD:DAT:  0    0    0
+   */
+
+  uint32_t minLowfs, minHighfs;
+  uint32_t baudrate = i2cp->config->baudrate;
+  if (baudrate <= 100000U) {
+    // ns
+    minLowfs = 4700U;
+    minHighfs = 4000U;
+  } else if (baudrate <= 400000U) {
+    minLowfs = 1300U;
+    minHighfs = 600U;
+  } else {
+    minLowfs = 500U;
+    minHighfs = 260U;
+  }
+
+  halfreq_t sys_clk = halClockGetPointX(clk_sys) / 100000;
+  uint32_t hcntfs = (minHighfs * sys_clk) / 10000U + 1U;
+  uint32_t lcntfs = (minLowfs * hcntfs) / ((10000000U / baudrate) * 100U - minLowfs) + 1U;
+
+  uint32_t sdahd = 0U;
+  if (baudrate < 1000000U) {
+    sdahd = (sys_clk * 3U) / 100U + 1U;
+  } else {
+    sdahd = (sys_clk * 3U) / 250U + 1U;
+  }
+
+  /* Always Fast Mode */
+  dp->FSSCLHCNT = hcntfs - 7U;
+  dp->FSSCLLCNT = lcntfs - 1U;
+  dp->FSSPKLEN = 2U;
+
+  dp->SDAHOLD |= sdahd & I2C_IC_SDA_HOLD_IC_SDA_TX_HOLD;
+}
+
+/**
+ * @brief    Requests data to be received, actual reception is done in the interrupt handler.
+ */
+static void i2c_lld_request_data(I2CDriver *i2cp) {
+  I2C_TypeDef *dp = i2cp->i2c;
+  uint32_t data = I2C_IC_DATA_CMD_CMD;
+
+  /* RP2040 Designware I2C peripheral has FIFO depth of 16 elements. As we
+   * specify that the TX_EMPTY interrupt only fires if the TX FIFO is
+   * truly empty we don't need to check the current fill level. */
+  uint32_t batch = MIN(16U, i2cp->rxbytes);
+
+  if (i2cp->send_restart) {
+    data |= I2C_IC_DATA_CMD_RESTART;
+    i2cp->send_restart = false;
+  }
+
+  /* Setup RX FIFO trigger level to only trigger when the batch has been
+   * completely received. Therefore we don't need to check if there are any
+   * bytes still pending to be received. */
+  dp->RXTL = batch > 1U ? batch - 1U : 0U;
+
+  while (batch > 0U) {
+    /* Send STOP after last byte. */
+    if (i2cp->rxbytes == 1U) {
+      data |= I2C_IC_DATA_CMD_STOP;
+    }
+    dp->DATACMD = data;
+
+    batch--;
+    i2cp->rxbytes--;
+    data = I2C_IC_DATA_CMD_CMD;
+  }
+
+  /* Clear TX FIFO empty interrupt, it will be re-activated when data has been
+   * received. */
+  dp->CLR.INTRMASK = I2C_IC_INTR_MASK_M_TX_EMPTY;
+  /* Enable RX FULL interrupt to process received data. */
+  dp->SET.INTRMASK = I2C_IC_INTR_STAT_R_RX_FULL;
+}
+
+/**
+ * @brief    Fills TX FIFO with data to be send.
+ */
+static void i2c_lld_transmit_data(I2CDriver *i2cp) {
+  I2C_TypeDef *dp = i2cp->i2c;
+  uint32_t data;
+
+  while (i2cp->txbytes > 0U && dp->STATUS & I2C_IC_STATUS_TFNF) {
+    data = (uint32_t)*i2cp->txptr;
+
+    /* Send STOP after last byte */
+    if (i2cp->txbytes == 1U) {
+      data |= I2C_IC_DATA_CMD_STOP;
+    }
+    dp->DATACMD = data;
+
+    i2cp->txptr++;
+    i2cp->txbytes--;
+  }
+
+  /* Nothing more to send, disable TX FIFO empty interrupt. */
+  if (i2cp->txbytes == 0U) {
+    dp->CLR.INTRMASK = I2C_IC_INTR_MASK_M_TX_EMPTY;
+  }
+}
+
+/**
+ * @brief   I2C shared ISR code.
+ *
+ * @param[in] i2cp      pointer to the @p I2CDriver object
+ */
+static void i2c_lld_serve_interrupt(I2CDriver *i2cp) {
+  I2C_TypeDef *dp = i2cp->i2c;
+  uint32_t intr = dp->INTRSTAT;
+
+  /* Transmission error detected. */
+  if (intr & I2C_ERROR_INTERRUPTS) {
+    return i2c_lld_handle_errors(i2cp);
+  }
+
+  /* If the TX FIFO is empty we can request or send more data. */
+  if (intr & I2C_IC_INTR_STAT_R_TX_EMPTY) {
+    if (i2cp->state == I2C_ACTIVE_TX) {
+      i2c_lld_transmit_data(i2cp);
+    } else {
+      i2c_lld_request_data(i2cp);
+    }
+    return;
+  }
+
+  if (intr & I2C_IC_INTR_STAT_R_RX_FULL) {
+    while (dp->STATUS & I2C_IC_STATUS_RFNE) {
+      /* Read out received data. */
+      *i2cp->rxptr= (uint8_t)dp->DATACMD;
+      i2cp->rxptr++;
+    }
+
+    if (i2cp->rxbytes == 0U) {
+      /* Everything is received, therefore disable all FIFO IRQs. */
+      dp->CLR.INTRMASK = I2C_IC_INTR_MASK_M_RX_FULL | I2C_IC_INTR_STAT_R_TX_EMPTY;
+    } else {
+      /* Enable TX FIFO empty IRQ to request more data. */
+      dp->SET.INTRMASK = I2C_IC_INTR_STAT_R_TX_EMPTY;
+    }
+    return;
+  }
+
+  if (intr & I2C_IC_INTR_STAT_R_STOP_DET) {
     /* Clear irq flag. */
     (void)dp->CLRSTOPDET;
-    if (i2cp->state == I2C_ACTIVE_TX) {
-      /* TX end. */
-      if (i2cp->rxbytes > 0U) {
-        /* Setup RX. */
-        /* Set interrupt mask. */
-        dp->INTRMASK = I2C_IC_INTR_MASK_M_STOP_DET |
-                       I2C_IC_INTR_MASK_M_TX_ABRT |
-                       I2C_IC_INTR_MASK_M_RX_FULL;
+    if (i2cp->state == I2C_ACTIVE_TX && i2cp->rxbytes > 0U) {
+      /* State change to RX. */
+      i2cp->state = I2C_ACTIVE_RX;
+      /* Restart communication. */
+      i2cp->send_restart = true;
 
-        /* Set read flag. */
-        dp->DATACMD = I2C_IC_DATA_CMD_CMD |
-                      I2C_IC_CON_IC_RESTART_EN |
-                      (i2cp->rxbytes == 1 ? I2C_IC_DATA_CMD_STOP : 0);
-
-        /* State change to RX. */
-        i2cp->state = I2C_ACTIVE_RX;
-        return;
-      }
-    } else {
-      /* RX end. */
-      dp->CLR.INTRMASK = I2C_IC_INTR_MASK_M_RX_FULL;
+      /* Enable TX FIFO empty IRQ to request more data to be received. */
+      dp->SET.INTRMASK = I2C_IC_INTR_STAT_R_TX_EMPTY;
+      return;
     }
   }
 
-  if (dp->INTRSTAT & I2C_IC_INTR_STAT_R_TX_ABRT_Msk) {
-    // Reason, dp->TXABRTSOURCE
-    i2cp->errors = dp->TXABRTSOURCE;
-
-    _i2c_wakeup_error_isr(i2cp);
-  }
-
-  /* Clear interrupt flags. */
+  /* Transmission complete, disable and clear all interrupts. */
+  dp->INTRMASK = 0U;
   (void)dp->CLRINTR;
-
   _i2c_wakeup_isr(i2cp);
 }
 
@@ -196,9 +334,10 @@ static void serve_interrupt(I2CDriver *i2cp) {
 #if (RP_I2C_USE_I2C0 == TRUE) || defined(__DOXYGEN__)
 
 OSAL_IRQ_HANDLER(RP_I2C0_IRQ_HANDLER) {
-
   OSAL_IRQ_PROLOGUE();
-  serve_interrupt(&I2CD1);
+
+  i2c_lld_serve_interrupt(&I2CD1);
+
   OSAL_IRQ_EPILOGUE();
 }
 
@@ -207,9 +346,10 @@ OSAL_IRQ_HANDLER(RP_I2C0_IRQ_HANDLER) {
 #if (RP_I2C_USE_I2C1 == TRUE) || defined(__DOXYGEN__)
 
 OSAL_IRQ_HANDLER(RP_I2C1_IRQ_HANDLER) {
-
   OSAL_IRQ_PROLOGUE();
-  serve_interrupt(&I2CD2);
+
+  i2c_lld_serve_interrupt(&I2CD2);
+
   OSAL_IRQ_EPILOGUE();
 }
 
@@ -274,8 +414,10 @@ void i2c_lld_start(I2CDriver *i2cp) {
 #endif
   }
 
-  /* Disable for setup. */
-  dp->ENABLE = 0;
+  /* Disable i2c peripheral for setup phase. */
+  if (i2c_lld_disable(i2cp) != MSG_OK) {
+    return;
+  }
 
   dp->CON = I2C_IC_CON_IC_SLAVE_DISABLE |
             I2C_IC_CON_IC_RESTART_EN |
@@ -283,12 +425,24 @@ void i2c_lld_start(I2CDriver *i2cp) {
             I2C_IC_CON_IC_10BITADDR_MASTER |
 #endif
             (2U << I2C_IC_CON_SPEED_Pos) | // Always Fast Mode
-            I2C_IC_CON_MASTER_MODE;
+            I2C_IC_CON_MASTER_MODE |
+            I2C_IC_CON_STOP_DET_IF_MASTER_ACTIVE |
+            I2C_IC_CON_TX_EMPTY_CTRL;
 
-  dp->RXTL = 0;
-  dp->TXTL = 0;
 
-  setup_frequency(i2cp);
+  dp->RXTL = 0U;
+  dp->TXTL = 0U;
+
+  i2c_lld_setup_frequency(i2cp);
+
+  /* Clear interrupt mask. */
+  dp->INTRMASK = 0U;
+
+  /* Enable peripheral */
+  dp->ENABLE = I2C_IC_ENABLE_ENABLE;
+
+  /* Clear interrupts. */
+  (void)dp->CLRINTR;
 }
 
 /**
@@ -301,7 +455,9 @@ void i2c_lld_start(I2CDriver *i2cp) {
 void i2c_lld_stop(I2CDriver *i2cp) {
 
   if (i2cp->state != I2C_STOP) {
-
+      if (i2c_lld_disable(i2cp) != MSG_OK) {
+        i2c_lld_abort_transmission(i2cp);
+      }
 #if RP_I2C_USE_I2C0 == TRUE
     if (&I2CD1 == i2cp) {
       nvicDisableVector(RP_I2C0_IRQ_NUMBER);
@@ -317,7 +473,6 @@ void i2c_lld_stop(I2CDriver *i2cp) {
       hal_lld_peripheral_reset(RESETS_ALLREG_I2C1);
     }
 #endif
-
   }
 }
 
@@ -345,7 +500,6 @@ void i2c_lld_stop(I2CDriver *i2cp) {
 msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
                                      uint8_t *rxbuf, size_t rxbytes,
                                      sysinterval_t timeout) {
-
   msg_t msg;
   systime_t start, end;
   I2C_TypeDef *dp = i2cp->i2c;
@@ -364,8 +518,11 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
       break;
     }
 
+    /* Attempt to clear activity bit. */
+    (void)dp->CLRACTIVITY;
+
     /* If the system time went outside the allowed window then a timeout
-       condition is returned.*/
+       condition is returned. */
     if (!osalTimeIsInRangeX(osalOsGetSystemTimeX(), start, end)) {
       return MSG_TIMEOUT;
     }
@@ -374,39 +531,42 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   }
 
   i2cp->txbytes = 0U;
+  i2cp->txptr = NULL;
   i2cp->rxbytes = rxbytes;
-  i2cp->txindex = 0U;
-  i2cp->rxindex = 0U;
-  i2cp->txbuf = NULL;
-  i2cp->rxbuf = rxbuf;
+  i2cp->rxptr = rxbuf;
+  i2cp->send_restart = false;
 
-  dp->ENABLE = 0;
+  /* Disable I2C peripheral during setup phase. */
+  msg = i2c_lld_disable(i2cp);
+  if (msg != MSG_OK) {
+    return msg;
+  }
 
   /* Set address. */
   dp->TAR = addr & I2C_IC_TAR_IC_TAR_Msk;
 
-  /* Set interrupt mask, active low. */
+  /* Clear interrupt mask. */
+  dp->INTRMASK = 0U;
+
+  /* Enable peripheral */
+  dp->ENABLE = I2C_IC_ENABLE_ENABLE;
+
+  /* Clear interrupts. */
+  (void)dp->CLRINTR;
+
+  /* Set interrupt mask. */
   dp->INTRMASK = I2C_IC_INTR_MASK_M_STOP_DET |
-                 I2C_IC_INTR_MASK_M_TX_ABRT |
-                 I2C_IC_INTR_MASK_M_RX_FULL;
-
-  dp->ENABLE = 1;
-
-  /* Read flag. */
-  dp->DATACMD = I2C_IC_DATA_CMD_CMD |
-                (i2cp->rxbytes == 1 ? I2C_IC_DATA_CMD_STOP : 0);
+                 I2C_IC_INTR_MASK_M_TX_EMPTY |
+                 I2C_ERROR_INTERRUPTS;
 
   /* Waits for the operation completion or a timeout.*/
   msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
 
-  /* In case of a software timeout a STOP is sent as an extreme attempt
-     to release the bus and DMA is forcibly disabled.*/
   if (msg == MSG_TIMEOUT) {
-    /* Clear irq flags. */
+    /* Disable and clear interrupts. */
+    dp->INTRMASK = 0U;
     (void)dp->CLRINTR;
   }
-
-  dp->ENABLE = 0;
 
   return msg;
 }
@@ -453,9 +613,11 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   while (true) {
     osalSysLock();
 
-    if ((dp->STATUS & I2C_IC_STATUS_ACTIVITY) == 0) {
+    if ((dp->STATUS & I2C_IC_STATUS_ACTIVITY) == 0U) {
       break;
     }
+    /* Attempt to clear activity bit. */
+    (void)dp->CLRACTIVITY;
 
     /* If the system time went outside the allowed window then a timeout
        condition is returned.*/
@@ -467,36 +629,42 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   }
 
   i2cp->txbytes = txbytes;
+  i2cp->txptr = txbuf;
   i2cp->rxbytes = rxbytes;
-  i2cp->txindex = 0U;
-  i2cp->rxindex = 0U;
-  i2cp->txbuf = txbuf;
-  i2cp->rxbuf = rxbuf;
+  i2cp->rxptr = rxbuf;
+  i2cp->send_restart = false;
 
-  dp->ENABLE = 0;
+  /* disabel i2c peripheral during setup phase. */
+  msg = i2c_lld_disable(i2cp);
+  if (msg != MSG_OK) {
+    return msg;
+  }
 
   /* Set target address. */
-  dp->TAR = addr & I2C_IC_TAR_IC_TAR_Msk;
+  dp->TAR = addr & I2C_IC_TAR_IC_TAR;
 
-  /* TX_EMPTY irq active. */
-  dp->CON |= I2C_IC_CON_TX_EMPTY_CTRL;
+  /* Clear interrupt mask. */
+  dp->INTRMASK = 0U;
+
+  /* Enable peripheral */
+  dp->ENABLE = I2C_IC_ENABLE_ENABLE;
+
+  /* Clear interrupts. */
+  (void)dp->CLRINTR;
 
   /* Set interrupt mask. */
   dp->INTRMASK = I2C_IC_INTR_MASK_M_STOP_DET |
-                 I2C_IC_INTR_MASK_M_TX_ABRT |
-                 I2C_IC_INTR_MASK_M_TX_EMPTY;
-
-  dp->ENABLE = 1;
+                 I2C_IC_INTR_MASK_M_TX_EMPTY |
+                 I2C_ERROR_INTERRUPTS;
 
   /* Waits for the operation completion or a timeout.*/
   msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
 
   if (msg == MSG_TIMEOUT) {
-    /* Clear irq flags. */
+    /* Disable and clear interrupts. */
+    dp->INTRMASK = 0U;
     (void)dp->CLRINTR;
   }
-
-  dp->ENABLE = 0;
 
   return msg;
 }
