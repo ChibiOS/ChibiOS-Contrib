@@ -425,7 +425,7 @@ void dmaServeInterrupt(const wb32_dma_stream_t *dmastp) {
   uint32_t regaddr = ((uint32_t)(&((dmastp)->dmac->StatusTfr)) + WB32_DMAC_IT_TFR);
 
   if ((*((__I uint32_t *)(regaddr))) & mask) {
-    IT_flag = WB32_DMAC_IT_TFR;
+    IT_flag = WB32_DMAC_IT_STATE_TFR;
     if (dma.streams[selfindex].func) {
        dma.streams[selfindex].func(dma.streams[selfindex].param, IT_flag);
     }
@@ -434,7 +434,7 @@ void dmaServeInterrupt(const wb32_dma_stream_t *dmastp) {
   regaddr = ((uint32_t)(&((dmastp)->dmac->StatusTfr)) + WB32_DMAC_IT_BLOCK);
 
   if ((*((__I uint32_t *)(regaddr))) & mask) {
-    IT_flag = WB32_DMAC_IT_BLOCK;
+    IT_flag = WB32_DMAC_IT_STATE_BLOCK;
     if (dma.streams[selfindex].func) {
       dma.streams[selfindex].func(dma.streams[selfindex].param, IT_flag);
     }
@@ -443,7 +443,7 @@ void dmaServeInterrupt(const wb32_dma_stream_t *dmastp) {
   regaddr = ((uint32_t)(&((dmastp)->dmac->StatusTfr)) + WB32_DMAC_IT_SRCTRAN);
 
   if ((*((__I uint32_t *)(regaddr))) & mask) {
-    IT_flag = WB32_DMAC_IT_SRCTRAN;
+    IT_flag = WB32_DMAC_IT_STATE_SRCTRAN;
     if (dma.streams[selfindex].func) {
       dma.streams[selfindex].func(dma.streams[selfindex].param, IT_flag);
     }
@@ -452,7 +452,7 @@ void dmaServeInterrupt(const wb32_dma_stream_t *dmastp) {
   regaddr = ((uint32_t)(&((dmastp)->dmac->StatusTfr)) + WB32_DMAC_IT_DSTTRAN);
 
   if ((*((__I uint32_t *)(regaddr))) & mask) {
-    IT_flag = WB32_DMAC_IT_DSTTRAN;
+    IT_flag = WB32_DMAC_IT_STATE_DSTTRAN;
     if (dma.streams[selfindex].func) {
       dma.streams[selfindex].func(dma.streams[selfindex].param, IT_flag);
     }
@@ -461,7 +461,7 @@ void dmaServeInterrupt(const wb32_dma_stream_t *dmastp) {
   regaddr = ((uint32_t)(&((dmastp)->dmac->StatusTfr)) + WB32_DMAC_IT_ERR);
 
   if ((*((__I uint32_t *)(regaddr))) & mask) {
-    IT_flag = WB32_DMAC_IT_ERR;
+    IT_flag = WB32_DMAC_IT_STATE_ERR;
     if (dma.streams[selfindex].func) {
       dma.streams[selfindex].func(dma.streams[selfindex].param, IT_flag);
     }

@@ -58,19 +58,19 @@ ADCDriver ADCD1;
 static void adc_lld_serve_rx_interrupt(ADCDriver *adcp, uint32_t flags) {
 
   /* DMA errors handling.*/
-  if ((flags & WB32_DMAC_IT_ERR) != 0) {
+  if ((flags & WB32_DMAC_IT_STATE_ERR) != 0) {
     /* DMA, this could help only if the DMA tries to access an unmapped
        address space or violates alignment rules.*/
     _adc_isr_error_code(adcp, ADC_ERR_DMAFAILURE);
   }
   else {
-    if ((flags & WB32_DMAC_IT_TFR) != 0) {
+    if ((flags & WB32_DMAC_IT_STATE_TFR) != 0) {
       /* Transfer complete processing.*/
       _adc_isr_full_code(adcp);
     }
     /* Because WB32 DMAC hasn't half transfer interrupt,
        so it use transfer complete interrupt. */
-    else if ((flags & WB32_DMAC_IT_TFR) != 0) {
+    else if ((flags & WB32_DMAC_IT_STATE_BLOCK) != 0) {
       /* Half transfer processing.*/
       _adc_isr_half_code(adcp);
     }
@@ -104,7 +104,8 @@ void adc_lld_init(void) {
                   WB32_DMA_CHCFG_MSIZE_HWORD | \
                   WB32_DMA_CHCFG_DIR_P2M | \
                   WB32_DMA_CHCFG_MINC | \
-                  WB32_DMA_CHCFG_CIRC;
+                  WB32_DMA_CHCFG_TCIE | \
+                  WB32_DMAC_INTERRUPT_EN;
 
   /* Temporary activation.*/
   rccEnableADC();
@@ -227,7 +228,7 @@ void adc_lld_start_conversion(ADCDriver *adcp) {
     if (adcp->depth > 1) {
       /* If circular buffer depth > 1, then the half transfer interrupt
          is enabled in order to allow streaming processing.*/
-      mode |= WB32_DMA_CHCFG_TCIE;
+      mode |= WB32_DMA_CHCFG_HTIE;
     }
   }
   dmaStreamSetDestination(adcp->dmastp, adcp->samples);
