@@ -265,7 +265,7 @@ void adc_lld_start_conversion(ADCDriver *adcp) {
 void adc_lld_stop_conversion(ADCDriver *adcp) {
 
   dmaStreamDisable(adcp->dmastp);
-  adcp->adc->CR2 = 0;
+  rccResetADC();
 }
 
 #endif /* HAL_USE_ADC */

@@ -466,6 +466,8 @@ void dmaServeInterrupt(const wb32_dma_stream_t *dmastp) {
       dma.streams[selfindex].func(dma.streams[selfindex].param, IT_flag);
     }
   }
+  
+  dmaStreamClearInterrupt(dmastp);
 }
 
 #endif /* WB32_DMA_REQUIRED */
