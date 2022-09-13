@@ -219,12 +219,6 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp)
     {
       if (i2cp->state == I2C_ACTIVE_TX && (dp->SERCOM_INTFLAG & SERCOM_I2CM_INTFLAG_MB_Msk))
       {
-        dp->SERCOM_INTFLAG |= SERCOM_I2CM_INTFLAG_MB_Msk;
-        uint8_t data = (uint8_t)*i2cp->txptr;
-        dp->SERCOM_DATA = data;
-        sam_i2c_busy_wait(i2cp);
-        i2cp->txptr++;
-        i2cp->txbytes--;
         if (i2cp->txbytes == 0 && i2cp->rxbytes != 0)
         {
           i2c_lld_set_address(i2cp, i2cp->addr, true);
@@ -236,6 +230,15 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp)
           sam_i2c_busy_wait(i2cp);
           isFinished = true;
         }
+        else {        
+          dp->SERCOM_INTFLAG |= SERCOM_I2CM_INTFLAG_MB_Msk;
+          uint8_t data = (uint8_t)*i2cp->txptr;
+          i2cp->txptr++;
+          i2cp->txbytes--;
+          dp->SERCOM_DATA = data;
+          sam_i2c_busy_wait(i2cp);
+        }
+
       }
       else if (i2cp->state == I2C_ACTIVE_RX && (dp->SERCOM_INTFLAG & SERCOM_I2CM_INTFLAG_SB_Msk))
       {
