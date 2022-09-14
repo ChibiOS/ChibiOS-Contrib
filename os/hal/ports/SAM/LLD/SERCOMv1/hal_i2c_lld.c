@@ -97,6 +97,7 @@ static inline void sam_i2c_busy_wait(I2CDriver *i2cp)
 
 static bool sam_i2c_cal_baud(uint32_t srcClkFreq, uint32_t i2cClkSpeed, uint32_t *baudVal)
 {
+  osalDbgAssert(i2cClkSpeed <= 400000, "This Clock is currently not supported");
   uint32_t baudValue = 0U;
   float fSrcClkFreq = (float)srcClkFreq;
   float fI2cClkSpeed = (float)i2cClkSpeed;
