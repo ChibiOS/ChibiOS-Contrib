@@ -240,6 +240,26 @@
 extern SIODriver SIOD1;
 #endif
 
+#if (SAM_SIO_USE_SERCOM1 == TRUE) && !defined(__DOXYGEN__)
+extern SIODriver SIOD2;
+#endif
+
+#if (SAM_SIO_USE_SERCOM2 == TRUE) && !defined(__DOXYGEN__)
+extern SIODriver SIOD3;
+#endif
+
+#if (SAM_SIO_USE_SERCOM3 == TRUE) && !defined(__DOXYGEN__)
+extern SIODriver SIOD4;
+#endif
+
+#if (SAM_SIO_USE_SERCOM4 == TRUE) && !defined(__DOXYGEN__)
+extern SIODriver SIOD5;
+#endif
+
+#if (SAM_SIO_USE_SERCOM5 == TRUE) && !defined(__DOXYGEN__)
+extern SIODriver SIOD6;
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {

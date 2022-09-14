@@ -47,6 +47,41 @@
 SIODriver SIOD1;
 #endif
 
+/**
+ * @brief   SIO2 driver identifier.
+ */
+#if (SAM_SIO_USE_SERCOM1 == TRUE) || defined(__DOXYGEN__)
+SIODriver SIOD2;
+#endif
+
+/**
+ * @brief   SIO3 driver identifier.
+ */
+#if (SAM_SIO_USE_SERCOM2 == TRUE) || defined(__DOXYGEN__)
+SIODriver SIOD3;
+#endif
+
+/**
+ * @brief   SIO4 driver identifier.
+ */
+#if (SAM_SIO_USE_SERCOM3 == TRUE) || defined(__DOXYGEN__)
+SIODriver SIOD4;
+#endif
+
+/**
+ * @brief   SIO5 driver identifier.
+ */
+#if (SAM_SIO_USE_SERCOM4 == TRUE) || defined(__DOXYGEN__)
+SIODriver SIOD5;
+#endif
+
+/**
+ * @brief   SIO6 driver identifier.
+ */
+#if (SAM_SIO_USE_SERCOM5 == TRUE) || defined(__DOXYGEN__)
+SIODriver SIOD6;
+#endif
+
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/

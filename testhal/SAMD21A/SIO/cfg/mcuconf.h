@@ -104,7 +104,7 @@
 #define SAM_SPI_USE_SERCOM1       FALSE
 #define SAM_I2C_USE_SERCOM1       FALSE
 
-#define SAM_SIO_USE_SERCOM2       FALSE
+#define SAM_SIO_USE_SERCOM2       TRUE
 #define SAM_SPI_USE_SERCOM2       FALSE
 #define SAM_I2C_USE_SERCOM2       FALSE
 
