@@ -2,7 +2,7 @@
 #define BOARD_H_
 
 #define __SAMD21G18A__
-#define BOARD_NAME                  "Test Board"
+#define BOARD_NAME                "SEEEDUINO Cortex-M0+"
 
 #define SAM_XOSC_FREQ             32000000UL
 #define SAM_XOSC32K_FREQ          32768UL
