@@ -40,7 +40,7 @@
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
-
+static uint8_t isAlarmActive;
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
@@ -52,7 +52,14 @@
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
+
+/**
+ * @brief Serving RTC Interrupt
+ * 
+ * @notapi
+ */
 static void st_lld_serve_interrupt(void);
+
 /**
  * @brief   Low level ST driver initialization.
  *
@@ -60,10 +67,11 @@ static void st_lld_serve_interrupt(void);
  */
 void st_lld_init(void)
 {
+  isAlarmActive = false;
+  PM_REGS->PM_APBAMASK |= PM_APBAMASK_RTC_Msk;
   /* Connect GENCLK to RTC */
   sam_gclk_mux(SAM_RTC_GCLK_SRC_ID, GCLK_CLKCTRL_ID_RTC, TRUE);
 
-  PM_REGS->PM_APBAMASK |= PM_APBAMASK_RTC_Msk;
   /* Reset Peripheral before usage */
   RTC_REGS->MODE0.RTC_CTRL = RTC_MODE0_CTRL_SWRST_Msk;
   while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
@@ -75,15 +83,69 @@ void st_lld_init(void)
   nvicEnableVector(RTC_IRQn, SAM_EIC_IRQ_PRIORITY);
 }
 
+/**
+ * @brief   Starts the alarm.
+ * @note    Makes sure that no spurious alarms are triggered after
+ *          this call.
+ *
+ * @param[in] abstime   the time to be set for the first alarm
+ *
+ * @notapi
+ */
+void st_lld_start_alarm(systime_t abstime)
+{
+  RTC_REGS->MODE0.RTC_CTRL &= ~RTC_MODE0_CTRL_ENABLE_Msk;
+  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
+    ;
+  RTC_REGS->MODE0.RTC_INTFLAG = RTC_MODE0_INTENSET_CMP0_Msk;
+  RTC_REGS->MODE0.RTC_COMP = (uint32_t)abstime;
+  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
+    ;
+  RTC_REGS->MODE0.RTC_INTENSET = RTC_MODE0_INTENSET_CMP0_Msk;
+  RTC_REGS->MODE0.RTC_CTRL |= RTC_MODE0_CTRL_ENABLE_Msk;
+  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
+    ;
+  isAlarmActive = true;
+}
+
+/**
+ * @brief   Stops the alarm interrupt.
+ *
+ * @notapi
+ */
+void st_lld_stop_alarm(void)
+{
+  RTC_REGS->MODE0.RTC_INTENCLR = RTC_MODE0_INTENCLR_CMP0_Msk;
+  isAlarmActive = false;
+}
+
+/**
+ * @brief   Determines if the alarm is active.
+ *
+ * @return              The alarm status.
+ * @retval false        if the alarm is not active.
+ * @retval true         is the alarm is active
+ *
+ * @notapi
+ */
+bool st_lld_is_alarm_active(void)
+{
+  return isAlarmActive;
+}
+
 static void st_lld_serve_interrupt(void)
 {
-  uint32_t isr;
+  uint8_t isr;
   /* Get and clear the RTC interrupts. */
   isr = RTC_REGS->MODE0.RTC_INTFLAG;
-  RTC_REGS->MODE0.RTC_INTFLAG = RTC_MODE0_INTFLAG_Msk;
-  osalSysLockFromISR();
-  osalOsTimerHandlerI();
-  osalSysUnlockFromISR();
+  RTC_REGS->MODE0.RTC_INTFLAG = isr;
+  RTC_REGS->MODE0.RTC_INTENCLR = isr;
+  if(isr & RTC_MODE0_INTFLAG_CMP0_Msk)
+  {
+    osalSysLockFromISR();
+    osalOsTimerHandlerI();
+    osalSysUnlockFromISR();
+  }
 }
 
 OSAL_IRQ_HANDLER(RTC_HANDLER)

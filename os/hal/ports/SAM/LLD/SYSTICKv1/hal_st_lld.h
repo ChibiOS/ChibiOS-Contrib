@@ -94,6 +94,9 @@ extern "C"
 {
 #endif
   void st_lld_init(void);
+  void st_lld_start_alarm(systime_t abstime);
+  void st_lld_stop_alarm(void);
+  bool st_lld_is_alarm_active(void);
 #ifdef __cplusplus
 }
 #endif
@@ -120,42 +123,6 @@ static inline systime_t st_lld_get_counter(void)
 }
 
 /**
- * @brief   Starts the alarm.
- * @note    Makes sure that no spurious alarms are triggered after
- *          this call.
- *
- * @param[in] abstime   the time to be set for the first alarm
- *
- * @notapi
- */
-static inline void st_lld_start_alarm(systime_t abstime)
-{
-  RTC_REGS->MODE0.RTC_CTRL &= (uint16_t)(~(RTC_MODE0_CTRL_ENABLE_Msk));
-  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
-    ;
-  RTC_REGS->MODE0.RTC_COMP = (uint32_t)abstime;
-  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
-    ;
-  RTC_REGS->MODE0.RTC_CTRL |= (uint16_t)(RTC_MODE0_CTRL_ENABLE_Msk);
-  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
-    ;
-  RTC_REGS->MODE0.RTC_INTENSET = 1;
-}
-
-/**
- * @brief   Stops the alarm interrupt.
- *
- * @notapi
- */
-static inline void st_lld_stop_alarm(void)
-{
-  RTC_REGS->MODE0.RTC_CTRL &= (uint16_t)(~(RTC_MODE0_CTRL_ENABLE_Msk));
-  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
-    ;
-  RTC_REGS->MODE0.RTC_INTENCLR = 1;
-}
-
-/**
  * @brief   Sets the alarm time.
  *
  * @param[in] abstime   the time to be set for the next alarm
@@ -177,24 +144,6 @@ static inline void st_lld_set_alarm(systime_t abstime)
 static inline systime_t st_lld_get_alarm(void)
 {
   return ((RTC_REGS->MODE0.RTC_COMP));
-}
-
-/**
- * @brief   Determines if the alarm is active.
- *
- * @return              The alarm status.
- * @retval false        if the alarm is not active.
- * @retval true         is the alarm is active
- *
- * @notapi
- */
-static inline bool st_lld_is_alarm_active(void)
-{
-  if (RTC_REGS->MODE0.RTC_CTRL & RTC_MODE0_CTRL_ENABLE_Msk)
-  {
-    return true;
-  }
-  return false;
 }
 
 #endif /* HAL_ST_LLD_H */
