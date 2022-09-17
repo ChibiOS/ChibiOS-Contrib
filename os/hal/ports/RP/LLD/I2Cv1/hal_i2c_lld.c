@@ -83,30 +83,41 @@ static sysinterval_t i2c_lld_get_wait_time(I2CDriver *i2cp){
 /**
  * @brief    Tries to disable the I2C peripheral.
  */
-static msg_t i2c_lld_disable(I2CDriver *i2cp) {
+static msg_t i2c_lld_disableS(I2CDriver *i2cp) {
   I2C_TypeDef *dp = i2cp->i2c;
   systime_t start, end;
+  msg_t ok = MSG_OK;
 
   /* Calculating the time window for the timeout on the enable condition.*/
   start = osalOsGetSystemTimeX();
   end = osalTimeAddX(start, i2c_lld_get_wait_time(i2cp));
 
   dp->ENABLE &= ~I2C_IC_ENABLE_ENABLE;
+
+  osalSysUnlock();
   while ((dp->ENABLESTATUS & I2C_IC_ENABLE_STATUS_IC_EN) != 0U) {
+    osalSysLock();
     if (!osalTimeIsInRangeX(osalOsGetSystemTimeX(), start, end)) {
-      return MSG_TIMEOUT;
+      ok = MSG_TIMEOUT;
+    }
+    osalSysUnlock();
+
+    if (ok != MSG_OK) {
+      break;
     }
   }
+  osalSysLock();
 
-  return MSG_OK;
+  return ok;
 }
 
 /**
  * @brief    Aborts any ongoing transmission of the I2C peripheral.
  */
-static msg_t i2c_lld_abort_transmission(I2CDriver *i2cp) {
+static msg_t i2c_lld_abort_transmissionS(I2CDriver *i2cp) {
   I2C_TypeDef *dp = i2cp->i2c;
   systime_t start, end;
+  msg_t ok = MSG_OK;
 
   /* Calculating the time window for the timeout on the abort condition.*/
   start = osalOsGetSystemTimeX();
@@ -119,15 +130,22 @@ static msg_t i2c_lld_abort_transmission(I2CDriver *i2cp) {
   /* Issue abort. */
   dp->ENABLE |= I2C_IC_ENABLE_ABORT;
 
+  osalSysUnlock();
   /* Wait for transmission the be aborted */
   while((dp->RAWINTRSTAT & I2C_IC_INTR_STAT_M_TX_ABRT) == 0U) {
+    osalSysLock();
     if (!osalTimeIsInRangeX(osalOsGetSystemTimeX(), start, end)) {
-      return MSG_TIMEOUT;
+      ok = MSG_TIMEOUT;
+    }
+    osalSysUnlock();
+    if (ok != MSG_OK){
+      break;
     }
   }
+  osalSysLock();
 
   (void)dp->CLRTXABRT;
-  return MSG_OK;
+  return ok;
 }
 
 /**
@@ -415,7 +433,7 @@ void i2c_lld_start(I2CDriver *i2cp) {
   }
 
   /* Disable i2c peripheral for setup phase. */
-  if (i2c_lld_disable(i2cp) != MSG_OK) {
+  if (i2c_lld_disableS(i2cp) != MSG_OK) {
     return;
   }
 
@@ -455,8 +473,8 @@ void i2c_lld_start(I2CDriver *i2cp) {
 void i2c_lld_stop(I2CDriver *i2cp) {
 
   if (i2cp->state != I2C_STOP) {
-      if (i2c_lld_disable(i2cp) != MSG_OK) {
-        i2c_lld_abort_transmission(i2cp);
+      if (i2c_lld_disableS(i2cp) != MSG_OK) {
+        i2c_lld_abort_transmissionS(i2cp);
       }
 #if RP_I2C_USE_I2C0 == TRUE
     if (&I2CD1 == i2cp) {
@@ -537,7 +555,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   i2cp->send_restart = false;
 
   /* Disable I2C peripheral during setup phase. */
-  msg = i2c_lld_disable(i2cp);
+  msg = i2c_lld_disableS(i2cp);
   if (msg != MSG_OK) {
     return msg;
   }
@@ -635,7 +653,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   i2cp->send_restart = false;
 
   /* disabel i2c peripheral during setup phase. */
-  msg = i2c_lld_disable(i2cp);
+  msg = i2c_lld_disableS(i2cp);
   if (msg != MSG_OK) {
     return msg;
   }
