@@ -128,6 +128,14 @@ typedef uint32_t iomode_t;
 #define   MODE_MODE_PULL_UP       (0x2U << MODE_MODE_POS)
 #define   MODE_MODE_REPEATER      (0x3U << MODE_MODE_POS)
 
+#define   MODE_HYS_POS            5U
+#define   MODE_HYS_DISABLE        (0x0U << MODE_HYS_POS)
+#define   MODE_HYS_ENABLE         (0x1U << MODE_HYS_POS)
+
+#define   MODE_INV_POS            6U
+#define   MODE_INV_DISABLE        (0x0U << MODE_INV_POS)
+#define   MODE_INV_ENABLE         (0x1U << MODE_INV_POS)
+
 #define   MODE_AD_POS             (7U)
 #define   MODE_AD_MASK            (1U << MODE_AD_POS)
 #define   MODE_AD_ANALOG          (0U << MODE_AD_POS)
