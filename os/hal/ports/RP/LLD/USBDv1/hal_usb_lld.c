@@ -637,9 +637,10 @@ void usb_lld_start(USBDriver *usbp) {
 void usb_lld_stop(USBDriver *usbp) {
 #if RP_USB_USE_USBD0 == TRUE
   if (&USBD1 == usbp) {
-    if (usbp->state == USB_READY) {
-      /* Disable interrupt */
+    if (usbp->state != USB_STOP) {
+      /* Disable USB interrupt */
       USB->INTE = 0;
+      nvicDisableVector(RP_USBCTRL_IRQ_NUMBER);
 
       /* Disable controller */
       USB->CLR.MAINCTRL = USB_MAIN_CTRL_CONTROLLER_EN;
