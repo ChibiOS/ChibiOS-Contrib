@@ -543,9 +543,6 @@ void usb_lld_start(USBDriver *usbp) {
 
       /* Enable USB interrupt. */
       nvicEnableVector(RP_USBCTRL_IRQ_NUMBER, RP_IRQ_USB0_PRIORITY);
-
-      /* Present full speed device by enabling pull up on DP */
-      USB->SET.SIECTRL = USB_SIE_CTRL_PULLUP_EN;
     }
   }
 #endif
