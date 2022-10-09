@@ -125,14 +125,14 @@ static void uart_deinit(UART_TypeDef *u) {
 #endif
 
 #if WB32_SERIAL_USE_UART2
-  else if (u == UART2) {
+  if (u == UART2) {
     /* UART2 DeInit.*/
     rccResetUART2()
   }
 #endif
 
 #if WB32_SERIAL_USE_UART3
-  else if (u == UART3) {
+  if (u == UART3) {
     /* UART3 DeInit.*/
     rccResetUART3()
   }
