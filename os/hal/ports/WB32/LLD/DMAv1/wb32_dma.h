@@ -705,7 +705,7 @@ typedef struct {
 #define dmaStreamEnableInterrupt(dmastp, it_flag) {                         \
     uint32_t mask = (uint32_t)(0x01U << ((dmastp)->channel));               \
     uint32_t regaddr = ((uint32_t)(&((dmastp)->dmac->MaskTfr)) + it_flag);  \
-    *((__O uint32_t *)(regaddr)) |= (mask << 8) | mask;                     \
+    *((__O uint32_t *)(regaddr)) = (mask << 8) | mask;                      \
   }
 
 /**
@@ -722,7 +722,7 @@ typedef struct {
 #define dmaStreamDisableInterrupt(dmastp, it_flag) {                        \
     uint32_t mask = (uint32_t)(0x01U << ((dmastp)->channel));               \
     uint32_t regaddr = ((uint32_t)(&((dmastp)->dmac->MaskTfr)) + it_flag);  \
-    *((__O uint32_t *)(regaddr)) &= ~(mask);                                \
+    *((__O uint32_t *)(regaddr)) = (mask << 8);                             \
   }
 
 /**
@@ -797,7 +797,7 @@ typedef struct {
  */
 #define dmaStreamEnable(dmastp) {                                           \
     uint32_t mask = (uint32_t)(0x01U << ((dmastp)->channel));               \
-    (dmastp)->dmac->ChEnReg |= (mask << 8) | mask;                          \
+    (dmastp)->dmac->ChEnReg = (mask << 8) | mask;                           \
   }
 
 /**
@@ -816,7 +816,7 @@ typedef struct {
  */
 #define dmaStreamDisable(dmastp) {                                          \
     uint32_t mask = (uint32_t)(0x01U << ((dmastp)->channel));               \
-    (dmastp)->dmac->ChEnReg &= ~(mask);                                     \
+    (dmastp)->dmac->ChEnReg = (mask << 8);                                  \
     dmaStreamDisableInterruptAll(dmastp);                                   \
     dmaStreamClearInterrupt(dmastp);                                        \
   }
@@ -840,8 +840,8 @@ typedef struct {
  * @param[in] n         number of data units to copy
  */
 #define dmaStartMemCopy(dmastp, mode, src, dst, n) {                        \
-    (mode).src_addr_inc = WB32_DMAC_SRC_ADDR_INC;                              \
-    (mode).dst_addr_inc = WB32_DMAC_DST_ADDR_INC;                              \
+    (mode).src_addr_inc = WB32_DMAC_SRC_ADDR_INC;                           \
+    (mode).dst_addr_inc = WB32_DMAC_DST_ADDR_INC;                           \
     (mode).trf_tfc = WB32_DMAC_TRF_TFC_M2MD;                                \
     dmaStreamSetSource(dmastp, src);                                        \
     dmaStreamSetDestination(dmastp, dst);                                   \
