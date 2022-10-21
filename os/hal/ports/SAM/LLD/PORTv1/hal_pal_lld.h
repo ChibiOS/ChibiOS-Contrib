@@ -181,7 +181,7 @@
  * @brief   Decodes a pad identifier from a line identifier.
  */
 #define PAL_PAD(line)                                                       \
-  ((uint32_t)((uint32_t)(line) & 0x0000002FU))
+  ((uint32_t)((uint32_t)(line) & 0x0000001FU))
 
 /**
  * @brief   Value identifying an invalid line.
