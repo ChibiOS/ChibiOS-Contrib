@@ -278,8 +278,7 @@ OSAL_IRQ_HANDLER(KINETIS_USB_IRQ_VECTOR) {
         }
         else
         {
-          if(epc->in_cb != NULL)
-            _usb_isr_invoke_in_cb(usbp,ep);
+          _usb_isr_invoke_in_cb(usbp,ep);
         }
       } break;
       case BDT_PID_OUT:                                                // OUT
@@ -304,8 +303,7 @@ OSAL_IRQ_HANDLER(KINETIS_USB_IRQ_VECTOR) {
              has been received or the current packet is a short packet.*/
           if ((rxed < epc->out_maxsize) || (epc->out_state->rxpkts == 0))
           {
-            if(epc->out_cb != NULL)
-              _usb_isr_invoke_out_cb(usbp, ep);
+            _usb_isr_invoke_out_cb(usbp, ep);
           }
         }
       } break;
