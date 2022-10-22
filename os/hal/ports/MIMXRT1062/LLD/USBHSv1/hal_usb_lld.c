@@ -308,7 +308,6 @@ static usb_status_t device_ep0_control_callback(usb_device_handle handle,
 
   if (direction == USB_OUT) {
     printf_debug("    complete, OUT ep=%d (OUT), rxbuf=%x", ep, epc->out_state->rxbuf);
-    (usbp)->receiving &= ~(1 << ep);
 
     USBOutEndpointState *osp = epc->out_state;
     osp->rxcnt = message->length;
@@ -317,19 +316,14 @@ static usb_status_t device_ep0_control_callback(usb_device_handle handle,
 
     /* Endpoint Receive Complete Event */
     /* Transfer Direction OUT */
-    if (epc->out_cb != NULL) {
-      printf_debug("    invoking out_cb for ep %d", ep);
-      _usb_isr_invoke_out_cb(usbp, ep);
-    }
+    printf_debug("    invoking out_cb for ep %d", ep);
+    _usb_isr_invoke_out_cb(usbp, ep);
   } else if (direction == USB_IN) {
     printf_debug("    complete, IN ep=%d (IN), txbuf=%x", ep, epc->in_state->txbuf);
-    (usbp)->transmitting &= ~(1 << ep);
     /* Endpoint Transmit Complete Event */
     /* Transfer Direction IN */
-    if (epc->in_cb != NULL) {
-      printf_debug("    invoking in_cb for ep %d", ep);
-      _usb_isr_invoke_in_cb(usbp, ep);
-    }
+    printf_debug("    invoking in_cb for ep %d", ep);
+    _usb_isr_invoke_in_cb(usbp, ep);
   }
 
   return kStatus_USB_Success;
@@ -468,7 +462,6 @@ static usb_status_t device_epN_control_callback(usb_device_handle handle,
 
   if (direction == USB_OUT) {
     printf_debug("    complete, OUT ep=%d (OUT), rxbuf=%x", ep, epc->out_state->rxbuf);
-    (usbp)->receiving &= ~(1 << ep);
 
     USBOutEndpointState *osp = epc->out_state;
     osp->rxcnt = message->length;
@@ -476,19 +469,14 @@ static usb_status_t device_epN_control_callback(usb_device_handle handle,
 
     /* Endpoint Receive Complete Event */
     /* Transfer Direction OUT */
-    if (epc->out_cb != NULL) {
-      printf_debug("    invoking out_cb for ep %d", ep);
-      _usb_isr_invoke_out_cb(usbp, ep);
-    }
+    printf_debug("    invoking out_cb for ep %d", ep);
+    _usb_isr_invoke_out_cb(usbp, ep);
   } else if (direction == USB_IN) {
     printf_debug("    complete, IN ep=%d (IN), txbuf=%x", ep, epc->in_state->txbuf);
-    (usbp)->transmitting &= ~(1 << ep);
     /* Endpoint Transmit Complete Event */
     /* Transfer Direction IN */
-    if (epc->in_cb != NULL) {
-      printf_debug("    invoking in_cb for ep %d", ep);
-      _usb_isr_invoke_in_cb(usbp, ep);
-    }
+    printf_debug("    invoking in_cb for ep %d", ep);
+    _usb_isr_invoke_in_cb(usbp, ep);
   }
   return kStatus_USB_Success;
 }
