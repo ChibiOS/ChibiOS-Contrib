@@ -101,7 +101,7 @@ void gpt_lld_init(void) {
 #endif
 #if HT32_GPT_USE_BFTM1 == TRUE
     gptObjectInit(&GPTD_BFTM1);
-    GPTD_BFTM0.BFTM = BFTM1;
+    GPTD_BFTM1.BFTM = BFTM1;
 #endif
 }
 
