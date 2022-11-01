@@ -969,6 +969,7 @@ void pwm_lld_serve_interrupt(PWMDriver *pwmp) {
   uint32_t ris;
 
   ris  = pwmp->ct->RIS;
+  pwmp->ct->IC = ris;
   if (((ris & mskCT16_MR0IF) != 0) &&
       (pwmp->config->channels[0].callback != NULL))
     pwmp->config->channels[0].callback(pwmp);
