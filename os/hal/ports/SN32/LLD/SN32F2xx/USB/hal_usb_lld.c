@@ -294,10 +294,8 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
     /////////////////////////////////////////////////
     if ((iwIntFlag & mskUSB_SOF) && (SN32_USB->INTEN & mskUSB_SOF_IE)) {
         /* SOF */
-         SN_GPIO2->BSET = (1<<12);
         _usb_isr_invoke_sof_cb(usbp);
         SN32_USB->INSTSC = (mskUSB_SOF);
-        SN_GPIO2->BCLR = (1<<12);
     }
     /////////////////////////////////////////////////
     /* Device Status Interrupt (EPnACK)            */
@@ -356,7 +354,6 @@ void usb_serve_endpoints(USBDriver* usbp, usbep_t ep, bool in) {
         else {
             /* Transfer complete, invokes the callback.*/
             //EPCTL_SET_STAT_NAK(ep); //useless mcu resets it anyways
-            LOG_TRACE(")\n\r");
             _usb_isr_invoke_in_cb(usbp, ep);
         }
     }
