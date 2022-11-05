@@ -34,12 +34,20 @@
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
-#if HAL_USE_RTC == TRUE && OSAL_ST_MODE != OSAL_ST_MODE_NONE
-#error "SYSTICKv1 already uses RTC"
+#if HAL_USE_RTC == TRUE && OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
+#error "SYSTICKv1 already uses RTC for freerunning, please change to periodic mode"
 #endif
 #if OSAL_ST_RESOLUTION != 32
 #error "SYSTICKv1 already requires OSAL_ST_RESOLUTION == 32"
 #endif
+
+/**
+ * @brief   SysTick timer IRQ priority.
+ */
+#if !defined(SAM_ST_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define SAM_ST_IRQ_PRIORITY               8
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
@@ -94,9 +102,11 @@ extern "C"
 {
 #endif
   void st_lld_init(void);
+  #if (OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING) || defined(__DOXYGEN__)
   void st_lld_start_alarm(systime_t abstime);
   void st_lld_stop_alarm(void);
   bool st_lld_is_alarm_active(void);
+  #endif
 #ifdef __cplusplus
 }
 #endif
@@ -104,6 +114,8 @@ extern "C"
 /*===========================================================================*/
 /* Driver inline functions.                                                  */
 /*===========================================================================*/
+
+#if (OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING) || defined(__DOXYGEN__)
 
 /**
  * @brief   Returns the time counter value.
@@ -134,6 +146,7 @@ static inline void st_lld_set_alarm(systime_t abstime)
   st_lld_start_alarm(abstime);
 }
 
+#endif
 /**
  * @brief   Returns the current alarm time.
  *
