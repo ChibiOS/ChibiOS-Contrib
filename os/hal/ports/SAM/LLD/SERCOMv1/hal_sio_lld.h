@@ -102,6 +102,36 @@
 #error "SERCOM0: Can only configured as one function only"
 #endif
 #endif
+
+#if SAM_SIO_USE_SERCOM1 == TRUE
+#if SAM_SPI_USE_SERCOM1 == TRUE || SAM_I2C_USE_SERCOM1 == TRUE
+#error "SERCOM1: Can only configured as one function only"
+#endif
+#endif
+
+#if SAM_SIO_USE_SERCOM2 == TRUE
+#if SAM_SPI_USE_SERCOM2 == TRUE || SAM_I2C_USE_SERCOM2 == TRUE
+#error "SERCOM2: Can only configured as one function only"
+#endif
+#endif
+
+#if SAM_SIO_USE_SERCOM3 == TRUE
+#if SAM_SPI_USE_SERCOM3 == TRUE || SAM_I2C_USE_SERCOM3 == TRUE
+#error "SERCOM3: Can only configured as one function only"
+#endif
+#endif
+
+#if SAM_SIO_USE_SERCOM4 == TRUE
+#if SAM_SPI_USE_SERCOM4 == TRUE || SAM_I2C_USE_SERCOM4 == TRUE
+#error "SERCOM4: Can only configured as one function only"
+#endif
+#endif
+
+#if SAM_SIO_USE_SERCOM5 == TRUE
+#if SAM_SPI_USE_SERCOM5 == TRUE || SAM_I2C_USE_SERCOM5 == TRUE
+#error "SERCOM5: Can only configured as one function only"
+#endif
+#endif
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
