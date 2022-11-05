@@ -121,7 +121,6 @@ static flash_error_t sam_flash_page_write(EFlashDriver *eflp, uint8_t *dest, con
 { 
   osalDbgCheck((eflp != NULL) && ((uint32_t)dest % sizeof(uint16_t) == 0) 
         && (n > 0U) && (n <= FLASH_PAGE_SIZE) && (n % 2 == 0));
-  size_t pg_offset = ((uint32_t)(dest)) % FLASH_PAGE_SIZE;
   flash_error_t err = FLASH_NO_ERROR;
   n /= 2;
   volatile uint16_t *dst_addr = (volatile uint16_t *)dest;

@@ -151,7 +151,7 @@ void _pal_lld_setgroupmode(ioportid_t port,
   /* PMUX */
   uint32_t altr    = (mode & PAL_SAM_ALTERNATE_MASK) >> 6;
   uint32_t bit     = 0;
-  uint32_t altrmask, m1, m3;
+  uint32_t m1;
   while(1) {
     if((mask & 1) != 0) {
       m1 = 1 << bit; 
@@ -319,7 +319,6 @@ OSAL_IRQ_HANDLER(EIC_HANDLER)
 {
   OSAL_IRQ_PROLOGUE();
   unsigned i;
-  unsigned long eicIntFlagStatus = 0;
   for(i = 0; i < 16; i++) {
     unsigned long intflag = 1UL << i;
     if((EIC_REGS->EIC_INTFLAG & intflag) == intflag) {
