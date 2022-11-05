@@ -45,7 +45,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(SAM_SIO_USE_SERCOM0) || defined(__DOXYGEN__)
-#define SAM_SIO_USE_SERCOM0 FALSE
+#define SAM_SIO_USE_SERCOM0             FALSE
 #endif
 
 /**
@@ -54,7 +54,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(SAM_SIO_USE_SERCOM1) || defined(__DOXYGEN__)
-#define SAM_SIO_USE_SERCOM1 FALSE
+#define SAM_SIO_USE_SERCOM1             FALSE
 #endif
 
 /**
@@ -63,7 +63,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(SAM_SIO_USE_SERCOM2) || defined(__DOXYGEN__)
-#define SAM_SIO_USE_SERCOM2 FALSE
+#define SAM_SIO_USE_SERCOM2             FALSE
 #endif
 
 /**
@@ -72,7 +72,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(SAM_SIO_USE_SERCOM3) || defined(__DOXYGEN__)
-#define SAM_SIO_USE_SERCOM3 FALSE
+#define SAM_SIO_USE_SERCOM3             FALSE
 #endif
 
 /**
@@ -81,7 +81,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(SAM_SIO_USE_SERCOM4) || defined(__DOXYGEN__)
-#define SAM_SIO_USE_SERCOM4 FALSE
+#define SAM_SIO_USE_SERCOM4             FALSE
 #endif
 
 /**
@@ -90,7 +90,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(SAM_SIO_USE_SERCOM5) || defined(__DOXYGEN__)
-#define SAM_SIO_USE_SERCOM5 FALSE
+#define SAM_SIO_USE_SERCOM5             FALSE
 #endif
 /** @} */
 
@@ -102,40 +102,14 @@
 #error "SERCOM0: Can only configured as one function only"
 #endif
 #endif
-
-#if SAM_SIO_USE_SERCOM1 == TRUE
-#if SAM_SPI_USE_SERCOM1 == TRUE || SAM_I2C_USE_SERCOM1 == TRUE
-#error "SERCOM1: Can only configured as one function only"
-#endif
-#endif
-
-#if SAM_SIO_USE_SERCOM2 == TRUE
-#if SAM_SPI_USE_SERCOM2 == TRUE || SAM_I2C_USE_SERCOM2 == TRUE
-#error "SERCOM2: Can only configured as one function only"
-#endif
-#endif
-
-#if SAM_SIO_USE_SERCOM3 == TRUE
-#if SAM_SPI_USE_SERCOM3 == TRUE || SAM_I2C_USE_SERCOM3 == TRUE
-#error "SERCOM3: Can only configured as one function only"
-#endif
-#endif
-
-#if SAM_SIO_USE_SERCOM4 == TRUE
-#if SAM_SPI_USE_SERCOM4 == TRUE || SAM_I2C_USE_SERCOM4 == TRUE
-#error "SERCOM4: Can only configured as one function only"
-#endif
-#endif
-
-#if SAM_SIO_USE_SERCOM5 == TRUE
-#if SAM_SPI_USE_SERCOM5 == TRUE || SAM_I2C_USE_SERCOM5 == TRUE
-#error "SERCOM5: Can only configured as one function only"
-#endif
-#endif
-
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
+
+/**
+ * @brief   Type of a SIO events mask.
+ */
+typedef uint32_t sio_events_mask_t;
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
@@ -144,22 +118,23 @@
 /**
  * @brief   Low level fields of the SIO driver structure.
  */
-#define sio_lld_driver_fields          \
-  sercom_usart_int_registers_t *usart; \
-  uint32_t clock;
+#define sio_lld_driver_fields                                               \
+  sercom_usart_int_registers_t   *usart;                                    \
+  uint32_t                       clock;                                     
 
 /**
  * @brief   Low level fields of the SIO configuration structure.
  */
-#define sio_lld_config_fields \
-  uint32_t baud;              \
-  uint32_t ctrla;             \
-  uint32_t ctrlb;             \
-  uint8_t txpo;               \
-  uint8_t rxpo;
+#define sio_lld_config_fields                                               \
+  uint32_t                  baud;                                           \
+  uint32_t                  ctrla;                                          \
+  uint32_t                  ctrlb;                                          \
+  uint8_t                   txpo;                                           \
+  uint8_t                   rxpo;
+
 
 #define SERCOM_CTRLA_DEFAULT (SERCOM_USART_INT_CTRLA_MODE_USART_INT_CLK | \
-                              SERCOM_USART_INT_CTRLA_DORD_Msk |           \
+                              SERCOM_USART_INT_CTRLA_DORD_Msk | \
                               SERCOM_USART_INT_CTRLA_IBON_Msk)
 
 #define SERCOM_CTRLB_DEFAULT (0)
@@ -178,35 +153,6 @@
                                     SERCOM_USART_INT_INTFLAG_RXC_Msk)
 
 /**
- * @brief   Determines the activity state of the receiver.
- *
- * @param[in] siop      pointer to the @p SIODriver object
- * @return              The RX activity state.
- * @retval false        if RX is in active state.
- * @retval true         if RX is in idle state.
- *
- * @notapi
- */
-#define sio_lld_is_rx_idle(siop) false
-
-/**
- * @brief   Determines if RX has pending error events to be read and cleared.
- * @note    Only error and protocol errors are handled, data events are not
- *          considered.
- *
- * @param[in] siop      pointer to the @p SIODriver object
- * @return              The RX error events.
- * @retval false        if RX has no pending events
- * @retval true         if RX has pending events
- *
- * @notapi
- */
-#define sio_lld_has_rx_errors(siop) ((siop->usart->SERCOM_STATUS & (SERCOM_USART_INT_STATUS_BUFOVF_Msk |      \
-                                                                    SERCOM_USART_INT_STATUS_FERR_Msk |        \
-                                                                    SERCOM_USART_INT_STATUS_PERR_Msk) != 0) | \
-                                     (siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_RXBRK_Msk) != 0)
-
-/**
  * @brief   Determines the state of the TX FIFO.
  *
  * @param[in] siop      pointer to the @p SIODriver object
@@ -217,7 +163,7 @@
  * @notapi
  */
 #define sio_lld_is_tx_full(siop) !((siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_DRE_Msk) == \
-                                   SERCOM_USART_INT_INTFLAG_DRE_Msk)
+                                    SERCOM_USART_INT_INTFLAG_DRE_Msk)
 
 /**
  * @brief   Determines the transmission state.
@@ -230,7 +176,7 @@
  * @notapi
  */
 #define sio_lld_is_tx_ongoing(siop) !((siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_TXC_Msk) == \
-                                      SERCOM_USART_INT_INTFLAG_TXC_Msk)
+                                    SERCOM_USART_INT_INTFLAG_TXC_Msk)
 
 /*===========================================================================*/
 /* External declarations.                                                    */
@@ -261,22 +207,19 @@ extern SIODriver SIOD6;
 #endif
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
   void sio_lld_init(void);
-  msg_t sio_lld_start(SIODriver *siop);
+  msg_t  sio_lld_start(SIODriver *siop);
   void sio_lld_stop(SIODriver *siop);
-  void sio_lld_update_enable_flags(SIODriver *siop);
-  sioevents_t sio_lld_get_and_clear_errors(SIODriver *siop);
-  sioevents_t sio_lld_get_and_clear_events(SIODriver *siop);
-  sioevents_t sio_lld_get_events(SIODriver *siop);
+  void sio_lld_start_operation(SIODriver *siop);
+  void sio_lld_stop_operation(SIODriver *siop);
+  sio_events_mask_t sio_lld_get_and_clear_events(SIODriver *siop);
   size_t sio_lld_read(SIODriver *siop, uint8_t *buffer, size_t n);
   size_t sio_lld_write(SIODriver *siop, const uint8_t *buffer, size_t n);
   msg_t sio_lld_get(SIODriver *siop);
   void sio_lld_put(SIODriver *siop, uint_fast16_t data);
   msg_t sio_lld_control(SIODriver *siop, unsigned int operation, void *arg);
-  void sio_lld_serve_interrupt(SIODriver *siop);
 #ifdef __cplusplus
 }
 #endif

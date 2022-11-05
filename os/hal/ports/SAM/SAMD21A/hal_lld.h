@@ -75,9 +75,6 @@
 #define PTC_HANDLER                 VectorA8
 #define I2S_HANDLER                 VectorAC
 
-
-
-
 /**
  * @brief   Enables or disables the HSI clock source.
  */

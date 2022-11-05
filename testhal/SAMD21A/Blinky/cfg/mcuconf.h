@@ -58,7 +58,7 @@
 
 #define SAM_GCLK4_SRC             GCLK_GENCTRL_SRC_DFLL48M
 #define SAM_GCLK4_FREQ            1000000UL
-#define SAM_GCLK4_ENABLE          TRUE
+#define SAM_GCLK4_ENABLE          FALSE
 
 #define SAM_GCLK5_SRC             GCLK_GENCTRL_SRC_DFLL48M
 #define SAM_GCLK5_FREQ            1000000UL
@@ -93,8 +93,6 @@
 #define SAM_TC3_IRQ_PRIORITY      2
 
 #define SAM_ADC_USE_ADC1          FALSE
-#define SAM_GPT_USE_TIM0          FALSE
-#define SAM_GPT_USE_TIM3          FALSE
 
 #define SAM_SIO_USE_SERCOM0       FALSE
 #define SAM_SPI_USE_SERCOM0       FALSE
@@ -120,4 +118,5 @@
 #define SAM_SPI_USE_SERCOM5       FALSE
 #define SAM_I2C_USE_SERCOM5       FALSE
 
+#define SAM_EFL_USE_EFL1          FALSE
 #endif /* MCUCONF_H */

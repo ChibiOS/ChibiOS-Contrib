@@ -2,6 +2,7 @@
 PLATFORMSRC_CONTRIB := $(CHIBIOS)/os/hal/ports/common/ARMCMx/nvic.c \
                $(CHIBIOS_CONTRIB)/os/hal/ports/SAM/SAMD21A/sam_clk.c \
                $(CHIBIOS_CONTRIB)/os/hal/ports/SAM/SAMD21A/hal_lld.c \
+			   $(CHIBIOS_CONTRIB)/os/hal/ports/SAM/SAMD21A/hal_efl_lld.c \
 
 # Required include directories.
 PLATFORMINC_CONTRIB := $(CHIBIOS)/os/hal/ports/common/ARMCMx \

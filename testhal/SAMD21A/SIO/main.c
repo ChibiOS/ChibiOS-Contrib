@@ -31,17 +31,8 @@ static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp, "Usage: write\r\n");
     return;
   }
-
-  while (chnGetTimeout((BaseChannel *)chp, TIME_IMMEDIATE) == Q_TIMEOUT) {
-#if 1
-    /* Writing in channel mode.*/
+  while(chnGetTimeout(&SIOD3, TIME_IMMEDIATE) == MSG_RESET) {
     chnWrite(&SIOD3, buf, sizeof buf - 1);
-#else
-    /* Writing in buffer mode.*/
-    (void) obqGetEmptyBufferTimeout(&SDU1.obqueue, TIME_INFINITE);
-    memcpy(SDU1.obqueue.ptr, buf, SERIAL_USB_BUFFERS_SIZE);
-    obqPostFullBuffer(&SDU1.obqueue, SERIAL_USB_BUFFERS_SIZE);
-#endif
   }
   chprintf(chp, "\r\n\nstopped\r\n");
 }
@@ -57,7 +48,7 @@ static const ShellConfig shell_cfg1 = {
 };
 
 static const SIOConfig siocfg = {
-  921600,
+  SIO_DEFAULT_BITRATE,
   SERCOM_CTRLA_DEFAULT,
   SERCOM_CTRLB_DEFAULT,
   1,
@@ -97,6 +88,7 @@ int main(void)
   palSetPadMode(GPIOA, 10, PAL_MODE_ALTERNATE(PAL_SAM_FUNC_D));
   palSetPadMode(GPIOA, 11, PAL_MODE_ALTERNATE(PAL_SAM_FUNC_D));
   sioStart(&SIOD3, &siocfg);
+  sioStartOperation(&SIOD3, NULL);
 
   /*
    * Shell manager initialization.
