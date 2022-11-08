@@ -176,6 +176,7 @@ typedef struct {
 #define CKCU_CKST_PLLST_MASK        (0xfU << 8)
 #define CKCU_LPCR_USBSLEEP          (1U << 8)
 #define CKCU_LPCR_BKISO             (1U << 0)
+#define CKCU_MCUDBGCR_DBWDT         (1U << 3)
 
 // Reset Control Unit
 // /////////////////////////////////////////////////////////////////////////////
@@ -378,6 +379,35 @@ typedef struct {
 
 // Watchdog Timer
 // /////////////////////////////////////////////////////////////////////////////
+typedef struct {
+       uint32_t CR;             //!< 0x000          Control Register
+  __IO uint32_t MR0;            //!< 0x004          Mode Register 0
+  __IO uint32_t MR1;            //!< 0x008          Mode Register 1
+  __IO uint32_t SR;             //!< 0x00C          Status Register
+  __IO uint32_t PR;             //!< 0x010          Protection Register
+  __IO uint32_t CNTR;           //!< 0x014          Counter Register
+  __IO uint32_t CSR;            //!< 0x018          Clock Selection Register
+} WDT_TypeDef;
+
+#define WDT_CR_WDTRS                (1U << 0)
+#define WDT_MR0_WDTEN               (1U << 16)
+#define WDT_MR0_WDTSHLT_MASK        (3U << 14)
+#define WDT_MR0_WDTSHLT_MODE0       (0U << 14)
+#define WDT_MR0_WDTSHLT_MODE1       (1U << 14)
+#define WDT_MR0_WDTSHLT_MODE2       (3U << 14)
+#define WDT_MR0_WDTRSTEN            (1U << 13)
+#define WDT_MR0_WDTFIEN             (1U << 12)
+#define WDT_MR0_WDTV_MASK           (0xfffU << 0)
+#define WDT_MR1_WPSC_MASK           (7U << 12)
+#define WDT_MR1_WDTD_MASK           (0xfffU << 0)
+#define WDT_SR_WDTERR               (1U << 1)
+#define WDT_SR_WDTUF                (1U << 0)
+#define WDT_PR_PROTECT_STATUS       (1U << 0)
+#define WDT_CNTR_WDTCNT_MASK        (0xfffU << 0)
+#define WDT_CSR_WDTLOCK             (1U << 4)
+#define WDT_CSR_WDTSRC              (1U << 0)
+#define WDT_CSR_WDTSRC_LSE          (1U << 0)
+#define WDT_CSR_WDTSRC_LSI          (0U << 0)
 
 // I2C
 // /////////////////////////////////////////////////////////////////////////////
