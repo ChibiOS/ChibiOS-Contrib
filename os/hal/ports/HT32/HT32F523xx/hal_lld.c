@@ -60,7 +60,9 @@ void ht32_clock_init(void) {
 #if HT32_CKCU_SW == CKCU_GCCR_SW_HSE
     // Enable HSE
     CKCU->GCCR |= CKCU_GCCR_HSEEN;
-    while ((CKCU->GCSR & CKCU_GCSR_HSERDY) == 0); // wait for HSE ready
+    // wait for HSE ready
+    while ((CKCU->GCSR & CKCU_GCSR_HSERDY) == 0)
+        ;
 #endif
 
 #if HT32_CKCU_SW == CKCU_GCCR_SW_PLL
@@ -72,7 +74,9 @@ void ht32_clock_init(void) {
     #endif
     CKCU->PLLCFGR = ((HT32_PLL_FBDIV & 0x3F) << 23) | ((HT32_PLL_OTDIV & 0x3) << 21);
     CKCU->GCCR |= CKCU_GCCR_PLLEN; // enable PLL
-    while ((CKCU->GCSR & CKCU_GCSR_PLLRDY) == 0); // wait for PLL ready
+    // wait for PLL ready
+    while ((CKCU->GCSR & CKCU_GCSR_PLLRDY) == 0)
+        ;
 #endif
 
     // flash wait states for core clock frequencies
@@ -95,7 +99,9 @@ void ht32_clock_init(void) {
 
     // Clock switch
     CKCU->GCCR = (CKCU->GCCR & ~CKCU_GCCR_SW_MASK) | HT32_CKCU_SW;
-    while ((CKCU->GCCR & CKCU_GCCR_SW_MASK) != HT32_CKCU_SW); // wait for clock switch
+    // wait for clock switch
+    while ((CKCU->GCCR & CKCU_GCCR_SW_MASK) != HT32_CKCU_SW)
+        ;
 
     // HSI is needed for flash erase/write for some reason.
     // Only disable if you will not need to erase/write memory

@@ -205,7 +205,8 @@ void gpt_lld_polled_delay(GPTDriver *gptp, gptcnt_t interval) {
     gptp->BFTM->CNTR = 0;
     gptp->BFTM->CMP = (HT32_CK_AHB_FREQUENCY / gptp->config->frequency) * interval;
     gptp->BFTM->CR = BFTM_CR_CEN | BFTM_CR_OSM;
-    while(!(gptp->BFTM->SR & BFTM_SR_MIF));
+    while(!(gptp->BFTM->SR & BFTM_SR_MIF))
+        ;
 }
 
 #endif /* HAL_USE_GPT == TRUE */
