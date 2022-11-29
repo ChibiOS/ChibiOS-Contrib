@@ -141,7 +141,7 @@ static void SetSysClock(void) {
   /* Enable HSE */
 #if WB32_HSE_STATE == ANCTL_HSECR0_BYPASS
   GPIOD->CFGMSK = 0xFFFE;
-  GPIOD->MODER = 0x0F;
+  GPIOD->MODER = 0x03;
   ANCTL->HSECR1 = 0x00;
   ANCTL->HSECR0 = ANCTL_HSECR0_BYPASS;
 #else
