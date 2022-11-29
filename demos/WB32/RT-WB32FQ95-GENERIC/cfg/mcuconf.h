@@ -49,6 +49,7 @@
 #define WB32_LSE_ENABLED                   FALSE
 #define WB32_PLL_ENABLED                   TRUE
 #define WB32_MAINCLKSRC                    WB32_MAINCLKSRC_PLL
+#define WB32_HSE_STATE                     ANCTL_HSECR0_HSEON
 #define WB32_PLLSRC                        WB32_PLLSRC_HSE
 #define WB32_PLLDIV_VALUE                  2
 #define WB32_PLLMUL_VALUE                  12     // The allowed range is 12,16,20,24.

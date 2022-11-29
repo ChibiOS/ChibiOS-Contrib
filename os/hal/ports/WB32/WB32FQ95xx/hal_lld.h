@@ -214,6 +214,13 @@
 #endif
 
 /**
+ * @brief   Specifies the state of the HSE.
+ */
+#if !defined(WB32_HSE_STATE) || defined(__DOXYGEN__)
+#define WB32_HSE_STATE                         ANCTL_HSECR0_HSEON
+#endif
+
+/**
  * @brief   Clock source for the PLL.
  * @note    This setting has only effect if the PLL is selected as the
  *          system clock source.
@@ -315,6 +322,10 @@
 #error "HSE frequency not defined"
 #elif (WB32_HSECLK < WB32_HSECLK_MIN) || (WB32_HSECLK > WB32_HSECLK_MAX)
 #error "WB32_HSECLK outside acceptable range (WB32_HSECLK_MIN...WB32_HSECLK_MAX)"
+#endif
+
+#if (WB32_HSE_STATE != ANCTL_HSECR0_HSEON) && (WB32_HSE_STATE != ANCTL_HSECR0_BYPASS)
+#error "The value of WB32_HSE_STATE can only be ANCTL_HSECR0_HSEON or ANCTL_HSECR0_BYPASS"
 #endif
 
 #else /* !WB32_HSE_ENABLED */
