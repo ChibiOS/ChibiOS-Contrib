@@ -98,6 +98,12 @@ typedef struct {
 } msd_cbw_t;
 
 /**
+ * @brief The size of the command block wrapper structure.
+ * @details The actual size of the structure ignoring data padding.
+*/
+#define USB_MSD_CBW_T_SIZE 31
+
+/**
  * @brief   Represents command status wrapper structure.
  * @details See USB Mass Storage Class Specification.
  */
@@ -107,6 +113,12 @@ typedef struct {
   uint32_t  data_residue;
   uint8_t   status;
 } msd_csw_t;
+
+/**
+ * @brief The size of the command status wrapper structure.
+ * @details The actual size of the structure ignoring data padding.
+*/
+#define USB_MSD_CSW_T_SIZE 13
 
 /**
  * @brief   Transport handler passed to SCSI layer.

@@ -274,11 +274,11 @@ static bool read_format_capacities(SCSITarget *scsip, const uint8_t *cmd) {
     memcpy(ret.blocknum, &tmp, 4);
 
     uint8_t formatted_media = 0b10;
-    uint16_t blocklen = bdi.blk_size;
+    uint16_t blocklen = (uint16_t)bdi.blk_size;
     ret.blocklen[0] = formatted_media;
     ret.blocklen[1] = 0;
-    ret.blocklen[2] = blocklen >> 8;
-    ret.blocklen[3] = blocklen & 0xFF;
+    ret.blocklen[2] = (uint8_t)blocklen >> 8;
+    ret.blocklen[3] = (uint8_t)blocklen & 0xFF;
 
     ret.header[3] = 1 * 8;
 
