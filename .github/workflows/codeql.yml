@@ -1,0 +1,74 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "chibios-21.11.x", "chibios-17.6.x", "chibios-18.2.x", "chibios-19.1.x", "chibios-20.3.x", "chibios-21.6.x" ]
+  pull_request:
+    branches: [ "chibios-21.11.x" ]
+  schedule:
+    - cron: "54 20 * * 1"
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ python, cpp ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Packages (cpp)
+        if: ${{ matrix.language == 'cpp' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes p7zip-full
+
+      - name: After Prepare (cpp)
+        if: ${{ matrix.language == 'cpp' }}
+        run: |
+          export GCC=gcc-arm-none-eabi-9-2020-q2-update && echo "GCC=$GCC" >> $GITHUB_ENV
+          export CH_VER=master && echo "CH_VER=$CH_VER" >> $GITHUB_ENV
+          cd ${LGTM_WORKSPACE}
+          wget -nv https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2 -O compiler.tar.xz
+          tar xf compiler.tar.xz -C ${LGTM_WORKSPACE}
+          mv ${LGTM_WORKSPACE}/${GCC} ${LGTM_WORKSPACE}/gcc-arm
+          curl -L https://github.com/ChibiOS/ChibiOS/archive/${CH_VER}.tar.gz | tar xz
+          mv ChibiOS-${CH_VER} ChibiOS
+          cd ChibiOS/ext
+          for i in *.7z; do 7z x -y "$i"; done
+          cd ${LGTM_SRC}/ext
+          for i in *.7z; do 7z x -y "$i"; done
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+          queries: +security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+        if: ${{ matrix.language == 'python' }}
+
+      - name: Build cpp
+        if: ${{ matrix.language == 'cpp' }}
+        run: |
+          export PATH=${LGTM_WORKSPACE}/gcc-arm/bin:${PATH}
+          export CH_PATH=${LGTM_WORKSPACE}/ChibiOS CHC_PATH=${LGTM_SRC}
+          ./tools/chbuild.sh testhal/{STM32,NRF51,NRF52,KINETIS}
+          ./tools/chbuild.sh demos/{STM32,NRF51,NRF52,KINETIS}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:${{ matrix.language }}"
