@@ -40,14 +40,14 @@
  * @brief   I2C1 driver identifier.
  */
 #if (RP_I2C_USE_I2C0 == TRUE) || defined(__DOXYGEN__)
-I2CDriver I2CD1;
+I2CDriver I2CD0;
 #endif
 
 /**
  * @brief   I2C2 driver identifier.
  */
 #if (RP_I2C_USE_I2C1 == TRUE) || defined(__DOXYGEN__)
-I2CDriver I2CD2;
+I2CDriver I2CD1;
 #endif
 
 /*===========================================================================*/
@@ -354,7 +354,7 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp) {
 OSAL_IRQ_HANDLER(RP_I2C0_IRQ_HANDLER) {
   OSAL_IRQ_PROLOGUE();
 
-  i2c_lld_serve_interrupt(&I2CD1);
+  i2c_lld_serve_interrupt(&I2CD0);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -366,7 +366,7 @@ OSAL_IRQ_HANDLER(RP_I2C0_IRQ_HANDLER) {
 OSAL_IRQ_HANDLER(RP_I2C1_IRQ_HANDLER) {
   OSAL_IRQ_PROLOGUE();
 
-  i2c_lld_serve_interrupt(&I2CD2);
+  i2c_lld_serve_interrupt(&I2CD1);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -385,18 +385,18 @@ OSAL_IRQ_HANDLER(RP_I2C1_IRQ_HANDLER) {
 void i2c_lld_init(void) {
 
 #if RP_I2C_USE_I2C0 == TRUE
-  i2cObjectInit(&I2CD1);
-  I2CD1.i2c = I2C0;
-  I2CD1.thread = NULL;
+  i2cObjectInit(&I2CD0);
+  I2CD0.i2c = I2C0;
+  I2CD0.thread = NULL;
 
   /* Reset I2C */
   hal_lld_peripheral_reset(RESETS_ALLREG_I2C0);
 #endif
 
 #if RP_I2C_USE_I2C1 == TRUE
-  i2cObjectInit(&I2CD2);
-  I2CD2.i2c = I2C1;
-  I2CD2.thread = NULL;
+  i2cObjectInit(&I2CD1);
+  I2CD1.i2c = I2C1;
+  I2CD1.thread = NULL;
 
   /* Reset I2C */
   hal_lld_peripheral_reset(RESETS_ALLREG_I2C1);
@@ -416,7 +416,7 @@ void i2c_lld_start(I2CDriver *i2cp) {
   if (i2cp->state == I2C_STOP) {
 
 #if RP_I2C_USE_I2C0 == TRUE
-    if (&I2CD1 == i2cp) {
+    if (&I2CD0 == i2cp) {
       hal_lld_peripheral_unreset(RESETS_ALLREG_I2C0);
 
       nvicEnableVector(RP_I2C0_IRQ_NUMBER, RP_IRQ_I2C0_PRIORITY);
@@ -424,7 +424,7 @@ void i2c_lld_start(I2CDriver *i2cp) {
 #endif
 
 #if RP_I2C_USE_I2C1 == TRUE
-    if (&I2CD2 == i2cp) {
+    if (&I2CD1 == i2cp) {
       hal_lld_peripheral_unreset(RESETS_ALLREG_I2C1);
 
       nvicEnableVector(RP_I2C1_IRQ_NUMBER, RP_IRQ_I2C1_PRIORITY);
@@ -477,7 +477,7 @@ void i2c_lld_stop(I2CDriver *i2cp) {
         i2c_lld_abort_transmissionS(i2cp);
       }
 #if RP_I2C_USE_I2C0 == TRUE
-    if (&I2CD1 == i2cp) {
+    if (&I2CD0 == i2cp) {
       nvicDisableVector(RP_I2C0_IRQ_NUMBER);
 
       hal_lld_peripheral_reset(RESETS_ALLREG_I2C0);
@@ -485,7 +485,7 @@ void i2c_lld_stop(I2CDriver *i2cp) {
 #endif
 
 #if RP_I2C_USE_I2C1 == TRUE
-    if (&I2CD2 == i2cp) {
+    if (&I2CD1 == i2cp) {
       nvicDisableVector(RP_I2C1_IRQ_NUMBER);
 
       hal_lld_peripheral_reset(RESETS_ALLREG_I2C1);
