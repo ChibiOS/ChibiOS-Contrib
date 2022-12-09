@@ -311,7 +311,8 @@ void spi_lld_receive(SPIDriver *spip, size_t n, void *rxbuf) {
  */
 uint16_t spi_lld_polled_exchange(SPIDriver *spip, uint16_t frame) {
     spip->SPI->DR = frame;
-    while((spip->SPI->SR & SPI_SR_RXBNE) == 0);
+    while((spip->SPI->SR & SPI_SR_RXBNE) == 0)
+        ;
     return (spip->SPI->DR & 0xffff);
 }
 

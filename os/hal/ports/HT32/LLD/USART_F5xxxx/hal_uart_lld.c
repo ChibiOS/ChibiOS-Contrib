@@ -230,7 +230,8 @@ void uart_lld_start_send(UARTDriver *uartp, size_t n, const void *txbuf) {
         uint16_t *txdata = (uint16_t *)txbuf;
         while(n > 0){
             uartp->UART->TBR = *txdata;
-            while(!(uartp->UART->LSR & USART_LSR_TXEMPT));
+            while(!(uartp->UART->LSR & USART_LSR_TXEMPT))
+                ;
             txdata++;
             n--;
         }
@@ -238,7 +239,8 @@ void uart_lld_start_send(UARTDriver *uartp, size_t n, const void *txbuf) {
         uint8_t *txdata = (uint8_t *)txbuf;
         while(n > 0){
             uartp->UART->TBR = *txdata;
-            while(!(uartp->UART->LSR & USART_LSR_TXEMPT));
+            while(!(uartp->UART->LSR & USART_LSR_TXEMPT))
+                ;
             txdata++;
             n--;
         }
