@@ -66,3 +66,6 @@ jobs:
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/RP
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/RP
+    - name: build SAMD21
+      run: |
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/SAMD21A
