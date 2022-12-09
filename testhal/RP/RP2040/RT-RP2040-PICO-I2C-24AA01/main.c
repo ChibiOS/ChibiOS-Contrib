@@ -27,9 +27,6 @@
 #define I2C0_SDA_PIN   12U
 #define I2C0_SCL_PIN   13U
 
-// This is I2C0
-#define I2CN  I2CD1
-
 /*
  * Green LED blinker thread, times are in milliseconds.
  */
@@ -72,7 +69,7 @@ int main(void) {
   I2CConfig i2cConfig = {
     400000, // baudrate
   };
-  i2cStart(&I2CN, &i2cConfig);
+  i2cStart(&I2CD0, &i2cConfig);
 
   /* Set up I2C pins. */
   palSetLineMode(I2C0_SDA_PIN, PAL_MODE_ALTERNATE_I2C | PAL_RP_PAD_PUE | PAL_RP_PAD_DRIVE4);
@@ -96,7 +93,7 @@ int main(void) {
 
   msg_t msg;
 
-  msg = i2cMasterTransmitTimeout(&I2CN, EEPROM_ADDRESS, (uint8_t*)&initData, sizeof(initData), NULL, 0, 1000);
+  msg = i2cMasterTransmitTimeout(&I2CD0, EEPROM_ADDRESS, (uint8_t *)&initData, sizeof(initData), NULL, 0, 1000);
   chprintf((BaseSequentialStream *)&SIOD0, "write: %d\r\n", msg);
   if (msg == MSG_OK) {
 
@@ -104,7 +101,7 @@ int main(void) {
     memset(readData, 0xAA, 10);
 
     // read 4 bytes
-    msg = i2cMasterTransmitTimeout(&I2CN, EEPROM_ADDRESS, (uint8_t*)&target_address, 1, (uint8_t*)&readData, 4, 1000);
+    msg = i2cMasterTransmitTimeout(&I2CD0, EEPROM_ADDRESS, (uint8_t *)&target_address, 1, (uint8_t *)&readData, 4, 1000);
     chprintf((BaseSequentialStream *)&SIOD0, "write and read: %d\r\n", msg);
     chprintf((BaseSequentialStream *)&SIOD0, "data: %d\r\n",
       readData[0] == initData[1] &&
@@ -116,7 +113,7 @@ int main(void) {
     }
 
     // read next 4 bytes
-    msg = i2cMasterReceiveTimeout(&I2CN, EEPROM_ADDRESS, (uint8_t*)&readData[4], 4, 1000);
+    msg = i2cMasterReceiveTimeout(&I2CD0, EEPROM_ADDRESS, (uint8_t *)&readData[4], 4, 1000);
     chprintf((BaseSequentialStream *)&SIOD0, "read: %d\r\n", msg);
     chprintf((BaseSequentialStream *)&SIOD0, "data: %d\r\n",
       readData[4] == initData[5] &&
@@ -126,9 +123,9 @@ int main(void) {
     for (int i = 0; i < 10; i++) {
       chprintf((BaseSequentialStream *)&SIOD0, "[%d]: 0x%X\r\n", i, readData[i]);
     }
-    if (msg = MSG_OK) {
-      uint32_t error = i2cGetErrors(&I2CN);
-      chprintf((BaseSequentialStream *)&SIOD0, "error: %d\r\n", error);
+    if (msg != MSG_OK) {
+        uint32_t error = i2cGetErrors(&I2CD0);
+        chprintf((BaseSequentialStream *)&SIOD0, "error: %d\r\n", error);
     }
   }
 
