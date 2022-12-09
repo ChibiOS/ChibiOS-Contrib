@@ -144,9 +144,33 @@ static inline systime_t st_lld_get_counter(void) {
  * @notapi
  */
 static inline void st_lld_start_alarm(systime_t abstime) {
+
+  /* The requested delay in OSAL_ST_FREQUENCY ticks, decreased by 1 to bring it
+   * into the 0...0xFFFF range instead of 1...0x10000. */
+  uint32_t delay = ((uint32_t)abstime - SN32_ST_TIM->TC - 1U) & 0xFFFF;
+
+  /* The conversion factor between the SN32_ST_TIM and SysTick clock
+   * frequencies (SN32_HCLK / OSAL_ST_FREQUENCY).
+   * TODO: Actually use (SN32_HCLK / OSAL_ST_FREQUENCY) instead of reading the
+   * value from a hardware register (this requires making SN32_HCLK a compile
+   * time constant). */
+  uint32_t prescale = (SN32_ST_TIM->PRE & 0xFF) + 1;
+
+  /* The requested delay in the SysTick clock ticks.  The maximum possible
+   * value with prescale=256 is 0xFFFFFF, which just fits into the 24-bit
+   * SysTick timer registers. */
+  uint32_t systick_delay = delay * prescale + (prescale - 1);
+
+  /* Start SysTick to generate an interrupt after systick_delay. */
+  SysTick->LOAD = systick_delay;
+  SysTick->VAL = 0;
+  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
+                  SysTick_CTRL_ENABLE_Msk |
+                  SysTick_CTRL_TICKINT_Msk;
+
+  /* Save the alarm time in a timer register.  This is needed only to make
+   * st_lld_get_alarm() work. */
   SN32_ST_TIM->MR0 = (uint32_t)abstime;
-  SN32_ST_TIM->IC &= 0x1FFFFFF;
-  SN32_ST_TIM->MCTRL |= mskCT16_MR0IE_EN;
 }
 
 /**
@@ -155,7 +179,8 @@ static inline void st_lld_start_alarm(systime_t abstime) {
  * @notapi
  */
 static inline void st_lld_stop_alarm(void) {
-  SN32_ST_TIM->MCTRL &= ~mskCT16_MR0IE_EN;
+  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk;
+  SCB->ICSR = SCB_ICSR_PENDSTCLR_Msk;
 }
 
 /**
@@ -166,7 +191,8 @@ static inline void st_lld_stop_alarm(void) {
  * @notapi
  */
 static inline void st_lld_set_alarm(systime_t abstime) {
-  SN32_ST_TIM->MR0 = (uint32_t)abstime;
+  st_lld_stop_alarm();
+  st_lld_start_alarm(abstime);
 }
 
 /**
@@ -177,7 +203,6 @@ static inline void st_lld_set_alarm(systime_t abstime) {
  * @notapi
  */
 static inline systime_t st_lld_get_alarm(void) {
-
   return (systime_t)(SN32_ST_TIM->MR0 & 0x0000FFFF);
 }
 
@@ -191,8 +216,7 @@ static inline systime_t st_lld_get_alarm(void) {
  * @notapi
  */
 static inline bool st_lld_is_alarm_active(void) {
-
-  return (bool)((SN32_ST_TIM->MCTRL & mskCT16_MR0IE_EN) != 0);
+  return (bool)((SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) != 0);
 }
 
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */

@@ -74,7 +74,7 @@
  * @brief   USB interrupt priority level setting.
  */
 #if !defined(SN32_USB_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define SN32_USB_IRQ_PRIORITY                3
+#define SN32_USB_IRQ_PRIORITY                1
 #endif
 
 /**
@@ -423,8 +423,7 @@ extern "C" {
     void usb_lld_stall_in(USBDriver *usbp, usbep_t ep);
     void usb_lld_clear_out(USBDriver *usbp, usbep_t ep);
     void usb_lld_clear_in(USBDriver *usbp, usbep_t ep);
-    void handleACK(USBDriver* usbp, usbep_t ep);
-    void handleNAK(USBDriver* usbp, usbep_t ep);
+    void usb_serve_endpoints(USBDriver* usbp, usbep_t ep, bool in);
 #ifdef __cplusplus
 }
 #endif
