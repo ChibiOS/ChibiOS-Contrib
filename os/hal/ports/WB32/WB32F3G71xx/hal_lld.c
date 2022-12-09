@@ -137,12 +137,19 @@ static void SetSysClock(void) {
 #if WB32_HSE_ENABLED == TRUE
   /* Configure PD0 and PD1 to analog mode */
   RCC->APB1ENR = RCC_APB1ENR_BMX1EN | RCC_APB1ENR_GPIODEN;
-  GPIOD->CFGMSK = 0xFFFC;
-  GPIOD->MODER = 0x0F;
 
   /* Enable HSE */
+#if WB32_HSE_STATE == ANCTL_HSECR0_BYPASS
+  GPIOD->CFGMSK = 0xFFFE;
+  GPIOD->MODER = 0x03;
+  ANCTL->HSECR1 = 0x00;
+  ANCTL->HSECR0 = ANCTL_HSECR0_BYPASS;
+#else
+  GPIOD->CFGMSK = 0xFFFC;
+  GPIOD->MODER = 0x0F;
   ANCTL->HSECR1 = ANCTL_HSECR1_PADOEN;
   ANCTL->HSECR0 = ANCTL_HSECR0_HSEON;
+#endif
 
   /* Wait till HSE is ready and if Time out is reached exit */
   do {
