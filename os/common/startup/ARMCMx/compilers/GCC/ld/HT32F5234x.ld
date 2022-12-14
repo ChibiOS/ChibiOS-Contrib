@@ -89,5 +89,14 @@ REGION_ALIAS("BSS_RAM", ram0);
 /* RAM region to be used for the default heap.*/
 REGION_ALIAS("HEAP_RAM", ram0);
 
-/* Generic rules inclusion.*/
-INCLUDE rules.ld
+/* Stack rules inclusion.*/
+INCLUDE rules_stacks.ld
+
+/* Code rules inclusion.*/
+INCLUDE HT32F523xx_rules_code.ld
+
+/* Data rules inclusion.*/
+INCLUDE rules_data.ld
+
+/* Memory rules inclusion.*/
+INCLUDE rules_memory.ld
