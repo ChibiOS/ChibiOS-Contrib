@@ -116,7 +116,7 @@ static const scsi_unit_serial_number_inquiry_response_t default_scsi_unit_serial
  * @notapi
  */
 static bool cbw_valid(const msd_cbw_t *cbw, msg_t recvd) {
-  if ((USB_MSD_CBW_T_SIZE != recvd) || (cbw->signature != MSD_CBW_SIGNATURE)) {
+  if ((sizeof(msd_cbw_t) != recvd) || (cbw->signature != MSD_CBW_SIGNATURE)) {
     return false;
   }
   else {
@@ -213,7 +213,7 @@ static void send_csw(USBMassStorageDriver *msdp, uint8_t status,
   msdp->csw.status = status;
 
   usbTransmit(msdp->usbp, USB_MSD_DATA_EP, (uint8_t *)&msdp->csw,
-      USB_MSD_CSW_T_SIZE);
+      sizeof(msd_csw_t));
 }
 
 /**
@@ -229,7 +229,7 @@ static THD_FUNCTION(usb_msd_worker, arg) {
 
   while(! chThdShouldTerminateX()) {
     const msg_t status = usbReceive(msdp->usbp, USB_MSD_DATA_EP,
-                                   (uint8_t *)&msdp->cbw, USB_MSD_CBW_T_SIZE);
+                                   (uint8_t *)&msdp->cbw, sizeof(msd_cbw_t));
     if (MSG_RESET == status) {
       osalThreadSleepMilliseconds(50);
     }

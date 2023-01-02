@@ -95,13 +95,7 @@ typedef struct {
   uint8_t   lun;
   uint8_t   cmd_len;
   uint8_t   cmd_data[16];
-} msd_cbw_t;
-
-/**
- * @brief The size of the command block wrapper structure.
- * @details The actual size of the structure ignoring data padding.
-*/
-#define USB_MSD_CBW_T_SIZE 31
+} __attribute__((packed)) msd_cbw_t;
 
 /**
  * @brief   Represents command status wrapper structure.
@@ -112,13 +106,7 @@ typedef struct {
   uint32_t  tag;
   uint32_t  data_residue;
   uint8_t   status;
-} msd_csw_t;
-
-/**
- * @brief The size of the command status wrapper structure.
- * @details The actual size of the structure ignoring data padding.
-*/
-#define USB_MSD_CSW_T_SIZE 13
+} __attribute__((packed)) msd_csw_t;
 
 /**
  * @brief   Transport handler passed to SCSI layer.
