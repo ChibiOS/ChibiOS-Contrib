@@ -22,15 +22,15 @@
     distribute, sublicense, and/or sell copies of the Software, and to
     permit persons to whom the Software is furnished to do so, subject to
     the following conditions:
-    
+
     1. The above copyright notice and this permission notice shall be
     included in all copies or substantial portions of the Software.
-    
+
     2. If the Software is incorporated into a build system that allows
     selection among a list of target devices, then similar target
     devices manufactured by PJRC.COM must be included in the list of
     target devices and selectable in the same manner.
-    
+
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
     MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -142,7 +142,7 @@ void MK66F18_clock_init(void) {
 
   /* Ported from the Teensyduino Core Library at
      https://github.com/PaulStoffregen/cores/blob/master/teensy3/mk20dx128.c
-   */    
+   */
   /* Allow the MCU to enter High Speed Run mode (HSRUN) */
   SMC->PMPROT = SMC_PMPROT_AHSRUN_SET(1) | SMC_PMPROT_AVLP_SET(1) | SMC_PMPROT_ALLS_SET(1) | SMC_PMPROT_AVLLS_SET(1);
 
@@ -208,17 +208,17 @@ void MK66F18_clock_init(void) {
   MCG->C1 = MCG_C1_CLKS_SET(2) | MCG_C1_FRDIV_SET(frdiv);
 
   /* Wait for crystal oscillator to begin */
-  while (!(MCG->S & MCG_S_OSCINIT0));
+  while (!(MCG->S & MCG_S_OSCINIT0)) {}
 
   /* Wait for the FLL to use the oscillator */
-  while (MCG->S & MCG_S_IREFST);
+  while (MCG->S & MCG_S_IREFST) {}
 
   /* Wait for the MCGOUTCLK to use the oscillator */
-  while ((MCG->S & MCG_S_CLKST_MASK) != MCG_S_CLKST_SET(2));
+  while ((MCG->S & MCG_S_CLKST_MASK) != MCG_S_CLKST_SET(2)) {}
 
   /* Ported from the Teensyduino Core Library at
      https://github.com/PaulStoffregen/cores/blob/master/teensy3/mk20dx128.c
-   */    
+   */
 #define F_CPU KINETIS_SYSCLK_FREQUENCY
 #define MCG_C5 MCG->C5
 #undef MCG_C5_PRDIV0
@@ -231,8 +231,7 @@ void MK66F18_clock_init(void) {
 #if F_CPU > 120000000
   SMC->PMCTRL = SMC_PMCTRL_RUNM_SET(3); // enter HSRUN mode
   #define SMC_PMSTAT_HSRUN		((uint8_t)0x80)
-  while (SMC->PMSTAT != SMC_PMSTAT_HSRUN)
-    ; // wait for HSRUN
+  while (SMC->PMSTAT != SMC_PMSTAT_HSRUN) {} // wait for HSRUN
 #endif
     #if F_CPU == 256000000
         //See table in 27.4.6 MCG Control 6 Register (MCG_C6)
@@ -301,7 +300,7 @@ void MK66F18_clock_init(void) {
 #endif /* PJRC_HSRUN */
 
   /* Wait for PLL to start using crystal as its input, and to lock */
-  while ((MCG->S & (MCG_S_PLLST|MCG_S_LOCK0))!=(MCG_S_PLLST|MCG_S_LOCK0));
+  while ((MCG->S & (MCG_S_PLLST|MCG_S_LOCK0))!=(MCG_S_PLLST|MCG_S_LOCK0)) {}
 
   /*
    * Now in PBE mode
@@ -319,7 +318,7 @@ void MK66F18_clock_init(void) {
   MCG->C1 = MCG_C1_CLKS_SET(0);
 
   /* Wait for PLL clock to be used */
-  while ((MCG->S & MCG_S_CLKST_MASK) != MCG_S_CLKST_PLL);
+  while ((MCG->S & MCG_S_CLKST_MASK) != MCG_S_CLKST_PLL) {}
 
   /*
    * Now in PEE mode
