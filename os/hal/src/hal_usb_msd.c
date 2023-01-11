@@ -190,7 +190,7 @@ static uint32_t scsi_transport_receive(const SCSITransport *transport,
   usb_scsi_transport_handler_t *trp = transport->handler;
   msg_t status = usbReceive(trp->usbp, trp->ep, data, len);
   if (MSG_RESET != status)
-    return status;
+    return len;
   else
     return 0;
 }

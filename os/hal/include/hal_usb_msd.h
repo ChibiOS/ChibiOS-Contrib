@@ -95,7 +95,7 @@ typedef struct {
   uint8_t   lun;
   uint8_t   cmd_len;
   uint8_t   cmd_data[16];
-} msd_cbw_t;
+} __attribute__((packed)) msd_cbw_t;
 
 /**
  * @brief   Represents command status wrapper structure.
@@ -106,7 +106,7 @@ typedef struct {
   uint32_t  tag;
   uint32_t  data_residue;
   uint8_t   status;
-} msd_csw_t;
+} __attribute__((packed)) msd_csw_t;
 
 /**
  * @brief   Transport handler passed to SCSI layer.
