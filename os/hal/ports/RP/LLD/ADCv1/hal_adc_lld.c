@@ -260,6 +260,11 @@ void adc_lld_stop(ADCDriver *adcp) {
  */
 void adc_lld_start_conversion(ADCDriver *adcp) {
 
+  /* Initialize the buffer position. */
+  adcp->current_buffer_position = 0;
+  adcp->current_channel = 0;
+  adcp->current_iteration = 0;
+
   /* Clear error flags. */
   adcp->adc->CLR.CS = ADC_CS_ERR_STICKY;
 
