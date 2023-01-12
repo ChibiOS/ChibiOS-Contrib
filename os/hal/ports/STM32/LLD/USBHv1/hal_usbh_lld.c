@@ -1419,7 +1419,7 @@ static void usb_lld_serve_interrupt(USBHDriver *host) {
 /*===========================================================================*/
 
 #if STM32_USBH_USE_OTG1
-OSAL_IRQ_HANDLER(STM32_OTG_FS_HANDLER) {
+OSAL_IRQ_HANDLER(STM32_OTG1_HANDLER) {
 	OSAL_IRQ_PROLOGUE();
 	osalSysLockFromISR();
 	usb_lld_serve_interrupt(&USBHD1);
@@ -1429,7 +1429,7 @@ OSAL_IRQ_HANDLER(STM32_OTG_FS_HANDLER) {
 #endif
 
 #if STM32_USBH_USE_OTG2
-OSAL_IRQ_HANDLER(STM32_OTG_HS_HANDLER) {
+OSAL_IRQ_HANDLER(STM32_OTG2_HANDLER) {
 	OSAL_IRQ_PROLOGUE();
 	osalSysLockFromISR();
 	usb_lld_serve_interrupt(&USBHD2);
