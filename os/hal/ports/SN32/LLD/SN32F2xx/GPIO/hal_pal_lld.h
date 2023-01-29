@@ -45,6 +45,11 @@
 #undef GPIOC
 #undef GPIOD
 
+
+/*===========================================================================*/
+/* I/O Ports Types and constants.                                            */
+/*===========================================================================*/
+
 /**
  * @name    GPIO ports definitions
  * @{
@@ -56,18 +61,15 @@
 
 /** @} */
 
-/*===========================================================================*/
-/* I/O Ports Types and constants.                                            */
-/*===========================================================================*/
-
 /**
  * @name    Port related definitions
  * @{
  */
+#define TOTAL_PORTS       4U
 /**
  * @brief   Width, in bits, of an I/O port.
  */
-#define PAL_IOPORTS_WIDTH 16
+#define PAL_IOPORTS_WIDTH 16U
 
 /**
  * @brief   Whole port mask.
@@ -190,6 +192,11 @@ typedef uint32_t ioline_t;
  */
 typedef SN_GPIO0_Type * ioportid_t;
 
+/**
+ * @brief   Type of an pad identifier.
+ */
+typedef uint32_t iopadid_t;
+
 /*===========================================================================*/
 /* I/O Ports Identifiers.                                                    */
 /* The low level driver wraps the definitions already present in the SN32   */
@@ -222,6 +229,34 @@ typedef SN_GPIO0_Type * ioportid_t;
  */
 #if SN32_HAS_GPIOD || defined(__DOXYGEN__)
 #define IOPORT4         GPIOD
+#endif
+
+/**
+ * @brief   GPIO port A interrupt priority level setting.
+ */
+#if !defined(SN32_GPIOA_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define SN32_GPIOA_IRQ_PRIORITY         3
+#endif
+
+/**
+ * @brief   GPIO port B interrupt priority level setting.
+ */
+#if !defined(SN32_GPIOB_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define SN32_GPIOB_IRQ_PRIORITY         3
+#endif
+
+/**
+ * @brief   GPIO port A interrupt priority level setting.
+ */
+#if !defined(SN32_GPIOC_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define SN32_GPIOC_IRQ_PRIORITY         3
+#endif
+
+/**
+ * @brief   GPIO port A interrupt priority level setting.
+ */
+#if !defined(SN32_GPIOD_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define SN32_GPIOD_IRQ_PRIORITY         3
 #endif
 
 /*===========================================================================*/
@@ -404,14 +439,93 @@ typedef SN_GPIO0_Type * ioportid_t;
 #define pal_lld_setpadmode(port, pad, mode)                      \
   _pal_lld_setpadmode(port, pad, mode)
 
+
+/**
+ * @brief   Returns a PAL event structure associated to a pad.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ *
+ * @notapi
+ */
+#define pal_lld_get_pad_event(port, pad)                                \
+  _pal_lld_get_pad_event(port, pad)
+
+/**
+ * @brief   Returns a PAL event structure associated to a line.
+ *
+ * @param[in] line      line identifier
+ *
+ * @notapi
+ */
+#define pal_lld_get_line_event(line)                                        \
+  pal_lld_get_pad_event(PAL_PORT(line), PAL_PAD(line))
+
+/**
+ * @brief   Pad event enable.
+ * @note    Programming an unknown or unsupported mode is silently ignored.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ * @param[in] mode      pad event mode
+ *
+ * @notapi
+ */
+#define pal_lld_enablepadevent(port, pad, mode)                             \
+  _pal_lld_enablepadevent(port, pad, mode)
+
+/**
+ * @brief   Pad event disable.
+ * @details This function disables previously programmed event callbacks.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ *
+ * @notapi
+ */
+#define pal_lld_disablepadevent(port, pad)                                  \
+  _pal_lld_disablepadevent(port, pad)
+
+/**
+ * @brief   Pad event enable check.
+ *
+ * @param[in] port      port identifier
+ * @param[in] pad       pad number within the port
+ * @return              Pad event status.
+ * @retval false        if the pad event is disabled.
+ * @retval true         if the pad event is enabled.
+ *
+ * @notapi
+ */
+#define pal_lld_ispadeventenabled(port, pad)                                \
+  _pal_lld_ispadeventenabled(port, pad)
+
+#if !defined(__DOXYGEN__)
+extern const PALConfig pal_default_config;
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
+extern palevent_t _pal_events[TOTAL_PORTS * PAL_IOPORTS_WIDTH];
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
   extern const PALConfig pal_default_config;
   void _pal_lld_init(const PALConfig *config);
   void _pal_lld_setpadmode(ioportid_t port,
-                             uint32_t pad,
+                             iopadid_t pad,
                              iomode_t mode);
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
+  palevent_t* _pal_lld_get_pad_event(ioportid_t port,
+                                      iopadid_t pad);
+  void _pal_lld_enablepadevent(ioportid_t port,
+                                iopadid_t pad,
+                                iomode_t mode);
+  void _pal_lld_disablepadevent(ioportid_t port,
+                                iopadid_t pad);
+  bool _pal_lld_ispadeventenabled(ioportid_t port,
+                                  iopadid_t pad);
+#endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
 #ifdef __cplusplus
 }
 #endif
