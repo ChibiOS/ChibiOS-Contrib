@@ -196,15 +196,9 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   start = osalOsGetSystemTimeX();
   end = osalTimeAddX(start, OSAL_MS2I(SN32_I2C_BUSY_TIMEOUT));
 
-  /* Waits until INTERRUPT flag is reset or, alternatively, for a timeout
-     condition.*/
+  /* Waits for a timeout condition.*/
   while (true) {
     osalSysLock();
-
-    /* If the bus is not busy then the operation can continue, note, the
-       loop is exited in the locked state.*/
-    if (!(i2cp->i2c->STAT_b.I2CIF))
-      break;
 
     /* If the system time went outside the allowed window then a timeout
        condition is returned.*/
@@ -213,12 +207,10 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
     osalSysUnlock();
   }
-  i2cp->i2c->CTRL_b.STA = true;
-  if (i2cp->i2c->STAT_b.RX_DN != 0) {
-    rxbuf = i2cp->i2c->RX_DATA;
-  }
   i2cp->rx_buffer = rxbuf;
   i2cp->rx_len = rxbytes;
+  i2cp->i2c->CTRL_b.STA = true;
+  i2cp->i2c->TX_DATA = addr;
 
   /* Waits for the operation completion or a timeout.*/
   return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
