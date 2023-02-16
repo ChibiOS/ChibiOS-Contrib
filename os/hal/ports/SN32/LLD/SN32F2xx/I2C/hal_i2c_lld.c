@@ -68,10 +68,13 @@ static inline void i2c_lld_irq_handler(I2CDriver *i2cp) {
   } else if (i2cp->i2c->STAT_b.RX_DN && i2cp->rx_buffer && i2cp->count < i2cp->rx_len) {
       i2cp->rx_buffer[i2cp->count++] = i2cp->i2c->RXDATA;
       i2cp->i2c->CTRL_b.ACK = true;
+  } else if (i2cp->i2c->STAT_b.START_DN && i2cp->tx_buffer && i2cp->count < i2cp->tx_len) {
+      i2cp->tx_buffer[i2cp->count++] = i2cp->i2c->TXDATA;
+      i2cp->i2c->CTRL_b.ACK = true;
   }
 
-  if (i2cp->rx_buffer && !i2cp->tx_buffer) {
-    if (i2cp->count == i2cp->rx_len) {
+  if ((i2cp->rx_buffer && !i2cp->tx_buffer) || (!i2cp->rx_buffer && i2cp->tx_buffer)) {
+    if ((i2cp->count == i2cp->rx_len) || (i2cp->count == i2cp->tx_len)) {
       i2cp->i2c->CTRL_b.STO = true;
       i2cp->i2c->CTRL_b.I2CEN = false;
       i2cp->i2c->CTRL_b.I2CEN = true;
@@ -184,6 +187,8 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
                                      uint8_t *rxbuf, size_t rxbytes,
                                      sysinterval_t timeout) {
 
+  systime_t start, end;
+
   /* Resetting error flags for this transfer.*/
   i2cp->errors = I2C_NO_ERROR;
 
@@ -246,15 +251,39 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
                                       uint8_t *rxbuf, size_t rxbytes,
                                       sysinterval_t timeout) {
 
-  (void)i2cp;
-  (void)addr;
-  (void)txbuf;
-  (void)txbytes;
-  (void)rxbuf;
-  (void)rxbytes;
-  (void)timeout;
+  systime_t start, end;
+  
+  /* Resetting error flags for this transfer.*/
+  i2cp->errors = I2C_NO_ERROR;
 
-  return MSG_OK;
+  /* Initializes driver fields, LSB = 0 -> transmit.*/
+  i2cp->addr = (addr << 1);
+
+  /* Releases the lock from high level driver.*/
+  osalSysUnlock();
+
+  /* Calculating the time window for the timeout on the busy bus condition.*/
+  start = osalOsGetSystemTimeX();
+  end = osalTimeAddX(start, OSAL_MS2I(SN32_I2C_BUSY_TIMEOUT));
+
+  /* Waits for a timeout condition.*/
+  while (true) {
+    osalSysLock();
+
+    /* If the system time went outside the allowed window then a timeout
+       condition is returned.*/
+    if (!osalTimeIsInRangeX(osalOsGetSystemTimeX(), start, end))
+      return MSG_TIMEOUT;
+
+    osalSysUnlock();
+  }
+  i2cp->tx_buffer = txbuf;
+  i2cp->tx_len = txbytes;
+  i2cp->i2c->CTRL_b.STA = true;
+  i2cp->i2c->TX_DATA = addr;
+
+  /* Waits for the operation completion or a timeout.*/
+  return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
 }
 
 #endif /* HAL_USE_I2C == TRUE */
