@@ -54,6 +54,14 @@
 #if !defined(SN32_I2C_I2C0_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define SN32_I2C_I2C0_IRQ_PRIORITY         3
 #endif
+
+/**
+ * @brief   I2C timeout on busy condition in milliseconds.
+ */
+#if !defined(SN32_I2C_BUSY_TIMEOUT) || defined(__DOXYGEN__)
+#define SN32_I2C_BUSY_TIMEOUT              50
+#endif
+
 /** @} */
 
 /*===========================================================================*/
