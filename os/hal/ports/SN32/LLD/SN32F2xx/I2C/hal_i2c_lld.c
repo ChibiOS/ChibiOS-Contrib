@@ -65,20 +65,19 @@ static inline void i2c_lld_irq_handler(I2CDriver *i2cp) {
     i2cp->state = I2C_ARBITRATION_LOST;
     _i2c_wakeup_error_isr(i2cp);
     return;
-  } else {
-      if (i2cp->i2c->STAT_b.NACK_STAT) {
-        i2cp->i2c->CTRL_b.ACK = true;
+  }
+  if (i2cp->i2c->STAT_b.NACK_STAT) {
+    i2cp->i2c->CTRL_b.ACK = true;
       } else {
           if (i2cp->i2c->STAT_b.RX_DN && i2cp->rx_buffer && i2cp->count < i2cp->rx_len) {
-                i2cp->rx_buffer[i2cp->count++] = i2cp->i2c->RXDATA;
-                i2cp->i2c->CTRL_b.ACK = true;
-                return;
+            i2cp->rx_buffer[i2cp->count++] = i2cp->i2c->RXDATA;
+            i2cp->i2c->CTRL_b.ACK = true;
+            return;
           }
           if (i2cp->i2c->STAT_b.ACK_STAT && i2cp->tx_buffer && i2cp->count < i2cp->tx_len) {
-               i2cp->tx_buffer[i2cp->count++] = i2cp->i2c->TXDATA;
-               return;
+            i2cp->tx_buffer[i2cp->count++] = i2cp->i2c->TXDATA;
+            return;
           }
-        }
   }
 
   if ((i2cp->rx_buffer && !i2cp->tx_buffer) || (!i2cp->rx_buffer && i2cp->tx_buffer)) {
