@@ -73,6 +73,15 @@ static inline void i2c_lld_irq_handler(I2CDriver *i2cp) {
             i2cp->rx_buffer[i2cp->count++] = i2cp->i2c->RXDATA;
             i2cp->i2c->CTRL_b.ACK = true;
             return;
+          } else {
+              if (i2cp->i2c->STAT_b.SLV_RX_HIT) {
+                i2cp->i2c->CTRL_b.ACK = true;
+                return;
+              }
+              if (i2cp->i2c->STAT_b.SLV_TX_HIT) {
+                //silent return
+                return;
+              }
           }
           if (i2cp->i2c->STAT_b.ACK_STAT && i2cp->tx_buffer && i2cp->count < i2cp->tx_len) {
             i2cp->tx_buffer[i2cp->count++] = i2cp->i2c->TXDATA;
@@ -296,3 +305,5 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
 #endif /* HAL_USE_I2C == TRUE */
 
 /** @} */
+
+
