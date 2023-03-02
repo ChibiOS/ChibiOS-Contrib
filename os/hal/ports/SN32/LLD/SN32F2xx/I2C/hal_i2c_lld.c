@@ -56,51 +56,50 @@ static inline void i2c_lld_configure(I2CDriver *i2cp) {
   i2cp->i2c->CTRL_b.I2CEN = true;
 }
 
-static inline void i2c_lld_irq_handler(I2CDriver *i2cp) {
+static inline void i2c_lld_irq_handler(I2CDriver * i2cp) {
   chSysLockFromISR();
-  i2cp->i2c->STAT_b.I2CIF = true;
+  i2cp -> i2c -> STAT_b.I2CIF = true;
   chSysUnlockFromISR();
 
-  if (i2cp->i2c->STAT_b.LOST_ARB) {
-    i2cp->state = I2C_ARBITRATION_LOST;
+  if (i2cp -> i2c -> STAT_b.LOST_ARB) {
+    i2cp -> state = I2C_ARBITRATION_LOST;
     _i2c_wakeup_error_isr(i2cp);
     return;
   }
-  if (i2cp->i2c->STAT_b.NACK_STAT) {
-    i2cp->i2c->CTRL_b.ACK = true;
-      } else {
-          if (i2cp->i2c->STAT_b.RX_DN && i2cp->rx_buffer && i2cp->count < i2cp->rx_len) {
-            i2cp->rx_buffer[i2cp->count++] = i2cp->i2c->RXDATA;
-            i2cp->i2c->CTRL_b.ACK = true;
-            return;
-          } else {
-              if (i2cp->i2c->STAT_b.SLV_RX_HIT) {
-                i2cp->i2c->CTRL_b.ACK = true;
-                return;
-              }
-              if (i2cp->i2c->STAT_b.SLV_TX_HIT) {
-                //silent return
-                return;
-              }
-          }
-          if (i2cp->i2c->STAT_b.ACK_STAT && i2cp->tx_buffer && i2cp->count < i2cp->tx_len) {
-            i2cp->tx_buffer[i2cp->count++] = i2cp->i2c->TXDATA;
-            return;
-          }
+  if (i2cp -> i2c -> STAT_b.NACK_STAT) {
+    i2cp -> i2c -> CTRL_b.ACK = true;
+  } else {
+    if (i2cp -> i2c -> STAT_b.RX_DN && i2cp -> rx_buffer && i2cp -> count < i2cp -> rx_len) {
+      i2cp -> rx_buffer[i2cp -> count++] = i2cp -> i2c -> RXDATA;
+      i2cp -> i2c -> CTRL_b.ACK = true;
+      return;
+    } else {
+      if (i2cp -> i2c -> STAT_b.SLV_RX_HIT) {
+        i2cp -> i2c -> CTRL_b.ACK = true;
+        return;
+      }
+      if (i2cp -> i2c -> STAT_b.SLV_TX_HIT) {
+        //silent return
+        return;
+      }
+    }
+    if (i2cp -> i2c -> STAT_b.ACK_STAT && i2cp -> tx_buffer && i2cp -> count < i2cp -> tx_len) {
+      i2cp -> tx_buffer[i2cp -> count++] = i2cp -> i2c -> TXDATA;
+      return;
+    }
   }
 
-  if ((i2cp->rx_buffer && !i2cp->tx_buffer) || (!i2cp->rx_buffer && i2cp->tx_buffer)) {
-    if ((i2cp->count == i2cp->rx_len) || (i2cp->count == i2cp->tx_len)) {
-      i2cp->i2c->CTRL_b.STO = true;
-      i2cp->i2c->CTRL_b.I2CEN = false;
-      i2cp->i2c->CTRL_b.I2CEN = true;
-      i2cp->state = I2C_STOP;
+  if ((i2cp -> rx_buffer && !i2cp -> tx_buffer) || (!i2cp -> rx_buffer && i2cp -> tx_buffer)) {
+    if ((i2cp -> count == i2cp -> rx_len) || (i2cp -> count == i2cp -> tx_len)) {
+      i2cp -> i2c -> CTRL_b.STO = true;
+      i2cp -> i2c -> CTRL_b.I2CEN = false;
+      i2cp -> i2c -> CTRL_b.I2CEN = true;
+      i2cp -> state = I2C_STOP;
       _i2c_wakeup_isr(i2cp);
       return;
     }
   }
 }
-
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
