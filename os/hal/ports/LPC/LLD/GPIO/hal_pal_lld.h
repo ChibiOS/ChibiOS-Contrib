@@ -310,7 +310,7 @@ typedef uint32_t iopadid_t;
  * @notapi
  */
 #define pal_lld_readpad(port, pad)                                          \
-  (LPC_GPIO->B[(PAL_IOPORTS_WIDTH * LPC_IOPORT_NUM(port)) + pad])
+  (LPC_GPIO->BP[(PAL_IOPORTS_WIDTH * LPC_IOPORT_NUM(port)) + pad])
 
 /**
  * @brief   Writes a logical state on an output pad.
@@ -329,7 +329,7 @@ typedef uint32_t iopadid_t;
  */
 #define pal_lld_writepad(port, pad, bit)                                    \
   do {                                                                      \
-    (LPC_GPIO->B[(PAL_IOPORTS_WIDTH * LPC_IOPORT_NUM(port)) + pad]) = bit;  \                                                              \
+    (LPC_GPIO->BP[(PAL_IOPORTS_WIDTH * LPC_IOPORT_NUM(port)) + pad]) = bit;  \                                                              \
   } while (false)
 
 
