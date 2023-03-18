@@ -138,7 +138,7 @@ SYSCON_MAINCLKSEL_PLLIN, SYSCON_MAINCLKSEL_WATCHDOG, SYSCON_MAINCLKSEL_PLLOUT"
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
-
+#define CPU_CLOCK  LPC_SYS_FREQUENCY
 
 /*===========================================================================*/
 /* External declarations.                                                    */
