@@ -33,8 +33,8 @@
 /*
  * Board identifier.
  */
-#define BOARD_GENERIC_LPC11U35
-#define BOARD_NAME                  "LPC11U35"
+#define BOARD_LPC11U35_TURING61
+#define BOARD_NAME                  "LPC11U35_TURING61"
 
 #define LPC11U35
 
@@ -47,25 +47,11 @@
 #define GPIOA                                           IOPORT0
 #define GPIOB                                           IOPORT1
 
+
+#define LINE_RESET                                      PAL_LINE(IOPORT0, 0)
+#define LINE_USBISP                                     PAL_LINE(IOPORT0, 1)
 #define LINE_USBCONN                                    PAL_LINE(IOPORT0, 6)
 #define LINE_USBVBUS                                    PAL_LINE(IOPORT0, 3)
-
-#if defined(SNOWFOX_V3)
-
-#define LINE_ROW1                                       PAL_LINE(IOPORT1, 25)
-#define LINE_COL1                                       PAL_LINE(IOPORT1, 18)
-
-#elif defined(SNOWFOX_V1_5)
-
-#define LINE_ROW1                                       PAL_LINE(IOPORT1, 25)
-#define LINE_COL1                                       PAL_LINE(IOPORT1, 28)
-
-#elif defined(SNOWFOX_TST)
-
-#define LINE_BTN1                                       PAL_LINE(IOPORT1, 9)
-
-#endif
-
 
 #if !defined(_FROM_ASM_)
 #ifdef __cplusplus
