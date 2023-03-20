@@ -33,8 +33,8 @@
 /*
  * Board identifier.
  */
-#define BOARD_LPC11U35_TURING61
-#define BOARD_NAME                  "LPC11U35_TURING61"
+#define BOARD_LPC11U35_GENERIC  
+#define BOARD_NAME                  "LPC11U35_GENERIC"
 
 #define LPC11U35
 
