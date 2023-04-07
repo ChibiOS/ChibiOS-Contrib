@@ -17,16 +17,15 @@
 #include "board.h"
 #include "quantum.h"
 
-__attribute__((weak)) void __chibios_override___early_init(void) {}
-__attribute__((weak)) void __chibios_override_boardInit(void) {}
-
-void early_hardware_init_pre(void) {
+__attribute__((weak)) void __chibios_override___early_init(void) {
     // Reset / Debug Select Input
-    palSetLineMode(LINE_RESET , MODE_FUNC_ALT1 | MODE_DIR_IN | MODE_MODE_PULL_UP | MODE_AD_DIGITAL);
+    palSetLineMode(LINE_RESET , MODE_DIR_IN | MODE_MODE_PULL_UP | MODE_AD_DIGITAL);
+    // ISP TP
+    palSetLineMode(LINE_USBISP, MODE_DIR_IN | MODE_MODE_PULL_UP | MODE_AD_DIGITAL);
     // USB
     palSetLineMode(LINE_USBVBUS, MODE_FUNC_ALT1 | MODE_MODE_PULL_UP | MODE_AD_DIGITAL);
     palSetLineMode(LINE_USBCONN, MODE_FUNC_ALT1);
-    // ISP TP
-    palSetLineMode(LINE_USBISP, MODE_DIR_IN | MODE_MODE_PULL_UP | MODE_AD_DIGITAL);
 }
+
+__attribute__((weak)) void __chibios_override_boardInit(void) {}
 
