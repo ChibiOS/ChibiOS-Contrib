@@ -301,6 +301,79 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
 }
 
+#if (I2C_SUPPORTS_SLAVE_MODE == TRUE) || defined(__DOXYGEN__)
+/**
+ * @brief   Listen I2C bus for address match.
+ * @details Use 7 bit address (10 bit,dual and general call address dosn't implement yet) .
+ *
+ * @param[in] i2cp      pointer to the @p I2CDriver object
+ * @param[in] addr      slave device address
+ * @return              The operation status.
+ * @retval MSG_OK       if the function succeeded.
+ * @retval MSG_RESET    if one or more I2C errors occurred, the errors can
+ *                      be retrieved using @p i2cGetErrors().
+ *
+ * @notapi
+ */
+msg_t i2c_lld_match_address(I2CDriver *i2cp, i2caddr_t addr) {
+
+}
+
+/**
+ * @brief   Receive data via the I2C bus as slave and call handler.
+ *
+ * @param[in] i2cp      pointer to the @p I2CDriver object
+ * @param[out] rxbuf    pointer to the receive buffer
+ * @param[in] rxbytes   size of receive buffer
+ * @param[in] timeout   the number of ticks before the operation timeouts,
+ *                      the following special values are allowed:
+ *                      - @a TIME_INFINITE no timeout.
+ *                      .
+ * @return              The operation status.
+ * @retval MSG_OK       if the function succeeded.
+ * @retval MSG_RESET    if one or more I2C errors occurred, the errors can
+ *                      be retrieved using @p i2cGetErrors().
+ * @retval MSG_TIMEOUT  if a timeout occurred before operation end. <b>After a
+ *                      timeout the driver must be stopped and restarted
+ *                      because the bus is in an uncertain state</b>.
+ *
+ * @api
+ */
+msg_t i2c_lld_slave_receive_timeout(I2CDriver *i2cp,
+                             uint8_t *rxbuf,
+                             size_t rxbytes,
+                             sysinterval_t timeout) {
+
+}
+
+/**
+ * @brief   Transmits data via the I2C bus as slave.
+ * @details Call this function when Master request data (in request handler)
+ *
+ * @param[in] i2cp      pointer to the @p I2CDriver object
+ * @param[in] txbuf     pointer to the transmit buffer
+ * @param[in] txbytes   number of bytes to be transmitted
+ * @param[in] timeout   the number of ticks before the operation timeouts,
+ *                      the following special values are allowed:
+ *                      - @a TIME_INFINITE no timeout.
+ *                      .
+ * @return              The operation status.
+ * @retval MSG_OK       if the function succeeded.
+ * @retval MSG_RESET    if one or more I2C errors occurred, the errors can
+ *                      be retrieved using @p i2cGetErrors().
+ * @retval MSG_TIMEOUT  if a timeout occurred before operation end. <b>After a
+ *                      timeout the driver must be stopped and restarted
+ *                      because the bus is in an uncertain state</b>.
+ *
+ * @api
+ */
+msg_t i2c_lld_slave_transmit_timeout(I2CDriver *i2cp,
+                               const uint8_t *txbuf,
+                               size_t txbytes,
+                               sysinterval_t timeout) {
+
+}
+#endif /* I2C_SUPPORTS_SLAVE_MODE == TRUE */
 #endif /* HAL_USE_I2C == TRUE */
 
 /** @} */

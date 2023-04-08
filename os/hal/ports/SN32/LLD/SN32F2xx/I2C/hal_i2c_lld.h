@@ -175,6 +175,17 @@ extern "C" {
   msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
                                        uint8_t *rxbuf, size_t rxbytes,
                                        sysinterval_t timeout);
+#if (I2C_SUPPORTS_SLAVE_MODE == TRUE) || defined(__DOXYGEN__)
+  msg_t i2c_lld_match_address(I2CDriver *i2cp, i2caddr_t addr);
+  msg_t i2c_lld_slave_receive_timeout(I2CDriver *i2cp,
+                             uint8_t *rxbuf,
+                             size_t rxbytes,
+                             sysinterval_t timeout);
+  msg_t i2c_lld_slave_transmit_timeout(I2CDriver *i2cp,
+                               const uint8_t *txbuf,
+                               size_t txbytes,
+                               sysinterval_t timeout);
+#endif /* I2C_SUPPORTS_SLAVE_MODE == TRUE */
 #ifdef __cplusplus
 }
 #endif
