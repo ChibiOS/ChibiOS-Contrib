@@ -317,6 +317,17 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
  */
 msg_t i2c_lld_match_address(I2CDriver *i2cp, i2caddr_t addr) {
 
+  uint16_t i2cadr = addr << 1;
+  uint16_t ownAdr = i2cp->i2c->SLVADRR0 & (0x7f<<1);
+
+  if (ownAdr == 0 || ownAdr == i2cadr)
+    i2cp->i2c->SLVADRR0 = i2cadr;
+  else
+  /* cannot add this address to set of those matched */
+    return MSG_RESET;
+
+  return MSG_OK;
+
 }
 
 /**
