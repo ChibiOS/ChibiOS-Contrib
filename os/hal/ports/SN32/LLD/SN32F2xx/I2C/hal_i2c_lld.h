@@ -141,6 +141,11 @@ struct hal_i2c_driver {
   uint8_t                   count;
 };
 
+/* For compatibility, some LLDs could not export this.*/
+#if !defined(I2C_SUPPORTS_SLAVE_MODE)
+#define I2C_SUPPORTS_SLAVE_MODE             TRUE
+#endif
+
 /*===========================================================================*/
 /* Driver macros.                                                            */
 /*===========================================================================*/
