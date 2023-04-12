@@ -30,7 +30,7 @@
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
-
+#include "sn32_i2c.h"
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -74,7 +74,7 @@
 
 #if SN32_HAS_I2C0
 #define SN32_I2C0_BASE  SN_I2C0_BASE
-#define SN32_I2C0       ((sn32_i2c_t *)SN_I2C_BASE)
+#define SN32_I2C0       ((sn32_i2c_t *)SN_I2C0_BASE)
 #endif
 
 /**
@@ -132,6 +132,11 @@ struct hal_i2c_driver {
   I2C_DRIVER_EXT_FIELDS
 #endif
   /* End of the mandatory fields.*/
+
+  /* @brief Thread waiting for I/O completion. */
+  thread_reference_t        thread;
+  /* @brief     Current slave address without R/W bit. */
+  i2caddr_t                 addr;
 
   sn32_i2c_t               *i2c;
   uint8_t                  *rx_buffer;

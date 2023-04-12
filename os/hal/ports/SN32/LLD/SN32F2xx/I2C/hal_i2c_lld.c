@@ -108,7 +108,7 @@ static inline void i2c_lld_irq_handler(I2CDriver * i2cp) {
 OSAL_IRQ_HANDLER(SN32_I2C0_GLOBAL_HANDLER) {
   OSAL_IRQ_PROLOGUE();
 
-  i2c_lld_irq_handler(&I2C0);
+  i2c_lld_irq_handler(&I2CD0);
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -127,6 +127,7 @@ void i2c_lld_init(void) {
 
 #if SN32_I2C_USE_I2C0 == TRUE
   i2cObjectInit(&I2CD0);
+  I2CD0.thread  = NULL;
   I2CD0.i2c = SN32_I2C0;
 #endif
 }
@@ -231,7 +232,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   i2cp->rx_buffer = rxbuf;
   i2cp->rx_len = rxbytes;
   i2cp->i2c->CTRL_b.STA = true;
-  i2cp->i2c->TX_DATA = addr;
+  i2cp->i2c->TXDATA = addr;
 
   /* Waits for the operation completion or a timeout.*/
   return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
@@ -295,7 +296,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   i2cp->tx_buffer = txbuf;
   i2cp->tx_len = txbytes;
   i2cp->i2c->CTRL_b.STA = true;
-  i2cp->i2c->TX_DATA = addr;
+  i2cp->i2c->TXDATA = addr;
 
   /* Waits for the operation completion or a timeout.*/
   return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
@@ -356,7 +357,6 @@ msg_t i2c_lld_slave_receive_timeout(I2CDriver *i2cp,
                              sysinterval_t timeout) {
   i2cp->rx_buffer = rxbuf;
   i2cp->rx_len = rxbytes;
-  i2cp->i2c->TX_DATA = addr;
 
   /* Waits for the operation completion or a timeout.*/
   return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
@@ -389,7 +389,6 @@ msg_t i2c_lld_slave_transmit_timeout(I2CDriver *i2cp,
                                sysinterval_t timeout) {
   i2cp->tx_buffer = txbuf;
   i2cp->tx_len = txbytes;
-  i2cp->i2c->TX_DATA = addr;
 
   /* Waits for the operation completion or a timeout.*/
   return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);

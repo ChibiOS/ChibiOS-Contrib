@@ -41,7 +41,7 @@ typedef struct {
     struct {
       uint32_t RX_DN : 1;
       uint32_t ACK_STAT : 1;
-      uint32_t NACK_STATE : 1;
+      uint32_t NACK_STAT : 1;
       uint32_t STOP_DN : 1;
       uint32_t START_DN : 1;
       uint32_t MST : 1;
@@ -49,7 +49,7 @@ typedef struct {
       uint32_t SLV_TX_HIT : 1;
       uint32_t LOST_ARB : 1;
       uint32_t TIMEOUT : 1;
-      uint32_t : 5
+      uint32_t : 5;
       uint32_t I2CIF : 1;
       uint32_t : 16;
     } STAT_b;
