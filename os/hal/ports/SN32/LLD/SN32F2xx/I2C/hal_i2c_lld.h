@@ -139,11 +139,16 @@ struct hal_i2c_driver {
   i2caddr_t                 addr;
 
   sn32_i2c_t               *i2c;
+  /* @brief Pointer to the buffer to put received data. */
   uint8_t                  *rx_buffer;
-  uint8_t                   rx_len;
-  uint8_t                  *tx_buffer;
-  uint8_t                   tx_len;
-  uint8_t                   count;
+  /* @brief Number of bytes of data to receive. */
+  size_t                   rx_len;
+  /* @brief Pointer to the buffer with data to send. */
+  const uint8_t            *tx_buffer;
+  /* @brief Number of bytes of data to send. */
+  size_t                   tx_len;
+  /* @brief Current count of transmitted data. */
+  size_t                   count;
 };
 
 /* For compatibility, some LLDs could not export this.*/
