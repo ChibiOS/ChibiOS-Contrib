@@ -84,7 +84,7 @@ static inline void i2c_lld_irq_handler(I2CDriver * i2cp) {
       }
     }
     if (i2cp -> i2c -> STAT_b.ACK_STAT && i2cp -> tx_buffer && i2cp -> count < i2cp -> tx_len) {
-      i2cp -> tx_buffer[i2cp -> count++] = i2cp -> i2c -> TXDATA;
+       i2cp -> i2c -> TXDATA = i2cp -> tx_buffer[i2cp -> count++];
       return;
     }
   }
