@@ -140,6 +140,10 @@ void _pal_lld_init(const PALConfig *config) {
   sys1EnableP3();
   nvicEnableVector(SN32_GPIOD_NUMBER, SN32_GPIOD_IRQ_PRIORITY);
 #endif
+
+  for (uint8_t i = 0; i < TOTAL_PORTS * PAL_IOPORTS_WIDTH; i++) {
+    _pal_init_event(i);
+  }
 #endif
 
   /*
