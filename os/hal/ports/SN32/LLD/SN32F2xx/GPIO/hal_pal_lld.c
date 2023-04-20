@@ -291,6 +291,16 @@ void _pal_lld_enablepadevent(ioportid_t ioport,
  */
 void _pal_lld_disablepadevent(ioportid_t ioport, iopadid_t pad) {
   _pal_lld_enablepadevent(ioport, pad, PAL_EVENT_MODE_DISABLED);
+
+  if (port == GPIOA) {
+    _pal_clear_event(pad);
+  } else if (port == GPIOB) {
+    _pal_clear_event(PAL_IOPORTS_WIDTH + pad);
+  } else if (port == GPIOC) {
+    _pal_clear_event(PAL_IOPORTS_WIDTH * 2 + pad);
+  } else if (port == GPIOD) {
+    _pal_clear_event(PAL_IOPORTS_WIDTH * 3 + pad);
+  }
 }
 
 /**
