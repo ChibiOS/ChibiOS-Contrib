@@ -54,21 +54,18 @@ static void initgpio(ioportid_t gpiop, const sn32_gpio_setup_t *config) {
 }
 
 #if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
-static void irq_handler(ioportid_t port, palevent_t *events) {
+static void irq_handler(ioportid_t port, uint32_t offset) {
     chSysLockFromISR();
     uint32_t ris = port->RIS; /* Get pending interrupts on this port. */
     port->IC = 0xFFFFFFFFU; /* Clear all pending interrupts on this port. */
     chSysUnlockFromISR();
 
     iopadid_t pad;
-    uint32_t pad_mask;
 
     /* invoke callbacks for pending interrupts */
-    for (pad = 0, pad_mask = 1U;
-         pad < PAL_IOPORTS_WIDTH;
-         ++pad, ++events, pad_mask <<= 1) {
-        if (events->cb && (ris & pad_mask)) {
-            events->cb(events->arg);
+    for (iopadid_t pad = 0; pad < PAL_IOPORTS_WIDTH; pad++) {
+        if (ris & (1 << pad)) {
+            _pal_isr_code(offset + pad)
         }
     }
 }
@@ -82,28 +79,28 @@ static void irq_handler(ioportid_t port, palevent_t *events) {
 #if SN32_HAS_GPIOA
 OSAL_IRQ_HANDLER(SN32_GPIOA_HANDLER) {
     OSAL_IRQ_PROLOGUE();
-    irq_handler(GPIOA, _pal_events);
+    irq_handler(GPIOA, 0);
     OSAL_IRQ_EPILOGUE();
 }
 #endif
 #if SN32_HAS_GPIOB
 OSAL_IRQ_HANDLER(SN32_GPIOB_HANDLER) {
     OSAL_IRQ_PROLOGUE();
-    irq_handler(GPIOB, _pal_events + PAL_IOPORTS_WIDTH);
+    irq_handler(GPIOB, PAL_IOPORTS_WIDTH);
     OSAL_IRQ_EPILOGUE();
 }
 #endif
 #if SN32_HAS_GPIOC
 OSAL_IRQ_HANDLER(SN32_GPIOC_HANDLER) {
     OSAL_IRQ_PROLOGUE();
-    irq_handler(GPIOC, _pal_events + PAL_IOPORTS_WIDTH * 2);
+    irq_handler(GPIOC, PAL_IOPORTS_WIDTH * 2);
     OSAL_IRQ_EPILOGUE();
 }
 #endif
 #if SN32_HAS_GPIOD
 OSAL_IRQ_HANDLER(SN32_GPIOD_HANDLER) {
     OSAL_IRQ_PROLOGUE();
-    irq_handler(GPIOD, _pal_events + PAL_IOPORTS_WIDTH * 3);
+    irq_handler(GPIOD, PAL_IOPORTS_WIDTH * 3);
     OSAL_IRQ_EPILOGUE();
 }
 #endif
