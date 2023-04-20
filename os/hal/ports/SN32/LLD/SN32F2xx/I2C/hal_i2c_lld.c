@@ -231,6 +231,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   }
   i2cp->rx_buffer = rxbuf;
   i2cp->rx_len = rxbytes;
+  i2cp->count = 0;
   i2cp->i2c->CTRL_b.STA = true;
   i2cp->i2c->TXDATA = addr;
 
@@ -295,6 +296,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   }
   i2cp->tx_buffer = txbuf;
   i2cp->tx_len = txbytes;
+  i2cp->count = 0;
   i2cp->i2c->CTRL_b.STA = true;
   i2cp->i2c->TXDATA = addr;
 
@@ -357,6 +359,7 @@ msg_t i2c_lld_slave_receive_timeout(I2CDriver *i2cp,
                              sysinterval_t timeout) {
   i2cp->rx_buffer = rxbuf;
   i2cp->rx_len = rxbytes;
+  i2cp->count = 0;
 
   /* Waits for the operation completion or a timeout.*/
   return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
@@ -389,6 +392,7 @@ msg_t i2c_lld_slave_transmit_timeout(I2CDriver *i2cp,
                                sysinterval_t timeout) {
   i2cp->tx_buffer = txbuf;
   i2cp->tx_len = txbytes;
+  i2cp->count = 0;
 
   /* Waits for the operation completion or a timeout.*/
   return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
