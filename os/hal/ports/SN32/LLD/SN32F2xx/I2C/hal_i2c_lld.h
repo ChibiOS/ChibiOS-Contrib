@@ -168,6 +168,22 @@ struct hal_i2c_driver {
  * @notapi
  */
 #define i2c_lld_get_errors(i2cp) ((i2cp)->errors)
+/**
+ * @brief   Get rx length from I2C driver.
+ *
+ * @param[in] i2cp      pointer to the @p I2CDriver object
+ *
+ * @notapi
+ */
+#define i2c_lld_get_rxbytes(i2cp) (i2cp)->rx_len
+/**
+ * @brief   Get tx length from I2C driver.
+ *
+ * @param[in] i2cp      pointer to the @p I2CDriver object
+ *
+ * @notapi
+ */
+#define i2c_lld_get_txbytes(i2cp) (i2cp)->tx_len
 
 /*===========================================================================*/
 /* External declarations.                                                    */
