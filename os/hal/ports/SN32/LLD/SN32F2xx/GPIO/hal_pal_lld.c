@@ -47,7 +47,6 @@ palevent_t _pal_events[TOTAL_PORTS * PAL_IOPORTS_WIDTH];
 /*===========================================================================*/
 
 static void initgpio(ioportid_t gpiop, const sn32_gpio_setup_t *config) {
-
     gpiop->DATA  = config->data;
     gpiop->MODE  = config->mode;
     gpiop->CFG   = config->cfg;
@@ -60,12 +59,10 @@ static void irq_handler(ioportid_t port, uint32_t offset) {
     port->IC = 0xFFFFFFFFU; /* Clear all pending interrupts on this port. */
     chSysUnlockFromISR();
 
-    iopadid_t pad;
-
     /* invoke callbacks for pending interrupts */
     for (iopadid_t pad = 0; pad < PAL_IOPORTS_WIDTH; pad++) {
         if (ris & (1 << pad)) {
-            _pal_isr_code(offset + pad)
+            _pal_isr_code(offset + pad);
         }
     }
 }
@@ -249,32 +246,32 @@ palevent_t* _pal_lld_get_pad_event(ioportid_t port,
  *
  * @notapi
  */
-void _pal_lld_enablepadevent(ioportid_t ioport,
+void _pal_lld_enablepadevent(ioportid_t port,
                              iopadid_t pad,
                              iomode_t mode) {
   switch(mode) {
     case PAL_EVENT_MODE_RISING_EDGE:
-      ioport->IS  &= ~(1 << pad);
-      ioport->IBS &= ~(1 << pad);
-      ioport->IEV &= ~(1 << pad);
-      ioport->IE  |= (1 << pad);
+      port->IS  &= ~(1 << pad);
+      port->IBS &= ~(1 << pad);
+      port->IEV &= ~(1 << pad);
+      port->IE  |= (1 << pad);
       break;
     case PAL_EVENT_MODE_FALLING_EDGE:
-      ioport->IS  &= ~(1 << pad);
-      ioport->IBS &= ~(1 << pad);
-      ioport->IEV |= (1 << pad);
-      ioport->IE  |= (1 << pad);
+      port->IS  &= ~(1 << pad);
+      port->IBS &= ~(1 << pad);
+      port->IEV |= (1 << pad);
+      port->IE  |= (1 << pad);
       break;
     case PAL_EVENT_MODE_BOTH_EDGES:
-      ioport->IS  &= ~(1 << pad);
-      ioport->IBS |= (1 << pad);
-      ioport->IE  |= (1 << pad);
+      port->IS  &= ~(1 << pad);
+      port->IBS |= (1 << pad);
+      port->IE  |= (1 << pad);
       break;
     case PAL_EVENT_MODE_DISABLED:
-      ioport->IS  &= ~(1 << pad);
-      ioport->IBS &= ~(1 << pad);
-      ioport->IEV &= ~(1 << pad);
-      ioport->IE  &= ~(1 << pad);
+      port->IS  &= ~(1 << pad);
+      port->IBS &= ~(1 << pad);
+      port->IEV &= ~(1 << pad);
+      port->IE  &= ~(1 << pad);
       break;
     default:
       return;
@@ -284,13 +281,13 @@ void _pal_lld_enablepadevent(ioportid_t ioport,
 /**
  * @brief   Disables a pad event
  *
- * @param[in] ioport    port containing pad whose event is to be disabled
+ * @param[in] port      port containing pad whose event is to be disabled
  * @param[in] pad       pad whose event is to be disabled
  *
  * @notapi
  */
-void _pal_lld_disablepadevent(ioportid_t ioport, iopadid_t pad) {
-  _pal_lld_enablepadevent(ioport, pad, PAL_EVENT_MODE_DISABLED);
+void _pal_lld_disablepadevent(ioportid_t port, iopadid_t pad) {
+  _pal_lld_enablepadevent(port, pad, PAL_EVENT_MODE_DISABLED);
 
   if (port == GPIOA) {
     _pal_clear_event(pad);
@@ -306,13 +303,13 @@ void _pal_lld_disablepadevent(ioportid_t ioport, iopadid_t pad) {
 /**
  * @brief   Returns whether a pad event is enabled
  *
- * @param[in] ioport   port containing the pad
+ * @param[in] port     port containing the pad
  * @param[in] pad      pad whose event is to be queried
  *
  * @notapi
  */
-bool _pal_lld_ispadeventenabled(ioportid_t ioport, iopadid_t pad) {
-  return ((ioport->IE >> pad) & 1);
+bool _pal_lld_ispadeventenabled(ioportid_t port, iopadid_t pad) {
+  return ((port->IE >> pad) & 1);
 }
 #endif /* (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE) */
 #endif /* HAL_USE_PAL */
