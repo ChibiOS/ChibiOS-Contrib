@@ -76,10 +76,22 @@
 #define PAL_WHOLE_PORT ((ioportmask_t)0xFFFF)
 /** @} */
 
-// GPIO0 = 40044000
-// pad = 5
+/**
+ * @name    Standard I/O mode flags
+ * @{
+ */
+#undef PAL_MODE_RESET
+#undef PAL_MODE_UNCONNECTED
 
-// line = 40044005
+/**
+ * @brief   Implemented as input.
+ */
+#define PAL_MODE_RESET                  PAL_MODE_INPUT
+
+/**
+ * @brief   Implemented as input with DATA keep low.
+ */
+#define PAL_MODE_UNCONNECTED            PAL_MODE_INPUT_ANALOG
 
 /**
  * @name    Line handling macros

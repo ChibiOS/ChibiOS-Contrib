@@ -103,43 +103,40 @@ void _pal_lld_setpadmode(ioportid_t port,
                            uint32_t pad,
                            iomode_t mode) {
 
-    switch (mode)
-    {
+  switch (mode) {
 
-    case PAL_MODE_UNCONNECTED:
+    case PAL_MODE_INPUT_ANALOG:
+        //set MODE as INPUT
+        port->MODE &= ~(1 << pad);
+        // disable pull up resistor
+        // disable Schmitt trigger
+        // keep DATA low
+        port->CFG |= (3 << (pad * 2));
         break;
 
     case PAL_MODE_INPUT:
+        //set MODE as INPUT
         port->MODE &= ~(1 << pad);
+        // disable pull up resistor
+        // enable Schmitt trigger
+        port->CFG |= (2 << (pad * 2));
         break;
 
     case PAL_MODE_INPUT_PULLUP:
+        //set MODE as INPUT
         port->MODE &= ~(1 << pad);
-        port->CFG &= ~(3 << (pad * 2));
-        // port->BSET = (1 << pad); // High 1
-        break;
-
-    case PAL_MODE_INPUT_PULLDOWN:
-        port->MODE &= ~(1 << pad);
-        port->CFG &= ~(3 << (pad * 2));
-        // port->BCLR = (1 << pad); // Low 0
-        break;
-
-    case PAL_MODE_INPUT_ANALOG:
-        port->MODE &= ~(1 << pad);
+        //enable pull up resistor
         port->CFG &= ~(3 << (pad * 2));
         break;
 
     case PAL_MODE_OUTPUT_PUSHPULL:
+        //set MODE as OUTPUT
         port->MODE |= (1 << pad);
-        break;
-
-    case 7:
         break;
 
     default:
         break;
-    }
+  }
 }
 
 #endif /* HAL_USE_PAL */
