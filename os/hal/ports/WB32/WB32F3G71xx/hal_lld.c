@@ -277,10 +277,10 @@ void wb32_usb_init(USBDriver *usbp) {
 
     /* Enable USB peripheral clock */
     RCC->AHBENR1 |= RCC_AHBENR1_USBEN;
-    
-    /* Reset USB1 peripheral */
-    RCC->AHBRSTR1 |= (RCC_AHBENR1_USBEN);
-    RCC->AHBRSTR1 &= ~(RCC_AHBENR1_USBEN);
+
+    /* Reset USB peripheral */
+    RCC->AHBRSTR1 |= (RCC_AHBRSTR1_USBRST);
+    RCC->AHBRSTR1 &= ~(RCC_AHBRSTR1_USBRST);
 
     /* Configure USB FIFO clock source */
     RCC->USBFIFOCLKSRC = RCC_USBFIFOCLKSRC_USBCLK;
