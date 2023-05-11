@@ -356,7 +356,10 @@ typedef SN_GPIO0_Type * ioportid_t;
  *
  * @notapi
  */
-#define pal_lld_writepad(port, pad, bit) ((port)->DATA = (bit << pad))
+#define pal_lld_writepad(port, pad, bit) do {    \
+    if(bit > PAL_LOW) pal_lld_setpad(port, pad); \
+    else pal_lld_clearpad(port, pad);            \
+} while(0)
 
 /**
  * @brief   Sets a pad logical state to @p PAL_HIGH.
