@@ -162,14 +162,28 @@ void gpt_lld_start(GPTDriver *gptp) {
     }
 #endif
   }
+  else {
+    /* Driver re-configuration scenario, it must be stopped first.*/
+    gptp->ct->TMRCTRL = CT16_CEN_DIS;       /* Timer disabled.              */
+#if SN32_GPT_USE_CT16B0
+      if (&GPTD1 == gptp) {
+        CT16B0_ResetTimer();                /* Counter reset to zero.       */
+      }
+#endif
+#if SN32_GPT_USE_CT16B1
+      if (&GPTD2 == gptp) {
+        CT16B1_ResetTimer();                /* Counter reset to zero.       */
+      }
+#endif
+  }
 
   /* Prescaler value calculation.*/
-  psc = (uint8_t)((gptp->clock / gptp->config->frequency) - 1);
-  osalDbgAssert(((uint32_t)(psc + 1) * gptp->config->frequency) == gptp->clock,
+  psc = ((gptp->clock / gptp->config->frequency) - 1);
+  osalDbgAssert((psc <= 0xFF) &&     /* Prescaler calculation.             */
+                ((psc + 1) * gptp->config->frequency) == gptp->clock,
                 "invalid frequency");
 
   /* Timer configuration.*/
-  gptp->ct->TMRCTRL = CT16_CEN_DIS;            /* Initially stopped.       */
   gptp->ct->CNTCTRL = gptp->config->cntctrl;
   gptp->ct->PRE  = psc;                        /* Prescaler value.         */
   gptp->ct->IC   &= 0x1FFFFFF;                 /* Clear pending IRQs.      */
@@ -219,7 +233,16 @@ void gpt_lld_stop(GPTDriver *gptp) {
 void gpt_lld_start_timer(GPTDriver *gptp, gptcnt_t interval) {
 
   gptp->ct->MR0 = (uint32_t)(interval - 1U);  /* Time constant.           */
-  gptp->ct->TMRCTRL = mskCT16_CRST;           /* Reset counter.           */
+#if SN32_GPT_USE_CT16B0
+      if (&GPTD1 == gptp) {
+        CT16B0_ResetTimer();                  /* Counter reset to zero.   */
+      }
+#endif
+#if SN32_GPT_USE_CT16B1
+      if (&GPTD2 == gptp) {
+        CT16B1_ResetTimer();                  /* Counter reset to zero.   */
+      }
+#endif
   gptp->ct->IC      &= 0x1FFFFFF;             /* Clear pending IRQs.      */
   if (NULL != gptp->config->callback)
     gptp->ct->MCTRL |= mskCT16_MR0IE_EN;
@@ -255,10 +278,10 @@ void gpt_lld_stop_timer(GPTDriver *gptp) {
 void gpt_lld_polled_delay(GPTDriver *gptp, gptcnt_t interval) {
 
   gptp->ct->MR0 = (uint32_t)(interval - 1U);   /* Time constant.           */
-  gptp->ct->IC &= 0x1FFFFFF;                   /* Clear pending IRQs.      */
   gptp->ct->MCTRL = (mskCT16_MR0IE_EN | mskCT16_MR0STOP_EN);
+  gptp->ct->IC &= 0x1FFFFFF;                   /* Clear pending IRQs.      */
   gptp->ct->TMRCTRL |= mskCT16_CEN_EN;
-  while (!(gptp->ct->RIS & mskCT16_MR0IF))
+  while ((gptp->ct->RIS & mskCT16_MR0IF)!= 0)
     ;
   gptp->ct->IC &= 0x1FFFFFF;                   /* Clear pending IRQs.      */
 }
@@ -271,13 +294,12 @@ void gpt_lld_polled_delay(GPTDriver *gptp, gptcnt_t interval) {
  * @notapi
  */
 void gpt_lld_serve_interrupt(GPTDriver *gptp) {
+  uint32_t ris;
 
-  gptp->ct->IC &= 0x1FFFFFF;
-  if (gptp->state == GPT_ONESHOT) {
-    gptp->state = GPT_READY;                /* Back in GPT_READY state.     */
-    gpt_lld_stop_timer(gptp);               /* Timer automatically stopped. */
-  }
-  gptp->config->callback(gptp);
+  ris  = gptp->ct->RIS;
+  gptp->ct->IC = ris;
+  if ((ris & mskCT16_MR0IF) != 0)
+    _gpt_isr_invoke_cb(gptp);
 }
 
 #endif /* HAL_USE_GPT */

@@ -139,7 +139,7 @@ typedef uint32_t gptfreq_t;
 /**
  * @brief   GPT counter type.
  */
-typedef uint16_t gptcnt_t;
+typedef uint32_t gptcnt_t;
 
 /**
  * @brief   Driver configuration structure.
