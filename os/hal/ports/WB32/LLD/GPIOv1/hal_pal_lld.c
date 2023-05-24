@@ -204,8 +204,10 @@ void _pal_lld_disablepadevent(ioportid_t port, iopadid_t pad) {
     EXTI->FTSR = ftsr1 & ~padmask;
     EXTI->PR = padmask;
 
-    /* Disable EXTI clock.*/
-    rccDisableEXTI();
+    if ((!EXTI->IMR) && (!EXTI->EMR)) {
+      /* Disable EXTI clock.*/
+      rccDisableEXTI();
+    }
 
 #if PAL_USE_CALLBACKS || PAL_USE_WAIT
     /* Callback cleared and/or thread reset.*/
