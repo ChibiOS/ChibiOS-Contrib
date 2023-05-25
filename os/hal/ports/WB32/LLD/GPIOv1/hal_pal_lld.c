@@ -159,6 +159,8 @@ void _pal_lld_enablepadevent(ioportid_t port,
   else
     EXTI->FTSR &= ~padmask;
 
+  EXTI->PR = padmask;
+
   /* Programming interrupt and event registers.*/
   EXTI->IMR |= padmask;
   EXTI->EMR &= ~padmask;
