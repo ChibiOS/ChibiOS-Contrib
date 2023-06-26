@@ -6,7 +6,7 @@
     You may obtain a copy of the License at
 
         http://www.apache.org/licenses/LICENSE-2.0
-    
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -86,13 +86,6 @@
 
 #if RP_USE_EXTERNAL_VBUS_DETECT == TRUE
 extern bool usb_vbus_detect(void);
-#endif
-
-/**
- * @brief Enables the SOF interrupt.
- */
-#if !defined(RP_USB_USE_SOF_INTR) || defined(__DOXYGEN__)
-#define RP_USB_USE_SOF_INTR                 FALSE
 #endif
 
 /**
@@ -438,6 +431,9 @@ struct USBDriver {
  */
 #define usb_lld_wakeup_host(usbp)                                           \
   do {                                                                      \
+    /* remote wakeup doesn't trigger the wakeup interrupt, therefore        \
+     * we use the SOF interrupt to detect resume of the bus. */             \
+    USB->INTE |= USB_INTE_DEV_SOF;                                          \
     USB->SET.SIECTRL = USB_SIE_CTRL_RESUME;                                 \
   } while (false)
 
