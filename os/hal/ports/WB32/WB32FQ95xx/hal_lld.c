@@ -256,8 +256,6 @@ void wb32_clock_init(void) {
   rccEnableAPB1(RCC_APB1ENR_BMX1EN);
   rccEnableAPB2(RCC_APB2ENR_BMX2EN);
 
-  SCB->VTOR = FLASH_BASE; /* Vector Table Relocation in Internal FLASH. */
-
 #endif /* WB32_NO_INIT == FALSE */
 }
 
