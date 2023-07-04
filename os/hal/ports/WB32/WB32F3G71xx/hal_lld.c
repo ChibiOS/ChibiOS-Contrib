@@ -119,7 +119,6 @@ void SystemCoreClockUpdate(void) {
  * @return None
  */
 static void SetSysClock(void) {
-  __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
 
   /* Unlocks write to ANCTL registers */
   PWR->ANAKEY1 = 0x03;
@@ -135,6 +134,8 @@ static void SetSysClock(void) {
 #endif /* WB32_PPRE1 == 1 */
 
 #if WB32_HSE_ENABLED == TRUE
+  __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
+
   /* Configure PD0 and PD1 to analog mode */
   RCC->APB1ENR = RCC_APB1ENR_BMX1EN | RCC_APB1ENR_GPIODEN;
 
