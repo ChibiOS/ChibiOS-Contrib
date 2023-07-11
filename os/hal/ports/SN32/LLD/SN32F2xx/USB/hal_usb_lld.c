@@ -292,7 +292,15 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
     /////////////////////////////////////////////////
     /* Device Status Interrupt (SOF)               */
     /////////////////////////////////////////////////
-    if ((iwIntFlag & mskUSB_SOF) && (SN32_USB->INTEN & mskUSB_SOF_IE)) {
+    if (iwIntFlag & mskUSB_SOF) {
+        /* SOF interrupt was used to detect resume of the USB bus after issuing a
+         * remote wake up of the host, therefore we disable it again. */
+        if (usbp->config->sof_cb == NULL) {
+          SN32_USB->INTEN &= ~mskUSB_SOF_IE;
+        }
+        if (usbp->state == USB_SUSPENDED) {
+          _usb_wakeup(usbp);
+        }
         /* SOF */
         _usb_isr_invoke_sof_cb(usbp);
         SN32_USB->INSTSC = (mskUSB_SOF);
@@ -504,7 +512,10 @@ void usb_lld_reset(USBDriver *usbp) {
     usb_lld_init_endpoint(usbp, 0);
 
     /* Enable other interrupts.*/
-    SN32_USB->INTEN |= (mskUSB_IE|mskEPnACK_EN|mskBUSWK_IE|mskUSB_SOF_IE);
+    SN32_USB->INTEN |= (mskUSB_IE|mskEPnACK_EN|mskBUSWK_IE);
+    if (usbp->config->sof_cb != NULL) {
+        SN32_USB->INTEN |= mskUSB_SOF_IE;
+    }
     //SN32_USB->INTEN |= (mskEP1_NAK_EN|mskEP2_NAK_EN|mskEP3_NAK_EN|mskEP4_NAK_EN);
 #if (USB_ENDPOINTS_NUMBER > 4)
     //SN32_USB->INTEN |= (mskEP5_NAK_EN|mskEP6_NAK_EN);
