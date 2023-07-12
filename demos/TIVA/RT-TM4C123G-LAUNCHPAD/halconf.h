@@ -213,6 +213,7 @@
 //#if !defined(PAL_USE_CALLBACKS) || defined(__DOXYGEN__)
 //#define PAL_USE_CALLBACKS                   FALSE
 //#endif
+
 #define PAL_USE_CALLBACKS                   TRUE
 
 /**
