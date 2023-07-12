@@ -210,10 +210,10 @@
  * @brief   Enables synchronous APIs.
  * @note    Disabling this option saves both code and data space.
  */
-#if !defined(PAL_USE_CALLBACKS) || defined(__DOXYGEN__)
+//#if !defined(PAL_USE_CALLBACKS) || defined(__DOXYGEN__)
 //#define PAL_USE_CALLBACKS                   FALSE
+//#endif
 #define PAL_USE_CALLBACKS                   TRUE
-#endif
 
 /**
  * @brief   Enables synchronous APIs.
