@@ -466,6 +466,16 @@ void usb_lld_start(USBDriver *usbp) {
 #endif /* SN32_USB_USE_USB1 == TRUE */
     /* Reset procedure enforced on driver start.*/
     usb_lld_reset(usbp);
+
+    /* Enable other interrupts.*/
+    SN32_USB->INTEN |= (mskUSB_IE|mskEPnACK_EN|mskBUSWK_IE);
+    if (usbp->config->sof_cb != NULL) {
+        SN32_USB->INTEN |= mskUSB_SOF_IE;
+    }
+    //SN32_USB->INTEN |= (mskEP1_NAK_EN|mskEP2_NAK_EN|mskEP3_NAK_EN|mskEP4_NAK_EN);
+#if (USB_ENDPOINTS_NUMBER > 4)
+    //SN32_USB->INTEN |= (mskEP5_NAK_EN|mskEP6_NAK_EN);
+#endif /* (USB_ENDPOINTS_NUMBER > 4) */
   }
 }
 
@@ -510,17 +520,6 @@ void usb_lld_reset(USBDriver *usbp) {
     /* EP0 initialization.*/
     usbp->epc[0] = &ep0config;
     usb_lld_init_endpoint(usbp, 0);
-
-    /* Enable other interrupts.*/
-    SN32_USB->INTEN |= (mskUSB_IE|mskEPnACK_EN|mskBUSWK_IE);
-    if (usbp->config->sof_cb != NULL) {
-        SN32_USB->INTEN |= mskUSB_SOF_IE;
-    }
-    //SN32_USB->INTEN |= (mskEP1_NAK_EN|mskEP2_NAK_EN|mskEP3_NAK_EN|mskEP4_NAK_EN);
-#if (USB_ENDPOINTS_NUMBER > 4)
-    //SN32_USB->INTEN |= (mskEP5_NAK_EN|mskEP6_NAK_EN);
-#endif /* (USB_ENDPOINTS_NUMBER > 4) */
-
 }
 
 /**
