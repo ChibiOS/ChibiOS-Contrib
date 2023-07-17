@@ -331,6 +331,12 @@ void usb_serve_endpoints(USBDriver* usbp, usbep_t ep, bool in) {
         /* IN endpoint, transmission.*/
         USBInEndpointState *isp = epcp->in_state;
         
+        if (isp->txcnt >= isp->txsize) {
+          /* Transfer completed, invokes the callback.*/
+          _usb_isr_invoke_in_cb(usbp, ep);
+          return;
+        }
+
         isp->txcnt += isp->txlast;
         n = isp->txsize - isp->txcnt;
 
