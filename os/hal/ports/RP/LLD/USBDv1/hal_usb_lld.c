@@ -153,31 +153,6 @@ static void reset_ep0(USBDriver *usbp) {
   usbp->epc[0]->in_state->stalled = false;
 }
 
-#if 0
-/**
- * @brief   Reset specified endpoint.
- */
-static void reset_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
-  const USBEndpointConfig *epcp = usbp->epc[ep];
-
-  if (is_in) {
-    USBInEndpointState *in_state = epcp->in_state;
-    if (in_state) {
-      in_state->active = false;
-      in_state->stalled = false;
-      in_state->next_pid = 0U;
-    }
-  } else {
-    USBOutEndpointState *out_state = epcp->out_state;
-    if (out_state) {
-      out_state->active = false;
-      out_state->stalled = false;
-      out_state->next_pid = 0U;
-    }
-  }
-}
-#endif
-
 /**
  * @brief   Prepare buffer for receiving data.
  */
@@ -698,16 +673,8 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 void usb_lld_disable_endpoints(USBDriver *usbp) {
-  /* Ignore zero */
   for (uint8_t ep = 1; ep <= USB_ENDOPOINTS_NUMBER; ep++) {
-    usbp->epc[ep]->in_state->active = false;
-    usbp->epc[ep]->in_state->stalled = false;
-    usbp->epc[ep]->in_state->next_pid = 0;
     EP_CTRL(ep).IN &= ~USB_EP_EN;
-
-    usbp->epc[ep]->out_state->active = false;
-    usbp->epc[ep]->out_state->stalled = false;
-    usbp->epc[ep]->out_state->next_pid = 0;
     EP_CTRL(ep).OUT &= ~USB_EP_EN;
   }
 }
