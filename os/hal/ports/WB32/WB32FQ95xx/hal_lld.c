@@ -119,7 +119,6 @@ void SystemCoreClockUpdate(void) {
  * @return None
  */
 static void SetSysClock(void) {
-  __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
 
   /* Unlocks write to ANCTL registers */
   PWR->ANAKEY1 = 0x03;
@@ -135,6 +134,8 @@ static void SetSysClock(void) {
 #endif /* WB32_PPRE1 == 1 */
 
 #if WB32_HSE_ENABLED == TRUE
+  __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
+
   /* Configure PD0 and PD1 to analog mode */
   RCC->APB1ENR = RCC_APB1ENR_BMX1EN | RCC_APB1ENR_GPIODEN;
 
@@ -256,8 +257,6 @@ void wb32_clock_init(void) {
   rccEnableAPB1(RCC_APB1ENR_BMX1EN);
   rccEnableAPB2(RCC_APB2ENR_BMX2EN);
 
-  SCB->VTOR = FLASH_BASE; /* Vector Table Relocation in Internal FLASH. */
-
 #endif /* WB32_NO_INIT == FALSE */
 }
 
@@ -277,6 +276,10 @@ void wb32_usb_init(USBDriver *usbp) {
 
     /* Enable USB peripheral clock */
     RCC->AHBENR1 |= RCC_AHBENR1_USBEN;
+
+    /* Reset USB peripheral */
+    RCC->AHBRSTR1 |= (RCC_AHBRSTR1_USBRST);
+    RCC->AHBRSTR1 &= ~(RCC_AHBRSTR1_USBRST);
 
     /* Configure USB FIFO clock source */
     RCC->USBFIFOCLKSRC = RCC_USBFIFOCLKSRC_USBCLK;

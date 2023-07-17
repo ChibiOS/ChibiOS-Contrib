@@ -62,8 +62,7 @@ OSAL_IRQ_HANDLER(WB32_EXTI0_IRQ_VECTOR) {
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & EXTI_IMR_MR0;
+  pr = EXTI->PR & EXTI_PR_PR0;
   EXTI->PR = pr;
 
   exti_serve_irq(pr, 0);
@@ -83,8 +82,7 @@ OSAL_IRQ_HANDLER(WB32_EXTI1_IRQ_VECTOR) {
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & EXTI_IMR_MR1;
+  pr = EXTI->PR & EXTI_PR_PR1;
   EXTI->PR = pr;
 
   exti_serve_irq(pr, 1);
@@ -104,8 +102,7 @@ OSAL_IRQ_HANDLER(WB32_EXTI2_IRQ_VECTOR) {
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & EXTI_IMR_MR2;
+  pr = EXTI->PR & EXTI_PR_PR2;
   EXTI->PR = pr;
 
   exti_serve_irq(pr, 2);
@@ -125,8 +122,7 @@ OSAL_IRQ_HANDLER(WB32_EXTI3_IRQ_VECTOR) {
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & EXTI_IMR_MR3;
+  pr = EXTI->PR & EXTI_PR_PR3;
   EXTI->PR = pr;
 
   exti_serve_irq(pr, 3);
@@ -146,8 +142,7 @@ OSAL_IRQ_HANDLER(WB32_EXTI4_IRQ_VECTOR) {
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & EXTI_IMR_MR4;
+  pr = EXTI->PR & EXTI_PR_PR4;
   EXTI->PR = pr;
 
   exti_serve_irq(pr, 4);
@@ -167,9 +162,8 @@ OSAL_IRQ_HANDLER(WB32_EXTI9_5_IRQ_VECTOR) {
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & (EXTI_IMR_MR5 | EXTI_IMR_MR6 | EXTI_IMR_MR7 | EXTI_IMR_MR8 |
-                     EXTI_IMR_MR9);
+  pr = EXTI->PR & (EXTI_PR_PR5 | EXTI_PR_PR6 | EXTI_PR_PR7 |
+                   EXTI_PR_PR8 | EXTI_PR_PR9);
   EXTI->PR = pr;
 
   exti_serve_irq(pr, 5);
@@ -193,9 +187,8 @@ OSAL_IRQ_HANDLER(WB32_EXTI15_10_IRQ_VECTOR) {
 
   OSAL_IRQ_PROLOGUE();
 
-  pr = EXTI->PR;
-  pr &= EXTI->IMR & (EXTI_IMR_MR10 | EXTI_IMR_MR11 | EXTI_IMR_MR12 |
-                     EXTI_IMR_MR13 | EXTI_IMR_MR14 | EXTI_IMR_MR15);
+  pr = EXTI->PR & (EXTI_PR_PR10 | EXTI_PR_PR11 | EXTI_PR_PR12 |
+                   EXTI_PR_PR13 | EXTI_PR_PR14 | EXTI_PR_PR15);
   EXTI->PR = pr;
 
   exti_serve_irq(pr, 10);

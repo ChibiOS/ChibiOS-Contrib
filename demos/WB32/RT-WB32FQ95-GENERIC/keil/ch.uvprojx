@@ -10,13 +10,12 @@
       <TargetName>Demo</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM3</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.8.0</PackID>
+          <PackID>ARM.CMSIS.5.6.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("Cortex-M3") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -184,8 +183,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
-            <RvdsCdeCp>0</RvdsCdeCp>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -326,7 +323,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -339,7 +335,7 @@
               <MiscControls>-UWB32FQ95xx</MiscControls>
               <Define>CORTEX_USE_FPU=0  TEST_CFG_SIZE_REPORT=0 __heap_base__=Image$$$$RW_IRAM1$$$$ZI$$$$Limit __heap_end__=Image$$$$RW_IRAM1$$$$Base</Define>
               <Undefine></Undefine>
-              <IncludePath>..\;..\cfg;..\..\..\..\..\ChibiOS\os\license;..\..\..\..\..\ChibiOS-Contrib\os\common\startup\ARMCMx\devices\WB32FQ95xx;..\..\..\..\..\ChibiOS\os\common\ext\ARM\CMSIS\Core\Include;..\..\..\..\..\ChibiOS-Contrib\os\common\ext\CMSIS\WB32\WB32FQ95xx;..\..\..\..\..\ChibiOS\os\common\portability\Keil;..\..\..\..\..\ChibiOS\os\common\ports\ARM-common;..\..\..\..\..\ChibiOS\os\common\ports\ARMv7-M;..\..\..\..\..\ChibiOS\os\rt\include;..\..\..\..\..\ChibiOS\os\oslib\include;..\..\..\..\..\ChibiOS\os\hal\osal\rt-nil;..\..\..\..\..\ChibiOS\os\hal\include;..\board;..\..\..\..\..\ChibiOS\os\hal\ports\common\ARMCMx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\WB32FQ95xx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\LLD\GPIOv1;..\..\..\..\os\hal\ports\WB32\LLD\TIMv1;..\..\..\..\..\ChibiOS\os\test\include;..\..\..\..\..\ChibiOS\test\rt\source\test;..\..\..\..\..\ChibiOS\test\oslib\source\test</IncludePath>
+              <IncludePath>..\;..\cfg;..\..\..\..\..\ChibiOS\os\license;..\..\..\..\..\ChibiOS-Contrib\os\common\startup\ARMCMx\devices\WB32FQ95xx;..\..\..\..\..\ChibiOS\os\common\ext\ARM\CMSIS\Core\Include;..\..\..\..\..\ChibiOS-Contrib\os\common\ext\CMSIS\WB32\WB32FQ95xx;..\..\..\..\..\ChibiOS\os\common\portability\Keil;..\..\..\..\..\ChibiOS\os\common\ports\ARM-common;..\..\..\..\..\ChibiOS\os\common\ports\ARMv7-M;..\..\..\..\..\ChibiOS\os\rt\include;..\..\..\..\..\ChibiOS\os\oslib\include;..\..\..\..\..\ChibiOS\os\hal\osal\rt-nil;..\..\..\..\..\ChibiOS\os\hal\include;..\board;..\..\..\..\..\ChibiOS\os\hal\ports\common\ARMCMx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\WB32FQ95xx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\LLD\GPIOv1;..\..\..\..\os\hal\ports\WB32\LLD\DMAv1;..\..\..\..\os\hal\ports\WB32\LLD\TIMv1;..\..\..\..\..\ChibiOS\os\test\include;..\..\..\..\..\ChibiOS\test\rt\source\test;..\..\..\..\..\ChibiOS\test\oslib\source\test</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -352,7 +348,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <ClangAsOpt>4</ClangAsOpt>
+            <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls>--cpreproc --cpreproc_opts=-DCORTEX_USE_FPU=0</MiscControls>
               <Define></Define>

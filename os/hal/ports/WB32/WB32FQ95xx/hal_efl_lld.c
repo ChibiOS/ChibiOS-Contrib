@@ -21,7 +21,7 @@
  * @addtogroup HAL_EFL
  * @{
  */
- 
+
 #include <string.h>
 
 #include "hal.h"
@@ -308,28 +308,33 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
 
     memcpy((void *)&line.b[0], (const void *)address, WB32_FLASH_PAGE_SIZE);
 
-#ifndef WB32_FLASH_PROGRAM_NO_ERASE
-    /* Erase page. */
-    err = wb32_flash_erase_page(devp, (uint32_t)address);
-    if (err != FLASH_NO_ERROR) {
-      break;
-    }
-#endif
-
-    /* Clear page latch. */
-    err = wb32_flash_clear_page_latch(devp);
-    if (err != FLASH_NO_ERROR) {
-      break;
-    }
-
     /* Copying data inside the prepared page.*/
     do {
       line.b[offset & WB32_FLASH_PAGE_MASK] = *pp;
       offset++;
       n--;
       pp++;
+    } while ((n > 0U) & ((offset & WB32_FLASH_PAGE_MASK) != 0U));
+
+#ifndef WB32_FLASH_PROGRAM_NO_ERASE
+    bool ferase = true;
+#else
+    bool ferase = false;
+to_erase:
+#endif
+    /* Erase page. */
+    if (ferase) {
+      err = wb32_flash_erase_page(devp, (uint32_t)address);
+      if (err != FLASH_NO_ERROR) {
+          break;
+      }
     }
-    while ((n > 0U) & ((offset & WB32_FLASH_PAGE_MASK) != 0U));
+
+    /* Clear page latch. */
+    err = wb32_flash_clear_page_latch(devp);
+    if (err != FLASH_NO_ERROR) {
+      break;
+    }
 
     for (int i = 0; i < (WB32_FLASH_PAGE_SIZE / sizeof(uint32_t)); i++) {
       devp->flash->BUF[i] = line.w[i];
@@ -340,8 +345,15 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
     if (err != FLASH_NO_ERROR) {
       break;
     }
+
     /* Check for flash error.*/
-    if (address[0] != line.w[0]) {
+    if (memcmp(&line.w[0], (void *)address, WB32_FLASH_PAGE_SIZE) != 0) {
+#ifdef WB32_FLASH_PROGRAM_NO_ERASE
+      if (!ferase) {
+          ferase = true;
+          goto to_erase;
+      }
+#endif
       err = FLASH_ERROR_PROGRAM;
       break;
     }

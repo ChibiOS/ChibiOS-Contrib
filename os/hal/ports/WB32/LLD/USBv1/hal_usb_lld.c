@@ -354,6 +354,12 @@ static void usb_serve_epin_handler(USBDriver *usbp, usbep_t ep) {
   /* IN endpoint, transmission.*/
   USBInEndpointState *isp = epcp->in_state;
 
+  if (isp->txcnt >= isp->txsize) {
+    /* Transfer completed, invokes the callback.*/
+    _usb_isr_invoke_in_cb(usbp, ep);
+    return;
+  }
+
   WB32_USB->INDEX = ep;
 
   isp->txcnt += isp->txlast;
