@@ -399,12 +399,43 @@ void comp_ext_lld_channel_disable(COMPDriver *compp, uint32_t channel) {
  */
 void comp_lld_start(COMPDriver *compp) {
 
-  // Apply CSR Execpt the enable bit.
+  // Apply CSR except the enable bit.
+#if defined(STM32F373xx) || defined(STM32F378xx)
+#if STM32_COMP_USE_COMP1
+  if (compp == &COMPD1) {
+    COMP1->CSR &= ~((uint32_t)0x0000FFFF << COMP_CSR_COMP1EN_Pos);
+    COMP1->CSR |= ((compp->config->csr & ~COMP_CSR_EN) << COMP_CSR_COMP1EN_Pos);
+  }
+#endif
+
+#if STM32_COMP_USE_COMP2
+  if (compp == &COMPD2) {
+    COMP1->CSR &= ~((uint32_t)0x0000FFFF << COMP_CSR_COMP2EN_Pos);
+    COMP1->CSR |= ((compp->config->csr & ~COMP_CSR_EN) << COMP_CSR_COMP2EN_Pos);
+  }
+#endif
+#else
   compp->reg->CSR = compp->config->csr & ~COMP_CSR_EN;
+#endif
 
   // Inverted output
-  if (compp->config->output_mode == COMP_OUTPUT_INVERTED)
+  if (compp->config->output_mode == COMP_OUTPUT_INVERTED) {
+#if defined(STM32F373xx) || defined(STM32F378xx)
+#if STM32_COMP_USE_COMP1
+    if (compp == &COMPD1) {
+      COMP1->CSR |= COMP_CSR_COMP1POL;
+    }
+#endif
+
+#if STM32_COMP_USE_COMP2
+    if (compp == &COMPD2) {
+      COMP1->CSR |= COMP_CSR_COMP2POL;
+    }
+#endif
+#else
     compp->reg->CSR |= COMP_CSR_POLARITY;
+#endif
+  }
 
 #if STM32_COMP_USE_INTERRUPTS
 #if STM32_COMP_USE_COMP1
@@ -462,8 +493,21 @@ void comp_lld_start(COMPDriver *compp) {
 void comp_lld_stop(COMPDriver *compp) {
 
   if (compp->state == COMP_READY) {
+#if defined(STM32F373xx) || defined(STM32F378xx)
+#if STM32_COMP_USE_COMP1
+    if (compp == &COMPD1) {
+      COMP1->CSR &= ~((uint32_t)0x0000FFFF << COMP_CSR_COMP1EN_Pos);
+    }
+#endif
 
+#if STM32_COMP_USE_COMP2
+  if (compp == &COMPD2) {
+    COMP1->CSR &= ~((uint32_t)0x0000FFFF << COMP_CSR_COMP2EN_Pos);
+  }
+#endif
+#else
     compp->reg->CSR = 0;
+#endif
   }
 
 #if STM32_COMP_USE_INTERRUPTS
@@ -521,7 +565,22 @@ void comp_lld_stop(COMPDriver *compp) {
  */
 void comp_lld_enable(COMPDriver *compp) {
 
-   compp->reg->CSR |= COMP_CSR_EN; /* Enable */
+#if defined(STM32F373xx) || defined(STM32F378xx)
+#if STM32_COMP_USE_COMP1
+  if (compp == &COMPD1) {
+    COMP1->CSR |= COMP_CSR_COMP1EN; /* Enable */
+  }
+#endif
+
+#if STM32_COMP_USE_COMP2
+  if (compp == &COMPD2) {
+    COMP1->CSR |= COMP_CSR_COMP2EN; /* Enable */
+  }
+#endif
+
+#else
+  compp->reg->CSR |= COMP_CSR_EN; /* Enable */
+#endif
 }
 
 /**
@@ -533,7 +592,22 @@ void comp_lld_enable(COMPDriver *compp) {
  */
 void comp_lld_disable(COMPDriver *compp) {
 
+#if defined(STM32F373xx) || defined(STM32F378xx)
+#if STM32_COMP_USE_COMP1
+  if (compp == &COMPD1) {
+    COMP1->CSR &= ~COMP_CSR_COMP1EN; /* Enable */
+  }
+#endif
+
+#if STM32_COMP_USE_COMP2
+  if (compp == &COMPD2) {
+    COMP1->CSR &= ~COMP_CSR_COMP2EN; /* Enable */
+  }
+#endif
+
+#else
   compp->reg->CSR &= ~COMP_CSR_EN; /* Disable */
+#endif
 }
 
 #endif /* HAL_USE_COMP */
