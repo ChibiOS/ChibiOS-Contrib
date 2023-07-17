@@ -107,7 +107,8 @@ include $(CHIBIOS)/test/rt/rt_test.mk
 include $(CHIBIOS)/test/oslib/oslib_test.mk
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD)/TM4C129xNC.ld
+#LDSCRIPT= $(STARTUPLD)/TM4C129xNC.ld
+LDSCRIPT= $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/ld/TM4C123xH6.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.

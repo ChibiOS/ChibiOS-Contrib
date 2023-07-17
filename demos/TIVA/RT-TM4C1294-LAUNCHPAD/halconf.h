@@ -29,7 +29,8 @@
 #define HALCONF_H
 
 #define _CHIBIOS_HAL_CONF_
-#define _CHIBIOS_HAL_CONF_VER_8_0_
+//#define _CHIBIOS_HAL_CONF_VER_8_0_
+#define _CHIBIOS_HAL_CONF_VER_8_4_
 
 #include "mcuconf.h"
 
@@ -209,9 +210,10 @@
  * @brief   Enables synchronous APIs.
  * @note    Disabling this option saves both code and data space.
  */
-#if !defined(PAL_USE_CALLBACKS) || defined(__DOXYGEN__)
-#define PAL_USE_CALLBACKS                   FALSE
-#endif
+//#if !defined(PAL_USE_CALLBACKS) || defined(__DOXYGEN__)
+//#define PAL_USE_CALLBACKS                   FALSE
+//#endif
+#define PAL_USE_CALLBACKS                   TRUE
 
 /**
  * @brief   Enables synchronous APIs.
@@ -526,7 +528,7 @@
 #define WSPI_USE_MUTUAL_EXCLUSION           TRUE
 #endif
 
-#include "halconf_community.h"
+//#include "halconf_community.h"
 
 #endif /* HALCONF_H */
 
