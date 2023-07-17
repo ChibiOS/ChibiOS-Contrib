@@ -36,6 +36,23 @@
 #define PAL_NEW_INIT
 
 /*===========================================================================*/
+/* Unsupported modes and specific modes                                      */
+/*===========================================================================*/
+
+#undef PAL_MODE_RESET
+#undef PAL_MODE_UNCONNECTED
+#undef PAL_MODE_INPUT
+#undef PAL_MODE_INPUT_PULLUP
+#undef PAL_MODE_INPUT_PULLDOWN
+#undef PAL_MODE_INPUT_ANALOG
+#undef PAL_MODE_OUTPUT_PUSHPULL
+#undef PAL_MODE_OUTPUT_OPENDRAIN
+
+#define PAL_MODE_INPUT_PULLUP       (MODE_DIR_IN | MODE_MODE_PULL_UP | MODE_AD_DIGITAL)
+#define PAL_MODE_INPUT_PULLDOWN     (MODE_DIR_IN | MODE_MODE_PULL_DOWN | MODE_AD_DIGITAL)
+#define PAL_MODE_OUTPUT_OPENDRAIN   (MODE_DIR_OUT | MODE_OD_ENABLE | MODE_AD_DIGITAL)
+
+/*===========================================================================*/
 /* I/O Ports Types and constants.                                            */
 /*===========================================================================*/
 
@@ -136,7 +153,7 @@ typedef uint32_t iomode_t;
 #define   MODE_INV_DISABLE        (0x0U << MODE_INV_POS)
 #define   MODE_INV_ENABLE         (0x1U << MODE_INV_POS)
 
-#define   MODE_AD_POS             (7U)
+#define   MODE_AD_POS             7U
 #define   MODE_AD_MASK            (1U << MODE_AD_POS)
 #define   MODE_AD_ANALOG          (0U << MODE_AD_POS)
 #define   MODE_AD_DIGITAL         (1U << MODE_AD_POS)
@@ -310,7 +327,7 @@ typedef uint32_t iopadid_t;
  * @notapi
  */
 #define pal_lld_readpad(port, pad)                                          \
-  (LPC_GPIO->B[(PAL_IOPORTS_WIDTH * LPC_IOPORT_NUM(port)) + pad])
+  (LPC_GPIO->BP[(PAL_IOPORTS_WIDTH * LPC_IOPORT_NUM(port)) + pad])
 
 /**
  * @brief   Writes a logical state on an output pad.
@@ -329,7 +346,7 @@ typedef uint32_t iopadid_t;
  */
 #define pal_lld_writepad(port, pad, bit)                                    \
   do {                                                                      \
-    (LPC_GPIO->B[(PAL_IOPORTS_WIDTH * LPC_IOPORT_NUM(port)) + pad]) = bit;  \                                                              \
+    (LPC_GPIO->BP[(PAL_IOPORTS_WIDTH * LPC_IOPORT_NUM(port)) + pad]) = bit;  \                                                              \
   } while (false)
 
 

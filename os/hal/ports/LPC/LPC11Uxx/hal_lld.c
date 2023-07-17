@@ -99,4 +99,5 @@ void hal_lld_init(void) {
     lpc_clock_init();
 }
 
+
 /** @} */
