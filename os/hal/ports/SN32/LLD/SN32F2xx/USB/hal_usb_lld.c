@@ -208,10 +208,8 @@ static void sn32_usb_write_fifo(usbep_t ep, const uint8_t *buf, size_t sz, bool 
 static void usb_lld_serve_interrupt(USBDriver *usbp) {
     uint32_t iwIntFlag;
 
-    /* Get Interrupt Status and clear immediately. */
+    /* Get Interrupt Status */
     iwIntFlag = SN32_USB->INSTS;
-    /* Keep only PRESETUP & ERR_SETUP flags. */
-    SN32_USB->INSTSC = ~(mskEP0_PRESETUP | mskERR_SETUP);
 
     if (iwIntFlag == 0) {
         //@20160902 add for EMC protection
