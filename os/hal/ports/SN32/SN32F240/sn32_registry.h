@@ -61,6 +61,7 @@
  */
 #define SN32_USB_HANDLER          Vector44
 #define SN32_USB_NUMBER           USB_IRQn
+#define SN32_HAS_USB              TRUE
 
 #define USBD_INTSTS_EPEVT_Pos        USBD_INTSTS_EPEVT0_Pos
 #define USBD_INTSTS_EPEVT_Msk        (0xFFul << USBD_INTSTS_EPEVT_Pos)
@@ -70,12 +71,14 @@
  */
 #define SN32_SPI0_HANDLER          Vector58
 #define SN32_SPI0_NUMBER           SPI0_IRQn
+#define SN32_HAS_SPI0              TRUE
 
 /*
  * I2C unit.
  */
 #define SN32_I2C0_GLOBAL_HANDLER   Vector68
 #define SN32_I2C0_GLOBAL_NUMBER    I2C0_IRQn
+#define SN32_HAS_I2C0              TRUE
 
 /*
  * USART units.
@@ -88,6 +91,10 @@
 #define SN32_USART1_NUMBER         UART1_IRQn
 #define SN32_USART2_NUMBER         UART2_IRQn
 
+#define SN32_HAS_USART0            TRUE
+#define SN32_HAS_USART1            TRUE
+#define SN32_HAS_USART2            TRUE
+
 /*
  * CT16 units.
  */
@@ -98,6 +105,10 @@
 #define SN32_CT16B0_NUMBER        CT16B0_IRQn
 #define SN32_CT16B1_NUMBER        CT16B1_IRQn
 #define SN32_CT16B2_NUMBER        CT16B2_IRQn
+
+#define SN32_HAS_CT16B0           TRUE
+#define SN32_HAS_CT16B1           TRUE
+#define SN32_HAS_CT16B2           TRUE
 
 /*
  * CT32 units.
@@ -110,11 +121,16 @@
 #define SN32_CT32B1_NUMBER        CT32B1_IRQn
 #define SN32_CT32B2_NUMBER        CT32B2_IRQn
 
+#define SN32_HAS_CT32B0           TRUE
+#define SN32_HAS_CT32B1           TRUE
+#define SN32_HAS_CT32B2           TRUE
+
 /*
  * ADC unit.
  */
 #define SN32_ADC_HANDLER          VectorA0
 #define SN32_ADC_NUMBER           ADC_IRQn
+#define SN32_HAS_ADC              TRUE
 
 /*
  * WDT unit.
@@ -140,6 +156,12 @@
 #define SN32_GPIOC_NUMBER         P2_IRQn
 #define SN32_GPIOB_NUMBER         P1_IRQn
 #define SN32_GPIOA_NUMBER         P0_IRQn
+
+#define SN32_HAS_GPIOD            TRUE
+#define SN32_HAS_GPIOC            TRUE
+#define SN32_HAS_GPIOB            TRUE
+#define SN32_HAS_GPIOA            TRUE
+
 /*===========================================================================*/
 /* Common.                                                                   */
 /*===========================================================================*/
