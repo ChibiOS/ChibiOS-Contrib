@@ -24,6 +24,7 @@ HALCONF := $(strip $(shell cat $(HALCONFDIR)/halconf.h | egrep -e "\#define"))
 endif
 
 # Drivers compatible with the platform.
+include $(CHIBIOS_CONTRIB)/os/hal/ports/AT32/LLD/DMAv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/AT32/LLD/GPIOv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/AT32/LLD/OTGv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/AT32/LLD/SYSTICKv1/driver.mk

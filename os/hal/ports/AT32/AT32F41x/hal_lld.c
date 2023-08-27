@@ -95,13 +95,13 @@ static void hal_lld_battery_powered_domain_init(void) {
 /*===========================================================================*/
 
 #if defined(AT32_DMA_REQUIRED) || defined(__DOXYGEN__)
-#if defined(AT32_DMA2_CH45_HANDLER) || defined(__DOXYGEN__)
+#if defined(AT32_DMA2_CH4_5_HANDLER) || defined(__DOXYGEN__)
 /**
  * @brief   DMA2 streams 4 and 5 shared ISR.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(AT32_DMA2_CH45_HANDLER) {
+OSAL_IRQ_HANDLER(AT32_DMA2_CH4_5_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
@@ -113,7 +113,27 @@ OSAL_IRQ_HANDLER(AT32_DMA2_CH45_HANDLER) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* defined(AT32_DMA2_CH45_HANDLER) */
+#endif /* defined(AT32_DMA2_CH4_5_HANDLER) */
+
+#if defined(AT32_DMA2_CH6_7_HANDLER) || defined(__DOXYGEN__)
+/**
+ * @brief   DMA2 streams 6 and 7 shared ISR.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_DMA2_CH6_7_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  /* Check on channel 6 of DMA2.*/
+  dmaServeInterrupt(AT32_DMA2_STREAM6);
+
+  /* Check on channel 7 of DMA2.*/
+  dmaServeInterrupt(AT32_DMA2_STREAM7);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* defined(AT32_DMA2_CH6_7_HANDLER) */
 #endif /* defined(AT32_DMA_REQUIRED) */
 
 /*===========================================================================*/
