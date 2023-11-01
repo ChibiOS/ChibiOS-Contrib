@@ -346,7 +346,7 @@ static void anjay_async_test(void) {
     goto err;
   }
 
-  uint8_t __read_payload[64];
+  uint8_t __read_payload[64] = {0};
   avs_payload_buffer_t read_payload = { .buffer = __read_payload, .length = sizeof(__read_payload), };
 
   if (!avs_coap_exchange_id_valid(id)) {
@@ -478,7 +478,7 @@ static void anjay_async_tcp_test(void) {
     goto err;
   }
 
-  uint8_t __read_payload[64];
+  uint8_t __read_payload[64] = {0};
   avs_payload_buffer_t read_payload = { .buffer = __read_payload, .length = sizeof(__read_payload), };
 
   if (!avs_coap_exchange_id_valid(id)) {
@@ -631,7 +631,7 @@ static void ssl_psk_anjay_async_test(void) {
     goto err;
   }
 
-  uint8_t __read_payload[64];
+  uint8_t __read_payload[64] = {0};
   avs_payload_buffer_t read_payload = { .buffer = __read_payload, .length = sizeof(__read_payload), };
 
   if (!avs_coap_exchange_id_valid(id)) {
@@ -790,7 +790,7 @@ static void ssl_x509_anjay_async_test(void) {
     goto err;
   }
 
-  uint8_t __read_payload[64];
+  uint8_t __read_payload[64] = {0};
   avs_payload_buffer_t read_payload = { .buffer = __read_payload, .length = sizeof(__read_payload), };
 
   if (!avs_coap_exchange_id_valid(id)) {
