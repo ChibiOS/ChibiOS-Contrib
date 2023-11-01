@@ -154,13 +154,13 @@ typedef struct {
  * @brief   Low level fields of the MAC transmit descriptor structure.
  */
 #define mac_lld_transmit_descriptor_fields                                  \
-  const ETHSPIConfig            *spi_config
+  MACDriver                     *macp
 
 /**
  * @brief   Low level fields of the MAC receive descriptor structure.
  */
 #define mac_lld_receive_descriptor_fields                                  \
-  const ETHSPIConfig            *spi_config
+  MACDriver                     *macp
 
 /*===========================================================================*/
 /* External declarations.                                                    */

@@ -28,11 +28,21 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#define W5500_CHIP_ID              0x04
+/**
+ * @brief    W5500 chip ID.
+ */
+#define W5500_CHIP_ID               0x04
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
+
+/**
+ * @brief    Size of ethernet frame without FCS: MTU + VLAN tag = 1500 + 4.
+ */
+#if !defined(W5500_ETH_MAX_FRAME_SIZE)
+#define W5500_ETH_MAX_FRAME_SIZE    1504
+#endif
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */

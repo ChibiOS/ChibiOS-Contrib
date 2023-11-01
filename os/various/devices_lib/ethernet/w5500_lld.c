@@ -27,6 +27,8 @@
 #define W5500_MSB(n)               (((n) >> 8) & 0xFF)
 #define W5500_LSB(n)               (((n) >> 0) & 0xFF)
 
+#define W5500_RX_FRAME_HEADER_SIZE 2
+
 #define W5500_RWB_READ             (0x00 << 2) //< Read Access Mode Bit
 #define W5500_RWB_WRITE            (0x01 << 2) //< Write Access Mode Bit
 
@@ -501,29 +503,23 @@ static uint16_t w5500_lld_get_tx_ptr(SPIDriver *spi) {
 }
 
 
-static size_t w5500_lld_write_transmit(SPIDriver *spi, const void *txbuf, size_t n) {
+static size_t w5500_lld_write_transmit(MACTransmitDescriptor *tdp, const void *txbuf, size_t size) {
 
-  uint16_t ptr = w5500_lld_get_tx_ptr(spi);
-  w5500_write(spi, ptr, W5500P_BSB_TX_BUF, n, txbuf);
-  ptr = (size_t)ptr + n;
+  SPIDriver *spi = tdp->macp->spi_config->driver;
+  uint16_t ptr;
+
+  if (size > tdp->size) size = tdp->size;
+
+  ptr = tdp->offset;
+  w5500_write(spi, ptr, W5500P_BSB_TX_BUF, size, txbuf);
+
+  ptr = (size_t)ptr + size;
   w5500_write16(spi, W5500_IO_SN_TX_WR, W5500P_BSB_SOCKET, ptr);
-  w5500_write8(spi, W5500_IO_SN_CR, W5500P_BSB_SOCKET, W5500_SN_CR_SEND);
 
-  while (true) {
-    uint8_t status = w5500_read8(spi, W5500_IO_SN_IR, W5500P_BSB_SOCKET);
+  tdp->offset = ptr;
+  tdp->size = tdp->size - size;
 
-    if (status & W5500_SN_IR_TIMEOUT) {
-      w5500_write8(spi, W5500_IO_SN_IR, W5500P_BSB_SOCKET, W5500_SN_IR_TIMEOUT);
-      return 0;
-    }
-
-    if (status & W5500_SN_IR_SEND_OK) {
-      w5500_write8(spi, W5500_IO_SN_IR, W5500P_BSB_SOCKET, W5500_SN_IR_SEND_OK);
-      break;
-    }
-  }
-
-  return n;
+  return size;
 }
 
 
@@ -537,23 +533,24 @@ static uint16_t w5500_lld_get_rx_ptr(SPIDriver *spi) {
 }
 
 
-static size_t w5500_lld_read_receive(SPIDriver *spi, void *rxbuf, size_t n) {
+static size_t w5500_lld_read_receive(MACReceiveDescriptor *rdp, void *rxbuf, size_t size) {
 
-  uint16_t ptr = w5500_lld_get_rx_ptr(spi);
+  SPIDriver *spi = rdp->macp->spi_config->driver;
+  uint16_t ptr = rdp->offset;
 
-  /* First two bytes contain the length of data that is following.
-   * The length itself is not really useful, so skip it. */
-#define W5500_RX_FRAME_HEADER_SIZE 2
-  ptr += W5500_RX_FRAME_HEADER_SIZE;
-  n -= W5500_RX_FRAME_HEADER_SIZE;
+  if (size > rdp->size) size = rdp->size;
 
-  w5500_read(spi, ptr, W5500P_BSB_RX_BUF, n, rxbuf);
-  ptr = (size_t)ptr + n;
+  w5500_read(spi, ptr, W5500P_BSB_RX_BUF, size, rxbuf);
+  ptr = (size_t)ptr + size;
   w5500_write16(spi, W5500_IO_SN_RX_RD, W5500P_BSB_SOCKET, ptr);
   w5500_write8(spi, W5500_IO_SN_CR, W5500P_BSB_SOCKET, W5500_SN_CR_RECV);
 
-  return n;
+  rdp->offset = ptr;
+  rdp->size = rdp->size - size;
+
+  return size;
 }
+
 
 static uint16_t w5500_lld_get_rx_frame_length(SPIDriver *spi) {
 
@@ -567,9 +564,7 @@ static uint16_t w5500_lld_get_rx_frame_length(SPIDriver *spi) {
     return 0;
   }
 
-#define MAX_ETH_FRAME_SIZE 1518
-
-  if (bytes_received > (MAX_ETH_FRAME_SIZE + W5500_RX_FRAME_HEADER_SIZE)) {
+  if (bytes_received > (W5500_RX_FRAME_HEADER_SIZE + W5500_ETH_MAX_FRAME_SIZE)) {
     /* Skip all rx data. */
     uint16_t ptr = w5500_lld_get_rx_ptr(spi);
     ptr = (size_t)ptr + bytes_received;
@@ -578,10 +573,21 @@ static uint16_t w5500_lld_get_rx_frame_length(SPIDriver *spi) {
     return 0;
   }
 
-#undef W5500_RX_FRAME_HEADER_SIZE
-#undef MAX_ETH_FRAME_SIZE
+  bytes_received = bytes_received - W5500_RX_FRAME_HEADER_SIZE;
 
   return bytes_received;
+}
+
+
+static uint16_t w5500_lld_get_rx_ptr_skip_eth_header_size(SPIDriver *spi) {
+
+  uint16_t ptr = w5500_lld_get_rx_ptr(spi);
+
+  ptr = (size_t)ptr + W5500_RX_FRAME_HEADER_SIZE;
+  w5500_write16(spi, W5500_IO_SN_RX_RD, W5500P_BSB_SOCKET, ptr);
+  w5500_write8(spi, W5500_IO_SN_CR, W5500P_BSB_SOCKET, W5500_SN_CR_RECV);
+
+  return ptr;
 }
 
 
@@ -657,7 +663,7 @@ msg_t mac_lld_get_transmit_descriptor(MACDriver *macp,
 
   tdp->offset = w5500_lld_get_tx_ptr(spi);
   tdp->size = bytes_free;
-  tdp->spi_config = macp->spi_config;
+  tdp->macp = macp;
 
   return MSG_OK;
 }
@@ -672,11 +678,11 @@ msg_t mac_lld_get_transmit_descriptor(MACDriver *macp,
  */
 void mac_lld_release_transmit_descriptor(MACTransmitDescriptor *tdp) {
 
-  SPIDriver *spi = tdp->spi_config->driver;
+  SPIDriver *spi = tdp->macp->spi_config->driver;
 
   tdp->offset = 0;
   tdp->size = 0;
-  tdp->spi_config = NULL;
+  tdp->macp = NULL;
 
   w5500_write8(spi, W5500_IO_SN_CR, W5500P_BSB_SOCKET, W5500_SN_CR_SEND);
 
@@ -715,19 +721,22 @@ msg_t mac_lld_get_receive_descriptor(MACDriver *macp,
 
   SPIDriver *spi = macp->spi_config->driver;
 
-  if (macp->irq_unhandled) {
-    macp->irq_unhandled = false;
-    w5500_lld_clear_pending_irqs(spi);
-  }
-
   size_t eth_frame_length = w5500_lld_get_rx_frame_length(spi);
 
-  if (eth_frame_length == 0)
-    return MSG_TIMEOUT;
+  if (eth_frame_length == 0) {
+    /* IRQ flag is still pending and needs to be removed if something
+       went wrong. */
+    if (macp->irq_unhandled) {
+      macp->irq_unhandled = false;
+      w5500_lld_clear_pending_irqs(spi);
+    }
 
-  rdp->offset = w5500_lld_get_rx_ptr(spi);
+    return MSG_TIMEOUT;
+  }
+
+  rdp->offset = w5500_lld_get_rx_ptr_skip_eth_header_size(spi);
   rdp->size = eth_frame_length;
-  rdp->spi_config = macp->spi_config;
+  rdp->macp = macp;
 
   return MSG_OK;
 }
@@ -743,9 +752,17 @@ msg_t mac_lld_get_receive_descriptor(MACDriver *macp,
  */
 void mac_lld_release_receive_descriptor(MACReceiveDescriptor *rdp) {
 
+  MACDriver *macp = rdp->macp;
+  SPIDriver *spi = macp->spi_config->driver;
+
+  if (macp->irq_unhandled) {
+    macp->irq_unhandled = false;
+    w5500_lld_clear_pending_irqs(spi);
+  }
+
   rdp->offset = 0;
   rdp->size = 0;
-  rdp->spi_config = NULL;
+  rdp->macp = NULL;
 }
 
 /**
@@ -781,21 +798,7 @@ size_t mac_lld_write_transmit_descriptor(MACTransmitDescriptor *tdp,
                                          uint8_t *buf,
                                          size_t size) {
 
-  SPIDriver *spi = tdp->spi_config->driver;
-  uint16_t ptr;
-
-  if (size > tdp->size) size = tdp->size;
-
-  ptr = tdp->offset;
-  w5500_write(spi, ptr, W5500P_BSB_TX_BUF, size, buf);
-
-  ptr = (size_t)ptr + size;
-  w5500_write16(spi, W5500_IO_SN_TX_WR, W5500P_BSB_SOCKET, ptr);
-
-  tdp->offset = ptr;
-  tdp->size = tdp->size - size;
-
-  return size;
+  return w5500_lld_write_transmit(tdp, buf, size);
 }
 
 /**
@@ -815,11 +818,5 @@ size_t mac_lld_read_receive_descriptor(MACReceiveDescriptor *rdp,
                                        uint8_t *buf,
                                        size_t size) {
 
-  SPIDriver *spi = rdp->spi_config->driver;
-  size_t n = w5500_lld_read_receive(spi, buf, size);
-
-  rdp->offset = w5500_lld_get_rx_ptr(spi);
-  rdp->size = w5500_lld_get_rx_frame_length(spi);
-
-  return n;
+  return w5500_lld_read_receive(rdp, buf, size);
 }
