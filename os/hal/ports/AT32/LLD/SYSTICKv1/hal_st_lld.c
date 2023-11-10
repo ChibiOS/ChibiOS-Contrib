@@ -40,8 +40,10 @@
 
 #if (OSAL_ST_RESOLUTION == 32)
 #define ST_PR_INIT                          0xFFFFFFFFU
+#define ST_CTRL1_INIT                       0x00000400U
 #else
 #define ST_PR_INIT                          0x0000FFFFU
+#define ST_CTRL1_INIT                       0x00000000U
 #endif
 
 #if AT32_ST_USE_TIMER == 2
@@ -253,6 +255,7 @@ void st_lld_init(void) {
   ST_ENABLE_PAUSE();
 
   /* Initializing the counter in free running mode.*/
+  AT32_ST_TMR->CTRL1  = ST_CTRL1_INIT;
   AT32_ST_TMR->DIV    = (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1;
   AT32_ST_TMR->PR     = ST_PR_INIT;
   AT32_ST_TMR->CM1    = 0;
@@ -269,7 +272,7 @@ void st_lld_init(void) {
   AT32_ST_TMR->IDEN   = 0;
   AT32_ST_TMR->CTRL2  = 0;
   AT32_ST_TMR->SWEVT  = AT32_TMR_SWEVT_OVFSWTR;
-  AT32_ST_TMR->CTRL1  = AT32_TMR_CTRL1_TMREN;
+  AT32_ST_TMR->CTRL1 |= AT32_TMR_CTRL1_TMREN;
 
 #if !defined(AT32_SYSTICK_SUPPRESS_ISR)
   /* IRQ enabled.*/

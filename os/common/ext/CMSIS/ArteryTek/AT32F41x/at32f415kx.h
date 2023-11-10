@@ -4471,9 +4471,9 @@ typedef struct
 /*!< MDIV configuration */
 #define SPI_CTRL1_MDIV_Msk                  ((SPI_CTRL2_MDIV) | (0x7U << 3)         /*!< 0x00000138 */
 #define SPI_CTRL1_MDIV                      SPI_CTRL1_MDIV_Msk                      /*!< MDIV[3:0] bits (Master clock frequency division) */
-#define SPI_CTRL1_MDIV_0                    (0x1U << SPI_CTRL1_MDIV_Pos)            /*!< 0x00000008 */
-#define SPI_CTRL1_MDIV_1                    (0x2U << SPI_CTRL1_MDIV_Pos)            /*!< 0x00000010 */
-#define SPI_CTRL1_MDIV_2                    (0x4U << SPI_CTRL1_MDIV_Pos)            /*!< 0x00000020 */
+#define SPI_CTRL1_MDIV_0                    (0x1U << 3)                             /*!< 0x00000008 */
+#define SPI_CTRL1_MDIV_1                    (0x2U << 3)                             /*!< 0x00000010 */
+#define SPI_CTRL1_MDIV_2                    (0x4U << 3)                             /*!< 0x00000020 */
 #define SPI_CTRL1_MDIV_3                    SPI_CTRL2_MDIV                          /*!< 0x00000100 */
 
 #define SPI_CTRL1_SPIEN_Pos                 (6U)
