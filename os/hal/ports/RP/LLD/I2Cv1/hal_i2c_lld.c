@@ -175,45 +175,51 @@ void i2c_lld_handle_errors(I2CDriver *i2cp) {
  */
 static void i2c_lld_setup_frequency(I2CDriver *i2cp) {
   I2C_TypeDef *dp = i2cp->i2c;
-  /*                [us]    SS   FS  FS+
-   *  MIN_SCL_LOWtime_FS:  4.7  1.3  0.5
-   * MIN_SCL_HIGHtime_FS:  4.0  0.6  0.26
-   *             max tSP:    -  0.05 0.05
-   *         min tSU:DAT: 0.25  0.1  0.05
-   *             tHD:DAT:  0    0    0
-   */
 
-  uint32_t minLowfs, minHighfs;
-  uint32_t baudrate = i2cp->config->baudrate;
+  halfreq_t freq_in = halClockGetPointX(clk_sys);
+
+  const uint32_t baudrate = i2cp->config->baudrate;
+  const uint32_t period = (freq_in + baudrate / 2U) / baudrate;
+
+  uint32_t lcnt, hcnt, sda_tx_hold_count;
+
   if (baudrate <= 100000U) {
-    // ns
-    minLowfs = 4700U;
-    minHighfs = 4000U;
+    /* Standard Mode: H: 4000ns, L: 4700ns ~ 0.54 */
+    lcnt = period * 54U / 100U;
   } else if (baudrate <= 400000U) {
-    minLowfs = 1300U;
-    minHighfs = 600U;
+    /* Fast Mode: H: 600ns, L: 1300ns ~ 0.68 */
+    lcnt = period * 68U / 100U;
   } else {
-    minLowfs = 500U;
-    minHighfs = 260U;
+    /* Fast Mode Plus: H: 500ns, L: 760ns ~ 0.60 */
+    lcnt = period * 60U / 100U;
   }
+  hcnt = period - lcnt;
 
-  halfreq_t sys_clk = halClockGetPointX(clk_sys) / 100000;
-  uint32_t hcntfs = (minHighfs * sys_clk) / 10000U + 1U;
-  uint32_t lcntfs = (minLowfs * hcntfs) / ((10000000U / baudrate) * 100U - minLowfs) + 1U;
+  osalDbgAssert((lcnt >= 8) &&
+                (lcnt <= I2C_IC_FS_SCL_LCNT) &&
+                (hcnt >= 8) &&
+                (hcnt <= I2C_IC_FS_SCL_HCNT),
+                "Invalid I2C clock parameters.");
 
-  uint32_t sdahd = 0U;
   if (baudrate < 1000000U) {
-    sdahd = (sys_clk * 3U) / 100U + 1U;
+      /* Standard and Fast Mode: */
+      /* sda_tx_hold_count = freq_in [cycles/s] * 300ns * (1s / 1e9ns)
+       * Reduce 300/1e9 to 3/1e7 to avoid numbers that don't fit in u32.
+       * Add 1 to avoid division truncation. */
+      sda_tx_hold_count = ((freq_in * 3U) / 10000000U) + 1U;
   } else {
-    sdahd = (sys_clk * 3U) / 250U + 1U;
+      /* Fast Mode Plus: */
+      /* sda_tx_hold_count = freq_in [cycles/s] * 120ns * (1s / 1e9ns)
+       * Reduce 120/1e9 to 3/25e6 to avoid numbers that don't fit in u32.
+       * Add 1 to avoid division truncation. */
+      sda_tx_hold_count = ((freq_in * 3U) / 25000000U) + 1U;
   }
+  osalDbgCheck(sda_tx_hold_count <= lcnt - 2U);
 
-  /* Always Fast Mode */
-  dp->FSSCLHCNT = hcntfs - 7U;
-  dp->FSSCLLCNT = lcntfs - 1U;
-  dp->FSSPKLEN = 2U;
-
-  dp->SDAHOLD |= sdahd & I2C_IC_SDA_HOLD_IC_SDA_TX_HOLD;
+  dp->FSSCLHCNT = hcnt & I2C_IC_FS_SCL_HCNT;
+  dp->FSSCLLCNT = lcnt & I2C_IC_FS_SCL_LCNT;
+  dp->FSSPKLEN = (lcnt < 16 ? 1 : lcnt / 16) & I2C_IC_FS_SPKLEN_IC_FS_SPKLEN;
+  dp->SDAHOLD = sda_tx_hold_count & I2C_IC_SDA_HOLD_IC_SDA_TX_HOLD;
 }
 
 /**
