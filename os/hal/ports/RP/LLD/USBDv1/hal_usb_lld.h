@@ -132,14 +132,6 @@ typedef struct {
    */
   size_t                        txlast;
   /**
-   * @brief   Endpoint is active.
-   */
-  bool                          active;
-  /**
-   * @brief   Endpoint is stalled.
-   */
-  bool                          stalled;
-  /**
    * @brief   Data PID used by next transfer.
    */
   uint8_t                       next_pid;
@@ -180,14 +172,6 @@ typedef struct {
    * @brief   Number of packets to receive.
    */
   uint16_t                      rxpkts;
-  /**
-   * @brief   Endpoint is active.
-   */
-  bool                          active;
-  /**
-   * @brief   Endpoint is stalled.
-   */
-  bool                          stalled;
   /**
    * @brief   Data PID used by next transfer.
    */
