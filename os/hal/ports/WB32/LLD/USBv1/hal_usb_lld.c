@@ -501,6 +501,16 @@ OSAL_IRQ_HANDLER(WB32_USB1_IRQ_VECTOR) {
 
   /* SOF handling.*/
   if (IntrUSB & USB_INTRUSB_SOFIS) {
+
+    /* SOF interrupt was used to detect resume of the USB bus after issuing a
+       remote wake up of the host, therefore we disable it again.*/
+    if (USBD1.config->sof_cb == NULL) {
+      WB32_USB->INTRUSBE &= ~USB_INTRUSBE_SOFIE;
+    }
+    if (USBD1.state == USB_SUSPENDED) {
+      _usb_wakeup(&USBD1);
+    }
+
     /* sof hook function */
     _usb_isr_invoke_sof_cb(&USBD1);
   }

@@ -114,7 +114,7 @@ static void i2c_lld_configuration(I2CDriver *i2cp) {
 
   osalDbgCheck((i2cp != NULL) &&
                (clock_speed > 0) &&
-               (clock_speed <= 400000));
+               (clock_speed <= 3400000));
 
   con_reg = I2C_CON_SLAVE_DISABLE | I2C_CON_RESTART_EN | I2C_CON_MASTER_MODE;
 
@@ -146,6 +146,12 @@ static void i2c_lld_configuration(I2CDriver *i2cp) {
   else if (clock_speed <= 400000) {
     con_reg |= I2C_CON_SPEED_FAST;
     dp->SDA_SETUP = (uint32_t)(WB32_PCLK2 / 1000000 * 0.15); // 150ns
+    dp->FS_SCL_HCNT = (uint32_t)(tval - 7 - dp->FS_SPKLEN);
+    dp->FS_SCL_LCNT = (uint32_t)(tval - 1);
+  }
+  else if (clock_speed <= 3400000) {
+    con_reg |= I2C_CON_SPEED_HIGH;
+    dp->SDA_SETUP = (uint32_t)(WB32_PCLK2 / 1000000 * 0.01); // 10ns
     dp->FS_SCL_HCNT = (uint32_t)(tval - 7 - dp->FS_SPKLEN);
     dp->FS_SCL_LCNT = (uint32_t)(tval - 1);
   }
