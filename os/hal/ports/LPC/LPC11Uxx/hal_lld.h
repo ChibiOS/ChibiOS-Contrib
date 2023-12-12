@@ -46,6 +46,30 @@
 #define LPC_IRC_FREQUENCY   12000000UL // 12MHz
 /** @} */
 
+/* set_pll mode options */
+#define CPU_FREQ_EQU        0
+#define CPU_FREQ_LTE        1
+#define CPU_FREQ_GTE        2 
+#define CPU_FREQ_APPROX     3
+
+/* set_pll result0 options */
+#define PLL_CMD_SUCCESS     0
+#define PLL_INVALID_FREQ    1
+#define PLL_INVALID_MODE    2
+#define PLL_FREQ_NOT_FOUND  3
+#define PLL_NOT_LOCKED      4
+
+/* set_power mode options */
+#define PWR_DEFAULT         0
+#define PWR_CPU_PERFORMANCE 1
+#define PWR_EFFICIENCY      2
+#define PWR_LOW_CURRENT     3
+
+/* set_power result0 options */
+#define PWR_CMD_SUCCESS     0
+#define PWR_INVALID_FREQ    1
+#define PWR_INVALID_MODE    2
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
@@ -130,6 +154,18 @@ SYSCON_MAINCLKSEL_PLLIN, SYSCON_MAINCLKSEL_WATCHDOG, SYSCON_MAINCLKSEL_PLLOUT"
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
+typedef struct _PWRD {
+    void (*set_pll)(unsigned int cmd[], unsigned int resp[]);
+    void (*set_power)(unsigned int cmd[], unsigned int resp[]);
+} PWRD;
+
+typedef struct _ROM {
+    const void *drv000;
+    const void *drv001;
+    const void *drv002;
+    const PWRD *pWRD;
+} ROM;
+
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
@@ -138,7 +174,7 @@ SYSCON_MAINCLKSEL_PLLIN, SYSCON_MAINCLKSEL_WATCHDOG, SYSCON_MAINCLKSEL_PLLOUT"
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
-
+#define CPU_CLOCK  LPC_SYS_FREQUENCY
 
 /*===========================================================================*/
 /* External declarations.                                                    */

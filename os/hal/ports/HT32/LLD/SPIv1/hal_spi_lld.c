@@ -76,8 +76,14 @@ static void spi_lld_tx(SPIDriver * const spip) {
 
     while (spip->txcnt) {
         sr = spip->SPI->SR;
-        if ((sr & SPI_SR_TXBE) == 0)
-            return;
+        // avoid write collision
+        if (spip->SPI->FCR & SPI_FCR_FIFOEN) {
+            if ((sr & SPI_SR_TXBE) == 0)
+                return;
+        } else {
+            if ((sr & SPI_SR_TXE) == 0)
+                return;
+        }
         if (spip->txptr) {
             fd = *spip->txptr++;
         } else {
@@ -260,7 +266,7 @@ void spi_lld_exchange(SPIDriver *spip, size_t n,
     spip->txptr = txbuf;
     spip->rxptr = rxbuf;
     spip->rxcnt = spip->txcnt = n;
-    spip->SPI->IER = SPI_IER_RXBNEIEN | SPI_IER_TXBEIEN;
+    spip->SPI->IER = SPI_IER_RXBNEIEN | SPI_IER_TXBEIEN | SPI_IER_TXEIEN;
 }
 
 /**

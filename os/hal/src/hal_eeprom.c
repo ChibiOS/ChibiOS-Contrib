@@ -136,7 +136,7 @@ size_t EepromWriteWord(EepromFileStream *efs, uint32_t data) {
 }
 
 msg_t eepfs_getsize(void *ip, fileoffset_t *offset) {
-
+  (void)offset;
   uint32_t h, l;
 
   osalDbgCheck((ip != NULL) && (((EepromFileStream *)ip)->vmt != NULL) &&
@@ -148,7 +148,7 @@ msg_t eepfs_getsize(void *ip, fileoffset_t *offset) {
 }
 
 msg_t eepfs_getposition(void *ip, fileoffset_t *offset) {
-
+  (void)offset;
   osalDbgCheck((ip != NULL) && (((EepromFileStream *)ip)->vmt != NULL));
 
   return ((EepromFileStream *)ip)->position;

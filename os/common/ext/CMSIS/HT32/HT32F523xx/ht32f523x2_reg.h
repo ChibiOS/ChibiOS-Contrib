@@ -477,6 +477,7 @@ typedef struct {
 #define SPI_CR1_FORMAT_MODE2        (0x6U << 8)
 #define SPI_CR1_FORMAT_MODE3        (0x5U << 8)
 #define SPI_IER_RXBNEIEN            (1U << 2)
+#define SPI_IER_TXEIEN              (1U << 1)
 #define SPI_IER_TXBEIEN             (1U << 0)
 #define SPI_SR_RXBNE                (1U << 2)
 #define SPI_SR_TXE                  (1U << 1)

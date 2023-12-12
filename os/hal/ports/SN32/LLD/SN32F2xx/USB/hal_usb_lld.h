@@ -390,6 +390,9 @@ struct USBDriver {
 #define usb_lld_wakeup_host(usbp)                                           \
   do {                                                                      \
     SN32_USB->SGCTL = (mskBUS_DRVEN|mskBUS_K_STATE);                        \
+    /* remote wakeup doesn't trigger the wakeup interrupt, therefore        \
+     * we use the SOF interrupt to detect resume of the bus. */             \
+    SN32_USB->INTEN |= mskUSB_SOF_IE;                                       \
     osalThreadSleepMilliseconds(SN32_USB_HOST_WAKEUP_DURATION);             \
     SN32_USB->SGCTL &= ~mskBUS_DRVEN;                                       \
   } while (false)
