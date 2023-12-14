@@ -82,6 +82,9 @@
 #if !defined(STM32_OTG2_USE_HS)
 #define STM32_OTG2_USE_HS FALSE
 #endif
+#if !defined(STM32_OTG1_USE_ULPI)
+#define STM32_OTG1_USE_ULPI FALSE
+#endif
 #if !defined(STM32_OTG2_USE_ULPI)
 #define STM32_OTG2_USE_ULPI FALSE
 #endif
