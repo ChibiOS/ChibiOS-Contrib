@@ -764,7 +764,7 @@
 #endif
 
 /**
- * @brief   Timers 2, 3, 4, 5, 6, 7, 12, 13, 14 clock.
+ * @brief   Timers 2, 3, 4, 5 clock.
  */
 #if (AT32_APB1DIV == AT32_APB1DIV_DIV1) || defined(__DOXYGEN__)
 #define AT32_TMRCLK1                (AT32_PCLK1 * 1)
@@ -773,7 +773,7 @@
 #endif
 
 /**
- * @brief   Timers 1, 8, 9, 10, 11 clock.
+ * @brief   Timers 1, 9, 10, 11 clock.
  */
 #if (AT32_APB2DIV == AT32_APB2DIV_DIV1) || defined(__DOXYGEN__)
 #define AT32_TMRCLK2                (AT32_PCLK2 * 1)
