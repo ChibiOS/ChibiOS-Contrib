@@ -516,7 +516,6 @@
 #elif WB32_RTCSEL == WB32_RTCSEL_NOCLOCK
 #define WB32_RTCCLK                            0
 #else
-#error "invalid source selected for RTC clock"
 #endif
 
 /**

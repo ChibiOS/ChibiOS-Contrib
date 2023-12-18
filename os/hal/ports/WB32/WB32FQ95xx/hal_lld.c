@@ -45,6 +45,55 @@ uint32_t SystemCoreClock = WB32_MAINCLK;
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
+
+/**
+ * @brief   Initializes the backup domain.
+ * @note    WARNING! Changing clock source impossible without resetting
+ *          of the whole BKP domain.
+ */
+static void hal_lld_backup_domain_init(void) {
+
+  /* Turn on the backup domain clock.*/
+  rccEnableBKPInterface();
+
+#if HAL_USE_RTC
+  /* Reset BKP domain if different clock source selected.*/
+  if ((BKP->BDCR & WB32_RTCSEL_MASK) != WB32_RTCSEL) {
+    /* Backup domain reset.*/
+    RCC->BDRSTR = 0x1U;
+    RCC->BDRSTR = 0x0U;
+  }
+
+  /* If enabled then the LSE is started.*/
+#if WB32_LSE_ENABLED
+#if defined(WB32_LSE_BYPASS)
+  /* LSE Bypass.*/
+  BKP->BDCR = RCC_BDCR_LSEON;
+#else
+  /* No LSE Bypass.*/
+  BKP->BDCR = BKP_LSE_Bypass;
+#endif
+  while ((BKP->BDCR & 0x2U) == 0)
+    ;                                     /* Waits until LSE is stable.   */
+#endif /* WB32_LSE_ENABLED */
+
+#if WB32_RTCSEL != WB32_RTCSEL_NOCLOCK
+  /* If the backup domain hasn't been initialized yet then proceed with
+     initialization.*/
+  if ((RCC->BDRSTR & 0x1U) == 0) {
+    /* Selects clock source.*/
+    BKP->BDCR |= WB32_RTCSEL;
+
+    /* Prescaler value loaded in registers.*/
+    rtc_lld_set_prescaler();
+
+    /* RTC clock enabled.*/
+    BKP->BDCR |= 0x1U;
+  }
+#endif /* WB32_RTCSEL != WB32_RTCSEL_NOCLOCK */
+#endif /* HAL_USE_RTC */
+}
+
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
@@ -62,6 +111,9 @@ void hal_lld_init(void) {
 
   void SystemCoreClockUpdate(void);
   SystemCoreClockUpdate();
+
+  /* Initializes the backup domain.*/
+  hal_lld_backup_domain_init();
 }
 
 /**
@@ -253,6 +305,21 @@ void wb32_clock_init(void) {
   PWR->ANAKEY2 = 0x00;
 
   SetSysClock();
+
+#if WB32_LSI_ENABLED == TRUE
+  /* Unlocks write to ANCTL registers */
+  PWR->ANAKEY1 = 0x03;
+  PWR->ANAKEY2 = 0x0C;
+
+  /* LSI activation.*/
+  ANCTL->LSIENR |= 0x1;
+  while ((ANCTL->LSISR & 0x1) == 0)
+    ;                                       /* Waits until LSI is stable.   */
+
+  /* Locks write to ANCTL registers */
+  PWR->ANAKEY1 = 0x00;
+  PWR->ANAKEY2 = 0x00;
+#endif
 
   rccEnableAPB1(RCC_APB1ENR_BMX1EN);
   rccEnableAPB2(RCC_APB2ENR_BMX2EN);
