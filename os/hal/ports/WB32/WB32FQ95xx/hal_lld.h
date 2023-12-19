@@ -596,6 +596,7 @@ extern "C" {
 #endif
   void hal_lld_init(void);
   void wb32_clock_init(void);
+  void wb32_set_main_clock_to_mhsi(void);
 #ifdef __cplusplus
 }
 #endif

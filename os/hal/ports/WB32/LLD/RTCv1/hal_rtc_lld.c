@@ -245,24 +245,54 @@ void rtc_lld_init(void) {
 
   /* RTC pointer initialization.*/
   RTCD1.rtc = RTC;
-  
+
+  /* RSF bit must be cleared by software after an APB1 reset or an APB1 clock
+     stop. Otherwise its value will not be actual. */
+  RTCD1.rtc->CRL &= ~RTC_CRL_RSF;
+
+  /* Required because access to PRL.*/
+  rtc_apb1_sync();
+
+  /* All interrupts initially disabled.*/
+  rtc_wait_write_completed();
+  RTCD1.rtc->CRH |= 2;
+
+  /* Callback initially disabled.*/
+  RTCD1.callback = NULL;
+
+  /* IRQ vector permanently assigned to this driver.*/
+  nvicEnableVector(WB32_RTC_NUMBER, WB32_RTC_IRQ_PRIORITY);
+}
+
+/**
+ * @brief   Initialize RTC_LP.
+ *
+ * @notapi
+ */
+void rtclp_lld_init(void) {
+
+  /* RTC object initialization.*/
+  rtcObjectInit(&RTCD1);
+
+  /* RTC pointer initialization.*/
+  RTCD1.rtc = RTC;
   PWR_BackupAccessEnable();
 
   rccResetBKP();
-  
-#if WB32_RTCSEL == WB32_RTCSEL_HSEDIV
-  RCC->HSE2RTCENR = 1;
-  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x03U << 8);
-#elif WB32_RTCSEL == WB32_RTCSEL_LSE
-  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x02U << 8);
-#elif WB32_RTCSEL == WB32_RTCSEL_LSI
-#error 'The LSI clock cannot be used under normal use of the RTC'
-  // RCC->LSI2RTCENR = 1;
-  // /* Select the RTC clock source */
-  // BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x01U << 8);
-#endif
+  /* Turn on the backup domain clock.*/
+  rccEnableBKPInterface();
 
+  RCC->LSI2RTCENR = 1;
+  /* Select the RTC clock source */
+  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x02U << 8);
+
+  /* Prescaler value loaded in registers.*/
+  rtc_lld_set_prescaler();
+
+  /* RTC clock enabled.*/
   BKP->BDCR |= (1 << 15);
+
+  rccDisableBKPInterface();
   /* RSF bit must be cleared by software after an APB1 reset or an APB1 clock
      stop. Otherwise its value will not be actual. */
   RTCD1.rtc->CRL &= ~RTC_CRL_RSF;
@@ -283,7 +313,6 @@ void rtc_lld_init(void) {
   EXTI->FTSR &= ~(1 << 17);
 
   /* IRQ vector permanently assigned to this driver.*/
-  nvicEnableVector(WB32_RTC_NUMBER, WB32_RTC_IRQ_PRIORITY);
   nvicEnableVector(WB32_RTCAlarm_NUMBER, WB32_RTCAlarm_IRQ_PRIORITY);
 }
 

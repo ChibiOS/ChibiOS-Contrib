@@ -53,45 +53,66 @@ uint32_t SystemCoreClock = WB32_MAINCLK;
  */
 static void hal_lld_backup_domain_init(void) {
 
+  PWR_BackupAccessEnable();
+
+  rccResetBKP();
   /* Turn on the backup domain clock.*/
   rccEnableBKPInterface();
 
 #if HAL_USE_RTC
-  /* Reset BKP domain if different clock source selected.*/
-  if ((BKP->BDCR & WB32_RTCSEL_MASK) != WB32_RTCSEL) {
-    /* Backup domain reset.*/
-    RCC->BDRSTR = 0x1U;
-    RCC->BDRSTR = 0x0U;
-  }
-
   /* If enabled then the LSE is started.*/
-#if WB32_LSE_ENABLED
-#if defined(WB32_LSE_BYPASS)
-  /* LSE Bypass.*/
-  BKP->BDCR = RCC_BDCR_LSEON;
-#else
+#  if WB32_LSE_ENABLED
+#     if defined(WB32_LSE_BYPASS)
   /* No LSE Bypass.*/
   BKP->BDCR = BKP_LSE_Bypass;
-#endif
+#    else
+  /*LSE Bypass.*/
+  BKP->BDCR = (1 << 0);
+#    endif
   while ((BKP->BDCR & 0x2U) == 0)
     ;                                     /* Waits until LSE is stable.   */
-#endif /* WB32_LSE_ENABLED */
+#  endif /* WB32_LSE_ENABLED */
 
-#if WB32_RTCSEL != WB32_RTCSEL_NOCLOCK
-  /* If the backup domain hasn't been initialized yet then proceed with
-     initialization.*/
-  if ((RCC->BDRSTR & 0x1U) == 0) {
-    /* Selects clock source.*/
-    BKP->BDCR |= WB32_RTCSEL;
+#if WB32_RTCSEL == WB32_RTCSEL_HSEDIV
+  RCC->HSE2RTCENR = 1;
+  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x03U << 8);
+#elif WB32_RTCSEL == WB32_RTCSEL_LSE
+  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x01U << 8);
+#elif WB32_RTCSEL == WB32_RTCSEL_LSI || WB32_RTCSEL == WB32_RTCSEL_NOCLOCK
+#  error 'The LSI clock cannot be used under normal use of the RTC'
+#endif
 
     /* Prescaler value loaded in registers.*/
     rtc_lld_set_prescaler();
 
     /* RTC clock enabled.*/
-    BKP->BDCR |= 0x1U;
-  }
-#endif /* WB32_RTCSEL != WB32_RTCSEL_NOCLOCK */
+    BKP->BDCR |= (1 << 15);
+
 #endif /* HAL_USE_RTC */
+
+rccDisableBKPInterface();
+
+}
+
+void wb32_set_main_clock_to_mhsi(void) {
+
+  /* Unlocks write to ANCTL registers */
+  PWR->ANAKEY1 = 0x03;
+  PWR->ANAKEY2 = 0x0C;
+
+  /* Configure Flash prefetch, Cache and wait state */
+  CACHE->CR = CACHE_CR_CHEEN | CACHE_CR_PREFEN_ON | CACHE_CR_LATENCY_0WS;
+
+  /* Select FHSI as system clock source */
+  RCC->MAINCLKSRC = RCC_MAINCLKSRC_MHSI;
+  RCC->MAINCLKUEN = RCC_MAINCLKUEN_ENA;
+
+  /* PLL Disable */
+  RCC->PLLPRE = 0;
+
+  /* Locks write to ANCTL registers */
+  PWR->ANAKEY1 = 0x00;
+  PWR->ANAKEY2 = 0x00;
 }
 
 /*===========================================================================*/

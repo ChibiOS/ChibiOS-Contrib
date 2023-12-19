@@ -130,6 +130,7 @@ extern "C" {
 #endif
   void rtc_lld_set_prescaler(void);
   void rtc_lld_init(void);
+  void rtclp_lld_init(void);
   void rtc_lld_set_time(RTCDriver *rtcp, const RTCDateTime *timespec);
   void rtc_lld_get_time(RTCDriver *rtcp, RTCDateTime *timespec);
   void rtc_lld_set_alarm(RTCDriver *rtcp,

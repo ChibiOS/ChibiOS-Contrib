@@ -31,7 +31,7 @@
 
 
 
-#define TEST_ALARM_WAKEUP     FALSE
+#define TEST_ALARM_WAKEUP     TRUE
 
 #if TEST_ALARM_WAKEUP
 
@@ -185,10 +185,34 @@ int main(void) {
   alarmspec.tv_sec = tv_sec + 20;
   rtcSetAlarm(&RTCD1, 0, &alarmspec);
   rtcSetCallback(&RTCD1, my_cb);
+  
+
   while (true){
     chThdSleepSeconds(10);
 
     chSysDisable();
+    
+    wb32_set_main_clock_to_mhsi();
+    
+#if WB32_HAS_GPIOA
+  rccEnableAPB1(RCC_APB1ENR_GPIOAEN);
+#endif
+
+#if WB32_HAS_GPIOB
+  rccEnableAPB1(RCC_APB1ENR_GPIOBEN);
+#endif
+
+#if WB32_HAS_GPIOC
+  rccEnableAPB1(RCC_APB1ENR_GPIOCEN);
+#endif
+
+#if WB32_HAS_GPIOD
+  rccEnableAPB1(RCC_APB1ENR_GPIODEN);
+#endif
+
+    extern void rtclp_lld_init(void);
+    rtclp_lld_init();
+    rtcSetCallback(&RTCD1, my_cb);
     RTC->CRL &= ~(RTC_CRL_SECF | RTC_CRL_ALRF | RTC_CRL_OWF);
     EXTI->PR = 1 << 17;
     EXTI->IMR |= EXTI_IMR_MR17;
@@ -198,7 +222,7 @@ int main(void) {
  
     extern void __early_init(void);
     __early_init();
-
+    rtc_lld_init();
     rccEnableEXTI();
 
     rccEnableBKP();
@@ -236,7 +260,7 @@ int main(void) {
      palToggleLine(PORTAB_LINE_LED2);
      break;
    case RTC_EVENT_ALARM:
-     //palToggleLine(PORTAB_LINE_LED2);
+     palToggleLine(PORTAB_LINE_LED2);
      osalSysLockFromISR();
      chBSemSignalI(&alarm_sem);
      osalSysUnlockFromISR();
@@ -245,6 +269,11 @@ int main(void) {
  }
 
  static time_measurement_t sett, gett;
+
+void delay(volatile uint32_t n)
+{
+  while(n--);
+}
 
  int main(void) {
 
@@ -294,6 +323,8 @@ int main(void) {
 
    while (true){
       /* Wait until alarm callback signaled semaphore.*/
+//    delay(1500000);
+//    palToggleLine(PORTAB_LINE_LED1);
       status = chBSemWaitTimeout(&alarm_sem, TIME_S2I(RTC_ALARMPERIOD + 5));
 
       if (status == MSG_TIMEOUT){

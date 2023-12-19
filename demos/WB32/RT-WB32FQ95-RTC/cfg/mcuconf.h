@@ -46,7 +46,7 @@
 #define WB32_FHSI_ENABLED                  FALSE
 #define WB32_LSI_ENABLED                   TRUE
 #define WB32_HSE_ENABLED                   TRUE
-#define WB32_LSE_ENABLED                   FALSE
+#define WB32_LSE_ENABLED                   TRUE
 #define WB32_PLL_ENABLED                   TRUE
 #define WB32_MAINCLKSRC                    WB32_MAINCLKSRC_PLL
 #define WB32_HSE_STATE                     ANCTL_HSECR0_HSEON
@@ -57,7 +57,8 @@
 #define WB32_PPRE1                         1
 #define WB32_PPRE2                         1
 #define WB32_USBPRE                        WB32_USBPRE_DIV1P5
-#define WB32_RTCSEL                        WB32_RTCSEL_LSE
+#define WB32_RTCSEL                        WB32_RTCSEL_HSEDIV
+#define WB32_RTCLP_SEL                     WB32_RTCSEL_LSI
 /*
  * EXTI driver system settings.
  */
