@@ -509,14 +509,25 @@
  */
 #if (WB32_RTCSEL == WB32_RTCSEL_LSE) || defined(__DOXYGEN__)
 #define WB32_RTCCLK                            WB32_LSECLK
-#elif WB32_RTCSEL == WB32_RTCSEL_LSI
-#define WB32_RTCCLK                            WB32_LSICLK
 #elif WB32_RTCSEL == WB32_RTCSEL_HSEDIV
 #define WB32_RTCCLK                            (WB32_HSECLK / 128)
 #elif WB32_RTCSEL == WB32_RTCSEL_NOCLOCK
 #define WB32_RTCCLK                            0
 #else
 #error "invalid source selected for RTC clock"
+#endif
+
+/**
+ * @brief   RTC Low Power clock.
+ */
+#if (WB32_RTCLP_SEL == WB32_RTCSEL_LSE) || defined(__DOXYGEN__)
+#define WB32_RTCLPCLK                          WB32_LSECLK
+#elif WB32_RTCLP_SEL == WB32_RTCSEL_LSI
+#define WB32_RTCLPCLK                          WB32_LSICLK
+#elif WB32_RTCLP_SEL == WB32_RTCSEL_NOCLOCK
+#define WB32_RTCLPCLK                          0
+#else
+#error "invalid source selected for RTC Low Power clock"
 #endif
 
 /**
