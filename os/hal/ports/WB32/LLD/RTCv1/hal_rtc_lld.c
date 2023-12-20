@@ -33,7 +33,54 @@
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
+static bool rtc_mod_flag;
+/**
+ * @brief   Initializes the backup domain.
+ * @note    WARNING! Changing clock source impossible without resetting
+ *          of the whole BKP domain.
+ */
+static void hal_lld_backup_domain_init(void) {
 
+  PWR_BackupAccessEnable();
+
+  rccResetBKP();
+  /* Turn on the backup domain clock.*/
+  rccEnableBKPInterface();
+
+#if HAL_USE_RTC
+  /* If enabled then the LSE is started.*/
+#  if WB32_LSE_ENABLED
+#     if defined(WB32_LSE_BYPASS)
+  /* No LSE Bypass.*/
+  BKP->BDCR = BKP_LSE_Bypass;
+#    else
+  /*LSE Bypass.*/
+  BKP->BDCR = (1 << 0);
+#    endif
+  while ((BKP->BDCR & 0x2U) == 0)
+    ;                                     /* Waits until LSE is stable.   */
+#  endif /* WB32_LSE_ENABLED */
+
+#if WB32_RTCSEL == WB32_RTCSEL_HSEDIV
+  RCC->HSE2RTCENR = 1;
+  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x03U << 8);
+#elif WB32_RTCSEL == WB32_RTCSEL_LSE
+  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x01U << 8);
+#elif WB32_RTCSEL == WB32_RTCSEL_LSI || WB32_RTCSEL == WB32_RTCSEL_NOCLOCK
+#  error 'The LSI clock cannot be used under normal use of the RTC'
+#endif
+
+    /* Prescaler value loaded in registers.*/
+    rtc_lld_set_prescaler(rtc_mod_flag);
+
+    /* RTC clock enabled.*/
+    BKP->BDCR |= (1 << 15);
+
+#endif /* HAL_USE_RTC */
+
+rccDisableBKPInterface();
+
+}
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -218,15 +265,20 @@ OSAL_IRQ_HANDLER(WB32_RTC_IRQ_VECTOR) {
  *
  * @notapi
  */
-void rtc_lld_set_prescaler(void) {
+void rtc_lld_set_prescaler(bool rtc_mod) {
   syssts_t sts;
 
   /* Entering a reentrant critical zone.*/
   sts = osalSysGetStatusAndLockX();
 
   rtc_acquire_access();
-  RTC->PRLH = (uint16_t)((WB32_RTCCLK - 1) >> 16) & 0x000F;
-  RTC->PRLL = (uint16_t)(((WB32_RTCCLK - 1))      & 0xFFFF);
+  if (rtc_mod != true) {
+    RTC->PRLH = (uint16_t)((WB32_RTCCLK - 1) >> 16) & 0x000F;
+    RTC->PRLL = (uint16_t)(((WB32_RTCCLK - 1))      & 0xFFFF);
+  } else {
+    RTC->PRLH = (uint16_t)((WB32_RTCLPCLK - 1) >> 16) & 0x000F;
+    RTC->PRLL = (uint16_t)(((WB32_RTCLPCLK - 1))      & 0xFFFF);
+  }
   rtc_release_access();
 
   /* Leaving a reentrant critical zone.*/
@@ -242,6 +294,10 @@ void rtc_lld_init(void) {
 
   /* RTC object initialization.*/
   rtcObjectInit(&RTCD1);
+  
+  rtc_mod_flag = false;
+  /* Initializes the backup domain.*/
+  hal_lld_backup_domain_init();
 
   /* RTC pointer initialization.*/
   RTCD1.rtc = RTC;
@@ -273,7 +329,7 @@ void rtclp_lld_init(void) {
 
   /* RTC object initialization.*/
   rtcObjectInit(&RTCD1);
-
+  rtc_mod_flag = true;
   /* RTC pointer initialization.*/
   RTCD1.rtc = RTC;
   PWR_BackupAccessEnable();
@@ -287,10 +343,11 @@ void rtclp_lld_init(void) {
   BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x02U << 8);
 
   /* Prescaler value loaded in registers.*/
-  rtc_lld_set_prescaler();
+  rtc_lld_set_prescaler(rtc_mod_flag);
 
   /* RTC clock enabled.*/
   BKP->BDCR |= (1 << 15);
+
 
   rccDisableBKPInterface();
   /* RSF bit must be cleared by software after an APB1 reset or an APB1 clock
@@ -370,7 +427,7 @@ void rtc_lld_set_alarm(RTCDriver *rtcp,
   /* Entering a reentrant critical zone.*/
   sts = osalSysGetStatusAndLockX();
 
-  rtc_lld_set_prescaler();
+  rtc_lld_set_prescaler(rtc_mod_flag);
 
   rtc_acquire_access();
   if (alarmspec != NULL) {
@@ -512,7 +569,7 @@ void rtcWB32SetSec(RTCDriver *rtcp, uint32_t tv_sec) {
   /* Entering a reentrant critical zone.*/
   sts = osalSysGetStatusAndLockX();
 
-  rtc_lld_set_prescaler();
+  rtc_lld_set_prescaler(rtc_mod_flag);
 
   rtc_acquire_access();
   rtcp->rtc->CNTH = (uint16_t)(tv_sec >> 16);

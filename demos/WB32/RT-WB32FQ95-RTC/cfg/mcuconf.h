@@ -129,7 +129,7 @@
 /*
  * SERIAL driver system settings.
  */
-#define WB32_SERIAL_USE_UART1             FALSE
+#define WB32_SERIAL_USE_UART1             TRUE
 #define WB32_SERIAL_USE_UART2             FALSE
 #define WB32_SERIAL_USE_UART3             FALSE
 #define WB32_SERIAL_USART1_PRIORITY        12

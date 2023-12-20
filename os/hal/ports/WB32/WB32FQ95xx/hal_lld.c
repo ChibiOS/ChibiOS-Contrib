@@ -45,55 +45,6 @@ uint32_t SystemCoreClock = WB32_MAINCLK;
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-
-/**
- * @brief   Initializes the backup domain.
- * @note    WARNING! Changing clock source impossible without resetting
- *          of the whole BKP domain.
- */
-static void hal_lld_backup_domain_init(void) {
-
-  PWR_BackupAccessEnable();
-
-  rccResetBKP();
-  /* Turn on the backup domain clock.*/
-  rccEnableBKPInterface();
-
-#if HAL_USE_RTC
-  /* If enabled then the LSE is started.*/
-#  if WB32_LSE_ENABLED
-#     if defined(WB32_LSE_BYPASS)
-  /* No LSE Bypass.*/
-  BKP->BDCR = BKP_LSE_Bypass;
-#    else
-  /*LSE Bypass.*/
-  BKP->BDCR = (1 << 0);
-#    endif
-  while ((BKP->BDCR & 0x2U) == 0)
-    ;                                     /* Waits until LSE is stable.   */
-#  endif /* WB32_LSE_ENABLED */
-
-#if WB32_RTCSEL == WB32_RTCSEL_HSEDIV
-  RCC->HSE2RTCENR = 1;
-  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x03U << 8);
-#elif WB32_RTCSEL == WB32_RTCSEL_LSE
-  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x01U << 8);
-#elif WB32_RTCSEL == WB32_RTCSEL_LSI || WB32_RTCSEL == WB32_RTCSEL_NOCLOCK
-#  error 'The LSI clock cannot be used under normal use of the RTC'
-#endif
-
-    /* Prescaler value loaded in registers.*/
-    rtc_lld_set_prescaler();
-
-    /* RTC clock enabled.*/
-    BKP->BDCR |= (1 << 15);
-
-#endif /* HAL_USE_RTC */
-
-rccDisableBKPInterface();
-
-}
-
 void wb32_set_main_clock_to_mhsi(void) {
 
   /* Unlocks write to ANCTL registers */
@@ -132,9 +83,6 @@ void hal_lld_init(void) {
 
   void SystemCoreClockUpdate(void);
   SystemCoreClockUpdate();
-
-  /* Initializes the backup domain.*/
-  hal_lld_backup_domain_init();
 }
 
 /**

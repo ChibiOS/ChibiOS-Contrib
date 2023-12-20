@@ -128,7 +128,7 @@ typedef struct hal_rtc_alarm {
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void rtc_lld_set_prescaler(void);
+  void rtc_lld_set_prescaler(bool rtc_mod);
   void rtc_lld_init(void);
   void rtclp_lld_init(void);
   void rtc_lld_set_time(RTCDriver *rtcp, const RTCDateTime *timespec);

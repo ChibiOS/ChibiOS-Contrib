@@ -17,6 +17,7 @@
 
  #include "ch.h"
  #include "hal.h"
+ #include "touch_drivers.h"
 
  #define PORTAB_LINE_LED1 PAL_LINE(GPIOB, 14U)
  #define PORTAB_LINE_LED2 PAL_LINE(GPIOB, 13U)
@@ -45,48 +46,6 @@ static THD_FUNCTION(blink_thd, arg) {
     chThdSleepMilliseconds(100);
     palToggleLine(PORTAB_LINE_LED2);
   }
-}
-static void hal_lld_backup_domain_init(void) {
-
-  /* Turn on the backup domain clock.*/
-  rccEnableBKPInterface();
-
-#if HAL_USE_RTC
-  /* Reset BKP domain if different clock source selected.*/
-  if ((BKP->BDCR & WB32_RTCSEL_MASK) != WB32_RTCSEL) {
-    /* Backup domain reset.*/
-    RCC->BDRSTR = 0x1U;
-    RCC->BDRSTR = 0x0U;
-  }
-
-  /* If enabled then the LSE is started.*/
-#if WB32_LSE_ENABLED
-#if defined(WB32_LSE_BYPASS)
-  /* LSE Bypass.*/
-  BKP->BDCR = RCC_BDCR_LSEON;
-#else
-  /* No LSE Bypass.*/
-  BKP->BDCR = BKP_LSE_Bypass;
-#endif
-  while ((BKP->BDCR & 0x2U) == 0)
-    ;                                     /* Waits until LSE is stable.   */
-#endif /* WB32_LSE_ENABLED */
-
-#if WB32_RTCSEL != WB32_RTCSEL_NOCLOCK
-  /* If the backup domain hasn't been initialized yet then proceed with
-     initialization.*/
-  if ((RCC->BDRSTR & 0x1U) == 0) {
-    /* Selects clock source.*/
-    BKP->BDCR |= WB32_RTCSEL;
-
-    /* Prescaler value loaded in registers.*/
-    rtc_lld_set_prescaler();
-
-    /* RTC clock enabled.*/
-    BKP->BDCR |= 0x1U;
-  }
-#endif /* WB32_RTCSEL != WB32_RTCSEL_NOCLOCK */
-#endif /* HAL_USE_RTC */
 }
 
 /*
@@ -151,7 +110,7 @@ static void stop_mode_entry(void) {
 
      break;
    case RTC_EVENT_SECOND:
-     palToggleLine(PORTAB_LINE_LED2);
+     palToggleLine(PORTAB_LINE_LED1);
      break;
    case RTC_EVENT_ALARM:
      osalSysLockFromISR();
@@ -163,12 +122,11 @@ static void stop_mode_entry(void) {
   }
  
 int main(void) {
-
+  uint32_t time = 0;
   uint32_t tv_sec;
 
   halInit();
   chSysInit();
-
    /* 
     * Init LED port and pad.
     */
@@ -180,59 +138,46 @@ int main(void) {
   /* compile ability test */
   rtcGetTime(&RTCD1, &timespec);
   
-  /* set alarm in near future */
-  rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);
-  alarmspec.tv_sec = tv_sec + 20;
-  rtcSetAlarm(&RTCD1, 0, &alarmspec);
-  rtcSetCallback(&RTCD1, my_cb);
-  
+  touch_drivers_init(115200);
+
 
   while (true){
-    chThdSleepSeconds(10);
-
+    chThdSleepSeconds(4);
+    time ++;
+    touch_write(time >> 24);
+    touch_write(time >> 16);
+    touch_write(time >> 8);
+    touch_write(time >> 0);
+    chThdSleepSeconds(1);
     chSysDisable();
     
     wb32_set_main_clock_to_mhsi();
     
-#if WB32_HAS_GPIOA
-  rccEnableAPB1(RCC_APB1ENR_GPIOAEN);
-#endif
-
-#if WB32_HAS_GPIOB
-  rccEnableAPB1(RCC_APB1ENR_GPIOBEN);
-#endif
-
-#if WB32_HAS_GPIOC
-  rccEnableAPB1(RCC_APB1ENR_GPIOCEN);
-#endif
-
-#if WB32_HAS_GPIOD
-  rccEnableAPB1(RCC_APB1ENR_GPIODEN);
-#endif
-
-    extern void rtclp_lld_init(void);
-    rtclp_lld_init();
-    rtcSetCallback(&RTCD1, my_cb);
     RTC->CRL &= ~(RTC_CRL_SECF | RTC_CRL_ALRF | RTC_CRL_OWF);
     EXTI->PR = 1 << 17;
     EXTI->IMR |= EXTI_IMR_MR17;
+    rtclp_lld_init();
+    rtcSetCallback(&RTCD1, my_cb);
+    rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);
+    alarmspec.tv_sec = tv_sec + 5;
+    rtcSetAlarm(&RTCD1, 0, &alarmspec);
+
     NVIC_EnableIRQ(RTCAlarm_IRQn);
     
     stop_mode_entry();
  
     extern void __early_init(void);
     __early_init();
+    rccEnableAPB1(RCC_APB1ENR_GPIOBEN);
     rtc_lld_init();
     rccEnableEXTI();
-
+    rccEnableUART1();
+    rtcSetCallback(&RTCD1, my_cb);
     rccEnableBKP();
     rccEnableBKPInterface();
   
     chSysEnable();
-    
-    rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);
-    alarmspec.tv_sec = tv_sec + 20;
-    rtcSetAlarm(&RTCD1, 0, &alarmspec);
+
   }
 }
 
