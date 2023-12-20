@@ -216,8 +216,9 @@ OSAL_IRQ_HANDLER(WB32_RTCAlarm_IRQ_VECTOR) {
   /* Mask of all enabled and pending sources.*/
   flags = RTCD1.rtc->CRL;
   RTCD1.rtc->CRL &= ~(RTC_CRL_SECF | RTC_CRL_ALRF | RTC_CRL_OWF);
-  //extiClearLine(WB32_RTC_ALARM_EXTI);
-   EXTI->PR = EXTI_PR_PR17;
+  
+  extiClearLine(WB32_RTC_ALARM_EXTI);
+  
   if (flags & RTC_CRL_ALRF)
     RTCD1.callback(&RTCD1, RTC_EVENT_ALARM);
   
@@ -387,12 +388,7 @@ void rtclp_lld_init(void) {
   /* Callback initially disabled.*/
   RTCD1.callback = NULL;
   
-  rccEnableEXTI();
-  EXTI->IMR |= (1 << 17);
-  EXTI->EMR &= ~(1 << 17);
-  EXTI->RTSR |= (1 << 17);
-  EXTI->FTSR &= ~(1 << 17);
-  //extiEnableLine(WB32_RTC_ALARM_EXTI, EXTI_MODE_RISING_EDGE | EXTI_MODE_ACTION_INTERRUPT);
+  extiEnableLine(WB32_RTC_ALARM_EXTI, EXTI_MODE_RISING_EDGE | EXTI_MODE_ACTION_INTERRUPT);
 
   /* IRQ vector permanently assigned to this driver.*/
   nvicEnableVector(WB32_RTCAlarm_NUMBER, WB32_RTCAlarm_IRQ_PRIORITY);

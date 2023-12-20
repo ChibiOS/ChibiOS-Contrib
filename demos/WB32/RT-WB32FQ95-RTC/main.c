@@ -145,7 +145,7 @@ int main(void) {
     chThdSleepSeconds(4);
     time ++;
 
-    touch_write(1);
+    touch_write(2);
     touch_write(time >> 24);
     touch_write(time >> 16);
     touch_write(time >> 8);
@@ -160,7 +160,7 @@ int main(void) {
     rtclp_lld_init();
     rtcSetCallback(&RTCD1, my_cb);
     rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);
-    alarmspec.tv_sec = tv_sec + 5;
+    alarmspec.tv_sec = tv_sec + 1;
     rtcSetAlarm(&RTCD1, 0, &alarmspec);
 
     NVIC_EnableIRQ(RTCAlarm_IRQn);
