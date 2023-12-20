@@ -144,6 +144,8 @@ int main(void) {
   while (true){
     chThdSleepSeconds(4);
     time ++;
+
+    touch_write(1);
     touch_write(time >> 24);
     touch_write(time >> 16);
     touch_write(time >> 8);
@@ -154,8 +156,7 @@ int main(void) {
     wb32_set_main_clock_to_mhsi();
     
     RTC->CRL &= ~(RTC_CRL_SECF | RTC_CRL_ALRF | RTC_CRL_OWF);
-    EXTI->PR = 1 << 17;
-    EXTI->IMR |= EXTI_IMR_MR17;
+    EXTI->PR = EXTI_PR_PR17;
     rtclp_lld_init();
     rtcSetCallback(&RTCD1, my_cb);
     rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);

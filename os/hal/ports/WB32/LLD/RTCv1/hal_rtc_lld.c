@@ -215,12 +215,12 @@ OSAL_IRQ_HANDLER(WB32_RTCAlarm_IRQ_VECTOR) {
 
   /* Mask of all enabled and pending sources.*/
   flags = RTCD1.rtc->CRL;
-  RTCD1.rtc->CRL &= ~(RTC_CRL_ALRF);
-
+  RTCD1.rtc->CRL &= ~(RTC_CRL_SECF | RTC_CRL_ALRF | RTC_CRL_OWF);
+  //extiClearLine(WB32_RTC_ALARM_EXTI);
+   EXTI->PR = EXTI_PR_PR17;
   if (flags & RTC_CRL_ALRF)
     RTCD1.callback(&RTCD1, RTC_EVENT_ALARM);
   
-  EXTI->PR = EXTI_PR_PR17;
   
   OSAL_IRQ_EPILOGUE();
 }
@@ -241,10 +241,13 @@ OSAL_IRQ_HANDLER(WB32_RTC_IRQ_VECTOR) {
 
   /* Mask of all enabled and pending sources.*/
   flags = RTCD1.rtc->CRL;
-  RTCD1.rtc->CRL &= ~(RTC_CRL_SECF | RTC_CRL_OWF);
-  
+  RTCD1.rtc->CRL &= ~(RTC_CRL_SECF | RTC_CRL_ALRF | RTC_CRL_OWF);
+
   if (flags & RTC_CRL_SECF)
     RTCD1.callback(&RTCD1, RTC_EVENT_SECOND);
+
+  if (flags & RTC_CRL_ALRF)
+    RTCD1.callback(&RTCD1, RTC_EVENT_ALARM);
 
   if (flags & RTC_CRL_OWF)
     RTCD1.callback(&RTCD1, RTC_EVENT_OVERFLOW);
@@ -311,11 +314,11 @@ void rtc_lld_init(void) {
 
   /* All interrupts initially disabled.*/
   rtc_wait_write_completed();
-  RTCD1.rtc->CRH |= 2;
+  RTCD1.rtc->CRH = 0;
 
   /* Callback initially disabled.*/
   RTCD1.callback = NULL;
-
+  
   /* IRQ vector permanently assigned to this driver.*/
   nvicEnableVector(WB32_RTC_NUMBER, WB32_RTC_IRQ_PRIORITY);
 }
@@ -338,16 +341,34 @@ void rtclp_lld_init(void) {
   /* Turn on the backup domain clock.*/
   rccEnableBKPInterface();
 
+#if HAL_USE_RTC
+#  if WB32_RTCLP_SEL == WB32_RTCSEL_LSE
+  /* If enabled then the LSE is started.*/
+#    if WB32_LSE_ENABLED
+#       if defined(WB32_LSE_BYPASS)
+  /* No LSE Bypass.*/
+  BKP->BDCR = BKP_LSE_Bypass;
+#      else
+  /*LSE Bypass.*/
+  BKP->BDCR = (1 << 0);
+#      endif
+  while ((BKP->BDCR & 0x2U) == 0)
+    ;                                     /* Waits until LSE is stable.   */
+  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x01U << 8);
+#    endif /* WB32_LSE_ENABLED */
+#  elif WB32_RTCLP_SEL == WB32_RTCSEL_LSI
   RCC->LSI2RTCENR = 1;
   /* Select the RTC clock source */
   BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x02U << 8);
 
   /* Prescaler value loaded in registers.*/
   rtc_lld_set_prescaler(rtc_mod_flag);
-
+#  else
+#  error  'The RTC LP clock is selected incorrectly'
+#  endif
   /* RTC clock enabled.*/
   BKP->BDCR |= (1 << 15);
-
+#endif
 
   rccDisableBKPInterface();
   /* RSF bit must be cleared by software after an APB1 reset or an APB1 clock
@@ -359,15 +380,19 @@ void rtclp_lld_init(void) {
 
   /* All interrupts initially disabled.*/
   rtc_wait_write_completed();
-  RTCD1.rtc->CRH |= 2;
+  
+  RTCD1.rtc->CRL &= ~(RTC_CRL_OWF | RTC_CRL_ALRF | RTC_CRL_SECF);
+  RTCD1.rtc->CRH = 0;
 
   /* Callback initially disabled.*/
   RTCD1.callback = NULL;
+  
   rccEnableEXTI();
   EXTI->IMR |= (1 << 17);
   EXTI->EMR &= ~(1 << 17);
   EXTI->RTSR |= (1 << 17);
   EXTI->FTSR &= ~(1 << 17);
+  //extiEnableLine(WB32_RTC_ALARM_EXTI, EXTI_MODE_RISING_EDGE | EXTI_MODE_ACTION_INTERRUPT);
 
   /* IRQ vector permanently assigned to this driver.*/
   nvicEnableVector(WB32_RTCAlarm_NUMBER, WB32_RTCAlarm_IRQ_PRIORITY);
@@ -433,8 +458,7 @@ void rtc_lld_set_alarm(RTCDriver *rtcp,
   if (alarmspec != NULL) {
     rtcp->rtc->ALRH = (uint16_t)(alarmspec->tv_sec >> 16);
     rtcp->rtc->ALRL = (uint16_t)(alarmspec->tv_sec & 0xFFFF);
-  }
-  else {
+  } else {
     rtcp->rtc->ALRH = 0;
     rtcp->rtc->ALRL = 0;
   }
@@ -500,8 +524,7 @@ void rtc_lld_set_callback(RTCDriver *rtcp, rtccb_t callback) {
     rtc_wait_write_completed();
     rtcp->rtc->CRL &= ~(RTC_CRL_OWF | RTC_CRL_ALRF | RTC_CRL_SECF);
     rtcp->rtc->CRH = RTC_CRH_OWIE | RTC_CRH_ALRIE | RTC_CRH_SECIE;
-  }
-  else {
+  } else {
     rtc_wait_write_completed();
     rtcp->rtc->CRH = 0;
 

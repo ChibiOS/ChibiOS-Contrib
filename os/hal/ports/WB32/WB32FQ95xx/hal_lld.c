@@ -59,7 +59,7 @@ void wb32_set_main_clock_to_mhsi(void) {
   RCC->MAINCLKUEN = RCC_MAINCLKUEN_ENA;
 
   /* PLL Disable */
-  RCC->PLLPRE = 0;
+  ANCTL->PLLENR = 0x00;
 
   /* Locks write to ANCTL registers */
   PWR->ANAKEY1 = 0x00;
