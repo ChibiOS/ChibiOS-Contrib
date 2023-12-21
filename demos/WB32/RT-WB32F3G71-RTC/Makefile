@@ -118,7 +118,7 @@ include $(CHIBIOS)/tools/mk/autobuild.mk
 # include $(CHIBIOS)/os/various/shell/shell.mk
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD_CONTRIB)/WB32FQ95xC.ld
+LDSCRIPT= $(STARTUPLD_CONTRIB)/WB32F3G71xC.ld
 
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
@@ -126,7 +126,15 @@ LDSCRIPT= $(STARTUPLD_CONTRIB)/WB32FQ95xC.ld
 CSRC = $(ALLCSRC) \
        $(TESTSRC) \
        $(CHIBIOS)/os/various/syscalls.c \
+       $(CHIBIOS)/os/common/lib/src/chprintf.c \
+       debug.c \
        main.c
+
+ALLINC += ./ \
+    $(CHIBIOS)/os/common/lib/include \
+    $(CHIBIOS)/os/common/oop/include
+
+
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -156,7 +164,7 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS =
+UDEFS = 
 
 # Define ASM defines here
 UADEFS =

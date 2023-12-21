@@ -25,7 +25,9 @@
 
  RTCDateTime timespec;
  RTCAlarm alarmspec;
-
+ 
+ extern void __early_init(void);
+    
 #define TEST_ALARM_WAKEUP     TRUE
 
 #if TEST_ALARM_WAKEUP
@@ -130,7 +132,6 @@ int main(void) {
     
     stop_mode_entry();
  
-    extern void __early_init(void);
     __early_init();
     rtc_lld_init();
     rccEnableEXTI();

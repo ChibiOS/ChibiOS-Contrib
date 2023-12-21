@@ -17,7 +17,7 @@
  #include "ch.h"
  #include "hal.h"
  #include "debug.h"
-
+ #include "chprintf.h"
  #define PORTAB_LINE_LED1 PAL_LINE(GPIOB, 14U)
  #define PORTAB_LINE_LED2 PAL_LINE(GPIOB, 13U)
  #define PORTAB_LED_OFF   PAL_HIGH
@@ -110,11 +110,11 @@ int main(void) {
   
   serial_debug_init();
  
-   /* 
-    * Init LED port and pad.
-    */
-   palSetPadMode(PAL_PORT(PORTAB_LINE_LED1), PAL_PAD(PORTAB_LINE_LED1), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
-   palSetPadMode(PAL_PORT(PORTAB_LINE_LED2), PAL_PAD(PORTAB_LINE_LED2), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
+  /* 
+   * Init LED port and pad.
+   */
+  palSetPadMode(PAL_PORT(PORTAB_LINE_LED1), PAL_PAD(PORTAB_LINE_LED1), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
+  palSetPadMode(PAL_PORT(PORTAB_LINE_LED2), PAL_PAD(PORTAB_LINE_LED2), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
   
   chThdCreateStatic(blinkWA, sizeof(blinkWA), NORMALPRIO, blink_thd, NULL);
 
@@ -124,8 +124,9 @@ int main(void) {
   while (true){
     chThdSleepSeconds(2);
     rtcGetTime(&RTCD1, &timespec);
-    printf("year = %d  month = %d  dstflag=%d  dayofweek = %d  day = %d  millisecond = %d\r\n",
-            timespec.year, timespec.month, timespec.dstflag, timespec.dayofweek, timespec.day, timespec.millisecond);
+    chprintf((sequential_stream_i *)&SERIAL_DEBUG_DRIVER, 
+              "lsi sleep 30s year = %d  month = %d  dstflag=%d  dayofweek = %d  day = %d  millisecond = %d\r\n",
+              timespec.year, timespec.month, timespec.dstflag, timespec.dayofweek, timespec.day, timespec.millisecond);
     chThdSleepSeconds(3);
 
     chSysDisable();
@@ -134,7 +135,7 @@ int main(void) {
     rtclp_lld_init();
     rtcSetCallback(&RTCD1, my_cb);
     rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);
-    alarmspec.tv_sec = tv_sec + 5;
+    alarmspec.tv_sec = tv_sec + 60;
     rtcSetAlarm(&RTCD1, 0, &alarmspec);
     NVIC_EnableIRQ(RTCAlarm_IRQn);
     

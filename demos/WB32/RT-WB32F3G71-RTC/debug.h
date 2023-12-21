@@ -19,4 +19,5 @@
 #include <hal.h>
 #include <stdio.h>
 
+#define SERIAL_DEBUG_DRIVER SD1
 void serial_debug_init(void);
