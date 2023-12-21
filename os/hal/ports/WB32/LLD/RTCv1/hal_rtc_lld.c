@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+    Copyright (C) 2021 Westberry Technology (ChangZhou) Corp., Ltd
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
    Concepts and parts of this file have been contributed by Uladzimir Pylinsky
    aka barthess.
  */
+
 
 /**
  * @file    RTCv1/hal_rtc_lld.c
@@ -109,6 +110,10 @@ RTCDriver RTCD1;
 
 static void rtc_apb1_sync(void) {
 
+  /* RSF bit must be cleared by software after an APB1 reset or an APB1 clock
+     stop. Otherwise its value will not be actual. */
+  RTCD1.rtc->CRL &= ~RTC_CRL_RSF;
+
   /* Loop until RSF flag is set */
   while ((RTC->CRL & RTC_CRL_RSF) == 0)
     ;
@@ -179,7 +184,7 @@ static void rtc_decode(uint32_t tv_sec,
                        RTCDateTime *timespec) {
   struct tm tim;
   struct tm *t;
-  const time_t time = (const time_t)tv_sec;   /* Could be 64 bits.*/
+  const time_t time = (time_t)tv_sec;   /* Could be 64 bits.*/
 
   /* If the conversion is successful the function returns a pointer
      to the object the result was written into.*/
@@ -305,10 +310,6 @@ void rtc_lld_init(void) {
 
   /* RTC pointer initialization.*/
   RTCD1.rtc = RTC;
-
-  /* RSF bit must be cleared by software after an APB1 reset or an APB1 clock
-     stop. Otherwise its value will not be actual. */
-  RTCD1.rtc->CRL &= ~RTC_CRL_RSF;
 
   /* Required because access to PRL.*/
   rtc_apb1_sync();
