@@ -211,7 +211,7 @@
     RCC->AHBRSTR1 &= ~(mask);                                               \
     (void)RCC->AHBRSTR;                                                     \
   }
-
+/** @} */
 
 
 /**
