@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2021 Westberry Technology (ChangZhou) Corp., Ltd
+    Copyright (C) 2023 Westberry Technology Corp., Ltd
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -41,17 +41,24 @@
 /**
  * @brief   This RTC implementation supports callbacks.
  */
-#define RTC_SUPPORTS_CALLBACKS      TRUE
+#ifndef RTC_SUPPORTS_CALLBACKS
+#  define RTC_SUPPORTS_CALLBACKS      TRUE
+#endif
 
 /**
  * @brief   One alarm comparator available.
  */
-#define RTC_ALARMS                  1
+#ifndef RTC_ALARMS
+#  define RTC_ALARMS                  1
+#endif
 
 /**
  * @brief   Presence of a local persistent storage.
  */
-#define RTC_HAS_STORAGE             FALSE
+#ifndef RTC_HAS_STORAGE
+#  define RTC_HAS_STORAGE             FALSE
+#endif
+
 /** @} */
 
 /*===========================================================================*/
@@ -65,7 +72,10 @@
 /*
  * RTC driver system settings.
  */
-#define WB32_RTC_IRQ_PRIORITY      15
+#ifndef WB32_RTC_IRQ_PRIORITY
+#  define WB32_RTC_IRQ_PRIORITY      15
+#endif
+
 /** @} */
 
 /*===========================================================================*/

@@ -1,4 +1,4 @@
-c/*
+/*
     Copyright (C) 2021 Westberry Technology (ChangZhou) Corp., Ltd
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,6 +44,27 @@ uint32_t SystemCoreClock = WB32_MAINCLK;
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
+
+void wb32_set_main_clock_to_mhsi(void) {
+
+  /* Unlocks write to ANCTL registers */
+  PWR->ANAKEY1 = 0x03;
+  PWR->ANAKEY2 = 0x0C;
+
+  /* Configure Flash prefetch, Cache and wait state */
+  CACHE->CR = CACHE_CR_CHEEN | CACHE_CR_PREFEN_ON | CACHE_CR_LATENCY_0WS;
+
+  /* Select FHSI as system clock source */
+  RCC->MAINCLKSRC = RCC_MAINCLKSRC_MHSI;
+  RCC->MAINCLKUEN = RCC_MAINCLKUEN_ENA;
+
+  /* PLL Disable */
+  ANCTL->PLLENR = 0x00;
+
+  /* Locks write to ANCTL registers */
+  PWR->ANAKEY1 = 0x00;
+  PWR->ANAKEY2 = 0x00;
+}
 
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
@@ -253,6 +274,21 @@ void wb32_clock_init(void) {
   PWR->ANAKEY2 = 0x00;
 
   SetSysClock();
+
+#if WB32_LSI_ENABLED == TRUE
+  /* Unlocks write to ANCTL registers */
+  PWR->ANAKEY1 = 0x03;
+  PWR->ANAKEY2 = 0x0C;
+
+  /* LSI activation.*/
+  ANCTL->LSIENR |= 0x1;
+  while ((ANCTL->LSISR & 0x1) == 0)
+    ;                                       /* Waits until LSI is stable.   */
+
+  /* Locks write to ANCTL registers */
+  PWR->ANAKEY1 = 0x00;
+  PWR->ANAKEY2 = 0x00;
+#endif
 
   rccEnableAPB1(RCC_APB1ENR_BMX1EN);
   rccEnableAPB2(RCC_APB2ENR_BMX2EN);

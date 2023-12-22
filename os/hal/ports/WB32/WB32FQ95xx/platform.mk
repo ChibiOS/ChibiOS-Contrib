@@ -33,6 +33,7 @@ include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/SPIv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/USBv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/ADCv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/RTCv1/driver.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/WB32/LLD/EXTIv1/driver.mk
 
 # Shared variables
 ALLCSRC += $(PLATFORMSRC_CONTRIB)

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2021 Westberry Technology (ChangZhou) Corp., Ltd
+    Copyright (C) 2023 Westberry Technology Corp., Ltd
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 static bool rtc_mod_flag;
+static uint32_t last_rtc_cnt = 0;
 /**
  * @brief   Initializes the backup domain.
  * @note    WARNING! Changing clock source impossible without resetting
@@ -47,7 +48,7 @@ static void hal_lld_backup_domain_init(void) {
   rccResetBKP();
   /* Turn on the backup domain clock.*/
   rccEnableBKPInterface();
-
+  
 #if HAL_USE_RTC
   /* If enabled then the LSE is started.*/
 #  if WB32_LSE_ENABLED
@@ -62,24 +63,24 @@ static void hal_lld_backup_domain_init(void) {
     ;                                     /* Waits until LSE is stable.   */
 #  endif /* WB32_LSE_ENABLED */
 
-#if WB32_RTCSEL == WB32_RTCSEL_HSEDIV
+#  if WB32_RTCSEL == WB32_RTCSEL_HSEDIV
   RCC->HSE2RTCENR = 1;
   BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x03U << 8);
-#elif WB32_RTCSEL == WB32_RTCSEL_LSE
+#  elif WB32_RTCSEL == WB32_RTCSEL_LSE
   BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x01U << 8);
-#elif WB32_RTCSEL == WB32_RTCSEL_LSI || WB32_RTCSEL == WB32_RTCSEL_NOCLOCK
-#  error 'The LSI clock cannot be used under normal use of the RTC'
-#endif
+#  elif WB32_RTCSEL == WB32_RTCSEL_LSI || WB32_RTCSEL == WB32_RTCSEL_NOCLOCK
+#    error 'The LSI clock cannot be used under normal use of the RTC'
+#  endif
 
-    /* Prescaler value loaded in registers.*/
-    rtc_lld_set_prescaler(rtc_mod_flag);
+  /* Prescaler value loaded in registers.*/
+  rtc_lld_set_prescaler(rtc_mod_flag);
 
-    /* RTC clock enabled.*/
-    BKP->BDCR |= (1 << 15);
+  /* RTC clock enabled.*/
+  BKP->BDCR |= (1 << 15);
 
 #endif /* HAL_USE_RTC */
 
-rccDisableBKPInterface();
+  rccDisableBKPInterface();
 
 }
 /*===========================================================================*/
@@ -107,7 +108,6 @@ RTCDriver RTCD1;
  *
  * @notapi
  */
-
 static void rtc_apb1_sync(void) {
 
   /* RSF bit must be cleared by software after an APB1 reset or an APB1 clock
@@ -227,7 +227,6 @@ OSAL_IRQ_HANDLER(WB32_RTCAlarm_IRQ_VECTOR) {
   if (flags & RTC_CRL_ALRF)
     RTCD1.callback(&RTCD1, RTC_EVENT_ALARM);
   
-  
   OSAL_IRQ_EPILOGUE();
 }
 
@@ -305,11 +304,14 @@ void rtc_lld_init(void) {
   rtcObjectInit(&RTCD1);
   
   rtc_mod_flag = false;
+  
+  /* RTC pointer initialization.*/
+  RTCD1.rtc = RTC;
+  
+  last_rtc_cnt =  ((uint32_t)(RTCD1.rtc->CNTH) << 16) + RTCD1.rtc->CNTL;
   /* Initializes the backup domain.*/
   hal_lld_backup_domain_init();
 
-  /* RTC pointer initialization.*/
-  RTCD1.rtc = RTC;
 
   /* Required because access to PRL.*/
   rtc_apb1_sync();
@@ -321,6 +323,7 @@ void rtc_lld_init(void) {
   /* Callback initially disabled.*/
   RTCD1.callback = NULL;
   
+  rtcWB32SetSec(&RTCD1, last_rtc_cnt);
   /* IRQ vector permanently assigned to this driver.*/
   nvicEnableVector(WB32_RTC_NUMBER, WB32_RTC_IRQ_PRIORITY);
 }
@@ -337,6 +340,9 @@ void rtclp_lld_init(void) {
   rtc_mod_flag = true;
   /* RTC pointer initialization.*/
   RTCD1.rtc = RTC;
+  
+  last_rtc_cnt =  ((uint32_t)(RTCD1.rtc->CNTH) << 16) + RTCD1.rtc->CNTL;
+
   PWR_BackupAccessEnable();
 
   rccResetBKP();
@@ -366,7 +372,7 @@ void rtclp_lld_init(void) {
   /* Prescaler value loaded in registers.*/
   rtc_lld_set_prescaler(rtc_mod_flag);
 #  else
-#  error  'The RTC LP clock is selected incorrectly'
+#    error  'The RTC LP clock is selected incorrectly'
 #  endif
   /* RTC clock enabled.*/
   BKP->BDCR |= (1 << 15);
@@ -388,6 +394,8 @@ void rtclp_lld_init(void) {
 
   /* Callback initially disabled.*/
   RTCD1.callback = NULL;
+  
+  rtcWB32SetSec(&RTCD1, last_rtc_cnt);
   
   extiEnableLine(WB32_RTC_ALARM_EXTI, EXTI_MODE_RISING_EDGE | EXTI_MODE_ACTION_INTERRUPT);
 
