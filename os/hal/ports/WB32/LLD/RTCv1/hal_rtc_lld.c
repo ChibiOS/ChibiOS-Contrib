@@ -81,7 +81,6 @@ static void hal_lld_backup_domain_init(void) {
 #endif /* HAL_USE_RTC */
 
   rccDisableBKPInterface();
-
 }
 /*===========================================================================*/
 /* Driver exported variables.                                                */
