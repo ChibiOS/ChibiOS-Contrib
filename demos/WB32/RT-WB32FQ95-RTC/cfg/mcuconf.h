@@ -130,12 +130,12 @@
 /*
  * SERIAL driver system settings.
  */
-#define WB32_SERIAL_USE_UART1             TRUE
-#define WB32_SERIAL_USE_UART2             FALSE
-#define WB32_SERIAL_USE_UART3             FALSE
-#define WB32_SERIAL_USART1_PRIORITY        12
-#define WB32_SERIAL_USART2_PRIORITY        12
-#define WB32_SERIAL_USART3_PRIORITY        12
+#define WB32_SERIAL_USE_UART1              TRUE
+#define WB32_SERIAL_USE_UART2              FALSE
+#define WB32_SERIAL_USE_UART3              FALSE
+#define WB32_SERIAL_UART1_PRIORITY         12
+#define WB32_SERIAL_UART2_PRIORITY         12
+#define WB32_SERIAL_UART3_PRIORITY         12
 
 /*
  * SPI driver system settings.
