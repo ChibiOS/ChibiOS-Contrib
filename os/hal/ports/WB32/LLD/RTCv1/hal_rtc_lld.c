@@ -221,8 +221,14 @@ OSAL_IRQ_HANDLER(WB32_RTCAlarm_IRQ_VECTOR) {
   
   extiClearLine(WB32_RTC_ALARM_EXTI);
   
+  if (flags & RTC_CRL_SECF)
+    RTCD1.callback(&RTCD1, RTC_EVENT_SECOND);
+
   if (flags & RTC_CRL_ALRF)
     RTCD1.callback(&RTCD1, RTC_EVENT_ALARM);
+
+  if (flags & RTC_CRL_OWF)
+    RTCD1.callback(&RTCD1, RTC_EVENT_OVERFLOW);
   
   OSAL_IRQ_EPILOGUE();
 }
