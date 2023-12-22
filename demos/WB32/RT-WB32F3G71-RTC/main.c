@@ -59,7 +59,7 @@ static void stop_mode_entry(void) {
   /* Clear all bits except DBP and FCLKSD bit */
   PWR->CR0 &= 0x09U;
 
-  // STOP LP4 MODE S32KON
+  /* STOP LP4 MODE S32KON */
   PWR->CR0 |= 0x3B004U;
   PWR->CFGR = 0x3B3;
 
