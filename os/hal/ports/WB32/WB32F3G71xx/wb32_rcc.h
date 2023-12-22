@@ -211,6 +211,7 @@
     RCC->AHBRSTR1 &= ~(mask);                                               \
     (void)RCC->AHBRSTR;                                                     \
   }
+/** @} */
 
 /**
  * @name    Backup domain interface specific RCC operations
