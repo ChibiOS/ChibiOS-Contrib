@@ -14,20 +14,25 @@
     limitations under the License.
 */
 
- #include "ch.h"
- #include "hal.h"
- #include "debug.h"
- #include "chprintf.h"
- #define PORTAB_LINE_LED1 PAL_LINE(GPIOB, 14U)
- #define PORTAB_LINE_LED2 PAL_LINE(GPIOB, 13U)
- #define PORTAB_LED_OFF   PAL_HIGH
- #define PORTAB_LED_ON    AL_LOW
+#include "ch.h"
+#include "hal.h"
+#include "debug.h"
+#include "chprintf.h"
+#define PORTAB_LINE_LED1 PAL_LINE(GPIOB, 14U)
+#define PORTAB_LINE_LED2 PAL_LINE(GPIOB, 13U)
+#define PORTAB_LED_OFF   PAL_HIGH
+#define PORTAB_LED_ON    AL_LOW
 
- RTCDateTime timespec;
- RTCAlarm alarmspec;
+RTCDateTime timespec;
+RTCAlarm alarmspec;
  
- extern void __early_init(void);
-    
+extern void __early_init(void);
+
+/*
+ * Test alarm period.
+ */
+#define RTC_ALARMPERIOD   10
+
 #define TEST_ALARM_WAKEUP     TRUE
 
 #if TEST_ALARM_WAKEUP
@@ -70,6 +75,7 @@ static void stop_mode_entry(void) {
   /* Clear SLEEPDEEP bit of Cortex System Control Register */
   SCB->SCR &= (~SCB_SCR_SLEEPDEEP_Msk);
 }
+
 /*
  * Running indicator thread.
  */
@@ -87,17 +93,15 @@ static void my_cb(RTCDriver *rtcp, rtcevent_t event) {
   (void)rtcp;
 
   switch (event) {
-  case RTC_EVENT_OVERFLOW:
-
-    break;
-  case RTC_EVENT_SECOND:
-    palToggleLine(PORTAB_LINE_LED1);
-    break;
-  case RTC_EVENT_ALARM:
-    osalSysLockFromISR();
-    NVIC_DisableIRQ(RTCAlarm_IRQn);
-    osalSysUnlockFromISR();
-    break;
+    case RTC_EVENT_OVERFLOW: break;
+    case RTC_EVENT_SECOND: {
+      palToggleLine(PORTAB_LINE_LED1);
+    } break;
+    case RTC_EVENT_ALARM: {
+      osalSysLockFromISR();
+      NVIC_DisableIRQ(RTCAlarm_IRQn);
+      osalSysUnlockFromISR();
+    } break;
   }
 }
 
@@ -118,15 +122,12 @@ int main(void) {
   
   chThdCreateStatic(blinkWA, sizeof(blinkWA), NORMALPRIO, blink_thd, NULL);
 
-  /* compile ability test */
-  rtcGetTime(&RTCD1, &timespec);
-
   while (true){
     chThdSleepSeconds(2);
     rtcGetTime(&RTCD1, &timespec);
     chprintf((sequential_stream_i *)&SERIAL_DEBUG_DRIVER, 
-              "lsi sleep 5s year = %d  month = %d  dstflag=%d  dayofweek = %d  day = %d  millisecond = %d\r\n",
-              timespec.year, timespec.month, timespec.dstflag, timespec.dayofweek, timespec.day, timespec.millisecond);
+             "lsi sleep %ds year = %d  month = %d  dstflag=%d  dayofweek = %d  day = %d  millisecond = %d\r\n",
+             RTC_ALARMPERIOD, timespec.year, timespec.month, timespec.dstflag, timespec.dayofweek, timespec.day, timespec.millisecond);
     chThdSleepSeconds(3);
 
     chSysDisable();
@@ -135,12 +136,13 @@ int main(void) {
     rtclp_lld_init();
     rtcSetCallback(&RTCD1, my_cb);
     rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);
-    alarmspec.tv_sec = tv_sec + 5;
+    alarmspec.tv_sec = tv_sec + RTC_ALARMPERIOD;
     rtcSetAlarm(&RTCD1, 0, &alarmspec);
     NVIC_EnableIRQ(RTCAlarm_IRQn);
     
     stop_mode_entry();
  
+    /* Recovery clock */
     __early_init();
     rtc_lld_init();
     rccEnableEXTI();
@@ -152,11 +154,6 @@ int main(void) {
 }
 
 #else /* TEST_ALARM_WAKEUP */
-
-/*
- * Test alarm period.
- */
-#define RTC_ALARMPERIOD   10
 
 binary_semaphore_t alarm_sem;
 
