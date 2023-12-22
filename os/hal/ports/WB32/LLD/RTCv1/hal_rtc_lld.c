@@ -305,7 +305,7 @@ void rtc_lld_init(void) {
   /* RTC pointer initialization.*/
   RTCD1.rtc = RTC;
   
-  last_rtc_cnt =  ((uint32_t)(RTCD1.rtc->CNTH) << 16) + RTCD1.rtc->CNTL;
+  last_rtc_cnt = ((uint32_t)(RTCD1.rtc->CNTH) << 16) + RTCD1.rtc->CNTL;
   /* Initializes the backup domain.*/
   hal_lld_backup_domain_init();
 
@@ -338,7 +338,7 @@ void rtclp_lld_init(void) {
   /* RTC pointer initialization.*/
   RTCD1.rtc = RTC;
   
-  last_rtc_cnt =  ((uint32_t)(RTCD1.rtc->CNTH) << 16) + RTCD1.rtc->CNTL;
+  last_rtc_cnt = ((uint32_t)(RTCD1.rtc->CNTH) << 16) + RTCD1.rtc->CNTL;
 
   PWR_BackupAccessEnable();
 
@@ -350,7 +350,7 @@ void rtclp_lld_init(void) {
 #  if WB32_RTCLP_SEL == WB32_RTCSEL_LSE
   /* If enabled then the LSE is started.*/
 #    if WB32_LSE_ENABLED
-#       if defined(WB32_LSE_BYPASS)
+#      if defined(WB32_LSE_BYPASS)
   /* No LSE Bypass.*/
   BKP->BDCR = BKP_LSE_Bypass;
 #      else
