@@ -137,6 +137,8 @@
 
 /* CRC attributes.*/
 #define WB32_HAS_CRC                           TRUE
+/* RTC attributes.*/
+#define WB32_RTC_ALARM_EXTI                    17
 /** @} */
 #endif /* defined(WB32F3G71xx) */
 

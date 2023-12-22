@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2021 Westberry Technology (ChangZhou) Corp., Ltd
+    Copyright (C) 2023 Westberry Technology Corp., Ltd
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #ifndef MCUCONF_H
 #define MCUCONF_H
 
-#define WB32FQ95xx_MCUCONF  TRUE
+#define WB32F3G71xx_MCUCONF  TRUE
 
 /*
  * WB32FQ95 drivers configuration.
@@ -44,9 +44,9 @@
 #define WB32_NO_INIT                       FALSE
 #define WB32_MHSI_ENABLED                  TRUE
 #define WB32_FHSI_ENABLED                  FALSE
-#define WB32_LSI_ENABLED                   FALSE
+#define WB32_LSI_ENABLED                   TRUE
 #define WB32_HSE_ENABLED                   TRUE
-#define WB32_LSE_ENABLED                   FALSE
+#define WB32_LSE_ENABLED                   TRUE
 #define WB32_PLL_ENABLED                   TRUE
 #define WB32_MAINCLKSRC                    WB32_MAINCLKSRC_PLL
 #define WB32_HSE_STATE                     ANCTL_HSECR0_HSEON
@@ -57,10 +57,12 @@
 #define WB32_PPRE1                         1
 #define WB32_PPRE2                         1
 #define WB32_USBPRE                        WB32_USBPRE_DIV1P5
-
+#define WB32_RTCSEL                        WB32_RTCSEL_HSEDIV
+#define WB32_RTCLP_SEL                     WB32_RTCSEL_LSI
 /*
  * EXTI driver system settings.
  */
+#define WB32_EXTI_REQUIRED
 #define WB32_IRQ_EXTI0_PRIORITY            6
 #define WB32_IRQ_EXTI1_PRIORITY            6
 #define WB32_IRQ_EXTI2_PRIORITY            6
@@ -85,6 +87,11 @@
 #define WB32_GPT_TIM2_IRQ_PRIORITY         7
 #define WB32_GPT_TIM3_IRQ_PRIORITY         7
 #define WB32_GPT_TIM4_IRQ_PRIORITY         7
+/*
+ * RTC driver system settings.
+ */
+#define WB32_RTCAlarm_IRQ_PRIORITY         14
+#define WB32_RTC_IRQ_PRIORITY              15
 
 /*
  * ICU driver system settings.
@@ -123,7 +130,7 @@
 /*
  * SERIAL driver system settings.
  */
-#define WB32_SERIAL_USE_UART1              FALSE
+#define WB32_SERIAL_USE_UART1              TRUE
 #define WB32_SERIAL_USE_UART2              FALSE
 #define WB32_SERIAL_USE_UART3              FALSE
 #define WB32_SERIAL_UART1_PRIORITY         12
