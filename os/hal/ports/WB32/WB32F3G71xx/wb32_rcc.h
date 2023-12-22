@@ -182,7 +182,7 @@
  *
  * @api
  */
-#define rccEnableAHB2(mask) {                                                \
+#define rccEnableAHB2(mask) {                                               \
     RCC->AHBENR2 |= (mask);                                                 \
     (void)RCC->AHBENR2;                                                     \
   }
@@ -194,7 +194,7 @@
  *
  * @api
  */
-#define rccDisableAHB2(mask) {                                               \
+#define rccDisableAHB2(mask) {                                              \
     RCC->AHBENR2 &= ~(mask);                                                \
     (void)RCC->AHBENR2;                                                     \
   }
