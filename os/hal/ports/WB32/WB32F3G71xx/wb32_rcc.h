@@ -51,9 +51,9 @@
 /** @defgroup LSE_Configuration 
   * @{
   */
-#define BKP_LSE_OFF     ((uint32_t)0x00000000)
-#define BKP_LSE_ON      ((uint32_t)0x00000001)
-#define BKP_LSE_Bypass  ((uint32_t)0x00000004)
+#define BKP_LSE_OFF                     ((uint32_t)0x00000000)
+#define BKP_LSE_ON                      ((uint32_t)0x00000001)
+#define BKP_LSE_Bypass                  ((uint32_t)0x00000004)
 /**
   * @}
   */
