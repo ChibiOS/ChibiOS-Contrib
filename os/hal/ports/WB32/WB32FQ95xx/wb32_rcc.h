@@ -51,9 +51,9 @@
 /** @defgroup LSE_Configuration 
   * @{
   */
-#define BKP_LSE_OFF     ((uint32_t)0x00000000)
-#define BKP_LSE_ON      ((uint32_t)0x00000001)
-#define BKP_LSE_Bypass  ((uint32_t)0x00000004)
+#define BKP_LSE_OFF                     ((uint32_t)0x00000000)
+#define BKP_LSE_ON                      ((uint32_t)0x00000001)
+#define BKP_LSE_Bypass                  ((uint32_t)0x00000004)
 /**
   * @}
   */
@@ -211,27 +211,6 @@
     RCC->AHBRSTR1 &= ~(mask);                                               \
     (void)RCC->AHBRSTR;                                                     \
   }
-/** @} */
-
-
-/**
- * @name    Backup domain interface specific RCC operations
- * @{
- */
-/**
- * @brief   Enables the BKP interface clock.
- *
- * @api
- */
-#define rccEnableBKPInterface() rccEnableAHB2(RCC_AHBPeriph_BKP >> 24)
-
-/**
- * @brief   Disables BKP interface clock.
- *
- * @api
- */
-#define rccDisableBKPInterface() rccDisableAHB2(RCC_AHBPeriph_BKP >> 24)
-
 /** @} */
 
 /**

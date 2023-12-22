@@ -214,26 +214,6 @@
 /** @} */
 
 /**
- * @name    Backup domain interface specific RCC operations
- * @{
- */
-/**
- * @brief   Enables the BKP interface clock.
- *
- * @api
- */
-#define rccEnableBKPInterface() rccEnableAHB2(RCC_AHBPeriph_BKP >> 24)
-
-/**
- * @brief   Disables BKP interface clock.
- *
- * @api
- */
-#define rccDisableBKPInterface() rccDisableAHB2(RCC_AHBPeriph_BKP >> 24)
-
-/** @} */
-
-/**
  * @name    EXTI peripherals specific RCC operations
  * @{
  */

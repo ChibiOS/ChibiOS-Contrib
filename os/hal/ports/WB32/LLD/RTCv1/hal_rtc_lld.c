@@ -47,7 +47,7 @@ static void hal_lld_backup_domain_init(void) {
 
   rccResetBKP();
   /* Turn on the backup domain clock.*/
-  rccEnableBKPInterface();
+  rccEnableBKP();
   
 #if HAL_USE_RTC
   /* If enabled then the LSE is started.*/
@@ -79,7 +79,7 @@ static void hal_lld_backup_domain_init(void) {
   BKP->BDCR |= (1 << 15);
 #endif /* HAL_USE_RTC */
 
-  rccDisableBKPInterface();
+  rccDisableBKP();
 }
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -344,7 +344,7 @@ void rtclp_lld_init(void) {
 
   rccResetBKP();
   /* Turn on the backup domain clock.*/
-  rccEnableBKPInterface();
+  rccEnableBKP();
 
 #if HAL_USE_RTC
 #  if WB32_RTCLP_SEL == WB32_RTCSEL_LSE
@@ -375,7 +375,7 @@ void rtclp_lld_init(void) {
   BKP->BDCR |= (1 << 15);
 #endif
 
-  rccDisableBKPInterface();
+  rccDisableBKP();
   /* RSF bit must be cleared by software after an APB1 reset or an APB1 clock
      stop. Otherwise its value will not be actual. */
   RTCD1.rtc->CRL &= ~RTC_CRL_RSF;
