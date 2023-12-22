@@ -449,6 +449,7 @@ void rtc_lld_set_alarm(RTCDriver *rtcp,
                        rtcalarm_t alarm_number,
                        const RTCAlarm *alarmspec) {
   syssts_t sts;
+  
   (void)alarm_number;
 
   /* Entering a reentrant critical zone.*/
