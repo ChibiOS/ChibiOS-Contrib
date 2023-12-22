@@ -207,7 +207,6 @@ static void rtc_decode(uint32_t tv_sec,
  * @isr
  */
 OSAL_IRQ_HANDLER(WB32_RTCAlarm_IRQ_VECTOR) {
-  
   uint16_t flags;
 
   OSAL_IRQ_PROLOGUE();
