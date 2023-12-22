@@ -30,7 +30,7 @@
 /*===========================================================================*/
 
 /* EXTI attributes.*/
-#define WB32_EXTI_IMR1_MASK                0xFFF00000U
+#define WB32_EXTI_IMR1_MASK         0xFFF00000U
 
 /**
  * @name    EXTI channel modes

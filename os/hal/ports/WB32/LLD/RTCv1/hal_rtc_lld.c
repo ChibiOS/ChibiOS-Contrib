@@ -52,12 +52,12 @@ static void hal_lld_backup_domain_init(void) {
 #if HAL_USE_RTC
   /* If enabled then the LSE is started.*/
 #  if WB32_LSE_ENABLED
-#     if defined(WB32_LSE_BYPASS)
+#    if defined(WB32_LSE_BYPASS)
   /* No LSE Bypass.*/
   BKP->BDCR = BKP_LSE_Bypass;
 #    else
   /*LSE Bypass.*/
-  BKP->BDCR = (1 << 0);
+  BKP->BDCR = BKP_LSE_ON;
 #    endif
   while ((BKP->BDCR & 0x2U) == 0)
     ;                                     /* Waits until LSE is stable.   */
@@ -65,9 +65,9 @@ static void hal_lld_backup_domain_init(void) {
 
 #  if WB32_RTCSEL == WB32_RTCSEL_HSEDIV
   RCC->HSE2RTCENR = 1;
-  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x03U << 8);
+  BKP->BDCR = (BKP->BDCR & (~(WB32_RTCSEL_MASK))) | (WB32_RTCSEL_HSEDIV);
 #  elif WB32_RTCSEL == WB32_RTCSEL_LSE
-  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x01U << 8);
+  BKP->BDCR = (BKP->BDCR & (~(WB32_RTCSEL_MASK))) | (WB32_RTCSEL_LSE);
 #  elif WB32_RTCSEL == WB32_RTCSEL_LSI || WB32_RTCSEL == WB32_RTCSEL_NOCLOCK
 #    error 'The LSI clock cannot be used under normal use of the RTC'
 #  endif
@@ -362,12 +362,12 @@ void rtclp_lld_init(void) {
 #      endif
   while ((BKP->BDCR & 0x2U) == 0)
     ;                                     /* Waits until LSE is stable.   */
-  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x01U << 8);
+  BKP->BDCR = (BKP->BDCR & (~(WB32_RTCSEL_MASK))) | (WB32_RTCSEL_LSE);
 #    endif /* WB32_LSE_ENABLED */
 #  elif WB32_RTCLP_SEL == WB32_RTCSEL_LSI
   RCC->LSI2RTCENR = 1;
   /* Select the RTC clock source */
-  BKP->BDCR = (BKP->BDCR & (~(0x03U << 8))) | (0x02U << 8);
+  BKP->BDCR = (BKP->BDCR & (~(WB32_RTCSEL_MASK))) | (WB32_RTCSEL_LSI);
 
   /* Prescaler value loaded in registers.*/
   rtc_lld_set_prescaler(rtc_mod_flag);
