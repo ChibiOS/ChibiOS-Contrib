@@ -18,6 +18,7 @@
 #include "hal.h"
 #include "debug.h"
 #include "chprintf.h"
+
 #define PORTAB_LINE_LED1 PAL_LINE(GPIOB, 14U)
 #define PORTAB_LINE_LED2 PAL_LINE(GPIOB, 13U)
 #define PORTAB_LED_OFF   PAL_HIGH
