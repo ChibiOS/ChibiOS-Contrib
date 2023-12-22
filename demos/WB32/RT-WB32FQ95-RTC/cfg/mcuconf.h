@@ -18,7 +18,6 @@
 #define MCUCONF_H
 
 #define WB32FQ95xx_MCUCONF  TRUE
-#define WB32_EXTI_REQUIRED
 
 /*
  * WB32FQ95 drivers configuration.
@@ -63,6 +62,7 @@
 /*
  * EXTI driver system settings.
  */
+#define WB32_EXTI_REQUIRED
 #define WB32_IRQ_EXTI0_PRIORITY            6
 #define WB32_IRQ_EXTI1_PRIORITY            6
 #define WB32_IRQ_EXTI2_PRIORITY            6
