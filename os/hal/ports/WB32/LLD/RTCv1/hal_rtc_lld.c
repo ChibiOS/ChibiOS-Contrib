@@ -220,7 +220,7 @@ OSAL_IRQ_HANDLER(WB32_RTCAlarm_IRQ_VECTOR) {
   RTCD1.rtc->CRL &= ~(RTC_CRL_SECF | RTC_CRL_ALRF | RTC_CRL_OWF);
   
   extiClearLine(WB32_RTC_ALARM_EXTI);
-  
+
   if (flags & RTC_CRL_SECF)
     RTCD1.callback(&RTCD1, RTC_EVENT_SECOND);
 
@@ -314,7 +314,6 @@ void rtc_lld_init(void) {
   last_rtc_cnt = ((uint32_t)(RTCD1.rtc->CNTH) << 16) + RTCD1.rtc->CNTL;
   /* Initializes the backup domain.*/
   hal_lld_backup_domain_init();
-
 
   /* Required because access to PRL.*/
   rtc_apb1_sync();
