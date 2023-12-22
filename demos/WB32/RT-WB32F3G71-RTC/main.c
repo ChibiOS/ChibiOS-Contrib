@@ -18,6 +18,7 @@
 #include "hal.h"
 #include "debug.h"
 #include "chprintf.h"
+
 #define PORTAB_LINE_LED1 PAL_LINE(GPIOB, 14U)
 #define PORTAB_LINE_LED2 PAL_LINE(GPIOB, 13U)
 #define PORTAB_LED_OFF   PAL_HIGH
@@ -31,9 +32,9 @@ extern void __early_init(void);
 /*
  * Test alarm period.
  */
-#define RTC_ALARMPERIOD   10
+#define RTC_ALARMPERIOD 10
 
-#define TEST_ALARM_WAKEUP     TRUE
+#define TEST_ALARM_WAKEUP TRUE
 
 #if TEST_ALARM_WAKEUP
 
@@ -58,7 +59,7 @@ static void stop_mode_entry(void) {
   /* Clear all bits except DBP and FCLKSD bit */
   PWR->CR0 &= 0x09U;
 
-  // STOP LP4 MODE S32KON
+  /* STOP LP4 MODE S32KON */
   PWR->CR0 |= 0x3B004U;
   PWR->CFGR = 0x3B3;
 
