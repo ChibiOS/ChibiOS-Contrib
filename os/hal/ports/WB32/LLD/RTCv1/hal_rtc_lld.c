@@ -13,11 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
 /*
    Concepts and parts of this file have been contributed by Uladzimir Pylinsky
    aka barthess.
  */
-
 
 /**
  * @file    RTCv1/hal_rtc_lld.c
