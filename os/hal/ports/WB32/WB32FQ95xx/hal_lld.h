@@ -251,7 +251,7 @@
  * @brief   RTC clock source.
  */
 #if !defined(WB32_RTCSEL) || defined(__DOXYGEN__)
-#define WB32_RTCSEL                            WB32_RTCSEL_LSI
+#define WB32_RTCSEL                            WB32_RTCSEL_NOCLOCK
 #endif
 
 /**
