@@ -125,7 +125,7 @@ int main(void) {
     chThdSleepSeconds(2);
     rtcGetTime(&RTCD1, &timespec);
     chprintf((sequential_stream_i *)&SERIAL_DEBUG_DRIVER, 
-              "lsi sleep 30s year = %d  month = %d  dstflag=%d  dayofweek = %d  day = %d  millisecond = %d\r\n",
+              "lsi sleep 5s year = %d  month = %d  dstflag=%d  dayofweek = %d  day = %d  millisecond = %d\r\n",
               timespec.year, timespec.month, timespec.dstflag, timespec.dayofweek, timespec.day, timespec.millisecond);
     chThdSleepSeconds(3);
 
@@ -135,7 +135,7 @@ int main(void) {
     rtclp_lld_init();
     rtcSetCallback(&RTCD1, my_cb);
     rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);
-    alarmspec.tv_sec = tv_sec + 60;
+    alarmspec.tv_sec = tv_sec + 5;
     rtcSetAlarm(&RTCD1, 0, &alarmspec);
     NVIC_EnableIRQ(RTCAlarm_IRQn);
     
