@@ -19,22 +19,17 @@
 #include "debug.h"
 #include "chprintf.h"
 
-#define PORTAB_LINE_LED1 PAL_LINE(GPIOB, 14U)
-#define PORTAB_LINE_LED2 PAL_LINE(GPIOB, 13U)
-#define PORTAB_LED_OFF   PAL_HIGH
-#define PORTAB_LED_ON    AL_LOW
+#define PORTAB_LINE_LED1      PAL_LINE(GPIOB, 14U)
+#define PORTAB_LINE_LED2      PAL_LINE(GPIOB, 13U)
+#define PORTAB_LED_OFF        PAL_HIGH
+#define PORTAB_LED_ON         AL_LOW
+#define RTC_ALARMPERIOD       10
+#define TEST_ALARM_WAKEUP     TRUE
 
 RTCDateTime timespec;
 RTCAlarm alarmspec;
  
 extern void __early_init(void);
-
-/*
- * Test alarm period.
- */
-#define RTC_ALARMPERIOD 10
-
-#define TEST_ALARM_WAKEUP TRUE
 
 #if TEST_ALARM_WAKEUP
 
@@ -166,18 +161,16 @@ static void my_cb(RTCDriver *rtcp, rtcevent_t event) {
   (void)rtcp;
 
   switch (event) {
-    case RTC_EVENT_OVERFLOW:
-
-    break;
-    case RTC_EVENT_SECOND:
+    case RTC_EVENT_OVERFLOW: break;
+    case RTC_EVENT_SECOND: {
       palToggleLine(PORTAB_LINE_LED2);
-    break;
-    case RTC_EVENT_ALARM:
+    } break;
+    case RTC_EVENT_ALARM: {
       palToggleLine(PORTAB_LINE_LED1);
       osalSysLockFromISR();
       chBSemSignalI(&alarm_sem);
       osalSysUnlockFromISR();
-    break;
+    } break;
   }
 }
 
