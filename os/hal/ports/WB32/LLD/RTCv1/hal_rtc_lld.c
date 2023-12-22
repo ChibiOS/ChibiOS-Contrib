@@ -77,7 +77,6 @@ static void hal_lld_backup_domain_init(void) {
 
   /* RTC clock enabled.*/
   BKP->BDCR |= (1 << 15);
-
 #endif /* HAL_USE_RTC */
 
   rccDisableBKPInterface();
