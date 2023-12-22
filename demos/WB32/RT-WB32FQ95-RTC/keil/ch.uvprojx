@@ -1329,6 +1329,26 @@
               <FileType>5</FileType>
               <FilePath>..\cfg\mcuconf.h</FilePath>
             </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>chprintf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\ChibiOS\os\common\lib\src\chprintf.c</FilePath>
+            </File>
+            <File>
+              <FileName>memstreams.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\ChibiOS\os\common\lib\src\memstreams.c</FilePath>
+            </File>
+            <File>
+              <FileName>oop_base_object.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\ChibiOS\os\common\oop\src\oop_base_object.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

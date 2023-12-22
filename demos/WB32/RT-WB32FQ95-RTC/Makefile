@@ -126,7 +126,15 @@ LDSCRIPT= $(STARTUPLD_CONTRIB)/WB32FQ95xC.ld
 CSRC = $(ALLCSRC) \
        $(TESTSRC) \
        $(CHIBIOS)/os/various/syscalls.c \
+       $(CHIBIOS)/os/common/lib/src/chprintf.c \
+       debug.c \
        main.c
+
+ALLINC += ./ \
+    $(CHIBIOS)/os/common/lib/include \
+    $(CHIBIOS)/os/common/oop/include
+
+
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.

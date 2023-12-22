@@ -16,8 +16,8 @@
 
  #include "ch.h"
  #include "hal.h"
-
-
+ #include "debug.h"
+ #include "chprintf.h"
  #define PORTAB_LINE_LED1 PAL_LINE(GPIOB, 14U)
  #define PORTAB_LINE_LED2 PAL_LINE(GPIOB, 13U)
  #define PORTAB_LED_OFF   PAL_HIGH
@@ -107,11 +107,14 @@ int main(void) {
   
   halInit();
   chSysInit();
-   /* 
-    * Init LED port and pad.
-    */
-   palSetPadMode(PAL_PORT(PORTAB_LINE_LED1), PAL_PAD(PORTAB_LINE_LED1), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
-   palSetPadMode(PAL_PORT(PORTAB_LINE_LED2), PAL_PAD(PORTAB_LINE_LED2), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
+  
+  serial_debug_init();
+ 
+  /* 
+   * Init LED port and pad.
+   */
+  palSetPadMode(PAL_PORT(PORTAB_LINE_LED1), PAL_PAD(PORTAB_LINE_LED1), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
+  palSetPadMode(PAL_PORT(PORTAB_LINE_LED2), PAL_PAD(PORTAB_LINE_LED2), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
   
   chThdCreateStatic(blinkWA, sizeof(blinkWA), NORMALPRIO, blink_thd, NULL);
 
@@ -119,7 +122,13 @@ int main(void) {
   rtcGetTime(&RTCD1, &timespec);
 
   while (true){
-    chThdSleepSeconds(5);
+    chThdSleepSeconds(2);
+    rtcGetTime(&RTCD1, &timespec);
+    chprintf((sequential_stream_i *)&SERIAL_DEBUG_DRIVER, 
+              "lsi sleep 5s year = %d  month = %d  dstflag=%d  dayofweek = %d  day = %d  millisecond = %d\r\n",
+              timespec.year, timespec.month, timespec.dstflag, timespec.dayofweek, timespec.day, timespec.millisecond);
+    chThdSleepSeconds(3);
+
     chSysDisable();
     wb32_set_main_clock_to_mhsi();
 
@@ -135,6 +144,7 @@ int main(void) {
     __early_init();
     rtc_lld_init();
     rccEnableEXTI();
+    rccEnableUART1();
     rtcSetCallback(&RTCD1, my_cb);
 
     chSysEnable();
@@ -143,91 +153,93 @@ int main(void) {
 
 #else /* TEST_ALARM_WAKEUP */
 
- /*
-  * Test alarm period.
+/*
+ * Test alarm period.
+ */
+#define RTC_ALARMPERIOD   10
+
+binary_semaphore_t alarm_sem;
+
+/*
+ * Alarm callback.
+ */
+static void my_cb(RTCDriver *rtcp, rtcevent_t event) {
+
+  (void)rtcp;
+
+  switch (event) {
+    case RTC_EVENT_OVERFLOW:
+
+    break;
+    case RTC_EVENT_SECOND:
+      palToggleLine(PORTAB_LINE_LED2);
+    break;
+    case RTC_EVENT_ALARM:
+      palToggleLine(PORTAB_LINE_LED1);
+      osalSysLockFromISR();
+      chBSemSignalI(&alarm_sem);
+      osalSysUnlockFromISR();
+    break;
+  }
+}
+
+static time_measurement_t sett, gett;
+
+int main(void) {
+
+  msg_t status = MSG_TIMEOUT;
+  uint32_t tv_sec;
+
+  halInit();
+  chSysInit();
+
+  /* 
+  * Init LED port and pad.
   */
- #define RTC_ALARMPERIOD   10
+  palSetPadMode(PAL_PORT(PORTAB_LINE_LED1), PAL_PAD(PORTAB_LINE_LED1), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
+  palSetPadMode(PAL_PORT(PORTAB_LINE_LED2), PAL_PAD(PORTAB_LINE_LED2), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
 
- binary_semaphore_t alarm_sem;
+  chBSemObjectInit(&alarm_sem, TRUE);
+  chTMObjectInit(&sett);
+  chTMObjectInit(&gett);
 
- /*
-  * Alarm callback.
-  */
- static void my_cb(RTCDriver *rtcp, rtcevent_t event) {
+  /* compile ability test */
+  chTMStartMeasurementX(&gett);
+  rtcGetTime(&RTCD1, &timespec);
+  chTMStopMeasurementX(&gett);
 
-   (void)rtcp;
+  rtcWB32SetSec(&RTCD1, 1414845464);
+  osalThreadSleepMilliseconds(10);
+  rtcGetTime(&RTCD1, &timespec);
+  timespec.month -= 1;
 
-   switch (event) {
-   case RTC_EVENT_OVERFLOW:
+  chTMStartMeasurementX(&sett);
+  rtcSetTime(&RTCD1, &timespec);
+  chTMStopMeasurementX(&sett);
+  osalThreadSleepMilliseconds(10);
 
-     break;
-   case RTC_EVENT_SECOND:
-     palToggleLine(PORTAB_LINE_LED2);
-     break;
-   case RTC_EVENT_ALARM:
-     palToggleLine(PORTAB_LINE_LED1);
-     osalSysLockFromISR();
-     chBSemSignalI(&alarm_sem);
-     osalSysUnlockFromISR();
-     break;
-   }
- }
+  rtcGetTime(&RTCD1, &timespec);
 
- static time_measurement_t sett, gett;
+  rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);
+  alarmspec.tv_sec = tv_sec + RTC_ALARMPERIOD;
+  rtcSetAlarm(&RTCD1, 0, &alarmspec);
 
- int main(void) {
+  rtcSetCallback(&RTCD1, my_cb);
 
-   msg_t status = MSG_TIMEOUT;
-   uint32_t tv_sec;
+  while (true){
+    /* Wait until alarm callback signaled semaphore.*/
+    status = chBSemWaitTimeout(&alarm_sem, TIME_S2I(RTC_ALARMPERIOD + 5));
 
-   halInit();
-   chSysInit();
-
-   /* 
-    * Init LED port and pad.
-    */
-   palSetPadMode(PAL_PORT(PORTAB_LINE_LED1), PAL_PAD(PORTAB_LINE_LED1), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
-   palSetPadMode(PAL_PORT(PORTAB_LINE_LED2), PAL_PAD(PORTAB_LINE_LED2), PAL_WB32_MODE_OUTPUT | PAL_WB32_OTYPE_PUSHPULL);
-
-    chBSemObjectInit(&alarm_sem, TRUE);
-    chTMObjectInit(&sett);
-    chTMObjectInit(&gett);
-
-    /* compile ability test */
-    chTMStartMeasurementX(&gett);
-    rtcGetTime(&RTCD1, &timespec);
-    chTMStopMeasurementX(&gett);
-
-    rtcWB32SetSec(&RTCD1, 1414845464);
-    osalThreadSleepMilliseconds(10);
-    rtcGetTime(&RTCD1, &timespec);
-    timespec.month -= 1;
-
-    chTMStartMeasurementX(&sett);
-    rtcSetTime(&RTCD1, &timespec);
-    chTMStopMeasurementX(&sett);
-    osalThreadSleepMilliseconds(10);
-
-    rtcGetTime(&RTCD1, &timespec);
-
-    rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);
-    alarmspec.tv_sec = tv_sec + RTC_ALARMPERIOD;
-    rtcSetAlarm(&RTCD1, 0, &alarmspec);
-
-    rtcSetCallback(&RTCD1, my_cb);
-
-   while (true){
-      /* Wait until alarm callback signaled semaphore.*/
-      status = chBSemWaitTimeout(&alarm_sem, TIME_S2I(RTC_ALARMPERIOD + 5));
-
-      if (status == MSG_TIMEOUT){
-        osalSysHalt("time is out");
-      }
-      else{
-        rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);
-        alarmspec.tv_sec = tv_sec + RTC_ALARMPERIOD;
-        rtcSetAlarm(&RTCD1, 0, &alarmspec);
-      }
-   }
- }
+    if (status == MSG_TIMEOUT){
+      osalSysHalt("time is out");
+    } else {
+      rtcWB32GetSecMsec(&RTCD1, &tv_sec, NULL);
+      alarmspec.tv_sec = tv_sec + RTC_ALARMPERIOD;
+      rtcSetAlarm(&RTCD1, 0, &alarmspec);
+    }
+  }
+}
 #endif /* TEST_ALARM_WAKEUP */
+
+
+
