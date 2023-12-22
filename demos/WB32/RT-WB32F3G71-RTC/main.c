@@ -32,9 +32,9 @@ extern void __early_init(void);
 /*
  * Test alarm period.
  */
-#define RTC_ALARMPERIOD   10
+#define RTC_ALARMPERIOD 10
 
-#define TEST_ALARM_WAKEUP     TRUE
+#define TEST_ALARM_WAKEUP TRUE
 
 #if TEST_ALARM_WAKEUP
 
