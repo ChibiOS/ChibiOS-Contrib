@@ -21,13 +21,13 @@
 */
 
 /**
- * @file        AT32F415x/cmparams.h
- * @brief       ARM Cortex-M4 parameters for the Artery AT32F415x
+ * @file        AT32F415/cmparams.h
+ * @brief       ARM Cortex-M4 parameters for the Artery AT32F415
  *
- * @defgroup    ARMCMx_AT32F415x Artery AT32F415x Specific Parameters
+ * @defgroup    ARMCMx_AT32F415 Artery AT32F415 Specific Parameters
  * @ingroup     ARMCMx_SPECIFIC
  * @details     This file contains the Cortex-M4 specific parameters for the
- *              Artery AT32F415x platform.
+ *              Artery AT32F415 platform.
  * @{
  */
 
@@ -76,7 +76,7 @@
 /* Including the device CMSIS header. Note, we are not using the definitions
    from this header because we need this file to be usable also from
    assembler source files. We verify that the info matches instead.*/
-#include "at32f41x.h"
+#include "at32f415.h"
 
 /*lint -save -e9029 [10.4] Signedness comes from external files, it is
   unpredictable but gives no problems.*/

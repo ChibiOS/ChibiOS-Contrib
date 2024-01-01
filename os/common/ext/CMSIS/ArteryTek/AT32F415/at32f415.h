@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file    at32f41x.h
+  * @file    at32f415.h
   * @author  Artery Technology & HorrorTroll
-  * @brief   AT32F41x header file
+  * @brief   AT32F415 header file
   *
   ******************************************************************************
   *                       Copyright notice & Disclaimer
@@ -28,12 +28,12 @@
   * @{
   */
 
-/** @addtogroup at32f41x
+/** @addtogroup at32f415
   * @{
   */
     
-#ifndef __AT32F41X_H
-#define __AT32F41X_H
+#ifndef __AT32F415_H
+#define __AT32F415_H
 
 #ifdef __cplusplus
  extern "C" {
@@ -50,24 +50,16 @@
 /**
   * @brief AT32 Family
   */
-#if !defined (AT32F41)
-#define AT32F41
-#endif /* AT32F41 */
+#if !defined (AT32F415)
+#define AT32F415
+#endif /* AT32F415 */
 
 /* Uncomment the line below according to the target AT32 device used in your
    application 
   */
 
-#if !defined(AT32F413KB) && !defined(AT32F413KC) && !defined(AT32F413CB) && \
-    !defined(AT32F413CC) && !defined(AT32F413RB) && !defined(AT32F413RC) && \
-    !defined(AT32F415KB) && !defined(AT32F415KC) && !defined(AT32F415CB) && \
+#if !defined(AT32F415KB) && !defined(AT32F415KC) && !defined(AT32F415CB) && \
     !defined(AT32F415CC) && !defined(AT32F415RB) && !defined(AT32F415RC)
-   /* #define AT32F413KB */     /*!< AT32F413KB */
-   /* #define AT32F413KC */     /*!< AT32F413KC */
-   /* #define AT32F413CB */     /*!< AT32F413C8 and AT32F413CB */
-   /* #define AT32F413CC */     /*!< AT32F413CC */
-   /* #define AT32F413RB */     /*!< AT32F413RB */
-   /* #define AT32F413RC */     /*!< AT32F413RC */
    /* #define AT32F415KB */     /*!< AT32F415K8 and AT32F415KB */
    /* #define AT32F415KC */     /*!< AT32F415KC */
    /* #define AT32F415CB */     /*!< AT32F415C8 and AT32F415CB */
@@ -98,19 +90,7 @@
   * @{
   */
 
-#if defined(AT32F413KB)
-   #include "at32f413kx.h"
-#elif defined(AT32F413KC)
-   #include "at32f413kx.h"
-#elif defined(AT32F413CB)
-   #include "at32f413cx.h"
-#elif defined(AT32F413CC)
-   #include "at32f413cx.h"
-#elif defined(AT32F413RB)
-   #include "at32f413rx.h"
-#elif defined(AT32F413RC)
-   #include "at32f413rx.h"
-#elif defined(AT32F415KB)
+#if defined(AT32F415KB)
    #include "at32f415kx.h"
 #elif defined(AT32F415KC)
    #include "at32f415kx.h"
@@ -123,7 +103,7 @@
 #elif defined(AT32F415RC)
    #include "at32f415rx.h"
 #else
-   #error "Please select first the target AT32F41x device used in your application (in at32f41x.h file)"
+   #error "Please select first the target AT32F415 device used in your application (in at32f415.h file)"
 #endif
 
 /**
@@ -214,7 +194,7 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} error_status;
 }
 #endif /* __cplusplus */
 
-#endif /* __AT32F41X_H */
+#endif /* __AT32F415_H */
 
 /**
   * @}

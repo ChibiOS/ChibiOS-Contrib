@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    at32f415kx.h
+  * @file    at32f415cx.h
   * @author  Artery Technology & HorrorTroll
-  * @version v2.1.0
-  * @date    8-August-2023
-  * @brief   AT32F415Kx header file.
+  * @version v2.1.1
+  * @date    26-October-2023
+  * @brief   AT32F415Cx header file.
   *
   ******************************************************************************
   *                       Copyright notice & Disclaimer
@@ -30,23 +30,23 @@
   * @{
   */
 
-/** @addtogroup at32f415kx
+/** @addtogroup at32f415cx
   * @{
   */
 
-#ifndef __AT32F415Kx_H
-#define __AT32F415Kx_H
+#ifndef __AT32F415Cx_H
+#define __AT32F415Cx_H
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /**
-  * @brief CMSIS Device version number V2.1.0
+  * @brief CMSIS Device version number V2.1.1
   */
 #define __AT32F415_LIBRARY_VERSION_MAJOR   (0x02) /*!< [31:24] major version */
 #define __AT32F415_LIBRARY_VERSION_MIDDLE  (0x01) /*!< [23:16] middle version */
-#define __AT32F415_LIBRARY_VERSION_MINOR   (0x00) /*!< [15:8]  minor version */
+#define __AT32F415_LIBRARY_VERSION_MINOR   (0x01) /*!< [15:8]  minor version */
 #define __AT32F415_LIBRARY_VERSION_RC      (0x00) /*!< [7:0]   release candidate */
 #define __AT32F415_LIBRARY_VERSION         ((__AT32F415_LIBRARY_VERSION_MAJOR  << 24)\
                                            |(__AT32F415_LIBRARY_VERSION_MIDDLE << 16)\
@@ -79,7 +79,7 @@
   */
 
 /**
- * @brief AT32F415Kx Interrupt Number Definition, according to the selected device
+ * @brief AT32F415Cx Interrupt Number Definition, according to the selected device
  *        in @ref Library_configuration_section
  */
 
@@ -100,9 +100,9 @@ typedef enum
 
 /******  AT32 specific Interrupt Numbers **********************************************************/
   WWDT_IRQn                   = 0,      /*!< Window WatchDog Timer Interrupt                      */
-  PVM_IRQn                    = 1,      /*!< PVM through EXINT Line detection Interrupt           */
-  TAMPER_IRQn                 = 2,      /*!< Tamper Interrupt                                     */
-  RTC_IRQn                    = 3,      /*!< RTC global Interrupt                                 */
+  PVM_IRQn                    = 1,      /*!< PVM Interrupt linked to EXINT16                      */
+  TAMPER_IRQn                 = 2,      /*!< Tamper Interrupt linked to EXINT21                   */
+  ERTC_IRQn                   = 3,      /*!< ERTC Interrupt linked to EXINT22                     */
   FLASH_IRQn                  = 4,      /*!< FLASH global Interrupt                               */
   CRM_IRQn                    = 5,      /*!< CRM global Interrupt                                 */
   EXINT0_IRQn                 = 6,      /*!< EXINT Line 0 Interrupt                               */
@@ -138,9 +138,10 @@ typedef enum
   SPI2_IRQn                   = 36,     /*!< SPI2 global Interrupt                                */
   USART1_IRQn                 = 37,     /*!< USART1 global Interrupt                              */
   USART2_IRQn                 = 38,     /*!< USART2 global Interrupt                              */
+  USART3_IRQn                 = 39,     /*!< USART3 global Interrupt                              */
   EXINT15_10_IRQn             = 40,     /*!< EXINT Line[15:10] Interrupts                         */
-  RTCAlarm_IRQn               = 41,     /*!< RTC Alarm through EXINT Line Interrupt               */
-  OTGFS_WKUP_IRQn             = 42,     /*!< OTGFS WakeUp through EXINT Line Interrupt            */
+  ERTCAlarm_IRQn              = 41,     /*!< ERTC Alarm Interrupt linked to EXINT17               */
+  OTGFS_WKUP_IRQn             = 42,     /*!< OTGFS Wake Up Interrupt linked to EXINT18            */
   SDIO_IRQn                   = 49,     /*!< SDIO global Interrupt                                */
   TMR5_GLOBAL_IRQn            = 50,     /*!< TMR5 global Interrupt                                */
   DMA2_Channel1_IRQn          = 56,     /*!< DMA2 Channel 1 global Interrupt                      */
@@ -148,8 +149,8 @@ typedef enum
   DMA2_Channel3_IRQn          = 58,     /*!< DMA2 Channel 3 global Interrupt                      */
   DMA2_Channel4_5_IRQn        = 59,     /*!< DMA2 Channel 4 and Channel 5 global Interrupt        */
   OTGFS_IRQn                  = 67,     /*!< OTGFS global Interrupt                               */
-  CMP1_IRQn                   = 70,     /*!< CMP1 global Interrupt                                */
-  CMP2_IRQn                   = 71,     /*!< CMP2 global Interrupt                                */
+  CMP1_IRQn                   = 70,     /*!< CMP1 Interrupt linked to EXINT19                     */
+  CMP2_IRQn                   = 71,     /*!< CMP2 Interrupt linked to EXINT20                     */
   DMA2_Channel6_7_IRQn        = 75,     /*!< DMA2 Channel 6 and Channel 7 global Interrupt        */
 } IRQn_Type;
 
@@ -158,7 +159,7 @@ typedef enum
   */
 
 #include "core_cm4.h"
-#include "system_at32f41x.h"
+#include "system_at32f415.h"
 #include <stdint.h>
 
 /** @addtogroup Peripheral_registers_structures
@@ -337,33 +338,33 @@ typedef struct
 } DMA_TypeDef;
 
 /**
-  * @brief Real-Time Clock
+  * @brief Enhanced Real-Time Clock
   */
 
 typedef struct
 {
-  __IO uint32_t TIME;        /*!< RTC time register,                           Address offset: 0x00        */
-  __IO uint32_t DATE;        /*!< RTC date register,                           Address offset: 0x04        */
-  __IO uint32_t CTRL;        /*!< RTC control register,                        Address offset: 0x08        */
-  __IO uint32_t STS;         /*!< RTC initialization and status register,      Address offset: 0x0C        */
-  __IO uint32_t DIV;         /*!< RTC divider register,                        Address offset: 0x10        */
-  __IO uint32_t WAT;         /*!< RTC wakeup timer register,                   Address offset: 0x14        */
-  __IO uint32_t CCAL;        /*!< RTC coarse calibration register,             Address offset: 0x18        */
-  __IO uint32_t ALA;         /*!< RTC alarm clock A register,                  Address offset: 0x1C        */
-  __IO uint32_t ALB;         /*!< RTC alarm clock B register,                  Address offset: 0x20        */
-  __IO uint32_t WP;          /*!< RTC write protection register,               Address offset: 0x24        */
-  __IO uint32_t SBS;         /*!< RTC subsecond register,                      Address offset: 0x28        */
-  __IO uint32_t TADJ;        /*!< RTC time adjustment register,                Address offset: 0x2C        */
-  __IO uint32_t TSTM;        /*!< RTC time stamp time register,                Address offset: 0x30        */
-  __IO uint32_t TSDT;        /*!< RTC time stamp date register,                Address offset: 0x34        */
-  __IO uint32_t TSSBS;       /*!< RTC time stamp subsecond register,           Address offset: 0x38        */
-  __IO uint32_t SCAL;        /*!< RTC smooth calibration register,             Address offset: 0x3C        */
-  __IO uint32_t TAMP;        /*!< RTC tamper configuration register,           Address offset: 0x40        */
-  __IO uint32_t ALASBS;      /*!< RTC alarm clock A subsecond register,        Address offset: 0x44        */
-  __IO uint32_t ALBSBS;      /*!< RTC alarm clock B subsecond register,        Address offset: 0x48        */
+  __IO uint32_t TIME;        /*!< ERTC time register,                          Address offset: 0x00        */
+  __IO uint32_t DATE;        /*!< ERTC date register,                          Address offset: 0x04        */
+  __IO uint32_t CTRL;        /*!< ERTC control register,                       Address offset: 0x08        */
+  __IO uint32_t STS;         /*!< ERTC initialization and status register,     Address offset: 0x0C        */
+  __IO uint32_t DIV;         /*!< ERTC divider register,                       Address offset: 0x10        */
+  __IO uint32_t WAT;         /*!< ERTC wakeup timer register,                  Address offset: 0x14        */
+  __IO uint32_t CCAL;        /*!< ERTC coarse calibration register,            Address offset: 0x18        */
+  __IO uint32_t ALA;         /*!< ERTC alarm clock A register,                 Address offset: 0x1C        */
+  __IO uint32_t ALB;         /*!< ERTC alarm clock B register,                 Address offset: 0x20        */
+  __IO uint32_t WP;          /*!< ERTC write protection register,              Address offset: 0x24        */
+  __IO uint32_t SBS;         /*!< ERTC subsecond register,                     Address offset: 0x28        */
+  __IO uint32_t TADJ;        /*!< ERTC time adjustment register,               Address offset: 0x2C        */
+  __IO uint32_t TSTM;        /*!< ERTC time stamp time register,               Address offset: 0x30        */
+  __IO uint32_t TSDT;        /*!< ERTC time stamp date register,               Address offset: 0x34        */
+  __IO uint32_t TSSBS;       /*!< ERTC time stamp subsecond register,          Address offset: 0x38        */
+  __IO uint32_t SCAL;        /*!< ERTC smooth calibration register,            Address offset: 0x3C        */
+  __IO uint32_t TAMP;        /*!< ERTC tamper configuration register,          Address offset: 0x40        */
+  __IO uint32_t ALASBS;      /*!< ERTC alarm clock A subsecond register,       Address offset: 0x44        */
+  __IO uint32_t ALBSBS;      /*!< ERTC alarm clock B subsecond register,       Address offset: 0x48        */
   uint32_t      RESERVED;    /*!< Reserved,                                    Address offset: 0x4C        */
-  __IO uint32_t BPR[20];     /*!< RTC battery powered domain data register,    Address offset: 0x50 ~ 0x9C */
-} RTC_TypeDef;
+  __IO uint32_t BPR[20];     /*!< ERTC battery powered domain data register,   Address offset: 0x50 ~ 0x9C */
+} ERTC_TypeDef;
 
 /**
   * @brief External Interrupt/Event Controller
@@ -628,11 +629,12 @@ typedef struct
 #define TMR4_BASE                    (APB1PERIPH_BASE + 0x00000800U) /*!< TMR4 base address                              */
 #define TMR5_BASE                    (APB1PERIPH_BASE + 0x00000C00U) /*!< TMR5 base address                              */
 #define CMP_BASE                     (APB1PERIPH_BASE + 0x00002400U) /*!< CMP base address                               */
-#define RTC_BASE                     (APB1PERIPH_BASE + 0x00002800U) /*!< RTC base address                               */
+#define ERTC_BASE                    (APB1PERIPH_BASE + 0x00002800U) /*!< ERTC base address                              */
 #define WWDT_BASE                    (APB1PERIPH_BASE + 0x00002C00U) /*!< WWDT base address                              */
 #define WDT_BASE                     (APB1PERIPH_BASE + 0x00003000U) /*!< WDT base address                               */
 #define SPI2_BASE                    (APB1PERIPH_BASE + 0x00003800U) /*!< SPI2 base address                              */
 #define USART2_BASE                  (APB1PERIPH_BASE + 0x00004400U) /*!< USART2 base address                            */
+#define USART3_BASE                  (APB1PERIPH_BASE + 0x00004800U) /*!< USART3 base address                            */
 #define I2C1_BASE                    (APB1PERIPH_BASE + 0x00005400U) /*!< I2C1 base address                              */
 #define I2C2_BASE                    (APB1PERIPH_BASE + 0x00005800U) /*!< I2C2 base address                              */
 #define CAN1_BASE                    (APB1PERIPH_BASE + 0x00006400U) /*!< CAN1 base address                              */
@@ -730,7 +732,7 @@ typedef struct
 #define DMA2_Channel5       ((DMA_Channel_TypeDef *)DMA2_Channel5_BASE)
 #define DMA2_Channel6       ((DMA_Channel_TypeDef *)DMA2_Channel6_BASE)
 #define DMA2_Channel7       ((DMA_Channel_TypeDef *)DMA2_Channel7_BASE)
-#define RTC                 ((RTC_TypeDef *)RTC_BASE)
+#define ERTC                ((ERTC_TypeDef *)ERTC_BASE)
 #define EXINT               ((EXINT_TypeDef *)EXINT_BASE)
 #define FLASH               ((FLASH_TypeDef *)FLASH_R_BASE)
 #define USD                 ((USD_TypeDef *)USD_BASE)
@@ -756,6 +758,7 @@ typedef struct
 #define TMR11               ((TMR_TypeDef *)TMR11_BASE)
 #define USART1              ((USART_TypeDef *)USART1_BASE)
 #define USART2              ((USART_TypeDef *)USART2_BASE)
+#define USART3              ((USART_TypeDef *)USART3_BASE)
 #define WDT                 ((WDT_TypeDef *)WDT_BASE)
 #define WWDT                ((WWDT_TypeDef *)WWDT_BASE)
 
@@ -1245,6 +1248,9 @@ typedef struct
 #define CRM_APB1RST_USART2RST_Pos           (17U)
 #define CRM_APB1RST_USART2RST_Msk           (0x1U << CRM_APB1RST_USART2RST_Pos)     /*!< 0x00020000 */
 #define CRM_APB1RST_USART2RST               CRM_APB1RST_USART2RST_Msk               /*!< USART2 reset */
+#define CRM_APB1RST_USART3RST_Pos           (18U)
+#define CRM_APB1RST_USART3RST_Msk           (0x1U << CRM_APB1RST_USART3RST_Pos)     /*!< 0x00040000 */
+#define CRM_APB1RST_USART3RST               CRM_APB1RST_USART3RST_Msk               /*!< USART3 reset */
 #define CRM_APB1RST_I2C1RST_Pos             (21U)
 #define CRM_APB1RST_I2C1RST_Msk             (0x1U << CRM_APB1RST_I2C1RST_Pos)       /*!< 0x00200000 */
 #define CRM_APB1RST_I2C1RST                 CRM_APB1RST_I2C1RST_Msk                 /*!< I2C1 reset */
@@ -1347,6 +1353,9 @@ typedef struct
 #define CRM_APB1EN_USART2EN_Pos             (17U)
 #define CRM_APB1EN_USART2EN_Msk             (0x1U << CRM_APB1EN_USART2EN_Pos)       /*!< 0x00020000 */
 #define CRM_APB1EN_USART2EN                 CRM_APB1EN_USART2EN_Msk                 /*!< USART2 clock enable */
+#define CRM_APB1EN_USART3EN_Pos             (18U)
+#define CRM_APB1EN_USART3EN_Msk             (0x1U << CRM_APB1EN_USART3EN_Pos)       /*!< 0x00040000 */
+#define CRM_APB1EN_USART3EN                 CRM_APB1EN_USART3EN_Msk                 /*!< USART3 clock enable */
 #define CRM_APB1EN_I2C1EN_Pos               (21U)
 #define CRM_APB1EN_I2C1EN_Msk               (0x1U << CRM_APB1EN_I2C1EN_Pos)         /*!< 0x00200000 */
 #define CRM_APB1EN_I2C1EN                   CRM_APB1EN_I2C1EN_Msk                   /*!< I2C1 clock enable */
@@ -1371,21 +1380,21 @@ typedef struct
 #define CRM_BPDC_LEXTBYPS_Msk               (0x1U << CRM_BPDC_LEXTBYPS_Pos)         /*!< 0x00000004 */
 #define CRM_BPDC_LEXTBYPS                   CRM_BPDC_LEXTBYPS_Msk                   /*!< Low speed external crystal bypass */
 
-/*!< RTCSEL congiguration */
-#define CRM_BPDC_RTCSEL_Pos                 (8U)
-#define CRM_BPDC_RTCSEL_Msk                 (0x3U << CRM_BPDC_RTCSEL_Pos)           /*!< 0x00000300 */
-#define CRM_BPDC_RTCSEL                     CRM_BPDC_RTCSEL_Msk                     /*!< RTCSEL[1:0] bits (RTC clock selection) */
-#define CRM_BPDC_RTCSEL_0                   (0x1U << CRM_BPDC_RTCSEL_Pos)           /*!< 0x00000100 */
-#define CRM_BPDC_RTCSEL_1                   (0x2U << CRM_BPDC_RTCSEL_Pos)           /*!< 0x00000200 */
+/*!< ERTCSEL congiguration */
+#define CRM_BPDC_ERTCSEL_Pos                (8U)
+#define CRM_BPDC_ERTCSEL_Msk                (0x3U << CRM_BPDC_ERTCSEL_Pos)          /*!< 0x00000300 */
+#define CRM_BPDC_ERTCSEL                    CRM_BPDC_ERTCSEL_Msk                    /*!< ERTCSEL[1:0] bits (ERTC clock selection) */
+#define CRM_BPDC_ERTCSEL_0                  (0x1U << CRM_BPDC_ERTCSEL_Pos)          /*!< 0x00000100 */
+#define CRM_BPDC_ERTCSEL_1                  (0x2U << CRM_BPDC_ERTCSEL_Pos)          /*!< 0x00000200 */
 
-#define CRM_BPDC_RTCSEL_NOCLOCK             0x00000000U                             /*!< No clock */
-#define CRM_BPDC_RTCSEL_LEXT                0x00000100U                             /*!< LEXT */
-#define CRM_BPDC_RTCSEL_LICK                0x00000200U                             /*!< LICK */
-#define CRM_BPDC_RTCSEL_HEXT                0x00000300U                             /*!< HEXT/128 */
+#define CRM_BPDC_ERTCSEL_NOCLOCK            0x00000000U                             /*!< No clock */
+#define CRM_BPDC_ERTCSEL_LEXT               0x00000100U                             /*!< LEXT */
+#define CRM_BPDC_ERTCSEL_LICK               0x00000200U                             /*!< LICK */
+#define CRM_BPDC_ERTCSEL_HEXT               0x00000300U                             /*!< HEXT/128 */
 
-#define CRM_BPDC_RTCEN_Pos                  (15U)
-#define CRM_BPDC_RTCEN_Msk                  (0x1U << CRM_BPDC_RTCEN_Pos)            /*!< 0x00008000 */
-#define CRM_BPDC_RTCEN                      CRM_BPDC_RTCEN_Msk                      /*!< RTC clock enable */
+#define CRM_BPDC_ERTCEN_Pos                 (15U)
+#define CRM_BPDC_ERTCEN_Msk                 (0x1U << CRM_BPDC_ERTCEN_Pos)           /*!< 0x00008000 */
+#define CRM_BPDC_ERTCEN                     CRM_BPDC_ERTCEN_Msk                     /*!< ERTC clock enable */
 #define CRM_BPDC_BPDRST_Pos                 (16U)
 #define CRM_BPDC_BPDRST_Msk                 (0x1U << CRM_BPDC_BPDRST_Pos)           /*!< 0x00010000 */
 #define CRM_BPDC_BPDRST                     CRM_BPDC_BPDRST_Msk                     /*!< Battery powered domain software reset */
@@ -2506,6 +2515,21 @@ typedef struct
 #define IOMUX_REMAP_USART1_MUX_Msk          (0x1U << IOMUX_REMAP_USART1_MUX_Pos)    /*!< 0x00000004 */
 #define IOMUX_REMAP_USART1_MUX              IOMUX_REMAP_USART1_MUX_Msk              /*!< USART1 IO multiplexing */
 
+/*!< USART3_MUX configuration */
+#define IOMUX_REMAP_USART3_MUX_Pos          (4U)
+#define IOMUX_REMAP_USART3_MUX_Msk          (0x3U << IOMUX_REMAP_USART3_MUX_Pos)    /*!< 0x00000030 */
+#define IOMUX_REMAP_USART3_MUX              IOMUX_REMAP_USART3_MUX_Msk              /*!< USART3_MUX[1:0] bits (USART3 IO multiplexing) */
+#define IOMUX_REMAP_USART3_MUX_0            (0x1U << IOMUX_REMAP_USART3_MUX_Pos)    /*!< 0x00000010 */
+#define IOMUX_REMAP_USART3_MUX_1            (0x2U << IOMUX_REMAP_USART3_MUX_Pos)    /*!< 0x00000020 */
+
+#define IOMUX_REMAP_USART3_MUX_MUX1         0x00000000U                             /*!< TX/PB10, RX/PB11, CK/PB12, CTS/PB13, RTS/PB14 */
+#define IOMUX_REMAP_USART3_MUX_MUX2_Pos     (4U)                                    /*!< 0x00000010 */
+#define IOMUX_REMAP_USART3_MUX_MUX2_Msk     (0x1U << IOMUX_REMAP_USART3_MUX_MUX2_Pos)
+#define IOMUX_REMAP_USART3_MUX_MUX2         IOMUX_REMAP_USART3_MUX_MUX2_Msk         /*!< TX/PC10, RX/PC11, CK/PC12, CTS/PB13, RTS/PB14 */
+#define IOMUX_REMAP_USART3_MUX_MUX3_Pos     (5U)                                    /*!< 0x00000020 */
+#define IOMUX_REMAP_USART3_MUX_MUX3_Msk     (0x1U << IOMUX_REMAP_USART3_MUX_MUX3_Pos)
+#define IOMUX_REMAP_USART3_MUX_MUX3         IOMUX_REMAP_USART3_MUX_MUX3_Msk         /*!< TX/PA7, RX/PA6, CK/PA5, CTS/PB1, RTS/PB0 */
+
 /*!< TMR1_MUX configuration */
 #define IOMUX_REMAP_TMR1_MUX_Pos            (6U)
 #define IOMUX_REMAP_TMR1_MUX_Msk            (0x3U << IOMUX_REMAP_TMR1_MUX_Pos)      /*!< 0x000000C0 */
@@ -3094,6 +3118,23 @@ typedef struct
 #define IOMUX_REMAP6_USART1_GMUX_1          (0x2U << IOMUX_REMAP6_USART1_GMUX_Pos)  /*!< 0x00020000 */
 #define IOMUX_REMAP6_USART1_GMUX_2          (0x4U << IOMUX_REMAP6_USART1_GMUX_Pos)  /*!< 0x00040000 */
 #define IOMUX_REMAP6_USART1_GMUX_3          (0x8U << IOMUX_REMAP6_USART1_GMUX_Pos)  /*!< 0x00080000 */
+
+/*!< USART3_GMUX configuration */
+#define IOMUX_REMAP6_USART3_GMUX_Pos        (24U)
+#define IOMUX_REMAP6_USART3_GMUX_Msk        (0xFU << IOMUX_REMAP6_USART3_GMUX_Pos)  /*!< 0x0F000000 */
+#define IOMUX_REMAP6_USART3_GMUX            IOMUX_REMAP6_USART3_GMUX_Msk            /*!< USART3_GMUX[3:0] bits (USART3 IO general multiplexing) */
+#define IOMUX_REMAP6_USART3_GMUX_0          (0x1U << IOMUX_REMAP6_USART3_GMUX_Pos)  /*!< 0x01000000 */
+#define IOMUX_REMAP6_USART3_GMUX_1          (0x2U << IOMUX_REMAP6_USART3_GMUX_Pos)  /*!< 0x02000000 */
+#define IOMUX_REMAP6_USART3_GMUX_2          (0x4U << IOMUX_REMAP6_USART3_GMUX_Pos)  /*!< 0x04000000 */
+#define IOMUX_REMAP6_USART3_GMUX_3          (0x8U << IOMUX_REMAP6_USART3_GMUX_Pos)  /*!< 0x08000000 */
+
+#define IOMUX_REMAP6_USART3_GMUX_MUX1       0x00000000U                             /*!< TX/PB10, RX/PB11, CK/PB12, CTS/PB13, RTS/PB14 */
+#define IOMUX_REMAP6_USART3_GMUX_MUX2_Pos   (24U)                                   /*!< 0x01000000 */
+#define IOMUX_REMAP6_USART3_GMUX_MUX2_Msk   (0x1U << IOMUX_REMAP6_USART3_GMUX_MUX2_Pos)
+#define IOMUX_REMAP6_USART3_GMUX_MUX2       IOMUX_REMAP6_USART3_GMUX_MUX2_Msk       /*!< TX/PC10, RX/PC11, CK/PC12, CTS/PB13, RTS/PB14 */
+#define IOMUX_REMAP6_USART3_GMUX_MUX3_Pos   (25U)                                   /*!< 0x02000000 */
+#define IOMUX_REMAP6_USART3_GMUX_MUX3_Msk   (0x1U << IOMUX_REMAP6_USART3_GMUX_MUX3_Pos)
+#define IOMUX_REMAP6_USART3_GMUX_MUX3       IOMUX_REMAP6_USART3_GMUX_MUX3_Msk       /*!< TX/PA7, RX/PA6, CK/PA5, CTS/PB1, RTS/PB0 */
 
 /*****************  Bit definition for IOMUX_REMAP7 register  *****************/
 #define IOMUX_REMAP7_ADC1_ETP_GMUX_Pos      (4U)                                    /*!< 0x00000010 */
@@ -4729,703 +4770,703 @@ typedef struct
 
 /******************************************************************************/
 /*                                                                            */
-/*                           Real-time clock (RTC)                            */
+/*                      Enhanced real-time clock (ERTC)                       */
 /*                                                                            */
 /******************************************************************************/
 
-/*******************  Bit definition for RTC_TIME register  *******************/
-#define RTC_TIME_SU_Pos                     (0U)
-#define RTC_TIME_SU_Msk                     (0xFU << RTC_TIME_SU_Pos)               /*!< 0x0000000F */
-#define RTC_TIME_SU                         RTC_TIME_SU_Msk                         /*!< SU[3:0] (Second units) */
-#define RTC_TIME_SU_0                       (0x1U << RTC_TIME_SU_Pos)               /*!< 0x00000001 */
-#define RTC_TIME_SU_1                       (0x2U << RTC_TIME_SU_Pos)               /*!< 0x00000002 */
-#define RTC_TIME_SU_2                       (0x4U << RTC_TIME_SU_Pos)               /*!< 0x00000004 */
-#define RTC_TIME_SU_3                       (0x8U << RTC_TIME_SU_Pos)               /*!< 0x00000008 */
-
-#define RTC_TIME_ST_Pos                     (4U)
-#define RTC_TIME_ST_Msk                     (0x7U << RTC_TIME_ST_Pos)               /*!< 0x00000070 */
-#define RTC_TIME_ST                         RTC_TIME_ST_Msk                         /*!< ST[2:0] (Second tens) */
-#define RTC_TIME_ST_0                       (0x1U << RTC_TIME_ST_Pos)               /*!< 0x00000010 */
-#define RTC_TIME_ST_1                       (0x2U << RTC_TIME_ST_Pos)               /*!< 0x00000020 */
-#define RTC_TIME_ST_2                       (0x4U << RTC_TIME_ST_Pos)               /*!< 0x00000040 */
-
-#define RTC_TIME_MU_Pos                     (8U)
-#define RTC_TIME_MU_Msk                     (0xFU << RTC_TIME_MU_Pos)               /*!< 0x00000F00 */
-#define RTC_TIME_MU                         RTC_TIME_MU_Msk                         /*!< MU[3:0] (Minute units) */
-#define RTC_TIME_MU_0                       (0x1U << RTC_TIME_MU_Pos)               /*!< 0x00000100 */
-#define RTC_TIME_MU_1                       (0x2U << RTC_TIME_MU_Pos)               /*!< 0x00000200 */
-#define RTC_TIME_MU_2                       (0x4U << RTC_TIME_MU_Pos)               /*!< 0x00000400 */
-#define RTC_TIME_MU_3                       (0x8U << RTC_TIME_MU_Pos)               /*!< 0x00000800 */
-
-#define RTC_TIME_MT_Pos                     (12U)
-#define RTC_TIME_MT_Msk                     (0x7U << RTC_TIME_MT_Pos)               /*!< 0x00007000 */
-#define RTC_TIME_MT                         RTC_TIME_MT_Msk                         /*!< MT[2:0] (Minute tens) */
-#define RTC_TIME_MT_0                       (0x1U << RTC_TIME_MT_Pos)               /*!< 0x00001000 */
-#define RTC_TIME_MT_1                       (0x2U << RTC_TIME_MT_Pos)               /*!< 0x00002000 */
-#define RTC_TIME_MT_2                       (0x4U << RTC_TIME_MT_Pos)               /*!< 0x00004000 */
-
-#define RTC_TIME_HU_Pos                     (16U)
-#define RTC_TIME_HU_Msk                     (0xFU << RTC_TIME_HU_Pos)               /*!< 0x000F0000 */
-#define RTC_TIME_HU                         RTC_TIME_HU_Msk                         /*!< HU[3:0] (Hour units) */
-#define RTC_TIME_HU_0                       (0x1U << RTC_TIME_HU_Pos)               /*!< 0x00010000 */
-#define RTC_TIME_HU_1                       (0x2U << RTC_TIME_HU_Pos)               /*!< 0x00020000 */
-#define RTC_TIME_HU_2                       (0x4U << RTC_TIME_HU_Pos)               /*!< 0x00040000 */
-#define RTC_TIME_HU_3                       (0x8U << RTC_TIME_HU_Pos)               /*!< 0x00080000 */
-
-#define RTC_TIME_HT_Pos                     (20U)
-#define RTC_TIME_HT_Msk                     (0x3U << RTC_TIME_HT_Pos)               /*!< 0x00300000 */
-#define RTC_TIME_HT                         RTC_TIME_HT_Msk                         /*!< HT[1:0] (Hour tens) */
-#define RTC_TIME_HT_0                       (0x1U << RTC_TIME_HT_Pos)               /*!< 0x00100000 */
-#define RTC_TIME_HT_1                       (0x2U << RTC_TIME_HT_Pos)               /*!< 0x00200000 */
-
-#define RTC_TIME_AMPM_Pos                   (22U)
-#define RTC_TIME_AMPM_Msk                   (0x1U << RTC_TIME_AMPM_Pos)             /*!< 0x00400000 */
-#define RTC_TIME_AMPM                       RTC_TIME_AMPM_Msk                       /*!< AM/PM */
-
-/*******************  Bit definition for RTC_DATE register  *******************/
-#define RTC_DATE_DU_Pos                     (0U)
-#define RTC_DATE_DU_Msk                     (0xFU << RTC_DATE_DU_Pos)               /*!< 0x0000000F */
-#define RTC_DATE_DU                         RTC_DATE_DU_Msk                         /*!< DU[3:0] (Date units) */
-#define RTC_DATE_DU_0                       (0x1U << RTC_DATE_DU_Pos)               /*!< 0x00000001 */
-#define RTC_DATE_DU_1                       (0x2U << RTC_DATE_DU_Pos)               /*!< 0x00000002 */
-#define RTC_DATE_DU_2                       (0x4U << RTC_DATE_DU_Pos)               /*!< 0x00000004 */
-#define RTC_DATE_DU_3                       (0x8U << RTC_DATE_DU_Pos)               /*!< 0x00000008 */
-
-#define RTC_DATE_DT_Pos                     (4U)
-#define RTC_DATE_DT_Msk                     (0x3U << RTC_DATE_DT_Pos)               /*!< 0x00300000 */
-#define RTC_DATE_DT                         RTC_DATE_DT_Msk                         /*!< DT[1:0] (Date tens) */
-#define RTC_DATE_DT_0                       (0x1U << RTC_DATE_DT_Pos)               /*!< 0x00000010 */
-#define RTC_DATE_DT_1                       (0x2U << RTC_DATE_DT_Pos)               /*!< 0x00000020 */
-
-#define RTC_DATE_MU_Pos                     (8U)
-#define RTC_DATE_MU_Msk                     (0xFU << RTC_DATE_MU_Pos)               /*!< 0x00000F00 */
-#define RTC_DATE_MU                         RTC_DATE_MU_Msk                         /*!< MU[3:0] (Month units) */
-#define RTC_DATE_MU_0                       (0x1U << RTC_DATE_MU_Pos)               /*!< 0x00000100 */
-#define RTC_DATE_MU_1                       (0x2U << RTC_DATE_MU_Pos)               /*!< 0x00000200 */
-#define RTC_DATE_MU_2                       (0x4U << RTC_DATE_MU_Pos)               /*!< 0x00000400 */
-#define RTC_DATE_MU_3                       (0x8U << RTC_DATE_MU_Pos)               /*!< 0x00000800 */
-
-#define RTC_DATE_MT_Pos                     (12U)
-#define RTC_DATE_MT_Msk                     (0x1U << RTC_DATE_MT_Pos)               /*!< 0x00001000 */
-#define RTC_DATE_MT                         RTC_DATE_MT_Msk                         /*!< Month tens */
-
-#define RTC_DATE_WK_Pos                     (13U)
-#define RTC_DATE_WK_Msk                     (0x7U << RTC_DATE_WK_Pos)               /*!< 0x0000E000 */
-#define RTC_DATE_WK                         RTC_DATE_WK_Msk                         /*!< WK[2:0] (Week day) */
-#define RTC_DATE_WK_0                       (0x1U << RTC_DATE_WK_Pos)               /*!< 0x00002000 */
-#define RTC_DATE_WK_1                       (0x2U << RTC_DATE_WK_Pos)               /*!< 0x00004000 */
-#define RTC_DATE_WK_2                       (0x4U << RTC_DATE_WK_Pos)               /*!< 0x00008000 */
-
-#define RTC_DATE_YU_Pos                     (16U)
-#define RTC_DATE_YU_Msk                     (0xFU << RTC_DATE_YU_Pos)               /*!< 0x000F0000 */
-#define RTC_DATE_YU                         RTC_DATE_YU_Msk                         /*!< YU[3:0] (Year units) */
-#define RTC_DATE_YU_0                       (0x1U << RTC_DATE_YU_Pos)               /*!< 0x00010000 */
-#define RTC_DATE_YU_1                       (0x2U << RTC_DATE_YU_Pos)               /*!< 0x00020000 */
-#define RTC_DATE_YU_2                       (0x4U << RTC_DATE_YU_Pos)               /*!< 0x00040000 */
-#define RTC_DATE_YU_3                       (0x8U << RTC_DATE_YU_Pos)               /*!< 0x00080000 */
-
-#define RTC_DATE_YT_Pos                     (20U)
-#define RTC_DATE_YT_Msk                     (0xFU << RTC_DATE_YT_Pos)               /*!< 0x00F00000 */
-#define RTC_DATE_YT                         RTC_DATE_YT_Msk                         /*!< YT[3:0] (Year tens) */
-#define RTC_DATE_YT_0                       (0x1U << RTC_DATE_YT_Pos)               /*!< 0x00100000 */
-#define RTC_DATE_YT_1                       (0x2U << RTC_DATE_YT_Pos)               /*!< 0x00200000 */
-#define RTC_DATE_YT_2                       (0x4U << RTC_DATE_YT_Pos)               /*!< 0x00400000 */
-#define RTC_DATE_YT_3                       (0x8U << RTC_DATE_YT_Pos)               /*!< 0x00800000 */
-
-/*******************  Bit definition for RTC_CTRL register  *******************/
-#define RTC_CTRL_WATCLK_Pos                 (0U)
-#define RTC_CTRL_WATCLK_Msk                 (0x7U << RTC_CTRL_WATCLK_Pos)           /*!< 0x00000007 */
-#define RTC_CTRL_WATCLK                     RTC_CTRL_WATCLK_Msk                     /*!< WATCLK[2:0] (Wakeup timer clock selection) */
-#define RTC_CTRL_WATCLK_0                   (0x1U << RTC_CTRL_WATCLK_Pos)           /*!< 0x00000001 */
-#define RTC_CTRL_WATCLK_1                   (0x2U << RTC_CTRL_WATCLK_Pos)           /*!< 0x00000002 */
-#define RTC_CTRL_WATCLK_2                   (0x4U << RTC_CTRL_WATCLK_Pos)           /*!< 0x00000004 */
-
-#define RTC_CTRL_TSEDG_Pos                  (3U)
-#define RTC_CTRL_TSEDG_Msk                  (0x1U << RTC_CTRL_TSEDG_Pos)            /*!< 0x00000008 */
-#define RTC_CTRL_TSEDG                      RTC_CTRL_TSEDG_Msk                      /*!< Timestamp trigger edge */
-#define RTC_CTRL_RCDEN_Pos                  (4U)
-#define RTC_CTRL_RCDEN_Msk                  (0x1U << RTC_CTRL_RCDEN_Pos)            /*!< 0x00000010 */
-#define RTC_CTRL_RCDEN                      RTC_CTRL_RCDEN_Msk                      /*!< Reference clock detection enable */
-#define RTC_CTRL_DREN_Pos                   (5U)
-#define RTC_CTRL_DREN_Msk                   (0x1U << RTC_CTRL_DREN_Pos)             /*!< 0x00000020 */
-#define RTC_CTRL_DREN                       RTC_CTRL_DREN_Msk                       /*!< Date/time register direct read enable */
-#define RTC_CTRL_HM_Pos                     (6U)
-#define RTC_CTRL_HM_Msk                     (0x1U << RTC_CTRL_HM_Pos)               /*!< 0x00000040 */
-#define RTC_CTRL_HM                         RTC_CTRL_HM_Msk                         /*!< Hour mode */
-#define RTC_CTRL_CCALEN_Pos                 (7U)
-#define RTC_CTRL_CCALEN_Msk                 (0x1U << RTC_CTRL_CCALEN_Pos)           /*!< 0x00000080 */
-#define RTC_CTRL_CCALEN                     RTC_CTRL_CCALEN_Msk                     /*!< Coarse calibration enable */
-#define RTC_CTRL_ALAEN_Pos                  (8U)
-#define RTC_CTRL_ALAEN_Msk                  (0x1U << RTC_CTRL_ALAEN_Pos)            /*!< 0x00000100 */
-#define RTC_CTRL_ALAEN                      RTC_CTRL_ALAEN_Msk                      /*!< Alarm A enable */
-#define RTC_CTRL_ALBEN_Pos                  (9U)
-#define RTC_CTRL_ALBEN_Msk                  (0x1U << RTC_CTRL_ALBEN_Pos)            /*!< 0x00000200 */
-#define RTC_CTRL_ALBEN                      RTC_CTRL_ALBEN_Msk                      /*!< Alarm B enable */
-#define RTC_CTRL_WATEN_Pos                  (10U)
-#define RTC_CTRL_WATEN_Msk                  (0x1U << RTC_CTRL_WATEN_Pos)            /*!< 0x00000400 */
-#define RTC_CTRL_WATEN                      RTC_CTRL_WATEN_Msk                      /*!< Wakeup timer enable */
-#define RTC_CTRL_TSEN_Pos                   (11U)
-#define RTC_CTRL_TSEN_Msk                   (0x1U << RTC_CTRL_TSEN_Pos)             /*!< 0x00000800 */
-#define RTC_CTRL_TSEN                       RTC_CTRL_TSEN_Msk                       /*!< Timestamp enable */
-#define RTC_CTRL_ALAIEN_Pos                 (12U)
-#define RTC_CTRL_ALAIEN_Msk                 (0x1U << RTC_CTRL_ALAIEN_Pos)           /*!< 0x00001000 */
-#define RTC_CTRL_ALAIEN                     RTC_CTRL_ALAIEN_Msk                     /*!< Alarm A interrupt enable */
-#define RTC_CTRL_ALBIEN_Pos                 (13U)
-#define RTC_CTRL_ALBIEN_Msk                 (0x1U << RTC_CTRL_ALBIEN_Pos)           /*!< 0x00002000 */
-#define RTC_CTRL_ALBIEN                     RTC_CTRL_ALBIEN_Msk                     /*!< Alarm B interrupt enable */
-#define RTC_CTRL_WATIEN_Pos                 (14U)
-#define RTC_CTRL_WATIEN_Msk                 (0x1U << RTC_CTRL_WATIEN_Pos)           /*!< 0x00004000 */
-#define RTC_CTRL_WATIEN                     RTC_CTRL_WATIEN_Msk                     /*!< Wakeup timer interrupt enable */
-#define RTC_CTRL_TSIEN_Pos                  (15U)
-#define RTC_CTRL_TSIEN_Msk                  (0x1U << RTC_CTRL_TSIEN_Pos)            /*!< 0x000008000 */
-#define RTC_CTRL_TSIEN                      RTC_CTRL_TSIEN_Msk                      /*!< Timestamp interrupt enable */
-#define RTC_CTRL_ADD1H_Pos                  (16U)
-#define RTC_CTRL_ADD1H_Msk                  (0x1U << RTC_CTRL_ADD1H_Pos)            /*!< 0x00010000 */
-#define RTC_CTRL_ADD1H                      RTC_CTRL_ADD1H_Msk                      /*!< Add 1 hour */
-#define RTC_CTRL_DEC1H_Pos                  (17U)
-#define RTC_CTRL_DEC1H_Msk                  (0x1U << RTC_CTRL_DEC1H_Pos)            /*!< 0x00020000 */
-#define RTC_CTRL_DEC1H                      RTC_CTRL_DEC1H_Msk                      /*!< Decrease 1 hour */
-#define RTC_CTRL_BPR_Pos                    (18U)
-#define RTC_CTRL_BPR_Msk                    (0x1U << RTC_CTRL_BPR_Pos)              /*!< 0x00040000 */
-#define RTC_CTRL_BPR                        RTC_CTRL_BPR_Msk                        /*!< Battery powered domain data register */
-#define RTC_CTRL_CALOSEL_Pos                (19U)
-#define RTC_CTRL_CALOSEL_Msk                (0x1U << RTC_CTRL_CALOSEL_Pos)          /*!< 0x00080000 */
-#define RTC_CTRL_CALOSEL                    RTC_CTRL_CALOSEL_Msk                    /*!< Calibration output selection */
-#define RTC_CTRL_OUTP_Pos                   (20U)
-#define RTC_CTRL_OUTP_Msk                   (0x1U << RTC_CTRL_OUTP_Pos)             /*!< 0x00100000 */
-#define RTC_CTRL_OUTP                       RTC_CTRL_OUTP_Msk                       /*!< Output polarity */
-
-#define RTC_CTRL_OUTSEL_Pos                 (21U)
-#define RTC_CTRL_OUTSEL_Msk                 (0x3U << RTC_CTRL_OUTSEL_Pos)           /*!< 0x00600000 */
-#define RTC_CTRL_OUTSEL                     RTC_CTRL_OUTSEL_Msk                     /*!< WATCLK[1:0] (Output source selection) */
-#define RTC_CTRL_OUTSEL_0                   (0x1U << RTC_CTRL_OUTSEL_Pos)           /*!< 0x00200000 */
-#define RTC_CTRL_OUTSEL_1                   (0x2U << RTC_CTRL_OUTSEL_Pos)           /*!< 0x00400000 */
-
-#define RTC_CTRL_CALOEN_Pos                 (23U)
-#define RTC_CTRL_CALOEN_Msk                 (0x1U << RTC_CTRL_CALOEN_Pos)           /*!< 0x00800000 */
-#define RTC_CTRL_CALOEN                     RTC_CTRL_CALOEN_Msk                     /*!< Calibration output enable */
-
-/*******************  Bit definition for RTC_STS register  ********************/
-#define RTC_STS_ALAWF_Pos                   (0U)
-#define RTC_STS_ALAWF_Msk                   (0x1U << RTC_STS_ALAWF_Pos)             /*!< 0x00000001 */
-#define RTC_STS_ALAWF                       RTC_STS_ALAWF_Msk                       /*!< Alarm A register allows write flag */
-#define RTC_STS_ALBWF_Pos                   (1U)
-#define RTC_STS_ALBWF_Msk                   (0x1U << RTC_STS_ALBWF_Pos)             /*!< 0x00000002 */
-#define RTC_STS_ALBWF                       RTC_STS_ALBWF_Msk                       /*!< Alarm B register allows write flag */
-#define RTC_STS_WATWF_Pos                   (2U)
-#define RTC_STS_WATWF_Msk                   (0x1U << RTC_STS_WATWF_Pos)             /*!< 0x00000004 */
-#define RTC_STS_WATWF                       RTC_STS_WATWF_Msk                       /*!< Wakeup timer register allows write flag */
-#define RTC_STS_TADJF_Pos                   (3U)
-#define RTC_STS_TADJF_Msk                   (0x1U << RTC_STS_TADJF_Pos)             /*!< 0x00000008 */
-#define RTC_STS_TADJF                       RTC_STS_TADJF_Msk                       /*!< Time adjustment flag */
-#define RTC_STS_INITF_Pos                   (4U)
-#define RTC_STS_INITF_Msk                   (0x1U << RTC_STS_INITF_Pos)             /*!< 0x00000010 */
-#define RTC_STS_INITF                       RTC_STS_INITF_Msk                       /*!< Calendar initialization flag */
-#define RTC_STS_UPDF_Pos                    (5U)
-#define RTC_STS_UPDF_Msk                    (0x1U << RTC_STS_UPDF_Pos)              /*!< 0x00000020 */
-#define RTC_STS_UPDF                        RTC_STS_UPDF_Msk                        /*!< Calendar update flag */
-#define RTC_STS_IMF_Pos                     (6U)
-#define RTC_STS_IMF_Msk                     (0x1U << RTC_STS_IMF_Pos)               /*!< 0x00000040 */
-#define RTC_STS_IMF                         RTC_STS_IMF_Msk                         /*!< Enter initialization mode flag */
-#define RTC_STS_IMEN_Pos                    (7U)
-#define RTC_STS_IMEN_Msk                    (0x1U << RTC_STS_IMEN_Pos)              /*!< 0x00000080 */
-#define RTC_STS_IMEN                        RTC_STS_IMEN_Msk                        /*!< Initialization mode enable */
-#define RTC_STS_ALAF_Pos                    (8U)
-#define RTC_STS_ALAF_Msk                    (0x1U << RTC_STS_ALAF_Pos)              /*!< 0x00000100 */
-#define RTC_STS_ALAF                        RTC_STS_ALAF_Msk                        /*!< Alarm clock A flag */
-#define RTC_STS_ALBF_Pos                    (9U)
-#define RTC_STS_ALBF_Msk                    (0x1U << RTC_STS_ALBF_Pos)              /*!< 0x00000200 */
-#define RTC_STS_ALBF                        RTC_STS_ALBF_Msk                        /*!< Alarm clock B flag */
-#define RTC_STS_WATF_Pos                    (10U)
-#define RTC_STS_WATF_Msk                    (0x1U << RTC_STS_WATF_Pos)              /*!< 0x00000400 */
-#define RTC_STS_WATF                        RTC_STS_WATF_Msk                        /*!< Wakeup timer flag */
-#define RTC_STS_TSF_Pos                     (11U)
-#define RTC_STS_TSF_Msk                     (0x1U << RTC_STS_TSF_Pos)               /*!< 0x00000800 */
-#define RTC_STS_TSF                         RTC_STS_TSF_Msk                         /*!< Timestamp flag */
-#define RTC_STS_TSOF_Pos                    (12U)
-#define RTC_STS_TSOF_Msk                    (0x1U << RTC_STS_TSOF_Pos)              /*!< 0x00001000 */
-#define RTC_STS_TSOF                        RTC_STS_TSOF_Msk                        /*!< Timestamp overflow flag */
-#define RTC_STS_TP1F_Pos                    (13U)
-#define RTC_STS_TP1F_Msk                    (0x1U << RTC_STS_TP1F_Pos)              /*!< 0x00002000 */
-#define RTC_STS_TP1F                        RTC_STS_TP1F_Msk                        /*!< Tamper detection 1 flag */
-#define RTC_STS_CALUPDF_Pos                 (16U)
-#define RTC_STS_CALUPDF_Msk                 (0x1U << RTC_STS_CALUPDF_Pos)           /*!< 0x00010000 */
-#define RTC_STS_CALUPDF                     RTC_STS_CALUPDF_Msk                     /*!< Calibration value update complete flag */
-
-/*******************  Bit definition for RTC_DIV register  ********************/
-#define RTC_DIV_DIVB_Pos                    (0U)
-#define RTC_DIV_DIVB_Msk                    (0x7FFFU << RTC_DIV_DIVB_Pos)           /*!< 0x00007FFF */
-#define RTC_DIV_DIVB                        RTC_DIV_DIVB_Msk                        /*!< Divider B */
-#define RTC_DIV_DIVA_Pos                    (16U)
-#define RTC_DIV_DIVA_Msk                    (0x7FU << RTC_DIV_DIVA_Pos)             /*!< 0x007F0000 */
-#define RTC_DIV_DIVA                        RTC_DIV_DIVA_Msk                        /*!< Divider A */
-
-/*******************  Bit definition for RTC_WAT register  ********************/
-#define RTC_WAT_VAL_Pos                     (0U)
-#define RTC_WAT_VAL_Msk                     (0xFFFFU << RTC_WAT_VAL_Pos)            /*!< 0x0000FFFF */
-#define RTC_WAT_VAL                         RTC_WAT_VAL_Msk                         /*!< Wakeup timer reload value */
-
-/*******************  Bit definition for RTC_CCAL register  *******************/
-#define RTC_CCAL_CALVAL_Pos                 (0U)
-#define RTC_CCAL_CALVAL_Msk                 (0x1FU << RTC_CCAL_CALVAL_Pos)          /*!< 0x0000001F */
-#define RTC_CCAL_CALVAL                     RTC_CCAL_CALVAL_Msk                     /*!< CALVAL[4:0] (Calibration value) */
-#define RTC_CCAL_CALVAL_0                   (0x1U << RTC_CCAL_CALVAL_Pos)           /*!< 0x00000001 */
-#define RTC_CCAL_CALVAL_1                   (0x2U << RTC_CCAL_CALVAL_Pos)           /*!< 0x00000002 */
-#define RTC_CCAL_CALVAL_2                   (0x4U << RTC_CCAL_CALVAL_Pos)           /*!< 0x00000004 */
-#define RTC_CCAL_CALVAL_3                   (0x8U << RTC_CCAL_CALVAL_Pos)           /*!< 0x00000008 */
-#define RTC_CCAL_CALVAL_4                   (0x10U << RTC_CCAL_CALVAL_Pos)          /*!< 0x00000010 */
-
-#define RTC_CCAL_CALDIR_Pos                 (7U)
-#define RTC_CCAL_CALDIR_Msk                 (0x1U << RTC_CCAL_CALDIR_Pos)           /*!< 0x00000080 */
-#define RTC_CCAL_CALDIR                     RTC_CCAL_CALDIR_Msk                     /*!< Calibration direction */
-
-/*******************  Bit definition for RTC_ALA register  ********************/
-#define RTC_ALA_SU_Pos                      (0U)
-#define RTC_ALA_SU_Msk                      (0xFU << RTC_ALA_SU_Pos)                /*!< 0x0000000F */
-#define RTC_ALA_SU                          RTC_ALA_SU_Msk                          /*!< SU[3:0] (Second units) */
-#define RTC_ALA_SU_0                        (0x1U << RTC_ALA_SU_Pos)                /*!< 0x00000001 */
-#define RTC_ALA_SU_1                        (0x2U << RTC_ALA_SU_Pos)                /*!< 0x00000002 */
-#define RTC_ALA_SU_2                        (0x4U << RTC_ALA_SU_Pos)                /*!< 0x00000004 */
-#define RTC_ALA_SU_3                        (0x8U << RTC_ALA_SU_Pos)                /*!< 0x00000008 */
-
-#define RTC_ALA_ST_Pos                      (4U)
-#define RTC_ALA_ST_Msk                      (0x7U << RTC_ALA_ST_Pos)                /*!< 0x00000070 */
-#define RTC_ALA_ST                          RTC_ALA_ST_Msk                          /*!< ST[2:0] (Second tens) */
-#define RTC_ALA_ST_0                        (0x1U << RTC_ALA_ST_Pos)                /*!< 0x00000010 */
-#define RTC_ALA_ST_1                        (0x2U << RTC_ALA_ST_Pos)                /*!< 0x00000020 */
-#define RTC_ALA_ST_2                        (0x4U << RTC_ALA_ST_Pos)                /*!< 0x00000040 */
-
-#define RTC_ALA_MASK1_Pos                   (7U)
-#define RTC_ALA_MASK1_Msk                   (0x1U << RTC_ALA_MASK1_Pos)             /*!< 0x00000080 */
-#define RTC_ALA_MASK1                       RTC_ALA_MASK1_Msk                       /*!< Second mask */
-
-#define RTC_ALA_MU_Pos                      (8U)
-#define RTC_ALA_MU_Msk                      (0xFU << RTC_ALA_MU_Pos)                /*!< 0x00000F00 */
-#define RTC_ALA_MU                          RTC_ALA_MU_Msk                          /*!< MU[3:0] (Minute units) */
-#define RTC_ALA_MU_0                        (0x1U << RTC_ALA_MU_Pos)                /*!< 0x00000100 */
-#define RTC_ALA_MU_1                        (0x2U << RTC_ALA_MU_Pos)                /*!< 0x00000200 */
-#define RTC_ALA_MU_2                        (0x4U << RTC_ALA_MU_Pos)                /*!< 0x00000400 */
-#define RTC_ALA_MU_3                        (0x8U << RTC_ALA_MU_Pos)                /*!< 0x00000800 */
-
-#define RTC_ALA_MT_Pos                      (12U)
-#define RTC_ALA_MT_Msk                      (0x7U << RTC_ALA_MT_Pos)                /*!< 0x00007000 */
-#define RTC_ALA_MT                          RTC_ALA_MT_Msk                          /*!< MT[2:0] (Minute tens) */
-#define RTC_ALA_MT_0                        (0x1U << RTC_ALA_MT_Pos)                /*!< 0x00001000 */
-#define RTC_ALA_MT_1                        (0x2U << RTC_ALA_MT_Pos)                /*!< 0x00002000 */
-#define RTC_ALA_MT_2                        (0x4U << RTC_ALA_MT_Pos)                /*!< 0x00004000 */
-
-#define RTC_ALA_MASK2_Pos                   (15U)
-#define RTC_ALA_MASK2_Msk                   (0x1U << RTC_ALA_MASK2_Pos)             /*!< 0x00008000 */
-#define RTC_ALA_MASK2                       RTC_ALA_MASK2_Msk                       /*!< Minute mask */
-
-#define RTC_ALA_HU_Pos                      (16U)
-#define RTC_ALA_HU_Msk                      (0xFU << RTC_ALA_HU_Pos)                /*!< 0x000F0000 */
-#define RTC_ALA_HU                          RTC_ALA_HU_Msk                          /*!< HU[3:0] (Hour units) */
-#define RTC_ALA_HU_0                        (0x1U << RTC_ALA_HU_Pos)                /*!< 0x00010000 */
-#define RTC_ALA_HU_1                        (0x2U << RTC_ALA_HU_Pos)                /*!< 0x00020000 */
-#define RTC_ALA_HU_2                        (0x4U << RTC_ALA_HU_Pos)                /*!< 0x00040000 */
-#define RTC_ALA_HU_3                        (0x8U << RTC_ALA_HU_Pos)                /*!< 0x00080000 */
-
-#define RTC_ALA_HT_Pos                      (20U)
-#define RTC_ALA_HT_Msk                      (0x3U << RTC_ALA_HT_Pos)                /*!< 0x00300000 */
-#define RTC_ALA_HT                          RTC_ALA_HT_Msk                          /*!< HT[1:0] (Hour tens) */
-#define RTC_ALA_HT_0                        (0x1U << RTC_ALA_HT_Pos)                /*!< 0x00100000 */
-#define RTC_ALA_HT_1                        (0x2U << RTC_ALA_HT_Pos)                /*!< 0x00200000 */
-
-#define RTC_ALA_AMPM_Pos                    (22U)
-#define RTC_ALA_AMPM_Msk                    (0x1U << RTC_ALA_AMPM_Pos)              /*!< 0x00400000 */
-#define RTC_ALA_AMPM                        RTC_ALA_AMPM_Msk                        /*!< AM/PM */
-#define RTC_ALA_MASK3_Pos                   (23U)
-#define RTC_ALA_MASK3_Msk                   (0x1U << RTC_ALA_MASK3_Pos)             /*!< 0x00800000 */
-#define RTC_ALA_MASK3                       RTC_ALA_MASK3_Msk                       /*!< Hour mask */
-
-#define RTC_ALA_DU_Pos                      (24U)
-#define RTC_ALA_DU_Msk                      (0xFU << RTC_ALA_DU_Pos)                /*!< 0x0F000000 */
-#define RTC_ALA_DU                          RTC_ALA_DU_Msk                          /*!< DU[3:0] (Date/week day units) */
-#define RTC_ALA_DU_0                        (0x1U << RTC_ALA_DU_Pos)                /*!< 0x01000000 */
-#define RTC_ALA_DU_1                        (0x2U << RTC_ALA_DU_Pos)                /*!< 0x02000000 */
-#define RTC_ALA_DU_2                        (0x4U << RTC_ALA_DU_Pos)                /*!< 0x04000000 */
-#define RTC_ALA_DU_3                        (0x8U << RTC_ALA_DU_Pos)                /*!< 0x08000000 */
-
-#define RTC_ALA_DT_Pos                      (28U)
-#define RTC_ALA_DT_Msk                      (0x3U << RTC_ALA_DT_Pos)                /*!< 0x30000000 */
-#define RTC_ALA_DT                          RTC_ALA_DT_Msk                          /*!< DT[1:0] (Date/week day tens) */
-#define RTC_ALA_DT_0                        (0x1U << RTC_ALA_DT_Pos)                /*!< 0x10000000 */
-#define RTC_ALA_DT_1                        (0x2U << RTC_ALA_DT_Pos)                /*!< 0x20000000 */
-
-#define RTC_ALA_WKSEL_Pos                   (30U)
-#define RTC_ALA_WKSEL_Msk                   (0x1U << RTC_ALA_WKSEL_Pos)             /*!< 0x40000000 */
-#define RTC_ALA_WKSEL                       RTC_ALA_WKSEL_Msk                       /*!< Date/week day select */
-#define RTC_ALA_MASK4_Pos                   (31U)
-#define RTC_ALA_MASK4_Msk                   (0x1U << RTC_ALA_MASK4_Pos)             /*!< 0x80000000 */
-#define RTC_ALA_MASK4                       RTC_ALA_MASK4_Msk                       /*!< Date/week day mask */
-
-/*******************  Bit definition for RTC_ALB register  ********************/
-#define RTC_ALB_SU_Pos                      (0U)
-#define RTC_ALB_SU_Msk                      (0xFU << RTC_ALB_SU_Pos)                /*!< 0x0000000F */
-#define RTC_ALB_SU                          RTC_ALB_SU_Msk                          /*!< SU[3:0] (Second units) */
-#define RTC_ALB_SU_0                        (0x1U << RTC_ALB_SU_Pos)                /*!< 0x00000001 */
-#define RTC_ALB_SU_1                        (0x2U << RTC_ALB_SU_Pos)                /*!< 0x00000002 */
-#define RTC_ALB_SU_2                        (0x4U << RTC_ALB_SU_Pos)                /*!< 0x00000004 */
-#define RTC_ALB_SU_3                        (0x8U << RTC_ALB_SU_Pos)                /*!< 0x00000008 */
-
-#define RTC_ALB_ST_Pos                      (4U)
-#define RTC_ALB_ST_Msk                      (0x7U << RTC_ALB_ST_Pos)                /*!< 0x00000070 */
-#define RTC_ALB_ST                          RTC_ALB_ST_Msk                          /*!< ST[2:0] (Second tens) */
-#define RTC_ALB_ST_0                        (0x1U << RTC_ALB_ST_Pos)                /*!< 0x00000010 */
-#define RTC_ALB_ST_1                        (0x2U << RTC_ALB_ST_Pos)                /*!< 0x00000020 */
-#define RTC_ALB_ST_2                        (0x4U << RTC_ALB_ST_Pos)                /*!< 0x00000040 */
-
-#define RTC_ALB_MASK1_Pos                   (7U)
-#define RTC_ALB_MASK1_Msk                   (0x1U << RTC_ALB_MASK1_Pos)             /*!< 0x00000080 */
-#define RTC_ALB_MASK1                       RTC_ALB_MASK1_Msk                       /*!< Second mask */
-
-#define RTC_ALB_MU_Pos                      (8U)
-#define RTC_ALB_MU_Msk                      (0xFU << RTC_ALB_MU_Pos)                /*!< 0x00000F00 */
-#define RTC_ALB_MU                          RTC_ALB_MU_Msk                          /*!< MU[3:0] (Minute units) */
-#define RTC_ALB_MU_0                        (0x1U << RTC_ALB_MU_Pos)                /*!< 0x00000100 */
-#define RTC_ALB_MU_1                        (0x2U << RTC_ALB_MU_Pos)                /*!< 0x00000200 */
-#define RTC_ALB_MU_2                        (0x4U << RTC_ALB_MU_Pos)                /*!< 0x00000400 */
-#define RTC_ALB_MU_3                        (0x8U << RTC_ALB_MU_Pos)                /*!< 0x00000800 */
-
-#define RTC_ALB_MT_Pos                      (12U)
-#define RTC_ALB_MT_Msk                      (0x7U << RTC_ALB_MT_Pos)                /*!< 0x00007000 */
-#define RTC_ALB_MT                          RTC_ALB_MT_Msk                          /*!< MT[2:0] (Minute tens) */
-#define RTC_ALB_MT_0                        (0x1U << RTC_ALB_MT_Pos)                /*!< 0x00001000 */
-#define RTC_ALB_MT_1                        (0x2U << RTC_ALB_MT_Pos)                /*!< 0x00002000 */
-#define RTC_ALB_MT_2                        (0x4U << RTC_ALB_MT_Pos)                /*!< 0x00004000 */
-
-#define RTC_ALB_MASK2_Pos                   (15U)
-#define RTC_ALB_MASK2_Msk                   (0x1U << RTC_ALB_MASK2_Pos)             /*!< 0x00008000 */
-#define RTC_ALB_MASK2                       RTC_ALB_MASK2_Msk                       /*!< Minute mask */
-
-#define RTC_ALB_HU_Pos                      (16U)
-#define RTC_ALB_HU_Msk                      (0xFU << RTC_ALB_HU_Pos)                /*!< 0x000F0000 */
-#define RTC_ALB_HU                          RTC_ALB_HU_Msk                          /*!< HU[3:0] (Hour units) */
-#define RTC_ALB_HU_0                        (0x1U << RTC_ALB_HU_Pos)                /*!< 0x00010000 */
-#define RTC_ALB_HU_1                        (0x2U << RTC_ALB_HU_Pos)                /*!< 0x00020000 */
-#define RTC_ALB_HU_2                        (0x4U << RTC_ALB_HU_Pos)                /*!< 0x00040000 */
-#define RTC_ALB_HU_3                        (0x8U << RTC_ALB_HU_Pos)                /*!< 0x00080000 */
-
-#define RTC_ALB_HT_Pos                      (20U)
-#define RTC_ALB_HT_Msk                      (0x3U << RTC_ALB_HT_Pos)                /*!< 0x00300000 */
-#define RTC_ALB_HT                          RTC_ALB_HT_Msk                          /*!< HT[1:0] (Hour tens) */
-#define RTC_ALB_HT_0                        (0x1U << RTC_ALB_HT_Pos)                /*!< 0x00100000 */
-#define RTC_ALB_HT_1                        (0x2U << RTC_ALB_HT_Pos)                /*!< 0x00200000 */
-
-#define RTC_ALB_AMPM_Pos                    (22U)
-#define RTC_ALB_AMPM_Msk                    (0x1U << RTC_ALB_AMPM_Pos)              /*!< 0x00400000 */
-#define RTC_ALB_AMPM                        RTC_ALB_AMPM_Msk                        /*!< AM/PM */
-#define RTC_ALB_MASK3_Pos                   (23U)
-#define RTC_ALB_MASK3_Msk                   (0x1U << RTC_ALB_MASK3_Pos)             /*!< 0x00800000 */
-#define RTC_ALB_MASK3                       RTC_ALB_MASK3_Msk                       /*!< Hour mask */
-
-#define RTC_ALB_DU_Pos                      (24U)
-#define RTC_ALB_DU_Msk                      (0xFU << RTC_ALB_DU_Pos)                /*!< 0x0F000000 */
-#define RTC_ALB_DU                          RTC_ALB_DU_Msk                          /*!< DU[3:0] (Date/week day units) */
-#define RTC_ALB_DU_0                        (0x1U << RTC_ALB_DU_Pos)                /*!< 0x01000000 */
-#define RTC_ALB_DU_1                        (0x2U << RTC_ALB_DU_Pos)                /*!< 0x02000000 */
-#define RTC_ALB_DU_2                        (0x4U << RTC_ALB_DU_Pos)                /*!< 0x04000000 */
-#define RTC_ALB_DU_3                        (0x8U << RTC_ALB_DU_Pos)                /*!< 0x08000000 */
-
-#define RTC_ALB_DT_Pos                      (28U)
-#define RTC_ALB_DT_Msk                      (0x3U << RTC_ALB_DT_Pos)                /*!< 0x30000000 */
-#define RTC_ALB_DT                          RTC_ALB_DT_Msk                          /*!< DT[1:0] (Date/week day tens) */
-#define RTC_ALB_DT_0                        (0x1U << RTC_ALB_DT_Pos)                /*!< 0x10000000 */
-#define RTC_ALB_DT_1                        (0x2U << RTC_ALB_DT_Pos)                /*!< 0x20000000 */
-
-#define RTC_ALB_WKSEL_Pos                   (30U)
-#define RTC_ALB_WKSEL_Msk                   (0x1U << RTC_ALB_WKSEL_Pos)             /*!< 0x40000000 */
-#define RTC_ALB_WKSEL                       RTC_ALB_WKSEL_Msk                       /*!< Date/week day select */
-#define RTC_ALB_MASK4_Pos                   (31U)
-#define RTC_ALB_MASK4_Msk                   (0x1U << RTC_ALB_MASK4_Pos)             /*!< 0x80000000 */
-#define RTC_ALB_MASK4                       RTC_ALB_MASK4_Msk                       /*!< Date/week day mask */
-
-/********************  Bit definition for RTC_WP register  ********************/
-#define RTC_WP_CMD_Pos                      (0U)
-#define RTC_WP_CMD_Msk                      (0xFFU << RTC_WP_CMD_Pos)               /*!< 0x000000FF */
-#define RTC_WP_CMD                          RTC_WP_CMD_Msk                          /*!< Command register */
-
-/*******************  Bit definition for RTC_SBS register  ********************/
-#define RTC_SBS_SBS_Pos                     (0U)
-#define RTC_SBS_SBS_Msk                     (0xFFFFU << RTC_SBS_SBS_Pos)            /*!< 0x0000FFFF */
-#define RTC_SBS_SBS                         RTC_SBS_SBS_Msk                         /*!< Sub-second value */
-
-/*******************  Bit definition for RTC_TADJ register  *******************/
-#define RTC_TADJ_DECSBS_Pos                 (0U)
-#define RTC_TADJ_DECSBS_Msk                 (0x7FFFU << RTC_TADJ_DECSBS_Pos)        /*!< 0x00007FFF */
-#define RTC_TADJ_DECSBS                     RTC_TADJ_DECSBS_Msk                     /*!< Decrease sub-second value */
-#define RTC_TADJ_ADD1S_Pos                  (31U)
-#define RTC_TADJ_ADD1S_Msk                  (0x1U << RTC_TADJ_ADD1S_Pos)            /*!< 0x80000000 */
-#define RTC_TADJ_ADD1S                      RTC_TADJ_ADD1S_Msk                      /*!< Add 1 second */
-
-/*******************  Bit definition for RTC_TSTM register  *******************/
-#define RTC_TSTM_SU_Pos                     (0U)
-#define RTC_TSTM_SU_Msk                     (0xFU << RTC_TSTM_SU_Pos)               /*!< 0x0000000F */
-#define RTC_TSTM_SU                         RTC_TSTM_SU_Msk                         /*!< SU[3:0] (Second units) */
-#define RTC_TSTM_SU_0                       (0x1U << RTC_TSTM_SU_Pos)               /*!< 0x00000001 */
-#define RTC_TSTM_SU_1                       (0x2U << RTC_TSTM_SU_Pos)               /*!< 0x00000002 */
-#define RTC_TSTM_SU_2                       (0x4U << RTC_TSTM_SU_Pos)               /*!< 0x00000004 */
-#define RTC_TSTM_SU_3                       (0x8U << RTC_TSTM_SU_Pos)               /*!< 0x00000008 */
-
-#define RTC_TSTM_ST_Pos                     (4U)
-#define RTC_TSTM_ST_Msk                     (0x7U << RTC_TSTM_ST_Pos)               /*!< 0x00000070 */
-#define RTC_TSTM_ST                         RTC_TSTM_ST_Msk                         /*!< ST[2:0] (Second tens) */
-#define RTC_TSTM_ST_0                       (0x1U << RTC_TSTM_ST_Pos)               /*!< 0x00000010 */
-#define RTC_TSTM_ST_1                       (0x2U << RTC_TSTM_ST_Pos)               /*!< 0x00000020 */
-#define RTC_TSTM_ST_2                       (0x4U << RTC_TSTM_ST_Pos)               /*!< 0x00000040 */
-
-#define RTC_TSTM_MU_Pos                     (8U)
-#define RTC_TSTM_MU_Msk                     (0xFU << RTC_TSTM_MU_Pos)               /*!< 0x00000F00 */
-#define RTC_TSTM_MU                         RTC_TSTM_MU_Msk                         /*!< MU[3:0] (Minute units) */
-#define RTC_TSTM_MU_0                       (0x1U << RTC_TSTM_MU_Pos)               /*!< 0x00000100 */
-#define RTC_TSTM_MU_1                       (0x2U << RTC_TSTM_MU_Pos)               /*!< 0x00000200 */
-#define RTC_TSTM_MU_2                       (0x4U << RTC_TSTM_MU_Pos)               /*!< 0x00000400 */
-#define RTC_TSTM_MU_3                       (0x8U << RTC_TSTM_MU_Pos)               /*!< 0x00000800 */
-
-#define RTC_TSTM_MT_Pos                     (12U)
-#define RTC_TSTM_MT_Msk                     (0x7U << RTC_TSTM_MT_Pos)               /*!< 0x00007000 */
-#define RTC_TSTM_MT                         RTC_TSTM_MT_Msk                         /*!< MT[2:0] (Minute tens) */
-#define RTC_TSTM_MT_0                       (0x1U << RTC_TSTM_MT_Pos)               /*!< 0x00001000 */
-#define RTC_TSTM_MT_1                       (0x2U << RTC_TSTM_MT_Pos)               /*!< 0x00002000 */
-#define RTC_TSTM_MT_2                       (0x4U << RTC_TSTM_MT_Pos)               /*!< 0x00004000 */
-
-#define RTC_TSTM_HU_Pos                     (16U)
-#define RTC_TSTM_HU_Msk                     (0xFU << RTC_TSTM_HU_Pos)               /*!< 0x000F0000 */
-#define RTC_TSTM_HU                         RTC_TSTM_HU_Msk                         /*!< HU[3:0] (Hour units) */
-#define RTC_TSTM_HU_0                       (0x1U << RTC_TSTM_HU_Pos)               /*!< 0x00010000 */
-#define RTC_TSTM_HU_1                       (0x2U << RTC_TSTM_HU_Pos)               /*!< 0x00020000 */
-#define RTC_TSTM_HU_2                       (0x4U << RTC_TSTM_HU_Pos)               /*!< 0x00040000 */
-#define RTC_TSTM_HU_3                       (0x8U << RTC_TSTM_HU_Pos)               /*!< 0x00080000 */
-
-#define RTC_TSTM_HT_Pos                     (20U)
-#define RTC_TSTM_HT_Msk                     (0x3U << RTC_TSTM_HT_Pos)               /*!< 0x00300000 */
-#define RTC_TSTM_HT                         RTC_TSTM_HT_Msk                         /*!< HT[1:0] (Hour tens) */
-#define RTC_TSTM_HT_0                       (0x1U << RTC_TSTM_HT_Pos)               /*!< 0x00100000 */
-#define RTC_TSTM_HT_1                       (0x2U << RTC_TSTM_HT_Pos)               /*!< 0x00200000 */
-
-#define RTC_TSTM_AMPM_Pos                   (22U)
-#define RTC_TSTM_AMPM_Msk                   (0x1U << RTC_TSTM_AMPM_Pos)             /*!< 0x00400000 */
-#define RTC_TSTM_AMPM                       RTC_TSTM_AMPM_Msk                       /*!< AM/PM */
-
-/*******************  Bit definition for RTC_TSDT register  *******************/
-#define RTC_TSDT_DU_Pos                     (0U)
-#define RTC_TSDT_DU_Msk                     (0xFU << RTC_TSDT_DU_Pos)               /*!< 0x0000000F */
-#define RTC_TSDT_DU                         RTC_TSDT_DU_Msk                         /*!< DU[3:0] (Date units) */
-#define RTC_TSDT_DU_0                       (0x1U << RTC_TSDT_DU_Pos)               /*!< 0x00000001 */
-#define RTC_TSDT_DU_1                       (0x2U << RTC_TSDT_DU_Pos)               /*!< 0x00000002 */
-#define RTC_TSDT_DU_2                       (0x4U << RTC_TSDT_DU_Pos)               /*!< 0x00000004 */
-#define RTC_TSDT_DU_3                       (0x8U << RTC_TSDT_DU_Pos)               /*!< 0x00000008 */
-
-#define RTC_TSDT_DT_Pos                     (4U)
-#define RTC_TSDT_DT_Msk                     (0x3U << RTC_TSDT_DT_Pos)               /*!< 0x00000030 */
-#define RTC_TSDT_DT                         RTC_TSDT_DT_Msk                         /*!< DT[1:0] (Date tens) */
-#define RTC_TSDT_DT_0                       (0x1U << RTC_TSDT_DT_Pos)               /*!< 0x00000010 */
-#define RTC_TSDT_DT_1                       (0x2U << RTC_TSDT_DT_Pos)               /*!< 0x00000020 */
-
-#define RTC_TSDT_MU_Pos                     (8U)
-#define RTC_TSDT_MU_Msk                     (0xFU << RTC_TSDT_MU_Pos)               /*!< 0x00000F00 */
-#define RTC_TSDT_MU                         RTC_TSDT_MU_Msk                         /*!< MU[3:0] (Month units) */
-#define RTC_TSDT_MU_0                       (0x1U << RTC_TSDT_MU_Pos)               /*!< 0x00000100 */
-#define RTC_TSDT_MU_1                       (0x2U << RTC_TSDT_MU_Pos)               /*!< 0x00000200 */
-#define RTC_TSDT_MU_2                       (0x4U << RTC_TSDT_MU_Pos)               /*!< 0x00000400 */
-#define RTC_TSDT_MU_3                       (0x8U << RTC_TSDT_MU_Pos)               /*!< 0x00000800 */
-
-#define RTC_TSDT_MT_Pos                     (12U)
-#define RTC_TSDT_MT_Msk                     (0x1U << RTC_TSDT_MT_Pos)               /*!< 0x00001000 */
-#define RTC_TSDT_MT                         RTC_TSDT_MT_Msk                         /*!< Month tens */
-
-#define RTC_TSDT_WK_Pos                     (13U)
-#define RTC_TSDT_WK_Msk                     (0x7U << RTC_TSDT_WK_Pos)               /*!< 0x0000E000 */
-#define RTC_TSDT_WK                         RTC_TSDT_WK_Msk                         /*!< WK[2:0] (Week day) */
-#define RTC_TSDT_WK_0                       (0x1U << RTC_TSDT_WK_Pos)               /*!< 0x00002000 */
-#define RTC_TSDT_WK_1                       (0x2U << RTC_TSDT_WK_Pos)               /*!< 0x00004000 */
-#define RTC_TSDT_WK_2                       (0x4U << RTC_TSDT_WK_Pos)               /*!< 0x00008000 */
-
-/******************  Bit definition for RTC_TSSBS register  *******************/
-#define RTC_TSSBS_SBS_Pos                   (0U)
-#define RTC_TSSBS_SBS_Msk                   (0xFFFFU << RTC_TSSBS_SBS_Pos)          /*!< 0x0000FFFF */
-#define RTC_TSSBS_SBS                       RTC_TSSBS_SBS_Msk                       /*!< Sub-second value */
-
-/*******************  Bit definition for RTC_SCAL register  *******************/
-#define RTC_SCAL_DEC_Pos                    (0U)
-#define RTC_SCAL_DEC_Msk                    (0x1FFU << RTC_SCAL_DEC_Pos)            /*!< 0x000001FF */
-#define RTC_SCAL_DEC                        RTC_SCAL_DEC_Msk                        /*!< Decrease RTC clock */
-#define RTC_SCAL_CAL16_Pos                  (13U)
-#define RTC_SCAL_CAL16_Msk                  (0x1U << RTC_SCAL_CAL16_Pos)            /*!< 0x00002000 */
-#define RTC_SCAL_CAL16                      RTC_SCAL_CAL16_Msk                      /*!< 16 second calibration period */
-#define RTC_SCAL_CAL8_Pos                   (14U)
-#define RTC_SCAL_CAL8_Msk                   (0x1U << RTC_SCAL_CAL8_Pos)             /*!< 0x00004000 */
-#define RTC_SCAL_CAL8                       RTC_SCAL_CAL8_Msk                       /*!< 8 second calibration period */
-#define RTC_SCAL_ADD_Pos                    (15U)
-#define RTC_SCAL_ADD_Msk                    (0x1U << RTC_SCAL_ADD_Pos)              /*!< 0x00008000 */
-#define RTC_SCAL_ADD                        RTC_SCAL_ADD_Msk                        /*!< Add RTC clock */
-
-/*******************  Bit definition for RTC_TAMP register  *******************/
-#define RTC_TAMP_TP1EN_Pos                  (0U)
-#define RTC_TAMP_TP1EN_Msk                  (0x1U << RTC_TAMP_TP1EN_Pos)            /*!< 0x00000001 */
-#define RTC_TAMP_TP1EN                      RTC_TAMP_TP1EN_Msk                      /*!< Tamper detection 1 enable */
-#define RTC_TAMP_TP1EDG_Pos                 (1U)
-#define RTC_TAMP_TP1EDG_Msk                 (0x1U << RTC_TAMP_TP1EDG_Pos)           /*!< 0x00000002 */
-#define RTC_TAMP_TP1EDG                     RTC_TAMP_TP1EDG_Msk                     /*!< Tamper detection 1 valid edge */
-#define RTC_TAMP_TPIEN_Pos                  (2U)
-#define RTC_TAMP_TPIEN_Msk                  (0x1U << RTC_TAMP_TPIEN_Pos)            /*!< 0x00000004 */
-#define RTC_TAMP_TPIEN                      RTC_TAMP_TPIEN_Msk                      /*!< Tamper detection interrupt enable */
-#define RTC_TAMP_TPTSEN_Pos                 (7U)
-#define RTC_TAMP_TPTSEN_Msk                 (0x1U << RTC_TAMP_TPTSEN_Pos)           /*!< 0x00000080 */
-#define RTC_TAMP_TPTSEN                     RTC_TAMP_TPTSEN_Msk                     /*!< Tamper detection timestamp enable */
-
-#define RTC_TAMP_TPFREQ_Pos                 (8U)
-#define RTC_TAMP_TPFREQ_Msk                 (0x7U << RTC_TAMP_TPFREQ_Pos)           /*!< 0x00000700 */
-#define RTC_TAMP_TPFREQ                     RTC_TAMP_TPFREQ_Msk                     /*!< TPFREQ[2:0] (Tamper detection frequency) */
-#define RTC_TAMP_TPFREQ_0                   (0x1U << RTC_TAMP_TPFREQ_Pos)           /*!< 0x00000100 */
-#define RTC_TAMP_TPFREQ_1                   (0x2U << RTC_TAMP_TPFREQ_Pos)           /*!< 0x00000200 */
-#define RTC_TAMP_TPFREQ_2                   (0x4U << RTC_TAMP_TPFREQ_Pos)           /*!< 0x00000400 */
-
-#define RTC_TAMP_TPFLT_Pos                  (11U)
-#define RTC_TAMP_TPFLT_Msk                  (0x3U << RTC_TAMP_TPFLT_Pos)            /*!< 0x00001800 */
-#define RTC_TAMP_TPFLT                      RTC_TAMP_TPFLT_Msk                      /*!< TPFLT[1:0] (Tamper detection filter time) */
-#define RTC_TAMP_TPFLT_0                    (0x1U << RTC_TAMP_TPFLT_Pos)            /*!< 0x00000800 */
-#define RTC_TAMP_TPFLT_1                    (0x2U << RTC_TAMP_TPFLT_Pos)            /*!< 0x00001000 */
-
-#define RTC_TAMP_TPPR_Pos                   (13U)
-#define RTC_TAMP_TPPR_Msk                   (0x3U << RTC_TAMP_TPPR_Pos)             /*!< 0x00006000 */
-#define RTC_TAMP_TPPR                       RTC_TAMP_TPPR_Msk                       /*!< TPPR[1:0] (Tamper detection pre-charge time) */
-#define RTC_TAMP_TPPR_0                     (0x1U << RTC_TAMP_TPPR_Pos)             /*!< 0x00002000 */
-#define RTC_TAMP_TPPR_1                     (0x2U << RTC_TAMP_TPPR_Pos)             /*!< 0x00004000 */
-
-#define RTC_TAMP_TPPU_Pos                   (15U)
-#define RTC_TAMP_TPPU_Msk                   (0x1U << RTC_TAMP_TPPU_Pos)             /*!< 0x00008000 */
-#define RTC_TAMP_TPPU                       RTC_TAMP_TPPU_Msk                       /*!< Tamper detection pull-up */
-#define RTC_TAMP_OUTTYPE_Pos                (18U)
-#define RTC_TAMP_OUTTYPE_Msk                (0x1U << RTC_TAMP_OUTTYPE_Pos)          /*!< 0x00040000 */
-#define RTC_TAMP_OUTTYPE                    RTC_TAMP_OUTTYPE_Msk                    /*!< Output type */
-
-/******************  Bit definition for RTC_ALASBS register  ******************/
-#define RTC_ALASBS_SBS_Pos                  (0U)
-#define RTC_ALASBS_SBS_Msk                  (0x7FFFU << RTC_ALASBS_SBS_Pos)         /*!< 0x00007FFF */
-#define RTC_ALASBS_SBS                      RTC_ALASBS_SBS_Msk                      /*!< Sub-second value */
-
-#define RTC_ALASBS_SBSMSK_Pos               (24U)
-#define RTC_ALASBS_SBSMSK_Msk               (0xFU << RTC_ALASBS_SBSMSK_Pos)         /*!< 0x0F000000 */
-#define RTC_ALASBS_SBSMSK                   RTC_ALASBS_SBSMSK_Msk                   /*!< Sub-second mask */
-#define RTC_ALASBS_SBSMSK_0                 (0x1U << RTC_ALASBS_SBSMSK_Pos)         /*!< 0x01000000 */
-#define RTC_ALASBS_SBSMSK_1                 (0x2U << RTC_ALASBS_SBSMSK_Pos)         /*!< 0x02000000 */
-#define RTC_ALASBS_SBSMSK_2                 (0x4U << RTC_ALASBS_SBSMSK_Pos)         /*!< 0x04000000 */
-#define RTC_ALASBS_SBSMSK_3                 (0x8U << RTC_ALASBS_SBSMSK_Pos)         /*!< 0x08000000 */
-
-/******************  Bit definition for RTC_ALBSBS register  ******************/
-#define RTC_ALBSBS_SBS_Pos                  (0U)
-#define RTC_ALBSBS_SBS_Msk                  (0x7FFFU << RTC_ALBSBS_SBS_Pos)         /*!< 0x00007FFF */
-#define RTC_ALBSBS_SBS                      RTC_ALBSBS_SBS_Msk                      /*!< Sub-second value */
-
-#define RTC_ALBSBS_SBSMSK_Pos               (24U)
-#define RTC_ALBSBS_SBSMSK_Msk               (0xFU << RTC_ALBSBS_SBSMSK_Pos)         /*!< 0x0F000000 */
-#define RTC_ALBSBS_SBSMSK                   RTC_ALBSBS_SBSMSK_Msk                   /*!< Sub-second mask */
-#define RTC_ALBSBS_SBSMSK_0                 (0x1U << RTC_ALBSBS_SBSMSK_Pos)         /*!< 0x01000000 */
-#define RTC_ALBSBS_SBSMSK_1                 (0x2U << RTC_ALBSBS_SBSMSK_Pos)         /*!< 0x02000000 */
-#define RTC_ALBSBS_SBSMSK_2                 (0x4U << RTC_ALBSBS_SBSMSK_Pos)         /*!< 0x04000000 */
-#define RTC_ALBSBS_SBSMSK_3                 (0x8U << RTC_ALBSBS_SBSMSK_Pos)         /*!< 0x08000000 */
-
-/*******************  Bit definition for RTC_BPR1 register  *******************/
-#define RTC_BPR1_DT_Pos                     (0U)
-#define RTC_BPR1_DT_Msk                     (0xFFFFFFFFU << RTC_BPR1_DT_Pos)        /*!< 0xFFFFFFFF */
-#define RTC_BPR1_DT                         RTC_BPR1_DT_Msk                         /*!< Battery powered domain data 1 */
-
-/*******************  Bit definition for RTC_BPR2 register  *******************/
-#define RTC_BPR2_DT_Pos                     (0U)
-#define RTC_BPR2_DT_Msk                     (0xFFFFFFFFU << RTC_BPR2_DT_Pos)        /*!< 0xFFFFFFFF */
-#define RTC_BPR2_DT                         RTC_BPR2_DT_Msk                         /*!< Battery powered domain data 2 */
-
-/*******************  Bit definition for RTC_BPR3 register  *******************/
-#define RTC_BPR3_DT_Pos                     (0U)
-#define RTC_BPR3_DT_Msk                     (0xFFFFFFFFU << RTC_BPR3_DT_Pos)        /*!< 0xFFFFFFFF */
-#define RTC_BPR3_DT                         RTC_BPR3_DT_Msk                         /*!< Battery powered domain data 3 */
-
-/*******************  Bit definition for RTC_BPR4 register  *******************/
-#define RTC_BPR4_DT_Pos                     (0U)
-#define RTC_BPR4_DT_Msk                     (0xFFFFFFFFU << RTC_BPR4_DT_Pos)        /*!< 0xFFFFFFFF */
-#define RTC_BPR4_DT                         RTC_BPR4_DT_Msk                         /*!< Battery powered domain data 4 */
-
-/*******************  Bit definition for RTC_BPR5 register  *******************/
-#define RTC_BPR5_DT_Pos                     (0U)
-#define RTC_BPR5_DT_Msk                     (0xFFFFFFFFU << RTC_BPR5_DT_Pos)        /*!< 0xFFFFFFFF */
-#define RTC_BPR5_DT                         RTC_BPR5_DT_Msk                         /*!< Battery powered domain data 5 */
-
-/*******************  Bit definition for RTC_BPR6 register  *******************/
-#define RTC_BPR6_DT_Pos                     (0U)
-#define RTC_BPR6_DT_Msk                     (0xFFFFFFFFU << RTC_BPR6_DT_Pos)        /*!< 0xFFFFFFFF */
-#define RTC_BPR6_DT                         RTC_BPR6_DT_Msk                         /*!< Battery powered domain data 6 */
-
-/*******************  Bit definition for RTC_BPR7 register  *******************/
-#define RTC_BPR7_DT_Pos                     (0U)
-#define RTC_BPR7_DT_Msk                     (0xFFFFFFFFU << RTC_BPR7_DT_Pos)        /*!< 0xFFFFFFFF */
-#define RTC_BPR7_DT                         RTC_BPR7_DT_Msk                         /*!< Battery powered domain data 7 */
-
-/*******************  Bit definition for RTC_BPR8 register  *******************/
-#define RTC_BPR8_DT_Pos                     (0U)
-#define RTC_BPR8_DT_Msk                     (0xFFFFFFFFU << RTC_BPR8_DT_Pos)        /*!< 0xFFFFFFFF */
-#define RTC_BPR8_DT                         RTC_BPR8_DT_Msk                         /*!< Battery powered domain data 8 */
-
-/*******************  Bit definition for RTC_BPR9 register  *******************/
-#define RTC_BPR9_DT_Pos                     (0U)
-#define RTC_BPR9_DT_Msk                     (0xFFFFFFFFU << RTC_BPR9_DT_Pos)        /*!< 0xFFFFFFFF */
-#define RTC_BPR9_DT                         RTC_BPR9_DT_Msk                         /*!< Battery powered domain data 9 */
-
-/******************  Bit definition for RTC_BPR10 register  *******************/
-#define RTC_BPR10_DT_Pos                    (0U)
-#define RTC_BPR10_DT_Msk                    (0xFFFFFFFFU << RTC_BPR10_DT_Pos)       /*!< 0xFFFFFFFF */
-#define RTC_BPR10_DT                        RTC_BPR10_DT_Msk                        /*!< Battery powered domain data 10 */
-
-/******************  Bit definition for RTC_BPR11 register  *******************/
-#define RTC_BPR11_DT_Pos                    (0U)
-#define RTC_BPR11_DT_Msk                    (0xFFFFFFFFU << RTC_BPR11_DT_Pos)       /*!< 0xFFFFFFFF */
-#define RTC_BPR11_DT                        RTC_BPR11_DT_Msk                        /*!< Battery powered domain data 11 */
-
-/******************  Bit definition for RTC_BPR12 register  *******************/
-#define RTC_BPR12_DT_Pos                    (0U)
-#define RTC_BPR12_DT_Msk                    (0xFFFFFFFFU << RTC_BPR12_DT_Pos)       /*!< 0xFFFFFFFF */
-#define RTC_BPR12_DT                        RTC_BPR12_DT_Msk                        /*!< Battery powered domain data 12 */
-
-/******************  Bit definition for RTC_BPR13 register  *******************/
-#define RTC_BPR13_DT_Pos                    (0U)
-#define RTC_BPR13_DT_Msk                    (0xFFFFFFFFU << RTC_BPR13_DT_Pos)       /*!< 0xFFFFFFFF */
-#define RTC_BPR13_DT                        RTC_BPR13_DT_Msk                        /*!< Battery powered domain data 13 */
-
-/******************  Bit definition for RTC_BPR14 register  *******************/
-#define RTC_BPR14_DT_Pos                    (0U)
-#define RTC_BPR14_DT_Msk                    (0xFFFFFFFFU << RTC_BPR14_DT_Pos)       /*!< 0xFFFFFFFF */
-#define RTC_BPR14_DT                        RTC_BPR14_DT_Msk                        /*!< Battery powered domain data 14 */
-
-/******************  Bit definition for RTC_BPR15 register  *******************/
-#define RTC_BPR15_DT_Pos                    (0U)
-#define RTC_BPR15_DT_Msk                    (0xFFFFFFFFU << RTC_BPR15_DT_Pos)       /*!< 0xFFFFFFFF */
-#define RTC_BPR15_DT                        RTC_BPR15_DT_Msk                        /*!< Battery powered domain data 15 */
-
-/******************  Bit definition for RTC_BPR16 register  *******************/
-#define RTC_BPR16_DT_Pos                    (0U)
-#define RTC_BPR16_DT_Msk                    (0xFFFFFFFFU << RTC_BPR16_DT_Pos)       /*!< 0xFFFFFFFF */
-#define RTC_BPR16_DT                        RTC_BPR16_DT_Msk                        /*!< Battery powered domain data 16 */
-
-/******************  Bit definition for RTC_BPR17 register  *******************/
-#define RTC_BPR17_DT_Pos                    (0U)
-#define RTC_BPR17_DT_Msk                    (0xFFFFFFFFU << RTC_BPR17_DT_Pos)       /*!< 0xFFFFFFFF */
-#define RTC_BPR17_DT                        RTC_BPR17_DT_Msk                        /*!< Battery powered domain data 17 */
-
-/******************  Bit definition for RTC_BPR18 register  *******************/
-#define RTC_BPR18_DT_Pos                    (0U)
-#define RTC_BPR18_DT_Msk                    (0xFFFFFFFFU << RTC_BPR18_DT_Pos)       /*!< 0xFFFFFFFF */
-#define RTC_BPR18_DT                        RTC_BPR18_DT_Msk                        /*!< Battery powered domain data 18 */
-
-/******************  Bit definition for RTC_BPR19 register  *******************/
-#define RTC_BPR19_DT_Pos                    (0U)
-#define RTC_BPR19_DT_Msk                    (0xFFFFFFFFU << RTC_BPR19_DT_Pos)       /*!< 0xFFFFFFFF */
-#define RTC_BPR19_DT                        RTC_BPR19_DT_Msk                        /*!< Battery powered domain data 19 */
-
-/******************  Bit definition for RTC_BPR20 register  *******************/
-#define RTC_BPR20_DT_Pos                    (0U)
-#define RTC_BPR20_DT_Msk                    (0xFFFFFFFFU << RTC_BPR20_DT_Pos)       /*!< 0xFFFFFFFF */
-#define RTC_BPR20_DT                        RTC_BPR20_DT_Msk                        /*!< Battery powered domain data 20 */
+/******************  Bit definition for ERTC_TIME register  *******************/
+#define ERTC_TIME_SU_Pos                    (0U)
+#define ERTC_TIME_SU_Msk                    (0xFU << ERTC_TIME_SU_Pos)              /*!< 0x0000000F */
+#define ERTC_TIME_SU                        ERTC_TIME_SU_Msk                        /*!< SU[3:0] (Second units) */
+#define ERTC_TIME_SU_0                      (0x1U << ERTC_TIME_SU_Pos)              /*!< 0x00000001 */
+#define ERTC_TIME_SU_1                      (0x2U << ERTC_TIME_SU_Pos)              /*!< 0x00000002 */
+#define ERTC_TIME_SU_2                      (0x4U << ERTC_TIME_SU_Pos)              /*!< 0x00000004 */
+#define ERTC_TIME_SU_3                      (0x8U << ERTC_TIME_SU_Pos)              /*!< 0x00000008 */
+
+#define ERTC_TIME_ST_Pos                    (4U)
+#define ERTC_TIME_ST_Msk                    (0x7U << ERTC_TIME_ST_Pos)              /*!< 0x00000070 */
+#define ERTC_TIME_ST                        ERTC_TIME_ST_Msk                        /*!< ST[2:0] (Second tens) */
+#define ERTC_TIME_ST_0                      (0x1U << ERTC_TIME_ST_Pos)              /*!< 0x00000010 */
+#define ERTC_TIME_ST_1                      (0x2U << ERTC_TIME_ST_Pos)              /*!< 0x00000020 */
+#define ERTC_TIME_ST_2                      (0x4U << ERTC_TIME_ST_Pos)              /*!< 0x00000040 */
+
+#define ERTC_TIME_MU_Pos                    (8U)
+#define ERTC_TIME_MU_Msk                    (0xFU << ERTC_TIME_MU_Pos)              /*!< 0x00000F00 */
+#define ERTC_TIME_MU                        ERTC_TIME_MU_Msk                        /*!< MU[3:0] (Minute units) */
+#define ERTC_TIME_MU_0                      (0x1U << ERTC_TIME_MU_Pos)              /*!< 0x00000100 */
+#define ERTC_TIME_MU_1                      (0x2U << ERTC_TIME_MU_Pos)              /*!< 0x00000200 */
+#define ERTC_TIME_MU_2                      (0x4U << ERTC_TIME_MU_Pos)              /*!< 0x00000400 */
+#define ERTC_TIME_MU_3                      (0x8U << ERTC_TIME_MU_Pos)              /*!< 0x00000800 */
+
+#define ERTC_TIME_MT_Pos                    (12U)
+#define ERTC_TIME_MT_Msk                    (0x7U << ERTC_TIME_MT_Pos)              /*!< 0x00007000 */
+#define ERTC_TIME_MT                        ERTC_TIME_MT_Msk                        /*!< MT[2:0] (Minute tens) */
+#define ERTC_TIME_MT_0                      (0x1U << ERTC_TIME_MT_Pos)              /*!< 0x00001000 */
+#define ERTC_TIME_MT_1                      (0x2U << ERTC_TIME_MT_Pos)              /*!< 0x00002000 */
+#define ERTC_TIME_MT_2                      (0x4U << ERTC_TIME_MT_Pos)              /*!< 0x00004000 */
+
+#define ERTC_TIME_HU_Pos                    (16U)
+#define ERTC_TIME_HU_Msk                    (0xFU << ERTC_TIME_HU_Pos)              /*!< 0x000F0000 */
+#define ERTC_TIME_HU                        ERTC_TIME_HU_Msk                        /*!< HU[3:0] (Hour units) */
+#define ERTC_TIME_HU_0                      (0x1U << ERTC_TIME_HU_Pos)              /*!< 0x00010000 */
+#define ERTC_TIME_HU_1                      (0x2U << ERTC_TIME_HU_Pos)              /*!< 0x00020000 */
+#define ERTC_TIME_HU_2                      (0x4U << ERTC_TIME_HU_Pos)              /*!< 0x00040000 */
+#define ERTC_TIME_HU_3                      (0x8U << ERTC_TIME_HU_Pos)              /*!< 0x00080000 */
+
+#define ERTC_TIME_HT_Pos                    (20U)
+#define ERTC_TIME_HT_Msk                    (0x3U << ERTC_TIME_HT_Pos)              /*!< 0x00300000 */
+#define ERTC_TIME_HT                        ERTC_TIME_HT_Msk                        /*!< HT[1:0] (Hour tens) */
+#define ERTC_TIME_HT_0                      (0x1U << ERTC_TIME_HT_Pos)              /*!< 0x00100000 */
+#define ERTC_TIME_HT_1                      (0x2U << ERTC_TIME_HT_Pos)              /*!< 0x00200000 */
+
+#define ERTC_TIME_AMPM_Pos                  (22U)
+#define ERTC_TIME_AMPM_Msk                  (0x1U << ERTC_TIME_AMPM_Pos)            /*!< 0x00400000 */
+#define ERTC_TIME_AMPM                      ERTC_TIME_AMPM_Msk                      /*!< AM/PM */
+
+/******************  Bit definition for ERTC_DATE register  *******************/
+#define ERTC_DATE_DU_Pos                    (0U)
+#define ERTC_DATE_DU_Msk                    (0xFU << ERTC_DATE_DU_Pos)              /*!< 0x0000000F */
+#define ERTC_DATE_DU                        ERTC_DATE_DU_Msk                        /*!< DU[3:0] (Date units) */
+#define ERTC_DATE_DU_0                      (0x1U << ERTC_DATE_DU_Pos)              /*!< 0x00000001 */
+#define ERTC_DATE_DU_1                      (0x2U << ERTC_DATE_DU_Pos)              /*!< 0x00000002 */
+#define ERTC_DATE_DU_2                      (0x4U << ERTC_DATE_DU_Pos)              /*!< 0x00000004 */
+#define ERTC_DATE_DU_3                      (0x8U << ERTC_DATE_DU_Pos)              /*!< 0x00000008 */
+
+#define ERTC_DATE_DT_Pos                    (4U)
+#define ERTC_DATE_DT_Msk                    (0x3U << ERTC_DATE_DT_Pos)              /*!< 0x00300000 */
+#define ERTC_DATE_DT                        ERTC_DATE_DT_Msk                        /*!< DT[1:0] (Date tens) */
+#define ERTC_DATE_DT_0                      (0x1U << ERTC_DATE_DT_Pos)              /*!< 0x00000010 */
+#define ERTC_DATE_DT_1                      (0x2U << ERTC_DATE_DT_Pos)              /*!< 0x00000020 */
+
+#define ERTC_DATE_MU_Pos                    (8U)
+#define ERTC_DATE_MU_Msk                    (0xFU << ERTC_DATE_MU_Pos)              /*!< 0x00000F00 */
+#define ERTC_DATE_MU                        ERTC_DATE_MU_Msk                        /*!< MU[3:0] (Month units) */
+#define ERTC_DATE_MU_0                      (0x1U << ERTC_DATE_MU_Pos)              /*!< 0x00000100 */
+#define ERTC_DATE_MU_1                      (0x2U << ERTC_DATE_MU_Pos)              /*!< 0x00000200 */
+#define ERTC_DATE_MU_2                      (0x4U << ERTC_DATE_MU_Pos)              /*!< 0x00000400 */
+#define ERTC_DATE_MU_3                      (0x8U << ERTC_DATE_MU_Pos)              /*!< 0x00000800 */
+
+#define ERTC_DATE_MT_Pos                    (12U)
+#define ERTC_DATE_MT_Msk                    (0x1U << ERTC_DATE_MT_Pos)              /*!< 0x00001000 */
+#define ERTC_DATE_MT                        ERTC_DATE_MT_Msk                        /*!< Month tens */
+
+#define ERTC_DATE_WK_Pos                    (13U)
+#define ERTC_DATE_WK_Msk                    (0x7U << ERTC_DATE_WK_Pos)              /*!< 0x0000E000 */
+#define ERTC_DATE_WK                        ERTC_DATE_WK_Msk                        /*!< WK[2:0] (Week day) */
+#define ERTC_DATE_WK_0                      (0x1U << ERTC_DATE_WK_Pos)              /*!< 0x00002000 */
+#define ERTC_DATE_WK_1                      (0x2U << ERTC_DATE_WK_Pos)              /*!< 0x00004000 */
+#define ERTC_DATE_WK_2                      (0x4U << ERTC_DATE_WK_Pos)              /*!< 0x00008000 */
+
+#define ERTC_DATE_YU_Pos                    (16U)
+#define ERTC_DATE_YU_Msk                    (0xFU << ERTC_DATE_YU_Pos)              /*!< 0x000F0000 */
+#define ERTC_DATE_YU                        ERTC_DATE_YU_Msk                        /*!< YU[3:0] (Year units) */
+#define ERTC_DATE_YU_0                      (0x1U << ERTC_DATE_YU_Pos)              /*!< 0x00010000 */
+#define ERTC_DATE_YU_1                      (0x2U << ERTC_DATE_YU_Pos)              /*!< 0x00020000 */
+#define ERTC_DATE_YU_2                      (0x4U << ERTC_DATE_YU_Pos)              /*!< 0x00040000 */
+#define ERTC_DATE_YU_3                      (0x8U << ERTC_DATE_YU_Pos)              /*!< 0x00080000 */
+
+#define ERTC_DATE_YT_Pos                    (20U)
+#define ERTC_DATE_YT_Msk                    (0xFU << ERTC_DATE_YT_Pos)              /*!< 0x00F00000 */
+#define ERTC_DATE_YT                        ERTC_DATE_YT_Msk                        /*!< YT[3:0] (Year tens) */
+#define ERTC_DATE_YT_0                      (0x1U << ERTC_DATE_YT_Pos)              /*!< 0x00100000 */
+#define ERTC_DATE_YT_1                      (0x2U << ERTC_DATE_YT_Pos)              /*!< 0x00200000 */
+#define ERTC_DATE_YT_2                      (0x4U << ERTC_DATE_YT_Pos)              /*!< 0x00400000 */
+#define ERTC_DATE_YT_3                      (0x8U << ERTC_DATE_YT_Pos)              /*!< 0x00800000 */
+
+/******************  Bit definition for ERTC_CTRL register  *******************/
+#define ERTC_CTRL_WATCLK_Pos                (0U)
+#define ERTC_CTRL_WATCLK_Msk                (0x7U << ERTC_CTRL_WATCLK_Pos)          /*!< 0x00000007 */
+#define ERTC_CTRL_WATCLK                    ERTC_CTRL_WATCLK_Msk                    /*!< WATCLK[2:0] (Wakeup timer clock selection) */
+#define ERTC_CTRL_WATCLK_0                  (0x1U << ERTC_CTRL_WATCLK_Pos)          /*!< 0x00000001 */
+#define ERTC_CTRL_WATCLK_1                  (0x2U << ERTC_CTRL_WATCLK_Pos)          /*!< 0x00000002 */
+#define ERTC_CTRL_WATCLK_2                  (0x4U << ERTC_CTRL_WATCLK_Pos)          /*!< 0x00000004 */
+
+#define ERTC_CTRL_TSEDG_Pos                 (3U)
+#define ERTC_CTRL_TSEDG_Msk                 (0x1U << ERTC_CTRL_TSEDG_Pos)           /*!< 0x00000008 */
+#define ERTC_CTRL_TSEDG                     ERTC_CTRL_TSEDG_Msk                     /*!< Timestamp trigger edge */
+#define ERTC_CTRL_RCDEN_Pos                 (4U)
+#define ERTC_CTRL_RCDEN_Msk                 (0x1U << ERTC_CTRL_RCDEN_Pos)           /*!< 0x00000010 */
+#define ERTC_CTRL_RCDEN                     ERTC_CTRL_RCDEN_Msk                     /*!< Reference clock detection enable */
+#define ERTC_CTRL_DREN_Pos                  (5U)
+#define ERTC_CTRL_DREN_Msk                  (0x1U << ERTC_CTRL_DREN_Pos)            /*!< 0x00000020 */
+#define ERTC_CTRL_DREN                      ERTC_CTRL_DREN_Msk                      /*!< Date/time register direct read enable */
+#define ERTC_CTRL_HM_Pos                    (6U)
+#define ERTC_CTRL_HM_Msk                    (0x1U << ERTC_CTRL_HM_Pos)              /*!< 0x00000040 */
+#define ERTC_CTRL_HM                        ERTC_CTRL_HM_Msk                        /*!< Hour mode */
+#define ERTC_CTRL_CCALEN_Pos                (7U)
+#define ERTC_CTRL_CCALEN_Msk                (0x1U << ERTC_CTRL_CCALEN_Pos)          /*!< 0x00000080 */
+#define ERTC_CTRL_CCALEN                    ERTC_CTRL_CCALEN_Msk                    /*!< Coarse calibration enable */
+#define ERTC_CTRL_ALAEN_Pos                 (8U)
+#define ERTC_CTRL_ALAEN_Msk                 (0x1U << ERTC_CTRL_ALAEN_Pos)           /*!< 0x00000100 */
+#define ERTC_CTRL_ALAEN                     ERTC_CTRL_ALAEN_Msk                     /*!< Alarm A enable */
+#define ERTC_CTRL_ALBEN_Pos                 (9U)
+#define ERTC_CTRL_ALBEN_Msk                 (0x1U << ERTC_CTRL_ALBEN_Pos)           /*!< 0x00000200 */
+#define ERTC_CTRL_ALBEN                     ERTC_CTRL_ALBEN_Msk                     /*!< Alarm B enable */
+#define ERTC_CTRL_WATEN_Pos                 (10U)
+#define ERTC_CTRL_WATEN_Msk                 (0x1U << ERTC_CTRL_WATEN_Pos)           /*!< 0x00000400 */
+#define ERTC_CTRL_WATEN                     ERTC_CTRL_WATEN_Msk                     /*!< Wakeup timer enable */
+#define ERTC_CTRL_TSEN_Pos                  (11U)
+#define ERTC_CTRL_TSEN_Msk                  (0x1U << ERTC_CTRL_TSEN_Pos)            /*!< 0x00000800 */
+#define ERTC_CTRL_TSEN                      ERTC_CTRL_TSEN_Msk                      /*!< Timestamp enable */
+#define ERTC_CTRL_ALAIEN_Pos                (12U)
+#define ERTC_CTRL_ALAIEN_Msk                (0x1U << ERTC_CTRL_ALAIEN_Pos)          /*!< 0x00001000 */
+#define ERTC_CTRL_ALAIEN                    ERTC_CTRL_ALAIEN_Msk                    /*!< Alarm A interrupt enable */
+#define ERTC_CTRL_ALBIEN_Pos                (13U)
+#define ERTC_CTRL_ALBIEN_Msk                (0x1U << ERTC_CTRL_ALBIEN_Pos)          /*!< 0x00002000 */
+#define ERTC_CTRL_ALBIEN                    ERTC_CTRL_ALBIEN_Msk                    /*!< Alarm B interrupt enable */
+#define ERTC_CTRL_WATIEN_Pos                (14U)
+#define ERTC_CTRL_WATIEN_Msk                (0x1U << ERTC_CTRL_WATIEN_Pos)          /*!< 0x00004000 */
+#define ERTC_CTRL_WATIEN                    ERTC_CTRL_WATIEN_Msk                    /*!< Wakeup timer interrupt enable */
+#define ERTC_CTRL_TSIEN_Pos                 (15U)
+#define ERTC_CTRL_TSIEN_Msk                 (0x1U << ERTC_CTRL_TSIEN_Pos)           /*!< 0x000008000 */
+#define ERTC_CTRL_TSIEN                     ERTC_CTRL_TSIEN_Msk                     /*!< Timestamp interrupt enable */
+#define ERTC_CTRL_ADD1H_Pos                 (16U)
+#define ERTC_CTRL_ADD1H_Msk                 (0x1U << ERTC_CTRL_ADD1H_Pos)           /*!< 0x00010000 */
+#define ERTC_CTRL_ADD1H                     ERTC_CTRL_ADD1H_Msk                     /*!< Add 1 hour */
+#define ERTC_CTRL_DEC1H_Pos                 (17U)
+#define ERTC_CTRL_DEC1H_Msk                 (0x1U << ERTC_CTRL_DEC1H_Pos)           /*!< 0x00020000 */
+#define ERTC_CTRL_DEC1H                     ERTC_CTRL_DEC1H_Msk                     /*!< Decrease 1 hour */
+#define ERTC_CTRL_BPR_Pos                   (18U)
+#define ERTC_CTRL_BPR_Msk                   (0x1U << ERTC_CTRL_BPR_Pos)             /*!< 0x00040000 */
+#define ERTC_CTRL_BPR                       ERTC_CTRL_BPR_Msk                       /*!< Battery powered domain data register */
+#define ERTC_CTRL_CALOSEL_Pos               (19U)
+#define ERTC_CTRL_CALOSEL_Msk               (0x1U << ERTC_CTRL_CALOSEL_Pos)         /*!< 0x00080000 */
+#define ERTC_CTRL_CALOSEL                   ERTC_CTRL_CALOSEL_Msk                   /*!< Calibration output selection */
+#define ERTC_CTRL_OUTP_Pos                  (20U)
+#define ERTC_CTRL_OUTP_Msk                  (0x1U << ERTC_CTRL_OUTP_Pos)            /*!< 0x00100000 */
+#define ERTC_CTRL_OUTP                      ERTC_CTRL_OUTP_Msk                      /*!< Output polarity */
+
+#define ERTC_CTRL_OUTSEL_Pos                (21U)
+#define ERTC_CTRL_OUTSEL_Msk                (0x3U << ERTC_CTRL_OUTSEL_Pos)          /*!< 0x00600000 */
+#define ERTC_CTRL_OUTSEL                    ERTC_CTRL_OUTSEL_Msk                    /*!< WATCLK[1:0] (Output source selection) */
+#define ERTC_CTRL_OUTSEL_0                  (0x1U << ERTC_CTRL_OUTSEL_Pos)          /*!< 0x00200000 */
+#define ERTC_CTRL_OUTSEL_1                  (0x2U << ERTC_CTRL_OUTSEL_Pos)          /*!< 0x00400000 */
+
+#define ERTC_CTRL_CALOEN_Pos                (23U)
+#define ERTC_CTRL_CALOEN_Msk                (0x1U << ERTC_CTRL_CALOEN_Pos)          /*!< 0x00800000 */
+#define ERTC_CTRL_CALOEN                    ERTC_CTRL_CALOEN_Msk                    /*!< Calibration output enable */
+
+/*******************  Bit definition for ERTC_STS register  *******************/
+#define ERTC_STS_ALAWF_Pos                  (0U)
+#define ERTC_STS_ALAWF_Msk                  (0x1U << ERTC_STS_ALAWF_Pos)            /*!< 0x00000001 */
+#define ERTC_STS_ALAWF                      ERTC_STS_ALAWF_Msk                      /*!< Alarm A register allows write flag */
+#define ERTC_STS_ALBWF_Pos                  (1U)
+#define ERTC_STS_ALBWF_Msk                  (0x1U << ERTC_STS_ALBWF_Pos)            /*!< 0x00000002 */
+#define ERTC_STS_ALBWF                      ERTC_STS_ALBWF_Msk                      /*!< Alarm B register allows write flag */
+#define ERTC_STS_WATWF_Pos                  (2U)
+#define ERTC_STS_WATWF_Msk                  (0x1U << ERTC_STS_WATWF_Pos)            /*!< 0x00000004 */
+#define ERTC_STS_WATWF                      ERTC_STS_WATWF_Msk                      /*!< Wakeup timer register allows write flag */
+#define ERTC_STS_TADJF_Pos                  (3U)
+#define ERTC_STS_TADJF_Msk                  (0x1U << ERTC_STS_TADJF_Pos)            /*!< 0x00000008 */
+#define ERTC_STS_TADJF                      ERTC_STS_TADJF_Msk                      /*!< Time adjustment flag */
+#define ERTC_STS_INITF_Pos                  (4U)
+#define ERTC_STS_INITF_Msk                  (0x1U << ERTC_STS_INITF_Pos)            /*!< 0x00000010 */
+#define ERTC_STS_INITF                      ERTC_STS_INITF_Msk                      /*!< Calendar initialization flag */
+#define ERTC_STS_UPDF_Pos                   (5U)
+#define ERTC_STS_UPDF_Msk                   (0x1U << ERTC_STS_UPDF_Pos)             /*!< 0x00000020 */
+#define ERTC_STS_UPDF                       ERTC_STS_UPDF_Msk                       /*!< Calendar update flag */
+#define ERTC_STS_IMF_Pos                    (6U)
+#define ERTC_STS_IMF_Msk                    (0x1U << ERTC_STS_IMF_Pos)              /*!< 0x00000040 */
+#define ERTC_STS_IMF                        ERTC_STS_IMF_Msk                        /*!< Enter initialization mode flag */
+#define ERTC_STS_IMEN_Pos                   (7U)
+#define ERTC_STS_IMEN_Msk                   (0x1U << ERTC_STS_IMEN_Pos)             /*!< 0x00000080 */
+#define ERTC_STS_IMEN                       ERTC_STS_IMEN_Msk                       /*!< Initialization mode enable */
+#define ERTC_STS_ALAF_Pos                   (8U)
+#define ERTC_STS_ALAF_Msk                   (0x1U << ERTC_STS_ALAF_Pos)             /*!< 0x00000100 */
+#define ERTC_STS_ALAF                       ERTC_STS_ALAF_Msk                       /*!< Alarm clock A flag */
+#define ERTC_STS_ALBF_Pos                   (9U)
+#define ERTC_STS_ALBF_Msk                   (0x1U << ERTC_STS_ALBF_Pos)             /*!< 0x00000200 */
+#define ERTC_STS_ALBF                       ERTC_STS_ALBF_Msk                       /*!< Alarm clock B flag */
+#define ERTC_STS_WATF_Pos                   (10U)
+#define ERTC_STS_WATF_Msk                   (0x1U << ERTC_STS_WATF_Pos)             /*!< 0x00000400 */
+#define ERTC_STS_WATF                       ERTC_STS_WATF_Msk                       /*!< Wakeup timer flag */
+#define ERTC_STS_TSF_Pos                    (11U)
+#define ERTC_STS_TSF_Msk                    (0x1U << ERTC_STS_TSF_Pos)              /*!< 0x00000800 */
+#define ERTC_STS_TSF                        ERTC_STS_TSF_Msk                        /*!< Timestamp flag */
+#define ERTC_STS_TSOF_Pos                   (12U)
+#define ERTC_STS_TSOF_Msk                   (0x1U << ERTC_STS_TSOF_Pos)             /*!< 0x00001000 */
+#define ERTC_STS_TSOF                       ERTC_STS_TSOF_Msk                       /*!< Timestamp overflow flag */
+#define ERTC_STS_TP1F_Pos                   (13U)
+#define ERTC_STS_TP1F_Msk                   (0x1U << ERTC_STS_TP1F_Pos)             /*!< 0x00002000 */
+#define ERTC_STS_TP1F                       ERTC_STS_TP1F_Msk                       /*!< Tamper detection 1 flag */
+#define ERTC_STS_CALUPDF_Pos                (16U)
+#define ERTC_STS_CALUPDF_Msk                (0x1U << ERTC_STS_CALUPDF_Pos)          /*!< 0x00010000 */
+#define ERTC_STS_CALUPDF                    ERTC_STS_CALUPDF_Msk                    /*!< Calibration value update complete flag */
+
+/*******************  Bit definition for ERTC_DIV register  *******************/
+#define ERTC_DIV_DIVB_Pos                   (0U)
+#define ERTC_DIV_DIVB_Msk                   (0x7FFFU << ERTC_DIV_DIVB_Pos)          /*!< 0x00007FFF */
+#define ERTC_DIV_DIVB                       ERTC_DIV_DIVB_Msk                       /*!< Divider B */
+#define ERTC_DIV_DIVA_Pos                   (16U)
+#define ERTC_DIV_DIVA_Msk                   (0x7FU << ERTC_DIV_DIVA_Pos)            /*!< 0x007F0000 */
+#define ERTC_DIV_DIVA                       ERTC_DIV_DIVA_Msk                       /*!< Divider A */
+
+/*******************  Bit definition for ERTC_WAT register  *******************/
+#define ERTC_WAT_VAL_Pos                    (0U)
+#define ERTC_WAT_VAL_Msk                    (0xFFFFU << ERTC_WAT_VAL_Pos)           /*!< 0x0000FFFF */
+#define ERTC_WAT_VAL                        ERTC_WAT_VAL_Msk                        /*!< Wakeup timer reload value */
+
+/******************  Bit definition for ERTC_CCAL register  *******************/
+#define ERTC_CCAL_CALVAL_Pos                (0U)
+#define ERTC_CCAL_CALVAL_Msk                (0x1FU << ERTC_CCAL_CALVAL_Pos)         /*!< 0x0000001F */
+#define ERTC_CCAL_CALVAL                    ERTC_CCAL_CALVAL_Msk                    /*!< CALVAL[4:0] (Calibration value) */
+#define ERTC_CCAL_CALVAL_0                  (0x1U << ERTC_CCAL_CALVAL_Pos)          /*!< 0x00000001 */
+#define ERTC_CCAL_CALVAL_1                  (0x2U << ERTC_CCAL_CALVAL_Pos)          /*!< 0x00000002 */
+#define ERTC_CCAL_CALVAL_2                  (0x4U << ERTC_CCAL_CALVAL_Pos)          /*!< 0x00000004 */
+#define ERTC_CCAL_CALVAL_3                  (0x8U << ERTC_CCAL_CALVAL_Pos)          /*!< 0x00000008 */
+#define ERTC_CCAL_CALVAL_4                  (0x10U << ERTC_CCAL_CALVAL_Pos)         /*!< 0x00000010 */
+
+#define ERTC_CCAL_CALDIR_Pos                (7U)
+#define ERTC_CCAL_CALDIR_Msk                (0x1U << ERTC_CCAL_CALDIR_Pos)          /*!< 0x00000080 */
+#define ERTC_CCAL_CALDIR                    ERTC_CCAL_CALDIR_Msk                    /*!< Calibration direction */
+
+/*******************  Bit definition for ERTC_ALA register  *******************/
+#define ERTC_ALA_SU_Pos                     (0U)
+#define ERTC_ALA_SU_Msk                     (0xFU << ERTC_ALA_SU_Pos)               /*!< 0x0000000F */
+#define ERTC_ALA_SU                         ERTC_ALA_SU_Msk                         /*!< SU[3:0] (Second units) */
+#define ERTC_ALA_SU_0                       (0x1U << ERTC_ALA_SU_Pos)               /*!< 0x00000001 */
+#define ERTC_ALA_SU_1                       (0x2U << ERTC_ALA_SU_Pos)               /*!< 0x00000002 */
+#define ERTC_ALA_SU_2                       (0x4U << ERTC_ALA_SU_Pos)               /*!< 0x00000004 */
+#define ERTC_ALA_SU_3                       (0x8U << ERTC_ALA_SU_Pos)               /*!< 0x00000008 */
+
+#define ERTC_ALA_ST_Pos                     (4U)
+#define ERTC_ALA_ST_Msk                     (0x7U << ERTC_ALA_ST_Pos)               /*!< 0x00000070 */
+#define ERTC_ALA_ST                         ERTC_ALA_ST_Msk                         /*!< ST[2:0] (Second tens) */
+#define ERTC_ALA_ST_0                       (0x1U << ERTC_ALA_ST_Pos)               /*!< 0x00000010 */
+#define ERTC_ALA_ST_1                       (0x2U << ERTC_ALA_ST_Pos)               /*!< 0x00000020 */
+#define ERTC_ALA_ST_2                       (0x4U << ERTC_ALA_ST_Pos)               /*!< 0x00000040 */
+
+#define ERTC_ALA_MASK1_Pos                  (7U)
+#define ERTC_ALA_MASK1_Msk                  (0x1U << ERTC_ALA_MASK1_Pos)            /*!< 0x00000080 */
+#define ERTC_ALA_MASK1                      ERTC_ALA_MASK1_Msk                      /*!< Second mask */
+
+#define ERTC_ALA_MU_Pos                     (8U)
+#define ERTC_ALA_MU_Msk                     (0xFU << ERTC_ALA_MU_Pos)               /*!< 0x00000F00 */
+#define ERTC_ALA_MU                         ERTC_ALA_MU_Msk                         /*!< MU[3:0] (Minute units) */
+#define ERTC_ALA_MU_0                       (0x1U << ERTC_ALA_MU_Pos)               /*!< 0x00000100 */
+#define ERTC_ALA_MU_1                       (0x2U << ERTC_ALA_MU_Pos)               /*!< 0x00000200 */
+#define ERTC_ALA_MU_2                       (0x4U << ERTC_ALA_MU_Pos)               /*!< 0x00000400 */
+#define ERTC_ALA_MU_3                       (0x8U << ERTC_ALA_MU_Pos)               /*!< 0x00000800 */
+
+#define ERTC_ALA_MT_Pos                     (12U)
+#define ERTC_ALA_MT_Msk                     (0x7U << ERTC_ALA_MT_Pos)               /*!< 0x00007000 */
+#define ERTC_ALA_MT                         ERTC_ALA_MT_Msk                         /*!< MT[2:0] (Minute tens) */
+#define ERTC_ALA_MT_0                       (0x1U << ERTC_ALA_MT_Pos)               /*!< 0x00001000 */
+#define ERTC_ALA_MT_1                       (0x2U << ERTC_ALA_MT_Pos)               /*!< 0x00002000 */
+#define ERTC_ALA_MT_2                       (0x4U << ERTC_ALA_MT_Pos)               /*!< 0x00004000 */
+
+#define ERTC_ALA_MASK2_Pos                  (15U)
+#define ERTC_ALA_MASK2_Msk                  (0x1U << ERTC_ALA_MASK2_Pos)            /*!< 0x00008000 */
+#define ERTC_ALA_MASK2                      ERTC_ALA_MASK2_Msk                      /*!< Minute mask */
+
+#define ERTC_ALA_HU_Pos                     (16U)
+#define ERTC_ALA_HU_Msk                     (0xFU << ERTC_ALA_HU_Pos)               /*!< 0x000F0000 */
+#define ERTC_ALA_HU                         ERTC_ALA_HU_Msk                         /*!< HU[3:0] (Hour units) */
+#define ERTC_ALA_HU_0                       (0x1U << ERTC_ALA_HU_Pos)               /*!< 0x00010000 */
+#define ERTC_ALA_HU_1                       (0x2U << ERTC_ALA_HU_Pos)               /*!< 0x00020000 */
+#define ERTC_ALA_HU_2                       (0x4U << ERTC_ALA_HU_Pos)               /*!< 0x00040000 */
+#define ERTC_ALA_HU_3                       (0x8U << ERTC_ALA_HU_Pos)               /*!< 0x00080000 */
+
+#define ERTC_ALA_HT_Pos                     (20U)
+#define ERTC_ALA_HT_Msk                     (0x3U << ERTC_ALA_HT_Pos)               /*!< 0x00300000 */
+#define ERTC_ALA_HT                         ERTC_ALA_HT_Msk                         /*!< HT[1:0] (Hour tens) */
+#define ERTC_ALA_HT_0                       (0x1U << ERTC_ALA_HT_Pos)               /*!< 0x00100000 */
+#define ERTC_ALA_HT_1                       (0x2U << ERTC_ALA_HT_Pos)               /*!< 0x00200000 */
+
+#define ERTC_ALA_AMPM_Pos                   (22U)
+#define ERTC_ALA_AMPM_Msk                   (0x1U << ERTC_ALA_AMPM_Pos)             /*!< 0x00400000 */
+#define ERTC_ALA_AMPM                       ERTC_ALA_AMPM_Msk                       /*!< AM/PM */
+#define ERTC_ALA_MASK3_Pos                  (23U)
+#define ERTC_ALA_MASK3_Msk                  (0x1U << ERTC_ALA_MASK3_Pos)            /*!< 0x00800000 */
+#define ERTC_ALA_MASK3                      ERTC_ALA_MASK3_Msk                      /*!< Hour mask */
+
+#define ERTC_ALA_DU_Pos                     (24U)
+#define ERTC_ALA_DU_Msk                     (0xFU << ERTC_ALA_DU_Pos)               /*!< 0x0F000000 */
+#define ERTC_ALA_DU                         ERTC_ALA_DU_Msk                         /*!< DU[3:0] (Date/week day units) */
+#define ERTC_ALA_DU_0                       (0x1U << ERTC_ALA_DU_Pos)               /*!< 0x01000000 */
+#define ERTC_ALA_DU_1                       (0x2U << ERTC_ALA_DU_Pos)               /*!< 0x02000000 */
+#define ERTC_ALA_DU_2                       (0x4U << ERTC_ALA_DU_Pos)               /*!< 0x04000000 */
+#define ERTC_ALA_DU_3                       (0x8U << ERTC_ALA_DU_Pos)               /*!< 0x08000000 */
+
+#define ERTC_ALA_DT_Pos                     (28U)
+#define ERTC_ALA_DT_Msk                     (0x3U << ERTC_ALA_DT_Pos)               /*!< 0x30000000 */
+#define ERTC_ALA_DT                         ERTC_ALA_DT_Msk                         /*!< DT[1:0] (Date/week day tens) */
+#define ERTC_ALA_DT_0                       (0x1U << ERTC_ALA_DT_Pos)               /*!< 0x10000000 */
+#define ERTC_ALA_DT_1                       (0x2U << ERTC_ALA_DT_Pos)               /*!< 0x20000000 */
+
+#define ERTC_ALA_WKSEL_Pos                  (30U)
+#define ERTC_ALA_WKSEL_Msk                  (0x1U << ERTC_ALA_WKSEL_Pos)            /*!< 0x40000000 */
+#define ERTC_ALA_WKSEL                      ERTC_ALA_WKSEL_Msk                      /*!< Date/week day select */
+#define ERTC_ALA_MASK4_Pos                  (31U)
+#define ERTC_ALA_MASK4_Msk                  (0x1U << ERTC_ALA_MASK4_Pos)            /*!< 0x80000000 */
+#define ERTC_ALA_MASK4                      ERTC_ALA_MASK4_Msk                      /*!< Date/week day mask */
+
+/*******************  Bit definition for ERTC_ALB register  *******************/
+#define ERTC_ALB_SU_Pos                     (0U)
+#define ERTC_ALB_SU_Msk                     (0xFU << ERTC_ALB_SU_Pos)               /*!< 0x0000000F */
+#define ERTC_ALB_SU                         ERTC_ALB_SU_Msk                         /*!< SU[3:0] (Second units) */
+#define ERTC_ALB_SU_0                       (0x1U << ERTC_ALB_SU_Pos)               /*!< 0x00000001 */
+#define ERTC_ALB_SU_1                       (0x2U << ERTC_ALB_SU_Pos)               /*!< 0x00000002 */
+#define ERTC_ALB_SU_2                       (0x4U << ERTC_ALB_SU_Pos)               /*!< 0x00000004 */
+#define ERTC_ALB_SU_3                       (0x8U << ERTC_ALB_SU_Pos)               /*!< 0x00000008 */
+
+#define ERTC_ALB_ST_Pos                     (4U)
+#define ERTC_ALB_ST_Msk                     (0x7U << ERTC_ALB_ST_Pos)               /*!< 0x00000070 */
+#define ERTC_ALB_ST                         ERTC_ALB_ST_Msk                         /*!< ST[2:0] (Second tens) */
+#define ERTC_ALB_ST_0                       (0x1U << ERTC_ALB_ST_Pos)               /*!< 0x00000010 */
+#define ERTC_ALB_ST_1                       (0x2U << ERTC_ALB_ST_Pos)               /*!< 0x00000020 */
+#define ERTC_ALB_ST_2                       (0x4U << ERTC_ALB_ST_Pos)               /*!< 0x00000040 */
+
+#define ERTC_ALB_MASK1_Pos                  (7U)
+#define ERTC_ALB_MASK1_Msk                  (0x1U << ERTC_ALB_MASK1_Pos)            /*!< 0x00000080 */
+#define ERTC_ALB_MASK1                      ERTC_ALB_MASK1_Msk                      /*!< Second mask */
+
+#define ERTC_ALB_MU_Pos                     (8U)
+#define ERTC_ALB_MU_Msk                     (0xFU << ERTC_ALB_MU_Pos)               /*!< 0x00000F00 */
+#define ERTC_ALB_MU                         ERTC_ALB_MU_Msk                         /*!< MU[3:0] (Minute units) */
+#define ERTC_ALB_MU_0                       (0x1U << ERTC_ALB_MU_Pos)               /*!< 0x00000100 */
+#define ERTC_ALB_MU_1                       (0x2U << ERTC_ALB_MU_Pos)               /*!< 0x00000200 */
+#define ERTC_ALB_MU_2                       (0x4U << ERTC_ALB_MU_Pos)               /*!< 0x00000400 */
+#define ERTC_ALB_MU_3                       (0x8U << ERTC_ALB_MU_Pos)               /*!< 0x00000800 */
+
+#define ERTC_ALB_MT_Pos                     (12U)
+#define ERTC_ALB_MT_Msk                     (0x7U << ERTC_ALB_MT_Pos)               /*!< 0x00007000 */
+#define ERTC_ALB_MT                         ERTC_ALB_MT_Msk                         /*!< MT[2:0] (Minute tens) */
+#define ERTC_ALB_MT_0                       (0x1U << ERTC_ALB_MT_Pos)               /*!< 0x00001000 */
+#define ERTC_ALB_MT_1                       (0x2U << ERTC_ALB_MT_Pos)               /*!< 0x00002000 */
+#define ERTC_ALB_MT_2                       (0x4U << ERTC_ALB_MT_Pos)               /*!< 0x00004000 */
+
+#define ERTC_ALB_MASK2_Pos                  (15U)
+#define ERTC_ALB_MASK2_Msk                  (0x1U << ERTC_ALB_MASK2_Pos)            /*!< 0x00008000 */
+#define ERTC_ALB_MASK2                      ERTC_ALB_MASK2_Msk                      /*!< Minute mask */
+
+#define ERTC_ALB_HU_Pos                     (16U)
+#define ERTC_ALB_HU_Msk                     (0xFU << ERTC_ALB_HU_Pos)               /*!< 0x000F0000 */
+#define ERTC_ALB_HU                         ERTC_ALB_HU_Msk                         /*!< HU[3:0] (Hour units) */
+#define ERTC_ALB_HU_0                       (0x1U << ERTC_ALB_HU_Pos)               /*!< 0x00010000 */
+#define ERTC_ALB_HU_1                       (0x2U << ERTC_ALB_HU_Pos)               /*!< 0x00020000 */
+#define ERTC_ALB_HU_2                       (0x4U << ERTC_ALB_HU_Pos)               /*!< 0x00040000 */
+#define ERTC_ALB_HU_3                       (0x8U << ERTC_ALB_HU_Pos)               /*!< 0x00080000 */
+
+#define ERTC_ALB_HT_Pos                     (20U)
+#define ERTC_ALB_HT_Msk                     (0x3U << ERTC_ALB_HT_Pos)               /*!< 0x00300000 */
+#define ERTC_ALB_HT                         ERTC_ALB_HT_Msk                         /*!< HT[1:0] (Hour tens) */
+#define ERTC_ALB_HT_0                       (0x1U << ERTC_ALB_HT_Pos)               /*!< 0x00100000 */
+#define ERTC_ALB_HT_1                       (0x2U << ERTC_ALB_HT_Pos)               /*!< 0x00200000 */
+
+#define ERTC_ALB_AMPM_Pos                   (22U)
+#define ERTC_ALB_AMPM_Msk                   (0x1U << ERTC_ALB_AMPM_Pos)             /*!< 0x00400000 */
+#define ERTC_ALB_AMPM                       ERTC_ALB_AMPM_Msk                       /*!< AM/PM */
+#define ERTC_ALB_MASK3_Pos                  (23U)
+#define ERTC_ALB_MASK3_Msk                  (0x1U << ERTC_ALB_MASK3_Pos)            /*!< 0x00800000 */
+#define ERTC_ALB_MASK3                      ERTC_ALB_MASK3_Msk                      /*!< Hour mask */
+
+#define ERTC_ALB_DU_Pos                     (24U)
+#define ERTC_ALB_DU_Msk                     (0xFU << ERTC_ALB_DU_Pos)               /*!< 0x0F000000 */
+#define ERTC_ALB_DU                         ERTC_ALB_DU_Msk                         /*!< DU[3:0] (Date/week day units) */
+#define ERTC_ALB_DU_0                       (0x1U << ERTC_ALB_DU_Pos)               /*!< 0x01000000 */
+#define ERTC_ALB_DU_1                       (0x2U << ERTC_ALB_DU_Pos)               /*!< 0x02000000 */
+#define ERTC_ALB_DU_2                       (0x4U << ERTC_ALB_DU_Pos)               /*!< 0x04000000 */
+#define ERTC_ALB_DU_3                       (0x8U << ERTC_ALB_DU_Pos)               /*!< 0x08000000 */
+
+#define ERTC_ALB_DT_Pos                     (28U)
+#define ERTC_ALB_DT_Msk                     (0x3U << ERTC_ALB_DT_Pos)               /*!< 0x30000000 */
+#define ERTC_ALB_DT                         ERTC_ALB_DT_Msk                         /*!< DT[1:0] (Date/week day tens) */
+#define ERTC_ALB_DT_0                       (0x1U << ERTC_ALB_DT_Pos)               /*!< 0x10000000 */
+#define ERTC_ALB_DT_1                       (0x2U << ERTC_ALB_DT_Pos)               /*!< 0x20000000 */
+
+#define ERTC_ALB_WKSEL_Pos                  (30U)
+#define ERTC_ALB_WKSEL_Msk                  (0x1U << ERTC_ALB_WKSEL_Pos)            /*!< 0x40000000 */
+#define ERTC_ALB_WKSEL                      ERTC_ALB_WKSEL_Msk                      /*!< Date/week day select */
+#define ERTC_ALB_MASK4_Pos                  (31U)
+#define ERTC_ALB_MASK4_Msk                  (0x1U << ERTC_ALB_MASK4_Pos)            /*!< 0x80000000 */
+#define ERTC_ALB_MASK4                      ERTC_ALB_MASK4_Msk                      /*!< Date/week day mask */
+
+/*******************  Bit definition for ERTC_WP register  ********************/
+#define ERTC_WP_CMD_Pos                     (0U)
+#define ERTC_WP_CMD_Msk                     (0xFFU << ERTC_WP_CMD_Pos)              /*!< 0x000000FF */
+#define ERTC_WP_CMD                         ERTC_WP_CMD_Msk                         /*!< Command register */
+
+/*******************  Bit definition for ERTC_SBS register  *******************/
+#define ERTC_SBS_SBS_Pos                    (0U)
+#define ERTC_SBS_SBS_Msk                    (0xFFFFU << ERTC_SBS_SBS_Pos)           /*!< 0x0000FFFF */
+#define ERTC_SBS_SBS                        ERTC_SBS_SBS_Msk                        /*!< Sub-second value */
+
+/******************  Bit definition for ERTC_TADJ register  *******************/
+#define ERTC_TADJ_DECSBS_Pos                (0U)
+#define ERTC_TADJ_DECSBS_Msk                (0x7FFFU << ERTC_TADJ_DECSBS_Pos)       /*!< 0x00007FFF */
+#define ERTC_TADJ_DECSBS                    ERTC_TADJ_DECSBS_Msk                    /*!< Decrease sub-second value */
+#define ERTC_TADJ_ADD1S_Pos                 (31U)
+#define ERTC_TADJ_ADD1S_Msk                 (0x1U << ERTC_TADJ_ADD1S_Pos)           /*!< 0x80000000 */
+#define ERTC_TADJ_ADD1S                     ERTC_TADJ_ADD1S_Msk                     /*!< Add 1 second */
+
+/******************  Bit definition for ERTC_TSTM register  *******************/
+#define ERTC_TSTM_SU_Pos                    (0U)
+#define ERTC_TSTM_SU_Msk                    (0xFU << ERTC_TSTM_SU_Pos)              /*!< 0x0000000F */
+#define ERTC_TSTM_SU                        ERTC_TSTM_SU_Msk                        /*!< SU[3:0] (Second units) */
+#define ERTC_TSTM_SU_0                      (0x1U << ERTC_TSTM_SU_Pos)              /*!< 0x00000001 */
+#define ERTC_TSTM_SU_1                      (0x2U << ERTC_TSTM_SU_Pos)              /*!< 0x00000002 */
+#define ERTC_TSTM_SU_2                      (0x4U << ERTC_TSTM_SU_Pos)              /*!< 0x00000004 */
+#define ERTC_TSTM_SU_3                      (0x8U << ERTC_TSTM_SU_Pos)              /*!< 0x00000008 */
+
+#define ERTC_TSTM_ST_Pos                    (4U)
+#define ERTC_TSTM_ST_Msk                    (0x7U << ERTC_TSTM_ST_Pos)              /*!< 0x00000070 */
+#define ERTC_TSTM_ST                        ERTC_TSTM_ST_Msk                        /*!< ST[2:0] (Second tens) */
+#define ERTC_TSTM_ST_0                      (0x1U << ERTC_TSTM_ST_Pos)              /*!< 0x00000010 */
+#define ERTC_TSTM_ST_1                      (0x2U << ERTC_TSTM_ST_Pos)              /*!< 0x00000020 */
+#define ERTC_TSTM_ST_2                      (0x4U << ERTC_TSTM_ST_Pos)              /*!< 0x00000040 */
+
+#define ERTC_TSTM_MU_Pos                    (8U)
+#define ERTC_TSTM_MU_Msk                    (0xFU << ERTC_TSTM_MU_Pos)              /*!< 0x00000F00 */
+#define ERTC_TSTM_MU                        ERTC_TSTM_MU_Msk                        /*!< MU[3:0] (Minute units) */
+#define ERTC_TSTM_MU_0                      (0x1U << ERTC_TSTM_MU_Pos)              /*!< 0x00000100 */
+#define ERTC_TSTM_MU_1                      (0x2U << ERTC_TSTM_MU_Pos)              /*!< 0x00000200 */
+#define ERTC_TSTM_MU_2                      (0x4U << ERTC_TSTM_MU_Pos)              /*!< 0x00000400 */
+#define ERTC_TSTM_MU_3                      (0x8U << ERTC_TSTM_MU_Pos)              /*!< 0x00000800 */
+
+#define ERTC_TSTM_MT_Pos                    (12U)
+#define ERTC_TSTM_MT_Msk                    (0x7U << ERTC_TSTM_MT_Pos)              /*!< 0x00007000 */
+#define ERTC_TSTM_MT                        ERTC_TSTM_MT_Msk                        /*!< MT[2:0] (Minute tens) */
+#define ERTC_TSTM_MT_0                      (0x1U << ERTC_TSTM_MT_Pos)              /*!< 0x00001000 */
+#define ERTC_TSTM_MT_1                      (0x2U << ERTC_TSTM_MT_Pos)              /*!< 0x00002000 */
+#define ERTC_TSTM_MT_2                      (0x4U << ERTC_TSTM_MT_Pos)              /*!< 0x00004000 */
+
+#define ERTC_TSTM_HU_Pos                    (16U)
+#define ERTC_TSTM_HU_Msk                    (0xFU << ERTC_TSTM_HU_Pos)              /*!< 0x000F0000 */
+#define ERTC_TSTM_HU                        ERTC_TSTM_HU_Msk                        /*!< HU[3:0] (Hour units) */
+#define ERTC_TSTM_HU_0                      (0x1U << ERTC_TSTM_HU_Pos)              /*!< 0x00010000 */
+#define ERTC_TSTM_HU_1                      (0x2U << ERTC_TSTM_HU_Pos)              /*!< 0x00020000 */
+#define ERTC_TSTM_HU_2                      (0x4U << ERTC_TSTM_HU_Pos)              /*!< 0x00040000 */
+#define ERTC_TSTM_HU_3                      (0x8U << ERTC_TSTM_HU_Pos)              /*!< 0x00080000 */
+
+#define ERTC_TSTM_HT_Pos                    (20U)
+#define ERTC_TSTM_HT_Msk                    (0x3U << ERTC_TSTM_HT_Pos)              /*!< 0x00300000 */
+#define ERTC_TSTM_HT                        ERTC_TSTM_HT_Msk                        /*!< HT[1:0] (Hour tens) */
+#define ERTC_TSTM_HT_0                      (0x1U << ERTC_TSTM_HT_Pos)              /*!< 0x00100000 */
+#define ERTC_TSTM_HT_1                      (0x2U << ERTC_TSTM_HT_Pos)              /*!< 0x00200000 */
+
+#define ERTC_TSTM_AMPM_Pos                  (22U)
+#define ERTC_TSTM_AMPM_Msk                  (0x1U << ERTC_TSTM_AMPM_Pos)            /*!< 0x00400000 */
+#define ERTC_TSTM_AMPM                      ERTC_TSTM_AMPM_Msk                      /*!< AM/PM */
+
+/******************  Bit definition for ERTC_TSDT register  *******************/
+#define ERTC_TSDT_DU_Pos                    (0U)
+#define ERTC_TSDT_DU_Msk                    (0xFU << ERTC_TSDT_DU_Pos)              /*!< 0x0000000F */
+#define ERTC_TSDT_DU                        ERTC_TSDT_DU_Msk                        /*!< DU[3:0] (Date units) */
+#define ERTC_TSDT_DU_0                      (0x1U << ERTC_TSDT_DU_Pos)              /*!< 0x00000001 */
+#define ERTC_TSDT_DU_1                      (0x2U << ERTC_TSDT_DU_Pos)              /*!< 0x00000002 */
+#define ERTC_TSDT_DU_2                      (0x4U << ERTC_TSDT_DU_Pos)              /*!< 0x00000004 */
+#define ERTC_TSDT_DU_3                      (0x8U << ERTC_TSDT_DU_Pos)              /*!< 0x00000008 */
+
+#define ERTC_TSDT_DT_Pos                    (4U)
+#define ERTC_TSDT_DT_Msk                    (0x3U << ERTC_TSDT_DT_Pos)              /*!< 0x00000030 */
+#define ERTC_TSDT_DT                        ERTC_TSDT_DT_Msk                        /*!< DT[1:0] (Date tens) */
+#define ERTC_TSDT_DT_0                      (0x1U << ERTC_TSDT_DT_Pos)              /*!< 0x00000010 */
+#define ERTC_TSDT_DT_1                      (0x2U << ERTC_TSDT_DT_Pos)              /*!< 0x00000020 */
+
+#define ERTC_TSDT_MU_Pos                    (8U)
+#define ERTC_TSDT_MU_Msk                    (0xFU << ERTC_TSDT_MU_Pos)              /*!< 0x00000F00 */
+#define ERTC_TSDT_MU                        ERTC_TSDT_MU_Msk                        /*!< MU[3:0] (Month units) */
+#define ERTC_TSDT_MU_0                      (0x1U << ERTC_TSDT_MU_Pos)              /*!< 0x00000100 */
+#define ERTC_TSDT_MU_1                      (0x2U << ERTC_TSDT_MU_Pos)              /*!< 0x00000200 */
+#define ERTC_TSDT_MU_2                      (0x4U << ERTC_TSDT_MU_Pos)              /*!< 0x00000400 */
+#define ERTC_TSDT_MU_3                      (0x8U << ERTC_TSDT_MU_Pos)              /*!< 0x00000800 */
+
+#define ERTC_TSDT_MT_Pos                    (12U)
+#define ERTC_TSDT_MT_Msk                    (0x1U << ERTC_TSDT_MT_Pos)              /*!< 0x00001000 */
+#define ERTC_TSDT_MT                        ERTC_TSDT_MT_Msk                        /*!< Month tens */
+
+#define ERTC_TSDT_WK_Pos                    (13U)
+#define ERTC_TSDT_WK_Msk                    (0x7U << ERTC_TSDT_WK_Pos)              /*!< 0x0000E000 */
+#define ERTC_TSDT_WK                        ERTC_TSDT_WK_Msk                        /*!< WK[2:0] (Week day) */
+#define ERTC_TSDT_WK_0                      (0x1U << ERTC_TSDT_WK_Pos)              /*!< 0x00002000 */
+#define ERTC_TSDT_WK_1                      (0x2U << ERTC_TSDT_WK_Pos)              /*!< 0x00004000 */
+#define ERTC_TSDT_WK_2                      (0x4U << ERTC_TSDT_WK_Pos)              /*!< 0x00008000 */
+
+/******************  Bit definition for ERTC_TSSBS register  ******************/
+#define ERTC_TSSBS_SBS_Pos                  (0U)
+#define ERTC_TSSBS_SBS_Msk                  (0xFFFFU << ERTC_TSSBS_SBS_Pos)         /*!< 0x0000FFFF */
+#define ERTC_TSSBS_SBS                      ERTC_TSSBS_SBS_Msk                      /*!< Sub-second value */
+
+/******************  Bit definition for ERTC_SCAL register  *******************/
+#define ERTC_SCAL_DEC_Pos                   (0U)
+#define ERTC_SCAL_DEC_Msk                   (0x1FFU << ERTC_SCAL_DEC_Pos)           /*!< 0x000001FF */
+#define ERTC_SCAL_DEC                       ERTC_SCAL_DEC_Msk                       /*!< Decrease ERTC clock */
+#define ERTC_SCAL_CAL16_Pos                 (13U)
+#define ERTC_SCAL_CAL16_Msk                 (0x1U << ERTC_SCAL_CAL16_Pos)           /*!< 0x00002000 */
+#define ERTC_SCAL_CAL16                     ERTC_SCAL_CAL16_Msk                     /*!< 16 second calibration period */
+#define ERTC_SCAL_CAL8_Pos                  (14U)
+#define ERTC_SCAL_CAL8_Msk                  (0x1U << ERTC_SCAL_CAL8_Pos)            /*!< 0x00004000 */
+#define ERTC_SCAL_CAL8                      ERTC_SCAL_CAL8_Msk                      /*!< 8 second calibration period */
+#define ERTC_SCAL_ADD_Pos                   (15U)
+#define ERTC_SCAL_ADD_Msk                   (0x1U << ERTC_SCAL_ADD_Pos)             /*!< 0x00008000 */
+#define ERTC_SCAL_ADD                       ERTC_SCAL_ADD_Msk                       /*!< Add ERTC clock */
+
+/******************  Bit definition for ERTC_TAMP register  *******************/
+#define ERTC_TAMP_TP1EN_Pos                 (0U)
+#define ERTC_TAMP_TP1EN_Msk                 (0x1U << ERTC_TAMP_TP1EN_Pos)           /*!< 0x00000001 */
+#define ERTC_TAMP_TP1EN                     ERTC_TAMP_TP1EN_Msk                     /*!< Tamper detection 1 enable */
+#define ERTC_TAMP_TP1EDG_Pos                (1U)
+#define ERTC_TAMP_TP1EDG_Msk                (0x1U << ERTC_TAMP_TP1EDG_Pos)          /*!< 0x00000002 */
+#define ERTC_TAMP_TP1EDG                    ERTC_TAMP_TP1EDG_Msk                    /*!< Tamper detection 1 valid edge */
+#define ERTC_TAMP_TPIEN_Pos                 (2U)
+#define ERTC_TAMP_TPIEN_Msk                 (0x1U << ERTC_TAMP_TPIEN_Pos)           /*!< 0x00000004 */
+#define ERTC_TAMP_TPIEN                     ERTC_TAMP_TPIEN_Msk                     /*!< Tamper detection interrupt enable */
+#define ERTC_TAMP_TPTSEN_Pos                (7U)
+#define ERTC_TAMP_TPTSEN_Msk                (0x1U << ERTC_TAMP_TPTSEN_Pos)          /*!< 0x00000080 */
+#define ERTC_TAMP_TPTSEN                    ERTC_TAMP_TPTSEN_Msk                    /*!< Tamper detection timestamp enable */
+
+#define ERTC_TAMP_TPFREQ_Pos                (8U)
+#define ERTC_TAMP_TPFREQ_Msk                (0x7U << ERTC_TAMP_TPFREQ_Pos)          /*!< 0x00000700 */
+#define ERTC_TAMP_TPFREQ                    ERTC_TAMP_TPFREQ_Msk                    /*!< TPFREQ[2:0] (Tamper detection frequency) */
+#define ERTC_TAMP_TPFREQ_0                  (0x1U << ERTC_TAMP_TPFREQ_Pos)          /*!< 0x00000100 */
+#define ERTC_TAMP_TPFREQ_1                  (0x2U << ERTC_TAMP_TPFREQ_Pos)          /*!< 0x00000200 */
+#define ERTC_TAMP_TPFREQ_2                  (0x4U << ERTC_TAMP_TPFREQ_Pos)          /*!< 0x00000400 */
+
+#define ERTC_TAMP_TPFLT_Pos                 (11U)
+#define ERTC_TAMP_TPFLT_Msk                 (0x3U << ERTC_TAMP_TPFLT_Pos)           /*!< 0x00001800 */
+#define ERTC_TAMP_TPFLT                     ERTC_TAMP_TPFLT_Msk                     /*!< TPFLT[1:0] (Tamper detection filter time) */
+#define ERTC_TAMP_TPFLT_0                   (0x1U << ERTC_TAMP_TPFLT_Pos)           /*!< 0x00000800 */
+#define ERTC_TAMP_TPFLT_1                   (0x2U << ERTC_TAMP_TPFLT_Pos)           /*!< 0x00001000 */
+
+#define ERTC_TAMP_TPPR_Pos                  (13U)
+#define ERTC_TAMP_TPPR_Msk                  (0x3U << ERTC_TAMP_TPPR_Pos)            /*!< 0x00006000 */
+#define ERTC_TAMP_TPPR                      ERTC_TAMP_TPPR_Msk                      /*!< TPPR[1:0] (Tamper detection pre-charge time) */
+#define ERTC_TAMP_TPPR_0                    (0x1U << ERTC_TAMP_TPPR_Pos)            /*!< 0x00002000 */
+#define ERTC_TAMP_TPPR_1                    (0x2U << ERTC_TAMP_TPPR_Pos)            /*!< 0x00004000 */
+
+#define ERTC_TAMP_TPPU_Pos                  (15U)
+#define ERTC_TAMP_TPPU_Msk                  (0x1U << ERTC_TAMP_TPPU_Pos)            /*!< 0x00008000 */
+#define ERTC_TAMP_TPPU                      ERTC_TAMP_TPPU_Msk                      /*!< Tamper detection pull-up */
+#define ERTC_TAMP_OUTTYPE_Pos               (18U)
+#define ERTC_TAMP_OUTTYPE_Msk               (0x1U << ERTC_TAMP_OUTTYPE_Pos)         /*!< 0x00040000 */
+#define ERTC_TAMP_OUTTYPE                   ERTC_TAMP_OUTTYPE_Msk                   /*!< Output type */
+
+/*****************  Bit definition for ERTC_ALASBS register  ******************/
+#define ERTC_ALASBS_SBS_Pos                 (0U)
+#define ERTC_ALASBS_SBS_Msk                 (0x7FFFU << ERTC_ALASBS_SBS_Pos)        /*!< 0x00007FFF */
+#define ERTC_ALASBS_SBS                     ERTC_ALASBS_SBS_Msk                     /*!< Sub-second value */
+
+#define ERTC_ALASBS_SBSMSK_Pos              (24U)
+#define ERTC_ALASBS_SBSMSK_Msk              (0xFU << ERTC_ALASBS_SBSMSK_Pos)        /*!< 0x0F000000 */
+#define ERTC_ALASBS_SBSMSK                  ERTC_ALASBS_SBSMSK_Msk                  /*!< Sub-second mask */
+#define ERTC_ALASBS_SBSMSK_0                (0x1U << ERTC_ALASBS_SBSMSK_Pos)        /*!< 0x01000000 */
+#define ERTC_ALASBS_SBSMSK_1                (0x2U << ERTC_ALASBS_SBSMSK_Pos)        /*!< 0x02000000 */
+#define ERTC_ALASBS_SBSMSK_2                (0x4U << ERTC_ALASBS_SBSMSK_Pos)        /*!< 0x04000000 */
+#define ERTC_ALASBS_SBSMSK_3                (0x8U << ERTC_ALASBS_SBSMSK_Pos)        /*!< 0x08000000 */
+
+/*****************  Bit definition for ERTC_ALBSBS register  ******************/
+#define ERTC_ALBSBS_SBS_Pos                 (0U)
+#define ERTC_ALBSBS_SBS_Msk                 (0x7FFFU << ERTC_ALBSBS_SBS_Pos)        /*!< 0x00007FFF */
+#define ERTC_ALBSBS_SBS                     ERTC_ALBSBS_SBS_Msk                     /*!< Sub-second value */
+
+#define ERTC_ALBSBS_SBSMSK_Pos              (24U)
+#define ERTC_ALBSBS_SBSMSK_Msk              (0xFU << ERTC_ALBSBS_SBSMSK_Pos)        /*!< 0x0F000000 */
+#define ERTC_ALBSBS_SBSMSK                  ERTC_ALBSBS_SBSMSK_Msk                  /*!< Sub-second mask */
+#define ERTC_ALBSBS_SBSMSK_0                (0x1U << ERTC_ALBSBS_SBSMSK_Pos)        /*!< 0x01000000 */
+#define ERTC_ALBSBS_SBSMSK_1                (0x2U << ERTC_ALBSBS_SBSMSK_Pos)        /*!< 0x02000000 */
+#define ERTC_ALBSBS_SBSMSK_2                (0x4U << ERTC_ALBSBS_SBSMSK_Pos)        /*!< 0x04000000 */
+#define ERTC_ALBSBS_SBSMSK_3                (0x8U << ERTC_ALBSBS_SBSMSK_Pos)        /*!< 0x08000000 */
+
+/******************  Bit definition for ERTC_BPR1 register  *******************/
+#define ERTC_BPR1_DT_Pos                    (0U)
+#define ERTC_BPR1_DT_Msk                    (0xFFFFFFFFU << ERTC_BPR1_DT_Pos)       /*!< 0xFFFFFFFF */
+#define ERTC_BPR1_DT                        ERTC_BPR1_DT_Msk                        /*!< Battery powered domain data 1 */
+
+/******************  Bit definition for ERTC_BPR2 register  *******************/
+#define ERTC_BPR2_DT_Pos                    (0U)
+#define ERTC_BPR2_DT_Msk                    (0xFFFFFFFFU << ERTC_BPR2_DT_Pos)       /*!< 0xFFFFFFFF */
+#define ERTC_BPR2_DT                        ERTC_BPR2_DT_Msk                        /*!< Battery powered domain data 2 */
+
+/******************  Bit definition for ERTC_BPR3 register  *******************/
+#define ERTC_BPR3_DT_Pos                    (0U)
+#define ERTC_BPR3_DT_Msk                    (0xFFFFFFFFU << ERTC_BPR3_DT_Pos)       /*!< 0xFFFFFFFF */
+#define ERTC_BPR3_DT                        ERTC_BPR3_DT_Msk                        /*!< Battery powered domain data 3 */
+
+/******************  Bit definition for ERTC_BPR4 register  *******************/
+#define ERTC_BPR4_DT_Pos                    (0U)
+#define ERTC_BPR4_DT_Msk                    (0xFFFFFFFFU << ERTC_BPR4_DT_Pos)       /*!< 0xFFFFFFFF */
+#define ERTC_BPR4_DT                        ERTC_BPR4_DT_Msk                        /*!< Battery powered domain data 4 */
+
+/******************  Bit definition for ERTC_BPR5 register  *******************/
+#define ERTC_BPR5_DT_Pos                    (0U)
+#define ERTC_BPR5_DT_Msk                    (0xFFFFFFFFU << ERTC_BPR5_DT_Pos)       /*!< 0xFFFFFFFF */
+#define ERTC_BPR5_DT                        ERTC_BPR5_DT_Msk                        /*!< Battery powered domain data 5 */
+
+/******************  Bit definition for ERTC_BPR6 register  *******************/
+#define ERTC_BPR6_DT_Pos                    (0U)
+#define ERTC_BPR6_DT_Msk                    (0xFFFFFFFFU << ERTC_BPR6_DT_Pos)       /*!< 0xFFFFFFFF */
+#define ERTC_BPR6_DT                        ERTC_BPR6_DT_Msk                        /*!< Battery powered domain data 6 */
+
+/******************  Bit definition for ERTC_BPR7 register  *******************/
+#define ERTC_BPR7_DT_Pos                    (0U)
+#define ERTC_BPR7_DT_Msk                    (0xFFFFFFFFU << ERTC_BPR7_DT_Pos)       /*!< 0xFFFFFFFF */
+#define ERTC_BPR7_DT                        ERTC_BPR7_DT_Msk                        /*!< Battery powered domain data 7 */
+
+/******************  Bit definition for ERTC_BPR8 register  *******************/
+#define ERTC_BPR8_DT_Pos                    (0U)
+#define ERTC_BPR8_DT_Msk                    (0xFFFFFFFFU << ERTC_BPR8_DT_Pos)       /*!< 0xFFFFFFFF */
+#define ERTC_BPR8_DT                        ERTC_BPR8_DT_Msk                        /*!< Battery powered domain data 8 */
+
+/******************  Bit definition for ERTC_BPR9 register  *******************/
+#define ERTC_BPR9_DT_Pos                    (0U)
+#define ERTC_BPR9_DT_Msk                    (0xFFFFFFFFU << ERTC_BPR9_DT_Pos)       /*!< 0xFFFFFFFF */
+#define ERTC_BPR9_DT                        ERTC_BPR9_DT_Msk                        /*!< Battery powered domain data 9 */
+
+/******************  Bit definition for ERTC_BPR10 register  ******************/
+#define ERTC_BPR10_DT_Pos                   (0U)
+#define ERTC_BPR10_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR10_DT_Pos)      /*!< 0xFFFFFFFF */
+#define ERTC_BPR10_DT                       ERTC_BPR10_DT_Msk                       /*!< Battery powered domain data 10 */
+
+/******************  Bit definition for ERTC_BPR11 register  ******************/
+#define ERTC_BPR11_DT_Pos                   (0U)
+#define ERTC_BPR11_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR11_DT_Pos)      /*!< 0xFFFFFFFF */
+#define ERTC_BPR11_DT                       ERTC_BPR11_DT_Msk                       /*!< Battery powered domain data 11 */
+
+/******************  Bit definition for ERTC_BPR12 register  ******************/
+#define ERTC_BPR12_DT_Pos                   (0U)
+#define ERTC_BPR12_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR12_DT_Pos)      /*!< 0xFFFFFFFF */
+#define ERTC_BPR12_DT                       ERTC_BPR12_DT_Msk                       /*!< Battery powered domain data 12 */
+
+/******************  Bit definition for ERTC_BPR13 register  ******************/
+#define ERTC_BPR13_DT_Pos                   (0U)
+#define ERTC_BPR13_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR13_DT_Pos)      /*!< 0xFFFFFFFF */
+#define ERTC_BPR13_DT                       ERTC_BPR13_DT_Msk                       /*!< Battery powered domain data 13 */
+
+/******************  Bit definition for ERTC_BPR14 register  ******************/
+#define ERTC_BPR14_DT_Pos                   (0U)
+#define ERTC_BPR14_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR14_DT_Pos)      /*!< 0xFFFFFFFF */
+#define ERTC_BPR14_DT                       ERTC_BPR14_DT_Msk                       /*!< Battery powered domain data 14 */
+
+/******************  Bit definition for ERTC_BPR15 register  ******************/
+#define ERTC_BPR15_DT_Pos                   (0U)
+#define ERTC_BPR15_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR15_DT_Pos)      /*!< 0xFFFFFFFF */
+#define ERTC_BPR15_DT                       ERTC_BPR15_DT_Msk                       /*!< Battery powered domain data 15 */
+
+/******************  Bit definition for ERTC_BPR16 register  ******************/
+#define ERTC_BPR16_DT_Pos                   (0U)
+#define ERTC_BPR16_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR16_DT_Pos)      /*!< 0xFFFFFFFF */
+#define ERTC_BPR16_DT                       ERTC_BPR16_DT_Msk                       /*!< Battery powered domain data 16 */
+
+/******************  Bit definition for ERTC_BPR17 register  ******************/
+#define ERTC_BPR17_DT_Pos                   (0U)
+#define ERTC_BPR17_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR17_DT_Pos)      /*!< 0xFFFFFFFF */
+#define ERTC_BPR17_DT                       ERTC_BPR17_DT_Msk                       /*!< Battery powered domain data 17 */
+
+/******************  Bit definition for ERTC_BPR18 register  ******************/
+#define ERTC_BPR18_DT_Pos                   (0U)
+#define ERTC_BPR18_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR18_DT_Pos)      /*!< 0xFFFFFFFF */
+#define ERTC_BPR18_DT                       ERTC_BPR18_DT_Msk                       /*!< Battery powered domain data 18 */
+
+/******************  Bit definition for ERTC_BPR19 register  ******************/
+#define ERTC_BPR19_DT_Pos                   (0U)
+#define ERTC_BPR19_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR19_DT_Pos)      /*!< 0xFFFFFFFF */
+#define ERTC_BPR19_DT                       ERTC_BPR19_DT_Msk                       /*!< Battery powered domain data 19 */
+
+/******************  Bit definition for ERTC_BPR20 register  ******************/
+#define ERTC_BPR20_DT_Pos                   (0U)
+#define ERTC_BPR20_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR20_DT_Pos)      /*!< 0xFFFFFFFF */
+#define ERTC_BPR20_DT                       ERTC_BPR20_DT_Msk                       /*!< Battery powered domain data 20 */
 
 /******************************************************************************/
 /*                                                                            */
@@ -10270,42 +10311,51 @@ typedef struct
 
 /********************* USART Instances : Synchronous mode *********************/
 #define IS_USART_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                     ((INSTANCE) == USART2))
+                                     ((INSTANCE) == USART2) || \
+                                     ((INSTANCE) == USART3))
 
 /********************* UART Instances : Asynchronous mode *********************/
 #define IS_UART_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                    ((INSTANCE) == USART2))
+                                    ((INSTANCE) == USART2) || \
+                                    ((INSTANCE) == USART3))
 
 /********************* UART Instances : Half-Duplex mode **********************/
 #define IS_UART_HALFDUPLEX_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                               ((INSTANCE) == USART2))
+                                               ((INSTANCE) == USART2) || \
+                                               ((INSTANCE) == USART3))
 
 /************************* UART Instances : LIN mode **************************/
 #define IS_UART_LIN_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                        ((INSTANCE) == USART2))
+                                        ((INSTANCE) == USART2) || \
+                                        ((INSTANCE) == USART3))
 
 /******************* UART Instances : Hardware Flow control *******************/
 #define IS_UART_HWFLOW_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                           ((INSTANCE) == USART2))
+                                           ((INSTANCE) == USART2) || \
+                                           ((INSTANCE) == USART3))
 
 /********************* UART Instances : Smard card mode ***********************/
 #define IS_SMARTCARD_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                         ((INSTANCE) == USART2))
+                                         ((INSTANCE) == USART2) || \
+                                         ((INSTANCE) == USART3))
 
 /************************* UART Instances : IRDA mode *************************/
 #define IS_IRDA_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                    ((INSTANCE) == USART2))
+                                    ((INSTANCE) == USART2) || \
+                                    ((INSTANCE) == USART3))
 
 /******************* UART Instances : Multi-Processor mode ********************/
 #define IS_UART_MULTIPROCESSOR_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                                   ((INSTANCE) == USART2))
+                                                   ((INSTANCE) == USART2) || \
+                                                   ((INSTANCE) == USART3))
 
 /******************** UART Instances : DMA mode available *********************/
 #define IS_UART_DMA_INSTANCE(INSTANCE) (((INSTANCE) == USART1) || \
-                                        ((INSTANCE) == USART2))
+                                        ((INSTANCE) == USART2) || \
+                                        ((INSTANCE) == USART3))
 
-/******************************* RTC Instances ********************************/
-#define IS_RTC_ALL_INSTANCE(INSTANCE)  ((INSTANCE) == RTC)
+/******************************* ERTC Instances *******************************/
+#define IS_ERTC_ALL_INSTANCE(INSTANCE)  ((INSTANCE) == ERTC)
 
 /******************************* WWDT Instances *******************************/
 #define IS_WWDT_ALL_INSTANCE(INSTANCE)  ((INSTANCE) == WWDT)
@@ -10323,6 +10373,6 @@ typedef struct
 }
 #endif /* __cplusplus */
 
-#endif /* __AT32F415Kx_H */
+#endif /* __AT32F415Cx_H */
 
 /*********************** (C) COPYRIGHT Artery Technologies *****END OF FILE****/

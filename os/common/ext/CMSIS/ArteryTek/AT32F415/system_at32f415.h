@@ -1,8 +1,8 @@
 /**
   **************************************************************************
-  * @file    system_at32f41x.h
+  * @file    system_at32f415.h
   * @author  Artery Technology & HorrorTroll
-  * @brief   CMSIS AT32F41x system header file
+  * @brief   CMSIS AT32F415 system header file
   *
   **************************************************************************
   *                       Copyright notice & Disclaimer
@@ -28,7 +28,7 @@
   * @{
   */
 
-/** @addtogroup AT32F41x_system
+/** @addtogroup AT32F415_system
   * @{
   */
 
@@ -36,18 +36,18 @@
   * @brief Define to prevent recursive inclusion
   */
 
-#ifndef __SYSTEM_AT32F41X_H
-#define __SYSTEM_AT32F41X_H
+#ifndef __SYSTEM_AT32F415_H
+#define __SYSTEM_AT32F415_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/** @addtogroup AT32F41x_System_Includes
+/** @addtogroup AT32F415_System_Includes
   * @{
   */
 
-/** @defgroup AT32F41x_System_Clock_Stable_Definition
+/** @defgroup AT32F415_System_Clock_Stable_Definition
   * @{
   */
 
@@ -58,7 +58,7 @@ extern "C" {
   * @}
   */
 
-/** @defgroup AT32F41x_System_Exported_Variables
+/** @defgroup AT32F415_System_Exported_Variables
   * @{
   */
 
@@ -68,7 +68,7 @@ extern uint32_t SystemCoreClock;          /*!< System Clock Frequency (Core Cloc
   * @}
   */
 
-/** @addtogroup AT32F40xx_System_Exported_Constants
+/** @addtogroup AT32F415_System_Exported_Constants
   * @{
   */
 
@@ -76,7 +76,7 @@ extern uint32_t SystemCoreClock;          /*!< System Clock Frequency (Core Cloc
   * @}
   */
 
-/** @addtogroup AT32F40xx_System_Exported_Macros
+/** @addtogroup AT32F415_System_Exported_Macros
   * @{
   */
 
@@ -84,7 +84,7 @@ extern uint32_t SystemCoreClock;          /*!< System Clock Frequency (Core Cloc
   * @}
   */
 
-/** @defgroup AT32F41x_System_Exported_Functions
+/** @defgroup AT32F415_System_Exported_Functions
   * @{
   */
 
@@ -99,7 +99,7 @@ extern void SystemCoreClockUpdate(void);
 }
 #endif
 
-#endif /*__SYSTEM_AT32F41X_H */
+#endif /*__SYSTEM_AT32F415_H */
 
 /**
   * @}

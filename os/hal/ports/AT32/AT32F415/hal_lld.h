@@ -17,26 +17,78 @@
 */
 
 /**
- * @defgroup AT32F415_HAL AT32F415 HAL Support
- * @details HAL support for AT32 Value Line MD and HD sub-families.
+ * @file    AT32F415/hal_lld.h
+ * @brief   AT32F415 HAL subsystem low level driver header.
+ * @pre     This module requires the following macros to be defined in the
+ *          @p board.h file:
+ *          - AT32_LEXTCLK.
+ *          - AT32_LEXT_BYPASS (optionally).
+ *          - AT32_HEXTCLK.
+ *          - AT32_HEXT_BYPASS (optionally).
+ *          .
+ *          One of the following macros must also be defined:
+ *          - AT32F415KB for K Value Medium Density devices.
+ *          - AT32F415CB for C Value Medium Density devices.
+ *          - AT32F415RB for R Value Medium Density devices.
+ *          - AT32F415KC for K Value High Density devices.
+ *          - AT32F415CC for C Value High Density devices.
+ *          - AT32F415RC for R Value High Density devices.
+ *          .
  *
- * @ingroup HAL
- */
-
-/**
- * @file    AT32F41x/hal_lld_f415.h
- * @brief   AT32F415 Value Line HAL subsystem low level driver header.
- *
- * @addtogroup AT32F415_HAL
+ * @addtogroup HAL
  * @{
  */
 
-#ifndef _HAL_LLD_F415_H_
-#define _HAL_LLD_F415_H_
+#ifndef _HAL_LLD_H_
+#define _HAL_LLD_H_
+
+#include "at32_registry.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
+
+/**
+ * @brief   Requires use of SPIv2 driver model.
+ */
+#define HAL_LLD_SELECT_SPI_V2    TRUE
+
+/**
+ * @name    Platform identification
+ * @{
+ */
+#if defined(__DOXYGEN__)
+#define PLATFORM_NAME            "AT32F415"
+
+#elif defined(AT32F415K_MD)
+#define PLATFORM_NAME            "AT32F415K Value Line Medium Density"
+
+#elif defined(AT32F415K_HD)
+#define PLATFORM_NAME            "AT32F415K Value Line High Density"
+
+#elif defined(AT32F415C_MD)
+#define PLATFORM_NAME            "AT32F415C Value Line Medium Density"
+
+#elif defined(AT32F415C_HD)
+#define PLATFORM_NAME            "AT32F415C Value Line High Density"
+
+#elif defined(AT32F415R_MD)
+#define PLATFORM_NAME            "AT32F415R Value Line Medium Density"
+
+#elif defined(AT32F415R_HD)
+#define PLATFORM_NAME            "AT32F415R Value Line High Density"
+
+#else
+#error "unsupported or unrecognized AT32F415 member"
+#endif
+
+/**
+ * @brief   Sub-family identifier.
+ */
+#if !defined(AT32F415) || defined(__DOXYGEN__)
+#define AT32F415
+#endif
+/** @} */
 
 /**
  * @name    Absolute Maximum Ratings
@@ -115,6 +167,28 @@
 /** @} */
 
 /**
+ * @name    Internal clock sources
+ * @{
+ */
+#define AT32_HICKCLK             48000000                /**< High speed internal clock.        */
+#define AT32_LICKCLK             40000                   /**< Low speed internal clock.         */
+/** @} */
+
+/**
+ * @name    PWC_CTRL register bits definitions
+ * @{
+ */
+#define AT32_PVMSEL_MASK         (7 << 5)                /**< PVMSEL bits mask.                 */
+#define AT32_PVMSEL_LEV1         (1 << 5)                /**< PVM level 1.                      */
+#define AT32_PVMSEL_LEV2         (2 << 5)                /**< PVM level 2.                      */
+#define AT32_PVMSEL_LEV3         (3 << 5)                /**< PVM level 3.                      */
+#define AT32_PVMSEL_LEV4         (4 << 5)                /**< PVM level 4.                      */
+#define AT32_PVMSEL_LEV5         (5 << 5)                /**< PVM level 5.                      */
+#define AT32_PVMSEL_LEV6         (6 << 5)                /**< PVM level 6.                      */
+#define AT32_PVMSEL_LEV7         (7 << 5)                /**< PVM level 7.                      */
+/** @} */
+
+/**
  * @name    CRM_CFG register bits definitions
  * @{
  */
@@ -183,12 +257,12 @@
  * @name    CRM_BPDC register bits definitions
  * @{
  */
-#define AT32_RTCSEL_MASK         (3 << 8)                /**< RTC clock source mask.            */
-#define AT32_RTCSEL_NOCLOCK      (0 << 8)                /**< No clock.                         */
-#define AT32_RTCSEL_LEXT         (1 << 8)                /**< LEXT used as RTC clock.           */
-#define AT32_RTCSEL_LICK         (2 << 8)                /**< LICK used as RTC clock.           */
-#define AT32_RTCSEL_HEXTDIV      (3 << 8)                /**< HEXT divided by 128 used as
-                                                              RTC clock.                        */
+#define AT32_ERTCSEL_MASK        (3 << 8)                /**< ERTC clock source mask.           */
+#define AT32_ERTCSEL_NOCLOCK     (0 << 8)                /**< No clock.                         */
+#define AT32_ERTCSEL_LEXT        (1 << 8)                /**< LEXT used as ERTC clock.          */
+#define AT32_ERTCSEL_LICK        (2 << 8)                /**< LICK used as ERTC clock.          */
+#define AT32_ERTCSEL_HEXTDIV     (3 << 8)                /**< HEXT divided by 128 used as
+                                                              ERTC clock.                       */
 /** @} */
 
 /**
@@ -220,6 +294,10 @@
 /** @} */
 
 /*===========================================================================*/
+/* Platform capabilities.                                                    */
+/*===========================================================================*/
+
+/*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 
@@ -227,6 +305,54 @@
  * @name    Configuration options
  * @{
  */
+/**
+ * @brief   Disables the PWC/CRM initialization in the HAL.
+ */
+#if !defined(AT32_NO_INIT) || defined(__DOXYGEN__)
+#define AT32_NO_INIT                FALSE
+#endif
+
+/**
+ * @brief   Enables or disables the power voltage monitoring.
+ */
+#if !defined(AT32_PVM_ENABLE) || defined(__DOXYGEN__)
+#define AT32_PVM_ENABLE             FALSE
+#endif
+
+/**
+ * @brief   Sets voltage level for power voltage monitoring.
+ */
+#if !defined(AT32_PVMSEL) || defined(__DOXYGEN__)
+#define AT32_PVMSEL                 AT32_PVMSEL_LEV1
+#endif
+
+/**
+ * @brief   Enables or disables the HICK clock source.
+ */
+#if !defined(AT32_HICK_ENABLED) || defined(__DOXYGEN__)
+#define AT32_HICK_ENABLED           TRUE
+#endif
+
+/**
+ * @brief   Enables or disables the LICK clock source.
+ */
+#if !defined(AT32_LICK_ENABLED) || defined(__DOXYGEN__)
+#define AT32_LICK_ENABLED           FALSE
+#endif
+
+/**
+ * @brief   Enables or disables the HEXT clock source.
+ */
+#if !defined(AT32_HEXT_ENABLED) || defined(__DOXYGEN__)
+#define AT32_HEXT_ENABLED           TRUE
+#endif
+
+/**
+ * @brief   Enables or disables the LEXT clock source.
+ */
+#if !defined(AT32_LEXT_ENABLED) || defined(__DOXYGEN__)
+#define AT32_LEXT_ENABLED           FALSE
+#endif
 
 /**
  * @brief   Main clock source selection.
@@ -360,10 +486,10 @@
 #endif
 
 /**
- * @brief   RTC clock source.
+ * @brief   ERTC clock source.
  */
-#if !defined(AT32_RTCSEL) || defined(__DOXYGEN__)
-#define AT32_RTCSEL                 AT32_RTCSEL_LICK
+#if !defined(AT32_ERTCSEL) || defined(__DOXYGEN__)
+#define AT32_ERTCSEL                AT32_ERTCSEL_LICK
 #endif
 /** @} */
 
@@ -374,8 +500,8 @@
 /*
  * Configuration-related checks.
  */
-#if !defined(AT32F41x_MCUCONF)
-#error "Using a wrong mcuconf.h file, AT32F41x_MCUCONF not defined"
+#if !defined(AT32F415_MCUCONF)
+#error "Using a wrong mcuconf.h file, AT32F415_MCUCONF not defined"
 #endif
 
 /*
@@ -429,8 +555,8 @@
 #error "HEXT not enabled, required by AT32_CLKOUT_SEL"
 #endif
 
-#if (AT32_RTCSEL == AT32_RTCSEL_HEXTDIV)
-#error "HEXT not enabled, required by AT32_RTCSEL"
+#if (AT32_ERTCSEL == AT32_ERTCSEL_HEXTDIV)
+#error "HEXT not enabled, required by AT32_ERTCSEL"
 #endif
 #endif /* !AT32_HEXT_ENABLED */
 
@@ -444,8 +570,8 @@
 #error "LICK not enabled, required by AT32_CLKOUT_SEL"
 #endif
 
-#if HAL_USE_RTC && (AT32_RTCSEL == AT32_RTCSEL_LICK)
-#error "LICK not enabled, required by AT32_RTCSEL"
+#if HAL_USE_RTC && (AT32_ERTCSEL == AT32_ERTCSEL_LICK)
+#error "LICK not enabled, required by AT32_ERTCSEL"
 #endif
 #endif /* !AT32_LICK_ENABLED */
 
@@ -468,8 +594,8 @@
 #error "LEXT not enabled, required by AT32_CLKOUT_SEL"
 #endif
 
-#if AT32_RTCSEL == AT32_RTCSEL_LEXT
-#error "LEXT not enabled, required by AT32_RTCSEL"
+#if AT32_ERTCSEL == AT32_ERTCSEL_LEXT
+#error "LEXT not enabled, required by AT32_ERTCSEL"
 #endif
 
 #endif /* !AT32_LEXT_ENABLED */
@@ -704,18 +830,18 @@
 #endif
 
 /**
- * @brief   RTC clock.
+ * @brief   ERTC clock.
  */
-#if (AT32_RTCSEL == AT32_RTCSEL_LEXT) || defined(__DOXYGEN__)
-#define AT32_RTCCLK                 AT32_LEXTCLK
-#elif AT32_RTCSEL == AT32_RTCSEL_LICK
-#define AT32_RTCCLK                 AT32_LICKCLK
-#elif AT32_RTCSEL == AT32_RTCSEL_HEXTDIV
-#define AT32_RTCCLK                 (AT32_HEXTCLK / 128)
-#elif AT32_RTCSEL == AT32_RTCSEL_NOCLOCK
-#define AT32_RTCCLK                 0
+#if (AT32_ERTCSEL == AT32_ERTCSEL_LEXT) || defined(__DOXYGEN__)
+#define AT32_ERTCCLK                AT32_LEXTCLK
+#elif AT32_ERTCSEL == AT32_ERTCSEL_LICK
+#define AT32_ERTCCLK                AT32_LICKCLK
+#elif AT32_ERTCSEL == AT32_ERTCSEL_HEXTDIV
+#define AT32_ERTCCLK                (AT32_HEXTCLK / 128)
+#elif AT32_ERTCSEL == AT32_ERTCSEL_NOCLOCK
+#define AT32_ERTCCLK                0
 #else
-#error "invalid source selected for RTC clock"
+#error "invalid source selected for ERTC clock"
 #endif
 
 /**
@@ -796,6 +922,36 @@
 #define AT32_FLASHBITS             0x00000014
 #endif
 
-#endif /* _HAL_LLD_F415_H_ */
+/*===========================================================================*/
+/* Driver data structures and types.                                         */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver macros.                                                            */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* External declarations.                                                    */
+/*===========================================================================*/
+
+/* Various helpers.*/
+#include "nvic.h"
+#include "cache.h"
+#include "mpu_v7m.h"
+#include "at32_isr.h"
+#include "at32_dma.h"
+#include "at32_crm.h"
+#include "at32_tmr.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+  void hal_lld_init(void);
+  void at32_clock_init(void);
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _HAL_LLD_H_ */
 
 /** @} */

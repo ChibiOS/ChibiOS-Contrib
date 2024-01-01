@@ -17,10 +17,10 @@
 */
 
 /**
- * @file    AT32F41x/at32_dmamux.h
- * @brief   AT32F41x DMAMUX handler header.
+ * @file    AT32F415/at32_dmamux.h
+ * @brief   AT32F415 DMAMUX handler header.
  *
- * @addtogroup AT32F41x_DMAMUX
+ * @addtogroup AT32F415_DMAMUX
  * @{
  */
 

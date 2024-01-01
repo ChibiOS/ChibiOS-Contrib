@@ -17,10 +17,10 @@
 */
 
 /**
- * @file    AT32F41x/at32_isr.c
- * @brief   AT32F41x ISR handler code.
+ * @file    AT32F415/at32_isr.c
+ * @brief   AT32F415 ISR handler code.
  *
- * @addtogroup AT32F41x_ISR
+ * @addtogroup AT32F415_ISR
  * @{
  */
 
@@ -60,7 +60,7 @@
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(Vector58) {
+OSAL_IRQ_HANDLER(AT32_EXINT0_HANDLER) {
   uint32_t intsts;
 
   OSAL_IRQ_PROLOGUE();
@@ -81,7 +81,7 @@ OSAL_IRQ_HANDLER(Vector58) {
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(Vector5C) {
+OSAL_IRQ_HANDLER(AT32_EXINT1_HANDLER) {
   uint32_t intsts;
 
   OSAL_IRQ_PROLOGUE();
@@ -102,7 +102,7 @@ OSAL_IRQ_HANDLER(Vector5C) {
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(Vector60) {
+OSAL_IRQ_HANDLER(AT32_EXINT2_HANDLER) {
   uint32_t intsts;
 
   OSAL_IRQ_PROLOGUE();
@@ -123,7 +123,7 @@ OSAL_IRQ_HANDLER(Vector60) {
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(Vector64) {
+OSAL_IRQ_HANDLER(AT32_EXINT3_HANDLER) {
   uint32_t intsts;
 
   OSAL_IRQ_PROLOGUE();
@@ -144,7 +144,7 @@ OSAL_IRQ_HANDLER(Vector64) {
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(Vector68) {
+OSAL_IRQ_HANDLER(AT32_EXINT4_HANDLER) {
   uint32_t intsts;
 
   OSAL_IRQ_PROLOGUE();
@@ -165,7 +165,7 @@ OSAL_IRQ_HANDLER(Vector68) {
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(Vector9C) {
+OSAL_IRQ_HANDLER(AT32_EXINT5_9_HANDLER) {
   uint32_t intsts;
 
   OSAL_IRQ_PROLOGUE();
@@ -191,7 +191,7 @@ OSAL_IRQ_HANDLER(Vector9C) {
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(VectorE0) {
+OSAL_IRQ_HANDLER(AT32_EXINT10_15_HANDLER) {
   uint32_t intsts;
 
   OSAL_IRQ_PROLOGUE();
@@ -212,6 +212,153 @@ OSAL_IRQ_HANDLER(VectorE0) {
 }
 #endif
 
+#if !defined(AT32_DISABLE_EXINT16_HANDLER)
+/**
+ * @brief   EXINT[16] interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_EXINT16_HANDLER) {
+  uint32_t intsts;
+
+  OSAL_IRQ_PROLOGUE();
+
+  intsts = EXINT->INTSTS;
+  intsts &= EXINT->INTEN & (1U << 16);
+  EXINT->INTSTS = intsts;
+
+  exint_serve_irq(intsts, 16);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if !defined(AT32_DISABLE_EXINT17_HANDLER)
+/**
+ * @brief   EXINT[17] interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_EXINT17_HANDLER) {
+  uint32_t intsts;
+
+  OSAL_IRQ_PROLOGUE();
+
+  intsts = EXINT->INTSTS;
+  intsts &= EXINT->INTEN & (1U << 17);
+  EXINT->INTSTS = intsts;
+
+  exint_serve_irq(intsts, 17);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if !defined(AT32_DISABLE_EXINT18_HANDLER)
+/**
+ * @brief   EXINT[18] interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_EXINT18_HANDLER) {
+  uint32_t intsts;
+
+  OSAL_IRQ_PROLOGUE();
+
+  intsts = EXINT->INTSTS;
+  intsts &= EXINT->INTEN & (1U << 18);
+  EXINT->INTSTS = intsts;
+
+  exint_serve_irq(intsts, 18);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if !defined(AT32_DISABLE_EXINT19_HANDLER)
+/**
+ * @brief   EXINT[19] interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_EXINT19_HANDLER) {
+  uint32_t intsts;
+
+  OSAL_IRQ_PROLOGUE();
+
+  intsts = EXINT->INTSTS;
+  intsts &= EXINT->INTEN & (1U << 19);
+  EXINT->INTSTS = intsts;
+
+  exint_serve_irq(intsts, 19);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if !defined(AT32_DISABLE_EXINT20_HANDLER)
+/**
+ * @brief   EXINT[20] interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_EXINT20_HANDLER) {
+  uint32_t intsts;
+
+  OSAL_IRQ_PROLOGUE();
+
+  intsts = EXINT->INTSTS;
+  intsts &= EXINT->INTEN & (1U << 20);
+  EXINT->INTSTS = intsts;
+
+  exint_serve_irq(intsts, 20);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if !defined(AT32_DISABLE_EXINT21_HANDLER)
+/**
+ * @brief   EXINT[21] interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_EXINT21_HANDLER) {
+  uint32_t intsts;
+
+  OSAL_IRQ_PROLOGUE();
+
+  intsts = EXINT->INTSTS;
+  intsts &= EXINT->INTEN & (1U << 21);
+  EXINT->INTSTS = intsts;
+
+  exint_serve_irq(intsts, 21);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
+#if !defined(AT32_DISABLE_EXINT22_HANDLER)
+/**
+ * @brief   EXINT[22] interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_EXINT22_HANDLER) {
+  uint32_t intsts;
+
+  OSAL_IRQ_PROLOGUE();
+
+  intsts = EXINT->INTSTS;
+  intsts &= EXINT->INTEN & (1U << 22);
+  EXINT->INTSTS = intsts;
+
+  exint_serve_irq(intsts, 22);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
 #endif /* HAL_USE_PAL */
 
 /*===========================================================================*/
@@ -226,13 +373,20 @@ OSAL_IRQ_HANDLER(VectorE0) {
 void irqInit(void) {
 
 #if HAL_USE_PAL
-  nvicEnableVector(EXINT0_IRQn, AT32_IRQ_EXINT0_PRIORITY);
-  nvicEnableVector(EXINT1_IRQn, AT32_IRQ_EXINT1_PRIORITY);
-  nvicEnableVector(EXINT2_IRQn, AT32_IRQ_EXINT2_PRIORITY);
-  nvicEnableVector(EXINT3_IRQn, AT32_IRQ_EXINT3_PRIORITY);
-  nvicEnableVector(EXINT4_IRQn, AT32_IRQ_EXINT4_PRIORITY);
-  nvicEnableVector(EXINT9_5_IRQn, AT32_IRQ_EXINT5_9_PRIORITY);
-  nvicEnableVector(EXINT15_10_IRQn, AT32_IRQ_EXINT10_15_PRIORITY);
+  nvicEnableVector(AT32_EXINT0_NUMBER, AT32_IRQ_EXINT0_PRIORITY);
+  nvicEnableVector(AT32_EXINT1_NUMBER, AT32_IRQ_EXINT1_PRIORITY);
+  nvicEnableVector(AT32_EXINT2_NUMBER, AT32_IRQ_EXINT2_PRIORITY);
+  nvicEnableVector(AT32_EXINT3_NUMBER, AT32_IRQ_EXINT3_PRIORITY);
+  nvicEnableVector(AT32_EXINT4_NUMBER, AT32_IRQ_EXINT4_PRIORITY);
+  nvicEnableVector(AT32_EXINT5_9_NUMBER, AT32_IRQ_EXINT5_9_PRIORITY);
+  nvicEnableVector(AT32_EXINT10_15_NUMBER, AT32_IRQ_EXINT10_15_PRIORITY);
+  nvicEnableVector(AT32_EXINT16_NUMBER, AT32_IRQ_EXINT16_PRIORITY);
+  nvicEnableVector(AT32_EXINT17_NUMBER, AT32_IRQ_EXINT17_PRIORITY);
+  nvicEnableVector(AT32_EXINT18_NUMBER, AT32_IRQ_EXINT18_PRIORITY);
+  nvicEnableVector(AT32_EXINT19_NUMBER, AT32_IRQ_EXINT19_PRIORITY);
+  nvicEnableVector(AT32_EXINT20_NUMBER, AT32_IRQ_EXINT20_PRIORITY);
+  nvicEnableVector(AT32_EXINT21_NUMBER, AT32_IRQ_EXINT21_PRIORITY);
+  nvicEnableVector(AT32_EXINT22_NUMBER, AT32_IRQ_EXINT22_PRIORITY);
 #endif
 }
 
@@ -244,13 +398,20 @@ void irqInit(void) {
 void irqDeinit(void) {
 
 #if HAL_USE_PAL
-  nvicDisableVector(EXINT0_IRQn);
-  nvicDisableVector(EXINT1_IRQn);
-  nvicDisableVector(EXINT2_IRQn);
-  nvicDisableVector(EXINT3_IRQn);
-  nvicDisableVector(EXINT4_IRQn);
-  nvicDisableVector(EXINT9_5_IRQn);
-  nvicDisableVector(EXINT15_10_IRQn);
+  nvicDisableVector(AT32_EXINT0_NUMBER);
+  nvicDisableVector(AT32_EXINT1_NUMBER);
+  nvicDisableVector(AT32_EXINT2_NUMBER);
+  nvicDisableVector(AT32_EXINT3_NUMBER);
+  nvicDisableVector(AT32_EXINT4_NUMBER);
+  nvicDisableVector(AT32_EXINT5_9_NUMBER);
+  nvicDisableVector(AT32_EXINT10_15_NUMBER);
+  nvicDisableVector(AT32_EXINT16_NUMBER);
+  nvicDisableVector(AT32_EXINT17_NUMBER);
+  nvicDisableVector(AT32_EXINT18_NUMBER);
+  nvicDisableVector(AT32_EXINT19_NUMBER);
+  nvicDisableVector(AT32_EXINT20_NUMBER);
+  nvicDisableVector(AT32_EXINT21_NUMBER);
+  nvicDisableVector(AT32_EXINT22_NUMBER);
 #endif
 }
 

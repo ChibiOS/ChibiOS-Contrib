@@ -6,9 +6,9 @@ STARTUPASM = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/crt0_v7m.S \
 
 STARTUPINC = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC \
              $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/ld \
-             $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/devices/AT32F415x \
+             $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/devices/AT32F415 \
              $(CHIBIOS)/os/common/ext/ARM/CMSIS/Core/Include \
-             $(CHIBIOS_CONTRIB)/os/common/ext/CMSIS/ArteryTek/AT32F41x
+             $(CHIBIOS_CONTRIB)/os/common/ext/CMSIS/ArteryTek/AT32F415
 
 STARTUPLD  = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/ld
 STARTUPLD_CONTRIB  = $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/ld

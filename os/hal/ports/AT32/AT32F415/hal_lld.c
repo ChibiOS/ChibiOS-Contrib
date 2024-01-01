@@ -17,8 +17,8 @@
 */
 
 /**
- * @file    AT32F41x/hal_lld.c
- * @brief   AT32F41x HAL subsystem low level driver source.
+ * @file    AT32F415/hal_lld.c
+ * @brief   AT32F415 HAL subsystem low level driver source.
  *
  * @addtogroup HAL
  * @{
@@ -36,7 +36,7 @@
 
 /**
  * @brief   CMSIS system core clock variable.
- * @note    It is declared in system_at32f41x.h.
+ * @note    It is declared in system_at32f415.h.
  */
 uint32_t SystemCoreClock = AT32_HCLK;
 
@@ -59,7 +59,7 @@ static void hal_lld_battery_powered_domain_init(void) {
   PWC->CTRL |= PWC_CTRL_BPWEN;
 
   /* Reset BPR domain if different clock source selected. */
-  if ((CRM->BPDC & AT32_RTCSEL_MASK) != AT32_RTCSEL) {
+  if ((CRM->BPDC & AT32_ERTCSEL_MASK) != AT32_ERTCSEL) {
     /* Battery powered domain reset. */
     CRM->BPDC = CRM_BPDC_BPDRST;
     CRM->BPDC = 0;
@@ -80,12 +80,12 @@ static void hal_lld_battery_powered_domain_init(void) {
 #if HAL_USE_RTC
   /* If the battery powered domain hasn't been initialized yet then proceed
      with initialization. */
-  if ((CRM->BPDC & CRM_BPDC_RTCEN) == 0) {
+  if ((CRM->BPDC & CRM_BPDC_ERTCEN) == 0) {
     /* Selects clock source. */
-    CRM->BPDC |= AT32_RTCSEL;
+    CRM->BPDC |= AT32_ERTCSEL;
 
-    /* RTC clock enabled. */
-    CRM->BPDC |= CRM_BPDC_RTCEN;
+    /* ERTC clock enabled. */
+    CRM->BPDC |= CRM_BPDC_ERTCEN;
   }
 #endif /* HAL_USE_RTC */
 }
@@ -206,6 +206,12 @@ void at32_clock_init(void) {
   CRM->MISC2 = 0x0000000D;                  /* MISC2 reset value.            */
   CRM->CLKINT = 0x009F0000;                 /* CLKINT reset value.           */
 
+  /* Flash setup and final clock selection. */
+  FLASH->PSR = AT32_FLASHBITS;       /* Flash wait states depending on clock. */
+  while ((FLASH->PSR & FLASH_PSR_WTCYC_Msk) !=
+         (AT32_FLASHBITS & FLASH_PSR_WTCYC_Msk)) {
+  }
+
 #if AT32_HEXT_ENABLED
 #if defined(AT32_HEXT_BYPASS)
   /* HEXT Bypass. */
@@ -255,12 +261,6 @@ void at32_clock_init(void) {
 
   /* PLL Auto Step activation. */
   CRM->MISC2 |= CRM_MISC2_AUTO_STEP_EN;
-
-  /* Flash setup and final clock selection. */
-  FLASH->PSR = AT32_FLASHBITS;       /* Flash wait states depending on clock. */
-  while ((FLASH->PSR & FLASH_PSR_WTCYC_Msk) !=
-         (AT32_FLASHBITS & FLASH_PSR_WTCYC_Msk)) {
-  }
 
   /* Switching to the configured clock source if it is different from HICK. */
 #if (AT32_SCLKSEL != AT32_SCLKSEL_HICK)
