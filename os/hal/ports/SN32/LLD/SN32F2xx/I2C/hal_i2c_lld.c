@@ -45,14 +45,24 @@ I2CDriver I2CD0;
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
-
+#define I2C_CLK                          SN32_HCLK
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
 static inline void i2c_lld_configure(I2CDriver *i2cp) {
-  i2cp->i2c->SCLHT = i2cp->config->high_time;
-  i2cp->i2c->SCLLT = i2cp->config->low_time;
+  float tclk, tval;
+  int32_t clock_speed = i2cp->config->clock_speed;
+
+  osalDbgCheck((i2cp != NULL) &&
+               (clock_speed > 0) &&
+               (clock_speed <= 400000));
+
+  tclk = (float)1000000 / (clock_speed << 1);
+  tval = (float)I2C_CLK / 1000000 * tclk;
+
+  i2cp->i2c->SCLHT = (uint32_t)(tval -1);
+  i2cp->i2c->SCLLT = (uint32_t)(tval -1);
   i2cp->i2c->TOCTRL = i2cp->config->timeout;
   i2cp->i2c->CTRL_b.I2CEN = true;
 }

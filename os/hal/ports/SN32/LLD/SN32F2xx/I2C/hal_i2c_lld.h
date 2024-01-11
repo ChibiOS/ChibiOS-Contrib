@@ -95,9 +95,11 @@ typedef uint32_t i2cflags_t;
  */
 struct hal_i2c_config {
   /* End of the mandatory fields.*/
-  uint8_t                  high_time;
-  uint8_t                  low_time;
-  uint16_t                 timeout;
+  uint32_t        clock_speed;   /**< @brief Specifies the clock frequency.
+                                      @note Must be set to a value lower
+                                      than 400kHz.                          */
+  uint16_t        timeout;       /**< @brief Specifies the timeout period.
+                                      @note A zero value is off.            */
 };
 
 /**
