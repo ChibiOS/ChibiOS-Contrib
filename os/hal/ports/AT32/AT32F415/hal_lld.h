@@ -938,9 +938,10 @@
 #include "nvic.h"
 #include "cache.h"
 #include "mpu_v7m.h"
-#include "at32_isr.h"
-#include "at32_dma.h"
 #include "at32_crm.h"
+#include "at32_dma.h"
+#include "at32_exint.h"
+#include "at32_isr.h"
 #include "at32_tmr.h"
 
 #ifdef __cplusplus

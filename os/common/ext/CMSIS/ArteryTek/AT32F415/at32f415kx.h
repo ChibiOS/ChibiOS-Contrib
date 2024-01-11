@@ -342,27 +342,46 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t TIME;        /*!< ERTC time register,                          Address offset: 0x00        */
-  __IO uint32_t DATE;        /*!< ERTC date register,                          Address offset: 0x04        */
-  __IO uint32_t CTRL;        /*!< ERTC control register,                       Address offset: 0x08        */
-  __IO uint32_t STS;         /*!< ERTC initialization and status register,     Address offset: 0x0C        */
-  __IO uint32_t DIV;         /*!< ERTC divider register,                       Address offset: 0x10        */
-  __IO uint32_t WAT;         /*!< ERTC wakeup timer register,                  Address offset: 0x14        */
-  __IO uint32_t CCAL;        /*!< ERTC coarse calibration register,            Address offset: 0x18        */
-  __IO uint32_t ALA;         /*!< ERTC alarm clock A register,                 Address offset: 0x1C        */
-  __IO uint32_t ALB;         /*!< ERTC alarm clock B register,                 Address offset: 0x20        */
-  __IO uint32_t WP;          /*!< ERTC write protection register,              Address offset: 0x24        */
-  __IO uint32_t SBS;         /*!< ERTC subsecond register,                     Address offset: 0x28        */
-  __IO uint32_t TADJ;        /*!< ERTC time adjustment register,               Address offset: 0x2C        */
-  __IO uint32_t TSTM;        /*!< ERTC time stamp time register,               Address offset: 0x30        */
-  __IO uint32_t TSDT;        /*!< ERTC time stamp date register,               Address offset: 0x34        */
-  __IO uint32_t TSSBS;       /*!< ERTC time stamp subsecond register,          Address offset: 0x38        */
-  __IO uint32_t SCAL;        /*!< ERTC smooth calibration register,            Address offset: 0x3C        */
-  __IO uint32_t TAMP;        /*!< ERTC tamper configuration register,          Address offset: 0x40        */
-  __IO uint32_t ALASBS;      /*!< ERTC alarm clock A subsecond register,       Address offset: 0x44        */
-  __IO uint32_t ALBSBS;      /*!< ERTC alarm clock B subsecond register,       Address offset: 0x48        */
-  uint32_t      RESERVED;    /*!< Reserved,                                    Address offset: 0x4C        */
-  __IO uint32_t BPR[20];     /*!< ERTC battery powered domain data register,   Address offset: 0x50 ~ 0x9C */
+  __IO uint32_t TIME;        /*!< ERTC time register,                          Address offset: 0x00 */
+  __IO uint32_t DATE;        /*!< ERTC date register,                          Address offset: 0x04 */
+  __IO uint32_t CTRL;        /*!< ERTC control register,                       Address offset: 0x08 */
+  __IO uint32_t STS;         /*!< ERTC initialization and status register,     Address offset: 0x0C */
+  __IO uint32_t DIV;         /*!< ERTC divider register,                       Address offset: 0x10 */
+  __IO uint32_t WAT;         /*!< ERTC wakeup timer register,                  Address offset: 0x14 */
+  __IO uint32_t CCAL;        /*!< ERTC coarse calibration register,            Address offset: 0x18 */
+  __IO uint32_t ALA;         /*!< ERTC alarm clock A register,                 Address offset: 0x1C */
+  __IO uint32_t ALB;         /*!< ERTC alarm clock B register,                 Address offset: 0x20 */
+  __IO uint32_t WP;          /*!< ERTC write protection register,              Address offset: 0x24 */
+  __IO uint32_t SBS;         /*!< ERTC subsecond register,                     Address offset: 0x28 */
+  __IO uint32_t TADJ;        /*!< ERTC time adjustment register,               Address offset: 0x2C */
+  __IO uint32_t TSTM;        /*!< ERTC time stamp time register,               Address offset: 0x30 */
+  __IO uint32_t TSDT;        /*!< ERTC time stamp date register,               Address offset: 0x34 */
+  __IO uint32_t TSSBS;       /*!< ERTC time stamp subsecond register,          Address offset: 0x38 */
+  __IO uint32_t SCAL;        /*!< ERTC smooth calibration register,            Address offset: 0x3C */
+  __IO uint32_t TAMP;        /*!< ERTC tamper configuration register,          Address offset: 0x40 */
+  __IO uint32_t ALASBS;      /*!< ERTC alarm clock A subsecond register,       Address offset: 0x44 */
+  __IO uint32_t ALBSBS;      /*!< ERTC alarm clock B subsecond register,       Address offset: 0x48 */
+  uint32_t      RESERVED;    /*!< Reserved,                                    Address offset: 0x4C */
+  __IO uint32_t BPR1;        /*!< ERTC battery powered domain data register 1, Address offset: 0x50 */
+  __IO uint32_t BPR2;        /*!< ERTC battery powered domain data register 2, Address offset: 0x54 */
+  __IO uint32_t BPR3;        /*!< ERTC battery powered domain data register 3, Address offset: 0x58 */
+  __IO uint32_t BPR4;        /*!< ERTC battery powered domain data register 4, Address offset: 0x5C */
+  __IO uint32_t BPR5;        /*!< ERTC battery powered domain data register 5, Address offset: 0x60 */
+  __IO uint32_t BPR6;        /*!< ERTC battery powered domain data register 6, Address offset: 0x64 */
+  __IO uint32_t BPR7;        /*!< ERTC battery powered domain data register 7, Address offset: 0x68 */
+  __IO uint32_t BPR8;        /*!< ERTC battery powered domain data register 8, Address offset: 0x6C */
+  __IO uint32_t BPR9;        /*!< ERTC battery powered domain data register 9, Address offset: 0x70 */
+  __IO uint32_t BPR10;       /*!< ERTC BAT powered domain data register 10,    Address offset: 0x74 */
+  __IO uint32_t BPR11;       /*!< ERTC BAT powered domain data register 11,    Address offset: 0x78 */
+  __IO uint32_t BPR12;       /*!< ERTC BAT powered domain data register 12,    Address offset: 0x7C */
+  __IO uint32_t BPR13;       /*!< ERTC BAT powered domain data register 13,    Address offset: 0x80 */
+  __IO uint32_t BPR14;       /*!< ERTC BAT powered domain data register 14,    Address offset: 0x84 */
+  __IO uint32_t BPR15;       /*!< ERTC BAT powered domain data register 15,    Address offset: 0x88 */
+  __IO uint32_t BPR16;       /*!< ERTC BAT powered domain data register 16,    Address offset: 0x8C */
+  __IO uint32_t BPR17;       /*!< ERTC BAT powered domain data register 17,    Address offset: 0x90 */
+  __IO uint32_t BPR18;       /*!< ERTC BAT powered domain data register 18,    Address offset: 0x94 */
+  __IO uint32_t BPR19;       /*!< ERTC BAT powered domain data register 19,    Address offset: 0x98 */
+  __IO uint32_t BPR20;       /*!< ERTC BAT powered domain data register 20,    Address offset: 0x9C */
 } ERTC_TypeDef;
 
 /**
@@ -5426,6 +5445,9 @@ typedef struct
 #define ERTC_BPR20_DT_Pos                   (0U)
 #define ERTC_BPR20_DT_Msk                   (0xFFFFFFFFU << ERTC_BPR20_DT_Pos)      /*!< 0xFFFFFFFF */
 #define ERTC_BPR20_DT                       ERTC_BPR20_DT_Msk                       /*!< Battery powered domain data 20 */
+
+/************************* Number of backup registers *************************/
+#define ERTC_BPR_NUMBER                     0x000000014U
 
 /******************************************************************************/
 /*                                                                            */

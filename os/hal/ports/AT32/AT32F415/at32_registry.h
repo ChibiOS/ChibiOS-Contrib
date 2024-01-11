@@ -100,7 +100,9 @@
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
 #define AT32_ERTC_HAS_SUBSECONDS           TRUE
-#define AT32_ERTC_IS_CALENDAR              TRUE
+#define AT32_ERTC_HAS_PERIODIC_WAKEUPS     TRUE
+#define AT32_ERTC_NUM_ALARMS               2
+#define AT32_ERTC_STORAGE_SIZE             80
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
@@ -233,7 +235,9 @@
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
 #define AT32_ERTC_HAS_SUBSECONDS           TRUE
-#define AT32_ERTC_IS_CALENDAR              TRUE
+#define AT32_ERTC_HAS_PERIODIC_WAKEUPS     TRUE
+#define AT32_ERTC_NUM_ALARMS               2
+#define AT32_ERTC_STORAGE_SIZE             80
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
@@ -366,7 +370,9 @@
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
 #define AT32_ERTC_HAS_SUBSECONDS           TRUE
-#define AT32_ERTC_IS_CALENDAR              TRUE
+#define AT32_ERTC_HAS_PERIODIC_WAKEUPS     TRUE
+#define AT32_ERTC_NUM_ALARMS               2
+#define AT32_ERTC_STORAGE_SIZE             80
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
@@ -499,7 +505,9 @@
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
 #define AT32_ERTC_HAS_SUBSECONDS           TRUE
-#define AT32_ERTC_IS_CALENDAR              TRUE
+#define AT32_ERTC_HAS_PERIODIC_WAKEUPS     TRUE
+#define AT32_ERTC_NUM_ALARMS               2
+#define AT32_ERTC_STORAGE_SIZE             80
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
@@ -632,7 +640,9 @@
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
 #define AT32_ERTC_HAS_SUBSECONDS           TRUE
-#define AT32_ERTC_IS_CALENDAR              TRUE
+#define AT32_ERTC_HAS_PERIODIC_WAKEUPS     TRUE
+#define AT32_ERTC_NUM_ALARMS               2
+#define AT32_ERTC_STORAGE_SIZE             80
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
@@ -765,7 +775,9 @@
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
 #define AT32_ERTC_HAS_SUBSECONDS           TRUE
-#define AT32_ERTC_IS_CALENDAR              TRUE
+#define AT32_ERTC_HAS_PERIODIC_WAKEUPS     TRUE
+#define AT32_ERTC_NUM_ALARMS               2
+#define AT32_ERTC_STORAGE_SIZE             80
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
