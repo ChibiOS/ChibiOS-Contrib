@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2023 1Conan
-    Copyright (C) 2023 Dimitris Mantzouranis
+    Copyright (C) 2024 Dimitris Mantzouranis
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -50,10 +50,26 @@
 #endif
 
 /**
+ * @brief   I2C1 driver enable switch.
+ * @details If set to @p TRUE the support for I2C0 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(SN32_I2C_USE_I2C1) || defined(__DOXYGEN__)
+#define SN32_I2C_USE_I2C1                  FALSE
+#endif
+
+/**
  * @brief   I2C0 interrupt priority level setting.
  */
 #if !defined(SN32_I2C_I2C0_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define SN32_I2C_I2C0_IRQ_PRIORITY         3
+#endif
+
+/**
+ * @brief   I2C1 interrupt priority level setting.
+ */
+#if !defined(SN32_I2C_I2C1_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define SN32_I2C_I2C1_IRQ_PRIORITY         3
 #endif
 
 /**
@@ -78,6 +94,12 @@
 #define SN32_I2C0       ((sn32_i2c_t *)SN_I2C0_BASE)
 #endif
 
+#if SN32_HAS_I2C1
+#define SN32_I2C1_BASE  SN_I2C1_BASE
+#define SN32_I2C1       ((sn32_i2c_t *)SN_I2C1_BASE)
+#endif
+
+typedef sn32_i2c_t I2C_TypeDef;
 /**
  * @brief   Type representing an I2C address.
  */
@@ -89,16 +111,26 @@ typedef uint16_t i2caddr_t;
 typedef uint32_t i2cflags_t;
 
 /**
+ * @brief   Supported modes for the I2C bus.
+ */
+typedef enum {
+  OPMODE_I2C = 1,
+  OPMODE_SMBUS_DEVICE = 2,
+  OPMODE_SMBUS_HOST = 3,
+} i2copmode_t;
+
+/**
  * @brief   I2C driver configuration structure.
  * @note    Implementations may extend this structure to contain more,
  *          architecture dependent, fields.
  */
 struct hal_i2c_config {
   /* End of the mandatory fields.*/
+  i2copmode_t     op_mode;       /**< @brief Specifies the I2C mode.        */
   uint32_t        clock_speed;   /**< @brief Specifies the clock frequency.
                                       @note Must be set to a value lower
                                       than 400kHz.                          */
-  uint16_t        timeout;       /**< @brief Specifies the timeout period.
+  uint16_t        timeout;       /**< @brief Specifies the timeout period(ms).
                                       @note A zero value is off.            */
 };
 

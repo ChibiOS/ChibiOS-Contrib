@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2023 1Conan
-    Copyright (C) 2023 Dimitris Mantzouranis
+    Copyright (C) 2024 Dimitris Mantzouranis
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -42,6 +42,14 @@
 I2CDriver I2CD0;
 #endif
 
+/**
+ * @brief   I2C1 driver identifier.
+ */
+#if (SN32_I2C_USE_I2C1 == TRUE) || defined(__DOXYGEN__)
+I2CDriver I2CD1;
+#endif
+
+
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
@@ -51,6 +59,21 @@ I2CDriver I2CD0;
 /*===========================================================================*/
 
 static inline void i2c_lld_configure(I2CDriver *i2cp) {
+  I2C_TypeDef *dp = i2cp->i2c;
+
+  i2copmode_t opmode = i2cp->config->op_mode;
+
+  switch (opmode) {
+    case OPMODE_I2C:
+      break;
+    case OPMODE_SMBUS_DEVICE:
+      osalDbgAssert(false, "SMBUS_DEVICE mode is not supported");
+      break;
+    case OPMODE_SMBUS_HOST:
+      osalDbgAssert(false, "SMBUS_HOST mode is not supported");
+      break;
+  }
+
   float tclk, tval;
   int32_t clock_speed = i2cp->config->clock_speed;
 
@@ -61,53 +84,100 @@ static inline void i2c_lld_configure(I2CDriver *i2cp) {
   tclk = (float)1000000 / (clock_speed << 1);
   tval = (float)I2C_CLK / 1000000 * tclk;
 
-  i2cp->i2c->SCLHT = (uint32_t)(tval -1);
-  i2cp->i2c->SCLLT = (uint32_t)(tval -1);
-  i2cp->i2c->TOCTRL = i2cp->config->timeout;
-  i2cp->i2c->CTRL_b.I2CEN = true;
+  dp->SCLHT = (uint32_t)(tval -1);
+  dp->SCLLT = (uint32_t)(tval -1);
+
+  // Convert timeout in milliseconds to system ticks
+  sysinterval_t timeout_ticks = TIME_MS2I(i2cp->config->timeout);
+  uint32_t timeout_cycles = (uint32_t)(timeout_ticks * 32 * I2C_CLK / CH_CFG_ST_FREQUENCY);
+
+  osalDbgCheck(timeout_cycles <= 0xFFFF);
+  dp->TOCTRL = timeout_cycles;
 }
 
 static inline void i2c_lld_irq_handler(I2CDriver * i2cp) {
-  chSysLockFromISR();
-  i2cp -> i2c -> STAT_b.I2CIF = true;
-  chSysUnlockFromISR();
+  I2C_TypeDef *dp = i2cp->i2c;
 
-  if (i2cp -> i2c -> STAT_b.LOST_ARB) {
-    i2cp -> state = I2C_ARBITRATION_LOST;
+  if (dp-> STAT_b.TIMEOUT) {
+    i2cp -> errors |= I2C_TIMEOUT;
+    dp-> STAT_b.I2CIF |= true;
     _i2c_wakeup_error_isr(i2cp);
     return;
   }
-  if (i2cp -> i2c -> STAT_b.NACK_STAT) {
-    i2cp -> i2c -> CTRL_b.ACK = true;
-  } else {
-    if (i2cp -> i2c -> STAT_b.RX_DN && i2cp -> rx_buffer && i2cp -> count < i2cp -> rx_len) {
-      i2cp -> rx_buffer[i2cp -> count++] = i2cp -> i2c -> RXDATA;
-      i2cp -> i2c -> CTRL_b.ACK = true;
-      return;
-    } else {
-      if (i2cp -> i2c -> STAT_b.SLV_RX_HIT) {
-        i2cp -> i2c -> CTRL_b.ACK = true;
-        return;
-      }
-      if (i2cp -> i2c -> STAT_b.SLV_TX_HIT) {
-        //silent return
-        return;
-      }
-    }
-    if (i2cp -> i2c -> STAT_b.ACK_STAT && i2cp -> tx_buffer && i2cp -> count < i2cp -> tx_len) {
-       i2cp -> i2c -> TXDATA = i2cp -> tx_buffer[i2cp -> count++];
-      return;
-    }
+  if (dp-> STAT_b.LOST_ARB) {
+    i2cp -> errors |= I2C_ARBITRATION_LOST;
+    dp-> STAT_b.I2CIF |= true;
+    _i2c_wakeup_error_isr(i2cp);
+    return;
   }
-
-  if ((i2cp -> rx_buffer && !i2cp -> tx_buffer) || (!i2cp -> rx_buffer && i2cp -> tx_buffer)) {
-    if ((i2cp -> count == i2cp -> rx_len) || (i2cp -> count == i2cp -> tx_len)) {
-      i2cp -> i2c -> CTRL_b.STO = true;
-      i2cp -> i2c -> CTRL_b.I2CEN = false;
-      i2cp -> i2c -> CTRL_b.I2CEN = true;
-      i2cp -> state = I2C_STOP;
-      _i2c_wakeup_isr(i2cp);
+  if((dp-> STAT_b.STOP_DN)){
+    // stop received
+    dp-> STAT_b.I2CIF |= true;
+    _i2c_wakeup_isr(i2cp);
+    return;
+  }
+  if((dp-> STAT_b.MST) && (dp-> STAT_b.START_DN)) {
+    // set slave address.
+    dp->TXDATA = i2cp->addr;
+    dp-> STAT_b.I2CIF |= true;
+    return;
+  }
+  // TX
+  if (i2cp->state == I2C_ACTIVE_TX) {
+    if ((dp-> STAT_b.ACK_STAT) | (dp-> STAT_b.SLV_TX_HIT)) {
+        if (i2cp -> tx_buffer && i2cp -> count < i2cp -> tx_len) {
+          // ack received, clear to transmit
+          dp-> TXDATA = i2cp -> tx_buffer[i2cp -> count++];
+        } else if (dp-> STAT_b.MST) {
+          // transmission completed
+          dp-> CTRL_b.STO |= true;
+        }
+        dp-> STAT_b.I2CIF = true;
+        return;
+      } else if (dp-> STAT_b.NACK_STAT) {
+          if (dp-> STAT_b.MST == false) {
+            dp-> CTRL_b.ACK |= true;
+            dp-> STAT_b.I2CIF |= true;
+            return;
+          }
+          else if (i2cp -> count == i2cp -> tx_len) {
+            dp-> CTRL_b.STO |= true;
+            _i2c_wakeup_isr(i2cp);
+          } else {
+            i2cp -> errors |= I2C_ACK_FAILURE;
+          }
+          dp-> STAT_b.I2CIF |= true;
+      } else {
+        i2cp -> errors |= I2C_BUS_ERROR;
+        dp-> STAT_b.I2CIF |= true;
+        _i2c_wakeup_error_isr(i2cp);
+      }
+  }
+  // RX
+  if (i2cp->state == I2C_ACTIVE_RX) {
+    if ((dp-> STAT_b.MST) | (dp-> STAT_b.ACK_STAT) || (dp-> STAT_b.SLV_RX_HIT)) {
+      dp-> CTRL_b.ACK |= true;
+      dp-> STAT_b.I2CIF |= true;
       return;
+    } else if((dp-> STAT_b.MST) | (dp-> STAT_b.RX_DN)) {
+      if (i2cp -> rx_buffer && i2cp -> count < i2cp -> rx_len) {
+        // rx done received, clear to receive
+        i2cp -> rx_buffer[i2cp -> count++]  = dp-> RXDATA;
+        dp-> STAT_b.I2CIF |= true;
+      } else if (i2cp -> count == i2cp -> rx_len) {
+        // transmission completed
+        dp-> CTRL_b.STO = true;
+        dp-> STAT_b.I2CIF |= true;
+        _i2c_wakeup_isr(i2cp);
+      } else {
+        i2cp -> errors |= I2C_OVERRUN;
+        dp-> STAT_b.I2CIF |= true;
+        _i2c_wakeup_error_isr(i2cp);
+      }
+    } else {
+      i2cp -> errors |= I2C_BUS_ERROR;
+      dp-> STAT_b.I2CIF |= true;
+      _i2c_wakeup_error_isr(i2cp);
     }
   }
 }
@@ -115,7 +185,7 @@ static inline void i2c_lld_irq_handler(I2CDriver * i2cp) {
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if SN32_I2C_USE_I2C0
+#if SN32_I2C_USE_I2C0 || defined(__DOXYGEN__)
 OSAL_IRQ_HANDLER(SN32_I2C0_GLOBAL_HANDLER) {
   OSAL_IRQ_PROLOGUE();
 
@@ -123,7 +193,17 @@ OSAL_IRQ_HANDLER(SN32_I2C0_GLOBAL_HANDLER) {
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif
+#endif /* SN32_I2C_USE_I2C0 */
+
+#if SN32_I2C_USE_I2C1 || defined(__DOXYGEN__)
+OSAL_IRQ_HANDLER(SN32_I2C1_GLOBAL_HANDLER) {
+  OSAL_IRQ_PROLOGUE();
+
+  i2c_lld_irq_handler(&I2CD1);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* SN32_I2C_USE_I2C1 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -140,7 +220,21 @@ void i2c_lld_init(void) {
   i2cObjectInit(&I2CD0);
   I2CD0.thread  = NULL;
   I2CD0.i2c = SN32_I2C0;
-#endif
+  I2CD0.rx_buffer = NULL;
+  I2CD0.tx_buffer = NULL;
+  I2CD0.rx_len = 0;
+  I2CD0.tx_len = 0;
+#endif /* SN32_I2C_USE_I2C0 */
+
+#if SN32_I2C_USE_I2C1 == TRUE
+  i2cObjectInit(&I2CD1);
+  I2CD1.thread  = NULL;
+  I2CD1.i2c = SN32_I2C1;
+  I2CD1.rx_buffer = NULL;
+  I2CD1.tx_buffer = NULL;
+  I2CD1.rx_len = 0;
+  I2CD1.tx_len = 0;
+#endif /* SN32_I2C_USE_I2C1 */
 }
 
 /**
@@ -151,6 +245,7 @@ void i2c_lld_init(void) {
  * @notapi
  */
 void i2c_lld_start(I2CDriver *i2cp) {
+  I2C_TypeDef *dp = i2cp->i2c;
 
   if (i2cp->state == I2C_STOP) {
     /* Enables the peripheral.*/
@@ -160,10 +255,19 @@ void i2c_lld_start(I2CDriver *i2cp) {
       nvicClearPending(SN32_I2C0_GLOBAL_NUMBER);
       nvicEnableVector(SN32_I2C0_GLOBAL_NUMBER, SN32_I2C_I2C0_IRQ_PRIORITY);
     }
-#endif
+#endif /* SN32_I2C_USE_I2C0 */
+
+#if SN32_I2C_USE_I2C1 == TRUE
+    if (&I2CD1 == i2cp) {
+      sys1EnableI2C0();
+      nvicClearPending(SN32_I2C1_GLOBAL_NUMBER);
+      nvicEnableVector(SN32_I2C1_GLOBAL_NUMBER, SN32_I2C_I2C1_IRQ_PRIORITY);
+    }
+#endif /* SN32_I2C_USE_I2C1 */
   }
 
   i2c_lld_configure(i2cp);
+  dp->CTRL_b.I2CEN = true;
 }
 
 /**
@@ -174,10 +278,15 @@ void i2c_lld_start(I2CDriver *i2cp) {
  * @notapi
  */
 void i2c_lld_stop(I2CDriver *i2cp) {
+  I2C_TypeDef *dp = i2cp->i2c;
 
   if (i2cp->state != I2C_STOP) {
 
-    i2cp->i2c->CTRL_b.I2CEN = false;
+    dp->CTRL_b.I2CEN = false;
+    i2cp->rx_buffer = NULL;
+    i2cp->tx_buffer = NULL;
+    i2cp->rx_len = 0;
+    i2cp->tx_len = 0;
 
     /* Disables the peripheral.*/
 #if SN32_I2C_USE_I2C0 == TRUE
@@ -185,7 +294,14 @@ void i2c_lld_stop(I2CDriver *i2cp) {
       sys1DisableI2C0();
       nvicDisableVector(SN32_I2C0_GLOBAL_NUMBER);
     }
-#endif
+#endif /* SN32_I2C_USE_I2C0 */
+
+#if SN32_I2C_USE_I2C1 == TRUE
+    if (&I2CD1 == i2cp) {
+      sys1DisableI2C1();
+      nvicDisableVector(SN32_I2C1_GLOBAL_NUMBER);
+    }
+#endif /* SN32_I2C_USE_I2C1 */
   }
 }
 
@@ -213,8 +329,8 @@ void i2c_lld_stop(I2CDriver *i2cp) {
 msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
                                      uint8_t *rxbuf, size_t rxbytes,
                                      sysinterval_t timeout) {
-
-  systime_t start, end;
+  I2C_TypeDef *dp = i2cp->i2c;
+  msg_t msg;
 
   /* Resetting error flags for this transfer.*/
   i2cp->errors = I2C_NO_ERROR;
@@ -222,33 +338,22 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   /* Initializes driver fields, LSB = 1 -> receive.*/
   i2cp->addr = (addr << 1) | 0x01;
 
-  /* Releases the lock from high level driver.*/
-  osalSysUnlock();
-
-  /* Calculating the time window for the timeout on the busy bus condition.*/
-  start = osalOsGetSystemTimeX();
-  end = osalTimeAddX(start, OSAL_MS2I(SN32_I2C_BUSY_TIMEOUT));
-
-  /* Waits for a timeout condition.*/
-  while (true) {
-    osalSysLock();
-
-    /* If the system time went outside the allowed window then a timeout
-       condition is returned.*/
-    if (!osalTimeIsInRangeX(osalOsGetSystemTimeX(), start, end))
-      return MSG_TIMEOUT;
-
-    osalSysUnlock();
-  }
-  i2cp->rx_buffer = rxbuf;
-  i2cp->rx_len = rxbytes;
+  /* Get the buffer from the peripheral */
+  rxbuf = i2cp->rx_buffer;
+  rxbytes = i2cp->rx_len;
   i2cp->count = 0;
-  i2cp->i2c->CTRL_b.STA = true;
-  i2cp->i2c->TXDATA = addr;
+
+  /* Starts the operation.*/
+  dp->CTRL_b.STA = true;
 
   /* Waits for the operation completion or a timeout.*/
-  return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+  msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+  if (msg != MSG_OK) {
+    i2cp->rx_buffer = NULL;
+    i2cp->rx_len = 0;
+  }
 
+  return msg;
 }
 
 /**
@@ -278,41 +383,32 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
                                       const uint8_t *txbuf, size_t txbytes,
                                       uint8_t *rxbuf, size_t rxbytes,
                                       sysinterval_t timeout) {
+  I2C_TypeDef *dp = i2cp->i2c;
+  msg_t msg;
 
-  systime_t start, end;
-  
   /* Resetting error flags for this transfer.*/
   i2cp->errors = I2C_NO_ERROR;
 
   /* Initializes driver fields, LSB = 0 -> transmit.*/
   i2cp->addr = (addr << 1);
 
-  /* Releases the lock from high level driver.*/
-  osalSysUnlock();
-
-  /* Calculating the time window for the timeout on the busy bus condition.*/
-  start = osalOsGetSystemTimeX();
-  end = osalTimeAddX(start, OSAL_MS2I(SN32_I2C_BUSY_TIMEOUT));
-
-  /* Waits for a timeout condition.*/
-  while (true) {
-    osalSysLock();
-
-    /* If the system time went outside the allowed window then a timeout
-       condition is returned.*/
-    if (!osalTimeIsInRangeX(osalOsGetSystemTimeX(), start, end))
-      return MSG_TIMEOUT;
-
-    osalSysUnlock();
-  }
+  /* Pass the buffer to the peripheral */
   i2cp->tx_buffer = txbuf;
   i2cp->tx_len = txbytes;
   i2cp->count = 0;
-  i2cp->i2c->CTRL_b.STA = true;
-  i2cp->i2c->TXDATA = addr;
+
+  /* Starts the operation.*/
+  dp->CTRL_b.STA = true;
 
   /* Waits for the operation completion or a timeout.*/
-  return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+  msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+
+  if (msg != MSG_OK) {
+    i2cp->tx_buffer = NULL;
+    i2cp->tx_len = 0;
+  }
+
+  return msg;
 }
 
 #if (I2C_SUPPORTS_SLAVE_MODE == TRUE) || defined(__DOXYGEN__)
@@ -331,17 +427,17 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
  */
 msg_t i2c_lld_match_address(I2CDriver *i2cp, i2caddr_t addr) {
 
+  I2C_TypeDef *dp = i2cp->i2c;
   uint16_t i2cadr = addr << 1;
-  uint16_t ownAdr = i2cp->i2c->SLVADRR0 & (0x7f<<1);
+  uint16_t ownAdr = dp->SLVADRR0 & (0x7f<<1);
 
   if (ownAdr == 0 || ownAdr == i2cadr)
-    i2cp->i2c->SLVADRR0 = i2cadr;
+    dp->SLVADRR0 = i2cadr;
   else
   /* cannot add this address to set of those matched */
     return MSG_RESET;
 
   return MSG_OK;
-
 }
 
 /**
@@ -368,12 +464,28 @@ msg_t i2c_lld_slave_receive_timeout(I2CDriver *i2cp,
                              uint8_t *rxbuf,
                              size_t rxbytes,
                              sysinterval_t timeout) {
-  i2cp->rx_buffer = rxbuf;
-  i2cp->rx_len = rxbytes;
+  I2C_TypeDef *dp = i2cp->i2c;
+  msg_t msg;
+
+  /* Resetting error flags for this transfer.*/
+  i2cp->errors = I2C_NO_ERROR;
+
+  /* Get the buffer from the peripheral */
+  rxbuf = i2cp->rx_buffer;
+  rxbytes = i2cp->rx_len;
   i2cp->count = 0;
 
+  /* Starts the operation.*/
+  dp->CTRL_b.STA = true;
+
   /* Waits for the operation completion or a timeout.*/
-  return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+  msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+  if (msg != MSG_OK) {
+    i2cp->rx_buffer = NULL;
+    i2cp->rx_len = 0;
+  }
+
+  return msg;
 }
 
 /**
@@ -401,12 +513,29 @@ msg_t i2c_lld_slave_transmit_timeout(I2CDriver *i2cp,
                                const uint8_t *txbuf,
                                size_t txbytes,
                                sysinterval_t timeout) {
+  I2C_TypeDef *dp = i2cp->i2c;
+  msg_t msg;
+
+  /* Resetting error flags for this transfer.*/
+  i2cp->errors = I2C_NO_ERROR;
+
+  /* Pass the buffer to the peripheral */
   i2cp->tx_buffer = txbuf;
   i2cp->tx_len = txbytes;
   i2cp->count = 0;
 
+  /* Starts the operation.*/
+  dp->CTRL_b.STA = true;
+
   /* Waits for the operation completion or a timeout.*/
-  return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+  msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+
+  if (msg != MSG_OK) {
+    i2cp->tx_buffer = NULL;
+    i2cp->tx_len = 0;
+  }
+
+  return msg;
 }
 #endif /* I2C_SUPPORTS_SLAVE_MODE == TRUE */
 #endif /* HAL_USE_I2C == TRUE */
