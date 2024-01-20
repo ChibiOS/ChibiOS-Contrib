@@ -58,10 +58,6 @@ jobs:
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/WB32
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/WB32
-    - name: build NUMICRO
-      run: |
-        $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/NUMICRO
-        $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/NUMICRO
     - name: build RP
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/RP
