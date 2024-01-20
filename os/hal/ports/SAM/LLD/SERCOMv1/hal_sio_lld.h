@@ -208,6 +208,20 @@ typedef uint32_t sio_events_mask_t;
 #define sio_lld_is_tx_ongoing(siop) !((siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_TXC_Msk) == \
                                     SERCOM_USART_INT_INTFLAG_TXC_Msk)
 
+/**
+ * @brief   Determines if RX has pending error events to be read and cleared.
+ * @note    Only error and protocol errors are handled, data events are not
+ *          considered.
+ *
+ * @param[in] siop      pointer to the @p SIODriver object
+ * @return              The RX error events.
+ * @retval false        if RX has no pending events
+ * @retval true         if RX has pending events
+ *
+ * @notapi
+ */
+#define sio_lld_has_rx_errors(siop) false
+
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
