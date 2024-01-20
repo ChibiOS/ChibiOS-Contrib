@@ -177,36 +177,36 @@ static inline void usart_enable_tx_end_irq(SIODriver *siop) {
  * @notapi
  */
 void sio_lld_serve_interrupt(SIODriver *siop) {
-  osalDbgAssert(siop->state == SIO_ACTIVE, "invalid state");
+  osalDbgAssert(siop->state == SIO_READY, "invalid state");
   uint8_t intflag = siop->usart->SERCOM_INTFLAG;
   uint8_t intenset = siop->usart->SERCOM_INTENSET;
   uint8_t evtmask = intflag & (SERCOM_USART_INT_INTFLAG_ERROR_Msk | 
                                 SERCOM_USART_INT_INTFLAG_RXBRK_Msk);
   if(evtmask != 0) {
     siop->usart->SERCOM_INTENCLR = (SERCOM_USART_INT_INTENCLR_ERROR_Msk | SERCOM_USART_INT_INTENCLR_RXBRK_Msk);
-    __sio_callback_rx_evt(siop);
+    __sio_callback(siop);
 
     /* Waiting thread woken, if any.*/
-    __sio_wakeup_rx(siop, SIO_MSG_ERRORS);
+    __sio_wakeup_rx(siop);
   }
   if((intflag & SERCOM_USART_INT_INTFLAG_RXC_Msk) && 
     (intenset & SERCOM_USART_INT_INTENSET_RXC_Msk)) {
     siop->usart->SERCOM_INTENCLR = SERCOM_USART_INT_INTENCLR_RXC_Msk;
     /* The callback is invoked if defined.*/
-    __sio_callback_rx(siop);
+    __sio_callback(siop);
 
     /* Waiting thread woken, if any.*/
-    __sio_wakeup_rx(siop, MSG_OK);
+    __sio_wakeup_rx(siop);
   }
   /* TX FIFO is non-full.*/
   if ((intflag & SERCOM_USART_INT_INTFLAG_DRE_Msk) && 
     (intenset & SERCOM_USART_INT_INTENSET_DRE_Msk))  {
     siop->usart->SERCOM_INTENCLR = SERCOM_USART_INT_INTENCLR_DRE_Msk;
     /* The callback is invoked if defined.*/
-    __sio_callback_tx(siop);
+    __sio_callback(siop);
 
     /* Waiting thread woken, if any.*/
-    __sio_wakeup_tx(siop, MSG_OK);
+    __sio_wakeup_tx(siop);
   }
 
   /* Physical transmission end.*/
@@ -214,10 +214,10 @@ void sio_lld_serve_interrupt(SIODriver *siop) {
     (intenset & SERCOM_USART_INT_INTENSET_TXC_Msk)) {
     siop->usart->SERCOM_INTENCLR = SERCOM_USART_INT_INTENCLR_TXC_Msk;
     /* The callback is invoked if defined.*/
-    __sio_callback_tx_end(siop);
+    __sio_callback(siop);
 
     /* Waiting thread woken, if any.*/
-    __sio_wakeup_txend(siop, MSG_OK);
+    __sio_wakeup_txend(siop);
   }
 }
 
@@ -533,16 +533,16 @@ sio_events_mask_t  sio_lld_get_and_clear_events(SIODriver *siop) {
   status = (uint8_t)(siop->usart->SERCOM_STATUS);
   irq_status = (uint8_t)(siop->usart->SERCOM_INTFLAG);
   if(status & SERCOM_USART_INT_STATUS_BUFOVF_Msk) {
-    evtmask |= SIO_OVERRUN_ERROR;
+    evtmask |= SD_OVERRUN_ERROR;
   }
   if(status & SERCOM_USART_INT_STATUS_FERR_Msk) {
-    evtmask |= SIO_FRAMING_ERROR;
+    evtmask |= SD_FRAMING_ERROR;
   }
   if(status & SERCOM_USART_INT_STATUS_PERR_Msk) {
-    evtmask |= SIO_PARITY_ERROR;
+    evtmask |= SD_PARITY_ERROR;
   }
   if(irq_status & SERCOM_USART_INT_INTFLAG_RXBRK_Msk) {
-    evtmask |= SIO_BREAK_DETECTED;
+    evtmask |= SD_BREAK_DETECTED;
     irq_status |= SERCOM_USART_INT_INTFLAG_RXBRK_Msk;
   }
 
@@ -690,6 +690,15 @@ msg_t sio_lld_control(SIODriver *siop, unsigned int operation, void *arg) {
   return MSG_OK;
 }
 
+/**
+ * @brief   Enable flags change notification.
+ *
+ * @param[in] siop      pointer to the @p SIODriver object
+ */
+void sio_lld_update_enable_flags(SIODriver *siop) {
+
+  (void)siop;
+ }
 
 #endif /* HAL_USE_SIO == TRUE */
 
