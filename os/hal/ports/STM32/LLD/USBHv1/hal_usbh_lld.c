@@ -1448,35 +1448,40 @@ OSAL_IRQ_HANDLER(STM32_OTG2_HANDLER) {
 static void otg_core_reset(stm32_otg_t *const otgp) {
 
   /* Wait AHB idle condition.*/
-  while ((otgp->GRSTCTL & GRSTCTL_AHBIDL) == 0) osalSysPolledDelayX(1);
+  while ((otgp->GRSTCTL & GRSTCTL_AHBIDL) == 0)
+    ;
 
   /* Core reset and delay of at least 3 PHY cycles.*/
   otgp->GRSTCTL = GRSTCTL_CSRST;
   osalSysPolledDelayX(12);
-  while ((otgp->GRSTCTL & GRSTCTL_CSRST) != 0) osalSysPolledDelayX(1);
+  while ((otgp->GRSTCTL & GRSTCTL_CSRST) != 0)
+    ;
 
   osalSysPolledDelayX(18);
 
   /* Wait AHB idle condition again.*/
-  while ((otgp->GRSTCTL & GRSTCTL_AHBIDL) == 0) osalSysPolledDelayX(1);
+  while ((otgp->GRSTCTL & GRSTCTL_AHBIDL) == 0)
+    ;
 }
 
 static void otg_rxfifo_flush(USBHDriver *usbp) {
   stm32_otg_t *const otgp = usbp->otg;
 
   otgp->GRSTCTL = GRSTCTL_RXFFLSH;
-  while ((otgp->GRSTCTL & GRSTCTL_RXFFLSH) != 0) osalSysPolledDelayX(1);
+  while ((otgp->GRSTCTL & GRSTCTL_RXFFLSH) != 0)
+    ;
   /* Wait for 3 PHY Clocks.*/
-  osalSysPolledDelayX(24);
+  osalSysPolledDelayX(18);
 }
 
 static void otg_txfifo_flush(USBHDriver *usbp, uint32_t fifo) {
   stm32_otg_t *const otgp = usbp->otg;
 
   otgp->GRSTCTL = GRSTCTL_TXFNUM(fifo) | GRSTCTL_TXFFLSH;
-  while ((otgp->GRSTCTL & GRSTCTL_TXFFLSH) != 0) osalSysPolledDelayX(1);
+  while ((otgp->GRSTCTL & GRSTCTL_TXFFLSH) != 0)
+    ;
   /* Wait for 3 PHY Clocks.*/
-  osalSysPolledDelayX(24);
+  osalSysPolledDelayX(18);
 }
 
 static void _init(USBHDriver *host) {
