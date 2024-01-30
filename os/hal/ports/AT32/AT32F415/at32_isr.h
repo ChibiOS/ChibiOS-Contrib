@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023 HorrorTroll
-    ChibiOS - Copyright (C) 2023 Zhaqian
+    ChibiOS - Copyright (C) 2024 HorrorTroll
+    ChibiOS - Copyright (C) 2024 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -35,6 +35,15 @@
  * @name    ISRs suppressed in standard drivers
  * @{
  */
+#define AT32_TMR1_SUPPRESS_ISR
+#define AT32_TMR2_SUPPRESS_ISR
+#define AT32_TMR3_SUPPRESS_ISR
+#define AT32_TMR4_SUPPRESS_ISR
+#define AT32_TMR5_SUPPRESS_ISR
+#define AT32_TMR9_SUPPRESS_ISR
+#define AT32_TMR10_SUPPRESS_ISR
+#define AT32_TMR11_SUPPRESS_ISR
+
 #define AT32_USART1_SUPPRESS_ISR
 #define AT32_USART2_SUPPRESS_ISR
 #define AT32_USART3_SUPPRESS_ISR
@@ -185,7 +194,7 @@
  */
 #define AT32_TMR1_BRK_TMR9_HANDLER   VectorA0
 #define AT32_TMR1_OVF_TMR10_HANDLER  VectorA4
-#define AT32_TMR1_HALL_TIM11_HANDLER VectorA8
+#define AT32_TMR1_HALL_TMR11_HANDLER VectorA8
 #define AT32_TMR1_CH_HANDLER         VectorAC
 #define AT32_TMR2_HANDLER            VectorB0
 #define AT32_TMR3_HANDLER            VectorB4
@@ -194,7 +203,7 @@
 
 #define AT32_TMR1_BRK_TMR9_NUMBER    24
 #define AT32_TMR1_OVF_TMR10_NUMBER   25
-#define AT32_TMR1_HALL_TIM11_NUMBER  26
+#define AT32_TMR1_HALL_TMR11_NUMBER  26
 #define AT32_TMR1_CH_NUMBER          27
 #define AT32_TMR2_NUMBER             28
 #define AT32_TMR3_NUMBER             29

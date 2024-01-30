@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023 HorrorTroll
-    ChibiOS - Copyright (C) 2023 Zhaqian
+    ChibiOS - Copyright (C) 2024 HorrorTroll
+    ChibiOS - Copyright (C) 2024 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -49,6 +49,8 @@
 
 #define AT32_TMR_CTRL1_CLKDIV_MASK          (3U << 8)
 #define AT32_TMR_CTRL1_CLKDIV(n)            ((n) << 8)
+
+#define AT32_TMR_CTRL1_PMEN                 (1U << 10)
 /** @} */
 
 /**

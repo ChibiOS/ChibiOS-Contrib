@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023 HorrorTroll
-    ChibiOS - Copyright (C) 2023 Zhaqian
+    ChibiOS - Copyright (C) 2024 HorrorTroll
+    ChibiOS - Copyright (C) 2024 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -68,6 +68,12 @@
 #include "at32_exint21.inc"
 #include "at32_exint22.inc"
 
+#include "at32_tmr1_9_10_11.inc"
+#include "at32_tmr2.inc"
+#include "at32_tmr3.inc"
+#include "at32_tmr4.inc"
+#include "at32_tmr5.inc"
+
 #include "at32_usart1.inc"
 #include "at32_usart2.inc"
 #include "at32_usart3.inc"
@@ -100,6 +106,12 @@ void irqInit(void) {
   exint21_irq_init();
   exint22_irq_init();
 
+  tmr1_tmr9_tmr10_tmr11_irq_init();
+  tmr2_irq_init();
+  tmr3_irq_init();
+  tmr4_irq_init();
+  tmr5_irq_init();
+
   usart1_irq_init();
   usart2_irq_init();
   usart3_irq_init();
@@ -128,6 +140,12 @@ void irqDeinit(void) {
   exint20_irq_deinit();
   exint21_irq_deinit();
   exint22_irq_deinit();
+
+  tmr1_tmr9_tmr10_tmr11_irq_deinit();
+  tmr2_irq_deinit();
+  tmr3_irq_deinit();
+  tmr4_irq_deinit();
+  tmr5_irq_deinit();
 
   usart1_irq_deinit();
   usart2_irq_deinit();
