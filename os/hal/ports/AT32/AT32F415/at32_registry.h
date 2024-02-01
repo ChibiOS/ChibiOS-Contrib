@@ -60,6 +60,7 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
@@ -195,6 +196,7 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
@@ -330,6 +332,7 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
@@ -465,6 +468,7 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
@@ -600,6 +604,7 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
@@ -735,6 +740,7 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
