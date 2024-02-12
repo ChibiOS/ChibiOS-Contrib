@@ -139,6 +139,11 @@ void adc_lld_start(ADCDriver *adcp) {
                                      (at32_dmasts_t)adc_lld_serve_rx_interrupt,
                                      (void *)adcp);
       osalDbgAssert(adcp->dmastp != NULL, "unable to allocate stream");
+
+#if AT32_DMA_SUPPORTS_DMAMUX
+      dmaSetRequestSource(adcp->dmastp, AT32_ADC_ADC1_DMAMUX_CHANNEL, AT32_DMAMUX_ADC1);
+#endif
+
       dmaStreamSetPeripheral(adcp->dmastp, &ADC1->ODT);
       crmEnableADC1(true);
     }

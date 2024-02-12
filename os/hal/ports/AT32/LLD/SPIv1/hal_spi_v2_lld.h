@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023 HorrorTroll
-    ChibiOS - Copyright (C) 2023 Zhaqian
+    ChibiOS - Copyright (C) 2024 HorrorTroll
+    ChibiOS - Copyright (C) 2024 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -144,42 +144,6 @@
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SPI_SPI2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SPI2"
 #endif
-
-/* The following checks are only required when there is a DMA able to
-   reassign streams to different channels.*/
-#if AT32_ADVANCED_DMA
-/* Check on the presence of the DMA streams settings in mcuconf.h.*/
-#if AT32_SPI_USE_SPI1 && (!defined(AT32_SPI_SPI1_RX_DMA_STREAM) ||          \
-                          !defined(AT32_SPI_SPI1_TX_DMA_STREAM))
-#error "SPI1 DMA streams not defined"
-#endif
-
-#if AT32_SPI_USE_SPI2 && (!defined(AT32_SPI_SPI2_RX_DMA_STREAM) ||          \
-                          !defined(AT32_SPI_SPI2_TX_DMA_STREAM))
-#error "SPI2 DMA streams not defined"
-#endif
-
-/* Check on the validity of the assigned DMA channels.*/
-#if AT32_SPI_USE_SPI1 &&                                                    \
-    !AT32_DMA_IS_VALID_ID(AT32_SPI_SPI1_RX_DMA_STREAM, AT32_SPI1_RX_DMA_MSK)
-#error "invalid DMA stream associated to SPI1 RX"
-#endif
-
-#if AT32_SPI_USE_SPI1 &&                                                    \
-    !AT32_DMA_IS_VALID_ID(AT32_SPI_SPI1_TX_DMA_STREAM, AT32_SPI1_TX_DMA_MSK)
-#error "invalid DMA stream associated to SPI1 TX"
-#endif
-
-#if AT32_SPI_USE_SPI2 &&                                                    \
-    !AT32_DMA_IS_VALID_ID(AT32_SPI_SPI2_RX_DMA_STREAM, AT32_SPI2_RX_DMA_MSK)
-#error "invalid DMA stream associated to SPI2 RX"
-#endif
-
-#if AT32_SPI_USE_SPI2 &&                                                    \
-    !AT32_DMA_IS_VALID_ID(AT32_SPI_SPI2_TX_DMA_STREAM, AT32_SPI2_TX_DMA_MSK)
-#error "invalid DMA stream associated to SPI2 TX"
-#endif
-#endif /* AT32_ADVANCED_DMA */
 
 #if !defined(AT32_DMA_REQUIRED)
 #define AT32_DMA_REQUIRED

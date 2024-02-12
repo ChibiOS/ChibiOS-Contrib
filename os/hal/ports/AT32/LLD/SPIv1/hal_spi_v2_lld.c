@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023 HorrorTroll
-    ChibiOS - Copyright (C) 2023 Zhaqian
+    ChibiOS - Copyright (C) 2024 HorrorTroll
+    ChibiOS - Copyright (C) 2024 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -209,15 +209,15 @@ static msg_t spi_lld_get_dma(SPIDriver *spip, uint32_t rxstream,
                              uint32_t txstream, uint32_t priority) {
 
   spip->dmarx = dmaStreamAllocI(rxstream, priority,
-                                (at32_dmasts_t)spi_lld_serve_rx_interrupt,
-                                (void *)spip);
+                               (at32_dmasts_t)spi_lld_serve_rx_interrupt,
+                               (void *)spip);
   if (spip->dmarx == NULL) {
     return HAL_RET_NO_RESOURCE;
   }
 
   spip->dmatx = dmaStreamAllocI(txstream, priority,
-                                (at32_dmasts_t)spi_lld_serve_tx_interrupt,
-                                (void *)spip);
+                               (at32_dmasts_t)spi_lld_serve_tx_interrupt,
+                               (void *)spip);
   if (spip->dmatx == NULL) {
     dmaStreamFreeI(spip->dmarx);
     return HAL_RET_NO_RESOURCE;
@@ -300,6 +300,10 @@ msg_t spi_lld_start(SPIDriver *spip) {
       }
       crmEnableSPI1(true);
       crmResetSPI1();
+#if AT32_DMA_SUPPORTS_DMAMUX
+      dmaSetRequestSource(spip->dmarx, AT32_SPI_SPI1_RX_DMAMUX_CHANNEL, AT32_DMAMUX_SPI1_RX);
+      dmaSetRequestSource(spip->dmatx, AT32_SPI_SPI1_TX_DMAMUX_CHANNEL, AT32_DMAMUX_SPI1_TX);
+#endif
     }
 #endif
 
@@ -314,6 +318,10 @@ msg_t spi_lld_start(SPIDriver *spip) {
       }
       crmEnableSPI2(true);
       crmResetSPI2();
+#if AT32_DMA_SUPPORTS_DMAMUX
+      dmaSetRequestSource(spip->dmarx, AT32_SPI_SPI2_RX_DMAMUX_CHANNEL, AT32_DMAMUX_SPI2_RX);
+      dmaSetRequestSource(spip->dmatx, AT32_SPI_SPI2_TX_DMAMUX_CHANNEL, AT32_DMAMUX_SPI2_TX);
+#endif
     }
 #endif
 

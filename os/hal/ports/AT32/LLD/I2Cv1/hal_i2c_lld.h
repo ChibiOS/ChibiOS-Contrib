@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023 HorrorTroll
-    ChibiOS - Copyright (C) 2023 Zhaqian
+    ChibiOS - Copyright (C) 2024 HorrorTroll
+    ChibiOS - Copyright (C) 2024 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -118,28 +118,6 @@
 #if !defined(AT32_I2C_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
 #define AT32_I2C_DMA_ERROR_HOOK(i2cp)       osalSysHalt("DMA failure")
 #endif
-
-#if AT32_DMA_SUPPORTS_DMAMUX && AT32_DMA_USE_DMAMUX
-
-/**
- * @brief   I2C1 DMA MUX setting.
- */
-#if !defined(AT32_I2C_I2C1_RX_DMAMUX_CHANNEL) || \
-    !defined(AT32_I2C_I2C1_TX_DMAMUX_CHANNEL) || defined(__DOXYGEN__)
-#define AT32_I2C_I2C1_RX_DMAMUX_CHANNEL     0
-#define AT32_I2C_I2C1_TX_DMAMUX_CHANNEL     0
-#endif
-
-/**
- * @brief   I2C2 DMA MUX setting.
- */
-#if !defined(AT32_I2C_I2C2_RX_DMAMUX_CHANNEL) || \
-    !defined(AT32_I2C_I2C2_TX_DMAMUX_CHANNEL) || defined(__DOXYGEN__)
-#define AT32_I2C_I2C2_RX_DMAMUX_CHANNEL     0
-#define AT32_I2C_I2C2_TX_DMAMUX_CHANNEL     0
-#endif
-
-#endif
 /** @} */
 
 /*===========================================================================*/
@@ -184,7 +162,7 @@
 #endif
 
 /* Check clock range. */
-#if !(I2C_CLK_FREQ >= 2) && (I2C_CLK_FREQ <= 120)
+#if !(I2C_CLK_FREQ >= 2) && (I2C_CLK_FREQ <= 72)
 #error "I2C peripheral clock frequency out of range."
 #endif
 

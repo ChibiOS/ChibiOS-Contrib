@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023 HorrorTroll
-    ChibiOS - Copyright (C) 2023 Zhaqian
+    ChibiOS - Copyright (C) 2024 HorrorTroll
+    ChibiOS - Copyright (C) 2024 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -60,14 +60,25 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#define AT32_ADC_ADC1_DMAMUX_CHANNEL       1
+#else
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#endif
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
 #define AT32_CAN_MAX_FILTERS               14
 
 /* DMA attributes.*/
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_DMA_SUPPORTS_DMAMUX           TRUE
+#else
+#define AT32_DMA_SUPPORTS_DMAMUX           FALSE
+#endif
+
 #define AT32_DMA1_NUM_CHANNELS             7
 #define AT32_DMA2_NUM_CHANNELS             7
 
@@ -78,6 +89,7 @@
 /* FLASH attributes.*/
 #define AT32_FLASH_NUMBER_OF_BANKS         1
 #define AT32_FLASH_SECTOR_SIZE             1024U
+
 #if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
 #define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
 #endif
@@ -91,12 +103,28 @@
 
 /* I2C attributes.*/
 #define AT32_HAS_I2C1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C1_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C1_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 7)
 #define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#endif
 
 #define AT32_HAS_I2C2                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C2_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C2_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
 #define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
@@ -107,20 +135,42 @@
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 4)
+#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      4
+#else
 #define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#endif
 
 /* SPI attributes.*/
 #define AT32_HAS_SPI1                      TRUE
 #define AT32_SPI1_SUPPORTS_I2S             TRUE
 #define AT32_SPI1_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI1_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI1_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
 #define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#endif
 
 #define AT32_HAS_SPI2                      TRUE
 #define AT32_SPI2_SUPPORTS_I2S             TRUE
 #define AT32_SPI2_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI2_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI2_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
 #define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#endif
 
 /* TMR attributes.*/
 #define AT32_TMR_MAX_CHANNELS              4
@@ -159,22 +209,61 @@
 
 /* USART attributes.*/
 #define AT32_HAS_USART1                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART1_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART1_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 5)
 #define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 #define AT32_HAS_USART2                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART2_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART2_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 6)
 #define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#endif
 
 #define AT32_HAS_USART3                    FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART3_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART3_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 3)
 #define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 2)
+#endif
 
 #define AT32_HAS_UART4                     FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART4_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART4_TX_DMAMUX_CHANNEL  1
+#else
 #define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 3)
 #define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 5)
+#endif
 
 #define AT32_HAS_UART5                     FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART5_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART5_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART5_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART5_TX_DMAMUX_CHANNEL  1
+#endif
 
 /* USB attributes.*/
 #define AT32_OTG_STEPPING                  1
@@ -196,14 +285,25 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#define AT32_ADC_ADC1_DMAMUX_CHANNEL       1
+#else
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#endif
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
 #define AT32_CAN_MAX_FILTERS               14
 
 /* DMA attributes.*/
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_DMA_SUPPORTS_DMAMUX           TRUE
+#else
+#define AT32_DMA_SUPPORTS_DMAMUX           FALSE
+#endif
+
 #define AT32_DMA1_NUM_CHANNELS             7
 #define AT32_DMA2_NUM_CHANNELS             7
 
@@ -214,6 +314,7 @@
 /* FLASH attributes.*/
 #define AT32_FLASH_NUMBER_OF_BANKS         1
 #define AT32_FLASH_SECTOR_SIZE             2048U
+
 #if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
 #define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
 #endif
@@ -227,12 +328,28 @@
 
 /* I2C attributes.*/
 #define AT32_HAS_I2C1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C1_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C1_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 7)
 #define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#endif
 
 #define AT32_HAS_I2C2                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C2_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C2_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
 #define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
@@ -243,20 +360,42 @@
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 4)
+#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      4
+#else
 #define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#endif
 
 /* SPI attributes.*/
 #define AT32_HAS_SPI1                      TRUE
 #define AT32_SPI1_SUPPORTS_I2S             TRUE
 #define AT32_SPI1_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI1_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI1_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
 #define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#endif
 
 #define AT32_HAS_SPI2                      TRUE
 #define AT32_SPI2_SUPPORTS_I2S             TRUE
 #define AT32_SPI2_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI2_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI2_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
 #define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#endif
 
 /* TMR attributes.*/
 #define AT32_TMR_MAX_CHANNELS              4
@@ -295,22 +434,61 @@
 
 /* USART attributes.*/
 #define AT32_HAS_USART1                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART1_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART1_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 5)
 #define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 #define AT32_HAS_USART2                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART2_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART2_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 6)
 #define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#endif
 
 #define AT32_HAS_USART3                    FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART3_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART3_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 3)
 #define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 2)
+#endif
 
 #define AT32_HAS_UART4                     FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART4_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART4_TX_DMAMUX_CHANNEL  1
+#else
 #define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 3)
 #define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 5)
+#endif
 
 #define AT32_HAS_UART5                     FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART5_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART5_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART5_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART5_TX_DMAMUX_CHANNEL  1
+#endif
 
 /* USB attributes.*/
 #define AT32_OTG_STEPPING                  1
@@ -332,14 +510,25 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#define AT32_ADC_ADC1_DMAMUX_CHANNEL       1
+#else
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#endif
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
 #define AT32_CAN_MAX_FILTERS               14
 
 /* DMA attributes.*/
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_DMA_SUPPORTS_DMAMUX           TRUE
+#else
+#define AT32_DMA_SUPPORTS_DMAMUX           FALSE
+#endif
+
 #define AT32_DMA1_NUM_CHANNELS             7
 #define AT32_DMA2_NUM_CHANNELS             7
 
@@ -350,6 +539,7 @@
 /* FLASH attributes.*/
 #define AT32_FLASH_NUMBER_OF_BANKS         1
 #define AT32_FLASH_SECTOR_SIZE             1024U
+
 #if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
 #define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
 #endif
@@ -363,12 +553,28 @@
 
 /* I2C attributes.*/
 #define AT32_HAS_I2C1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C1_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C1_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 7)
 #define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#endif
 
 #define AT32_HAS_I2C2                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C2_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C2_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
 #define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
@@ -379,20 +585,42 @@
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 4)
+#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      4
+#else
 #define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#endif
 
 /* SPI attributes.*/
 #define AT32_HAS_SPI1                      TRUE
 #define AT32_SPI1_SUPPORTS_I2S             TRUE
 #define AT32_SPI1_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI1_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI1_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
 #define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#endif
 
 #define AT32_HAS_SPI2                      TRUE
 #define AT32_SPI2_SUPPORTS_I2S             TRUE
 #define AT32_SPI2_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI2_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI2_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
 #define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#endif
 
 /* TMR attributes.*/
 #define AT32_TMR_MAX_CHANNELS              4
@@ -431,22 +659,61 @@
 
 /* USART attributes.*/
 #define AT32_HAS_USART1                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART1_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART1_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 5)
 #define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 #define AT32_HAS_USART2                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART2_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART2_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 6)
 #define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#endif
 
 #define AT32_HAS_USART3                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART3_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART3_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 3)
 #define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 2)
+#endif
 
 #define AT32_HAS_UART4                     FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART4_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART4_TX_DMAMUX_CHANNEL  1
+#else
 #define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 3)
 #define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 5)
+#endif
 
 #define AT32_HAS_UART5                     FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART5_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART5_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART5_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART5_TX_DMAMUX_CHANNEL  1
+#endif
 
 /* USB attributes.*/
 #define AT32_OTG_STEPPING                  1
@@ -468,14 +735,25 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#define AT32_ADC_ADC1_DMAMUX_CHANNEL       1
+#else
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#endif
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
 #define AT32_CAN_MAX_FILTERS               14
 
 /* DMA attributes.*/
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_DMA_SUPPORTS_DMAMUX           TRUE
+#else
+#define AT32_DMA_SUPPORTS_DMAMUX           FALSE
+#endif
+
 #define AT32_DMA1_NUM_CHANNELS             7
 #define AT32_DMA2_NUM_CHANNELS             7
 
@@ -486,6 +764,7 @@
 /* FLASH attributes.*/
 #define AT32_FLASH_NUMBER_OF_BANKS         1
 #define AT32_FLASH_SECTOR_SIZE             2048U
+
 #if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
 #define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
 #endif
@@ -499,12 +778,28 @@
 
 /* I2C attributes.*/
 #define AT32_HAS_I2C1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C1_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C1_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 7)
 #define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#endif
 
 #define AT32_HAS_I2C2                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C2_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C2_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
 #define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
@@ -515,20 +810,42 @@
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 4)
+#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      4
+#else
 #define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#endif
 
 /* SPI attributes.*/
 #define AT32_HAS_SPI1                      TRUE
 #define AT32_SPI1_SUPPORTS_I2S             TRUE
 #define AT32_SPI1_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI1_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI1_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
 #define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#endif
 
 #define AT32_HAS_SPI2                      TRUE
 #define AT32_SPI2_SUPPORTS_I2S             TRUE
 #define AT32_SPI2_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI2_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI2_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
 #define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#endif
 
 /* TMR attributes.*/
 #define AT32_TMR_MAX_CHANNELS              4
@@ -567,22 +884,61 @@
 
 /* USART attributes.*/
 #define AT32_HAS_USART1                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART1_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART1_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 5)
 #define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 #define AT32_HAS_USART2                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART2_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART2_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 6)
 #define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#endif
 
 #define AT32_HAS_USART3                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART3_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART3_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 3)
 #define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 2)
+#endif
 
 #define AT32_HAS_UART4                     FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART4_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART4_TX_DMAMUX_CHANNEL  1
+#else
 #define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 3)
 #define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 5)
+#endif
 
 #define AT32_HAS_UART5                     FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART5_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART5_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART5_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART5_TX_DMAMUX_CHANNEL  1
+#endif
 
 /* USB attributes.*/
 #define AT32_OTG_STEPPING                  1
@@ -604,14 +960,25 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#define AT32_ADC_ADC1_DMAMUX_CHANNEL       1
+#else
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#endif
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
 #define AT32_CAN_MAX_FILTERS               14
 
 /* DMA attributes.*/
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_DMA_SUPPORTS_DMAMUX           TRUE
+#else
+#define AT32_DMA_SUPPORTS_DMAMUX           FALSE
+#endif
+
 #define AT32_DMA1_NUM_CHANNELS             7
 #define AT32_DMA2_NUM_CHANNELS             7
 
@@ -622,6 +989,7 @@
 /* FLASH attributes.*/
 #define AT32_FLASH_NUMBER_OF_BANKS         1
 #define AT32_FLASH_SECTOR_SIZE             1024U
+
 #if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
 #define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
 #endif
@@ -635,12 +1003,28 @@
 
 /* I2C attributes.*/
 #define AT32_HAS_I2C1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C1_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C1_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 7)
 #define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#endif
 
 #define AT32_HAS_I2C2                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C2_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C2_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
 #define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
@@ -651,20 +1035,42 @@
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 4)
+#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      4
+#else
 #define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#endif
 
 /* SPI attributes.*/
 #define AT32_HAS_SPI1                      TRUE
 #define AT32_SPI1_SUPPORTS_I2S             TRUE
 #define AT32_SPI1_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI1_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI1_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
 #define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#endif
 
 #define AT32_HAS_SPI2                      TRUE
 #define AT32_SPI2_SUPPORTS_I2S             TRUE
 #define AT32_SPI2_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI2_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI2_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
 #define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#endif
 
 /* TMR attributes.*/
 #define AT32_TMR_MAX_CHANNELS              4
@@ -703,22 +1109,61 @@
 
 /* USART attributes.*/
 #define AT32_HAS_USART1                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART1_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART1_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 5)
 #define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 #define AT32_HAS_USART2                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART2_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART2_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 6)
 #define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#endif
 
 #define AT32_HAS_USART3                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART3_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART3_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 3)
 #define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 2)
+#endif
 
 #define AT32_HAS_UART4                     TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART4_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART4_TX_DMAMUX_CHANNEL  1
+#else
 #define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 3)
 #define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 5)
+#endif
 
 #define AT32_HAS_UART5                     TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART5_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART5_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART5_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART5_TX_DMAMUX_CHANNEL  1
+#endif
 
 /* USB attributes.*/
 #define AT32_OTG_STEPPING                  1
@@ -740,14 +1185,25 @@
  */
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#define AT32_ADC_ADC1_DMAMUX_CHANNEL       1
+#else
+#define AT32_ADC_ADC1_DMA_STREAM           AT32_DMA_STREAM_ID(1, 1)
+#endif
 
 /* CAN attributes.*/
 #define AT32_HAS_CAN1                      TRUE
 #define AT32_CAN_MAX_FILTERS               14
 
 /* DMA attributes.*/
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
 #define AT32_DMA_SUPPORTS_DMAMUX           TRUE
+#else
+#define AT32_DMA_SUPPORTS_DMAMUX           FALSE
+#endif
+
 #define AT32_DMA1_NUM_CHANNELS             7
 #define AT32_DMA2_NUM_CHANNELS             7
 
@@ -758,6 +1214,7 @@
 /* FLASH attributes.*/
 #define AT32_FLASH_NUMBER_OF_BANKS         1
 #define AT32_FLASH_SECTOR_SIZE             2048U
+
 #if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
 #define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
 #endif
@@ -771,12 +1228,28 @@
 
 /* I2C attributes.*/
 #define AT32_HAS_I2C1                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C1_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C1_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 7)
 #define AT32_I2C_I2C1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#endif
 
 #define AT32_HAS_I2C2                      TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
+#define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#define AT32_I2C_I2C2_RX_DMAMUX_CHANNEL    2
+#define AT32_I2C_I2C2_TX_DMAMUX_CHANNEL    3
+#else
 #define AT32_I2C_I2C2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
 #define AT32_I2C_I2C2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 /* ERTC attributes.*/
 #define AT32_HAS_ERTC                      TRUE
@@ -787,20 +1260,42 @@
 
 /* SDIO attributes.*/
 #define AT32_HAS_SDIO1                     TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 4)
+#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      4
+#else
 #define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#endif
 
 /* SPI attributes.*/
 #define AT32_HAS_SPI1                      TRUE
 #define AT32_SPI1_SUPPORTS_I2S             TRUE
 #define AT32_SPI1_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI1_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI1_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI1_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 2)
 #define AT32_SPI_SPI1_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 3)
+#endif
 
 #define AT32_HAS_SPI2                      TRUE
 #define AT32_SPI2_SUPPORTS_I2S             TRUE
 #define AT32_SPI2_I2S_FULLDUPLEX           FALSE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 6)
+#define AT32_SPI_SPI2_RX_DMAMUX_CHANNEL    5
+#define AT32_SPI_SPI2_TX_DMAMUX_CHANNEL    6
+#else
 #define AT32_SPI_SPI2_RX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 4)
 #define AT32_SPI_SPI2_TX_DMA_STREAM        AT32_DMA_STREAM_ID(1, 5)
+#endif
 
 /* TMR attributes.*/
 #define AT32_TMR_MAX_CHANNELS              4
@@ -839,22 +1334,61 @@
 
 /* USART attributes.*/
 #define AT32_HAS_USART1                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART1_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART1_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART1_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 5)
 #define AT32_UART_USART1_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 4)
+#endif
 
 #define AT32_HAS_USART2                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART2_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART2_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART2_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 6)
 #define AT32_UART_USART2_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#endif
 
 #define AT32_HAS_USART3                    TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_USART3_RX_DMAMUX_CHANNEL 7
+#define AT32_UART_USART3_TX_DMAMUX_CHANNEL 1
+#else
 #define AT32_UART_USART3_RX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 3)
 #define AT32_UART_USART3_TX_DMA_STREAM     AT32_DMA_STREAM_ID(1, 2)
+#endif
 
 #define AT32_HAS_UART4                     TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART4_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART4_TX_DMAMUX_CHANNEL  1
+#else
 #define AT32_UART_UART4_RX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 3)
 #define AT32_UART_UART4_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 5)
+#endif
 
 #define AT32_HAS_UART5                     TRUE
+
+#if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
+#define AT32_UART_UART5_RX_DMA_STREAM      AT32_DMA_STREAM_ID(1, 7)
+#define AT32_UART_UART5_TX_DMA_STREAM      AT32_DMA_STREAM_ID(2, 1)
+#define AT32_UART_UART5_RX_DMAMUX_CHANNEL  7
+#define AT32_UART_UART5_TX_DMAMUX_CHANNEL  1
+#endif
 
 /* USB attributes.*/
 #define AT32_OTG_STEPPING                  1

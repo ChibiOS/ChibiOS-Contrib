@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023 HorrorTroll
-    ChibiOS - Copyright (C) 2023 Zhaqian
+    ChibiOS - Copyright (C) 2024 HorrorTroll
+    ChibiOS - Copyright (C) 2024 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,6 +21,13 @@
  * @brief   DMA helper driver code.
  *
  * @addtogroup AT32_DMA
+ * @details DMA sharing helper driver. In the AT32 the DMA streams are a
+ *          shared resource, this driver allows to allocate and free DMA
+ *          streams at runtime in order to allow all the other device
+ *          drivers to coordinate the access to the resource.
+ * @note    The DMA STS handlers are all declared into this module because
+ *          sharing, the various device drivers can associate a callback to
+ *          STSs when allocating streams.
  * @{
  */
 
@@ -37,12 +44,12 @@
 /**
  * @brief   Mask of the DMA1 streams in @p dma_streams_mask.
  */
-#define AT32_DMA1_STREAMS_MASK     ((1U << AT32_DMA1_NUM_CHANNELS) - 1U)
+#define AT32_DMA1_STREAMS_MASK      ((1U << AT32_DMA1_NUM_CHANNELS) - 1U)
 
 /**
  * @brief   Mask of the DMA2 streams in @p dma_streams_mask.
  */
-#define AT32_DMA2_STREAMS_MASK     (((1U << AT32_DMA2_NUM_CHANNELS) -     \
+#define AT32_DMA2_STREAMS_MASK      (((1U << AT32_DMA2_NUM_CHANNELS) -      \
                                       1U) << AT32_DMA1_NUM_CHANNELS)
 
 #define DMA1_CH1_VARIANT            0
@@ -496,22 +503,6 @@ const at32_dma_stream_t *dmaStreamAllocI(uint32_t id,
     startid = id;
     endid   = id;
   }
-#if AT32_DMA_SUPPORTS_DMAMUX == TRUE
-  else if (id == AT32_DMA_STREAM_ID_ANY) {
-    startid = 0U;
-    endid   = AT32_DMA_STREAMS - 1U;
-  }
-  else if (id == AT32_DMA_STREAM_ID_ANY_DMA1) {
-    startid = 0U;
-    endid   = AT32_DMA1_NUM_CHANNELS - 1U;
-  }
-#if AT32_DMA2_NUM_CHANNELS > 0
-  else if (id == AT32_DMA_STREAM_ID_ANY_DMA2) {
-    startid = AT32_DMA1_NUM_CHANNELS;
-    endid   = AT32_DMA_STREAMS - 1U;
-  }
-#endif
-#endif
   else {
     osalDbgCheck(false);
     return NULL;
@@ -534,13 +525,6 @@ const at32_dma_stream_t *dmaStreamAllocI(uint32_t id,
 #if AT32_DMA2_NUM_CHANNELS > 0
       if ((AT32_DMA2_STREAMS_MASK & mask) != 0U) {
         crmEnableDMA2(true);
-      }
-#endif
-
-#if (AT32_DMA_SUPPORTS_DMAMUX == TRUE) && defined(crmEnableDMAMUX)
-      /* Enabling DMAMUX if present.*/
-      if (dma.allocated_mask != 0U) {
-        crmEnableDMAMUX(true);
       }
 #endif
 
@@ -638,13 +622,6 @@ void dmaStreamFreeI(const at32_dma_stream_t *dmastp) {
 #if AT32_DMA2_NUM_CHANNELS > 0
   if ((dma.allocated_mask & AT32_DMA2_STREAMS_MASK) == 0U) {
     crmDisableDMA2();
-  }
-#endif
-
-#if (AT32_DMA_SUPPORTS_DMAMUX == TRUE) && defined(crmDisableDMAMUX)
-  /* Shutting down DMAMUX if present.*/
-  if (dma.allocated_mask == 0U) {
-    crmDisableDMAMUX();
   }
 #endif
 }
