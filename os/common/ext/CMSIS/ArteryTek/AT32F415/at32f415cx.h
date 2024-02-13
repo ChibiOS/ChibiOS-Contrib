@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    at32f415cx.h
-  * @author  Artery Technology & HorrorTroll
+  * @author  Artery Technology & HorrorTroll & Zhaqian
   * @version v2.1.1
   * @date    26-October-2023
   * @brief   AT32F415Cx header file.
@@ -2541,13 +2541,13 @@ typedef struct
 #define IOMUX_REMAP_USART3_MUX_0            (0x1U << IOMUX_REMAP_USART3_MUX_Pos)    /*!< 0x00000010 */
 #define IOMUX_REMAP_USART3_MUX_1            (0x2U << IOMUX_REMAP_USART3_MUX_Pos)    /*!< 0x00000020 */
 
-#define IOMUX_REMAP_USART3_MUX_MUX1         0x00000000U                             /*!< TX/PB10, RX/PB11, CK/PB12, CTS/PB13, RTS/PB14 */
-#define IOMUX_REMAP_USART3_MUX_MUX2_Pos     (4U)                                    /*!< 0x00000010 */
+#define IOMUX_REMAP_USART3_MUX_MUX0         0x00000000U                             /*!< TX/PB10, RX/PB11, CK/PB12, CTS/PB13, RTS/PB14 */
+#define IOMUX_REMAP_USART3_MUX_MUX1_Pos     (4U)                                    /*!< 0x00000010 */
+#define IOMUX_REMAP_USART3_MUX_MUX1_Msk     (0x1U << IOMUX_REMAP_USART3_MUX_MUX1_Pos)
+#define IOMUX_REMAP_USART3_MUX_MUX1         IOMUX_REMAP_USART3_MUX_MUX1_Msk         /*!< TX/PC10, RX/PC11, CK/PC12, CTS/PB13, RTS/PB14 */
+#define IOMUX_REMAP_USART3_MUX_MUX2_Pos     (5U)                                    /*!< 0x00000020 */
 #define IOMUX_REMAP_USART3_MUX_MUX2_Msk     (0x1U << IOMUX_REMAP_USART3_MUX_MUX2_Pos)
-#define IOMUX_REMAP_USART3_MUX_MUX2         IOMUX_REMAP_USART3_MUX_MUX2_Msk         /*!< TX/PC10, RX/PC11, CK/PC12, CTS/PB13, RTS/PB14 */
-#define IOMUX_REMAP_USART3_MUX_MUX3_Pos     (5U)                                    /*!< 0x00000020 */
-#define IOMUX_REMAP_USART3_MUX_MUX3_Msk     (0x1U << IOMUX_REMAP_USART3_MUX_MUX3_Pos)
-#define IOMUX_REMAP_USART3_MUX_MUX3         IOMUX_REMAP_USART3_MUX_MUX3_Msk         /*!< TX/PA7, RX/PA6, CK/PA5, CTS/PB1, RTS/PB0 */
+#define IOMUX_REMAP_USART3_MUX_MUX2         IOMUX_REMAP_USART3_MUX_MUX2_Msk         /*!< TX/PA7, RX/PA6, CK/PA5, CTS/PB1, RTS/PB0 */
 
 /*!< TMR1_MUX configuration */
 #define IOMUX_REMAP_TMR1_MUX_Pos            (6U)
@@ -2556,10 +2556,10 @@ typedef struct
 #define IOMUX_REMAP_TMR1_MUX_0              (0x1U << IOMUX_REMAP_TMR1_MUX_Pos)      /*!< 0x00000040 */
 #define IOMUX_REMAP_TMR1_MUX_1              (0x2U << IOMUX_REMAP_TMR1_MUX_Pos       /*!< 0x00000080 */
 
-#define IOMUX_REMAP_TMR1_MUX_MUX1           0x00000000U                             /*!< EXT/PA12, CH1/PA8, CH2/PA9, CH3/PA10, CH4/PA11, BRK/PB12, CH1C/PB13, CH2C/PB14, CH3C/PB15 */
-#define IOMUX_REMAP_TMR1_MUX_MUX2_Pos       (6U)
-#define IOMUX_REMAP_TMR1_MUX_MUX2_Msk       (0x1U << IOMUX_REMAP_TMR1_MUX_MUX2_Pos) /*!< 0x00000040 */
-#define IOMUX_REMAP_TMR1_MUX_MUX2           IOMUX_REMAP_TMR1_MUX_MUX2_Msk           /*!< EXT/PA12, CH1/PA8, CH2/PA9, CH3/PA10, CH4/PA11, BRK/PA6, CH1C/PA7, CH2C/PB0, CH3C/PB1 */
+#define IOMUX_REMAP_TMR1_MUX_MUX0           0x00000000U                             /*!< EXT/PA12, CH1/PA8, CH2/PA9, CH3/PA10, CH4/PA11, BRK/PB12, CH1C/PB13, CH2C/PB14, CH3C/PB15 */
+#define IOMUX_REMAP_TMR1_MUX_MUX1_Pos       (6U)
+#define IOMUX_REMAP_TMR1_MUX_MUX1_Msk       (0x1U << IOMUX_REMAP_TMR1_MUX_MUX1_Pos) /*!< 0x00000040 */
+#define IOMUX_REMAP_TMR1_MUX_MUX1           IOMUX_REMAP_TMR1_MUX_MUX1_Msk           /*!< EXT/PA12, CH1/PA8, CH2/PA9, CH3/PA10, CH4/PA11, BRK/PA6, CH1C/PA7, CH2C/PB0, CH3C/PB1 */
 
 /*!< TMR2_MUX configuration */
 #define IOMUX_REMAP_TMR2_MUX_Pos            (8U)
@@ -2568,16 +2568,16 @@ typedef struct
 #define IOMUX_REMAP_TMR2_MUX_0              (0x1U << IOMUX_REMAP_TMR2_MUX_Pos)      /*!< 0x00000100 */
 #define IOMUX_REMAP_TMR2_MUX_1              (0x2U << IOMUX_REMAP_TMR2_MUX_Pos)      /*!< 0x00000200 */
 
-#define IOMUX_REMAP_TMR2_MUX_MUX1           0x00000000U                             /*!< CH1/EXT/PA0, CH2/PA1, CH3/PA2, CH4/PA3 */
-#define IOMUX_REMAP_TMR2_MUX_MUX2_Pos       (8U)
-#define IOMUX_REMAP_TMR2_MUX_MUX2_Msk       (0x1U << IOMUX_REMAP_TMR2_MUX_MUX2_Pos) /*!< 0x00000100 */
-#define IOMUX_REMAP_TMR2_MUX_MUX2           IOMUX_REMAP_TMR2_MUX_MUX2_Msk           /*!< CH1/EXT/PA15, CH2/PB3, CH3/PA2, CH4/PA3 */
-#define IOMUX_REMAP_TMR2_MUX_MUX3_Pos       (9U)
-#define IOMUX_REMAP_TMR2_MUX_MUX3_Msk       (0x1U << IOMUX_REMAP_TMR2_MUX_MUX3_Pos) /*!< 0x00000200 */
-#define IOMUX_REMAP_TMR2_MUX_MUX3           IOMUX_REMAP_TMR2_MUX_MUX3_Msk           /*!< CH1/EXT/PA0, CH2/PA1, CH3/PB10, CH4/PB11 */
-#define IOMUX_REMAP_TMR2_MUX_MUX4_Pos       (8U)
-#define IOMUX_REMAP_TMR2_MUX_MUX4_Msk       (0x3U << IOMUX_REMAP_TMR2_MUX_MUX4_Pos) /*!< 0x00000300 */
-#define IOMUX_REMAP_TMR2_MUX_MUX4           IOMUX_REMAP_TMR2_MUX_MUX4_Msk           /*!< CH1/EXT/PA15, CH2/PB3, CH3/PB10, CH4/PB11 */
+#define IOMUX_REMAP_TMR2_MUX_MUX0           0x00000000U                             /*!< CH1/EXT/PA0, CH2/PA1, CH3/PA2, CH4/PA3 */
+#define IOMUX_REMAP_TMR2_MUX_MUX1_Pos       (8U)
+#define IOMUX_REMAP_TMR2_MUX_MUX1_Msk       (0x1U << IOMUX_REMAP_TMR2_MUX_MUX1_Pos) /*!< 0x00000100 */
+#define IOMUX_REMAP_TMR2_MUX_MUX1           IOMUX_REMAP_TMR2_MUX_MUX1_Msk           /*!< CH1/EXT/PA15, CH2/PB3, CH3/PA2, CH4/PA3 */
+#define IOMUX_REMAP_TMR2_MUX_MUX2_Pos       (9U)
+#define IOMUX_REMAP_TMR2_MUX_MUX2_Msk       (0x1U << IOMUX_REMAP_TMR2_MUX_MUX2_Pos) /*!< 0x00000200 */
+#define IOMUX_REMAP_TMR2_MUX_MUX2           IOMUX_REMAP_TMR2_MUX_MUX2_Msk           /*!< CH1/EXT/PA0, CH2/PA1, CH3/PB10, CH4/PB11 */
+#define IOMUX_REMAP_TMR2_MUX_MUX3_Pos       (8U)
+#define IOMUX_REMAP_TMR2_MUX_MUX3_Msk       (0x3U << IOMUX_REMAP_TMR2_MUX_MUX3_Pos) /*!< 0x00000300 */
+#define IOMUX_REMAP_TMR2_MUX_MUX3           IOMUX_REMAP_TMR2_MUX_MUX3_Msk           /*!< CH1/EXT/PA15, CH2/PB3, CH3/PB10, CH4/PB11 */
 
 /*!< TMR3_MUX configuration */
 #define IOMUX_REMAP_TMR3_MUX_Pos            (10U)
@@ -2586,7 +2586,7 @@ typedef struct
 #define IOMUX_REMAP_TMR3_MUX_0              (0x1U << IOMUX_REMAP_TMR3_MUX_Pos)      /*!< 0x00000400 */
 #define IOMUX_REMAP_TMR3_MUX_1              (0x2U << IOMUX_REMAP_TMR3_MUX_Pos)      /*!< 0x00000800 */
 
-#define IOMUX_REMAP_TMR3_MUX_MUX1           0x00000000U                             /*!< CH1/PA6, CH2/PA7, CH3/PB0, CH4/PB1 */
+#define IOMUX_REMAP_TMR3_MUX_MUX0           0x00000000U                             /*!< CH1/PA6, CH2/PA7, CH3/PB0, CH4/PB1 */
 #define IOMUX_REMAP_TMR3_MUX_MUX2_Pos       (11U)
 #define IOMUX_REMAP_TMR3_MUX_MUX2_Msk       (0x1U << IOMUX_REMAP_TMR3_MUX_MUX2_Pos) /*!< 0x00000800 */
 #define IOMUX_REMAP_TMR3_MUX_MUX2           IOMUX_REMAP_TMR3_MUX_MUX2_Msk           /*!< CH1/PB4, CH2/PB5, CH3/PB0, CH4/PB1 */
@@ -2601,7 +2601,7 @@ typedef struct
 #define IOMUX_REMAP_CAN1_MUX_0              (0x1U << IOMUX_REMAP_CAN1_MUX_Pos)      /*!< 0x00002000 */
 #define IOMUX_REMAP_CAN1_MUX_1              (0x2U << IOMUX_REMAP_CAN1_MUX_Pos)      /*!< 0x00004000 */
 
-#define IOMUX_REMAP_CAN1_MUX_MUX1           0x00000000U                             /*!< RX/PA11, TX/PA12 */
+#define IOMUX_REMAP_CAN1_MUX_MUX0           0x00000000U                             /*!< RX/PA11, TX/PA12 */
 #define IOMUX_REMAP_CAN1_MUX_MUX2_Pos       (14U)
 #define IOMUX_REMAP_CAN1_MUX_MUX2_Msk       (0x1U << IOMUX_REMAP_CAN1_MUX_MUX2_Pos) /*!< 0x00004000 */
 #define IOMUX_REMAP_CAN1_MUX_MUX2           IOMUX_REMAP_CAN1_MUX_MUX2_Msk           /*!< RX/PB8, TX/PB9 */
@@ -2949,10 +2949,18 @@ typedef struct
 /*****************  Bit definition for IOMUX_REMAP2 register  *****************/
 /*!< CMP_MUX configuration */
 #define IOMUX_REMAP2_CMP_MUX_Pos            (26U)
-#define IOMUX_REMAP2_CMP_MUX_Msk            (0x3U << IOMUX_REMAP2_CMP_MUX_Pos)    /*!< 0x0C000000 */
-#define IOMUX_REMAP2_CMP_MUX                IOMUX_REMAP2_CMP_MUX_Msk              /*!< CMP_MUX[1:0] bits (CMP internal remap) */
-#define IOMUX_REMAP2_CMP_MUX_0              (0x1U << IOMUX_REMAP2_CMP_MUX_Pos)    /*!< 0x04000000 */
-#define IOMUX_REMAP2_CMP_MUX_1              (0x2U << IOMUX_REMAP2_CMP_MUX_Pos)    /*!< 0x08000000 */
+#define IOMUX_REMAP2_CMP_MUX_Msk            (0x3U << IOMUX_REMAP2_CMP_MUX_Pos)      /*!< 0x0C000000 */
+#define IOMUX_REMAP2_CMP_MUX                IOMUX_REMAP2_CMP_MUX_Msk                /*!< CMP_MUX[1:0] bits (CMP internal remap) */
+#define IOMUX_REMAP2_CMP_MUX_0              (0x1U << IOMUX_REMAP2_CMP_MUX_Pos)      /*!< 0x04000000 */
+#define IOMUX_REMAP2_CMP_MUX_1              (0x2U << IOMUX_REMAP2_CMP_MUX_Pos)      /*!< 0x08000000 */
+
+#define IOMUX_REMAP2_CMP_MUX_MUX0           0x00000000U                             /*!< CMP1_OUT is connected to PA0, CMP2_OUT is connected to PA2 */
+#define IOMUX_REMAP2_CMP_MUX_MUX1_Pos       (26U)
+#define IOMUX_REMAP2_CMP_MUX_MUX1_Msk       (0x1U << IOMUX_REMAP2_CMP_MUX_MUX1_Pos) /*!< 0x04000000 */
+#define IOMUX_REMAP2_CMP_MUX_MUX1           IOMUX_REMAP2_CMP_MUX_MUX1_Msk           /*!< CMP1_OUT is connected to PA6, CMP2_OUT is connected to PA7 */
+#define IOMUX_REMAP2_CMP_MUX_MUX2_Pos       (27U)
+#define IOMUX_REMAP2_CMP_MUX_MUX2_Msk       (0x1U << IOMUX_REMAP2_CMP_MUX_MUX2_Pos) /*!< 0x08000000 */
+#define IOMUX_REMAP2_CMP_MUX_MUX2           IOMUX_REMAP2_CMP_MUX_MUX2_Msk           /*!< CMP1_OUT is connected to PA11, CMP2_OUT is connected to PA12 */
 
 /*****************  Bit definition for IOMUX_REMAP3 register  *****************/
 /*!< TMR9_GMUX configuration */
@@ -2964,6 +2972,11 @@ typedef struct
 #define IOMUX_REMAP3_TMR9_GMUX_2            (0x4U << IOMUX_REMAP3_TMR9_GMUX_Pos)    /*!< 0x00000004 */
 #define IOMUX_REMAP3_TMR9_GMUX_3            (0x8U << IOMUX_REMAP3_TMR9_GMUX_Pos)    /*!< 0x00000008 */
 
+#define IOMUX_REMAP3_TMR9_GMUX_MUX0         0x00000000U                             /*!< CH1/PA2, CH2/PA3 */
+#define IOMUX_REMAP3_TMR9_GMUX_MUX2_Pos     (1U)                                    /*!< 0x00000002 */
+#define IOMUX_REMAP3_TMR9_GMUX_MUX2_Msk     (0x1U << IOMUX_REMAP3_TMR9_GMUX_MUX2_Pos)
+#define IOMUX_REMAP3_TMR9_GMUX_MUX2         IOMUX_REMAP3_TMR9_GMUX_MUX2_Msk         /*!< CH1/PB14, CH2/PB15 */
+
 /*!< TMR10_GMUX configuration */
 #define IOMUX_REMAP3_TMR10_GMUX_Pos         (4U)
 #define IOMUX_REMAP3_TMR10_GMUX_Msk         (0xFU << IOMUX_REMAP3_TMR10_GMUX_Pos)   /*!< 0x000000F0 */
@@ -2973,6 +2986,11 @@ typedef struct
 #define IOMUX_REMAP3_TMR10_GMUX_2           (0x4U << IOMUX_REMAP3_TMR10_GMUX_Pos)   /*!< 0x00000040 */
 #define IOMUX_REMAP3_TMR10_GMUX_3           (0x8U << IOMUX_REMAP3_TMR10_GMUX_Pos)   /*!< 0x00000080 */
 
+#define IOMUX_REMAP3_TMR10_GMUX_MUX0        0x00000000U                             /*!< CH1/PB8 */
+#define IOMUX_REMAP3_TMR10_GMUX_MUX2_Pos    (5U)                                    /*!< 0x00000020 */
+#define IOMUX_REMAP3_TMR10_GMUX_MUX2_Msk    (0x1U << IOMUX_REMAP3_TMR10_GMUX_MUX2_Pos)
+#define IOMUX_REMAP3_TMR10_GMUX_MUX2        IOMUX_REMAP3_TMR10_GMUX_MUX2_Msk        /*!< CH1/PA6 */
+
 /*!< TMR11_GMUX configuration */
 #define IOMUX_REMAP3_TMR11_GMUX_Pos         (8U)
 #define IOMUX_REMAP3_TMR11_GMUX_Msk         (0xFU << IOMUX_REMAP3_TMR11_GMUX_Pos)   /*!< 0x00000F00 */
@@ -2981,6 +2999,11 @@ typedef struct
 #define IOMUX_REMAP3_TMR11_GMUX_1           (0x2U << IOMUX_REMAP3_TMR11_GMUX_Pos)   /*!< 0x00000200 */
 #define IOMUX_REMAP3_TMR11_GMUX_2           (0x4U << IOMUX_REMAP3_TMR11_GMUX_Pos)   /*!< 0x00000400 */
 #define IOMUX_REMAP3_TMR11_GMUX_3           (0x8U << IOMUX_REMAP3_TMR11_GMUX_Pos)   /*!< 0x00000800 */
+
+#define IOMUX_REMAP3_TMR11_GMUX_MUX0        0x00000000U                             /*!< CH1/PB9 */
+#define IOMUX_REMAP3_TMR11_GMUX_MUX2_Pos    (9U)                                    /*!< 0x00000002 */
+#define IOMUX_REMAP3_TMR11_GMUX_MUX2_Msk    (0x1U << IOMUX_REMAP3_TMR11_GMUX_MUX2_Pos)
+#define IOMUX_REMAP3_TMR11_GMUX_MUX2        IOMUX_REMAP3_TMR11_GMUX_MUX2_Msk        /*!< CH1/PA7 */
 
 /*****************  Bit definition for IOMUX_REMAP4 register  *****************/
 /*!< TMR1_GMUX configuration */
@@ -2992,13 +3015,13 @@ typedef struct
 #define IOMUX_REMAP4_TMR1_GMUX_2            (0x4U << IOMUX_REMAP4_TMR1_GMUX_Pos)    /*!< 0x00000004 */
 #define IOMUX_REMAP4_TMR1_GMUX_3            (0x8U << IOMUX_REMAP4_TMR1_GMUX_Pos)    /*!< 0x00000008 */
 
-#define IOMUX_REMAP4_TMR1_GMUX_MUX1         0x00000000U                             /*!< EXT/PA12, CH1/PA8, CH2/PA9, CH3/PA10, CH4/PA11, BRK/PB12, CH1C/PB13, CH2C/PB14, CH3C/PB15 */
-#define IOMUX_REMAP4_TMR1_GMUX_MUX2_Pos     (0U)                                    /*!< 0x00000001 */
+#define IOMUX_REMAP4_TMR1_GMUX_MUX0         0x00000000U                             /*!< EXT/PA12, CH1/PA8, CH2/PA9, CH3/PA10, CH4/PA11, BRK/PB12, CH1C/PB13, CH2C/PB14, CH3C/PB15 */
+#define IOMUX_REMAP4_TMR1_GMUX_MUX1_Pos     (0U)                                    /*!< 0x00000001 */
+#define IOMUX_REMAP4_TMR1_GMUX_MUX1_Msk     (0x1U << IOMUX_REMAP4_TMR1_GMUX_MUX1_Pos)
+#define IOMUX_REMAP4_TMR1_GMUX_MUX1         IOMUX_REMAP4_TMR1_GMUX_MUX1_Msk         /*!< EXT/PA12, CH1/PA8, CH2/PA9, CH3/PA10, CH4/PA11, BRK/PA6, CH1C/PA7, CH2C/PB0, CH3C/PB1 */
+#define IOMUX_REMAP4_TMR1_GMUX_MUX2_Pos     (1U)                                    /*!< 0x00000002 */
 #define IOMUX_REMAP4_TMR1_GMUX_MUX2_Msk     (0x1U << IOMUX_REMAP4_TMR1_GMUX_MUX2_Pos)
-#define IOMUX_REMAP4_TMR1_GMUX_MUX2         IOMUX_REMAP4_TMR1_GMUX_MUX2_Msk         /*!< EXT/PA12, CH1/PA8, CH2/PA9, CH3/PA10, CH4/PA11, BRK/PA6, CH1C/PA7, CH2C/PB0, CH3C/PB1 */
-#define IOMUX_REMAP4_TMR1_GMUX_MUX3_Pos     (1U)                                    /*!< 0x00000002 */
-#define IOMUX_REMAP4_TMR1_GMUX_MUX3_Msk     (0x1U << IOMUX_REMAP4_TMR1_GMUX_MUX3_Pos)
-#define IOMUX_REMAP4_TMR1_GMUX_MUX3         IOMUX_REMAP4_TMR1_GMUX_MUX3_Msk         /*!< EXT/PA0, CH1/PC6, CH2/PC7, CH3/PC8, CH4/PC9, BRK/PA6, CH1C/PA7, CH2C/PB0, CH3C/PB1 */
+#define IOMUX_REMAP4_TMR1_GMUX_MUX2         IOMUX_REMAP4_TMR1_GMUX_MUX2_Msk         /*!< EXT/PA0, CH1/PC6, CH2/PC7, CH3/PC8, CH4/PC9, BRK/PA6, CH1C/PA7, CH2C/PB0, CH3C/PB1 */
 
 /*!< TMR2_GMUX configuration */
 #define IOMUX_REMAP4_TMR2_GMUX_Pos          (4U)
@@ -3008,16 +3031,16 @@ typedef struct
 #define IOMUX_REMAP4_TMR2_GMUX_1            (0x2U << IOMUX_REMAP4_TMR2_GMUX_Pos)    /*!< 0x00000020 */
 #define IOMUX_REMAP4_TMR2_GMUX_2            (0x4U << IOMUX_REMAP4_TMR2_GMUX_Pos)    /*!< 0x00000040 */
 
-#define IOMUX_REMAP4_TMR2_GMUX_MUX1         0x00000000U                             /*!< CH1_EXT/PA0, CH2/PA1, CH3/PA2, CH4/PA3 */
-#define IOMUX_REMAP4_TMR2_GMUX_MUX2_Pos     (4U)                                    /*!< 0x00000010 */
+#define IOMUX_REMAP4_TMR2_GMUX_MUX0         0x00000000U                             /*!< CH1_EXT/PA0, CH2/PA1, CH3/PA2, CH4/PA3 */
+#define IOMUX_REMAP4_TMR2_GMUX_MUX1_Pos     (4U)                                    /*!< 0x00000010 */
+#define IOMUX_REMAP4_TMR2_GMUX_MUX1_Msk     (0x1U << IOMUX_REMAP4_TMR2_GMUX_MUX1_Pos)
+#define IOMUX_REMAP4_TMR2_GMUX_MUX1         IOMUX_REMAP4_TMR2_GMUX_MUX1_Msk         /*!< CH1_EXT/PA15, CH2/PB3, CH3/PA2, CH4/PA3 */
+#define IOMUX_REMAP4_TMR2_GMUX_MUX2_Pos     (5U)                                    /*!< 0x00000020 */
 #define IOMUX_REMAP4_TMR2_GMUX_MUX2_Msk     (0x1U << IOMUX_REMAP4_TMR2_GMUX_MUX2_Pos)
-#define IOMUX_REMAP4_TMR2_GMUX_MUX2         IOMUX_REMAP4_TMR2_GMUX_MUX2_Msk         /*!< CH1_EXT/PA15, CH2/PB3, CH3/PA2, CH4/PA3 */
-#define IOMUX_REMAP4_TMR2_GMUX_MUX3_Pos     (5U)                                    /*!< 0x00000020 */
-#define IOMUX_REMAP4_TMR2_GMUX_MUX3_Msk     (0x1U << IOMUX_REMAP4_TMR2_GMUX_MUX3_Pos)
-#define IOMUX_REMAP4_TMR2_GMUX_MUX3         IOMUX_REMAP4_TMR2_GMUX_MUX3_Msk         /*!< CH1_EXT/PA0, CH2/PA1, CH3/PB10, CH4/PB11 */
-#define IOMUX_REMAP4_TMR2_GMUX_MUX4_Pos     (4U)                                    /*!< 0x00000030 */
-#define IOMUX_REMAP4_TMR2_GMUX_MUX4_Msk     (0x3U << IOMUX_REMAP4_TMR2_GMUX_MUX4_Pos)
-#define IOMUX_REMAP4_TMR2_GMUX_MUX4         IOMUX_REMAP4_TMR2_GMUX_MUX4_Msk         /*!< CH1_EXT/PA15, CH2/PB3, CH3/PB10, CH4/PB11 */
+#define IOMUX_REMAP4_TMR2_GMUX_MUX2         IOMUX_REMAP4_TMR2_GMUX_MUX2_Msk         /*!< CH1_EXT/PA0, CH2/PA1, CH3/PB10, CH4/PB11 */
+#define IOMUX_REMAP4_TMR2_GMUX_MUX3_Pos     (4U)                                    /*!< 0x00000030 */
+#define IOMUX_REMAP4_TMR2_GMUX_MUX3_Msk     (0x3U << IOMUX_REMAP4_TMR2_GMUX_MUX3_Pos)
+#define IOMUX_REMAP4_TMR2_GMUX_MUX3         IOMUX_REMAP4_TMR2_GMUX_MUX3_Msk         /*!< CH1_EXT/PA15, CH2/PB3, CH3/PB10, CH4/PB11 */
 
 /*!< TMR3_GMUX configuration */
 #define IOMUX_REMAP4_TMR3_GMUX_Pos          (8U)
@@ -3028,6 +3051,11 @@ typedef struct
 #define IOMUX_REMAP4_TMR3_GMUX_2            (0x4U << IOMUX_REMAP4_TMR3_GMUX_Pos)    /*!< 0x00000400 */
 #define IOMUX_REMAP4_TMR3_GMUX_3            (0x8U << IOMUX_REMAP4_TMR3_GMUX_Pos)    /*!< 0x00000800 */
 
+#define IOMUX_REMAP4_TMR3_GMUX_MUX0         0x00000000U                             /*!< CH1/PA6, CH2/PA7, CH3/PB0, CH4/PB1 */
+#define IOMUX_REMAP4_TMR3_GMUX_MUX1_Pos     (8U)                                    /*!< 0x00000100 */
+#define IOMUX_REMAP4_TMR3_GMUX_MUX1_Msk     (0x1U << IOMUX_REMAP4_TMR3_GMUX_MUX1_Pos)
+#define IOMUX_REMAP4_TMR3_GMUX_MUX1         IOMUX_REMAP4_TMR3_GMUX_MUX1_Msk         /*!< CH1/PB4, CH2/PB5, CH3/PB0, CH4/PB1 */
+
 /*!< TMR5_GMUX configuration */
 #define IOMUX_REMAP4_TMR5_GMUX_Pos          (16U)
 #define IOMUX_REMAP4_TMR5_GMUX_Msk          (0x7U << IOMUX_REMAP4_TMR5_GMUX_Pos)    /*!< 0x00070000 */
@@ -3035,6 +3063,11 @@ typedef struct
 #define IOMUX_REMAP4_TMR5_GMUX_0            (0x1U << IOMUX_REMAP4_TMR5_GMUX_Pos)    /*!< 0x00010000 */
 #define IOMUX_REMAP4_TMR5_GMUX_1            (0x2U << IOMUX_REMAP4_TMR5_GMUX_Pos)    /*!< 0x00020000 */
 #define IOMUX_REMAP4_TMR5_GMUX_2            (0x4U << IOMUX_REMAP4_TMR5_GMUX_Pos)    /*!< 0x00040000 */
+
+#define IOMUX_REMAP4_TMR5_GMUX_MUX0         0x00000000U                             /*!< CH1/PA0, CH2/PA1, CH3/PA2, CH4/PA3 */
+#define IOMUX_REMAP4_TMR5_GMUX_MUX1_Pos     (16U)                                   /*!< 0x00010000 */
+#define IOMUX_REMAP4_TMR5_GMUX_MUX1_Msk     (0x1U << IOMUX_REMAP4_TMR5_GMUX_MUX1_Pos)
+#define IOMUX_REMAP4_TMR5_GMUX_MUX1         IOMUX_REMAP4_TMR5_GMUX_MUX1_Msk         /*!< CH1/PF4, CH2/PF5, CH3/PA2, CH4/PA3 */
 
 #define IOMUX_REMAP4_TMR5CH4_GMUX_Pos       (19U)
 #define IOMUX_REMAP4_TMR5CH4_GMUX_Msk       (0x1U << IOMUX_REMAP4_TMR5CH4_GMUX_Pos) /*!< 0x00080000 */
@@ -3050,13 +3083,13 @@ typedef struct
 #define IOMUX_REMAP5_I2C1_GMUX_2            (0x4U << IOMUX_REMAP5_I2C1_GMUX_Pos)    /*!< 0x00000040 */
 #define IOMUX_REMAP5_I2C1_GMUX_3            (0x8U << IOMUX_REMAP5_I2C1_GMUX_Pos)    /*!< 0x00000080 */
 
-#define IOMUX_REMAP5_I2C1_GMUX_MUX1         0x00000000U                             /*!< SCL/PB6, SDA/PB7, SMBA/PB5 */
-#define IOMUX_REMAP5_I2C1_GMUX_MUX2_Pos     (4U)                                    /*!< 0x00000010 */
+#define IOMUX_REMAP5_I2C1_GMUX_MUX0         0x00000000U                             /*!< SCL/PB6, SDA/PB7, SMBA/PB5 */
+#define IOMUX_REMAP5_I2C1_GMUX_MUX1_Pos     (4U)                                    /*!< 0x00000010 */
+#define IOMUX_REMAP5_I2C1_GMUX_MUX1_Msk     (0x1U << IOMUX_REMAP5_I2C1_GMUX_MUX1_Pos)
+#define IOMUX_REMAP5_I2C1_GMUX_MUX1         IOMUX_REMAP5_I2C1_GMUX_MUX1_Msk         /*!< SCL/PB8, SDA/PB9, SMBA/PB5 */
+#define IOMUX_REMAP5_I2C1_GMUX_MUX2_Pos     (5U)                                    /*!< 0x00000020 */
 #define IOMUX_REMAP5_I2C1_GMUX_MUX2_Msk     (0x1U << IOMUX_REMAP5_I2C1_GMUX_MUX2_Pos)
-#define IOMUX_REMAP5_I2C1_GMUX_MUX2         IOMUX_REMAP5_I2C1_GMUX_MUX2_Msk         /*!< SCL/PB8, SDA/PB9, SMBA/PB5 */
-#define IOMUX_REMAP5_I2C1_GMUX_MUX3_Pos     (5U)                                    /*!< 0x00000020 */
-#define IOMUX_REMAP5_I2C1_GMUX_MUX3_Msk     (0x1U << IOMUX_REMAP5_I2C1_GMUX_MUX3_Pos)
-#define IOMUX_REMAP5_I2C1_GMUX_MUX3         IOMUX_REMAP5_I2C1_GMUX_MUX3_Msk         /*!< SCL/PF6, SDA/PF7, SMBA/PB5 */
+#define IOMUX_REMAP5_I2C1_GMUX_MUX2         IOMUX_REMAP5_I2C1_GMUX_MUX2_Msk         /*!< SCL/PF6, SDA/PF7, SMBA/PB5 */
 
 /*!< I2C2_GMUX configuration */
 #define IOMUX_REMAP5_I2C2_GMUX_Pos          (8U)
@@ -3067,16 +3100,16 @@ typedef struct
 #define IOMUX_REMAP5_I2C2_GMUX_2            (0x4U << IOMUX_REMAP5_I2C2_GMUX_Pos)    /*!< 0x00000400 */
 #define IOMUX_REMAP5_I2C2_GMUX_3            (0x8U << IOMUX_REMAP5_I2C2_GMUX_Pos)    /*!< 0x00000800 */
 
-#define IOMUX_REMAP5_I2C2_GMUX_MUX1         0x00000000U                             /*!< SCL/PB10, SDA/PB11, SMBA/PB12 */
-#define IOMUX_REMAP5_I2C2_GMUX_MUX2_Pos     (8U)                                    /*!< 0x00000100 */
+#define IOMUX_REMAP5_I2C2_GMUX_MUX0         0x00000000U                             /*!< SCL/PB10, SDA/PB11, SMBA/PB12 */
+#define IOMUX_REMAP5_I2C2_GMUX_MUX1_Pos     (8U)                                    /*!< 0x00000100 */
+#define IOMUX_REMAP5_I2C2_GMUX_MUX1_Msk     (0x1U << IOMUX_REMAP5_I2C2_GMUX_MUX1_Pos)
+#define IOMUX_REMAP5_I2C2_GMUX_MUX1         IOMUX_REMAP5_I2C2_GMUX_MUX1_Msk         /*!< SCL/PA8, SDA/PC9, SMBA/PA9 */
+#define IOMUX_REMAP5_I2C2_GMUX_MUX2_Pos     (9U)                                    /*!< 0x00000200 */
 #define IOMUX_REMAP5_I2C2_GMUX_MUX2_Msk     (0x1U << IOMUX_REMAP5_I2C2_GMUX_MUX2_Pos)
-#define IOMUX_REMAP5_I2C2_GMUX_MUX2         IOMUX_REMAP5_I2C2_GMUX_MUX2_Msk         /*!< SCL/PA8, SDA/PC9, SMBA/PA9 */
-#define IOMUX_REMAP5_I2C2_GMUX_MUX3_Pos     (9U)                                    /*!< 0x00000200 */
-#define IOMUX_REMAP5_I2C2_GMUX_MUX3_Msk     (0x1U << IOMUX_REMAP5_I2C2_GMUX_MUX3_Pos)
-#define IOMUX_REMAP5_I2C2_GMUX_MUX3         IOMUX_REMAP5_I2C2_GMUX_MUX3_Msk         /*!< SCL/PA8, SDA/PB4, SMBA/PA9 */
-#define IOMUX_REMAP5_I2C2_GMUX_MUX4_Pos     (8U)                                    /*!< 0x00000300 */
-#define IOMUX_REMAP5_I2C2_GMUX_MUX4_Msk     (0x3U << IOMUX_REMAP5_I2C2_GMUX_MUX4_Pos)
-#define IOMUX_REMAP5_I2C2_GMUX_MUX4         IOMUX_REMAP5_I2C2_GMUX_MUX4_Msk         /*!< SCL/PF6, SDA/PF7, SMBA/PA9 */
+#define IOMUX_REMAP5_I2C2_GMUX_MUX2         IOMUX_REMAP5_I2C2_GMUX_MUX2_Msk         /*!< SCL/PA8, SDA/PB4, SMBA/PA9 */
+#define IOMUX_REMAP5_I2C2_GMUX_MUX3_Pos     (8U)                                    /*!< 0x00000300 */
+#define IOMUX_REMAP5_I2C2_GMUX_MUX3_Msk     (0x3U << IOMUX_REMAP5_I2C2_GMUX_MUX3_Pos)
+#define IOMUX_REMAP5_I2C2_GMUX_MUX3         IOMUX_REMAP5_I2C2_GMUX_MUX3_Msk         /*!< SCL/PF6, SDA/PF7, SMBA/PA9 */
 
 /*!< SPI1_GMUX configuration */
 #define IOMUX_REMAP5_SPI1_GMUX_Pos          (16U)
@@ -3087,6 +3120,11 @@ typedef struct
 #define IOMUX_REMAP5_SPI1_GMUX_2            (0x4U << IOMUX_REMAP5_SPI1_GMUX_Pos)    /*!< 0x00040000 */
 #define IOMUX_REMAP5_SPI1_GMUX_3            (0x8U << IOMUX_REMAP5_SPI1_GMUX_Pos)    /*!< 0x00080000 */
 
+#define IOMUX_REMAP5_SPI1_GMUX_MUX0         0x00000000U                             /*!< CS/PA4, SCK/PA5, MISO/PA6, MOSI/PA7, MCK/PB0 */
+#define IOMUX_REMAP5_SPI1_GMUX_MUX1_Pos     (16U)                                   /*!< 0x00010000 */
+#define IOMUX_REMAP5_SPI1_GMUX_MUX1_Msk     (0x1U << IOMUX_REMAP5_SPI1_GMUX_MUX1_Pos)
+#define IOMUX_REMAP5_SPI1_GMUX_MUX1         IOMUX_REMAP5_SPI1_GMUX_MUX1_Msk         /*!< CS/PA15, SCK/PB3, MISO/PB4, MOSI/PB5, MCK/PB6 */
+
 /*!< SPI2_GMUX configuration */
 #define IOMUX_REMAP5_SPI2_GMUX_Pos          (20U)
 #define IOMUX_REMAP5_SPI2_GMUX_Msk          (0xFU << IOMUX_REMAP5_SPI2_GMUX_Pos)    /*!< 0x00F00000 */
@@ -3095,6 +3133,11 @@ typedef struct
 #define IOMUX_REMAP5_SPI2_GMUX_1            (0x2U << IOMUX_REMAP5_SPI2_GMUX_Pos)    /*!< 0x00200000 */
 #define IOMUX_REMAP5_SPI2_GMUX_2            (0x4U << IOMUX_REMAP5_SPI2_GMUX_Pos)    /*!< 0x00400000 */
 #define IOMUX_REMAP5_SPI2_GMUX_3            (0x8U << IOMUX_REMAP5_SPI2_GMUX_Pos)    /*!< 0x00800000 */
+
+#define IOMUX_REMAP5_SPI2_GMUX_MUX0         0x00000000U                             /*!< CS/PB12, SCK/PB13, MISO/PB14, MOSI/PB15, MCK/PC6 */
+#define IOMUX_REMAP5_SPI2_GMUX_MUX1_Pos     (20U)                                   /*!< 0x00100000 */
+#define IOMUX_REMAP5_SPI2_GMUX_MUX1_Msk     (0x1U << IOMUX_REMAP5_SPI2_GMUX_MUX1_Pos)
+#define IOMUX_REMAP5_SPI2_GMUX_MUX1         IOMUX_REMAP5_SPI2_GMUX_MUX1_Msk         /*!< CS/PA15, SCK/PB3, MISO/PB4, MOSI/PB5, MCK/PC7 */
 
 /*****************  Bit definition for IOMUX_REMAP6 register  *****************/
 /*!< CAN1_GMUX configuration */
@@ -3106,6 +3149,11 @@ typedef struct
 #define IOMUX_REMAP6_CAN1_GMUX_2            (0x4U << IOMUX_REMAP6_CAN1_GMUX_Pos)    /*!< 0x00000004 */
 #define IOMUX_REMAP6_CAN1_GMUX_3            (0x8U << IOMUX_REMAP6_CAN1_GMUX_Pos)    /*!< 0x00000008 */
 
+#define IOMUX_REMAP6_CAN1_GMUX_MUX0         0x00000000U                             /*!< RX/PA11, TX/PA12 */
+#define IOMUX_REMAP6_CAN1_GMUX_MUX2_Pos     (1U)                                    /*!< 0x00000002 */
+#define IOMUX_REMAP6_CAN1_GMUX_MUX2_Msk     (0x1U << IOMUX_REMAP6_CAN1_GMUX_MUX2_Pos)
+#define IOMUX_REMAP6_CAN1_GMUX_MUX2         IOMUX_REMAP6_CAN1_GMUX_MUX2_Msk         /*!< RX/PB8, TX/PB9 */
+
 /*!< SDIO_GMUX configuration */
 #define IOMUX_REMAP6_SDIO_GMUX_Pos          (8U)
 #define IOMUX_REMAP6_SDIO_GMUX_Msk          (0xFU << IOMUX_REMAP6_SDIO_GMUX_Pos)    /*!< 0x00000F00 */
@@ -3115,19 +3163,19 @@ typedef struct
 #define IOMUX_REMAP6_SDIO_GMUX_2            (0x4U << IOMUX_REMAP6_SDIO_GMUX_Pos)    /*!< 0x00000400 */
 #define IOMUX_REMAP6_SDIO_GMUX_3            (0x8U << IOMUX_REMAP6_SDIO_GMUX_Pos)    /*!< 0x00000800 */
 
-#define IOMUX_REMAP6_SDIO_GMUX_MUX1         0x00000000U                             /*!< D0/PC8, D1/PC9, D2/PC10, D3/PC11, D4/PB8, D5/PB9, D6/PC6, D7/PC7, CK/PC12, CMD/PD2 */
-#define IOMUX_REMAP6_SDIO_GMUX_MUX2_Pos     (10U)                                   /*!< 0x00000400 */
-#define IOMUX_REMAP6_SDIO_GMUX_MUX2_Msk     (0x1U << IOMUX_REMAP6_SDIO_GMUX_MUX2_Pos)
-#define IOMUX_REMAP6_SDIO_GMUX_MUX2         IOMUX_REMAP6_SDIO_GMUX_MUX2_Msk         /*!< D0/PC0, D1/PC1, D2/PC2, D3/PC3, D4/PA4, D5/PA5, D6/PA6, D7/PA7, CK/PC4, CMD/PC5 */
-#define IOMUX_REMAP6_SDIO_GMUX_MUX3_Pos     (8U)                                    /*!< 0x00000500 */
-#define IOMUX_REMAP6_SDIO_GMUX_MUX3_Msk     (0x5U << IOMUX_REMAP6_SDIO_GMUX_MUX3_Pos)
-#define IOMUX_REMAP6_SDIO_GMUX_MUX3         IOMUX_REMAP6_SDIO_GMUX_MUX3_Msk         /*!< D0/PA4, D1/PA5, D2/PA6, D3/PA7, CK/PC4, CMD/PC5 */
-#define IOMUX_REMAP6_SDIO_GMUX_MUX4_Pos     (9U)                                    /*!< 0x00000600 */
-#define IOMUX_REMAP6_SDIO_GMUX_MUX4_Msk     (0x3U << IOMUX_REMAP6_SDIO_GMUX_MUX4_Pos)
-#define IOMUX_REMAP6_SDIO_GMUX_MUX4         IOMUX_REMAP6_SDIO_GMUX_MUX4_Msk         /*!< D0/PC0, D1/PC1, D2/PC2, D3/PC3, D4/PA4, D5/PA5, D6/PA6, D7/PA7, CK/PA2, CMD/PA3 */
-#define IOMUX_REMAP6_SDIO_GMUX_MUX5_Pos     (8U)                                    /*!< 0x00000700 */
-#define IOMUX_REMAP6_SDIO_GMUX_MUX5_Msk     (0x7U << IOMUX_REMAP6_SDIO_GMUX_MUX5_Pos)
-#define IOMUX_REMAP6_SDIO_GMUX_MUX5         IOMUX_REMAP6_SDIO_GMUX_MUX5_Msk         /*!< D0/PA4, D1/PA5, D2/PA6, D3/PA7, CK/PA2, CMD/PA3 */
+#define IOMUX_REMAP6_SDIO_GMUX_MUX0         0x00000000U                             /*!< D0/PC8, D1/PC9, D2/PC10, D3/PC11, D4/PB8, D5/PB9, D6/PC6, D7/PC7, CK/PC12, CMD/PD2 */
+#define IOMUX_REMAP6_SDIO_GMUX_MUX4_Pos     (10U)                                   /*!< 0x00000400 */
+#define IOMUX_REMAP6_SDIO_GMUX_MUX4_Msk     (0x1U << IOMUX_REMAP6_SDIO_GMUX_MUX4_Pos)
+#define IOMUX_REMAP6_SDIO_GMUX_MUX4         IOMUX_REMAP6_SDIO_GMUX_MUX4_Msk         /*!< D0/PC0, D1/PC1, D2/PC2, D3/PC3, D4/PA4, D5/PA5, D6/PA6, D7/PA7, CK/PC4, CMD/PC5 */
+#define IOMUX_REMAP6_SDIO_GMUX_MUX5_Pos     (8U)                                    /*!< 0x00000500 */
+#define IOMUX_REMAP6_SDIO_GMUX_MUX5_Msk     (0x5U << IOMUX_REMAP6_SDIO_GMUX_MUX5_Pos)
+#define IOMUX_REMAP6_SDIO_GMUX_MUX5         IOMUX_REMAP6_SDIO_GMUX_MUX5_Msk         /*!< D0/PA4, D1/PA5, D2/PA6, D3/PA7, CK/PC4, CMD/PC5 */
+#define IOMUX_REMAP6_SDIO_GMUX_MUX6_Pos     (9U)                                    /*!< 0x00000600 */
+#define IOMUX_REMAP6_SDIO_GMUX_MUX6_Msk     (0x3U << IOMUX_REMAP6_SDIO_GMUX_MUX6_Pos)
+#define IOMUX_REMAP6_SDIO_GMUX_MUX6         IOMUX_REMAP6_SDIO_GMUX_MUX6_Msk         /*!< D0/PC0, D1/PC1, D2/PC2, D3/PC3, D4/PA4, D5/PA5, D6/PA6, D7/PA7, CK/PA2, CMD/PA3 */
+#define IOMUX_REMAP6_SDIO_GMUX_MUX7_Pos     (8U)                                    /*!< 0x00000700 */
+#define IOMUX_REMAP6_SDIO_GMUX_MUX7_Msk     (0x7U << IOMUX_REMAP6_SDIO_GMUX_MUX7_Pos)
+#define IOMUX_REMAP6_SDIO_GMUX_MUX7         IOMUX_REMAP6_SDIO_GMUX_MUX7_Msk         /*!< D0/PA4, D1/PA5, D2/PA6, D3/PA7, CK/PA2, CMD/PA3 */
 
 /*!< USART1_GMUX configuration */
 #define IOMUX_REMAP6_USART1_GMUX_Pos        (16U)
@@ -3138,6 +3186,11 @@ typedef struct
 #define IOMUX_REMAP6_USART1_GMUX_2          (0x4U << IOMUX_REMAP6_USART1_GMUX_Pos)  /*!< 0x00040000 */
 #define IOMUX_REMAP6_USART1_GMUX_3          (0x8U << IOMUX_REMAP6_USART1_GMUX_Pos)  /*!< 0x00080000 */
 
+#define IOMUX_REMAP6_USART1_GMUX_MUX0       0x00000000U                             /*!< TX/PA9, RX/PA10 */
+#define IOMUX_REMAP6_USART1_GMUX_MUX1_Pos   (16U)                                   /*!< 0x00010000 */
+#define IOMUX_REMAP6_USART1_GMUX_MUX1_Msk   (0x1U << IOMUX_REMAP6_USART1_GMUX_MUX1_Pos)
+#define IOMUX_REMAP6_USART1_GMUX_MUX1       IOMUX_REMAP6_USART1_GMUX_MUX1_Msk       /*!< TX/PB6, RX/PB7 */
+
 /*!< USART3_GMUX configuration */
 #define IOMUX_REMAP6_USART3_GMUX_Pos        (24U)
 #define IOMUX_REMAP6_USART3_GMUX_Msk        (0xFU << IOMUX_REMAP6_USART3_GMUX_Pos)  /*!< 0x0F000000 */
@@ -3147,13 +3200,13 @@ typedef struct
 #define IOMUX_REMAP6_USART3_GMUX_2          (0x4U << IOMUX_REMAP6_USART3_GMUX_Pos)  /*!< 0x04000000 */
 #define IOMUX_REMAP6_USART3_GMUX_3          (0x8U << IOMUX_REMAP6_USART3_GMUX_Pos)  /*!< 0x08000000 */
 
-#define IOMUX_REMAP6_USART3_GMUX_MUX1       0x00000000U                             /*!< TX/PB10, RX/PB11, CK/PB12, CTS/PB13, RTS/PB14 */
-#define IOMUX_REMAP6_USART3_GMUX_MUX2_Pos   (24U)                                   /*!< 0x01000000 */
+#define IOMUX_REMAP6_USART3_GMUX_MUX0       0x00000000U                             /*!< TX/PB10, RX/PB11, CK/PB12, CTS/PB13, RTS/PB14 */
+#define IOMUX_REMAP6_USART3_GMUX_MUX1_Pos   (24U)                                   /*!< 0x01000000 */
+#define IOMUX_REMAP6_USART3_GMUX_MUX1_Msk   (0x1U << IOMUX_REMAP6_USART3_GMUX_MUX1_Pos)
+#define IOMUX_REMAP6_USART3_GMUX_MUX1       IOMUX_REMAP6_USART3_GMUX_MUX1_Msk       /*!< TX/PC10, RX/PC11, CK/PC12, CTS/PB13, RTS/PB14 */
+#define IOMUX_REMAP6_USART3_GMUX_MUX2_Pos   (25U)                                   /*!< 0x02000000 */
 #define IOMUX_REMAP6_USART3_GMUX_MUX2_Msk   (0x1U << IOMUX_REMAP6_USART3_GMUX_MUX2_Pos)
-#define IOMUX_REMAP6_USART3_GMUX_MUX2       IOMUX_REMAP6_USART3_GMUX_MUX2_Msk       /*!< TX/PC10, RX/PC11, CK/PC12, CTS/PB13, RTS/PB14 */
-#define IOMUX_REMAP6_USART3_GMUX_MUX3_Pos   (25U)                                   /*!< 0x02000000 */
-#define IOMUX_REMAP6_USART3_GMUX_MUX3_Msk   (0x1U << IOMUX_REMAP6_USART3_GMUX_MUX3_Pos)
-#define IOMUX_REMAP6_USART3_GMUX_MUX3       IOMUX_REMAP6_USART3_GMUX_MUX3_Msk       /*!< TX/PA7, RX/PA6, CK/PA5, CTS/PB1, RTS/PB0 */
+#define IOMUX_REMAP6_USART3_GMUX_MUX2       IOMUX_REMAP6_USART3_GMUX_MUX2_Msk       /*!< TX/PA7, RX/PA6, CK/PA5, CTS/PB1, RTS/PB0 */
 
 /*****************  Bit definition for IOMUX_REMAP7 register  *****************/
 #define IOMUX_REMAP7_ADC1_ETP_GMUX_Pos      (4U)                                    /*!< 0x00000010 */
@@ -3171,16 +3224,16 @@ typedef struct
 #define IOMUX_REMAP7_SWJTAG_GMUX_1          (0x2U << IOMUX_REMAP7_SWJTAG_GMUX_Pos)  /*!< 0x00020000 */
 #define IOMUX_REMAP7_SWJTAG_GMUX_2          (0x4U << IOMUX_REMAP7_SWJTAG_GMUX_Pos)  /*!< 0x00040000 */
 
-#define IOMUX_REMAP7_SWJTAG_GMUX_MUX1       0x00000000U                             /*!< Supports SWD and JTAG. All SWJTAG pins cannot be used as GPIO */
-#define IOMUX_REMAP7_SWJTAG_GMUX_MUX2_Pos   (16U)                                   /*!< 0x00010000 */
-#define IOMUX_REMAP7_SWJTAG_GMUX_MUX2_Msk   (0x1U << IOMUX_REMAP7_SWJTAG_GMUX_MUX2_Pos)
-#define IOMUX_REMAP7_SWJTAG_GMUX_MUX2       IOMUX_REMAP7_SWJTAG_GMUX_MUX2_Msk       /*!< Supports SWD and JTAG. NJTRST is disabled. PB4 can be used as GPIO */
-#define IOMUX_REMAP7_SWJTAG_GMUX_MUX3_Pos   (17U)                                   /*!< 0x00020000 */
-#define IOMUX_REMAP7_SWJTAG_GMUX_MUX3_Msk   (0x1U << IOMUX_REMAP7_SWJTAG_GMUX_MUX3_Pos)
-#define IOMUX_REMAP7_SWJTAG_GMUX_MUX3       IOMUX_REMAP7_SWJTAG_GMUX_MUX3_Msk       /*!< Supports SWD. But JTAG is disabled. PA15/PB3/PB4 can be used as GPIO */
-#define IOMUX_REMAP7_SWJTAG_GMUX_MUX4_Pos   (18U)                                   /*!< 0x00040000 */
-#define IOMUX_REMAP7_SWJTAG_GMUX_MUX4_Msk   (0x1U << IOMUX_REMAP7_SWJTAG_GMUX_MUX4_Pos)
-#define IOMUX_REMAP7_SWJTAG_GMUX_MUX4       IOMUX_REMAP7_SWJTAG_GMUX_MUX4_Msk       /*!< SWD and JTAG are disabled. All SWJTAG pins can be used as GPIO */
+#define IOMUX_REMAP7_SWJTAG_GMUX_RESET        0x00000000U                           /*!< Supports SWD and JTAG. All SWJTAG pins cannot be used as GPIO */
+#define IOMUX_REMAP7_SWJTAG_GMUX_NONJTRST_Pos (16U)                                 /*!< 0x00010000 */
+#define IOMUX_REMAP7_SWJTAG_GMUX_NONJTRST_Msk (0x1U << IOMUX_REMAP7_SWJTAG_GMUX_NONJTRST_Pos)
+#define IOMUX_REMAP7_SWJTAG_GMUX_NONJTRST     IOMUX_REMAP7_SWJTAG_GMUX_NONJTRST_Msk /*!< Supports SWD and JTAG. NJTRST is disabled. PB4 can be used as GPIO */
+#define IOMUX_REMAP7_SWJTAG_GMUX_JTAGDIS_Pos  (17U)                                 /*!< 0x00020000 */
+#define IOMUX_REMAP7_SWJTAG_GMUX_JTAGDIS_Msk  (0x1U << IOMUX_REMAP7_SWJTAG_GMUX_JTAGDIS_Pos)
+#define IOMUX_REMAP7_SWJTAG_GMUX_JTAGDIS      IOMUX_REMAP7_SWJTAG_GMUX_JTAGDIS_Msk  /*!< Supports SWD. But JTAG is disabled. PA15/PB3/PB4 can be used as GPIO */
+#define IOMUX_REMAP7_SWJTAG_GMUX_DISABLE_Pos  (18U)                                 /*!< 0x00040000 */
+#define IOMUX_REMAP7_SWJTAG_GMUX_DISABLE_Msk  (0x1U << IOMUX_REMAP7_SWJTAG_GMUX_DISABLE_Pos)
+#define IOMUX_REMAP7_SWJTAG_GMUX_DISABLE      IOMUX_REMAP7_SWJTAG_GMUX_DISABLE_Msk  /*!< SWD and JTAG are disabled. All SWJTAG pins can be used as GPIO */
 
 #define IOMUX_REMAP7_PD01_GMUX_Pos          (20U)
 #define IOMUX_REMAP7_PD01_GMUX_Msk          (0x1U << IOMUX_REMAP7_PD01_GMUX_Pos)    /*!< 0x00100000 */
@@ -3194,12 +3247,34 @@ typedef struct
 #define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_0    (0x1U << IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_Pos)  /*!< 0x00000001 */
 #define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_1    (0x2U << IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_Pos)  /*!< 0x00000002 */
 
+#define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX0     0x00000000U                             /*!< TMR1_GMUX IO signal is connected to TMR1 BRK channel 1 */
+#define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX1_Pos (0U)                                    /*!< 0x00000001 */
+#define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX1_Msk (0x1U << IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX1_Pos)
+#define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX1     IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX1_Msk /*!< TMR1_GMUX IO signal is connected to TMR1 BRK channel 1 */
+#define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX2_Pos (1U)                                    /*!< 0x00000002 */
+#define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX2_Msk (0x1U << IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX2_Pos)
+#define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX2     IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX2_Msk /*!< CMP output signal is connected to TMR1 BRK channel 1 */
+#define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX3_Pos (0U)                                    /*!< 0x00000003 */
+#define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX3_Msk (0x3U << IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX3_Pos)
+#define IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX3     IOMUX_REMAP8_TMR1_BK1_CMP_GMUX_MUX3_Msk /*!< Either CMP output signal or TMR1_GMUX IO signal is connected to TMR1 BRK channel 1 */
+
 /*!< TMR1_CH1_CMP_GMUX configuration */
 #define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_Pos  (2U)                                    /*!< 0x0000000C */
 #define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_Msk  (0x3U << IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_Pos)
 #define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX      IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_Msk      /*!< TMR1_CH1_CMP_GMUX[1:0] bits (TMR1 channel 1 internal mapping) */
 #define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_0    (0x1U << IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_Pos)  /*!< 0x00000004 */
 #define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_1    (0x2U << IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_Pos)  /*!< 0x00000008 */
+
+#define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX0     0x00000000U                             /*!< TMR1_GMUX IO signal is connected to TMR1 channel 1 */
+#define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX1_Pos (2U)                                    /*!< 0x00000004 */
+#define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX1_Msk (0x1U << IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX1_Pos)
+#define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX1     IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX1_Msk /*!< TMR1_GMUX IO signal is connected to TMR1 channel 1 */
+#define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX2_Pos (3U)                                    /*!< 0x00000008 */
+#define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX2_Msk (0x1U << IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX2_Pos)
+#define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX2     IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX2_Msk /*!< CMP output signal is connected to TMR1 channel 1 */
+#define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX3_Pos (2U)                                    /*!< 0x0000000C */
+#define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX3_Msk (0x3U << IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX3_Pos)
+#define IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX3     IOMUX_REMAP8_TMR1_CH1_CMP_GMUX_MUX3_Msk /*!< Either CMP output signal or TMR1_GMUX IO signal is connected to TMR1 channel 1 */
 
 /*!< TMR2_CH4_CMP_GMUX configuration */
 #define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_Pos  (4U)                                    /*!< 0x00000030 */
@@ -3208,12 +3283,34 @@ typedef struct
 #define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_0    (0x1U << IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_Pos)  /*!< 0x00000010 */
 #define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_1    (0x2U << IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_Pos)  /*!< 0x00000020 */
 
+#define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX0     0x00000000U                             /*!< TMR2_GMUX IO signal is connected to TMR2 channel 4 */
+#define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX1_Pos (4U)                                    /*!< 0x00000010 */
+#define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX1_Msk (0x1U << IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX1_Pos)
+#define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX1     IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX1_Msk /*!< TMR2_GMUX IO signal is connected to TMR2 channel 4 */
+#define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX2_Pos (5U)                                    /*!< 0x00000020 */
+#define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX2_Msk (0x1U << IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX2_Pos)
+#define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX2     IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX2_Msk /*!< CMP output signal is connected to TMR2 channel 4 */
+#define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX3_Pos (4U)                                    /*!< 0x00000030 */
+#define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX3_Msk (0x3U << IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX3_Pos)
+#define IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX3     IOMUX_REMAP8_TMR2_CH4_CMP_GMUX_MUX3_Msk /*!< Either CMP output signal or TMR2_GMUX IO signal is connected to TMR2 channel 4 */
+
 /*!< TMR3_CH1_CMP_GMUX configuration */
 #define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_Pos  (6U)                                    /*!< 0x000000C0 */
 #define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_Msk  (0x3U << IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_Pos)
 #define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX      IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_Msk      /*!< TMR3_CH1_CMP_GMUX[1:0] bits (TMR3 channel 1 internal mapping) */
 #define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_0    (0x1U << IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_Pos)  /*!< 0x00000040 */
 #define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_1    (0x2U << IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_Pos)  /*!< 0x00000080 */
+
+#define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX0     0x00000000U                             /*!< TMR3_GMUX IO signal is connected to TMR3 channel 1 */
+#define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX1_Pos (6U)                                    /*!< 0x00000040 */
+#define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX1_Msk (0x1U << IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX1_Pos)
+#define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX1     IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX1_Msk /*!< TMR3_GMUX IO signal is connected to TMR3 channel 1 */
+#define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX2_Pos (7U)                                    /*!< 0x00000080 */
+#define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX2_Msk (0x1U << IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX2_Pos)
+#define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX2     IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX2_Msk /*!< CMP output signal is connected to TMR3 channel 1 */
+#define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX3_Pos (6U)                                    /*!< 0x000000C0 */
+#define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX3_Msk (0x3U << IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX3_Pos)
+#define IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX3     IOMUX_REMAP8_TMR3_CH1_CMP_GMUX_MUX3_Msk /*!< Either CMP output signal or TMR3_GMUX IO signal is connected to TMR3 channel 1 */
 
 /******************************************************************************/
 /*                                                                            */

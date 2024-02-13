@@ -1,8 +1,8 @@
 /*
     ChibiOS/RT - Copyright (C) 2006-2014 Giovanni Di Sirio.
-                           (C) 2015 RedoX https://github.com/RedoXyde
-                           (C) 2023 HorrorTroll (https://github.com/HorrorTroll)
-                           (C) 2023 Zhaqian (https://github.com/zhaqian12)
+                           (C) 2015 RedoX (https://github.com/RedoXyde)
+                           (C) 2023-2024 HorrorTroll (https://github.com/HorrorTroll)
+                           (C) 2023-2024 Zhaqian (https://github.com/zhaqian12)
 
     This file is part of ChibiOS/RT.
 

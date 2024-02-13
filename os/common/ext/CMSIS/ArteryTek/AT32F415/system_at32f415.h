@@ -1,7 +1,7 @@
 /**
   **************************************************************************
   * @file    system_at32f415.h
-  * @author  Artery Technology & HorrorTroll
+  * @author  Artery Technology & HorrorTroll & Zhaqian
   * @brief   CMSIS AT32F415 system header file
   *
   **************************************************************************

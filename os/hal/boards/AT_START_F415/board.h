@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023 HorrorTroll
-    ChibiOS - Copyright (C) 2023 Zhaqian
+    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2024 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@
  */
 #define GPIOA_ARD_A0                0U
 #define GPIOA_ADC1_IN0              0U
+#define GPIOA_BUTTON                0U
 #define GPIOA_ARD_A1                1U
 #define GPIOA_ADC1_IN1              1U
 #define GPIOA_ARD_D1                2U
@@ -106,7 +107,9 @@
 #define GPIOC_PIN14                 14U
 #define GPIOC_PIN15                 15U
 
+#define GPIOD_OSC_IN                0U
 #define GPIOD_PIN0                  0U
+#define GPIOD_OSC_OUT               1U
 #define GPIOD_PIN1                  1U
 #define GPIOD_PIN2                  2U
 #define GPIOD_PIN3                  3U
@@ -167,12 +170,13 @@
 /*
  * Port A setup.
  * Everything input with pull-up except:
+ * PA0  - Normal input              (GPIOA_BUTTON)
  * PA2  - Alternate output          (GPIOA_ARD_D1, GPIOA_USART2_TX)
  * PA3  - Normal input              (GPIOA_ARD_D0, GPIOA_USART2_RX)
  * PA13 - Pull-up input             (GPIOA_SWDIO)
  * PA14 - Pull-down input           (GPIOA_SWCLK)
  */
-#define VAL_GPIOACFGLR          0x88884B88      /*  PA7...PA0 */
+#define VAL_GPIOACFGLR          0x88884B84      /*  PA7...PA0 */
 #define VAL_GPIOACFGHR          0x88888888      /* PA15...PA8 */
 #define VAL_GPIOAODT            0xFFFFFFFF
 
@@ -199,8 +203,10 @@
 
 /*
  * Port D setup.
+ * PD0  - Normal input              (GPIOD_OSC_IN).
+ * PD1  - Normal input              (GPIOD_OSC_OUT).
  */
-#define VAL_GPIODCFGLR          0x88888888      /*  PD7...PD0 */
+#define VAL_GPIODCFGLR          0x88888844      /*  PD7...PD0 */
 #define VAL_GPIODCFGHR          0x88888888      /* PD15...PD8 */
 #define VAL_GPIODODT            0xFFFFFFFF
 

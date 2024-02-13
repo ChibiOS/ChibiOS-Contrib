@@ -1,6 +1,7 @@
 /*
-    Copyright (C) 2023 Artery Technology
-    Copyright (C) 2023 HorrorTroll (https://github.com/HorrorTroll)
+    Copyright (C) 2023..2024 Artery Technology
+    Copyright (C) 2023..2024 HorrorTroll (https://github.com/HorrorTroll)
+    Copyright (C) 2023..2024 Zhaqian (https://github.com/zhaqian12)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

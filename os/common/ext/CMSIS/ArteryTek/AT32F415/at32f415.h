@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    at32f415.h
-  * @author  Artery Technology & HorrorTroll
+  * @author  Artery Technology & HorrorTroll & Zhaqian
   * @brief   AT32F415 header file
   *
   ******************************************************************************
