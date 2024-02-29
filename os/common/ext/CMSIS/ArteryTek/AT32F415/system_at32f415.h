@@ -109,4 +109,4 @@ extern void SystemCoreClockUpdate(void);
   * @}
   */
 
-/*********************** (C) COPYRIGHT Artery Technologies *****END OF FILE****/
+/*********************** (C) COPYRIGHT Artery Technology *****END OF FILE****/
