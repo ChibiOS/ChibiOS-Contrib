@@ -518,9 +518,9 @@ struct USBDriver {
  * @notapi
  */
 #if (AT32_OTG_STEPPING == 1) || defined(__DOXYGEN__)
-#define usb_lld_connect_bus(usbp) ((usbp)->otg->GCCFG |= GCCFG_VBUSBSEN)
+#define usb_lld_connect_bus(usbp) ((usbp)->otg->GCCFG |= GCCFG_BVALIDSESEN)
 #else
-#define usb_lld_connect_bus(usbp) ((usbp)->otg->DCTL &= ~DCTL_SDIS)
+#define usb_lld_connect_bus(usbp) ((usbp)->otg->DCTL &= ~DCTL_SFTDISCON)
 #endif
 
 /**
@@ -529,9 +529,9 @@ struct USBDriver {
  * @notapi
  */
 #if (AT32_OTG_STEPPING == 1) || defined(__DOXYGEN__)
-#define usb_lld_disconnect_bus(usbp) ((usbp)->otg->GCCFG &= ~GCCFG_VBUSBSEN)
+#define usb_lld_disconnect_bus(usbp) ((usbp)->otg->GCCFG &= ~GCCFG_BVALIDSESEN)
 #else
-#define usb_lld_disconnect_bus(usbp) ((usbp)->otg->DCTL |= DCTL_SDIS)
+#define usb_lld_disconnect_bus(usbp) ((usbp)->otg->DCTL |= DCTL_SFTDISCON)
 #endif
 
 /**
@@ -541,13 +541,13 @@ struct USBDriver {
  */
 #define usb_lld_wakeup_host(usbp)                                           \
   do {                                                                      \
-    (usbp)->otg->DCTL |= DCTL_RWUSIG;                                       \
+    (usbp)->otg->DCTL |= DCTL_RWKUPSIG;                                     \
     /* remote wakeup doesn't trigger the wakeup interrupt, therefore
        we use the SOF interrupt to detect resume of the bus.*/              \
     (usbp)->otg->GINTSTS |= GINTSTS_SOF;                                    \
-    (usbp)->otg->GINTMSK |= GINTMSK_SOFM;                                   \
+    (usbp)->otg->GINTMSK |= GINTMSK_SOFMSK;                                 \
     osalThreadSleepMilliseconds(AT32_USB_HOST_WAKEUP_DURATION);             \
-    (usbp)->otg->DCTL &= ~DCTL_RWUSIG;                                      \
+    (usbp)->otg->DCTL &= ~DCTL_RWKUPSIG;                                    \
   } while (false)
 
 /*===========================================================================*/

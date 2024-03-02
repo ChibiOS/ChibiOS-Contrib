@@ -82,7 +82,7 @@ OSAL_IRQ_HANDLER(AT32_EXINT1_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  extiGetAndClearGroup1(1U << 1, intsts);
+  exintGetAndClearGroup1(1U << 1, intsts);
 
   exint_serve_irq(intsts, 1);
 

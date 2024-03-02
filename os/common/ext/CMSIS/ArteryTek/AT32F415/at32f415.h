@@ -204,4 +204,4 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} error_status;
   * @}
   */
 
-/*********************** (C) COPYRIGHT Artery Technologies *****END OF FILE****/
+/*********************** (C) COPYRIGHT Artery Technology *****END OF FILE****/

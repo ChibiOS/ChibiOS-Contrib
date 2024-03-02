@@ -43,13 +43,14 @@
 typedef struct {
   volatile uint32_t HCCHAR;     /**< @brief Host channel characteristics
                                             register.                       */
-  volatile uint32_t resvd8;
+  volatile uint32_t HCSPLT;     /**< @brief Host channel split register.    */
   volatile uint32_t HCINT;      /**< @brief Host channel interrupt register.*/
   volatile uint32_t HCINTMSK;   /**< @brief Host channel interrupt mask
                                             register.                       */
   volatile uint32_t HCTSIZ;     /**< @brief Host channel transfer size
                                             register.                       */
-  volatile uint32_t resvd14;
+  volatile uint32_t HCDMA;      /**< @brief Host channel DMA address
+                                            register.                       */
   volatile uint32_t resvd18;
   volatile uint32_t resvd1c;
 } at32_otg_host_chn_t;
@@ -66,7 +67,8 @@ typedef struct {
   volatile uint32_t resvdC;
   volatile uint32_t DIEPTSIZ;   /**< @brief Device IN endpoint transfer size
                                             register.                       */
-  volatile uint32_t resvd14;
+  volatile uint32_t DIEPDMA;    /**< @brief Device IN endpoint DMA address
+                                            register.                       */
   volatile uint32_t DTXFSTS;    /**< @brief Device IN endpoint transmit FIFO
                                             status register.                */
   volatile uint32_t resvd1C;
@@ -84,7 +86,8 @@ typedef struct {
   volatile uint32_t resvdC;
   volatile uint32_t DOEPTSIZ;   /**< @brief Device OUT endpoint transfer
                                             size register.                  */
-  volatile uint32_t resvd14;
+  volatile uint32_t DOEPDMA;    /**< @brief Device OUT endpoint DMA address
+                                            register.                       */
   volatile uint32_t resvd18;
   volatile uint32_t resvd1C;
 } at32_otg_out_ep_t;
@@ -107,12 +110,12 @@ typedef struct {
   volatile uint32_t GRXFSIZ;    /**< @brief Receive FIFO size register.     */
   volatile uint32_t DIEPTXF0;   /**< @brief Endpoint 0 transmit FIFO size
                                             register.                       */
-  volatile uint32_t HNPTXSTS;   /**< @brief Non-periodic transmit FIFO/queue
-                                            status register.                */
+  volatile uint32_t GNPTXSTS;   /**< @brief Non-periodic TxFIFO size/request
+                                            queue status register.          */
   volatile uint32_t resvd30;
   volatile uint32_t resvd34;
-  volatile uint32_t GCCFG;      /**< @brief General core configuration.     */
-  volatile uint32_t CID;        /**< @brief Core ID register.               */
+  volatile uint32_t GCCFG;      /**< @brief General controller config.      */
+  volatile uint32_t GUID;       /**< @brief Controller ID register.         */
   volatile uint32_t resvd58[48];
   volatile uint32_t HPTXFSIZ;   /**< @brief Host periodic transmit FIFO size
                                             register.                       */
@@ -150,17 +153,23 @@ typedef struct {
                                             mask register.                  */
   volatile uint32_t resvd820;
   volatile uint32_t resvd824;
-  volatile uint32_t DVBUSDIS;   /**< @brief Device VBUS discharge time
-                                            register.                       */
-  volatile uint32_t DVBUSPULSE; /**< @brief Device VBUS pulsing time
-                                            register.                       */
+  volatile uint32_t resvd828;
+  volatile uint32_t resvd82C;
   volatile uint32_t resvd830;
   volatile uint32_t DIEPEMPMSK; /**< @brief Device IN endpoint FIFO empty
                                             interrupt mask register.        */
-  volatile uint32_t resvd838;
-  volatile uint32_t resvd83C;
-  volatile uint32_t resvd840[16];
-  volatile uint32_t resvd880[16];
+  volatile uint32_t DEACHINT;   /**< @brief Device all endpoints interrupt
+                                            register.                       */
+  volatile uint32_t DEACHINTMSK; /**< @brief Device all endpoints interrupt
+                                             mask register.                 */
+  volatile uint32_t resvd840;
+  volatile uint32_t DIEPEACHMSK1; /**< @brief Device IN endpoint 1
+                                              interrupt mask register.      */
+  volatile uint32_t resvd848[14];
+  volatile uint32_t resvd880;
+  volatile uint32_t DOEPEACHMSK1; /**< @brief Device OUT endpoint 1
+                                              interrupt mask register.      */
+  volatile uint32_t resvd888[14];
   volatile uint32_t resvd8C0[16];
   at32_otg_in_ep_t ie[16];      /**< @brief Input endpoints.                */
   at32_otg_out_ep_t oe[16];     /**< @brief Output endpoints.               */
@@ -175,74 +184,50 @@ typedef struct {
  * @name GOTGCTL register bit definitions
  * @{
  */
-#define GOTGCTL_BSVLD           (1U << 19)  /**< B-Session Valid.           */
-#define GOTGCTL_ASVLD           (1U << 18)  /**< A-Session Valid.           */
-#define GOTGCTL_DBCT            (1U << 17)  /**< Long/Short debounce time.  */
-#define GOTGCTL_CIDSTS          (1U << 16)  /**< Connector ID status.       */
-#define GOTGCTL_EHEN            (1U << 12)
-#define GOTGCTL_DHNPEN          (1U << 11)  /**< Device HNP enabled.        */
-#define GOTGCTL_HSHNPEN         (1U << 10)  /**< Host Set HNP enable.       */
-#define GOTGCTL_HNPRQ           (1U << 9)   /**< HNP request.               */
-#define GOTGCTL_HNGSCS          (1U << 8)   /**< Host negotiation success.  */
-#define GOTGCTL_BVALOVAL        (1U << 7)
-#define GOTGCTL_BVALOEN         (1U << 6)
-#define GOTGCTL_AVALOVAL        (1U << 5)
-#define GOTGCTL_AVALOEN         (1U << 4)
-#define GOTGCTL_VBVALOVAL       (1U << 3)
-#define GOTGCTL_VBVALOEN        (1U << 2)
-#define GOTGCTL_SRQ             (1U << 1)   /**< Session request.           */
-#define GOTGCTL_SRQSCS          (1U << 0)   /**< Session request success.   */
+#define GOTGCTL_CURMOD          (1U << 21)  /**< Current mode of operation. */
+#define GOTGCTL_CONIDSTS        (1U << 16)  /**< Connector ID status.       */
 /** @} */
 
 /**
  * @name GOTGINT register bit definitions
  * @{
  */
-#define GOTGINT_DBCDNE          (1U << 19)  /**< Debounce done.             */
-#define GOTGINT_ADTOCHG         (1U << 18)  /**< A-Device timeout change.   */
-#define GOTGINT_HNGDET          (1U << 17)  /**< Host negotiation detected. */
-#define GOTGINT_HNSSCHG         (1U << 9)   /**< Host negotiation success
-                                                 status change.             */
-#define GOTGINT_SRSSCHG         (1U << 8)   /**< Session request success
-                                                 status change.             */
-#define GOTGINT_SEDET           (1U << 2)   /**< Session end detected.      */
+#define GOTGINT_SESENDDET       (1U << 2)   /**< Session end detected.      */
 /** @} */
 
 /**
  * @name GAHBCFG register bit definitions
  * @{
  */
-#define GAHBCFG_PTXFELVL        (1U << 8)   /**< Periodic TxFIFO empty
+#define GAHBCFG_PTXFEMPLVL      (1U << 8)   /**< Periodic TxFIFO empty
                                                  level.                     */
-#define GAHBCFG_TXFELVL         (1U << 7)   /**< Non-periodic TxFIFO empty
+#define GAHBCFG_NPTXFEMPLVL     (1U << 7)   /**< Non-periodic TxFIFO empty
                                                  level.                     */
 #define GAHBCFG_DMAEN           (1U << 5)   /**< DMA enable (HS only).      */
 #define GAHBCFG_HBSTLEN_MASK    (15U << 1)  /**< Burst length/type mask (HS
                                                  only).                     */
 #define GAHBCFG_HBSTLEN(n)      ((n) << 1)  /**< Burst length/type (HS
                                                  only).                     */
-#define GAHBCFG_GINTMSK         (1U << 0)   /**< Global interrupt mask.     */
+#define GAHBCFG_GLBINTMSK       (1U << 0)   /**< Global interrupt mask.     */
 /** @} */
 
 /**
  * @name GUSBCFG register bit definitions
  * @{
  */
-#define GUSBCFG_CTXPKT          (1U << 31)  /**< Corrupt Tx packet.         */
-#define GUSBCFG_FDMOD           (1U << 30)  /**< Force Device Mode.         */
-#define GUSBCFG_FHMOD           (1U << 29)  /**< Force Host Mode.           */
-#define GUSBCFG_TRDT_MASK       (15U << 10) /**< USB Turnaround time field
+#define GUSBCFG_COTXPKT         (1U << 31)  /**< Corrupt Tx packet.         */
+#define GUSBCFG_FDEVMODE        (1U << 30)  /**< Force Device Mode.         */
+#define GUSBCFG_FHSTMODE        (1U << 29)  /**< Force Host Mode.           */
+#define GUSBCFG_USBTRDTIM_MASK  (15U << 10) /**< USB Turnaround time field
                                                  mask.                      */
-#define GUSBCFG_TRDT(n)         ((n) << 10) /**< USB Turnaround time field
+#define GUSBCFG_USBTRDTIM(n)    ((n) << 10) /**< USB Turnaround time field
                                                  value.                     */
-#define GUSBCFG_HNPCAP          (1U << 9)   /**< HNP-Capable.               */
-#define GUSBCFG_SRPCAP          (1U << 8)   /**< SRP-Capable.               */
 #define GUSBCFG_PHYSEL          (1U << 6)   /**< USB 2.0 High-Speed PHY or
                                                  USB 1.1 Full-Speed serial
                                                  transceiver Select.        */
-#define GUSBCFG_TOCAL_MASK      (7U << 0)   /**< HS/FS timeout calibration
+#define GUSBCFG_TOUTCAL_MASK    (7U << 0)   /**< HS/FS timeout calibration
                                                  field mask.                */
-#define GUSBCFG_TOCAL(n)        ((n) << 0)  /**< HS/FS timeout calibration
+#define GUSBCFG_TOUTCAL(n)      ((n) << 0)  /**< HS/FS timeout calibration
                                                  field value.               */
 /** @} */
 
@@ -250,14 +235,15 @@ typedef struct {
  * @name GRSTCTL register bit definitions
  * @{
  */
-#define GRSTCTL_AHBIDL          (1U << 31)  /**< AHB Master Idle.           */
+#define GRSTCTL_AHBIDLE         (1U << 31)  /**< AHB master Idle.           */
 #define GRSTCTL_TXFNUM_MASK     (31U << 6)  /**< TxFIFO number field mask.  */
 #define GRSTCTL_TXFNUM(n)       ((n) << 6)  /**< TxFIFO number field value. */
 #define GRSTCTL_TXFFLSH         (1U << 5)   /**< TxFIFO flush.              */
 #define GRSTCTL_RXFFLSH         (1U << 4)   /**< RxFIFO flush.              */
-#define GRSTCTL_FCRST           (1U << 2)   /**< Host frame counter reset.  */
-#define GRSTCTL_HSRST           (1U << 1)   /**< HClk soft reset.           */
-#define GRSTCTL_CSRST           (1U << 0)   /**< Core soft reset.           */
+#define GRSTCTL_FRMCNTRST       (1U << 2)   /**< Host frame counter reset.  */
+#define GRSTCTL_PIUSFTRST       (1U << 1)   /**< PIU FS dedicated control
+                                                 soft reset.                */
+#define GRSTCTL_CSFTRST         (1U << 0)   /**< Controller soft reset.     */
 /** @} */
 
 /**
@@ -266,86 +252,84 @@ typedef struct {
  */
 #define GINTSTS_WKUPINT         (1U << 31)  /**< Resume/Remote wakeup
                                                  detected interrupt.        */
-#define GINTSTS_SRQINT          (1U << 30)  /**< Session request/New session
-                                                 detected interrupt.        */
-#define GINTSTS_DISCINT         (1U << 29)  /**< Disconnect detected
+#define GINTSTS_DISCONINT       (1U << 29)  /**< Disconnect detected
                                                  interrupt.                 */
-#define GINTSTS_CIDSCHG         (1U << 28)  /**< Connector ID status change.*/
-#define GINTSTS_PTXFE           (1U << 26)  /**< Periodic TxFIFO empty.     */
-#define GINTSTS_HCINT           (1U << 25)  /**< Host channels interrupt.   */
-#define GINTSTS_HPRTINT         (1U << 24)  /**< Host port interrupt.       */
-#define GINTSTS_IPXFR           (1U << 21)  /**< Incomplete periodic
+#define GINTSTS_CONIDSCHG       (1U << 28)  /**< Connector ID status change.*/
+#define GINTSTS_PTXFEMP         (1U << 26)  /**< Periodic TxFIFO empty.     */
+#define GINTSTS_HCHINT          (1U << 25)  /**< Host channels interrupt.   */
+#define GINTSTS_PRTINT          (1U << 24)  /**< Host port interrupt.       */
+#define GINTSTS_INCOMPIP        (1U << 21)  /**< Incomplete periodic
                                                  transfer.                  */
-#define GINTSTS_IISOOXFR        (1U << 21)  /**< Incomplete isochronous OUT
+#define GINTSTS_INCOMPISOOUT    (1U << 21)  /**< Incomplete isochronous OUT
                                                  transfer.                  */
-#define GINTSTS_IISOIXFR        (1U << 20)  /**< Incomplete isochronous IN
+#define GINTSTS_INCOMPISOIN     (1U << 20)  /**< Incomplete isochronous IN
                                                  transfer.                  */
-#define GINTSTS_OEPINT          (1U << 19)  /**< OUT endpoints interrupt.   */
-#define GINTSTS_IEPINT          (1U << 18)  /**< IN endpoints interrupt.    */
+#define GINTSTS_OEPTINT         (1U << 19)  /**< OUT endpoints interrupt.   */
+#define GINTSTS_IEPTINT         (1U << 18)  /**< IN endpoints interrupt.    */
 #define GINTSTS_EOPF            (1U << 15)  /**< End of periodic frame
                                                  interrupt.                 */
-#define GINTSTS_ISOODRP         (1U << 14)  /**< Isochronous OUT packet
+#define GINTSTS_ISOOUTDROP      (1U << 14)  /**< Isochronous OUT packet
                                                  dropped interrupt.         */
-#define GINTSTS_ENUMDNE         (1U << 13)  /**< Enumeration done.          */
+#define GINTSTS_ENUMDONE        (1U << 13)  /**< Enumeration done.          */
 #define GINTSTS_USBRST          (1U << 12)  /**< USB reset.                 */
 #define GINTSTS_USBSUSP         (1U << 11)  /**< USB suspend.               */
-#define GINTSTS_ESUSP           (1U << 10)  /**< Early suspend.             */
-#define GINTSTS_GONAKEFF        (1U << 7)   /**< Global OUT NAK effective.  */
-#define GINTSTS_GINAKEFF        (1U << 6)   /**< Global IN non-periodic NAK
+#define GINTSTS_ERLYSUSP        (1U << 10)  /**< Early suspend.             */
+#define GINTSTS_GOUTNAKEFF      (1U << 7)   /**< Global OUT NAK effective.  */
+#define GINTSTS_GINNAKEFF       (1U << 6)   /**< Global IN non-periodic NAK
                                                  effective.                 */
-#define GINTSTS_NPTXFE          (1U << 5)   /**< Non-periodic TxFIFO empty. */
+#define GINTSTS_NPTXFEMP        (1U << 5)   /**< Non-periodic TxFIFO empty. */
 #define GINTSTS_RXFLVL          (1U << 4)   /**< RxFIFO non-empty.          */
 #define GINTSTS_SOF             (1U << 3)   /**< Start of frame.            */
 #define GINTSTS_OTGINT          (1U << 2)   /**< OTG interrupt.             */
-#define GINTSTS_MMIS            (1U << 1)   /**< Mode Mismatch interrupt.   */
-#define GINTSTS_CMOD            (1U << 0)   /**< Current mode of operation. */
+#define GINTSTS_MODEMIS         (1U << 1)   /**< Mode mismatch interrupt.   */
+#define GINTSTS_CURMOD          (1U << 0)   /**< Current mode of operation. */
 /** @} */
 
 /**
  * @name GINTMSK register bit definitions
  * @{
  */
-#define GINTMSK_WKUM            (1U << 31)  /**< Resume/remote wakeup
+#define GINTMSK_WKUPINTMSK      (1U << 31)  /**< Resume/remote wakeup
                                                  detected interrupt mask.   */
-#define GINTMSK_SRQM            (1U << 30)  /**< Session request/New session
-                                                 detected interrupt mask.   */
-#define GINTMSK_DISCM           (1U << 29)  /**< Disconnect detected
+#define GINTMSK_DISCONINTMSK    (1U << 29)  /**< Disconnect detected
                                                  interrupt mask.            */
-#define GINTMSK_CIDSCHGM        (1U << 28)  /**< Connector ID status change
+#define GINTMSK_CONIDSCHGMSK    (1U << 28)  /**< Connector ID status change
                                                  mask.                      */
-#define GINTMSK_PTXFEM          (1U << 26)  /**< Periodic TxFIFO empty mask.*/
-#define GINTMSK_HCM             (1U << 25)  /**< Host channels interrupt
+#define GINTMSK_PTXFEMPMSK      (1U << 26)  /**< Periodic TxFIFO empty mask.*/
+#define GINTMSK_HCHINTMSK       (1U << 25)  /**< Host channels interrupt
                                                  mask.                      */
-#define GINTMSK_HPRTM           (1U << 24)  /**< Host port interrupt mask.  */
-#define GINTMSK_IPXFRM          (1U << 21)  /**< Incomplete periodic
+#define GINTMSK_PRTINTMSK       (1U << 24)  /**< Host port interrupt mask.  */
+#define GINTMSK_INCOMPIPMSK     (1U << 21)  /**< Incomplete periodic
                                                  transfer mask.             */
-#define GINTMSK_IISOOXFRM       (1U << 21)  /**< Incomplete isochronous OUT
+#define GINTMSK_INCOMPISOOUTMSK (1U << 21)  /**< Incomplete isochronous OUT
                                                  transfer mask.             */
-#define GINTMSK_IISOIXFRM       (1U << 20)  /**< Incomplete isochronous IN
+#define GINTMSK_INCOMISOINMSK   (1U << 20)  /**< Incomplete isochronous IN
                                                  transfer mask.             */
-#define GINTMSK_OEPM            (1U << 19)  /**< OUT endpoints interrupt
+#define GINTMSK_OEPTINTMSK      (1U << 19)  /**< OUT endpoints interrupt
                                                  mask.                      */
-#define GINTMSK_IEPM            (1U << 18)  /**< IN endpoints interrupt
+#define GINTMSK_IEPTINTMSK      (1U << 18)  /**< IN endpoints interrupt
                                                  mask.                      */
-#define GINTMSK_EOPFM           (1U << 15)  /**< End of periodic frame
+#define GINTMSK_EOPFMSK         (1U << 15)  /**< End of periodic frame
                                                  interrupt mask.            */
-#define GINTMSK_ISOODRPM        (1U << 14)  /**< Isochronous OUT packet
+#define GINTMSK_ISOOUTDROPMSK   (1U << 14)  /**< Isochronous OUT packet
                                                  dropped interrupt mask.    */
-#define GINTMSK_ENUMDNEM        (1U << 13)  /**< Enumeration done mask.     */
-#define GINTMSK_USBRSTM         (1U << 12)  /**< USB reset mask.            */
-#define GINTMSK_USBSUSPM        (1U << 11)  /**< USB suspend mask.          */
-#define GINTMSK_ESUSPM          (1U << 10)  /**< Early suspend mask.        */
-#define GINTMSK_GONAKEFFM       (1U << 7)   /**< Global OUT NAK effective
+#define GINTMSK_ENUMDONEMSK     (1U << 13)  /**< Enumeration done mask.     */
+#define GINTMSK_USBRSTMSK       (1U << 12)  /**< USB reset mask.            */
+#define GINTMSK_USBSUSPMSK      (1U << 11)  /**< USB suspend interrupt
                                                  mask.                      */
-#define GINTMSK_GINAKEFFM       (1U << 6)   /**< Global non-periodic IN NAK
+#define GINTMSK_ERLYSUSPMSK     (1U << 10)  /**< Early suspend interrupt
+                                                 mask.                      */
+#define GINTMSK_GOUTNAKEFFMSK   (1U << 7)   /**< Global OUT NAK effective
+                                                 mask.                      */
+#define GINTMSK_GINNAKEFFMSK    (1U << 6)   /**< Global non-periodic IN NAK
                                                  effective mask.            */
-#define GINTMSK_NPTXFEM         (1U << 5)   /**< Non-periodic TxFIFO empty
+#define GINTMSK_NPTXFEMPMSK     (1U << 5)   /**< Non-periodic TxFIFO empty
                                                  mask.                      */
-#define GINTMSK_RXFLVLM         (1U << 4)   /**< Receive FIFO non-empty
+#define GINTMSK_RXFLVLMSK       (1U << 4)   /**< Receive FIFO non-empty
                                                  mask.                      */
-#define GINTMSK_SOFM            (1U << 3)   /**< Start of (micro)frame mask.*/
-#define GINTMSK_OTGM            (1U << 2)   /**< OTG interrupt mask.        */
-#define GINTMSK_MMISM           (1U << 1)   /**< Mode Mismatch interrupt
+#define GINTMSK_SOFMSK          (1U << 3)   /**< Start of Frame mask.       */
+#define GINTMSK_OTGINTMSK       (1U << 2)   /**< OTG interrupt mask.        */
+#define GINTMSK_MODEMISMSK      (1U << 1)   /**< Mode mismatch interrupt
                                                  mask.                      */
 /** @} */
 
@@ -366,8 +350,8 @@ typedef struct {
 #define GRXSTSR_BCNT(n)         ((n) << 4)  /**< Byte count value.          */
 #define GRXSTSR_CHNUM_MASK      (15U << 0)  /**< Channel number mask.       */
 #define GRXSTSR_CHNUM(n)        ((n) << 0)  /**< Channel number value.      */
-#define GRXSTSR_EPNUM_MASK      (15U << 0)  /**< Endpoint number mask.      */
-#define GRXSTSR_EPNUM(n)        ((n) << 0)  /**< Endpoint number value.     */
+#define GRXSTSR_EPTNUM_MASK     (15U << 0)  /**< Endpoint number mask.      */
+#define GRXSTSR_EPTNUM(n)       ((n) << 0)  /**< Endpoint number value.     */
 /** @} */
 
 /**
@@ -388,61 +372,60 @@ typedef struct {
 #define GRXSTSP_BCNT(n)         ((n) << 4)  /**< Byte count value.          */
 #define GRXSTSP_CHNUM_MASK      (15U << 0)  /**< Channel number mask.       */
 #define GRXSTSP_CHNUM(n)        ((n) << 0)  /**< Channel number value.      */
-#define GRXSTSP_EPNUM_MASK      (15U << 0)  /**< Endpoint number mask.      */
-#define GRXSTSP_EPNUM_OFF       0           /**< Endpoint number offset.    */
-#define GRXSTSP_EPNUM(n)        ((n) << 0)  /**< Endpoint number value.     */
+#define GRXSTSP_EPTNUM_MASK     (15U << 0)  /**< Endpoint number mask.      */
+#define GRXSTSP_EPTNUM_OFF      0           /**< Endpoint number offset.    */
+#define GRXSTSP_EPTNUM(n)       ((n) << 0)  /**< Endpoint number value.     */
 /** @} */
 
 /**
  * @name GRXFSIZ register bit definitions
  * @{
  */
-#define GRXFSIZ_RXFD_MASK       (0xFFFFU << 0) /**< RxFIFO depth mask.      */
-#define GRXFSIZ_RXFD(n)         ((n) << 0)  /**< RxFIFO depth value.        */
+#define GRXFSIZ_RXFDEP_MASK     (0xFFFFU << 0) /**< RxFIFO depth mask.      */
+#define GRXFSIZ_RXFDEP(n)       ((n) << 0)  /**< RxFIFO depth value.        */
 /** @} */
 
 /**
  * @name DIEPTXFx register bit definitions
  * @{
  */
-#define DIEPTXF_INEPTXFD_MASK   (0xFFFFU << 16) /**< IN endpoint TxFIFO depth
-                                                     mask.                  */
-#define DIEPTXF_INEPTXFD(n)     ((n) << 16)     /**< IN endpoint TxFIFO depth
-                                                     value.                 */
-#define DIEPTXF_INEPTXSA_MASK   (0xFFFFU << 0)  /**< IN endpoint FIFOx transmit
-                                                     RAM start address mask.*/
-#define DIEPTXF_INEPTXSA(n)     ((n) << 0)      /**< IN endpoint FIFOx transmit
-                                                     RAM start address value.*/
+#define DIEPTXF_INEPTXFDEP_MASK (0xFFFFU << 16) /**< IN endpoint TxFIFO
+                                                     depth mask.            */
+#define DIEPTXF_INEPTXFDEP(n)   ((n) << 16)     /**< IN endpoint TxFIFO depth
+                                                     depth value.           */
+#define DIEPTXF_INEPTXFSTADDR_MASK (0xFFFFU << 0) /**< IN endpoint FIFOx
+                                                       transmit SRAM start
+													   address mask.        */
+#define DIEPTXF_INEPTXFSTADDR(n) ((n) << 0)     /**< IN endpoint FIFOx
+                                                     transmit SRAM start
+                                                     address mask.          */
 /** @} */
 
 /**
  * @name GCCFG register bit definitions
  * @{
  */
-/* Definitions for stepping 1.*/
-#define GCCFG_NOVBUSSENS        (1U << 21)  /**< VBUS sensing disable.      */
+#define GCCFG_WAIT_CLK_RCV      (1U << 22)  /**< Wait clksoure recover (HS
+                                                 only).                     */
+#define GCCFG_VBUSIG            (1U << 21)  /**< VBUS ignored.              */
 #define GCCFG_SOFOUTEN          (1U << 20)  /**< SOF output enable.         */
-#define GCCFG_VBUSBSEN          (1U << 19)  /**< Enable the VBUS sensing "B"
-                                                 device.                    */
-#define GCCFG_VBUSASEN          (1U << 18)  /**< Enable the VBUS sensing "A"
-                                                 device.                    */
-
-/* Definitions for stepping 2.*/
-#define GCCFG_VBDEN             (1U << 21)  /**< VBUS sensing enable.       */
-#define GCCFG_PWRDWN            (1U << 16)  /**< Power down.                */
+#define GCCFG_BVALIDSESEN       (1U << 19)  /**< B valid sensing enable.    */
+#define GCCFG_AVALIDSESEN       (1U << 18)  /**< A valid sensing enable.    */
+#define GCCFG_LP_MODE           (1U << 17)  /**< Low-power mode.            */
+#define GCCFG_PWRDOWN           (1U << 16)  /**< Power down.                */
 /** @} */
 
 /**
  * @name HPTXFSIZ register bit definitions
  * @{
  */
-#define HPTXFSIZ_PTXFD_MASK     (0xFFFFU << 16) /**< Host periodic TxFIFO
+#define HPTXFSIZ_PTXFSIZE_MASK  (0xFFFFU << 16) /**< Host periodic TxFIFO
                                                      depth mask.            */
-#define HPTXFSIZ_PTXFD(n)       ((n) << 16)     /**< Host periodic TxFIFO
+#define HPTXFSIZ_PTXFSIZE(n)    ((n) << 16)     /**< Host periodic TxFIFO
                                                      depth value.           */
-#define HPTXFSIZ_PTXSA_MASK     (0xFFFFU << 0)  /**< Host periodic TxFIFO
-                                                     Start address mask.    */
-#define HPTXFSIZ_PTXSA(n)       ((n) << 0)      /**< Host periodic TxFIFO
+#define HPTXFSIZ_PTXFSTADDR_MASK (0xFFFFU << 0) /**< Host periodic TxFIFO
+                                                     start address mask.    */
+#define HPTXFSIZ_PTXFSTADDR(n)  ((n) << 0)      /**< Host periodic TxFIFO
                                                      start address value.   */
 /** @} */
 
@@ -450,12 +433,12 @@ typedef struct {
  * @name HCFG register bit definitions
  * @{
  */
-#define HCFG_FSLSS              (1U << 2)   /**< FS- and LS-only support.   */
-#define HCFG_FSLSPCS_MASK       (3U << 0)   /**< FS/LS PHY clock select
+#define HCFG_FSLSSUPP           (1U << 2)   /**< FS- and LS-only support.   */
+#define HCFG_FSLSPCLKSEL_MASK   (3U << 0)   /**< FS/LS PHY clock select
                                                  mask.                      */
-#define HCFG_FSLSPCS_48         (1U << 0)   /**< PHY clock is running at
+#define HCFG_FSLSPCLKSEL_48     (1U << 0)   /**< PHY clock is running at
                                                  48 MHz.                    */
-#define HCFG_FSLSPCS_6          (2U << 0)   /**< PHY clock is running at
+#define HCFG_FSLSPCLKSEL_6      (2U << 0)   /**< PHY clock is running at
                                                  6 MHz.                     */
 /** @} */
 
@@ -463,17 +446,17 @@ typedef struct {
  * @name HFIR register bit definitions
  * @{
  */
-#define HFIR_FRIVL_MASK         (0xFFFFU << 0) /**< Frame interval mask.    */
-#define HFIR_FRIVL(n)           ((n) << 0)     /**< Frame interval value.   */
+#define HFIR_FRINT_MASK         (0xFFFFU << 0) /**< Frame interval mask.    */
+#define HFIR_FRINT(n)           ((n) << 0)     /**< Frame interval value.   */
 /** @} */
 
 /**
  * @name HFNUM register bit definitions
  * @{
  */
-#define HFNUM_FTREM_MASK        (0xFFFFU << 16) /**< Frame time Remaining
+#define HFNUM_FTREM_MASK        (0xFFFFU << 16) /**< Frame time remaining
                                                      mask.                  */
-#define HFNUM_FTREM(n)          ((n) << 16)     /**< Frame time Remaining
+#define HFNUM_FTREM(n)          ((n) << 16)     /**< Frame time remaining
                                                      value.                 */
 #define HFNUM_FRNUM_MASK        (0xFFFFU << 0)  /**< Frame number mask.     */
 #define HFNUM_FRNUM(n)          ((n) << 0)      /**< Frame number value.    */
@@ -489,17 +472,17 @@ typedef struct {
 #define HPTXSTS_PTXQTOP(n)      ((n) << 24)     /**< Top of the periodic
                                                      transmit request queue
                                                      value.                 */
-#define HPTXSTS_PTXQSAV_MASK    (0xFF<< 16)     /**< Periodic transmit request
-                                                     queue Space Available
+#define HPTXSTS_PTXQSPCAVAIL_MASK (0xFF<< 16)   /**< Periodic transmit request
+                                                     queue space available
                                                      mask.                  */
-#define HPTXSTS_PTXQSAV(n)      ((n) << 16)     /**< Periodic transmit request
-                                                     queue Space Available
+#define HPTXSTS_PTXQSPCAVAIL(n) ((n) << 16)     /**< Periodic transmit request
+                                                     queue space available
                                                      value.                 */
-#define HPTXSTS_PTXFSAVL_MASK   (0xFFFF<< 0)    /**< Periodic transmit Data
-                                                     FIFO Space Available
+#define HPTXSTS_PTXFSPCAVAIL_MASK (0xFFFF<< 0)  /**< Periodic transmit data
+                                                     FIFO space available
                                                      mask.                  */
-#define HPTXSTS_PTXFSAVL(n)     ((n) << 0)      /**< Periodic transmit Data
-                                                     FIFO Space Available
+#define HPTXSTS_PTXFSPCAVAIL(n) ((n) << 0)      /**< Periodic transmit data
+                                                     FIFO space available
                                                      value.                 */
 /** @} */
 
@@ -517,9 +500,9 @@ typedef struct {
  * @name HAINTMSK register bit definitions
  * @{
  */
-#define HAINTMSK_HAINTM_MASK    (0xFFFFU << 0)  /**< Channel interrupt mask
+#define HAINTMSK_HAINTMSK_MASK  (0xFFFFU << 0)  /**< Channel interrupt mask
                                                      mask.                  */
-#define HAINTMSK_HAINTM(n)      ((n) << 0)      /**< Channel interrupt mask
+#define HAINTMSK_HAINTMSK(n)    ((n) << 0)      /**< Channel interrupt mask
                                                      value.                 */
 /** @} */
 
@@ -527,24 +510,24 @@ typedef struct {
  * @name HPRT register bit definitions
  * @{
  */
-#define HPRT_PSPD_MASK          (3U << 17)  /**< Port speed mask.           */
-#define HPRT_PSPD_FS            (1U << 17)  /**< Full speed value.          */
-#define HPRT_PSPD_LS            (2U << 17)  /**< Low speed value.           */
-#define HPRT_PTCTL_MASK         (15U << 13) /**< Port Test control mask.    */
-#define HPRT_PTCTL(n)           ((n) << 13) /**< Port Test control value.   */
-#define HPRT_PPWR               (1U << 12)  /**< Port power.                */
-#define HPRT_PLSTS_MASK         (3U << 11)  /**< Port Line status mask.     */
-#define HPRT_PLSTS_DM           (1U << 11)  /**< Logic level of D-.         */
-#define HPRT_PLSTS_DP           (1U << 10)  /**< Logic level of D+.         */
-#define HPRT_PRST               (1U << 8)   /**< Port reset.                */
-#define HPRT_PSUSP              (1U << 7)   /**< Port suspend.              */
-#define HPRT_PRES               (1U << 6)   /**< Port Resume.               */
-#define HPRT_POCCHNG            (1U << 5)   /**< Port overcurrent change.   */
-#define HPRT_POCA               (1U << 4)   /**< Port overcurrent active.   */
-#define HPRT_PENCHNG            (1U << 3)   /**< Port enable/disable change.*/
-#define HPRT_PENA               (1U << 2)   /**< Port enable.               */
-#define HPRT_PCDET              (1U << 1)   /**< Port Connect detected.     */
-#define HPRT_PCSTS              (1U << 0)   /**< Port connect status.       */
+#define HPRT_PRTSPD_MASK        (3U << 17)  /**< Port speed mask.           */
+#define HPRT_PRTSPD_FS          (1U << 17)  /**< Full speed value.          */
+#define HPRT_PRTSPD_LS          (2U << 17)  /**< Low speed value.           */
+#define HPRT_PRTTSTCTL_MASK     (15U << 13) /**< Port test control mask.    */
+#define HPRT_PRTTSTCTL(n)       ((n) << 13) /**< Port test control value.   */
+#define HPRT_PRTPWR             (1U << 12)  /**< Port power.                */
+#define HPRT_PRTLNSTS_MASK      (3U << 11)  /**< Port line status mask.     */
+#define HPRT_PRTLNSTS_DM        (1U << 11)  /**< Logic level of D-.         */
+#define HPRT_PRTLNSTS_DP        (1U << 10)  /**< Logic level of D+.         */
+#define HPRT_PRTRST             (1U << 8)   /**< Port reset.                */
+#define HPRT_PRTSUSP            (1U << 7)   /**< Port suspend.              */
+#define HPRT_PRTRES             (1U << 6)   /**< Port resume.               */
+#define HPRT_PRTOVRCCHNG        (1U << 5)   /**< Port overcurrent change.   */
+#define HPRT_PRTOVRCACT         (1U << 4)   /**< Port overcurrent active.   */
+#define HPRT_PRTENCHNG          (1U << 3)   /**< Port enable/disable change.*/
+#define HPRT_PRTENA             (1U << 2)   /**< Port enable.               */
+#define HPRT_PRTCONDET          (1U << 1)   /**< Port connect detected.     */
+#define HPRT_PRTCONSTS          (1U << 0)   /**< Port connect status.       */
 /** @} */
 
 /**
@@ -552,22 +535,22 @@ typedef struct {
  * @{
  */
 #define HCCHAR_CHENA            (1U << 31)  /**< Channel enable.            */
-#define HCCHAR_CHDIS            (1U << 30)  /**< Channel Disable.           */
+#define HCCHAR_CHDIS            (1U << 30)  /**< Channel disable.           */
 #define HCCHAR_ODDFRM           (1U << 29)  /**< Odd frame.                 */
-#define HCCHAR_DAD_MASK         (0x7FU << 22) /**< Device Address mask.     */
-#define HCCHAR_DAD(n)           ((n) << 22) /**< Device Address value.      */
-#define HCCHAR_MCNT_MASK        (3U << 20)  /**< Multicount mask.           */
-#define HCCHAR_MCNT(n)          ((n) << 20) /**< Multicount value.          */
-#define HCCHAR_EPTYP_MASK       (3U << 18)  /**< Endpoint type mask.        */
-#define HCCHAR_EPTYP(n)         ((n) << 18) /**< Endpoint type value.       */
-#define HCCHAR_EPTYP_CTL        (0U << 18)  /**< Control endpoint value.    */
-#define HCCHAR_EPTYP_ISO        (1U << 18)  /**< Isochronous endpoint value.*/
-#define HCCHAR_EPTYP_BULK       (2U << 18)  /**< Bulk endpoint value.       */
-#define HCCHAR_EPTYP_INTR       (3U << 18)  /**< Interrupt endpoint value.  */
-#define HCCHAR_LSDEV            (1U << 17)  /**< Low-Speed device.          */
-#define HCCHAR_EPDIR            (1U << 15)  /**< Endpoint direction.        */
-#define HCCHAR_EPNUM_MASK       (15U << 11) /**< Endpoint number mask.      */
-#define HCCHAR_EPNUM(n)         ((n) << 11) /**< Endpoint number value.     */
+#define HCCHAR_DEVADDR_MASK     (0x7FU << 22) /**< Device address mask.     */
+#define HCCHAR_DEVADDR(n)       ((n) << 22) /**< Device address value.      */
+#define HCCHAR_MC_MASK          (3U << 20)  /**< Multi count mask.          */
+#define HCCHAR_MC(n)            ((n) << 20) /**< Multi count value.         */
+#define HCCHAR_EPTYPE_MASK      (3U << 18)  /**< Endpoint type mask.        */
+#define HCCHAR_EPTYPE(n)        ((n) << 18) /**< Endpoint type value.       */
+#define HCCHAR_EPTYPE_CTL       (0U << 18)  /**< Control transfer value.    */
+#define HCCHAR_EPTYPE_ISO       (1U << 18)  /**< Isochronous transfer value.*/
+#define HCCHAR_EPTYPE_BULK      (2U << 18)  /**< Bulk transfer value.       */
+#define HCCHAR_EPTYPE_INTR      (3U << 18)  /**< Interrupt transfer value.  */
+#define HCCHAR_LSPDDEV          (1U << 17)  /**< Low-speed device.          */
+#define HCCHAR_EPTDIR           (1U << 15)  /**< Endpoint direction.        */
+#define HCCHAR_EPTNUM_MASK      (15U << 11) /**< Endpoint number mask.      */
+#define HCCHAR_EPTNUM(n)        ((n) << 11) /**< Endpoint number value.     */
 #define HCCHAR_MPS_MASK         (0x7FFU << 0) /**< Maximum packet size mask.*/
 #define HCCHAR_MPS(n)           ((n) << 0)  /**< Maximum packet size value. */
 /** @} */
@@ -576,10 +559,10 @@ typedef struct {
  * @name HCINT register bit definitions
  * @{
  */
-#define HCINT_DTERR             (1U << 10)  /**< Data toggle error.         */
-#define HCINT_FRMOR             (1U << 9)   /**< Frame overrun.             */
-#define HCINT_BBERR             (1U << 8)   /**< Babble error.              */
-#define HCINT_TRERR             (1U << 7)   /**< Transaction Error.         */
+#define HCINT_DTGLERR           (1U << 10)  /**< Data toggle error.         */
+#define HCINT_FRMOVRUN          (1U << 9)   /**< Frame overrun.             */
+#define HCINT_BBLERR            (1U << 8)   /**< Babble error.              */
+#define HCINT_XACTERR           (1U << 7)   /**< Transaction error.         */
 #define HCINT_ACK               (1U << 5)   /**< ACK response
                                                  received/transmitted
                                                  interrupt.                 */
@@ -587,66 +570,67 @@ typedef struct {
                                                  interrupt.                 */
 #define HCINT_STALL             (1U << 3)   /**< STALL response received
                                                  interrupt.                 */
-#define HCINT_AHBERR            (1U << 2)   /**< AHB error interrupt.       */
-#define HCINT_CHH               (1U << 1)   /**< Channel halted.            */
-#define HCINT_XFRC              (1U << 0)   /**< Transfer completed.        */
+#define HCINT_AHBERR            (1U << 2)   /**< AHB error interrupt
+                                                 (HS only).                 */
+#define HCINT_CHHLTD            (1U << 1)   /**< Channel halted.            */
+#define HCINT_XFERC             (1U << 0)   /**< Transfer completed.        */
 /** @} */
 
 /**
  * @name HCINTMSK register bit definitions
  * @{
  */
-#define HCINTMSK_DTERRM         (1U << 10)  /**< Data toggle error mask.    */
-#define HCINTMSK_FRMORM         (1U << 9)   /**< Frame overrun mask.        */
-#define HCINTMSK_BBERRM         (1U << 8)   /**< Babble error mask.         */
-#define HCINTMSK_TRERRM         (1U << 7)   /**< Transaction error mask.    */
-#define HCINTMSK_NYET           (1U << 6)   /**< NYET response received
+#define HCINTMSK_DTGLERRMSK     (1U << 10)  /**< Data toggle error mask.    */
+#define HCINTMSK_FRMOVRUNMSK    (1U << 9)   /**< Frame overrun mask.        */
+#define HCINTMSK_BBLERRMSK      (1U << 8)   /**< Babble error mask.         */
+#define HCINTMSK_XACTERRMSK     (1U << 7)   /**< Transaction error mask.    */
+#define HCINTMSK_NYETMSK        (1U << 6)   /**< NYET response received
                                                  interrupt mask.            */
-#define HCINTMSK_ACKM           (1U << 5)   /**< ACK Response
+#define HCINTMSK_ACKMSK         (1U << 5)   /**< ACK response
                                                  received/transmitted
                                                  interrupt mask.            */
-#define HCINTMSK_NAKM           (1U << 4)   /**< NAK response received
+#define HCINTMSK_NAKMSK         (1U << 4)   /**< NAK response received
                                                  interrupt mask.            */
-#define HCINTMSK_STALLM         (1U << 3)   /**< STALL response received
+#define HCINTMSK_STALLMSK       (1U << 3)   /**< STALL response received
                                                  interrupt mask.            */
-#define HCINTMSK_AHBERRM        (1U << 2)   /**< AHB error interrupt mask.  */
-#define HCINTMSK_CHHM           (1U << 1)   /**< Channel halted mask.       */
-#define HCINTMSK_XFRCM          (1U << 0)   /**< Transfer completed mask.   */
+#define HCINTMSK_AHBERRMSK      (1U << 2)   /**< AHB error mask (HS only).  */
+#define HCINTMSK_CHHLTDMSK      (1U << 1)   /**< Channel halted mask.       */
+#define HCINTMSK_XFERCMSK       (1U << 0)   /**< Transfer completed mask.   */
 /** @} */
 
 /**
  * @name HCTSIZ register bit definitions
  * @{
  */
-#define HCTSIZ_DPID_MASK        (3U << 29)  /**< PID mask.                  */
-#define HCTSIZ_DPID_DATA0       (0U << 29)  /**< DATA0.                     */
-#define HCTSIZ_DPID_DATA2       (1U << 29)  /**< DATA2.                     */
-#define HCTSIZ_DPID_DATA1       (2U << 29)  /**< DATA1.                     */
-#define HCTSIZ_DPID_MDATA       (3U << 29)  /**< MDATA.                     */
-#define HCTSIZ_DPID_SETUP       (3U << 29)  /**< SETUP.                     */
+#define HCTSIZ_PID_MASK         (3U << 29)  /**< PID mask.                  */
+#define HCTSIZ_PID_DATA0        (0U << 29)  /**< DATA0.                     */
+#define HCTSIZ_PID_DATA2        (1U << 29)  /**< DATA2.                     */
+#define HCTSIZ_PID_DATA1        (2U << 29)  /**< DATA1.                     */
+#define HCTSIZ_PID_MDATA        (3U << 29)  /**< MDATA.                     */
+#define HCTSIZ_PID_SETUP        (3U << 29)  /**< SETUP.                     */
 #define HCTSIZ_PKTCNT_MASK      (0x3FFU << 19)  /**< Packet count mask.     */
 #define HCTSIZ_PKTCNT(n)        ((n) << 19) /**< Packet count value.        */
-#define HCTSIZ_XFRSIZ_MASK      (0x7FFFFU << 0) /**< Transfer size mask.    */
-#define HCTSIZ_XFRSIZ(n)        ((n) << 0)  /**< Transfer size value.       */
+#define HCTSIZ_XFERSIZE_MASK    (0x7FFFFU << 0) /**< Transfer size mask.    */
+#define HCTSIZ_XFERSIZE(n)      ((n) << 0)  /**< Transfer size value.       */
 /** @} */
 
 /**
  * @name DCFG register bit definitions
  * @{
  */
-#define DCFG_PFIVL_MASK         (3U << 11)  /**< Periodic frame interval
+#define DCFG_PERFRINT_MASK      (3U << 11)  /**< Periodic frame interval
                                                  mask.                      */
-#define DCFG_PFIVL(n)           ((n) << 11) /**< Periodic frame interval
+#define DCFG_PERFRINT(n)        ((n) << 11) /**< Periodic frame interval
                                                  value.                     */
-#define DCFG_DAD_MASK           (0x7FU << 4)/**< Device address mask.       */
-#define DCFG_DAD(n)             ((n) << 4)  /**< Device address value.      */
-#define DCFG_NZLSOHSK           (1U << 2)   /**< Non-Zero-Length status
+#define DCFG_DEVADDR_MASK       (0x7FU << 4)/**< Device address mask.       */
+#define DCFG_DEVADDR(n)         ((n) << 4)  /**< Device address value.      */
+#define DCFG_NZSTSOUTHSHK       (1U << 2)   /**< Non-zero-length status
                                                  OUT handshake.             */
-#define DCFG_DSPD_MASK          (3U << 0)   /**< Device speed mask.         */
-#define DCFG_DSPD_HS            (0U << 0)   /**< High speed (USB 2.0).      */
-#define DCFG_DSPD_HS_FS         (1U << 0)   /**< High speed (USB 2.0) in FS
+#define DCFG_DEVSPD_MASK        (3U << 0)   /**< Device speed mask.         */
+#define DCFG_DEVSPD_HS          (0U << 0)   /**< High speed (USB 2.0).      */
+#define DCFG_DEVSPD_HS_FS       (1U << 0)   /**< High speed (USB 2.0) in FS
                                                  mode.                      */
-#define DCFG_DSPD_FS11          (3U << 0)   /**< Full speed (USB 1.1
+#define DCFG_DEVSPD_FS11        (3U << 0)   /**< Full speed (USB 1.1
                                                  transceiver clock is 48
                                                  MHz).                      */
 /** @} */
@@ -655,36 +639,38 @@ typedef struct {
  * @name DCTL register bit definitions
  * @{
  */
-#define DCTL_POPRGDNE           (1U << 11)  /**< Power-on programming done. */
-#define DCTL_CGONAK             (1U << 10)  /**< Clear global OUT NAK.      */
-#define DCTL_SGONAK             (1U << 9)   /**< Set global OUT NAK.        */
-#define DCTL_CGINAK             (1U << 8)   /**< Clear global non-periodic
+#define DCTL_PWROPRGDNE         (1U << 11)  /**< Power-on programming done. */
+#define DCTL_CGOUTNAK           (1U << 10)  /**< Clear global OUT NAK.      */
+#define DCTL_SGOUTNAK           (1U << 9)   /**< Set global OUT NAK.        */
+#define DCTL_CGNPINNAK          (1U << 8)   /**< Clear global non-periodic
                                                  IN NAK.                    */
-#define DCTL_SGINAK             (1U << 7)   /**< Set global non-periodic
+#define DCTL_SGNPINNAK          (1U << 7)   /**< Set global non-periodic
                                                  IN NAK.                    */
-#define DCTL_TCTL_MASK          (7U << 4)   /**< Test control mask.         */
-#define DCTL_TCTL(n)            ((n) << 4   /**< Test control value.        */
-#define DCTL_GONSTS             (1U << 3)   /**< Global OUT NAK status.     */
-#define DCTL_GINSTS             (1U << 2)   /**< Global non-periodic IN
+#define DCTL_TSTCTL_MASK        (7U << 4)   /**< Test control mask.         */
+#define DCTL_TSTCTL(n)          ((n) << 4)  /**< Test control value.        */
+#define DCTL_GOUTNAKSTS         (1U << 3)   /**< Global OUT NAK status.     */
+#define DCTL_GNPINNAKSTS        (1U << 2)   /**< Global non-periodic IN
                                                  NAK status.                */
-#define DCTL_SDIS               (1U << 1)   /**< Soft disconnect.           */
-#define DCTL_RWUSIG             (1U << 0)   /**< Remote wakeup signaling.   */
+#define DCTL_SFTDISCON          (1U << 1)   /**< Software disconnect.       */
+#define DCTL_RWKUPSIG           (1U << 0)   /**< Remote wakeup signaling.   */
 /** @} */
 
 /**
  * @name DSTS register bit definitions
  * @{
  */
-#define DSTS_FNSOF_MASK         (0x3FFU << 8)   /**< Frame number of the
+#define DSTS_SOFFN_MASK         (0x3FFFU << 8)  /**< Frame number of the
                                                      received SOF mask.     */
-#define DSTS_FNSOF(n)           ((n) << 8)      /**< Frame number of the
+#define DSTS_SOFFN(n)           ((n) << 8)      /**< Frame number of the
                                                      received SOF value.    */
-#define DSTS_FNSOF_ODD          (1U << 8)       /**< Frame parity of the
+#define DSTS_SOFFN_ODD          (1U << 8)       /**< Frame parity of the
                                                      received SOF value.    */
-#define DSTS_EERR               (1U << 3)       /**< Erratic error.         */
+#define DSTS_ETICERR            (1U << 3)       /**< Erratic error.         */
 #define DSTS_ENUMSPD_MASK       (3U << 1)       /**< Enumerated speed mask. */
 #define DSTS_ENUMSPD_FS_48      (3U << 1)       /**< Full speed (PHY clock is
                                                      running at 48 MHz).    */
+#define DSTS_ENUMSPD_FS_30_60   (1U << 1)       /**< Full speed (PHY clock is
+                                                     running at 30/60 MHz). */
 #define DSTS_ENUMSPD_HS_480     (0U << 1)       /**< High speed.            */
 #define DSTS_SUSPSTS            (1U << 0)       /**< Suspend status.        */
 /** @} */
@@ -693,15 +679,15 @@ typedef struct {
  * @name DIEPMSK register bit definitions
  * @{
  */
-#define DIEPMSK_TXFEM           (1U << 6)   /**< Transmit FIFO empty mask.  */
-#define DIEPMSK_INEPNEM         (1U << 6)   /**< IN endpoint NAK effective
+#define DIEPMSK_TXFIFOUDRMSK    (1U << 8)   /**< FIFO underrun mask.        */
+#define DIEPMSK_INEPTNAKMSK     (1U << 6)   /**< IN endpoint NAK effective
                                                  mask.                      */
-#define DIEPMSK_ITTXFEMSK       (1U << 4)   /**< IN token received when
+#define DIEPMSK_INTKNTXFEMPMSK  (1U << 4)   /**< IN token received when
                                                  TxFIFO empty mask.         */
-#define DIEPMSK_TOCM            (1U << 3)   /**< Timeout condition mask.    */
-#define DIEPMSK_EPDM            (1U << 1)   /**< Endpoint disabled
+#define DIEPMSK_TIMEOUTMSK      (1U << 3)   /**< Timeout condition mask.    */
+#define DIEPMSK_EPTDISMSK       (1U << 1)   /**< Endpoint disabled
                                                  interrupt mask.            */
-#define DIEPMSK_XFRCM           (1U << 0)   /**< Transfer completed
+#define DIEPMSK_XFERCMSK        (1U << 0)   /**< Transfer completed
                                                  interrupt mask.            */
 /** @} */
 
@@ -709,12 +695,12 @@ typedef struct {
  * @name DOEPMSK register bit definitions
  * @{
  */
-#define DOEPMSK_OTEPDM          (1U << 4)   /**< OUT token received when
+#define DOEPMSK_OUTTEPDMSK      (1U << 4)   /**< OUT token received when
                                                  endpoint disabled mask.    */
-#define DOEPMSK_STUPM           (1U << 3)   /**< SETUP phase done mask.     */
-#define DOEPMSK_EPDM            (1U << 1)   /**< Endpoint disabled
+#define DOEPMSK_SETUPMSK        (1U << 3)   /**< SETUP phase done mask.     */
+#define DOEPMSK_EPTDISMSK       (1U << 1)   /**< Endpoint disabled
                                                  interrupt mask.            */
-#define DOEPMSK_XFRCM           (1U << 0)   /**< Transfer completed
+#define DOEPMSK_XFERCMSK        (1U << 0)   /**< Transfer completed
                                                  interrupt mask.            */
 /** @} */
 
@@ -722,13 +708,13 @@ typedef struct {
  * @name DAINT register bit definitions
  * @{
  */
-#define DAINT_OEPINT_MASK       (0xFFFFU << 16) /**< OUT endpoint interrupt
+#define DAINT_OUTEPTINT_MASK    (0xFFFFU << 16) /**< OUT endpoint interrupt
                                                      bits mask.             */
-#define DAINT_OEPINT(n)         ((n) << 16)     /**< OUT endpoint interrupt
+#define DAINT_OUTEPTINT(n)      ((n) << 16)     /**< OUT endpoint interrupt
                                                      bits value.            */
-#define DAINT_IEPINT_MASK       (0xFFFFU << 0)  /**< IN endpoint interrupt
+#define DAINT_INEPTINT_MASK     (0xFFFFU << 0)  /**< IN endpoint interrupt
                                                      bits mask.             */
-#define DAINT_IEPINT(n)         ((n) << 0)      /**< IN endpoint interrupt
+#define DAINT_INEPTINT(n)       ((n) << 0)      /**< IN endpoint interrupt
                                                      bits value.            */
 /** @} */
 
@@ -736,147 +722,126 @@ typedef struct {
  * @name DAINTMSK register bit definitions
  * @{
  */
-#define DAINTMSK_OEPM_MASK      (0xFFFFU << 16) /**< OUT EP interrupt mask
+#define DAINTMSK_OUTEPTMSK_MASK (0xFFFFU << 16) /**< OUT EP interrupt mask
                                                      bits mask.             */
-#define DAINTMSK_OEPM(n)        (1U <<(16+(n))) /**< OUT EP interrupt mask
+#define DAINTMSK_OUTEPTMSK(n)   (1U <<(16+(n))) /**< OUT EP interrupt mask
                                                      bits value.            */
-#define DAINTMSK_IEPM_MASK      (0xFFFFU << 0)  /**< IN EP interrupt mask
+#define DAINTMSK_INEPTMSK_MASK  (0xFFFFU << 0)  /**< IN EP interrupt mask
                                                      bits mask.             */
-#define DAINTMSK_IEPM(n)        (1U <<(n))      /**< IN EP interrupt mask
+#define DAINTMSK_INEPTMSK(n)    (1U <<(n))      /**< IN EP interrupt mask
                                                      bits value.            */
-/** @} */
-
-/**
- * @name DVBUSDIS register bit definitions
- * @{
- */
-#define DVBUSDIS_VBUSDT_MASK    (0xFFFFU << 0)  /**< Device VBUS discharge
-                                                     time mask.             */
-#define DVBUSDIS_VBUSDT(n)      ((n) << 0)      /**< Device VBUS discharge
-                                                     time value.            */
-/** @} */
-
-/**
- * @name DVBUSPULSE register bit definitions
- * @{
- */
-#define DVBUSPULSE_DVBUSP_MASK  (0xFFFU << 0)   /**< Device VBUSpulsing time
-                                                     mask.                  */
-#define DVBUSPULSE_DVBUSP(n)    ((n) << 0)      /**< Device VBUS pulsing time
-                                                   value.                   */
 /** @} */
 
 /**
  * @name DIEPEMPMSK register bit definitions
  * @{
  */
-#define DIEPEMPMSK_INEPTXFEM(n) (1U << (n))     /**< IN EP Tx FIFO empty
-                                                   interrupt mask bit.      */
+#define DIEPEMPMSK_INEPTXFEMSK(n) (1U << (n))   /**< IN EP Tx FIFO empty
+                                                     interrupt mask bit.    */
 /** @} */
 
 /**
  * @name DIEPCTL register bit definitions
  * @{
  */
-#define DIEPCTL_EPENA           (1U << 31)  /**< Endpoint enable.           */
-#define DIEPCTL_EPDIS           (1U << 30)  /**< Endpoint disable.          */
-#define DIEPCTL_SD1PID          (1U << 29)  /**< Set DATA1 PID.             */
-#define DIEPCTL_SODDFRM         (1U << 29)  /**< Set odd frame.             */
-#define DIEPCTL_SD0PID          (1U << 28)  /**< Set DATA0 PID.             */
-#define DIEPCTL_SEVNFRM         (1U << 28)  /**< Set even frame.            */
+#define DIEPCTL_EPTENA          (1U << 31)  /**< Endpoint enable.           */
+#define DIEPCTL_EPTDIS          (1U << 30)  /**< Endpoint disable.          */
+#define DIEPCTL_SETD1PID        (1U << 29)  /**< Set DATA1 PID.             */
+#define DIEPCTL_SETODDFR        (1U << 29)  /**< Set odd frame.             */
+#define DIEPCTL_SETD0PID        (1U << 28)  /**< Set DATA0 PID.             */
+#define DIEPCTL_SETEVENFR       (1U << 28)  /**< Set even frame.            */
 #define DIEPCTL_SNAK            (1U << 27)  /**< Set NAK.                   */
 #define DIEPCTL_CNAK            (1U << 26)  /**< Clear NAK.                 */
 #define DIEPCTL_TXFNUM_MASK     (15U << 22) /**< TxFIFO number mask.        */
 #define DIEPCTL_TXFNUM(n)       ((n) << 22) /**< TxFIFO number value.       */
 #define DIEPCTL_STALL           (1U << 21)  /**< STALL handshake.           */
-#define DIEPCTL_SNPM            (1U << 20)  /**< Snoop mode.                */
-#define DIEPCTL_EPTYP_MASK      (3U << 18)  /**< Endpoint type mask.        */
-#define DIEPCTL_EPTYP_CTRL      (0U << 18)  /**< Control.                   */
-#define DIEPCTL_EPTYP_ISO       (1U << 18)  /**< Isochronous.               */
-#define DIEPCTL_EPTYP_BULK      (2U << 18)  /**< Bulk.                      */
-#define DIEPCTL_EPTYP_INTR      (3U << 18)  /**< Interrupt.                 */
+#define DIEPCTL_EPTYPE_MASK     (3U << 18)  /**< Endpoint type mask.        */
+#define DIEPCTL_EPTYPE_CTRL     (0U << 18)  /**< Control.                   */
+#define DIEPCTL_EPTYPE_ISO      (1U << 18)  /**< Isochronous.               */
+#define DIEPCTL_EPTYPE_BULK     (2U << 18)  /**< Bulk.                      */
+#define DIEPCTL_EPTYPE_INTR     (3U << 18)  /**< Interrupt.                 */
 #define DIEPCTL_NAKSTS          (1U << 17)  /**< NAK status.                */
-#define DIEPCTL_EONUM           (1U << 16)  /**< Even/odd frame.            */
+#define DIEPCTL_EOFRNUM         (1U << 16)  /**< Even/odd frame.            */
 #define DIEPCTL_DPID            (1U << 16)  /**< Endpoint data PID.         */
-#define DIEPCTL_USBAEP          (1U << 15)  /**< USB active endpoint.       */
-#define DIEPCTL_MPSIZ_MASK      (0x3FFU << 0) /**< Maximum Packet size mask.*/
-#define DIEPCTL_MPSIZ(n)        ((n) << 0)  /**< Maximum Packet size value. */
+#define DIEPCTL_USBACEPT        (1U << 15)  /**< USB active endpoint.       */
+#define DIEPCTL_MPS_MASK        (0x7FFU << 0) /**< Maximum packet size mask.*/
+#define DIEPCTL_MPS(n)          ((n) << 0)  /**< Maximum packet size value. */
 /** @} */
 
 /**
  * @name DIEPINT register bit definitions
  * @{
  */
-#define DIEPINT_TXFE            (1U << 7)   /**< Transmit FIFO empty.       */
-#define DIEPINT_INEPNE          (1U << 6)   /**< IN endpoint NAK effective. */
-#define DIEPINT_ITTXFE          (1U << 4)   /**< IN Token received when
+#define DIEPINT_TXFEMP          (1U << 7)   /**< Transmit FIFO empty.       */
+#define DIEPINT_INEPTNAK        (1U << 6)   /**< IN endpoint NAK effective. */
+#define DIEPINT_INTKNTXFEMP     (1U << 4)   /**< IN Token received when
                                                  TxFIFO is empty.           */
-#define DIEPINT_TOC             (1U << 3)   /**< Timeout condition.         */
-#define DIEPINT_EPDISD          (1U << 1)   /**< Endpoint disabled
+#define DIEPINT_TIMEOUT         (1U << 3)   /**< Timeout condition.         */
+#define DIEPINT_EPTDISD         (1U << 1)   /**< Endpoint disabled
                                                  interrupt.                 */
-#define DIEPINT_XFRC            (1U << 0)   /**< Transfer completed.        */
+#define DIEPINT_XFERC           (1U << 0)   /**< Transfer completed
+                                                 interrupt.                 */
 /** @} */
 
 /**
  * @name DIEPTSIZ register bit definitions
  * @{
  */
-#define DIEPTSIZ_MCNT_MASK      (3U << 29)      /**< Multi count mask.      */
-#define DIEPTSIZ_MCNT(n)        ((n) << 29)     /**< Multi count value.     */
+#define DIEPTSIZ_MC_MASK        (3U << 29)      /**< Multi count mask.      */
+#define DIEPTSIZ_MC(n)          ((n) << 29)     /**< Multi count value.     */
 #define DIEPTSIZ_PKTCNT_MASK    (0x3FF<< 19)    /**< Packet count mask.     */
 #define DIEPTSIZ_PKTCNT(n)      ((n) << 19)     /**< Packet count value.    */
-#define DIEPTSIZ_XFRSIZ_MASK    (0x7FFFFU << 0) /**< Transfer size mask.    */
-#define DIEPTSIZ_XFRSIZ(n)      ((n) << 0)      /**< Transfer size value.   */
+#define DIEPTSIZ_XFERSIZE_MASK  (0x7FFFFU << 0) /**< Transfer size mask.    */
+#define DIEPTSIZ_XFERSIZE(n)    ((n) << 0)      /**< Transfer size value.   */
 /** @} */
 
 /**
  * @name DTXFSTS register bit definitions.
  * @{
  */
-#define DTXFSTS_INEPTFSAV_MASK  (0xFFFFU << 0)  /**< IN endpoint TxFIFO space
-                                                     available.             */
+#define DTXFSTS_INEPTXFSAV_MASK  (0xFFFFU << 0) /**< IN endpoint TxFIFO
+                                                     space available.       */
 /** @} */
 
 /**
  * @name DOEPCTL register bit definitions.
  * @{
  */
-#define DOEPCTL_EPENA           (1U << 31)  /**< Endpoint enable.           */
-#define DOEPCTL_EPDIS           (1U << 30)  /**< Endpoint disable.          */
-#define DOEPCTL_SD1PID          (1U << 29)  /**< Set DATA1 PID.             */
-#define DOEPCTL_SODDFRM         (1U << 29)  /**< Set odd frame.             */
-#define DOEPCTL_SD0PID          (1U << 28)  /**< Set DATA0 PID.             */
-#define DOEPCTL_SEVNFRM         (1U << 28)  /**< Set even frame.            */
+#define DOEPCTL_EPTENA          (1U << 31)  /**< Endpoint enable.           */
+#define DOEPCTL_EPTDIS          (1U << 30)  /**< Endpoint disable.          */
+#define DOEPCTL_SETD1PID        (1U << 29)  /**< Set DATA1 PID.             */
+#define DOEPCTL_SETODDFR        (1U << 29)  /**< Set odd frame.             */
+#define DOEPCTL_SETD0PID        (1U << 28)  /**< Set DATA0 PID.             */
+#define DOEPCTL_SETEVENFR       (1U << 28)  /**< Set even frame.            */
 #define DOEPCTL_SNAK            (1U << 27)  /**< Set NAK.                   */
 #define DOEPCTL_CNAK            (1U << 26)  /**< Clear NAK.                 */
 #define DOEPCTL_STALL           (1U << 21)  /**< STALL handshake.           */
-#define DOEPCTL_SNPM            (1U << 20)  /**< Snoop mode.                */
-#define DOEPCTL_EPTYP_MASK      (3U << 18)  /**< Endpoint type mask.        */
-#define DOEPCTL_EPTYP_CTRL      (0U << 18)  /**< Control.                   */
-#define DOEPCTL_EPTYP_ISO       (1U << 18)  /**< Isochronous.               */
-#define DOEPCTL_EPTYP_BULK      (2U << 18)  /**< Bulk.                      */
-#define DOEPCTL_EPTYP_INTR      (3U << 18)  /**< Interrupt.                 */
+#define DOEPCTL_SNP             (1U << 20)  /**< Snoop mode.                */
+#define DOEPCTL_EPTYPE_MASK     (3U << 18)  /**< Endpoint type mask.        */
+#define DOEPCTL_EPTYPE_CTRL     (0U << 18)  /**< Control.                   */
+#define DOEPCTL_EPTYPE_ISO      (1U << 18)  /**< Isochronous.               */
+#define DOEPCTL_EPTYPE_BULK     (2U << 18)  /**< Bulk.                      */
+#define DOEPCTL_EPTYPE_INTR     (3U << 18)  /**< Interrupt.                 */
 #define DOEPCTL_NAKSTS          (1U << 17)  /**< NAK status.                */
-#define DOEPCTL_EONUM           (1U << 16)  /**< Even/odd frame.            */
+#define DOEPCTL_EOFRNUM         (1U << 16)  /**< Even/odd frame.            */
 #define DOEPCTL_DPID            (1U << 16)  /**< Endpoint data PID.         */
-#define DOEPCTL_USBAEP          (1U << 15)  /**< USB active endpoint.       */
-#define DOEPCTL_MPSIZ_MASK      (0x3FFU << 0)/**< Maximum Packet size mask. */
-#define DOEPCTL_MPSIZ(n)        ((n) << 0)  /**< Maximum Packet size value. */
+#define DOEPCTL_USBACEPT        (1U << 15)  /**< USB active endpoint.       */
+#define DOEPCTL_MPS_MASK        (0x7FFU << 0)/**< Maximum packet size mask. */
+#define DOEPCTL_MPS(n)          ((n) << 0)  /**< Maximum packet size value. */
 /** @} */
 
 /**
  * @name DOEPINT register bit definitions
  * @{
  */
-#define DOEPINT_SETUP_RCVD      (1U << 15)  /**< SETUP packet received.     */
 #define DOEPINT_B2BSTUP         (1U << 6)   /**< Back-to-back SETUP packets
                                                  received.                  */
-#define DOEPINT_OTEPDIS         (1U << 4)   /**< OUT token received when
+#define DOEPINT_OUTTEPD         (1U << 4)   /**< OUT token received when
                                                  endpoint disabled.         */
-#define DOEPINT_STUP            (1U << 3)   /**< SETUP phase done.          */
-#define DOEPINT_EPDISD          (1U << 1)   /**< Endpoint disabled
+#define DOEPINT_SETUP           (1U << 3)   /**< SETUP phase done.          */
+#define DOEPINT_EPTDISD         (1U << 1)   /**< Endpoint disabled
                                                  interrupt.                 */
-#define DOEPINT_XFRC            (1U << 0)   /**< Transfer completed
+#define DOEPINT_XFERC           (1U << 0)   /**< Transfer completed
                                                  interrupt.                 */
 /** @} */
 
@@ -886,21 +851,20 @@ typedef struct {
  */
 #define DOEPTSIZ_RXDPID_MASK    (3U << 29)  /**< Received data PID mask.    */
 #define DOEPTSIZ_RXDPID(n)      ((n) << 29) /**< Received data PID value.   */
-#define DOEPTSIZ_STUPCNT_MASK   (3U << 29)  /**< SETUP packet count mask.   */
-#define DOEPTSIZ_STUPCNT(n)     ((n) << 29) /**< SETUP packet count value.  */
+#define DOEPTSIZ_SETUPCNT_MASK  (3U << 29)  /**< SETUP packet count mask.   */
+#define DOEPTSIZ_SETUPCNT(n)    ((n) << 29) /**< SETUP packet count value.  */
 #define DOEPTSIZ_PKTCNT_MASK    (0x3FFU << 19)  /**< Packet count mask.     */
 #define DOEPTSIZ_PKTCNT(n)      ((n) << 19) /**< Packet count value.        */
-#define DOEPTSIZ_XFRSIZ_MASK    (0x7FFFFU << 0) /**< Transfer size mask.    */
-#define DOEPTSIZ_XFRSIZ(n)      ((n) << 0)  /**< Transfer size value.       */
+#define DOEPTSIZ_XFERSIZE_MASK  (0x7FFFFU << 0) /**< Transfer size mask.    */
+#define DOEPTSIZ_XFERSIZE(n)    ((n) << 0)  /**< Transfer size value.       */
 /** @} */
 
 /**
  * @name PCGCCTL register bit definitions
  * @{
  */
-#define PCGCCTL_PHYSUSP         (1U << 4)   /**< PHY Suspended.             */
-#define PCGCCTL_GATEHCLK        (1U << 1)   /**< Gate HCLK.                 */
-#define PCGCCTL_STPPCLK         (1U << 0)   /**< Stop PCLK.                 */
+#define PCGCCTL_SUSPENDM        (1U << 4)   /**< PHY Suspended.             */
+#define PCGCCTL_STOPPCLK        (1U << 0)   /**< Stop PCLK.                 */
 /** @} */
 
 #define OTG_FS_ADDR                 0x50000000
