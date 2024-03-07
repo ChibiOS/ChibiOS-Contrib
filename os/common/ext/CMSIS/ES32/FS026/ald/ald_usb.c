@@ -32,7 +32,7 @@
 
 #include "ald_usb.h"
 
-/** @addtogroup ES32F0283_ALD
+/** @addtogroup FS026_ALD
   * @{
   */
 
