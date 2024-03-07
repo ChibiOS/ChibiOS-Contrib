@@ -81,7 +81,7 @@ typedef enum IRQn
     PendSV_IRQn           = -2,       /*!< 14 Cortex-M0 Pend SV Interrupt                         */
     SysTick_IRQn          = -1,       /*!< 15 Cortex-M0 System Tick Interrupt                     */
 
-    /****************        ES32F0283 specific Exceptions Numbers        **************************/
+    /****************        ES32FS026 specific Exceptions Numbers        **************************/
     WWDT_IRQn             = 0,        /*  0       | WWDT          Interrupt                       */
     PVD_IRQn              = 1,        /*  1       | PVD           Interrupt   EXTI[20]            */
     RTC_IRQn              = 2,        /*  2       | RTC           Interrupt                       */
@@ -427,7 +427,7 @@ typedef enum
 #endif
 
 /**
-  * @} es32f0283
+  * @} es32fs026
   */
 
 /**
