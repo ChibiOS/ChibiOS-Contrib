@@ -1,0 +1,924 @@
+/**********************************************************************************
+ *
+ * @file    reg_gpio.h
+ * @brief   GPIO Head File
+ *
+ * @date    23 Nov 2021
+ * @author  AE Team
+ * @note
+ *          Change Logs:
+ *          Date            Author          Notes
+ *          23 Nov 2021     Ginger          the first version
+ *
+ * Copyright (C) Shanghai Eastsoft Microelectronics Co. Ltd. All rights reserved.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the License); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ **********************************************************************************
+ */
+
+#ifndef __GPIO_H__
+#define __GPIO_H__
+
+
+/******************************************************************************/
+/*              Device Specific Peripheral registers structures               */
+/******************************************************************************/
+
+/*  Support for anonymous structures and unions.  */
+//#pragma anon_unions
+
+/****************** Bit definition for GPIO_ID register ************************/
+
+#define  GPIO_ID_ID15_POS   15U
+#define  GPIO_ID_ID15_MSK   BIT(GPIO_ID_ID15_POS)
+#define  GPIO_ID_ID15       GPIO_ID_ID15_MSK
+
+#define  GPIO_ID_ID14_POS   14U
+#define  GPIO_ID_ID14_MSK   BIT(GPIO_ID_ID14_POS)
+#define  GPIO_ID_ID14       GPIO_ID_ID14_MSK
+
+#define  GPIO_ID_ID13_POS   13U
+#define  GPIO_ID_ID13_MSK   BIT(GPIO_ID_ID13_POS)
+#define  GPIO_ID_ID13       GPIO_ID_ID13_MSK
+
+#define  GPIO_ID_ID12_POS   12U
+#define  GPIO_ID_ID12_MSK   BIT(GPIO_ID_ID12_POS)
+#define  GPIO_ID_ID12       GPIO_ID_ID12_MSK
+
+#define  GPIO_ID_ID11_POS   11U
+#define  GPIO_ID_ID11_MSK   BIT(GPIO_ID_ID11_POS)
+#define  GPIO_ID_ID11       GPIO_ID_ID11_MSK
+
+#define  GPIO_ID_ID10_POS   10U
+#define  GPIO_ID_ID10_MSK   BIT(GPIO_ID_ID10_POS)
+#define  GPIO_ID_ID10       GPIO_ID_ID10_MSK
+
+#define  GPIO_ID_ID9_POS    9U
+#define  GPIO_ID_ID9_MSK    BIT(GPIO_ID_ID9_POS)
+#define  GPIO_ID_ID9        GPIO_ID_ID9_MSK
+
+#define  GPIO_ID_ID8_POS    8U
+#define  GPIO_ID_ID8_MSK    BIT(GPIO_ID_ID8_POS)
+#define  GPIO_ID_ID8        GPIO_ID_ID8_MSK
+
+#define  GPIO_ID_ID7_POS    7U
+#define  GPIO_ID_ID7_MSK    BIT(GPIO_ID_ID7_POS)
+#define  GPIO_ID_ID7        GPIO_ID_ID7_MSK
+
+#define  GPIO_ID_ID6_POS    6U
+#define  GPIO_ID_ID6_MSK    BIT(GPIO_ID_ID6_POS)
+#define  GPIO_ID_ID6        GPIO_ID_ID6_MSK
+
+#define  GPIO_ID_ID5_POS    5U
+#define  GPIO_ID_ID5_MSK    BIT(GPIO_ID_ID5_POS)
+#define  GPIO_ID_ID5        GPIO_ID_ID5_MSK
+
+#define  GPIO_ID_ID4_POS    4U
+#define  GPIO_ID_ID4_MSK    BIT(GPIO_ID_ID4_POS)
+#define  GPIO_ID_ID4        GPIO_ID_ID4_MSK
+
+#define  GPIO_ID_ID3_POS    3U
+#define  GPIO_ID_ID3_MSK    BIT(GPIO_ID_ID3_POS)
+#define  GPIO_ID_ID3        GPIO_ID_ID3_MSK
+
+#define  GPIO_ID_ID2_POS    2U
+#define  GPIO_ID_ID2_MSK    BIT(GPIO_ID_ID2_POS)
+#define  GPIO_ID_ID2        GPIO_ID_ID2_MSK
+
+#define  GPIO_ID_ID1_POS    1U
+#define  GPIO_ID_ID1_MSK    BIT(GPIO_ID_ID1_POS)
+#define  GPIO_ID_ID1        GPIO_ID_ID1_MSK
+
+#define  GPIO_ID_ID0_POS    0U
+#define  GPIO_ID_ID0_MSK    BIT(GPIO_ID_ID0_POS)
+#define  GPIO_ID_ID0        GPIO_ID_ID0_MSK
+
+/****************** Bit definition for GPIO_OD register ************************/
+
+#define  GPIO_OD_OD15_POS   15U
+#define  GPIO_OD_OD15_MSK   BIT(GPIO_OD_OD15_POS)
+#define  GPIO_OD_OD15       GPIO_OD_OD15_MSK
+
+#define  GPIO_OD_OD14_POS   14U
+#define  GPIO_OD_OD14_MSK   BIT(GPIO_OD_OD14_POS)
+#define  GPIO_OD_OD14       GPIO_OD_OD14_MSK
+
+#define  GPIO_OD_OD13_POS   13U
+#define  GPIO_OD_OD13_MSK   BIT(GPIO_OD_OD13_POS)
+#define  GPIO_OD_OD13       GPIO_OD_OD13_MSK
+
+#define  GPIO_OD_OD12_POS   12U
+#define  GPIO_OD_OD12_MSK   BIT(GPIO_OD_OD12_POS)
+#define  GPIO_OD_OD12       GPIO_OD_OD12_MSK
+
+#define  GPIO_OD_OD11_POS   11U
+#define  GPIO_OD_OD11_MSK   BIT(GPIO_OD_OD11_POS)
+#define  GPIO_OD_OD11       GPIO_OD_OD11_MSK
+
+#define  GPIO_OD_OD10_POS   10U
+#define  GPIO_OD_OD10_MSK   BIT(GPIO_OD_OD10_POS)
+#define  GPIO_OD_OD10       GPIO_OD_OD10_MSK
+
+#define  GPIO_OD_OD9_POS    9U
+#define  GPIO_OD_OD9_MSK    BIT(GPIO_OD_OD9_POS)
+#define  GPIO_OD_OD9        GPIO_OD_OD9_MSK
+
+#define  GPIO_OD_OD8_POS    8U
+#define  GPIO_OD_OD8_MSK    BIT(GPIO_OD_OD8_POS)
+#define  GPIO_OD_OD8        GPIO_OD_OD8_MSK
+
+#define  GPIO_OD_OD7_POS    7U
+#define  GPIO_OD_OD7_MSK    BIT(GPIO_OD_OD7_POS)
+#define  GPIO_OD_OD7        GPIO_OD_OD7_MSK
+
+#define  GPIO_OD_OD6_POS    6U
+#define  GPIO_OD_OD6_MSK    BIT(GPIO_OD_OD6_POS)
+#define  GPIO_OD_OD6        GPIO_OD_OD6_MSK
+
+#define  GPIO_OD_OD5_POS    5U
+#define  GPIO_OD_OD5_MSK    BIT(GPIO_OD_OD5_POS)
+#define  GPIO_OD_OD5        GPIO_OD_OD5_MSK
+
+#define  GPIO_OD_OD4_POS    4U
+#define  GPIO_OD_OD4_MSK    BIT(GPIO_OD_OD4_POS)
+#define  GPIO_OD_OD4        GPIO_OD_OD4_MSK
+
+#define  GPIO_OD_OD3_POS    3U
+#define  GPIO_OD_OD3_MSK    BIT(GPIO_OD_OD3_POS)
+#define  GPIO_OD_OD3        GPIO_OD_OD3_MSK
+
+#define  GPIO_OD_OD2_POS    2U
+#define  GPIO_OD_OD2_MSK    BIT(GPIO_OD_OD2_POS)
+#define  GPIO_OD_OD2        GPIO_OD_OD2_MSK
+
+#define  GPIO_OD_OD1_POS    1U
+#define  GPIO_OD_OD1_MSK    BIT(GPIO_OD_OD1_POS)
+#define  GPIO_OD_OD1        GPIO_OD_OD1_MSK
+
+#define  GPIO_OD_OD0_POS    0U
+#define  GPIO_OD_OD0_MSK    BIT(GPIO_OD_OD0_POS)
+#define  GPIO_OD_OD0        GPIO_OD_OD0_MSK
+
+/****************** Bit definition for GPIO_BSBR register ************************/
+
+#define  GPIO_BSBR_BR15_POS  31U
+#define  GPIO_BSBR_BR15_MSK  BIT(GPIO_BSBR_BR15_POS)
+#define  GPIO_BSBR_BR15      GPIO_BSBR_BR15_MSK
+
+#define  GPIO_BSBR_BR14_POS  30U
+#define  GPIO_BSBR_BR14_MSK  BIT(GPIO_BSBR_BR14_POS)
+#define  GPIO_BSBR_BR14      GPIO_BSBR_BR14_MSK
+
+#define  GPIO_BSBR_BR13_POS  29U
+#define  GPIO_BSBR_BR13_MSK  BIT(GPIO_BSBR_BR13_POS)
+#define  GPIO_BSBR_BR13      GPIO_BSBR_BR13_MSK
+
+#define  GPIO_BSBR_BR12_POS  28U
+#define  GPIO_BSBR_BR12_MSK  BIT(GPIO_BSBR_BR12_POS)
+#define  GPIO_BSBR_BR12      GPIO_BSBR_BR12_MSK
+
+#define  GPIO_BSBR_BR11_POS  27U
+#define  GPIO_BSBR_BR11_MSK  BIT(GPIO_BSBR_BR11_POS)
+#define  GPIO_BSBR_BR11      GPIO_BSBR_BR11_MSK
+
+#define  GPIO_BSBR_BR10_POS  26U
+#define  GPIO_BSBR_BR10_MSK  BIT(GPIO_BSBR_BR10_POS)
+#define  GPIO_BSBR_BR10      GPIO_BSBR_BR10_MSK
+
+#define  GPIO_BSBR_BR9_POS   25U
+#define  GPIO_BSBR_BR9_MSK   BIT(GPIO_BSBR_BR9_POS)
+#define  GPIO_BSBR_BR9       GPIO_BSBR_BR9_MSK
+
+#define  GPIO_BSBR_BR8_POS   24U
+#define  GPIO_BSBR_BR8_MSK   BIT(GPIO_BSBR_BR8_POS)
+#define  GPIO_BSBR_BR8       GPIO_BSBR_BR8_MSK
+
+#define  GPIO_BSBR_BR7_POS   23U
+#define  GPIO_BSBR_BR7_MSK   BIT(GPIO_BSBR_BR7_POS)
+#define  GPIO_BSBR_BR7       GPIO_BSBR_BR7_MSK
+
+#define  GPIO_BSBR_BR6_POS   22U
+#define  GPIO_BSBR_BR6_MSK   BIT(GPIO_BSBR_BR6_POS)
+#define  GPIO_BSBR_BR6       GPIO_BSBR_BR6_MSK
+
+#define  GPIO_BSBR_BR5_POS   21U
+#define  GPIO_BSBR_BR5_MSK   BIT(GPIO_BSBR_BR5_POS)
+#define  GPIO_BSBR_BR5       GPIO_BSBR_BR5_MSK
+
+#define  GPIO_BSBR_BR4_POS   20U
+#define  GPIO_BSBR_BR4_MSK   BIT(GPIO_BSBR_BR4_POS)
+#define  GPIO_BSBR_BR4       GPIO_BSBR_BR4_MSK
+
+#define  GPIO_BSBR_BR3_POS   19U
+#define  GPIO_BSBR_BR3_MSK   BIT(GPIO_BSBR_BR3_POS)
+#define  GPIO_BSBR_BR3       GPIO_BSBR_BR3_MSK
+
+#define  GPIO_BSBR_BR2_POS   18U
+#define  GPIO_BSBR_BR2_MSK   BIT(GPIO_BSBR_BR2_POS)
+#define  GPIO_BSBR_BR2       GPIO_BSBR_BR2_MSK
+
+#define  GPIO_BSBR_BR1_POS   17U
+#define  GPIO_BSBR_BR1_MSK   BIT(GPIO_BSBR_BR1_POS)
+#define  GPIO_BSBR_BR1       GPIO_BSBR_BR1_MSK
+
+#define  GPIO_BSBR_BR0_POS   16U
+#define  GPIO_BSBR_BR0_MSK   BIT(GPIO_BSBR_BR0_POS)
+#define  GPIO_BSBR_BR0       GPIO_BSBR_BR0_MSK
+
+#define  GPIO_BSBR_BS15_POS  15U
+#define  GPIO_BSBR_BS15_MSK  BIT(GPIO_BSBR_BS15_POS)
+#define  GPIO_BSBR_BS15      GPIO_BSBR_BS15_MSK
+
+#define  GPIO_BSBR_BS14_POS  14U
+#define  GPIO_BSBR_BS14_MSK  BIT(GPIO_BSBR_BS14_POS)
+#define  GPIO_BSBR_BS14      GPIO_BSBR_BS14_MSK
+
+#define  GPIO_BSBR_BS13_POS  13U
+#define  GPIO_BSBR_BS13_MSK  BIT(GPIO_BSBR_BS13_POS)
+#define  GPIO_BSBR_BS13      GPIO_BSBR_BS13_MSK
+
+#define  GPIO_BSBR_BS12_POS  12U
+#define  GPIO_BSBR_BS12_MSK  BIT(GPIO_BSBR_BS12_POS)
+#define  GPIO_BSBR_BS12      GPIO_BSBR_BS12_MSK
+
+#define  GPIO_BSBR_BS11_POS  11U
+#define  GPIO_BSBR_BS11_MSK  BIT(GPIO_BSBR_BS11_POS)
+#define  GPIO_BSBR_BS11      GPIO_BSBR_BS11_MSK
+
+#define  GPIO_BSBR_BS10_POS  10U
+#define  GPIO_BSBR_BS10_MSK  BIT(GPIO_BSBR_BS10_POS)
+#define  GPIO_BSBR_BS10      GPIO_BSBR_BS10_MSK
+
+#define  GPIO_BSBR_BS9_POS   9U
+#define  GPIO_BSBR_BS9_MSK   BIT(GPIO_BSBR_BS9_POS)
+#define  GPIO_BSBR_BS9       GPIO_BSBR_BS9_MSK
+
+#define  GPIO_BSBR_BS8_POS   8U
+#define  GPIO_BSBR_BS8_MSK   BIT(GPIO_BSBR_BS8_POS)
+#define  GPIO_BSBR_BS8       GPIO_BSBR_BS8_MSK
+
+#define  GPIO_BSBR_BS7_POS   7U
+#define  GPIO_BSBR_BS7_MSK   BIT(GPIO_BSBR_BS7_POS)
+#define  GPIO_BSBR_BS7       GPIO_BSBR_BS7_MSK
+
+#define  GPIO_BSBR_BS6_POS   6U
+#define  GPIO_BSBR_BS6_MSK   BIT(GPIO_BSBR_BS6_POS)
+#define  GPIO_BSBR_BS6       GPIO_BSBR_BS6_MSK
+
+#define  GPIO_BSBR_BS5_POS   5U
+#define  GPIO_BSBR_BS5_MSK   BIT(GPIO_BSBR_BS5_POS)
+#define  GPIO_BSBR_BS5       GPIO_BSBR_BS5_MSK
+
+#define  GPIO_BSBR_BS4_POS   4U
+#define  GPIO_BSBR_BS4_MSK   BIT(GPIO_BSBR_BS4_POS)
+#define  GPIO_BSBR_BS4       GPIO_BSBR_BS4_MSK
+
+#define  GPIO_BSBR_BS3_POS   3U
+#define  GPIO_BSBR_BS3_MSK   BIT(GPIO_BSBR_BS3_POS)
+#define  GPIO_BSBR_BS3       GPIO_BSBR_BS3_MSK
+
+#define  GPIO_BSBR_BS2_POS   2U
+#define  GPIO_BSBR_BS2_MSK   BIT(GPIO_BSBR_BS2_POS)
+#define  GPIO_BSBR_BS2       GPIO_BSBR_BS2_MSK
+
+#define  GPIO_BSBR_BS1_POS   1U
+#define  GPIO_BSBR_BS1_MSK   BIT(GPIO_BSBR_BS1_POS)
+#define  GPIO_BSBR_BS1       GPIO_BSBR_BS1_MSK
+
+#define  GPIO_BSBR_BS0_POS   0U
+#define  GPIO_BSBR_BS0_MSK   BIT(GPIO_BSBR_BS0_POS)
+#define  GPIO_BSBR_BS0       GPIO_BSBR_BS0_MSK
+
+/****************** Bit definition for GPIO_LCK register ************************/
+
+#define  GPIO_LCK_LCKK_POSS   16U
+#define  GPIO_LCK_LCKK_POSE   31U
+#define  GPIO_LCK_LCKK_MSK   BITS(GPIO_LCK_LCKK_POSS, GPIO_LCK_LCKK_POSE)
+#define  GPIO_LCK_LCKK       GPIO_LCK_LCKK_MSK
+
+#define  GPIO_LCK_LCK15_POS  15U
+#define  GPIO_LCK_LCK15_MSK  BIT(GPIO_LCK_LCK15_POS)
+#define  GPIO_LCK_LCK15      GPIO_LCK_LCK15_MSK
+
+#define  GPIO_LCK_LCK14_POS  14U
+#define  GPIO_LCK_LCK14_MSK  BIT(GPIO_LCK_LCK14_POS)
+#define  GPIO_LCK_LCK14      GPIO_LCK_LCK14_MSK
+
+#define  GPIO_LCK_LCK13_POS  13U
+#define  GPIO_LCK_LCK13_MSK  BIT(GPIO_LCK_LCK13_POS)
+#define  GPIO_LCK_LCK13      GPIO_LCK_LCK13_MSK
+
+#define  GPIO_LCK_LCK12_POS  12U
+#define  GPIO_LCK_LCK12_MSK  BIT(GPIO_LCK_LCK12_POS)
+#define  GPIO_LCK_LCK12      GPIO_LCK_LCK12_MSK
+
+#define  GPIO_LCK_LCK11_POS  11U
+#define  GPIO_LCK_LCK11_MSK  BIT(GPIO_LCK_LCK11_POS)
+#define  GPIO_LCK_LCK11      GPIO_LCK_LCK11_MSK
+
+#define  GPIO_LCK_LCK10_POS  10U
+#define  GPIO_LCK_LCK10_MSK  BIT(GPIO_LCK_LCK10_POS)
+#define  GPIO_LCK_LCK10      GPIO_LCK_LCK10_MSK
+
+#define  GPIO_LCK_LCK9_POS   9U
+#define  GPIO_LCK_LCK9_MSK   BIT(GPIO_LCK_LCK9_POS)
+#define  GPIO_LCK_LCK9       GPIO_LCK_LCK9_MSK
+
+#define  GPIO_LCK_LCK8_POS   8U
+#define  GPIO_LCK_LCK8_MSK   BIT(GPIO_LCK_LCK8_POS)
+#define  GPIO_LCK_LCK8       GPIO_LCK_LCK8_MSK
+
+#define  GPIO_LCK_LCK7_POS   7U
+#define  GPIO_LCK_LCK7_MSK   BIT(GPIO_LCK_LCK7_POS)
+#define  GPIO_LCK_LCK7       GPIO_LCK_LCK7_MSK
+
+#define  GPIO_LCK_LCK6_POS   6U
+#define  GPIO_LCK_LCK6_MSK   BIT(GPIO_LCK_LCK6_POS)
+#define  GPIO_LCK_LCK6       GPIO_LCK_LCK6_MSK
+
+#define  GPIO_LCK_LCK5_POS   5U
+#define  GPIO_LCK_LCK5_MSK   BIT(GPIO_LCK_LCK5_POS)
+#define  GPIO_LCK_LCK5       GPIO_LCK_LCK5_MSK
+
+#define  GPIO_LCK_LCK4_POS   4U
+#define  GPIO_LCK_LCK4_MSK   BIT(GPIO_LCK_LCK4_POS)
+#define  GPIO_LCK_LCK4       GPIO_LCK_LCK4_MSK
+
+#define  GPIO_LCK_LCK3_POS   3U
+#define  GPIO_LCK_LCK3_MSK   BIT(GPIO_LCK_LCK3_POS)
+#define  GPIO_LCK_LCK3       GPIO_LCK_LCK3_MSK
+
+#define  GPIO_LCK_LCK2_POS   2U
+#define  GPIO_LCK_LCK2_MSK   BIT(GPIO_LCK_LCK2_POS)
+#define  GPIO_LCK_LCK2       GPIO_LCK_LCK2_MSK
+
+#define  GPIO_LCK_LCK1_POS   1U
+#define  GPIO_LCK_LCK1_MSK   BIT(GPIO_LCK_LCK1_POS)
+#define  GPIO_LCK_LCK1       GPIO_LCK_LCK1_MSK
+
+#define  GPIO_LCK_LCK0_POS   0U
+#define  GPIO_LCK_LCK0_MSK   BIT(GPIO_LCK_LCK0_POS)
+#define  GPIO_LCK_LCK0       GPIO_LCK_LCK0_MSK
+
+/****************** Bit definition for GPIO_MOD register ************************/
+
+#define  GPIO_MOD_MOD15_POSS  30U
+#define  GPIO_MOD_MOD15_POSE  31U
+#define  GPIO_MOD_MOD15_MSK   BITS(GPIO_MOD_MOD15_POSS,GPIO_MOD_MOD15_POSE)
+#define  GPIO_MOD_MOD15       GPIO_MOD_MOD15_MSK
+
+#define  GPIO_MOD_MOD14_POSS  28U
+#define  GPIO_MOD_MOD14_POSE  29U
+#define  GPIO_MOD_MOD14_MSK   BITS(GPIO_MOD_MOD14_POSS,GPIO_MOD_MOD14_POSE)
+#define  GPIO_MOD_MOD14       GPIO_MOD_MOD14_MSK
+
+#define  GPIO_MOD_MOD13_POSS  26U
+#define  GPIO_MOD_MOD13_POSE  27U
+#define  GPIO_MOD_MOD13_MSK   BITS(GPIO_MOD_MOD13_POSS,GPIO_MOD_MOD13_POSE)
+#define  GPIO_MOD_MOD13       GPIO_MOD_MOD13_MSK
+
+#define  GPIO_MOD_MOD12_POSS  24U
+#define  GPIO_MOD_MOD12_POSE  25U
+#define  GPIO_MOD_MOD12_MSK   BITS(GPIO_MOD_MOD12_POSS,GPIO_MOD_MOD12_POSE)
+#define  GPIO_MOD_MOD12       GPIO_MOD_MOD12_MSK
+
+#define  GPIO_MOD_MOD11_POSS  22U
+#define  GPIO_MOD_MOD11_POSE  23U
+#define  GPIO_MOD_MOD11_MSK   BITS(GPIO_MOD_MOD11_POSS,GPIO_MOD_MOD11_POSE)
+#define  GPIO_MOD_MOD11       GPIO_MOD_MOD11_MSK
+
+#define  GPIO_MOD_MOD10_POSS  20U
+#define  GPIO_MOD_MOD10_POSE  21U
+#define  GPIO_MOD_MOD10_MSK   BITS(GPIO_MOD_MOD10_POSS,GPIO_MOD_MOD10_POSE)
+#define  GPIO_MOD_MOD10       GPIO_MOD_MOD10_MSK
+
+#define  GPIO_MOD_MOD9_POSS  18U
+#define  GPIO_MOD_MOD9_POSE  19U
+#define  GPIO_MOD_MOD9_MSK   BITS(GPIO_MOD_MOD9_POSS,GPIO_MOD_MOD9_POSE)
+#define  GPIO_MOD_MOD9       GPIO_MOD_MOD9_MSK
+
+#define  GPIO_MOD_MOD8_POSS  16U
+#define  GPIO_MOD_MOD8_POSE  17U
+#define  GPIO_MOD_MOD8_MSK   BITS(GPIO_MOD_MOD8_POSS,GPIO_MOD_MOD8_POSE)
+#define  GPIO_MOD_MOD8       GPIO_MOD_MOD8_MSK
+
+#define  GPIO_MOD_MOD7_POSS  14U
+#define  GPIO_MOD_MOD7_POSE  15U
+#define  GPIO_MOD_MOD7_MSK   BITS(GPIO_MOD_MOD7_POSS,GPIO_MOD_MOD7_POSE)
+#define  GPIO_MOD_MOD7       GPIO_MOD_MOD7_MSK
+
+#define  GPIO_MOD_MOD6_POSS  12U
+#define  GPIO_MOD_MOD6_POSE  13U
+#define  GPIO_MOD_MOD6_MSK   BITS(GPIO_MOD_MOD6_POSS,GPIO_MOD_MOD6_POSE)
+#define  GPIO_MOD_MOD6       GPIO_MOD_MOD6_MSK
+
+#define  GPIO_MOD_MOD5_POSS  10U
+#define  GPIO_MOD_MOD5_POSE  11U
+#define  GPIO_MOD_MOD5_MSK   BITS(GPIO_MOD_MOD5_POSS,GPIO_MOD_MOD5_POSE)
+#define  GPIO_MOD_MOD5       GPIO_MOD_MOD5_MSK
+
+#define  GPIO_MOD_MOD4_POSS  8U
+#define  GPIO_MOD_MOD4_POSE  9U
+#define  GPIO_MOD_MOD4_MSK   BITS(GPIO_MOD_MOD4_POSS,GPIO_MOD_MOD4_POSE)
+#define  GPIO_MOD_MOD4       GPIO_MOD_MOD4_MSK
+
+#define  GPIO_MOD_MOD3_POSS  6U
+#define  GPIO_MOD_MOD3_POSE  7U
+#define  GPIO_MOD_MOD3_MSK   BITS(GPIO_MOD_MOD3_POSS,GPIO_MOD_MOD3_POSE)
+#define  GPIO_MOD_MOD3       GPIO_MOD_MOD3_MSK
+
+#define  GPIO_MOD_MOD2_POSS  4U
+#define  GPIO_MOD_MOD2_POSE  5U
+#define  GPIO_MOD_MOD2_MSK   BITS(GPIO_MOD_MOD2_POSS,GPIO_MOD_MOD2_POSE)
+#define  GPIO_MOD_MOD2       GPIO_MOD_MOD2_MSK
+
+#define  GPIO_MOD_MOD1_POSS  2U
+#define  GPIO_MOD_MOD1_POSE  3U
+#define  GPIO_MOD_MOD1_MSK   BITS(GPIO_MOD_MOD1_POSS,GPIO_MOD_MOD1_POSE)
+#define  GPIO_MOD_MOD1       GPIO_MOD_MOD1_MSK
+
+#define  GPIO_MOD_MOD0_POSS  0U
+#define  GPIO_MOD_MOD0_POSE  1U
+#define  GPIO_MOD_MOD0_MSK   BITS(GPIO_MOD_MOD0_POSS,GPIO_MOD_MOD0_POSE)
+#define  GPIO_MOD_MOD0       GPIO_MOD_MOD0_MSK
+
+/****************** Bit definition for GPIO_PUD register ************************/
+
+#define  GPIO_PUD_PUD15_POSS  30U
+#define  GPIO_PUD_PUD15_POSE  31U
+#define  GPIO_PUD_PUD15_MSK   BITS(GPIO_PUD_PUD15_POSS,GPIO_PUD_PUD15_POSE)
+#define  GPIO_PUD_PUD15       GPIO_PUD_PUD15_MSK
+
+#define  GPIO_PUD_PUD14_POSS  28U
+#define  GPIO_PUD_PUD14_POSE  29U
+#define  GPIO_PUD_PUD14_MSK   BITS(GPIO_PUD_PUD14_POSS,GPIO_PUD_PUD14_POSE)
+#define  GPIO_PUD_PUD14       GPIO_PUD_PUD14_MSK
+
+#define  GPIO_PUD_PUD13_POSS  26U
+#define  GPIO_PUD_PUD13_POSE  27U
+#define  GPIO_PUD_PUD13_MSK   BITS(GPIO_PUD_PUD13_POSS,GPIO_PUD_PUD13_POSE)
+#define  GPIO_PUD_PUD13       GPIO_PUD_PUD13_MSK
+
+#define  GPIO_PUD_PUD12_POSS  24U
+#define  GPIO_PUD_PUD12_POSE  25U
+#define  GPIO_PUD_PUD12_MSK   BITS(GPIO_PUD_PUD12_POSS,GPIO_PUD_PUD12_POSE)
+#define  GPIO_PUD_PUD12       GPIO_PUD_PUD12_MSK
+
+#define  GPIO_PUD_PUD11_POSS  22U
+#define  GPIO_PUD_PUD11_POSE  23U
+#define  GPIO_PUD_PUD11_MSK   BITS(GPIO_PUD_PUD11_POSS,GPIO_PUD_PUD11_POSE)
+#define  GPIO_PUD_PUD11       GPIO_PUD_PUD11_MSK
+
+#define  GPIO_PUD_PUD10_POSS  20U
+#define  GPIO_PUD_PUD10_POSE  21U
+#define  GPIO_PUD_PUD10_MSK   BITS(GPIO_PUD_PUD10_POSS,GPIO_PUD_PUD10_POSE)
+#define  GPIO_PUD_PUD10       GPIO_PUD_PUD10_MSK
+
+#define  GPIO_PUD_PUD9_POSS   18U
+#define  GPIO_PUD_PUD9_POSE   19U
+#define  GPIO_PUD_PUD9_MSK    BITS(GPIO_PUD_PUD9_POSS,GPIO_PUD_PUD9_POSE)
+#define  GPIO_PUD_PUD9        GPIO_PUD_PUD9_MSK
+
+#define  GPIO_PUD_PUD8_POSS   16U
+#define  GPIO_PUD_PUD8_POSE   17U
+#define  GPIO_PUD_PUD8_MSK    BITS(GPIO_PUD_PUD8_POSS,GPIO_PUD_PUD8_POSE)
+#define  GPIO_PUD_PUD8        GPIO_PUD_PUD8_MSK
+
+#define  GPIO_PUD_PUD7_POSS   14U
+#define  GPIO_PUD_PUD7_POSE   15U
+#define  GPIO_PUD_PUD7_MSK    BITS(GPIO_PUD_PUD7_POSS,GPIO_PUD_PUD7_POSE)
+#define  GPIO_PUD_PUD7        GPIO_PUD_PUD7_MSK
+
+#define  GPIO_PUD_PUD6_POSS   12U
+#define  GPIO_PUD_PUD6_POSE   13U
+#define  GPIO_PUD_PUD6_MSK    BITS(GPIO_PUD_PUD6_POSS,GPIO_PUD_PUD6_POSE)
+#define  GPIO_PUD_PUD6        GPIO_PUD_PUD6_MSK
+
+#define  GPIO_PUD_PUD5_POSS   10U
+#define  GPIO_PUD_PUD5_POSE   11U
+#define  GPIO_PUD_PUD5_MSK    BITS(GPIO_PUD_PUD5_POSS,GPIO_PUD_PUD5_POSE)
+#define  GPIO_PUD_PUD5        GPIO_PUD_PUD5_MSK
+
+#define  GPIO_PUD_PUD4_POSS   8U
+#define  GPIO_PUD_PUD4_POSE   9U
+#define  GPIO_PUD_PUD4_MSK    BITS(GPIO_PUD_PUD4_POSS,GPIO_PUD_PUD4_POSE)
+#define  GPIO_PUD_PUD4        GPIO_PUD_PUD4_MSK
+
+#define  GPIO_PUD_PUD3_POSS   6U
+#define  GPIO_PUD_PUD3_POSE   7U
+#define  GPIO_PUD_PUD3_MSK    BITS(GPIO_PUD_PUD3_POSS,GPIO_PUD_PUD3_POSE)
+#define  GPIO_PUD_PUD3        GPIO_PUD_PUD3_MSK
+
+#define  GPIO_PUD_PUD2_POSS   4U
+#define  GPIO_PUD_PUD2_POSE   5U
+#define  GPIO_PUD_PUD2_MSK    BITS(GPIO_PUD_PUD2_POSS,GPIO_PUD_PUD2_POSE)
+#define  GPIO_PUD_PUD2        GPIO_PUD_PUD2_MSK
+
+#define  GPIO_PUD_PUD1_POSS   2U
+#define  GPIO_PUD_PUD1_POSE   3U
+#define  GPIO_PUD_PUD1_MSK    BITS(GPIO_PUD_PUD1_POSS,GPIO_PUD_PUD1_POSE)
+#define  GPIO_PUD_PUD1        GPIO_PUD_PUD1_MSK
+
+#define  GPIO_PUD_PUD0_POSS   0U
+#define  GPIO_PUD_PUD0_POSE   1U
+#define  GPIO_PUD_PUD0_MSK    BITS(GPIO_PUD_PUD0_POSS,GPIO_PUD_PUD0_POSE)
+#define  GPIO_PUD_PUD0        GPIO_PUD_PUD0_MSK
+
+/****************** Bit definition for GPIO_OT register ************************/
+
+#define  GPIO_OT_OT15_POS  15U
+#define  GPIO_OT_OT15_MSK  BIT(GPIO_OT_OT15_POS)
+#define  GPIO_OT_OT15      GPIO_OT_OT15_MSK
+
+#define  GPIO_OT_OT14_POS  14U
+#define  GPIO_OT_OT14_MSK  BIT(GPIO_OT_OT14_POS)
+#define  GPIO_OT_OT14      GPIO_OT_OT14_MSK
+
+#define  GPIO_OT_OT13_POS  13U
+#define  GPIO_OT_OT13_MSK  BIT(GPIO_OT_OT13_POS)
+#define  GPIO_OT_OT13      GPIO_OT_OT13_MSK
+
+#define  GPIO_OT_OT12_POS  12U
+#define  GPIO_OT_OT12_MSK  BIT(GPIO_OT_OT12_POS)
+#define  GPIO_OT_OT12      GPIO_OT_OT12_MSK
+
+#define  GPIO_OT_OT11_POS  11U
+#define  GPIO_OT_OT11_MSK  BIT(GPIO_OT_OT11_POS)
+#define  GPIO_OT_OT11      GPIO_OT_OT11_MSK
+
+#define  GPIO_OT_OT10_POS  10U
+#define  GPIO_OT_OT10_MSK  BIT(GPIO_OT_OT10_POS)
+#define  GPIO_OT_OT10      GPIO_OT_OT10_MSK
+
+#define  GPIO_OT_OT9_POS   9U
+#define  GPIO_OT_OT9_MSK   BIT(GPIO_OT_OT9_POS)
+#define  GPIO_OT_OT9       GPIO_OT_OT9_MSK
+
+#define  GPIO_OT_OT8_POS   8U
+#define  GPIO_OT_OT8_MSK   BIT(GPIO_OT_OT8_POS)
+#define  GPIO_OT_OT8       GPIO_OT_OT8_MSK
+
+#define  GPIO_OT_OT7_POS   7U
+#define  GPIO_OT_OT7_MSK   BIT(GPIO_OT_OT7_POS)
+#define  GPIO_OT_OT7       GPIO_OT_OT7_MSK
+
+#define  GPIO_OT_OT6_POS   6U
+#define  GPIO_OT_OT6_MSK   BIT(GPIO_OT_OT6_POS)
+#define  GPIO_OT_OT6       GPIO_OT_OT6_MSK
+
+#define  GPIO_OT_OT5_POS   5U
+#define  GPIO_OT_OT5_MSK   BIT(GPIO_OT_OT5_POS)
+#define  GPIO_OT_OT5       GPIO_OT_OT5_MSK
+
+#define  GPIO_OT_OT4_POS   4U
+#define  GPIO_OT_OT4_MSK   BIT(GPIO_OT_OT4_POS)
+#define  GPIO_OT_OT4       GPIO_OT_OT4_MSK
+
+#define  GPIO_OT_OT3_POS   3U
+#define  GPIO_OT_OT3_MSK   BIT(GPIO_OT_OT3_POS)
+#define  GPIO_OT_OT3       GPIO_OT_OT3_MSK
+
+#define  GPIO_OT_OT2_POS   2U
+#define  GPIO_OT_OT2_MSK   BIT(GPIO_OT_OT2_POS)
+#define  GPIO_OT_OT2       GPIO_OT_OT2_MSK
+
+#define  GPIO_OT_OT1_POS   1U
+#define  GPIO_OT_OT1_MSK   BIT(GPIO_OT_OT1_POS)
+#define  GPIO_OT_OT1       GPIO_OT_OT1_MSK
+
+#define  GPIO_OT_OT0_POS   0U
+#define  GPIO_OT_OT0_MSK   BIT(GPIO_OT_OT0_POS)
+#define  GPIO_OT_OT0       GPIO_OT_OT0_MSK
+
+//#define  GPIO_OT_OT_POSS   0U
+//#define  GPIO_OT_OT_POSE   15U
+//#define  GPIO_OT_OT_MSK    BITS(GPIO_OT_OT_POSS,GPIO_OT_OT_POSE)
+//#define  GPIO_OT_OT        GPIO_OT_OT_MSK
+
+/****************** Bit definition for GPIO_DS register ************************/
+
+#define  GPIO_DS_DS15_POS  15U
+#define  GPIO_DS_DS15_MSK  BIT(GPIO_DS_DS15_POS)
+#define  GPIO_DS_DS15      GPIO_DS_DS15_MSK
+
+#define  GPIO_DS_DS14_POS  14U
+#define  GPIO_DS_DS14_MSK  BIT(GPIO_DS_DS14_POS)
+#define  GPIO_DS_DS14      GPIO_DS_DS14_MSK
+
+#define  GPIO_DS_DS13_POS  13U
+#define  GPIO_DS_DS13_MSK  BIT(GPIO_DS_DS13_POS)
+#define  GPIO_DS_DS13      GPIO_DS_DS13_MSK
+
+#define  GPIO_DS_DS12_POS  12U
+#define  GPIO_DS_DS12_MSK  BIT(GPIO_DS_DS12_POS)
+#define  GPIO_DS_DS12      GPIO_DS_DS12_MSK
+
+#define  GPIO_DS_DS11_POS  11U
+#define  GPIO_DS_DS11_MSK  BIT(GPIO_DS_DS11_POS)
+#define  GPIO_DS_DS11      GPIO_DS_DS11_MSK
+
+#define  GPIO_DS_DS10_POS  10U
+#define  GPIO_DS_DS10_MSK  BIT(GPIO_DS_DS10_POS)
+#define  GPIO_DS_DS10      GPIO_DS_DS10_MSK
+
+#define  GPIO_DS_DS9_POS   9U
+#define  GPIO_DS_DS9_MSK   BIT(GPIO_DS_DS9_POS)
+#define  GPIO_DS_DS9       GPIO_DS_DS9_MSK
+
+#define  GPIO_DS_DS8_POS   8U
+#define  GPIO_DS_DS8_MSK   BIT(GPIO_DS_DS8_POS)
+#define  GPIO_DS_DS8       GPIO_DS_DS8_MSK
+
+#define  GPIO_DS_DS7_POS   7U
+#define  GPIO_DS_DS7_MSK   BIT(GPIO_DS_DS7_POS)
+#define  GPIO_DS_DS7       GPIO_DS_DS7_MSK
+
+#define  GPIO_DS_DS6_POS   6U
+#define  GPIO_DS_DS6_MSK   BIT(GPIO_DS_DS6_POS)
+#define  GPIO_DS_DS6       GPIO_DS_DS6_MSK
+
+#define  GPIO_DS_DS5_POS   5U
+#define  GPIO_DS_DS5_MSK   BIT(GPIO_DS_DS5_POS)
+#define  GPIO_DS_DS5       GPIO_DS_DS5_MSK
+
+#define  GPIO_DS_DS4_POS   4U
+#define  GPIO_DS_DS4_MSK   BIT(GPIO_DS_DS4_POS)
+#define  GPIO_DS_DS4       GPIO_DS_DS4_MSK
+
+#define  GPIO_DS_DS3_POS   3U
+#define  GPIO_DS_DS3_MSK   BIT(GPIO_DS_DS3_POS)
+#define  GPIO_DS_DS3       GPIO_DS_DS3_MSK
+
+#define  GPIO_DS_DS2_POS   2U
+#define  GPIO_DS_DS2_MSK   BIT(GPIO_DS_DS2_POS)
+#define  GPIO_DS_DS2       GPIO_DS_DS2_MSK
+
+#define  GPIO_DS_DS1_POS   1U
+#define  GPIO_DS_DS1_MSK   BIT(GPIO_DS_DS1_POS)
+#define  GPIO_DS_DS1       GPIO_DS_DS1_MSK
+
+#define  GPIO_DS_DS0_POS   0U
+#define  GPIO_DS_DS0_MSK   BIT(GPIO_DS_DS0_POS)
+#define  GPIO_DS_DS0       GPIO_DS_DS0_MSK
+
+//#define  GPIO_DS_DS_POSS    0U
+//#define  GPIO_DS_DS_POSE    15U
+//#define  GPIO_DS_DS_MSK     BITS(GPIO_DS_DS_POSS,GPIO_DS_DS_POSE)
+//#define  GPIO_DS_DS         GPIO_DS_DS_MSK
+
+/****************** Bit definition for GPIO_FIR register ************************/
+
+#define  GPIO_FIR_FIR15_POS  15U
+#define  GPIO_FIR_FIR15_MSK  BIT(GPIO_FIR_FIR15_POS)
+#define  GPIO_FIR_FIR15      GPIO_FIR_FIR15_MSK
+
+#define  GPIO_FIR_FIR14_POS  14U
+#define  GPIO_FIR_FIR14_MSK  BIT(GPIO_FIR_FIR14_POS)
+#define  GPIO_FIR_FIR14      GPIO_FIR_FIR14_MSK
+
+#define  GPIO_FIR_FIR13_POS  13U
+#define  GPIO_FIR_FIR13_MSK  BIT(GPIO_FIR_FIR13_POS)
+#define  GPIO_FIR_FIR13      GPIO_FIR_FIR13_MSK
+
+#define  GPIO_FIR_FIR12_POS  12U
+#define  GPIO_FIR_FIR12_MSK  BIT(GPIO_FIR_FIR12_POS)
+#define  GPIO_FIR_FIR12      GPIO_FIR_FIR12_MSK
+
+#define  GPIO_FIR_FIR11_POS  11U
+#define  GPIO_FIR_FIR11_MSK  BIT(GPIO_FIR_FIR11_POS)
+#define  GPIO_FIR_FIR11      GPIO_FIR_FIR11_MSK
+
+#define  GPIO_FIR_FIR10_POS  10U
+#define  GPIO_FIR_FIR10_MSK  BIT(GPIO_FIR_FIR10_POS)
+#define  GPIO_FIR_FIR10      GPIO_FIR_FIR10_MSK
+
+#define  GPIO_FIR_FIR9_POS   9U
+#define  GPIO_FIR_FIR9_MSK   BIT(GPIO_FIR_FIR9_POS)
+#define  GPIO_FIR_FIR9       GPIO_FIR_FIR9_MSK
+
+#define  GPIO_FIR_FIR8_POS   8U
+#define  GPIO_FIR_FIR8_MSK   BIT(GPIO_FIR_FIR8_POS)
+#define  GPIO_FIR_FIR8       GPIO_FIR_FIR8_MSK
+
+#define  GPIO_FIR_FIR7_POS   7U
+#define  GPIO_FIR_FIR7_MSK   BIT(GPIO_FIR_FIR7_POS)
+#define  GPIO_FIR_FIR7       GPIO_FIR_FIR7_MSK
+
+#define  GPIO_FIR_FIR6_POS   6U
+#define  GPIO_FIR_FIR6_MSK   BIT(GPIO_FIR_FIR6_POS)
+#define  GPIO_FIR_FIR6       GPIO_FIR_FIR6_MSK
+
+#define  GPIO_FIR_FIR5_POS   5U
+#define  GPIO_FIR_FIR5_MSK   BIT(GPIO_FIR_FIR5_POS)
+#define  GPIO_FIR_FIR5       GPIO_FIR_FIR5_MSK
+
+#define  GPIO_FIR_FIR4_POS   4U
+#define  GPIO_FIR_FIR4_MSK   BIT(GPIO_FIR_FIR4_POS)
+#define  GPIO_FIR_FIR4       GPIO_FIR_FIR4_MSK
+
+#define  GPIO_FIR_FIR3_POS   3U
+#define  GPIO_FIR_FIR3_MSK   BIT(GPIO_FIR_FIR3_POS)
+#define  GPIO_FIR_FIR3       GPIO_FIR_FIR3_MSK
+
+#define  GPIO_FIR_FIR2_POS   2U
+#define  GPIO_FIR_FIR2_MSK   BIT(GPIO_FIR_FIR2_POS)
+#define  GPIO_FIR_FIR2       GPIO_FIR_FIR2_MSK
+
+#define  GPIO_FIR_FIR1_POS   1U
+#define  GPIO_FIR_FIR1_MSK   BIT(GPIO_FIR_FIR1_POS)
+#define  GPIO_FIR_FIR1       GPIO_FIR_FIR1_MSK
+
+#define  GPIO_FIR_FIR0_POS   0U
+#define  GPIO_FIR_FIR0_MSK   BIT(GPIO_FIR_FIR0_POS)
+#define  GPIO_FIR_FIR0       GPIO_FIR_FIR0_MSK
+
+//#define  GPIO_FIR_FIR_POSS    0U
+//#define  GPIO_FIR_FIR_POSE    15U
+//#define  GPIO_FIR_FIR_MSK     BITS(GPIO_FIR_FIR_POSS,GPIO_FIR_FIR_POSE)
+//#define  GPIO_FIR_FIR         GPIO_FIR_FIR_MSK
+
+/****************** Bit definition for GPIO_IST register ************************/
+
+#define  GPIO_IST_IST15_POS  15U
+#define  GPIO_IST_IST15_MSK  BIT(GPIO_IST_IST15_POS)
+#define  GPIO_IST_IST15      GPIO_IST_IST15_MSK
+
+#define  GPIO_IST_IST14_POS  14U
+#define  GPIO_IST_IST14_MSK  BIT(GPIO_IST_IST14_POS)
+#define  GPIO_IST_IST14      GPIO_IST_IST14_MSK
+
+#define  GPIO_IST_IST13_POS  13U
+#define  GPIO_IST_IST13_MSK  BIT(GPIO_IST_IST13_POS)
+#define  GPIO_IST_IST13      GPIO_IST_IST13_MSK
+
+#define  GPIO_IST_IST12_POS  12U
+#define  GPIO_IST_IST12_MSK  BIT(GPIO_IST_IST12_POS)
+#define  GPIO_IST_IST12      GPIO_IST_IST12_MSK
+
+#define  GPIO_IST_IST11_POS  11U
+#define  GPIO_IST_IST11_MSK  BIT(GPIO_IST_IST11_POS)
+#define  GPIO_IST_IST11      GPIO_IST_IST11_MSK
+
+#define  GPIO_IST_IST10_POS  10U
+#define  GPIO_IST_IST10_MSK  BIT(GPIO_IST_IST10_POS)
+#define  GPIO_IST_IST10      GPIO_IST_IST10_MSK
+
+#define  GPIO_IST_IST9_POS   9U
+#define  GPIO_IST_IST9_MSK   BIT(GPIO_IST_IST9_POS)
+#define  GPIO_IST_IST9       GPIO_IST_IST9_MSK
+
+#define  GPIO_IST_IST8_POS   8U
+#define  GPIO_IST_IST8_MSK   BIT(GPIO_IST_IST8_POS)
+#define  GPIO_IST_IST8       GPIO_IST_IST8_MSK
+
+#define  GPIO_IST_IST7_POS   7U
+#define  GPIO_IST_IST7_MSK   BIT(GPIO_IST_IST7_POS)
+#define  GPIO_IST_IST7       GPIO_IST_IST7_MSK
+
+#define  GPIO_IST_IST6_POS   6U
+#define  GPIO_IST_IST6_MSK   BIT(GPIO_IST_IST6_POS)
+#define  GPIO_IST_IST6       GPIO_IST_IST6_MSK
+
+#define  GPIO_IST_IST5_POS   5U
+#define  GPIO_IST_IST5_MSK   BIT(GPIO_IST_IST5_POS)
+#define  GPIO_IST_IST5       GPIO_IST_IST5_MSK
+
+#define  GPIO_IST_IST4_POS   4U
+#define  GPIO_IST_IST4_MSK   BIT(GPIO_IST_IST4_POS)
+#define  GPIO_IST_IST4       GPIO_IST_IST4_MSK
+
+#define  GPIO_IST_IST3_POS   3U
+#define  GPIO_IST_IST3_MSK   BIT(GPIO_IST_IST3_POS)
+#define  GPIO_IST_IST3       GPIO_IST_IST3_MSK
+
+#define  GPIO_IST_IST2_POS   2U
+#define  GPIO_IST_IST2_MSK   BIT(GPIO_IST_IST2_POS)
+#define  GPIO_IST_IST2       GPIO_IST_IST2_MSK
+
+#define  GPIO_IST_IST1_POS   1U
+#define  GPIO_IST_IST1_MSK   BIT(GPIO_IST_IST1_POS)
+#define  GPIO_IST_IST1       GPIO_IST_IST1_MSK
+
+#define  GPIO_IST_IST0_POS   0U
+#define  GPIO_IST_IST0_MSK   BIT(GPIO_IST_IST0_POS)
+#define  GPIO_IST_IST0       GPIO_IST_IST0_MSK
+
+//#define  GPIO_IST_IST_POSS   0U
+//#define  GPIO_IST_IST_POSE   15U
+//#define  GPIO_IST_IST_MSK    BITS(GPIO_IST_IST_POSS, GPIO_IST_IST_POSE)
+//#define  GPIO_IST_IST        GPIO_IST_IST_MSK
+
+/****************** Bit definition for GPIO_AFL register ************************/
+
+#define  GPIO_AFL_AF7_POSS  28U
+#define  GPIO_AFL_AF7_POSE  31U
+#define  GPIO_AFL_AF7_MSK   BITS(GPIO_AFL_AF7_POSS,GPIO_AFL_AF7_POSE)
+#define  GPIO_AFL_AF7       GPIO_AFL_AF7_MSK
+
+#define  GPIO_AFL_AF6_POSS  24U
+#define  GPIO_AFL_AF6_POSE  27U
+#define  GPIO_AFL_AF6_MSK   BITS(GPIO_AFL_AF6_POSS,GPIO_AFL_AF6_POSE)
+#define  GPIO_AFL_AF6       GPIO_AFL_AF6_MSK
+
+#define  GPIO_AFL_AF5_POSS  20U
+#define  GPIO_AFL_AF5_POSE  23U
+#define  GPIO_AFL_AF5_MSK   BITS(GPIO_AFL_AF5_POSS,GPIO_AFL_AF5_POSE)
+#define  GPIO_AFL_AF5       GPIO_AFL_AF5_MSK
+
+#define  GPIO_AFL_AF4_POSS  16U
+#define  GPIO_AFL_AF4_POSE  19U
+#define  GPIO_AFL_AF4_MSK   BITS(GPIO_AFL_AF4_POSS,GPIO_AFL_AF4_POSE)
+#define  GPIO_AFL_AF4       GPIO_AFL_AF4_MSK
+
+#define  GPIO_AFL_AF3_POSS  12U
+#define  GPIO_AFL_AF3_POSE  15U
+#define  GPIO_AFL_AF3_MSK   BITS(GPIO_AFL_AF3_POSS,GPIO_AFL_AF3_POSE)
+#define  GPIO_AFL_AF3       GPIO_AFL_AF3_MSK
+
+#define  GPIO_AFL_AF2_POSS  8U
+#define  GPIO_AFL_AF2_POSE  11U
+#define  GPIO_AFL_AF2_MSK   BITS(GPIO_AFL_AF2_POSS,GPIO_AFL_AF2_POSE)
+#define  GPIO_AFL_AF2       GPIO_AFL_AF2_MSK
+
+#define  GPIO_AFL_AF1_POSS  4U
+#define  GPIO_AFL_AF1_POSE  7U
+#define  GPIO_AFL_AF1_MSK   BITS(GPIO_AFL_AF1_POSS,GPIO_AFL_AF1_POSE)
+#define  GPIO_AFL_AF1       GPIO_AFL_AF1_MSK
+
+#define  GPIO_AFL_AF0_POSS  0U
+#define  GPIO_AFL_AF0_POSE  3U
+#define  GPIO_AFL_AF0_MSK   BITS(GPIO_AFL_AF0_POSS,GPIO_AFL_AF0_POSE)
+#define  GPIO_AFL_AF0       GPIO_AFL_AF0_MSK
+
+/****************** Bit definition for GPIO_AFH register ************************/
+
+#define  GPIO_AFH_AF15_POSS  28U
+#define  GPIO_AFH_AF15_POSE  31U
+#define  GPIO_AFH_AF15_MSK   BITS(GPIO_AFH_AF15_POSS,GPIO_AFH_AF15_POSE)
+#define  GPIO_AFH_AF15       GPIO_AFH_AF15_MSK
+
+#define  GPIO_AFH_AF14_POSS  24U
+#define  GPIO_AFH_AF14_POSE  27U
+#define  GPIO_AFH_AF14_MSK   BITS(GPIO_AFH_AF14_POSS,GPIO_AFH_AF14_POSE)
+#define  GPIO_AFH_AF14       GPIO_AFH_AF14_MSK
+
+#define  GPIO_AFH_AF13_POSS  20U
+#define  GPIO_AFH_AF13_POSE  23U
+#define  GPIO_AFH_AF13_MSK   BITS(GPIO_AFH_AF13_POSS,GPIO_AFH_AF13_POSE)
+#define  GPIO_AFH_AF13       GPIO_AFH_AF13_MSK
+
+#define  GPIO_AFH_AF12_POSS  16U
+#define  GPIO_AFH_AF12_POSE  19U
+#define  GPIO_AFH_AF12_MSK   BITS(GPIO_AFH_AF12_POSS,GPIO_AFH_AF12_POSE)
+#define  GPIO_AFH_AF12       GPIO_AFH_AF12_MSK
+
+#define  GPIO_AFH_AF11_POSS  12U
+#define  GPIO_AFH_AF11_POSE  15U
+#define  GPIO_AFH_AF11_MSK   BITS(GPIO_AFH_AF11_POSS,GPIO_AFH_AF11_POSE)
+#define  GPIO_AFH_AF11         GPIO_AFH_AF11_MSK
+
+#define  GPIO_AFH_AF10_POSS  8U
+#define  GPIO_AFH_AF10_POSE  11U
+#define  GPIO_AFH_AF10_MSK   BITS(GPIO_AFH_AF10_POSS,GPIO_AFH_AF10_POSE)
+#define  GPIO_AFH_AF10       GPIO_AFH_AF10_MSK
+
+#define  GPIO_AFH_AF9_POSS   4U
+#define  GPIO_AFH_AF9_POSE   7U
+#define  GPIO_AFH_AF9_MSK    BITS(GPIO_AFH_AF9_POSS,GPIO_AFH_AF9_POSE)
+#define  GPIO_AFH_AF9        GPIO_AFH_AF9_MSK
+
+#define  GPIO_AFH_AF8_POSS   0U
+#define  GPIO_AFH_AF8_POSE   3U
+#define  GPIO_AFH_AF8_MSK    BITS(GPIO_AFH_AF8_POSS,GPIO_AFH_AF8_POSE)
+#define  GPIO_AFH_AF8                GPIO_AFH_AF8_MSK
+
+typedef struct
+{
+    __I uint32_t ID;
+    __IO uint32_t OD;
+    __O uint32_t BSBR;
+    __IO uint32_t LCK;
+    __IO uint32_t MOD;
+    __IO uint32_t PUD;
+    __IO uint32_t OT;
+    __IO uint32_t DS;
+    __IO uint32_t FIR;
+    __IO uint32_t IST;
+    __IO uint32_t AFL;
+    __IO uint32_t AFH;
+} GPIO_TypeDef;
+
+#endif
