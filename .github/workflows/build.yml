@@ -58,10 +58,6 @@ jobs:
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/WB32
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/WB32
-    - name: build NUMICRO
-      run: |
-        $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/NUMICRO
-        $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/NUMICRO
     - name: build RP
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/RP
@@ -69,3 +65,11 @@ jobs:
     - name: build SAMD21
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/SAMD21A
+    - name: build AT32
+      run: |
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/AT32
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/AT32
+    - name: build ES32
+      run: |
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/ES32
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/ES32

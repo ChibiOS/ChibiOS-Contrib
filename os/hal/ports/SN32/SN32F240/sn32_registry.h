@@ -162,6 +162,16 @@
 #define SN32_HAS_GPIOB            TRUE
 #define SN32_HAS_GPIOA            TRUE
 
+/*
+ * FLASH units.
+ */
+#define SN32_JUMPLOADER_SIZE 0x200
+#define SN32_FLASH_LINE_SIZE 4U
+#define SN32_FLASH_NUMBER_OF_BANKS 1
+#define SN32_FLASH_SECTORS_PER_BANK 64U
+#define SN32_FLASH_SECTOR_SIZE 1024U
+#define SN32_FLASH_BASE 0x00000000UL
+#define FLASH_SIZE (SN32_FLASH_NUMBER_OF_BANKS * SN32_FLASH_SECTORS_PER_BANK * SN32_FLASH_SECTOR_SIZE)
 /*===========================================================================*/
 /* Common.                                                                   */
 /*===========================================================================*/

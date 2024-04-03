@@ -61,7 +61,6 @@ int main(void) {
    * Activates the UART0 SIO driver using the default configuration.
    */
   sioStart(&SIOD0, NULL);
-  sioStartOperation(&SIOD0, NULL);
 
   /* LED GPIO */
   palSetLineMode(LED_GREEN_PIN, PAL_MODE_OUTPUT_PUSHPULL | PAL_RP_PAD_DRIVE12);

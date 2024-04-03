@@ -80,7 +80,6 @@ int main(void)
 
   /* Start SIO */
   sioStart(&SIOD3, &siocfg);
-  sioStartOperation(&SIOD3, NULL);
 
   /* Starting EFL driver.*/
   eflStart(&EFLD1, NULL);
