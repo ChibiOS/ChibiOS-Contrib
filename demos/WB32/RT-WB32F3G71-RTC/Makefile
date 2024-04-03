@@ -126,13 +126,14 @@ LDSCRIPT= $(STARTUPLD_CONTRIB)/WB32F3G71xC.ld
 CSRC = $(ALLCSRC) \
        $(TESTSRC) \
        $(CHIBIOS)/os/various/syscalls.c \
-       $(CHIBIOS)/os/common/lib/src/chprintf.c \
+       $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
        debug.c \
        main.c
 
 ALLINC += ./ \
     $(CHIBIOS)/os/common/lib/include \
-    $(CHIBIOS)/os/common/oop/include
+    $(CHIBIOS)/os/common/oop/include \
+    $(CHIBIOS)/os/hal/lib/streams
 
 
 
