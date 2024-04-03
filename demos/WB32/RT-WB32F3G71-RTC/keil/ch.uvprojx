@@ -332,10 +332,10 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls>-UWB32FQ95xx</MiscControls>
+              <MiscControls>-UWB32F3G71xx</MiscControls>
               <Define>CORTEX_USE_FPU=0  TEST_CFG_SIZE_REPORT=0 __heap_base__=Image$$$$RW_IRAM1$$$$ZI$$$$Limit __heap_end__=Image$$$$RW_IRAM1$$$$Base</Define>
               <Undefine></Undefine>
-              <IncludePath>..\;..\cfg;..\..\..\..\..\ChibiOS\os\license;..\..\..\..\..\ChibiOS-Contrib\os\common\startup\ARMCMx\devices\WB32FQ95xx;..\..\..\..\..\ChibiOS\os\common\ext\ARM\CMSIS\Core\Include;..\..\..\..\..\ChibiOS-Contrib\os\common\ext\CMSIS\WB32\WB32FQ95xx;..\..\..\..\..\ChibiOS\os\common\portability\Keil;..\..\..\..\..\ChibiOS\os\common\ports\ARM-common;..\..\..\..\..\ChibiOS\os\common\ports\ARMv7-M;..\..\..\..\..\ChibiOS\os\rt\include;..\..\..\..\..\ChibiOS\os\oslib\include;..\..\..\..\..\ChibiOS\os\hal\osal\rt-nil;..\..\..\..\..\ChibiOS\os\hal\include;..\board;..\..\..\..\..\ChibiOS\os\hal\ports\common\ARMCMx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\WB32FQ95xx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\LLD\GPIOv1;..\..\..\..\os\hal\ports\WB32\LLD\DMAv1;..\..\..\..\os\hal\ports\WB32\LLD\TIMv1;..\..\..\..\..\ChibiOS\os\test\include;..\..\..\..\..\ChibiOS\test\rt\source\test;..\..\..\..\..\ChibiOS\test\oslib\source\test;..\..\..\..\os\hal\ports\WB32\LLD\EXTIv1</IncludePath>
+              <IncludePath>..\;..\cfg;..\..\..\..\..\ChibiOS\os\license;..\..\..\..\..\ChibiOS-Contrib\os\common\startup\ARMCMx\devices\WB32F3G71xx;..\..\..\..\..\ChibiOS\os\common\ext\ARM\CMSIS\Core\Include;..\..\..\..\..\ChibiOS-Contrib\os\common\ext\CMSIS\WB32\WB32F3G71xx;..\..\..\..\..\ChibiOS\os\common\portability\Keil;..\..\..\..\..\ChibiOS\os\common\ports\ARM-common;..\..\..\..\..\ChibiOS\os\common\ports\ARMv7-M;..\..\..\..\..\ChibiOS\os\rt\include;..\..\..\..\..\ChibiOS\os\oslib\include;..\..\..\..\..\ChibiOS\os\hal\osal\rt-nil;..\..\..\..\..\ChibiOS\os\hal\include;..\board;..\..\..\..\..\ChibiOS\os\hal\ports\common\ARMCMx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\WB32F3G71xx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\LLD\GPIOv1;..\..\..\..\os\hal\ports\WB32\LLD\DMAv1;..\..\..\..\os\hal\ports\WB32\LLD\TIMv1;..\..\..\..\..\ChibiOS\os\test\include;..\..\..\..\..\ChibiOS\test\rt\source\test;..\..\..\..\..\ChibiOS\test\oslib\source\test;..\..\..\..\os\hal\ports\WB32\LLD\RTCv1;..\..\..\..\os\hal\ports\WB32\LLD\UARTv1;..\..\..\..\..\ChibiOS\os\hal\templates;..\..\..\..\os\hal\include;..\..\..\..\os\hal\ports\WB32\LLD\EXTIv1;..\..\..\..\..\ChibiOS\os\common\lib\include;..\..\..\..\..\ChibiOS\os\common\oop\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -353,7 +353,7 @@
               <MiscControls>--cpreproc --cpreproc_opts=-DCORTEX_USE_FPU=0</MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\;..\cfg;..\..\..\..\..\ChibiOS\os\license;..\..\..\..\..\ChibiOS-Contrib\os\common\startup\ARMCMx\devices\WB32FQ95xx;..\..\..\..\..\ChibiOS\os\common\ports\ARMv7-M;..\board</IncludePath>
+              <IncludePath>..\;..\cfg;..\..\..\..\..\ChibiOS\os\license;..\..\..\..\..\ChibiOS-Contrib\os\common\startup\ARMCMx\devices\WB32F3G71xx;..\..\..\..\..\ChibiOS\os\common\ports\ARMv7-M;..\board</IncludePath>
             </VariousControls>
           </Aads>
           <LDads>
@@ -412,7 +412,7 @@
             <File>
               <FileName>cmparams.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\ChibiOS-Contrib\os\common\startup\ARMCMx\devices\WB32FQ95xx\cmparams.h</FilePath>
+              <FilePath>..\..\..\..\..\ChibiOS-Contrib\os\common\startup\ARMCMx\devices\WB32F3G71xx\cmparams.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -425,9 +425,9 @@
               <FilePath>..\..\..\..\..\ChibiOS\os\common\ext\ARM\CMSIS\Core\Include\core_cm3.h</FilePath>
             </File>
             <File>
-              <FileName>wb32fq95xx.h</FileName>
+              <FileName>wb32f3g71xx.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\ChibiOS-Contrib\os\common\ext\CMSIS\WB32\WB32FQ95xx\wb32fq95xx.h</FilePath>
+              <FilePath>..\..\..\..\..\ChibiOS-Contrib\os\common\ext\CMSIS\WB32\WB32F3G71xx\wb32f3g71xx.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1127,12 +1127,12 @@
             <File>
               <FileName>hal_lld.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\WB32FQ95xx\hal_lld.c</FilePath>
+              <FilePath>..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\WB32F3G71xx\hal_lld.c</FilePath>
             </File>
             <File>
               <FileName>wb32_isr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\WB32FQ95xx\wb32_isr.c</FilePath>
+              <FilePath>..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\WB32F3G71xx\wb32_isr.c</FilePath>
             </File>
             <File>
               <FileName>nvic.c</FileName>
@@ -1143,6 +1143,21 @@
               <FileName>hal_st_lld.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\os\hal\ports\WB32\LLD\TIMv1\hal_st_lld.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_rtc_lld.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\os\hal\ports\WB32\LLD\RTCv1\hal_rtc_lld.c</FilePath>
+            </File>
+            <File>
+              <FileName>hal_serial_lld.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\os\hal\ports\WB32\LLD\UARTv1\hal_serial_lld.c</FilePath>
+            </File>
+            <File>
+              <FileName>wb32_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\os\hal\ports\WB32\LLD\EXTIv1\wb32_exti.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1313,6 +1328,26 @@
               <FileName>mcuconf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\cfg\mcuconf.h</FilePath>
+            </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>chprintf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\ChibiOS\os\common\lib\src\chprintf.c</FilePath>
+            </File>
+            <File>
+              <FileName>memstreams.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\ChibiOS\os\common\lib\src\memstreams.c</FilePath>
+            </File>
+            <File>
+              <FileName>oop_base_object.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\ChibiOS\os\common\oop\src\oop_base_object.c</FilePath>
             </File>
           </Files>
         </Group>
