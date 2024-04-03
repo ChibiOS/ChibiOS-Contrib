@@ -527,38 +527,6 @@ OSAL_IRQ_HANDLER(WB32_USB1_IRQ_VECTOR) {
 }
 #endif
 
-#if defined(WB32_USB1_DMA_IRQ_VECTOR)
-/**
- * @brief   USB DMA interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(WB32_USB1_DMA_IRQ_VECTOR) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  /* USB1 DMA handling.*/
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif
-
-#if defined(WB32_USBP1_WKUP_IRQ_VECTOR)
-/**
- * @brief   USB WKUP interrupt handler.
- *
- * @isr
- */
-OSAL_IRQ_HANDLER(WB32_USBP1_WKUP_IRQ_VECTOR) {
-
-  OSAL_IRQ_PROLOGUE();
-
-  /* USB1 DMA handling.*/
-
-  OSAL_IRQ_EPILOGUE();
-}
-#endif
-
 #endif /* WB32_USB_USE_USB1 */
 
 /*===========================================================================*/
