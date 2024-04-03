@@ -173,7 +173,6 @@
  * PA0  - Normal input              (GPIOA_BUTTON)
  * PA2  - Alternate output          (GPIOA_ARD_D1, GPIOA_USART2_TX)
  * PA3  - Normal input              (GPIOA_ARD_D0, GPIOA_USART2_RX)
- * PA13 - Pull-up input             (GPIOA_SWDIO)
  * PA14 - Pull-down input           (GPIOA_SWCLK)
  */
 #define VAL_GPIOACFGLR          0x88884B84      /*  PA7...PA0 */
@@ -182,8 +181,6 @@
 
 /*
  * Port B setup.
- * Everything input with pull-up except:
- * PB3  - Pull-up input             (GPIOB_SWO)
  */
 #define VAL_GPIOBCFGLR          0x88888888      /*  PB7...PB0 */
 #define VAL_GPIOBCFGHR          0x88888888      /* PB15...PB8 */
@@ -203,6 +200,7 @@
 
 /*
  * Port D setup.
+ * Everything input with pull-up except:
  * PD0  - Normal input              (GPIOD_OSC_IN).
  * PD1  - Normal input              (GPIOD_OSC_OUT).
  */

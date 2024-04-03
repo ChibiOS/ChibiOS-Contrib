@@ -469,10 +469,7 @@ typedef struct
 {
   __IO uint32_t EVTOUT;      /*!< IOMUX Event output control register,         Address offset: 0x00 */
   __IO uint32_t REMAP;       /*!< IOMUX remap register 1,                      Address offset: 0x04 */
-  __IO uint32_t EXINTC1;     /*!< IOMUX external interrupt config register 1,  Address offset: 0x08 */
-  __IO uint32_t EXINTC2;     /*!< IOMUX external interrupt config register 2,  Address offset: 0x0C */
-  __IO uint32_t EXINTC3;     /*!< IOMUX external interrupt config register 3,  Address offset: 0x10 */
-  __IO uint32_t EXINTC4;     /*!< IOMUX external interrupt config register 4,  Address offset: 0x14 */
+  __IO uint32_t EXINTC[4];   /*!< IOMUX external interrupt config register,    Address offset: 0x08 ~ 0x14 */
   uint32_t      RESERVED;    /*!< Reserved,                                    Address offset: 0x18 */
   __IO uint32_t REMAP2;      /*!< IOMUX remap register 2,                      Address offset: 0x1C */
   __IO uint32_t REMAP3;      /*!< IOMUX remap register 3,                      Address offset: 0x20 */
@@ -694,9 +691,7 @@ typedef struct
 
 #define FLASH_R_BASE                 (AHBPERIPH_BASE + 0x00002000U)  /*!< FLASH registers base address                   */
 #define FLASHSIZE_BASE               0x1FFFF7E0U                     /*!< FLASH Size register base address               */
-#define UID1_BASE                    0x1FFFF7E8U                     /*!< Unique device ID register 1 base address       */
-#define UID2_BASE                    0x1FFFF7ECU                     /*!< Unique device ID register 2 base address       */
-#define UID3_BASE                    0x1FFFF7F0U                     /*!< Unique device ID register 3 base address       */
+#define UID_BASE                     0x1FFFF7E8U                     /*!< Unique device ID register base address         */
 #define USD_BASE                     0x1FFFF800U                     /*!< FLASH User System Data base address            */
 
 #define DEBUG_BASE                   0xE0042000U                     /*!< Debug MCU registers base address               */
@@ -10444,4 +10439,4 @@ typedef struct
 
 #endif /* __AT32F415Kx_H */
 
-/*********************** (C) COPYRIGHT Artery Technologies *****END OF FILE****/
+/*********************** (C) COPYRIGHT Artery Technology *****END OF FILE****/
