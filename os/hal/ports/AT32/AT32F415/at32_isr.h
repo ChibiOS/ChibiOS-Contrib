@@ -145,7 +145,7 @@
 #define AT32_EXINT19_HANDLER         Vector158 /* Note: same as CMP1_IRQn       */
 #define AT32_EXINT20_HANDLER         Vector15C /* Note: same as CMP2_IRQn       */
 #define AT32_EXINT21_HANDLER         Vector48  /* Note: same as TAMPER_IRQn     */
-#define AT32_EXINT22_HANDLER         Vector4C  /* Note: same as ERTC_IRQn       */
+#define AT32_EXINT22_HANDLER         Vector4C  /* Note: same as ERTC_WKUP_IRQn  */
 
 #define AT32_EXINT0_NUMBER           6
 #define AT32_EXINT1_NUMBER           7
@@ -160,7 +160,7 @@
 #define AT32_EXINT19_NUMBER          70        /* Note: same as CMP1_IRQn       */
 #define AT32_EXINT20_NUMBER          71        /* Note: same as CMP2_IRQn       */
 #define AT32_EXINT21_NUMBER          2         /* Note: same as TAMPER_IRQn     */
-#define AT32_EXINT22_NUMBER          3         /* Note: same as ERTC_IRQn       */
+#define AT32_EXINT22_NUMBER          3         /* Note: same as ERTC_WKUP_IRQn  */
 
 /*
  * I2C units.
