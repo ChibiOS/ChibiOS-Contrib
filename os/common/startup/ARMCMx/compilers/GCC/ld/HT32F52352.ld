@@ -23,7 +23,7 @@
 
 
 /*
- * HT32F5235x memory setup
+ * HT32F52352 memory setup
  */
 
 MEMORY {
@@ -93,7 +93,7 @@ REGION_ALIAS("HEAP_RAM", ram0);
 INCLUDE rules_stacks.ld
 
 /* Code rules inclusion.*/
-INCLUDE HT32F523xx_rules_code.ld
+INCLUDE HT32F523x2_rules_code.ld
 
 /* Data rules inclusion.*/
 INCLUDE rules_data.ld
