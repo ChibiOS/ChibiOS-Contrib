@@ -161,7 +161,7 @@ void md_adc_sequence_conversion(ADC_TypeDef *ADCx, md_adc_initial *ADC_InitStruc
 ErrorStatus md_adc_software_calibration(ADC_TypeDef *ADCx, md_adc_initial *ADC_InitStruct)
 {
     //ADC input APB clock 12MHz
-    uint8_t clkdiv;
+    uint8_t clkdiv = 1;
     uint16_t adc_data_1 = 0;
     uint16_t adc_data_15 = 0;
 
@@ -277,6 +277,7 @@ ErrorStatus md_adc_optionbyte_calibration(ADC_TypeDef *ADCx, md_adc_initial *ADC
     md_adc_enable_adcpower(ADCx);
     md_adc_set_gain_factor(ADCx, adc_gain);
     md_adc_set_offset_factor(ADCx, adc_offset);
+    (void)ADC_InitStruct;
     return SUCCESS;
 }
 

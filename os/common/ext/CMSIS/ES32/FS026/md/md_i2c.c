@@ -337,8 +337,6 @@ void md_i2c_slave_receive(I2C_TypeDef *I2Cx, uint32_t Num, uint8_t *rxbuf)
 
     while (!(md_i2c_is_active_flag_busy(I2Cx)));
 
-    printf("I2C1->STAT:%x\r\n", I2C1->STAT);
-
     while (Num > 0)
     {
         while (!(md_i2c_is_active_flag_rxne(I2Cx)));

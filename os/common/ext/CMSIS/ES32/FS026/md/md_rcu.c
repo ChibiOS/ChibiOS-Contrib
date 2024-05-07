@@ -151,39 +151,28 @@ void md_rcu_sys_init(RCU_TypeDef *rcu, md_rcu_init_typedef *RCU_InitStruct)
 {
     uint32_t    PLL0_Frequency;
     uint32_t    PLL0_Ref_Frequency;
+    uint32_t    Current_Frequency;
     double      fration;
 
     md_fc_set_read_latency(FC, MD_FC_WAIT_MORE_THAN_72Mhz);
 
     if (RCU_InitStruct->HS_Clock & RCU_CON_PLL0ON)
         md_rcu_enable_pll0(rcu);
-    else
-        md_rcu_disable_pll0(rcu);
 
     if (RCU_InitStruct->HS_Clock & RCU_CON_HRC48ON)
         md_rcu_enable_hrc48(rcu);
-    else
-        md_rcu_disable_hrc48(rcu);
 
     if (RCU_InitStruct->HS_Clock & RCU_CON_HOSCON)
         md_rcu_enable_hosc(rcu);
-    else
-        md_rcu_disable_hosc(rcu);
 
     if (RCU_InitStruct->HS_Clock & RCU_CON_HRCON)
         md_rcu_enable_hrc(rcu);
-    else
-        md_rcu_disable_hrc(rcu);
 
     if (RCU_InitStruct->LS_Clock & RCU_LCON_LOSCON)
         md_rcu_enable_losc(rcu);
-    else
-        md_rcu_disable_losc(rcu);
 
     if (RCU_InitStruct->LS_Clock & RCU_LCON_LRCON)
         md_rcu_enable_lrc(rcu);
-    else
-        md_rcu_disable_lrc(rcu);
 
     //make sure HOSC CLK Ready
     if ((RCU_InitStruct->HS_Clock & RCU_CON_HOSCON))
@@ -200,10 +189,7 @@ void md_rcu_sys_init(RCU_TypeDef *rcu, md_rcu_init_typedef *RCU_InitStruct)
 
     md_rcu_set_mco_div(rcu, RCU_InitStruct->Mpre);
     md_rcu_set_mco_source(rcu, RCU_InitStruct->Msw);
-    md_rcu_set_pclk_div(rcu, RCU_InitStruct->Ppre);
-    md_rcu_set_hclk_div(rcu, RCU_InitStruct->Hpre);
-    md_rcu_set_system_clock_source(rcu, RCU_InitStruct->Sw);
-
+    
     switch ((RCU_InitStruct->PllSrc))
     {
         case MD_RCU_PLLSRC_HRC :
@@ -227,9 +213,58 @@ void md_rcu_sys_init(RCU_TypeDef *rcu, md_rcu_init_typedef *RCU_InitStruct)
     fration = (double)md_rcu_get_pll0_fn(rcu) + ((double)md_rcu_get_pll0_fk(rcu) / (1 << 19));
     PLL0_Frequency = (uint32_t)(PLL0_Ref_Frequency * fration / (1 << (md_rcu_get_pll0_fm(rcu) + 3)));
 
-    /* System Frequency */
+    /*
+    Determine whether it is a PLL that needs to be switched. 
+    If it is a PLL, it is a frequency increase buffering process. 
+    Otherwise, if it is not a PLL, it is a frequency decrease buffering process.
+    */
+    if(RCU_InitStruct->Sw==MD_RCU_SW_SYSCLK_PLL0)
+    {
+        /*
+        PLL frequency rise buffer processing, the trigger environment is when it is necessary to 
+        switch to the PLL frequency greater than or equal to 48M, if the current or set HCLK prescaler is 1, 
+        the HCLK prescaler will be set to 2 first and then the system frequency will be switched. 
+        After the switch is completed Will wait for 10us before resetting the HCLK prescaler.
+        */
+        if((PLL0_Frequency>=48000000) && 
+           ((md_rcu_get_hclk_div(RCU)==MD_RCU_HPRE_SYSCLK_DIV_1)||
+            (RCU_InitStruct->Hpre==MD_RCU_HPRE_SYSCLK_DIV_1)))
+        {
+            SystemFrequency_AHBClk = PLL0_Frequency>>1;
+            md_tick_init(MD_SYSTICK_CLKSRC_HCLK);
+            md_rcu_set_hclk_div(rcu,MD_RCU_HPRE_SYSCLK_DIV_2);
+            md_rcu_set_system_clock_source(rcu, RCU_InitStruct->Sw);
+            md_tick_wait10us(1,1);
+        }
+    }
+    else
+    {
+        /*
+        PLL frequency reduction buffer processing, the triggering environment is when it is not 
+        necessary to switch the PLL frequency and the current system frequency is higher than 48M, 
+        the HCLK prescaler will first be set to 2 to reduce the HCLK speed, and then the system frequency 
+        will be switched to a low frequency after the reduction is completed. Finally reset the 
+        HCLK prescaler.
+        */
+        Current_Frequency = md_rcu_get_current_system_frequency(RCU)*1000000;
+        if(Current_Frequency>=48000000)
+        {
+            SystemFrequency_AHBClk = Current_Frequency>>1;
+            md_tick_init(MD_SYSTICK_CLKSRC_HCLK);
+            md_rcu_set_hclk_div(rcu,MD_RCU_HPRE_SYSCLK_DIV_2);
+            md_tick_wait10us(1,1);
+        }
+    }
+    
+    md_rcu_set_system_clock_source(rcu, RCU_InitStruct->Sw);
+    
+    md_rcu_set_hclk_div(rcu, RCU_InitStruct->Hpre);
+    
+    md_rcu_set_pclk_div(rcu, RCU_InitStruct->Ppre);
+    
     switch (md_rcu_get_current_system_clock(rcu)) /* System clock switch(SYSCLK) */
     {
+
         case MD_RCU_SWS_SYSCLK_HRC: /*================= HRC selected as system clock*/
             SystemCoreClock = (uint32_t)(__HRC);
             break;
@@ -283,6 +318,26 @@ void md_rcu_sys_init(RCU_TypeDef *rcu, md_rcu_init_typedef *RCU_InitStruct)
         md_fc_set_read_latency(FC, MD_FC_WAIT_BETWEEN_24MHz_AND_48Mhz);
     else
         md_fc_set_read_latency(FC, MD_FC_WAIT_LESS_THAN_24MHz);
+
+    if (!(RCU_InitStruct->HS_Clock & RCU_CON_PLL0ON))
+        md_rcu_disable_pll0(rcu);
+
+    if (!(RCU_InitStruct->HS_Clock & RCU_CON_HRC48ON))
+        md_rcu_disable_hrc48(rcu);
+
+    if (!(RCU_InitStruct->HS_Clock & RCU_CON_HOSCON))
+        md_rcu_disable_hosc(rcu);
+
+    if (!(RCU_InitStruct->HS_Clock & RCU_CON_HRCON))
+        md_rcu_disable_hrc(rcu);
+
+    if (!(RCU_InitStruct->LS_Clock & RCU_LCON_LOSCON))
+        md_rcu_disable_losc(rcu);
+
+    if (!(RCU_InitStruct->LS_Clock & RCU_LCON_LRCON))
+        md_rcu_disable_lrc(rcu);
+
+    md_tick_init(MD_SYSTICK_CLKSRC_HCLK);
 }
 
 /**

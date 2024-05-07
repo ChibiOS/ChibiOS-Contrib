@@ -6,6 +6,11 @@ STARTUPSRC = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/crt1.c \
              $(CHIBIOS_CONTRIB)/os/common/ext/CMSIS/ES32/FS026/md/md_rcu.c \
              $(CHIBIOS_CONTRIB)/os/common/ext/CMSIS/ES32/FS026/md/md_gpio.c \
              $(CHIBIOS_CONTRIB)/os/common/ext/CMSIS/ES32/FS026/md/md_uart.c \
+             $(CHIBIOS_CONTRIB)/os/common/ext/CMSIS/ES32/FS026/md/md_spi.c \
+             $(CHIBIOS_CONTRIB)/os/common/ext/CMSIS/ES32/FS026/md/md_adc.c \
+             $(CHIBIOS_CONTRIB)/os/common/ext/CMSIS/ES32/FS026/md/md_i2c.c \
+             $(CHIBIOS_CONTRIB)/os/common/ext/CMSIS/ES32/FS026/md/md_wwdt.c \
+             $(CHIBIOS_CONTRIB)/os/common/ext/CMSIS/ES32/FS026/md/md_dma.c \
              $(CHIBIOS_CONTRIB)/os/common/ext/CMSIS/ES32/FS026/ald/ald_usb.c
 
 STARTUPASM = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/crt0_v6m.S \
