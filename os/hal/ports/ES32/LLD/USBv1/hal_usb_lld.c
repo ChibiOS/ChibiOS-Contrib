@@ -52,11 +52,6 @@
 /** True if the endpoint is an OUT endpoint */
 #define USB_EP_DIR_IS_OUT(ep) (USB_EP_GET_DIR(ep) == USB_EP_DIR_OUT)
 
-
-extern char g_num_to_char_tx_buf[32];
-extern const char g_num_to_char_table[16];
-extern void ffffff(uint32_t data);
-
 /**
  * @brief   EP0 state.
  * @note    It is an union because IN and OUT endpoints are never used at the
@@ -154,6 +149,16 @@ struct musb_udc {
 struct musb_udc g_musb_udc;
 static volatile uint8_t usb_ep0_state = USB_EP0_STATE_SETUP;
 volatile bool zlp_flag = 0;
+#if !defined(ES_NO_USB_SUSPEND)
+volatile uint16_t g_es_frame_id_last = 0U;
+volatile uint16_t g_es_frame_id_need_chang_times = 20U;
+uint8_t g_es_usb_state = 0U;
+
+#if !defined(ES_NO_USB_SUSPEND_CB)
+__attribute__((weak)) void es_usb_suspend_wakeup_init_user(void) {}
+__attribute__((weak)) void es_usb_suspend_power_down_user(void) {}
+#endif
+#endif
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
@@ -430,12 +435,6 @@ int usbd_ep_start_write(const uint8_t ep, const uint8_t *data, uint32_t data_len
 {
     uint8_t ep_idx = USB_EP_GET_IDX(ep);
     uint8_t old_ep_idx;
-//    uint32_t wait_cnt;
-
-//    if(ep_idx == 1)
-//    {
-//        ep_idx = 1;
-//    }
     
     if (!g_musb_udc.in_ep[ep_idx].ep_enable)
         return -2;
@@ -650,7 +649,9 @@ OSAL_IRQ_HANDLER(VectorBC)
     uint8_t ep_idx;
     uint16_t write_count, read_count;
     uint8_t status;
-
+#if !defined(ES_NO_USB_SUSPEND)
+	uint16_t frame_id = ((USB->FRAME2) << 8) | (USB->FRAME1);
+#endif
     USBDriver *usbp = &USBD1;
 
     OSAL_IRQ_PROLOGUE();
@@ -658,6 +659,10 @@ OSAL_IRQ_HANDLER(VectorBC)
 	status = USB->IFM & 0x7F;
 	USB->ICR = status;
 
+#if !defined(ES_NO_USB_SUSPEND)
+    if(((USB->POWER)&ALD_USB_POWER_SUSPENDEN) == 0)
+        USB->POWER |= ALD_USB_POWER_SUSPENDEN;
+#endif
     old_ep_idx = musb_get_active_ep();
 
     /* Receive a reset signal from the USB bus */
@@ -683,6 +688,37 @@ OSAL_IRQ_HANDLER(VectorBC)
 
     if (status & (USB_IFM_SOFIFM_MSK)) 
     {
+#if !defined(ES_NO_USB_SUSPEND)
+		if(g_es_frame_id_need_chang_times)
+		{
+			if(frame_id != g_es_frame_id_last)
+			{
+				g_es_frame_id_last = frame_id;
+				g_es_frame_id_need_chang_times--;
+			}
+			else
+			{
+				g_es_frame_id_need_chang_times = 10;
+			}
+		}
+		else
+		{
+        	if(((USB->POWER)&0x3) == 0x1)  //suspend_en = 1,suspend_flag = 0
+        	{                               
+           	 	USB->IDR = ALD_USB_INTCTRL_SOF; 
+
+				if(g_es_usb_state == 0)
+				{
+					g_es_usb_state = 1;
+            		_usb_wakeup(usbp);
+
+					#if !defined(ES_NO_USB_SUSPEND_CB)
+					es_usb_suspend_wakeup_init_user();
+					#endif
+				}
+        	}
+		}
+#endif
 //        _usb_isr_invoke_sof_cb(usbp);
     }
 
@@ -700,7 +736,21 @@ OSAL_IRQ_HANDLER(VectorBC)
                                 
     if (status & USB_IFM_SUSPDIFM_MSK) 
     {
-//        _usb_suspend(usbp);
+#if !defined(ES_NO_USB_SUSPEND)
+		g_es_frame_id_need_chang_times = 10;
+        USB->IER = ALD_USB_INTCTRL_SOF; 
+		
+		if(g_es_usb_state)
+		{
+			g_es_usb_state = 0;
+
+			#if !defined(ES_NO_USB_SUSPEND_CB)
+			es_usb_suspend_power_down_user();
+			#endif
+
+        	_usb_suspend(usbp);
+		}
+#endif
     }
 
     while (USB->TXIFM) 
@@ -736,9 +786,9 @@ OSAL_IRQ_HANDLER(VectorBC)
             {   
                 USB->TXIDR = 1U << ep_idx; 
 
-      /* Transfer completed, invokes the callback.*/
-        usbp->epc[ep_idx]->in_state->txcnt = g_musb_udc.in_ep[ep_idx].actual_xfer_len;
-      _usb_isr_invoke_in_cb(usbp, ep_idx);
+                /* Transfer completed, invokes the callback.*/
+                usbp->epc[ep_idx]->in_state->txcnt = g_musb_udc.in_ep[ep_idx].actual_xfer_len;
+                _usb_isr_invoke_in_cb(usbp, ep_idx);
             } 
             else 
             {
@@ -833,10 +883,13 @@ void usb_lld_start(USBDriver *usbp)
 
         /* Enable software connect */
         for(i = 0;i < 9999;i++){}
-        
-        
-        /* Enable USB interrupts */  
-        ald_usb_int_enable(ALD_USB_INTCTRL_RESET | ALD_USB_INTCTRL_DISCONNECT | ALD_USB_INTCTRL_RESUME |ALD_USB_INTCTRL_SUSPEND);/*æœªå¼€å¯SOFä¸­æ–­*/
+       
+        /* Enable USB interrupts */
+#if !defined(ES_NO_USB_SUSPEND)
+        ald_usb_int_enable(ALD_USB_INTCTRL_RESET | ALD_USB_INTCTRL_DISCONNECT | ALD_USB_INTCTRL_RESUME |ALD_USB_INTCTRL_SUSPEND | ALD_USB_INTCTRL_SOF);
+#else
+		ald_usb_int_enable(ALD_USB_INTCTRL_RESET | ALD_USB_INTCTRL_DISCONNECT | ALD_USB_INTCTRL_RESUME |ALD_USB_INTCTRL_SUSPEND);/*Î´¿ªÆôSOFÖÐ¶Ï*/
+#endif
         ald_usb_int_enable_ep(ALD_USB_INTEP_ALL);
         ald_usb_int_register();
     }
@@ -920,7 +973,7 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep)
     }
 
     if (ep_idx > (ES_USB_PERH_EP_MAX_INDEX)) {
-        es_test_printf("Ep addr overflow\r\n",sizeof("Ep addr overflow\r\n"));
+        /*Ep addr overflow*/
         return;
     }
 
@@ -992,7 +1045,7 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep)
  */
 void usb_lld_disable_endpoints(USBDriver *usbp)
 {
-    es_test_printf("usb_lld_disable_endpoints\r\n",sizeof("usb_lld_disable_endpoints\r\n"));
+
 }
 
 /**
@@ -1009,8 +1062,21 @@ void usb_lld_disable_endpoints(USBDriver *usbp)
  */
 usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep)
 {
+    if (!g_musb_udc.out_ep[ep].ep_enable)
+        return EP_STATUS_DISABLED;
 
-    es_test_printf("usb_lld_get_status_out\r\n",sizeof("usb_lld_get_status_out\r\n"));
+    USB->INDEX = ep;
+
+    if(ep == 0)
+    {
+		if((USB->CSR0L_TXCSRL) & (USB_CSR0L_STALL_MSK))
+            return EP_STATUS_STALLED;
+	}
+    else
+    {
+		if((USB->RXCSRL) & (USB_RXCSRL_STALL_MSK))
+            return EP_STATUS_STALLED;
+    }
 
     return EP_STATUS_ACTIVE;
 }
@@ -1029,7 +1095,21 @@ usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep)
  */
 usbepstatus_t usb_lld_get_status_in(USBDriver *usbp, usbep_t ep)
 {
-    es_test_printf("usb_lld_get_status_in\r\n",sizeof("usb_lld_get_status_in\r\n"));
+    if (!g_musb_udc.in_ep[ep].ep_enable)
+        return EP_STATUS_DISABLED;
+
+    USB->INDEX = ep;
+
+    if(ep == 0)
+    {
+		if((USB->CSR0L_TXCSRL) & (USB_CSR0L_STALL_MSK))
+            return EP_STATUS_STALLED;
+	}
+    else
+    {
+		if((USB->CSR0L_TXCSRL) & (USB_TXCSRL_STALL_MSK))
+            return EP_STATUS_STALLED;
+    }
 
     return EP_STATUS_ACTIVE;
 }
@@ -1072,6 +1152,9 @@ void usb_lld_start_out(USBDriver *usbp, usbep_t ep)
     usbd_ep_start_read(ep,osp->rxbuf,osp->rxsize);
 }
 
+/*user_callback*/
+__attribute__((weak)) void es_usb_lld_start_in_user_callback(uint8_t ep,uint8_t * buf , uint32_t len) {}
+
 /**
  * @brief   Starts a transmit operation on an IN endpoint.
  *
@@ -1084,6 +1167,7 @@ void usb_lld_start_in(USBDriver *usbp, usbep_t ep)
 {
     USBInEndpointState *isp = usbp->epc[ep]->in_state;
     usbd_ep_start_write(ep,isp->txbuf,isp->txsize);
+	es_usb_lld_start_in_user_callback(ep,(uint8_t*)(isp->txbuf),isp->txsize);
 }
 
 /**

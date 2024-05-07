@@ -356,7 +356,15 @@ struct USBDriver
  */
 #define usb_lld_wakeup_host(usbp)                                           \
     do {                                                                      \
-                                                      \
+        if(((USB->POWER)&ALD_USB_POWER_SUSPENDEN) == 0)                        \
+            USB->POWER |= ALD_USB_POWER_SUSPENDEN;                              \
+                                                                                 \
+        if(((USB->POWER)&ALD_USB_POWER_SUSPEND))                                  \
+        {                                                                          \
+           USB->POWER |= 0x4;/*md_usb_enable_resume(USB);*/                         \
+           chThdSleepMilliseconds(11);/*wait_ms(11);*/                               \
+           USB->POWER &= 0xFB;/*md_usb_disable_resume(USB);*/                         \
+        }                                                                               \
     } while (FALSE)
 
 

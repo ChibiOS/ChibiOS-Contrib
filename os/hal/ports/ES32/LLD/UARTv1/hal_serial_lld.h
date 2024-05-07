@@ -40,16 +40,16 @@
  * @{
  */
 /**
- * @brief   USART0 driver enable switch.
- * @details If set to @p TRUE the support for USART0 is included.
+ * @brief   UART0 driver enable switch.
+ * @details If set to @p TRUE the support for UART0 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(PLATFORM_SERIAL_USE_USART0) || defined(__DOXYGEN__)
-    #define PLATFORM_SERIAL_USE_USART0             FALSE
+#if !defined(ES32_SERIAL_USE_UART1) || defined(__DOXYGEN__)
+    #define ES32_SERIAL_USE_UART1             FALSE
 #endif
 
-#if !defined(PLATFORM_SERIAL_USE_USART1) || defined(__DOXYGEN__)
-    #define PLATFORM_SERIAL_USE_USART1             FALSE
+#if !defined(ES32_SERIAL_USE_UART1) || defined(__DOXYGEN__)
+    #define ES32_SERIAL_USE_UART2             FALSE
 #endif
 /** @} */
 
@@ -104,11 +104,17 @@ typedef struct
 /* External declarations.                                                    */
 /*===========================================================================*/
 
-#if (ES32_SERIAL_USE_USART0 == TRUE) && !defined(__DOXYGEN__)
-    extern SerialDriver SD0;
-#endif
 #if (ES32_SERIAL_USE_USART1 == TRUE) && !defined(__DOXYGEN__)
     extern SerialDriver SD1;
+#endif
+#if (ES32_SERIAL_USE_USART2 == TRUE) && !defined(__DOXYGEN__)
+    extern SerialDriver SD2;
+#endif
+#if (ES32_SERIAL_USE_USART3 == TRUE) && !defined(__DOXYGEN__)
+    extern SerialDriver SD3;
+#endif
+#if (ES32_SERIAL_USE_USART4 == TRUE) && !defined(__DOXYGEN__)
+    extern SerialDriver SD4;
 #endif
 
 #ifdef __cplusplus

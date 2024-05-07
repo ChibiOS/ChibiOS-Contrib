@@ -40,15 +40,21 @@
  * @{
  */
 /**
- * @brief   SPI0 driver enable switch.
+ * @brief   SPI1 driver enable switch.
  * @details If set to @p TRUE the support for SPI0 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(ES32_SPI_USE_SPI0) || defined(__DOXYGEN__)
-    #define ES32_SPI_USE_SPI0                  FALSE
+#if !defined(STM32_SPI_USE_SPI1) || defined(__DOXYGEN__)
+#define STM32_SPI_USE_SPI1                  FALSE
 #endif
-#if !defined(ES32_SPI_USE_SPI1) || defined(__DOXYGEN__)
-    #define ES32_SPI_USE_SPI1                  FALSE
+
+/**
+ * @brief   SPI2 driver enable switch.
+ * @details If set to @p TRUE the support for SPI2 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(STM32_SPI_USE_SPI2) || defined(__DOXYGEN__)
+#define STM32_SPI_USE_SPI2                  FALSE
 #endif
 /** @} */
 
@@ -88,11 +94,12 @@
     /* External declarations.                                                    */
     /*===========================================================================*/
 
-#if (ES32_SPI_USE_SPI0 == TRUE) && !defined(__DOXYGEN__)
-    extern SPIDriver SPID0;
+#if STM32_SPI_USE_SPI1 && !defined(__DOXYGEN__)
+extern SPIDriver SPID1;
 #endif
-#if (ES32_SPI_USE_SPI1 == TRUE) && !defined(__DOXYGEN__)
-    extern SPIDriver SPID1;
+
+#if STM32_SPI_USE_SPI2 && !defined(__DOXYGEN__)
+extern SPIDriver SPID2;
 #endif
 
 #ifdef __cplusplus
