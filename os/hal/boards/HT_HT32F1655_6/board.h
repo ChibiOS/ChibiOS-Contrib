@@ -141,7 +141,7 @@
 #define PIN_ODR_PUSHPULL(n)     (0U << (n))
 #define PIN_ODR_OPENDRAIN(n)    (1U << (n))
 #define PIN_DRVR_4MA(n)         (0U << (n))
-#define PIN_DRVR_8MA(n)         (0U << (n))
+#define PIN_DRVR_8MA(n)         (1U << (n))
 #define PIN_AFIO_AF(n, v)       ((v) << (((n) % 8U) * 4U))
 
 /*
