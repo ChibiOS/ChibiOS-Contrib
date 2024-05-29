@@ -69,7 +69,7 @@ DSTATUS disk_initialize (
     /* It is initialized externally, just reads the status.*/
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
       stat |= STA_NOINIT;
-    if (sdcIsWriteProtected(&FATFS_HAL_DEVICE))
+    if (blkIsWriteProtected(&FATFS_HAL_DEVICE))
       stat |=  STA_PROTECT;
     return stat;
 #endif
@@ -112,7 +112,7 @@ DSTATUS disk_status (
     /* It is initialized externally, just reads the status.*/
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
       stat |= STA_NOINIT;
-    if (sdcIsWriteProtected(&FATFS_HAL_DEVICE))
+    if (blkIsWriteProtected(&FATFS_HAL_DEVICE))
       stat |= STA_PROTECT;
     return stat;
 #endif
@@ -160,7 +160,7 @@ DRESULT disk_read (
   case FATFSDEV_MMC:
     if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
       return RES_NOTRDY;
-    if (sdcRead(&FATFS_HAL_DEVICE, sector, buff, count))
+    if (blkRead(&FATFS_HAL_DEVICE, sector, buff, count))
       return RES_ERROR;
     return RES_OK;
 #endif
@@ -221,7 +221,7 @@ DRESULT disk_write (
     // invalidate cache on buffer
     cacheBufferFlush(buff, count * MMCSD_BLOCK_SIZE);
 
-    if (sdcWrite(&FATFS_HAL_DEVICE, sector, buff, count))
+    if (blkWrite(&FATFS_HAL_DEVICE, sector, buff, count))
         return RES_ERROR;
 
     return RES_OK;
@@ -255,6 +255,8 @@ DRESULT disk_ioctl (
     void *buff        /* Buffer to send/receive control data */
 )
 {
+  BlockDeviceInfo bdi;
+
   (void)buff;
 
   switch (pdrv) {
@@ -282,20 +284,29 @@ DRESULT disk_ioctl (
     case CTRL_SYNC:
         return RES_OK;
     case GET_SECTOR_COUNT:
-        *((DWORD *)buff) = mmcsdGetCardCapacity(&FATFS_HAL_DEVICE);
-        return RES_OK;
+      if (blkGetInfo(&FATFS_HAL_DEVICE, &bdi)) {
+        return RES_ERROR;
+      }
+      *((DWORD *)buff) = bdi.blk_num;
+      return RES_OK;
 #if FF_MAX_SS > FF_MIN_SS
     case GET_SECTOR_SIZE:
-        *((WORD *)buff) = MMCSD_BLOCK_SIZE;
-        return RES_OK;
+      if (blkGetInfo(&FATFS_HAL_DEVICE, &bdi)) {
+        return RES_ERROR;
+      }
+      *((WORD *)buff) = bdi.blk_size;
+      return RES_OK;
 #endif
     case GET_BLOCK_SIZE:
         *((DWORD *)buff) = 256; /* 512b blocks in one erase block */
         return RES_OK;
 #if FF_USE_TRIM
+    case GET_BLOCK_SIZE:
+      /* unsupported */
+      break;
     case CTRL_TRIM:
-        sdcErase(&FATFS_HAL_DEVICE, *((DWORD *)buff), *((DWORD *)buff + 1));
-        return RES_OK;
+      /* unsupported */
+      break;
 #endif
     default:
         return RES_PARERR;
