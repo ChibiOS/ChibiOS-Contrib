@@ -35,15 +35,17 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-/**
- * @brief   SPI0 driver identifier.
- */
-#if (ES32_SPI_USE_SPI0 == TRUE) || defined(__DOXYGEN__)
-    SPIDriver SPID0;
+
+/** @brief SPI1 driver identifier.*/
+#if STM32_SPI_USE_SPI1 || defined(__DOXYGEN__)
+SPIDriver SPID1;
 #endif
-#if (ES32_SPI_USE_SPI1 == TRUE) || defined(__DOXYGEN__)
-    SPIDriver SPID1;
+
+/** @brief SPI2 driver identifier.*/
+#if STM32_SPI_USE_SPI2 || defined(__DOXYGEN__)
+SPIDriver SPID2;
 #endif
+
 
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
@@ -53,7 +55,7 @@
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-#if (ES32_SPI_USE_SPI0 == TRUE) || (ES32_SPI_USE_SPI1 == TRUE) || defined(__DOXYGEN__)
+#if (ES32_SPI_USE_SPI1 == TRUE) || (ES32_SPI_USE_SPI2 == TRUE) || defined(__DOXYGEN__)
 static void spi_lld_rx(SPIDriver *const spip)
 {
     uint32_t fd;
@@ -184,20 +186,20 @@ void spi_lld_start(SPIDriver *spip)
     if (spip->state == SPI_STOP)
     {
         /* Enables the peripheral.*/
-#if ES32_SPI_USE_SPI0 == TRUE
-        if (&SPID0 == spip)
+#if ES32_SPI_USE_SPI1 == TRUE
+        if (&SPID1 == spip)
         {
-            CKCU->APBCCR0 |= CKCU_APBCCR0_SPI0EN;
-            nvicEnableVector(SPI0_IRQn, ES32_SPI0_IRQ_PRIORITY);
+            md_rcu_enable_spi1(RCU);
+            nvicEnableVector(SPI1_IRQn, ES32_SPI1_IRQ_PRIORITY);
         }
 
 #endif
-#if ES32_SPI_USE_SPI1 == TRUE
+#if ES32_SPI_USE_SPI2 == TRUE
 
-        if (&SPID1 == spip)
+        if (&SPID2 == spip)
         {
-            CKCU->APBCCR0 |= CKCU_APBCCR0_SPI1EN;
-            nvicEnableVector(SPI1_IRQn, ES32_SPI1_IRQ_PRIORITY);
+            md_rcu_enable_spi2(RCU);
+            nvicEnableVector(SPI2_IRQn, ES32_SPI2_IRQ_PRIORITY);
         }
 
 #endif
@@ -224,22 +226,18 @@ void spi_lld_stop(SPIDriver *spip)
     if (spip->state == SPI_READY)
     {
         /* Disables the peripheral.*/
-#if ES32_SPI_USE_SPI0 == TRUE
-        if (&SPID0 == spip)
+#if ES32_SPI_USE_SPI1 == TRUE
+        if (&SPID1 == spip)
         {
-            RSTCU->APBPRSTR0 = RSTCU_APBPRSTR0_SPI0RST;
-            CKCU->APBCCR0 &= ~CKCU_APBCCR0_SPI0EN;
-            nvicDisableVector(SPI0_IRQn);
+            nvicDisableVector(SPI1_IRQn);
         }
 
 #endif
-#if ES32_SPI_USE_SPI1 == TRUE
+#if ES32_SPI_USE_SPI2 == TRUE
 
-        if (&SPID1 == spip)
+        if (&SPID2 == spip)
         {
-            RSTCU->APBPRSTR0 = RSTCU_APBPRSTR0_SPI1RST;
-            CKCU->APBCCR0 &= ~CKCU_APBCCR0_SPI1EN;
-            nvicDisableVector(SPI1_IRQn);
+            nvicDisableVector(SPI2_IRQn);
         }
 
 #endif
@@ -255,7 +253,7 @@ void spi_lld_stop(SPIDriver *spip)
  */
 void spi_lld_select(SPIDriver *spip)
 {
-    spip->SPI->CR0 |= SPI_CR0_SSELC;
+    /*hard control*/
 }
 
 /**
@@ -268,7 +266,7 @@ void spi_lld_select(SPIDriver *spip)
  */
 void spi_lld_unselect(SPIDriver *spip)
 {
-    spip->SPI->CR0 &= ~SPI_CR0_SSELC;
+    /*hard control*/
 }
 
 /**

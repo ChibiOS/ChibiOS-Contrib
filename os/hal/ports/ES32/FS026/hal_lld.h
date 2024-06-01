@@ -48,6 +48,53 @@
  * @name    PLATFORM configuration options
  * @{
  */
+/**
+ * @brief   Disables the PWR/RCC initialization in the HAL.
+ */
+#if !defined(ES32_NO_INIT) || defined(__DOXYGEN__)
+#define ES32_NO_INIT                       FALSE
+#endif
+
+/**
+ * @brief   system_clk select.
+ */
+#if !defined(ES32_SYSCLK_SOURSE_SELECT) || defined(__DOXYGEN__)
+#define ES32_SYSCLK_SOURSE_SELECT                       MD_RCU_SW_SYSCLK_HRC48
+#endif
+
+/**
+ * @brief   external clk config.
+ */
+#if !defined(ES32_HOSC_CLK_EN) || defined(__DOXYGEN__)
+#define ES32_HOSC_CLK_EN                       FALSE
+#endif
+
+/**
+ * @brief   pll clk config.
+ */
+#if !defined(ES32_PLL_CLK_EN) || defined(__DOXYGEN__)
+#define ES32_PLL_CLK_EN                       FALSE
+#endif
+
+#if !defined(ES32_PLL_SOURSE_SELECT) || defined(__DOXYGEN__)
+#define ES32_PLL_SOURSE_SELECT                       MD_RCU_PLLSRC_HRC48
+#endif
+
+#if !defined(ES32_PLL_CLK_FREQ) || defined(__DOXYGEN__)
+#define ES32_PLL_CLK_FREQ                       MD_RCU_PLLCLK_72M
+#endif
+
+/**
+ * @brief   bus clk config.
+ */
+#if !defined(ES32_BUS_DIV_HPRE) || defined(__DOXYGEN__)
+#define ES32_BUS_DIV_HPRE                       MD_RCU_HPRE_SYSCLK_DIV_1
+#endif
+
+#if !defined(ES32_BUS_DIV_PPRE) || defined(__DOXYGEN__)
+#define ES32_BUS_DIV_PPRE                       MD_RCU_PPRE_HCLK_DIV_1
+#endif
+
 /** @} */
 
 /*===========================================================================*/
@@ -70,7 +117,7 @@
 extern "C" {
 #endif
 void hal_lld_init(void);
-void ht32_clock_init(void);
+void es32_clock_init(void);
 #ifdef __cplusplus
 }
 #endif

@@ -108,7 +108,7 @@
  * @brief   Input pad with weak pull down resistor.
  */
 #define PAL_MODE_INPUT_PULLDOWN         (PAL_ES32_MODE_INPUT |             \
-                                         PAL_ES32_PUPDR_PULLDOWN)
+                                         PAL_ES32_PUD_PULLDOWN)
 
 /**
  * @brief   Analog input mode.

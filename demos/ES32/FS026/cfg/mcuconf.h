@@ -17,6 +17,8 @@
 #ifndef MCUCONF_H
 #define MCUCONF_H
 
+#define ES32_FS026_MCUCONF
+
 /**
  * @name    Internal clock sources
  * @{
@@ -28,22 +30,64 @@
 /*
  * HAL driver system settings.
  */
-#define ES32_NO_INIT                       FALSE
-#define ES32_MHSI_ENABLED                  TRUE
-#define ES32_FHSI_ENABLED                  FALSE
-#define ES32_LSI_ENABLED                   FALSE
-#define ES32_HSE_ENABLED                   TRUE
-#define ES32_LSE_ENABLED                   FALSE
-#define ES32_PLL_ENABLED                   TRUE
-#define ES32_MAINCLKSRC                    ES32_MAINCLKSRC_PLL
-#define ES32_HSE_STATE                     ANCTL_HSECR0_HSEON
-#define ES32_PLLSRC                        ES32_PLLSRC_HSE
-#define ES32_PLLDIV_VALUE                  2
-#define ES32_PLLMUL_VALUE                  12     // The allowed range is 12,16,20,24.
-#define ES32_HPRE                          1
-#define ES32_PPRE1                         1
-#define ES32_PPRE2                         1
-#define ES32_USBPRE                        ES32_USBPRE_DIV1P5
+#define ES32_NO_INIT   FALSE
+
+/*system_clk select
+
+MD_RCU_SW_SYSCLK_HRC   = HRC selected as system clock
+MD_RCU_SW_SYSCLK_HOSC  = HOSC selected as system clock
+MD_RCU_SW_SYSCLK_PLL0  = PLL0 selected as system clock
+MD_RCU_SW_SYSCLK_HRC48 = HRC48 selected as system clock
+*/
+#define ES32_SYSCLK_SOURSE_SELECT   MD_RCU_SW_SYSCLK_PLL0
+
+/*external clk config*/
+#define ES32_HOSC_CLK_EN            FALSE
+#define ES32_HOSC_CLK_FREQ          8
+
+/*pll clk config
+
+MD_RCU_PLLSRC_HRC     = HRC selected as PLL reference clock
+MD_RCU_PLLSRC_HOSC    = HOSC selected as PLL reference clock
+MD_RCU_PLLSRC_HRC48   = HRC48 selected as PLL reference clock
+
+MD_RCU_PLLCLK_PASS    = 0
+MD_RCU_PLLCLK_4M      = 4000000
+MD_RCU_PLLCLK_8M      = 8000000
+MD_RCU_PLLCLK_12M     = 12000000
+MD_RCU_PLLCLK_16M     = 16000000
+MD_RCU_PLLCLK_24M     = 24000000
+MD_RCU_PLLCLK_32M     = 32000000
+MD_RCU_PLLCLK_36M     = 36000000
+MD_RCU_PLLCLK_40M     = 40000000
+MD_RCU_PLLCLK_48M     = 48000000
+MD_RCU_PLLCLK_64M     = 64000000
+MD_RCU_PLLCLK_72M     = 72000000
+*/
+#define ES32_PLL_CLK_EN             TRUE
+#define ES32_PLL_SOURSE_SELECT      MD_RCU_PLLSRC_HRC48
+#define ES32_PLL_CLK_FREQ           MD_RCU_PLLCLK_72M
+
+/*bus clk config
+
+MD_RCU_HPRE_SYSCLK_DIV_1     = SYSCLK not divided
+MD_RCU_HPRE_SYSCLK_DIV_2     = SYSCLK divided by 2
+MD_RCU_HPRE_SYSCLK_DIV_4     = SYSCLK divided by 4
+MD_RCU_HPRE_SYSCLK_DIV_8     = SYSCLK divided by 8
+MD_RCU_HPRE_SYSCLK_DIV_16    = SYSCLK divided by 16
+MD_RCU_HPRE_SYSCLK_DIV_64    = SYSCLK divided by 64
+MD_RCU_HPRE_SYSCLK_DIV_128   = SYSCLK divided by 128
+MD_RCU_HPRE_SYSCLK_DIV_256   = SYSCLK divided by 256
+MD_RCU_HPRE_SYSCLK_DIV_512   = @brief SYSCLK divided by 512
+
+MD_RCU_PPRE_HCLK_DIV_1       = HCLK not divided
+MD_RCU_PPRE_HCLK_DIV_2       = HCLK divided by 2
+MD_RCU_PPRE_HCLK_DIV_4       = HCLK divided by 4
+MD_RCU_PPRE_HCLK_DIV_8       = HCLK divided by 8
+MD_RCU_PPRE_HCLK_DIV_16      = HCLK divided by 16
+*/
+#define ES32_BUS_DIV_HPRE    MD_RCU_HPRE_SYSCLK_DIV_1
+#define ES32_BUS_DIV_PPRE    MD_RCU_PPRE_HCLK_DIV_1
 
 /*
  * EXTI driver system settings.
@@ -88,15 +132,24 @@
 /*
  * PWM driver system settings.
  */
-#define ES32_PWM_USE_ADVANCED              FALSE
-#define ES32_PWM_USE_TIM1                  FALSE
-#define ES32_PWM_USE_TIM2                  FALSE
-#define ES32_PWM_USE_TIM3                  FALSE
-#define ES32_PWM_USE_TIM4                  FALSE
-#define ES32_PWM_TIM1_IRQ_PRIORITY         7
-#define ES32_PWM_TIM2_IRQ_PRIORITY         7
-#define ES32_PWM_TIM3_IRQ_PRIORITY         7
-#define ES32_PWM_TIM4_IRQ_PRIORITY         7
+#define ES32_PWM_USE_AD16C4T1          TRUE
+#define ES32_PWM_USE_GP32C4T1          TRUE
+#define ES32_PWM_USE_GP16C4T1          TRUE
+#define ES32_PWM_USE_GP16C4T2          TRUE
+#define ES32_PWM_USE_GP16C4T3          TRUE
+#define ES32_PWM_USE_GP16C2T1          TRUE
+#define ES32_PWM_USE_GP16C2T2          TRUE
+#define ES32_PWM_USE_GP16C2T3          TRUE
+#define ES32_PWM_USE_GP16C2T4          TRUE
+#define ES32_PWM_AD16C4T1_IRQ_PRIORITY 7
+#define ES32_PWM_GP32C4T1_IRQ_PRIORITY 7
+#define ES32_PWM_GP16C4T1_IRQ_PRIORITY 7
+#define ES32_PWM_GP16C4T2_IRQ_PRIORITY 7
+#define ES32_PWM_GP16C4T3_IRQ_PRIORITY 7
+#define ES32_PWM_GP16C2T1_IRQ_PRIORITY 7
+#define ES32_PWM_GP16C2T2_IRQ_PRIORITY 7
+#define ES32_PWM_GP16C2T3_IRQ_PRIORITY 7
+#define ES32_PWM_GP16C2T4_IRQ_PRIORITY 7
 
 /*
  * I2C driver system settings.
@@ -110,24 +163,20 @@
 /*
  * SERIAL driver system settings.
  */
-#define ES32_SERIAL_USE_UART1             FALSE
-#define ES32_SERIAL_USE_UART2             FALSE
-#define ES32_SERIAL_USE_UART3             FALSE
-#define ES32_SERIAL_USART1_PRIORITY        12
-#define ES32_SERIAL_USART2_PRIORITY        12
-#define ES32_SERIAL_USART3_PRIORITY        12
+#define ES32_SERIAL_USE_UART1              TRUE
+#define ES32_SERIAL_USE_UART2              TRUE
+#define ES32_SERIAL_USE_UART3              TRUE
+#define ES32_SERIAL_USE_UART4              TRUE
+#define ES32_SERIAL_USART1_PRIORITY        7
+#define ES32_SERIAL_USART1_PRIORITY        7
+#define ES32_SERIAL_USART1_PRIORITY        7
+#define ES32_SERIAL_USART1_PRIORITY        7
 
 /*
  * SPI driver system settings.
  */
-#define ES32_SPI_USE_QSPI                   FALSE
-#define ES32_SPI_USE_SPIM2                  FALSE
-#define ES32_SPI_USE_SPIS1                  FALSE
-#define ES32_SPI_USE_SPIS2                  FALSE
-#define ES32_SPI_QSPI_IRQ_PRIORITY          10
-#define ES32_SPI_SPIM2_IRQ_PRIORITY         10
-#define ES32_SPI_SPIS1_IRQ_PRIORITY         10
-#define ES32_SPI_SPIS2_IRQ_PRIORITY         10
+#define ES32_SPI_USE_SPI1                  TRUE
+#define ES32_SPI_USE_SPI2                  TRUE
 
 /*
  * ST driver system settings.
@@ -151,6 +200,7 @@
 #define ES32_USB_USE_USB1                   TRUE
 #define ES32_USB_USB1_IRQ_PRIORITY          13
 #define ES32_USB_HOST_WAKEUP_DURATION       10
+#define ES32_USE_USB_SOF_TRIM_HRC48         TRUE
 
 /*
  * ADC driver system settings.
