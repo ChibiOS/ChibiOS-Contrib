@@ -23,11 +23,11 @@
 
 
 /*
- * HT32F5234x memory setup
+ * HT32F52352 memory setup
  */
 
 MEMORY {
-    flash0  : org = 0x00000000, len = 64k
+    flash0  : org = 0x00000000, len = 128k
     flash1  : org = 0x00000000, len = 0
     flash2  : org = 0x00000000, len = 0
     flash3  : org = 0x00000000, len = 0
@@ -35,7 +35,7 @@ MEMORY {
     flash5  : org = 0x00000000, len = 0
     flash6  : org = 0x00000000, len = 0
     flash7  : org = 0x00000000, len = 0
-    ram0    : org = 0x20000000, len = 8k
+    ram0    : org = 0x20000000, len = 16k
     ram1    : org = 0x00000000, len = 0
     ram2    : org = 0x00000000, len = 0
     ram3    : org = 0x00000000, len = 0
@@ -93,7 +93,7 @@ REGION_ALIAS("HEAP_RAM", ram0);
 INCLUDE rules_stacks.ld
 
 /* Code rules inclusion.*/
-INCLUDE HT32F523xx_rules_code.ld
+INCLUDE HT32F523x2_rules_code.ld
 
 /* Data rules inclusion.*/
 INCLUDE rules_data.ld

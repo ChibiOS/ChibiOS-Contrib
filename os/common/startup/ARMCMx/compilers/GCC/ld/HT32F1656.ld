@@ -23,11 +23,11 @@
 
 
 /*
- * HT32F5235x memory setup
+ * HT32F1656 memory setup
  */
 
 MEMORY {
-    flash0  : org = 0x00000000, len = 128k
+    flash0  : org = 0x00000000, len = 255k
     flash1  : org = 0x00000000, len = 0
     flash2  : org = 0x00000000, len = 0
     flash3  : org = 0x00000000, len = 0
@@ -35,7 +35,7 @@ MEMORY {
     flash5  : org = 0x00000000, len = 0
     flash6  : org = 0x00000000, len = 0
     flash7  : org = 0x00000000, len = 0
-    ram0    : org = 0x20000000, len = 16k
+    ram0    : org = 0x20000000, len = 32k
     ram1    : org = 0x00000000, len = 0
     ram2    : org = 0x00000000, len = 0
     ram3    : org = 0x00000000, len = 0
@@ -89,14 +89,5 @@ REGION_ALIAS("BSS_RAM", ram0);
 /* RAM region to be used for the default heap.*/
 REGION_ALIAS("HEAP_RAM", ram0);
 
-/* Stack rules inclusion.*/
-INCLUDE rules_stacks.ld
-
-/* Code rules inclusion.*/
-INCLUDE HT32F523xx_rules_code.ld
-
-/* Data rules inclusion.*/
-INCLUDE rules_data.ld
-
-/* Memory rules inclusion.*/
-INCLUDE rules_memory.ld
+/* Generic rules inclusion.*/
+INCLUDE rules.ld
