@@ -27,6 +27,7 @@ include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F2xx/SysTick/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F2xx/SPI/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F2xx/I2C/driver.mk
 include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F2xx/WDT/driver.mk
+include ${CHIBIOS_CONTRIB}/os/hal/ports/SN32/LLD/SN32F2xx/UART/driver.mk
 
 # Shared variables
 ALLCSRC += $(PLATFORMSRC_CONTRIB)
