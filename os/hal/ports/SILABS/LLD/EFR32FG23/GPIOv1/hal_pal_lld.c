@@ -181,10 +181,62 @@ void _pal_lld_setgroupmode(ioportid_t port,
   while (mask) {
     if ((mask & 1) != 0) {
       _pal_lld_setpadmode(port, pad, mode);
+      _pal_lld_setalternatefunction(port, pad, mode);
     }
 
     mask >>= 1;
     pad++;
+  }
+}
+
+void _pal_lld_setalternatefunction(ioportid_t port,
+                                   iopadid_t pad,
+                                   iomode_t mode) {
+
+  uint32_t altfunc = (mode & PAL_EFR32_ALTERNATE_FUNCSEL_MASK);
+
+  switch (altfunc) {
+    case PAL_EFR32_ALTERNATE_FUNCSEL_NONE:
+      break;
+    case PAL_EFR32_ALTERNATE_FUNCSEL_EUSART0_RX:
+      GPIO->EUSARTROUTE[0].RXROUTE = (GPIO_PORT_INDEX(port) << _GPIO_EUSART_RXROUTE_PORT_SHIFT) |
+                                     (pad << _GPIO_EUSART_RXROUTE_PIN_SHIFT);
+      GPIO->EUSARTROUTE[0].ROUTEEN |= GPIO_EUSART_ROUTEEN_RXPEN;
+      break;
+
+    case PAL_EFR32_ALTERNATE_FUNCSEL_EUSART0_TX:
+      GPIO->EUSARTROUTE[0].TXROUTE = (GPIO_PORT_INDEX(port) << _GPIO_EUSART_TXROUTE_PORT_SHIFT) |
+                                     (pad << _GPIO_EUSART_TXROUTE_PIN_SHIFT);
+      GPIO->EUSARTROUTE[0].ROUTEEN |= GPIO_EUSART_ROUTEEN_TXPEN;
+      break;
+
+    case PAL_EFR32_ALTERNATE_FUNCSEL_EUSART1_RX:
+      GPIO->EUSARTROUTE[1].RXROUTE = (GPIO_PORT_INDEX(port) << _GPIO_EUSART_RXROUTE_PORT_SHIFT) |
+                                     (pad << _GPIO_EUSART_RXROUTE_PIN_SHIFT);
+      GPIO->EUSARTROUTE[1].ROUTEEN |= GPIO_EUSART_ROUTEEN_RXPEN;
+      break;
+
+    case PAL_EFR32_ALTERNATE_FUNCSEL_EUSART1_TX:
+      GPIO->EUSARTROUTE[1].TXROUTE = (GPIO_PORT_INDEX(port) << _GPIO_EUSART_TXROUTE_PORT_SHIFT) |
+                                     (pad << _GPIO_EUSART_TXROUTE_PIN_SHIFT);
+      GPIO->EUSARTROUTE[1].ROUTEEN |= GPIO_EUSART_ROUTEEN_TXPEN;
+      break;
+
+    case PAL_EFR32_ALTERNATE_FUNCSEL_EUSART2_RX:
+      GPIO->EUSARTROUTE[2].RXROUTE = (GPIO_PORT_INDEX(port) << _GPIO_EUSART_RXROUTE_PORT_SHIFT) |
+                                     (pad << _GPIO_EUSART_RXROUTE_PIN_SHIFT);
+      GPIO->EUSARTROUTE[2].ROUTEEN |= GPIO_EUSART_ROUTEEN_RXPEN;
+      break;
+
+    case PAL_EFR32_ALTERNATE_FUNCSEL_EUSART2_TX:
+      GPIO->EUSARTROUTE[2].TXROUTE = (GPIO_PORT_INDEX(port) << _GPIO_EUSART_TXROUTE_PORT_SHIFT) |
+                                     (pad << _GPIO_EUSART_TXROUTE_PIN_SHIFT);
+      GPIO->EUSARTROUTE[2].ROUTEEN |= GPIO_EUSART_ROUTEEN_TXPEN;
+      break;
+
+    default:
+      osalDbgAssert(false, "unimplemented alternate function");
+      break;
   }
 }
 
@@ -224,8 +276,7 @@ void _pal_lld_enablepadevent(ioportid_t port,
 
   osalDbgCheck(pad < GPIO_PIN_COUNT(port));
 
-  switch (mode & PAL_EVENT_MODE_EDGES_MASK)
-  {
+  switch (mode & PAL_EVENT_MODE_EDGES_MASK) {
     default:
     case PAL_EVENT_MODE_DISABLED:
       rising_edge = 0U;

@@ -218,6 +218,27 @@
 #define PAL_EFR32_DOUT_FILTER                   (1U << PAL_EFR32_DOUT_SHIFT)
 
 
+#define PAL_EFR32_ALTERNATE_FUNCSEL_SHIFT       (5U)
+#define PAL_EFR32_ALTERNATE_FUNCSEL_MASK        (0xFFU << PAL_EFR32_ALTERNATE_FUNCSEL_SHIFT)
+#define PAL_EFR32_ALTERNATE_FUNCSEL(n)          (  (n) << PAL_EFR32_ALTERNATE_FUNCSEL_SHIFT)
+#define PAL_EFR32_ALTERNATE_FUNCSEL_NONE        PAL_EFR32_ALTERNATE_FUNCSEL(0U)
+#define PAL_EFR32_ALTERNATE_FUNCSEL_EUSART0_RX  PAL_EFR32_ALTERNATE_FUNCSEL(1U)
+#define PAL_EFR32_ALTERNATE_FUNCSEL_EUSART0_TX  PAL_EFR32_ALTERNATE_FUNCSEL(2U)
+#define PAL_EFR32_ALTERNATE_FUNCSEL_EUSART1_RX  PAL_EFR32_ALTERNATE_FUNCSEL(3U)
+#define PAL_EFR32_ALTERNATE_FUNCSEL_EUSART1_TX  PAL_EFR32_ALTERNATE_FUNCSEL(4U)
+#define PAL_EFR32_ALTERNATE_FUNCSEL_EUSART2_RX  PAL_EFR32_ALTERNATE_FUNCSEL(5U)
+#define PAL_EFR32_ALTERNATE_FUNCSEL_EUSART2_TX  PAL_EFR32_ALTERNATE_FUNCSEL(6U)
+
+
+/**
+ * @brief   Alternate function.
+ *
+ * @param[in] n         alternate function selector
+ */
+#define PAL_MODE_ALTERNATE(n)                   PAL_EFR32_ALTERNATE_FUNCSEL_##n
+/** @} */
+
+
 #undef PAL_MODE_RESET
 #undef PAL_MODE_UNCONNECTED
 #undef PAL_MODE_INPUT
@@ -630,7 +651,8 @@ typedef uint32_t iopadid_t;
  * @notapi
  */
 #define pal_lld_setpadmode(port, pad, mode)                                \
-  _pal_lld_setpadmode(port, pad, mode)
+  _pal_lld_setpadmode(port, pad, mode);                                    \
+  _pal_lld_setalternatefunction(port, pad, mode)
 
 /**
  * @brief   Pad event enable.
@@ -693,6 +715,7 @@ extern "C"
 void _pal_lld_init(const PALConfig* config);
 void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode);
 void _pal_lld_setpadmode(ioportid_t port, iopadid_t pad, iomode_t mode);
+void _pal_lld_setalternatefunction(ioportid_t port, iopadid_t pad, iomode_t mode);
 void _pal_lld_enablepadevent(ioportid_t port, iopadid_t pad, ioeventmode_t mode);
 void _pal_lld_disablepadevent(ioportid_t port, iopadid_t pad);
 #ifdef __cplusplus
