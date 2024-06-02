@@ -8,7 +8,7 @@ STARTUPINC = $(CHIBIOS)/os/common/portability/GCC \
              $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC \
              $(CHIBIOS)/os/common/ext/ARM/CMSIS/Core/Include \
              $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/devices/EFR32FG23 \
-             $(CHIBIOS_CONTRIB)/ext/gecko-sdk/platform/Device/SiliconLabs/EFR32FG23/Include
+             $(CHIBIOS_CONTRIB)/ext/gecko_sdk/platform/Device/SiliconLabs/EFR32FG23/Include
 
 STARTUPLD  = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/ld
 STARTUPLD_CONTRIB  = $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/ld
