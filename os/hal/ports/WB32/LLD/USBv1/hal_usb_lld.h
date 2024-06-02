@@ -469,10 +469,10 @@ struct USBDriver {
  */
 #define usb_lld_wakeup_host(usbp) do {                                      \
     /* Remote Wakeup */                                                     \
+    WB32_USB->INTRUSBE |= USB_INTRUSBE_SOFIE;                               \
     WB32_USB->POWER |= USB_POWER_RESUME;                                    \
     osalThreadSleepMilliseconds(WB32_USB_HOST_WAKEUP_DURATION);             \
     WB32_USB->POWER &= ~USB_POWER_RESUME;                                   \
-    _usb_wakeup(usbp);                                                      \
   } while (false)
 
 /*===========================================================================*/

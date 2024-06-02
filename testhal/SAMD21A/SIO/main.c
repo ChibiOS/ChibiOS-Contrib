@@ -88,7 +88,6 @@ int main(void)
   palSetPadMode(GPIOA, 10, PAL_MODE_ALTERNATE(PAL_SAM_FUNC_D));
   palSetPadMode(GPIOA, 11, PAL_MODE_ALTERNATE(PAL_SAM_FUNC_D));
   sioStart(&SIOD3, &siocfg);
-  sioStartOperation(&SIOD3, NULL);
 
   /*
    * Shell manager initialization.

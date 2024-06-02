@@ -77,7 +77,6 @@ int main(void) {
    * Activates the UART0 SIO driver using the default configuration.
    */
   sioStart(&SIOD0, NULL);
-  sioStartOperation(&SIOD0, NULL);
 
   /*
    * Setting up GPIOs.

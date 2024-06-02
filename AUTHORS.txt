@@ -37,3 +37,7 @@ Stefan Kerkmann aka KarlK90
 https://github.com/KarlK90
 RISC-V ECLIC port
 GD32VF103 Platform port
+
+Le Minh Dang aka minh7a6
+https://github.com/minh7a6
+Microchip SAMD21

@@ -29,18 +29,13 @@
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
-#define SERCOM_UART_CTRLA_FORBIDDEN                                  (SERCOM_USART_INT_CTRLA_ENABLE_Msk | \
-                                                                      SERCOM_USART_INT_CTRLA_SWRST_Msk | \
-                                                                      SERCOM_USART_INT_CTRLA_TXPO_Msk | \
-                                                                      SERCOM_USART_INT_CTRLA_RXPO_Msk)
 
-#define SERCOM_UART_CTRLB_FORBIDDEN                                  (SERCOM_USART_INT_CTRLB_ENC_Msk)
+#define SERCOM_UART_CTRLA_FORBIDDEN (SERCOM_USART_INT_CTRLA_ENABLE_Msk | \
+                                     SERCOM_USART_INT_CTRLA_SWRST_Msk |  \
+                                     SERCOM_USART_INT_CTRLA_TXPO_Msk |   \
+                                     SERCOM_USART_INT_CTRLA_RXPO_Msk)
 
-#define SERCOM_USART_INTENSET_FULL_IRQ                               (SERCOM_USART_INT_INTENSET_DRE_Msk | \
-                                                                      SERCOM_USART_INT_INTENSET_TXC_Msk | \
-                                                                      SERCOM_USART_INT_INTENSET_RXC_Msk | \
-                                                                      SERCOM_USART_INT_INTENSET_RXBRK_Msk | \
-                                                                      SERCOM_USART_INT_INTENSET_ERROR_Msk);
+#define SERCOM_UART_CTRLB_FORBIDDEN (SERCOM_USART_INT_CTRLB_ENC_Msk)
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -103,123 +98,59 @@ static inline uint16_t usart_baud_calc(SIODriver *siop)
 static inline void usart_reset(SIODriver *siop)
 {
   siop->usart->SERCOM_CTRLA = SERCOM_USART_INT_CTRLA_SWRST_Msk;
-  while((siop->usart->SERCOM_SYNCBUSY & SERCOM_USART_INT_SYNCBUSY_SWRST_Msk) != 0U);
+  while ((siop->usart->SERCOM_SYNCBUSY & SERCOM_USART_INT_SYNCBUSY_SWRST_Msk) != 0U)
+    ;
 }
 
 static inline void usart_init(SIODriver *siop)
 {
   siop->usart->SERCOM_BAUD = SERCOM_USART_INT_BAUD_BAUD(usart_baud_calc(siop));
-  siop->usart->SERCOM_CTRLA = (siop->config->ctrla & ~(SERCOM_UART_CTRLA_FORBIDDEN)) | 
-                                SERCOM_USART_INT_CTRLA_TXPO(siop->config->txpo) | 
-                                SERCOM_USART_INT_CTRLA_RXPO(siop->config->rxpo) | 
-                                SERCOM_USART_INT_CTRLA_ENABLE_Msk;
-  while((siop->usart->SERCOM_SYNCBUSY & SERCOM_USART_INT_SYNCBUSY_ENABLE_Msk) != 0U);
+  siop->usart->SERCOM_CTRLA = (siop->config->ctrla & ~(SERCOM_UART_CTRLA_FORBIDDEN)) |
+                              SERCOM_USART_INT_CTRLA_TXPO(siop->config->txpo) |
+                              SERCOM_USART_INT_CTRLA_RXPO(siop->config->rxpo) |
+                              SERCOM_USART_INT_CTRLA_ENABLE_Msk;
+  while ((siop->usart->SERCOM_SYNCBUSY & SERCOM_USART_INT_SYNCBUSY_ENABLE_Msk) != 0U)
+    ;
   siop->usart->SERCOM_CTRLB = (siop->config->ctrlb & ~(SERCOM_UART_CTRLB_FORBIDDEN)) | SERCOM_USART_INT_CTRLB_RXEN_Msk | SERCOM_USART_INT_CTRLB_TXEN_Msk;
-  while((siop->usart->SERCOM_SYNCBUSY & SERCOM_USART_INT_SYNCBUSY_CTRLB_Msk) != 0U);
+  while ((siop->usart->SERCOM_SYNCBUSY & SERCOM_USART_INT_SYNCBUSY_CTRLB_Msk) != 0U)
+    ;
+}
+
+static inline void usart_enable_rx_errors_irq(SIODriver *siop)
+{
+  uint8_t intenset = __sio_reloc_field(siop->enabled, SIO_EV_OVERRUN_ERR, SIO_EV_OVERRUN_ERR_POS, SERCOM_USART_INT_INTENSET_ERROR_Pos) |
+                     __sio_reloc_field(siop->enabled, SIO_EV_RXBREAK, SIO_EV_RXBREAK_POS, SERCOM_USART_INT_INTENSET_RXBRK_Pos) |
+                     __sio_reloc_field(siop->enabled, SIO_EV_PARITY_ERR, SIO_EV_PARITY_ERR_POS, SERCOM_USART_INT_INTENSET_ERROR_Pos) |
+                     __sio_reloc_field(siop->enabled, SIO_EV_FRAMING_ERR, SIO_EV_FRAMING_ERR_POS, SERCOM_USART_INT_INTENSET_ERROR_Pos);
 }
 
 static inline void usart_enable_rx_irq(SIODriver *siop)
 {
-  #if SIO_USE_SYNCHRONIZATION == TRUE
+  if ((siop->enabled & SIO_EV_RXNOTEMPY) != 0U)
+  {
     siop->usart->SERCOM_INTENSET |= SERCOM_USART_INT_INTENSET_RXC_Msk;
-  #else
-    if (siop->operation->rx_cb != NULL) {
-      siop->usart->SERCOM_INTENSET |= SERCOM_USART_INT_INTENSET_RXC_Msk;
-    }
-  #endif
-}
-
-static inline void usart_enable_rx_evt_irq(SIODriver *siop)
-{
-  #if SIO_USE_SYNCHRONIZATION == TRUE
-    siop->usart->SERCOM_INTENSET |= SERCOM_USART_INT_INTENSET_RXBRK_Msk | 
-                                    SERCOM_USART_INT_INTENSET_ERROR_Msk;
-  #else
-    if (siop->operation->rx_cb != NULL) {
-      siop->usart->SERCOM_INTENSET |= SERCOM_USART_INT_INTENSET_RXBRK_Msk | 
-                                      SERCOM_USART_INT_INTENSET_ERROR_Msk;
-    }
-  #endif
-}
-
-static inline void usart_enable_tx_irq(SIODriver *siop) {
-
-#if SIO_USE_SYNCHRONIZATION == TRUE
-  siop->usart->SERCOM_INTENSET |= SERCOM_USART_INT_INTENSET_DRE_Msk;
-#else
-  if (siop->operation->tx_cb != NULL) {
-    siop->usart->CR3 |= SERCOM_USART_INT_INTENSET_DRE_Msk;
   }
-#endif
 }
 
-static inline void usart_enable_tx_end_irq(SIODriver *siop) {
+static inline void usart_enable_tx_irq(SIODriver *siop)
+{
+  if ((siop->enabled & SIO_EV_TXNOTFULL) != 0U)
+  {
+    siop->usart->SERCOM_INTENSET |= SERCOM_USART_INT_INTENSET_DRE_Msk;
+  }
+}
 
-#if SIO_USE_SYNCHRONIZATION == TRUE
-  siop->usart->SERCOM_INTENSET |= SERCOM_USART_INT_INTENSET_TXC_Msk;
-#else
-  if (siop->operation->tx_end_cb != NULL) {
+static inline void usart_enable_tx_end_irq(SIODriver *siop)
+{
+  if ((siop->enabled & SIO_EV_TXDONE) != 0U)
+  {
     siop->usart->SERCOM_INTENSET |= SERCOM_USART_INT_INTENSET_TXC_Msk;
   }
-#endif
 }
+
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
-
-
-
-/**
- * @brief   Serves an USART interrupt.
- *
- * @param[in] siop      pointer to the @p SIODriver object
- *
- * @notapi
- */
-void sio_lld_serve_interrupt(SIODriver *siop) {
-  osalDbgAssert(siop->state == SIO_ACTIVE, "invalid state");
-  uint8_t intflag = siop->usart->SERCOM_INTFLAG;
-  uint8_t intenset = siop->usart->SERCOM_INTENSET;
-  uint8_t evtmask = intflag & (SERCOM_USART_INT_INTFLAG_ERROR_Msk | 
-                                SERCOM_USART_INT_INTFLAG_RXBRK_Msk);
-  if(evtmask != 0) {
-    siop->usart->SERCOM_INTENCLR = (SERCOM_USART_INT_INTENCLR_ERROR_Msk | SERCOM_USART_INT_INTENCLR_RXBRK_Msk);
-    __sio_callback_rx_evt(siop);
-
-    /* Waiting thread woken, if any.*/
-    __sio_wakeup_rx(siop, SIO_MSG_ERRORS);
-  }
-  if((intflag & SERCOM_USART_INT_INTFLAG_RXC_Msk) && 
-    (intenset & SERCOM_USART_INT_INTENSET_RXC_Msk)) {
-    siop->usart->SERCOM_INTENCLR = SERCOM_USART_INT_INTENCLR_RXC_Msk;
-    /* The callback is invoked if defined.*/
-    __sio_callback_rx(siop);
-
-    /* Waiting thread woken, if any.*/
-    __sio_wakeup_rx(siop, MSG_OK);
-  }
-  /* TX FIFO is non-full.*/
-  if ((intflag & SERCOM_USART_INT_INTFLAG_DRE_Msk) && 
-    (intenset & SERCOM_USART_INT_INTENSET_DRE_Msk))  {
-    siop->usart->SERCOM_INTENCLR = SERCOM_USART_INT_INTENCLR_DRE_Msk;
-    /* The callback is invoked if defined.*/
-    __sio_callback_tx(siop);
-
-    /* Waiting thread woken, if any.*/
-    __sio_wakeup_tx(siop, MSG_OK);
-  }
-
-  /* Physical transmission end.*/
-  if ((intflag & SERCOM_USART_INT_INTFLAG_TXC_Msk) && 
-    (intenset & SERCOM_USART_INT_INTENSET_TXC_Msk)) {
-    siop->usart->SERCOM_INTENCLR = SERCOM_USART_INT_INTENCLR_TXC_Msk;
-    /* The callback is invoked if defined.*/
-    __sio_callback_tx_end(siop);
-
-    /* Waiting thread woken, if any.*/
-    __sio_wakeup_txend(siop, MSG_OK);
-  }
-}
 
 #if SAM_SIO_USE_SERCOM0 == TRUE
 OSAL_IRQ_HANDLER(SERCOM0_HANDLER)
@@ -275,7 +206,6 @@ OSAL_IRQ_HANDLER(SERCOM5_HANDLER)
 }
 #endif
 
-
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -285,7 +215,8 @@ OSAL_IRQ_HANDLER(SERCOM5_HANDLER)
  *
  * @notapi
  */
-void sio_lld_init(void) {
+void sio_lld_init(void)
+{
 
 #if SAM_SIO_USE_SERCOM0 == TRUE
   /* Driver initialization.*/
@@ -339,15 +270,19 @@ void sio_lld_init(void) {
  *
  * @notapi
  */
-msg_t sio_lld_start(SIODriver *siop) {
-  
-  if (siop->config == NULL) {
+msg_t sio_lld_start(SIODriver *siop)
+{
+
+  if (siop->config == NULL)
+  {
     osalDbgAssert(siop->config, "SERCOM requires configuration");
   }
-  if (siop->state == SIO_STOP) {
+  if (siop->state == SIO_STOP)
+  {
     /* Enables the peripheral.*/
 #if SAM_SIO_USE_SERCOM0 == TRUE
-    if (&SIOD1 == siop) {
+    if (&SIOD1 == siop)
+    {
       sam_gclk_mux(SAM_SERCOM0_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM0_CORE_Val, 0);
       sam_gclk_mux(SAM_SERCOM0_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM0_CORE_Val, 1);
       usart_reset(&SIOD1);
@@ -356,7 +291,8 @@ msg_t sio_lld_start(SIODriver *siop) {
 #endif
 
 #if SAM_SIO_USE_SERCOM1 == TRUE
-    if (&SIOD2 == siop) {
+    if (&SIOD2 == siop)
+    {
       sam_gclk_mux(SAM_SERCOM1_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM1_CORE_Val, 0);
       sam_gclk_mux(SAM_SERCOM1_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM1_CORE_Val, 1);
       usart_reset(&SIOD2);
@@ -365,7 +301,8 @@ msg_t sio_lld_start(SIODriver *siop) {
 #endif
 
 #if SAM_SIO_USE_SERCOM2 == TRUE
-    if (&SIOD3 == siop) {
+    if (&SIOD3 == siop)
+    {
       sam_gclk_mux(SAM_SERCOM2_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM2_CORE_Val, 0);
       sam_gclk_mux(SAM_SERCOM2_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM2_CORE_Val, 1);
       usart_reset(&SIOD3);
@@ -374,7 +311,8 @@ msg_t sio_lld_start(SIODriver *siop) {
 #endif
 
 #if SAM_SIO_USE_SERCOM3 == TRUE
-    if (&SIOD4 == siop) {
+    if (&SIOD4 == siop)
+    {
       sam_gclk_mux(SAM_SERCOM3_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM3_CORE_Val, 0);
       sam_gclk_mux(SAM_SERCOM3_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM3_CORE_Val, 1);
       usart_reset(&SIOD4);
@@ -383,7 +321,8 @@ msg_t sio_lld_start(SIODriver *siop) {
 #endif
 
 #if SAM_SIO_USE_SERCOM4 == TRUE
-    if (&SIOD5 == siop) {
+    if (&SIOD5 == siop)
+    {
       sam_gclk_mux(SAM_SERCOM4_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM4_CORE_Val, 0);
       sam_gclk_mux(SAM_SERCOM4_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM4_CORE_Val, 1);
       usart_reset(&SIOD5);
@@ -392,7 +331,8 @@ msg_t sio_lld_start(SIODriver *siop) {
 #endif
 
 #if SAM_SIO_USE_SERCOM5 == TRUE
-    if (&SIOD6 == siop) {
+    if (&SIOD6 == siop)
+    {
       sam_gclk_mux(SAM_SERCOM5_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM5_CORE_Val, 0);
       sam_gclk_mux(SAM_SERCOM5_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM5_CORE_Val, 1);
       usart_reset(&SIOD6);
@@ -412,14 +352,21 @@ msg_t sio_lld_start(SIODriver *siop) {
  *
  * @notapi
  */
-void sio_lld_stop(SIODriver *siop) {
+void sio_lld_stop(SIODriver *siop)
+{
 
-  if (siop->state == SIO_READY) {
+  if (siop->state == SIO_READY)
+  {
     /* Resets the peripheral.*/
-    
-    /* Disables the peripheral.*/
+    siop->usart->SERCOM_INTENCLR = SERCOM_USART_INT_INTENCLR_Msk;
+    // disable sercom
+    siop->usart->SERCOM_CTRLA &= ~SERCOM_USART_INT_CTRLA_ENABLE_Msk;
+    while ((siop->usart->SERCOM_SYNCBUSY & SERCOM_USART_INT_SYNCBUSY_ENABLE_Msk) != 0U)
+      ;
+      /* Disables the peripheral.*/
 #if SAM_SIO_USE_SERCOM0 == TRUE
-    if (&SIOD1 == siop) {
+    if (&SIOD1 == siop)
+    {
       usart_reset(&SIOD1);
       sam_gclk_mux(SAM_SERCOM0_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM0_CORE_Val, 0);
       nvicDisableVector(SERCOM0_IRQn);
@@ -427,7 +374,8 @@ void sio_lld_stop(SIODriver *siop) {
 #endif
 
 #if SAM_SIO_USE_SERCOM1 == TRUE
-    if (&SIOD2 == siop) {
+    if (&SIOD2 == siop)
+    {
       usart_reset(&SIOD2);
       sam_gclk_mux(SAM_SERCOM1_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM1_CORE_Val, 0);
       nvicDisableVector(SERCOM1_IRQn);
@@ -435,7 +383,8 @@ void sio_lld_stop(SIODriver *siop) {
 #endif
 
 #if SAM_SIO_USE_SERCOM2 == TRUE
-    if (&SIOD3 == siop) {
+    if (&SIOD3 == siop)
+    {
       usart_reset(&SIOD3);
       sam_gclk_mux(SAM_SERCOM2_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM2_CORE_Val, 0);
       nvicDisableVector(SERCOM2_IRQn);
@@ -443,7 +392,8 @@ void sio_lld_stop(SIODriver *siop) {
 #endif
 
 #if SAM_SIO_USE_SERCOM3 == TRUE
-    if (&SIOD4 == siop) {
+    if (&SIOD4 == siop)
+    {
       usart_reset(&SIOD4);
       sam_gclk_mux(SAM_SERCOM3_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM3_CORE_Val, 0);
       nvicDisableVector(SERCOM3_IRQn);
@@ -451,7 +401,8 @@ void sio_lld_stop(SIODriver *siop) {
 #endif
 
 #if SAM_SIO_USE_SERCOM4 == TRUE
-    if (&SIOD5 == siop) {
+    if (&SIOD5 == siop)
+    {
       usart_reset(&SIOD5);
       sam_gclk_mux(SAM_SERCOM4_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM4_CORE_Val, 0);
       nvicDisableVector(SERCOM4_IRQn);
@@ -459,7 +410,8 @@ void sio_lld_stop(SIODriver *siop) {
 #endif
 
 #if SAM_SIO_USE_SERCOM5 == TRUE
-    if (&SIOD6 == siop) {
+    if (&SIOD6 == siop)
+    {
       usart_reset(&SIOD6);
       sam_gclk_mux(SAM_SERCOM5_GCLK_SRC_ID, GCLK_CLKCTRL_ID_SERCOM5_CORE_Val, 0);
       nvicDisableVector(SERCOM5_IRQn);
@@ -469,84 +421,105 @@ void sio_lld_stop(SIODriver *siop) {
 }
 
 /**
- * @brief   Starts a SIO operation.
+ * @brief   Enable flags change notification.
  *
- * @param[in] siop          pointer to an @p SIODriver structure
- *
- * @api
+ * @param[in] siop      pointer to the @p SIODriver object
  */
-void sio_lld_start_operation(SIODriver *siop) {
-  #if SIO_USE_SYNCHRONIZATION == TRUE
-  siop->usart->SERCOM_INTENSET = SERCOM_USART_INTENSET_FULL_IRQ;
-  #else 
-  uint8_t intenset = 0;
-  if (siop->operation->rx_cb != NULL) {
-    intenset |= SERCOM_USART_INT_INTENSET_RXC_Msk;
-  }
-  if (siop->operation->rx_idle_cb != NULL) {
-    osalDbgAssert(false, "unsupported callback");
-  }
-  if (siop->operation->tx_cb != NULL) {
-    intenset |= SERCOM_USART_INT_INTENSET_DRE_Msk;
-  }
-  if (siop->operation->tx_end_cb != NULL) {
-    intenset |= SERCOM_USART_INT_INTENSET_TXC_Msk;
-  }
-  if (siop->operation->rx_evt_cb != NULL) {
-    intenset |= SERCOM_USART_INT_INTENSET_RXBRK_Msk | 
-                SERCOM_USART_INT_INTENSET_ERROR_Msk;
-  }
+void sio_lld_update_enable_flags(SIODriver *siop)
+{
+  uint8_t intenset;
+
+  // osalDbgAssert((siop->enabled & SIO_EV_RXIDLE) == 0U, "unsupported event");
+
+  intenset = __sio_reloc_field(siop->enabled, SIO_EV_RXNOTEMPY, SIO_EV_RXNOTEMPY_POS, SERCOM_USART_INT_INTENSET_RXC_Pos) |
+             __sio_reloc_field(siop->enabled, SIO_EV_TXNOTFULL, SIO_EV_TXNOTFULL_POS, SERCOM_USART_INT_INTENSET_DRE_Pos) |
+             __sio_reloc_field(siop->enabled, SIO_EV_OVERRUN_ERR, SIO_EV_OVERRUN_ERR_POS, SERCOM_USART_INT_INTENSET_ERROR_Pos) |
+             __sio_reloc_field(siop->enabled, SIO_EV_RXBREAK, SIO_EV_RXBREAK_POS, SERCOM_USART_INT_INTENSET_RXBRK_Pos) |
+             __sio_reloc_field(siop->enabled, SIO_EV_PARITY_ERR, SIO_EV_PARITY_ERR_POS, SERCOM_USART_INT_INTENSET_ERROR_Pos) |
+             __sio_reloc_field(siop->enabled, SIO_EV_FRAMING_ERR, SIO_EV_FRAMING_ERR_POS, SERCOM_USART_INT_INTENSET_ERROR_Pos) |
+             __sio_reloc_field(siop->enabled, SIO_EV_TXDONE, SIO_EV_TXDONE_POS, SERCOM_USART_INT_INTENSET_TXC_Pos);
+
+  /* Setting up the operation.*/
   siop->usart->SERCOM_INTENSET = intenset;
-  #endif
-  siop->usart->SERCOM_CTRLA |= SERCOM_USART_INT_CTRLA_ENABLE_Msk;
-  while((siop->usart->SERCOM_SYNCBUSY & SERCOM_USART_INT_SYNCBUSY_ENABLE_Msk) != 0U);
 }
 
 /**
- * @brief   Stops an ongoing SIO operation, if any.
- *
- * @param[in] siop      pointer to an @p SIODriver structure
- *
- * @api
- */
-void sio_lld_stop_operation(SIODriver *siop) {
-
-  // Clear all interrupts
-  siop->usart->SERCOM_INTENCLR = SERCOM_USART_INTENSET_FULL_IRQ;
-  // disable sercom
-  siop->usart->SERCOM_CTRLA &= ~SERCOM_USART_INT_CTRLA_ENABLE_Msk;
-  while((siop->usart->SERCOM_SYNCBUSY & SERCOM_USART_INT_SYNCBUSY_ENABLE_Msk) != 0U);
-}
-
-/**
- * @brief   Return the pending SIO events flags.
+ * @brief   Get and clears SIO error event flags.
  *
  * @param[in] siop      pointer to the @p SIODriver object
  * @return              The pending event flags.
  *
  * @notapi
  */
-sio_events_mask_t  sio_lld_get_and_clear_events(SIODriver *siop) {
-  sio_events_mask_t evtmask = 0;
+sioevents_t sio_lld_get_and_clear_errors(SIODriver *siop)
+{
+  sioevents_t errors = 0U;
   uint8_t status = 0;
   uint8_t irq_status = 0;
   status = (uint8_t)(siop->usart->SERCOM_STATUS);
   irq_status = (uint8_t)(siop->usart->SERCOM_INTFLAG);
-  if(status & SERCOM_USART_INT_STATUS_BUFOVF_Msk) {
-    evtmask |= SIO_OVERRUN_ERROR;
-  }
-  if(status & SERCOM_USART_INT_STATUS_FERR_Msk) {
-    evtmask |= SIO_FRAMING_ERROR;
-  }
-  if(status & SERCOM_USART_INT_STATUS_PERR_Msk) {
-    evtmask |= SIO_PARITY_ERROR;
-  }
-  if(irq_status & SERCOM_USART_INT_INTFLAG_RXBRK_Msk) {
-    evtmask |= SIO_BREAK_DETECTED;
-    irq_status |= SERCOM_USART_INT_INTFLAG_RXBRK_Msk;
-  }
+  siop->usart->SERCOM_STATUS |= SERCOM_USART_INT_STATUS_BUFOVF_Msk | SERCOM_USART_INT_STATUS_FERR_Msk | SERCOM_USART_INT_STATUS_PERR_Msk;
+  siop->usart->SERCOM_INTFLAG |= SERCOM_USART_INT_INTFLAG_RXBRK_Msk;
+  errors = __sio_reloc_field(irq_status, SERCOM_USART_INT_INTFLAG_RXBRK_Msk, SERCOM_USART_INT_INTFLAG_RXBRK_Pos, SIO_EV_RXBREAK_POS) |
+           __sio_reloc_field(status, SERCOM_USART_INT_STATUS_BUFOVF_Msk, SERCOM_USART_INT_STATUS_BUFOVF_Pos, SIO_EV_OVERRUN_ERR_POS) |
+           __sio_reloc_field(status, SERCOM_USART_INT_STATUS_FERR_Msk, SERCOM_USART_INT_STATUS_FERR_Pos, SIO_EV_FRAMING_ERR_POS) |
+           __sio_reloc_field(status, SERCOM_USART_INT_STATUS_PERR_Msk, SERCOM_USART_INT_STATUS_PERR_Pos, SIO_EV_PARITY_ERR_POS);
 
-  return evtmask;
+  return errors;
+}
+
+/**
+ * @brief   Get and clears SIO event flags.
+ *
+ * @param[in] siop      pointer to the @p SIODriver object
+ * @return              The pending event flags.
+ *
+ * @notapi
+ */
+sioevents_t sio_lld_get_and_clear_events(SIODriver *siop)
+{
+  sioevents_t events = 0U;
+  uint8_t status = 0;
+  uint8_t irq_status = 0;
+  status = (uint8_t)(siop->usart->SERCOM_STATUS);
+  irq_status = (uint8_t)(siop->usart->SERCOM_INTFLAG);
+  // clear both status and intflag
+  siop->usart->SERCOM_STATUS = SERCOM_USART_INT_STATUS_Msk;
+  siop->usart->SERCOM_INTFLAG = SERCOM_USART_INT_INTFLAG_Msk;
+  events |= __sio_reloc_field(irq_status, SERCOM_USART_INT_INTFLAG_RXC_Msk, SERCOM_USART_INT_INTFLAG_RXC_Pos, SIO_EV_RXNOTEMPY_POS) |
+            __sio_reloc_field(irq_status, SERCOM_USART_INT_INTFLAG_DRE_Msk, SERCOM_USART_INT_INTFLAG_DRE_Pos, SIO_EV_TXNOTFULL_POS) |
+            __sio_reloc_field(irq_status, SERCOM_USART_INT_INTFLAG_TXC_Msk, SERCOM_USART_INT_INTFLAG_TXC_Pos, SIO_EV_TXDONE_POS) |
+            __sio_reloc_field(irq_status, SERCOM_USART_INT_INTFLAG_RXBRK_Msk, SERCOM_USART_INT_INTFLAG_RXBRK_Pos, SIO_EV_RXBREAK_POS) |
+            __sio_reloc_field(status, SERCOM_USART_INT_STATUS_BUFOVF_Msk, SERCOM_USART_INT_STATUS_BUFOVF_Pos, SIO_EV_OVERRUN_ERR_POS) |
+            __sio_reloc_field(status, SERCOM_USART_INT_STATUS_FERR_Msk, SERCOM_USART_INT_STATUS_FERR_Pos, SIO_EV_FRAMING_ERR_POS) |
+            __sio_reloc_field(status, SERCOM_USART_INT_STATUS_PERR_Msk, SERCOM_USART_INT_STATUS_PERR_Pos, SIO_EV_PARITY_ERR_POS);
+
+  return events;
+}
+
+/**
+ * @brief   Returns the pending SIO event flags.
+ *
+ * @param[in] siop      pointer to the @p SIODriver object
+ * @return              The pending event flags.
+ *
+ * @notapi
+ */
+
+sioevents_t sio_lld_get_events(SIODriver *siop)
+{
+  sioevents_t events = 0U;
+  uint8_t status = 0;
+  uint8_t irq_status = 0;
+  status = (uint8_t)(siop->usart->SERCOM_STATUS);
+  irq_status = (uint8_t)(siop->usart->SERCOM_INTFLAG);
+  events |= __sio_reloc_field(irq_status, SERCOM_USART_INT_INTFLAG_RXC_Msk, SERCOM_USART_INT_INTFLAG_RXC_Pos, SIO_EV_RXNOTEMPY_POS) |
+            __sio_reloc_field(irq_status, SERCOM_USART_INT_INTFLAG_DRE_Msk, SERCOM_USART_INT_INTFLAG_DRE_Pos, SIO_EV_TXNOTFULL_POS) |
+            __sio_reloc_field(irq_status, SERCOM_USART_INT_INTFLAG_TXC_Msk, SERCOM_USART_INT_INTFLAG_TXC_Pos, SIO_EV_TXDONE_POS) |
+            __sio_reloc_field(irq_status, SERCOM_USART_INT_INTFLAG_RXBRK_Msk, SERCOM_USART_INT_INTFLAG_RXBRK_Pos, SIO_EV_RXBREAK_POS) |
+            __sio_reloc_field(status, SERCOM_USART_INT_STATUS_BUFOVF_Msk, SERCOM_USART_INT_STATUS_BUFOVF_Pos, SIO_EV_OVERRUN_ERR_POS) |
+            __sio_reloc_field(status, SERCOM_USART_INT_STATUS_FERR_Msk, SERCOM_USART_INT_STATUS_FERR_Pos, SIO_EV_FRAMING_ERR_POS) |
+            __sio_reloc_field(status, SERCOM_USART_INT_STATUS_PERR_Msk, SERCOM_USART_INT_STATUS_PERR_Pos, SIO_EV_PARITY_ERR_POS);
 }
 
 /**
@@ -560,20 +533,25 @@ sio_events_mask_t  sio_lld_get_and_clear_events(SIODriver *siop) {
  * @return                  The number of frames copied from the buffer.
  * @retval 0                if the TX FIFO is full.
  */
-size_t sio_lld_read(SIODriver *siop, uint8_t *buffer, size_t n) {
+size_t sio_lld_read(SIODriver *siop, uint8_t *buffer, size_t n)
+{
+
   size_t rd;
 
   rd = 0U;
-  while (true) {
+  while (true)
+  {
 
     /* If the RX FIFO has been emptied then the interrupt is enabled again.*/
-    if (sio_lld_is_rx_empty(siop)) {
+    if (sio_lld_is_rx_empty(siop))
+    {
       usart_enable_rx_irq(siop);
       break;
     }
 
     /* Buffer filled condition.*/
-    if (rd > n) {
+    if (rd > n)
+    {
       break;
     }
 
@@ -595,21 +573,25 @@ size_t sio_lld_read(SIODriver *siop, uint8_t *buffer, size_t n) {
  * @return                  The number of frames copied from the buffer.
  * @retval 0                if the TX FIFO is full.
  */
-size_t sio_lld_write(SIODriver *siop, const uint8_t *buffer, size_t n) {
+size_t sio_lld_write(SIODriver *siop, const uint8_t *buffer, size_t n)
+{
 
   size_t wr;
 
   wr = 0U;
-  while (true) {
+  while (true)
+  {
 
     /* If the TX FIFO has been filled then the interrupt is enabled again.*/
-    if (sio_lld_is_tx_full(siop)) {
+    if (sio_lld_is_tx_full(siop))
+    {
       usart_enable_tx_irq(siop);
       break;
     }
 
     /* Buffer emptied condition.*/
-    if (wr >= n) {
+    if (wr >= n)
+    {
       break;
     }
     uint8_t data = *buffer++;
@@ -632,13 +614,15 @@ size_t sio_lld_write(SIODriver *siop, const uint8_t *buffer, size_t n) {
  *
  * @notapi
  */
-msg_t sio_lld_get(SIODriver *siop) {
+msg_t sio_lld_get(SIODriver *siop)
+{
   msg_t msg;
 
   msg = (uint8_t)(siop->usart->SERCOM_DATA);
 
   /* If the RX FIFO has been emptied then the interrupt is enabled again.*/
-  if (sio_lld_is_rx_empty(siop)) {
+  if (sio_lld_is_rx_empty(siop))
+  {
     usart_enable_rx_irq(siop);
   }
 
@@ -654,12 +638,14 @@ msg_t sio_lld_get(SIODriver *siop) {
  *
  * @notapi
  */
-void sio_lld_put(SIODriver *siop, uint_fast16_t data) {
+void sio_lld_put(SIODriver *siop, uint_fast16_t data)
+{
 
   siop->usart->SERCOM_DATA = (uint8_t)data;
 
   /* If the TX FIFO has been filled then the interrupt is enabled again.*/
-  if (sio_lld_is_tx_full(siop)) {
+  if (sio_lld_is_tx_full(siop))
+  {
     usart_enable_tx_irq(siop);
   }
 
@@ -681,7 +667,8 @@ void sio_lld_put(SIODriver *siop, uint_fast16_t data) {
  *
  * @notapi
  */
-msg_t sio_lld_control(SIODriver *siop, unsigned int operation, void *arg) {
+msg_t sio_lld_control(SIODriver *siop, unsigned int operation, void *arg)
+{
 
   (void)siop;
   (void)operation;
@@ -690,6 +677,58 @@ msg_t sio_lld_control(SIODriver *siop, unsigned int operation, void *arg) {
   return MSG_OK;
 }
 
+/**
+ * @brief   Serves an UART interrupt.
+ *
+ * @param[in] siop      pointer to the @p SIODriver object
+ *
+ * @notapi
+ */
+void sio_lld_serve_interrupt(SIODriver *siop)
+{
+  osalDbgAssert(siop->state == SIO_READY, "invalid state");
+  uint8_t intflag = siop->usart->SERCOM_INTFLAG;
+  uint8_t intenset = siop->usart->SERCOM_INTENSET;
+  uint8_t intenclr = 0;
+  uint8_t evtmask = intflag & (SERCOM_USART_INT_INTFLAG_ERROR_Msk |
+                               SERCOM_USART_INT_INTFLAG_RXBRK_Msk);
+  siop->usart->SERCOM_INTFLAG = SERCOM_USART_INT_INTFLAG_Msk;
+  if (evtmask != 0)
+  {
+    __sio_wakeup_errors(siop);
+    intenclr |= (SERCOM_USART_INT_INTENCLR_ERROR_Msk | SERCOM_USART_INT_INTENCLR_RXBRK_Msk);
+  }
+  if (intflag & SERCOM_USART_INT_INTFLAG_RXC_Msk)
+  {
+    __sio_wakeup_rx(siop);
+
+    /* Called once then the interrupt source is disabled.*/
+    intenclr |= SERCOM_USART_INT_INTENCLR_RXC_Msk;
+  }
+  /* TX FIFO is non-full.*/
+  if (intflag & SERCOM_USART_INT_INTFLAG_DRE_Msk)
+  {
+
+    /* Waiting thread woken, if any.*/
+    __sio_wakeup_tx(siop);
+
+    /* Called once then the interrupt is disabled.*/
+    intenclr |= SERCOM_USART_INT_INTENCLR_DRE_Msk;
+  }
+
+  /* Physical transmission end.*/
+  if (intflag & SERCOM_USART_INT_INTFLAG_TXC_Msk)
+  {
+
+    /* Waiting thread woken, if any.*/
+    __sio_wakeup_txend(siop);
+
+    /* Called once then the interrupt is disabled.*/
+    intenclr |= SERCOM_USART_INT_INTENCLR_TXC_Msk;
+  }
+  siop->usart->SERCOM_INTENCLR = intenclr;
+  __sio_callback(siop);
+}
 
 #endif /* HAL_USE_SIO == TRUE */
 

@@ -31,6 +31,32 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
+/** @defgroup AHB_peripheral 
+  * @{
+  */
+#define RCC_AHBPeriph_IWDG              ((uint32_t)0x00000004)
+#define RCC_AHBPeriph_USB               ((uint32_t)0x00000200)
+#define RCC_AHBPeriph_ISO               ((uint32_t)0x00000400)
+#define RCC_AHBPeriph_FLASH             ((uint32_t)0x00000800)
+#define RCC_AHBPeriph_CACHE             ((uint32_t)0x00001000)
+#define RCC_AHBPeriph_SYS               ((uint32_t)0x00002000)
+#define RCC_AHBPeriph_DMAC1Bridge       ((uint32_t)0x00004000)
+#define RCC_AHBPeriph_DMAC2Bridge       ((uint32_t)0x00008000)
+#define RCC_AHBPeriph_CRC_SFM           ((uint32_t)0x00010000)
+#define RCC_AHBPeriph_BKP               ((uint32_t)0x04000000)
+/**
+  * @}
+  */
+ 
+/** @defgroup LSE_Configuration 
+  * @{
+  */
+#define BKP_LSE_OFF                     ((uint32_t)0x00000000)
+#define BKP_LSE_ON                      ((uint32_t)0x00000001)
+#define BKP_LSE_Bypass                  ((uint32_t)0x00000004)
+/**
+  * @}
+  */
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -150,6 +176,30 @@
   }
 
 /**
+ * @brief   Enables the clock of one or more peripheral on the AHB bus.
+ *
+ * @param[in] mask      AHB peripherals mask
+ *
+ * @api
+ */
+#define rccEnableAHB2(mask) {                                               \
+    RCC->AHBENR2 |= (mask);                                                 \
+    (void)RCC->AHBENR2;                                                     \
+  }
+
+/**
+ * @brief   Disables the clock of one or more peripheral on the AHB bus.
+ *
+ * @param[in] mask      AHB peripherals mask
+ *
+ * @api
+ */
+#define rccDisableAHB2(mask) {                                              \
+    RCC->AHBENR2 &= ~(mask);                                                \
+    (void)RCC->AHBENR2;                                                     \
+  }
+
+/**
  * @brief   Resets one or more peripheral on the AHB bus.
  *
  * @param[in] mask      AHB peripherals mask
@@ -162,9 +212,6 @@
     (void)RCC->AHBRSTR;                                                     \
   }
 /** @} */
-
-
-
 
 /**
  * @name    EXTI peripherals specific RCC operations
@@ -587,6 +634,40 @@
  * @api
  */
 #define rccResetDMAC2() rccResetAPB2(RCC_APB2RSTR_DMAC2RST)
+/** @} */
+
+/**
+ * @name    BKP peripherals specific RCC operations
+ * @{
+ */
+/**
+ * @brief   Enables the BKP peripheral clock.
+ *
+ * @api
+ */
+#define rccEnableBKP() do {                                               \
+    rccEnableAHB2(RCC_AHBPeriph_BKP >> 24);                               \
+  } while (false)
+
+/**
+ * @brief   Disables the BKP peripheral clock.
+ *
+ * @api
+ */
+#define rccDisableBKP() do {                                              \
+    rccDisableAHB2(RCC_AHBPeriph_BKP >> 24);                              \
+  } while (false)
+
+/**
+ * @brief   Resets the BKP peripheral.
+ *
+ * @api
+ */
+#define rccResetBKP() {                                                   \
+    RCC->BDRSTR = (uint32_t)ENABLE;                                       \
+    RCC->BDRSTR = (uint32_t)DISABLE;                                      \
+    (void)RCC->BDRSTR;                                                    \
+  }
 /** @} */
 
 /*===========================================================================*/

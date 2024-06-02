@@ -15,7 +15,7 @@
         <TargetCommonOption>
           <Device>ARMCM3</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.6.0</PackID>
+          <PackID>ARM.CMSIS.5.1.1</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("Cortex-M3") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -32,7 +32,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile></SFDFile>
+          <SFDFile>$$Device:ARMCM3$Device\ARM\SVD\ARMCM3.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -335,7 +335,7 @@
               <MiscControls>-UWB32FQ95xx</MiscControls>
               <Define>CORTEX_USE_FPU=0  TEST_CFG_SIZE_REPORT=0 __heap_base__=Image$$$$RW_IRAM1$$$$ZI$$$$Limit __heap_end__=Image$$$$RW_IRAM1$$$$Base</Define>
               <Undefine></Undefine>
-              <IncludePath>..\;..\cfg;..\..\..\..\..\ChibiOS\os\license;..\..\..\..\..\ChibiOS-Contrib\os\common\startup\ARMCMx\devices\WB32FQ95xx;..\..\..\..\..\ChibiOS\os\common\ext\ARM\CMSIS\Core\Include;..\..\..\..\..\ChibiOS-Contrib\os\common\ext\CMSIS\WB32\WB32FQ95xx;..\..\..\..\..\ChibiOS\os\common\portability\Keil;..\..\..\..\..\ChibiOS\os\common\ports\ARM-common;..\..\..\..\..\ChibiOS\os\common\ports\ARMv7-M;..\..\..\..\..\ChibiOS\os\rt\include;..\..\..\..\..\ChibiOS\os\oslib\include;..\..\..\..\..\ChibiOS\os\hal\osal\rt-nil;..\..\..\..\..\ChibiOS\os\hal\include;..\board;..\..\..\..\..\ChibiOS\os\hal\ports\common\ARMCMx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\WB32FQ95xx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\LLD\GPIOv1;..\..\..\..\os\hal\ports\WB32\LLD\DMAv1;..\..\..\..\os\hal\ports\WB32\LLD\TIMv1;..\..\..\..\..\ChibiOS\os\test\include;..\..\..\..\..\ChibiOS\test\rt\source\test;..\..\..\..\..\ChibiOS\test\oslib\source\test</IncludePath>
+              <IncludePath>..\;..\cfg;..\..\..\..\..\ChibiOS\os\license;..\..\..\..\..\ChibiOS-Contrib\os\common\startup\ARMCMx\devices\WB32FQ95xx;..\..\..\..\..\ChibiOS\os\common\ext\ARM\CMSIS\Core\Include;..\..\..\..\..\ChibiOS-Contrib\os\common\ext\CMSIS\WB32\WB32FQ95xx;..\..\..\..\..\ChibiOS\os\common\portability\Keil;..\..\..\..\..\ChibiOS\os\common\ports\ARM-common;..\..\..\..\..\ChibiOS\os\common\ports\ARMv7-M;..\..\..\..\..\ChibiOS\os\rt\include;..\..\..\..\..\ChibiOS\os\oslib\include;..\..\..\..\..\ChibiOS\os\hal\osal\rt-nil;..\..\..\..\..\ChibiOS\os\hal\include;..\board;..\..\..\..\..\ChibiOS\os\hal\ports\common\ARMCMx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\WB32FQ95xx;..\..\..\..\..\ChibiOS-Contrib\os\hal\ports\WB32\LLD\GPIOv1;..\..\..\..\os\hal\ports\WB32\LLD\DMAv1;..\..\..\..\os\hal\ports\WB32\LLD\TIMv1;..\..\..\..\..\ChibiOS\os\test\include;..\..\..\..\..\ChibiOS\test\rt\source\test;..\..\..\..\..\ChibiOS\test\oslib\source\test;..\..\..\..\os\hal\ports\WB32\LLD\EXTIv1</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -748,6 +748,11 @@
               <FileName>chpipes.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\ChibiOS\os\oslib\src\chpipes.c</FilePath>
+            </File>
+            <File>
+              <FileName>chmemchecks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\ChibiOS\os\oslib\src\chmemchecks.c</FilePath>
             </File>
           </Files>
         </Group>

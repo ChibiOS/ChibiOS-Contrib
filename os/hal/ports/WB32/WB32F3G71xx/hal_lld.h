@@ -35,6 +35,7 @@
 #include "wb32_registry.h"
 #include "wb32_tim.h"
 #include "wb32_dma.h"
+#include "wb32_exti.h"
 
 /*===========================================================================*/
 /* Driver constants.                                                         */
@@ -58,6 +59,13 @@
  * @name    Absolute Maximum Ratings
  * @{
  */
+
+/**
+ * @brief   LSI clock frequency.
+ */
+#ifndef WB32_LSICLK
+#define WB32_LSICLK                            40000
+#endif
 
 /**
  * @brief   Maximum HSE clock frequency.
@@ -140,6 +148,16 @@
 #define WB32_USBPRE_DIV3                       (0x3U)
 /** @} */
 
+/**
+ * @name    RCC_BDCR register bits definitions
+ * @{
+ */
+#define WB32_RTCSEL_MASK                       (3U << 8)
+#define WB32_RTCSEL_NOCLOCK                    (0U << 8)
+#define WB32_RTCSEL_LSE                        (1U << 8)
+#define WB32_RTCSEL_LSI                        (2U << 8)
+#define WB32_RTCSEL_HSEDIV                     (3U << 8)
+/** @} */
 
 /*===========================================================================*/
 /* Platform capabilities.                                                    */
@@ -227,6 +245,13 @@
  */
 #if !defined(WB32_PLLSRC) || defined(__DOXYGEN__)
 #define WB32_PLLSRC                            WB32_PLLSRC_HSE
+#endif
+
+/**
+ * @brief   RTC clock source.
+ */
+#if !defined(WB32_RTCSEL) || defined(__DOXYGEN__)
+#define WB32_RTCSEL                            WB32_RTCSEL_NOCLOCK
 #endif
 
 /**
@@ -338,6 +363,10 @@
 #error "HSE not enabled, required by WB32_MAINCLKSRC and WB32_PLLSRC"
 #endif
 
+#if WB32_RTCSEL == WB32_RTCSEL_HSEDIV
+#error "HSE not enabled, required by WB32_RTCSEL"
+#endif
+
 #endif /* !WB32_HSE_ENABLED */
 
 /*
@@ -345,6 +374,11 @@
  */
 #if WB32_LSI_ENABLED
 #else /* !WB32_LSI_ENABLED */
+
+#if HAL_USE_RTC && (WB32_RTCSEL == WB32_RTCSEL_LSI)
+#error "LSI not enabled, required by WB32_RTCSEL"
+#endif
+
 #endif /* !WB32_LSI_ENABLED */
 
 /*
@@ -361,6 +395,11 @@
 #endif
 
 #else /* !WB32_LSE_ENABLED */
+
+#if WB32_RTCSEL == WB32_RTCSEL_LSE
+#error "LSE not enabled, required by WB32_RTCSEL"
+#endif
+
 #endif /* !WB32_LSE_ENABLED */
 
 /**
@@ -467,6 +506,32 @@
 #endif
 
 /**
+ * @brief   RTC clock.
+ */
+#if (WB32_RTCSEL == WB32_RTCSEL_LSE) || defined(__DOXYGEN__)
+#define WB32_RTCCLK                            WB32_LSECLK
+#elif WB32_RTCSEL == WB32_RTCSEL_HSEDIV
+#define WB32_RTCCLK                            (WB32_HSECLK / 128)
+#elif WB32_RTCSEL == WB32_RTCSEL_NOCLOCK
+#define WB32_RTCCLK                            0
+#else
+#error "invalid source selected for RTC clock"
+#endif
+
+/**
+ * @brief   RTC Low Power clock.
+ */
+#if (WB32_RTCLP_SEL == WB32_RTCSEL_LSE) || defined(__DOXYGEN__)
+#define WB32_RTCLPCLK                          WB32_LSECLK
+#elif WB32_RTCLP_SEL == WB32_RTCSEL_LSI
+#define WB32_RTCLPCLK                          WB32_LSICLK
+#elif WB32_RTCLP_SEL == WB32_RTCSEL_NOCLOCK
+#define WB32_RTCLPCLK                          0
+#else
+#error "invalid source selected for RTC Low Power clock"
+#endif
+
+/**
  * @brief   USB frequency.
  */
 #if (WB32_USBPRE == WB32_USBPRE_DIV1P5) || defined(__DOXYGEN__)
@@ -498,6 +563,26 @@
 /* Driver macros.                                                            */
 /*===========================================================================*/
 
+/**
+ * @name    PWR interface specific BKP operations
+ * @{
+ */
+/**
+ * @brief   Enables the PWR interface.
+ *
+ * @api
+ */
+#define PWR_BackupAccessEnable()               (PWR->CR0 |= 0x1U)
+
+/**
+ * @brief   Disables PWR interface.
+ *
+ * @api
+ */
+#define PWR_BackupAccessDISABLE()              (PWR->CR0 &= (~(0x1U)))
+
+/** @} */
+
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
@@ -512,6 +597,7 @@ extern "C" {
 #endif
   void hal_lld_init(void);
   void wb32_clock_init(void);
+  void wb32_set_main_clock_to_mhsi(void);
 #ifdef __cplusplus
 }
 #endif
