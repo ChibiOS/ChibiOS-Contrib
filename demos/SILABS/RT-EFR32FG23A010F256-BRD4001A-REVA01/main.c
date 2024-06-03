@@ -22,6 +22,10 @@
 
 #include "emlib_chibios.h"
 
+CC_USED CC_SECTION(".ram0")
+static int no_init_variable;
+
+CC_USED
 static void gpio_callback(void* arg) {
 
   (void)arg;
@@ -108,6 +112,8 @@ int main(void) {
 
   siop = &SIOD1;
   sioStart(siop, &sio_config);
+  sioStop(siop);
+  sioStart(siop, &sio_config);
   #endif
 
   #if EFR32_SIO_USE_EUSART2 == TRUE
@@ -116,6 +122,8 @@ int main(void) {
 
   siop = &SIOD2;
   sioStart(siop, &sio_config);
+  sioStop(siop);
+  sioStart(siop, &sio_config);
   #endif
 
   #if EFR32_SIO_USE_EUSART3 == TRUE
@@ -123,6 +131,18 @@ int main(void) {
   palSetPadMode(GPIOC, 1, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(EUSART2_RX));
 
   siop = &SIOD3;
+  sioStart(siop, &sio_config);
+  sioStop(siop);
+  sioStart(siop, &sio_config);
+  #endif
+
+  #if EFR32_SIO_USE_USART1 == TRUE
+  palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(USART0_TX));
+  palSetPadMode(GPIOC, 1, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(USART0_RX));
+
+  siop = &SIOD4;
+  sioStart(siop, &sio_config);
+  sioStop(siop);
   sioStart(siop, &sio_config);
   #endif
 
@@ -163,7 +183,7 @@ int main(void) {
         size_t rb = sioAsyncRead(siop, buf, sizeof(buf));
         if (rb > 0) {
           sioAsyncWrite(siop, buf, rb);
-          msg = sioSynchronizeTX(siop, TIME_MS2I(1000));
+          msg = sioSynchronizeTX(siop, TIME_MS2I(1));
           //msg = sioSynchronizeTXEnd(siop, TIME_MS2I(1000));
         }
       #endif

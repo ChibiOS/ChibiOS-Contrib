@@ -194,6 +194,8 @@ include $(RULESPATH)/rules.mk
 # Custom rules
 #
 
+include post-build.mk
+
 #
 # Custom rules
 ##############################################################################

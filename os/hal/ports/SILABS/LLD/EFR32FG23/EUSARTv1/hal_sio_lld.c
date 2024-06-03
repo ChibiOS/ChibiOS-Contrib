@@ -30,10 +30,28 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define USART_IEN_CFG_FORBIDDEN             (EUSART_IF_TXFL            | \
-                                             EUSART_IF_TXC             | \
-                                             EUSART_IF_RXFL            | \
-                                             SIO_LLD_ISR_RX_ERRORS)
+/**
+ * @brief   Mask of RX-related errors in the EUSART ISR register.
+ */
+#define EUSART_ISR_RX_ERRORS                (EUSART_IF_RXOF  /* RX overrun    */ | \
+                                             EUSART_IF_FERR  /* Frame error.  */ | \
+                                             EUSART_IF_PERR) /* Parity error. */
+
+#define EUSART_IEN_CFG_FORBIDDEN             (EUSART_IF_TXFL                     | \
+                                              EUSART_IF_TXC                      | \
+                                              EUSART_IF_RXFL                     | \
+                                              EUSART_ISR_RX_ERRORS)
+/**
+ * @brief   Mask of RX-related errors in the UART ISR register.
+ */
+#define USART_ISR_RX_ERRORS                 (USART_IF_RXOF  /* RX overrun    */  | \
+                                             USART_IF_FERR  /* Frame error.  */  | \
+                                             USART_IF_PERR) /* Parity error. */
+
+#define USART_IEN_CFG_FORBIDDEN             (USART_IF_TXBL                       | \
+                                             USART_IF_TXC                        | \
+                                             USART_IF_RXDATAV                    | \
+                                             USART_ISR_RX_ERRORS)
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -58,6 +76,13 @@ SIODriver SIOD2;
  */
 #if (EFR32_SIO_USE_EUSART3 == TRUE) || defined(__DOXYGEN__)
 SIODriver SIOD3;
+#endif
+
+/**
+ * @brief   SIO4 driver identifier.
+ */
+#if (EFR32_SIO_USE_USART1 == TRUE) || defined(__DOXYGEN__)
+SIODriver SIOD4;
 #endif
 
 /*===========================================================================*/
@@ -110,7 +135,7 @@ __STATIC_INLINE void _sio_lld_reg_masked_write(volatile uint32_t* address,
 }
 
 
-__STATIC_INLINE void _sio_lld_start(SIODriver* siop) {
+__STATIC_INLINE void _sio_lld_start_eusart(SIODriver* siop) {
 
   EUSART_TypeDef* usart = siop->usart;
   const SIOConfig* config = siop->config;
@@ -132,28 +157,79 @@ __STATIC_INLINE void _sio_lld_start(SIODriver* siop) {
 
   _sio_lld_reg_masked_write(&(usart->CLKDIV), _EUSART_CLKDIV_MASK, clkdiv);
 
-  usart->IF_CLR = USART_IEN_CFG_FORBIDDEN;
+  usart->IF_CLR = EUSART_IEN_CFG_FORBIDDEN;
 
   usart->CMD_SET = EUSART_CMD_RXEN | EUSART_CMD_TXEN | EUSART_CMD_CLEARTX;
   while ((usart->SYNCBUSY & _EUSART_SYNCBUSY_MASK) != 0U);
 }
 
-__STATIC_INLINE void _sio_lld_stop(SIODriver* siop) {
+__STATIC_INLINE void _sio_lld_stop_eusart(SIODriver* siop) {
 
   EUSART_TypeDef* usart = siop->usart;
 
   usart->CMD_CLR = EUSART_CMD_RXEN | EUSART_CMD_TXEN | EUSART_CMD_CLEARTX;
   while ((usart->SYNCBUSY & _EUSART_SYNCBUSY_MASK) != 0U);
 
-  usart->IF_CLR = USART_IEN_CFG_FORBIDDEN;
+  usart->IF_CLR = EUSART_IEN_CFG_FORBIDDEN;
 
   usart->EN_CLR = EUSART_EN_EN;
+}
+
+__STATIC_INLINE void _sio_lld_start_usart(SIODriver* siop) {
+
+  USART_TypeDef* usart = siop->usart;
+  const SIOConfig* config = siop->config;
+  uint32_t ovs, clkdiv;
+
+  osalDbgAssert((siop->clock / config->baud >= 3), "invalid baudrate");
+
+  ovs = _sio_lld_get_ovs((config->cfg0 & _EUSART_CFG0_OVS_MASK) >> _EUSART_CFG0_OVS_SHIFT);
+  clkdiv = _sio_lld_get_clkdiv(siop->clock, ovs, config->baud);
+
+  osalDbgAssert((clkdiv <= _USART_CLKDIV_MASK), "invalid clkdiv");
+
+  _sio_lld_reg_masked_write(&(usart->CTRL), _USART_CTRL_MASK, config->cfg0);
+
+  /* Number of data bits starts with 4 for UART and with 7 for EUSART. */
+  uint32_t framecfg = (config->framecfg & ~_EUSART_FRAMECFG_MASK) |
+                      ((config->framecfg & _EUSART_FRAMECFG_MASK) + (7-4));
+
+  _sio_lld_reg_masked_write(&(usart->FRAME), _USART_FRAME_MASK, framecfg);
+
+  /* Enable module before writing into CLKDIV register. */
+  usart->EN_SET = USART_EN_EN;
+
+  _sio_lld_reg_masked_write(&(usart->CLKDIV), _USART_CLKDIV_MASK, clkdiv);
+
+  usart->IF_CLR = USART_IEN_CFG_FORBIDDEN;
+
+  usart->CMD_SET = USART_CMD_RXEN | USART_CMD_TXEN | USART_CMD_CLEARTX;
+}
+
+__STATIC_INLINE void _sio_lld_stop_usart(SIODriver* siop) {
+
+  USART_TypeDef* usart = siop->usart;
+
+  usart->CMD_CLR = USART_CMD_RXEN | USART_CMD_TXEN | USART_CMD_CLEARTX;
+
+  usart->IF_CLR = USART_IEN_CFG_FORBIDDEN;
+
+  usart->EN_CLR = USART_EN_EN;
 }
 
 __STATIC_INLINE void usart_enable_rx_irq(SIODriver* siop) {
 
   if ((siop->enabled & SIO_EV_RXNOTEMPY) != 0U) {
-    siop->usart->IEN_SET = EUSART_IEN_RXFL;
+    #if (EFR32_SIO_USE_USART1 == TRUE)
+    if (siop == &SIOD4) {
+      USART_TypeDef* usart = siop->usart;
+      usart->IEN_SET = USART_IEN_RXDATAV;
+    } else
+    #endif
+    {
+      USART_TypeDef* usart = siop->usart;
+      usart->IEN_SET = EUSART_IEN_RXFL;
+    }
   }
 }
 
@@ -161,6 +237,7 @@ __STATIC_INLINE void usart_enable_rx_errors_irq(SIODriver* siop) {
 
   uint32_t ien = 0U;
 
+  /* Following interrupt flags are the same for EUSART and USART. */
   ien |= __sio_reloc_field(siop->enabled, SIO_EV_FRAMING_ERR, SIO_EV_FRAMING_ERR_POS, _EUSART_IEN_FERR_SHIFT);
   ien |= __sio_reloc_field(siop->enabled, SIO_EV_PARITY_ERR,  SIO_EV_PARITY_ERR_POS,  _EUSART_IEN_PERR_SHIFT);
   ien |= __sio_reloc_field(siop->enabled, SIO_EV_OVERRUN_ERR, SIO_EV_OVERRUN_ERR_POS, _EUSART_IEN_RXOF_SHIFT);
@@ -169,21 +246,48 @@ __STATIC_INLINE void usart_enable_rx_errors_irq(SIODriver* siop) {
   if ((siop->enabled & (SIO_EV_FRAMING_ERR |
                         SIO_EV_PARITY_ERR  |
                         SIO_EV_OVERRUN_ERR)) != 0U) {
-    siop->usart->IEN_SET = ien;
+    #if (EFR32_SIO_USE_USART1 == TRUE)
+    if (siop == &SIOD4) {
+      USART_TypeDef* usart = siop->usart;
+      usart->IEN_SET = ien;
+    } else
+    #endif
+    {
+      EUSART_TypeDef* usart = siop->usart;
+      usart->IEN_SET = ien;
+    }
   }
 }
 
 __STATIC_INLINE void usart_enable_tx_irq(SIODriver* siop) {
 
   if ((siop->enabled & SIO_EV_TXNOTFULL) != 0U) {
-    siop->usart->IEN_SET = EUSART_IEN_TXFL;
+    #if (EFR32_SIO_USE_USART1 == TRUE)
+    if (siop == &SIOD4) {
+      USART_TypeDef* usart = siop->usart;
+      usart->IEN_SET = USART_IEN_TXBL;
+    } else
+    #endif
+    {
+      EUSART_TypeDef* usart = siop->usart;
+      usart->IEN_SET = EUSART_IEN_TXFL;
+    }
   }
 }
 
 __STATIC_INLINE void usart_enable_tx_end_irq(SIODriver* siop) {
 
   if ((siop->enabled & SIO_EV_TXDONE) != 0U) {
-    siop->usart->IEN_SET = EUSART_IEN_TXC;
+    #if (EFR32_SIO_USE_USART1 == TRUE)
+    if (siop == &SIOD4) {
+      USART_TypeDef* usart = siop->usart;
+      usart->IEN_SET = USART_IEN_TXC;
+    } else
+    #endif
+    {
+      EUSART_TypeDef* usart = siop->usart;
+      usart->IEN_SET = EUSART_IEN_TXC;
+    }
   }
 }
 
@@ -268,6 +372,32 @@ OSAL_IRQ_HANDLER(EFR32_EUSART3_TX_HANDLER) {
 }
 #endif
 
+#if (EFR32_SIO_USE_USART1 == TRUE) || defined(__DOXYGEN__)
+/**
+ * @brief   EFR32_USART1_RX_HANDLER interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(EFR32_USART1_RX_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+  sio_lld_serve_interrupt(&SIOD4);
+  OSAL_IRQ_EPILOGUE();
+}
+
+/**
+ * @brief   EFR32_USART1_TX_HANDLER interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(EFR32_USART1_TX_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+  sio_lld_serve_interrupt(&SIOD4);
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -297,6 +427,12 @@ void sio_lld_init(void) {
   SIOD3.usart = EUSART2;
   SIOD3.clock = EFR32_EUSART23CLK;
 #endif
+
+#if EFR32_SIO_USE_USART1 == TRUE
+  sioObjectInit(&SIOD4);
+  SIOD4.usart = USART0;
+  SIOD4.clock = EFR32_USART1CLK;
+#endif
 }
 
 /**
@@ -318,7 +454,7 @@ msg_t sio_lld_start(SIODriver* siop) {
     if (&SIOD1 == siop) {
       CMU->CLKEN1_SET = CMU_CLKEN1_EUSART0;
 
-      _sio_lld_start(siop);
+      _sio_lld_start_eusart(siop);
 
       nvicEnableVector(EFR32_EUSART1_RX_NUMBER, EFR32_EUSART1_RX_IRQ_PRIORITY);
       nvicEnableVector(EFR32_EUSART1_TX_NUMBER, EFR32_EUSART1_TX_IRQ_PRIORITY);
@@ -329,7 +465,7 @@ msg_t sio_lld_start(SIODriver* siop) {
     if (&SIOD2 == siop) {
       CMU->CLKEN1_SET = CMU_CLKEN1_EUSART1;
 
-      _sio_lld_start(siop);
+      _sio_lld_start_eusart(siop);
 
       nvicEnableVector(EFR32_EUSART2_RX_NUMBER, EFR32_EUSART2_RX_IRQ_PRIORITY);
       nvicEnableVector(EFR32_EUSART2_TX_NUMBER, EFR32_EUSART2_TX_IRQ_PRIORITY);
@@ -340,10 +476,21 @@ msg_t sio_lld_start(SIODriver* siop) {
     if (&SIOD3 == siop) {
       CMU->CLKEN1_SET = CMU_CLKEN1_EUSART2;
 
-      _sio_lld_start(siop);
+      _sio_lld_start_eusart(siop);
 
       nvicEnableVector(EFR32_EUSART3_RX_NUMBER, EFR32_EUSART3_RX_IRQ_PRIORITY);
       nvicEnableVector(EFR32_EUSART3_TX_NUMBER, EFR32_EUSART3_TX_IRQ_PRIORITY);
+    }
+#endif
+
+#if EFR32_SIO_USE_USART1 == TRUE
+    if (&SIOD4 == siop) {
+      CMU->CLKEN0_SET = CMU_CLKEN0_USART0;
+
+      _sio_lld_start_usart(siop);
+
+      nvicEnableVector(EFR32_USART1_RX_NUMBER, EFR32_USART1_RX_IRQ_PRIORITY);
+      nvicEnableVector(EFR32_USART1_TX_NUMBER, EFR32_USART1_TX_IRQ_PRIORITY);
     }
 #endif
   }
@@ -365,22 +512,29 @@ void sio_lld_stop(SIODriver* siop) {
     /* Disables the peripheral.*/
 #if EFR32_SIO_USE_EUSART1 == TRUE
     if (&SIOD1 == siop) {
-      _sio_lld_stop(siop);
+      _sio_lld_stop_eusart(siop);
       CMU->CLKEN1_CLR = CMU_CLKEN1_EUSART0;
     }
 #endif
 
 #if EFR32_SIO_USE_EUSART2 == TRUE
     if (&SIOD2 == siop) {
-      _sio_lld_stop(siop);
+      _sio_lld_stop_eusart(siop);
       CMU->CLKEN1_CLR = CMU_CLKEN1_EUSART1;
     }
 #endif
 
 #if EFR32_SIO_USE_EUSART3 == TRUE
     if (&SIOD3 == siop) {
-      _sio_lld_stop(siop);
+      _sio_lld_stop_eusart(siop);
       CMU->CLKEN1_CLR = CMU_CLKEN1_EUSART2;
+    }
+#endif
+
+#if EFR32_SIO_USE_USART1 == TRUE
+    if (&SIOD4 == siop) {
+      _sio_lld_stop_usart(siop);
+      CMU->CLKEN0_CLR = CMU_CLKEN0_USART0;
     }
 #endif
   }
@@ -395,20 +549,42 @@ void sio_lld_update_enable_flags(SIODriver* siop) {
 
   uint32_t ien;
 
-  ien = siop->usart->IF & ~(SIO_LLD_ISR_RX_ERRORS |
-                            EUSART_IF_RXFL        |
-                            EUSART_IF_TXFL        |
-                            EUSART_IF_TXC);
+  #if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    USART_TypeDef* usart = siop->usart;
+    ien = usart->IF & ~(USART_ISR_RX_ERRORS |
+                        USART_IF_RXDATAV    |
+                        USART_IF_TXBL       |
+                        USART_IF_TXC);
 
-  ien |= __sio_reloc_field(siop->enabled, SIO_EV_FRAMING_ERR, SIO_EV_FRAMING_ERR_POS, _EUSART_IEN_FERR_SHIFT);
-  ien |= __sio_reloc_field(siop->enabled, SIO_EV_PARITY_ERR,  SIO_EV_PARITY_ERR_POS,  _EUSART_IEN_PERR_SHIFT);
-  ien |= __sio_reloc_field(siop->enabled, SIO_EV_OVERRUN_ERR, SIO_EV_OVERRUN_ERR_POS, _EUSART_IEN_RXOF_SHIFT);
-  ien |= __sio_reloc_field(siop->enabled, SIO_EV_RXNOTEMPY,   SIO_EV_RXNOTEMPY_POS,   _EUSART_IEN_RXFL_SHIFT);
-  ien |= __sio_reloc_field(siop->enabled, SIO_EV_TXNOTFULL,   SIO_EV_TXNOTFULL_POS,   _EUSART_IEN_TXFL_SHIFT);
-  ien |= __sio_reloc_field(siop->enabled, SIO_EV_TXDONE,      SIO_EV_TXDONE_POS,      _EUSART_IEN_TXC_SHIFT);
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_FRAMING_ERR, SIO_EV_FRAMING_ERR_POS, _USART_IEN_FERR_SHIFT);
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_PARITY_ERR,  SIO_EV_PARITY_ERR_POS,  _USART_IEN_PERR_SHIFT);
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_OVERRUN_ERR, SIO_EV_OVERRUN_ERR_POS, _USART_IEN_RXOF_SHIFT);
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_RXNOTEMPY,   SIO_EV_RXNOTEMPY_POS,   _USART_IEN_RXDATAV_SHIFT);
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_TXNOTFULL,   SIO_EV_TXNOTFULL_POS,   _USART_IEN_TXBL_SHIFT);
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_TXDONE,      SIO_EV_TXDONE_POS,      _USART_IEN_TXC_SHIFT);
 
-  /* Setting up the operation.*/
-  siop->usart->IEN_SET = ien;
+    /* Setting up the operation.*/
+    usart->IEN_SET = ien;
+  } else
+  #endif
+  {
+    EUSART_TypeDef* usart = siop->usart;
+    ien = usart->IF & ~(EUSART_ISR_RX_ERRORS |
+                        EUSART_IF_RXFL       |
+                        EUSART_IF_TXFL       |
+                        EUSART_IF_TXC);
+
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_FRAMING_ERR, SIO_EV_FRAMING_ERR_POS, _EUSART_IEN_FERR_SHIFT);
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_PARITY_ERR,  SIO_EV_PARITY_ERR_POS,  _EUSART_IEN_PERR_SHIFT);
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_OVERRUN_ERR, SIO_EV_OVERRUN_ERR_POS, _EUSART_IEN_RXOF_SHIFT);
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_RXNOTEMPY,   SIO_EV_RXNOTEMPY_POS,   _EUSART_IEN_RXFL_SHIFT);
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_TXNOTFULL,   SIO_EV_TXNOTFULL_POS,   _EUSART_IEN_TXFL_SHIFT);
+    ien |= __sio_reloc_field(siop->enabled, SIO_EV_TXDONE,      SIO_EV_TXDONE_POS,      _EUSART_IEN_TXC_SHIFT);
+
+    /* Setting up the operation.*/
+    usart->IEN_SET = ien;
+  }
 }
 
 /**
@@ -424,20 +600,44 @@ sioevents_t sio_lld_get_and_clear_errors(SIODriver* siop) {
   uint32_t isr;
   sioevents_t errors;
 
-  /* Getting all error ISR flags (and only those).*/
-  isr = siop->usart->IF & (SIO_LLD_ISR_RX_ERRORS);
+  #if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    USART_TypeDef* usart = siop->usart;
 
-  /* Clearing captured events.*/
-  siop->usart->IF_CLR = isr;
+    /* Getting all error ISR flags (and only those).*/
+    isr = usart->IF & (USART_ISR_RX_ERRORS);
 
-  /* Status flags cleared, now the error-related interrupts can be
-     enabled again.*/
-  usart_enable_rx_errors_irq(siop);
+    /* Clearing captured events.*/
+    usart->IF_CLR = isr;
 
-  /* Translating the status flags in SIO events.*/
-  errors = __sio_reloc_field(isr, _EUSART_IF_FERR_MASK, _EUSART_IF_FERR_SHIFT, SIO_EV_FRAMING_ERR_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_PERR_MASK, _EUSART_IF_PERR_SHIFT, SIO_EV_PARITY_ERR_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_RXOF_MASK, _EUSART_IF_RXOF_SHIFT, SIO_EV_OVERRUN_ERR_POS);
+    /* Status flags cleared, now the error-related interrupts can be
+       enabled again.*/
+    usart_enable_rx_errors_irq(siop);
+
+    /* Translating the status flags in SIO events.*/
+    errors = __sio_reloc_field(isr, _USART_IF_FERR_MASK, _USART_IF_FERR_SHIFT, SIO_EV_FRAMING_ERR_POS) |
+             __sio_reloc_field(isr, _USART_IF_PERR_MASK, _USART_IF_PERR_SHIFT, SIO_EV_PARITY_ERR_POS)  |
+             __sio_reloc_field(isr, _USART_IF_RXOF_MASK, _USART_IF_RXOF_SHIFT, SIO_EV_OVERRUN_ERR_POS);
+  } else
+  #endif
+  {
+    EUSART_TypeDef* usart = siop->usart;
+
+    /* Getting all error ISR flags (and only those).*/
+    isr = usart->IF & (EUSART_ISR_RX_ERRORS);
+
+    /* Clearing captured events.*/
+    usart->IF_CLR = isr;
+
+    /* Status flags cleared, now the error-related interrupts can be
+       enabled again.*/
+    usart_enable_rx_errors_irq(siop);
+
+    /* Translating the status flags in SIO events.*/
+    errors = __sio_reloc_field(isr, _EUSART_IF_FERR_MASK, _EUSART_IF_FERR_SHIFT, SIO_EV_FRAMING_ERR_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_PERR_MASK, _EUSART_IF_PERR_SHIFT, SIO_EV_PARITY_ERR_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_RXOF_MASK, _EUSART_IF_RXOF_SHIFT, SIO_EV_OVERRUN_ERR_POS);
+  }
 
   return errors;
 }
@@ -452,33 +652,64 @@ sioevents_t sio_lld_get_and_clear_errors(SIODriver* siop) {
  */
 sioevents_t sio_lld_get_and_clear_events(SIODriver* siop) {
 
-  uint32_t isr, status;
+  uint32_t isr;
   sioevents_t events;
 
-  /* Getting all ISR flags.*/
-  isr = siop->usart->IF & (SIO_LLD_ISR_RX_ERRORS |
-                           EUSART_IF_RXFL        |
-                           EUSART_IF_TXFL        |
-                           EUSART_IF_TXC);
+  #if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    USART_TypeDef* usart = siop->usart;
 
-  status = siop->usart->STATUS & EUSART_STATUS_RXIDLE;
+    /* Getting all ISR flags.*/
+    isr = usart->IF & (USART_ISR_RX_ERRORS |
+                       USART_IF_RXDATAV    |
+                       USART_IF_TXBL       |
+                       USART_IF_TXC);
 
-  /* Clearing captured events.*/
-  siop->usart->IF_CLR = isr;
+    /* Clearing captured events.*/
+    usart->IF_CLR = isr;
 
-  /* Status flags cleared, now the RX-related interrupts can be
-     enabled again.*/
-  usart_enable_rx_irq(siop);
-  usart_enable_rx_errors_irq(siop);
+    /* Status flags cleared, now the RX-related interrupts can be
+       enabled again.*/
+    usart_enable_rx_irq(siop);
+    usart_enable_rx_errors_irq(siop);
 
-  /* Translating the status flags in SIO events.*/
-  events = __sio_reloc_field(isr, _EUSART_IF_FERR_MASK, _EUSART_IF_FERR_SHIFT, SIO_EV_FRAMING_ERR_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_PERR_MASK, _EUSART_IF_PERR_SHIFT, SIO_EV_PARITY_ERR_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_RXOF_MASK, _EUSART_IF_RXOF_SHIFT, SIO_EV_OVERRUN_ERR_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_RXFL_MASK, _EUSART_IF_RXFL_SHIFT, SIO_EV_RXNOTEMPY_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_TXFL_MASK, _EUSART_IF_TXFL_SHIFT, SIO_EV_TXNOTFULL_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_TXC_MASK,  _EUSART_IF_TXC_SHIFT,  SIO_EV_TXDONE_POS) |
-           __sio_reloc_field(status, _EUSART_STATUS_RXIDLE_MASK, _EUSART_STATUS_RXIDLE_SHIFT, SIO_EV_RXIDLE_POS);
+    /* Translating the status flags in SIO events.*/
+    events = __sio_reloc_field(isr, _USART_IF_FERR_MASK, _USART_IF_FERR_SHIFT, SIO_EV_FRAMING_ERR_POS) |
+             __sio_reloc_field(isr, _USART_IF_PERR_MASK, _USART_IF_PERR_SHIFT, SIO_EV_PARITY_ERR_POS) |
+             __sio_reloc_field(isr, _USART_IF_RXOF_MASK, _USART_IF_RXOF_SHIFT, SIO_EV_OVERRUN_ERR_POS) |
+             __sio_reloc_field(isr, _USART_IF_RXDATAV_MASK, _USART_IF_RXDATAV_SHIFT, SIO_EV_RXNOTEMPY_POS) |
+             __sio_reloc_field(isr, _USART_IF_TXBL_MASK, _USART_IF_TXBL_SHIFT, SIO_EV_TXNOTFULL_POS) |
+             __sio_reloc_field(isr, _USART_IF_TXC_MASK,  _USART_IF_TXC_SHIFT,  SIO_EV_TXDONE_POS);
+  } else
+  #endif
+  {
+    EUSART_TypeDef* usart = siop->usart;
+
+    /* Getting all ISR flags.*/
+    isr = usart->IF & (EUSART_ISR_RX_ERRORS |
+                       EUSART_IF_RXFL       |
+                       EUSART_IF_TXFL       |
+                       EUSART_IF_TXC);
+
+    uint32_t status = usart->STATUS & EUSART_STATUS_RXIDLE;
+
+    /* Clearing captured events.*/
+    usart->IF_CLR = isr;
+
+    /* Status flags cleared, now the RX-related interrupts can be
+       enabled again.*/
+    usart_enable_rx_irq(siop);
+    usart_enable_rx_errors_irq(siop);
+
+    /* Translating the status flags in SIO events.*/
+    events = __sio_reloc_field(isr, _EUSART_IF_FERR_MASK, _EUSART_IF_FERR_SHIFT, SIO_EV_FRAMING_ERR_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_PERR_MASK, _EUSART_IF_PERR_SHIFT, SIO_EV_PARITY_ERR_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_RXOF_MASK, _EUSART_IF_RXOF_SHIFT, SIO_EV_OVERRUN_ERR_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_RXFL_MASK, _EUSART_IF_RXFL_SHIFT, SIO_EV_RXNOTEMPY_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_TXFL_MASK, _EUSART_IF_TXFL_SHIFT, SIO_EV_TXNOTFULL_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_TXC_MASK,  _EUSART_IF_TXC_SHIFT,  SIO_EV_TXDONE_POS) |
+             __sio_reloc_field(status, _EUSART_STATUS_RXIDLE_MASK, _EUSART_STATUS_RXIDLE_SHIFT, SIO_EV_RXIDLE_POS);
+  }
 
   return events;
 }
@@ -493,27 +724,173 @@ sioevents_t sio_lld_get_and_clear_events(SIODriver* siop) {
  */
 sioevents_t sio_lld_get_events(SIODriver* siop) {
 
-  uint32_t isr, status;
+  uint32_t isr;
   sioevents_t events;
 
-  /* Getting all ISR flags.*/
-  isr = siop->usart->IF & (SIO_LLD_ISR_RX_ERRORS |
-                           EUSART_IF_RXFL        |
-                           EUSART_IF_TXFL        |
-                           EUSART_IF_TXC);
+  #if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    USART_TypeDef* usart = siop->usart;
 
-  status = siop->usart->STATUS & EUSART_STATUS_RXIDLE;
+    /* Getting all ISR flags.*/
+    isr = usart->IF & (USART_ISR_RX_ERRORS |
+                       USART_IF_RXDATAV    |
+                       USART_IF_TXBL       |
+                       USART_IF_TXC);
 
-  /* Translating the status flags in SIO events.*/
-  events = __sio_reloc_field(isr, _EUSART_IF_FERR_MASK, _EUSART_IF_FERR_SHIFT, SIO_EV_FRAMING_ERR_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_PERR_MASK, _EUSART_IF_PERR_SHIFT, SIO_EV_PARITY_ERR_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_RXOF_MASK, _EUSART_IF_RXOF_SHIFT, SIO_EV_OVERRUN_ERR_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_RXFL_MASK, _EUSART_IF_RXFL_SHIFT, SIO_EV_RXNOTEMPY_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_TXFL_MASK, _EUSART_IF_TXFL_SHIFT, SIO_EV_TXNOTFULL_POS) |
-           __sio_reloc_field(isr, _EUSART_IF_TXC_MASK,  _EUSART_IF_TXC_SHIFT,  SIO_EV_TXDONE_POS) |
-           __sio_reloc_field(status, _EUSART_STATUS_RXIDLE_MASK, _EUSART_STATUS_RXIDLE_SHIFT, SIO_EV_RXIDLE_POS);
+    /* Translating the status flags in SIO events.*/
+    events = __sio_reloc_field(isr, _USART_IF_FERR_MASK, _USART_IF_FERR_SHIFT, SIO_EV_FRAMING_ERR_POS) |
+             __sio_reloc_field(isr, _USART_IF_PERR_MASK, _USART_IF_PERR_SHIFT, SIO_EV_PARITY_ERR_POS) |
+             __sio_reloc_field(isr, _USART_IF_RXOF_MASK, _USART_IF_RXOF_SHIFT, SIO_EV_OVERRUN_ERR_POS) |
+             __sio_reloc_field(isr, _USART_IF_RXDATAV_MASK, _USART_IF_RXDATAV_SHIFT, SIO_EV_RXNOTEMPY_POS) |
+             __sio_reloc_field(isr, _USART_IF_TXBL_MASK, _USART_IF_TXBL_SHIFT, SIO_EV_TXNOTFULL_POS) |
+             __sio_reloc_field(isr, _USART_IF_TXC_MASK,  _USART_IF_TXC_SHIFT,  SIO_EV_TXDONE_POS);
+
+  } else
+  #endif
+  {
+    EUSART_TypeDef* usart = siop->usart;
+
+    /* Getting all ISR flags.*/
+    isr = usart->IF & (EUSART_ISR_RX_ERRORS |
+                       EUSART_IF_RXFL       |
+                       EUSART_IF_TXFL       |
+                       EUSART_IF_TXC);
+
+    uint32_t status = usart->STATUS & EUSART_STATUS_RXIDLE;
+
+    /* Translating the status flags in SIO events.*/
+    events = __sio_reloc_field(isr, _EUSART_IF_FERR_MASK, _EUSART_IF_FERR_SHIFT, SIO_EV_FRAMING_ERR_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_PERR_MASK, _EUSART_IF_PERR_SHIFT, SIO_EV_PARITY_ERR_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_RXOF_MASK, _EUSART_IF_RXOF_SHIFT, SIO_EV_OVERRUN_ERR_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_RXFL_MASK, _EUSART_IF_RXFL_SHIFT, SIO_EV_RXNOTEMPY_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_TXFL_MASK, _EUSART_IF_TXFL_SHIFT, SIO_EV_TXNOTFULL_POS) |
+             __sio_reloc_field(isr, _EUSART_IF_TXC_MASK,  _EUSART_IF_TXC_SHIFT,  SIO_EV_TXDONE_POS) |
+             __sio_reloc_field(status, _EUSART_STATUS_RXIDLE_MASK, _EUSART_STATUS_RXIDLE_SHIFT, SIO_EV_RXIDLE_POS);
+  }
 
   return events;
+}
+
+bool _sio_lld_is_rx_empty(SIODriver* siop) {
+
+  bool rv;
+
+#if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    USART_TypeDef* usart = siop->usart;
+    rv = (usart->STATUS & USART_STATUS_RXDATAV) == 0U;
+  } else
+#endif
+  {
+    EUSART_TypeDef* usart = siop->usart;
+    rv = (usart->STATUS & EUSART_STATUS_RXFL) == 0U;
+  }
+
+  return rv;
+}
+
+bool _sio_lld_is_rx_idle(SIODriver* siop) {
+
+  bool rv;
+
+#if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    //USART_TypeDef* usart = siop->usart;
+    rv = true; /** FIXME: There is no idle status flag? */
+  } else
+#endif
+  {
+    EUSART_TypeDef* usart = siop->usart;
+    rv = (usart->STATUS & EUSART_STATUS_RXIDLE) != 0U;
+  }
+
+  return rv;
+}
+
+bool _sio_lld_has_rx_errors(SIODriver* siop) {
+
+  bool rv;
+
+#if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    USART_TypeDef* usart = siop->usart;
+    rv = (usart->IF & (USART_IF_FERR | USART_IF_PERR | USART_IF_RXOF)) != 0U;
+  } else
+#endif
+  {
+    EUSART_TypeDef* usart = siop->usart;
+    rv = (usart->IF & (EUSART_IF_FERR | EUSART_IF_PERR | EUSART_IF_RXOF)) != 0U;
+  }
+
+  return rv;
+}
+
+bool _sio_lld_is_tx_full(SIODriver* siop) {
+
+  bool rv;
+
+#if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    USART_TypeDef* usart = siop->usart;
+    rv = (usart->STATUS & USART_STATUS_TXBL) == 0U;
+  } else
+#endif
+  {
+    EUSART_TypeDef* usart = siop->usart;
+    rv = (usart->STATUS & EUSART_STATUS_TXFL) == 0U;
+  }
+
+  return rv;
+}
+
+bool _sio_lld_is_tx_ongoing(SIODriver* siop) {
+
+  bool rv;
+
+#if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    USART_TypeDef* usart = siop->usart;
+    rv = (usart->STATUS & USART_STATUS_TXC) == 0U;
+  } else
+#endif
+  {
+    EUSART_TypeDef* usart = siop->usart;
+    rv = (usart->STATUS & EUSART_STATUS_TXC) == 0U;
+  }
+
+  return rv;
+}
+
+__STATIC_INLINE uint_fast16_t _sio_lld_read(SIODriver* siop) {
+
+  uint_fast16_t data;
+
+#if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    USART_TypeDef* usart = siop->usart;
+    data = (uint8_t)usart->RXDATA;
+  } else
+#endif
+  {
+    EUSART_TypeDef* usart = siop->usart;
+    data = (uint8_t)usart->RXDATA;
+  }
+
+  return data;
+}
+
+__STATIC_INLINE void _sio_lld_write(SIODriver* siop, uint_fast16_t data) {
+
+#if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    USART_TypeDef* usart = siop->usart;
+    usart->TXDATA = (uint8_t)data;
+  } else
+#endif
+  {
+    EUSART_TypeDef* usart = siop->usart;
+    usart->TXDATA = (uint8_t)data;
+  }
 }
 
 /**
@@ -546,7 +923,7 @@ size_t sio_lld_read(SIODriver* siop, uint8_t* buffer, size_t n) {
       break;
     }
 
-    *buffer++ = (uint8_t)siop->usart->RXDATA;
+    *buffer++ = (uint8_t)_sio_lld_read(siop);
     rd++;
   }
 
@@ -582,7 +959,8 @@ size_t sio_lld_write(SIODriver* siop, const uint8_t* buffer, size_t n) {
       break;
     }
 
-    siop->usart->TXDATA = (uint32_t)*buffer++;
+    _sio_lld_write(siop, *buffer);
+    buffer++;
     wr++;
   }
 
@@ -610,7 +988,7 @@ msg_t sio_lld_get(SIODriver* siop) {
     usart_enable_rx_irq(siop);
     msg = MSG_TIMEOUT;
   } else {
-    msg = (msg_t)siop->usart->RXDATA;
+    msg = (msg_t)_sio_lld_read(siop);
   }
 
   return msg;
@@ -627,7 +1005,7 @@ msg_t sio_lld_get(SIODriver* siop) {
  */
 void sio_lld_put(SIODriver* siop, uint_fast16_t data) {
 
-  siop->usart->TXDATA = data;
+  _sio_lld_write(siop, data);
 
   /* If the TX FIFO has been filled then the interrupt is enabled again.*/
   if (sio_lld_is_tx_full(siop)) {
@@ -662,16 +1040,17 @@ msg_t sio_lld_control(SIODriver* siop, unsigned int operation, void* arg) {
 }
 
 /**
- * @brief   Serves an UART interrupt.
+ * @brief   Serves an EUSART interrupt.
  *
  * @param[in] siop      pointer to the @p SIODriver object
  *
  * @notapi
  */
-void sio_lld_serve_interrupt(SIODriver* siop) {
+__STATIC_INLINE void sio_lld_serve_interrupt_eusart(SIODriver* siop) {
+
+  sioevents_t events;
 
   EUSART_TypeDef* u = siop->usart;
-  sioevents_t events;
   uint32_t ien = u->IEN;
 
   osalDbgAssert(siop->state == SIO_READY, "invalid state");
@@ -684,7 +1063,7 @@ void sio_lld_serve_interrupt(SIODriver* siop) {
     if ((events & SIO_EV_ALL_ERRORS) != 0U) {
 
       /* All RX-related interrupt sources disabled.*/
-      ien &= ~(EUSART_IEN_RXFL | SIO_LLD_ISR_RX_ERRORS);
+      ien &= ~(EUSART_IEN_RXFL | EUSART_ISR_RX_ERRORS);
 
       /* Waiting thread woken, if any.*/
       __sio_wakeup_errors(siop);
@@ -738,6 +1117,106 @@ void sio_lld_serve_interrupt(SIODriver* siop) {
     __sio_callback(siop);
   } else {
 //    osalDbgAssert(false, "spurious interrupt");
+  }
+}
+
+/**
+ * @brief   Serves an USART interrupt.
+ *
+ * @param[in] siop      pointer to the @p SIODriver object
+ *
+ * @notapi
+ */
+__STATIC_INLINE void sio_lld_serve_interrupt_usart(SIODriver* siop) {
+
+  sioevents_t events;
+
+  USART_TypeDef* u = siop->usart;
+  uint32_t ien = u->IEN;
+
+  osalDbgAssert(siop->state == SIO_READY, "invalid state");
+
+  /* Events to be processed.*/
+  events = sio_lld_get_events(siop) & siop->enabled;
+  if (events != 0U) {
+
+    /* Error events handled as a group.*/
+    if ((events & SIO_EV_ALL_ERRORS) != 0U) {
+
+      /* All RX-related interrupt sources disabled.*/
+      ien &= ~(USART_IEN_RXDATAV | USART_ISR_RX_ERRORS);
+
+      /* Waiting thread woken, if any.*/
+      __sio_wakeup_errors(siop);
+    }
+    /* If there are no errors then we check for the other RX events.*/
+    else {
+      /* Idle RX event.*/
+      if ((events & SIO_EV_RXIDLE) != 0U) {
+
+        /* There is no interrupt source to disable.*/
+
+        /* Waiting thread woken, if any.*/
+        __sio_wakeup_rxidle(siop);
+      }
+
+      /* RX FIFO is non-empty.*/
+      if ((events & SIO_EV_RXNOTEMPY) != 0U) {
+
+        /* Interrupt source disabled.*/
+        ien &= ~(USART_IEN_RXDATAV);
+
+        /* Waiting thread woken, if any.*/
+        __sio_wakeup_rx(siop);
+      }
+    }
+
+    /* TX FIFO is non-full.*/
+    if ((events & SIO_EV_TXNOTFULL) != 0U) {
+
+      /* Interrupt source disabled.*/
+      ien &= ~(USART_IEN_TXBL);
+
+      /* Waiting thread woken, if any.*/
+      __sio_wakeup_tx(siop);
+    }
+
+    /* Physical transmission end.*/
+    if ((events & SIO_EV_TXDONE) != 0U) {
+
+      /* Interrupt source disabled.*/
+      ien &= ~(USART_IEN_TXC);
+
+      /* Waiting thread woken, if any.*/
+      __sio_wakeup_txend(siop);
+    }
+
+    /* Updating control registers, some sources could have been disabled.*/
+    u->IEN = ien;
+
+    /* The callback is invoked.*/
+    __sio_callback(siop);
+  } else {
+//    osalDbgAssert(false, "spurious interrupt");
+  }
+}
+
+/**
+ * @brief   Serves an EUSART or USART interrupt.
+ *
+ * @param[in] siop      pointer to the @p SIODriver object
+ *
+ * @notapi
+ */
+void sio_lld_serve_interrupt(SIODriver* siop) {
+
+#if (EFR32_SIO_USE_USART1 == TRUE)
+  if (siop == &SIOD4) {
+    sio_lld_serve_interrupt_usart(siop);
+  } else
+#endif
+  {
+    sio_lld_serve_interrupt_eusart(siop);
   }
 }
 

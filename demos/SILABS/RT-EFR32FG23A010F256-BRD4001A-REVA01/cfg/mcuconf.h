@@ -80,11 +80,14 @@
 #define EFR32_SIO_USE_EUSART1               FALSE
 #define EFR32_SIO_USE_EUSART2               TRUE
 #define EFR32_SIO_USE_EUSART3               FALSE
+#define EFR32_SIO_USE_USART1                FALSE
 #define EFR32_EUSART1_RX_IRQ_PRIORITY       4
 #define EFR32_EUSART1_TX_IRQ_PRIORITY       4
 #define EFR32_EUSART2_RX_IRQ_PRIORITY       4
 #define EFR32_EUSART2_TX_IRQ_PRIORITY       4
 #define EFR32_EUSART3_RX_IRQ_PRIORITY       4
 #define EFR32_EUSART3_TX_IRQ_PRIORITY       4
+#define EFR32_USART1_RX_IRQ_PRIORITY        4
+#define EFR32_USART1_TX_IRQ_PRIORITY        4
 
 #endif /* MCUCONF_H */

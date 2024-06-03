@@ -66,14 +66,7 @@ void efr32_chip_init(void) {
 
 }
 
-/**
- * @brief   EFR32FG23 clocks initialization.
- * @note    All the involved constants come from the file @p board.h.
- * @note    This function should be invoked just after the system reset.
- *
- * @special
- */
-void efr32_clock_init(void) {
+__STATIC_INLINE void efr32_enable_clock_sources(void) {
 
 #if defined(EFR32_CMU_SYSCLKCTRL)
   CMU->SYSCLKCTRL = (CMU->SYSCLKCTRL & ~_CMU_SYSCLKCTRL_MASK) | EFR32_CMU_SYSCLKCTRL;
@@ -119,7 +112,9 @@ void efr32_clock_init(void) {
 #else
   CMU->CLKEN0_CLR = CMU_CLKEN0_HFXO0;
 #endif
+}
 
+__STATIC_INLINE void efr32_enable_em01grpaclk(void) {
 
 #if EFR32_EM01GRPACLKSEL != EFR32_EM01GRPACLKSEL_NOCLOCK
 #if EFR32_FSRCO_ENABLED && (EFR32_EM01GRPACLKSEL == EFR32_EM01GRPACLKSEL_FSRCO)
@@ -137,6 +132,9 @@ void efr32_clock_init(void) {
 #else
 #warning "EFR32_EM01GRPACLK can't be disabled"
 #endif
+}
+
+__STATIC_INLINE void efr32_enable_em01grpcclk(void) {
 
 #if EFR32_EM01GRPCCLKSEL != EFR32_EM01GRPCCLKSEL_NOCLOCK
 #if EFR32_FSRCO_ENABLED && (EFR32_EM01GRPCCLKSEL == EFR32_EM01GRPCCLKSEL_FSRCO)
@@ -154,6 +152,9 @@ void efr32_clock_init(void) {
 #else
 #warning "EFR32_EM01GRPCCLK can't be disabled"
 #endif
+}
+
+__STATIC_INLINE void efr32_enable_em23grpaclk(void) {
 
 #if EFR32_EM23GRPACLKSEL != EFR32_EM23GRPACLKSEL_NOCLOCK
 #if EFR32_LFXO_ENABLED && (EFR32_EM23GRPACLKSEL == EFR32_EM23GRPACLKSEL_LFXO)
@@ -173,6 +174,9 @@ void efr32_clock_init(void) {
 #else
 #warning "EFR32_EM23GRPACLK can't be disabled"
 #endif
+}
+
+__STATIC_INLINE void efr32_enable_eusartclk(void) {
 
 #if EFR32_EUSART1SEL != EFR32_EUSART1SEL_NOCLOCK
 #if EFR32_LFRCO_ENABLED && EFR32_EUSART1SEL == EFR32_EUSART1SEL_LFRCO
@@ -217,7 +221,23 @@ void efr32_clock_init(void) {
 #endif
 }
 
-/**************************************************************************//**
+/**
+ * @brief   EFR32FG23 clocks initialization.
+ * @note    All the involved constants come from the file @p board.h.
+ * @note    This function should be invoked just after the system reset.
+ *
+ * @special
+ */
+void efr32_clock_init(void) {
+
+  efr32_enable_clock_sources();
+  efr32_enable_em01grpaclk();
+  efr32_enable_em01grpcclk();
+  efr32_enable_em23grpaclk();
+  efr32_enable_eusartclk();
+}
+
+/**
  * @brief efr32_escape_hatch()
  * When developing or debugging code that enters EM2 or
  * lower, it's a good idea to have an "escape hatch" type
@@ -227,7 +247,7 @@ void efr32_clock_init(void) {
  * Before proceeding with this example, make sure ESCAPE_HATCH_PAD is not
  * grounded. If the ESCAPE_HATCH_PIN pin is low, execute the breakpoint instruction
  * to stop the processor in EM0 and allow a debug connection to be made.
- *****************************************************************************/
+ */
 void efr32_escape_hatch(void) {
 
 #if defined(ESCAPE_HATCH_ENABLE) && (ESCAPE_HATCH_ENABLE == TRUE)

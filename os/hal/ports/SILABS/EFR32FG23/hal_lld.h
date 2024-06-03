@@ -265,6 +265,8 @@
 
 #define EFR32_EUSART23CLK               EFR32_EM01GRPCCLK
 
+#define EFR32_USART1CLK                 EFR32_PCLK
+
 
 /* Vector8C = Vector(40 + 4*LETIMER0_IRQn) */
 #define EFR32_LETIM1_HANDLER            Vector8C
@@ -281,6 +283,14 @@
 /* VectorAC = Vector(40 + 4*GPIO_EVEN_IRQn) */
 #define EFR32_GPIO_EVEN_HANDLER 		VectorAC
 #define EFR32_GPIO_EVEN_NUMBER			GPIO_EVEN_IRQn
+
+/* Vector64 = Vector(40 + 4*USART0_RX_IRQn) */
+#define EFR32_USART1_RX_HANDLER 		Vector64
+#define EFR32_USART1_RX_NUMBER			USART0_RX_IRQn
+
+/* Vector68 = Vector(40 + 4USART0_TX_IRQn) */
+#define EFR32_USART1_TX_HANDLER 		Vector68
+#define EFR32_USART1_TX_NUMBER			USART0_TX_IRQn
 
 /* Vector6C = Vector(40 + 4*EUSART0_RX_IRQn) */
 #define EFR32_EUSART1_RX_HANDLER 		Vector6C

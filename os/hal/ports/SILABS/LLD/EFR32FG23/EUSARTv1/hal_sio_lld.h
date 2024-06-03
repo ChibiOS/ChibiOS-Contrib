@@ -31,13 +31,6 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-/**
- * @brief   Mask of RX-related errors in the ISR register.
- */
-#define SIO_LLD_ISR_RX_ERRORS           (EUSART_IF_RXOF | /* RX overrun    */ \
-                                         EUSART_IF_FERR | /* Frame error.  */ \
-                                         EUSART_IF_PERR)  /* Parity error. */
-
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -74,6 +67,15 @@
 #endif
 /** @} */
 
+/**
+ * @brief   SIO driver enable switch.
+ * @details If set to @p TRUE the support for SIO4 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(EFR32_SIO_USE_USART1) || defined(__DOXYGEN__)
+#define EFR32_SIO_USE_USART1              FALSE
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
@@ -90,6 +92,11 @@
 #error "EUSART3 not present in the selected device"
 #endif
 
+#if EFR32_SIO_USE_USART1 && !EFR32_HAS_USART1
+#error "USART1 not present in the selected device"
+#endif
+
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
@@ -102,8 +109,8 @@
  * @brief   Low level fields of the SIO driver structure.
  */
 #define sio_lld_driver_fields                                               \
-  /* Pointer to the EUSARTx registers block.*/                              \
-  EUSART_TypeDef *usart;                                                    \
+  /* Pointer to the EUSARTx or USARTx registers block.*/                    \
+  void *usart;                                                              \
 /* Clock frequency for the associated USART/UART.*/                         \
   uint32_t clock
 
@@ -126,8 +133,7 @@
  *
  * @notapi
  */
-#define sio_lld_is_rx_empty(siop) \
-  (bool)(((siop)->usart->STATUS & EUSART_STATUS_RXFL) == 0U)
+#define sio_lld_is_rx_empty(siop) _sio_lld_is_rx_empty(siop)
 
 /**
  * @brief   Determines the activity state of the receiver.
@@ -139,8 +145,7 @@
  *
  * @notapi
  */
-#define sio_lld_is_rx_idle(siop) \
-  (bool)(((siop)->usart->STATUS & EUSART_STATUS_RXIDLE) != 0U)
+#define sio_lld_is_rx_idle(siop) _sio_lld_is_rx_idle(siop)
 
 /**
  * @brief   Determines if RX has pending error events to be read and cleared.
@@ -154,8 +159,7 @@
  *
  * @notapi
  */
-#define sio_lld_has_rx_errors(siop) \
-  (bool)(((siop)->usart->IF & (EUSART_IF_FERR | EUSART_IF_PERR | EUSART_IF_RXOF)) != 0U)
+#define sio_lld_has_rx_errors(siop) _sio_lld_has_rx_errors(siop)
 
 /**
  * @brief   Determines the state of the TX FIFO.
@@ -167,8 +171,7 @@
  *
  * @notapi
  */
-#define sio_lld_is_tx_full(siop) \
-  (bool)(((siop)->usart->STATUS & EUSART_STATUS_TXFL) == 0U)
+#define sio_lld_is_tx_full(siop) _sio_lld_is_tx_full(siop)
 
 /**
  * @brief   Determines the transmission state.
@@ -180,8 +183,7 @@
  *
  * @notapi
  */
-#define sio_lld_is_tx_ongoing(siop) \
-  (bool)(((siop)->usart->STATUS & EUSART_STATUS_TXC) == 0U)
+#define sio_lld_is_tx_ongoing(siop) _sio_lld_is_tx_ongoing(siop)
 
 /*===========================================================================*/
 /* External declarations.                                                    */
@@ -197,6 +199,10 @@ extern SIODriver SIOD2;
 
 #if (EFR32_SIO_USE_EUSART3 == TRUE) && !defined(__DOXYGEN__)
 extern SIODriver SIOD3;
+#endif
+
+#if (EFR32_SIO_USE_USART1 == TRUE) && !defined(__DOXYGEN__)
+extern SIODriver SIOD4;
 #endif
 
 #ifdef __cplusplus
@@ -216,6 +222,12 @@ msg_t sio_lld_get(SIODriver* siop);
 void sio_lld_put(SIODriver* siop, uint_fast16_t data);
 msg_t sio_lld_control(SIODriver* siop, unsigned int operation, void* arg);
 void sio_lld_serve_interrupt(SIODriver* siop);
+
+bool _sio_lld_is_rx_empty(SIODriver* siop);
+bool _sio_lld_is_rx_idle(SIODriver* siop);
+bool _sio_lld_has_rx_errors(SIODriver* siop);
+bool _sio_lld_is_tx_full(SIODriver* siop);
+bool _sio_lld_is_tx_ongoing(SIODriver* siop);
 #ifdef __cplusplus
 }
 #endif

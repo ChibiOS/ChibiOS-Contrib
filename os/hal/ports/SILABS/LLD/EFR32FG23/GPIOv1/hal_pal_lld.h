@@ -228,6 +228,8 @@
 #define PAL_EFR32_ALTERNATE_FUNCSEL_EUSART1_TX  PAL_EFR32_ALTERNATE_FUNCSEL(4U)
 #define PAL_EFR32_ALTERNATE_FUNCSEL_EUSART2_RX  PAL_EFR32_ALTERNATE_FUNCSEL(5U)
 #define PAL_EFR32_ALTERNATE_FUNCSEL_EUSART2_TX  PAL_EFR32_ALTERNATE_FUNCSEL(6U)
+#define PAL_EFR32_ALTERNATE_FUNCSEL_USART0_RX   PAL_EFR32_ALTERNATE_FUNCSEL(7U)
+#define PAL_EFR32_ALTERNATE_FUNCSEL_USART0_TX   PAL_EFR32_ALTERNATE_FUNCSEL(8U)
 
 
 /**
@@ -310,7 +312,7 @@
  * @brief   Decodes a port identifier from a line identifier.
  */
 #define PAL_PORT(line)                                                      \
-  ((GPIO_PORT_TypeDef *)(((uint32_t)(line)) & 0xFFFFFFF0U))
+  ((((uint32_t)(line)) & 0xFFFFFFF0U))
 
 /**
  * @brief   Decodes a pad identifier from a line identifier.
@@ -378,7 +380,7 @@ typedef uint32_t ioeventmode_t;
  *          any assumption about it, use the provided macros when populating
  *          variables of this type.
  */
-typedef GPIO_PORT_TypeDef* ioportid_t;
+typedef uint32_t ioportid_t;
 
 /**
  * @brief   Type of an pad identifier.
@@ -395,7 +397,7 @@ typedef uint32_t iopadid_t;
  * @brief   GPIO port A identifier.
  */
 #if EFR32_HAS_GPIOA || defined(__DOXYGEN__)
-#define GPIOA           (&(GPIO->P[GPIO_PA_INDEX]))
+#define GPIOA           GPIO_PA_INDEX
 #define IOPORT1         GPIOA
 #endif
 
@@ -403,7 +405,7 @@ typedef uint32_t iopadid_t;
  * @brief   GPIO port B identifier.
  */
 #if EFR32_HAS_GPIOB || defined(__DOXYGEN__)
-#define GPIOB           (&(GPIO->P[GPIO_PB_INDEX]))
+#define GPIOB           GPIO_PB_INDEX
 #define IOPORT2         GPIOB
 #endif
 
@@ -411,7 +413,7 @@ typedef uint32_t iopadid_t;
  * @brief   GPIO port C identifier.
  */
 #if EFR32_HAS_GPIOC || defined(__DOXYGEN__)
-#define GPIOC           (&(GPIO->P[GPIO_PC_INDEX]))
+#define GPIOC           GPIO_PC_INDEX
 #define IOPORT3         GPIOC
 #endif
 
@@ -419,27 +421,25 @@ typedef uint32_t iopadid_t;
  * @brief   GPIO port D identifier.
  */
 #if EFR32_HAS_GPIOD || defined(__DOXYGEN__)
-#define GPIOD           (&(GPIO->P[GPIO_PD_INDEX]))
+#define GPIOD           GPIO_PD_INDEX
 #define IOPORT4         GPIOD
 #endif
 
-#define GPIO_PORT_INDEX(port) ((port == GPIOA) ? GPIO_PA_INDEX : \
-                               (port == GPIOB) ? GPIO_PB_INDEX : \
-                               (port == GPIOC) ? GPIO_PC_INDEX : \
-                               (port == GPIOD) ? GPIO_PD_INDEX : \
+#define GPIO_PORT_INDEX(port) (port)
+
+#define GPIO_PORT(port)       (&(GPIO->P[GPIO_PORT_INDEX(port)]))
+
+#define GPIO_PORT_SIZE(port)  ((port == GPIOA) ? GPIO_PA_COUNT : \
+                               (port == GPIOB) ? GPIO_PB_COUNT : \
+                               (port == GPIOC) ? GPIO_PC_COUNT : \
+                               (port == GPIOD) ? GPIO_PD_COUNT : \
                                0)
 
-#define GPIO_PIN_COUNT(port) ((port == GPIOA) ? GPIO_PA_COUNT : \
-                              (port == GPIOB) ? GPIO_PB_COUNT : \
-                              (port == GPIOC) ? GPIO_PC_COUNT : \
-                              (port == GPIOD) ? GPIO_PD_COUNT : \
-                              0)
-
-#define GPIO_PORT_MASK(port) ((port == GPIOA) ? GPIO_PA_MASK : \
-                              (port == GPIOB) ? GPIO_PB_MASK : \
-                              (port == GPIOC) ? GPIO_PC_MASK : \
-                              (port == GPIOD) ? GPIO_PD_MASK : \
-                              0)
+#define GPIO_PORT_MASK(port)  ((port == GPIOA) ? (ioportmask_t)GPIO_PA_MASK : \
+                               (port == GPIOB) ? (ioportmask_t)GPIO_PB_MASK : \
+                               (port == GPIOC) ? (ioportmask_t)GPIO_PC_MASK : \
+                               (port == GPIOD) ? (ioportmask_t)GPIO_PD_MASK : \
+                               0)
 
 /*===========================================================================*/
 /* Implementation, some of the following macros could be implemented as      */
@@ -463,7 +463,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_readport(port) ((ioportmask_t)(port->DIN))
+#define pal_lld_readport(port) ((ioportmask_t)(GPIO_PORT(port)->DIN) & GPIO_PORT_MASK(port))
 
 /**
  * @brief   Reads the output latch.
@@ -475,7 +475,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_readlatch(port) ((ioportmask_t)(port->DOUT))
+#define pal_lld_readlatch(port) ((ioportmask_t)(GPIO_PORT(port)->DOUT) & GPIO_PORT_MASK(port))
 
 /**
  * @brief   Writes a bits mask on a I/O port.
@@ -485,7 +485,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_writeport(port, bits) ((port->DOUT = (ioportmask_t)(bits)))
+#define pal_lld_writeport(port, bits) ((GPIO_PORT(port)->DOUT = (ioportmask_t)(bits) & GPIO_PORT_MASK(port)))
 
 /**
  * @brief   Sets a bits mask on a I/O port.
@@ -498,7 +498,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_setport(port, bits) ((GPIO->P_SET[GPIO_PORT_INDEX(port)].DOUT = (ioportmask_t)(bits)))
+#define pal_lld_setport(port, bits) ((GPIO->P_SET[GPIO_PORT_INDEX(port)].DOUT = (ioportmask_t)(bits) & GPIO_PORT_MASK(port)))
 
 /**
  * @brief   Clears a bits mask on a I/O port.
@@ -511,7 +511,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_clearport(port, bits) ((GPIO->P_CLR[GPIO_PORT_INDEX(port)].DOUT = (ioportmask_t)(bits)))
+#define pal_lld_clearport(port, bits) ((GPIO->P_CLR[GPIO_PORT_INDEX(port)].DOUT = (ioportmask_t)(bits) & GPIO_PORT_MASK(port)))
 
 /**
  * @brief   Toggles a bits mask on a I/O port.
@@ -524,7 +524,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_toggleport(port, bits) ((GPIO->P_TGL[GPIO_PORT_INDEX(port)].DOUT = (ioportmask_t)(bits)))
+#define pal_lld_toggleport(port, bits) ((GPIO->P_TGL[GPIO_PORT_INDEX(port)].DOUT = (ioportmask_t)(bits) & GPIO_PORT_MASK(port)))
 
 /**
  * @brief   Pads group mode setup.
@@ -556,7 +556,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_readpad(port, pad) ((((port->DIN >> pad) & 1) == 1) ? \
+#define pal_lld_readpad(port, pad) ((((GPIO_PORT(port)->DIN >> pad) & 1) == 1) ? \
                                     PAL_HIGH : PAL_LOW)
 
 /**

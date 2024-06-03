@@ -65,6 +65,8 @@
 #define EFR32_HAS_EUSART2                   TRUE
 #define EFR32_HAS_EUSART3                   TRUE
 
+#define EFR32_HAS_USART1                    TRUE
+
 /*
  * LETIM driver system settings.
  */

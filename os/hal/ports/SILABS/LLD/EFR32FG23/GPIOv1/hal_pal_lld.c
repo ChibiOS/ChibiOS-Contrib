@@ -49,7 +49,7 @@ palevent_t _pal_events[PAL_EVENTS_SIZE];
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-static inline void _pal_lld_reg_masked_write(volatile uint32_t* address,
+__STATIC_INLINE void _pal_lld_reg_masked_write(volatile uint32_t* address,
                                              uint32_t mask,
                                              uint32_t value) {
 
@@ -133,25 +133,25 @@ void _pal_lld_init(const PALConfig* config) {
   /*
    * Initial GPIO setup.
    */
-  GPIOA->CTRL  = config->PAData.ctrlr;
-  GPIOA->MODEL = config->PAData.modelr;
-  GPIOA->MODEH = config->PAData.modehr;
-  GPIOA->DOUT  = config->PAData.doutr;
+  GPIO_PORT(GPIOA)->CTRL  = config->PAData.ctrlr;
+  GPIO_PORT(GPIOA)->MODEL = config->PAData.modelr;
+  GPIO_PORT(GPIOA)->MODEH = config->PAData.modehr;
+  GPIO_PORT(GPIOA)->DOUT  = config->PAData.doutr;
 
-  GPIOB->CTRL  = config->PBData.ctrlr;
-  GPIOB->MODEL = config->PBData.modelr;
-  GPIOB->MODEH = config->PBData.modehr;
-  GPIOB->DOUT  = config->PBData.doutr;
+  GPIO_PORT(GPIOB)->CTRL  = config->PBData.ctrlr;
+  GPIO_PORT(GPIOB)->MODEL = config->PBData.modelr;
+  GPIO_PORT(GPIOB)->MODEH = config->PBData.modehr;
+  GPIO_PORT(GPIOB)->DOUT  = config->PBData.doutr;
 
-  GPIOC->CTRL  = config->PCData.ctrlr;
-  GPIOC->MODEL = config->PCData.modelr;
-  GPIOC->MODEH = config->PCData.modehr;
-  GPIOC->DOUT  = config->PCData.doutr;
+  GPIO_PORT(GPIOC)->CTRL  = config->PCData.ctrlr;
+  GPIO_PORT(GPIOC)->MODEL = config->PCData.modelr;
+  GPIO_PORT(GPIOC)->MODEH = config->PCData.modehr;
+  GPIO_PORT(GPIOC)->DOUT  = config->PCData.doutr;
 
-  GPIOD->CTRL  = config->PDData.ctrlr;
-  GPIOD->MODEL = config->PDData.modelr;
-  GPIOD->MODEH = config->PDData.modehr;
-  GPIOD->DOUT  = config->PDData.doutr;
+  GPIO_PORT(GPIOD)->CTRL  = config->PDData.ctrlr;
+  GPIO_PORT(GPIOD)->MODEL = config->PDData.modelr;
+  GPIO_PORT(GPIOD)->MODEH = config->PDData.modehr;
+  GPIO_PORT(GPIOD)->DOUT  = config->PDData.doutr;
 
 #if (PAL_USE_WAIT || PAL_USE_CALLBACKS) || defined(__DOXYGEN__)
   nvicEnableVector(EFR32_GPIO_ODD_NUMBER, EFR32_GPIO_ODD_IRQ_PRIORITY);
@@ -198,6 +198,7 @@ void _pal_lld_setalternatefunction(ioportid_t port,
   switch (altfunc) {
     case PAL_EFR32_ALTERNATE_FUNCSEL_NONE:
       break;
+
     case PAL_EFR32_ALTERNATE_FUNCSEL_EUSART0_RX:
       GPIO->EUSARTROUTE[0].RXROUTE = (GPIO_PORT_INDEX(port) << _GPIO_EUSART_RXROUTE_PORT_SHIFT) |
                                      (pad << _GPIO_EUSART_RXROUTE_PIN_SHIFT);
@@ -234,6 +235,18 @@ void _pal_lld_setalternatefunction(ioportid_t port,
       GPIO->EUSARTROUTE[2].ROUTEEN |= GPIO_EUSART_ROUTEEN_TXPEN;
       break;
 
+    case PAL_EFR32_ALTERNATE_FUNCSEL_USART0_RX:
+      GPIO->USARTROUTE[0].RXROUTE = (GPIO_PORT_INDEX(port) << _GPIO_USART_RXROUTE_PORT_SHIFT) |
+                                     (pad << _GPIO_USART_RXROUTE_PIN_SHIFT);
+      GPIO->USARTROUTE[0].ROUTEEN |= GPIO_USART_ROUTEEN_RXPEN;
+      break;
+
+    case PAL_EFR32_ALTERNATE_FUNCSEL_USART0_TX:
+      GPIO->USARTROUTE[0].TXROUTE = (GPIO_PORT_INDEX(port) << _GPIO_USART_TXROUTE_PORT_SHIFT) |
+                                    (pad << _GPIO_USART_TXROUTE_PIN_SHIFT);
+      GPIO->USARTROUTE[0].ROUTEEN |= GPIO_USART_ROUTEEN_TXPEN;
+      break;
+
     default:
       osalDbgAssert(false, "unimplemented alternate function");
       break;
@@ -248,9 +261,9 @@ void _pal_lld_setpadmode(ioportid_t port,
   uint32_t doutr = (mode & PAL_EFR32_DOUT_MASK) >> PAL_EFR32_DOUT_SHIFT;
 
   if (pad < 8) {
-    _pal_lld_reg_masked_write(&(port->MODEL), 0xFu << ((pad - 0) * 4), moder << ((pad - 0) * 4));
+    _pal_lld_reg_masked_write(&(GPIO_PORT(port)->MODEL), 0xFu << ((pad - 0) * 4), moder << ((pad - 0) * 4));
   } else {
-    _pal_lld_reg_masked_write(&(port->MODEH), 0xFu << ((pad - 8) * 4), moder << ((pad - 8) * 4));
+    _pal_lld_reg_masked_write(&(GPIO_PORT(port)->MODEH), 0xFu << ((pad - 8) * 4), moder << ((pad - 8) * 4));
   }
 
   pal_lld_writepad(port, pad, (doutr != 0) ? PAL_HIGH : PAL_LOW);
@@ -274,7 +287,7 @@ void _pal_lld_enablepadevent(ioportid_t port,
   uint32_t int_no = pad;
   uint32_t rising_edge, falling_edge;
 
-  osalDbgCheck(pad < GPIO_PIN_COUNT(port));
+  osalDbgCheck(pad < GPIO_PORT_SIZE(port));
 
   switch (mode & PAL_EVENT_MODE_EDGES_MASK) {
     default:

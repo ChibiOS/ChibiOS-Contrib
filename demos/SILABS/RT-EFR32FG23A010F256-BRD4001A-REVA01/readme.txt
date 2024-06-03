@@ -11,8 +11,6 @@ The demo runs on an CUSTOM board EFR32FG23 equipped with EFR32FG23A010F256QFN48.
 HAL is far from complete: only SYSTICK and LETIMER0 for deep sleep and serial IO (SIO)
 have been implemented.
 
-Implement configuring GPIOs for alternate functions.
-
 Implement export clocks in GPIOs.
 
 Make EUSART0 working.
