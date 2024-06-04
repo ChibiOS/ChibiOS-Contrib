@@ -31,6 +31,57 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
+#define EFR32_SIO_LLD_USART_DATABITS_FOUR      (1U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_FIVE      (2U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_SIX       (3U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_SEVEN     (4U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_EIGHT     (5U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_NINE      (6U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_TEN       (7U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_ELEVEN    (8U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_TWELVE    (9U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_THIRTEEN  (10U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_FOURTEEN  (11U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_FIFTEEN   (12U << 0)
+#define EFR32_SIO_LLD_USART_DATABITS_SIXTEEN   (13U << 0)
+
+#define EFR32_SIO_LLD_USART_PARITY_NONE        (0U << 10)
+#define EFR32_SIO_LLD_USART_PARITY_EVEN        (2U << 10)
+#define EFR32_SIO_LLD_USART_PARITY_ODD         (3U << 10)
+
+#define EFR32_SIO_LLD_USART_STOPBITS_HALF       (0U << 12)
+#define EFR32_SIO_LLD_USART_STOPBITS_ONE        (1U << 12)
+#define EFR32_SIO_LLD_USART_STOPBITS_ONEANDHALF (2U << 12)
+#define EFR32_SIO_LLD_USART_STOPBITS_TWO        (3U << 12)
+
+#define EFR32_SIO_LLD_USART_8N1                (EFR32_SIO_LLD_USART_STOPBITS_ONE |\
+                                                EFR32_SIO_LLD_USART_PARITY_EVEN  |\
+                                                EFR32_SIO_LLD_USART_DATABITS_EIGHT)
+
+#define EFR32_SIO_LLD_EUSART_DATABITS_SEVEN    (1U << 0)
+#define EFR32_SIO_LLD_EUSART_DATABITS_EIGHT    (2U << 0)
+#define EFR32_SIO_LLD_EUSART_DATABITS_NINE     (3U << 0)
+#define EFR32_SIO_LLD_EUSART_DATABITS_TEN      (4U << 0)
+#define EFR32_SIO_LLD_EUSART_DATABITS_ELEVEN   (5U << 0)
+#define EFR32_SIO_LLD_EUSART_DATABITT_TWELVE   (6U << 0)
+#define EFR32_SIO_LLD_EUSART_DATABITS_THIRTEEN (7U << 0)
+#define EFR32_SIO_LLD_EUSART_DATABITS_FOURTEEN (8U << 0)
+#define EFR32_SIO_LLD_EUSART_DATABITS_FIFTEEN  (9U << 0)
+#define EFR32_SIO_LLD_EUSART_DATABITS_SIXTEEN  (10U << 0)
+
+#define EFR32_SIO_LLD_EUSART_PARITY_NONE       (0U << 10)
+#define EFR32_SIO_LLD_EUSART_PARITY_EVEN       (2U << 10)
+#define EFR32_SIO_LLD_EUSART_PARITY_ODD        (3U << 10)
+
+#define EFR32_SIO_LLD_EUSART_STOPBITS_HALF       (0U << 12)
+#define EFR32_SIO_LLD_EUSART_STOPBITS_ONE        (1U << 12)
+#define EFR32_SIO_LLD_EUSART_STOPBITS_ONEANDHALF (2U << 12)
+#define EFR32_SIO_LLD_EUSART_STOPBITS_TWO        (3U << 12)
+
+#define EFR32_SIO_LLD_EUSART_8N1               (EFR32_SIO_LLD_EUSART_STOPBITS_ONE |\
+                                                EFR32_SIO_LLD_EUSART_PARITY_EVEN  |\
+                                                EFR32_SIO_LLD_EUSART_DATABITS_EIGHT)
+
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -118,10 +169,9 @@
  * @brief   Low level fields of the SIO configuration structure.
  */
 #define sio_lld_config_fields                                               \
-  /* Desired baud rate.*/                                                   \
-  uint32_t baud;                                                            \
-  uint32_t cfg0;                                                            \
-  uint32_t framecfg
+  uint32_t baud;    /**< Desired baud rate. */                              \
+  uint32_t cfg0;    /**< EUSART_CFG _or_ USART_CTRL. */                     \
+  uint32_t framecfg /**< EUSART_FRAMECFG _or_ USART_FRAME. */
 
 /**
  * @brief   Determines the state of the RX FIFO.

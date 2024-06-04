@@ -32,21 +32,6 @@ static void gpio_callback(void* arg) {
   return;
 }
 
-static const SIOConfig sio_config = {
-  #if 0
-  .baud = 9600U,       /* Baudrate (9600 max. for LF operation) */
-  .cfg0 = (0U <<  0) | /* ASYNC operation */
-  (4U <<  5),  /* Disable oversampling (for LF operation) */
-  #else
-  .baud = 115200U,       /* Baudrate */
-  .cfg0 = (0U <<  0) |   /* ASYNC operation */
-  (0U <<  5),    /* 16x oversampling (for HF operation) */
-  #endif
-  .framecfg = (2U <<  0) | /* 8 data bits */
-  (0U <<  8) | /* No parity */
-  (1U << 12),  /* One stop bit*/
-};
-
 /*
  * Application entry point.
  */
@@ -110,6 +95,13 @@ int main(void) {
   palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(EUSART0_TX));
   palSetPadMode(GPIOC, 1, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(EUSART0_RX));
 
+  static const SIOConfig sio_config = {
+    .baud = 9600U,       /* Baudrate (9600 max. for LF operation) */
+    .cfg0 = (0U <<  0) | /* ASYNC operation */
+            (4U <<  5),  /* Disable oversampling (for LF operation) */
+    .framecfg = EFR32_SIO_LLD_EUSART_8N1,
+  };
+
   siop = &SIOD1;
   sioStart(siop, &sio_config);
   sioStop(siop);
@@ -119,6 +111,13 @@ int main(void) {
   #if EFR32_SIO_USE_EUSART2 == TRUE
   palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(EUSART1_TX));
   palSetPadMode(GPIOC, 1, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(EUSART1_RX));
+
+  static const SIOConfig sio_config = {
+    .baud = 115200U,       /* Baudrate */
+    .cfg0 = (0U <<  0) |   /* ASYNC operation */
+            (0U <<  5),    /* 16x oversampling (for HF operation) */
+    .framecfg = EFR32_SIO_LLD_EUSART_8N1,
+  };
 
   siop = &SIOD2;
   sioStart(siop, &sio_config);
@@ -130,6 +129,13 @@ int main(void) {
   palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(EUSART2_TX));
   palSetPadMode(GPIOC, 1, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(EUSART2_RX));
 
+  static const SIOConfig sio_config = {
+    .baud = 115200U,       /* Baudrate */
+    .cfg0 = (0U <<  0) |   /* ASYNC operation */
+            (0U <<  5),    /* 16x oversampling (for HF operation) */
+    .framecfg = EFR32_SIO_LLD_EUSART_8N1,
+  };
+
   siop = &SIOD3;
   sioStart(siop, &sio_config);
   sioStop(siop);
@@ -139,6 +145,13 @@ int main(void) {
   #if EFR32_SIO_USE_USART1 == TRUE
   palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(USART0_TX));
   palSetPadMode(GPIOC, 1, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(USART0_RX));
+
+  static const SIOConfig sio_config = {
+    .baud = 115200U,       /* Baudrate */
+    .cfg0 = (0U <<  0) |   /* ASYNC operation */
+            (0U <<  5),    /* 16x oversampling (for HF operation) */
+    .framecfg = EFR32_SIO_LLD_USART_8N1,
+  };
 
   siop = &SIOD4;
   sioStart(siop, &sio_config);

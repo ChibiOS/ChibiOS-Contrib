@@ -196,18 +196,14 @@ __STATIC_INLINE void _sio_lld_start_usart(SIODriver* siop) {
 
   osalDbgAssert((siop->clock / config->baud >= 3), "invalid baudrate");
 
-  ovs = _sio_lld_get_ovs((config->cfg0 & _EUSART_CFG0_OVS_MASK) >> _EUSART_CFG0_OVS_SHIFT);
+  ovs = _sio_lld_get_ovs((config->cfg0 & _USART_CTRL_OVS_MASK) >> _USART_CTRL_OVS_SHIFT);
   clkdiv = _sio_lld_get_clkdiv(siop->clock, ovs, config->baud);
 
   osalDbgAssert((clkdiv <= _USART_CLKDIV_MASK), "invalid clkdiv");
 
   _sio_lld_reg_masked_write(&(usart->CTRL), _USART_CTRL_MASK, config->cfg0);
 
-  /* Number of data bits starts with 4 for UART and with 7 for EUSART. */
-  uint32_t framecfg = (config->framecfg & ~_EUSART_FRAMECFG_MASK) |
-                      ((config->framecfg & _EUSART_FRAMECFG_MASK) + (7 - 4));
-
-  _sio_lld_reg_masked_write(&(usart->FRAME), _USART_FRAME_MASK, framecfg);
+  _sio_lld_reg_masked_write(&(usart->FRAME), _USART_FRAME_MASK, config->framecfg);
 
   /* Enable module before writing into CLKDIV register. */
   usart->EN_SET = USART_EN_EN;
