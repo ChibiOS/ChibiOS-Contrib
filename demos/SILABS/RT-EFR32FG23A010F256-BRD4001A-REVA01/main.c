@@ -46,7 +46,22 @@ int main(void) {
      already enabled.*/
   osKernelInitialize();
 
+  // Don't execute tests.
   palSetPadMode(GPIOC, 3, PAL_MODE_INPUT_PULLUP);
+
+  #if 0
+  palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPad(GPIOC, 2);
+  palClearPad(GPIOC, 2);
+  palSetPad(GPIOC, 2);
+  
+  palSetPadMode(GPIOC, 1, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetPad(GPIOC, 1);
+  palClearPad(GPIOC, 1);
+  palSetPad(GPIOC, 1);
+
+  while (true);
+  #endif
 
   #if 0
   palSetPadMode(GPIOC, 3, PAL_MODE_OUTPUT_PUSHPULL);
@@ -85,78 +100,98 @@ int main(void) {
   //CMU_ClkOutPinConfig(1, cmuSelect_EM23GRPACLK, 1U, gpioPortC, 3);
 
   //CMU_ClkOutPinConfig(0, cmuSelect_LFRCO, 1U, gpioPortC, 3);
+  CMU_ClkOutPinConfig(0, cmuSelect_LFXO, 1U, gpioPortC, 3);
   //CMU_ClkOutPinConfig(0, cmuSelect_LFRCO, 1U, gpioPortC, 2);
   //CMU_ClkOutPinConfig(0, cmuSelect_LFRCO, 1U, gpioPortC, 1);
+
+  while (true);
   #endif
 
-  SIODriver* siop = NULL;
-
   #if EFR32_SIO_USE_EUSART1 == TRUE
+  #if 0
   palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(EUSART0_TX));
   palSetPadMode(GPIOC, 1, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(EUSART0_RX));
+  #else
+  palSetPadMode(GPIOB, 1, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(EUSART0_TX));
+  palSetPadMode(GPIOB, 2, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(EUSART0_RX));
+  #endif
 
-  static const SIOConfig sio_config = {
+  static const SIOConfig sio_config1 = {
+    #if 1
     .baud = 9600U,       /* Baudrate (9600 max. for LF operation) */
     .cfg0 = (0U <<  0) | /* ASYNC operation */
             (4U <<  5),  /* Disable oversampling (for LF operation) */
     .framecfg = EFR32_SIO_LLD_EUSART_8N1,
+    #else
+    .baud = 115200U,       /* Baudrate */
+    .cfg0 = (0U <<  0) |   /* ASYNC operation */
+            (0U <<  5),    /* 16x oversampling (for HF operation) */
+    .framecfg = EFR32_SIO_LLD_EUSART_8N1,
+    #endif
   };
 
-  siop = &SIOD1;
-  sioStart(siop, &sio_config);
+  SIODriver* siop = &SIOD1;
+  sioStart(siop, &sio_config1);
+  #if 0
   sioStop(siop);
-  sioStart(siop, &sio_config);
+  sioStart(siop, &sio_config1);
+  #endif
   #endif
 
   #if EFR32_SIO_USE_EUSART2 == TRUE
   palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(EUSART1_TX));
   palSetPadMode(GPIOC, 1, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(EUSART1_RX));
 
-  static const SIOConfig sio_config = {
+  static const SIOConfig sio_config2 = {
     .baud = 115200U,       /* Baudrate */
     .cfg0 = (0U <<  0) |   /* ASYNC operation */
             (0U <<  5),    /* 16x oversampling (for HF operation) */
     .framecfg = EFR32_SIO_LLD_EUSART_8N1,
   };
 
-  siop = &SIOD2;
-  sioStart(siop, &sio_config);
+  SIODriver* siop = &SIOD2;
+  sioStart(siop, &sio_config2);
   sioStop(siop);
-  sioStart(siop, &sio_config);
+  sioStart(siop, &sio_config2);
   #endif
 
   #if EFR32_SIO_USE_EUSART3 == TRUE
   palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(EUSART2_TX));
   palSetPadMode(GPIOC, 1, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(EUSART2_RX));
 
-  static const SIOConfig sio_config = {
+  static const SIOConfig sio_config3 = {
     .baud = 115200U,       /* Baudrate */
     .cfg0 = (0U <<  0) |   /* ASYNC operation */
             (0U <<  5),    /* 16x oversampling (for HF operation) */
     .framecfg = EFR32_SIO_LLD_EUSART_8N1,
   };
 
-  siop = &SIOD3;
-  sioStart(siop, &sio_config);
+  SIODriver* siop = &SIOD3;
+  sioStart(siop, &sio_config3);
   sioStop(siop);
-  sioStart(siop, &sio_config);
+  sioStart(siop, &sio_config3);
   #endif
 
   #if EFR32_SIO_USE_USART1 == TRUE
+  #if 1
   palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(USART0_TX));
   palSetPadMode(GPIOC, 1, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(USART0_RX));
+  #else
+  palSetPadMode(GPIOB, 1, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(USART0_TX));
+  palSetPadMode(GPIOB, 2, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(USART0_RX));
+  #endif
 
-  static const SIOConfig sio_config = {
+  static const SIOConfig sio_config4 = {
     .baud = 115200U,       /* Baudrate */
     .cfg0 = (0U <<  0) |   /* ASYNC operation */
             (0U <<  5),    /* 16x oversampling (for HF operation) */
     .framecfg = EFR32_SIO_LLD_USART_8N1,
   };
 
-  siop = &SIOD4;
-  sioStart(siop, &sio_config);
+  SIODriver* siop = &SIOD4;
+  sioStart(siop, &sio_config4);
   sioStop(siop);
-  sioStart(siop, &sio_config);
+  sioStart(siop, &sio_config4);
   #endif
 
   /* Kernel started, the main() thread has priority osPriorityNormal
@@ -199,6 +234,10 @@ int main(void) {
           msg = sioSynchronizeTX(siop, TIME_MS2I(1));
           //msg = sioSynchronizeTXEnd(siop, TIME_MS2I(1000));
         }
+      #elif 0
+        buf[0] = '5A';
+        sioAsyncWrite(siop, buf, 1);
+        msg = sioSynchronizeTX(siop, TIME_MS2I(1));
       #endif
       }
 

@@ -46,6 +46,42 @@ uint32_t SystemCoreClock = EFR32_HCLK;
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
+__STATIC_INLINE void efr32_calibrate_lfxo(void) {
+
+  uint32_t gain_cal_value, captune_cal_value;
+  uint32_t gain, captune;
+
+  efr32_get_lfxo_calibration_values(&gain_cal_value, &captune_cal_value);
+
+  gain = (LFXO->CAL & _LFXO_CAL_GAIN_MASK) >> _LFXO_CAL_GAIN_SHIFT;
+  if (gain != gain_cal_value) {
+    while ((LFXO->SYNCBUSY & _LFXO_SYNCBUSY_CAL_MASK) == LFXO_SYNCBUSY_CAL);
+    LFXO->CAL = (LFXO->CAL & ~_LFXO_CAL_GAIN_MASK) |
+                ((gain_cal_value & _LFXO_CAL_GAIN_MASK) << _LFXO_CAL_GAIN_SHIFT);
+    while ((LFXO->SYNCBUSY & _LFXO_SYNCBUSY_CAL_MASK) != 0U);
+  }
+
+  while (true)
+  {
+    captune = (LFXO->CAL & _LFXO_CAL_CAPTUNE_MASK) >> _LFXO_CAL_CAPTUNE_SHIFT;
+
+    if (captune > captune_cal_value) {
+      --captune;
+    }
+    else if (captune < captune_cal_value) {
+      ++captune;
+    }
+    else {
+      break;
+    }
+
+    while ((LFXO->SYNCBUSY & _LFXO_SYNCBUSY_CAL_MASK) == LFXO_SYNCBUSY_CAL);
+    LFXO->CAL = (LFXO->CAL & ~_LFXO_CAL_CAPTUNE_MASK) |
+                ((captune & _LFXO_CAL_CAPTUNE_MASK) << _LFXO_CAL_CAPTUNE_SHIFT);
+    while ((LFXO->SYNCBUSY & _LFXO_SYNCBUSY_CAL_MASK) == LFXO_SYNCBUSY_CAL);
+  }
+}
+
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
@@ -77,9 +113,18 @@ __STATIC_INLINE void efr32_enable_clock_sources(void) {
 #if EFR32_LFXO_ENABLED
   CMU->CLKEN0_SET = CMU_CLKEN0_LFXO;
   LFXO->CTRL_SET = LFXO_CTRL_FORCEEN;
-  while ((LFXO->STATUS & _LFXO_STATUS_RDY_MASK) != LFXO_STATUS_RDY);
+  while ((LFXO->STATUS & (_LFXO_STATUS_RDY_MASK | _LFXO_STATUS_ENS_MASK)) !=
+         (LFXO_STATUS_RDY | LFXO_STATUS_ENS));
+  efr32_calibrate_lfxo();
 #else
   CMU->CLKEN0_CLR = CMU_CLKEN0_LFXO;
+#endif
+
+#if EFR32_HFXO_ENABLED
+  CMU->CLKEN0_SET = CMU_CLKEN0_HFXO0;
+  HFXO0->CTRL |= HFXO_CTRL_FORCEEN;
+#else
+  CMU->CLKEN0_CLR = CMU_CLKEN0_HFXO0;
 #endif
 
 #if EFR32_LFRCO_ENABLED
@@ -96,6 +141,8 @@ __STATIC_INLINE void efr32_enable_clock_sources(void) {
 
 #if EFR32_HFRCOEM23_ENABLED
   CMU->CLKEN0_SET = CMU_CLKEN0_HFRCOEM23;
+  HFRCOEM23->CTRL_SET = HFRCO_CTRL_FORCEEN;
+  while ((HFRCOEM23->STATUS & _HFRCO_STATUS_RDY_MASK) != HFRCO_STATUS_RDY);
 #else
   CMU->CLKEN0_CLR = CMU_CLKEN0_HFRCOEM23;
 #endif
@@ -106,12 +153,6 @@ __STATIC_INLINE void efr32_enable_clock_sources(void) {
   CMU->CLKEN0_CLR = CMU_CLKEN0_FSRCO;
 #endif
 
-#if EFR32_HFXO_ENABLED
-  CMU->CLKEN0_SET = CMU_CLKEN0_HFXO0;
-  HFXO0->CTRL |= HFXO_CTRL_FORCEEN;
-#else
-  CMU->CLKEN0_CLR = CMU_CLKEN0_HFXO0;
-#endif
 }
 
 __STATIC_INLINE void efr32_enable_em01grpaclk(void) {
@@ -219,6 +260,15 @@ __STATIC_INLINE void efr32_enable_eusartclk(void) {
   CMU->EM01GRPCCLKCTRL = (CMU->EM01GRPCCLKCTRL & ~_CMU_EM01GRPCCLKCTRL_CLKSEL_MASK)\
     | CMU_EM01GRPCCLKCTRL_CLKSEL_DEFAULT;
 #endif
+}
+
+void efr32_get_lfxo_calibration_values(uint32_t *gain, uint32_t *captune)
+{
+  osalDbgAssert(gain != NULL, "gain must be not NULL");
+  osalDbgAssert(captune != NULL, "captune must be not NULL");
+
+  *gain = LFXO_RTC_GAIN_DEFAULT_VALUE;
+  *captune = LFXO_RTC_CAPTUNE_DEFAULT_VALUE;
 }
 
 /**

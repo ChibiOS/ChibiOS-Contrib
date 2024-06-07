@@ -63,7 +63,7 @@
 #define EFR32_FSRCOCLK                   20000000UL
 #define EFR32_LFRCOCLK                   32768UL
 #define EFR32_ULFRCOCLK                  1000UL
-#define EFR32_HFRCODPLLCLK               19000000UL
+#define EFR32_HFRCODPLL_FREQ             19000000UL
 
 /**
  * @name    CMU_SYSCLKCTRL register bits definitions
@@ -77,14 +77,18 @@
 #define EFR32_PPRE_DIV1                  (0U << 10)  /**< PCLK is HCLK divided by 1     */
 #define EFR32_PPRE_DIV2                  (1U << 10)  /**< PCLK is HCLK divided by 2     */
 
-#define EFR32_HPRE_DIV1                  (0U  << 12)  /**< HCLK is SYSCLK divided by 1  */
-#define EFR32_HPRE_DIV2                  (1U  << 12)  /**< HCLK is SYSCLK divided by 2  */
-#define EFR32_HPRE_DIV4                  (3U  << 12)  /**< HCLK is SYSCLK divided by 4  */
-#define EFR32_HPRE_DIV8                  (7U  << 12)  /**< HCLK is SYSCLK divided by 8  */
-#define EFR32_HPRE_DIV16                 (15U << 12)  /**< HCLK is SYSCLK divided by 16 */
+#define EFR32_HPRE_DIV1                  (0U  << 12) /**< HCLK is SYSCLK divided by 1  */
+#define EFR32_HPRE_DIV2                  (1U  << 12) /**< HCLK is SYSCLK divided by 2  */
+#define EFR32_HPRE_DIV4                  (3U  << 12) /**< HCLK is SYSCLK divided by 4  */
+#define EFR32_HPRE_DIV8                  (7U  << 12) /**< HCLK is SYSCLK divided by 8  */
+#define EFR32_HPRE_DIV16                 (15U << 12) /**< HCLK is SYSCLK divided by 16 */
 
-#define EFR32_RHPRE_DIV1                 (0U << 16)   /**< Radio HCLK is HCLK divided by 1 */
-#define EFR32_RHPRE_DIV2                 (1U << 16)   /**< Radio HCLK is HCLK divided by 2 */
+#define EFR32_RHPRE_DIV1                 (0U << 16)  /**< Radio HCLK is HCLK divided by 1 */
+#define EFR32_RHPRE_DIV2                 (1U << 16)  /**< Radio HCLK is HCLK divided by 2 */
+
+#define EFR32_HFRCOPRE_DIV1              (0U << 24)  /**< HFRCO clock is divided by 1  */
+#define EFR32_HFRCOPRE_DIV2              (1U << 24)  /**< HFRCO clock is divided by 2  */
+#define EFR32_HFRCOPRE_DIV4              (2U << 24)  /**< HFRCO clock is divided by 4  */
 
 /**
  * @brief   System clock source.
@@ -138,6 +142,22 @@
 #define EFR32_RHCLK                (EFR32_SYSCLK / 2)
 #else
 #error "invalid EFR32_RHPRE value specified"
+#endif
+
+/**
+ * @brief   HFRCODPLL and HFRCOEM23 frequencies.
+ */
+#if (EFR32_HFRCOPRE == EFR32_HFRCOPRE_DIV1) || defined(__DOXYGEN__)
+#define EFR32_HFRCODPLLCLK         (EFR32_HFRCODPLL_FREQ / 1)
+#define EFR32_HFRCOEM23CLK         (EFR32_HFRCODPLL_FREQ / 1)
+#elif EFR32_HFRCOPRE == EFR32_HFRCOEM23PRE_DIV2
+#define EFR32_HFRCODPLLCLK         (EFR32_HFRCODPLL_FREQ / 1)
+#define EFR32_HFRCOEM23CLK         (EFR32_HFRCODPLL_FREQ / 2)
+#elif EFR32_HFRCOPRE == EFR32_HFRCOEM23PRE_DIV4
+#define EFR32_HFRCODPLLCLK         (EFR32_HFRCODPLL_FREQ / 1)
+#define EFR32_HFRCOEM23CLK         (EFR32_HFRCODPLLCLK / 4)
+#else
+#error "invalid EFR32_HFRCOEM23PRE value specified"
 #endif
 
 #if EFR32_HFXO_ENABLED
@@ -256,7 +276,7 @@
 #if EFR32_EUSART1SEL == EFR32_EUSART1SEL_EM01GRPCCLK
 #define EFR32_EUSART1CLK                EFR32_EM01GRPCCLK
 #elif EFR32_EUSART1SEL == EFR32_EUSART1SEL_HFRCOEM23
-#error "EFR32_EUSART1SEL_HFRCOEM23 is not implemented"
+#define EFR32_EUSART1CLK                EFR32_HFRCOEM23CLK
 #elif EFR32_EUSART1SEL == EFR32_EUSART1SEL_LFRCO
 #define EFR32_EUSART1CLK                EFR32_LFRCOCLK
 #elif EFR32_EUSART1SEL == EFR32_EUSART1SEL_LFXO
@@ -336,6 +356,7 @@ extern "C" {
 #endif
   void efr32_chip_init(void);
   void efr32_clock_init(void);
+  void efr32_get_lfxo_calibration_values(uint32_t *gain, uint32_t *captune) CC_WEAK;
   void efr32_escape_hatch(void);
   void hal_lld_init(void);
 #ifdef __cplusplus

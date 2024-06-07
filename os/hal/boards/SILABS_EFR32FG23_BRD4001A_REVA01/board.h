@@ -29,6 +29,8 @@
 
 #if !defined(EFR32_LFXO_FREQ)
 #define EFR32_LFXO_FREQ                 32768UL
+#define LFXO_RTC_GAIN_DEFAULT_VALUE     0x02UL  /**< Manually estmated value which gave 32.768 kHz on CLKOUTn pin. */
+#define LFXO_RTC_CAPTUNE_DEFAULT_VALUE  0x1CUL  /**< Manually estmated value which gave 32.768 kHz on CLKOUTn pin. */
 #endif
 
 #if !defined(EFR32_HFXO_FREQ)

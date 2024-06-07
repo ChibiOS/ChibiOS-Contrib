@@ -39,27 +39,28 @@
  * Clock settings.
  */
 #define EFR32_CMU_SYSCLKCTRL                (EFR32_SYSCLKSEL | EFR32_PPRE | EFR32_HPRE | EFR32_RHPRE)
-#define EFR32_LFXO_ENABLED                  FALSE
-#define EFR32_LFRCO_ENABLED                 TRUE
+#define EFR32_LFXO_ENABLED                  TRUE
+#define EFR32_LFRCO_ENABLED                 FALSE
 #define EFR32_ULFRCO_ENABLED                FALSE
-#define EFR32_HFRCOEM23_ENABLED             FALSE
 #define EFR32_FSRCO_ENABLED                 FALSE
 #define EFR32_HFRCODPLL_ENABLED             TRUE
+#define EFR32_HFRCOEM23_ENABLED             TRUE
 #define EFR32_HFXO_ENABLED                  FALSE
 #define EFR32_SYSCLKSEL                     EFR32_SYSCLKSEL_HFRCODPLL
 #define EFR32_PPRE                          EFR32_PPRE_DIV1
 #define EFR32_HPRE                          EFR32_HPRE_DIV1
 #define EFR32_RHPRE                         EFR32_RHPRE_DIV1
+#define EFR32_HFRCOPRE                      EFR32_HFRCOPRE_DIV1
 
 /*
  * Peripherals clock sources.
  */
 #define EFR32_EM01GRPACLKSEL                EFR32_EM01GRPACLKSEL_HFRCODPLL
 #define EFR32_EM01GRPCCLKSEL                EFR32_EM01GRPCCLKSEL_HFRCODPLL
-#define EFR32_EM23GRPACLKSEL                EFR32_EM23GRPACLKSEL_LFRCO
+#define EFR32_EM23GRPACLKSEL                EFR32_EM23GRPACLKSEL_LFXO
 #define EFR32_EM4GRPACLKSEL                 EFR32_EM4GRPACLKSEL_NOCLOCK
 
-#define EFR32_EUSART1SEL                    EFR32_EUSART1SEL_LFRCO
+#define EFR32_EUSART1SEL                    EFR32_EUSART1SEL_LFXO
 #define EFR32_EUSART23SEL                   EFR32_EUSART23SEL_HFRCODPLL
 
 /*

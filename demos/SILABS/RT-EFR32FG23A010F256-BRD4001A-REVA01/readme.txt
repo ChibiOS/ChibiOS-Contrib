@@ -8,14 +8,18 @@ The demo runs on an CUSTOM board EFR32FG23 equipped with EFR32FG23A010F256QFN48.
 
 ** TODO **
 
-HAL is far from complete: only SYSTICK and LETIMER0 for deep sleep and serial IO (SIO)
-have been implemented.
+HAL is far from complete. What is working:
+  * SYSTICK
+  * LETIMER0 for deep sleep and serial
+  * serial IO (SIO) have been implemented
 
 Implement export clocks in GPIOs.
 
-Make EUSART0 working.
-
 Make HCLK DIV2 (CLKOUT) working.
+
+Make radio driver with underlying rail lib.
+
+
 
 ** The Demo **
 
