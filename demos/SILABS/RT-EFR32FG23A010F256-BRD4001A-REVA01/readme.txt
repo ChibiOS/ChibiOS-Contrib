@@ -4,24 +4,22 @@
 
 ** TARGET **
 
-The demo runs on an CUSTOM board EFR32FG23 equipped with EFR32FG23A010F256QFN48.
+The demo runs on a CUSTOM board EFR32FG23 equipped with EFR32FG23A010F256QFN48.
 
 ** TODO **
 
-HAL is far from complete. What is working:
-  * SYSTICK
-  * LETIMER0 for deep sleep and serial
-  * serial IO (SIO) have been implemented
-
-Implement export clocks in GPIOs.
+HAL in general. Currently the HAL is far from being complete.
 
 Make HCLK DIV2 (CLKOUT) working.
 
-Make radio driver with underlying rail lib.
-
-
+Create radio driver with underlying RAIL lib.
 
 ** The Demo **
+
+What is working now:
+  * SYSTICK
+  * LETIMER0 for deep sleep and serial
+  * serial IO (SIO) implemented
 
 ** Build Procedure **
 
@@ -30,6 +28,6 @@ Make radio driver with underlying rail lib.
 Some files used by the demo are not part of ChibiOS/RT but are copyright of
 Silicon Labs and are licensed under a different license. Also note that not
 all the files present in the emlib library are distributed with ChibiOS/RT,
-you can find the whole library on the ST web site:
+you can find the whole library on the Silicon Labs web site:
 
-                             http://www.silabs.com
+                             https://www.silabs.com

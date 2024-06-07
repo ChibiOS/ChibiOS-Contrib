@@ -55,7 +55,15 @@
 #define EFR32_SIO_LLD_USART_STOPBITS_TWO        (3U << 12)
 
 #define EFR32_SIO_LLD_USART_8N1                (EFR32_SIO_LLD_USART_STOPBITS_ONE |\
+                                                EFR32_SIO_LLD_USART_PARITY_NONE  |\
+                                                EFR32_SIO_LLD_USART_DATABITS_EIGHT)
+
+#define EFR32_SIO_LLD_USART_8E1                (EFR32_SIO_LLD_USART_STOPBITS_ONE |\
                                                 EFR32_SIO_LLD_USART_PARITY_EVEN  |\
+                                                EFR32_SIO_LLD_USART_DATABITS_EIGHT)
+
+#define EFR32_SIO_LLD_USART_8O1                (EFR32_SIO_LLD_USART_STOPBITS_ONE |\
+                                                EFR32_SIO_LLD_USART_PARITY_ODD   |\
                                                 EFR32_SIO_LLD_USART_DATABITS_EIGHT)
 
 #define EFR32_SIO_LLD_EUSART_DATABITS_SEVEN    (1U << 0)
@@ -79,7 +87,15 @@
 #define EFR32_SIO_LLD_EUSART_STOPBITS_TWO        (3U << 12)
 
 #define EFR32_SIO_LLD_EUSART_8N1               (EFR32_SIO_LLD_EUSART_STOPBITS_ONE |\
+                                                EFR32_SIO_LLD_EUSART_PARITY_NONE  |\
+                                                EFR32_SIO_LLD_EUSART_DATABITS_EIGHT)
+
+#define EFR32_SIO_LLD_EUSART_8E1               (EFR32_SIO_LLD_EUSART_STOPBITS_ONE |\
                                                 EFR32_SIO_LLD_EUSART_PARITY_EVEN  |\
+                                                EFR32_SIO_LLD_EUSART_DATABITS_EIGHT)
+
+#define EFR32_SIO_LLD_EUSART_8O1               (EFR32_SIO_LLD_EUSART_STOPBITS_ONE |\
+                                                EFR32_SIO_LLD_EUSART_PARITY_ODD   |\
                                                 EFR32_SIO_LLD_EUSART_DATABITS_EIGHT)
 
 /*===========================================================================*/

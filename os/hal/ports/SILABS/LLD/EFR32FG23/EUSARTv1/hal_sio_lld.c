@@ -172,7 +172,6 @@ __STATIC_INLINE void _sio_lld_start_eusart(SIODriver* siop) {
 
   usart->IF_CLR = EUSART_IEN_CFG_FORBIDDEN;
 
-  while ((usart->SYNCBUSY & _EUSART_SYNCBUSY_MASK) != 0U);
   usart->CMD_SET = EUSART_CMD_RXEN | EUSART_CMD_TXEN | EUSART_CMD_CLEARTX;
   while ((usart->SYNCBUSY & _EUSART_SYNCBUSY_MASK) != 0U);
 }
@@ -181,13 +180,15 @@ __STATIC_INLINE void _sio_lld_stop_eusart(SIODriver* siop) {
 
   EUSART_TypeDef* usart = siop->usart;
 
-  while ((usart->SYNCBUSY & _EUSART_SYNCBUSY_MASK) != 0U);
   usart->CMD_CLR = EUSART_CMD_RXEN | EUSART_CMD_TXEN | EUSART_CMD_CLEARTX;
   while ((usart->SYNCBUSY & _EUSART_SYNCBUSY_MASK) != 0U);
 
   usart->IF_CLR = EUSART_IEN_CFG_FORBIDDEN;
 
   usart->EN_CLR = EUSART_EN_EN;
+
+  /* Wait until EUSART is disabled. */
+  while ((usart->EN & _EUSART_EN_DISABLING_MASK) == EUSART_EN_DISABLING);
 }
 
 __STATIC_INLINE void _sio_lld_start_usart(SIODriver* siop) {

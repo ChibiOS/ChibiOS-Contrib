@@ -57,6 +57,9 @@
 #define HFRCODPLL_MAX_FREQ               80000000UL
 #endif
 
+#define VSCALE_1V0_MAX_FREQ              40000000UL
+#define VSCALE_1V1_MAX_FREQ              HFRCODPLL_MAX_FREQ
+
 #define EFR32_LFXOCLK                    EFR32_LFXO_FREQ
 #define EFR32_HFXOCLK                    EFR32_HFXO_FREQ
 #define EFR32_CLKIN0CLK                  EFR32_CLKIN0_FREQ
@@ -64,6 +67,20 @@
 #define EFR32_LFRCOCLK                   32768UL
 #define EFR32_ULFRCOCLK                  1000UL
 #define EFR32_HFRCODPLL_FREQ             19000000UL
+
+#define EFR32_EM01_VSCALESEL_1V0         (1U << 0)
+#define EFR32_EM01_VSCALESEL_1V1         (1U << 1)
+
+#define EFR32_EM23_VSCALESEL_0V9         (0U << 0)
+#define EFR32_EM23_VSCALESEL_1V0         (1U << 0) 
+#define EFR32_EM23_VSCALESEL_1V1         (1U << 1)
+
+#define EFR32_EM01_VSCALE_1V0            (1U << 10) /**< EM0/EM1 operation up to 40 MHz */
+#define EFR32_EM01_VSCALE_1V1            (1U << 11) /**< EM0/EM1 operation up to 80 MHz */
+                                       
+#define EFR32_EM23_VSCALE_0V9            (0U << 8)  /**< EM2/EM3 operation up to 40 MHz, slow startup */
+#define EFR32_EM23_VSCALE_1V0            (1U << 8)  /**< EM2/EM3 operation up to 40 MHz */
+#define EFR32_EM23_VSCALE_1V1            (2U << 8)  /**< EM2/EM3 operation up to 80 MHz */
 
 /**
  * @name    CMU_SYSCLKCTRL register bits definitions
@@ -111,7 +128,7 @@
 #if (EFR32_HPRE == EFR32_HPRE_DIV1) || defined(__DOXYGEN__)
 #define EFR32_HCLK                 (EFR32_SYSCLK / 1)
 #elif EFR32_HPRE == EFR32_HPRE_DIV2
-#define EFR32_HCLK                  (EFR32_SYSCLK / 2)
+#define EFR32_HCLK                 (EFR32_SYSCLK / 2)
 #elif EFR32_HPRE == EFR32_HPRE_DIV4
 #define EFR32_HCLK                 (EFR32_SYSCLK / 4)
 #elif EFR32_HPRE == EFR32_HPRE_DIV8
@@ -179,6 +196,34 @@
 #if EFR32_SYSCLKSEL == EFR32_SYSCLKSEL_CLKIN0
 #error "CLKIN0 is not enabled, required by EFR32_SYSCLKSEL"
 #endif
+#endif
+
+#if EFR32_EM01VSCALE_SEL >= EFR32_EM23VSCALE_SEL
+#if EFR32_EM01VSCALE_SEL == EFR32_EM01_VSCALESEL_1V0
+#define EFR32_EM01_VSCALE                EFR32_EM01_VSCALE_1V0
+#elif EFR32_EM01VSCALE_SEL == EFR32_EM01_VSCALESEL_1V1
+#define EFR32_EM01_VSCALE                EFR32_EM01_VSCALE_1V1
+#else
+#error "EFR32_EM01VSCALE_SEL is not set"
+#endif
+#else
+#error "EFR32_EM01VSCALE_SEL must be equal or greater than EFR32_EM23VSCALE_SEL"
+#endif
+
+#if EFR32_EM23VSCALE_SEL == EFR32_EM23_VSCALESEL_0V9
+#define EFR32_EM23_VSCALE                EFR32_EM23_VSCALE_0V9
+#elif EFR32_EM23VSCALE_SEL == EFR32_EM23_VSCALESEL_1V0
+#define EFR32_EM23_VSCALE                EFR32_EM23_VSCALE_1V0
+#elif EFR32_EM23VSCALE_SEL == EFR32_EM23_VSCALESEL_1V1
+#define EFR32_EM23_VSCALE                EFR32_EM23_VSCALE_1V1
+#else
+#error "EFR32_EM23VSCALE_SEL is not set"
+#endif
+
+#if (EFR32_HCLK > VSCALE_1V1_MAX_FREQ)
+#error "EFR32_HCLK must be lower than VSCALE_1V1_MAX_FREQ"
+#elif (EFR32_HCLK > VSCALE_1V0_MAX_FREQ) && (EFR32_EM01_VSCALE != EFR32_EM23_VSCALESEL_1V1)
+#error "EFR32_EM01_VSCALE must be set to EFR32_EM23_VSCALESEL_1V1"
 #endif
 
 #define EFR32_EM01GRPACLKSEL_NOCLOCK     (1u << 0)

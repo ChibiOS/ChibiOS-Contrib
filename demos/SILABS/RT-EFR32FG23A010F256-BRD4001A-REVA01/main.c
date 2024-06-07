@@ -46,20 +46,8 @@ int main(void) {
      already enabled.*/
   osKernelInitialize();
 
-  // Don't execute tests.
-  palSetPadMode(GPIOC, 3, PAL_MODE_INPUT_PULLUP);
-
   #if 0
-  palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPad(GPIOC, 2);
-  palClearPad(GPIOC, 2);
-  palSetPad(GPIOC, 2);
-  
-  palSetPadMode(GPIOC, 1, PAL_MODE_OUTPUT_PUSHPULL);
-  palSetPad(GPIOC, 1);
-  palClearPad(GPIOC, 1);
-  palSetPad(GPIOC, 1);
-
+  palSetPadMode(GPIOC, 3, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_HCLK));
   while (true);
   #endif
 
@@ -84,29 +72,6 @@ int main(void) {
   palEnablePadEvent(GPIOC, 3, PAL_EVENT_MODE_BOTH_EDGES);
   #endif
 
-  #if 0
-  //CMU_ClockEnable(cmuSelect_EM23GRPACLK, true);
-  //CMU_Clock_TypeDef clock, CMU_Select_TypeDef ref
-  //CMU_ClockSelectSet(cmuClock_EM23GRPACLK, cmuSelect_ULFRCO);
-  //CMU_Clock_TypeDef clock, CMU_Select_TypeDef ref
-
-  //CMU_ClkOutPinConfig(1, cmuSelect_LFRCO, 1U, gpioPortC, 3); // 32.768 Hz
-  //CMU_ClkOutPinConfig(1, cmuSelect_LFXO, 1U, gpioPortC, 3); // ?? != 32.768 kHz
-  //CMU_ClkOutPinConfig(1, cmuSelect_HCLK, 1U, gpioPortC, 3); // 19 MHz
-  //CMU_ClkOutPinConfig(1, cmuSelect_FSRCO, 1U, gpioPortC, 3); // 20 Mhz
-  //CMU_ClkOutPinConfig(1, cmuSelect_ULFRCO, 1U, gpioPortC, 3); // 1000 Hz
-  //CMU_ClkOutPinConfig(1, cmuSelect_EM01GRPACLK, 1U, gpioPortC, 3);
-  //CMU_ClkOutPinConfig(1, cmuSelect_EM01GRPCCLK, 1U, gpioPortC, 3);
-  //CMU_ClkOutPinConfig(1, cmuSelect_EM23GRPACLK, 1U, gpioPortC, 3);
-
-  //CMU_ClkOutPinConfig(0, cmuSelect_LFRCO, 1U, gpioPortC, 3);
-  CMU_ClkOutPinConfig(0, cmuSelect_LFXO, 1U, gpioPortC, 3);
-  //CMU_ClkOutPinConfig(0, cmuSelect_LFRCO, 1U, gpioPortC, 2);
-  //CMU_ClkOutPinConfig(0, cmuSelect_LFRCO, 1U, gpioPortC, 1);
-
-  while (true);
-  #endif
-
   #if EFR32_SIO_USE_EUSART1 == TRUE
   #if 0
   palSetPadMode(GPIOC, 2, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(EUSART0_TX));
@@ -121,7 +86,7 @@ int main(void) {
     .baud = 9600U,       /* Baudrate (9600 max. for LF operation) */
     .cfg0 = (0U <<  0) | /* ASYNC operation */
             (4U <<  5),  /* Disable oversampling (for LF operation) */
-    .framecfg = EFR32_SIO_LLD_EUSART_8N1,
+    .framecfg = EFR32_SIO_LLD_EUSART_8E1,
     #else
     .baud = 115200U,       /* Baudrate */
     .cfg0 = (0U <<  0) |   /* ASYNC operation */
@@ -132,10 +97,8 @@ int main(void) {
 
   SIODriver* siop = &SIOD1;
   sioStart(siop, &sio_config1);
-  #if 0
   sioStop(siop);
   sioStart(siop, &sio_config1);
-  #endif
   #endif
 
   #if EFR32_SIO_USE_EUSART2 == TRUE
@@ -193,6 +156,9 @@ int main(void) {
   sioStop(siop);
   sioStart(siop, &sio_config4);
   #endif
+
+  // Don't execute tests.
+  palSetPadMode(GPIOC, 3, PAL_MODE_INPUT_PULLUP);
 
   /* Kernel started, the main() thread has priority osPriorityNormal
      by default.*/

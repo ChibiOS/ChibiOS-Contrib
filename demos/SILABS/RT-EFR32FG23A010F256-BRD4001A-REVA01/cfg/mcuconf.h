@@ -34,6 +34,8 @@
 /*
  * Power settings.
  */
+#define EFR32_EM01VSCALE_SEL                EFR32_EM01_VSCALESEL_1V1
+#define EFR32_EM23VSCALE_SEL                EFR32_EM23_VSCALESEL_1V1
 
 /*
  * Clock settings.
@@ -78,10 +80,10 @@
 /*
  * SIO driver system settings.
  */
-#define EFR32_SIO_USE_EUSART1               FALSE
+#define EFR32_SIO_USE_EUSART1               TRUE
 #define EFR32_SIO_USE_EUSART2               FALSE
 #define EFR32_SIO_USE_EUSART3               FALSE
-#define EFR32_SIO_USE_USART1                TRUE
+#define EFR32_SIO_USE_USART1                FALSE
 #define EFR32_EUSART1_RX_IRQ_PRIORITY       4
 #define EFR32_EUSART1_TX_IRQ_PRIORITY       4
 #define EFR32_EUSART2_RX_IRQ_PRIORITY       4

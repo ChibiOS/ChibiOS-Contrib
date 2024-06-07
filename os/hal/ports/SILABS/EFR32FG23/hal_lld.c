@@ -82,6 +82,14 @@ __STATIC_INLINE void efr32_calibrate_lfxo(void) {
   }
 }
 
+__STATIC_INLINE void efr32_set_voltage_scaling(void) {
+
+  EMU->CTRL = (EMU->CTRL & ~_EMU_CTRL_EM23VSCALE_MASK) | EFR32_EM23_VSCALE;
+
+  EMU->CMD = (EMU->CMD & ~(_EMU_CMD_EM01VSCALE1_MASK | _EMU_CMD_EM01VSCALE2_MASK)) | EFR32_EM01_VSCALE;
+  while ((EMU->STATUS & _EMU_STATUS_VSCALEBUSY_MASK) == EMU_STATUS_VSCALEBUSY); 
+}
+
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
@@ -285,6 +293,9 @@ void efr32_clock_init(void) {
   efr32_enable_em01grpcclk();
   efr32_enable_em23grpaclk();
   efr32_enable_eusartclk();
+
+  /* After all clocks were set, set also the voltage scaling. */
+  efr32_set_voltage_scaling();
 }
 
 /**
