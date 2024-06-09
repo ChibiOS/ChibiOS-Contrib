@@ -66,8 +66,6 @@
 #error "EFR32_RTCCLK_DIV is not obtainable"
 #endif
 
-#define EFR32_RTCCLK              (EFR32_BURTCCLK / EFR32_RTCCLK_DIV)
-
 #define EFR32_OVERFLOW_SCALE(val)                                             \
   ((val) * ((_EFR32_OVERFLOW_VALUE - (EFR32_RTCCLK - 1U)) / EFR32_RTCCLK + 1U))
 
@@ -76,17 +74,17 @@
 #if EFR32_BURTCCLK % 32768U == 0U
 #define EFR32_RTCCLK_DIV 32768U
 #define EFR32_BURTC_CFG_CNTPRESC  BURTC_CFG_CNTPRESC_DIV32768
-
-#define EFR32_RTCCLK              (EFR32_BURTCCLK / EFR32_RTCCLK_DIV)
+#else
+#error "EFR32_RTCCLK_DIV is not obtainable"
+#endif
 
 /* Overflow handling can't be implemented here.
    After 68 years it just overflows. */
 #define EFR32_OVERFLOW_SCALE(val) ((val) * 0U)
-#else
-#error "EFR32_RTCCLK_DIV is not obtainable (resolution better than one millisec)"
-#endif
 
 #endif
+
+#define EFR32_RTCCLK              (EFR32_BURTCCLK / EFR32_RTCCLK_DIV)
 
 #define EFR32_RTC_STARTOFTIME     1980
 
