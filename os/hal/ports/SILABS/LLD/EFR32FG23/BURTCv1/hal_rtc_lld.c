@@ -79,7 +79,9 @@
 
 #define EFR32_RTCCLK              (EFR32_BURTCCLK / EFR32_RTCCLK_DIV)
 
-#define EFR32_OVERFLOW_SCALE(val) ((val) * 1U)
+/* Overflow handling can't be implemented here.
+   After 68 years it just overflows. */
+#define EFR32_OVERFLOW_SCALE(val) ((val) * 0U)
 #else
 #error "EFR32_RTCCLK_DIV is not obtainable (resolution better than one millisec)"
 #endif
