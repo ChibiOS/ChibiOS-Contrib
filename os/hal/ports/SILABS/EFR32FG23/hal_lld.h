@@ -314,9 +314,9 @@
 #define EFR32_EM4GRPACLK                EFR32_ULFRCOCLK
 #endif
 
-
 #define EFR32_LETIM1CLK                 EFR32_EM23GRPACLK
 
+#define EFR32_BURTCCLK                  EFR32_EM4GRPACLK
 
 #if EFR32_EUSART1SEL == EFR32_EUSART1SEL_EM01GRPCCLK
 #define EFR32_EUSART1CLK                EFR32_EM01GRPCCLK
@@ -338,48 +338,52 @@
 #define EFR32_LETIM1_NUMBER             LETIMER0_IRQn
 
 /* Vector120 = Vector(40 + 4*PCNT0_IRQn) */
-#define EFR32_PCNT0_HANDLER				Vector120
-#define EFR32_PCNT0_NUMBER				PCNT0_IRQn
+#define EFR32_PCNT0_HANDLER			        Vector120
+#define EFR32_PCNT0_NUMBER			        PCNT0_IRQn
 
 /* VectorA8 = Vector(40 + 4*GPIO_ODD_IRQn) */
-#define EFR32_GPIO_ODD_HANDLER 			VectorA8
-#define EFR32_GPIO_ODD_NUMBER			GPIO_ODD_IRQn
+#define EFR32_GPIO_ODD_HANDLER 		      VectorA8
+#define EFR32_GPIO_ODD_NUMBER			      GPIO_ODD_IRQn
 
 /* VectorAC = Vector(40 + 4*GPIO_EVEN_IRQn) */
-#define EFR32_GPIO_EVEN_HANDLER 		VectorAC
-#define EFR32_GPIO_EVEN_NUMBER			GPIO_EVEN_IRQn
+#define EFR32_GPIO_EVEN_HANDLER 	    	VectorAC
+#define EFR32_GPIO_EVEN_NUMBER		    	GPIO_EVEN_IRQn
 
 /* Vector64 = Vector(40 + 4*USART0_RX_IRQn) */
-#define EFR32_USART1_RX_HANDLER 		Vector64
-#define EFR32_USART1_RX_NUMBER			USART0_RX_IRQn
-
+#define EFR32_USART1_RX_HANDLER 	      Vector64
+#define EFR32_USART1_RX_NUMBER		      USART0_RX_IRQn
+                                       
 /* Vector68 = Vector(40 + 4USART0_TX_IRQn) */
-#define EFR32_USART1_TX_HANDLER 		Vector68
-#define EFR32_USART1_TX_NUMBER			USART0_TX_IRQn
+#define EFR32_USART1_TX_HANDLER 	      Vector68
+#define EFR32_USART1_TX_NUMBER		      USART0_TX_IRQn
 
 /* Vector6C = Vector(40 + 4*EUSART0_RX_IRQn) */
-#define EFR32_EUSART1_RX_HANDLER 		Vector6C
-#define EFR32_EUSART1_RX_NUMBER			EUSART0_RX_IRQn
+#define EFR32_EUSART1_RX_HANDLER 		    Vector6C
+#define EFR32_EUSART1_RX_NUMBER			    EUSART0_RX_IRQn
 
 /* Vector70 = Vector(40 + 4*EUSART0_TX_IRQn) */
-#define EFR32_EUSART1_TX_HANDLER 		Vector70
-#define EFR32_EUSART1_TX_NUMBER			EUSART0_TX_IRQn
+#define EFR32_EUSART1_TX_HANDLER 	    	Vector70
+#define EFR32_EUSART1_TX_NUMBER		    	EUSART0_TX_IRQn
 
 /* Vector74 = Vector(40 + 4*EUSART1_RX_IRQn) */
-#define EFR32_EUSART2_RX_HANDLER 		Vector74
-#define EFR32_EUSART2_RX_NUMBER			EUSART1_RX_IRQn
+#define EFR32_EUSART2_RX_HANDLER 	      Vector74
+#define EFR32_EUSART2_RX_NUMBER		      EUSART1_RX_IRQn
 
 /* Vector78 = Vector(40 + 4*EUSART1_TX_IRQn) */
-#define EFR32_EUSART2_TX_HANDLER 		Vector78
-#define EFR32_EUSART2_TX_NUMBER			EUSART1_TX_IRQn
+#define EFR32_EUSART2_TX_HANDLER 	      Vector78
+#define EFR32_EUSART2_TX_NUMBER		      EUSART1_TX_IRQn
 
 /* Vector7C = Vector(40 + 4*EUSART2_RX_IRQn) */
-#define EFR32_EUSART3_RX_HANDLER 		Vector7C
-#define EFR32_EUSART3_RX_NUMBER			EUSART2_RX_IRQn
+#define EFR32_EUSART3_RX_HANDLER 	      Vector7C
+#define EFR32_EUSART3_RX_NUMBER		      EUSART2_RX_IRQn
 
 /* Vector80 = Vector(40 + 4*EUSART2_TX_IRQn) */
-#define EFR32_EUSART3_TX_HANDLER 		Vector80
-#define EFR32_EUSART3_TX_NUMBER			EUSART2_TX_IRQn
+#define EFR32_EUSART3_TX_HANDLER 	    	Vector80
+#define EFR32_EUSART3_TX_NUMBER		    	EUSART2_TX_IRQn
+
+/* Vector88 = Vector(40 + 4*BURTC_IRQn) */
+#define EFR32_BURTC_HANDLER             Vector88
+#define EFR32_BURTC_NUMBER              BURTC_IRQn
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */

@@ -68,6 +68,13 @@
 #define EFR32_HAS_USART1                    TRUE
 
 /*
+ * RTC driver system settings.
+ */
+#define EFR32_HAS_RTC                       TRUE
+#define EFR32_RTC_HAS_SUBSECONDS            TRUE
+#define EFR32_RTC_NUM_ALARMS                1
+
+/*
  * LETIM driver system settings.
  */
 #define EFR32_LETIM1_IS_32BITS              TRUE

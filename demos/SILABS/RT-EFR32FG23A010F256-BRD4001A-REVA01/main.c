@@ -157,12 +157,26 @@ int main(void) {
   sioStart(siop, &sio_config4);
   #endif
 
-  // Don't execute tests.
-  palSetPadMode(GPIOC, 3, PAL_MODE_INPUT_PULLUP);
-
   /* Kernel started, the main() thread has priority osPriorityNormal
      by default.*/
   osKernelStart();
+
+    RTCDateTime ts = {
+      .year = 44,
+      .month = 6,
+      .dstflag = 0,
+      .dayofweek = 7,
+      .day = 9,
+      .millisecond = (19*3600 + 4*60 + 30) * 1000 + 123
+    };
+    rtcSetTime(&RTCD1, &ts);
+    struct tm tim;
+    uint32_t tv_msec;
+
+    RTCAlarm alarmspec = { 
+      .sec = 5,
+    };
+    rtcSetAlarm(&RTCD1, 0, &alarmspec);
 
   /*
    * Normal main() thread activity, in this demo it does nothing except
@@ -170,11 +184,26 @@ int main(void) {
    */
   while (true) {
     //palDisablePadEvent(GPIOC, 3);
-    if (siop != NULL) {
+    #if 1
+    //osDelay(1000);
+    rtcGetAlarm(&RTCD1, 0, &alarmspec);
+    rtcGetTime(&RTCD1, &ts);
+    rtcConvertDateTimeToStructTm(&ts, &tim, &tv_msec);
+    chprintf((BaseSequentialStream*)siop, "%02u-%02u-%02u %02u:%02u:%02u, %d\r\n",
+             tim.tm_year + 1900, tim.tm_mon + 1, tim.tm_mday,
+             tim.tm_hour, tim.tm_min, tim.tm_sec, tim.tm_wday);
+    //chprintf((BaseSequentialStream*)tm_mon  siop, "%u\r\n", ts2.millisecond);
+    //continue;                         
+    #endif                            
+    if (siop != NULL) {               
+      #if 0
+      // Don't execute tests.
+      palSetPadMode(GPIOC, 3, PAL_MODE_INPUT_PULLUP);
       if (palReadPad(GPIOC, 3) == PAL_LOW) {
         test_execute((BaseSequentialStream*)siop, &rt_test_suite);
         test_execute((BaseSequentialStream*)siop, &oslib_test_suite);
       }
+      #endif
 
       while (true) {
         msg_t msg;
@@ -193,6 +222,10 @@ int main(void) {
         //osalDbgAssert(msg == MSG_OK);
       #elif 1
         msg = sioSynchronizeRX(siop, TIME_MS2I(1000));
+        if (msg == SIO_MSG_ERRORS) {
+          sioGetAndClearErrors(siop);
+          break;
+        }
         if (msg == MSG_TIMEOUT) break;
         size_t rb = sioAsyncRead(siop, buf, sizeof(buf));
         if (rb > 0) {
