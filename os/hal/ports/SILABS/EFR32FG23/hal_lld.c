@@ -90,26 +90,6 @@ __STATIC_INLINE void efr32_set_voltage_scaling(void) {
   while ((EMU->STATUS & _EMU_STATUS_VSCALEBUSY_MASK) == EMU_STATUS_VSCALEBUSY); 
 }
 
-/*===========================================================================*/
-/* Driver interrupt handlers.                                                */
-/*===========================================================================*/
-
-/*===========================================================================*/
-/* Driver exported functions.                                                */
-/*===========================================================================*/
-
-/**
- * @brief   EFR32FG23 chip and errata initialization.
- * @note    All the involved constants come from the file @p board.h.
- * @note    This function should be invoked just after the system reset.
- *
- * @special
- */
-
-void efr32_chip_init(void) {
-
-}
-
 __STATIC_INLINE void efr32_enable_clock_sources(void) {
 
 #if defined(EFR32_CMU_SYSCLKCTRL)
@@ -268,6 +248,26 @@ __STATIC_INLINE void efr32_enable_eusartclk(void) {
   CMU->EM01GRPCCLKCTRL = (CMU->EM01GRPCCLKCTRL & ~_CMU_EM01GRPCCLKCTRL_CLKSEL_MASK)\
     | CMU_EM01GRPCCLKCTRL_CLKSEL_DEFAULT;
 #endif
+}
+
+/*===========================================================================*/
+/* Driver interrupt handlers.                                                */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver exported functions.                                                */
+/*===========================================================================*/
+
+/**
+ * @brief   EFR32FG23 chip and errata initialization.
+ * @note    All the involved constants come from the file @p board.h.
+ * @note    This function should be invoked just after the system reset.
+ *
+ * @special
+ */
+
+void efr32_chip_init(void) {
+
 }
 
 void efr32_get_lfxo_calibration_values(uint32_t *gain, uint32_t *captune)
