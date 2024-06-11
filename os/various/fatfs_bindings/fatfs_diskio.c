@@ -45,7 +45,7 @@ extern RTCDriver RTCD1;
 
 
 /*-----------------------------------------------------------------------*/
-/* Inidialize a Drive                                                    */
+/* Initialize a Drive                                                    */
 
 DSTATUS disk_initialize (
     BYTE pdrv         /* Physical drive number (0..) */
@@ -55,37 +55,35 @@ DSTATUS disk_initialize (
 
   switch (pdrv) {
 #if HAL_USE_MMC_SPI
-  case FATFSDEV_MMC:
-    stat = 0;
-    /* It is initialized externally, just reads the status.*/
-    if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
-      stat |= STA_NOINIT;
-    if (mmcIsWriteProtected(&FATFS_HAL_DEVICE))
-      stat |=  STA_PROTECT;
-    return stat;
+    case FATFSDEV_MMC:
+      stat = 0;
+      /* It is initialized externally, just reads the status.*/
+      if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
+        stat |= STA_NOINIT;
+      if (mmcIsWriteProtected(&FATFS_HAL_DEVICE))
+        stat |=  STA_PROTECT;
+      return stat;
 #elif HAL_USE_SDC
-  case FATFSDEV_MMC:
-    stat = 0;
-    /* It is initialized externally, just reads the status.*/
-    if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
-      stat |= STA_NOINIT;
-    if (blkIsWriteProtected(&FATFS_HAL_DEVICE))
-      stat |=  STA_PROTECT;
-    return stat;
+    case FATFSDEV_MMC:
+      stat = 0;
+      /* It is initialized externally, just reads the status.*/
+      if (blkGetDriverState(&FATFS_HAL_DEVICE) != BLK_READY)
+        stat |= STA_NOINIT;
+      if (blkIsWriteProtected(&FATFS_HAL_DEVICE))
+        stat |= STA_PROTECT;
+      return stat;
 #endif
 #if HAL_USBH_USE_MSD
-  case FATFSDEV_MSD:
-	stat = 0;
-	/* It is initialized externally, just reads the status.*/
-	if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
-	  stat |= STA_NOINIT;
-	return stat;
+    case FATFSDEV_MSD:
+      stat = 0;
+      /* It is initialized externally, just reads the status.*/
+      if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
+        stat |= STA_NOINIT;
+      return stat;
 #endif
   }
   return STA_NOINIT;
 }
-
-
 
 /*-----------------------------------------------------------------------*/
 /* Return Disk Status                                                    */
@@ -117,18 +115,16 @@ DSTATUS disk_status (
     return stat;
 #endif
 #if HAL_USBH_USE_MSD
-  case FATFSDEV_MSD:
-    stat = 0;
-    /* It is initialized externally, just reads the status.*/
-    if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
-      stat |= STA_NOINIT;
-    return stat;
+    case FATFSDEV_MSD:
+      stat = 0;
+      /* It is initialized externally, just reads the status.*/
+      if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
+        stat |= STA_NOINIT;
+      return stat;
 #endif
   }
   return STA_NOINIT;
 }
-
-
 
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
@@ -165,19 +161,17 @@ DRESULT disk_read (
     return RES_OK;
 #endif
 #if HAL_USBH_USE_MSD
-  case FATFSDEV_MSD:
-	/* It is initialized externally, just reads the status.*/
-	if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
-		return RES_NOTRDY;
-	if (usbhmsdLUNRead(&MSBLKD[0], sector, buff, count))
-		return RES_ERROR;
-	return RES_OK;
+    case FATFSDEV_MSD:
+    /* It is initialized externally, just reads the status.*/
+    if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
+      return RES_NOTRDY;
+    if (usbhmsdLUNRead(&MSBLKD[0], sector, buff, count))
+      return RES_ERROR;
+    return RES_OK;
 #endif
   }
   return RES_PARERR;
 }
-
-
 
 /*-----------------------------------------------------------------------*/
 /* Write Sector(s)                                                       */
@@ -190,7 +184,6 @@ DRESULT disk_write (
     UINT count        /* Number of sectors to write (1..255) */
 )
 {
-
   switch (pdrv) {
 #if HAL_USE_MMC_SPI
   case FATFSDEV_MMC:
@@ -228,23 +221,21 @@ DRESULT disk_write (
 #endif
 #if HAL_USBH_USE_MSD
   case FATFSDEV_MSD:
-	/* It is initialized externally, just reads the status.*/
-	if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
-		return RES_NOTRDY;
+    /* It is initialized externally, just reads the status.*/
+    if (blkGetDriverState(&MSBLKD[0]) != BLK_READY)
+      return RES_NOTRDY;
 
     // invalidate cache on buffer
     cacheBufferFlush(buff, count * MSBLKD[0].info.blk_size);
 
-	if (usbhmsdLUNWrite(&MSBLKD[0], sector, buff, count))
-		return RES_ERROR;
-	return RES_OK;
+    if (usbhmsdLUNWrite(&MSBLKD[0], sector, buff, count))
+      return RES_ERROR;
+    return RES_OK;
 #endif
   }
   return RES_PARERR;
 }
 #endif /* _FS_READONLY */
-
-
 
 /*-----------------------------------------------------------------------*/
 /* Miscellaneous Functions                                               */
@@ -255,8 +246,6 @@ DRESULT disk_ioctl (
     void *buff        /* Buffer to send/receive control data */
 )
 {
-  BlockDeviceInfo bdi;
-
   (void)buff;
 
   switch (pdrv) {
@@ -280,50 +269,49 @@ DRESULT disk_ioctl (
     }
 #elif HAL_USE_SDC
   case FATFSDEV_MMC:
+    BlockDeviceInfo bdi;
+
     switch (cmd) {
-    case CTRL_SYNC:
+      case CTRL_SYNC:
+          return RES_OK;
+      case GET_SECTOR_COUNT:
+        if (blkGetInfo(&FATFS_HAL_DEVICE, &bdi)) {
+          return RES_ERROR;
+        }
+        *((DWORD *)buff) = bdi.blk_num;
         return RES_OK;
-    case GET_SECTOR_COUNT:
-      if (blkGetInfo(&FATFS_HAL_DEVICE, &bdi)) {
-        return RES_ERROR;
-      }
-      *((DWORD *)buff) = bdi.blk_num;
-      return RES_OK;
 #if FF_MAX_SS > FF_MIN_SS
-    case GET_SECTOR_SIZE:
-      if (blkGetInfo(&FATFS_HAL_DEVICE, &bdi)) {
-        return RES_ERROR;
-      }
-      *((WORD *)buff) = bdi.blk_size;
-      return RES_OK;
-#endif
-    case GET_BLOCK_SIZE:
-        *((DWORD *)buff) = 256; /* 512b blocks in one erase block */
+      case GET_SECTOR_SIZE:
+        if (blkGetInfo(&FATFS_HAL_DEVICE, &bdi)) {
+          return RES_ERROR;
+        }
+        *((WORD *)buff) = bdi.blk_size;
         return RES_OK;
-#if FF_USE_TRIM
-    case GET_BLOCK_SIZE:
-      /* unsupported */
-      break;
-    case CTRL_TRIM:
-      /* unsupported */
-      break;
 #endif
-    default:
-        return RES_PARERR;
+#if FF_USE_TRIM
+      case GET_BLOCK_SIZE:
+        /* unsupported */
+        break;
+      case CTRL_TRIM:
+        /* unsupported */
+        break;
+#endif
+      default:
+          return RES_PARERR;
     }
 #endif
 #if HAL_USBH_USE_MSD
     case FATFSDEV_MSD:
       switch (cmd) {
-      case CTRL_SYNC:
-          return RES_OK;
-      case GET_SECTOR_COUNT:
-          *((DWORD *)buff) = MSBLKD[0].info.blk_num;
-          return RES_OK;
+        case CTRL_SYNC:
+            return RES_OK;
+        case GET_SECTOR_COUNT:
+            *((DWORD *)buff) = MSBLKD[0].info.blk_num;
+            return RES_OK;
 #if FF_MAX_SS > FF_MIN_SS
-      case GET_SECTOR_SIZE:
-          *((WORD *)buff) = MSBLKD[0].info.blk_size;
-          return RES_OK;
+        case GET_SECTOR_SIZE:
+            *((WORD *)buff) = MSBLKD[0].info.blk_size;
+            return RES_OK;
 #endif
 #if FF_USE_TRIM
 #error "unimplemented yet!"
@@ -331,8 +319,8 @@ DRESULT disk_ioctl (
 //      ....
 //      return RES_OK;
 #endif
-      default:
-          return RES_PARERR;
+        default:
+            return RES_PARERR;
       }
 #endif
   }
