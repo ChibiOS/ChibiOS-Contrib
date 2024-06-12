@@ -137,6 +137,11 @@ static void sn32_usb_read_fifo(usbep_t ep, uint8_t *buf, size_t sz, bool intr) {
         if (off + chunk > sz)
             chunk = sz - off;
 
+#if (SN32_USB_DIRECT_SRAM == TRUE)
+        volatile uint32_t *sram;
+        sram = (volatile uint32_t *)(SN32_USBRAM_BASE + off + ep_offset);
+        data = *sram;
+#else
         if(intr) {
             SN32_USB->RWADDR = off + ep_offset;
             SN32_USB->RWSTATUS = 0x02;
@@ -149,7 +154,7 @@ static void sn32_usb_read_fifo(usbep_t ep, uint8_t *buf, size_t sz, bool intr) {
             while (SN32_USB->RWSTATUS2 & 0x02);
             data = SN32_USB->RWDATA2;
         }
-
+#endif
         //dest, src, size
         memcpy(buf, &data, chunk);
 
@@ -180,6 +185,11 @@ static void sn32_usb_write_fifo(usbep_t ep, const uint8_t *buf, size_t sz, bool 
         //dest, src, size
         memcpy(&data, buf, chunk);
 
+#if (SN32_USB_DIRECT_SRAM == TRUE)
+        volatile uint32_t *sram;
+        sram = (volatile uint32_t *)(SN32_USBRAM_BASE + off + ep_offset);
+        *sram = data;
+#else
         if(intr) {
             SN32_USB->RWADDR = off + ep_offset;
             SN32_USB->RWDATA = data;
@@ -192,7 +202,7 @@ static void sn32_usb_write_fifo(usbep_t ep, const uint8_t *buf, size_t sz, bool 
             SN32_USB->RWSTATUS2 = 0x01;
             while (SN32_USB->RWSTATUS2 & 0x01);
         }
-
+#endif
         off += chunk;
         buf += chunk;
     }
