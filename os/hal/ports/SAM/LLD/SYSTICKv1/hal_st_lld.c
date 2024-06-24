@@ -29,10 +29,10 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
-#define ST_HANDLER                          SysTick_Handler
-#define SYSTICK_CK                          SAM_CPU_FREQ
+#define ST_HANDLER SysTick_Handler
+#define SYSTICK_CK SAM_CPU_FREQ
 #elif OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
-#define ST_HANDLER                          RTC_HANDLER
+#define ST_HANDLER RTC_HANDLER
 #endif
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -72,9 +72,8 @@ static void st_lld_serve_interrupt(void);
  *
  * @notapi
  */
-void st_lld_init(void)
-{
-  #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
+void st_lld_init(void) {
+#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   isAlarmActive = false;
   PM_REGS->PM_APBAMASK |= PM_APBAMASK_RTC_Msk;
   /* Connect GENCLK to RTC */
@@ -82,24 +81,26 @@ void st_lld_init(void)
 
   /* Reset Peripheral before usage */
   RTC_REGS->MODE0.RTC_CTRL = RTC_MODE0_CTRL_SWRST_Msk;
-  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
+  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) ==
+         RTC_STATUS_SYNCBUSY_Msk)
     ;
   /* Set to 32 */
-  RTC_REGS->MODE0.RTC_CTRL = RTC_MODE0_CTRL_PRESCALER(SAM_RTC_DIV) | RTC_MODE0_CTRL_MODE_COUNT32;
-  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
+  RTC_REGS->MODE0.RTC_CTRL =
+      RTC_MODE0_CTRL_PRESCALER(SAM_RTC_DIV) | RTC_MODE0_CTRL_MODE_COUNT32;
+  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) ==
+         RTC_STATUS_SYNCBUSY_Msk)
     ;
   nvicEnableVector(RTC_IRQn, SAM_EIC_IRQ_PRIORITY);
-  #endif
-  #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
+#endif
+#if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
   SysTick->LOAD = (SYSTICK_CK / OSAL_ST_FREQUENCY) - 1;
   SysTick->VAL = 0;
-  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
-                  SysTick_CTRL_ENABLE_Msk |
+  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk |
                   SysTick_CTRL_TICKINT_Msk;
 
   /* IRQ enabled.*/
   nvicSetSystemHandlerPriority(HANDLER_SYSTICK, SAM_ST_IRQ_PRIORITY);
-  #endif
+#endif
 }
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
 /**
@@ -111,18 +112,20 @@ void st_lld_init(void)
  *
  * @notapi
  */
-void st_lld_start_alarm(systime_t abstime)
-{
+void st_lld_start_alarm(systime_t abstime) {
   RTC_REGS->MODE0.RTC_CTRL &= ~RTC_MODE0_CTRL_ENABLE_Msk;
-  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
+  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) ==
+         RTC_STATUS_SYNCBUSY_Msk)
     ;
   RTC_REGS->MODE0.RTC_INTFLAG = RTC_MODE0_INTENSET_CMP0_Msk;
   RTC_REGS->MODE0.RTC_COMP = (uint32_t)abstime;
-  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
+  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) ==
+         RTC_STATUS_SYNCBUSY_Msk)
     ;
   RTC_REGS->MODE0.RTC_INTENSET = RTC_MODE0_INTENSET_CMP0_Msk;
   RTC_REGS->MODE0.RTC_CTRL |= RTC_MODE0_CTRL_ENABLE_Msk;
-  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
+  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) ==
+         RTC_STATUS_SYNCBUSY_Msk)
     ;
   isAlarmActive = true;
 }
@@ -132,12 +135,11 @@ void st_lld_start_alarm(systime_t abstime)
  *
  * @notapi
  */
-void st_lld_stop_alarm(void)
-{
-  #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
+void st_lld_stop_alarm(void) {
+#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   RTC_REGS->MODE0.RTC_INTENCLR = RTC_MODE0_INTENCLR_CMP0_Msk;
   isAlarmActive = false;
-  #endif
+#endif
 }
 
 /**
@@ -149,30 +151,28 @@ void st_lld_stop_alarm(void)
  *
  * @notapi
  */
-bool st_lld_is_alarm_active(void)
-{
+bool st_lld_is_alarm_active(void) {
   return isAlarmActive;
 }
 #endif
 
-static void st_lld_serve_interrupt(void)
-{
-  #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
+static void st_lld_serve_interrupt(void) {
+#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   uint8_t isr;
   /* Get and clear the RTC interrupts. */
   isr = RTC_REGS->MODE0.RTC_INTFLAG;
   RTC_REGS->MODE0.RTC_INTFLAG = isr;
   RTC_REGS->MODE0.RTC_INTENCLR = isr;
-  if(isr & RTC_MODE0_INTFLAG_CMP0_Msk)
-  #endif
+  if (isr & RTC_MODE0_INTFLAG_CMP0_Msk)
+#endif
   {
     osalSysLockFromISR();
     osalOsTimerHandlerI();
     osalSysUnlockFromISR();
   }
 }
-OSAL_IRQ_HANDLER(ST_HANDLER)
-{
+
+OSAL_IRQ_HANDLER(ST_HANDLER) {
   OSAL_IRQ_PROLOGUE();
 
   st_lld_serve_interrupt();

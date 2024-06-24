@@ -35,22 +35,24 @@
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
 #if HAL_USE_RTC == TRUE && OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
-#error "SYSTICKv1 already uses RTC for freerunning, please change to periodic mode"
+#error \
+    "SYSTICKv1 already uses RTC for freerunning, please change to periodic mode"
 #endif
 #if OSAL_ST_RESOLUTION != 32
-#error "SYSTICKv1 already requires OSAL_ST_RESOLUTION == 32"
+#error "SYSTICKv1 requires OSAL_ST_RESOLUTION == 32"
 #endif
 
 /**
  * @brief   SysTick timer IRQ priority.
  */
 #if !defined(SAM_ST_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define SAM_ST_IRQ_PRIORITY               8
+#define SAM_ST_IRQ_PRIORITY 8
 #endif
 
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+#if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
 #if SAM_RTC_GCLK_SRC_ID == 0
 #define SAM_RTC_GCLK_GENDIV SAM_GCLK0_GENDIV
 #define SAM_RTC_GCLK_SRC_FREQ SAM_GCLK0_SRC_FREQ
@@ -81,10 +83,11 @@
 #endif
 #if SAM_RTC_GCLK_GENDIV == 0
 #error SAM_RTC_GCLK_GENDIV cannot be 0
-#elif (SAM_RTC_GCLK_GENDIV * OSAL_ST_FREQUENCY * (1UL << SAM_RTC_DIV)) != SAM_RTC_GCLK_SRC_FREQ
+#elif (SAM_RTC_GCLK_GENDIV * OSAL_ST_FREQUENCY * (1UL << SAM_RTC_DIV)) != \
+    SAM_RTC_GCLK_SRC_FREQ
 #error SAM_RTC_DIV and SAM_RTC_GCLK_SRC_FREQ does not satisfy for OSAL_ST_FREQUENCY
 #endif
-
+#endif
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
@@ -98,15 +101,14 @@
 /*===========================================================================*/
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
-  void st_lld_init(void);
-  #if (OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING) || defined(__DOXYGEN__)
-  void st_lld_start_alarm(systime_t abstime);
-  void st_lld_stop_alarm(void);
-  bool st_lld_is_alarm_active(void);
-  #endif
+void st_lld_init(void);
+#if (OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING) || defined(__DOXYGEN__)
+void st_lld_start_alarm(systime_t abstime);
+void st_lld_stop_alarm(void);
+bool st_lld_is_alarm_active(void);
+#endif
 #ifdef __cplusplus
 }
 #endif
@@ -125,10 +127,10 @@ extern "C"
  * @notapi
  */
 
-static inline systime_t st_lld_get_counter(void)
-{
+static inline systime_t st_lld_get_counter(void) {
   RTC_REGS->MODE0.RTC_READREQ = RTC_READREQ_RREQ_Msk | RTC_READREQ_ADDR(0x10U);
-  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) == RTC_STATUS_SYNCBUSY_Msk)
+  while ((RTC_REGS->MODE0.RTC_STATUS & RTC_STATUS_SYNCBUSY_Msk) ==
+         RTC_STATUS_SYNCBUSY_Msk)
     ;
   uint32_t counter = (RTC_REGS->MODE0.RTC_COUNT);
   return counter;
@@ -141,12 +143,10 @@ static inline systime_t st_lld_get_counter(void)
  *
  * @notapi
  */
-static inline void st_lld_set_alarm(systime_t abstime)
-{
+static inline void st_lld_set_alarm(systime_t abstime) {
   st_lld_start_alarm(abstime);
 }
 
-#endif
 /**
  * @brief   Returns the current alarm time.
  *
@@ -154,11 +154,10 @@ static inline void st_lld_set_alarm(systime_t abstime)
  *
  * @notapi
  */
-static inline systime_t st_lld_get_alarm(void)
-{
-  return ((RTC_REGS->MODE0.RTC_COMP));
+static inline systime_t st_lld_get_alarm(void) {
+  return (systime_t)(RTC_REGS->MODE0.RTC_COMP);
 }
-
+#endif
 #endif /* HAL_ST_LLD_H */
 
 /** @} */

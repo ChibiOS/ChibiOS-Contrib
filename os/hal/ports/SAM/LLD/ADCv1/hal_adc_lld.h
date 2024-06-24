@@ -35,9 +35,9 @@
  * @name    Possible ADC errors mask bits.
  * @{
  */
-#define ADC_ERR_DMAFAILURE      1U  /**< DMA operations failure.            */
-#define ADC_ERR_OVERFLOW        2U  /**< ADC overflow condition.            */
-#define ADC_ERR_AWD             4U  /**< Watchdog triggered.                */
+#define ADC_ERR_DMAFAILURE 1U /**< DMA operations failure.            */
+#define ADC_ERR_OVERFLOW 2U   /**< ADC overflow condition.            */
+#define ADC_ERR_AWD 4U        /**< Watchdog triggered.                */
 /** @} */
 
 /*===========================================================================*/
@@ -54,7 +54,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(SAM_ADC_USE_ADC1) || defined(__DOXYGEN__)
-#define SAM_ADC_USE_ADC1                  FALSE
+#define SAM_ADC_USE_ADC1 FALSE
 #endif
 /** @} */
 
@@ -88,31 +88,31 @@ typedef uint32_t adcerror_t;
 /**
  * @brief   Low level fields of the ADC driver structure.
  */
-#define adc_lld_driver_fields                                               \
-  /* Dummy field, it is not needed.*/                                       \
-  adc_registers_t*          adc;                                            \
-  uint8_t                   dmacId;                                         \
-  uint16_t                  curr_size;                                      \
-  uint8_t                   curr_pin;
+#define adc_lld_driver_fields         \
+  /* Dummy field, it is not needed.*/ \
+  adc_registers_t* adc;               \
+  uint8_t dmacId;                     \
+  uint16_t curr_size;                 \
+  uint8_t curr_pin;
 
 /**
  * @brief   Low level fields of the ADC configuration structure.
  */
-#define adc_lld_config_fields                                               \
-  /* Dummy configuration, it is not needed.*/                               \
-  uint32_t                  dummy
+#define adc_lld_config_fields                 \
+  /* Dummy configuration, it is not needed.*/ \
+  uint32_t dummy
 
 /**
  * @brief   Low level fields of the ADC configuration structure.
  */
-#define adc_lld_configuration_group_fields                                  \
-  /* Dummy configuration, it is not needed.*/                               \
-  uint8_t                  refctrl;                                         \
-  uint8_t                  avgctrl;                                         \
-  uint8_t                  sampctrl;                                        \
-  uint16_t                 ctrlb;                                           \
-  uint32_t                 inputctrl;                                       \
-  uint8_t                  *seq;
+#define adc_lld_configuration_group_fields    \
+  /* Dummy configuration, it is not needed.*/ \
+  uint8_t refctrl;                            \
+  uint8_t avgctrl;                            \
+  uint8_t sampctrl;                           \
+  uint16_t ctrlb;                             \
+  uint32_t inputctrl;                         \
+  uint8_t* seq;
 
 /*===========================================================================*/
 /* External declarations.                                                    */
@@ -125,11 +125,11 @@ extern ADCDriver ADCD1;
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void adc_lld_init(void);
-  void adc_lld_start(ADCDriver *adcp);
-  void adc_lld_stop(ADCDriver *adcp);
-  void adc_lld_start_conversion(ADCDriver *adcp);
-  void adc_lld_stop_conversion(ADCDriver *adcp);
+void adc_lld_init(void);
+void adc_lld_start(ADCDriver* adcp);
+void adc_lld_stop(ADCDriver* adcp);
+void adc_lld_start_conversion(ADCDriver* adcp);
+void adc_lld_stop_conversion(ADCDriver* adcp);
 #ifdef __cplusplus
 }
 #endif

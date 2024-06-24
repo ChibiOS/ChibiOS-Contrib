@@ -2,17 +2,16 @@
 
 #if defined(SAM_DMAC_REQUIRED) || defined(__DOXYGEN__)
 
-static struct
-{
+static struct {
   /**
    * @brief   Mask of the allocated streams.
    */
   uint32_t allocated_mask;
+
   /**
    * @brief   DMA IRQ redirectors.
    */
-  struct
-  {
+  struct {
     /**
      * @brief   DMA callback function.
      */
@@ -20,12 +19,14 @@ static struct
     /**
      * @brief   DMA callback parameter.
      */
-    void *param;
+    void* param;
   } channel[SAM_DMAC_CHAN_NUM];
 } dmac;
 
-static dmac_descriptor_registers_t descriptor_section[SAM_DMAC_CHAN_NUM] __ALIGNED(16);
-static dmac_descriptor_registers_t writeback_section[SAM_DMAC_CHAN_NUM] __ALIGNED(16);
+static dmac_descriptor_registers_t
+    descriptor_section[SAM_DMAC_CHAN_NUM] __ALIGNED(16);
+static dmac_descriptor_registers_t
+    writeback_section[SAM_DMAC_CHAN_NUM] __ALIGNED(16);
 
 const sam_dmac_chnl_t _sam_dmac_chnl[SAM_DMAC_CHAN_NUM] = {
     {&descriptor_section[0], &writeback_section[0]},
@@ -40,14 +41,35 @@ const sam_dmac_chnl_t _sam_dmac_chnl[SAM_DMAC_CHAN_NUM] = {
     {&descriptor_section[9], &writeback_section[9]},
     {&descriptor_section[10], &writeback_section[10]},
     {&descriptor_section[11], &writeback_section[11]},
+#if (SAM_DMAC_CHAN_NUM > 12)
+    {&descriptor_section[12], &writeback_section[12]},
+    {&descriptor_section[13], &writeback_section[13]},
+    {&descriptor_section[14], &writeback_section[14]},
+    {&descriptor_section[15], &writeback_section[15]},
+    {&descriptor_section[16], &writeback_section[16]},
+    {&descriptor_section[17], &writeback_section[17]},
+    {&descriptor_section[18], &writeback_section[18]},
+    {&descriptor_section[19], &writeback_section[19]},
+    {&descriptor_section[20], &writeback_section[20]},
+    {&descriptor_section[21], &writeback_section[21]},
+    {&descriptor_section[22], &writeback_section[22]},
+    {&descriptor_section[23], &writeback_section[23]},
+    {&descriptor_section[24], &writeback_section[24]},
+    {&descriptor_section[25], &writeback_section[25]},
+    {&descriptor_section[26], &writeback_section[26]},
+    {&descriptor_section[27], &writeback_section[27]},
+    {&descriptor_section[28], &writeback_section[28]},
+    {&descriptor_section[29], &writeback_section[29]},
+    {&descriptor_section[30], &writeback_section[30]},
+    {&descriptor_section[31], &writeback_section[31]},
+#endif
 };
 
 /**
  * @brief Initialize DMAC Peripheral
  *
  */
-void dmacInit(void)
-{
+void dmacInit(void) {
   PM_REGS->PM_APBBMASK |= PM_APBBMASK_DMAC_Msk;
   PM_REGS->PM_AHBMASK |= PM_AHBMASK_DMAC_Msk;
 
@@ -55,18 +77,21 @@ void dmacInit(void)
   DMAC_REGS->DMAC_CTRL = DMAC_CTRL_SWRST_Msk;
   DMAC_REGS->DMAC_BASEADDR = (uint32_t)&descriptor_section[0];
   DMAC_REGS->DMAC_WRBADDR = (uint32_t)&writeback_section[0];
-  DMAC_REGS->DMAC_PRICTRL0 = DMAC_PRICTRL0_LVLPRI0(1UL) | DMAC_PRICTRL0_RRLVLEN0_Msk |
-                             DMAC_PRICTRL0_LVLPRI1(1UL) | DMAC_PRICTRL0_RRLVLEN1_Msk |
-                             DMAC_PRICTRL0_LVLPRI2(1UL) | DMAC_PRICTRL0_RRLVLEN2_Msk |
-                             DMAC_PRICTRL0_LVLPRI3(1UL) | DMAC_PRICTRL0_RRLVLEN3_Msk;
+  DMAC_REGS->DMAC_PRICTRL0 =
+      DMAC_PRICTRL0_LVLPRI0(1UL) | DMAC_PRICTRL0_RRLVLEN0_Msk |
+      DMAC_PRICTRL0_LVLPRI1(1UL) | DMAC_PRICTRL0_RRLVLEN1_Msk |
+      DMAC_PRICTRL0_LVLPRI2(1UL) | DMAC_PRICTRL0_RRLVLEN2_Msk |
+      DMAC_PRICTRL0_LVLPRI3(1UL) | DMAC_PRICTRL0_RRLVLEN3_Msk;
   unsigned i;
   dmac.allocated_mask = 0;
-  for (i = 0; i < SAM_DMAC_CHAN_NUM; i++)
-  {
+  for (i = 0; i < SAM_DMAC_CHAN_NUM; i++) {
     dmac.channel[i].func = NULL;
     dmac.channel[i].param = NULL;
   }
-  DMAC_REGS->DMAC_CTRL = (uint16_t)(DMAC_CTRL_DMAENABLE_Msk | DMAC_CTRL_LVLEN0_Msk | DMAC_CTRL_LVLEN1_Msk | DMAC_CTRL_LVLEN2_Msk | DMAC_CTRL_LVLEN3_Msk);
+  DMAC_REGS->DMAC_CTRL =
+      (uint16_t)(DMAC_CTRL_DMAENABLE_Msk | DMAC_CTRL_LVLEN0_Msk |
+                 DMAC_CTRL_LVLEN1_Msk | DMAC_CTRL_LVLEN2_Msk |
+                 DMAC_CTRL_LVLEN3_Msk);
   nvicEnableVector(DMAC_IRQn, SAM_DMAC_IRQ_PRIORITY);
 }
 
@@ -80,32 +105,24 @@ void dmacInit(void)
  * @return int8_t the channel ID
  * if unable to then return -1
  */
-int8_t dmacChnlAllocI(uint8_t id,
-                      uint8_t priority,
-                      sam_dmaisr_t func,
-                      void *param)
-{
+int8_t dmacChnlAllocI(uint8_t id, uint8_t priority, sam_dmaisr_t func,
+                      void* param) {
   uint32_t i, startid, endid;
 
   osalDbgCheckClassI();
 
-  if (id < SAM_DMAC_NUM_MAX)
-  {
+  if (id < SAM_DMAC_NUM_MAX) {
     startid = id;
     endid = id;
-  }
-  else
-  {
+  } else {
     startid = 0;
     endid = SAM_DMAC_NUM_MAX - 1;
   }
 
-  for (i = startid; i <= endid; i++)
-  {
+  for (i = startid; i <= endid; i++) {
     uint32_t mask = (1U << i);
-    if ((dmac.allocated_mask & mask) == 0U)
-    {
-      const sam_dmac_chnl_t *dmastp = &_sam_dmac_chnl[i];
+    if ((dmac.allocated_mask & mask) == 0U) {
+      const sam_dmac_chnl_t* dmastp = &_sam_dmac_chnl[i];
       dmastp->desc->DMAC_BTCTRL |= DMAC_BTCTRL_VALID_Msk;
       /* Installs the DMA handler. */
       dmac.channel[i].func = func;
@@ -120,11 +137,8 @@ int8_t dmacChnlAllocI(uint8_t id,
   return -1;
 }
 
-int8_t dmacChnlAlloc(uint8_t id,
-                     uint8_t priority,
-                     sam_dmaisr_t func,
-                     void *param)
-{
+int8_t dmacChnlAlloc(uint8_t id, uint8_t priority, sam_dmaisr_t func,
+                     void* param) {
   int8_t dmac_id = -1;
   osalSysLock();
   dmac_id = dmacChnlAllocI(id, priority, func, param);
@@ -132,8 +146,7 @@ int8_t dmacChnlAlloc(uint8_t id,
   return dmac_id;
 }
 
-void dmacChnlFreeI(uint8_t id)
-{
+void dmacChnlFreeI(uint8_t id) {
   osalDbgCheckClassI();
   dmacChnlDisableIRQn(id);
   dmacChnlDisable(id);
@@ -142,14 +155,16 @@ void dmacChnlFreeI(uint8_t id)
   dmac.allocated_mask &= ~(1 << (uint32_t)id);
 }
 
-void dmacChnlFree(uint8_t id)
-{
+void dmacChnlFree(uint8_t id) {
   osalSysLock();
   dmacChnlFreeI(id);
   osalSysUnlock();
 }
-
+#ifdef SAMD21_CONF
 OSAL_IRQ_HANDLER(DMAC_HANDLER)
+#elif SAME54_CONF
+OSAL_IRQ_HANDLER(DMAC_4_31_HANDLER)
+#endif
 {
   OSAL_IRQ_PROLOGUE();
   uint8_t channel = 0U;
@@ -158,8 +173,7 @@ OSAL_IRQ_HANDLER(DMAC_HANDLER)
   DMAC_REGS->DMAC_CHID = channel;
   chanIntFlagStatus = (uint8_t)DMAC_REGS->DMAC_CHINTFLAG;
   dmacChnlDisableIRQn(channel);
-  if (dmac.channel[channel].func != NULL)
-  {
+  if (dmac.channel[channel].func != NULL) {
     dmac.channel[channel].func(dmac.channel[channel].param, chanIntFlagStatus);
   }
   OSAL_IRQ_EPILOGUE();

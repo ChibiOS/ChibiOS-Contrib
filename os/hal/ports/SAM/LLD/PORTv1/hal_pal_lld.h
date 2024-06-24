@@ -55,32 +55,32 @@
 // #define PAL_SAM_ALTERNATE_MASK        (15U << 7U)
 // #define PAL_SAM_ALTERNATE(n)          ((n) << 7U)
 
-#define PAL_SAM_PMUXEN_MASK               (1U << 0U)
-#define PAL_SAM_PMUXEN_PMUX               (1U << 0U)
-#define PAL_SAM_PMUXEN_IO                 (0U << 0U)
+#define PAL_SAM_PMUXEN_MASK (1U << 0U)
+#define PAL_SAM_PMUXEN_PMUX (1U << 0U)
+#define PAL_SAM_PMUXEN_IO (0U << 0U)
 
-#define PAL_SAM_INEN_MASK                 (1U << 1U)
-#define PAL_SAM_INEN_ENABLE               (1U << 1U)
-#define PAL_SAM_INEN_DISABLE              (0U << 1U)
+#define PAL_SAM_INEN_MASK (1U << 1U)
+#define PAL_SAM_INEN_ENABLE (1U << 1U)
+#define PAL_SAM_INEN_DISABLE (0U << 1U)
 
-#define PAL_SAM_PULLEN_MASK               (1U << 2U)
-#define PAL_SAM_PULLEN_ENABLE             (1U << 2U)
-#define PAL_SAM_PULLEN_DISABLE            (0U << 2U)
+#define PAL_SAM_PULLEN_MASK (1U << 2U)
+#define PAL_SAM_PULLEN_ENABLE (1U << 2U)
+#define PAL_SAM_PULLEN_DISABLE (0U << 2U)
 
-#define PAL_SAM_DRVSTR_MASK               (1U << 3U)
-#define PAL_SAM_DRVSTR_NORMAL             (0U << 3U)
-#define PAL_SAM_DRVSTR_STRONGER           (1U << 3U)
+#define PAL_SAM_DRVSTR_MASK (1U << 3U)
+#define PAL_SAM_DRVSTR_NORMAL (0U << 3U)
+#define PAL_SAM_DRVSTR_STRONGER (1U << 3U)
 
-#define PAL_SAM_DIR_MASK                  (1U << 4U)
-#define PAL_SAM_DIR_OUT                   (1U << 4U)
-#define PAL_SAM_DIR_IN                    (0U << 4U)
+#define PAL_SAM_DIR_MASK (1U << 4U)
+#define PAL_SAM_DIR_OUT (1U << 4U)
+#define PAL_SAM_DIR_IN (0U << 4U)
 
-#define PAL_SAM_OUT_MASK                  (1U << 5U)
-#define PAL_SAM_OUT_ENABLE                (1U << 5U)
-#define PAL_SAM_OUT_DISABLE               (0U << 5U)
+#define PAL_SAM_OUT_MASK (1U << 5U)
+#define PAL_SAM_OUT_ENABLE (1U << 5U)
+#define PAL_SAM_OUT_DISABLE (0U << 5U)
 
-#define PAL_SAM_ALTERNATE_MASK            (7U  << 6U)
-#define PAL_SAM_ALTERNATE(n)              ((n) << 6U)
+#define PAL_SAM_ALTERNATE_MASK (7U << 6U)
+#define PAL_SAM_ALTERNATE(n) ((n) << 6U)
 
 #define PAL_NEW_INIT
 #undef PAL_MODE_RESET
@@ -93,52 +93,68 @@
 #undef PAL_MODE_OUTPUT_OPENDRAIN
 // PORT RESET MODE
 
-#define PAL_SAM_RESET                    (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_DISABLE | \
-                                           PAL_SAM_PULLEN_DISABLE | PAL_SAM_DIR_IN)
-
+#define PAL_SAM_RESET                                                  \
+  (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_DISABLE | PAL_SAM_PULLEN_DISABLE | \
+   PAL_SAM_DIR_IN)
 
 /* PORT INPUT MODE: FLOAT, PULLUP, PULLDOWN pg 368 */
 
-#define PAL_MODE_INPUT                    (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_ENABLE | \
-                                           PAL_SAM_PULLEN_DISABLE | PAL_SAM_DIR_IN)
+#define PAL_MODE_INPUT                                                \
+  (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_ENABLE | PAL_SAM_PULLEN_DISABLE | \
+   PAL_SAM_DIR_IN)
 
-#define PAL_MODE_INPUT_PULLUP             (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_ENABLE | \
-                                           PAL_SAM_PULLEN_ENABLE | PAL_SAM_DIR_IN | \
-                                           PAL_SAM_OUT_ENABLE)
+#define PAL_MODE_INPUT_PULLUP                                        \
+  (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_ENABLE | PAL_SAM_PULLEN_ENABLE | \
+   PAL_SAM_DIR_IN | PAL_SAM_OUT_ENABLE)
 
-#define PAL_MODE_INPUT_PULLDOWN           (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_ENABLE | \
-                                           PAL_SAM_PULLEN_ENABLE | PAL_SAM_DIR_IN | \
-                                           PAL_SAM_OUT_DISABLE)  
-
+#define PAL_MODE_INPUT_PULLDOWN                                      \
+  (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_ENABLE | PAL_SAM_PULLEN_ENABLE | \
+   PAL_SAM_DIR_IN | PAL_SAM_OUT_DISABLE)
 
 /* PORT OUTPUT MODE pg 369 */
 
-#define PAL_MODE_OUTPUT_OPENDRAIN         (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_DISABLE | \
-                                           PAL_SAM_PULLEN_ENABLE | PAL_SAM_DIR_OUT)
+#define PAL_MODE_OUTPUT_OPENDRAIN                                     \
+  (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_DISABLE | PAL_SAM_PULLEN_ENABLE | \
+   PAL_SAM_DIR_OUT)
 
-#define PAL_MODE_OUTPUT_INBUFF            (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_ENABLE | \
-                                           PAL_SAM_PULLEN_DISABLE | PAL_SAM_DIR_OUT | \
-                                           PAL_SAM_OUT_ENABLE)
+#define PAL_MODE_OUTPUT_INBUFF                                        \
+  (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_ENABLE | PAL_SAM_PULLEN_DISABLE | \
+   PAL_SAM_DIR_OUT | PAL_SAM_OUT_ENABLE)
 
-#define PAL_MODE_OUTPUT_PUSHPULL          (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_DISABLE | \
-                                           PAL_SAM_PULLEN_DISABLE | PAL_SAM_DIR_OUT)
+#define PAL_MODE_OUTPUT_PUSHPULL                                       \
+  (PAL_SAM_PMUXEN_IO | PAL_SAM_INEN_DISABLE | PAL_SAM_PULLEN_DISABLE | \
+   PAL_SAM_DIR_OUT)
+
+/*
+* Refer to SAM Datasheet under I/O Multiplexing and Considerations to determine what mode to put your GPIO in.
+*/
+#define PAL_SAM_FUNC_A 0
+#define PAL_SAM_FUNC_B 1
+#define PAL_SAM_FUNC_C 2
+#define PAL_SAM_FUNC_D 3
+#define PAL_SAM_FUNC_E 4
+#define PAL_SAM_FUNC_F 5
+#define PAL_SAM_FUNC_G 6
+#define PAL_SAM_FUNC_H 7   
+
+#ifdef SAME54_MCUCONF
+#define PAL_SAM_FUNC_I 8
+#define PAL_SAM_FUNC_J 9
+#define PAL_SAM_FUNC_K 10
+#define PAL_SAM_FUNC_L 11
+#define PAL_SAM_FUNC_M 12
+#define PAL_SAM_FUNC_N 13
+#endif
 
 // PORT ALTERNATE MODE
-
-#define PAL_MODE_ALTERNATE(n)             (PAL_SAM_PMUXEN_PMUX | PAL_SAM_ALTERNATE(n))
-
+#define PAL_MODE_ALTERNATE(n) (PAL_SAM_PMUXEN_PMUX | PAL_SAM_ALTERNATE(n))
 
 // PORT ANALOG MODE
 
-#define PAL_MODE_ANALOG                   (PAL_SAM_RESET | PAL_MODE_ALTERNATE(1))
-#define PAL_SAM_FUNC_A                    0
-#define PAL_SAM_FUNC_B                    1
-#define PAL_SAM_FUNC_C                    2
-#define PAL_SAM_FUNC_D                    3
-#define PAL_SAM_FUNC_E                    4
-#define PAL_SAM_FUNC_F                    5
-#define PAL_SAM_FUNC_G                    6
-#define PAL_SAM_FUNC_H                    7
+#define PAL_MODE_ANALOG (PAL_SAM_RESET | PAL_MODE_ALTERNATE(1))
+
+
+
 /*===========================================================================*/
 /* I/O Ports Types and constants.                                            */
 /*===========================================================================*/
@@ -150,13 +166,13 @@
 /**
  * @brief   Width, in bits, of an I/O port.
  */
-#define PAL_IOPORTS_WIDTH           32U
+#define PAL_IOPORTS_WIDTH 32U
 
 /**
  * @brief   Whole port mask.
  * @details This macro specifies all the valid bits into a port.
  */
-#define PAL_WHOLE_PORT              ((ioportmask_t)0xFFFFU)
+#define PAL_WHOLE_PORT ((ioportmask_t)0xFFFFU)
 /** @} */
 
 /**
@@ -168,25 +184,23 @@
  * @details A port/pad pair are encoded into an @p ioline_t type. The encoding
  *          of this type is platform-dependent.
  */
-#define PAL_LINE(port, pad)                                                 \
-  ((ioline_t)((uint32_t)(port)) | ((uint32_t)(pad)))
+#define PAL_LINE(port, pad) ((ioline_t)((uintptr_t)(port)) | ((uint32_t)(pad)))
 
 /**
  * @brief   Decodes a port identifier from a line identifier.
  */
-#define PAL_PORT(line)                                                      \
-  ((ioportid_t)(((uint32_t)(line)) & 0xFFFFFF80U))
+#define PAL_PORT(line) ((ioportid_t)(((uint32_t)(line)) & 0xFFFFFF80U))
 
 /**
  * @brief   Decodes a pad identifier from a line identifier.
  */
-#define PAL_PAD(line)                                                       \
-  ((uint32_t)((uint32_t)(line) & 0x0000001FU))
+#define PAL_PAD(line) ((uint32_t)((uint32_t)(line)&0x0000001FU))
 
 /**
  * @brief   Value identifying an invalid line.
  */
-#define PAL_NOLINE                      0U
+#define PAL_NOLINE 0U
+
 /** @} */
 
 /**
@@ -244,18 +258,34 @@ typedef uint8_t iopadid_t;
  * @details Low level drivers can define multiple ports, it is suggested to
  *          use this naming convention.
  */
- 
+
 #if defined(SAM_HAS_GPIOA) || defined(__DOXYGEN__)
-#define GPIOA			      &PORT_REGS->GROUP[0]
-#define IOPORT1         &PORT_REGS->GROUP[0]
+#define GPIOA &PORT_REGS->GROUP[0]
+#define IOPORT1 &PORT_REGS->GROUP[0]
 #endif
 
 /**
  * @brief   GPIO port B identifier.
  */
-#if defined(SAM_HAS_GPIOA) || defined(__DOXYGEN__)
-#define GPIOB			      &PORT_REGS->GROUP[1]
-#define IOPORT2         &PORT_REGS->GROUP[1]
+#if defined(SAM_HAS_GPIOB) || defined(__DOXYGEN__)
+#define GPIOB &PORT_REGS->GROUP[1]
+#define IOPORT2 &PORT_REGS->GROUP[1]
+#endif
+
+/**
+ * @brief   GPIO port B identifier.
+ */
+#if defined(SAM_HAS_GPIOC) || defined(__DOXYGEN__)
+#define GPIOC &PORT_REGS->GROUP[2]
+#define IOPORT3 &PORT_REGS->GROUP[2]
+#endif
+
+/**
+ * @brief   GPIO port D identifier.
+ */
+#if defined(SAM_HAS_GPIOD) || defined(__DOXYGEN__)
+#define GPIOD &PORT_REGS->GROUP[3]
+#define IOPORT4 &PORT_REGS->GROUP[3]
 #endif
 
 /*===========================================================================*/
@@ -340,23 +370,9 @@ typedef uint8_t iopadid_t;
  * @notapi
  */
 #define pal_lld_toggleport(port, bits) ((port)->PORT_OUTTGL = bits)
-/**
- * @brief   Reads a group of bits.
- * @note    The @ref PAL provides a default software implementation of this
- *          functionality, implement this function if can optimize it by using
- *          special hardware functionalities or special coding.
- *
- * @param[in] port      port identifier
- * @param[in] mask      group mask
- * @param[in] offset    group bit offset within the port
- * @return              The group logical states.
- *
- * @notapi
- */
-#define pal_lld_readgroup(port, mask, offset) ((port)->PORT_IN >> offset)
 
 #define pal_lld_writegroup(port, mask, offset, bits) \
-        _pal_lld_writegroup(port, mask, offset, bits)
+  _pal_lld_writegroup(port, mask, offset, bits)
 
 /**
  * @brief   Pads group mode setup.
@@ -371,7 +387,7 @@ typedef uint8_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_setgroupmode(port, mask, offset, mode)                      \
+#define pal_lld_setgroupmode(port, mask, offset, mode) \
   _pal_lld_setgroupmode(port, mask << offset, mode)
 /**
  * @brief   Sets a pad logical state to @p PAL_HIGH.
@@ -397,7 +413,7 @@ typedef uint8_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_clearpad(port, pad) ((port)->PORT_OUTCLR = (1 << pad))                                         
+#define pal_lld_clearpad(port, pad) ((port)->PORT_OUTCLR = (1 << pad))
 
 /**
  * @brief   Toggles a pad logical state.
@@ -410,7 +426,7 @@ typedef uint8_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_togglepad(port, pad) ((port)->PORT_OUTTGL = (1 << pad))   
+#define pal_lld_togglepad(port, pad) ((port)->PORT_OUTTGL = (1 << pad))
 
 /**
  * @brief   Pad event enable.
@@ -422,7 +438,7 @@ typedef uint8_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_enablepadevent(port, pad, mode)                             \
+#define pal_lld_enablepadevent(port, pad, mode) \
   _pal_lld_enablepadevent(port, pad, mode)
 
 /**
@@ -434,9 +450,7 @@ typedef uint8_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_disablepadevent(port, pad)                                  \
-  _pal_lld_disablepadevent(port, pad)
-
+#define pal_lld_disablepadevent(port, pad) _pal_lld_disablepadevent(port, pad)
 
 /**
  * @brief   Returns a PAL event structure associated to a pad.
@@ -446,8 +460,7 @@ typedef uint8_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_get_pad_event(port, pad)                                    \
-  _pal_lld_get_pad_event(port, pad)
+#define pal_lld_get_pad_event(port, pad) _pal_lld_get_pad_event(port, pad)
 
 /**
  * @brief   Returns a PAL event structure associated to a line.
@@ -456,8 +469,7 @@ typedef uint8_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_get_line_event(line)                                        \
-  _pal_lld_get_line_event(line)
+#define pal_lld_get_line_event(line) _pal_lld_get_line_event(line)
 
 /**
  * @brief   Pad event enable check.
@@ -470,7 +482,7 @@ typedef uint8_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_ispadeventenabled(port, pad)                                \
+#define pal_lld_ispadeventenabled(port, pad) \
   _pal_lld_ispadeventenabled(port, pad)
 
 #if !defined(__DOXYGEN__)
@@ -482,23 +494,18 @@ extern palevent_t _pal_events[16];
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void _pal_lld_init(void);
-  void _pal_lld_setgroupmode(ioportid_t port,
-                             ioportmask_t mask,
-                             iomode_t mode);
-  void _pal_lld_writegroup(ioportid_t port, 
-                          ioportmask_t mask, 
-                          uint32_t offset, 
-                          uint32_t bits);
-  void _pal_lld_enablepadevent(ioportid_t port,
-                               iopadid_t pad,
-                               ioeventmode_t mode);
-  void _pal_lld_disablepadevent(ioportid_t port,
-                                iopadid_t pad);
-  bool _pal_lld_ispadeventenabled(ioportid_t port, iopadid_t pad);
-  palevent_t* _pal_lld_get_line_event(ioline_t line);
-  palevent_t* _pal_lld_get_pad_event(ioportid_t port, 
-                                    iopadid_t pad);
+void _pal_lld_init(void);
+void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode);
+void _pal_lld_writegroup(ioportid_t port, ioportmask_t mask, uint32_t offset,
+                         uint32_t bits);
+#if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
+void _pal_lld_enablepadevent(ioportid_t port, iopadid_t pad,
+                             ioeventmode_t mode);
+void _pal_lld_disablepadevent(ioportid_t port, iopadid_t pad);
+bool _pal_lld_ispadeventenabled(ioportid_t port, iopadid_t pad);
+palevent_t* _pal_lld_get_line_event(ioline_t line);
+palevent_t* _pal_lld_get_pad_event(ioportid_t port, iopadid_t pad);
+#endif
 #ifdef __cplusplus
 }
 #endif

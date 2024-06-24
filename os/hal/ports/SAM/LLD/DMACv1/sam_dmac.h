@@ -6,8 +6,8 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 #define SAM_DMAC_NUM_MAX SAM_DMAC_CHAN_NUM
-typedef enum
-{
+
+typedef enum {
   DISABLE = 0,
   SERCOM0_RX,
   SERCOM0_TX,
@@ -60,8 +60,7 @@ typedef enum
   TCC3_MC3,
 } dmac_trigsrc_t;
 
-typedef enum
-{
+typedef enum {
   BLOCK = 0,
   BEAT = 2,
   TRANSACTION,
@@ -86,13 +85,23 @@ typedef enum
  * @param[in] flags     pre-shifted content of the ISR register, the bits
  *                      are aligned to bit zero
  */
-typedef void (*sam_dmaisr_t)(void *p, uint8_t flags);
+typedef void (*sam_dmaisr_t)(void* p, uint8_t flags);
 
-typedef struct
-{
-  dmac_descriptor_registers_t *desc;
-  dmac_descriptor_registers_t *wb;
+typedef struct {
+  dmac_descriptor_registers_t* desc;
+  dmac_descriptor_registers_t* wb;
 } sam_dmac_chnl_t;
+
+typedef struct {
+  uint8_t DMAC_CHCTRLA;
+  uint8_t reserved0[3];
+  uint32_t DMAC_CHCTRLB;
+  uint32_t reserved1[2];
+  uint8_t DMAC_CHINTENCLR;
+  uint8_t DMAC_CHINTENSET;
+  uint8_t DMAC_CHINTFLAG;
+  uint8_t DMAC_CHSTATUS;
+} sam_dmac_chnl_reg_t;
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
@@ -106,20 +115,15 @@ extern const sam_dmac_chnl_t _sam_dmac_chnl[SAM_DMAC_CHAN_NUM];
 #endif
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
-  void dmacInit(void);
-  int8_t dmacChnlAllocI(uint8_t id,
-                        uint8_t priority,
-                        sam_dmaisr_t func,
-                        void *param);
-  int8_t dmacChnlAlloc(uint8_t id,
-                       uint8_t priority,
-                       sam_dmaisr_t func,
-                       void *param);
-  void dmacChnlFree(uint8_t id);
-  void dmacChnlFreeI(uint8_t id);
+void dmacInit(void);
+int8_t dmacChnlAllocI(uint8_t id, uint8_t priority, sam_dmaisr_t func,
+                      void* param);
+int8_t dmacChnlAlloc(uint8_t id, uint8_t priority, sam_dmaisr_t func,
+                     void* param);
+void dmacChnlFree(uint8_t id);
+void dmacChnlFreeI(uint8_t id);
 #ifdef __cplusplus
 }
 #endif
@@ -127,13 +131,13 @@ extern "C"
 /*===========================================================================*/
 /* Driver inline functions.                                                  */
 /*===========================================================================*/
-/**
+
+    /**
  * @brief Resetting DMAC channel
  *
  * @param id DMAC Channel
  */
-static inline void dmacChnlReset(uint8_t id)
-{
+static inline void dmacChnlReset(uint8_t id) {
   DMAC_REGS->DMAC_CHID = id;
   /* Disable the DMA channel */
   DMAC_REGS->DMAC_CHCTRLA = (uint8_t)(DMAC_CHCTRLA_SWRST_Msk);
@@ -148,8 +152,7 @@ static inline void dmacChnlReset(uint8_t id)
  * @param id DMAC Channel
  * @return uint16_t bytes have been transferred
  */
-static inline uint16_t dmacChnlGetTransferred(uint8_t id)
-{
+static inline uint16_t dmacChnlGetTransferred(uint8_t id) {
   uint16_t transferredCount = _sam_dmac_chnl[id].desc->DMAC_BTCNT;
   transferredCount -= _sam_dmac_chnl[id].wb->DMAC_BTCNT;
   return (transferredCount);
@@ -162,8 +165,7 @@ static inline uint16_t dmacChnlGetTransferred(uint8_t id)
  * @param id DMAC Channel
  * @param prio channel priority
  */
-static inline void dmacChnlSetPrio(uint8_t id, uint8_t prio)
-{
+static inline void dmacChnlSetPrio(uint8_t id, uint8_t prio) {
   DMAC_REGS->DMAC_CHID = id;
   osalDbgAssert(prio < 3, "DMAC Priority out of range");
   uint8_t chctrlb = DMAC_REGS->DMAC_CHCTRLB;
@@ -177,8 +179,7 @@ static inline void dmacChnlSetPrio(uint8_t id, uint8_t prio)
  *
  * @param id DMAC Channel
  */
-static inline void dmacChnlEnable(uint8_t id)
-{
+static inline void dmacChnlEnable(uint8_t id) {
   DMAC_REGS->DMAC_CHID = id;
   DMAC_REGS->DMAC_CHCTRLA |= (uint8_t)(DMAC_CHCTRLA_ENABLE_Msk);
 }
@@ -188,8 +189,7 @@ static inline void dmacChnlEnable(uint8_t id)
  *
  * @param id DMAC Channel
  */
-static inline void dmacChnlDisable(uint8_t id)
-{
+static inline void dmacChnlDisable(uint8_t id) {
   DMAC_REGS->DMAC_CHID = id;
   DMAC_REGS->DMAC_CHCTRLA &= (uint8_t)(~DMAC_CHCTRLA_ENABLE_Msk);
 }
@@ -200,16 +200,16 @@ static inline void dmacChnlDisable(uint8_t id)
  * @param id DMAC Channel
  * @param btctrl
  */
-static inline void dmacChnlSetBtCtrl(uint8_t id, uint16_t btctrl)
-{
-  dmac_descriptor_registers_t *dmacDescReg = _sam_dmac_chnl[id].desc;
+static inline void dmacChnlSetBtCtrl(uint8_t id, uint16_t btctrl) {
+  dmac_descriptor_registers_t* dmacDescReg = _sam_dmac_chnl[id].desc;
   dmacDescReg->DMAC_BTCTRL = btctrl;
 }
 
-static inline uint8_t dmacChnlGetBeatSize(uint8_t id)
-{
-  dmac_descriptor_registers_t *dmacDescReg = _sam_dmac_chnl[id].desc;
-  uint8_t beat_size = (uint8_t)((dmacDescReg->DMAC_BTCTRL & DMAC_BTCTRL_BEATSIZE_Msk) >> DMAC_BTCTRL_BEATSIZE_Pos);
+static inline uint8_t dmacChnlGetBeatSize(uint8_t id) {
+  dmac_descriptor_registers_t* dmacDescReg = _sam_dmac_chnl[id].desc;
+  uint8_t beat_size =
+      (uint8_t)((dmacDescReg->DMAC_BTCTRL & DMAC_BTCTRL_BEATSIZE_Msk) >>
+                DMAC_BTCTRL_BEATSIZE_Pos);
   return 1u << beat_size;
 }
 
@@ -219,8 +219,7 @@ static inline uint8_t dmacChnlGetBeatSize(uint8_t id)
  * @param id DMAC Channel
  * @param src source to trigger
  */
-static inline void dmacChnlSetTrigSrc(uint8_t id, dmac_trigsrc_t src)
-{
+static inline void dmacChnlSetTrigSrc(uint8_t id, dmac_trigsrc_t src) {
   DMAC_REGS->DMAC_CHID = id;
   uint32_t chctrlb = DMAC_REGS->DMAC_CHCTRLB;
   chctrlb &= ~DMAC_CHCTRLB_TRIGSRC_Msk;
@@ -233,8 +232,7 @@ static inline void dmacChnlSetTrigSrc(uint8_t id, dmac_trigsrc_t src)
  *
  * @param id DMAC Channel
  */
-static inline void dmacChnlEnableEventOut(uint8_t id)
-{
+static inline void dmacChnlEnableEventOut(uint8_t id) {
   osalDbgAssert(id < 3, "Cannot map to EVSYS");
   DMAC_REGS->DMAC_CHID = id;
   DMAC_REGS->DMAC_CHCTRLB |= DMAC_CHCTRLB_EVOE_Msk;
@@ -245,10 +243,10 @@ static inline void dmacChnlEnableEventOut(uint8_t id)
  *
  * @param id DMAC Channel
  */
-static inline void dmacChnlEnableIRQn(uint8_t id)
-{
+static inline void dmacChnlEnableIRQn(uint8_t id) {
   DMAC_REGS->DMAC_CHID = id;
-  DMAC_REGS->DMAC_CHINTENSET = (uint8_t)(DMAC_CHINTENSET_TCMPL_Msk | DMAC_CHINTENSET_TERR_Msk);
+  DMAC_REGS->DMAC_CHINTENSET =
+      (uint8_t)(DMAC_CHINTENSET_TCMPL_Msk | DMAC_CHINTENSET_TERR_Msk);
 }
 
 /**
@@ -256,10 +254,10 @@ static inline void dmacChnlEnableIRQn(uint8_t id)
  *
  * @param id DMAC Channel
  */
-static inline void dmacChnlDisableIRQn(uint8_t id)
-{
+static inline void dmacChnlDisableIRQn(uint8_t id) {
   DMAC_REGS->DMAC_CHID = id;
-  DMAC_REGS->DMAC_CHINTENCLR = (uint8_t)(DMAC_CHINTENCLR_TCMPL_Msk | DMAC_CHINTENCLR_TERR_Msk);
+  DMAC_REGS->DMAC_CHINTENCLR =
+      (uint8_t)(DMAC_CHINTENCLR_TCMPL_Msk | DMAC_CHINTENCLR_TERR_Msk);
 }
 
 /**
@@ -268,8 +266,7 @@ static inline void dmacChnlDisableIRQn(uint8_t id)
  * @param id DMAC Channel
  */
 
-static inline void dmacChnlSetTrigAct(uint8_t id, dmac_trigact_t act)
-{
+static inline void dmacChnlSetTrigAct(uint8_t id, dmac_trigact_t act) {
   DMAC_REGS->DMAC_CHID = id;
   uint32_t chctrlb = DMAC_REGS->DMAC_CHCTRLB;
   chctrlb &= ~DMAC_CHCTRLB_TRIGACT_Msk;
@@ -285,24 +282,20 @@ static inline void dmacChnlSetTrigAct(uint8_t id, dmac_trigact_t act)
  * @param srcAddr Source Address
  * @param size number of transfer need to be made per beat
  */
-static inline void dmacChnlSetDir(uint8_t id, uint32_t dstAddr, uint32_t srcAddr, uint16_t size)
-{
-  dmac_descriptor_registers_t *dmacDescReg = _sam_dmac_chnl[id].desc;
+static inline void dmacChnlSetDir(uint8_t id, uint32_t dstAddr,
+                                  uint32_t srcAddr, uint16_t size) {
+  dmac_descriptor_registers_t* dmacDescReg = _sam_dmac_chnl[id].desc;
   dmacDescReg->DMAC_BTCNT = size;
-  if ((dmacDescReg->DMAC_BTCTRL & DMAC_BTCTRL_DSTINC_Msk) == DMAC_BTCTRL_DSTINC_Msk)
-  {
+  if ((dmacDescReg->DMAC_BTCTRL & DMAC_BTCTRL_DSTINC_Msk) ==
+      DMAC_BTCTRL_DSTINC_Msk) {
     dmacDescReg->DMAC_DSTADDR = dstAddr + size * dmacChnlGetBeatSize(id);
-  }
-  else
-  {
+  } else {
     dmacDescReg->DMAC_DSTADDR = dstAddr;
   }
-  if ((dmacDescReg->DMAC_BTCTRL & DMAC_BTCTRL_SRCINC_Msk) == DMAC_BTCTRL_SRCINC_Msk)
-  {
+  if ((dmacDescReg->DMAC_BTCTRL & DMAC_BTCTRL_SRCINC_Msk) ==
+      DMAC_BTCTRL_SRCINC_Msk) {
     dmacDescReg->DMAC_SRCADDR = srcAddr + size * dmacChnlGetBeatSize(id);
-  }
-  else
-  {
+  } else {
     dmacDescReg->DMAC_SRCADDR = srcAddr;
   }
 }
@@ -325,9 +318,8 @@ static inline void dmacChnlSetDir(uint8_t id, uint32_t dstAddr, uint32_t srcAddr
  * @param id
  * @return uint32_t
  */
-static inline uint32_t dmacChnlGetDstAddr(uint8_t id)
-{
-  dmac_descriptor_registers_t *dmacDescReg = _sam_dmac_chnl[id].desc;
+static inline uint32_t dmacChnlGetDstAddr(uint8_t id) {
+  dmac_descriptor_registers_t* dmacDescReg = _sam_dmac_chnl[id].desc;
   return dmacDescReg->DMAC_DSTADDR;
 }
 

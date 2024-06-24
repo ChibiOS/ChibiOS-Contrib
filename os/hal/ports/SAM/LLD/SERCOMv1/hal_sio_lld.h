@@ -145,7 +145,7 @@
  * @brief   Low level fields of the SIO driver structure.
  */
 #define sio_lld_driver_fields          \
-  sercom_usart_int_registers_t *usart; \
+  sercom_usart_int_registers_t* usart; \
   uint32_t clock;
 
 /**
@@ -158,11 +158,11 @@
   uint8_t txpo;               \
   uint8_t rxpo;
 
-#define SERCOM_CTRLA_DEFAULT (SERCOM_USART_INT_CTRLA_MODE_USART_INT_CLK | \
-                              SERCOM_USART_INT_CTRLA_DORD_Msk |           \
-                              SERCOM_USART_INT_CTRLA_IBON_Msk)
+#define SERCOM_SIO_CTRLA_DEFAULT                   \
+  (SERCOM_USART_INT_CTRLA_MODE_USART_INT_CLK | \
+   SERCOM_USART_INT_CTRLA_DORD_Msk | SERCOM_USART_INT_CTRLA_IBON_Msk)
 
-#define SERCOM_CTRLB_DEFAULT (0)
+#define SERCOM_SIO_CTRLB_DEFAULT (0)
 
 /**
  * @brief   Determines the state of the RX FIFO.
@@ -174,8 +174,9 @@
  *
  * @notapi
  */
-#define sio_lld_is_rx_empty(siop) !((siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_RXC_Msk) == \
-                                    SERCOM_USART_INT_INTFLAG_RXC_Msk)
+#define sio_lld_is_rx_empty(siop)                                       \
+  !((siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_RXC_Msk) == \
+    SERCOM_USART_INT_INTFLAG_RXC_Msk)
 
 /**
  * @brief   Determines the activity state of the receiver.
@@ -201,10 +202,11 @@
  *
  * @notapi
  */
-#define sio_lld_has_rx_errors(siop) ((siop->usart->SERCOM_STATUS & (SERCOM_USART_INT_STATUS_BUFOVF_Msk |      \
-                                                                    SERCOM_USART_INT_STATUS_FERR_Msk |        \
-                                                                    SERCOM_USART_INT_STATUS_PERR_Msk) != 0) | \
-                                     (siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_RXBRK_Msk) != 0)
+#define sio_lld_has_rx_errors(siop)                                           \
+  (((siop->usart->SERCOM_STATUS &                                             \
+     (SERCOM_USART_INT_STATUS_BUFOVF_Msk | SERCOM_USART_INT_STATUS_FERR_Msk | \
+      SERCOM_USART_INT_STATUS_PERR_Msk)) != 0) |                              \
+   ((siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_RXBRK_Msk) != 0))
 
 /**
  * @brief   Determines the state of the TX FIFO.
@@ -216,8 +218,9 @@
  *
  * @notapi
  */
-#define sio_lld_is_tx_full(siop) !((siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_DRE_Msk) == \
-                                   SERCOM_USART_INT_INTFLAG_DRE_Msk)
+#define sio_lld_is_tx_full(siop)                                        \
+  !((siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_DRE_Msk) == \
+    SERCOM_USART_INT_INTFLAG_DRE_Msk)
 
 /**
  * @brief   Determines the transmission state.
@@ -229,8 +232,9 @@
  *
  * @notapi
  */
-#define sio_lld_is_tx_ongoing(siop) !((siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_TXC_Msk) == \
-                                      SERCOM_USART_INT_INTFLAG_TXC_Msk)
+#define sio_lld_is_tx_ongoing(siop)                                     \
+  !((siop->usart->SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_TXC_Msk) == \
+    SERCOM_USART_INT_INTFLAG_TXC_Msk)
 
 /*===========================================================================*/
 /* External declarations.                                                    */
@@ -260,23 +264,34 @@ extern SIODriver SIOD5;
 extern SIODriver SIOD6;
 #endif
 
-#ifdef __cplusplus
-extern "C"
-{
+#ifdef SAME54_MCUCONF
+
+#if (SAM_SIO_USE_SERCOM6 == TRUE) && !defined(__DOXYGEN__)
+extern SIODriver SIOD7;
 #endif
-  void sio_lld_init(void);
-  msg_t sio_lld_start(SIODriver *siop);
-  void sio_lld_stop(SIODriver *siop);
-  void sio_lld_update_enable_flags(SIODriver *siop);
-  sioevents_t sio_lld_get_and_clear_errors(SIODriver *siop);
-  sioevents_t sio_lld_get_and_clear_events(SIODriver *siop);
-  sioevents_t sio_lld_get_events(SIODriver *siop);
-  size_t sio_lld_read(SIODriver *siop, uint8_t *buffer, size_t n);
-  size_t sio_lld_write(SIODriver *siop, const uint8_t *buffer, size_t n);
-  msg_t sio_lld_get(SIODriver *siop);
-  void sio_lld_put(SIODriver *siop, uint_fast16_t data);
-  msg_t sio_lld_control(SIODriver *siop, unsigned int operation, void *arg);
-  void sio_lld_serve_interrupt(SIODriver *siop);
+
+#if (SAM_SIO_USE_SERCOM7 == TRUE) && !defined(__DOXYGEN__)
+extern SIODriver SIOD8;
+#endif
+
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+void sio_lld_init(void);
+msg_t sio_lld_start(SIODriver* siop);
+void sio_lld_stop(SIODriver* siop);
+void sio_lld_update_enable_flags(SIODriver* siop);
+sioevents_t sio_lld_get_and_clear_errors(SIODriver* siop);
+sioevents_t sio_lld_get_and_clear_events(SIODriver* siop);
+sioevents_t sio_lld_get_events(SIODriver* siop);
+size_t sio_lld_read(SIODriver* siop, uint8_t* buffer, size_t n);
+size_t sio_lld_write(SIODriver* siop, const uint8_t* buffer, size_t n);
+msg_t sio_lld_get(SIODriver* siop);
+void sio_lld_put(SIODriver* siop, uint_fast16_t data);
+msg_t sio_lld_control(SIODriver* siop, unsigned int operation, void* arg);
+void sio_lld_serve_interrupt(SIODriver* siop);
 #ifdef __cplusplus
 }
 #endif

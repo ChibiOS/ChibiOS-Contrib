@@ -27,7 +27,7 @@
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
-#define SAM_FLASH_SECTOR_SIZE      256
+#define SAM_FLASH_SECTOR_SIZE 256
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -45,91 +45,85 @@ EFlashDriver EFLD1;
 /*===========================================================================*/
 
 typedef union {
-  uint16_t  hw[FLASH_PAGE_SIZE / sizeof (uint16_t)];
-  uint8_t   b[FLASH_PAGE_SIZE / sizeof (uint8_t)];
+  uint16_t hw[FLASH_PAGE_SIZE / sizeof(uint16_t)];
+  uint8_t b[FLASH_PAGE_SIZE / sizeof(uint8_t)];
 } pg_buffer_t;
 
 static const flash_descriptor_t efl_lld_descriptor = {
- .attributes        = FLASH_ATTR_ERASED_IS_ONE |
-                      FLASH_ATTR_MEMORY_MAPPED,
- .page_size         = FLASH_PAGE_SIZE,
- .sectors_count     = (FLASH_SIZE - SAM_FLASH_START_OFFSET) / SAM_FLASH_SECTOR_SIZE,
- .sectors           = NULL,
- .sectors_size      = SAM_FLASH_SECTOR_SIZE,
- .address           = (uint8_t *)FLASH_ADDR + SAM_FLASH_START_OFFSET,
- .size              = FLASH_SIZE
-};
+    .attributes = FLASH_ATTR_ERASED_IS_ONE | FLASH_ATTR_MEMORY_MAPPED,
+    .page_size = FLASH_PAGE_SIZE,
+    .sectors_count =
+        (FLASH_SIZE - SAM_FLASH_START_OFFSET) / SAM_FLASH_SECTOR_SIZE,
+    .sectors = NULL,
+    .sectors_size = SAM_FLASH_SECTOR_SIZE,
+    .address = (uint8_t*)FLASH_ADDR + SAM_FLASH_START_OFFSET,
+    .size = FLASH_SIZE};
 
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-static inline void sam_flash_clear_status(EFlashDriver *eflp) 
-{
+static inline void sam_flash_clear_status(EFlashDriver* eflp) {
   eflp->flash->NVMCTRL_STATUS = 0x001F;
 }
 
-static inline void sam_flash_exc_cmd(EFlashDriver *eflp, uint16_t cmd)
-{
-  eflp->flash->NVMCTRL_CTRLA = (uint16_t)(NVMCTRL_CTRLA_CMDEX_KEY | NVMCTRL_CTRLA_CMD(cmd));
+static inline void sam_flash_exc_cmd(EFlashDriver* eflp, uint16_t cmd) {
+  eflp->flash->NVMCTRL_CTRLA =
+      (uint16_t)(NVMCTRL_CTRLA_CMDEX_KEY | NVMCTRL_CTRLA_CMD(cmd));
 }
 
-static inline void sam_flash_set_addr(EFlashDriver *eflp, uint32_t addr)
-{
+static inline void sam_flash_set_addr(EFlashDriver* eflp, uint32_t addr) {
   eflp->flash->NVMCTRL_ADDR = (addr >> 1) & NVMCTRL_ADDR_ADDR_Msk;
 }
 
-static inline bool sam_flash_is_busy(EFlashDriver *eflp)
-{
-  return (eflp->flash->NVMCTRL_INTFLAG & NVMCTRL_INTFLAG_READY_Msk) != NVMCTRL_INTFLAG_READY_Msk;
+static inline bool sam_flash_is_busy(EFlashDriver* eflp) {
+  return (eflp->flash->NVMCTRL_INTFLAG & NVMCTRL_INTFLAG_READY_Msk) !=
+         NVMCTRL_INTFLAG_READY_Msk;
 }
 
-static inline void sam_flash_wait_busy(EFlashDriver *eflp)
-{
-  while(sam_flash_is_busy(eflp));
+static inline void sam_flash_wait_busy(EFlashDriver* eflp) {
+  while (sam_flash_is_busy(eflp))
+    ;
 }
 
-static inline flash_error_t sam_flash_get_error(EFlashDriver *eflp)
-{
-  uint16_t stat = (eflp->flash->NVMCTRL_STATUS & (NVMCTRL_STATUS_PROGE_Msk | 
-                                                  NVMCTRL_STATUS_NVME_Msk));
+static inline flash_error_t sam_flash_get_error(EFlashDriver* eflp) {
+  uint16_t stat = (eflp->flash->NVMCTRL_STATUS &
+                   (NVMCTRL_STATUS_PROGE_Msk | NVMCTRL_STATUS_NVME_Msk));
   sam_flash_clear_status(eflp);
-  if((stat & NVMCTRL_STATUS_NVME_Msk) != 0)
-  {
+  if ((stat & NVMCTRL_STATUS_NVME_Msk) != 0) {
     return FLASH_ERROR_HW_FAILURE;
   }
-  if((stat & NVMCTRL_STATUS_PROGE_Msk) != 0)
-  {
+  if ((stat & NVMCTRL_STATUS_PROGE_Msk) != 0) {
     return FLASH_ERROR_PROGRAM;
   }
   return FLASH_NO_ERROR;
 }
 
-static inline uint16_t read_unaligned_uint16(const void *data)
-{
+static inline uint16_t read_unaligned_uint16(const void* data) {
   union {
     uint16_t u16;
     uint8_t u8[2];
   } res;
-  const uint8_t *d = (const uint8_t *)data;
+
+  const uint8_t* d = (const uint8_t*)data;
   res.u8[0] = d[0];
   res.u8[1] = d[1];
   return res.u16;
 }
 
-static flash_error_t sam_flash_page_write(EFlashDriver *eflp, uint8_t *dest, const uint8_t *src, size_t n)
-{ 
-  osalDbgCheck((eflp != NULL) && ((uint32_t)dest % sizeof(uint16_t) == 0) 
-        && (n > 0U) && (n <= FLASH_PAGE_SIZE) && (n % 2 == 0));
+static flash_error_t sam_flash_page_write(EFlashDriver* eflp, uint8_t* dest,
+                                          const uint8_t* src, size_t n) {
+  osalDbgCheck((eflp != NULL) && ((uint32_t)dest % sizeof(uint16_t) == 0) &&
+               (n > 0U) && (n <= FLASH_PAGE_SIZE) && (n % 2 == 0));
   flash_error_t err = FLASH_NO_ERROR;
   n /= 2;
-  volatile uint16_t *dst_addr = (volatile uint16_t *)dest;
-  const uint16_t *src_addr = (uint16_t *)src;
+  volatile uint16_t* dst_addr = (volatile uint16_t*)dest;
+  const uint16_t* src_addr = (uint16_t*)src;
   sam_flash_wait_busy(eflp);
   sam_flash_exc_cmd(eflp, NVMCTRL_CTRLA_CMD_PBC_Val);
   sam_flash_wait_busy(eflp);
   uint32_t i;
-  for (i=0; i<(FLASH_PAGE_SIZE/2) && n; i++) {
+  for (i = 0; i < (FLASH_PAGE_SIZE / 2) && n; i++) {
     *dst_addr = read_unaligned_uint16(src_addr);
     src_addr++;
     dst_addr++;
@@ -138,7 +132,7 @@ static flash_error_t sam_flash_page_write(EFlashDriver *eflp, uint8_t *dest, con
   sam_flash_exc_cmd(eflp, NVMCTRL_CTRLA_CMD_WP_Val);
   sam_flash_wait_busy(eflp);
   err = sam_flash_get_error(eflp);
-  if(memcmp(dest, src, n) != 0) {
+  if (memcmp(dest, src, n) != 0) {
     err = FLASH_ERROR_PROGRAM;
   }
   return err;
@@ -173,18 +167,15 @@ void efl_lld_init(void) {
  *
  * @notapi
  */
-void efl_lld_start(EFlashDriver *eflp) {
+void efl_lld_start(EFlashDriver* eflp) {
 
   if (eflp->state == FLASH_STOP) {
     /* Enables the peripheral.*/
 #if SAM_EFL_USE_EFL1 == TRUE
-    if (&EFLD1 == eflp) {
-
-    }
+    if (&EFLD1 == eflp) {}
 #endif
   }
   /* Configures the peripheral.*/
-
 }
 
 /**
@@ -194,16 +185,14 @@ void efl_lld_start(EFlashDriver *eflp) {
  *
  * @notapi
  */
-void efl_lld_stop(EFlashDriver *eflp) {
+void efl_lld_stop(EFlashDriver* eflp) {
 
   if (eflp->state == FLASH_READY) {
     /* Resets the peripheral.*/
 
     /* Disables the peripheral.*/
 #if SAM_EFL_USE_EFL1 == TRUE
-    if (&EFLD1 == eflp) {
-
-    }
+    if (&EFLD1 == eflp) {}
 #endif
   }
 }
@@ -216,7 +205,7 @@ void efl_lld_stop(EFlashDriver *eflp) {
  *
  * @notapi
  */
-const flash_descriptor_t *efl_lld_get_descriptor(void *instance) {
+const flash_descriptor_t* efl_lld_get_descriptor(void* instance) {
 
   (void)instance;
 
@@ -238,9 +227,9 @@ const flash_descriptor_t *efl_lld_get_descriptor(void *instance) {
  *
  * @notapi
  */
-flash_error_t efl_lld_read(void *instance, flash_offset_t offset,
-                           size_t n, uint8_t *rp) {
-  EFlashDriver *devp = (EFlashDriver *)instance;
+flash_error_t efl_lld_read(void* instance, flash_offset_t offset, size_t n,
+                           uint8_t* rp) {
+  EFlashDriver* devp = (EFlashDriver*)instance;
   flash_error_t err = FLASH_NO_ERROR;
 
   osalDbgCheck((instance != NULL) && (rp != NULL) && (n > 0U));
@@ -258,7 +247,7 @@ flash_error_t efl_lld_read(void *instance, flash_offset_t offset,
 
   /* IMPLEMENT */
   sam_flash_clear_status(devp);
-  memcpy((void *)rp, (const void *)efl_lld_descriptor.address + offset, n);
+  memcpy((void*)rp, (const void*)efl_lld_descriptor.address + offset, n);
   /* Ready state again.*/
   devp->state = FLASH_READY;
   return err;
@@ -281,9 +270,9 @@ flash_error_t efl_lld_read(void *instance, flash_offset_t offset,
  *
  * @notapi
  */
-flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
-                              size_t n, const uint8_t *pp) {
-  EFlashDriver *devp = (EFlashDriver *)instance;
+flash_error_t efl_lld_program(void* instance, flash_offset_t offset, size_t n,
+                              const uint8_t* pp) {
+  EFlashDriver* devp = (EFlashDriver*)instance;
   flash_error_t err = FLASH_NO_ERROR;
 
   osalDbgCheck((instance != NULL) && (pp != NULL) && (n > 0U));
@@ -303,15 +292,15 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
   /* IMPLEMENT */
   sam_flash_wait_busy(devp);
   sam_flash_clear_status(devp);
-  uint8_t *address;
+  uint8_t* address;
   /* Programming address aligned to flash lines.*/
-  address = (uint8_t *)(efl_lld_descriptor.address + (offset));
+  address = (uint8_t*)(efl_lld_descriptor.address + (offset));
   size_t pg_offset = ((uint32_t)address) % FLASH_PAGE_SIZE;
   /* If pg_offset occurred, write fully in that page first */
-  if(pg_offset > 0 && n > FLASH_PAGE_SIZE) {
+  if (pg_offset > 0 && n > FLASH_PAGE_SIZE) {
     size_t bytes_writing = FLASH_PAGE_SIZE - pg_offset;
     err = sam_flash_page_write(devp, address, pp, bytes_writing);
-    if(err != FLASH_NO_ERROR) {
+    if (err != FLASH_NO_ERROR) {
       goto error;
     }
     address += bytes_writing;
@@ -320,9 +309,9 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
   }
 
   size_t num_pages = n / FLASH_PAGE_SIZE;
-  while(num_pages > 0U) {
+  while (num_pages > 0U) {
     err = sam_flash_page_write(devp, address, pp, FLASH_PAGE_SIZE);
-    if(err != FLASH_NO_ERROR) {
+    if (err != FLASH_NO_ERROR) {
       goto error;
     }
     address += FLASH_PAGE_SIZE;
@@ -330,7 +319,7 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
     num_pages--;
     n -= FLASH_PAGE_SIZE;
   }
-  if(n > 0) {
+  if (n > 0) {
     err = sam_flash_page_write(devp, address, pp, n);
   }
 error:
@@ -354,8 +343,8 @@ error:
  *
  * @notapi
  */
-flash_error_t efl_lld_start_erase_all(void *instance) {
-  (void) instance;
+flash_error_t efl_lld_start_erase_all(void* instance) {
+  (void)instance;
   return FLASH_ERROR_UNIMPLEMENTED;
 }
 
@@ -371,9 +360,9 @@ flash_error_t efl_lld_start_erase_all(void *instance) {
  *
  * @notapi
  */
-flash_error_t efl_lld_start_erase_sector(void *instance,
+flash_error_t efl_lld_start_erase_sector(void* instance,
                                          flash_sector_t sector) {
-  EFlashDriver *devp = (EFlashDriver *)instance;
+  EFlashDriver* devp = (EFlashDriver*)instance;
 
   osalDbgCheck(instance != NULL);
   osalDbgCheck(sector < efl_lld_descriptor.sectors_count);
@@ -391,8 +380,9 @@ flash_error_t efl_lld_start_erase_sector(void *instance,
   /* IMPLEMENT */
   sam_flash_wait_busy(devp);
   sam_flash_clear_status(devp);
-  uint32_t address = (uint32_t)(efl_lld_descriptor.address +
-                         flashGetSectorOffset(getBaseFlash(devp), sector));
+  uint32_t address =
+      (uint32_t)(efl_lld_descriptor.address +
+                 flashGetSectorOffset(getBaseFlash(devp), sector));
   osalDbgCheck(address % SAM_FLASH_SECTOR_SIZE == 0);
   sam_flash_set_addr(devp, address);
   sam_flash_exc_cmd(devp, NVMCTRL_CTRLA_CMD_ER_Val);
@@ -414,8 +404,8 @@ flash_error_t efl_lld_start_erase_sector(void *instance,
  *
  * @api
  */
-flash_error_t efl_lld_query_erase(void *instance, uint32_t *msec) {
-  EFlashDriver *devp = (EFlashDriver *)instance;
+flash_error_t efl_lld_query_erase(void* instance, uint32_t* msec) {
+  EFlashDriver* devp = (EFlashDriver*)instance;
   flash_error_t err = FLASH_NO_ERROR;
 
   (void)msec;
@@ -424,20 +414,18 @@ flash_error_t efl_lld_query_erase(void *instance, uint32_t *msec) {
   if (devp->state == FLASH_ERASE) {
 
     /* IMPLEMENT */
-    if(sam_flash_is_busy(devp) == 0) {
+    if (sam_flash_is_busy(devp) == 0) {
       devp->state = FLASH_READY;
       err = sam_flash_get_error(devp);
 
-    }
-    else {
-      if(msec != NULL) {
+    } else {
+      if (msec != NULL) {
         *msec = (uint32_t)SAM_FLASH_WAIT_TIME_MS;
       }
       err = FLASH_BUSY_ERASING;
     }
 
-  }
-  else {
+  } else {
     err = FLASH_NO_ERROR;
   }
   return err;
@@ -456,10 +444,10 @@ flash_error_t efl_lld_query_erase(void *instance, uint32_t *msec) {
  *
  * @notapi
  */
-flash_error_t efl_lld_verify_erase(void *instance, flash_sector_t sector) {
-  EFlashDriver *devp = (EFlashDriver *)instance;
+flash_error_t efl_lld_verify_erase(void* instance, flash_sector_t sector) {
+  EFlashDriver* devp = (EFlashDriver*)instance;
   flash_error_t err = FLASH_NO_ERROR;
-  uint32_t *address;
+  uint32_t* address;
   unsigned i;
 
   osalDbgCheck(instance != NULL);
@@ -474,13 +462,12 @@ flash_error_t efl_lld_verify_erase(void *instance, flash_sector_t sector) {
 
   /* IMPLEMENT */
   /* Address of the sector.*/
-  address = (uint32_t *)(efl_lld_descriptor.address +
-                         flashGetSectorOffset(getBaseFlash(devp), sector));
+  address = (uint32_t*)(efl_lld_descriptor.address +
+                        flashGetSectorOffset(getBaseFlash(devp), sector));
   devp->state = FLASH_READ;
   osalDbgCheck((uint32_t)address % SAM_FLASH_SECTOR_SIZE == 0);
   /* Scanning the sector space.*/
-  for (i = 0U; i < SAM_FLASH_SECTOR_SIZE / sizeof(uint32_t); i++) 
-  {
+  for (i = 0U; i < SAM_FLASH_SECTOR_SIZE / sizeof(uint32_t); i++) {
     if (*address != 0xFFFFFFFFUL) {
       err = FLASH_ERROR_VERIFY;
       break;

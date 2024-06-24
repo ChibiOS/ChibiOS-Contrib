@@ -2,13 +2,13 @@
 #define SAM_CLK_H_
 
 #if SAM_OSC8M_ENABLED == TRUE
-#define SAM_OSC8M_FREQ  SAM_OSC8_VAL
+#define SAM_OSC8M_FREQ SAM_OSC8_VAL
 #else
 #define SAM_OSC8M_FREQ 0
 #endif
 
 #if SAM_OSC32K_ENABLED == TRUE
-#define SAM_OSC32K_FREQ  SAM_OSC32K_VAL
+#define SAM_OSC32K_FREQ SAM_OSC32K_VAL
 #else
 #define SAM_OSC32K_FREQ 0
 #endif
@@ -42,7 +42,7 @@
 #elif SAM_GCLK0_SRC == GCLK_GENCTRL_SRC_XOSC32K
 #define SAM_GCLK0_SRC_FREQ SAM_XOSC32K_FREQ
 #endif
-#define SAM_GCLK0_GENDIV SAM_GCLK0_SRC_FREQ/SAM_GCLK0_FREQ
+#define SAM_GCLK0_GENDIV SAM_GCLK0_SRC_FREQ / SAM_GCLK0_FREQ
 #if SAM_GCLK0_GENDIV == 0
 #error "GENDIV GCLK0 == 0"
 #endif
@@ -63,7 +63,7 @@
 #undef SAM_GCLK1_ENABLE
 #define SAM_GCLK1_ENABLE TRUE
 #endif
-#define SAM_GCLK1_GENDIV SAM_GCLK1_SRC_FREQ/SAM_GCLK1_FREQ
+#define SAM_GCLK1_GENDIV SAM_GCLK1_SRC_FREQ / SAM_GCLK1_FREQ
 #if SAM_GCLK1_GENDIV == 0 && SAM_GCLK1_ENABLE == TRUE
 #error "GENDIV GCLK1 == 0"
 #endif
@@ -79,7 +79,7 @@
 #define SAM_GCLK2_SRC_FREQ SAM_XOSC32K_FREQ
 #endif
 
-#define SAM_GCLK2_GENDIV SAM_GCLK2_SRC_FREQ/SAM_GCLK2_FREQ
+#define SAM_GCLK2_GENDIV SAM_GCLK2_SRC_FREQ / SAM_GCLK2_FREQ
 #if SAM_GCLK2_GENDIV == 0 && SAM_GCLK2_ENABLE == TRUE
 #error "GENDIV GCLK2 == 0"
 #endif
@@ -95,7 +95,7 @@
 #define SAM_GCLK3_SRC_FREQ SAM_XOSC32K_FREQ
 #endif
 
-#define SAM_GCLK3_GENDIV SAM_GCLK3_SRC_FREQ/SAM_GCLK3_FREQ
+#define SAM_GCLK3_GENDIV SAM_GCLK3_SRC_FREQ / SAM_GCLK3_FREQ
 #if SAM_GCLK3_GENDIV == 0 && SAM_GCLK3_ENABLE == TRUE
 #error "GENDIV GCLK3 == 0"
 #endif
@@ -111,7 +111,7 @@
 #define SAM_GCLK4_SRC_FREQ SAM_XOSC32K_FREQ
 #endif
 
-#define SAM_GCLK4_GENDIV SAM_GCLK4_SRC_FREQ/SAM_GCLK4_FREQ
+#define SAM_GCLK4_GENDIV SAM_GCLK4_SRC_FREQ / SAM_GCLK4_FREQ
 #if SAM_GCLK4_GENDIV == 0 && SAM_GCLK4_ENABLE == TRUE
 #error "GENDIV GCLK4 == 0"
 #endif
@@ -127,7 +127,7 @@
 #define SAM_GCLK5_SRC_FREQ SAM_XOSC32K_FREQ
 #endif
 
-#define SAM_GCLK5_GENDIV SAM_GCLK5_SRC_FREQ/SAM_GCLK5_FREQ
+#define SAM_GCLK5_GENDIV SAM_GCLK5_SRC_FREQ / SAM_GCLK5_FREQ
 #if SAM_GCLK5_GENDIV == 0 && SAM_GCLK5_ENABLE == TRUE
 #error "GENDIV GCLK5 == 0"
 #endif
@@ -143,7 +143,7 @@
 #define SAM_GCLK6_SRC_FREQ SAM_XOSC32K_FREQ
 #endif
 
-#define SAM_GCLK6_GENDIV SAM_GCLK6_SRC_FREQ/SAM_GCLK6_FREQ
+#define SAM_GCLK6_GENDIV SAM_GCLK6_SRC_FREQ / SAM_GCLK6_FREQ
 #if SAM_GCLK6_GENDIV == 0 && SAM_GCLK6_ENABLE == TRUE
 #error "GENDIV GCLK6 == 0"
 #endif
@@ -159,7 +159,7 @@
 #define SAM_GCLK7_SRC_FREQ SAM_XOSC32K_FREQ
 #endif
 
-#define SAM_GCLK7_GENDIV SAM_GCLK7_SRC_FREQ/SAM_GCLK7_FREQ
+#define SAM_GCLK7_GENDIV SAM_GCLK7_SRC_FREQ / SAM_GCLK7_FREQ
 #if SAM_GCLK7_GENDIV == 0 && SAM_GCLK7_ENABLE == TRUE
 #error "GENDIV GCLK7 == 0"
 #endif
@@ -175,9 +175,27 @@
 #define SAM_GCLK8_SRC_FREQ SAM_XOSC32K_FREQ
 #endif
 
-#define SAM_GCLK8_GENDIV SAM_GCLK8_SRC_FREQ/SAM_GCLK8_FREQ
+#define SAM_GCLK8_GENDIV SAM_GCLK8_SRC_FREQ / SAM_GCLK8_FREQ
 #if SAM_GCLK8_GENDIV == 0 && SAM_GCLK8_ENABLE == TRUE
 #error "GENDIV GCLK8 == 0"
+#endif
+
+// GCLK9
+#if SAM_GCLK9_SRC == GCLK_GENCTRL_SRC_DFLL48M
+#define SAM_GCLK9_SRC_FREQ SAM_DFLL48_FREQ
+#elif SAM_GCLK9_SRC == GCLK_GENCTRL_SRC_OSC8M
+#define SAM_GCLK9_SRC_FREQ SAM_OSC8_FREQ
+#elif SAM_GCLK9_SRC == GCLK_GENCTRL_SRC_OSC32K
+#define SAM_GCLK9_SRC_FREQ SAM_OSC32K_FREQ
+#elif SAM_GCLK9_SRC == GCLK_GENCTRL_SRC_XOSC32K
+#define SAM_GCLK9_SRC_FREQ SAM_XOSC32K_FREQ
+#endif
+
+
+
+#define SAM_GCLK9_GENDIV SAM_GCLK9_SRC_FREQ / SAM_GCLK9_FREQ
+#if SAM_GCLK9_GENDIV == 0 && SAM_GCLK9_ENABLE == TRUE
+#error "GENDIV GCLK9 == 0"
 #endif
 
 #define SAM_CPU_FREQ SAM_GCLK0_FREQ / (1UL << SAM_CPUDIV)
@@ -187,26 +205,22 @@
 
 #if SAM_CPU_FREQ > 1000000UL
 #define SAM_NVM_DELAY 3
-#else 
+#else
 #define SAM_NVM_DELAY 0
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    static inline uint32_t get_cpu_freq(void) {
-        return SAM_CPU_FREQ;
-    }
-    void sam_gclk_init(uint32_t id, 
-                    uint32_t sysctrl_src, 
-                    uint16_t gendiv, 
-                    bool enable);
-    void sam_gclk_mux(uint32_t id, 
-                      uint32_t dest, 
-                      bool enable);
+static inline uint32_t get_cpu_freq(void) {
+  return SAM_CPU_FREQ;
+}
+
+void sam_gclk_init(uint32_t id, uint32_t sysctrl_src, uint16_t gendiv,
+                   bool enable);
+void sam_gclk_mux(uint32_t id, uint32_t dest, bool enable);
 #ifdef __cplusplus
 }
-#endif
+#endif /*CPP*/
 
-
-#endif
+#endif /*SAM_CLK_H_*/

@@ -42,7 +42,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(SAM_EFL_USE_EFL1) || defined(__DOXYGEN__)
-#define SAM_EFL_USE_EFL1               FALSE
+#define SAM_EFL_USE_EFL1 FALSE
 #endif
 /** @} */
 
@@ -55,7 +55,7 @@
 #endif
 
 #if !defined(SAM_FLASH_START_OFFSET) && !defined(__DOXYGEN__)
-#define SAM_FLASH_START_OFFSET FLASH_SIZE/2
+#define SAM_FLASH_START_OFFSET FLASH_SIZE / 2
 #endif
 
 #if SAM_FLASH_START_OFFSET > FLASH_SIZE
@@ -73,16 +73,16 @@
 /**
  * @brief   Low level fields of the embedded flash driver structure.
  */
-#define efl_lld_driver_fields                                               \
-  /* Dummy field, it is not needed.*/                                       \
-  nvmctrl_registers_t       *flash
+#define efl_lld_driver_fields         \
+  /* Dummy field, it is not needed.*/ \
+  nvmctrl_registers_t* flash
 
 /**
  * @brief   Low level fields of the embedded flash configuration structure.
  */
-#define efl_lld_config_fields                                               \
-  /* Dummy configuration, it is not needed.*/                               \
-  uint32_t                  dummy
+#define efl_lld_config_fields                 \
+  /* Dummy configuration, it is not needed.*/ \
+  uint32_t dummy
 
 /*===========================================================================*/
 /* External declarations.                                                    */
@@ -95,19 +95,18 @@ extern EFlashDriver EFLD1;
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void efl_lld_init(void);
-  void efl_lld_start(EFlashDriver *eflp);
-  void efl_lld_stop(EFlashDriver *eflp);
-  const flash_descriptor_t *efl_lld_get_descriptor(void *instance);
-  flash_error_t efl_lld_read(void *instance, flash_offset_t offset,
-                             size_t n, uint8_t *rp);
-  flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
-                                size_t n, const uint8_t *pp);
-  flash_error_t efl_lld_start_erase_all(void *instance);
-  flash_error_t efl_lld_start_erase_sector(void *instance,
-                                           flash_sector_t sector);
-  flash_error_t efl_lld_query_erase(void *instance, uint32_t *msec);
-  flash_error_t efl_lld_verify_erase(void *instance, flash_sector_t sector);
+void efl_lld_init(void);
+void efl_lld_start(EFlashDriver* eflp);
+void efl_lld_stop(EFlashDriver* eflp);
+const flash_descriptor_t* efl_lld_get_descriptor(void* instance);
+flash_error_t efl_lld_read(void* instance, flash_offset_t offset, size_t n,
+                           uint8_t* rp);
+flash_error_t efl_lld_program(void* instance, flash_offset_t offset, size_t n,
+                              const uint8_t* pp);
+flash_error_t efl_lld_start_erase_all(void* instance);
+flash_error_t efl_lld_start_erase_sector(void* instance, flash_sector_t sector);
+flash_error_t efl_lld_query_erase(void* instance, uint32_t* msec);
+flash_error_t efl_lld_verify_erase(void* instance, flash_sector_t sector);
 #ifdef __cplusplus
 }
 #endif

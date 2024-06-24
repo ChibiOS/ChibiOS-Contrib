@@ -1,0 +1,4 @@
+PLATFORMSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/ports/SAM/LLD/SPIv1/hal_spi_v2_lld_qspi.c
+PLATFORMSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/ports/SAM/LLD/SPIv1/hal_spi_v2_lld.c
+
+PLATFORMINC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/ports/SAM/LLD/SPIv1

@@ -41,77 +41,6 @@
  */
 #define SPI_SUPPORTS_SLAVE_MODE TRUE
 
-#if !defined(SAM_SPI0_DMATX_CHANNEL)
-#define SAM_SPI0_DMATX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI0_DMARX_CHANNEL)
-#define SAM_SPI0_DMARX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI0_DMA_PRIO)
-#define SAM_SPI0_DMA_PRIO 1
-#endif
-
-#if !defined(SAM_SPI1_DMATX_CHANNEL)
-#define SAM_SPI1_DMATX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI1_DMARX_CHANNEL)
-#define SAM_SPI1_DMARX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI1_DMA_PRIO)
-#define SAM_SPI1_DMA_PRIO 1
-#endif
-
-#if !defined(SAM_SPI2_DMATX_CHANNEL)
-#define SAM_SPI2_DMATX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI2_DMARX_CHANNEL)
-#define SAM_SPI2_DMARX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI2_DMA_PRIO)
-#define SAM_SPI2_DMA_PRIO 1
-#endif
-
-#if !defined(SAM_SPI3_DMATX_CHANNEL)
-#define SAM_SPI3_DMATX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI3_DMARX_CHANNEL)
-#define SAM_SPI3_DMARX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI3_DMA_PRIO)
-#define SAM_SPI3_DMA_PRIO 1
-#endif
-
-#if !defined(SAM_SPI4_DMATX_CHANNEL)
-#define SAM_SPI4_DMATX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI4_DMARX_CHANNEL)
-#define SAM_SPI4_DMARX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI4_DMA_PRIO)
-#define SAM_SPI4_DMA_PRIO 1
-#endif
-
-#if !defined(SAM_SPI5_DMATX_CHANNEL)
-#define SAM_SPI5_DMATX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI5_DMARX_CHANNEL)
-#define SAM_SPI5_DMARX_CHANNEL SAM_DMAC_NUM_MAX
-#endif
-
-#if !defined(SAM_SPI5_DMA_PRIO)
-#define SAM_SPI5_DMA_PRIO 1
-#endif
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -225,6 +154,18 @@
 #endif
 #endif
 
+#if SAM_SPI_USE_SERCOM6 == TRUE
+#if SAM_SIO_USE_SERCOM6 == TRUE || SAM_I2C_USE_SERCOM6 == TRUE
+#error "SERCOM6: Can only configured as one function only"
+#endif
+#endif
+
+#if SAM_SPI_USE_SERCOM7 == TRUE
+#if SAM_SIO_USE_SERCOM7 == TRUE || SAM_I2C_USE_SERCOM7 == TRUE
+#error "SERCOM7: Can only configured as one function only"
+#endif
+#endif
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
@@ -236,86 +177,49 @@
 /**
  * @brief   Low level fields of the SPI driver structure.
  */
-#define spi_lld_driver_fields   \
-  sercom_spim_registers_t *spi; \
-  uint32_t clock;               \
-  uint8_t dmaTxId;              \
-  uint8_t dmaRxId;              \
-  uint32_t rxsink;              \
-  uint32_t txsource;
+#define spi_lld_driver_fields     \
+  union {                         \
+    sercom_spim_registers_t* spi; \
+    qspi_registers_t *qspi;       \
+  };                              \
+  uint32_t clock;                 \
+  uint8_t dmaTxId;                \
+  uint8_t dmaRxId;                \
+  uint32_t rxsink;                \
+  uint32_t txsource;              \
+  bool is_qspi;
 
 /**
  * @brief   Low level fields of the SPI configuration structure.
  */
 #define spi_lld_config_fields \
-  uint32_t ctrla;             \
-  uint32_t ctrlb;             \
-  uint32_t freq;
+  union { \
+    sercom_spi_config_t sercom_cfg; \
+    qspi_spi_config_t qspi_cfg; \
+  };
 
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
-
-/**
- * @brief   SPI1 driver identifier.
- */
-#if (SAM_SPI_USE_SERCOM0 == TRUE) || defined(__DOXYGEN__)
-extern SPIDriver SPID1;
-#endif
-
-/**
- * @brief   SPI2 driver identifier.
- */
-#if (SAM_SPI_USE_SERCOM1 == TRUE) || defined(__DOXYGEN__)
-extern SPIDriver SPID2;
-#endif
-
-/**
- * @brief   SPI3 driver identifier.
- */
-#if (SAM_SPI_USE_SERCOM2 == TRUE) || defined(__DOXYGEN__)
-extern SPIDriver SPID3;
-#endif
-
-/**
- * @brief   SPI4 driver identifier.
- */
-#if (SAM_SPI_USE_SERCOM3 == TRUE) || defined(__DOXYGEN__)
-extern SPIDriver SPID4;
-#endif
-
-/**
- * @brief   SPI5 driver identifier.
- */
-#if (SAM_SPI_USE_SERCOM4 == TRUE) || defined(__DOXYGEN__)
-extern SPIDriver SPID5;
-#endif
-
-/**
- * @brief   SPI6 driver identifier.
- */
-#if (SAM_SPI_USE_SERCOM5 == TRUE) || defined(__DOXYGEN__)
-extern SPIDriver SPID6;
-#endif
-
+#include "hal_spi_v2_lld_sercom.h"
+#include "hal_spi_v2_lld_qspi.h"
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
-  void spi_lld_init(void);
-  msg_t spi_lld_start(SPIDriver *spip);
-  void spi_lld_stop(SPIDriver *spip);
+void spi_lld_init(void);
+msg_t spi_lld_start(SPIDriver* spip);
+void spi_lld_stop(SPIDriver* spip);
 #if (SPI_SELECT_MODE == SPI_SELECT_MODE_LLD) || defined(__DOXYGEN__)
-  void spi_lld_select(SPIDriver *spip);
-  void spi_lld_unselect(SPIDriver *spip);
+void spi_lld_select(SPIDriver* spip);
+void spi_lld_unselect(SPIDriver* spip);
 #endif
-  msg_t spi_lld_ignore(SPIDriver *spip, size_t n);
-  msg_t spi_lld_exchange(SPIDriver *spip, size_t n,
-                         const void *txbuf, void *rxbuf);
-  msg_t spi_lld_send(SPIDriver *spip, size_t n, const void *txbuf);
-  msg_t spi_lld_receive(SPIDriver *spip, size_t n, void *rxbuf);
-  msg_t spi_lld_stop_transfer(SPIDriver *spip, size_t *sizep);
-  uint16_t spi_lld_polled_exchange(SPIDriver *spip, uint16_t frame);
+msg_t spi_lld_ignore(SPIDriver* spip, size_t n);
+msg_t spi_lld_exchange(SPIDriver* spip, size_t n, const void* txbuf,
+                       void* rxbuf);
+msg_t spi_lld_send(SPIDriver* spip, size_t n, const void* txbuf);
+msg_t spi_lld_receive(SPIDriver* spip, size_t n, void* rxbuf);
+msg_t spi_lld_stop_transfer(SPIDriver* spip, size_t* sizep);
+uint16_t spi_lld_polled_exchange(SPIDriver* spip, uint16_t frame);
 #ifdef __cplusplus
 }
 #endif

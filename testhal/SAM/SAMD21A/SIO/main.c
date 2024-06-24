@@ -49,8 +49,8 @@ static const ShellConfig shell_cfg1 = {
 
 static const SIOConfig siocfg = {
   SIO_DEFAULT_BITRATE,
-  SERCOM_CTRLA_DEFAULT,
-  SERCOM_CTRLB_DEFAULT,
+  SERCOM_SIO_CTRLA_DEFAULT,
+  SERCOM_SIO_CTRLB_DEFAULT,
   1,
   3
 };

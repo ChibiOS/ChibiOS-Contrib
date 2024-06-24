@@ -142,10 +142,28 @@
 #endif
 #endif
 
+#if SAM_I2C_USE_SERCOM6 == TRUE
+#if SAM_SIO_USE_SERCOM6 == TRUE || SAM_SPI_USE_SERCOM6 == TRUE
+#error "SERCOM6: Can only configured as one function only"
+#endif
+#endif
+
+#if SAM_I2C_USE_SERCOM7 == TRUE
+#if SAM_SIO_USE_SERCOM7 == TRUE || SAM_SPI_USE_SERCOM7 == TRUE
+#error "SERCOM7: Can only configured as one function only"
+#endif
+#endif
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
 
+#define SERCOM_I2C_CTRLA_DEFAULT                   \
+  (SERCOM_I2CM_CTRLA_MODE_I2C_MASTER | SERCOM_I2CM_CTRLA_SDAHOLD_75NS | \
+  SERCOM_I2CM_CTRLA_SPEED_STANDARD_AND_FAST_MODE | \
+  SERCOM_I2CM_CTRLA_SCLSM(0UL) | SERCOM_I2CM_CTRLA_ENABLE_Msk)
+
+#define SERCOM_I2C_CTRLB_DEFAULT \
+  (SERCOM_I2CM_CTRLB_CMD(3UL))
 /**
  * @brief   Type representing an I2C address.
  */
@@ -161,8 +179,7 @@ typedef uint32_t i2cflags_t;
  * @note    Implementations may extend this structure to contain more,
  *          architecture dependent, fields.
  */
-struct hal_i2c_config
-{
+struct hal_i2c_config {
   /* End of the mandatory fields.*/
   uint32_t i2cSpeed;
   uint32_t ctrla;
@@ -181,8 +198,7 @@ typedef struct hal_i2c_driver I2CDriver;
 /**
  * @brief   Structure representing an I2C driver.
  */
-struct hal_i2c_driver
-{
+struct hal_i2c_driver {
   /**
    * @brief   Driver state.
    */
@@ -190,7 +206,7 @@ struct hal_i2c_driver
   /**
    * @brief   Current configuration data.
    */
-  const I2CConfig *config;
+  const I2CConfig* config;
   /**
    * @brief   Error flags.
    */
@@ -210,7 +226,7 @@ struct hal_i2c_driver
   /**
    * @brief     Pointer to the next TX buffer location.
    */
-  const uint8_t *txptr;
+  const uint8_t* txptr;
   /**
    * @brief     Number of bytes in TX phase.
    */
@@ -218,12 +234,12 @@ struct hal_i2c_driver
   /**
    * @brief     Pointer to the next RX buffer location.
    */
-  uint8_t *rxptr;
+  uint8_t* rxptr;
   /**
    * @brief     Number of bytes in RX phase.
    */
   size_t rxbytes;
-  sercom_i2cm_registers_t *i2c;
+  sercom_i2cm_registers_t* i2c;
   i2caddr_t addr;
   /* End of the mandatory fields.*/
 };
@@ -269,20 +285,32 @@ extern I2CDriver I2CD5;
 extern I2CDriver I2CD6;
 #endif
 
-#ifdef __cplusplus
-extern "C"
-{
+#ifdef SAME54_MCUCONF
+
+#if (SAM_I2C_USE_SERCOM6 == TRUE) && !defined(__DOXYGEN__)
+extern I2CDriver I2CD7;
 #endif
-  void i2c_lld_init(void);
-  void i2c_lld_start(I2CDriver *i2cp);
-  void i2c_lld_stop(I2CDriver *i2cp);
-  msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
-                                        const uint8_t *txbuf, size_t txbytes,
-                                        uint8_t *rxbuf, size_t rxbytes,
-                                        sysinterval_t timeout);
-  msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
-                                       uint8_t *rxbuf, size_t rxbytes,
-                                       sysinterval_t timeout);
+
+#if (SAM_I2C_USE_SERCOM7 == TRUE) && !defined(__DOXYGEN__)
+extern I2CDriver I2CD8;
+#endif
+
+#endif
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+void i2c_lld_init(void);
+void i2c_lld_start(I2CDriver* i2cp);
+void i2c_lld_stop(I2CDriver* i2cp);
+msg_t i2c_lld_master_transmit_timeout(I2CDriver* i2cp, i2caddr_t addr,
+                                      const uint8_t* txbuf, size_t txbytes,
+                                      uint8_t* rxbuf, size_t rxbytes,
+                                      sysinterval_t timeout);
+msg_t i2c_lld_master_receive_timeout(I2CDriver* i2cp, i2caddr_t addr,
+                                     uint8_t* rxbuf, size_t rxbytes,
+                                     sysinterval_t timeout);
 #ifdef __cplusplus
 }
 #endif
