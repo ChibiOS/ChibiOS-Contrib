@@ -56,7 +56,7 @@
  * @{
  */
 /*
- * CAN units.
+ * CAN unit.
  */
 #define AT32_CAN1_TX_HANDLER         Vector8C
 #define AT32_CAN1_RX0_HANDLER        Vector90
@@ -69,7 +69,7 @@
 #define AT32_CAN1_SE_NUMBER          22
 
 /*
- * DMA unit
+ * DMA units.
  */
 #define AT32_DMA1_CH1_HANDLER        Vector6C
 #define AT32_DMA1_CH2_HANDLER        Vector70
@@ -110,7 +110,7 @@
 #define AT32_DMA2_CH7_CMASK          0x00003000U
 
 /*
- * ERTC unit
+ * ERTC unit.
  */
 #define AT32_ERTC_TAMP_STAMP_HANDLER Vector48
 #define AT32_ERTC_WKUP_HANDLER       Vector4C
@@ -130,7 +130,7 @@
 } while (false)
 
 /*
- * EXINT unit.
+ * EXINT units.
  */
 #define AT32_EXINT0_HANDLER          Vector58
 #define AT32_EXINT1_HANDLER          Vector5C
@@ -176,7 +176,7 @@
 #define AT32_I2C2_ERROR_NUMBER       34
 
 /*
- * OTGFS units.
+ * OTG unit.
  */
 #define AT32_OTG1_HANDLER            Vector14C
 

@@ -55,22 +55,22 @@ uint32_t SystemCoreClock = AT32_HCLK;
  */
 static void hal_lld_battery_powered_domain_init(void) {
 
-  /* Battery powered domain access enabled and left open. */
+  /* Battery powered domain access enabled and left open.*/
   PWC->CTRL |= PWC_CTRL_BPWEN;
 
-  /* Reset BPR domain if different clock source selected. */
+  /* Reset BPR domain if different clock source selected.*/
   if ((CRM->BPDC & AT32_ERTCSEL_MASK) != AT32_ERTCSEL) {
-    /* Battery powered domain reset. */
+    /* Battery powered domain reset.*/
     CRM->BPDC = CRM_BPDC_BPDRST;
     CRM->BPDC = 0;
   }
 
 #if AT32_LEXT_ENABLED
 #if defined(AT32_LEXT_BYPASS)
-  /* LEXT Bypass. */
+  /* LEXT Bypass.*/
   CRM->BPDC |= CRM_BPDC_LEXTEN | CRM_BPDC_LEXTBYPS;
 #else
-  /* No LEXT Bypass. */
+  /* No LEXT Bypass.*/
   CRM->BPDC |= CRM_BPDC_LEXTEN;
 #endif
   while ((CRM->BPDC & CRM_BPDC_LEXTSTBL) == 0)
@@ -79,12 +79,12 @@ static void hal_lld_battery_powered_domain_init(void) {
 
 #if HAL_USE_RTC
   /* If the battery powered domain hasn't been initialized yet then proceed
-     with initialization. */
+     with initialization.*/
   if ((CRM->BPDC & CRM_BPDC_ERTCEN) == 0) {
-    /* Selects clock source. */
+    /* Selects clock source.*/
     CRM->BPDC |= AT32_ERTCSEL;
 
-    /* ERTC clock enabled. */
+    /* ERTC clock enabled.*/
     CRM->BPDC |= CRM_BPDC_ERTCEN;
   }
 #endif /* HAL_USE_RTC */
@@ -154,18 +154,18 @@ void hal_lld_init(void) {
   /* PWC clocks enabled. */
   crmEnablePWCInterface(true);
 
-  /* Initializes the backup domain. */
+  /* Initializes the backup domain.*/
   hal_lld_battery_powered_domain_init();
 
-  /* DMA subsystems initialization. */
+  /* DMA subsystems initialization.*/
 #if defined(AT32_DMA_REQUIRED)
   dmaInit();
 #endif
 
-  /* IRQ subsystem initialization. */
+  /* IRQ subsystem initialization.*/
   irqInit();
 
-  /* Power voltage monitoring enable. */
+  /* Power voltage monitoring enable.*/
 #if AT32_PVM_ENABLE
   PWC->CTRL |= PWC_CTRL_PVMEN | (AT32_PVMSEL & AT32_PVMSEL_MASK);
 #endif /* AT32_PVM_ENABLE */
@@ -186,7 +186,7 @@ void at32_clock_init(void) {
 
 #if !AT32_NO_INIT
   /* HICK setup, it enforces the reset situation in order to handle possible
-     problems with JTAG probes and re-initializations. */
+     problems with JTAG probes and re-initializations.*/
   CRM->CTRL |= CRM_CTRL_HICKEN;             /* Make sure HICK is ON.          */
   while (!(CRM->CTRL & CRM_CTRL_HICKSTBL))
     ;                                       /* Wait until HICK is stable.     */
@@ -199,22 +199,22 @@ void at32_clock_init(void) {
     ;                                       /* Waits until HICK is selected.  */
 
   /* Registers finally cleared to reset values. */
-  CRM->CTRL &= ~(0x010D0000U);              /* CTRL reset value.             */
-  CRM->CFG = 0x00000000;                    /* CFG reset value.              */
-  CRM->PLL = 0x00001F10U;                   /* PLL reset value.              */
-  CRM->MISC1 = 0x00100000;                  /* MISC1 reset value.            */
-  CRM->MISC2 = 0x0000000D;                  /* MISC2 reset value.            */
-  CRM->CLKINT = 0x009F0000;                 /* CLKINT reset value.           */
+  CRM->CTRL &= ~(0x010D0000);               /* CTRL reset value.              */
+  CRM->CFG = 0x00000000;                    /* CFG reset value.               */
+  CRM->PLL = 0x00001F10;                    /* PLL reset value.               */
+  CRM->MISC1 = 0x00100000;                  /* MISC1 reset value.             */
+  CRM->MISC2 = 0x0000000D;                  /* MISC2 reset value.             */
+  CRM->CLKINT = 0x009F0000;                 /* CLKINT reset value.            */
 
-  /* Flash setup and final clock selection. */
-  FLASH->PSR = AT32_FLASHBITS;       /* Flash wait states depending on clock. */
+  /* Flash setup and final clock selection.*/
+  FLASH->PSR = AT32_FLASHBITS;        /* Flash wait states depending on clock.*/
   while ((FLASH->PSR & FLASH_PSR_WTCYC_Msk) !=
          (AT32_FLASHBITS & FLASH_PSR_WTCYC_Msk)) {
   }
 
 #if AT32_HEXT_ENABLED
 #if defined(AT32_HEXT_BYPASS)
-  /* HEXT Bypass. */
+  /* HEXT Bypass.*/
   CRM->CTRL |= CRM_CTRL_HEXTEN | CRM_CTRL_HEXTBYPS;
 #endif
   /* HEXT activation. */
@@ -224,14 +224,14 @@ void at32_clock_init(void) {
 #endif
 
 #if AT32_LICK_ENABLED
-  /* LICK activation. */
+  /* LICK activation.*/
   CRM->CTRLSTS |= CRM_CTRLSTS_LICKEN;
   while ((CRM->CTRLSTS & CRM_CTRLSTS_LICKSTBL) == 0)
     ;                                       /* Waits until LICK is stable.    */
 #endif
 
 #if AT32_ACTIVATE_PLL
-  /* PLL activation. */
+  /* PLL activation.*/
 #if (AT32_PLLCFGEN == AT32_PLLCFGEN_SOLID)
   /* Solid PLL config. */
   CRM->CFG |= AT32_PLLMULT | AT32_PLLHEXTDIV | AT32_PLLRCS;
@@ -251,26 +251,26 @@ void at32_clock_init(void) {
 
   /* Clock settings.*/
 #if AT32_HAS_OTG1
-  CRM->CFG   |= (AT32_CLKOUT_SEL & AT32_CLKOUT_SEL_CFG_MSK) | AT32_USBDIV  | AT32_ADCDIV |
-                AT32_APB2DIV                                | AT32_APB1DIV | AT32_AHBDIV;
+  CRM->CFG   |= (AT32_CLKOUT_SEL & AT32_CLKOUT_SEL_CFG_MASK) | AT32_USBDIV  | AT32_ADCDIV |
+                AT32_APB2DIV                                 | AT32_APB1DIV | AT32_AHBDIV;
 #else
-  CRM->CFG   |= (AT32_CLKOUT_SEL & AT32_CLKOUT_SEL_CFG_MSK) |                AT32_ADCDIV |
-                AT32_APB2DIV                                | AT32_APB1DIV | AT32_AHBDIV;
+  CRM->CFG   |= (AT32_CLKOUT_SEL & AT32_CLKOUT_SEL_CFG_MASK) |                AT32_ADCDIV |
+                AT32_APB2DIV                                 | AT32_APB1DIV | AT32_AHBDIV;
 #endif
-  CRM->MISC1 |= (AT32_CLKOUT_SEL & AT32_CLKOUT_SEL_MISC_MSK) >> 11;
+  CRM->MISC1 |= (AT32_CLKOUT_SEL & AT32_CLKOUT_SEL_MISC1_MASK) >> 11 | AT32_CLKOUTDIV;
 
-  /* PLL Auto Step activation. */
+  /* PLL auto step activation.*/
   CRM->MISC2 |= CRM_MISC2_AUTO_STEP_EN;
 
-  /* Switching to the configured clock source if it is different from HICK. */
-#if (AT32_SCLKSEL != AT32_SCLKSEL_HICK)
-  /* Switches clock source. */
+  /* Switching to the configured clock source if it is different from HICK.*/
+#if AT32_SCLKSEL != AT32_SCLKSEL_HICK
+  /* Switches clock source.*/
   CRM->CFG |= AT32_SCLKSEL;
   while ((CRM->CFG & CRM_CFG_SCLKSTS) != (AT32_SCLKSEL << 2))
     ;                                       /* Waits selection complete.      */
 #endif
 
-  /* PLL Auto Step inactivation. */
+  /* PLL auto step inactivation.*/
   CRM->MISC2 &= ~CRM_MISC2_AUTO_STEP_EN;
 
 #if !AT32_HICK_ENABLED

@@ -69,7 +69,6 @@
 
 /**
  * @brief   Disables the clock of one or more peripheral on the APB1 bus.
- * @note    The @p lp parameter is ignored in this family.
  *
  * @param[in] mask      APB1 peripherals mask
  *
@@ -109,7 +108,6 @@
 
 /**
  * @brief   Disables the clock of one or more peripheral on the APB2 bus.
- * @note    The @p lp parameter is ignored in this family.
  *
  * @param[in] mask      APB2 peripherals mask
  *
@@ -149,7 +147,6 @@
 
 /**
  * @brief   Disables the clock of one or more peripheral on the AHB bus.
- * @note    The @p lp parameter is ignored in this family.
  *
  * @param[in] mask      AHB peripherals mask
  *
@@ -259,6 +256,7 @@
  * @api
  */
 #define crmResetCAN1() crmResetAPB1(CRM_APB1RST_CAN1RST)
+/** @} */
 
 /**
  * @name    DMA peripherals specific CRM operations
@@ -307,7 +305,7 @@
 #define crmDisableDMA2() crmDisableAHB(CRM_AHBEN_DMA2EN)
 
 /**
- * @brief   Resets the DMA1 peripheral.
+ * @brief   Resets the DMA2 peripheral.
  * @note    Not supported in this family, does nothing.
  *
  * @api
@@ -374,6 +372,7 @@
  */
 /**
  * @brief   Enables the OTG_FS peripheral clock.
+ * @note    The @p lp parameter is ignored in this family.
  *
  * @param[in] lp        low power enable flag
  *
@@ -397,7 +396,7 @@
 /** @} */
 
 /**
- * @name    SDIO peripheral specific CRM operations
+ * @name    SDIO peripherals specific CRM operations
  * @{
  */
 /**
@@ -477,6 +476,7 @@
  * @api
  */
 #define crmResetSPI2() crmResetAPB1(CRM_APB1RST_SPI2RST)
+/** @} */
 
 /**
  * @name    TMR peripherals specific CRM operations
@@ -673,6 +673,7 @@
  * @api
  */
 #define crmResetTMR11() crmResetAPB2(CRM_APB2RST_TMR11RST)
+/** @} */
 
 /**
  * @name    USART/UART peripherals specific CRM operations

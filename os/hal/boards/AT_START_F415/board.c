@@ -18,6 +18,18 @@
 
 #include "hal.h"
 
+/*===========================================================================*/
+/* Driver local definitions.                                                 */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver exported variables.                                                */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver local variables and types.                                         */
+/*===========================================================================*/
+
 /**
  * @brief   PAL setup.
  * @details Digital I/O ports static configuration as defined in @p board.h.
@@ -38,17 +50,29 @@ const PALConfig pal_default_config =
 };
 #endif
 
-/*
- * Early initialization code.
- * This initialization must be performed just after stack setup and before
- * any other initialization.
+/*===========================================================================*/
+/* Driver local functions.                                                   */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver interrupt handlers.                                                */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* Driver exported functions.                                                */
+/*===========================================================================*/
+
+/**
+ * @brief   Early initialization code.
+ * @details System clocks are initialized before everything else.
  */
 void __early_init(void) {
   at32_clock_init();
 }
 
-/*
- * Board-specific initialization code.
+/**
+ * @brief   Board-specific initialization code.
+ * @note    You can add your board-specific code here.
  */
 void boardInit(void) {
 
