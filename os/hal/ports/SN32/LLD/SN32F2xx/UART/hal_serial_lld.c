@@ -68,6 +68,7 @@ static const SerialConfig default_config = {SERIAL_DEFAULT_BITRATE,
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
+#if SN32_UART_USE_FD || defined(__DOXYGEN__)
 void UART_divisor_CAL(uint32_t baudrate,uint32_t UART_PCLK,uint8_t Oversampling,uint8_t *dlm,uint8_t *dll,uint8_t  *d_divaddval,uint8_t  *d_mulval)
 {
   float expected_val;
@@ -156,6 +157,8 @@ void UART_divisor_CAL(uint32_t baudrate,uint32_t UART_PCLK,uint8_t Oversampling,
     *d_divaddval = divaddval[0];
   }
 }
+#endif
+
 /**
  * @brief   UART initialization.
  * @details This function must be invoked with interrupts disabled.
@@ -173,7 +176,15 @@ static void uart_init(SerialDriver *sdp, const SerialConfig *config) {
   apbclock = (SN32_HCLK);
 
   // Calculate divider
+#if SN32_UART_USE_FD || defined(__DOXYGEN__)
   UART_divisor_CAL(config->speed,apbclock,oversampling,&dlm,&dll,&divaddval,&mulval);
+#else
+  uint32_t divisor = (uint32_t)(apbclock/oversampling/config->speed);
+  dlm = (divisor>>8)&0xff;
+  dll = divisor&0xff;
+  divaddval = 0;
+  mulval = 1;
+#endif // SN32_UART_USE_FD
 
   // Update the registers
   u->LC = UART_Divisor_Latch_Access_Enable;
