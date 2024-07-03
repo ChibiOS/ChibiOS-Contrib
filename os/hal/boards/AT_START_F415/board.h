@@ -112,6 +112,47 @@
 #define GPIOF_PIN6                  6U
 #define GPIOF_PIN7                  7U
 
+/*
+ * IO lines assignments.
+ */
+#define LINE_BUTTON                 PAL_LINE(GPIOA, 0U)
+#define LINE_ARD_A1                 PAL_LINE(GPIOA, 1U)
+#define LINE_ARD_D1                 PAL_LINE(GPIOA, 2U)
+#define LINE_ARD_D0                 PAL_LINE(GPIOA, 3U)
+#define LINE_ARD_A2                 PAL_LINE(GPIOA, 4U)
+#define LINE_ARD_D13                PAL_LINE(GPIOA, 5U)
+#define LINE_ARD_D12                PAL_LINE(GPIOA, 6U)
+#define LINE_ARD_D11                PAL_LINE(GPIOA, 7U)
+#define LINE_ARD_D7                 PAL_LINE(GPIOA, 8U)
+#define LINE_ARD_D8                 PAL_LINE(GPIOA, 9U)
+#define LINE_ARD_D2                 PAL_LINE(GPIOA, 10U)
+#define LINE_SWDIO                  PAL_LINE(GPIOA, 13U)
+#define LINE_SWCLK                  PAL_LINE(GPIOA, 14U)
+#define LINE_ARD_D10                PAL_LINE(GPIOA, 15U)
+#define LINE_ARD_A3                 PAL_LINE(GPIOB, 0U)
+#define LINE_SWO                    PAL_LINE(GPIOB, 3U)
+#define LINE_ARD_D5                 PAL_LINE(GPIOB, 4U)
+#define LINE_ARD_D4                 PAL_LINE(GPIOB, 5U)
+#define LINE_ARD_SCL                PAL_LINE(GPIOB, 8U)
+#define LINE_ARD_SDA                PAL_LINE(GPIOB, 9U)
+#define LINE_ARD_D6                 PAL_LINE(GPIOB, 10U)
+#define LINE_ARD_PB11               PAL_LINE(GPIOB, 11U)
+#define LINE_ARD_NSS                PAL_LINE(GPIOB, 12U)
+#define LINE_ARD_SCK                PAL_LINE(GPIOB, 13U)
+#define LINE_ARD_MISO               PAL_LINE(GPIOB, 14U)
+#define LINE_ARD_MOSI               PAL_LINE(GPIOB, 15U)
+#define LINE_ARD_A5                 PAL_LINE(GPIOC, 0U)
+#define LINE_ARD_A4                 PAL_LINE(GPIOC, 1U)
+#define LINE_LED_RED                PAL_LINE(GPIOC, 2U)
+#define LINE_LED_YELLOW             PAL_LINE(GPIOC, 3U)
+#define LINE_LED_GREEN              PAL_LINE(GPIOC, 5U)
+#define LINE_ARD_D9                 PAL_LINE(GPIOC, 7U)
+#define LINE_BUTTON_ALT             PAL_LINE(GPIOC, 13U)
+#define LINE_LEXT_IN                PAL_LINE(GPIOC, 14U)
+#define LINE_LEXT_OUT               PAL_LINE(GPIOC, 15U)
+#define LINE_HEXT_IN                PAL_LINE(GPIOD, 0U)
+#define LINE_HEXT_OUT               PAL_LINE(GPIOD, 1U)
+
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -155,13 +196,12 @@
 /*
  * Port A setup.
  * Everything input with pull-up except:
- * PA0  - Normal input              (GPIOA_BUTTON)
- * PA2  - Alternate output          (GPIOA_ARD_D1)
- * PA3  - Normal input              (GPIOA_ARD_D0)
- * PA14 - Pull-down input           (GPIOA_SWCLK)
+ * PA0  - Normal input              (GPIOA_BUTTON).
+ * PA9  - Alternate output          (GPIOA_ARD_D8).
+ * PA10 - Normal input              (GPIOA_ARD_D2).
  */
-#define VAL_GPIOACFGLR          0x88884B84      /*  PA7...PA0 */
-#define VAL_GPIOACFGHR          0x88888888      /* PA15...PA8 */
+#define VAL_GPIOACFGLR          0x88888884      /*  PA7...PA0 */
+#define VAL_GPIOACFGHR          0x888884B8      /* PA15...PA8 */
 #define VAL_GPIOAODT            0xFFFFFFFF
 
 /*
@@ -174,10 +214,10 @@
 /*
  * Port C setup.
  * Everything input with pull-up except:
- * PC2  - Push Pull output          (GPIOC_LED_RED)
- * PC3  - Push Pull output          (GPIOC_LED_YELLOW)
- * PC5  - Push Pull output          (GPIOC_LED_GREEN)
- * PC13 - Normal input              (GPIOC_BUTTON)
+ * PC2  - Push Pull output          (GPIOC_LED_RED).
+ * PC3  - Push Pull output          (GPIOC_LED_YELLOW).
+ * PC5  - Push Pull output          (GPIOC_LED_GREEN).
+ * PC13 - Normal input              (GPIOC_BUTTON).
  */
 #define VAL_GPIOCCFGLR          0x88383388      /*  PC7...PC0 */
 #define VAL_GPIOCCFGHR          0x88488888      /* PC15...PC8 */

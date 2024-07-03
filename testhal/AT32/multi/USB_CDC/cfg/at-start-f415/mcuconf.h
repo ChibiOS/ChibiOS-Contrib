@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2006..2020 Giovanni Di Sirio
     ChibiOS - Copyright (C) 2023..2024 HorrorTroll
     ChibiOS - Copyright (C) 2023..2024 Zhaqian
 
@@ -19,8 +19,6 @@
 #ifndef MCUCONF_H
 #define MCUCONF_H
 
-#define AT32F415_MCUCONF
-
 /*
  * AT32F415 drivers configuration.
  * The following settings override the default settings present in
@@ -34,6 +32,8 @@
  * DMA priorities:
  * 0...3        Lowest...Highest.
  */
+
+#define AT32F415_MCUCONF
 
 /*
  * HAL driver system settings.
@@ -58,6 +58,7 @@
 #define AT32_USB_CLOCK_REQUIRED             TRUE
 #define AT32_USBDIV                         AT32_USBDIV_DIV3
 #define AT32_CLKOUT_SEL                     AT32_CLKOUT_SEL_NOCLOCK
+#define AT32_CLKOUTDIV                      AT32_CLKOUTDIV_DIV1
 #define AT32_ERTCSEL                        AT32_ERTCSEL_HEXTDIV
 #define AT32_PVM_ENABLE                     FALSE
 #define AT32_PVMSEL                         AT32_PVMSEL_LEV1
@@ -143,7 +144,7 @@
 #define AT32_ICU_USE_TMR1                   FALSE
 #define AT32_ICU_USE_TMR2                   FALSE
 #define AT32_ICU_USE_TMR3                   FALSE
-#define AT32_ICU_USE_TMR4                   TRUE
+#define AT32_ICU_USE_TMR4                   FALSE
 #define AT32_ICU_USE_TMR5                   FALSE
 #define AT32_ICU_USE_TMR9                   FALSE
 #define AT32_ICU_USE_TMR10                  FALSE
@@ -152,7 +153,7 @@
 /*
  * PWM driver system settings.
  */
-#define AT32_PWM_USE_TMR1                   TRUE
+#define AT32_PWM_USE_TMR1                   FALSE
 #define AT32_PWM_USE_TMR2                   FALSE
 #define AT32_PWM_USE_TMR3                   FALSE
 #define AT32_PWM_USE_TMR4                   FALSE
@@ -209,10 +210,9 @@
 /*
  * USB driver system settings.
  */
-#define AT32_USB_USE_OTG1                   FALSE
+#define AT32_USB_USE_OTG1                   TRUE
 #define AT32_USB_OTG1_IRQ_PRIORITY          14
 #define AT32_USB_OTG1_RX_FIFO_SIZE          512
-#define AT32_USB_HOST_WAKEUP_DURATION       2
 
 /*
  * WDG driver system settings.

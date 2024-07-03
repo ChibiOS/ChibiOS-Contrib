@@ -16,12 +16,12 @@
     limitations under the License.
 */
 
+#include <portab.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "ch.h"
 #include "hal.h"
-
 #include "shell.h"
 #include "chprintf.h"
 
@@ -62,12 +62,12 @@ static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
   while (chnGetTimeout((BaseChannel *)chp, TIME_IMMEDIATE) == Q_TIMEOUT) {
 #if 1
     /* Writing in channel mode.*/
-    chnWrite(&SDU1, buf, sizeof buf - 1);
+    chnWrite(&PORTAB_SDU1, buf, sizeof buf - 1);
 #else
     /* Writing in buffer mode.*/
-    (void) obqGetEmptyBufferTimeout(&SDU1.obqueue, TIME_INFINITE);
-    memcpy(SDU1.obqueue.ptr, buf, SERIAL_USB_BUFFERS_SIZE);
-    obqPostFullBuffer(&SDU1.obqueue, SERIAL_USB_BUFFERS_SIZE);
+    (void) obqGetEmptyBufferTimeout(&PORTAB_SDU1.obqueue, TIME_INFINITE);
+    memcpy(PORTAB_SDU1.obqueue.ptr, buf, SERIAL_USB_BUFFERS_SIZE);
+    obqPostFullBuffer(&PORTAB_SDU1.obqueue, SERIAL_USB_BUFFERS_SIZE);
 #endif
   }
   chprintf(chp, "\r\n\nstopped\r\n");
@@ -79,7 +79,7 @@ static const ShellCommand commands[] = {
 };
 
 static const ShellConfig shell_cfg1 = {
-  (BaseSequentialStream *)&SDU1,
+  (BaseSequentialStream *)&PORTAB_SDU1,
   commands
 };
 
@@ -88,7 +88,7 @@ static const ShellConfig shell_cfg1 = {
 /*===========================================================================*/
 
 /*
- * Green LED blinker thread, times are in milliseconds.
+ * LED blinker thread, times are in milliseconds.
  */
 static THD_WORKING_AREA(waThread1, 128);
 static THD_FUNCTION(Thread1, arg) {
@@ -96,10 +96,20 @@ static THD_FUNCTION(Thread1, arg) {
   (void)arg;
   chRegSetThreadName("blinker");
   while (true) {
-    systime_t time = serusbcfg.usbp->state == USB_ACTIVE ? 250 : 500;
-    palClearPad(IOPORT3, GPIOC_LED_GREEN);
+    systime_t time;
+
+    time = serusbcfg.usbp->state == USB_ACTIVE ? 250 : 500;
+    palSetLine(PORTAB_BLINK_LED1);
     chThdSleepMilliseconds(time);
-    palSetPad(IOPORT3, GPIOC_LED_GREEN);
+    palSetLine(PORTAB_BLINK_LED2);
+    chThdSleepMilliseconds(time);
+    palSetLine(PORTAB_BLINK_LED3);
+    chThdSleepMilliseconds(time);
+    palClearLine(PORTAB_BLINK_LED1);
+    chThdSleepMilliseconds(time);
+    palClearLine(PORTAB_BLINK_LED2);
+    chThdSleepMilliseconds(time);
+    palClearLine(PORTAB_BLINK_LED3);
     chThdSleepMilliseconds(time);
   }
 }
@@ -120,10 +130,15 @@ int main(void) {
   chSysInit();
 
   /*
+   * Board-dependent initialization.
+   */
+  portab_setup();
+
+  /*
    * Initializes a serial-over-USB CDC driver.
    */
-  sduObjectInit(&SDU1);
-  sduStart(&SDU1, &serusbcfg);
+  sduObjectInit(&PORTAB_SDU1);
+  sduStart(&PORTAB_SDU1, &serusbcfg);
 
   /*
    * Activates the USB driver and then the USB bus pull-up on D+.
@@ -131,7 +146,7 @@ int main(void) {
    * after a reset.
    */
   usbDisconnectBus(serusbcfg.usbp);
-  chThdSleepMilliseconds(1000);
+  chThdSleepMilliseconds(1500);
   usbStart(serusbcfg.usbp, &usbcfg);
   usbConnectBus(serusbcfg.usbp);
 
@@ -149,7 +164,7 @@ int main(void) {
    * Normal main() thread activity, spawning shells.
    */
   while (true) {
-    if (SDU1.config->usbp->state == USB_ACTIVE) {
+    if (PORTAB_SDU1.config->usbp->state == USB_ACTIVE) {
       thread_t *shelltp = chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
                                               "shell", NORMALPRIO + 1,
                                               shellThread, (void *)&shell_cfg1);
