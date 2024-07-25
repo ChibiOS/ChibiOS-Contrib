@@ -63,9 +63,10 @@ OSAL_IRQ_HANDLER(WB32_EXTI0_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
 
   pr = EXTI->PR & EXTI_PR_PR0;
-  EXTI->PR = pr;
 
   exti_serve_irq(pr, 0);
+
+  EXTI->PR = EXTI_PR_PR0;
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -83,9 +84,10 @@ OSAL_IRQ_HANDLER(WB32_EXTI1_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
 
   pr = EXTI->PR & EXTI_PR_PR1;
-  EXTI->PR = pr;
 
   exti_serve_irq(pr, 1);
+
+  EXTI->PR = EXTI_PR_PR1;
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -103,9 +105,10 @@ OSAL_IRQ_HANDLER(WB32_EXTI2_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
 
   pr = EXTI->PR & EXTI_PR_PR2;
-  EXTI->PR = pr;
 
   exti_serve_irq(pr, 2);
+  
+  EXTI->PR = EXTI_PR_PR2;
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -123,9 +126,10 @@ OSAL_IRQ_HANDLER(WB32_EXTI3_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
 
   pr = EXTI->PR & EXTI_PR_PR3;
-  EXTI->PR = pr;
 
   exti_serve_irq(pr, 3);
+
+  EXTI->PR = EXTI_PR_PR3;
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -143,9 +147,10 @@ OSAL_IRQ_HANDLER(WB32_EXTI4_IRQ_VECTOR) {
   OSAL_IRQ_PROLOGUE();
 
   pr = EXTI->PR & EXTI_PR_PR4;
-  EXTI->PR = pr;
 
   exti_serve_irq(pr, 4);
+
+  EXTI->PR = EXTI_PR_PR4;
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -164,13 +169,15 @@ OSAL_IRQ_HANDLER(WB32_EXTI9_5_IRQ_VECTOR) {
 
   pr = EXTI->PR & (EXTI_PR_PR5 | EXTI_PR_PR6 | EXTI_PR_PR7 |
                    EXTI_PR_PR8 | EXTI_PR_PR9);
-  EXTI->PR = pr;
 
   exti_serve_irq(pr, 5);
   exti_serve_irq(pr, 6);
   exti_serve_irq(pr, 7);
   exti_serve_irq(pr, 8);
   exti_serve_irq(pr, 9);
+
+  EXTI->PR = EXTI_PR_PR5 | EXTI_PR_PR6 | EXTI_PR_PR7 |
+             EXTI_PR_PR8 | EXTI_PR_PR9;
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -189,7 +196,6 @@ OSAL_IRQ_HANDLER(WB32_EXTI15_10_IRQ_VECTOR) {
 
   pr = EXTI->PR & (EXTI_PR_PR10 | EXTI_PR_PR11 | EXTI_PR_PR12 |
                    EXTI_PR_PR13 | EXTI_PR_PR14 | EXTI_PR_PR15);
-  EXTI->PR = pr;
 
   exti_serve_irq(pr, 10);
   exti_serve_irq(pr, 11);
@@ -197,6 +203,9 @@ OSAL_IRQ_HANDLER(WB32_EXTI15_10_IRQ_VECTOR) {
   exti_serve_irq(pr, 13);
   exti_serve_irq(pr, 14);
   exti_serve_irq(pr, 15);
+
+  EXTI->PR = EXTI_PR_PR10 | EXTI_PR_PR11 | EXTI_PR_PR12 |
+             EXTI_PR_PR13 | EXTI_PR_PR14 | EXTI_PR_PR15;
 
   OSAL_IRQ_EPILOGUE();
 }
