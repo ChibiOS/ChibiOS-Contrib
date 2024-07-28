@@ -280,6 +280,16 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
   /* Clear ADDR7F flag. */
   if (event & (I2C_STS1_ADDR7F | I2C_STS1_ADDRHF))
     (void)dp->STS2;
+  /* BUSERR flag doesnt happen anymore in event handling */
+#if 0
+  /* Errata 1.14.2 for AT32F415, I2C communication error when BUSERR is detected on bus.*/
+  /* Errata 1.4.4 for AT32F403A/7, BUSERR is detected by I2C before start of communication.*/
+  /* Errata 1.15.2 for AT32F413, BUSERR is detected by I2C before start of communication.*/
+  /* Errata 1.2.2 for AT32A403A, BUSERR is detected by I2C before start of communication.*/
+  if (event & I2C_STS1_BUSERR) {
+    dp->STS1 &= ~I2C_STS1_BUSERR;
+  }
+#endif
 }
 
 /**
@@ -354,6 +364,18 @@ static void i2c_lld_serve_error_interrupt(I2CDriver *i2cp, uint16_t sts) {
 
   if (sts & I2C_STS1_BUSERR) {                      /* Bus error.           */
     i2cp->errors |= I2C_BUS_ERROR;
+    /* No more needed */
+#if 0
+    /* Errata 1.14.2 for AT32F415, I2C communication error when BUSERR is
+       detected on bus.*/
+    /* Errata 1.4.4 for AT32F403A/7, BUSERR is detected by I2C before start
+       of communication.*/
+    /* Errata 1.15.2 for AT32F413, BUSERR is detected by I2C before start
+       of communication.*/
+    /* Errata 1.2.2 for AT32A403A, BUSERR is detected by I2C before start
+       of communication.*/
+    i2cp->i2c->STS1 &= ~I2C_STS1_BUSERR;
+#endif
   }
 
   if (sts & I2C_STS1_ARLOST)                        /* Arbitration lost.    */

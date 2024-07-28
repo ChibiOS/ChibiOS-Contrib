@@ -282,6 +282,9 @@ OSAL_IRQ_HANDLER(AT32_ERTC_COMMON_HANDLER) {
 #if defined(ERTC_STS_TP1F)
            | ERTC_STS_TP1F
 #endif
+#if defined(ERTC_STS_TP2F)
+           | ERTC_STS_TP2F
+#endif
 #if defined(ERTC_STS_WATF)
            | ERTC_STS_WATF
 #endif
@@ -338,6 +341,11 @@ OSAL_IRQ_HANDLER(AT32_ERTC_COMMON_HANDLER) {
         RTCD1.callback(&RTCD1, RTC_EVENT_TAMP1);
       }
 #endif
+#if defined(ERTC_STS_TP2F)
+      if ((sts & ERTC_STS_TP2F) != 0U) {
+        RTCD1.callback(&RTCD1, RTC_EVENT_TAMP2);
+      }
+#endif
     }
 #endif /* !defined(ERTC_TAMP_TP1EN) */
   }
@@ -365,6 +373,9 @@ OSAL_IRQ_HANDLER(AT32_ERTC_TAMP_STAMP_HANDLER) {
 #if defined(ERTC_STS_TP1F)
            | ERTC_STS_TP1F
 #endif
+#if defined(ERTC_STS_TP2F)
+           | ERTC_STS_TP2F
+#endif
           );
 
   sts = RTCD1.rtc->STS;
@@ -391,6 +402,11 @@ OSAL_IRQ_HANDLER(AT32_ERTC_TAMP_STAMP_HANDLER) {
 #if defined(ERTC_STS_TP1F)
       if ((sts & ERTC_STS_TP1F) != 0U) {
         RTCD1.callback(&RTCD1, RTC_EVENT_TAMP1);
+      }
+#endif
+#if defined(ERTC_STS_TP2F)
+      if ((sts & ERTC_STS_TP2F) != 0U) {
+        RTCD1.callback(&RTCD1, RTC_EVENT_TAMP2);
       }
 #endif
     }
@@ -467,7 +483,7 @@ OSAL_IRQ_HANDLER(AT32_ERTC_ALARM_HANDLER) {
 }
 
 #else
-#error "missing required RTC handlers definitions in IRQ"
+#error "missing required RTC handlers definitions in registry"
 #endif
 
 /*===========================================================================*/
@@ -488,8 +504,8 @@ void rtc_lld_init(void) {
   RTCD1.rtc = ERTC;
 
   /* Disable write protection. */
-  RTCD1.rtc->WP = 0xCA;
-  RTCD1.rtc->WP = 0x53;
+  RTCD1.rtc->WP = 0xCAU;
+  RTCD1.rtc->WP = 0x53U;
 
   /* If calendar has not been initialized yet then proceed with the
      initial setup.*/
@@ -497,12 +513,12 @@ void rtc_lld_init(void) {
 
     rtc_enter_init();
 
-    RTCD1.rtc->CTRL = AT32_ERTC_CTRL_INIT;
+    RTCD1.rtc->CTRL = AT32_ERTC_CTRL_INIT | ERTC_CTRL_DREN;
 #if defined(ERTC_TAMP_TP1EN)
     RTCD1.rtc->TAMP = AT32_ERTC_TAMP_INIT;
 #endif
     RTCD1.rtc->STS  = ERTC_STS_IMEN; /* Clearing all but ERTC_STS_IMEN. */
-    RTCD1.rtc->DIV  = AT32_ERTC_DIV_BITS;
+    RTCD1.rtc->DIV  = AT32_ERTC_DIV_BITS & 0x7FFFU;
     RTCD1.rtc->DIV  = AT32_ERTC_DIV_BITS;
 
     rtc_exit_init();
@@ -567,34 +583,42 @@ void rtc_lld_set_time(RTCDriver *rtcp, const RTCDateTime *timespec) {
  * @notapi
  */
 void rtc_lld_get_time(RTCDriver *rtcp, RTCDateTime *timespec) {
-  uint32_t date, time, ctrl;
+  uint32_t ctrl, date, time, prev_date, prev_time;
   uint32_t subs;
 #if AT32_ERTC_HAS_SUBSECONDS
-  uint32_t oldsbs, sbs;
+  uint32_t sbs, prev_sbs;
 #endif /* AT32_ERTC_HAS_SUBSECONDS */
   syssts_t sts;
 
   /* Entering a reentrant critical zone.*/
   sts = osalSysGetStatusAndLockX();
 
-  /* Synchronization with the RTC and reading the registers, note
-     DATE must be read last.*/
-  while ((rtcp->rtc->STS & ERTC_STS_UPDF) == 0)
-    ;
+  /* Repeated registers read until 2 matching sets are found.*/
 #if AT32_ERTC_HAS_SUBSECONDS
-  do
-#endif /* AT32_ERTC_HAS_SUBSECONDS */
-  {
-    oldsbs = rtcp->rtc->SBS;
+  sbs  = 0U;
+  time = 0U;
+  date = 0U;
+  do {
+    prev_sbs  = sbs;
+    prev_time = time;
+    prev_date = date;
+    sbs = rtcp->rtc->SBS;
     time = rtcp->rtc->TIME;
     date = rtcp->rtc->DATE;
-  }
-#if AT32_ERTC_HAS_SUBSECONDS
-  while (oldsbs != (sbs = rtcp->rtc->SBS));
-  (void) rtcp->rtc->DATE;
-#endif /* AT32_ERTC_HAS_SUBSECONDS */
+  } while ((sbs != prev_sbs) || (time != prev_time) || (date != prev_date));
+#else /* !AT32_ERTC_HAS_SUBSECONDS */
+  time = 0U;
+  date = 0U;
+  do {
+    prev_time = time;
+    prev_date = date;
+    time = rtcp->rtc->TIME;
+    date = rtcp->rtc->DATE;
+  } while ((time != prev_time) || (date != prev_date));
+#endif /* !AT32_ERTC_HAS_SUBSECONDS */
+
+  /* DST bit is in CTRL, no need to poll on this one.*/
   ctrl = rtcp->rtc->CTRL;
-  rtcp->rtc->STS &= ~ERTC_STS_UPDF;
 
   /* Leaving a reentrant critical zone.*/
   osalSysRestoreStatusX(sts);

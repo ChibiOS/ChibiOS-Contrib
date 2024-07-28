@@ -150,11 +150,9 @@
 #error "unsupported AT32_OTG_STEPPING"
 #endif
 
-/*
 #if !defined(AT32_HAS_OTG1) || !defined(AT32_HAS_OTG2)
 #error "AT32_HAS_OTGx not defined in registry"
 #endif
-*/
 
 #if AT32_HAS_OTG1 && !defined(AT32_OTG1_ENDPOINTS)
 #error "AT32_OTG1_ENDPOINTS not defined in registry"
