@@ -46,7 +46,23 @@
 #define ST_CTRL1_INIT                       0x00000000U
 #endif
 
-#if AT32_ST_USE_TIMER == 2
+#if AT32_ST_USE_TIMER == 1
+
+#if !AT32_HAS_TMR1
+#error "TMR1 not present in the selected device"
+#endif
+
+#if (OSAL_ST_RESOLUTION == 32) && !AT32_TMR1_IS_32BITS
+#error "TMR1 is not a 32bits timer"
+#endif
+
+#define ST_HANDLER                          AT32_TMR1_CH_HANDLER
+#define ST_NUMBER                           AT32_TMR1_CH_NUMBER
+#define ST_CLOCK_SRC                        AT32_TMRCLK2
+#define ST_ENABLE_CLOCK()                   crmEnableTMR1(true)
+#define ST_ENABLE_PAUSE()                   DEBUG->CTRL |= DEBUG_CTRL_TMR1_PAUSE
+
+#elif AT32_ST_USE_TIMER == 2
 
 #if !AT32_HAS_TMR2
 #error "TMR2 not present in the selected device"
