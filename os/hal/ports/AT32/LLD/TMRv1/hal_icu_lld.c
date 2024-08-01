@@ -634,7 +634,7 @@ void icu_lld_start_capture(ICUDriver *icup) {
   icup->tmr->ISTS   = 0;
 
   /* Timer is started.*/
-  icup->tmr->CTRL1 |= AT32_TMR_CTRL1_OVFS | AT32_TMR_CTRL1_TMREN;
+  icup->tmr->CTRL1 = AT32_TMR_CTRL1_OVFS | AT32_TMR_CTRL1_TMREN;
 }
 
 /**
@@ -671,7 +671,7 @@ bool icu_lld_wait_capture(ICUDriver *icup) {
 void icu_lld_stop_capture(ICUDriver *icup) {
 
   /* Timer stopped.*/
-  icup->tmr->CTRL1 &= ~(AT32_TMR_CTRL1_OVFS | AT32_TMR_CTRL1_TMREN);
+  icup->tmr->CTRL1 = 0;
 
   /* All interrupts disabled.*/
   icup->tmr->IDEN &= ~AT32_TMR_IDEN_IRQ_MASK;
