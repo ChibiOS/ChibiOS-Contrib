@@ -18,7 +18,7 @@
 
 /**
  * @file    xWDGv1/hal_wdg_lld.h
- * @brief   WDG Driver subsystem low level driver header.
+ * @brief   WDT Driver subsystem low level driver header.
  *
  * @addtogroup WDG
  * @{
@@ -64,8 +64,8 @@
  * @{
  */
 /**
- * @brief   WDG driver enable switch.
- * @details If set to @p TRUE the support for WDG is included.
+ * @brief   WDT driver enable switch.
+ * @details If set to @p TRUE the support for WDT is included.
  * @note    The default is @p FALSE.
  */
 #if !defined(AT32_WDG_USE_WDT) || defined(__DOXYGEN__)
@@ -78,11 +78,11 @@
 /*===========================================================================*/
 
 #if AT32_WDG_USE_WDT && !AT32_HAS_WDT
-#error "WDG not present in the selected device"
+#error "WDT not present in the selected device"
 #endif
 
 #if !AT32_WDG_USE_WDT
-#error "WDG driver activated but no xWDG peripheral assigned"
+#error "WDT driver activated but no xWDG peripheral assigned"
 #endif
 
 #if !defined(AT32_LICK_ENABLED)
@@ -90,7 +90,7 @@
 #endif
 
 #if (AT32_WDG_USE_WDT == TRUE) && (AT32_LICK_ENABLED == FALSE)
-#error "WDG requires LICK clock"
+#error "WDT requires LICK clock"
 #endif
 
 /*===========================================================================*/
@@ -98,7 +98,7 @@
 /*===========================================================================*/
 
 /**
- * @brief   Type of a structure representing an WDG driver.
+ * @brief   Type of a structure representing an WDT driver.
  */
 typedef struct WDGDriver WDGDriver;
 
@@ -133,9 +133,9 @@ struct WDGDriver {
   const WDGConfig           *config;
   /* End of the mandatory fields.*/
   /**
-   * @brief   Pointer to the WDG registers block.
+   * @brief   Pointer to the WDT registers block.
    */
-  WDT_TypeDef               *wdg;
+  WDT_TypeDef               *wdt;
 };
 
 /*===========================================================================*/

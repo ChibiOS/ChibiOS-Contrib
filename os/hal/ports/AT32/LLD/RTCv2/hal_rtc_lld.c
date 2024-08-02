@@ -23,7 +23,7 @@
 
 /**
  * @file    RTCv2/hal_rtc_lld.c
- * @brief   AT32 RTC low level driver.
+ * @brief   AT32 ERTC low level driver.
  *
  * @addtogroup RTC
  * @{
@@ -60,7 +60,7 @@
 /*===========================================================================*/
 
 /**
- * @brief RTC driver identifier.
+ * @brief ERTC driver identifier.
  */
 RTCDriver RTCD1;
 
@@ -77,10 +77,10 @@ RTCDriver RTCD1;
  *
  * @notapi
  */
-static void rtc_enter_init(void) {
+static void ertc_enter_init(void) {
 
-  RTCD1.rtc->STS |= ERTC_STS_IMEN;
-  while ((RTCD1.rtc->STS & ERTC_STS_IMF) == 0)
+  RTCD1.ertc->STS |= ERTC_STS_IMEN;
+  while ((RTCD1.ertc->STS & ERTC_STS_IMF) == 0)
     ;
 }
 
@@ -89,9 +89,9 @@ static void rtc_enter_init(void) {
  *
  * @notapi
  */
-static inline void rtc_exit_init(void) {
+static inline void ertc_exit_init(void) {
 
-  RTCD1.rtc->STS &= ~ERTC_STS_IMEN;
+  RTCD1.ertc->STS &= ~ERTC_STS_IMEN;
 }
 
 /**
@@ -102,7 +102,7 @@ static inline void rtc_exit_init(void) {
  *
  * @notapi
  */
-static void rtc_decode_time(uint32_t time, RTCDateTime *timespec) {
+static void ertc_decode_time(uint32_t time, RTCDateTime *timespec) {
   uint32_t n;
 
   n  = ((time >> ERTC_TIME_HT_OFFSET) & 3)  * 36000000;
@@ -122,7 +122,7 @@ static void rtc_decode_time(uint32_t time, RTCDateTime *timespec) {
  *
  * @notapi
  */
-static void rtc_decode_date(uint32_t date, RTCDateTime *timespec) {
+static void ertc_decode_date(uint32_t date, RTCDateTime *timespec) {
 
   timespec->year  = (((date >> ERTC_DATE_YT_OFFSET) & 15) * 10) +
                      ((date >> ERTC_DATE_YU_OFFSET) & 15);
@@ -141,7 +141,7 @@ static void rtc_decode_date(uint32_t date, RTCDateTime *timespec) {
  *
  * @notapi
  */
-static uint32_t rtc_encode_time(const RTCDateTime *timespec) {
+static uint32_t ertc_encode_time(const RTCDateTime *timespec) {
   uint32_t n, time = 0;
 
   /* Subseconds cannot be set.*/
@@ -175,7 +175,7 @@ static uint32_t rtc_encode_time(const RTCDateTime *timespec) {
  *
  * @notapi
  */
-static uint32_t rtc_encode_date(const RTCDateTime *timespec) {
+static uint32_t ertc_encode_date(const RTCDateTime *timespec) {
   uint32_t n, date = 0;
 
   /* Year conversion. Note, only years last two digits are considered.*/
@@ -212,7 +212,7 @@ static size_t _getsize(void *instance) {
 
 static ps_error_t _read(void *instance, ps_offset_t offset,
                         size_t n, uint8_t *rp) {
-  volatile uint32_t *bpr = &((RTCDriver *)instance)->rtc->BPR1;
+  volatile uint32_t *bpr = &((RTCDriver *)instance)->ertc->BPR1;
   unsigned i;
 
   osalDbgCheck((instance != NULL) && (rp != NULL));
@@ -231,7 +231,7 @@ static ps_error_t _read(void *instance, ps_offset_t offset,
 
 static ps_error_t _write(void *instance, ps_offset_t offset,
                          size_t n, const uint8_t *wp) {
-  volatile uint32_t *bpr = &((RTCDriver *)instance)->rtc->BPR1;
+  volatile uint32_t *bpr = &((RTCDriver *)instance)->ertc->BPR1;
   unsigned i;
 
   osalDbgCheck((instance != NULL) && (wp != NULL));
@@ -252,7 +252,7 @@ static ps_error_t _write(void *instance, ps_offset_t offset,
 }
 
 /**
- * @brief   VMT for the RTC storage file interface.
+ * @brief   VMT for the ERTC storage file interface.
  */
 struct RTCDriverVMT _rtc_lld_vmt = {
   (size_t)0,
@@ -267,7 +267,7 @@ struct RTCDriverVMT _rtc_lld_vmt = {
 #if defined(AT32_ERTC_COMMON_HANDLER)
 #if !defined(AT32_ERTC_SUPPRESS_COMMON_ISR)
 /**
- * @brief   RTC common interrupt handler.
+ * @brief   ERTC common interrupt handler.
  *
  * @isr
  */
@@ -296,54 +296,54 @@ OSAL_IRQ_HANDLER(AT32_ERTC_COMMON_HANDLER) {
 #endif
           );
 
-  sts = RTCD1.rtc->STS;
-  RTCD1.rtc->STS = sts & ~clear;
+  sts = RTCD1.ertc->STS;
+  RTCD1.ertc->STS = sts & ~clear;
 
   exintClearGroup1(EXINT_MASK1(AT32_ERTC_ALARM_EXINT) |
                    EXINT_MASK1(AT32_ERTC_TAMP_STAMP_EXINT) |
                    EXINT_MASK1(AT32_ERTC_WKUP_EXINT));
 
   if (RTCD1.callback != NULL) {
-    uint32_t ctrl = RTCD1.rtc->CTRL;
+    uint32_t ctrl = RTCD1.ertc->CTRL;
     uint32_t tamp;
 
 #if defined(ERTC_STS_WATF)
     if (((ctrl & ERTC_CTRL_WATIEN) != 0U) && ((sts & ERTC_STS_WATF) != 0U)) {
-      RTCD1.callback(&RTCD1, RTC_EVENT_WAKEUP);
+      RTCD1.callback(&RTCD1, ERTC_EVENT_WAKEUP);
     }
 #endif
 
 #if defined(ERTC_STS_ALAF)
     if (((ctrl & ERTC_CTRL_ALAIEN) != 0U) && ((sts & ERTC_STS_ALAF) != 0U)) {
-      RTCD1.callback(&RTCD1, RTC_EVENT_ALARM_A);
+      RTCD1.callback(&RTCD1, ERTC_EVENT_ALARM_A);
     }
 #endif
 #if defined(ERTC_STS_ALBF)
     if (((ctrl & ERTC_CTRL_ALBIEN) != 0U) && ((sts & ERTC_STS_ALBF) != 0U)) {
-      RTCD1.callback(&RTCD1, RTC_EVENT_ALARM_B);
+      RTCD1.callback(&RTCD1, ERTC_EVENT_ALARM_B);
     }
 #endif
 
     if ((ctrl & ERTC_CTRL_TSIEN) != 0U) {
       if ((sts & ERTC_STS_TSF) != 0U) {
-        RTCD1.callback(&RTCD1, RTC_EVENT_TS);
+        RTCD1.callback(&RTCD1, ERTC_EVENT_TS);
       }
       if ((sts & ERTC_STS_TSOF) != 0U) {
-        RTCD1.callback(&RTCD1, RTC_EVENT_TS_OVF);
+        RTCD1.callback(&RTCD1, ERTC_EVENT_TS_OVF);
       }
     }
 
 #if defined(ERTC_TAMP_TP1EN)
-    tamp = RTCD1.rtc->TAMP;
+    tamp = RTCD1.ertc->TAMP;
     if ((tamp & ERTC_TAMP_TPIEN) != 0U) {
 #if defined(ERTC_STS_TP1F)
       if ((sts & ERTC_STS_TP1F) != 0U) {
-        RTCD1.callback(&RTCD1, RTC_EVENT_TAMP1);
+        RTCD1.callback(&RTCD1, ERTC_EVENT_TAMP1);
       }
 #endif
 #if defined(ERTC_STS_TP2F)
       if ((sts & ERTC_STS_TP2F) != 0U) {
-        RTCD1.callback(&RTCD1, RTC_EVENT_TAMP2);
+        RTCD1.callback(&RTCD1, ERTC_EVENT_TAMP2);
       }
 #endif
     }
@@ -358,7 +358,7 @@ OSAL_IRQ_HANDLER(AT32_ERTC_COMMON_HANDLER) {
       defined(AT32_ERTC_WKUP_HANDLER) &&                                    \
       defined(AT32_ERTC_ALARM_HANDLER)
 /**
- * @brief   RTC TAMP/STAMP interrupt handler.
+ * @brief   ERTC TAMP/STAMP interrupt handler.
  *
  * @isr
  */
@@ -378,35 +378,35 @@ OSAL_IRQ_HANDLER(AT32_ERTC_TAMP_STAMP_HANDLER) {
 #endif
           );
 
-  sts = RTCD1.rtc->STS;
-  RTCD1.rtc->STS = sts & ~clear;
+  sts = RTCD1.ertc->STS;
+  RTCD1.ertc->STS = sts & ~clear;
 
   exintClearGroup1(EXINT_MASK1(AT32_ERTC_TAMP_STAMP_EXINT));
 
   if (RTCD1.callback != NULL) {
     uint32_t ctrl, tamp;
 
-    ctrl = RTCD1.rtc->CTRL;
+    ctrl = RTCD1.ertc->CTRL;
     if ((ctrl & ERTC_CTRL_TSIEN) != 0U) {
       if ((sts & ERTC_STS_TSF) != 0U) {
-        RTCD1.callback(&RTCD1, RTC_EVENT_TS);
+        RTCD1.callback(&RTCD1, ERTC_EVENT_TS);
       }
       if ((sts & ERTC_STS_TSOF) != 0U) {
-        RTCD1.callback(&RTCD1, RTC_EVENT_TS_OVF);
+        RTCD1.callback(&RTCD1, ERTC_EVENT_TS_OVF);
       }
     }
 
 #if defined(ERTC_TAMP_TP1EN)
-    tamp = RTCD1.rtc->TAMP;
+    tamp = RTCD1.ertc->TAMP;
     if ((tamp & ERTC_TAMP_TPIEN) != 0U) {
 #if defined(ERTC_STS_TP1F)
       if ((sts & ERTC_STS_TP1F) != 0U) {
-        RTCD1.callback(&RTCD1, RTC_EVENT_TAMP1);
+        RTCD1.callback(&RTCD1, ERTC_EVENT_TAMP1);
       }
 #endif
 #if defined(ERTC_STS_TP2F)
       if ((sts & ERTC_STS_TP2F) != 0U) {
-        RTCD1.callback(&RTCD1, RTC_EVENT_TAMP2);
+        RTCD1.callback(&RTCD1, ERTC_EVENT_TAMP2);
       }
 #endif
     }
@@ -416,7 +416,7 @@ OSAL_IRQ_HANDLER(AT32_ERTC_TAMP_STAMP_HANDLER) {
   OSAL_IRQ_EPILOGUE();
 }
 /**
- * @brief   RTC wakeup interrupt handler.
+ * @brief   ERTC wakeup interrupt handler.
  *
  * @isr
  */
@@ -425,16 +425,16 @@ OSAL_IRQ_HANDLER(AT32_ERTC_WKUP_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  sts = RTCD1.rtc->STS;
-  RTCD1.rtc->STS = sts & ~ERTC_STS_WATF;
+  sts = RTCD1.ertc->STS;
+  RTCD1.ertc->STS = sts & ~ERTC_STS_WATF;
 
   exintClearGroup1(EXINT_MASK1(AT32_ERTC_WKUP_EXINT));
 
   if (RTCD1.callback != NULL) {
-    uint32_t ctrl = RTCD1.rtc->CTRL;
+    uint32_t ctrl = RTCD1.ertc->CTRL;
 
     if (((ctrl & ERTC_CTRL_WATIEN) != 0U) && ((sts & ERTC_STS_WATF) != 0U)) {
-      RTCD1.callback(&RTCD1, RTC_EVENT_WAKEUP);
+      RTCD1.callback(&RTCD1, ERTC_EVENT_WAKEUP);
     }
   }
 
@@ -442,7 +442,7 @@ OSAL_IRQ_HANDLER(AT32_ERTC_WKUP_HANDLER) {
 }
 
 /**
- * @brief   RTC alarm interrupt handler.
+ * @brief   ERTC alarm interrupt handler.
  *
  * @isr
  */
@@ -460,21 +460,21 @@ OSAL_IRQ_HANDLER(AT32_ERTC_ALARM_HANDLER) {
 #endif
           );
 
-  sts = RTCD1.rtc->STS;
-  RTCD1.rtc->STS = sts & ~clear;
+  sts = RTCD1.ertc->STS;
+  RTCD1.ertc->STS = sts & ~clear;
 
   exintClearGroup1(EXINT_MASK1(AT32_ERTC_ALARM_EXINT));
 
   if (RTCD1.callback != NULL) {
-    uint32_t ctrl = RTCD1.rtc->CTRL;
+    uint32_t ctrl = RTCD1.ertc->CTRL;
 #if defined(ERTC_STS_ALAF)
     if (((ctrl & ERTC_CTRL_ALAIEN) != 0U) && ((sts & ERTC_STS_ALAF) != 0U)) {
-      RTCD1.callback(&RTCD1, RTC_EVENT_ALARM_A);
+      RTCD1.callback(&RTCD1, ERTC_EVENT_ALARM_A);
     }
 #endif
 #if defined(ERTC_STS_ALBF)
     if (((ctrl & ERTC_CTRL_ALBIEN) != 0U) && ((sts & ERTC_STS_ALBF) != 0U)) {
-      RTCD1.callback(&RTCD1, RTC_EVENT_ALARM_B);
+      RTCD1.callback(&RTCD1, ERTC_EVENT_ALARM_B);
     }
 #endif
   }
@@ -483,7 +483,7 @@ OSAL_IRQ_HANDLER(AT32_ERTC_ALARM_HANDLER) {
 }
 
 #else
-#error "missing required RTC handlers definitions in registry"
+#error "missing required ERTC handlers definitions in registry"
 #endif
 
 /*===========================================================================*/
@@ -497,40 +497,40 @@ OSAL_IRQ_HANDLER(AT32_ERTC_ALARM_HANDLER) {
  */
 void rtc_lld_init(void) {
 
-  /* RTC object initialization.*/
+  /* ERTC object initialization.*/
   rtcObjectInit(&RTCD1);
 
-  /* RTC pointer initialization.*/
-  RTCD1.rtc = ERTC;
+  /* ERTC pointer initialization.*/
+  RTCD1.ertc = ERTC;
 
   /* Disable write protection. */
-  RTCD1.rtc->WP = 0xCAU;
-  RTCD1.rtc->WP = 0x53U;
+  RTCD1.ertc->WP = 0xCAU;
+  RTCD1.ertc->WP = 0x53U;
 
   /* If calendar has not been initialized yet then proceed with the
      initial setup.*/
-  if (!(RTCD1.rtc->STS & ERTC_STS_INITF)) {
+  if (!(RTCD1.ertc->STS & ERTC_STS_INITF)) {
 
-    rtc_enter_init();
+    ertc_enter_init();
 
-    RTCD1.rtc->CTRL = AT32_ERTC_CTRL_INIT | ERTC_CTRL_DREN;
+    RTCD1.ertc->CTRL = AT32_ERTC_CTRL_INIT | ERTC_CTRL_DREN;
 #if defined(ERTC_TAMP_TP1EN)
-    RTCD1.rtc->TAMP = AT32_ERTC_TAMP_INIT;
+    RTCD1.ertc->TAMP = AT32_ERTC_TAMP_INIT;
 #endif
-    RTCD1.rtc->STS  = ERTC_STS_IMEN; /* Clearing all but ERTC_STS_IMEN. */
-    RTCD1.rtc->DIV  = AT32_ERTC_DIV_BITS & 0x7FFFU;
-    RTCD1.rtc->DIV  = AT32_ERTC_DIV_BITS;
+    RTCD1.ertc->STS  = ERTC_STS_IMEN; /* Clearing all but ERTC_STS_IMEN. */
+    RTCD1.ertc->DIV  = AT32_ERTC_DIV_BITS & 0x7FFFU;
+    RTCD1.ertc->DIV  = AT32_ERTC_DIV_BITS;
 
-    rtc_exit_init();
+    ertc_exit_init();
   }
   else {
-    RTCD1.rtc->STS &= ~ERTC_STS_UPDF;
+    RTCD1.ertc->STS &= ~ERTC_STS_UPDF;
   }
 
   /* Callback initially disabled.*/
   RTCD1.callback = NULL;
 
-  /* Enabling RTC-related EXINT lines.*/
+  /* Enabling ERTC-related EXINT lines.*/
   exintEnableGroup1(EXINT_MASK1(AT32_ERTC_ALARM_EXINT) |
                     EXINT_MASK1(AT32_ERTC_TAMP_STAMP_EXINT) |
                     EXINT_MASK1(AT32_ERTC_WKUP_EXINT),
@@ -546,7 +546,7 @@ void rtc_lld_init(void) {
  *          to set it on AT32 platform.
  * @note    The function can be called from any context.
  *
- * @param[in] rtcp      pointer to RTC driver structure
+ * @param[in] rtcp      pointer to ERTC driver structure
  * @param[in] timespec  pointer to a @p RTCDateTime structure
  *
  * @notapi
@@ -555,19 +555,19 @@ void rtc_lld_set_time(RTCDriver *rtcp, const RTCDateTime *timespec) {
   uint32_t date, time;
   syssts_t sts;
 
-  time = rtc_encode_time(timespec);
-  date = rtc_encode_date(timespec);
+  time = ertc_encode_time(timespec);
+  date = ertc_encode_date(timespec);
 
   /* Entering a reentrant critical zone.*/
   sts = osalSysGetStatusAndLockX();
 
   /* Writing the registers.*/
-  rtc_enter_init();
-  rtcp->rtc->TIME = time;
-  rtcp->rtc->DATE = date;
-  rtcp->rtc->CTRL = (rtcp->rtc->CTRL & ~(1U << ERTC_CTRL_BPR_OFFSET)) |
-                    (timespec->dstflag << ERTC_CTRL_BPR_OFFSET);
-  rtc_exit_init();
+  ertc_enter_init();
+  rtcp->ertc->TIME = time;
+  rtcp->ertc->DATE = date;
+  rtcp->ertc->CTRL = (rtcp->ertc->CTRL & ~(1U << ERTC_CTRL_BPR_OFFSET)) |
+                     (timespec->dstflag << ERTC_CTRL_BPR_OFFSET);
+  ertc_exit_init();
 
   /* Leaving a reentrant critical zone.*/
   osalSysRestoreStatusX(sts);
@@ -577,7 +577,7 @@ void rtc_lld_set_time(RTCDriver *rtcp, const RTCDateTime *timespec) {
  * @brief   Get current time.
  * @note    The function can be called from any context.
  *
- * @param[in] rtcp      pointer to RTC driver structure
+ * @param[in] rtcp      pointer to ERTC driver structure
  * @param[out] timespec pointer to a @p RTCDateTime structure
  *
  * @notapi
@@ -602,9 +602,9 @@ void rtc_lld_get_time(RTCDriver *rtcp, RTCDateTime *timespec) {
     prev_sbs  = sbs;
     prev_time = time;
     prev_date = date;
-    sbs = rtcp->rtc->SBS;
-    time = rtcp->rtc->TIME;
-    date = rtcp->rtc->DATE;
+    sbs = rtcp->ertc->SBS;
+    time = rtcp->ertc->TIME;
+    date = rtcp->ertc->DATE;
   } while ((sbs != prev_sbs) || (time != prev_time) || (date != prev_date));
 #else /* !AT32_ERTC_HAS_SUBSECONDS */
   time = 0U;
@@ -612,22 +612,22 @@ void rtc_lld_get_time(RTCDriver *rtcp, RTCDateTime *timespec) {
   do {
     prev_time = time;
     prev_date = date;
-    time = rtcp->rtc->TIME;
-    date = rtcp->rtc->DATE;
+    time = rtcp->ertc->TIME;
+    date = rtcp->ertc->DATE;
   } while ((time != prev_time) || (date != prev_date));
 #endif /* !AT32_ERTC_HAS_SUBSECONDS */
 
   /* DST bit is in CTRL, no need to poll on this one.*/
-  ctrl = rtcp->rtc->CTRL;
+  ctrl = rtcp->ertc->CTRL;
 
   /* Leaving a reentrant critical zone.*/
   osalSysRestoreStatusX(sts);
 
   /* Decoding day time, this starts the atomic read sequence, see "Reading
-     the calendar" in the RTC documentation.*/
-  rtc_decode_time(time, timespec);
+     the calendar" in the ERTC documentation.*/
+  ertc_decode_time(time, timespec);
 
-  /* If the RTC is capable of sub-second counting then the value is
+  /* If the ERTC is capable of sub-second counting then the value is
      normalized in milliseconds and added to the time.*/
 #if AT32_ERTC_HAS_SUBSECONDS
   subs = (((AT32_ERTC_DIVB_VALUE - 1U) - sbs) * 1000U) / AT32_ERTC_DIVB_VALUE;
@@ -637,7 +637,7 @@ void rtc_lld_get_time(RTCDriver *rtcp, RTCDateTime *timespec) {
   timespec->millisecond += subs;
 
   /* Decoding date, this concludes the atomic read sequence.*/
-  rtc_decode_date(date, timespec);
+  ertc_decode_date(date, timespec);
 
   /* Retrieving the DST bit.*/
   timespec->dstflag = (ctrl >> ERTC_CTRL_BPR_OFFSET) & 1;
@@ -650,7 +650,7 @@ void rtc_lld_get_time(RTCDriver *rtcp, RTCDateTime *timespec) {
  * @note    Function does not performs any checks of alarm time validity.
  * @note    The function can be called from any context.
  *
- * @param[in] rtcp      pointer to RTC driver structure.
+ * @param[in] rtcp      pointer to ERTC driver structure.
  * @param[in] alarm     alarm identifier. Can be 0 or 1.
  * @param[in] alarmspec pointer to a @p RTCAlarm structure.
  *
@@ -666,31 +666,31 @@ void rtc_lld_set_alarm(RTCDriver *rtcp,
 
   if (alarm == 0) {
     if (alarmspec != NULL) {
-      rtcp->rtc->CTRL &= ~ERTC_CTRL_ALAEN;
-      while (!(rtcp->rtc->STS & ERTC_STS_ALAWF))
+      rtcp->ertc->CTRL &= ~ERTC_CTRL_ALAEN;
+      while (!(rtcp->ertc->STS & ERTC_STS_ALAWF))
         ;
-      rtcp->rtc->ALA = alarmspec->alrmr;
-      rtcp->rtc->CTRL |= ERTC_CTRL_ALAEN;
-      rtcp->rtc->CTRL |= ERTC_CTRL_ALAIEN;
+      rtcp->ertc->ALA = alarmspec->alrmr;
+      rtcp->ertc->CTRL |= ERTC_CTRL_ALAEN;
+      rtcp->ertc->CTRL |= ERTC_CTRL_ALAIEN;
     }
     else {
-      rtcp->rtc->CTRL &= ~ERTC_CTRL_ALAIEN;
-      rtcp->rtc->CTRL &= ~ERTC_CTRL_ALAEN;
+      rtcp->ertc->CTRL &= ~ERTC_CTRL_ALAIEN;
+      rtcp->ertc->CTRL &= ~ERTC_CTRL_ALAEN;
     }
   }
 #if RTC_ALARMS > 1
   else {
     if (alarmspec != NULL) {
-      rtcp->rtc->CTRL &= ~ERTC_CTRL_ALBEN;
-      while (!(rtcp->rtc->STS & ERTC_STS_ALBWF))
+      rtcp->ertc->CTRL &= ~ERTC_CTRL_ALBEN;
+      while (!(rtcp->ertc->STS & ERTC_STS_ALBWF))
         ;
-      rtcp->rtc->ALB = alarmspec->alrmr;
-      rtcp->rtc->CTRL |= ERTC_CTRL_ALBEN;
-      rtcp->rtc->CTRL |= ERTC_CTRL_ALBIEN;
+      rtcp->ertc->ALB = alarmspec->alrmr;
+      rtcp->ertc->CTRL |= ERTC_CTRL_ALBEN;
+      rtcp->ertc->CTRL |= ERTC_CTRL_ALBIEN;
     }
     else {
-      rtcp->rtc->CTRL &= ~ERTC_CTRL_ALBIEN;
-      rtcp->rtc->CTRL &= ~ERTC_CTRL_ALBEN;
+      rtcp->ertc->CTRL &= ~ERTC_CTRL_ALBIEN;
+      rtcp->ertc->CTRL &= ~ERTC_CTRL_ALBEN;
     }
   }
 #endif /* RTC_ALARMS > 1 */
@@ -703,7 +703,7 @@ void rtc_lld_set_alarm(RTCDriver *rtcp,
  * @brief   Get alarm time.
  * @note    The function can be called from any context.
  *
- * @param[in] rtcp       pointer to RTC driver structure
+ * @param[in] rtcp       pointer to ERTC driver structure
  * @param[in] alarm     alarm identifier. Can be 0 or 1.
  * @param[out] alarmspec pointer to a @p RTCAlarm structure
  *
@@ -714,21 +714,21 @@ void rtc_lld_get_alarm(RTCDriver *rtcp,
                        RTCAlarm *alarmspec) {
 
   if (alarm == 0)
-    alarmspec->alrmr = rtcp->rtc->ALA;
+    alarmspec->alrmr = rtcp->ertc->ALA;
 #if RTC_ALARMS > 1
   else
-    alarmspec->alrmr = rtcp->rtc->ALB;
+    alarmspec->alrmr = rtcp->ertc->ALB;
 #endif /* RTC_ALARMS > 1 */
 }
 #endif /* RTC_ALARMS > 0 */
 
 /**
- * @brief   Enables or disables RTC callbacks.
+ * @brief   Enables or disables ERTC callbacks.
  * @details This function enables or disables callbacks, use a @p NULL pointer
  *          in order to disable a callback.
  * @note    The function can be called from any context.
  *
- * @param[in] rtcp      pointer to RTC driver structure
+ * @param[in] rtcp      pointer to ERTC driver structure
  * @param[in] callback  callback function pointer or @p NULL
  *
  * @notapi
@@ -744,12 +744,12 @@ void rtc_lld_set_callback(RTCDriver *rtcp, rtccb_t callback) {
  * @note    Default value after BPR domain reset is 0x0000FFFF
  * @note    The function can be called from any context.
  *
- * @param[in] rtcp       pointer to RTC driver structure
- * @param[in] wakeupspec pointer to a @p RTCWakeup structure
+ * @param[in] rtcp       pointer to ERTC driver structure
+ * @param[in] wakeupspec pointer to a @p ERTCWakeup structure
  *
  * @api
  */
-void ertcAT32SetPeriodicWakeup(RTCDriver *rtcp, const RTCWakeup *wakeupspec) {
+void ertcAT32SetPeriodicWakeup(RTCDriver *rtcp, const ERTCWakeup *wakeupspec) {
   syssts_t sts;
 
   /* Entering a reentrant critical zone.*/
@@ -758,19 +758,19 @@ void ertcAT32SetPeriodicWakeup(RTCDriver *rtcp, const RTCWakeup *wakeupspec) {
   if (wakeupspec != NULL) {
     osalDbgCheck(wakeupspec->wat != 0x30000);
 
-    rtcp->rtc->CTRL &= ~ERTC_CTRL_WATEN;
-    rtcp->rtc->CTRL &= ~ERTC_CTRL_WATIEN;
-    while (!(rtcp->rtc->STS & ERTC_STS_WATWF))
+    rtcp->ertc->CTRL &= ~ERTC_CTRL_WATEN;
+    rtcp->ertc->CTRL &= ~ERTC_CTRL_WATIEN;
+    while (!(rtcp->ertc->STS & ERTC_STS_WATWF))
       ;
-    rtcp->rtc->WAT = wakeupspec->wat & 0xFFFF;
-    rtcp->rtc->CTRL &= ~ERTC_CTRL_WATCLK;
-    rtcp->rtc->CTRL |= (wakeupspec->wat >> 16) & ERTC_CTRL_WATCLK;
-    rtcp->rtc->CTRL |= ERTC_CTRL_WATIEN;
-    rtcp->rtc->CTRL |= ERTC_CTRL_WATEN;
+    rtcp->ertc->WAT = wakeupspec->wat & 0xFFFF;
+    rtcp->ertc->CTRL &= ~ERTC_CTRL_WATCLK;
+    rtcp->ertc->CTRL |= (wakeupspec->wat >> 16) & ERTC_CTRL_WATCLK;
+    rtcp->ertc->CTRL |= ERTC_CTRL_WATIEN;
+    rtcp->ertc->CTRL |= ERTC_CTRL_WATEN;
   }
   else {
-    rtcp->rtc->CTRL &= ~ERTC_CTRL_WATEN;
-    rtcp->rtc->CTRL &= ~ERTC_CTRL_WATIEN;
+    rtcp->ertc->CTRL &= ~ERTC_CTRL_WATEN;
+    rtcp->ertc->CTRL &= ~ERTC_CTRL_WATIEN;
   }
 
   /* Leaving a reentrant critical zone.*/
@@ -782,20 +782,20 @@ void ertcAT32SetPeriodicWakeup(RTCDriver *rtcp, const RTCWakeup *wakeupspec) {
  * @note    Default value after BPR domain reset is 0x0000FFFF
  * @note    The function can be called from any context.
  *
- * @param[in] rtcp        pointer to RTC driver structure
- * @param[out] wakeupspec pointer to a @p RTCWakeup structure
+ * @param[in] rtcp        pointer to ERTC driver structure
+ * @param[out] wakeupspec pointer to a @p ERTCWakeup structure
  *
  * @api
  */
-void ertcAT32GetPeriodicWakeup(RTCDriver *rtcp, RTCWakeup *wakeupspec) {
+void ertcAT32GetPeriodicWakeup(RTCDriver *rtcp, ERTCWakeup *wakeupspec) {
   syssts_t sts;
 
   /* Entering a reentrant critical zone.*/
   sts = osalSysGetStatusAndLockX();
 
   wakeupspec->wat  = 0;
-  wakeupspec->wat |= rtcp->rtc->WAT;
-  wakeupspec->wat |= (((uint32_t)rtcp->rtc->CTRL) & 0x7) << 16;
+  wakeupspec->wat |= rtcp->ertc->WAT;
+  wakeupspec->wat |= (((uint32_t)rtcp->ertc->CTRL) & 0x7) << 16;
 
   /* Leaving a reentrant critical zone.*/
   osalSysRestoreStatusX(sts);
