@@ -10,7 +10,7 @@ endif
 
 # C specific options here (added to USE_OPT).
 ifeq ($(USE_COPT),)
-  USE_COPT = 
+  USE_COPT =
 endif
 
 # C++ specific options here (added to USE_OPT).
@@ -25,7 +25,7 @@ endif
 
 # Linker extra options here.
 ifeq ($(USE_LDOPT),)
-  USE_LDOPT = 
+  USE_LDOPT =
 endif
 
 # Enable this if you want link time optimizations (LTO).
@@ -42,6 +42,11 @@ endif
 # modules not used in the current configuration.
 ifeq ($(USE_SMART_BUILD),)
   USE_SMART_BUILD = yes
+endif
+
+# Enable this if you want to use bitbang I2C.
+ifeq ($(USE_HAL_I2C_FALLBACK),)
+  USE_HAL_I2C_FALLBACK = no
 endif
 
 #

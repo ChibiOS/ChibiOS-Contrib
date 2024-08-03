@@ -35,10 +35,16 @@
 
 #define AT32F415_MCUCONF
 
+#include "config.h"
+
+/*
+ * General settings.
+ */
+#define AT32_NO_INIT                        FALSE
+
 /*
  * HAL driver system settings.
  */
-#define AT32_NO_INIT                        FALSE
 #define AT32_HICK_ENABLED                   TRUE
 #define AT32_LICK_ENABLED                   FALSE
 #define AT32_HEXT_ENABLED                   TRUE
