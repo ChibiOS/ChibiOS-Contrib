@@ -44,7 +44,7 @@
  * HAL driver system settings.
  */
 #define AT32_HICK_ENABLED                   TRUE
-#define AT32_LICK_ENABLED                   FALSE
+#define AT32_LICK_ENABLED                   TRUE
 #define AT32_HEXT_ENABLED                   TRUE
 #define AT32_LEXT_ENABLED                   FALSE
 #define AT32_SCLKSEL                        AT32_SCLKSEL_PLL
@@ -214,14 +214,14 @@
 /*
  * USB driver system settings.
  */
-#define AT32_USB_USE_OTG1                   TRUE
+#define AT32_USB_USE_OTG1                   FALSE
 #define AT32_USB_OTG1_IRQ_PRIORITY          14
 #define AT32_USB_OTG1_RX_FIFO_SIZE          512
 
 /*
  * WDG driver system settings.
  */
-#define AT32_WDG_USE_WDT                    FALSE
+#define AT32_WDG_USE_WDT                    TRUE
 
 #include "config.h"
 

@@ -16,22 +16,23 @@
     limitations under the License.
 */
 
-#include <portab.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "ch.h"
 #include "hal.h"
+
 #include "shell.h"
 #include "chprintf.h"
 
+#include "portab.h"
 #include "usbcfg.h"
 
 /*===========================================================================*/
 /* Command line related.                                                     */
 /*===========================================================================*/
 
-#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(2048)
+#define SHELL_WA_SIZE THD_WORKING_AREA_SIZE(2048)
 
 /* Can be measured using dd if=/dev/xxxx of=/dev/null bs=512 count=10000.*/
 static void cmd_write(BaseSequentialStream *chp, int argc, char *argv[]) {
