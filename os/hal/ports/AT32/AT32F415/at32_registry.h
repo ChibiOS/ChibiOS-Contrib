@@ -265,9 +265,6 @@
 /* WDT attributes.*/
 #define AT32_HAS_WDT                       TRUE
 #define AT32_WDT_IS_WINDOWED               FALSE
-
-/* CRC attributes.*/
-#define AT32_HAS_CRC                       TRUE
 /** @} */
 #endif /* defined(AT32F415K_MD) */
 
@@ -483,9 +480,6 @@
 /* WDT attributes.*/
 #define AT32_HAS_WDT                       TRUE
 #define AT32_WDT_IS_WINDOWED               FALSE
-
-/* CRC attributes.*/
-#define AT32_HAS_CRC                       TRUE
 /** @} */
 #endif /* defined(AT32F415K_HD) */
 
@@ -711,9 +705,6 @@
 /* WDT attributes.*/
 #define AT32_HAS_WDT                       TRUE
 #define AT32_WDT_IS_WINDOWED               FALSE
-
-/* CRC attributes.*/
-#define AT32_HAS_CRC                       TRUE
 /** @} */
 #endif /* defined(AT32F415C_MD) */
 
@@ -939,9 +930,6 @@
 /* WDT attributes.*/
 #define AT32_HAS_WDT                       TRUE
 #define AT32_WDT_IS_WINDOWED               FALSE
-
-/* CRC attributes.*/
-#define AT32_HAS_CRC                       TRUE
 /** @} */
 #endif /* defined(AT32F415C_HD) */
 
@@ -1186,9 +1174,6 @@
 /* WDT attributes.*/
 #define AT32_HAS_WDT                       TRUE
 #define AT32_WDT_IS_WINDOWED               FALSE
-
-/* CRC attributes.*/
-#define AT32_HAS_CRC                       TRUE
 /** @} */
 #endif /* defined(AT32F415R_MD) */
 
@@ -1433,9 +1418,6 @@
 /* WDT attributes.*/
 #define AT32_HAS_WDT                       TRUE
 #define AT32_WDT_IS_WINDOWED               FALSE
-
-/* CRC attributes.*/
-#define AT32_HAS_CRC                       TRUE
 /** @} */
 #endif /* defined(AT32F415R_HD) */
 

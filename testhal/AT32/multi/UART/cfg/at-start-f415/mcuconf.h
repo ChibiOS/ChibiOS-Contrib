@@ -35,8 +35,6 @@
 
 #define AT32F415_MCUCONF
 
-#include "config.h"
-
 /*
  * General settings.
  */
@@ -224,5 +222,7 @@
  * WDG driver system settings.
  */
 #define AT32_WDG_USE_WDT                    FALSE
+
+#include "config.h"
 
 #endif /* MCUCONF_H */
