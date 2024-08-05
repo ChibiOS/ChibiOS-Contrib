@@ -99,7 +99,12 @@ void wdg_lld_start(WDGDriver *wdgp) {
   while (wdgp->wdt->STS != 0)
     ;
 
+#if AT32_WDT_IS_WINDOWED
+  /* This also triggers a refresh.*/
+  wdgp->wdt->WIN = wdgp->config->win;
+#else
   wdgp->wdt->CMD = CMD_CMD_RELOAD;
+#endif
 }
 
 /**

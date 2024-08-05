@@ -55,6 +55,15 @@
 #define AT32_WDT_DIV_256                    6U
 /** @} */
 
+/**
+ * @name    WIN register definitions
+ * @{
+ */
+#define AT32_WDT_WIN_MASK                   (0x00000FFF << 0)
+#define AT32_WDT_WIN(n)                     ((n) << 0)
+#define AT32_WDT_WIN_DISABLED               AT32_WDT_WIN(0x00000FFF)
+/** @} */
+
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
 /*===========================================================================*/
@@ -117,6 +126,14 @@ typedef struct {
    * @details See the AT32 reference manual for details.
    */
   uint32_t    rld;
+#if AT32_WDT_IS_WINDOWED || defined(__DOXYGEN__)
+  /**
+   * @brief   Configuration of the WDT_WIN register.
+   * @details See the AT32 reference manual for details.
+   * @note    This field is not present in F415 sub-families.
+   */
+  uint32_t    win;
+#endif
 } WDGConfig;
 
 /**

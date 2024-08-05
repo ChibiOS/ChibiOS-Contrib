@@ -18,6 +18,7 @@
 
 #include "ch.h"
 #include "hal.h"
+
 #include "portab.h"
 
 static virtual_timer_t vt1, vt2;
