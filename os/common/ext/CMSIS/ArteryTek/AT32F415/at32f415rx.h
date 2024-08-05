@@ -281,6 +281,7 @@ typedef struct
   __IO uint32_t CTRL;        /*!< CRC Control register,                        Address offset: 0x08 */
   uint32_t      RESERVED;    /*!< Reserved,                                    Address offset: 0x0C */
   __IO uint32_t IDT;         /*!< CRC Initialization register,                 Address offset: 0x10 */
+  __IO uint32_t POLY;        /*!< CRC Polynomial register,                     Address offset: 0x14 */
 } CRC_TypeDef;
 
 /**
@@ -4237,6 +4238,24 @@ typedef struct
 #define CRC_CTRL_RST_Msk                    (0x1U << CRC_CTRL_RST_Pos)              /*!< 0x00000001 */
 #define CRC_CTRL_RST                        CRC_CTRL_RST_Msk                        /*!< Reset CRC calculation unit */
 
+/*!< POLY_SIZE configuration */
+#define CRC_CTRL_POLY_SIZE_Pos              (3U)
+#define CRC_CTRL_POLY_SIZE_Msk              (0x3U << CRC_CTRL_POLY_SIZE_Pos)        /*!< 0x00000018 */
+#define CRC_CTRL_POLY_SIZE                  CRC_CTRL_POLY_SIZE_Msk                  /*!< POLY_SIZE[1:0] bits (Polynomial size) */
+#define CRC_CTRL_POLY_SIZE_0                (0x1U << CRC_CTRL_POLY_SIZE_Pos)        /*!< 0x00000008 */
+#define CRC_CTRL_POLY_SIZE_1                (0x2U << CRC_CTRL_POLY_SIZE_Pos)        /*!< 0x00000010 */
+
+#define CRC_CTRL_POLY_SIZE_32BITS           0x00000000U                             /*!< 32 bits */
+#define CRC_CTRL_POLY_SIZE_16BITS_Pos       (3U)
+#define CRC_CTRL_POLY_SIZE_16BITS_Msk       (0x1U << CRC_CTRL_POLY_SIZE_16BITS_Pos) /*!< 0x00000008 */
+#define CRC_CTRL_POLY_SIZE_16BITS           CRC_CTRL_POLY_SIZE_16BITS_Msk           /*!< 16 bits */
+#define CRC_CTRL_POLY_SIZE_8BITS_Pos        (4U)
+#define CRC_CTRL_POLY_SIZE_8BITS_Msk        (0x1U << CRC_CTRL_POLY_SIZE_8BITS_Pos)  /*!< 0x00000010 */
+#define CRC_CTRL_POLY_SIZE_8BITS            CRC_CTRL_POLY_SIZE_8BITS_Msk            /*!< 8 bits */
+#define CRC_CTRL_POLY_SIZE_7BITS_Pos        (3U)
+#define CRC_CTRL_POLY_SIZE_7BITS_Msk        (0x3U << CRC_CTRL_POLY_SIZE_7BITS_Pos)  /*!< 0x00000018 */
+#define CRC_CTRL_POLY_SIZE_7BITS            CRC_CTRL_POLY_SIZE_7BITS_Msk            /*!< 7 bits */
+
 /*!< REVID configuration */
 #define CRC_CTRL_REVID_Pos                  (5U)
 #define CRC_CTRL_REVID_Msk                  (0x3U << CRC_CTRL_REVID_Pos)            /*!< 0x00000060 */
@@ -4263,6 +4282,11 @@ typedef struct
 #define CRC_IDT_IDT_Pos                     (0U)
 #define CRC_IDT_IDT_Msk                     (0xFFFFFFFFU << CRC_IDT_IDT_Pos)        /*!< 0xFFFFFFFF */
 #define CRC_IDT_IDT                         CRC_IDT_IDT_Msk                         /*!< Initialization data register */
+
+/*******************  Bit definition for CRC_POLY register  *******************/
+#define CRC_POLY_POLY_Pos                   (0U)
+#define CRC_POLY_POLY_Msk                   (0xFFFFFFFFU << CRC_POLY_POLY_Pos)      /*!< 0xFFFFFFFF */
+#define CRC_POLY_POLY                       CRC_POLY_POLY_Msk                       /*!< Polynomial coefficient */
 
 /******************************************************************************/
 /*                                                                            */
