@@ -34,13 +34,16 @@
  */
 #define HAL_MAX_ENDPOINTS                  7
 #if (defined(SN32F240B) || defined(SN32F260))
-#define USB_ENDPOINTS_NUMBER               4
-#define SN32_USB_PMA_SIZE                  256
-#elif (defined(SN32F280) || defined(SN32F290))
-#define USB_ENDPOINTS_NUMBER               6
-#define SN32_USB_PMA_SIZE                  512
+#   define USB_ENDPOINTS_NUMBER               4
+#   define SN32_USB_PMA_SIZE                  256
+#elif defined(SN32F240C)
+#   define USB_ENDPOINTS_NUMBER               HAL_MAX_ENDPOINTS
+#   define SN32_USB_PMA_SIZE                  512
+#elif (defined(SN32F240) || defined(SN32F280) || defined(SN32F290))
+#   define USB_ENDPOINTS_NUMBER               6
+#   define SN32_USB_PMA_SIZE                  512
 #else
-#error "USB driver not supported in the selected device"
+#   error "USB driver not supported in the selected device"
 #endif
 
 /**
