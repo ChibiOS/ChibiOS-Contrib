@@ -460,6 +460,9 @@ void usb_lld_start(USBDriver *usbp) {
       /* Powers up the transceiver while holding the USB in reset state.*/
       SN32_USB->SGCTL = (mskBUS_DRVEN|mskBUS_J_STATE);
       SN32_USB->CFG = (mskVREG33_EN|mskPHY_EN|mskDPPU_EN|mskSIE_EN|mskESD_EN);
+#   if defined(SN32F240)
+      SN32_USB->CFG |= (mskUSBRAM_EN|mskVREG33DIS_EN);
+#   endif
       /* Set up hardware configuration.*/
       SN32_USB->PHYPRM = 0x80000000;
       SN32_USB->PHYPRM2 = 0x00004004;
