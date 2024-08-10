@@ -29,6 +29,8 @@
 #define mskUADDR                    (0x7F<<0)
 
 /* USB Configuration Bit Definitions <USB_CFG> */
+#define mskVREG33DIS_EN             (0x1<<24)
+#define mskUSBRAM_EN                (0x1<<25)
 #define mskDIS_PDEN                 (0x1<<26)
 #define mskESD_EN                   (0x1<<27)
 #define mskSIE_EN                   (0x1<<28)
