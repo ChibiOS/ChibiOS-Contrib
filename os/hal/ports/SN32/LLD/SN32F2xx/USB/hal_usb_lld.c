@@ -526,7 +526,7 @@ void usb_lld_stop(USBDriver *usbp) {
  */
 void usb_lld_reset(USBDriver *usbp) {
     /* Post reset initialization.*/
-    SN32_USB->INSTSC = (0xFFFFFFFF);
+    SN32_USB->INSTSC = (UINT32_MAX);
 
     /* Set the address to zero during enumeration.*/
     usbp->address = 0;
