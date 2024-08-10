@@ -48,25 +48,25 @@
  */
   typedef struct {
   volatile uint32_t INTEN;                          /*!< (@ 0x00000000) Offset:0x00 USB Interrupt Enable Register                  */
-  volatile uint32_t INSTS;                          /*!< (@ 0x00000004) Offset:0x04 USB Interrupt Event Status Register            */
+  volatile const uint32_t INSTS;                    /*!< (@ 0x00000004) Offset:0x04 USB Interrupt Event Status Register            */
   volatile uint32_t INSTSC;                         /*!< (@ 0x00000008) Offset:0x08 USB Interrupt Event Status Clear Register      */
   volatile uint32_t ADDR;                           /*!< (@ 0x0000000C) Offset:0x0C USB Device Address Register                    */
   volatile uint32_t CFG;                            /*!< (@ 0x00000010) Offset:0x10 USB Configuration Register                     */
   volatile uint32_t SGCTL;                          /*!< (@ 0x00000014) Offset:0x14 USB Signal Control Register                    */
   volatile uint32_t EPCTL[USB_ENDPOINTS_NUMBER +1]; /*!< (@ 0x00000018) Offset:0x18 USB Endpoint 0-7 Control Registers             */
-  volatile uint32_t  RESERVED[HAL_MAX_ENDPOINTS - USB_ENDPOINTS_NUMBER + 1];
+  volatile const uint32_t  RESERVED[HAL_MAX_ENDPOINTS - USB_ENDPOINTS_NUMBER + 1];
   volatile uint32_t EPTOGGLE;                       /*!< (@ 0x0000003C) Offset:0x3C USB Endpoint Data Toggle Register              */
-  volatile uint32_t  RESERVED1[2];
+  volatile const uint32_t  RESERVED1[2];
   volatile uint32_t EPBUFOS[USB_ENDPOINTS_NUMBER];  /*!< (@ 0x00000048) Offset:0x48 USB Endpoint 1-7 Buffer Offset Registers       */
 #if (USB_ENDPOINTS_NUMBER != HAL_MAX_ENDPOINTS)
   volatile uint32_t  RESERVED2[HAL_MAX_ENDPOINTS - USB_ENDPOINTS_NUMBER - 1];
 #endif
-  volatile uint32_t FRMNO;                          /*!< (@ 0x00000060) Offset:0x60 USB Frame Number Register                      */
+  volatile const uint32_t FRMNO;                    /*!< (@ 0x00000060) Offset:0x60 USB Frame Number Register                      */
   volatile uint32_t PHYPRM;                         /*!< (@ 0x00000064) Offset:0x64 USB PHY Parameter Register                     */
-  volatile uint32_t  RESERVED3;
+  volatile const uint32_t  RESERVED3;
   volatile uint32_t PHYPRM2;                        /*!< (@ 0x0000006C) Offset:0x6C USB PHY Parameter 2 Register                   */
   volatile uint32_t PS2CTL;                         /*!< (@ 0x00000070) Offset:0x70 PS/2 Control Register                          */
-  volatile uint32_t  RESERVED4;
+  volatile const uint32_t  RESERVED4;
   volatile uint32_t RWADDR;                         /*!< (@ 0x00000078) Offset:0x78 USB Read/Write Address Register                */
   volatile uint32_t RWDATA;                         /*!< (@ 0x0000007C) Offset:0x7C USB Read/Write Data Register                   */
   volatile uint32_t RWSTATUS;                       /*!< (@ 0x00000080) Offset:0x80 USB Read/Write Status Register                 */
