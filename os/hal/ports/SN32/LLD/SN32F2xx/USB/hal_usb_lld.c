@@ -86,7 +86,7 @@ static const USBEndpointConfig ep0config = {
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
-
+uint32_t msk_EP_NAK, msk_EP_ACK;
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
@@ -306,7 +306,7 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
     /////////////////////////////////////////////////
     /* Device Status Interrupt (EPnACK)            */
     /////////////////////////////////////////////////
-    if (iwIntFlag & (mskEP6_ACK|mskEP5_ACK|mskEP4_ACK|mskEP3_ACK|mskEP2_ACK|mskEP1_ACK)) {
+    if (iwIntFlag & msk_EP_ACK) {
         // Determine the interrupting endpoint, direction, and clear the interrupt flag
         for(usbep_t ep = 1; ep <= USB_MAX_ENDPOINTS; ep++) {
             if (iwIntFlag & mskEPn_ACK(ep)){
@@ -315,9 +315,8 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
             }
         }
     }
-    if (iwIntFlag & (mskEP6_NAK|mskEP5_NAK|mskEP4_NAK|mskEP3_NAK|mskEP2_NAK|mskEP1_NAK)) {
-        SN32_USB->INSTSC = (mskEP6_NAK|mskEP5_NAK|mskEP4_NAK|mskEP3_NAK|mskEP2_NAK|mskEP1_NAK);
-
+    if (iwIntFlag & msk_EP_NAK) {
+        SN32_USB->INSTSC = msk_EP_NAK;
     }
 
 }
@@ -470,10 +469,18 @@ void usb_lld_start(USBDriver *usbp) {
     if (usbp->config->sof_cb != NULL) {
         SN32_USB->INTEN |= mskUSB_SOF_IE;
     }
-    //SN32_USB->INTEN |= (mskEP1_NAK_EN|mskEP2_NAK_EN|mskEP3_NAK_EN|mskEP4_NAK_EN);
-#if (USB_ENDPOINTS_NUMBER > 4)
-    //SN32_USB->INTEN |= (mskEP5_NAK_EN|mskEP6_NAK_EN);
-#endif /* (USB_ENDPOINTS_NUMBER > 4) */
+    /* Calculate EP ACK, NAK, NAK_EN flags.*/
+    msk_EP_NAK = 0;
+    msk_EP_ACK = 0;
+    //uint32_t msk_EP_NAK_EN = 0;
+    for(usbep_t ep = 1; ep <= USB_MAX_ENDPOINTS; ep++) {
+        msk_EP_NAK |= mskEPn_NAK(ep);
+        msk_EP_ACK |= mskEPn_ACK(ep);
+        // msk_EP_NAK_EN |= mskEPn_NAK_EN(ep);
+    }
+     /* Enable NAK EP interrupts.*/
+    // Disabled for now.
+    // SN32_USB->INTEN |= msk_EP_NAK_EN;
   }
 }
 

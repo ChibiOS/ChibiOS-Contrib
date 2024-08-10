@@ -96,10 +96,19 @@
  * @brief   Pointer to the USB RAM.
  */
 #define SN32_USBRAM            ((sn32_usb_pma_t *)SN32_USBRAM_BASE)
-#define mskEPn_NAK(ep)          (0x1<<(ep -1))
-#define mskEPn_ACK(ep)          (0x1<<(8+(ep-1)))
-#define mskEPn_DIR(ep)          (0x1<<(ep-1))
-#define mskEPn_DATA_TOGGLE(ep)      (0x1<<(ep-1))
+/**
+ * @brief USB EP handling.
+ */
+/* USB Interrupt Event Status Bit Definitions <USB_INSTS/USB_INSTSC> */
+#define mskEPn_NAK(ep)         (0x1<<(ep -1))
+#define mskEPn_ACK(ep)         (0x1<<(8+(ep-1)))
+/* USB Configuration Bit Definitions <USB_CFG> */
+#define mskEPn_DIR(ep)         (0x1<<(ep-1))
+/* USB Endpoint Data Toggle Bit Definitions <USB_EPTOGGLE> */
+#define mskEPn_DATA_TOGGLE(ep) (0x1<<(ep-1))
+/* USB Interrupt Enable Bit Definitions <USB_INTEN> */
+#define mskEPn_NAK_EN(ep)      mskEPn_NAK(ep)
+#define mskEPnACK_EN           (0x1<<USB_ENDPOINTS_NUMBER)
 
 #define EPCTL_SET_STAT_ACK(ep, bBytecnt)                                  \
   SN32_USB->EPCTL[ep] = (mskEPn_ENDP_EN|mskEPn_ENDP_STATE_ACK|bBytecnt)

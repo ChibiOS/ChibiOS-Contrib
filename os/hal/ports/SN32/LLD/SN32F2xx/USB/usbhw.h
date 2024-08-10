@@ -5,35 +5,12 @@
 #define __USBHW_H__
 
 /* USB Interrupt Enable Bit Definitions <USB_INTEN> */
-#define mskEP1_NAK_EN               (0x1<<0)
-#define mskEP2_NAK_EN               (0x1<<1)
-#define mskEP3_NAK_EN               (0x1<<2)
-#define mskEP4_NAK_EN               (0x1<<3)
-#define mskEP5_NAK_EN               (0x1<<4)
-#define mskEP6_NAK_EN               (0x1<<5)
-#define mskEPnACK_EN                (0x1<<6)
-
 #define mskBUSWK_IE                 (0x1<<28)
 #define mskUSB_IE                   (0x1<<29)
 #define mskUSB_SOF_IE               (0x1<<30)
 #define mskBUS_IE                   (0x1U<<31)
 
 /* USB Interrupt Event Status Bit Definitions <USB_INSTS/USB_INSTSC> */
-#define mskEP1_NAK                  (0x1<<0)
-#define mskEP2_NAK                  (0x1<<1)
-#define mskEP3_NAK                  (0x1<<2)
-#define mskEP4_NAK                  (0x1<<3)
-#define mskEP5_NAK                  (0x1<<4)
-#define mskEP6_NAK                  (0x1<<5)
-
-#define mskEP1_ACK                  (0x1<<8)
-#define mskEP2_ACK                  (0x1<<9)
-#define mskEP3_ACK                  (0x1<<10)
-#define mskEP4_ACK                  (0x1<<11)
-#define mskEP5_ACK                  (0x1<<12)
-#define mskEP6_ACK                  (0x1<<13)
-
-
 #define mskERR_TIMEOUT              (0x1<<17)
 #define mskERR_SETUP                (0x1<<18)
 #define mskEP0_OUT_STALL            (0x1<<19)
@@ -52,13 +29,6 @@
 #define mskUADDR                    (0x7F<<0)
 
 /* USB Configuration Bit Definitions <USB_CFG> */
-#define mskEP1_DIR                  (0x1<<0)
-#define mskEP2_DIR                  (0x1<<1)
-#define mskEP3_DIR                  (0x1<<2)
-#define mskEP4_DIR                  (0x1<<3)
-#define mskEP5_DIR                  (0x1<<4)
-#define mskEP6_DIR                  (0x1<<5)
-
 #define mskDIS_PDEN                 (0x1<<26)
 #define mskESD_EN                   (0x1<<27)
 #define mskSIE_EN                   (0x1<<28)
@@ -84,12 +54,6 @@
 #define mskEPn_ENDP_STATE_NAK       (0x0<<29)
 #define mskEPn_ENDP_STATE_STALL     (0x3<<29)
 #define mskEPn_ENDP_EN              (0x1U<<31)
-
-/* USB Endpoint Data Toggle Bit Definitions <USB_EPTOGGLE> */
-#define mskEP1_CLEAR_DATA0          (0x1<<0)
-#define mskEP2_CLEAR_DATA0          (0x1<<1)
-#define mskEP3_CLEAR_DATA0          (0x1<<2)
-#define mskEP4_CLEAR_DATA0          (0x1<<3)
 
 /* USB Endpoint n Buffer Offset Bit Definitions <USB_EPnBUFOS> */
 #define mskEPn_OFFSET               (0x1FF<<0)
