@@ -162,7 +162,7 @@
 #endif
 
 /* Check clock range. */
-#if !(I2C_CLK_FREQ >= 2) && (I2C_CLK_FREQ <= 72)
+#if !(I2C_CLK_FREQ >= 2) && (I2C_CLK_FREQ <= 75)
 #error "I2C peripheral clock frequency out of range."
 #endif
 

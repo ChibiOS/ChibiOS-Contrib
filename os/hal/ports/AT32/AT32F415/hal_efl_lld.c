@@ -411,7 +411,7 @@ flash_error_t efl_lld_query_erase(void *instance, uint32_t *wait_time) {
     if (at32_flash_is_busy(devp) == 0U) {
 
       /* Disabling the various erase control bits.*/
-      devp->flash->CTRL &= ~(FLASH_CTRL_USDERS | FLASH_CTRL_USDPRGM |
+      devp->flash->CTRL &= ~(FLASH_CTRL_USDERS  | FLASH_CTRL_USDPRGM |
                              FLASH_CTRL_BANKERS | FLASH_CTRL_SECERS);
 
       /* Back to ready state.*/

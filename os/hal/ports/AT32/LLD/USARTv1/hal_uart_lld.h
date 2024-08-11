@@ -197,17 +197,13 @@
 #error "USART3 not present in the selected device"
 #endif
 
-#if AT32_UART_USE_UART4
-#if !AT32_HAS_UART4
+#if AT32_UART_USE_UART4 && !AT32_HAS_UART4
 #error "UART4 not present in the selected device"
 #endif
-#endif /* AT32_UART_USE_UART4 */
 
-#if AT32_UART_USE_UART5
-#if !AT32_HAS_UART5
+#if AT32_UART_USE_UART5 && !AT32_HAS_UART5
 #error "UART5 not present in the selected device"
 #endif
-#endif /* AT32_UART_USE_UART5 */
 
 #if !AT32_UART_USE_USART1 && !AT32_UART_USE_USART2 &&                       \
     !AT32_UART_USE_USART3 && !AT32_UART_USE_UART4 &&                        \
