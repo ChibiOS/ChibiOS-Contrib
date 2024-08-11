@@ -70,6 +70,28 @@ void __early_init(void) {
   at32_clock_init();
 }
 
+#if HAL_USE_SDC || defined(__DOXYGEN__)
+/**
+ * @brief   SDC card detection.
+ */
+bool sdc_lld_is_card_inserted(SDCDriver *sdcp) {
+  static bool last_status = false;
+
+  if (blkIsTransferring(sdcp))
+    return last_status;
+  return last_status = (bool)palReadPad(GPIOA, GPIOA_ARD_A2);
+}
+
+/**
+ * @brief   SDC card write protection detection.
+ */
+bool sdc_lld_is_write_protected(SDCDriver *sdcp) {
+
+  (void)sdcp;
+  return false;
+}
+#endif /* HAL_USE_SDC */
+
 /**
  * @brief   Board-specific initialization code.
  * @note    You can add your board-specific code here.

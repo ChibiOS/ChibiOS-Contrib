@@ -142,13 +142,13 @@
 #define AT32_HAS_QUADSPI1                  FALSE
 
 /* SDIO attributes.*/
-#define AT32_HAS_SDIO1                     TRUE
+#define AT32_HAS_SDIO                      TRUE
 
 #if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 5)
-#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      5
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SDC_SDIO_DMAMUX_CHANNEL       5
 #else
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(2, 4)
 #endif
 
 /* SPI attributes.*/
@@ -357,13 +357,13 @@
 #define AT32_HAS_QUADSPI1                  FALSE
 
 /* SDIO attributes.*/
-#define AT32_HAS_SDIO1                     TRUE
+#define AT32_HAS_SDIO                      TRUE
 
 #if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 5)
-#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      5
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SDC_SDIO_DMAMUX_CHANNEL       5
 #else
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(2, 4)
 #endif
 
 /* SPI attributes.*/
@@ -571,13 +571,13 @@
 #define AT32_HAS_QUADSPI1                  FALSE
 
 /* SDIO attributes.*/
-#define AT32_HAS_SDIO1                     TRUE
+#define AT32_HAS_SDIO                      TRUE
 
 #if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 5)
-#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      5
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SDC_SDIO_DMAMUX_CHANNEL       5
 #else
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(2, 4)
 #endif
 
 /* SPI attributes.*/
@@ -796,13 +796,13 @@
 #define AT32_HAS_QUADSPI1                  FALSE
 
 /* SDIO attributes.*/
-#define AT32_HAS_SDIO1                     TRUE
+#define AT32_HAS_SDIO                      TRUE
 
 #if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 5)
-#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      5
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SDC_SDIO_DMAMUX_CHANNEL       5
 #else
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(2, 4)
 #endif
 
 /* SPI attributes.*/
@@ -1021,13 +1021,13 @@
 #define AT32_HAS_QUADSPI1                  FALSE
 
 /* SDIO attributes.*/
-#define AT32_HAS_SDIO1                     TRUE
+#define AT32_HAS_SDIO                      TRUE
 
 #if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 5)
-#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      5
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SDC_SDIO_DMAMUX_CHANNEL       5
 #else
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(2, 4)
 #endif
 
 /* SPI attributes.*/
@@ -1265,13 +1265,13 @@
 #define AT32_HAS_QUADSPI1                  FALSE
 
 /* SDIO attributes.*/
-#define AT32_HAS_SDIO1                     TRUE
+#define AT32_HAS_SDIO                      TRUE
 
 #if (AT32_DMA_USE_DMAMUX == TRUE) || defined(__DOXYGEN__)
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(1, 5)
-#define AT32_SDC_SDIO1_DMAMUX_CHANNEL      5
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(1, 5)
+#define AT32_SDC_SDIO_DMAMUX_CHANNEL       5
 #else
-#define AT32_SDC_SDIO1_DMA_STREAM          AT32_DMA_STREAM_ID(2, 4)
+#define AT32_SDC_SDIO_DMA_STREAM           AT32_DMA_STREAM_ID(2, 4)
 #endif
 
 /* SPI attributes.*/
