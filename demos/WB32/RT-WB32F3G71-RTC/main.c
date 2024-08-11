@@ -121,9 +121,6 @@ int main(void) {
   while (true){
     chThdSleepSeconds(2);
     rtcGetTime(&RTCD1, &timespec);
-    chprintf((BaseSequentialStream *)&SERIAL_DEBUG_DRIVER, 
-             "lsi sleep %ds year = %d  month = %d  dstflag=%d  dayofweek = %d  day = %d  millisecond = %d\r\n",
-             RTC_ALARMPERIOD, timespec.year, timespec.month, timespec.dstflag, timespec.dayofweek, timespec.day, timespec.millisecond);
     chThdSleepSeconds(3);
 
     chSysDisable();
