@@ -175,6 +175,16 @@
 #define AT32_ERTC_TAMP_INIT                 0
 
 /*
+ * SDC driver system settings.
+ */
+#define AT32_SDC_SDIO_DMA_PRIORITY          3
+#define AT32_SDC_SDIO_IRQ_PRIORITY          9
+#define AT32_SDC_WRITE_TIMEOUT_MS           1000
+#define AT32_SDC_READ_TIMEOUT_MS            1000
+#define AT32_SDC_CLOCK_ACTIVATION_DELAY     10
+#define AT32_SDC_SDIO_UNALIGNED_SUPPORT     TRUE
+
+/*
  * SERIAL driver system settings.
  */
 #define AT32_SERIAL_USE_USART1              FALSE
