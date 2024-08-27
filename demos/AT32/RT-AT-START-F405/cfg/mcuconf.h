@@ -181,8 +181,8 @@
 #define AT32_PWM_USE_TMR9                   FALSE
 #define AT32_PWM_USE_TMR10                  FALSE
 #define AT32_PWM_USE_TMR11                  FALSE
-#define AT32_ICU_USE_TMR13                  FALSE
-#define AT32_ICU_USE_TMR14                  FALSE
+#define AT32_PWM_USE_TMR13                  FALSE
+#define AT32_PWM_USE_TMR14                  FALSE
 
 /*
  * RTC driver system settings.
