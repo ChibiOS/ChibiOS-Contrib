@@ -41,7 +41,7 @@
 /* Driver local functions.                                                   */
 /*===========================================================================*/
 
-#define exti_serve_irq(intsts, channel) {                                       \
+#define exint_serve_irq(intsts, channel) {                                       \
                                                                             \
   if ((intsts) & (1U << (channel))) {                                           \
     _pal_isr_code(channel);                                                 \
