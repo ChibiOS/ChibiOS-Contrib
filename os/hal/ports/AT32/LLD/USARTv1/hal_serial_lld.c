@@ -91,14 +91,6 @@ static void usart_init(SerialDriver *sdp, const SerialConfig *config) {
 
   baudr = (uint32_t)((sdp->clock + config->speed/2) / config->speed);
 
-#if defined(USART_CTRL1_OVER8)
-  /* Correcting BAUDR value when oversampling by 8 instead of 16.
-     Fraction is still 4 bits wide, but only lower 3 bits used.
-     Mantissa is doubled, but Fraction is left the same.*/
-  if (config->ctrl1 & USART_CTRL1_OVER8)
-    baudr = ((baudr & ~7) * 2) | (baudr & 7);
-#endif
-
   osalDbgAssert(baudr < 0x10000, "invalid BAUDR value");
 
   u->BAUDR = baudr;
@@ -111,7 +103,7 @@ static void usart_init(SerialDriver *sdp, const SerialConfig *config) {
                              USART_CTRL1_REN;
   u->STS = 0;
   (void)u->STS; /* STS reset step 1.*/
-  (void)u->DT;  /* DT reset step 2.*/
+  (void)u->DT;  /* STS reset step 2.*/
 
   /* Deciding mask to be applied on the data register on receive, this is
      required in order to mask out the parity bit.*/
@@ -460,7 +452,7 @@ void sd_lld_stop(SerialDriver *sdp) {
  */
 void sd_lld_serve_interrupt(SerialDriver *sdp) {
   USART_TypeDef *u = sdp->usart;
-  uint16_t ctrl1 = u->CTRL1;
+  uint16_t ctrl1;
   uint16_t sts = u->STS;
 
   /* Special case, LIN break detection.*/
@@ -487,6 +479,9 @@ void sd_lld_serve_interrupt(SerialDriver *sdp) {
   }
   osalSysUnlockFromISR();
 
+  /* Caching CTRL1.*/
+  ctrl1 = u->CTRL1;
+
   /* Transmission buffer empty.*/
   if ((ctrl1 & USART_CTRL1_TDBEIEN) && (sts & USART_STS_TDBE)) {
     msg_t b;
@@ -494,7 +489,7 @@ void sd_lld_serve_interrupt(SerialDriver *sdp) {
     b = oqGetI(&sdp->oqueue);
     if (b < MSG_OK) {
       chnAddFlagsI(sdp, CHN_OUTPUT_EMPTY);
-      u->CTRL1 = ctrl1 & ~USART_CTRL1_TDBEIEN;
+      ctrl1 &= ~USART_CTRL1_TDBEIEN;
     }
     else
       u->DT = b;
@@ -506,10 +501,13 @@ void sd_lld_serve_interrupt(SerialDriver *sdp) {
     osalSysLockFromISR();
     if (oqIsEmptyI(&sdp->oqueue)) {
       chnAddFlagsI(sdp, CHN_TRANSMISSION_END);
-      u->CTRL1 = ctrl1 & ~USART_CTRL1_TDCIEN;
+      ctrl1 &= ~USART_CTRL1_TDCIEN;
     }
     osalSysUnlockFromISR();
   }
+
+  /* Writing CTRL1 once.*/
+  u->CTRL1 = ctrl1;
 }
 
 #endif /* HAL_USE_SERIAL */

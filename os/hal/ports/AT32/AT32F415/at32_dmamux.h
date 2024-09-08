@@ -54,7 +54,7 @@
 #define AT32_DMAMUX_I2C1_TX       42
 #define AT32_DMAMUX_I2C2_RX       43
 #define AT32_DMAMUX_I2C2_TX       44
-#define AT32_DMAMUX_SDIO1         49
+#define AT32_DMAMUX_SDIO          49
 #define AT32_DMAMUX_TMR1_TRIG     53
 #define AT32_DMAMUX_TMR1_HALL     54
 #define AT32_DMAMUX_TMR1_OVERFLOW 55

@@ -154,14 +154,6 @@ static void usart_start(UARTDriver *uartp) {
 
   /* Baud rate setting.*/
   baudr = (uint32_t)((uartp->clock + uartp->config->speed/2) / uartp->config->speed);
-
-  /* Correcting USARTDIV when oversampling by 8 instead of 16.
-     Fraction is still 4 bits wide, but only lower 3 bits used.
-     Mantissa is doubled, but Fraction is left the same.*/
-#if defined(USART_CTRL1_OVER8)
-  if (uartp->config->ctrl1 & USART_CTRL1_OVER8)
-    baudr = ((baudr & ~7) * 2) | (baudr & 7);
-#endif
   u->BAUDR = baudr;
 
   /* Resetting eventual pending status flags.*/
@@ -438,7 +430,6 @@ void uart_lld_start(UARTDriver *uartp) {
 
       crmEnableUSART1(true);
       nvicEnableVector(AT32_USART1_NUMBER, AT32_UART_USART1_IRQ_PRIORITY);
-
       uartp->dmarxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_USART1_DMA_PRIORITY);
       uartp->dmatxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_USART1_DMA_PRIORITY);
     }
@@ -464,7 +455,6 @@ void uart_lld_start(UARTDriver *uartp) {
 
       crmEnableUSART2(true);
       nvicEnableVector(AT32_USART2_NUMBER, AT32_UART_USART2_IRQ_PRIORITY);
-
       uartp->dmarxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_USART2_DMA_PRIORITY);
       uartp->dmatxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_USART2_DMA_PRIORITY);
     }
@@ -490,7 +480,6 @@ void uart_lld_start(UARTDriver *uartp) {
 
       crmEnableUSART3(true);
       nvicEnableVector(AT32_USART3_NUMBER, AT32_UART_USART3_IRQ_PRIORITY);
-
       uartp->dmarxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_USART3_DMA_PRIORITY);
       uartp->dmatxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_USART3_DMA_PRIORITY);
     }
@@ -522,7 +511,6 @@ void uart_lld_start(UARTDriver *uartp) {
 
       crmEnableUART4(true);
       nvicEnableVector(AT32_UART4_NUMBER, AT32_UART_UART4_IRQ_PRIORITY);
-
       uartp->dmarxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_UART4_DMA_PRIORITY);
       uartp->dmatxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_UART4_DMA_PRIORITY);
     }
@@ -554,7 +542,6 @@ void uart_lld_start(UARTDriver *uartp) {
 
       crmEnableUART5(true);
       nvicEnableVector(AT32_UART5_NUMBER, AT32_UART_UART5_IRQ_PRIORITY);
-
       uartp->dmarxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_UART5_DMA_PRIORITY);
       uartp->dmatxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_UART5_DMA_PRIORITY);
     }

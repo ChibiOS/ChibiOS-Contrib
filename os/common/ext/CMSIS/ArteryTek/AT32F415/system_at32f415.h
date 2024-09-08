@@ -47,6 +47,10 @@ extern "C" {
   * @{
   */
 
+/**
+  * @}
+  */
+
 /** @defgroup AT32F415_System_Clock_Stable_Definition
   * @{
   */

@@ -23,7 +23,7 @@
 
 /**
  * @file    RTCv2/hal_rtc_lld.h
- * @brief   AT32 RTC low level driver header.
+ * @brief   AT32 ERTC low level driver header.
  *
  * @addtogroup RTC
  * @{
@@ -59,27 +59,27 @@
 /** @} */
 
 /**
- * @brief   RTC DIV register initializer.
+ * @brief   ERTC DIV register initializer.
  */
-#define RTC_DIV(a, s)              ((((a) - 1) << 16) | ((s) - 1))
+#define ERTC_DIV(a, s)              ((((a) - 1) << 16) | ((s) - 1))
 
 /**
  * @name    Alarm helper macros
  * @{
  */
-#define RTC_ALRM_MASK4              (1U << 31)
-#define RTC_ALRM_WKSEL              (1U << 30)
-#define RTC_ALRM_DT(n)              ((n) << 28)
-#define RTC_ALRM_DU(n)              ((n) << 24)
-#define RTC_ALRM_MASK3              (1U << 23)
-#define RTC_ALRM_HT(n)              ((n) << 20)
-#define RTC_ALRM_HU(n)              ((n) << 16)
-#define RTC_ALRM_MASK2              (1U << 15)
-#define RTC_ALRM_MT(n)              ((n) << 12)
-#define RTC_ALRM_MU(n)              ((n) << 8)
-#define RTC_ALRM_MASK1              (1U << 7)
-#define RTC_ALRM_ST(n)              ((n) << 4)
-#define RTC_ALRM_SU(n)              ((n) << 0)
+#define ERTC_ALRM_MASK4             (1U << 31)
+#define ERTC_ALRM_WKSEL             (1U << 30)
+#define ERTC_ALRM_DT(n)             ((n) << 28)
+#define ERTC_ALRM_DU(n)             ((n) << 24)
+#define ERTC_ALRM_MASK3             (1U << 23)
+#define ERTC_ALRM_HT(n)             ((n) << 20)
+#define ERTC_ALRM_HU(n)             ((n) << 16)
+#define ERTC_ALRM_MASK2             (1U << 15)
+#define ERTC_ALRM_MT(n)             ((n) << 12)
+#define ERTC_ALRM_MU(n)             ((n) << 8)
+#define ERTC_ALRM_MASK1             (1U << 7)
+#define ERTC_ALRM_ST(n)             ((n) << 4)
+#define ERTC_ALRM_SU(n)             ((n) << 0)
 /** @} */
 
 /* Requires services from the EXINT driver.*/
@@ -96,7 +96,7 @@
  * @{
  */
 /**
- * @brief   RTC DIVA register initialization.
+ * @brief   ERTC DIVA register initialization.
  * @note    The default is calculated for a 32768Hz clock.
  */
 #if !defined(AT32_ERTC_DIVA_VALUE) || defined(__DOXYGEN__)
@@ -104,7 +104,7 @@
 #endif
 
 /**
- * @brief   RTC DIVB divider initialization.
+ * @brief   ERTC DIVB divider initialization.
  * @note    The default is calculated for a 32768Hz clock.
  */
 #if !defined(AT32_ERTC_DIVB_VALUE) || defined(__DOXYGEN__)
@@ -112,18 +112,18 @@
 #endif
 
 /**
- * @brief   RTC CTRL register initialization value.
+ * @brief   ERTC CTRL register initialization value.
  * @note    Use this value to initialize features not directly handled by
- *          the RTC driver.
+ *          the ERTC driver.
  */
 #if !defined(AT32_ERTC_CTRL_INIT) || defined(__DOXYGEN__)
 #define AT32_ERTC_CTRL_INIT                 0
 #endif
 
 /**
- * @brief   RTC TAMP register initialization value.
+ * @brief   ERTC TAMP register initialization value.
  * @note    Use this value to initialize features not directly handled by
- *          the RTC driver.
+ *          the ERTC driver.
  * @note    On some devices this values goes in the similar TAMP register.
  */
 #if !defined(AT32_ERTC_TAMP_INIT) || defined(__DOXYGEN__)
@@ -136,11 +136,11 @@
 /*===========================================================================*/
 
 #if HAL_USE_RTC && !AT32_HAS_ERTC
-#error "RTC not present in the selected device"
+#error "ERTC not present in the selected device"
 #endif
 
 #if !defined(AT32_ERTCCLK)
-#error "RTC clock not exported by HAL layer"
+#error "ERTC clock not exported by HAL layer"
 #endif
 
 #if AT32_PCLK1 < (AT32_ERTCCLK * 7)
@@ -148,66 +148,65 @@
 #endif
 
 /**
- * @brief   Initialization for the RTC_DIV register.
+ * @brief   Initialization for the ERTC_DIV register.
  */
-#define AT32_ERTC_DIV_BITS                  RTC_DIV(AT32_ERTC_DIVA_VALUE, \
-                                                    AT32_ERTC_DIVB_VALUE)
+#define AT32_ERTC_DIV_BITS                  ERTC_DIV(AT32_ERTC_DIVA_VALUE, \
+                                                     AT32_ERTC_DIVB_VALUE)
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
 
 /**
- * @brief   Type of an RTC event.
+ * @brief   Type of an ERTC event.
  */
 typedef enum {
-  RTC_EVENT_ALARM_A     = 0,            /** Alarm A.                        */
-  RTC_EVENT_ALARM_B     = 1,            /** Alarm B.                        */
-  RTC_EVENT_TS          = 2,            /** Time stamp.                     */
-  RTC_EVENT_TS_OVF      = 3,            /** Time stamp overflow.            */
-  RTC_EVENT_TAMP1       = 4,            /** Tamper 1.                       */
-  RTC_EVENT_TAMP2       = 5,            /** Tamper 2-                       */
-  RTC_EVENT_TAMP3       = 6,            /** Tamper 3.                       */
-  RTC_EVENT_WAKEUP      = 7             /** Wakeup.                         */
- } rtcevent_t;
+  ERTC_EVENT_ALARM_A     = 0,           /** Alarm A.                        */
+  ERTC_EVENT_ALARM_B     = 1,           /** Alarm B.                        */
+  ERTC_EVENT_TS          = 2,           /** Time stamp.                     */
+  ERTC_EVENT_TS_OVF      = 3,           /** Time stamp overflow.            */
+  ERTC_EVENT_TAMP1       = 4,           /** Tamper 1.                       */
+  ERTC_EVENT_TAMP2       = 5,           /** Tamper 2.                       */
+  ERTC_EVENT_WAKEUP      = 6            /** Wakeup.                         */
+ } ertcevent_t;
 
 /**
- * @brief   Type of a generic RTC callback.
+ * @brief   Type of a generic ERTC callback.
  */
-typedef void (*rtccb_t)(RTCDriver *rtcp, rtcevent_t event);
+typedef void (*rtccb_t)(RTCDriver *rtcp, ertcevent_t event);
 
 /**
- * @brief   Type of a structure representing an RTC alarm time stamp.
+ * @brief   Type of a structure representing an ERTC alarm time stamp.
  */
-typedef struct hal_rtc_alarm {
+typedef struct hal_ertc_alarm {
   /**
-   * @brief   Type of an alarm as encoded in RTC ALx registers.
+   * @brief   Type of an alarm as encoded in ERTC ALx registers.
    */
   uint32_t                  alrmr;
 } RTCAlarm;
 
 #if AT32_ERTC_HAS_PERIODIC_WAKEUPS
 /**
- * @brief   Type of a wakeup as encoded in RTC WAT register.
+ * @brief   Type of a wakeup as encoded in ERTC WAT register.
  */
-typedef struct hal_rtc_wakeup {
+typedef struct hal_ertc_wakeup {
   /**
-   * @brief   Wakeup as encoded in RTC WAT register.
+   * @brief   Wakeup as encoded in ERTC WAT register.
    * @note    ((WAT == 0) || (WATCLK == 3)) are a forbidden combination.
    * @note    Bits 16..18 are copied in the CTRL bits 0..2 (WATCLK).
    */
   uint32_t                  wat;
-} RTCWakeup;
+} ERTCWakeup;
 #endif
 
 /**
  * @brief   Implementation-specific @p RTCDriver fields.
  */
 #define rtc_lld_driver_fields                                               \
-  /* Pointer to the RTC registers block.*/                                  \
-  ERTC_TypeDef              *rtc;                                           \
+  /* Pointer to the ERTC registers block.*/                                 \
+  ERTC_TypeDef              *ertc;                                          \
   /* Callback pointer.*/                                                    \
-  rtccb_t           callback
+  rtccb_t                   callback
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
@@ -235,8 +234,8 @@ extern "C" {
                          RTCAlarm *alarmspec);
 #endif
 #if AT32_ERTC_HAS_PERIODIC_WAKEUPS
-  void ertcAT32SetPeriodicWakeup(RTCDriver *rtcp, const RTCWakeup *wakeupspec);
-  void ertcAT32GetPeriodicWakeup(RTCDriver *rtcp, RTCWakeup *wakeupspec);
+  void ertcAT32SetPeriodicWakeup(RTCDriver *rtcp, const ERTCWakeup *wakeupspec);
+  void ertcAT32GetPeriodicWakeup(RTCDriver *rtcp, ERTCWakeup *wakeupspec);
 #endif /* AT32_ERTC_HAS_PERIODIC_WAKEUPS */
 #ifdef __cplusplus
 }

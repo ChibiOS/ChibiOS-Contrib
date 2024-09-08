@@ -56,7 +56,7 @@
  * @{
  */
 /*
- * CAN units.
+ * CAN unit.
  */
 #define AT32_CAN1_TX_HANDLER         Vector8C
 #define AT32_CAN1_RX0_HANDLER        Vector90
@@ -69,7 +69,7 @@
 #define AT32_CAN1_SE_NUMBER          22
 
 /*
- * DMA unit
+ * DMA units.
  */
 #define AT32_DMA1_CH1_HANDLER        Vector6C
 #define AT32_DMA1_CH2_HANDLER        Vector70
@@ -110,7 +110,7 @@
 #define AT32_DMA2_CH7_CMASK          0x00003000U
 
 /*
- * ERTC unit
+ * ERTC unit.
  */
 #define AT32_ERTC_TAMP_STAMP_HANDLER Vector48
 #define AT32_ERTC_WKUP_HANDLER       Vector4C
@@ -130,7 +130,7 @@
 } while (false)
 
 /*
- * EXINT unit.
+ * EXINT units.
  */
 #define AT32_EXINT0_HANDLER          Vector58
 #define AT32_EXINT1_HANDLER          Vector5C
@@ -145,7 +145,7 @@
 #define AT32_EXINT19_HANDLER         Vector158 /* Note: same as CMP1_IRQn       */
 #define AT32_EXINT20_HANDLER         Vector15C /* Note: same as CMP2_IRQn       */
 #define AT32_EXINT21_HANDLER         Vector48  /* Note: same as TAMPER_IRQn     */
-#define AT32_EXINT22_HANDLER         Vector4C  /* Note: same as ERTC_IRQn       */
+#define AT32_EXINT22_HANDLER         Vector4C  /* Note: same as ERTC_WKUP_IRQn  */
 
 #define AT32_EXINT0_NUMBER           6
 #define AT32_EXINT1_NUMBER           7
@@ -160,7 +160,7 @@
 #define AT32_EXINT19_NUMBER          70        /* Note: same as CMP1_IRQn       */
 #define AT32_EXINT20_NUMBER          71        /* Note: same as CMP2_IRQn       */
 #define AT32_EXINT21_NUMBER          2         /* Note: same as TAMPER_IRQn     */
-#define AT32_EXINT22_NUMBER          3         /* Note: same as ERTC_IRQn       */
+#define AT32_EXINT22_NUMBER          3         /* Note: same as ERTC_WKUP_IRQn  */
 
 /*
  * I2C units.
@@ -176,7 +176,7 @@
 #define AT32_I2C2_ERROR_NUMBER       34
 
 /*
- * OTGFS units.
+ * OTG unit.
  */
 #define AT32_OTG1_HANDLER            Vector14C
 

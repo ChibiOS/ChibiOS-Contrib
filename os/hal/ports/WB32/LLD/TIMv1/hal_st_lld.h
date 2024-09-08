@@ -154,7 +154,7 @@
 #define ST_LLD_NUM_ALARMS                      WB32_ST_ENFORCE_ALARMS
 #endif
 
-#elif OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
+#elif OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
 
 #define WB32_ST_USE_SYSTICK                    TRUE
 #define WB32_ST_USE_TIM2                       FALSE
@@ -225,8 +225,10 @@ static inline void st_lld_start_alarm(systime_t abstime) {
   WB32_ST_TIM->SR     = 0;
 #if ST_LLD_NUM_ALARMS == 1
   WB32_ST_TIM->DIER   = WB32_TIM_DIER_CC1IE;
+  WB32_ST_TIM->CCER   = WB32_TIM_CCER_CC1E;
 #else
   WB32_ST_TIM->DIER  |= WB32_TIM_DIER_CC1IE;
+  WB32_ST_TIM->CCER  |= WB32_TIM_CCER_CC1E;
 #endif
 }
 
@@ -239,8 +241,10 @@ static inline void st_lld_stop_alarm(void) {
 
 #if ST_LLD_NUM_ALARMS == 1
   WB32_ST_TIM->DIER = 0U;
+  WB32_ST_TIM->CCER = 0U;
 #else
   WB32_ST_TIM->DIER &= ~WB32_TIM_DIER_CC1IE;
+  WB32_ST_TIM->CCER &= ~WB32_TIM_CCER_CC1E;
 #endif
 }
 
@@ -300,6 +304,7 @@ static inline void st_lld_start_alarm_n(unsigned alarm, systime_t abstime) {
   WB32_ST_TIM->CCR[alarm] = (uint32_t)abstime;
   WB32_ST_TIM->SR         = 0;
   WB32_ST_TIM->DIER      |= (WB32_TIM_DIER_CC1IE << alarm);
+  WB32_ST_TIM->CCER      |= (WB32_TIM_CCER_CC1E << (alarm * 4));
 }
 
 /**
@@ -314,6 +319,7 @@ static inline void st_lld_start_alarm_n(unsigned alarm, systime_t abstime) {
 static inline void st_lld_stop_alarm_n(unsigned alarm) {
 
   WB32_ST_TIM->DIER &= ~(WB32_TIM_DIER_CC1IE << alarm);
+  WB32_ST_TIM->CCER &= ~(WB32_TIM_CCER_CC1E << (alarm * 4));
 }
 
 /**

@@ -674,7 +674,6 @@ void pwm_lld_enable_channel(PWMDriver *pwmp,
  * @notapi
  */
 void pwm_lld_disable_channel(PWMDriver *pwmp, pwmchannel_t channel) {
-
   pwmp->tmr->CDT[channel] = 0;
   pwmp->tmr->IDEN &= ~(2 << channel);
 }

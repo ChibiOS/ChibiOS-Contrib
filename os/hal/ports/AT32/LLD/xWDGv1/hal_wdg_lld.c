@@ -18,7 +18,7 @@
 
 /**
  * @file    xWDGv1/hal_wdg_lld.c
- * @brief   WDG Driver subsystem low level driver source.
+ * @brief   WDT Driver subsystem low level driver source.
  *
  * @addtogroup WDG
  * @{
@@ -37,8 +37,8 @@
 #define CMD_CMD_WRITE                       0x5555U
 #define CMD_CMD_PROTECT                     0x0000U
 
-#if !defined(WDG) && defined(WDG1)
-#define WDG                                 WDG1
+#if !defined(WDT) && defined(WDT1)
+#define WDT                                 WDT1
 #endif
 
 /*===========================================================================*/
@@ -66,7 +66,7 @@ WDGDriver WDGD1;
 /*===========================================================================*/
 
 /**
- * @brief   Low level WDG driver initialization.
+ * @brief   Low level WDT driver initialization.
  *
  * @notapi
  */
@@ -74,12 +74,12 @@ void wdg_lld_init(void) {
 
 #if AT32_WDG_USE_WDT
   WDGD1.state = WDG_STOP;
-  WDGD1.wdg   = WDT;
+  WDGD1.wdt   = WDT;
 #endif
 }
 
 /**
- * @brief   Configures and activates the WDG peripheral.
+ * @brief   Configures and activates the WDT peripheral.
  *
  * @param[in] wdgp      pointer to the @p WDGDriver object
  *
@@ -87,23 +87,28 @@ void wdg_lld_init(void) {
  */
 void wdg_lld_start(WDGDriver *wdgp) {
 
-  /* Enable WDG and unlock for write.*/
-  wdgp->wdg->CMD = CMD_CMD_ENABLE;
-  wdgp->wdg->CMD = CMD_CMD_WRITE;
+  /* Enable WDT and unlock for write.*/
+  wdgp->wdt->CMD = CMD_CMD_ENABLE;
+  wdgp->wdt->CMD = CMD_CMD_WRITE;
 
   /* Write configuration.*/
-  wdgp->wdg->DIV = wdgp->config->div;
-  wdgp->wdg->RLD = wdgp->config->rld;
+  wdgp->wdt->DIV = wdgp->config->div;
+  wdgp->wdt->RLD = wdgp->config->rld;
 
   /* Wait the registers to be updated.*/
-  while (wdgp->wdg->STS != 0)
+  while (wdgp->wdt->STS != 0)
     ;
 
-  wdgp->wdg->CMD = CMD_CMD_RELOAD;
+#if AT32_WDT_IS_WINDOWED
+  /* This also triggers a refresh.*/
+  wdgp->wdt->WIN = wdgp->config->win;
+#else
+  wdgp->wdt->CMD = CMD_CMD_RELOAD;
+#endif
 }
 
 /**
- * @brief   Deactivates the WDG peripheral.
+ * @brief   Deactivates the WDT peripheral.
  *
  * @param[in] wdgp      pointer to the @p WDGDriver object
  *
@@ -112,11 +117,11 @@ void wdg_lld_start(WDGDriver *wdgp) {
 void wdg_lld_stop(WDGDriver *wdgp) {
 
   osalDbgAssert(wdgp->state == WDG_STOP,
-                "WDG cannot be stopped once activated");
+                "WDT cannot be stopped once activated");
 }
 
 /**
- * @brief   Reloads WDG's counter.
+ * @brief   Reloads WDT's counter.
  *
  * @param[in] wdgp      pointer to the @p WDGDriver object
  *
@@ -124,7 +129,7 @@ void wdg_lld_stop(WDGDriver *wdgp) {
  */
 void wdg_lld_reset(WDGDriver * wdgp) {
 
-  wdgp->wdg->CMD = CMD_CMD_RELOAD;
+  wdgp->wdt->CMD = CMD_CMD_RELOAD;
 }
 
 #endif /* HAL_USE_WDG == TRUE */

@@ -99,13 +99,13 @@
 #define WB32_HAS_TIM3                          TRUE
 #define WB32_HAS_TIM4                          TRUE
 
-#define WB32_TIM1_IS_32BITS                    TRUE
+#define WB32_TIM1_IS_32BITS                    FALSE
 #define WB32_TIM1_CHANNELS                     4
-#define WB32_TIM2_IS_32BITS                    TRUE
+#define WB32_TIM2_IS_32BITS                    FALSE
 #define WB32_TIM2_CHANNELS                     4
-#define WB32_TIM3_IS_32BITS                    TRUE
+#define WB32_TIM3_IS_32BITS                    FALSE
 #define WB32_TIM3_CHANNELS                     4
-#define WB32_TIM4_IS_32BITS                    TRUE
+#define WB32_TIM4_IS_32BITS                    FALSE
 #define WB32_TIM4_CHANNELS                     4
 
 /* I2C attributes */
