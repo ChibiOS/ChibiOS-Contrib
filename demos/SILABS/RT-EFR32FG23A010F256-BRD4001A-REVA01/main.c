@@ -32,6 +32,37 @@ static void gpio_callback(void* arg) {
   return;
 }
 
+static void dm_callback(void *ptr, uint32_t mask) {
+  (void)ptr;
+  (void)mask;
+
+  return;
+}
+
+static void dma_test(BaseSequentialStream* siop) {
+  uint8_t dma_test_src[16] = {1, 2, 3, 4, 5, 6, 7, 8, 8, 7, 6, 5, 4, 3, 2, 1};
+  uint8_t dma_test_dst[32] = {0};
+
+  const efr32_dma_stream_t *dmastp1 = dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, dm_callback, &dma_test_dst[0]);
+  const efr32_dma_stream_t *dmastp2 = dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, dm_callback, &dma_test_dst[16]);
+
+  dmaStartMemCopy(dmastp1, 0, &dma_test_src[0], &dma_test_dst[0], 8);
+  dmaStartMemCopy(dmastp2, 0, &dma_test_src[8], &dma_test_dst[16], 8);
+
+  dmaWaitCompletion(dmastp1);
+  dmaWaitCompletion(dmastp2);
+
+  dmaStreamFree(dmastp1);
+  dmaStreamFree(dmastp2);
+
+  for (size_t i = 0; i < sizeof(dma_test_dst); i++) {
+    chprintf(siop, "0x%02x, ", dma_test_dst[i]);
+  }
+  chprintf(siop, "\n");
+
+  return;
+}
+
 /*
  * Application entry point.
  */
@@ -47,7 +78,9 @@ int main(void) {
   osKernelInitialize();
 
   #if 0
-  palSetPadMode(GPIOC, 3, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_HCLK));
+  //palSetPadMode(GPIOC, 3, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_HCLK));
+  //palSetPadMode(GPIOC, 3, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_HFRCOEM23));
+  palSetPadMode(GPIOC, 3, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_LFXO));
   while (true);
   #endif
 
@@ -83,7 +116,7 @@ int main(void) {
 
   static const SIOConfig sio_config1 = {
     #if 1
-    .baud = 9600U,       /* Baudrate (9600 max. for LF operation) */
+    .baud = 2400U,       /* Baudrate (2400 max. for LF operation) */
     .cfg0 = (0U <<  0) | /* ASYNC operation */
             (4U <<  5),  /* Disable oversampling (for LF operation) */
     .framecfg = EFR32_SIO_LLD_EUSART_8E1,
@@ -177,6 +210,12 @@ int main(void) {
       .sec = 5,
     };
     rtcSetAlarm(&RTCD1, 0, &alarmspec);
+
+  #if 0
+  dma_test((BaseSequentialStream*)siop);
+  #endif
+
+  //lesenseObjectInit();
 
   /*
    * Normal main() thread activity, in this demo it does nothing except
