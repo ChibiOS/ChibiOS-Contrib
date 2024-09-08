@@ -66,9 +66,6 @@
 #error "EFR32_RTCCLK_DIV is not obtainable"
 #endif
 
-#define EFR32_OVERFLOW_SCALE(val)                                             \
-  ((val) * ((_EFR32_OVERFLOW_VALUE - (EFR32_RTCCLK - 1U)) / EFR32_RTCCLK + 1U))
-
 #else
 
 #if EFR32_BURTCCLK % 32768U == 0U
@@ -78,15 +75,12 @@
 #error "EFR32_RTCCLK_DIV is not obtainable"
 #endif
 
-/* Overflow handling can't be implemented here.
-   After 68 years it just overflows. */
-#define EFR32_OVERFLOW_SCALE(val) ((val) * 0U)
-
 #endif
 
 #define EFR32_RTCCLK              (EFR32_BURTCCLK / EFR32_RTCCLK_DIV)
 
-#define EFR32_RTC_STARTOFTIME     1980
+#define EFR32_OVERFLOW_SCALE(val)                                             \
+  ((val) * ((_EFR32_OVERFLOW_VALUE - (EFR32_RTCCLK - 1U)) / EFR32_RTCCLK + 1U))
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -103,9 +97,23 @@ RTCDriver RTCD1;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
-static const int month_days[12] = {
-  31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+static const int day_offset_by_month[12] = {
+  0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334
 };
+
+static const int rtc_day_of_the_week[7] = {
+  RTC_DAY_SUNDAY, RTC_DAY_MONDAY, RTC_DAY_TUESDAY, RTC_DAY_WEDNESDAY,
+  RTC_DAY_THURSDAY, RTC_DAY_FRIDAY, RTC_DAY_SATURDAY
+};
+
+/*
+ * @brief   Global DAC-related data structures.
+ *          Structure remains initialised after reboot.
+ */
+CC_SECTION(".ram0")
+static struct {
+  uint32_t                 ovf_counter; /**< BURTC overflow counter. */
+} rtc;
 
 /*===========================================================================*/
 /* Driver local functions.                                                   */
@@ -119,7 +127,7 @@ static const int month_days[12] = {
  * @param[in] year      Year, e.g. 1969
  * @param[in] month     Months 1..12.
  * @param[in] day       Day of the month 1..31
- * @return              Day of week 1 .. 7, Mon .. Sun.
+ * @return              Day of week 0 .. 6, Sun .. Sat.
  *
  */
 __STATIC_INLINE int _rtc_lld_wday(int year, int month, int day) {
@@ -134,51 +142,54 @@ __STATIC_INLINE int _rtc_lld_wday(int year, int month, int day) {
   wday = (day + (13 * mm - 1) / 5 +
           yy + yy / 4 - yy / 100 + yy / 400) % 7;
 
-  /* wday in range from 1 .. 7: Mon .. Sun */
-  wday += 1;
-
   return wday;
 }
 
 __STATIC_INLINE void _rtc_lld_to_timespec(uint32_t tv_sec, RTCDateTime* timespec, uint32_t tv_msec) {
 
-  int year = EFR32_RTC_STARTOFTIME;
+  int year;
   int month;
   int day = tv_sec / 86400;
 
   /* Seconds left after all days are subtracted. */
   tv_sec -= day * 86400;
 
-  while (true) {
+  year = day / 365;
 
-    int days_in_year = 365 + isleap(year);
+  /* Days left after all years are subtracted, which works only
+     during the next thousend years. */
+  day -= year * 365;
 
-    if (day < days_in_year)
-      break;
+  int last_year = RTC_BASE_YEAR + year - 1;
+  /* Number of leap corrections to apply up to end of last year. */
+  int leap_days_to_last_year = (last_year / 4 - last_year / 100 + last_year / 400);
+  leap_days_to_last_year -= ((RTC_BASE_YEAR - 1) / 4 - (RTC_BASE_YEAR - 1) / 100 + (RTC_BASE_YEAR - 1) / 400);
 
-    day -= days_in_year;
-    year += 1;
-  }
+  day -= leap_days_to_last_year;
 
   for (month = 0; month < 12; month++) {
 
-    int days_in_month = month_days[month];
-
-    if (month == 1)
-      days_in_month += isleap(year);
-
-    if (day < days_in_month)
+    if (day_offset_by_month[month] > day)
       break;
+  }
 
-    day -= days_in_month;
+  day -= day_offset_by_month[month - 1];
+
+  if (month > 2) {
+    /* Are we past 29 February? */
+    day -= isleap(RTC_BASE_YEAR + year);
   }
 
   timespec->millisecond = tv_sec * 1000 + tv_msec;
   timespec->dstflag = 0;
-  timespec->year = year - EFR32_RTC_STARTOFTIME;
-  timespec->month = month + 1;
-  timespec->day = day + 1;
-  timespec->dayofweek = _rtc_lld_wday(year, timespec->month, timespec->day = day);
+  timespec->year = year;
+  timespec->month = month;
+  timespec->day = day + 1 /* 0 .. 30 -> 1 .. 31 */;
+  int dayofweek = _rtc_lld_wday(RTC_BASE_YEAR + year,
+                                timespec->month,
+                                timespec->day);
+  /* wday 0 .. 6: Sun .. Sat -> 1 .. 7: Mon .. Sun */
+  timespec->dayofweek = rtc_day_of_the_week[dayofweek];
 }
 
 /*===========================================================================*/
@@ -201,7 +212,7 @@ OSAL_IRQ_HANDLER(EFR32_BURTC_HANDLER) {
   BURTC->IF_CLR = isr;
 
   if ((isr & _BURTC_IF_OF_MASK) == BURTC_IF_OF) {
-    RTCD1.ovf_counter += 1U;
+    rtc.ovf_counter += 1U;
 
     if (RTCD1.callback != NULL) {
       RTCD1.callback(&RTCD1, RTC_EVENT_TS_OVF);
@@ -242,9 +253,11 @@ void rtc_lld_init(void) {
 
   CMU->CLKEN0_SET = CMU_CLKEN0_BURTC;
 
+  /* After reboot the BURTC must remain enabled.
+     Check this before changing its configuration. */
   if ((BURTC->EN & _BURTC_EN_MASK) == BURTC_EN_EN) {
 
-    /* If cfg prescaler is not as wanted, disable BURTC. */
+    /* Disable BURTC if cfg prescaler is not set as wanted. */
     if ((BURTC->CFG & _BURTC_CFG_CNTPRESC_MASK) != EFR32_BURTC_CFG_CNTPRESC) {
       BURTC->CMD_CLR = BURTC_CMD_STOP;
       while ((BURTC->SYNCBUSY & _BURTC_SYNCBUSY_MASK) != 0U);
@@ -268,7 +281,7 @@ void rtc_lld_init(void) {
     /* Clear all counter. */
     BURTC->PRECNT_CLR = _BURTC_PRECNT_PRECNT_MASK;
     BURTC->CNT_CLR = _BURTC_CNT_CNT_MASK;
-    RTCD1.ovf_counter = 0U;
+    rtc.ovf_counter = 0U;
 
     /* Clear interrupt flags. */
     BURTC->IF_CLR = _BURTC_IF_MASK;
@@ -280,6 +293,9 @@ void rtc_lld_init(void) {
 
     /* Clear interrupt flags. */
     BURTC->IF_CLR = _BURTC_IF_MASK;
+
+    /* If BURTC was enabled before, the interrupts ae still enabled
+       but inactive because BURTC is not started yet. */
   }
 
   /* Start BURTC. */
@@ -302,29 +318,28 @@ void rtc_lld_init(void) {
  */
 void rtc_lld_set_time(RTCDriver* rtcp, const RTCDateTime* timespec) {
 
+  (void)rtcp;
   syssts_t sts;
 
   uint32_t ovf_counter;
   uint32_t tv_sec, tv_msec;
   uint32_t cnt, precnt;
 
-  int year;
-  int days = timespec->day - 1;
+  int last_year = RTC_BASE_YEAR + timespec->year - 1;
+  /* Number of leap corrections to apply up to end of last year. */
+  int leap_days_to_last_year = (last_year / 4 - last_year / 100 + last_year / 400);
+  leap_days_to_last_year -= ((RTC_BASE_YEAR - 1) / 4 - (RTC_BASE_YEAR - 1) / 100 + (RTC_BASE_YEAR - 1) / 400);
+  int month = timespec->month - 1;
 
-  /* Calculate days by years. */
-  for (year = EFR32_RTC_STARTOFTIME;
-       year < EFR32_RTC_STARTOFTIME + timespec->year;
-       year++) {
-    days += 365 + isleap(year);
+  int days = timespec->day - 1; /* 1 .. 31 -> 0 .. 30 */
+
+  if (month >= 2) {
+    /* Are we past 29 February? */
+    days += isleap(RTC_BASE_YEAR + timespec->year);
   }
 
-  /* Calculate days by months. */
-  for (int month = 0; month < timespec->month - 1; month++) {
-    days += month_days[month];
-
-    if (month == 1)
-      days += isleap(year);
-  }
+  days += timespec->year * 365 + leap_days_to_last_year +
+          day_offset_by_month[month];
 
   tv_sec = days * 86400 + timespec->millisecond / 1000;
   tv_msec = timespec->millisecond % 1000;
@@ -341,14 +356,17 @@ void rtc_lld_set_time(RTCDriver* rtcp, const RTCDateTime* timespec) {
 
   /* Following note ist in the reference manual:
    * "Writing to the BURTC_PRECNT register may alter the frequency of the ticks
-   * for the BURTC_CNT register." Following that I assume PRECNT must be
-   * written before CNT.
+   * for the BURTC_CNT register." Following that PRECNT must be written before CNT.
    */
   BURTC->PRECNT = precnt;
   BURTC->CNT = cnt;
-  rtcp->ovf_counter = ovf_counter;
+  rtc.ovf_counter = ovf_counter;
 
   while ((BURTC->SYNCBUSY & _BURTC_SYNCBUSY_MASK) != 0U);
+
+  if (RTCD1.callback != NULL) {
+    RTCD1.callback(&RTCD1, RTC_EVENT_TIME_SET);
+  }
 
   /* Leaving a reentrant critical zone.*/
   osalSysRestoreStatusX(sts);
@@ -365,6 +383,7 @@ void rtc_lld_set_time(RTCDriver* rtcp, const RTCDateTime* timespec) {
  */
 void rtc_lld_get_time(RTCDriver* rtcp, RTCDateTime* timespec) {
 
+  (void)rtcp;
   syssts_t sts;
   uint32_t cnt, precnt;
   uint32_t ovf_counter, tv_sec, tv_msec;
@@ -373,7 +392,7 @@ void rtc_lld_get_time(RTCDriver* rtcp, RTCDateTime* timespec) {
   sts = osalSysGetStatusAndLockX();
 
   /* Cache overflow counter. */
-  ovf_counter = rtcp->ovf_counter;
+  ovf_counter = rtc.ovf_counter;
 
   /* Repeated registers read until both registers are corellated. */
   #if EFR32_RTC_HAS_SUBSECONDS
@@ -407,7 +426,7 @@ void rtc_lld_get_time(RTCDriver* rtcp, RTCDateTime* timespec) {
  * @note    The function can be called from any context.
  *
  * @param[in] rtcp      pointer to RTC driver structure.
- * @param[in] alarm     alarm identifier. Can be 1 or 2.
+ * @param[in] alarm     alarm identifier. Can only be 0.
  * @param[in] alarmspec pointer to a @p RTCAlarm structure.
  *
  * @notapi
@@ -419,6 +438,8 @@ void rtc_lld_set_alarm(RTCDriver* rtcp,
   (void)rtcp;
   syssts_t sts;
   uint32_t cnt;
+
+  osalDbgAssert(alarm == 0, "unknown alarm");
 
   if (alarm == 0) {
 

@@ -333,6 +333,23 @@
 #define EFR32_USART1CLK                 EFR32_PCLK
 
 
+#define EFR32_DAC1SEL_NOCLOCK            (0u << 0)
+#define EFR32_DAC1SEL_EM01GRPACLK        (1u << 1)
+#define EFR32_DAC1SEL_EM23GRPACLK        (1u << 2)
+#define EFR32_DAC1SEL_FSRCO              (1u << 3)
+#define EFR32_DAC1SEL_HFRCOEM23          (1u << 4)
+
+#if EFR32_DAC1SEL == EFR32_DAC1SEL_EM01GRPACLK
+#define EFR32_DAC1SELCLK                EFR32_EM01GRPACLK
+#elif EFR32_DAC1SEL == EFR32_DAC1SEL_EM23GRPACLK
+#define EFR32_DAC1SELCLK                EFR32_EM23GRPACLK
+#elif EFR32_DAC1SEL == EFR32_DAC1SEL_FSRCO
+#define EFR32_DAC1SELCLK                EFR32_FSRCOCLK
+#elif EFR32_DAC1SEL == EFR32_DAC1SEL_HFRCOEM23
+#define EFR32_DAC1SELCLK                EFR32_HFRCOEM23CLK
+#endif
+
+
 /* Vector8C = Vector(40 + 4*LETIMER0_IRQn) */
 #define EFR32_LETIM1_HANDLER            Vector8C
 #define EFR32_LETIM1_NUMBER             LETIMER0_IRQn
@@ -340,6 +357,10 @@
 /* Vector120 = Vector(40 + 4*PCNT0_IRQn) */
 #define EFR32_PCNT0_HANDLER			        Vector120
 #define EFR32_PCNT0_NUMBER			        PCNT0_IRQn
+
+/* Vector154 = Vector(40 + 4*LESENSE_IRQn) */
+#define EFR32_LESENSE_HANDLER 	        Vector154
+#define EFR32_LESENSE_NUMBER  		      LESENSE_IRQn
 
 /* VectorA8 = Vector(40 + 4*GPIO_ODD_IRQn) */
 #define EFR32_GPIO_ODD_HANDLER 		      VectorA8
@@ -353,7 +374,7 @@
 #define EFR32_USART1_RX_HANDLER 	      Vector64
 #define EFR32_USART1_RX_NUMBER		      USART0_RX_IRQn
                                        
-/* Vector68 = Vector(40 + 4USART0_TX_IRQn) */
+/* Vector68 = Vector(40 + 4*USART0_TX_IRQn) */
 #define EFR32_USART1_TX_HANDLER 	      Vector68
 #define EFR32_USART1_TX_NUMBER		      USART0_TX_IRQn
 
@@ -385,6 +406,10 @@
 #define EFR32_BURTC_HANDLER             Vector88
 #define EFR32_BURTC_NUMBER              BURTC_IRQn
 
+/* Vector88 = Vector(40 + 4*LDMA_IRQn) */
+#define EFR32_LDMA_HANDLER              Vector98
+#define EFR32_LDMA_NUMBER               LDMA_IRQn
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
@@ -399,6 +424,7 @@
 
 /* Various helpers.*/
 #include "nvic.h"
+#include "efr32_dma.h"
 
 #ifdef __cplusplus
 extern "C" {

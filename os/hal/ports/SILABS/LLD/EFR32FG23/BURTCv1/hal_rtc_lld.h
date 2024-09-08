@@ -82,8 +82,9 @@
  * @brief   Type of an RTC event.
  */
 typedef enum {
-  RTC_EVENT_TS_OVF      = 0,            /** Time stamp overflow.            */
-  RTC_EVENT_ALARM       = 1             /** Wakeup.                         */
+  RTC_EVENT_TIME_SET    = 0,            /** New time set.                   */
+  RTC_EVENT_TS_OVF      = 1,            /** Time stamp overflow.            */
+  RTC_EVENT_ALARM       = 2             /** Wakeup.                         */
 } rtcevent_t;
 
 /**
@@ -106,8 +107,7 @@ typedef struct {
  * @brief   Implementation-specific @p RTCDriver fields.
  */
 #define rtc_lld_driver_fields                                              \
-  rtccb_t                  callback;   /**< Callback function. */          \
-  uint32_t                 ovf_counter /**< Oveflow counter. */
+  rtccb_t                  callback    /**< Callback function. */
 
 /*===========================================================================*/
 /* Driver macros.                                                            */

@@ -57,27 +57,24 @@ __STATIC_INLINE void efr32_calibrate_lfxo(void) {
   if (gain != gain_cal_value) {
     while ((LFXO->SYNCBUSY & _LFXO_SYNCBUSY_CAL_MASK) == LFXO_SYNCBUSY_CAL);
     LFXO->CAL = (LFXO->CAL & ~_LFXO_CAL_GAIN_MASK) |
-                ((gain_cal_value & _LFXO_CAL_GAIN_MASK) << _LFXO_CAL_GAIN_SHIFT);
+                ((gain_cal_value << _LFXO_CAL_GAIN_SHIFT) & _LFXO_CAL_GAIN_MASK);
     while ((LFXO->SYNCBUSY & _LFXO_SYNCBUSY_CAL_MASK) != 0U);
   }
 
-  while (true)
-  {
+  while (true) {
     captune = (LFXO->CAL & _LFXO_CAL_CAPTUNE_MASK) >> _LFXO_CAL_CAPTUNE_SHIFT;
 
     if (captune > captune_cal_value) {
       --captune;
-    }
-    else if (captune < captune_cal_value) {
+    } else if (captune < captune_cal_value) {
       ++captune;
-    }
-    else {
+    } else {
       break;
     }
 
     while ((LFXO->SYNCBUSY & _LFXO_SYNCBUSY_CAL_MASK) == LFXO_SYNCBUSY_CAL);
     LFXO->CAL = (LFXO->CAL & ~_LFXO_CAL_CAPTUNE_MASK) |
-                ((captune & _LFXO_CAL_CAPTUNE_MASK) << _LFXO_CAL_CAPTUNE_SHIFT);
+                ((captune << _LFXO_CAL_CAPTUNE_SHIFT) & _LFXO_CAL_CAPTUNE_MASK);
     while ((LFXO->SYNCBUSY & _LFXO_SYNCBUSY_CAL_MASK) == LFXO_SYNCBUSY_CAL);
   }
 }
@@ -87,7 +84,7 @@ __STATIC_INLINE void efr32_set_voltage_scaling(void) {
   EMU->CTRL = (EMU->CTRL & ~_EMU_CTRL_EM23VSCALE_MASK) | EFR32_EM23_VSCALE;
 
   EMU->CMD = (EMU->CMD & ~(_EMU_CMD_EM01VSCALE1_MASK | _EMU_CMD_EM01VSCALE2_MASK)) | EFR32_EM01_VSCALE;
-  while ((EMU->STATUS & _EMU_STATUS_VSCALEBUSY_MASK) == EMU_STATUS_VSCALEBUSY); 
+  while ((EMU->STATUS & _EMU_STATUS_VSCALEBUSY_MASK) == EMU_STATUS_VSCALEBUSY);
 }
 
 __STATIC_INLINE void efr32_enable_clock_sources(void) {
@@ -99,11 +96,26 @@ __STATIC_INLINE void efr32_enable_clock_sources(void) {
 #endif
 
 #if EFR32_LFXO_ENABLED
+  /* Enable clock. */
   CMU->CLKEN0_SET = CMU_CLKEN0_LFXO;
+
+  /* Disable LFXO. */
+  LFXO->CTRL_SET = LFXO_CTRL_DISONDEMAND;
+  LFXO->CTRL_CLR = LFXO_CTRL_FORCEEN;
+  while ((LFXO->STATUS & _LFXO_STATUS_ENS_MASK) == LFXO_STATUS_ENS);
+
+  uint32_t gain_cal_value, captune_cal_value;
+  efr32_get_lfxo_calibration_values(&gain_cal_value, &captune_cal_value);
+
+  /* Configure LFXO as specified. */
+  LFXO->CAL = (LFXO->CAL & ~(_LFXO_CAL_GAIN_MASK | _LFXO_CAL_CAPTUNE_MASK)) |
+              ((gain_cal_value << _LFXO_CAL_GAIN_SHIFT) & _LFXO_CAL_GAIN_MASK) |
+              ((captune_cal_value << _LFXO_CAL_CAPTUNE_SHIFT) & _LFXO_CAL_CAPTUNE_MASK);
+
   LFXO->CTRL_SET = LFXO_CTRL_FORCEEN;
+
   while ((LFXO->STATUS & (_LFXO_STATUS_RDY_MASK | _LFXO_STATUS_ENS_MASK)) !=
-         (LFXO_STATUS_RDY | LFXO_STATUS_ENS));
-  efr32_calibrate_lfxo();
+           (LFXO_STATUS_RDY | LFXO_STATUS_ENS));
 #else
   CMU->CLKEN0_CLR = CMU_CLKEN0_LFXO;
 #endif
@@ -250,6 +262,30 @@ __STATIC_INLINE void efr32_enable_eusartclk(void) {
 #endif
 }
 
+__STATIC_INLINE void efr32_enable_vdacclk(void) {
+
+#if EFR32_DAC1SEL != EFR32_DAC1SEL_NOCLOCK
+#if EFR32_EM01GRPACLK_ENABLED && EFR32_DAC1SEL == EFR32_DAC1SEL_EM01GRPACLK
+  CMU->VDAC0CLKCTRL = (CMU->VDAC0CLKCTRL & ~_CMU_VDAC0CLKCTRL_CLKSEL_MASK)\
+    | CMU_VDAC0CLKCTRL_CLKSEL_EM01GRPACLK;
+#elif EFR32_EM23GRPACLK_ENABLED && EFR32_DAC1SEL == EFR32_DAC1SEL_EM23GRPACLK
+  CMU->VDAC0CLKCTRL = (CMU->VDAC0CLKCTRL & ~_CMU_VDAC0CLKCTRL_CLKSEL_MASK)\
+    | CMU_VDAC0CLKCTRL_CLKSEL_EM23GRPACLK;
+#elif EFR32_FSRCO_ENABLED && EFR32_DAC1SEL == EFR32_DAC1SEL_FSRCO
+  CMU->VDAC0CLKCTRL = (CMU->VDAC0CLKCTRL & ~_CMU_VDAC0CLKCTRL_CLKSEL_MASK)\
+    | CMU_VDAC0CLKCTRL_CLKSEL_FSRCO;
+#elif EFR32_HFRCOEM23_ENABLED && EFR32_DAC1SEL == EFR32_DAC1SEL_HFRCOEM23
+  CMU->VDAC0CLKCTRL = (CMU->VDAC0CLKCTRL & ~_CMU_VDAC0CLKCTRL_CLKSEL_MASK)\
+    | CMU_VDAC0CLKCTRL_CLKSEL_HFRCOEM23;
+#else
+#error "No clock source selected for EFR32_DAC1SEL"
+#endif
+#else
+  CMU->CLKEN1 = (CMU->CLKEN1 & ~_CMU_CLKEN1_VDAC0_MASK)\
+    | CMU_CLKEN1_VDAC0_DEFAULT;
+#endif
+}
+
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
@@ -270,8 +306,8 @@ void efr32_chip_init(void) {
 
 }
 
-void efr32_get_lfxo_calibration_values(uint32_t *gain, uint32_t *captune)
-{
+void efr32_get_lfxo_calibration_values(uint32_t* gain, uint32_t* captune) {
+
   osalDbgAssert(gain != NULL, "gain must be not NULL");
   osalDbgAssert(captune != NULL, "captune must be not NULL");
 
@@ -293,6 +329,7 @@ void efr32_clock_init(void) {
   efr32_enable_em01grpcclk();
   efr32_enable_em23grpaclk();
   efr32_enable_eusartclk();
+  efr32_enable_vdacclk();
 
   /* After all clocks were set, set also the voltage scaling. */
   efr32_set_voltage_scaling();
@@ -355,6 +392,11 @@ void efr32_escape_hatch(void) {
  * @notapi
  */
 void hal_lld_init(void) {
+
+  /* DMA subsystems initialization.*/
+#if defined(EFR32_DMA_REQUIRED)
+  dmaInit();
+#endif
 
   /* NVIC initialization.*/
   nvicInit();

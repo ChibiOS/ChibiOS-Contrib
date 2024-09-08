@@ -88,6 +88,19 @@
 #define EFR32_EUSART2_LOW_POWER_ENABLED     FALSE
 #define EFR32_EUSART3_LOW_POWER_ENABLED     FALSE
 
+/*
+ * DAC driver system settings.
+ */
+#define EFR32_HAS_DAC1_CH1                  TRUE
+#define EFR32_HAS_DAC1_CH2                  TRUE
+
+/*
+ * DMA driver system settings.
+ */
+#define EFR32_HAS_DMA                       TRUE
+#define EFR32_ADVANCED_DMA                  TRUE
+#define EFR32_DMA_SUPPORTS_DMAMUX           TRUE
+
 /*===========================================================================*/
 /* Common.                                                                   */
 /*===========================================================================*/
