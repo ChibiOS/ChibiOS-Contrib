@@ -49,10 +49,10 @@
 #endif
 
 /**
- * @brief   TIMx unit (by number) to be used for free running operations.
+ * @brief   TMRx unit (by number) to be used for free running operations.
  * @note    You must select a 32 bits timer if a 32 bits @p systick_t type
  *          is required.
- * @note    Timers 2, 3, 4, 5, 9, 10 and 11 are supported.
+ * @note    Timers 1, 2, 3, 4, 5, 9, 10 and 11 are supported.
  */
 #if !defined(AT32_ST_USE_TIMER) || defined(__DOXYGEN__)
 #define AT32_ST_USE_TIMER                   2
@@ -79,6 +79,10 @@
 
 /* This has to go after transition to shared handlers is complete for all
    platforms.*/
+#if !defined(AT32_HAS_TMR1)
+#define AT32_HAS_TMR1                       FALSE
+#endif
+
 #if !defined(AT32_HAS_TMR2)
 #define AT32_HAS_TMR2                       FALSE
 #endif
@@ -110,7 +114,31 @@
 
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
 
-#if AT32_ST_USE_TIMER == 2
+#if AT32_ST_USE_TIMER == 1
+
+#if defined(AT32_TMR1_IS_USED)
+#error "ST requires TMR1 but the timer is already used"
+#else
+#define AT32_TMR1_IS_USED
+#endif
+
+#if defined(AT32_TMR1_SUPPRESS_ISR)
+#define AT32_SYSTICK_SUPPRESS_ISR
+#endif
+
+#define AT32_ST_TMR                         AT32_TMR1
+#define ST_LLD_NUM_ALARMS                   AT32_TMR1_CHANNELS
+#define AT32_ST_USE_SYSTICK                 FALSE
+#define AT32_ST_USE_TMR1                    TRUE
+#define AT32_ST_USE_TMR2                    FALSE
+#define AT32_ST_USE_TMR3                    FALSE
+#define AT32_ST_USE_TMR4                    FALSE
+#define AT32_ST_USE_TMR5                    FALSE
+#define AT32_ST_USE_TMR9                    FALSE
+#define AT32_ST_USE_TMR10                   FALSE
+#define AT32_ST_USE_TMR11                   FALSE
+
+#elif AT32_ST_USE_TIMER == 2
 
 #if defined(AT32_TMR2_IS_USED)
 #error "ST requires TMR2 but the timer is already used"
@@ -125,6 +153,7 @@
 #define AT32_ST_TMR                         AT32_TMR2
 #define ST_LLD_NUM_ALARMS                   AT32_TMR2_CHANNELS
 #define AT32_ST_USE_SYSTICK                 FALSE
+#define AT32_ST_USE_TMR1                    FALSE
 #define AT32_ST_USE_TMR2                    TRUE
 #define AT32_ST_USE_TMR3                    FALSE
 #define AT32_ST_USE_TMR4                    FALSE
@@ -148,6 +177,7 @@
 #define AT32_ST_TMR                         AT32_TMR3
 #define ST_LLD_NUM_ALARMS                   AT32_TMR3_CHANNELS
 #define AT32_ST_USE_SYSTICK                 FALSE
+#define AT32_ST_USE_TMR1                    FALSE
 #define AT32_ST_USE_TMR2                    FALSE
 #define AT32_ST_USE_TMR3                    TRUE
 #define AT32_ST_USE_TMR4                    FALSE
@@ -171,6 +201,7 @@
 #define AT32_ST_TMR                         AT32_TMR4
 #define ST_LLD_NUM_ALARMS                   AT32_TMR4_CHANNELS
 #define AT32_ST_USE_SYSTICK                 FALSE
+#define AT32_ST_USE_TMR1                    FALSE
 #define AT32_ST_USE_TMR2                    FALSE
 #define AT32_ST_USE_TMR3                    FALSE
 #define AT32_ST_USE_TMR4                    TRUE
@@ -194,6 +225,7 @@
 #define AT32_ST_TMR                         AT32_TMR5
 #define ST_LLD_NUM_ALARMS                   AT32_TMR5_CHANNELS
 #define AT32_ST_USE_SYSTICK                 FALSE
+#define AT32_ST_USE_TMR1                    FALSE
 #define AT32_ST_USE_TMR2                    FALSE
 #define AT32_ST_USE_TMR3                    FALSE
 #define AT32_ST_USE_TMR4                    FALSE
@@ -217,6 +249,7 @@
 #define AT32_ST_TMR                         AT32_TMR9
 #define ST_LLD_NUM_ALARMS                   AT32_TMR9_CHANNELS
 #define AT32_ST_USE_SYSTICK                 FALSE
+#define AT32_ST_USE_TMR1                    FALSE
 #define AT32_ST_USE_TMR2                    FALSE
 #define AT32_ST_USE_TMR3                    FALSE
 #define AT32_ST_USE_TMR4                    FALSE
@@ -240,6 +273,7 @@
 #define AT32_ST_TMR                         AT32_TMR10
 #define ST_LLD_NUM_ALARMS                   AT32_TMR10_CHANNELS
 #define AT32_ST_USE_SYSTICK                 FALSE
+#define AT32_ST_USE_TMR1                    FALSE
 #define AT32_ST_USE_TMR2                    FALSE
 #define AT32_ST_USE_TMR3                    FALSE
 #define AT32_ST_USE_TMR4                    FALSE
@@ -263,6 +297,7 @@
 #define AT32_ST_TMR                         AT32_TMR11
 #define ST_LLD_NUM_ALARMS                   AT32_TMR11_CHANNELS
 #define AT32_ST_USE_SYSTICK                 FALSE
+#define AT32_ST_USE_TMR1                    FALSE
 #define AT32_ST_USE_TMR2                    FALSE
 #define AT32_ST_USE_TMR3                    FALSE
 #define AT32_ST_USE_TMR4                    FALSE
@@ -288,6 +323,7 @@
 #elif OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
 
 #define AT32_ST_USE_SYSTICK                 TRUE
+#define AT32_ST_USE_TMR1                    FALSE
 #define AT32_ST_USE_TMR2                    FALSE
 #define AT32_ST_USE_TMR3                    FALSE
 #define AT32_ST_USE_TMR4                    FALSE
@@ -299,6 +335,7 @@
 #else
 
 #define AT32_ST_USE_SYSTICK                 FALSE
+#define AT32_ST_USE_TMR1                    FALSE
 #define AT32_ST_USE_TMR2                    FALSE
 #define AT32_ST_USE_TMR3                    FALSE
 #define AT32_ST_USE_TMR4                    FALSE

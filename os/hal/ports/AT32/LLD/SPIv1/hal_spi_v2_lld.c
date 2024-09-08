@@ -32,18 +32,26 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
+#if !defined(SPI_SPID1_MEMORY)
+#define SPI_SPID1_MEMORY
+#endif
+
+#if !defined(SPI_SPID2_MEMORY)
+#define SPI_SPID2_MEMORY
+#endif
+
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
 /** @brief SPI1 driver identifier.*/
 #if AT32_SPI_USE_SPI1 || defined(__DOXYGEN__)
-SPIDriver SPID1;
+SPI_SPID1_MEMORY SPIDriver SPID1;
 #endif
 
 /** @brief SPI2 driver identifier.*/
 #if AT32_SPI_USE_SPI2 || defined(__DOXYGEN__)
-SPIDriver SPID2;
+SPI_SPID2_MEMORY SPIDriver SPID2;
 #endif
 
 /*===========================================================================*/

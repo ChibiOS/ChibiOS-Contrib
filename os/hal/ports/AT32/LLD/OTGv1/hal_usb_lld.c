@@ -49,13 +49,8 @@
 #endif
 
 #elif AT32_OTG_STEPPING == 2
-#if defined(BOARD_OTG_VBUSIG_LPM)
-#define GCCFG_INIT_VALUE        (GCCFG_VBUSIG | GCCFG_LP_MODE |             \
-                                 GCCFG_PWRDOWN)
-#elif defined(BOARD_OTG_VBUSIG)
+#if defined(BOARD_OTG_VBUSIG)
 #define GCCFG_INIT_VALUE        (GCCFG_VBUSIG | GCCFG_PWRDOWN)
-#elif defined(BOARD_OTG_LPM)
-#define GCCFG_INIT_VALUE        (GCCFG_LP_MODE | GCCFG_PWRDOWN)
 #else
 #define GCCFG_INIT_VALUE        GCCFG_PWRDOWN
 #endif
@@ -792,16 +787,6 @@ void usb_lld_start(USBDriver *usbp) {
       crmEnableOTG_HS(true);
       crmResetOTG_HS();
 
-      /* ULPI clock is managed depending on the presence of an external
-         PHY.*/
-#if defined(BOARD_OTG2_USES_ULPI)
-      crmEnableOTG_HSULPI(true);
-#else
-      /* Workaround for the problem described here:
-         http://forum.chibios.org/phpbb/viewtopic.php?f=16&t=1798.*/
-      crmDisableOTG_HSULPI();
-#endif
-
       /* Enables IRQ vector.*/
       nvicEnableVector(AT32_OTG2_NUMBER, AT32_USB_OTG2_IRQ_PRIORITY);
 
@@ -833,21 +818,7 @@ void usb_lld_start(USBDriver *usbp) {
     /* PHY enabled.*/
     otgp->PCGCCTL = 0;
 
-#if defined(BOARD_OTG2_USES_ULPI)
-#if AT32_USB_USE_OTG1
-    if (&USBD1 == usbp) {
-      otgp->GCCFG = GCCFG_INIT_VALUE;
-    }
-#endif
-
-#if AT32_USB_USE_OTG2
-    if (&USBD2 == usbp) {
-      otgp->GCCFG = 0;
-    }
-#endif
-#else
     otgp->GCCFG = GCCFG_INIT_VALUE;
-#endif
 
     /* Soft core reset.*/
     otg_core_reset(usbp);
@@ -913,9 +884,6 @@ void usb_lld_stop(USBDriver *usbp) {
     if (&USBD2 == usbp) {
       nvicDisableVector(AT32_OTG2_NUMBER);
       crmDisableOTG_HS();
-#if defined(BOARD_OTG2_USES_ULPI)
-      crmDisableOTG_HSULPI();
-#endif
     }
 #endif
   }
