@@ -60,8 +60,6 @@ void __early_init(void) {
  */
 void boardInit(void) {
 
-  SN_SYS0->EXRSTCTRL_b.RESETDIS = 1; // Disable RESET
-  SN_SYS0->SWDCTRL_b.SWDDIS = 1; // Disable SWD
 }
 
 void restart_usb_driver(USBDriver *usbp) {
