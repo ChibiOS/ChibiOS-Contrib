@@ -67,7 +67,7 @@ typedef struct {
 } gpio_config_t;
 
 /**
- * @brief   STM32 GPIO static initialization data.
+ * @brief   AT32 GPIO static initialization data.
  */
 static const gpio_config_t gpio_default_config = {
 #if AT32_HAS_GPIOA
