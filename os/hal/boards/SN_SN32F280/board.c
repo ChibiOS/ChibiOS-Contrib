@@ -44,7 +44,6 @@ const PALConfig pal_default_config = {
 #endif
 
 static int flag __attribute__((section(".flag"))) __attribute__((__used__)) = 0xAAAA5555;
-extern void enter_bootloader_mode_if_requested(void);
 
 /**
  * @brief   Early initialization code.
@@ -52,7 +51,6 @@ extern void enter_bootloader_mode_if_requested(void);
  *          and before any other initialization.
  */
 void __early_init(void) {
-  enter_bootloader_mode_if_requested();
   sn32_clock_init();
 }
 
