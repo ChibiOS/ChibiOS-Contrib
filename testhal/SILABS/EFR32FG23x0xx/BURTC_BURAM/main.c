@@ -36,9 +36,12 @@ static void led_off(void) {
 static int time_is_set;
 static int alarm_triggered;
 
-static void rtc_callback(RTCDriver* rtcp, rtcevent_t evt) {
+static const RTCAlarm alarmspec1 = {
+  .tv_sec = 2,
+  .tv_usec = 100,
+};
 
-  (void)rtcp;
+static void rtc_callback(RTCDriver* rtcp, rtcevent_t evt) {
 
   switch (evt) {
     case RTC_EVENT_TIME_SET:
@@ -46,6 +49,8 @@ static void rtc_callback(RTCDriver* rtcp, rtcevent_t evt) {
       break;
     case RTC_EVENT_ALARM:
       alarm_triggered++;
+      /* Retrigger alarm. */
+      rtcSetAlarm(rtcp, 0, &alarmspec1);
       break;
     case RTC_EVENT_TS_OVF:
       break;
@@ -83,10 +88,6 @@ static void test_rtc(void) {
 
 static void test_rtc_alarm(void) {
 
-  const RTCAlarm alarmspec1 = {
-    .tv_sec = 2,
-    .tv_usec = 100,
-  };
   rtcSetAlarm(&RTCD1, 0, &alarmspec1);
 
   RTCAlarm alarmspec2 = { 0 };
@@ -94,9 +95,12 @@ static void test_rtc_alarm(void) {
 
   osalDbgAssert(alarmspec1.tv_sec == alarmspec2.tv_sec, "wrong alarm second");
   osalDbgAssert((alarmspec1.tv_usec - alarmspec2.tv_usec) < 50, "wrong alarm microsecond");
-  
+
   osDelay(alarmspec1.tv_sec * 1000 + 1 + alarmspec1.tv_usec / 1000);
-  osalDbgAssert(alarm_triggered == 1, "no alarm triggered");
+  osalDbgAssert(alarm_triggered == 1, "no first alarm triggered");
+
+  osDelay(alarmspec1.tv_sec * 1000 + 1 + alarmspec1.tv_usec / 1000);
+  osalDbgAssert(alarm_triggered == 2, "no second alarm triggered");
 }
 
 /*
