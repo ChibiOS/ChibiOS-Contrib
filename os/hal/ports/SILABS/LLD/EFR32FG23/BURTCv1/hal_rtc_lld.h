@@ -82,15 +82,15 @@
  * @brief   Type of an RTC event.
  */
 typedef enum {
-  RTC_EVENT_TIME_SET    = 0,            /** New time set.                   */
-  RTC_EVENT_TS_OVF      = 1,            /** Time stamp overflow.            */
-  RTC_EVENT_ALARM       = 2             /** Wakeup.                         */
+  RTC_EVENT_TIME_SET    = 0,            /**< New time set.                   */
+  RTC_EVENT_ALARM       = 1,            /**< Wakeup.                         */
+  RTC_EVENT_TS_OVF      = 2             /**< Time stamp overflow.            */
 } rtcevent_t;
 
 /**
  * @brief   Type of a generic RTC callback.
  */
-typedef void (*rtccb_t)(RTCDriver* rtcp, rtcevent_t event);
+typedef void (*rtccb_t)(RTCDriver* rtcp, rtcevent_t evt);
 #endif
 
 #if (RTC_ALARMS > 0) || defined(__DOXYGEN__)
@@ -98,16 +98,19 @@ typedef void (*rtccb_t)(RTCDriver* rtcp, rtcevent_t event);
  * @brief   Type of a structure representing an RTC alarm time stamp.
  */
 typedef struct {
-  /* End of the mandatory fields.*/
-  uint32_t sec; /**< Alarm in seconds. */
+  uint32_t tv_sec;  /**< Seconds. */
+  uint32_t tv_usec; /**< Microseconds. */
 } RTCAlarm;
 #endif
 
 /**
  * @brief   Implementation-specific @p RTCDriver fields.
  */
-#define rtc_lld_driver_fields                                              \
-  rtccb_t                  callback    /**< Callback function. */
+#define rtc_lld_driver_fields                                                     \
+  volatile uint32_t        *ovf_counter;  /**< BURTC overflow counter. */         \
+  volatile uint32_t        *tv_sec;       /**< Seconds since RTC_BASE_YEAR.. */   \
+  volatile uint32_t        *tv_msec;      /**< .. and additional milliseconds. */ \
+  rtccb_t                  callback       /**< Callback function. */
 
 /*===========================================================================*/
 /* Driver macros.                                                            */

@@ -24,17 +24,13 @@
 
 #include "hal.h"
 
-#if (HAL_USE_RTC == TRUE) || defined(__DOXYGEN__)
+#if (HAL_USE_RTC == TRUE) && (HAL_USE_BURAM == TRUE) || defined(__DOXYGEN__)
+
+#include "hal_buram.h"
 
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
-
-/**
- * @brief Shortcut only that is not intended to use
- * elsewhere except for EFR32_OVERFLOW_SCALE macro.
- */
-#define _EFR32_OVERFLOW_VALUE     (_BURTC_CNT_CNT_MASK >> _BURTC_CNT_CNT_SHIFT)
 
 /**
  * EFR32_RTCCLK_DIV is more or less arbitrary. The smaller the value
@@ -42,45 +38,24 @@
  * of interrupts set the value as high as possible.
  */
 
-#if EFR32_RTC_HAS_SUBSECONDS
-
-#if EFR32_BURTCCLK % 32U == 0U
-#define EFR32_RTCCLK_DIV 32U
-#define EFR32_BURTC_CFG_CNTPRESC  BURTC_CFG_CNTPRESC_DIV32
-#elif EFR32_BURTCCLK % 16U == 0U
-#define EFR32_RTCCLK_DIV 16U
-#define EFR32_BURTC_CFG_CNTPRESC  BURTC_CFG_CNTPRESC_DIV16
-#elif EFR32_BURTCCLK % 8U == 0U
-#define EFR32_RTCCLK_DIV 8U
-#define EFR32_BURTC_CFG_CNTPRESC  BURTC_CFG_CNTPRESC_DIV8
-#elif EFR32_BURTCCLK % 4U == 0U
-#define EFR32_RTCCLK_DIV 4U
-#define EFR32_BURTC_CFG_CNTPRESC  BURTC_CFG_CNTPRESC_DIV4
-#elif EFR32_BURTCCLK % 2U == 0U
-#define EFR32_RTCCLK_DIV 2U
-#define EFR32_BURTC_CFG_CNTPRESC  BURTC_CFG_CNTPRESC_DIV2
-#elif EFR32_BURTCCLK % 1U == 0U
+#if EFR32_BURTCCLK == 1000U /* Clock source is ULFRCO. */
+#define EFR32_RTCCLK_DIV 1U
+#define EFR32_BURTC_CFG_CNTPRESC  BURTC_CFG_CNTPRESC_DIV1
+#elif EFR32_BURTCCLK == 32768U /* Clock source is LFXO or LFRCO. */
 #define EFR32_RTCCLK_DIV 1U
 #define EFR32_BURTC_CFG_CNTPRESC  BURTC_CFG_CNTPRESC_DIV1
 #else
 #error "EFR32_RTCCLK_DIV is not obtainable"
 #endif
 
-#else
+#define EFR32_RTCCLK                (EFR32_BURTCCLK / EFR32_RTCCLK_DIV)
 
-#if EFR32_BURTCCLK % 32768U == 0U
-#define EFR32_RTCCLK_DIV 32768U
-#define EFR32_BURTC_CFG_CNTPRESC  BURTC_CFG_CNTPRESC_DIV32768
-#else
-#error "EFR32_RTCCLK_DIV is not obtainable"
-#endif
+#define EFR32_RTC_OVERFLOW_VALUE    ((_BURTC_CNT_CNT_MASK >> _BURTC_CNT_CNT_SHIFT) + 1UL)
 
-#endif
+#define EFR32_RTC_OVERFLOW_INTERVAL (EFR32_RTC_OVERFLOW_VALUE / EFR32_RTCCLK)
 
-#define EFR32_RTCCLK              (EFR32_BURTCCLK / EFR32_RTCCLK_DIV)
-
-#define EFR32_OVERFLOW_SCALE(val)                                             \
-  ((val) * ((_EFR32_OVERFLOW_VALUE - (EFR32_RTCCLK - 1U)) / EFR32_RTCCLK + 1U))
+#define EFR32_RTC_OVERFLOW_INTERVAL_REMAINDER \
+                                    (EFR32_RTC_OVERFLOW_VALUE % EFR32_RTCCLK)
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -105,15 +80,6 @@ static const int rtc_day_of_the_week[7] = {
   RTC_DAY_SUNDAY, RTC_DAY_MONDAY, RTC_DAY_TUESDAY, RTC_DAY_WEDNESDAY,
   RTC_DAY_THURSDAY, RTC_DAY_FRIDAY, RTC_DAY_SATURDAY
 };
-
-/*
- * @brief   Global DAC-related data structures.
- *          Structure remains initialised after reboot.
- */
-CC_SECTION(".ram0")
-static struct {
-  uint32_t                 ovf_counter; /**< BURTC overflow counter. */
-} rtc;
 
 /*===========================================================================*/
 /* Driver local functions.                                                   */
@@ -145,47 +111,64 @@ __STATIC_INLINE int _rtc_lld_wday(int year, int month, int day) {
   return wday;
 }
 
-__STATIC_INLINE void _rtc_lld_to_timespec(uint32_t tv_sec, RTCDateTime* timespec, uint32_t tv_msec) {
+__STATIC_INLINE void _rtc_lld_to_timespec(uint32_t tv_sec, uint32_t tv_msec, RTCDateTime* timespec) {
 
-  int year;
-  int month;
+  int year = RTC_BASE_YEAR;
   int day = tv_sec / 86400;
 
   /* Seconds left after all days are subtracted. */
-  tv_sec -= day * 86400;
+  tv_sec = tv_sec % 86400;
 
-  year = day / 365;
+  /* Calculate year in 4 years steps. */
+  do {
+    int days_in_4years = isleap(year) ? (1 + 4 * 365) : (4 * 365);
 
-  /* Days left after all years are subtracted, which works only
-     during the next thousend years. */
-  day -= year * 365;
-
-  int last_year = RTC_BASE_YEAR + year - 1;
-  /* Number of leap corrections to apply up to end of last year. */
-  int leap_days_to_last_year = (last_year / 4 - last_year / 100 + last_year / 400);
-  leap_days_to_last_year -= ((RTC_BASE_YEAR - 1) / 4 - (RTC_BASE_YEAR - 1) / 100 + (RTC_BASE_YEAR - 1) / 400);
-
-  day -= leap_days_to_last_year;
-
-  for (month = 0; month < 12; month++) {
-
-    if (day_offset_by_month[month] > day)
+    if (day < days_in_4years)
       break;
+
+    day -= days_in_4years;
+    year += 4;
+  }
+  while (true);
+
+  /* Further calculate year in 1 years steps. */
+  do {
+    int days_in_1year = isleap(year) ? (1 + 1 * 365) : (1 * 365);
+
+    if (day < days_in_1year)
+      break;
+
+    day -= days_in_1year;
+    year += 1;
+  }
+  while (true);
+
+  /* Calculate month. */
+  int month = 0;
+  for (int end = 12; month != end;) {
+    int mid = (month + end) / 2;
+
+    if (day_offset_by_month[mid] <= day) {
+      month = mid + 1;
+    }
+    else {
+      end = mid;
+    }
   }
 
   day -= day_offset_by_month[month - 1];
 
   if (month > 2) {
     /* Are we past 29 February? */
-    day -= isleap(RTC_BASE_YEAR + year);
+    day -= isleap(year);
   }
 
-  timespec->millisecond = tv_sec * 1000 + tv_msec;
+  timespec->millisecond = tv_sec * 1000U + tv_msec;
   timespec->dstflag = 0;
-  timespec->year = year;
+  timespec->year = year  - RTC_BASE_YEAR;
   timespec->month = month;
   timespec->day = day + 1 /* 0 .. 30 -> 1 .. 31 */;
-  int dayofweek = _rtc_lld_wday(RTC_BASE_YEAR + year,
+  int dayofweek = _rtc_lld_wday(year,
                                 timespec->month,
                                 timespec->day);
   /* wday 0 .. 6: Sun .. Sat -> 1 .. 7: Mon .. Sun */
@@ -196,7 +179,6 @@ __STATIC_INLINE void _rtc_lld_to_timespec(uint32_t tv_sec, RTCDateTime* timespec
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
 
-#if !defined(EFR32_RTC_SUPPRESS_ISR)
 /**
  * @brief   RTC common interrupt handler.
  *
@@ -212,25 +194,29 @@ OSAL_IRQ_HANDLER(EFR32_BURTC_HANDLER) {
   BURTC->IF_CLR = isr;
 
   if ((isr & _BURTC_IF_OF_MASK) == BURTC_IF_OF) {
-    rtc.ovf_counter += 1U;
+    #if EFR32_RTC_USE_RTC1 == TRUE
+    /* Increment overflow counter in order of tracking time. */
+    *(RTCD1.ovf_counter) += 1U;
 
     if (RTCD1.callback != NULL) {
       RTCD1.callback(&RTCD1, RTC_EVENT_TS_OVF);
     }
+    #endif
   }
 
   if ((isr & _BURTC_IF_COMP_MASK) == BURTC_IF_COMP) {
     /* Disable alarm. */
     BURTC->IEN_CLR = BURTC_IEN_COMP;
 
+    #if EFR32_RTC_USE_RTC1 == TRUE
     if (RTCD1.callback != NULL) {
       RTCD1.callback(&RTCD1, RTC_EVENT_ALARM);
     }
+    #endif
   }
 
   OSAL_IRQ_EPILOGUE();
 }
-#endif /* !defined(EFR32_RTC_SUPPRESS_ISR) */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -243,14 +229,20 @@ OSAL_IRQ_HANDLER(EFR32_BURTC_HANDLER) {
  */
 void rtc_lld_init(void) {
 
-  /* RTC object initialization.*/
 #if EFR32_RTC_USE_RTC1 == TRUE
+  /* RTC object initialization. */
   rtcObjectInit(&RTCD1);
 
   /* Callback initially disabled. */
   RTCD1.callback = NULL;
+
+  /* Get data from backup RAM which survives restart. */
+  RTCD1.ovf_counter = buramAllocateAtI(&BURAMD1, 0, 4);
+  RTCD1.tv_sec = buramAllocateAtI(&BURAMD1, 4, 4);
+  RTCD1.tv_msec = buramAllocateAtI(&BURAMD1, 8, 4);
 #endif
 
+  /* Enable clock. */
   CMU->CLKEN0_SET = CMU_CLKEN0_BURTC;
 
   /* After reboot the BURTC must remain enabled.
@@ -278,10 +270,14 @@ void rtc_lld_init(void) {
     /* Enable BURTC. */
     BURTC->EN_SET = BURTC_EN_EN;
 
-    /* Clear all counter. */
-    BURTC->PRECNT_CLR = _BURTC_PRECNT_PRECNT_MASK;
+    /* Clear counter. */
     BURTC->CNT_CLR = _BURTC_CNT_CNT_MASK;
-    rtc.ovf_counter = 0U;
+
+    #if EFR32_RTC_USE_RTC1 == TRUE
+    *(RTCD1.ovf_counter) = 0U;
+    *(RTCD1.tv_sec) = 0U;
+    *(RTCD1.tv_msec) = 0U;
+    #endif
 
     /* Clear interrupt flags. */
     BURTC->IF_CLR = _BURTC_IF_MASK;
@@ -289,7 +285,8 @@ void rtc_lld_init(void) {
     /* Enable interrupts. */
     BURTC->IEN_CLR = _BURTC_IEN_MASK;
     BURTC->IEN_SET = BURTC_IEN_OF;
-  } else {
+  }
+  else {
 
     /* Clear interrupt flags. */
     BURTC->IF_CLR = _BURTC_IF_MASK;
@@ -318,57 +315,53 @@ void rtc_lld_init(void) {
  */
 void rtc_lld_set_time(RTCDriver* rtcp, const RTCDateTime* timespec) {
 
-  (void)rtcp;
   syssts_t sts;
-
-  uint32_t ovf_counter;
   uint32_t tv_sec, tv_msec;
-  uint32_t cnt, precnt;
 
-  int last_year = RTC_BASE_YEAR + timespec->year - 1;
   /* Number of leap corrections to apply up to end of last year. */
-  int leap_days_to_last_year = (last_year / 4 - last_year / 100 + last_year / 400);
-  leap_days_to_last_year -= ((RTC_BASE_YEAR - 1) / 4 - (RTC_BASE_YEAR - 1) / 100 + (RTC_BASE_YEAR - 1) / 400);
-  int month = timespec->month - 1;
+  const int leap_days_to_rtc_base_year = (RTC_BASE_YEAR - 1) / 4 -
+                                         (RTC_BASE_YEAR - 1) / 100 +
+                                         (RTC_BASE_YEAR - 1) / 400;
 
-  int days = timespec->day - 1; /* 1 .. 31 -> 0 .. 30 */
+  const int last_year = (RTC_BASE_YEAR - 1) + timespec->year;
+
+  const int leap_days_to_last_year = last_year / 4 -
+                                     last_year / 100 +
+                                     last_year / 400 -
+                                     leap_days_to_rtc_base_year;
+
+  const int month = timespec->month - 1; /* 1 .. 12 -> 0 .. 11 */
+
+  int day = timespec->day - 1; /* 1 .. 31 -> 0 .. 30 */
 
   if (month >= 2) {
-    /* Are we past 29 February? */
-    days += isleap(RTC_BASE_YEAR + timespec->year);
+    /* Are we past 29th February? */
+    day += isleap(RTC_BASE_YEAR + timespec->year);
   }
 
-  days += timespec->year * 365 + leap_days_to_last_year +
-          day_offset_by_month[month];
+  day += timespec->year * 365 + leap_days_to_last_year +
+         day_offset_by_month[month];
 
-  tv_sec = days * 86400 + timespec->millisecond / 1000;
+  tv_sec = day * 86400 + timespec->millisecond / 1000;
   tv_msec = timespec->millisecond % 1000;
 
-  ovf_counter = tv_sec / EFR32_OVERFLOW_SCALE(1);
-
-  tv_sec -= ovf_counter * EFR32_OVERFLOW_SCALE(1);
-
-  cnt = tv_sec * EFR32_RTCCLK;
-  precnt = tv_msec * ((_BURTC_PRECNT_PRECNT_MASK >> _BURTC_PRECNT_PRECNT_SHIFT) + 1U) / 1000U;
-
-  /* Entering a reentrant critical zone.*/
+  /* Entering a reentrant critical zone. */
   sts = osalSysGetStatusAndLockX();
 
-  /* Following note ist in the reference manual:
-   * "Writing to the BURTC_PRECNT register may alter the frequency of the ticks
-   * for the BURTC_CNT register." Following that PRECNT must be written before CNT.
-   */
-  BURTC->PRECNT = precnt;
-  BURTC->CNT = cnt;
-  rtc.ovf_counter = ovf_counter;
+  /* Clear all counters resetting the overflow counter as well. */
+  BURTC->CNT_CLR = _BURTC_CNT_CNT_MASK;
+
+  *(rtcp->ovf_counter) = 0U;
+  *(rtcp->tv_sec) = tv_sec;
+  *(rtcp->tv_msec) = tv_msec;
 
   while ((BURTC->SYNCBUSY & _BURTC_SYNCBUSY_MASK) != 0U);
 
-  if (RTCD1.callback != NULL) {
-    RTCD1.callback(&RTCD1, RTC_EVENT_TIME_SET);
+  if (rtcp->callback != NULL) {
+    rtcp->callback(rtcp, RTC_EVENT_TIME_SET);
   }
 
-  /* Leaving a reentrant critical zone.*/
+/* Leaving a reentrant critical zone.*/
   osalSysRestoreStatusX(sts);
 }
 
@@ -383,39 +376,34 @@ void rtc_lld_set_time(RTCDriver* rtcp, const RTCDateTime* timespec) {
  */
 void rtc_lld_get_time(RTCDriver* rtcp, RTCDateTime* timespec) {
 
-  (void)rtcp;
   syssts_t sts;
-  uint32_t cnt, precnt;
+  uint32_t cnt;
   uint32_t ovf_counter, tv_sec, tv_msec;
 
   /* Entering a reentrant critical zone.*/
   sts = osalSysGetStatusAndLockX();
 
   /* Cache overflow counter. */
-  ovf_counter = rtc.ovf_counter;
+  ovf_counter = *(rtcp->ovf_counter);
+  tv_sec = *(rtcp->tv_sec);
+  tv_msec = *(rtcp->tv_msec);
 
-  /* Repeated registers read until both registers are corellated. */
-  #if EFR32_RTC_HAS_SUBSECONDS
-  do {
-    cnt = BURTC->CNT;
-    precnt = BURTC->PRECNT;
-  }
-  while ((cnt != BURTC->CNT) && (precnt != BURTC->PRECNT));
-  #else
+  /* Read counter. */
   cnt = BURTC->CNT;
-  precnt = 0U;
-  #endif
 
   /* Leaving a reentrant critical zone.*/
   osalSysRestoreStatusX(sts);
 
-  cnt = (cnt & _BURTC_CNT_CNT_MASK) >> _BURTC_CNT_CNT_SHIFT;
-  precnt = (precnt & _BURTC_PRECNT_PRECNT_MASK) >> _BURTC_PRECNT_PRECNT_SHIFT;
+  tv_sec += (ovf_counter * EFR32_RTC_OVERFLOW_INTERVAL) +
+            (ovf_counter * EFR32_RTC_OVERFLOW_INTERVAL_REMAINDER) / EFR32_RTCCLK +
+            (cnt / EFR32_RTCCLK);
 
-  tv_sec = EFR32_OVERFLOW_SCALE(ovf_counter) + cnt / EFR32_RTCCLK;
-  tv_msec = 1000U * precnt / ((_BURTC_PRECNT_PRECNT_MASK >> _BURTC_PRECNT_PRECNT_SHIFT) + 1U);
+  tv_msec += (cnt % EFR32_RTCCLK * 1000U) / EFR32_RTCCLK;
 
-  _rtc_lld_to_timespec(tv_sec, timespec, tv_msec);
+  tv_sec += tv_msec / 1000U;
+  tv_msec = tv_msec % 1000U;
+
+  _rtc_lld_to_timespec(tv_sec, tv_msec, timespec);
 }
 
 #if (RTC_ALARMS > 0) || defined(__DOXYGEN__)
@@ -450,18 +438,22 @@ void rtc_lld_set_alarm(RTCDriver* rtcp,
       /* Enable alarm. */
 
       cnt = BURTC->CNT;
-      cnt = (cnt & _BURTC_CNT_CNT_MASK) >> _BURTC_CNT_CNT_SHIFT;
 
       /* Can overflow but don't care. */
-      cnt = (cnt / EFR32_RTCCLK + alarmspec->sec) * EFR32_RTCCLK;
+      cnt += (alarmspec->tv_sec * EFR32_RTCCLK) +
+             (alarmspec->tv_usec * EFR32_RTCCLK) / 1000000U;
 
       BURTC->COMP = cnt;
+
+      /* Enable alarm. */
       BURTC->IEN_SET = BURTC_IEN_COMP;
-    } else {
+    }
+    else {
       /* Disable alarm. */
       BURTC->IEN_CLR = BURTC_IEN_COMP;
     }
 
+    /* Clear alarm interrupt flag. */
     BURTC->IF_CLR = BURTC_IF_COMP;
 
     /* Leaving a reentrant critical zone.*/
@@ -492,18 +484,21 @@ void rtc_lld_get_alarm(RTCDriver* rtcp,
     sts = osalSysGetStatusAndLockX();
 
     comp = BURTC->COMP;
-    comp = (comp & _BURTC_COMP_COMP_MASK) >> _BURTC_COMP_COMP_SHIFT;
 
     cnt = BURTC->CNT;
-    cnt = (cnt & _BURTC_CNT_CNT_MASK) >> _BURTC_CNT_CNT_SHIFT;
 
     /* Leaving a reentrant critical zone.*/
     osalSysRestoreStatusX(sts);
 
-    if (comp > cnt) {
-      alarmspec->sec = (comp - cnt) / EFR32_RTCCLK;
-    } else {
-      alarmspec->sec = 0;
+    uint32_t diff_comp_cnt = comp - cnt;
+
+    if (diff_comp_cnt > 0U) {
+      alarmspec->tv_sec = diff_comp_cnt / EFR32_RTCCLK;
+      alarmspec->tv_usec = (diff_comp_cnt % EFR32_RTCCLK * 1000000U) / EFR32_RTCCLK;
+    }
+    else {
+      alarmspec->tv_sec = 0;
+      alarmspec->tv_usec = 0;
     }
   }
 }
@@ -522,7 +517,15 @@ void rtc_lld_get_alarm(RTCDriver* rtcp,
  */
 void rtc_lld_set_callback(RTCDriver* rtcp, rtccb_t callback) {
 
+  syssts_t sts;
+
+  /* Entering a reentrant critical zone.*/
+  sts = osalSysGetStatusAndLockX();
+
   rtcp->callback = callback;
+
+  /* Leaving a reentrant critical zone.*/
+  osalSysRestoreStatusX(sts);
 }
 
 #endif /* HAL_USE_RTC */

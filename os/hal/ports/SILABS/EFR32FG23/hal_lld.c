@@ -217,6 +217,11 @@ __STATIC_INLINE void efr32_enable_em23grpaclk(void) {
 #endif
 }
 
+__STATIC_INLINE void efr32_enable_buram(void) {
+
+  CMU->CLKEN0_SET = CMU_CLKEN0_BURAM;
+}
+
 __STATIC_INLINE void efr32_enable_eusartclk(void) {
 
 #if EFR32_EUSART1SEL != EFR32_EUSART1SEL_NOCLOCK
@@ -328,6 +333,7 @@ void efr32_clock_init(void) {
   efr32_enable_em01grpaclk();
   efr32_enable_em01grpcclk();
   efr32_enable_em23grpaclk();
+  efr32_enable_buram();
   efr32_enable_eusartclk();
   efr32_enable_vdacclk();
 
