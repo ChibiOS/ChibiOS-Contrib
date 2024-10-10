@@ -110,6 +110,7 @@ typedef struct {
   volatile uint32_t        *ovf_counter;  /**< BURTC overflow counter. */         \
   volatile uint32_t        *tv_sec;       /**< Seconds since RTC_BASE_YEAR.. */   \
   volatile uint32_t        *tv_msec;      /**< .. and additional milliseconds. */ \
+  volatile uint32_t        *dstflag;      /**< Keep DST flag. */                  \
   rtccb_t                  callback       /**< Callback function. */
 
 /*===========================================================================*/

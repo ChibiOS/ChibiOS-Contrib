@@ -111,7 +111,7 @@ __STATIC_INLINE int _rtc_lld_wday(int year, int month, int day) {
   return wday;
 }
 
-__STATIC_INLINE void _rtc_lld_to_timespec(uint32_t tv_sec, uint32_t tv_msec, RTCDateTime* timespec) {
+__STATIC_INLINE void _rtc_lld_to_timespec(uint32_t tv_sec, uint32_t tv_msec, RTCDateTime* timespec, uint32_t dstflag) {
 
   int year = RTC_BASE_YEAR;
   int day = tv_sec / 86400;
@@ -164,7 +164,7 @@ __STATIC_INLINE void _rtc_lld_to_timespec(uint32_t tv_sec, uint32_t tv_msec, RTC
   }
 
   timespec->millisecond = tv_sec * 1000U + tv_msec;
-  timespec->dstflag = 0;
+  timespec->dstflag = dstflag;
   timespec->year = year  - RTC_BASE_YEAR;
   timespec->month = month;
   timespec->day = day + 1 /* 0 .. 30 -> 1 .. 31 */;
@@ -240,6 +240,7 @@ void rtc_lld_init(void) {
   RTCD1.ovf_counter = buramAllocateAtI(&BURAMD1, 0, 4);
   RTCD1.tv_sec = buramAllocateAtI(&BURAMD1, 4, 4);
   RTCD1.tv_msec = buramAllocateAtI(&BURAMD1, 8, 4);
+  RTCD1.dstflag = buramAllocateAtI(&BURAMD1, 12, 4);
 #endif
 
   /* Enable clock. */
@@ -277,6 +278,7 @@ void rtc_lld_init(void) {
     *(RTCD1.ovf_counter) = 0U;
     *(RTCD1.tv_sec) = 0U;
     *(RTCD1.tv_msec) = 0U;
+    *(RTCD1.dstflag) = 0U;
     #endif
 
     /* Clear interrupt flags. */
@@ -354,6 +356,7 @@ void rtc_lld_set_time(RTCDriver* rtcp, const RTCDateTime* timespec) {
   *(rtcp->ovf_counter) = 0U;
   *(rtcp->tv_sec) = tv_sec;
   *(rtcp->tv_msec) = tv_msec;
+  *(rtcp->dstflag) = timespec->dstflag;
 
   while ((BURTC->SYNCBUSY & _BURTC_SYNCBUSY_MASK) != 0U);
 
@@ -378,7 +381,7 @@ void rtc_lld_get_time(RTCDriver* rtcp, RTCDateTime* timespec) {
 
   syssts_t sts;
   uint32_t cnt;
-  uint32_t ovf_counter, tv_sec, tv_msec;
+  uint32_t ovf_counter, tv_sec, tv_msec, dstflag;
 
   /* Entering a reentrant critical zone.*/
   sts = osalSysGetStatusAndLockX();
@@ -387,6 +390,7 @@ void rtc_lld_get_time(RTCDriver* rtcp, RTCDateTime* timespec) {
   ovf_counter = *(rtcp->ovf_counter);
   tv_sec = *(rtcp->tv_sec);
   tv_msec = *(rtcp->tv_msec);
+  dstflag = *(rtcp->dstflag);
 
   /* Read counter. */
   cnt = BURTC->CNT;
@@ -403,7 +407,7 @@ void rtc_lld_get_time(RTCDriver* rtcp, RTCDateTime* timespec) {
   tv_sec += tv_msec / 1000U;
   tv_msec = tv_msec % 1000U;
 
-  _rtc_lld_to_timespec(tv_sec, tv_msec, timespec);
+  _rtc_lld_to_timespec(tv_sec, tv_msec, timespec, dstflag);
 }
 
 #if (RTC_ALARMS > 0) || defined(__DOXYGEN__)
