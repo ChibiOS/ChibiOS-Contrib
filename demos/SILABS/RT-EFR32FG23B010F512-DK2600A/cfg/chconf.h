@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2024 Xael South
+    ChibiOS - Copyright (C) 2006..2024 Giovanni Di Sirio
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@
  * @note    Allowed values are 16, 32 or 64 bits.
  */
 #if !defined(CH_CFG_ST_RESOLUTION)
-#define CH_CFG_ST_RESOLUTION                16
+#define CH_CFG_ST_RESOLUTION                32
 #endif
 
 /**
@@ -85,7 +85,7 @@
  *          setting also defines the system tick time unit.
  */
 #if !defined(CH_CFG_ST_FREQUENCY)
-#define CH_CFG_ST_FREQUENCY                 1024
+#define CH_CFG_ST_FREQUENCY                 4096
 #endif
 
 /**
@@ -586,7 +586,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(CH_DBG_SYSTEM_STATE_CHECK)
-#define CH_DBG_SYSTEM_STATE_CHECK           TRUE
+#define CH_DBG_SYSTEM_STATE_CHECK           FALSE
 #endif
 
 /**
