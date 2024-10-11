@@ -62,6 +62,21 @@ SerialDriver SD4;
 SerialDriver SD5;
 #endif
 
+/** @brief USART6 serial driver identifier.*/
+#if AT32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
+SerialDriver SD6;
+#endif
+
+/** @brief UART7 serial driver identifier.*/
+#if AT32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
+SerialDriver SD7;
+#endif
+
+/** @brief UART8 serial driver identifier.*/
+#if AT32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
+SerialDriver SD8;
+#endif
+
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
@@ -189,6 +204,30 @@ static void notify5(io_queue_t *qp) {
 }
 #endif
 
+#if AT32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
+static void notify6(io_queue_t *qp) {
+
+  (void)qp;
+  USART6->CTRL1 |= USART_CTRL1_TDBEIEN | USART_CTRL1_TDCIEN;
+}
+#endif
+
+#if AT32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
+static void notify7(io_queue_t *qp) {
+
+  (void)qp;
+  UART7->CTRL1 |= USART_CTRL1_TDBEIEN | USART_CTRL1_TDCIEN;
+}
+#endif
+
+#if AT32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
+static void notify8(io_queue_t *qp) {
+
+  (void)qp;
+  UART8->CTRL1 |= USART_CTRL1_TDBEIEN | USART_CTRL1_TDCIEN;
+}
+#endif
+
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
@@ -298,6 +337,69 @@ OSAL_IRQ_HANDLER(AT32_UART5_HANDLER) {
 #endif
 #endif
 
+#if AT32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
+#if !defined(AT32_USART6_SUPPRESS_ISR)
+#if !defined(AT32_USART6_HANDLER)
+#error "AT32_USART6_HANDLER not defined"
+#endif
+/**
+ * @brief   USART6 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_USART6_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  sd_lld_serve_interrupt(&SD6);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+#endif
+
+#if AT32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
+#if !defined(AT32_UART7_SUPPRESS_ISR)
+#if !defined(AT32_UART7_HANDLER)
+#error "AT32_UART7_HANDLER not defined"
+#endif
+/**
+ * @brief   UART7 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_UART7_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  sd_lld_serve_interrupt(&SD7);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+#endif
+
+#if AT32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
+#if !defined(AT32_UART8_SUPPRESS_ISR)
+#if !defined(AT32_UART8_HANDLER)
+#error "AT32_UART8_HANDLER not defined"
+#endif
+/**
+ * @brief   UART8 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_UART8_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  sd_lld_serve_interrupt(&SD8);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+#endif
+
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -353,6 +455,34 @@ void sd_lld_init(void) {
   nvicEnableVector(AT32_UART5_NUMBER, AT32_SERIAL_UART5_PRIORITY);
 #endif
 #endif
+
+#if AT32_SERIAL_USE_USART6
+  sdObjectInit(&SD6, NULL, notify3);
+  SD6.usart = USART6;
+  SD6.clock = AT32_PCLK2;
+#if !defined(AT32_USART6_SUPPRESS_ISR) && defined(AT32_USART6_NUMBER)
+  nvicEnableVector(AT32_USART6_NUMBER, AT32_SERIAL_USART6_PRIORITY);
+#endif
+#endif
+
+#if AT32_SERIAL_USE_UART7
+  sdObjectInit(&SD7, NULL, notify4);
+  SD7.usart = UART7;
+  SD7.clock = AT32_PCLK1;
+#if !defined(AT32_UART7_SUPPRESS_ISR) && defined(AT32_UART7_NUMBER)
+  nvicEnableVector(AT32_UART7_NUMBER, AT32_SERIAL_UART7_PRIORITY);
+#endif
+#endif
+
+#if AT32_SERIAL_USE_UART8
+  sdObjectInit(&SD8, NULL, notify5);
+  SD8.usart = UART8;
+  SD8.clock = AT32_PCLK1;
+#if !defined(AT32_UART8_SUPPRESS_ISR) && defined(AT32_UART8_NUMBER)
+  nvicEnableVector(AT32_UART8_NUMBER, AT32_SERIAL_UART8_PRIORITY);
+#endif
+#endif
+
 }
 
 /**
@@ -394,6 +524,21 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
 #if AT32_SERIAL_USE_UART5
     if (&SD5 == sdp) {
       crmEnableUART5(true);
+    }
+#endif
+#if AT32_SERIAL_USE_USART6
+    if (&SD6 == sdp) {
+      crmEnableUSART6(true);
+    }
+#endif
+#if AT32_SERIAL_USE_UART7
+    if (&SD7 == sdp) {
+      crmEnableUART7(true);
+    }
+#endif
+#if AT32_SERIAL_USE_UART8
+    if (&SD8 == sdp) {
+      crmEnableUART8(true);
     }
 #endif
   }
@@ -440,6 +585,24 @@ void sd_lld_stop(SerialDriver *sdp) {
 #if AT32_SERIAL_USE_UART5
     if (&SD5 == sdp) {
       crmDisableUART5();
+      return;
+    }
+#endif
+#if AT32_SERIAL_USE_USART6
+    if (&SD6 == sdp) {
+      crmDisableUSART6();
+      return;
+    }
+#endif
+#if AT32_SERIAL_USE_UART7
+    if (&SD7 == sdp) {
+      crmDisableUART7();
+      return;
+    }
+#endif
+#if AT32_SERIAL_USE_UART8
+    if (&SD8 == sdp) {
+      crmDisableUART8();
       return;
     }
 #endif

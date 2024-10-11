@@ -88,6 +88,33 @@
 #endif
 
 /**
+ * @brief   UART driver on USART6 enable switch.
+ * @details If set to @p TRUE the support for USART6 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(AT32_UART_USE_USART6) || defined(__DOXYGEN__)
+#define AT32_UART_USE_USART6                 FALSE
+#endif
+
+/**
+ * @brief   UART driver on UART7 enable switch.
+ * @details If set to @p TRUE the support for UART7 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(AT32_UART_USE_UART7) || defined(__DOXYGEN__)
+#define AT32_UART_USE_UART7                 FALSE
+#endif
+
+/**
+ * @brief   UART driver on UART8 enable switch.
+ * @details If set to @p TRUE the support for UART8 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(AT32_UART_USE_UART8) || defined(__DOXYGEN__)
+#define AT32_UART_USE_UART8                 FALSE
+#endif
+
+/**
  * @brief   USART1 interrupt priority level setting.
  */
 #if !defined(AT32_UART_USART1_IRQ_PRIORITY) || defined(__DOXYGEN__)
@@ -120,6 +147,27 @@
  */
 #if !defined(AT32_UART_UART5_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define AT32_UART_UART5_IRQ_PRIORITY        12
+#endif
+
+/**
+ * @brief   USART6 interrupt priority level setting.
+ */
+#if !defined(AT32_UART_USART6_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define AT32_UART_USART6_IRQ_PRIORITY       12
+#endif
+
+/**
+ * @brief   UART7 interrupt priority level setting.
+ */
+#if !defined(AT32_UART_UART7_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define AT32_UART_UART7_IRQ_PRIORITY        12
+#endif
+
+/**
+ * @brief   UART8 interrupt priority level setting.
+ */
+#if !defined(AT32_UART_UART8_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define AT32_UART_UART8_IRQ_PRIORITY        12
 #endif
 
 /**
@@ -173,6 +221,36 @@
 #endif
 
 /**
+ * @brief   USART6 DMA priority (0..3|lowest..highest).
+ * @note    The priority level is used for both the TX and RX DMA channels but
+ *          because of the channels ordering the RX channel has always priority
+ *          over the TX channel.
+ */
+#if !defined(AT32_UART_USART6_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define AT32_UART_USART6_DMA_PRIORITY       0
+#endif
+
+/**
+ * @brief   UART7 DMA priority (0..3|lowest..highest).
+ * @note    The priority level is used for both the TX and RX DMA channels but
+ *          because of the channels ordering the RX channel has always priority
+ *          over the TX channel.
+ */
+#if !defined(AT32_UART_UART7_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define AT32_UART_UART7_DMA_PRIORITY        0
+#endif
+
+/**
+ * @brief   UART8 DMA priority (0..3|lowest..highest).
+ * @note    The priority level is used for both the TX and RX DMA channels but
+ *          because of the channels ordering the RX channel has always priority
+ *          over the TX channel.
+ */
+#if !defined(AT32_UART_UART8_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define AT32_UART_UART8_DMA_PRIORITY        0
+#endif
+
+/**
  * @brief   USART DMA error hook.
  * @note    The default action for DMA errors is a system halt because DMA
  *          error can only happen because programming errors.
@@ -206,9 +284,22 @@
 #error "UART5 not present in the selected device"
 #endif
 
+#if AT32_UART_USE_USART6 && !AT32_HAS_USART6
+#error "USART6 not present in the selected device"
+#endif
+
+#if AT32_UART_USE_UART7 && !AT32_HAS_UART7
+#error "UART7 not present in the selected device"
+#endif
+
+#if AT32_UART_USE_UART8 && !AT32_HAS_UART8
+#error "UART8 not present in the selected device"
+#endif
+
 #if !AT32_UART_USE_USART1 && !AT32_UART_USE_USART2 &&                       \
     !AT32_UART_USE_USART3 && !AT32_UART_USE_UART4 &&                        \
-    !AT32_UART_USE_UART5
+    !AT32_UART_USE_UART5 && !AT32_UART_USE_USART6 &&                         \
+	!AT32_UART_USE_UART7 && !AT32_UART_USE_UART8
 #error "UART driver activated but no USART/UART peripheral assigned"
 #endif
 
@@ -237,6 +328,21 @@
 #error "Invalid IRQ priority assigned to UART5"
 #endif
 
+#if AT32_UART_USE_USART6 &&                                                 \
+    !OSAL_IRQ_IS_VALID_PRIORITY(AT32_UART_USART6_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to USART6"
+#endif
+
+#if AT32_UART_USE_UART7 &&                                                  \
+    !OSAL_IRQ_IS_VALID_PRIORITY(AT32_UART_UART7_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to UART7"
+#endif
+
+#if AT32_UART_USE_UART8 &&                                                  \
+    !OSAL_IRQ_IS_VALID_PRIORITY(AT32_UART_UART8_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to UART8"
+#endif
+
 #if AT32_UART_USE_USART1 &&                                                 \
     !AT32_DMA_IS_VALID_PRIORITY(AT32_UART_USART1_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to USART1"
@@ -260,6 +366,21 @@
 #if AT32_UART_USE_UART5 &&                                                  \
     !AT32_DMA_IS_VALID_PRIORITY(AT32_UART_UART5_DMA_PRIORITY)
 #error "Invalid DMA priority assigned to UART5"
+#endif
+
+#if AT32_UART_USE_USART6 &&                                                 \
+    !AT32_DMA_IS_VALID_PRIORITY(AT32_UART_USART6_DMA_PRIORITY)
+#error "Invalid DMA priority assigned to USART6"
+#endif
+
+#if AT32_UART_USE_UART7 &&                                                  \
+    !AT32_DMA_IS_VALID_PRIORITY(AT32_UART_UART7_DMA_PRIORITY)
+#error "Invalid DMA priority assigned to UART7"
+#endif
+
+#if AT32_UART_USE_UART8 &&                                                  \
+    !AT32_DMA_IS_VALID_PRIORITY(AT32_UART_UART8_DMA_PRIORITY)
+#error "Invalid DMA priority assigned to UART8"
 #endif
 
 #if !defined(AT32_DMA_REQUIRED)
@@ -304,6 +425,30 @@
 #error "UARTD5 requires UART5 but it is already used"
 #else
 #define AT32_UART5_IS_USED
+#endif
+#endif
+
+#if AT32_UART_USE_USART6
+#if defined(AT32_USART6_IS_USED)
+#error "UARTD6 requires USART6 but it is already used"
+#else
+#define AT32_USART6_IS_USED
+#endif
+#endif
+
+#if AT32_UART_USE_UART7
+#if defined(AT32_UART7_IS_USED)
+#error "UARTD7 requires UART7 but it is already used"
+#else
+#define AT32_UART7_IS_USED
+#endif
+#endif
+
+#if AT32_UART_USE_UART8
+#if defined(AT32_UART8_IS_USED)
+#error "UARTD8 requires UART8 but it is already used"
+#else
+#define AT32_UART8_IS_USED
 #endif
 #endif
 
@@ -494,6 +639,18 @@ extern UARTDriver UARTD4;
 
 #if AT32_UART_USE_UART5 && !defined(__DOXYGEN__)
 extern UARTDriver UARTD5;
+#endif
+
+#if AT32_UART_USE_USART6 && !defined(__DOXYGEN__)
+extern UARTDriver UARTD6;
+#endif
+
+#if AT32_UART_USE_UART7 && !defined(__DOXYGEN__)
+extern UARTDriver UARTD7;
+#endif
+
+#if AT32_UART_USE_UART8 && !defined(__DOXYGEN__)
+extern UARTDriver UARTD8;
 #endif
 
 #ifdef __cplusplus

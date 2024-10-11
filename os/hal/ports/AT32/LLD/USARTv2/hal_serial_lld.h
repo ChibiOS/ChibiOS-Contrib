@@ -88,6 +88,33 @@
 #endif
 
 /**
+ * @brief   USART6 driver enable switch.
+ * @details If set to @p TRUE the support for USART6 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(AT32_SERIAL_USE_USART6) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USE_USART6              FALSE
+#endif
+
+/**
+ * @brief   UART7 driver enable switch.
+ * @details If set to @p TRUE the support for UART7 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(AT32_SERIAL_USE_UART7) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USE_UART7               FALSE
+#endif
+
+/**
+ * @brief   UART8 driver enable switch.
+ * @details If set to @p TRUE the support for UART8 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(AT32_SERIAL_USE_UART8) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USE_UART8               FALSE
+#endif
+
+/**
  * @brief   USART1 interrupt priority level setting.
  */
 #if !defined(AT32_SERIAL_USART1_PRIORITY) || defined(__DOXYGEN__)
@@ -121,6 +148,28 @@
 #if !defined(AT32_SERIAL_UART5_PRIORITY) || defined(__DOXYGEN__)
 #define AT32_SERIAL_UART5_PRIORITY          12
 #endif
+
+/**
+ * @brief   USART6 interrupt priority level setting.
+ */
+#if !defined(AT32_SERIAL_USART6_PRIORITY) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USART6_PRIORITY         12
+#endif
+
+/**
+ * @brief   UART7 interrupt priority level setting.
+ */
+#if !defined(AT32_SERIAL_UART7_PRIORITY) || defined(__DOXYGEN__)
+#define AT32_SERIAL_UART7_PRIORITY          12
+#endif
+
+/**
+ * @brief   UART8 interrupt priority level setting.
+ */
+#if !defined(AT32_SERIAL_UART8_PRIORITY) || defined(__DOXYGEN__)
+#define AT32_SERIAL_UART8_PRIORITY          12
+#endif
+
 /** @} */
 
 /*===========================================================================*/
@@ -147,9 +196,22 @@
 #error "UART5 not present in the selected device"
 #endif
 
+#if AT32_SERIAL_USE_USART6 && !AT32_HAS_USART6
+#error "USART6 not present in the selected device"
+#endif
+
+#if AT32_SERIAL_USE_UART7 && !AT32_HAS_UART7
+#error "UART7 not present in the selected device"
+#endif
+
+#if AT32_SERIAL_USE_UART8 && !AT32_HAS_UART8
+#error "UART8 not present in the selected device"
+#endif
+
 #if !AT32_SERIAL_USE_USART1 && !AT32_SERIAL_USE_USART2 &&                   \
     !AT32_SERIAL_USE_USART3 && !AT32_SERIAL_USE_UART4  &&                   \
-    !AT32_SERIAL_USE_UART5
+    !AT32_SERIAL_USE_UART5 && !AT32_SERIAL_USE_USART6  &&                   \
+	!AT32_SERIAL_USE_UART7 && !AT32_SERIAL_USE_UART8
 #error "SERIAL driver activated but no USART/UART peripheral assigned"
 #endif
 
@@ -176,6 +238,21 @@
 #if AT32_SERIAL_USE_UART5 &&                                                \
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_UART5_PRIORITY)
 #error "Invalid IRQ priority assigned to UART5"
+#endif
+
+#if AT32_SERIAL_USE_USART6 &&                                               \
+    !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_USART6_PRIORITY)
+#error "Invalid IRQ priority assigned to USART6"
+#endif
+
+#if AT32_SERIAL_USE_UART7 &&                                                \
+    !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_UART7_PRIORITY)
+#error "Invalid IRQ priority assigned to UART7"
+#endif
+
+#if AT32_SERIAL_USE_UART8 &&                                                \
+    !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_UART8_PRIORITY)
+#error "Invalid IRQ priority assigned to UART8"
 #endif
 
 /* Checks on allocation of USARTx units.*/
@@ -216,6 +293,30 @@
 #error "SD5 requires UART5 but it is already used"
 #else
 #define AT32_UART5_IS_USED
+#endif
+#endif
+
+#if AT32_SERIAL_USE_USART6
+#if defined(AT32_USART6_IS_USED)
+#error "SD6 requires USART6 but it is already used"
+#else
+#define AT32_USART6_IS_USED
+#endif
+#endif
+
+#if AT32_SERIAL_USE_UART7
+#if defined(AT32_UART7_IS_USED)
+#error "SD7 requires UART7 but it is already used"
+#else
+#define AT32_UART7_IS_USED
+#endif
+#endif
+
+#if AT32_SERIAL_USE_UART8
+#if defined(AT32_UART8_IS_USED)
+#error "SD8 requires UART8 but it is already used"
+#else
+#define AT32_UART8_IS_USED
 #endif
 #endif
 
@@ -304,6 +405,15 @@ extern SerialDriver SD4;
 #endif
 #if AT32_SERIAL_USE_UART5 && !defined(__DOXYGEN__)
 extern SerialDriver SD5;
+#endif
+#if AT32_SERIAL_USE_USART6 && !defined(__DOXYGEN__)
+extern SerialDriver SD6;
+#endif
+#if AT32_SERIAL_USE_UART7 && !defined(__DOXYGEN__)
+extern SerialDriver SD7;
+#endif
+#if AT32_SERIAL_USE_UART8 && !defined(__DOXYGEN__)
+extern SerialDriver SD8;
 #endif
 
 #ifdef __cplusplus
