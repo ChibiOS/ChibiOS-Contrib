@@ -70,6 +70,21 @@ UARTDriver UARTD4;
 UARTDriver UARTD5;
 #endif
 
+/** @brief USART6 UART driver identifier.*/
+#if AT32_UART_USE_USART6 || defined(__DOXYGEN__)
+UARTDriver UARTD6;
+#endif
+
+/** @brief UART7 UART driver identifier.*/
+#if AT32_UART_USE_UART7 || defined(__DOXYGEN__)
+UARTDriver UARTD7;
+#endif
+
+/** @brief UART8 UART driver identifier.*/
+#if AT32_UART_USE_UART8 || defined(__DOXYGEN__)
+UARTDriver UARTD8;
+#endif
+
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
@@ -339,6 +354,69 @@ OSAL_IRQ_HANDLER(AT32_UART5_HANDLER) {
 #endif
 #endif /* AT32_UART_USE_UART5 */
 
+#if AT32_UART_USE_USART6 || defined(__DOXYGEN__)
+#if !defined(AT32_USART6_SUPPRESS_ISR)
+#if !defined(AT32_USART6_HANDLER)
+#error "AT32_USART6_HANDLER not defined"
+#endif
+/**
+ * @brief   USART6 IRQ handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_USART6_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  uart_lld_serve_interrupt(&UARTD6);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+#endif /* AT32_UART_USE_USART6 */
+
+#if AT32_UART_USE_UART7 || defined(__DOXYGEN__)
+#if !defined(AT32_UART7_SUPPRESS_ISR)
+#if !defined(AT32_UART7_HANDLER)
+#error "AT32_UART7_HANDLER not defined"
+#endif
+/**
+ * @brief   UART7 IRQ handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_UART7_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  uart_lld_serve_interrupt(&UARTD7);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+#endif /* AT32_UART_USE_UART7 */
+
+#if AT32_UART_USE_UART8 || defined(__DOXYGEN__)
+#if !defined(AT32_UART8_SUPPRESS_ISR)
+#if !defined(AT32_UART8_HANDLER)
+#error "AT32_UART8_HANDLER not defined"
+#endif
+/**
+ * @brief   UART5 IRQ handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_UART8_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  uart_lld_serve_interrupt(&UARTD8);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+#endif /* AT32_UART_USE_UART5 */
+
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -398,6 +476,36 @@ void uart_lld_init(void) {
   UARTD5.dmatxmode = AT32_DMA_CCTRL_DTERRIEN;
   UARTD5.dmarx   = NULL;
   UARTD5.dmatx   = NULL;
+#endif
+
+#if AT32_UART_USE_USART6
+  uartObjectInit(&UARTD6);
+  UARTD6.usart   = USART6;
+  UARTD6.clock   = AT32_PCLK2;
+  UARTD6.dmarxmode = AT32_DMA_CCTRL_DTERRIEN;
+  UARTD6.dmatxmode = AT32_DMA_CCTRL_DTERRIEN;
+  UARTD6.dmarx   = NULL;
+  UARTD6.dmatx   = NULL;
+#endif
+
+#if AT32_UART_USE_UART7
+  uartObjectInit(&UARTD7);
+  UARTD7.usart   = UART7;
+  UARTD7.clock   = AT32_PCLK1;
+  UARTD7.dmarxmode = AT32_DMA_CCTRL_DTERRIEN;
+  UARTD7.dmatxmode = AT32_DMA_CCTRL_DTERRIEN;
+  UARTD7.dmarx   = NULL;
+  UARTD7.dmatx   = NULL;
+#endif
+
+#if AT32_UART_USE_UART8
+  uartObjectInit(&UARTD8);
+  UARTD8.usart   = UART8;
+  UARTD8.clock   = AT32_PCLK1;
+  UARTD8.dmarxmode = AT32_DMA_CCTRL_DTERRIEN;
+  UARTD8.dmatxmode = AT32_DMA_CCTRL_DTERRIEN;
+  UARTD8.dmarx   = NULL;
+  UARTD8.dmatx   = NULL;
 #endif
 }
 
@@ -548,6 +656,93 @@ void uart_lld_start(UARTDriver *uartp) {
     }
 #endif
 
+#if AT32_UART_USE_USART6
+    if (&UARTD6 == uartp) {
+      uartp->dmarx = dmaStreamAllocI(AT32_UART_USART6_RX_DMA_STREAM,
+                                     AT32_UART_USART6_IRQ_PRIORITY,
+                                     (at32_dmasts_t)uart_lld_serve_rx_end_irq,
+                                     (void *)uartp);
+      osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
+      uartp->dmatx = dmaStreamAllocI(AT32_UART_USART6_TX_DMA_STREAM,
+                                     AT32_UART_USART6_IRQ_PRIORITY,
+                                     (at32_dmasts_t)uart_lld_serve_tx_end_irq,
+                                     (void *)uartp);
+      osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
+
+#if AT32_DMA_SUPPORTS_DMAMUX
+      dmaSetRequestSource(uartp->dmarx, AT32_DMAMUX_USART6_RX);
+      dmaSetRequestSource(uartp->dmatx, AT32_DMAMUX_USART6_TX);
+#endif
+
+      crmEnableUSART6(true);
+      nvicEnableVector(AT32_USART6_NUMBER, AT32_UART_USART6_IRQ_PRIORITY);
+      uartp->dmarxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_USART6_DMA_PRIORITY);
+      uartp->dmatxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_USART6_DMA_PRIORITY);
+    }
+#endif
+
+#if AT32_UART_USE_UART7
+    if (&UARTD7 == uartp) {
+
+      osalDbgAssert((uartp->config->ctrl2 & AT32_UART_CTRL2_CHECK_MASK) == 0,
+                    "specified invalid bits in UART7 CTRL2 register settings");
+      osalDbgAssert((uartp->config->ctrl3 & AT32_UART_CTRL3_CHECK_MASK) == 0,
+                    "specified invalid bits in UART7 CTRL3 register settings");
+
+      uartp->dmarx = dmaStreamAllocI(AT32_UART_UART7_RX_DMA_STREAM,
+                                     AT32_UART_UART7_IRQ_PRIORITY,
+                                     (at32_dmasts_t)uart_lld_serve_rx_end_irq,
+                                     (void *)uartp);
+      osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
+      uartp->dmatx = dmaStreamAllocI(AT32_UART_UART7_TX_DMA_STREAM,
+                                     AT32_UART_UART7_IRQ_PRIORITY,
+                                     (at32_dmasts_t)uart_lld_serve_tx_end_irq,
+                                     (void *)uartp);
+      osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
+
+#if AT32_DMA_SUPPORTS_DMAMUX
+      dmaSetRequestSource(uartp->dmarx, AT32_DMAMUX_UART7_RX);
+      dmaSetRequestSource(uartp->dmatx, AT32_DMAMUX_UART7_TX);
+#endif
+
+      crmEnableUART7(true);
+      nvicEnableVector(AT32_UART7_NUMBER, AT32_UART_UART7_IRQ_PRIORITY);
+      uartp->dmarxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_UART7_DMA_PRIORITY);
+      uartp->dmatxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_UART7_DMA_PRIORITY);
+    }
+#endif
+
+#if AT32_UART_USE_UART8
+    if (&UARTD8 == uartp) {
+
+      osalDbgAssert((uartp->config->ctrl2 & AT32_UART_CTRL2_CHECK_MASK) == 0,
+                    "specified invalid bits in UART8 CTRL2 register settings");
+      osalDbgAssert((uartp->config->ctrl3 & AT32_UART_CTRL3_CHECK_MASK) == 0,
+                    "specified invalid bits in UART8 CTRL3 register settings");
+
+      uartp->dmarx = dmaStreamAllocI(AT32_UART_UART8_RX_DMA_STREAM,
+                                     AT32_UART_UART8_IRQ_PRIORITY,
+                                     (at32_dmasts_t)uart_lld_serve_rx_end_irq,
+                                     (void *)uartp);
+      osalDbgAssert(uartp->dmarx != NULL, "unable to allocate stream");
+      uartp->dmatx = dmaStreamAllocI(AT32_UART_UART8_TX_DMA_STREAM,
+                                     AT32_UART_UART8_IRQ_PRIORITY,
+                                     (at32_dmasts_t)uart_lld_serve_tx_end_irq,
+                                     (void *)uartp);
+      osalDbgAssert(uartp->dmatx != NULL, "unable to allocate stream");
+
+#if AT32_DMA_SUPPORTS_DMAMUX
+      dmaSetRequestSource(uartp->dmarx, AT32_DMAMUX_UART8_RX);
+      dmaSetRequestSource(uartp->dmatx, AT32_DMAMUX_UART8_TX);
+#endif
+
+      crmEnableUART8(true);
+      nvicEnableVector(AT32_UART5_NUMBER, AT32_UART_UART8_IRQ_PRIORITY);
+      uartp->dmarxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_UART8_DMA_PRIORITY);
+      uartp->dmatxmode |= AT32_DMA_CCTRL_CHPL(AT32_UART_UART8_DMA_PRIORITY);
+    }
+#endif
+
     /* Static DMA setup, the transfer size depends on the USART settings,
        it is 16 bits if M=1 and PEN=0 else it is 8 bits.*/
     if ((uartp->config->ctrl1 & (USART_CTRL1_DBN | USART_CTRL1_PEN)) == USART_CTRL1_DBN) {
@@ -619,6 +814,31 @@ void uart_lld_stop(UARTDriver *uartp) {
       return;
     }
 #endif
+
+#if AT32_UART_USE_USART6
+    if (&UARTD6 == uartp) {
+      nvicDisableVector(AT32_USART6_NUMBER);
+      crmDisableUSART6();
+      return;
+    }
+#endif
+
+#if AT32_UART_USE_UART7
+    if (&UARTD7 == uartp) {
+      nvicDisableVector(AT32_UART7_NUMBER);
+      crmDisableUART7();
+      return;
+    }
+#endif
+
+#if AT32_UART_USE_UART8
+    if (&UARTD8 == uartp) {
+      nvicDisableVector(AT32_UART8_NUMBER);
+      crmDisableUART8();
+      return;
+    }
+#endif
+
   }
 }
 
