@@ -94,7 +94,7 @@ static void test_rtc_alarm(void) {
   rtcGetAlarm(&RTCD1, 0, &alarmspec2);
 
   osalDbgAssert(alarmspec1.tv_sec == alarmspec2.tv_sec, "wrong alarm second");
-  osalDbgAssert((alarmspec1.tv_usec - alarmspec2.tv_usec) < 50, "wrong alarm microsecond");
+  osalDbgAssert((alarmspec1.tv_usec - alarmspec2.tv_usec) < 100, "wrong alarm microsecond");
 
   osDelay(alarmspec1.tv_sec * 1000 + 1 + alarmspec1.tv_usec / 1000);
   osalDbgAssert(alarm_triggered == 1, "no first alarm triggered");

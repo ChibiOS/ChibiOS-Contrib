@@ -49,7 +49,7 @@
  * @brief   Enables the BURAM subsystem.
  */
 #if !defined(HAL_USE_BURAM) || defined(__DOXYGEN__)
-#define HAL_USE_BURAM               TRUE
+#define HAL_USE_BURAM               FALSE
 #endif
 
 /**
@@ -134,19 +134,19 @@
 /*===========================================================================*/
 
 #if !defined(BURAM_USE_BURAM1) || defined(__DOXYGEN__)
-#define BURAM_USE_BURAM1            TRUE
+#define BURAM_USE_BURAM1            FALSE
 #endif
 
 #if !defined(BURAM_USE_BURAM2) || defined(__DOXYGEN__)
-#define BURAM_USE_BURAM2            TRUE
+#define BURAM_USE_BURAM2            FALSE
 #endif
 
 #if !defined(BURAM_USE_BURAM3) || defined(__DOXYGEN__)
-#define BURAM_USE_BURAM3            TRUE
+#define BURAM_USE_BURAM3            FALSE
 #endif
 
 #if !defined(BURAM_USE_BURAM4) || defined(__DOXYGEN__)
-#define BURAM_USE_BURAM4            TRUE
+#define BURAM_USE_BURAM4            FALSE
 #endif
 
 /*===========================================================================*/

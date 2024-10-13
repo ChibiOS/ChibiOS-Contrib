@@ -19,94 +19,105 @@
 #include "hal.h"
 #include "hal_buram.h"
 
-static void led_on(void) {
+static void led_on(void)
+{
 
   /* PB2 = LED */
   palSetPadMode(GPIOB, 2, PAL_MODE_OUTPUT_PUSHPULL);
   palSetPad(GPIOB, 2);
 }
 
-static void led_off(void) {
+static void led_off(void)
+{
 
   /* PB2 = LED */
   palSetPadMode(GPIOB, 2, PAL_MODE_OUTPUT_PUSHPULL);
   palClearPad(GPIOB, 2);
 }
 
-static int time_is_set;
-static int alarm_triggered;
+static int dma_calback_triggered;
 
-static const RTCAlarm alarmspec1 = {
-  .tv_sec = 2,
-  .tv_usec = 100,
-};
+static void dma_callback(void *ptr, uint32_t mask)
+{
 
-static void rtc_callback(RTCDriver* rtcp, rtcevent_t evt) {
+  (void)ptr;
+  (void)mask;
 
-  switch (evt) {
-    case RTC_EVENT_TIME_SET:
-      time_is_set++;
-      break;
-    case RTC_EVENT_ALARM:
-      alarm_triggered++;
-      /* Retrigger alarm. */
-      rtcSetAlarm(rtcp, 0, &alarmspec1);
-      break;
-    case RTC_EVENT_TS_OVF:
-      break;
+  dma_calback_triggered++;
+}
+
+static void test_dma_check_stream_allocation(void)
+{
+
+  /* Check stream allocation. */
+  const efr32_dma_stream_t *dmastp[EFR32_DMA_STREAMS + 1] = {
+    dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, NULL, NULL),
+    dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, NULL, NULL),
+    dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, NULL, NULL),
+    dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, NULL, NULL),
+
+    dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, NULL, NULL),
+    dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, NULL, NULL),
+    dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, NULL, NULL),
+    dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, NULL, NULL),
+
+    dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, NULL, NULL),
+  };
+
+  for (unsigned i = 0; i < EFR32_DMA_STREAMS; i++)
+  {
+    osalDbgCheck(dmastp[i] != NULL);
+  }
+
+  /* Can't allocate more channels. */
+  osalDbgCheck(dmastp[EFR32_DMA_STREAMS] == NULL);
+
+  for (unsigned i = 0; i < EFR32_DMA_STREAMS; i++)
+  {
+    dmaStreamFree(dmastp[i]);
   }
 }
 
-static void test_rtc(void) {
+static void test_dma_check_data_transfer(void)
+{
 
-  rtcSetCallback(&RTCD1, rtc_callback);
+  /* Check data transfer. */
+  uint8_t dma_test_src[16] = { 1, 2, 3, 4, 5, 6, 7, 8, 8, 7, 6, 5, 4, 3, 2, 1 };
+  uint8_t dma_test_dst[32] = { 0 };
 
-  const RTCDateTime ts1 = {
-    .year = 44,
-    .month = 6,
-    .dstflag = 0,
-    .dayofweek = 7,
-    .day = 9,
-    .millisecond = (19 * 3600 + 4 * 60 + 30) * 1000 + 123
-  };
-  rtcSetTime(&RTCD1, &ts1);
+  const efr32_dma_stream_t *dmastp1 = dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, dma_callback, &dma_test_dst[0]);
+  const efr32_dma_stream_t *dmastp2 = dmaStreamAlloc(EFR32_DMA_STREAM_ID_ANY, 4, dma_callback, &dma_test_dst[16]);
 
-  osDelay(1000);
-  osDelay(1000);
+  dmaStartMemCopy(dmastp1, 0, &dma_test_src[0], &dma_test_dst[0], 8);
+  dmaStartMemCopy(dmastp2, 0, &dma_test_src[8], &dma_test_dst[16], 8);
 
-  RTCDateTime ts2 = { 0 };
-  rtcGetTime(&RTCD1, &ts2);
+  dmaWaitCompletion(dmastp1);
+  dmaWaitCompletion(dmastp2);
 
-  osalDbgAssert(time_is_set == 1, "no time set event");
-  osalDbgAssert(ts1.year == ts2.year, "wrong year");
-  osalDbgAssert(ts1.month == ts2.month, "wrong month");
-  osalDbgAssert(ts1.dstflag == ts2.dstflag, "wrong dstflag");
-  osalDbgAssert(ts1.dayofweek == ts2.dayofweek, "wrong dayofweek");
-  osalDbgAssert(ts1.day == ts2.day, "wrong day");
-  osalDbgAssert((ts1.millisecond + 2000 - ts2.millisecond) < 10, "wrong milliscond");
-}
+  dmaStreamFree(dmastp1);
+  dmaStreamFree(dmastp2);
 
-static void test_rtc_alarm(void) {
+  for (size_t i = 0; i < 8; i++)
+  {
+    osalDbgCheck(dma_test_src[i] == dma_test_dst[i]);
+    osalDbgCheck(dma_test_src[i + 8] == dma_test_dst[i + 16]);
+  }
 
-  rtcSetAlarm(&RTCD1, 0, &alarmspec1);
+  for (size_t i = 8; i < 16; i++)
+  {
+    osalDbgCheck(dma_test_dst[i] == 0);
+    osalDbgCheck(dma_test_dst[i + 16] == 0);
+  }
 
-  RTCAlarm alarmspec2 = { 0 };
-  rtcGetAlarm(&RTCD1, 0, &alarmspec2);
-
-  osalDbgAssert(alarmspec1.tv_sec == alarmspec2.tv_sec, "wrong alarm second");
-  osalDbgAssert((alarmspec1.tv_usec - alarmspec2.tv_usec) < 50, "wrong alarm microsecond");
-
-  osDelay(alarmspec1.tv_sec * 1000 + 1 + alarmspec1.tv_usec / 1000);
-  osalDbgAssert(alarm_triggered == 1, "no first alarm triggered");
-
-  osDelay(alarmspec1.tv_sec * 1000 + 1 + alarmspec1.tv_usec / 1000);
-  osalDbgAssert(alarm_triggered == 2, "no second alarm triggered");
+  /* Check number of callbacks. */
+  osalDbgCheck(dma_calback_triggered == 2);
 }
 
 /*
  * Application entry point.
  */
-int main(void) {
+int main(void)
+{
 
   int unused = 0;
   (void)unused;
@@ -124,20 +135,17 @@ int main(void) {
      by default.*/
   osKernelStart();
 
-  buramInit();
-  BURAMConfig cfgp;
-  buramStart(&BURAMD1, &cfgp);
-
   led_off();
-  test_rtc();
-  test_rtc_alarm();
+  test_dma_check_stream_allocation();
+  test_dma_check_data_transfer();
   led_on();
 
   /*
    * Normal main() thread activity, in this demo it does nothing except
    * sleeping in a loop and check the button state.
    */
-  while (true) {
+  while (true)
+  {
     osDelay(1000);
   }
 }

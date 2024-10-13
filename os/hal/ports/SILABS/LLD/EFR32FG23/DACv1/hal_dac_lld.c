@@ -61,7 +61,8 @@ DACDriver DACD2;
 /*
  * @brief   Global DAC-related data structures.
  */
-static struct {
+static struct
+{
   /**
    * @brief   Mask of the allocated streams.
    */
@@ -86,9 +87,8 @@ static struct {
  *
  * @notapi
  */
-void dac_lld_init(void) {
-
-  dac.clk_en_mask = 0U;
+void dac_lld_init(void)
+{
 
 #if EFR32_DAC_USE_DAC1_CH1 == TRUE
   dacObjectInit(&DACD1);
@@ -97,6 +97,8 @@ void dac_lld_init(void) {
 #if EFR32_DAC_USE_DAC1_CH2 == TRUE
   dacObjectInit(&DACD2);
 #endif
+
+  dac.clk_en_mask = 0U;
 }
 
 /**
@@ -106,23 +108,28 @@ void dac_lld_init(void) {
  *
  * @notapi
  */
-msg_t dac_lld_start(DACDriver* dacp) {
+msg_t dac_lld_start(DACDriver *dacp)
+{
 
   /* If the driver is in DAC_STOP state then a full initialization is
      required.*/
-  if (dacp->state == DAC_STOP) {
+  if (dacp->state == DAC_STOP)
+  {
     dacchannel_t channel = 0;
 
     /* Enable DAC clock. DMA channel allocation is deferred to conversion
        start and only allocated if a group conversion is used.*/
 
-    if (false) {
+    if (false)
+    {
     }
 
 #if EFR32_DAC_USE_DAC1_CH1 == TRUE
-else if (&DACD1 == dacp) {
+    else if (&DACD1 == dacp)
+    {
       /* Enable clock only if disabled. The clock can be shared with CH2. */
-      if ((dac.clk_en_mask & EFF32_DAC1_CLK_EN_MASK) == 0U) {
+      if ((dac.clk_en_mask & EFF32_DAC1_CLK_EN_MASK) == 0U)
+      {
         CMU->CLKEN1 = (CMU->CLKEN1 & ~_CMU_CLKEN1_VDAC0_MASK) |\
           CMU_CLKEN1_VDAC0;
       }
@@ -132,11 +139,13 @@ else if (&DACD1 == dacp) {
 #endif
 
 #if EFR32_DAC_USE_DAC1_CH2 == TRUE
-else if (&DACD2 == dacp) {
+    else if (&DACD2 == dacp)
+    {
       channel = 1;
 
       /* Enable clock only if disabled. The clock can be shared with CH1. */
-      if ((dac.clk_en_mask & EFF32_DAC1_CLK_EN_MASK) == 0U) {
+      if ((dac.clk_en_mask & EFF32_DAC1_CLK_EN_MASK) == 0U)
+      {
         CMU->CLKEN1 = (CMU->CLKEN1 & ~_CMU_CLKEN1_VDAC0_MASK) |\
           CMU_CLKEN1_VDAC0;
       }
@@ -144,7 +153,8 @@ else if (&DACD2 == dacp) {
       dac.clk_en_mask |= EFF32_DAC1_CLK_EN_SHIFT(channel);
     }
 #endif
-else {
+    else
+    {
       osalDbgAssert(false, "unknown DAC instance");
       return HAL_RET_NO_RESOURCE;
     }
@@ -160,17 +170,21 @@ else {
  *
  * @notapi
  */
-void dac_lld_stop(DACDriver* dacp) {
+void dac_lld_stop(DACDriver *dacp)
+{
 
   /* If in ready state then disables the DAC clock.*/
-  if (dacp->state == DAC_READY) {
+  if (dacp->state == DAC_READY)
+  {
     dacchannel_t channel = 0;
 
 #if EFR32_DAC_USE_DAC1_CH1 == TRUE
-    if (&DACD1 == dacp) {
+    if (&DACD1 == dacp)
+    {
       dac.clk_en_mask &= ~EFF32_DAC1_CLK_EN_SHIFT(channel);
 
-      if ((dac.clk_en_mask & EFF32_DAC1_CLK_EN_MASK) == 0U) {
+      if ((dac.clk_en_mask & EFF32_DAC1_CLK_EN_MASK) == 0U)
+      {
         CMU->CLKEN1 = (CMU->CLKEN1 & ~_CMU_CLKEN1_VDAC0_MASK) |\
           CMU_CLKEN1_VDAC0_DEFAULT;
       }
@@ -180,12 +194,14 @@ void dac_lld_stop(DACDriver* dacp) {
 #endif
 
 #if EFR32_DAC_USE_DAC1_CH2 == TRUE
-    if (&DACD2 == dacp) {
+    if (&DACD2 == dacp)
+    {
       channel = 1;
 
       dac.clk_en_mask &= ~EFF32_DAC1_CLK_EN_SHIFT(channel);
 
-      if ((dac.clk_en_mask & EFF32_DAC1_CLK_EN_MASK) == 0U) {
+      if ((dac.clk_en_mask & EFF32_DAC1_CLK_EN_MASK) == 0U)
+      {
         CMU->CLKEN1 = (CMU->CLKEN1 & ~_CMU_CLKEN1_VDAC0_MASK) |\
           CMU_CLKEN1_VDAC0_DEFAULT;
       }
@@ -205,9 +221,10 @@ void dac_lld_stop(DACDriver* dacp) {
  *
  * @api
  */
-msg_t dac_lld_put_channel(DACDriver* dacp,
+msg_t dac_lld_put_channel(DACDriver *dacp,
                           dacchannel_t channel,
-                          dacsample_t sample) {
+                          dacsample_t sample)
+{
 
   (void)dacp;
   (void)channel;
@@ -232,7 +249,8 @@ msg_t dac_lld_put_channel(DACDriver* dacp,
  *
  * @notapi
  */
-msg_t dac_lld_start_conversion(DACDriver* dacp) {
+msg_t dac_lld_start_conversion(DACDriver *dacp)
+{
 
   (void)dacp;
 
@@ -251,7 +269,8 @@ msg_t dac_lld_start_conversion(DACDriver* dacp) {
  *
  * @iclass
  */
-void dac_lld_stop_conversion(DACDriver* dacp) {
+void dac_lld_stop_conversion(DACDriver *dacp)
+{
 
   (void)dacp;
 
