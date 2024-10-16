@@ -141,7 +141,7 @@ typedef struct {
 #define mac_lld_driver_fields                                               \
   const ETHSPIConfig            *spi_config;                                \
   const ETHPhyConfig            *phy_config;                                \
-  volatile bool irq_unhandled
+  bool irq_unhandled
 
 /**
  * @brief   Low level fields of the MAC configuration structure.
