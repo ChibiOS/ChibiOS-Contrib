@@ -94,14 +94,14 @@ static void test_synchronized_api(SIODriver *siop, const uint8_t *tx_buffer, siz
 #endif
 }
 
-static void test_vcom_eusart(void) {
+static void test_vcom_eusart_slow(void) {
 
   SIODriver *siop = NULL;
   const SIOConfig sio_config = {
-    .baud = 115200U,       /* Baudrate */
-    .cfg0 = (0U <<  0) |   /* ASYNC operation */
-    (0U <<  5),    /* 16x oversampling (for HF operation) */
-    .framecfg = EFR32_SIO_LLD_EUSART_8N1
+    .baud = 2400U,       /* Baudrate (2400 max. for LF operation) */
+    .cfg0 = (0U <<  0) | /* ASYNC operation */
+    (4U <<  5),  /* Disable oversampling (for LF operation) */
+    .framecfg = EFR32_SIO_LLD_EUSART_8E1,
   };
 
   #if EFR32_SIO_USE_EUSART1 == TRUE
@@ -141,33 +141,6 @@ static void test_vcom_eusart(void) {
   #endif
 }
 
-static void test_vcom_usart(void) {
-
-  SIODriver *siop = NULL;
-  const SIOConfig sio_config = {
-    .baud = 115200U,       /* Baudrate */
-    .cfg0 = (0U <<  0) |   /* ASYNC operation */
-    (0U <<  5),    /* 16x oversampling (for HF operation) */
-    .framecfg = EFR32_SIO_LLD_USART_8N1
-  };
-
-  #if EFR32_SIO_USE_USART1 == TRUE
-  palSetPadMode(GPIOA, 9, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(USART0_TX));
-  palSetPadMode(GPIOA, 10, PAL_MODE_INPUT_PULLUP | PAL_MODE_ALTERNATE(USART0_RX));
-
-  siop = &SIOD4;
-  sioStart(siop, &sio_config);
-  test_synchronized_api(siop, (const uint8_t*)"\r\nUSART1", 8);
-  test_GetX_PutX(siop, '4');
-  test_sioAsyncRead_sioAsyncWrite(siop, (const uint8_t*)"USART1", 6);
-  osDelay(10);
-  sioStop(siop);
-
-  palSetPadMode(GPIOA, 9, PAL_MODE_ALTERNATE(USART0_TX_DIS));
-  palSetPadMode(GPIOA, 10, PAL_MODE_ALTERNATE(USART0_RX_DIS));
-  #endif
-}
-
 /*
  * Application entry point.
  */
@@ -190,8 +163,7 @@ int main(void) {
   osKernelStart();
 
   led_off();
-  test_vcom_usart();
-  test_vcom_eusart();
+  test_vcom_eusart_slow();
   led_on();
 
   /*

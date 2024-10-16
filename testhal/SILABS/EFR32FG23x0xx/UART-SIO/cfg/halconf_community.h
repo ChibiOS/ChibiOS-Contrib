@@ -46,6 +46,13 @@
 #endif
 
 /**
+ * @brief   Enables the BURAM subsystem.
+ */
+#if !defined(HAL_USE_BURAM) || defined(__DOXYGEN__)
+#define HAL_USE_BURAM               FALSE
+#endif
+
+/**
  * @brief   Enables the NAND subsystem.
  */
 #if !defined(HAL_USE_NAND) || defined(__DOXYGEN__)
@@ -120,6 +127,26 @@
  */
 #if !defined(HAL_USE_USB_MSD) || defined(__DOXYGEN__)
 #define HAL_USE_USB_MSD             FALSE
+#endif
+
+/*===========================================================================*/
+/* BURAM driver related settings.                                            */
+/*===========================================================================*/
+
+#if !defined(BURAM_USE_BURAM1) || defined(__DOXYGEN__)
+#define BURAM_USE_BURAM1            FALSE
+#endif
+
+#if !defined(BURAM_USE_BURAM2) || defined(__DOXYGEN__)
+#define BURAM_USE_BURAM2            FALSE
+#endif
+
+#if !defined(BURAM_USE_BURAM3) || defined(__DOXYGEN__)
+#define BURAM_USE_BURAM3            FALSE
+#endif
+
+#if !defined(BURAM_USE_BURAM4) || defined(__DOXYGEN__)
+#define BURAM_USE_BURAM4            FALSE
 #endif
 
 /*===========================================================================*/
