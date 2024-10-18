@@ -41,13 +41,96 @@ static void gpio_callback(void* arg) {
   *cnt = *cnt + 1;
 }
 
-static void test_clock(void) {
+static void test_clock_clkout2(void) {
 
-  /* HCLK clock is present on PA7: 19 MHz. */
-  palSetPadMode(GPIOA, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT2_HCLK));
+  /* Clock output 2 works only on ports A or B. */
+
+  /* FRSCO clock is on PA7: 20 MHz. */
+  //palSetPadMode(GPIOA, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT2_FSRCO));
+
+  /* HFXO clock is on PA7: 39 MHz. */
+  //palSetPadMode(GPIOA, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT2_HFXO));
+
+  /* HFRCODPLL clock is on PA7: 19 MHz. */
+  palSetPadMode(GPIOA, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT2_HFRCODPLL));
+
+  /* HFRCOEM23 clock is on PA7: 19 MHz. */
+  //palSetPadMode(GPIOA, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT2_HFRCOEM23));
 
   /* LFXO clock is on PA7: 32768 Hz. */
   //palSetPadMode(GPIOA, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT2_LFXO));
+
+  /* LFRCO clock is on PA7: 32768 Hz. */
+  //palSetPadMode(GPIOA, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT2_LFRCO));
+
+  /* ULFRCO clock is on PA7: 1000 Hz. */
+  //palSetPadMode(GPIOA, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT2_ULFRCO));  
+
+  /* HCLK clock is present on PA7: 19 MHz. */
+  //palSetPadMode(GPIOA, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT2_HCLK));
+
+  /* TODO: The clock should be measured by timer. */
+}
+
+static void test_clock_clkout1(void) {
+
+  /* Clock output 1 works only on ports C or D. */
+
+
+  /* FRSCO clock is on PA7: 20 MHz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT1_FSRCO));
+
+  /* HFXO clock is on PA7: 39 MHz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT1_HFXO));
+
+  /* HFRCODPLL clock is on PA7: 19 MHz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT1_HFRCODPLL));
+
+  /* HFRCOEM23 clock is on PA7: 19 MHz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT1_HFRCOEM23));
+
+  /* LFXO clock is on PA7: 32768 Hz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT1_LFXO));
+
+  /* LFRCO clock is on PA7: 32768 Hz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT1_LFRCO));
+
+  /* ULFRCO clock is on PA7: 1000 Hz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT1_ULFRCO));  
+
+  /* HCLK clock is present on PA7: 19 MHz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT1_HCLK));
+
+  /* TODO: The clock should be measured by timer. */
+}
+
+static void test_clock_clkout0(void) {
+
+  /* Clock output 0 works only on ports C or D. */
+
+  /* FRSCO clock is on PA7: 20 MHz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_FSRCO));
+
+  /* HFXO clock is on PA7: 39 MHz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_HFXO));
+
+  /* HFRCODPLL clock is on PA7: 19 MHz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_HFRCODPLL));
+
+  /* HFRCOEM23 clock is on PA7: 19 MHz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_HFRCOEM23));
+
+  /* LFXO clock is on PA7: 32768 Hz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_LFXO));
+
+  /* LFRCO clock is on PA7: 32768 Hz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_LFRCO));
+
+  /* ULFRCO clock is on PA7: 1000 Hz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_ULFRCO));  
+
+  /* HCLK clock is present on PA7: 19 MHz. */
+  //palSetPadMode(GPIOC, 7, PAL_MODE_OUTPUT_PUSHPULL | PAL_MODE_ALTERNATE(CLKOUT0_HCLK));
 
   /* TODO: The clock should be measured by timer. */
 }
@@ -120,7 +203,9 @@ int main(void) {
   osKernelStart();
 
   led_off();
-  test_clock();
+  test_clock_clkout2();
+  test_clock_clkout1();
+  test_clock_clkout0();
   test_gpio();
   led_on();
 
