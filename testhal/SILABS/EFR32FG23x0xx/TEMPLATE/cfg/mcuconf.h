@@ -48,8 +48,8 @@
 #define EFR32_FSRCO_ENABLED                 FALSE
 #define EFR32_HFRCODPLL_ENABLED             TRUE
 #define EFR32_HFRCOEM23_ENABLED             TRUE
-#define EFR32_HFXO_ENABLED                  FALSE
-#define EFR32_SYSCLKSEL                     EFR32_SYSCLKSEL_HFRCODPLL
+#define EFR32_HFXO_ENABLED                  TRUE
+#define EFR32_SYSCLKSEL                     EFR32_SYSCLKSEL_HFXO
 #define EFR32_PPRE                          EFR32_PPRE_DIV1
 #define EFR32_HPRE                          EFR32_HPRE_DIV1
 #define EFR32_RHPRE                         EFR32_RHPRE_DIV1

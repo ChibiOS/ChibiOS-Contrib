@@ -91,12 +91,6 @@ __STATIC_INLINE void efr32_set_voltage_scaling(void) {
 
 __STATIC_INLINE void efr32_enable_clock_sources(void) {
 
-#if defined(EFR32_CMU_SYSCLKCTRL)
-  CMU->SYSCLKCTRL = (CMU->SYSCLKCTRL & ~_CMU_SYSCLKCTRL_MASK) | EFR32_CMU_SYSCLKCTRL;
-  //CMU->SYSCLKCTRL = (CMU->SYSCLKCTRL & ~_CMU_SYSCLKCTRL_HCLKPRESC_MASK) | EFR32_HPRE;
-  //CMU->SYSCLKCTRL = (CMU->SYSCLKCTRL & ~_CMU_SYSCLKCTRL_CLKSEL_MASK) | EFR32_SYSCLKSEL;
-#endif
-
 #if EFR32_LFXO_ENABLED
   /* Enable clock. */
   CMU->CLKEN0_SET = CMU_CLKEN0_LFXO;
@@ -162,6 +156,9 @@ __STATIC_INLINE void efr32_enable_clock_sources(void) {
   CMU->CLKEN0_CLR = CMU_CLKEN0_FSRCO;
 #endif
 
+#if defined(EFR32_CMU_SYSCLKCTRL)
+  CMU->SYSCLKCTRL = (CMU->SYSCLKCTRL & ~_CMU_SYSCLKCTRL_MASK) | EFR32_CMU_SYSCLKCTRL;
+#endif
 }
 
 __STATIC_INLINE void efr32_enable_em01grpaclk(void) {
