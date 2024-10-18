@@ -106,6 +106,7 @@ include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/SILABS/EFR32FG23/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/SILABS_EFR32FG23_DK2600A/board.mk
 include emlib/emlib.mk
+include raillib/raillib.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/common/ports/ARMv8-M-ML/compilers/GCC/mk/port.mk
@@ -126,7 +127,6 @@ LDSCRIPT = $(STARTUPLD_CONTRIB)/EFR32FG23XF512.ld
 # setting.
 CSRC = $(ALLCSRC) \
        $(TESTSRC) \
-       rail/autogen/rail_config.c \
        main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
@@ -169,6 +169,7 @@ UDEFS = -DCORTEX_ENABLE_WFI_IDLE \
         -DULFRCO_FREQ=1000UL \
         -DLFXO_FREQ=LFRCO_FREQ \
         -D_SILICON_LABS_32B_SERIES_1_CONFIG=0 \
+        -DSL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_ENABLE=0 \
         -DFEAT_RF_2G4=0 \
         -DFEAT_RF_SUBG=1 \
         -DSYSTEM_NO_STATIC_MEMORY
@@ -181,8 +182,7 @@ UADEFS =
 
 # List all user directories here
 UINCDIR = $(CHIBIOS_CONTRIB)/ext/gecko_sdk/platform/radio/rail_lib/common \
-          $(CHIBIOS_CONTRIB)/ext/gecko_sdk/platform/radio/rail_lib/chip/efr32/efr32xg2x \
-          rail/autogen
+          $(CHIBIOS_CONTRIB)/ext/gecko_sdk/platform/radio/rail_lib/chip/efr32/efr32xg2x
 
 # List the user directory to look for the libraries here
 ULIBDIR = $(CHIBIOS_CONTRIB)/ext/gecko_sdk/platform/radio/rail_lib/autogen/librail_release
