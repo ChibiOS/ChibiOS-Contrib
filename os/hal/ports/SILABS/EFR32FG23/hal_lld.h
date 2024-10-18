@@ -431,7 +431,14 @@ extern "C" {
 #endif
   void efr32_chip_init(void);
   void efr32_clock_init(void);
-  void efr32_get_lfxo_calibration_values(uint32_t *gain, uint32_t *captune) CC_WEAK;
+
+  /**
+   * @brief The user can overwrite the weak function in order to use his own values.
+   * 
+   * @param gain    LFXO gain value
+   * @param captune LFXO cap tuning value
+   */
+  void efr32_get_lfxo_calibration_values(uint32_t *gain, uint32_t *captune);
   void efr32_escape_hatch(void);
   void hal_lld_init(void);
 #ifdef __cplusplus

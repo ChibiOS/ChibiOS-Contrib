@@ -82,6 +82,11 @@
 #if OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC */
 
+/**
+ * @brief   ST Alarms number.
+ */
+#define ST_LLD_NUM_ALARMS                     2
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
@@ -118,7 +123,7 @@ void st_lld_serve_interrupt(void);
  */
 static inline systime_t st_lld_get_counter(void) {
 
-  return (systime_t)(ST_INIT_VALUE - EFR32_ST_TIM->CNT);
+  return ((systime_t)(ST_INIT_VALUE - EFR32_ST_TIM->CNT));
 }
 
 /**
@@ -174,13 +179,14 @@ static inline void st_lld_set_alarm(systime_t abstime) {
  */
 static inline systime_t st_lld_get_alarm(void) {
 
-  return (systime_t)(ST_INIT_VALUE - EFR32_ST_TIM->COMP0);
+  return ((systime_t)(ST_INIT_VALUE - EFR32_ST_TIM->COMP0));
 }
 
 /**
  * @brief   Determines if the alarm is active.
  *
  * @return              The alarm status.
+ *
  * @retval false        if the alarm is not active.
  * @retval true         is the alarm is active
  *
@@ -188,8 +194,95 @@ static inline systime_t st_lld_get_alarm(void) {
  */
 static inline bool st_lld_is_alarm_active(void) {
 
-  return (EFR32_ST_TIM->IEN & LETIMER_IEN_COMP0) != 0U;
+  return ((EFR32_ST_TIM->IEN & LETIMER_IEN_COMP0) != 0U);
 }
+
+#if (ST_LLD_NUM_ALARMS > 1) || defined(__DOXYGEN__)
+
+/**
+ * @brief   Starts an alarm.
+ * @note    Makes sure that no spurious alarms are triggered after
+ *          this call.
+ * @note    This functionality is only available in free running mode, the
+ *          behavior in periodic mode is undefined.
+ * @param[in] abstime   the time to be set for the first alarm
+ * @param[in] alarm     alarm channel number
+ * @notapi
+ */
+static inline void st_lld_start_alarm_n(unsigned alarm, systime_t abstime) {
+
+  (void)alarm;
+
+  EFR32_ST_TIM->IEN_CLR = LETIMER_IEN_COMP1;
+
+  #if (OSAL_ST_RESOLUTION == 32)
+  EFR32_ST_TIM->COMP1 = (uint32_t)ST_INIT_VALUE - (uint32_t)abstime;
+  #else
+  EFR32_ST_TIM->COMP1 = (uint16_t)ST_INIT_VALUE - (uint16_t)abstime;
+  #endif
+
+  EFR32_ST_TIM->IEN_SET = LETIMER_IEN_COMP1;
+}
+
+/**
+ * @brief   Stops an alarm interrupt.
+ * @note    This functionality is only available in free running mode, the
+ *          behavior in periodic mode is undefined.
+ * @param[in] alarm     alarm channel number
+ * @notapi
+ */
+static inline void st_lld_stop_alarm_n(unsigned alarm) {
+
+  (void)alarm;
+  EFR32_ST_TIM->IEN_CLR = LETIMER_IEN_COMP1;
+}
+
+/**
+ * @brief   Sets an alarm time.
+ * @note    This functionality is only available in free running mode, the
+ *          behavior in periodic mode is undefined.
+ * @param[in] alarm     alarm channel number
+ * @param[in] abstime   the time to be set for the next alarm
+ * @notapi
+ */
+static inline void st_lld_set_alarm_n(unsigned alarm, systime_t abstime) {
+
+  (void)alarm;
+  st_lld_start_alarm_n(alarm, abstime);
+}
+
+/**
+ * @brief   Returns an alarm current time.
+ * @note    This functionality is only available in free running mode, the
+ *          behavior in periodic mode is undefined.
+ * @param[in] alarm     alarm channel number
+ *
+ * @return              The currently set alarm time.
+ *
+ * @notapi
+ */
+static inline systime_t st_lld_get_alarm_n(unsigned alarm) {
+
+  (void)alarm;
+  return ((systime_t)(ST_INIT_VALUE - EFR32_ST_TIM->COMP1));
+}
+
+/**
+ * @brief   Determines if an alarm is active.
+ * @param[in] alarm     alarm channel number
+ *
+ * @return              The alarm status.
+ *
+ * @retval false        if the alarm is not active.
+ * @retval true         is the alarm is active
+ * @notapi
+ */
+static inline bool st_lld_is_alarm_active_n(unsigned alarm) {
+
+  (void)alarm;
+  return ((EFR32_ST_TIM->IEN & LETIMER_IEN_COMP1) != 0U);
+}
+#endif /* ST_LLD_NUM_ALARMS > 1 */
 
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */
 

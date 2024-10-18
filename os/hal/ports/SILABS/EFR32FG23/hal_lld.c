@@ -311,7 +311,7 @@ void efr32_chip_init(void) {
 
 }
 
-void efr32_get_lfxo_calibration_values(uint32_t* gain, uint32_t* captune) {
+CC_WEAK void efr32_get_lfxo_calibration_values(uint32_t* gain, uint32_t* captune) {
 
   osalDbgAssert(gain != NULL, "gain must be not NULL");
   osalDbgAssert(captune != NULL, "captune must be not NULL");

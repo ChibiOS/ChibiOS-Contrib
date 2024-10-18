@@ -35,7 +35,7 @@
     #if (OSAL_ST_RESOLUTION == 32) && !EFR32_LETIM1_IS_32BITS
       #error "LETIM1 is not a 32 bit timer"
     #endif
-  
+
     #if !EFR32_HAS_LETIM1
       #error "LETIM1 not present in the selected device"
     #endif
@@ -139,9 +139,12 @@ void st_lld_init(void) {
   /* Initializing the counter in free running mode. */
   EFR32_ST_TIM->IEN    = 0;
   EFR32_ST_TIM->IF_CLR = _LETIMER_IF_MASK;
-  EFR32_ST_TIM->CTRL   = LETIMER_CTRL_REPMODE_FREE |
-                         EFR32_ST_PRESC;
+  EFR32_ST_TIM->CTRL   = LETIMER_CTRL_REPMODE_FREE | EFR32_ST_PRESC;
   EFR32_ST_TIM->COMP0  = 0;
+
+#if ST_LLD_NUM_ALARMS > 1
+  EFR32_ST_TIM->COMP1  = 0;
+#endif
 
   /* Wait for command to complete. */
   while (EFR32_ST_TIM->SYNCBUSY & (LETIMER_SYNCBUSY_START | LETIMER_SYNCBUSY_CNT)) {
@@ -180,6 +183,14 @@ void st_lld_serve_interrupt(void) {
     osalSysUnlockFromISR();
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
   }
+#if ST_LLD_NUM_ALARMS > 1
+  if ((EFR32_ST_TIM->IF & LETIMER_IF_COMP1) != 0U) {
+    EFR32_ST_TIM->IF_CLR = LETIMER_IF_COMP1;
+    if (st_callbacks[1] != NULL) {
+      st_callbacks[1](1U);
+    }
+  }
+#endif
 #endif
 }
 
