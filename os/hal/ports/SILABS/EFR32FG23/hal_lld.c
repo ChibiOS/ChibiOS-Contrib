@@ -66,9 +66,11 @@ __STATIC_INLINE void efr32_calibrate_lfxo(void) {
 
     if (captune > captune_cal_value) {
       --captune;
-    } else if (captune < captune_cal_value) {
+    }
+    else if (captune < captune_cal_value) {
       ++captune;
-    } else {
+    }
+    else {
       break;
     }
 
@@ -137,6 +139,12 @@ __STATIC_INLINE void efr32_enable_clock_sources(void) {
   CMU->CLKEN0_SET = CMU_CLKEN0_ULFRCO;
 #else
   CMU->CLKEN0_CLR = CMU_CLKEN0_ULFRCO;
+#endif
+
+#if EFR32_HFRCO_ENABLED
+  CMU->CLKEN0_SET = CMU_CLKEN0_HFRCO0;
+#else
+  CMU->CLKEN0_CLR = CMU_CLKEN0_HFRCO0;
 #endif
 
 #if EFR32_HFRCOEM23_ENABLED
@@ -311,7 +319,7 @@ void efr32_chip_init(void) {
 
 }
 
-CC_WEAK void efr32_get_lfxo_calibration_values(uint32_t* gain, uint32_t* captune) {
+CC_WEAK void efr32_get_lfxo_calibration_values(uint32_t *gain, uint32_t *captune) {
 
   osalDbgAssert(gain != NULL, "gain must be not NULL");
   osalDbgAssert(captune != NULL, "captune must be not NULL");
@@ -366,7 +374,8 @@ void efr32_escape_hatch(void) {
   if (pin < 8) {
     GPIO->P[port].MODEL = (GPIO->P[port].MODEL & ~(0xFu << (pin * 4))) |
                           (GPIO_P_MODEL_MODE0_INPUTPULLFILTER << (pin * 4));
-  } else {
+  }
+  else {
     GPIO->P[port].MODEH = (GPIO->P[port].MODEH & ~(0xFu << (pin * 4))) |
                           (GPIO_P_MODEL_MODE0_INPUTPULLFILTER << (pin * 4));
   }
@@ -375,11 +384,13 @@ void efr32_escape_hatch(void) {
 
   if (pin_state == 0) { /* Pi asserted, so break into debugger. */
     __BKPT(0);
-  } else { /* Pin not asserted, so disable input. */
+  }
+  else { /* Pin not asserted, so disable input. */
     if (pin < 8) {
       GPIO->P[port].MODEL = (GPIO->P[port].MODEL & ~(0xFu << (pin * 4))) |
                             (GPIO_P_MODEL_MODE0_DISABLED << (pin * 4));
-    } else {
+    }
+    else {
       GPIO->P[port].MODEH = (GPIO->P[port].MODEH & ~(0xFu << (pin * 4))) |
                             (GPIO_P_MODEL_MODE0_DISABLED << (pin * 4));
     }

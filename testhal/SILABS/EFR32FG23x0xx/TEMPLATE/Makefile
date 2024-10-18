@@ -105,6 +105,7 @@ include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/SILABS/EFR32FG23/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/SILABS_EFR32FG23_DK2600A/board.mk
+include emlib/emlib.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/common/ports/ARMv8-M-ML/compilers/GCC/mk/port.mk
@@ -125,7 +126,7 @@ LDSCRIPT = $(STARTUPLD_CONTRIB)/EFR32FG23XF512.ld
 # setting.
 CSRC = $(ALLCSRC) \
        $(TESTSRC) \
-       $(CHIBIOS_CONTRIB)/os/various/bitmap.c \
+       rail/autogen/rail_config.c \
        main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
@@ -139,8 +140,7 @@ ASMSRC = $(ALLASMSRC)
 ASMXSRC = $(ALLXASMSRC)
 
 # Inclusion directories.
-INCDIR = $(CONFDIR) $(ALLINC) $(TESTINC) \
-         $(CHIBIOS_CONTRIB)/os/various
+INCDIR = $(CONFDIR) $(ALLINC) $(TESTINC)
 
 # Define C warning options here.
 CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes -Wcast-align=strict
@@ -157,22 +157,38 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS = -DEFR32FG23B010F512IM48=1 \
-        -DCORTEX_ENABLE_WFI_IDLE \
+UDEFS = -DCORTEX_ENABLE_WFI_IDLE \
         -DESCAPE_HATCH_ENABLE=TRUE \
-        -DEFR32_DMA_REQUIRED
+        -DEFR32FG23B010F512IM48=1 \
+        -DFSRCO_FREQ=20000000UL \
+        -DHFXO_FREQ=39000000UL \
+        -DFRCODPLL_STARTUP_FREQ=19000000UL \
+        -DRCODPLL_MAX_FREQ=0000000UL \
+        -DCLKIN0_FREQ=0UL \
+        -DLFRCO_FREQ=32768UL \
+        -DULFRCO_FREQ=1000UL \
+        -DLFXO_FREQ=LFRCO_FREQ \
+        -D_SILICON_LABS_32B_SERIES_1_CONFIG=0 \
+        -DFEAT_RF_2G4=0 \
+        -DFEAT_RF_SUBG=1 \
+        -DSYSTEM_NO_STATIC_MEMORY
+
+#        -DSL_TRUSTZONE_NONSECURE \
+#        -DSL_TRUSTZONE_SECURE \
 
 # Define ASM defines here
 UADEFS =
 
 # List all user directories here
-UINCDIR =
+UINCDIR = $(CHIBIOS_CONTRIB)/ext/gecko_sdk/platform/radio/rail_lib/common \
+          $(CHIBIOS_CONTRIB)/ext/gecko_sdk/platform/radio/rail_lib/chip/efr32/efr32xg2x \
+          rail/autogen
 
 # List the user directory to look for the libraries here
-ULIBDIR =
+ULIBDIR = $(CHIBIOS_CONTRIB)/ext/gecko_sdk/platform/radio/rail_lib/autogen/librail_release
 
 # List all user libraries here
-ULIBS =
+ULIBS = -l:librail_efr32xg23_gcc_release.a
 
 #
 # End of user section

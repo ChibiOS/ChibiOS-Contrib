@@ -44,6 +44,7 @@
 #define EFR32_LFXO_ENABLED                  TRUE
 #define EFR32_LFRCO_ENABLED                 FALSE
 #define EFR32_ULFRCO_ENABLED                FALSE
+#define EFR32_HFRCO_ENABLED                 TRUE
 #define EFR32_FSRCO_ENABLED                 FALSE
 #define EFR32_HFRCODPLL_ENABLED             TRUE
 #define EFR32_HFRCOEM23_ENABLED             TRUE

@@ -27,21 +27,62 @@
  * Board frequencies.
  */
 
+#if defined(LFXO_FREQ)
+#define EFR32_LFXO_FREQ                 LFXO_FREQ
+#endif
+
 #if !defined(EFR32_LFXO_FREQ)
 #define EFR32_LFXO_FREQ                 32768UL
-#define LFXO_RTC_GAIN_DEFAULT_VALUE     0x02UL  /**< Manually estmated value which gave 32.768 kHz on CLKOUTn pin. */
-#define LFXO_RTC_CAPTUNE_DEFAULT_VALUE  0x1CUL  /**< Manually estmated value which gave 32.768 kHz on CLKOUTn pin. */
+#endif
+
+#if defined(HFXO_FREQ)
+#define EFR32_HFXO_FREQ                 HFXO_FREQ
 #endif
 
 #if !defined(EFR32_HFXO_FREQ)
 #define EFR32_HFXO_FREQ                 39000000UL
 #endif
 
+#if defined(CLKIN0_FREQ)
+#define EFR32_CLKIN0_FREQ               CLKIN0_FREQ
+#endif
+
 #if !defined(EFR32_CLKIN0_FREQ)
 #define EFR32_CLKIN0_FREQ               0UL
 #endif
 
-/* PA5 is BUTTON1. */
+#if defined(LFRCO_FREQ)
+#define EFR32_LFRCO_FREQ                LFRCO_FREQ
+#endif
+
+#if !defined(EFR32_LFRCO_FREQ)
+#define EFR32_LFRCO_FREQ                32768UL
+#endif
+
+#if defined(FSRCO_FREQ)
+#define EFR32_FSRCO_FREQ                FSRCO_FREQ
+#endif
+
+#if !defined(EFR32_FSRCO_FREQ)
+#define EFR32_FSRCO_FREQ                20000000UL
+#endif
+
+/*
+ * Board calibration values.
+ */
+
+/** LFXO default gain value manually estmated by measuring 32.768 kHz on CLKOUTn pin. */
+#define LFXO_RTC_GAIN_DEFAULT_VALUE     0x02UL
+
+/** LFXO captune default value manually estmated by measuring 32.768 kHz on CLKOUTn pin. */
+#define LFXO_RTC_CAPTUNE_DEFAULT_VALUE  0x1CUL
+
+
+/*
+ * Hatch port and pin to get into debugger on startup.
+ */
+
+/** PA5 is BUTTON1 used for debug escape. */
 #define ESCAPE_HATCH_PORT               GPIO_PORTA
 #define ESCAPE_HATCH_PIN                5
 
