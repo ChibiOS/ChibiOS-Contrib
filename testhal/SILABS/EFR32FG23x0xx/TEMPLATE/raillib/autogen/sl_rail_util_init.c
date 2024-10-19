@@ -28,7 +28,7 @@
  *
  ******************************************************************************/
 #include "rail.h"
-//#include "rail_ble.h" // for RAIL_BLE_State_t
+#include "rail_ble.h" // for RAIL_BLE_State_t
 #include "sli_rail_util_callbacks.h" // for internal-only callback signatures
 #include "sl_rail_util_init.h"
 #include "sl_rail_util_protocol.h"

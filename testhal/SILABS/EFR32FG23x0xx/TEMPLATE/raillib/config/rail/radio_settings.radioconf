@@ -74,5 +74,39 @@
       <metadata>{"selectedPhy":"PHY_wMbus_ModeC_M2O_100k_frameA"}</metadata>
       <phy name="PHY_wMbus_ModeC_M2O_100k_frameA"/>
     </base_channel_configuration>
+    <base_channel_configuration name="wmbus_mode_s" profile="Mbus">
+      <channel_config_entries>
+        <channel_config_entry name="m2o_mode_s">
+          <channel_number_start>0</channel_number_start>
+          <channel_number_end>0</channel_number_end>
+          <physical_channel_offset>SAME_AS_FIRST_CHANNEL</physical_channel_offset>
+          <max_power>RAIL_TX_POWER_MAX</max_power>
+          <metadata>{"selectedPhy":"PHY_wMbus_ModeS_32p768k_frameA"}</metadata>
+          <channel_spacing>0</channel_spacing>
+          <profile_input_overrides>
+            <override>
+              <key>preamble_length</key>
+              <value>100</value>
+            </override>
+          </profile_input_overrides>
+        </channel_config_entry>
+        <channel_config_entry name="o2m_mode_s">
+          <channel_number_start>1</channel_number_start>
+          <channel_number_end>1</channel_number_end>
+          <physical_channel_offset>SAME_AS_FIRST_CHANNEL</physical_channel_offset>
+          <max_power>RAIL_TX_POWER_MAX</max_power>
+          <metadata>{"selectedPhy":"PHY_wMbus_ModeS_32p768k_frameA"}</metadata>
+          <channel_spacing>0</channel_spacing>
+          <profile_input_overrides>
+            <override>
+              <key>preamble_length</key>
+              <value>100</value>
+            </override>
+          </profile_input_overrides>
+        </channel_config_entry>
+      </channel_config_entries>
+      <metadata>{"selectedPhy":"PHY_wMbus_ModeS_32p768k_frameA"}</metadata>
+      <phy name="PHY_wMbus_ModeS_32p768k_frameA"/>
+    </base_channel_configuration>
   </base_channel_configurations>
 </multi_phy_configuration>
