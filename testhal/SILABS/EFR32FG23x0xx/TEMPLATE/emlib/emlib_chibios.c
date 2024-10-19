@@ -3,14 +3,12 @@
 
 CORE_irqState_t CORE_EnterCritical(void) {
 
-  chSysLock();
-  return 0;
+  return (chSysGetStatusAndLockX());
 }
 
 void CORE_ExitCritical(CORE_irqState_t irqState) {
 
-  (void)irqState;
-  osalSysUnlock();
+  chSysRestoreStatusX(irqState);
 }
 
 CORE_irqState_t CORE_EnterAtomic(void) {
