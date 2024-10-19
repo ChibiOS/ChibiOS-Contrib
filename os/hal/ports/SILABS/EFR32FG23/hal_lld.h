@@ -72,12 +72,12 @@
 #define EFR32_EM01_VSCALESEL_1V1         (1U << 1)
 
 #define EFR32_EM23_VSCALESEL_0V9         (0U << 0)
-#define EFR32_EM23_VSCALESEL_1V0         (1U << 0) 
+#define EFR32_EM23_VSCALESEL_1V0         (1U << 0)
 #define EFR32_EM23_VSCALESEL_1V1         (1U << 1)
 
 #define EFR32_EM01_VSCALE_1V0            (1U << 10) /**< EM0/EM1 operation up to 40 MHz */
 #define EFR32_EM01_VSCALE_1V1            (1U << 11) /**< EM0/EM1 operation up to 80 MHz */
-                                       
+
 #define EFR32_EM23_VSCALE_0V9            (0U << 8)  /**< EM2/EM3 operation up to 40 MHz, slow startup */
 #define EFR32_EM23_VSCALE_1V0            (1U << 8)  /**< EM2/EM3 operation up to 40 MHz */
 #define EFR32_EM23_VSCALE_1V1            (2U << 8)  /**< EM2/EM3 operation up to 80 MHz */
@@ -251,7 +251,7 @@
 #define EFR32_EM4GRPACLKSEL_LFXO         (1u << 1)
 #define EFR32_EM4GRPACLKSEL_LFRCO        (1u << 2)
 #define EFR32_EM4GRPACLKSEL_ULFRCO       (1u << 3)
-                                        
+
 #define EFR32_EUSART1SEL_NOCLOCK         (0u << 0)
 #define EFR32_EUSART1SEL_EM01GRPCCLK     (1u << 1)
 #define EFR32_EUSART1SEL_HFRCOEM23       (1u << 2)
@@ -373,7 +373,7 @@
 /* Vector64 = Vector(40 + 4*USART0_RX_IRQn) */
 #define EFR32_USART1_RX_HANDLER 	      Vector64
 #define EFR32_USART1_RX_NUMBER		      USART0_RX_IRQn
-                                       
+
 /* Vector68 = Vector(40 + 4*USART0_TX_IRQn) */
 #define EFR32_USART1_TX_HANDLER 	      Vector68
 #define EFR32_USART1_TX_NUMBER		      USART0_TX_IRQn
@@ -410,6 +410,62 @@
 #define EFR32_LDMA_HANDLER              Vector98
 #define EFR32_LDMA_NUMBER               LDMA_IRQn
 
+/* Vector168 = Vector(40 + 4*RFECA0_IRQn) */
+#define EFR32_RFECA0_HANDLER            Vector168
+#define EFR32_RFECA0_NUMBER             RFECA0_IRQn
+
+/* Vector16C = Vector(40 + 4*RFECA1_IRQn) */
+#define EFR32_RFECA1_HANDLER            Vector16C
+#define EFR32_RFECA1_NUMBER             RFECA1_IRQn
+
+/* Vector15C = Vector(40 + 4*SYSRTC_SEQ_IRQn) */
+#define EFR32_SYSRTC_SEQ_HANDLER        Vector15C
+#define EFR32_SYSRTC_SEQ_NUMBER         SYSRTC_SEQ_IRQn
+
+/* VectorBC = Vector(40 + 4*AGC_IRQn) */
+#define EFR32_AGC_HANDLER               VectorBC
+#define EFR32_AGC_NUMBER                AGC_IRQn
+
+/* VectorC0 = Vector(40 + 4*BUFC_IRQn) */
+#define EFR32_BUFC_HANDLER              VectorC0
+#define EFR32_BUFC_NUMBER               BUFC_IRQn
+
+/* VectorB8 = Vector(40 + 4*EMUDG_IRQn) */
+#define EFR32_EMUDG_HANDLER             VectorB8
+#define EFR32_EMUDG_NUMBER              EMUDG_IRQn
+
+/* VectorC8 = Vector(40 + 4*FRC_IRQn) */
+#define EFR32_FRC_HANDLER               VectorC8
+#define EFR32_FRC_NUMBER                FRC_IRQn
+
+/* VectorC4 = Vector(40 + 4*FRC_PRI_IRQn) */
+#define EFR32_FRC_PRI_HANDLER           VectorC4
+#define EFR32_FRC_PRI_NUMBER            FRC_PRI_IRQn
+
+/* VectorDC = Vector(40 + 4*HOSTMAILBOX_IRQn) */
+#define EFR32_HOSTMAILBOX_HANDLER       VectorDC
+#define EFR32_HOSTMAILBOX_NUMBER        HOSTMAILBOX_IRQn
+
+/* VectorCC = Vector(40 + 4*MODEM_IRQn) */
+#define EFR32_MODEM_HANDLER             VectorCC
+#define EFR32_MODEM_NUMBER              MODEM_IRQn
+
+/* VectorD0 = Vector(40 + 4*PROTIMER_IRQn) */
+#define EFR32_PROTIMER_HANDLER          VectorD0
+#define EFR32_PROTIMER_NUMBER           PROTIMER_IRQn
+
+/* VectorD4 = Vector(40 + 4*RAC_RSM_IRQn) */
+#define EFR32_RAC_RSM_HANDLER           VectorD4
+#define EFR32_RAC_RSM_NUMBER            RAC_RSM_IRQn
+
+/* VectorD8 = Vector(40 + 4*RAC_SEQ_IRQn) */
+#define EFR32_RAC_SEQ_HANDLER           VectorD8
+#define EFR32_RAC_SEQ_NUMBER            RAC_SEQ_IRQn
+
+/* VectorE0 = Vector(40 + 4*SYNTH_IRQn) */
+#define EFR32_SYNTH_HANDLER             VectorE0
+#define EFR32_SYNTH_NUMBER              SYNTH_IRQn
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/
@@ -429,18 +485,21 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void efr32_chip_init(void);
-  void efr32_clock_init(void);
+void efr32_chip_init(void);
 
-  /**
-   * @brief The user can overwrite the weak function in order to use his own values.
-   * 
-   * @param gain    LFXO gain value
-   * @param captune LFXO cap tuning value
-   */
-  void efr32_get_lfxo_calibration_values(uint32_t *gain, uint32_t *captune);
-  void efr32_escape_hatch(void);
-  void hal_lld_init(void);
+void efr32_clock_init(void);
+
+/**
+ * @brief The user can overwrite the weak function in order to use his own values.
+ *
+ * @param gain    LFXO gain value
+ * @param captune LFXO cap tuning value
+ */
+void efr32_get_lfxo_calibration_values(uint32_t *gain, uint32_t *captune);
+
+void efr32_escape_hatch(void);
+
+void hal_lld_init(void);
 #ifdef __cplusplus
 }
 #endif

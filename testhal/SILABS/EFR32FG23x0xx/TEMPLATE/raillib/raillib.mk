@@ -1,11 +1,13 @@
 # Required platform files.
 GECKO_SDK = $(CHIBIOS_CONTRIB)/ext/gecko_sdk
 
+# Here are RAIL lib binding for ChibiOS.
 RAILLIBSRC = \
-        raillib/autogen/rail_config.c \
-        raillib/autogen/sl_rail_util_callbacks.c \
-        raillib/autogen/sl_rail_util_init.c
+            raillib/raillib_chibios.c
 
+RAILLIBSRC += raillib/autogen/rail_config.c
+RAILLIBSRC += raillib/autogen/sl_rail_util_callbacks.c
+RAILLIBSRC += raillib/autogen/sl_rail_util_init.c
 #RAILLIBSRC += raillib/autogen/sl_cli_command_table.c
 #RAILLIBSRC += raillib/autogen/sl_iostream_init_eusart_instances.c
 #RAILLIBSRC += raillib/autogen/sli_cli_hooks.c
