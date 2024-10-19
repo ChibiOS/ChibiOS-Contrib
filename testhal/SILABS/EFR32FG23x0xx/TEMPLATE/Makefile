@@ -157,9 +157,16 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS = -DCORTEX_ENABLE_WFI_IDLE \
-        -DESCAPE_HATCH_ENABLE=TRUE \
+UDEFS = -DCORTEX_ENABLE_WFI_IDLE
+
+# MCU and board specific.
+UDEFS += \
         -DEFR32FG23B010F512IM48=1 \
+        -DESCAPE_HATCH_ENABLE=TRUE
+        
+# emlib specific.
+UDEFS += \
+        -DSYSTEM_NO_STATIC_MEMORY \
         -DFSRCO_FREQ=20000000UL \
         -DHFXO_FREQ=39000000UL \
         -DFRCODPLL_STARTUP_FREQ=19000000UL \
@@ -167,15 +174,16 @@ UDEFS = -DCORTEX_ENABLE_WFI_IDLE \
         -DCLKIN0_FREQ=0UL \
         -DLFRCO_FREQ=32768UL \
         -DULFRCO_FREQ=1000UL \
-        -DLFXO_FREQ=LFRCO_FREQ \
+        -DLFXO_FREQ=LFRCO_FREQ
+#        -DSL_TRUSTZONE_NONSECURE
+#        -DSL_TRUSTZONE_SECURE \
+
+# RAIL lib specific.
+UDEFS += \
         -D_SILICON_LABS_32B_SERIES_1_CONFIG=0 \
         -DSL_RAIL_UTIL_PROTOCOL_IEEE802154_GB868_ENABLE=0 \
         -DFEAT_RF_2G4=0 \
-        -DFEAT_RF_SUBG=1 \
-        -DSYSTEM_NO_STATIC_MEMORY
-
-#        -DSL_TRUSTZONE_NONSECURE \
-#        -DSL_TRUSTZONE_SECURE \
+        -DFEAT_RF_SUBG=1
 
 # Define ASM defines here
 UADEFS =
