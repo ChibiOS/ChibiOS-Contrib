@@ -67,9 +67,11 @@ void st_callback(unsigned alarm) {
   #define RAIL_CHANNEL_0  0
   RAIL_Handle_t railHandle = sl_rail_util_get_handle(SL_RAIL_UTIL_HANDLE_INST0);
 
+  #if 0
   extern const RAIL_ChannelConfig_t *channelConfigs[];
   RAIL_ConfigChannels(railHandle, channelConfigs[mode], NULL);
   mode = (mode + 1) % 3;
+  #endif
 
   memcpy(railFifo, wmbus_datagram_1, sizeof(wmbus_datagram_1));
   RAIL_SetTxFifo(railHandle, railFifo, sizeof(wmbus_datagram_1), sizeof(railFifo));
