@@ -20,6 +20,8 @@ RAILLIBSRC += raillib/autogen/sl_rail_util_init.c
 #RAILLIBSRC += raillib/autogen/sl_event_handler.c
 #RAILLIBSRC += raillib/autogen/sl_simple_led_instances.c
 
+RAILLIBSRC += $(GECKO_SDK)/app/common/util/app_log/app_log.c
+RAILLIBSRC += $(GECKO_SDK)/platform/service/iostream/src/sl_iostream.c
 RAILLIBSRC += $(GECKO_SDK)/platform/radio/rail_lib/plugin/pa-conversions/pa_conversions_efr32.c
 RAILLIBSRC += $(GECKO_SDK)/platform/radio/rail_lib/plugin/pa-conversions/pa_curves_efr32.c
 RAILLIBSRC += $(GECKO_SDK)/platform/radio/rail_lib/plugin/rail_util_protocol/sl_rail_util_protocol.c
@@ -29,6 +31,15 @@ RAILLIBINC = \
         raillib/config
 
 RAILLIBINC += \
+        $(GECKO_SDK)/app/common/util/app_assert \
+        $(GECKO_SDK)/app/common/util/app_assert/config \
+        $(GECKO_SDK)/app/common/util/app_log \
+        $(GECKO_SDK)/app/common/util/app_log/config \
+        $(GECKO_SDK)/platform/service/iostream/inc \
+        $(GECKO_SDK)/platform/service/power_manager/inc \
+        $(GECKO_SDK)/platform/service/sleeptimer/inc \
+        $(GECKO_SDK)/platform/emdrv/common/inc \
+        $(GECKO_SDK)/platform/emdrv/dmadrv/inc \
         $(GECKO_SDK)/platform/radio/rail_lib/plugin/pa-conversions\efr32xg23 \
         $(GECKO_SDK)/platform/radio/rail_lib/plugin/pa-conversions \
         $(GECKO_SDK)/platform/radio/rail_lib/plugin/rail_util_callbacks \

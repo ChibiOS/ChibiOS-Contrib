@@ -32,8 +32,8 @@
  ******************************************************************************/
  
 #include "rail.h"
-#ifdef SL_CATALOG_APP_ASSERT_PRESENT
 #include "sl_component_catalog.h"
+#ifdef SL_CATALOG_APP_ASSERT_PRESENT
 #include "app_assert.h"
 #define APP_ASSERT(expr, ...) app_assert(expr,__VA_ARGS__)
 #else
