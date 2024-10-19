@@ -56,22 +56,8 @@ void st_callback(unsigned alarm) {
 
   led_toggle();
 
-  enum {
-    WMBUS_MODE_T1A = 0,
-    WMBUS_MODE_C1A = 1,
-    WMBUS_MODE_S1 = 2
-  };
-
-  static int mode = WMBUS_MODE_T1A;
-
   #define RAIL_CHANNEL_0  0
   RAIL_Handle_t railHandle = sl_rail_util_get_handle(SL_RAIL_UTIL_HANDLE_INST0);
-
-  #if 0
-  extern const RAIL_ChannelConfig_t *channelConfigs[];
-  RAIL_ConfigChannels(railHandle, channelConfigs[mode], NULL);
-  mode = (mode + 1) % 3;
-  #endif
 
   memcpy(railFifo, wmbus_datagram_1, sizeof(wmbus_datagram_1));
   RAIL_SetTxFifo(railHandle, railFifo, sizeof(wmbus_datagram_1), sizeof(railFifo));
@@ -105,7 +91,17 @@ int main(void) {
   led_off();
   sl_rail_util_init();
 
+  {
+    enum {
+      WMBUS_MODE_T1A = 0,
+      WMBUS_MODE_C1A = 1,
+      WMBUS_MODE_S1 = 2
+    };
 
+    extern const RAIL_ChannelConfig_t *channelConfigs[];
+    RAIL_Handle_t railHandle = sl_rail_util_get_handle(SL_RAIL_UTIL_HANDLE_INST0);
+    RAIL_ConfigChannels(railHandle, channelConfigs[WMBUS_MODE_C1A], NULL);
+  }
 
   stSetCallback(1, st_callback);
   stStartAlarmN(1, stGetCounter() + chTimeMS2I(3000));
