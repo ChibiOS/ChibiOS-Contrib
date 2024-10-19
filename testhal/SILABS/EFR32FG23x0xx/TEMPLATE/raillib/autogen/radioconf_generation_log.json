@@ -1,6 +1,6 @@
 [
   {
-    "channel_name": "wmbus_mode_t-m2o",
+    "channel_name": "wmbus_mode_t-m2o_mode_t",
     "result_code": "0",
     "error_message": "",
     "logs": [],
@@ -112,7 +112,7 @@
     ]
   },
   {
-    "channel_name": "wmbus_mode_t-o2m",
+    "channel_name": "wmbus_mode_t-o2m_mode_t",
     "result_code": "0",
     "error_message": "",
     "logs": [],
@@ -220,6 +220,262 @@
       {
         "name": "RSSI Access Time After RX Start [us]",
         "value": 416.0556363415578
+      }
+    ]
+  },
+  {
+    "channel_name": "wmbus_mode_c-m2o_mode_c",
+    "result_code": "0",
+    "error_message": "",
+    "logs": [],
+    "cfg_logs": [
+      {
+        "name": "Preamble Binary Pattern",
+        "value": "01010101010101010101010101010101010101"
+      },
+      {
+        "name": "Syncword Binary Pattern",
+        "value": "00001111010101010011001101"
+      },
+      {
+        "name": "Pre Signal Lock RX Bandwidth [Hz]",
+        "value": 314896
+      },
+      {
+        "name": "Desired Bitrate [bps]",
+        "value": 100000
+      },
+      {
+        "name": "Actual TX Baudrate [baud]",
+        "value": 100000.0
+      },
+      {
+        "name": "Calculated RSSI Offset [dB]",
+        "value": -12.446100897895253
+      },
+      {
+        "name": "Actual Carrier Frequency [Hz]",
+        "value": 868949980
+      },
+      {
+        "name": "Actual Intermediate Frequency [Hz]",
+        "value": 207439
+      },
+      {
+        "name": "Synthesizer Resolution [Hz]",
+        "value": 24.7955322265625
+      },
+      {
+        "name": "Actual RX Baudrate [baud]",
+        "value": 100000.75120756615
+      },
+      {
+        "name": "Actual Deviation [Hz]",
+        "value": 44862.75895033032
+      },
+      {
+        "name": "Target Modulation Index",
+        "value": 0.9
+      },
+      {
+        "name": "Actual Modulation Index",
+        "value": 0.8972551790066063
+      },
+      {
+        "name": "Selected Demodulator",
+        "value": "DemodSelectEnum.TRECS_VITERBI"
+      },
+      {
+        "name": "Carson Bandwidth [Hz]",
+        "value": 190000
+      },
+      {
+        "name": "Theoretical Required Demodulator Bandwidth [Hz]",
+        "value": 110000
+      },
+      {
+        "name": "RX Crystal Accuracy [ppm]",
+        "value": 25
+      },
+      {
+        "name": "TX Crystal Accuracy [ppm]",
+        "value": 25
+      },
+      {
+        "name": "Post Signal Lock RX Bandwidth [Hz]",
+        "value": 162500
+      },
+      {
+        "name": "RSSI Measurement Period",
+        "value": 3
+      },
+      {
+        "name": "Actual Demodulator Oversampling Rate",
+        "value": 7.0
+      },
+      {
+        "name": "Raw Data Sampling Rate [sps]",
+        "value": 700005.2584529631
+      },
+      {
+        "name": "Signal Propagation Delay [symbol]",
+        "value": 7
+      },
+      {
+        "name": "Effective Syncword Length",
+        "value": 32
+      },
+      {
+        "name": "Effective Preamble Length",
+        "value": 32
+      },
+      {
+        "name": "Number of Bits Used from Preamble to Syncword [bits]",
+        "value": 6
+      },
+      {
+        "name": "Injection Side",
+        "value": "LoInjectionSideEnum.HIGH_SIDE"
+      },
+      {
+        "name": "TRECS syncword timeout [us]",
+        "value": 770.0
+      },
+      {
+        "name": "RSSI Update Period [symbol]",
+        "value": 8
+      },
+      {
+        "name": "RSSI Access Time After RX Start [us]",
+        "value": 179.22578646314105
+      }
+    ]
+  },
+  {
+    "channel_name": "wmbus_mode_c-o2m_mode_c",
+    "result_code": "0",
+    "error_message": "",
+    "logs": [],
+    "cfg_logs": [
+      {
+        "name": "Preamble Binary Pattern",
+        "value": "01010101010101010101010101010101010101"
+      },
+      {
+        "name": "Syncword Binary Pattern",
+        "value": "00001111010101010011001101"
+      },
+      {
+        "name": "Pre Signal Lock RX Bandwidth [Hz]",
+        "value": 166896
+      },
+      {
+        "name": "Desired Bitrate [bps]",
+        "value": 50000
+      },
+      {
+        "name": "Actual TX Baudrate [baud]",
+        "value": 50000.0
+      },
+      {
+        "name": "Calculated RSSI Offset [dB]",
+        "value": -14.178302025260141
+      },
+      {
+        "name": "Actual Carrier Frequency [Hz]",
+        "value": 868949980
+      },
+      {
+        "name": "Actual Intermediate Frequency [Hz]",
+        "value": 133424
+      },
+      {
+        "name": "Synthesizer Resolution [Hz]",
+        "value": 24.7955322265625
+      },
+      {
+        "name": "Actual RX Baudrate [baud]",
+        "value": 49999.88262497506
+      },
+      {
+        "name": "Actual Deviation [Hz]",
+        "value": 24689.509154995903
+      },
+      {
+        "name": "Target Modulation Index",
+        "value": 1.0
+      },
+      {
+        "name": "Actual Modulation Index",
+        "value": 0.9875803661998361
+      },
+      {
+        "name": "Selected Demodulator",
+        "value": "DemodSelectEnum.TRECS_SLICER"
+      },
+      {
+        "name": "Carson Bandwidth [Hz]",
+        "value": 100000
+      },
+      {
+        "name": "Theoretical Required Demodulator Bandwidth [Hz]",
+        "value": 100000
+      },
+      {
+        "name": "RX Crystal Accuracy [ppm]",
+        "value": 25
+      },
+      {
+        "name": "TX Crystal Accuracy [ppm]",
+        "value": 25
+      },
+      {
+        "name": "Post Signal Lock RX Bandwidth [Hz]",
+        "value": 100000
+      },
+      {
+        "name": "RSSI Measurement Period",
+        "value": 3
+      },
+      {
+        "name": "Actual Demodulator Oversampling Rate",
+        "value": 7.000000000000001
+      },
+      {
+        "name": "Raw Data Sampling Rate [sps]",
+        "value": 349999.1783748254
+      },
+      {
+        "name": "Signal Propagation Delay [symbol]",
+        "value": 8
+      },
+      {
+        "name": "Effective Syncword Length",
+        "value": 32
+      },
+      {
+        "name": "Effective Preamble Length",
+        "value": 32
+      },
+      {
+        "name": "Number of Bits Used from Preamble to Syncword [bits]",
+        "value": 6
+      },
+      {
+        "name": "Injection Side",
+        "value": "LoInjectionSideEnum.HIGH_SIDE"
+      },
+      {
+        "name": "TRECS syncword timeout [us]",
+        "value": 1540.0
+      },
+      {
+        "name": "RSSI Update Period [symbol]",
+        "value": 8
+      },
+      {
+        "name": "RSSI Access Time After RX Start [us]",
+        "value": 357.7993666402244
       }
     ]
   }
