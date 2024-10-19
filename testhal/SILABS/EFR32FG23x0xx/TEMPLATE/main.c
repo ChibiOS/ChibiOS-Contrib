@@ -18,7 +18,6 @@
 #include "cmsis_os.h"
 #include "hal.h"
 
-#include "em_device.h"
 #include "sl_rail_util_init.h"
 #include "rail_types.h"
 #include "rail.h"
