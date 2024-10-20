@@ -32,12 +32,6 @@
 /* Driver exported variables.                                                */
 /*===========================================================================*/
 
-/**
- * @brief   CMSIS system core clock variable.
- * @note    It is declared in system_efr32fg23.h.
- */
-uint32_t SystemCoreClock = EFR32_HCLK;
-
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/

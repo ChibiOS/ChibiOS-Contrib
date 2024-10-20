@@ -194,11 +194,15 @@ int main(void) {
   stStartAlarmN(1, stGetCounter() + chTimeMS2I(3000));
   led_on();
 
+  //RAIL_TxStreamStart(railHandle, RAIL_STREAM_PN9_STREAM);
+  //RAIL_TxStreamStart(railHandle, RAIL_STREAM_CARRIER_WAVE);
+
+  systime_t prev = chVTGetSystemTime();
+
   /*
    * Normal main() thread activity, in this demo it does nothing except
    * sleeping in a loop and check the button state.
    */
-  systime_t prev = chVTGetSystemTime();
   while (true) {
     send_datagram();
     prev = chThdSleepUntilWindowed(prev, chTimeAddX(prev, TIME_MS2I(3000)));
