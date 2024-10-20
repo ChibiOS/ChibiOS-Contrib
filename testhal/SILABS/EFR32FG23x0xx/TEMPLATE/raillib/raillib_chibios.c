@@ -10,7 +10,6 @@ uint32_t sli_tz_syscfg_read_chiprev_register(void) {
 
 /* SystemNNNGet are declared as weak function as they can be overwritten
    by linking with system_efr32fg23.c. */
-
 CC_WEAK uint32_t SystemHFXOClockGet(void) {
 
   return EFR32_HFXO_FREQ;

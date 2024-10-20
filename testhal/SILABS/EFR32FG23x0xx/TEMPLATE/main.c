@@ -66,6 +66,33 @@ void st_callback(unsigned alarm) {
   stStartAlarmN(alarm, stGetCounter() + chTimeMS2I(3000));
 }
 
+void sl_rail_util_on_assert_failed(RAIL_Handle_t rail_handle,
+                                   RAIL_AssertErrorCodes_t error_code) {
+
+  (void)rail_handle;
+  (void)error_code;
+  osalDbgAssert(false, "rail_handle with error_code");
+}
+
+void sl_rail_util_on_rf_ready(RAIL_Handle_t rail_handle) {
+
+  (void)rail_handle;
+}
+
+void sl_rail_util_on_channel_config_change(RAIL_Handle_t rail_handle,
+                                           const RAIL_ChannelConfigEntry_t *entry) {
+
+  (void)rail_handle;
+  (void)entry;
+}
+
+void sl_rail_util_on_event(RAIL_Handle_t rail_handle,
+                           RAIL_Events_t events) {
+
+  (void)rail_handle;
+  (void)events;
+}
+
 /*
  * Application entry point.
  */
@@ -93,8 +120,8 @@ int main(void) {
   {
     enum {
       WMBUS_MODE_T1A = 0,
-      WMBUS_MODE_C1A = 1,
-      WMBUS_MODE_S1 = 2
+                       WMBUS_MODE_C1A = 1,
+                                        WMBUS_MODE_S1 = 2
     };
 
     extern const RAIL_ChannelConfig_t *channelConfigs[];
