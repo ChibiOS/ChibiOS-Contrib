@@ -112,14 +112,13 @@ void custom_RAIL_Init(void) {
   };
 
   RAIL_Status_t status;
+  (void)status;
 
   RAIL_Config_t sl_rail_config = {
     .eventsCallback = &sli_rail_util_on_event,
     // Other fields are ignored nowadays
   };
-
-  railHandle = RAIL_Init(&sl_rail_config,
-                         &sli_rail_util_on_rf_ready);
+  railHandle = RAIL_Init(&sl_rail_config, &sli_rail_util_on_rf_ready);
 
   RAIL_DataConfig_t data_config = {
     .txSource = SL_RAIL_UTIL_INIT_DATA_FORMAT_INST0_TX_SOURCE,
@@ -128,6 +127,7 @@ void custom_RAIL_Init(void) {
     .rxMethod = SL_RAIL_UTIL_INIT_DATA_FORMAT_INST0_RX_MODE,
   };
   status = RAIL_ConfigData(railHandle, &data_config);
+  osalDbgCheck(status == RAIL_STATUS_NO_ERROR);
 
   const RAIL_ChannelConfig_t *channel_config = channelConfigs[WMBUS_MODE_C1A];
 
@@ -136,6 +136,7 @@ void custom_RAIL_Init(void) {
                             &sli_rail_util_on_channel_config_change);
   status = sl_rail_util_protocol_config(railHandle,
                                         SL_RAIL_UTIL_INIT_PROTOCOL_INST0_DEFAULT);
+  osalDbgCheck(status == RAIL_STATUS_NO_ERROR);
 
   status = RAIL_ConfigCal(railHandle,
                           0U
@@ -143,22 +144,27 @@ void custom_RAIL_Init(void) {
                              ? RAIL_CAL_TEMP : 0U)
                           | (SL_RAIL_UTIL_INIT_CALIBRATION_ONETIME_NOTIFY_INST0_ENABLE
                              ? RAIL_CAL_ONETIME : 0U));
-  status = RAIL_ConfigEvents(railHandle,
-                             RAIL_EVENTS_ALL,
+  osalDbgCheck(status == RAIL_STATUS_NO_ERROR);
+
+  status = RAIL_ConfigEvents(railHandle, RAIL_EVENTS_ALL,
                              SL_RAIL_UTIL_INIT_EVENT_INST0_MASK);
+  osalDbgCheck(status == RAIL_STATUS_NO_ERROR);
 
   RAIL_StateTransitions_t tx_transitions = {
     .success = SL_RAIL_UTIL_INIT_TRANSITION_INST0_TX_SUCCESS,
     .error = SL_RAIL_UTIL_INIT_TRANSITION_INST0_TX_ERROR
   };
+  status = RAIL_SetTxTransitions(railHandle,
+                                 &tx_transitions);
+  osalDbgCheck(status == RAIL_STATUS_NO_ERROR);
+
   RAIL_StateTransitions_t rx_transitions = {
     .success = SL_RAIL_UTIL_INIT_TRANSITION_INST0_RX_SUCCESS,
     .error = SL_RAIL_UTIL_INIT_TRANSITION_INST0_RX_ERROR
   };
-  status = RAIL_SetTxTransitions(railHandle,
-                                 &tx_transitions);
   status = RAIL_SetRxTransitions(railHandle,
                                  &rx_transitions);
+  osalDbgCheck(status == RAIL_STATUS_NO_ERROR);
 }
 
 /*

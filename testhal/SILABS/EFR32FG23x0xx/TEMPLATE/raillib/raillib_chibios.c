@@ -1,5 +1,4 @@
 #include "hal.h"
-#include "em_core_generic.h"
 
 #if defined(SL_TRUSTZONE_NONSECURE)
 uint32_t sli_tz_syscfg_read_chiprev_register(void) {
