@@ -8,7 +8,7 @@ RAILLIBSRC = \
 # Below are imports from Radio Configurator
 RAILLIBSRC += raillib/autogen/rail_config.c
 RAILLIBSRC += raillib/autogen/sl_rail_util_callbacks.c
-RAILLIBSRC += raillib/autogen/sl_rail_util_init.c
+#RAILLIBSRC += raillib/autogen/sl_rail_util_init.c
 
 # Below are imports from Gecko SDK
 RAILLIBSRC += $(GECKO_SDK)/platform/radio/rail_lib/plugin/pa-conversions/pa_conversions_efr32.c
