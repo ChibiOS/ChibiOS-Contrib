@@ -198,9 +198,10 @@ int main(void) {
    * Normal main() thread activity, in this demo it does nothing except
    * sleeping in a loop and check the button state.
    */
+  systime_t prev = chVTGetSystemTime();
   while (true) {
-    osDelay(3000);
     send_datagram();
+    prev = chThdSleepUntilWindowed(prev, chTimeAddX(prev, TIME_MS2I(3000)));
   }
 }
 
