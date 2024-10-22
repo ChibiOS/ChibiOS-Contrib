@@ -86,7 +86,7 @@ static const USBEndpointConfig ep0config = {
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
-
+uint32_t msk_EP_NAK, msk_EP_ACK;
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
@@ -137,6 +137,11 @@ static void sn32_usb_read_fifo(usbep_t ep, uint8_t *buf, size_t sz, bool intr) {
         if (off + chunk > sz)
             chunk = sz - off;
 
+#if (SN32_USB_DIRECT_SRAM == TRUE)
+        volatile uint32_t *sram;
+        sram = (volatile uint32_t *)(SN32_USBRAM_BASE + off + ep_offset);
+        data = *sram;
+#else
         if(intr) {
             SN32_USB->RWADDR = off + ep_offset;
             SN32_USB->RWSTATUS = 0x02;
@@ -149,7 +154,7 @@ static void sn32_usb_read_fifo(usbep_t ep, uint8_t *buf, size_t sz, bool intr) {
             while (SN32_USB->RWSTATUS2 & 0x02);
             data = SN32_USB->RWDATA2;
         }
-
+#endif
         //dest, src, size
         memcpy(buf, &data, chunk);
 
@@ -180,6 +185,11 @@ static void sn32_usb_write_fifo(usbep_t ep, const uint8_t *buf, size_t sz, bool 
         //dest, src, size
         memcpy(&data, buf, chunk);
 
+#if (SN32_USB_DIRECT_SRAM == TRUE)
+        volatile uint32_t *sram;
+        sram = (volatile uint32_t *)(SN32_USBRAM_BASE + off + ep_offset);
+        *sram = data;
+#else
         if(intr) {
             SN32_USB->RWADDR = off + ep_offset;
             SN32_USB->RWDATA = data;
@@ -192,7 +202,7 @@ static void sn32_usb_write_fifo(usbep_t ep, const uint8_t *buf, size_t sz, bool 
             SN32_USB->RWSTATUS2 = 0x01;
             while (SN32_USB->RWSTATUS2 & 0x01);
         }
-
+#endif
         off += chunk;
         buf += chunk;
     }
@@ -306,7 +316,7 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
     /////////////////////////////////////////////////
     /* Device Status Interrupt (EPnACK)            */
     /////////////////////////////////////////////////
-    if (iwIntFlag & (mskEP6_ACK|mskEP5_ACK|mskEP4_ACK|mskEP3_ACK|mskEP2_ACK|mskEP1_ACK)) {
+    if (iwIntFlag & msk_EP_ACK) {
         // Determine the interrupting endpoint, direction, and clear the interrupt flag
         for(usbep_t ep = 1; ep <= USB_MAX_ENDPOINTS; ep++) {
             if (iwIntFlag & mskEPn_ACK(ep)){
@@ -315,9 +325,8 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
             }
         }
     }
-    if (iwIntFlag & (mskEP6_NAK|mskEP5_NAK|mskEP4_NAK|mskEP3_NAK|mskEP2_NAK|mskEP1_NAK)) {
-        SN32_USB->INSTSC = (mskEP6_NAK|mskEP5_NAK|mskEP4_NAK|mskEP3_NAK|mskEP2_NAK|mskEP1_NAK);
-
+    if (iwIntFlag & msk_EP_NAK) {
+        SN32_USB->INSTSC = msk_EP_NAK;
     }
 
 }
@@ -451,6 +460,9 @@ void usb_lld_start(USBDriver *usbp) {
       /* Powers up the transceiver while holding the USB in reset state.*/
       SN32_USB->SGCTL = (mskBUS_DRVEN|mskBUS_J_STATE);
       SN32_USB->CFG = (mskVREG33_EN|mskPHY_EN|mskDPPU_EN|mskSIE_EN|mskESD_EN);
+#   if defined(SN32F240)
+      SN32_USB->CFG |= (mskUSBRAM_EN|mskVREG33DIS_EN);
+#   endif
       /* Set up hardware configuration.*/
       SN32_USB->PHYPRM = 0x80000000;
       SN32_USB->PHYPRM2 = 0x00004004;
@@ -470,10 +482,18 @@ void usb_lld_start(USBDriver *usbp) {
     if (usbp->config->sof_cb != NULL) {
         SN32_USB->INTEN |= mskUSB_SOF_IE;
     }
-    //SN32_USB->INTEN |= (mskEP1_NAK_EN|mskEP2_NAK_EN|mskEP3_NAK_EN|mskEP4_NAK_EN);
-#if (USB_ENDPOINTS_NUMBER > 4)
-    //SN32_USB->INTEN |= (mskEP5_NAK_EN|mskEP6_NAK_EN);
-#endif /* (USB_ENDPOINTS_NUMBER > 4) */
+    /* Calculate EP ACK, NAK, NAK_EN flags.*/
+    msk_EP_NAK = 0;
+    msk_EP_ACK = 0;
+    //uint32_t msk_EP_NAK_EN = 0;
+    for(usbep_t ep = 1; ep <= USB_MAX_ENDPOINTS; ep++) {
+        msk_EP_NAK |= mskEPn_NAK(ep);
+        msk_EP_ACK |= mskEPn_ACK(ep);
+        // msk_EP_NAK_EN |= mskEPn_NAK_EN(ep);
+    }
+     /* Enable NAK EP interrupts.*/
+    // Disabled for now.
+    // SN32_USB->INTEN |= msk_EP_NAK_EN;
   }
 }
 
@@ -506,7 +526,7 @@ void usb_lld_stop(USBDriver *usbp) {
  */
 void usb_lld_reset(USBDriver *usbp) {
     /* Post reset initialization.*/
-    SN32_USB->INSTSC = (0xFFFFFFFF);
+    SN32_USB->INSTSC = (UINT32_MAX);
 
     /* Set the address to zero during enumeration.*/
     usbp->address = 0;
@@ -529,7 +549,7 @@ void usb_lld_reset(USBDriver *usbp) {
  */
 void usb_lld_set_address(USBDriver *usbp) {
 
-    SN32_USB->ADDR = usbp->address & 0x7F;
+    SN32_USB->ADDR = usbp->address & mskUADDR;
 }
 
 /**
