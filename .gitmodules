@@ -1,3 +1,6 @@
 [submodule "ext/mcux-sdk"]
 	path = ext/mcux-sdk
 	url = https://github.com/NXPmicro/mcux-sdk
+[submodule "ext/gecko_sdk"]
+	path = ext/gecko_sdk
+	url = https://github.com/SiliconLabs/gecko_sdk
