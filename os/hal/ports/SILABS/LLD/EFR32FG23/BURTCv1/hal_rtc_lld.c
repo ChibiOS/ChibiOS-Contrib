@@ -72,8 +72,9 @@ RTCDriver RTCD1;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
-static const int day_offset_by_month[12] = {
-  0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334
+static const int rtc_day_offset_by_month[2][12] = {
+  [0] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 },
+  [1] = { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335 }
 };
 
 static const int rtc_day_of_the_week[7] = {
@@ -111,7 +112,7 @@ __STATIC_INLINE int _rtc_lld_wday(int year, int month, int day) {
   return wday;
 }
 
-__STATIC_INLINE void _rtc_lld_to_timespec(uint32_t tv_sec, uint32_t tv_msec, RTCDateTime* timespec, uint32_t dstflag) {
+__STATIC_INLINE void _rtc_lld_to_timespec_slow(uint32_t tv_sec, uint32_t tv_msec, RTCDateTime* timespec, uint32_t dstflag) {
 
   int year = RTC_BASE_YEAR;
   int day = tv_sec / 86400;
@@ -145,6 +146,9 @@ __STATIC_INLINE void _rtc_lld_to_timespec(uint32_t tv_sec, uint32_t tv_msec, RTC
 
   /* Calculate month. */
   int month = 0;
+  const int *day_offset_by_month = isleap(year) ?
+                                   &rtc_day_offset_by_month[1][0] :
+                                   &rtc_day_offset_by_month[0][0];  
   for (int end = 12; month != end;) {
     int mid = (month + end) / 2;
 
@@ -158,21 +162,66 @@ __STATIC_INLINE void _rtc_lld_to_timespec(uint32_t tv_sec, uint32_t tv_msec, RTC
 
   day -= day_offset_by_month[month - 1];
 
-  if (month > 2) {
-    /* Are we past 29 February? */
-    day -= isleap(year);
-  }
+  day += 1; /* 0 .. 30 -> 1 .. 31 */;
 
   timespec->millisecond = tv_sec * 1000U + tv_msec;
   timespec->dstflag = dstflag;
   timespec->year = year  - RTC_BASE_YEAR;
   timespec->month = month;
-  timespec->day = day + 1 /* 0 .. 30 -> 1 .. 31 */;
-  int dayofweek = _rtc_lld_wday(year,
-                                timespec->month,
-                                timespec->day);
+  timespec->day = day;
+  int dayofweek = _rtc_lld_wday(year, month, day);
   /* wday 0 .. 6: Sun .. Sat -> 1 .. 7: Mon .. Sun */
   timespec->dayofweek = rtc_day_of_the_week[dayofweek];
+}
+
+__STATIC_INLINE void _rtc_lld_to_timespec_approx(uint32_t tv_sec, uint32_t tv_msec, RTCDateTime* timespec, uint32_t dstflag) {
+
+  int day = tv_sec / 86400;
+
+  /* Seconds left after subtracting of all days. */
+  tv_sec -= day * 86400;
+
+  /* Every fourth year from 1980 to 2096 is leap year, so we can use that
+     formula for the next 70 years. */
+  int year = (day * 4) / (365 * 4 + 1);
+
+  day -= year * 365 + (year + 3) / 4;
+
+  year += RTC_BASE_YEAR;
+
+  /* Calculate month. */
+  const int *day_offset_by_month = isleap(year) ?
+                                   &rtc_day_offset_by_month[1][0] :
+                                   &rtc_day_offset_by_month[0][0];
+  int month = 0;
+  for (int end = 12; month != end;) {
+    int mid = (month + end) / 2;
+
+    if (day_offset_by_month[mid] <= day) {
+      month = mid + 1;
+    }
+    else {
+      end = mid;
+    }
+  }
+
+  day -= day_offset_by_month[month - 1];
+
+  day += 1; /* 0 .. 30 -> 1 .. 31 */;
+
+  timespec->millisecond = tv_sec * 1000U + tv_msec;
+  timespec->dstflag = dstflag;
+  timespec->year = year - RTC_BASE_YEAR;
+  timespec->month = month;
+  timespec->day = day;
+  int dayofweek = _rtc_lld_wday(year, month, day);
+  /* wday 0 .. 6: Sun .. Sat -> 1 .. 7: Mon .. Sun */
+  timespec->dayofweek = rtc_day_of_the_week[dayofweek];
+}
+
+__STATIC_INLINE void _rtc_lld_to_timespec(uint32_t tv_sec, uint32_t tv_msec, RTCDateTime* timespec, uint32_t dstflag) {
+
+  return _rtc_lld_to_timespec_approx(tv_sec, tv_msec, timespec, dstflag);
 }
 
 /*===========================================================================*/
@@ -305,17 +354,7 @@ void rtc_lld_init(void) {
   nvicEnableVector(EFR32_BURTC_NUMBER, EFR32_BURTC_PRIORITY);
 }
 
-/**
- * @brief   Set current time.
- * @note    Fractional part of second will be silently ignored.
- * @note    The function can be called from any context.
- *
- * @param[in] rtcp      pointer to RTC driver structure
- * @param[in] timespec  pointer to a @p RTCDateTime structure
- *
- * @notapi
- */
-void rtc_lld_set_time(RTCDriver* rtcp, const RTCDateTime* timespec) {
+__STATIC_INLINE void rtc_lld_set_time_slow(RTCDriver* rtcp, const RTCDateTime* timespec) {
 
   syssts_t sts;
   uint32_t tv_sec, tv_msec;
@@ -336,10 +375,9 @@ void rtc_lld_set_time(RTCDriver* rtcp, const RTCDateTime* timespec) {
 
   int day = timespec->day - 1; /* 1 .. 31 -> 0 .. 30 */
 
-  if (month >= 2) {
-    /* Are we past 29th February? */
-    day += isleap(RTC_BASE_YEAR + timespec->year);
-  }
+  const int *day_offset_by_month = isleap(RTC_BASE_YEAR + timespec->year) ?
+                                   &rtc_day_offset_by_month[1][0] :
+                                   &rtc_day_offset_by_month[0][0];
 
   day += timespec->year * 365 + leap_days_to_last_year +
          day_offset_by_month[month];
@@ -366,6 +404,62 @@ void rtc_lld_set_time(RTCDriver* rtcp, const RTCDateTime* timespec) {
 
 /* Leaving a reentrant critical zone.*/
   osalSysRestoreStatusX(sts);
+}
+
+__STATIC_INLINE void rtc_lld_set_time_approx(RTCDriver *rtcp, const RTCDateTime *timespec) {
+
+  syssts_t sts;
+  uint32_t tv_sec, tv_msec;
+
+  int year = timespec->year;
+
+  const int *day_offset_by_month = isleap(RTC_BASE_YEAR + year) ?
+                                   &rtc_day_offset_by_month[1][0] :
+                                   &rtc_day_offset_by_month[0][0];
+
+  int month = timespec->month - 1; /* 1 .. 12 -> 0 .. 11 */
+
+  int day = timespec->day - 1; /* 1 .. 31 -> 0 .. 30 */
+
+  day += year * 365 + (year + 3) / 4 + day_offset_by_month[month];
+
+  tv_sec = day * 86400 + timespec->millisecond / 1000;
+  tv_msec = timespec->millisecond % 1000;
+
+  /* Entering a reentrant critical zone. */
+  sts = osalSysGetStatusAndLockX();
+
+  /* Clear all counters resetting the overflow counter as well. */
+  BURTC->CNT_CLR = _BURTC_CNT_CNT_MASK;
+
+  *(rtcp->ovf_counter) = 0U;
+  *(rtcp->tv_sec) = tv_sec;
+  *(rtcp->tv_msec) = tv_msec;
+  *(rtcp->dstflag) = timespec->dstflag;
+
+  while ((BURTC->SYNCBUSY & _BURTC_SYNCBUSY_MASK) != 0U);
+
+  if (rtcp->callback != NULL) {
+    rtcp->callback(rtcp, RTC_EVENT_TIME_SET);
+  }
+
+/* Leaving a reentrant critical zone.*/
+  osalSysRestoreStatusX(sts);
+}
+
+/**
+ * @brief   Set current time.
+ * @note    Fractional part of second will be silently ignored.
+ * @note    The function can be called from any context.
+ *
+ * @param[in] rtcp      pointer to RTC driver structure
+ * @param[in] timespec  pointer to a @p RTCDateTime structure
+ *
+ * @notapi
+ */
+void rtc_lld_set_time(RTCDriver *rtcp, const RTCDateTime *timespec) {
+
+  return rtc_lld_set_time_approx(rtcp, timespec);
 }
 
 /**
