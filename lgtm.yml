@@ -20,5 +20,5 @@ extraction:
       build_command:
       - export PATH=${LGTM_WORKSPACE}/gcc-arm/bin:${PATH}
       - export CH_PATH=${LGTM_WORKSPACE}/ChibiOS CHC_PATH=${LGTM_SRC}
-      - ./tools/chbuild.sh testhal/{STM32,NRF51,NRF52,KINETIS}
-      - ./tools/chbuild.sh demos/{STM32,NRF51,NRF52,KINETIS}
+      - ./tools/chbuild.sh testhal/{STM32,NRF51,NRF52,KINETIS,NUMICRO}
+      - ./tools/chbuild.sh demos/{STM32,NRF51,NRF52,KINETIS,NUMICRO}
