@@ -127,6 +127,7 @@ LDSCRIPT = $(STARTUPLD_CONTRIB)/EFR32FG23XF512.ld
 # setting.
 CSRC = $(ALLCSRC) \
        $(TESTSRC) \
+       $(CHIBIOS_CONTRIB)/os/various/bitmap.c \
        $(CHIBIOS)/os/various/syscalls.c \
        main.c
 
@@ -141,7 +142,8 @@ ASMSRC = $(ALLASMSRC)
 ASMXSRC = $(ALLXASMSRC)
 
 # Inclusion directories.
-INCDIR = $(CONFDIR) $(ALLINC) $(TESTINC)
+INCDIR = $(CONFDIR) $(ALLINC) $(TESTINC) \
+         $(CHIBIOS_CONTRIB)/os/various
 
 # Define C warning options here.
 CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes -Wcast-align=strict

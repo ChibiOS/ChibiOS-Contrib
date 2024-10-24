@@ -53,6 +53,12 @@ extern const RAIL_ChannelConfig_t *channelConfigs[];
 
 static RAIL_Handle_t railHandle;
 
+enum {
+  WMBUS_MODE_T1A = 0,
+  WMBUS_MODE_C1A = 1,
+  WMBUS_MODE_S1 = 2
+};
+
 static void send_datagram(void) {
 
   static const uint8_t wmbus_datagram_1[] = {
@@ -63,6 +69,12 @@ static void send_datagram(void) {
   };
 
   CC_ALIGN_DATA(16)static uint8_t railFifo[1024];
+
+  static int config_nr = WMBUS_MODE_T1A;
+  const RAIL_ChannelConfig_t *channel_config = channelConfigs[config_nr];
+  config_nr = (config_nr + 1) % 3;
+  (void)RAIL_ConfigChannels(railHandle, channel_config,
+                            &sli_rail_util_on_channel_config_change);
 
   led_toggle();
 
@@ -104,12 +116,6 @@ void sl_rail_util_on_event(RAIL_Handle_t rail_handle,
 }
 
 void custom_RAIL_Init(void) {
-
-  enum {
-    WMBUS_MODE_T1A = 0,
-    WMBUS_MODE_C1A = 1,
-    WMBUS_MODE_S1 = 2
-  };
 
   RAIL_Status_t status;
   (void)status;
