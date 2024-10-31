@@ -105,6 +105,7 @@ include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/SILABS/EFR32FG23/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/SILABS_EFR32FG23_DK2600A/board.mk
+include $(CHIBIOS_CONTRIB)/ext/xmlmbus/xmlmbus_chibios.mk
 include emlib/emlib.mk
 include raillib/raillib.mk
 # RTOS files (optional).
