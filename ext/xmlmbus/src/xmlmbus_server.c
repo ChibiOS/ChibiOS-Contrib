@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <xmlmbus_server.h>
 
 uint8_t* xmlmbus_server_get_response_buffer(struct xmlmbus_server_ctx *ctx) {
@@ -15,7 +16,7 @@ size_t xmlmbus_server_get_response_buffer_used(const struct xmlmbus_server_ctx *
   return (ctx->buffer.length);
 }
 
-static int xmlmbus_process_control_frame(struct xmlmbus_server_ctx *ctx, uint8_t cfield) {
+static int xmlmbus_server_process_short_frame(struct xmlmbus_server_ctx *ctx, uint8_t cfield) {
 
   if (ctx->ctrl_cmd_table == NULL ||
       ctx->ctrl_cmd_table_size == 0) {
@@ -47,7 +48,7 @@ static int xmlmbus_process_control_frame(struct xmlmbus_server_ctx *ctx, uint8_t
   return rc;
 }
 
-static int xmlmbus_process_long_frame(struct xmlmbus_server_ctx *ctx, uint8_t cfield,
+static int xmlmbus_server_process_long_frame(struct xmlmbus_server_ctx *ctx, uint8_t cfield,
                                       const uint8_t *next_ci, const uint8_t * const last_ci) {
 
   if (ctx->ci_cmd_table == NULL ||
@@ -88,16 +89,16 @@ int xmlmbus_server_process_client_request(struct xmlmbus_server_ctx *ctx, const 
   unsigned cfield, address, length;
 
   if (ctx == NULL || in == NULL || inlen == 0)
-    return XMLMBUS_SERVER_OK;
+    return XMLMBUS_SERVER_ERROR;
 
   ctx->buffer.length = 0;
 
   switch (inlen) {
   case MBUS_FRAME_SIZE_SINGLE_CHARACTER:
-    if (ctx->single_character_handler == NULL)
-      rc = XMLMBUS_SERVER_UNIMPLEMENTED_SINGLE_CHARACTER_FRAME_HANDLER;
-    else
+    if (ctx->single_character_handler != NULL)
       rc = ctx->single_character_handler(ctx);
+    else
+      rc = XMLMBUS_SERVER_UNIMPLEMENTED_SINGLE_CHARACTER_FRAME_HANDLER;
     break;
 
   case MBUS_FRAME_SIZE_SHORT:
@@ -105,10 +106,13 @@ int xmlmbus_server_process_client_request(struct xmlmbus_server_ctx *ctx, const 
     address = in[2];
     //length = MBUS_FRAME_SIZE_DATA_SHORT;
 
-    if (address != ctx->address)
-      return XMLMBUS_SERVER_NOT_FOR_ME;
+    if ((cfield & MBUS_CFIELD_REQUEST) == 0)
+      return XMLMBUS_SERVER_ERROR_WRONG_DIRECTION_IN_CFIELD;
 
-    rc = xmlmbus_process_control_frame(ctx, cfield);
+    if (address == MBUS_ADDRESS_BROADCAST_ALL_REPLY || address == ctx->address)
+      rc = xmlmbus_server_process_short_frame(ctx, cfield);
+    else
+      rc = XMLMBUS_SERVER_NOT_FOR_ME;
     break;
 
   default:
@@ -116,11 +120,18 @@ int xmlmbus_server_process_client_request(struct xmlmbus_server_ctx *ctx, const 
     address = in[5];
     length = in[1];
 
-    if (address != ctx->address)
-      return XMLMBUS_SERVER_NOT_FOR_ME;
+    if ((cfield & MBUS_CFIELD_REQUEST) == 0)
+      return XMLMBUS_SERVER_ERROR_WRONG_DIRECTION_IN_CFIELD;
 
-    rc = xmlmbus_process_long_frame(ctx, cfield, &in[6], &in[4 + length]);
+    if (address == MBUS_ADDRESS_BROADCAST_ALL_REPLY || address == ctx->address)
+      rc = xmlmbus_server_process_long_frame(ctx, cfield, &in[6], &in[4 + length]);
+    else
+      rc = XMLMBUS_SERVER_NOT_FOR_ME;
     break;
+  }
+
+  if (rc == XMLMBUS_SERVER_OK) {
+    ctx->access_number++;
   }
 
   return rc;

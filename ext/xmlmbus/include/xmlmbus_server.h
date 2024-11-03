@@ -8,13 +8,19 @@
 enum xmlmbus_server_error {
   XMLMBUS_SERVER_OK = 0, /* Must have the same value as XMLMBUS_OK. */
 
-  XMLMBUS_SERVER_NOT_FOR_ME = 0x1000, /* Must be "above" all other XMLLMBUS_ERROR_x. */
+  XMLMBUS_SERVER_ERROR = 0x1000, /* Must be "above" all other XMLLMBUS_ERROR_x. */
+  XMLMBUS_SERVER_ERROR_NO_MEMORY,
+  XMLMBUS_SERVER_ERROR_WRONG_DIRECTION_IN_CFIELD,
 
-  XMLMBUS_SERVER_UNIMPLEMENTED_SINGLE_CHARACTER_FRAME_HANDLER = 0x1010,
+  XMLMBUS_SERVER_NOT_FOR_ME = 0x1010,
+
+  XMLMBUS_SERVER_UNIMPLEMENTED_SINGLE_CHARACTER_FRAME_HANDLER = 0x1020,
   XMLMBUS_SERVER_UNIMPLEMENTED_SHORT_FRAME_HANDLER,
   XMLMBUS_SERVER_UNIMPLEMENTED_LONG_FRAME_HANDLER,
   XMLMBUS_SERVER_ERROR_IN_SHORT_FRAME_HANDLER,
   XMLMBUS_SERVER_ERROR_IN_LONG_FRAME_HANDLER,
+
+  XMLMBUS_SERVER_CANT_OPEN_INTERFACE = 0x1030,
 };
 
 struct xmlmbus_server_ctx; /* Forward declaration. */
@@ -45,6 +51,14 @@ struct xmlmbus_server_ctx
     struct xmlmbus_buffer buffer;
 
     uint8_t address;
+
+    uint32_t ident_no;
+    uint16_t manufacturer;
+    uint8_t version;
+    uint8_t medium;
+
+    uint8_t access_number;
+    uint8_t status;
 
     const struct ctrl_cmd *ctrl_cmd_table;
     size_t ctrl_cmd_table_size;

@@ -1,14 +1,14 @@
 #include <xmlmbus_mbus_frame.h>
 
-static uint8_t _xmlmbus_crc_mbus(const uint8_t *buf, unsigned buflen) {
+static uint8_t _xmlmbus_mbus_checksum(const uint8_t *buf, unsigned buflen) {
 
-  uint8_t crc = 0;
+  uint8_t checksum = 0;
 
   while (buflen--) {
-    crc += *buf++;
+    checksum += *buf++;
   }
 
-  return crc;
+  return checksum;
 }
 
 static void _xmlmbus_clear_error_mask(struct xmlmbus_mbus_frame_state_machine_data *mach) {
@@ -21,7 +21,7 @@ static void _xmlmbus_reset_state_machine(struct xmlmbus_mbus_frame_state_machine
   mach->state = XMLMBUS_MBUS_RX_FRAME_STATE_WAIT_START_1;
   mach->length_1 = 0u;
   mach->length_2 = 0u;
-  mach->crc = 0u;
+  mach->checksum = 0u;
 
   mach->bytes_to_receive = 0u;
   mach->datalen = 0u;
@@ -39,9 +39,9 @@ static int _xmlmbus_is_start2_error(const struct xmlmbus_mbus_frame_state_machin
   return (mach->status.start2_error);
 }
 
-static int _xmlmbus_is_crc_error(const struct xmlmbus_mbus_frame_state_machine_data *mach) {
+static int _xmlmbus_is_checksum_error(const struct xmlmbus_mbus_frame_state_machine_data *mach) {
 
-  return (mach->status.crc_error);
+  return (mach->status.checksum_error);
 }
 
 static int _xmlmbus_is_stop_error(const struct xmlmbus_mbus_frame_state_machine_data *mach) {
@@ -143,12 +143,12 @@ int xmlmbus_process_state_machine(struct xmlmbus_mbus_frame_state_machine_data *
     mach->state = XMLMBUS_MBUS_RX_FRAME_STATE_WAIT_STOP;
 
     if (MBUS_FRAME_SHORT_START == mach->data[0]) {
-      uint8_t crc = _xmlmbus_crc_mbus(&mach->data[1], mach->datalen - 1u - 1u);
-      mach->status.crc_error = (crc == b) ? 0 : 1;
+      uint8_t checksum = _xmlmbus_mbus_checksum(&mach->data[1], mach->datalen - 1u - 1u);
+      mach->status.checksum_error = (checksum == b) ? 0 : 1;
     }
     else if (MBUS_FRAME_LONG_START == mach->data[0]) {
-      uint8_t crc = _xmlmbus_crc_mbus(&mach->data[4], mach->datalen - 4u - 1u);
-      mach->status.crc_error = (crc == b) ? 0 : 1;
+      uint8_t checksum = _xmlmbus_mbus_checksum(&mach->data[4], mach->datalen - 4u - 1u);
+      mach->status.checksum_error = (checksum == b) ? 0 : 1;
     }
     else {
       /* Unknown frame? */
@@ -194,9 +194,9 @@ int xmlmbus_mbus_frame_is_start2_error(const struct xmlmbus_mbus_frame_state_mac
   return (_xmlmbus_is_start2_error(mach));
 }
 
-int xmlmbus_mbus_frame_is_crc_error(const struct xmlmbus_mbus_frame_state_machine_data *mach) {
+int xmlmbus_mbus_frame_is_checksum_error(const struct xmlmbus_mbus_frame_state_machine_data *mach) {
 
-  return (_xmlmbus_is_crc_error(mach));
+  return (_xmlmbus_is_checksum_error(mach));
 }
 
 int xmlmbus_mbus_frame_is_stop_error(const struct xmlmbus_mbus_frame_state_machine_data *mach) {
@@ -210,7 +210,7 @@ int xmlmbus_mbus_frame_is_good(const struct xmlmbus_mbus_frame_state_machine_dat
 
   error_mask |= _xmlmbus_is_length_error(mach) <<  0;
   error_mask |= _xmlmbus_is_start2_error(mach) <<  1;
-  error_mask |= _xmlmbus_is_crc_error(mach) <<  2;
+  error_mask |= _xmlmbus_is_checksum_error(mach) <<  2;
   error_mask |= _xmlmbus_is_stop_error(mach) <<  3;
 
   return ((error_mask == 0) ? 1 : 0);
@@ -221,9 +221,9 @@ int xmlmbus_mbus_frame_is_rx_complete(const struct xmlmbus_mbus_frame_state_mach
   return (mach->status.rx_complete);
 }
 
-uint8_t xmlmbus_crc_mbus(const uint8_t *buf, unsigned buflen) {
+uint8_t xmlmbus_mbus_checksum(const uint8_t *buf, unsigned buflen) {
 
-  return (_xmlmbus_crc_mbus(buf, buflen));
+  return (_xmlmbus_mbus_checksum(buf, buflen));
 }
 
 const uint8_t* xmlmbus_mbus_frame_get_data(const struct xmlmbus_mbus_frame_state_machine_data *mach) {

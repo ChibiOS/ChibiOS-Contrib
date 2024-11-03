@@ -92,3 +92,8 @@ int xmlmbus_buffer_write_afield(struct xmlmbus_buffer *packet, uint8_t src) {
   return (_xmlmbus_buffer_write_u8(packet, src));
 }
 
+int xmlmbus_buffer_write_cifield(struct xmlmbus_buffer *packet, uint8_t src) {
+
+  return (_xmlmbus_buffer_write_u8(packet, src));
+}
+

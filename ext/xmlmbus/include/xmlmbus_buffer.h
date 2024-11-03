@@ -32,6 +32,8 @@ int xmlmbus_buffer_write_cfield(struct xmlmbus_buffer*, uint8_t);
 
 int xmlmbus_buffer_write_afield(struct xmlmbus_buffer*, uint8_t);
 
+int xmlmbus_buffer_write_cifield(struct xmlmbus_buffer*, uint8_t);
+
 #ifdef __cplusplus
 }
 #endif

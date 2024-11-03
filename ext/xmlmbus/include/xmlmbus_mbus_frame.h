@@ -19,7 +19,7 @@ struct xmlmbus_mbus_frame_state_machine_data {
   int state;
   uint8_t length_1;
   uint8_t length_2;
-  uint8_t crc;
+  uint8_t checksum;
   unsigned bytes_to_receive;
   unsigned datalen;
 
@@ -30,13 +30,47 @@ struct xmlmbus_mbus_frame_state_machine_data {
 
       unsigned length_error: 1;
       unsigned start2_error: 1;
-      unsigned crc_error: 1;
+      unsigned checksum_error: 1;
       unsigned stop_error: 1;
       unsigned rx_complete: 1;
     } status;
   };
 
   uint8_t data[MBUS_FRAME_SIZE_MAX];
+};
+
+struct mbus_single_frame {
+  uint8_t start;
+};
+
+struct mbus_short_frame {
+  uint8_t start;
+  uint8_t c;
+  uint8_t a;
+  uint8_t checksum;
+  uint8_t stop;
+};
+
+struct mbus_control_frame {
+  uint8_t start;
+  uint8_t length_1;
+  uint8_t length_2;
+  uint8_t start_2;
+  uint8_t c;
+  uint8_t a;
+  uint8_t ci;
+  uint8_t checksum;
+  uint8_t stop;
+};
+
+struct mbus_long_frame_header {
+  uint8_t start;
+  uint8_t length_1;
+  uint8_t length_2;
+  uint8_t start_2;
+  uint8_t c;
+  uint8_t a;
+  uint8_t ci;
 };
 
 #ifdef __cplusplus
@@ -56,13 +90,13 @@ int xmlmbus_mbus_frame_is_start2_error(const struct xmlmbus_mbus_frame_state_mac
 
 int xmlmbus_mbus_frame_is_stop_error(const struct xmlmbus_mbus_frame_state_machine_data *mach);
 
-int xmlmbus_mbus_frame_is_crc_error(const struct xmlmbus_mbus_frame_state_machine_data *mach);
+int xmlmbus_mbus_frame_is_checksum_error(const struct xmlmbus_mbus_frame_state_machine_data *mach);
 
 int xmlmbus_mbus_frame_is_good(const struct xmlmbus_mbus_frame_state_machine_data *mach);
 
 int xmlmbus_mbus_frame_is_rx_complete(const struct xmlmbus_mbus_frame_state_machine_data *mach);
 
-uint8_t xmlmbus_crc_mbus(const uint8_t *buf, unsigned buflen);
+uint8_t xmlmbus_mbus_checksum(const uint8_t *buf, unsigned buflen);
 
 const uint8_t* xmlmbus_mbus_frame_get_data(const struct xmlmbus_mbus_frame_state_machine_data *mach);
 
