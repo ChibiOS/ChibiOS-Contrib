@@ -3,6 +3,8 @@
 *~
 .dep
 build
+*.vpj
+*.vpw
 *.vpwhistuxml
 *.vpwhistu
 *.vtg

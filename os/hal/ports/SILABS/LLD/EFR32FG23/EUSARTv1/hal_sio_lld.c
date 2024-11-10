@@ -173,6 +173,8 @@ __STATIC_INLINE void _sio_lld_start_eusart(SIODriver* siop) {
 
   _sio_lld_reg_masked_write(&(usart->FRAMECFG), _EUSART_FRAMECFG_MASK, config->framecfg);
 
+  //_sio_lld_reg_masked_write(&(usart->CFG1), _EUSART_CFG1_MASK, EUSART_CFG1_TXFIW_SIXTEENFRAMES);
+
   /* Enable module before writing into CLKDIV register. */
   usart->EN_SET = EUSART_EN_EN;
 
@@ -780,10 +782,10 @@ bool _sio_lld_is_rx_empty(SIODriver* siop) {
 
   if (_sio_lld_is_usart(siop)) {
     USART_TypeDef* usart = siop->usart;
-    rv = (usart->IF & USART_IF_RXDATAV) == 0U;
+    rv = (usart->STATUS & USART_STATUS_RXDATAV) == 0U;
   } else {
     EUSART_TypeDef* usart = siop->usart;
-    rv = (usart->IF & EUSART_IF_RXFL) == 0U;
+    rv = (usart->STATUS & EUSART_STATUS_RXFL) == 0U;
   }
 
   return rv;
@@ -826,10 +828,10 @@ bool _sio_lld_is_tx_full(SIODriver* siop) {
 
   if (_sio_lld_is_usart(siop)) {
     USART_TypeDef* usart = siop->usart;
-    rv = (usart->IF & USART_IF_TXBL) == 0U;
+    rv = (usart->STATUS & USART_STATUS_TXBL) == 0U;
   } else {
     EUSART_TypeDef* usart = siop->usart;
-    rv = (usart->IF & EUSART_IF_TXFL) == 0U;
+    rv = (usart->STATUS & EUSART_STATUS_TXFL) == 0U;
   }
 
   return rv;
@@ -841,10 +843,10 @@ bool _sio_lld_is_tx_ongoing(SIODriver* siop) {
 
   if (_sio_lld_is_usart(siop)) {
     USART_TypeDef* usart = siop->usart;
-    rv = (usart->IF & USART_IF_TXC) == 0U;
+    rv = (usart->STATUS & USART_STATUS_TXC) == 0U;
   } else {
     EUSART_TypeDef* usart = siop->usart;
-    rv = (usart->IF & EUSART_IF_TXC) == 0U;
+    rv = (usart->STATUS & EUSART_STATUS_TXC) == 0U;
   }
 
   return rv;
