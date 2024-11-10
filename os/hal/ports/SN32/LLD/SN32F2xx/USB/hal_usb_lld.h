@@ -83,6 +83,13 @@
 #if !defined(SN32_USB_HOST_WAKEUP_DURATION) || defined(__DOXYGEN__)
 #define SN32_USB_HOST_WAKEUP_DURATION        2
 #endif
+
+/**
+ * @brief   USB driver using SRAM direct.
+ */
+#if !defined(SN32_USB_DIRECT_SRAM) || defined(__DOXYGEN__)
+#define SN32_USB_DIRECT_SRAM                FALSE
+#endif
 /** @} */
 
 /*===========================================================================*/

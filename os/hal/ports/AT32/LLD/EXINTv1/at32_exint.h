@@ -112,11 +112,11 @@ typedef uint32_t exintmode_t;
  * @special
  */
 #define exintGetAndClearGroup1(mask, out) do {                              \
-  uint32_t intsts;                                                          \
+  uint32_t intsts1;                                                          \
                                                                             \
-  intsts = EXINT->INTSTS & (mask);                                          \
-  (out) = intsts;                                                           \
-  EXINT->INTSTS = intsts;                                                   \
+  intsts1 = EXINT->INTSTS & (mask);                                          \
+  (out) = intsts1;                                                           \
+  EXINT->INTSTS = intsts1;                                                   \
 } while (false)
 
 /*===========================================================================*/

@@ -56,5 +56,5 @@ void __early_init(void) {
  * @brief   Board-specific initialization code.
  */
 void boardInit(void) {
-  SN_SYS0->SWDCTRL_b.SWDDIS = 1; // Disable SWD
+
 }

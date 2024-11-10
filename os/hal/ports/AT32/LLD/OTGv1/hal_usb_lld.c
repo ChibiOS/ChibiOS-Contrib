@@ -2,6 +2,7 @@
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
     ChibiOS - Copyright (C) 2023..2024 HorrorTroll
     ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2024 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -783,6 +784,8 @@ void usb_lld_start(USBDriver *usbp) {
 
 #if AT32_USB_USE_OTG2
     if (&USBD2 == usbp) {
+
+#if AT32_OTG2_SUPPORTS_HS
       /* OTG HS clock enable and reset.*/
       crmEnableOTG_HS(true);
       crmResetOTG_HS();
@@ -791,16 +794,8 @@ void usb_lld_start(USBDriver *usbp) {
       nvicEnableVector(AT32_OTG2_NUMBER, AT32_USB_OTG2_IRQ_PRIORITY);
 
       /* - Forced device mode.
-         - USB turn-around time = USBTRDTIM_VALUE_HS or USBTRDTIM_VALUE_FS.*/
-#if defined(BOARD_OTG2_USES_ULPI)
-      /* High speed ULPI PHY.*/
+               - USB turn-around time = USBTRDTIM_VALUE_HS or USBTRDTIM_VALUE_FS.*/
       otgp->GUSBCFG = GUSBCFG_FDEVMODE | GUSBCFG_USBTRDTIM(USBTRDTIM_VALUE_HS);
-#else
-      otgp->GUSBCFG = GUSBCFG_FDEVMODE | GUSBCFG_USBTRDTIM(USBTRDTIM_VALUE_FS) |
-                      GUSBCFG_PHYSEL;
-#endif
-
-#if defined(BOARD_OTG2_USES_ULPI)
 #if AT32_USE_USB_OTG2_HS
       /* USB 2.0 High Speed PHY in HS mode.*/
       otgp->DCFG = 0x02200000 | DCFG_DEVSPD_HS;
@@ -808,7 +803,20 @@ void usb_lld_start(USBDriver *usbp) {
       /* USB 2.0 High Speed PHY in FS mode.*/
       otgp->DCFG = 0x02200000 | DCFG_DEVSPD_HS_FS;
 #endif
+
 #else
+      /* OTG FS clock enable and reset.*/
+      crmEnableOTG_FS2(true);
+      crmResetOTG_FS2();
+
+      /* Enables IRQ vector.*/
+      nvicEnableVector(AT32_OTG2_NUMBER, AT32_USB_OTG2_IRQ_PRIORITY);
+
+      /* - Forced device mode.
+                     - USB turn-around time = USBTRDTIM_VALUE_HS or USBTRDTIM_VALUE_FS.*/
+      otgp->GUSBCFG = GUSBCFG_FDEVMODE | GUSBCFG_USBTRDTIM(USBTRDTIM_VALUE_FS) |
+                      GUSBCFG_PHYSEL;
+
       /* 48MHz 1.1 PHY.*/
       otgp->DCFG = 0x02200000 | DCFG_DEVSPD_FS11;
 #endif
