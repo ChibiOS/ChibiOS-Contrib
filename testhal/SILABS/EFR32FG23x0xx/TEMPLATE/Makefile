@@ -105,7 +105,7 @@ include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/SILABS/EFR32FG23/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/SILABS_EFR32FG23_DK2600A/board.mk
-include $(CHIBIOS_CONTRIB)/ext/xmlmbus/xmlmbus_chibios.mk
+include xmlmbus/xmlmbus_chibios.mk
 include emlib/emlib.mk
 include raillib/raillib.mk
 # RTOS files (optional).
@@ -178,7 +178,8 @@ UDEFS += \
         -DCLKIN0_FREQ=0UL \
         -DLFRCO_FREQ=32768UL \
         -DULFRCO_FREQ=1000UL \
-        -DLFXO_FREQ=LFRCO_FREQ
+        -DLFXO_FREQ=LFRCO_FREQ \
+        -DXMLMBUS_SERVER_HAS_MALLOC=0
 #        -DSL_TRUSTZONE_NONSECURE
 #        -DSL_TRUSTZONE_SECURE \
 

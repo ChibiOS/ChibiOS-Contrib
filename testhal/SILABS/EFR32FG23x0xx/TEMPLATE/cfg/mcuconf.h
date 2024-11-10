@@ -70,7 +70,7 @@
 #define EFR32_EM4GRPACLKSEL                 EFR32_EM4GRPACLKSEL_LFXO
 #define EFR32_EM4GRPACLK_ENABLED            (EFR32_EM4GRPACLKSEL != EFR32_EM4GRPACLKSEL_NOCLOCK)
 
-#define EFR32_EUSART1SEL                    EFR32_EUSART1SEL_EM01GRPCCLK
+#define EFR32_EUSART1SEL                    EFR32_EUSART1SEL_LFXO
 
 #define EFR32_EUSART23SEL                   EFR32_EUSART23SEL_HFRCODPLL
 
@@ -92,9 +92,9 @@
  * SIO driver system settings.
  */
 #define EFR32_SIO_USE_EUSART1               TRUE
-#define EFR32_SIO_USE_EUSART2               TRUE
+#define EFR32_SIO_USE_EUSART2               FALSE
 #define EFR32_SIO_USE_EUSART3               FALSE
-#define EFR32_SIO_USE_USART1                TRUE
+#define EFR32_SIO_USE_USART1                FALSE
 #define EFR32_EUSART1_RX_IRQ_PRIORITY       4
 #define EFR32_EUSART1_TX_IRQ_PRIORITY       4
 #define EFR32_EUSART2_RX_IRQ_PRIORITY       4
