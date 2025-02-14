@@ -363,19 +363,23 @@ static bool data_read_write10(SCSITarget *scsip, const uint8_t *cmd) {
     blkGetInfo(blkdev, &bdi);
     size_t bs = bdi.blk_size;
     uint8_t *buf = scsip->config->blkbuf;
+    uint32_t n_bufs = scsip->config->blkbufsize / bs;
 
     size_t i = 0;
-    for (i=0; i<req.blk_cnt; i++) {
+    while (i < req.blk_cnt) {
+      size_t n = n_bufs > (req.blk_cnt - i) ? (req.blk_cnt - i) : n_bufs;
+
       if (cmd[0] == SCSI_CMD_READ_10) {
         // TODO: block error handling
-        blkRead(blkdev, req.first_lba + i, buf, 1);
-        tr->transmit(tr, buf, bs);
+        blkRead(blkdev, req.first_lba + i, buf, n);
+        tr->transmit(tr, buf, bs * n);
       }
       else {
         // TODO: block error handling
-        tr->receive(tr, buf, bs);
-        blkWrite(blkdev, req.first_lba + i, buf, 1);
+        tr->receive(tr, buf, bs * n);
+        blkWrite(blkdev, req.first_lba + i, buf, n);
       }
+      i += n;
     }
   }
   return SCSI_SUCCESS;
