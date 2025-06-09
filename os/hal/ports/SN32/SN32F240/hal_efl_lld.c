@@ -78,7 +78,7 @@ static inline void sn32_flash_start_pgm(EFlashDriver *eflp) {
 static inline void sn32_flash_clear_status(EFlashDriver *eflp) {
 
   /* Clearing error conditions.*/
-  eflp->flash->STATUS_b.ERR = 0;
+  eflp->flash->STATUS_b.PGERR = 0;
 }
 
 static inline void sn32_flash_wait_busy(EFlashDriver *eflp) {
@@ -89,10 +89,10 @@ static inline void sn32_flash_wait_busy(EFlashDriver *eflp) {
 }
 
 static inline flash_error_t sn32_flash_check_errors(EFlashDriver *eflp) {
-  uint32_t error = eflp->flash->STATUS_b.ERR;
+  uint32_t error = eflp->flash->STATUS_b.PGERR;
 
   /* Clearing error conditions.*/
-  eflp->flash->STATUS_b.ERR = 0;
+  eflp->flash->STATUS_b.PGERR = 0;
 
   /* Decoding relevant errors.*/
   if ((error) != 0U) {
@@ -198,7 +198,7 @@ flash_error_t efl_lld_read(void *instance, flash_offset_t offset,
   sn32_flash_clear_status(devp);
 
   /* Actual read implementation.*/
-  memcpy((void *)rp, (const void *)efl_lld_descriptor.address + offset, n);
+  memcpy((void *)rp, (const void *)(efl_lld_descriptor.address + offset), n);
 
   /* Ready state again.*/
   devp->state = FLASH_READY;

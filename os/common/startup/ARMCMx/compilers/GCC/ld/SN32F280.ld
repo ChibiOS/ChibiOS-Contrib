@@ -85,7 +85,7 @@ REGION_ALIAS("HEAP_RAM", ram0);
 INCLUDE rules.ld
 
 
-_flag_start = 0xFFFC;
+_flag_start = 0x1FFFC;
 
 SECTIONS
 {

@@ -22,11 +22,9 @@
  *
  ******************************************************************************/
 
-
 #include <stdint.h>
 #include <system_SN32F2xx.h>
 #include <mcuconf.h>
-
 
 /*
 //-------- <<< Use Configuration Wizard in Context Menu >>> ------------------
@@ -92,136 +90,142 @@
 */
 
 #ifndef SYS_CLOCK_SETUP
-#define SYS_CLOCK_SETUP		1
+#define SYS_CLOCK_SETUP        1
 #endif
 #ifndef SYS0_CLKCFG_VAL
-#define SYS0_CLKCFG_VAL		0
+#define SYS0_CLKCFG_VAL        PLL
 #endif
 #ifndef EHS_FREQ
-#define EHS_FREQ			10
+#define EHS_FREQ               12
 #endif
 #ifndef PLL_MSEL
-#define PLL_MSEL			12
+#define PLL_MSEL               24
 #endif
 #ifndef PLL_PSEL
-#define PLL_PSEL			3
+#define PLL_PSEL               3
 #endif
 #ifndef PLL_FSEL
-#define PLL_FSEL			0
+#define PLL_FSEL               0
 #endif
 #ifndef PLL_CLKIN
-#define PLL_CLKIN			1
+#define PLL_CLKIN              0
 #endif
 #ifndef PLL_ENABLE
-#define PLL_ENABLE			0
+#define PLL_ENABLE             1
 #endif
 #ifndef AHB_PRESCALAR
-#define AHB_PRESCALAR 		0x0
+#define AHB_PRESCALAR          0x0
 #endif
 #ifndef CLKOUT_SEL_VAL
-#define CLKOUT_SEL_VAL 		0x0
+#define CLKOUT_SEL_VAL         0x0
 #endif
 
 /*
 //-------- <<< end of configuration section >>> ------------------------------
 */
 
-
 /*----------------------------------------------------------------------------
-  DEFINES
+  Defines
  *----------------------------------------------------------------------------*/
-#ifndef IHRC
-#define IHRC            0
-#endif
-#ifndef ILRC
-#define ILRC            1
-#endif
-#ifndef EHSXTAL
-#define EHSXTAL     2
-#endif
-#ifndef ELSXTAL
-#define ELSXTAL     3
-#endif
-#ifndef PLL
-#define PLL             4
-#endif
+#define IHRC                   0
+#define ILRC                   1
+#define EHSXTAL                2
+#define ELSXTAL                3
+#define PLL                    4
 
 /*----------------------------------------------------------------------------
   Define clocks
  *----------------------------------------------------------------------------*/
-#define __IHRC_FREQ			(12000000UL)
-#define __ILRC_FREQ			(32000UL)
-#define __ELS_XTAL_FREQ		(32768UL)
+#define __IHRC_FREQ            (12000000UL)
+#define __ILRC_FREQ            (32000UL)
+#define __ELS_XTAL_FREQ		   (32768UL)
 
 #if (SYS_CLOCK_SETUP)
-#define SYS0_PLLCTRL_VAL	(PLL_ENABLE<<15) | (PLL_CLKIN<<12) | (PLL_FSEL<<8) | (PLL_PSEL<<5) |  PLL_MSEL
+#define SYS0_PLLCTRL_VAL       (PLL_ENABLE<<15) | (PLL_CLKIN<<12) | (PLL_FSEL<<8) | (PLL_PSEL<<5) | PLL_MSEL
 #endif
 
 /*----------------------------------------------------------------------------
   Clock Variable definitions
  *----------------------------------------------------------------------------*/
-uint32_t SystemCoreClock;	/*!< System Clock Frequency (Core Clock)*/
-
+uint32_t SystemCoreClock;                                    /* System Clock Frequency (Core Clock).*/
 
 /*----------------------------------------------------------------------------
   Clock functions
  *----------------------------------------------------------------------------*/
-void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
-{
+void SystemCoreClockUpdate (void) {                          /* Get Core Clock Frequency.*/
     uint32_t AHB_prescaler = 0;
     uint32_t F;
 
-    switch (SN_SYS0->CLKCFG_b.SYSCLKST)
-    {
-        case 0:		//IHRC
+    switch (SN_SYS0->CLKCFG_b.SYSCLKST) {
+        case 0:                                              /* IHRC clock.*/
             SystemCoreClock = __IHRC_FREQ;
             break;
-        case 1:		//ILRC
+        case 1:                                              /* ILRC clock.*/
             SystemCoreClock = __ILRC_FREQ;
             break;
-        case 2:		//EHS X'TAL
-#if (SYS_CLOCK_SETUP)
-            SystemCoreClock = EHS_FREQ * 1000000;
-#else
-            //TODO: User had to assign EHS X'TAL frequency.
-			SystemCoreClock = 10000000UL / AHB_prescaler;
-#endif
+        case 2:                                              /* EHS X'TAL clock.*/
+            #if (SYS_CLOCK_SETUP)
+                SystemCoreClock = EHS_FREQ * 1000000;
+            #else
+                //TODO: User had to assign EHS X'TAL frequency.
+                SystemCoreClock = 10000000UL / AHB_prescaler;
+            #endif
             break;
-        case 3:		//ELS X'TAL
+        case 3:                                              /* ELS X'TAL clock.*/
             SystemCoreClock = __ELS_XTAL_FREQ;
             break;
-        case 4: 	//PLL
-#if (SYS_CLOCK_SETUP)
-            if (PLL_FSEL == 0)
-                F = 1;
-            else
-                F = 2;
-            if (PLL_CLKIN == 0x0)	//IHRC as F_CLKIN
-                SystemCoreClock = __IHRC_FREQ / F * PLL_MSEL / PLL_PSEL /2;
-            else
-                SystemCoreClock = EHS_FREQ * 1000000 / F * PLL_MSEL / PLL_PSEL /2;
-#else
-            //TODO: User had to assign PLL output frequency.
-			SystemCoreClock = 50000000UL;
-#endif
+        case 4:                                              /* PLL clock.*/
+            #if (SYS_CLOCK_SETUP)
+                if (PLL_FSEL == 0)
+                    F = 1;
+                else
+                    F = 2;
+                if (PLL_CLKIN == 0x0)	//IHRC as F_CLKIN
+                    SystemCoreClock = __IHRC_FREQ / F * PLL_MSEL / PLL_PSEL /2;
+                else
+                    SystemCoreClock = EHS_FREQ * 1000000 / F * PLL_MSEL / PLL_PSEL /2;
+            #else
+                //TODO: User had to assign PLL output frequency.
+                SystemCoreClock = 50000000UL;
+            #endif
             break;
         default:
             break;
     }
 
-    switch (SN_SYS0->AHBCP)
-    {
-        case 0:	AHB_prescaler = 1;	break;
-        case 1:	AHB_prescaler = 2;	break;
-        case 2:	AHB_prescaler = 4;	break;
-        case 3:	AHB_prescaler = 8;	break;
-        case 4:	AHB_prescaler = 16;	break;
-        case 5:	AHB_prescaler = 32;	break;
-        case 6:	AHB_prescaler = 64;	break;
-        case 7:	AHB_prescaler = 128;break;
-        case 8:	AHB_prescaler = 256;break;
-        case 9:	AHB_prescaler = 512;break;
-        default: break;
+    switch (SN_SYS0->AHBCP) {
+        case 0:
+            AHB_prescaler = 1;
+            break;
+        case 1:
+            AHB_prescaler = 2;
+            break;
+        case 2:
+            AHB_prescaler = 4;
+            break;
+        case 3:
+            AHB_prescaler = 8;
+            break;
+        case 4:
+            AHB_prescaler = 16;
+            break;
+        case 5:
+            AHB_prescaler = 32;
+            break;
+        case 6:
+            AHB_prescaler = 64;
+            break;
+        case 7:
+            AHB_prescaler = 128;
+            break;
+        case 8:
+            AHB_prescaler = 256;
+            break;
+        case 9:
+            AHB_prescaler = 512;
+            break;
+        default:
+            break;
     }
 
     SystemCoreClock /= AHB_prescaler;
@@ -238,63 +242,65 @@ void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
  * @brief  Setup the microcontroller system.
  *         Initialize the System.
  */
-void SystemInit (void)
-{
+void SystemInit (void) {
+    SN_FLASH->LPCTRL = 0x5AFA0000;                      /* Disable Slow mode power saving.*/
 
 #if (SYS_CLOCK_SETUP)
+    #if (SYS0_CLKCFG_VAL == IHRC)                       /* IHRC clock.*/
+        SN_SYS0->ANBCTRL |= (1<<0);                     /* Enable IHRC.*/
+        while ((SN_SYS0->CSST & 0x01) != 0x01);         /* Check IHRC ready.*/
+        SN_SYS0->CLKCFG = 0x00;                 
+        while ((SN_SYS0->CLKCFG & 0x70) != 0x00);       /* Switch IHRC.*/
+    #endif
 
-#if SYS0_CLKCFG_VAL == IHRC			//IHRC
+    #if (SYS0_CLKCFG_VAL == ILRC)                       /* ILRC clock.*/
+        SN_SYS0->CLKCFG = 0x01;
+        while ((SN_SYS0->CLKCFG & 0x70) != 0x10);       /* Switch ILRC.*/
+    #endif
 
-#endif
+    #if (SYS0_CLKCFG_VAL == EHSXTAL)                    /* EHS XTAL clock.*/
+        #if (EHS_FREQ > 12)
+            SN_SYS0->ANBCTRL |= (1<<5);                 /* Enable XTAL > 12MHz.*/
+        #else
+            SN_SYS0->ANBCTRL &=~(1<<5);                 /* Enable XTAL <= 12MHz.*/
+        #endif
 
-#if SYS0_CLKCFG_VAL == ILRC			//ILRC
-    SN_SYS0->CLKCFG = 0x1;
-    while ((SN_SYS0->CLKCFG & 0x70) != 0x10);
-#endif
+        SN_SYS0->ANBCTRL |= (1<<4);                     /* Enable EHS XTAL.*/
+        while ((SN_SYS0->CSST & 0x10) != 0x10);         /* Check EHS XTAL ready.*/
+        SN_SYS0->CLKCFG = 0x02;
+        while ((SN_SYS0->CLKCFG & 0x70) != 0x20);       /* Switch EHS XTAL.*/
+    #endif
 
-#if (SYS0_CLKCFG_VAL == EHSXTAL)	//EHS XTAL
-    #if (EHS_FREQ > 12)
-	SN_SYS0->ANBCTRL |= (1<<5);
-	#else
-	SN_SYS0->ANBCTRL &=~(1<<5);
-	#endif
-	SN_SYS0->ANBCTRL |= (1<<4);
-	while ((SN_SYS0->CSST & 0x10) != 0x10);
-	SN_SYS0->CLKCFG = 0x2;
-    while ((SN_SYS0->CLKCFG & 0x70) != 0x20);
-#endif
+    #if (SYS0_CLKCFG_VAL == ELSXTAL)                    /* ELS XTAL clock.*/
+        SN_SYS0->ANBCTRL |= (1<<2);                     /* Enable ELS XTAL.*/
+        while ((SN_SYS0->CSST & 0x04) != 0x04);         /* Check ELS XTAL ready.*/
+        SN_SYS0->CLKCFG = 0x03;
+        while ((SN_SYS0->CLKCFG & 0x70) != 0x30);       /* Switch ELS XTAL.*/
+    #endif
 
-#if (SYS0_CLKCFG_VAL == ELSXTAL)	//ELS XTAL
-    SN_SYS0->ANBCTRL |=0x04;
-	while((SN_SYS0->CSST & 0x4) != 0x4);
-	SN_SYS0->CLKCFG = 0x3;
-    while ((SN_SYS0->CLKCFG & 0x70) != 0x30);
-#endif
+    #if (SYS0_CLKCFG_VAL == PLL)                        /* PLL clock.*/
+        SN_SYS0->PLLCTRL = SYS0_PLLCTRL_VAL;            /* Enable PLL.*/
 
-#if (SYS0_CLKCFG_VAL == PLL)		//PLL
-    SN_SYS0->PLLCTRL = SYS0_PLLCTRL_VAL;
-	if (PLL_CLKIN == 0x1)	//EHS XTAL as F_CLKIN
-	{
-		//Enable EHS
-		#if (EHS_FREQ > 12)
-		SN_SYS0->ANBCTRL |= (1<<5);
-		#else
-		SN_SYS0->ANBCTRL &=~(1<<5);
-		#endif
-		SN_SYS0->ANBCTRL |= (1<<4);
-		while ((SN_SYS0->CSST & 0x10) != 0x10);
-	}
+        if (PLL_CLKIN == 0x01) {                        /* EHS XTAL as F_CLKIN.*/
+            #if (EHS_FREQ > 12)
+                SN_SYS0->ANBCTRL |= (1<<5);             /* Enable XTAL > 12MHz.*/
+            #else
+                SN_SYS0->ANBCTRL &=~(1<<5);             /* Enable XTAL <= 12MHz.*/
+            #endif
 
-	while ((SN_SYS0->CSST & 0x40) != 0x40);
-    SN_SYS0->CLKCFG = 0x4;
-    while ((SN_SYS0->CLKCFG & 0x70) != 0x40);
-#endif
+            SN_SYS0->ANBCTRL |= (1<<4);                 /* Enable EHS XTAL.*/
+            while ((SN_SYS0->CSST & 0x10) != 0x10);     /* Check EHS XTAL ready.*/
+        }
 
-    SN_SYS0->AHBCP = AHB_PRESCALAR;
+        while ((SN_SYS0->CSST & 0x40) != 0x40);         /* Check PLL ready.*/
+        SN_SYS0->CLKCFG = 0x04;
+        while ((SN_SYS0->CLKCFG & 0x70) != 0x40);       /* Switch PLL.*/
+    #endif
 
-#if (CLKOUT_SEL_VAL > 0)			//CLKOUT
-    SN_SYS1->AHBCLKEN_b.CLKOUTSEL = CLKOUT_SEL_VAL;
-#endif
+	SN_SYS0->AHBCP_b.AHBPRE = AHB_PRESCALAR;
+
+    #if (CLKOUT_SEL_VAL > 0)                            /* CLKOUT value.*/
+        sys1EnableCLKOUT(CLKOUT_SEL_VAL);
+    #endif
 #endif //(SYS_CLOCK_SETUP)
-
 }

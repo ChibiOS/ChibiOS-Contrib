@@ -49,6 +49,11 @@ UARTDriver UARTD1;
 UARTDriver UARTD2;
 #endif
 
+/** @brief UART3 UART driver identifier.*/
+#if SN32_UART_USE_UART3 || defined(__DOXYGEN__)
+UARTDriver UARTD3;
+#endif
+
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
@@ -363,6 +368,25 @@ OSAL_IRQ_HANDLER(SN32_UART2_HANDLER) {
 }
 #endif /* SN32_UART_USE_UART2 */
 
+#if SN32_UART_USE_UART3 || defined(__DOXYGEN__)
+#if !defined(SN32_UART3_HANDLER)
+#error "SN32_UART3_HANDLER not defined"
+#endif
+/**
+ * @brief   UART3 IRQ handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(SN32_UART3_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  serve_uart_irq(&UARTD3);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* SN32_UART_USE_UART3 */
+
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -387,6 +411,11 @@ void uart_lld_init(void) {
 #if SN32_UART_USE_UART2
   uartObjectInit(&UARTD2);
   UARTD2.uart = SN32_UART2;
+#endif
+
+#if SN32_UART_USE_UART3
+  uartObjectInit(&UARTD3);
+  UARTD3.uart = SN32_UART3;
 #endif
 }
 
@@ -424,6 +453,15 @@ void uart_lld_start(UARTDriver *uartp) {
       sys1EnableUART2();
       nvicClearPending(SN32_UART2_NUMBER);
       nvicEnableVector(SN32_UART2_NUMBER, SN32_UART_UART2_IRQ_PRIORITY);
+    }
+#endif
+
+#if SN32_UART_USE_UART3
+    if (&UARTD3 == uartp) {
+      /* UART3 clock enable.*/
+      sys1EnableUART3();
+      nvicClearPending(SN32_UART3_NUMBER);
+      nvicEnableVector(SN32_UART3_NUMBER, SN32_UART_UART3_IRQ_PRIORITY);
     }
 #endif
   }
@@ -470,6 +508,14 @@ void uart_lld_stop(UARTDriver *uartp) {
     if (&UARTD2 == uartp) {
       nvicDisableVector(SN32_UART2_NUMBER);
       sys1DisableUART2();
+      return;
+    }
+#endif
+
+#if SN32_UART_USE_UART3
+    if (&UARTD3 == uartp) {
+      nvicDisableVector(SN32_UART3_NUMBER);
+      sys1DisableUART3();
       return;
     }
 #endif

@@ -86,99 +86,120 @@ static inline void i2c_lld_configure(I2CDriver *i2cp) {
 
   dp->SCLHT = (uint32_t)(tval -1);
   dp->SCLLT = (uint32_t)(tval -1);
-
+  if(i2cp->config->timeout > 0) {
   // Convert timeout in milliseconds to system ticks
   sysinterval_t timeout_ticks = TIME_MS2I(i2cp->config->timeout);
   uint32_t timeout_cycles = (uint32_t)(timeout_ticks * 32 * I2C_CLK / CH_CFG_ST_FREQUENCY);
 
   osalDbgCheck(timeout_cycles <= 0xFFFF);
-  dp->TOCTRL = timeout_cycles;
+  dp->TOCTRL = (uint16_t)timeout_cycles;
+  }
+}
+
+static inline void i2c_lld_handle_error(I2CDriver *i2cp, uint32_t error_flag) {
+  i2cp->errors |= error_flag;
+  _i2c_wakeup_error_isr(i2cp);
+  i2cp->i2c->STAT_b.I2CIF = true;
+}
+
+static inline void i2c_lld_handle_success(I2CDriver *i2cp) {
+  _i2c_wakeup_isr(i2cp);
+  i2cp->i2c->STAT_b.I2CIF = true;
 }
 
 static inline void i2c_lld_irq_handler(I2CDriver * i2cp) {
   I2C_TypeDef *dp = i2cp->i2c;
+  uint32_t status = dp->STAT;
+  bool master = (status & mskI2C_MASTER_STATUS);
 
-  if (dp-> STAT_b.TIMEOUT) {
-    i2cp -> errors |= I2C_TIMEOUT;
-    dp-> STAT_b.I2CIF |= true;
-    _i2c_wakeup_error_isr(i2cp);
+  if (status & mskI2C_I2C_TIMEOUT) {
+    i2c_lld_handle_error(i2cp, I2C_TIMEOUT);
     return;
   }
-  if (dp-> STAT_b.LOST_ARB) {
-    i2cp -> errors |= I2C_ARBITRATION_LOST;
-    dp-> STAT_b.I2CIF |= true;
-    _i2c_wakeup_error_isr(i2cp);
+  if (status & mskI2C_LOST_ARB) {
+    i2c_lld_handle_error(i2cp, I2C_ARBITRATION_LOST);
     return;
   }
-  if((dp-> STAT_b.STOP_DN)){
+  if (status & mskI2C_STOP_DONE) {
     // stop received
-    dp-> STAT_b.I2CIF |= true;
-    _i2c_wakeup_isr(i2cp);
+    i2c_lld_handle_success(i2cp);
     return;
   }
-  if((dp-> STAT_b.MST) && (dp-> STAT_b.START_DN)) {
+  if (master && (status & mskI2C_START_DONE)) {
     // set slave address.
     dp->TXDATA = i2cp->addr;
-    dp-> STAT_b.I2CIF |= true;
+    dp->STAT_b.I2CIF |= true;
     return;
   }
   // TX
   if (i2cp->state == I2C_ACTIVE_TX) {
-    if ((dp-> STAT_b.ACK_STAT) | (dp-> STAT_b.SLV_TX_HIT)) {
-        if (i2cp -> tx_buffer && i2cp -> count < i2cp -> tx_len) {
-          // ack received, clear to transmit
-          dp-> TXDATA = i2cp -> tx_buffer[i2cp -> count++];
-        } else if (dp-> STAT_b.MST) {
-          // transmission completed
-          dp-> CTRL_b.STO |= true;
-        }
-        dp-> STAT_b.I2CIF = true;
-        return;
-      } else if (dp-> STAT_b.NACK_STAT) {
-          if (dp-> STAT_b.MST == false) {
-            dp-> CTRL_b.ACK |= true;
-            dp-> STAT_b.I2CIF |= true;
-            return;
-          }
-          else if (i2cp -> count == i2cp -> tx_len) {
-            dp-> CTRL_b.STO |= true;
-            _i2c_wakeup_isr(i2cp);
-          } else {
-            i2cp -> errors |= I2C_ACK_FAILURE;
-          }
-          dp-> STAT_b.I2CIF |= true;
-      } else {
-        i2cp -> errors |= I2C_BUS_ERROR;
-        dp-> STAT_b.I2CIF |= true;
-        _i2c_wakeup_error_isr(i2cp);
+    if (status & (mskI2C_ACK_DONE | mskI2C_SLAVE_TX_MATCH)) {
+      if (i2cp->tx_buffer && i2cp->count < i2cp->tx_len) {
+        dp->TXDATA = i2cp->tx_buffer[i2cp->count++];
+        dp->STAT_b.I2CIF |= true;
       }
+
+      else if (i2cp->count == i2cp->tx_len) {
+        // All data sent — end transaction
+        dp->CTRL_b.STO = true;
+        i2c_lld_handle_success(i2cp);
+      }
+
+    } else if (status & mskI2C_NACK_DONE) {
+      if (!master) {
+        // Slave was NACKed — treat as completed
+        dp->CTRL_b.ACK = true;
+        i2c_lld_handle_success(i2cp);
+      } else if (i2cp->count == i2cp->tx_len) {
+        dp->CTRL_b.STO = true;
+        i2c_lld_handle_success(i2cp);
+      } else {
+        dp->CTRL_b.STO = true;
+        i2c_lld_handle_error(i2cp, I2C_ACK_FAILURE);
+      }
+
+    } else {
+      dp->CTRL_b.STO = true;
+      i2c_lld_handle_error(i2cp, I2C_BUS_ERROR);
+    }
   }
   // RX
-  if (i2cp->state == I2C_ACTIVE_RX) {
-    if ((dp-> STAT_b.MST) | (dp-> STAT_b.ACK_STAT) || (dp-> STAT_b.SLV_RX_HIT)) {
-      dp-> CTRL_b.ACK |= true;
-      dp-> STAT_b.I2CIF |= true;
-      return;
-    } else if((dp-> STAT_b.MST) | (dp-> STAT_b.RX_DN)) {
-      if (i2cp -> rx_buffer && i2cp -> count < i2cp -> rx_len) {
-        // rx done received, clear to receive
-        i2cp -> rx_buffer[i2cp -> count++]  = dp-> RXDATA;
-        dp-> STAT_b.I2CIF |= true;
-      } else if (i2cp -> count == i2cp -> rx_len) {
-        // transmission completed
-        dp-> CTRL_b.STO = true;
-        dp-> STAT_b.I2CIF |= true;
-        _i2c_wakeup_isr(i2cp);
+  else if (i2cp->state == I2C_ACTIVE_RX) {
+    if ((status & mskI2C_ACK_DONE) || (status & mskI2C_SLAVE_RX_MATCH)) {
+      // ACK to continue reception
+      if (i2cp->count < i2cp->rx_len) {
+        dp->CTRL_b.ACK = true;
       } else {
-        i2cp -> errors |= I2C_OVERRUN;
-        dp-> STAT_b.I2CIF |= true;
-        _i2c_wakeup_error_isr(i2cp);
+        i2c_lld_handle_error(i2cp, I2C_OVERRUN);
+        return;
       }
-    } else {
-      i2cp -> errors |= I2C_BUS_ERROR;
-      dp-> STAT_b.I2CIF |= true;
-      _i2c_wakeup_error_isr(i2cp);
+      dp->STAT_b.I2CIF = true;
+      return;
     }
+
+    if (status & mskI2C_RX_DONE) {
+      if (!i2cp->rx_buffer || i2cp->count >= i2cp->rx_len) {
+        // Buffer full or invalid
+        i2c_lld_handle_error(i2cp, I2C_OVERRUN);
+        return;
+      }
+
+      // Receive byte
+      i2cp->rx_buffer[i2cp->count++] = dp->RXDATA;
+
+      if (i2cp->count == i2cp->rx_len) {
+        if (master) dp->CTRL_b.STO = true;
+        i2c_lld_handle_success(i2cp);
+      } else dp->STAT_b.I2CIF = true;
+    } else {
+      dp->CTRL_b.STO = true;
+      i2c_lld_handle_error(i2cp, I2C_BUS_ERROR);
+    }
+  }
+  // UNINIT, STOP, READY, LOCKED
+  else {
+    dp->CTRL_b.STO = true;
+    i2c_lld_handle_error(i2cp, I2C_BUS_ERROR);
   }
 }
 /*===========================================================================*/
@@ -259,7 +280,7 @@ void i2c_lld_start(I2CDriver *i2cp) {
 
 #if SN32_I2C_USE_I2C1 == TRUE
     if (&I2CD1 == i2cp) {
-      sys1EnableI2C0();
+      sys1EnableI2C1();
       nvicClearPending(SN32_I2C1_GLOBAL_NUMBER);
       nvicEnableVector(SN32_I2C1_GLOBAL_NUMBER, SN32_I2C_I2C1_IRQ_PRIORITY);
     }
@@ -429,10 +450,10 @@ msg_t i2c_lld_match_address(I2CDriver *i2cp, i2caddr_t addr) {
 
   I2C_TypeDef *dp = i2cp->i2c;
   uint16_t i2cadr = addr << 1;
-  uint16_t ownAdr = dp->SLVADRR0 & (0x7f<<1);
+  uint16_t ownAdr = dp->SLVADDR0 & (0x7f<<1);
 
   if (ownAdr == 0 || ownAdr == i2cadr)
-    dp->SLVADRR0 = i2cadr;
+    dp->SLVADDR0 = i2cadr;
   else
   /* cannot add this address to set of those matched */
     return MSG_RESET;

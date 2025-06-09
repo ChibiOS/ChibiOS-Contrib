@@ -228,6 +228,10 @@ struct hal_i2c_driver {
 extern I2CDriver I2CD0;
 #endif
 
+#if (SN32_I2C_USE_I2C1 == TRUE) && !defined(__DOXYGEN__)
+extern I2CDriver I2CD1;
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

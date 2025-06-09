@@ -37,7 +37,7 @@
 #error "Tickless mode on SN32 supports only 16bit timers"
 #endif
 
-#if SN32_ST_USE_TIMER == CT16B0
+#if SN32_ST_USE_TIMER == SN32_TIM_CT16B0
 
 #if !SN32_HAS_CT16B0
 #error "CT16B0 not present in the selected device"
@@ -46,7 +46,7 @@
 #define ST_ENABLE_CLOCK()                   sys1EnableCT16B0()
 #define ST_INIT_CLOCK()                     CT16B0_ResetTimer()
 
-#elif SN32_ST_USE_TIMER == CT16B1
+#elif SN32_ST_USE_TIMER == SN32_TIM_CT16B1
 
 #if !SN32_HAS_CT16B1
 #error "CT16B1 not present in the selected device"
@@ -65,7 +65,7 @@
 #error "the selected ST frequency is not obtainable because integer rounding"
 #endif
 
-#if (SYSTICK_CK / OSAL_ST_FREQUENCY) - 1 > 0xFF
+#if (SYSTICK_CK / OSAL_ST_FREQUENCY) - 1 > UINT8_MAX
 #error "the selected ST frequency is not obtainable because CT16 timer prescaler limits"
 #endif
 
@@ -130,8 +130,10 @@ void st_lld_init(void) {
   ST_ENABLE_CLOCK();
   ST_INIT_CLOCK();
   /* Initializing the counter in free running mode.*/
-  SN32_ST_TIM->PRE    = (SYSTICK_CK / OSAL_ST_FREQUENCY) - 1;
-  SN32_ST_TIM->TMRCTRL |= mskCT16_CEN_EN;
+  SN32_ST_TIM->config.PRE    = (SYSTICK_CK / OSAL_ST_FREQUENCY) - 1;
+  // safeguarding, CT16B1 has always more channels
+  SN32_ST_TIM->irq.IC &= mskCT_IC_Clear(SN32_CT16B1_MAX_CHANNELS);
+  SN32_ST_TIM->config.TMRCTRL |= mskCT16_CEN_EN;
 
   /* Reset the SysTick timer. */
   SysTick->LOAD = 0;

@@ -114,6 +114,11 @@
 
 // Define GPIO register values used by pal_default_config.
 // The following values match the chip reset values, all GPIO pins as floating inputs.
+#define GPIOA_WIDTH 16U
+#define GPIOB_WIDTH 16U
+#define GPIOC_WIDTH 16U
+#define GPIOD_WIDTH 16U
+#define PAL_IOPORTS_WIDTH 16U
 
 #define VAL_GPIOA_MODE \
     ( PIN_MODE_INPUT(GPIOA_PIN0) \

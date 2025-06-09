@@ -15,7 +15,7 @@
 */
 
 /**
- * @file    GPIOv3/hal_pal_lld.h
+ * @file    GPIO/hal_pal_lld.h
  * @brief   SN32 PAL low level driver header.
  *
  * @addtogroup PAL
@@ -31,21 +31,6 @@
 /* Unsupported modes and specific modes                                      */
 /*===========================================================================*/
 
-// /* Specifies palInit() without parameter, required until all platforms will
-//    be updated to the new style.*/
-// // #define PAL_NEW_INIT
-
-
-/* Discarded definitions from the ST headers, the PAL driver uses its own
-   definitions in order to have an unified handling for all devices.
-   Unfortunately the ST headers have no uniform definitions for the same
-   objects across the various sub-families.*/
-#undef GPIOA
-#undef GPIOB
-#undef GPIOC
-#undef GPIOD
-
-
 /*===========================================================================*/
 /* I/O Ports Types and constants.                                            */
 /*===========================================================================*/
@@ -54,10 +39,10 @@
  * @name    GPIO ports definitions
  * @{
  */
-#define GPIOA                         ((SN_GPIO0_Type *)SN_GPIO0_BASE)// SN_GPIO0//
-#define GPIOB                         ((SN_GPIO0_Type *)SN_GPIO1_BASE)// SN_GPIO1//
-#define GPIOC                         ((SN_GPIO0_Type *)SN_GPIO2_BASE)// SN_GPIO2//
-#define GPIOD                         ((SN_GPIO0_Type *)SN_GPIO3_BASE)// SN_GPIO3//
+#define GPIOA                         ((ioportid_t)SN_GPIO0_BASE)// SN_GPIO0//
+#define GPIOB                         ((ioportid_t)SN_GPIO1_BASE)// SN_GPIO1//
+#define GPIOC                         ((ioportid_t)SN_GPIO2_BASE)// SN_GPIO2//
+#define GPIOD                         ((ioportid_t)SN_GPIO3_BASE)// SN_GPIO3//
 
 /** @} */
 
@@ -66,16 +51,17 @@
  * @{
  */
 #define TOTAL_PORTS       4U
-/**
- * @brief   Width, in bits, of an I/O port.
- */
-#define PAL_IOPORTS_WIDTH 16U
 
 /**
  * @brief   Whole port mask.
  * @details This macro specifies all the valid bits into a port.
  */
-#define PAL_WHOLE_PORT ((ioportmask_t)0xFFFF)
+#if (PAL_IOPORTS_WIDTH > 16U)
+  #define PAL_WHOLE_PORT ((ioportmask_t)UINT32_MAX)
+#else
+  #define PAL_WHOLE_PORT ((ioportmask_t)UINT16_MAX)
+#endif
+
 /** @} */
 
 /**
@@ -99,27 +85,35 @@
  * @name    Line handling macros
  * @{
  */
+#define GET_PORT_WIDTH(portid) \
+    (((uint32_t)(portid) == (uint32_t)GPIOA) ? GPIOA_WIDTH : \
+    ((uint32_t)(portid) == (uint32_t)GPIOB) ? GPIOB_WIDTH : \
+    ((uint32_t)(portid) == (uint32_t)GPIOC) ? GPIOC_WIDTH : \
+    ((uint32_t)(portid) == (uint32_t)GPIOD) ? GPIOD_WIDTH : 0U)
+
+#define PAL_PAD_MASK (iopadid_t)((1U <<(PAL_IOPORTS_WIDTH / TOTAL_PORTS)) - 1)
+
 /**
  * @brief   Forms a line identifier.
  * @details A port/pad pair are encoded into an @p ioline_t type. The encoding
  *          of this type is platform-dependent.
- * @note    In this driver the pad number is encoded in the lower 4 bits of
+ * @note    In this driver the pad number is encoded in the lower PAL_PAD_MASK bits of
  *          the GPIO address which are guaranteed to be zero.
  */
 #define PAL_LINE(port, pad)                                                 \
-  ((ioline_t)((uint32_t)(port)) | ((uint32_t)(pad)))
+  ((ioline_t)((ioportmask_t)(port)) | ((iopadid_t)(pad)))
 
 /**
  * @brief   Decodes a port identifier from a line identifier.
  */
 #define PAL_PORT(line)                                                      \
-  ((SN_GPIO0_Type *)(((uint32_t)(line)) & 0xFFFFFFF0U))
+  ((ioportid_t)((ioline_t)(line) & ~PAL_PAD_MASK))
 
 /**
  * @brief   Decodes a pad identifier from a line identifier.
  */
 #define PAL_PAD(line)                                                       \
-  ((uint32_t)((uint32_t)(line) & 0x0000000FU))
+  ((iopadid_t)((ioline_t)(line) & PAL_PAD_MASK))
 
 /**
  * @brief   Value identifying an invalid line.
@@ -153,6 +147,10 @@ typedef struct {
   uint32_t              bset;
   /** Initial value for BCLR register.*/
   uint32_t              bclr;
+#if (PAL_IOPORTS_WIDTH > 16U)
+  /** Initial value for CFG1 register.*/
+  uint32_t              cfg1;
+#endif
 } sn32_gpio_setup_t;
 
 /**
@@ -202,8 +200,11 @@ typedef uint32_t ioline_t;
  *          any assumption about it, use the provided macros when populating
  *          variables of this type.
  */
-typedef SN_GPIO0_Type * ioportid_t;
-
+#if (defined(SN32F240) || defined(SN32F240B)|| defined(SN32F240C)|| defined(SN32F260))
+  typedef SN_GPIO0_Type * ioportid_t;
+#elif (defined(SN32F280)|| defined(SN32F290))
+  typedef SN_GPIO1_Type * ioportid_t;
+#endif
 /**
  * @brief   Type of an pad identifier.
  */
@@ -313,7 +314,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_writeport(port, bits) ((port)->DATA = (uint16_t)(bits))
+#define pal_lld_writeport(port, bits) ((port)->DATA = (uint32_t)(bits))
 
 /**
  * @brief   Sets a bits mask on a I/O port.
@@ -326,7 +327,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_setport(port, bits) ((port)->BSET = (uint16_t)(bits))
+#define pal_lld_setport(port, bits) ((port)->BSET = (uint32_t)(bits))
 
 /**
  * @brief   Clears a bits mask on a I/O port.
@@ -339,7 +340,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_clearport(port, bits) ((port)->BCLR = ~(uint16_t)(bits))
+#define pal_lld_clearport(port, bits) ((port)->BCLR = ~(uint32_t)(bits))
 
 /**
  * @brief   Writes a group of bits.
@@ -355,7 +356,7 @@ typedef uint32_t iopadid_t;
  * @notapi
  */
 #define pal_lld_writegroup(port, mask, offset, bits) {                      \
-  uint32_t w = ((~(uint32_t)(bits) & (uint32_t)(mask)) << (16U + (offset))) | \
+  uint32_t w = ((~(uint32_t)(bits) & (uint32_t)(mask)) << (GET_PORT_WIDTH(port) + (offset))) | \
                ((uint32_t)(bits) & (uint32_t)(mask)) << (offset);           \
   (port)->DATA = w;                                                       \
 }
