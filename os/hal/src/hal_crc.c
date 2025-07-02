@@ -81,6 +81,19 @@ void crcObjectInit(CRCDriver *crcp) {
  *
  * @api
  */
+
+#if (defined(STM32F1xx) || defined(STM32F2xx) || defined(STM32F4xx) || defined(STM32L1xx)) // Those MCU dont have programmable CRC registers
+void crcStart(CRCDriver *crcp) {
+  osalDbgCheck(crcp != NULL);
+
+  osalSysLock();
+  osalDbgAssert((crcp->state == CRC_STOP) || (crcp->state == CRC_READY),
+                "invalid state");
+  crc_lld_start(crcp);
+  crcp->state = CRC_READY;
+  osalSysUnlock();
+}
+#else
 void crcStart(CRCDriver *crcp, const CRCConfig *config) {
   osalDbgCheck(crcp != NULL);
 
@@ -92,6 +105,7 @@ void crcStart(CRCDriver *crcp, const CRCConfig *config) {
   crcp->state = CRC_READY;
   osalSysUnlock();
 }
+#endif
 
 /**
  * @brief   Deactivates the CRC peripheral.
