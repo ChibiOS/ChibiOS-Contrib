@@ -135,7 +135,11 @@ extern "C" {
 #endif
   void crcInit(void);
   void crcObjectInit(CRCDriver *crcp);
-#if (defined(STM32F1xx) || defined(STM32F2xx) || defined(STM32F4xx) || defined(STM32L1xx)) // Those MCU dont have programmable CRC registers
+#if (defined(STM32F1xx) || defined(STM32F2xx) || defined(STM32F4xx) || defined(STM32L1xx) || defined(STM32F07x) || \
+  defined(STM32F030x4) || defined(STM32F030x6) || defined(STM32F030x8) || defined(STM32F030xC) || \
+  defined(STM32F031x6) || defined(STM32F038xx) || \
+  defined(STM32F042x6) || defined(STM32F048xx) || \
+  defined(STM32F051x8) || defined(STM32F058xx) ) // Those MCU dont have programmable CRC registers
   void crcStart(CRCDriver *crcp);
 #else
   void crcStart(CRCDriver *crcp, const CRCConfig *config);
