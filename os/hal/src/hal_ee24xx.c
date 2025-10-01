@@ -59,7 +59,8 @@ Note:
 #define EEPROM_I2C_CLOCK (i2cp->config->clock_speed)
 #endif
 */
-#define EEPROM_I2C_CLOCK 400000
+/* Fallback frequency if not provided via config and not detectable */
+#define EEPROM_I2C_CLOCK_DEFAULT 400000U
 
 /*
  ******************************************************************************
@@ -98,12 +99,13 @@ Note:
 /**
  * @brief     Calculates requred timeout.
  */
-static systime_t calc_timeout(I2CDriver *i2cp, size_t txbytes, size_t rxbytes) {
+static systime_t calc_timeout(I2CDriver *i2cp, size_t txbytes, size_t rxbytes, uint32_t bus_hz) {
   (void)i2cp;
   const uint32_t bitsinbyte = 10;
   uint32_t tmo;
+  uint32_t freq = bus_hz ? bus_hz : EEPROM_I2C_CLOCK_DEFAULT;
   tmo = ((txbytes + rxbytes + 1) * bitsinbyte * 1000);
-  tmo /= EEPROM_I2C_CLOCK;
+  tmo /= freq;
   tmo += 10; /* some additional milliseconds to be safer */
   return TIME_MS2I(tmo);
 }
@@ -126,7 +128,7 @@ static msg_t eeprom_read(const I2CEepromFileConfig *eepcfg,
   const bool one_byte_addr = (eepcfg->size <= 2048U);
   const uint32_t eff_off = offset + eepcfg->barrier_low;
   const size_t addr_bytes = one_byte_addr ? 1U : 2U;
-  systime_t tmo = calc_timeout(eepcfg->i2cp, addr_bytes, len);
+  systime_t tmo = calc_timeout(eepcfg->i2cp, addr_bytes, len, eepcfg->bus_hz);
 
   osalDbgAssert(((len <= eepcfg->size) && ((offset + len) <= eepcfg->size)),
              "out of device bounds");
@@ -175,7 +177,7 @@ static msg_t eeprom_write(const I2CEepromFileConfig *eepcfg, uint32_t offset,
   const bool one_byte_addr = (eepcfg->size <= 2048U);
   const uint32_t eff_off = offset + eepcfg->barrier_low;
   const size_t addr_bytes = one_byte_addr ? 1U : 2U;
-  systime_t tmo = calc_timeout(eepcfg->i2cp, (len + addr_bytes), 0);
+  systime_t tmo = calc_timeout(eepcfg->i2cp, (len + addr_bytes), 0, eepcfg->bus_hz);
 
   osalDbgAssert(((len <= eepcfg->size) && ((offset + len) <= eepcfg->size)),
              "out of device bounds");

@@ -27,6 +27,11 @@ typedef struct {
    */
   i2caddr_t     addr;
   /**
+   * I2C bus frequency in Hz. Used to compute transaction timeouts.
+   * If zero, a conservative default will be used by the driver.
+   */
+  uint32_t      bus_hz;
+  /**
    * Pointer to write buffer. The safest size is (pagesize + 2)
    * Declare with CC_SECTION(".nocache") ... if using I2C with DMA to avoid
    * cache coherence issues.
