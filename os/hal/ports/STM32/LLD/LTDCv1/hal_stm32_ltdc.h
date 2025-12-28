@@ -113,8 +113,8 @@
 
 #define LTDC_MIN_SCREEN_WIDTH           (1)
 #define LTDC_MIN_SCREEN_HEIGHT          (1)
-#define LTDC_MAX_SCREEN_WIDTH           (800)
-#define LTDC_MAX_SCREEN_HEIGHT          (600)
+#define LTDC_MAX_SCREEN_WIDTH           (4096)
+#define LTDC_MAX_SCREEN_HEIGHT          (2048)
 
 #define LTDC_MIN_HSYNC_WIDTH            (1)
 #define LTDC_MIN_VSYNC_HEIGHT           (1)
