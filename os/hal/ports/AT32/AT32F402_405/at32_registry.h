@@ -62,6 +62,24 @@
 /* Platform capabilities.                                                    */
 /*===========================================================================*/
 
+/**
+ * @name    AT32F402_405 capabilities
+ * @{
+ */
+
+/* DEBUG helpers.*/
+#define AT32_DEBUG_TMR1_STOP()             DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR1_PAUSE
+#define AT32_DEBUG_TMR2_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR2_PAUSE
+#define AT32_DEBUG_TMR3_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR3_PAUSE
+#define AT32_DEBUG_TMR4_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR4_PAUSE
+#define AT32_DEBUG_TMR6_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR6_PAUSE
+#define AT32_DEBUG_TMR7_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR7_PAUSE
+#define AT32_DEBUG_TMR9_STOP()             DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR9_PAUSE
+#define AT32_DEBUG_TMR10_STOP()            DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR10_PAUSE
+#define AT32_DEBUG_TMR11_STOP()            DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR11_PAUSE
+#define AT32_DEBUG_TMR13_STOP()            DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR13_PAUSE
+#define AT32_DEBUG_TMR14_STOP()            DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR14_PAUSE
+
 /*===========================================================================*/
 /* Common.                                                                   */
 /*===========================================================================*/

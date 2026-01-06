@@ -56,6 +56,21 @@
 /* Platform capabilities.                                                    */
 /*===========================================================================*/
 
+/**
+ * @name    AT32F415 capabilities
+ * @{
+ */
+
+/* DEBUG helpers.*/
+#define AT32_DEBUG_TMR1_STOP()             DEBUG->CTRL |= DEBUG_CTRL_TMR1_PAUSE
+#define AT32_DEBUG_TMR2_STOP()             DEBUG->CTRL |= DEBUG_CTRL_TMR2_PAUSE
+#define AT32_DEBUG_TMR3_STOP()             DEBUG->CTRL |= DEBUG_CTRL_TMR3_PAUSE
+#define AT32_DEBUG_TMR4_STOP()             DEBUG->CTRL |= DEBUG_CTRL_TMR4_PAUSE
+#define AT32_DEBUG_TMR5_STOP()             DEBUG->CTRL |= DEBUG_CTRL_TMR5_PAUSE
+#define AT32_DEBUG_TMR9_STOP()             DEBUG->CTRL |= DEBUG_CTRL_TMR9_PAUSE
+#define AT32_DEBUG_TMR10_STOP()            DEBUG->CTRL |= DEBUG_CTRL_TMR10_PAUSE
+#define AT32_DEBUG_TMR11_STOP()            DEBUG->CTRL |= DEBUG_CTRL_TMR11_PAUSE
+
 /*===========================================================================*/
 /* Common.                                                                   */
 /*===========================================================================*/
