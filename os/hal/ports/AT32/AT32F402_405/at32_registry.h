@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
-    ChibiOS - Copyright (C) 2024..2025 Maxjta
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
+    ChibiOS - Copyright (C) 2024..2026 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -48,10 +48,10 @@
 /* Platform capabilities.                                                    */
 /*===========================================================================*/
 
-/**
- * @name    Common capabilities
- * @{
- */
+/*===========================================================================*/
+/* Common.                                                                   */
+/*===========================================================================*/
+
 /* GPIO attributes.*/
 #if defined(AT32_HAS_GPIOD)
 #define AT32_GPIO_EN_MASK                  (CRM_AHBEN1_GPIOAEN |           \
@@ -69,13 +69,13 @@
                                             CRM_AHBEN1_GPIOBEN |           \
                                             CRM_AHBEN1_GPIOFEN)
 #endif
-/** @} */
+
+/*===========================================================================*/
+/* AT32F402KB, AT32F402KC, AT32F405KB, AT32F405KC.                           */
+/*===========================================================================*/
 
 #if defined(AT32F402_405K) || defined(__DOXYGEN__)
-/**
- * @name    AT32F402_405K capabilities
- * @{
- */
+
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
 #define AT32_ADC_SUPPORTS_PRESCALER        TRUE
@@ -253,13 +253,13 @@
 #define AT32_OTG_STEPPING                  2
 
 #define AT32_HAS_OTG1                      TRUE
-#define AT32_OTG1_ENDPOINTS                8
+#define AT32_OTG1_ENDPOINTS                7
 
 #if defined(AT32F402KB) || defined(AT32F402KC) || defined(__DOXYGEN__)
 #define AT32_HAS_OTG2                      FALSE
 #elif defined(AT32F405KB) || defined(AT32F405KC)
 #define AT32_HAS_OTG2                      TRUE
-#define AT32_OTG2_ENDPOINTS                8
+#define AT32_OTG2_ENDPOINTS                7
 #endif
 
 /* WDT attributes.*/
@@ -275,14 +275,15 @@
 #else
 #define STM32_CRC_USE_CRC1                 FALSE
 #endif
-/** @} */
+
 #endif /* defined(AT32F402_405K) */
 
+/*===========================================================================*/
+/* AT32F402CB, AT32F402CC, AT32F405CB, AT32F405CC.                           */
+/*===========================================================================*/
+
 #if defined(AT32F402_405C) || defined(__DOXYGEN__)
-/**
- * @name    AT32F402_405C capabilities
- * @{
- */
+
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
 #define AT32_ADC_SUPPORTS_PRESCALER        TRUE
@@ -463,13 +464,13 @@
 #define AT32_OTG_STEPPING                  2
 
 #define AT32_HAS_OTG1                      TRUE
-#define AT32_OTG1_ENDPOINTS                8
+#define AT32_OTG1_ENDPOINTS                7
 
 #if defined(AT32F402CB) || defined(AT32F402CC) || defined(__DOXYGEN__)
 #define AT32_HAS_OTG2                      FALSE
 #elif defined(AT32F405CB) || defined(AT32F405CC)
 #define AT32_HAS_OTG2                      TRUE
-#define AT32_OTG2_ENDPOINTS                8
+#define AT32_OTG2_ENDPOINTS                7
 #endif
 
 /* WDT attributes.*/
@@ -485,14 +486,15 @@
 #else
 #define STM32_CRC_USE_CRC1                 FALSE
 #endif
-/** @} */
+
 #endif /* defined(AT32F402_405C) */
 
+/*===========================================================================*/
+/* AT32F402RB, AT32F402RC, AT32F405RB, AT32F405RC.                           */
+/*===========================================================================*/
+
 #if defined(AT32F402_405R) || defined(__DOXYGEN__)
-/**
- * @name    AT32F402_405R capabilities
- * @{
- */
+
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
 #define AT32_ADC_SUPPORTS_PRESCALER        TRUE
@@ -673,13 +675,13 @@
 #define AT32_OTG_STEPPING                  2
 
 #define AT32_HAS_OTG1                      TRUE
-#define AT32_OTG1_ENDPOINTS                8
+#define AT32_OTG1_ENDPOINTS                7
 
 #if defined(AT32F402RB) || defined(AT32F402RC) || defined(__DOXYGEN__)
 #define AT32_HAS_OTG2                      FALSE
 #elif defined(AT32F405RB) || defined(AT32F405RC)
 #define AT32_HAS_OTG2                      TRUE
-#define AT32_OTG2_ENDPOINTS                8
+#define AT32_OTG2_ENDPOINTS                7
 #endif
 
 /* WDT attributes.*/
@@ -695,7 +697,7 @@
 #else
 #define STM32_CRC_USE_CRC1                 FALSE
 #endif
-/** @} */
+
 #endif /* defined(AT32F402_405R) */
 
 #endif /* AT32_REGISTRY_H */

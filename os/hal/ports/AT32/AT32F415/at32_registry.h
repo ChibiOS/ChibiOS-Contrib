@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -44,11 +44,16 @@
 /* Platform capabilities.                                                    */
 /*===========================================================================*/
 
+/*===========================================================================*/
+/* Common.                                                                   */
+/*===========================================================================*/
+
+/*===========================================================================*/
+/* AT32F415KB, AT32F415KC.                                                   */
+/*===========================================================================*/
+
 #if defined(AT32F415K) || defined(__DOXYGEN__)
-/**
- * @name    AT32F415K capabilities
- * @{
- */
+
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
 #define AT32_ADC_SUPPORTS_PRESCALER        FALSE
@@ -278,14 +283,15 @@
 #else
 #define STM32_CRC_USE_CRC1                 FALSE
 #endif
-/** @} */
+
 #endif /* defined(AT32F415K) */
 
+/*===========================================================================*/
+/* AT32F415CB, AT32F415CC.                                                   */
+/*===========================================================================*/
+
 #if defined(AT32F415C) || defined(__DOXYGEN__)
-/**
- * @name    AT32F415C capabilities
- * @{
- */
+
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
 #define AT32_ADC_SUPPORTS_PRESCALER        FALSE
@@ -523,14 +529,15 @@
 #else
 #define STM32_CRC_USE_CRC1                 FALSE
 #endif
-/** @} */
+
 #endif /* defined(AT32F415C) */
 
+/*===========================================================================*/
+/* AT32F415RB, AT32F415RC.                                                   */
+/*===========================================================================*/
+
 #if defined(AT32F415R) || defined(__DOXYGEN__)
-/**
- * @name    AT32F415R capabilities
- * @{
- */
+
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
 #define AT32_ADC_SUPPORTS_PRESCALER        FALSE
@@ -787,7 +794,7 @@
 #else
 #define STM32_CRC_USE_CRC1                 FALSE
 #endif
-/** @} */
+
 #endif /* defined(AT32F415R) */
 
 #endif /* AT32_REGISTRY_H */
