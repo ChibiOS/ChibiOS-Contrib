@@ -27,17 +27,29 @@
 #ifndef AT32_REGISTRY_H
 #define AT32_REGISTRY_H
 
+/* Define by package size */
 #if defined(AT32F415KB) || defined(AT32F415KC)
-#define AT32F415K
+#define AT32F415Kx
 
 #elif defined(AT32F415CB) || defined(AT32F415CC)
-#define AT32F415C
+#define AT32F415Cx
 
 #elif defined(AT32F415RB) ||  defined(AT32F415RC)
-#define AT32F415R
+#define AT32F415Rx
 
 #else
-#error "unsupported or unrecognized AT32F415 member"
+#error "unsupported or unrecognized AT32F415 package size"
+#endif
+
+/* Define by flash size */
+#if defined(AT32F415KB) || defined(AT32F415CB) || defined(AT32F415RB)
+#define AT32F415xB
+
+#elif defined(AT32F415KC) || defined(AT32F415CC) || defined(AT32F415RC)
+#define AT32F415xC
+
+#else
+#error "unsupported or unrecognized AT32F415 flash size"
 #endif
 
 /*===========================================================================*/
@@ -48,11 +60,24 @@
 /* Common.                                                                   */
 /*===========================================================================*/
 
+/* FLASH attributes.*/
+#define AT32_FLASH_NUMBER_OF_BANKS         1
+
+#if defined(AT32F415xB) || defined(__DOXYGEN__)
+#define AT32_FLASH_SECTOR_SIZE             1024U
+#elif defined(AT32F415xC)
+#define AT32_FLASH_SECTOR_SIZE             2048U
+#endif
+
+#if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
+#define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
+#endif
+
 /*===========================================================================*/
 /* AT32F415KB, AT32F415KC.                                                   */
 /*===========================================================================*/
 
-#if defined(AT32F415K) || defined(__DOXYGEN__)
+#if defined(AT32F415Kx) || defined(__DOXYGEN__)
 
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
@@ -85,18 +110,6 @@
 /* EXINT attributes.*/
 #define AT32_EXINT_NUM_LINES               23
 #define AT32_EXINT_INTEN_MASK              0x00000000U
-
-/* FLASH attributes.*/
-#define AT32_FLASH_NUMBER_OF_BANKS         1
-#if defined(AT32F415KB) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTOR_SIZE             1024U
-#elif defined(AT32F415KC)
-#define AT32_FLASH_SECTOR_SIZE             2048U
-#endif
-
-#if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
-#endif
 
 /* GPIO attributes.*/
 #define AT32_HAS_GPIOA                     TRUE
@@ -290,7 +303,7 @@
 /* AT32F415CB, AT32F415CC.                                                   */
 /*===========================================================================*/
 
-#if defined(AT32F415C) || defined(__DOXYGEN__)
+#if defined(AT32F415Cx) || defined(__DOXYGEN__)
 
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
@@ -323,18 +336,6 @@
 /* EXINT attributes.*/
 #define AT32_EXINT_NUM_LINES               23
 #define AT32_EXINT_INTEN_MASK              0x00000000U
-
-/* FLASH attributes.*/
-#define AT32_FLASH_NUMBER_OF_BANKS         1
-#if defined(AT32F415CB) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTOR_SIZE             1024U
-#elif defined(AT32F415CC)
-#define AT32_FLASH_SECTOR_SIZE             2048U
-#endif
-
-#if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
-#endif
 
 /* GPIO attributes.*/
 #define AT32_HAS_GPIOA                     TRUE
@@ -536,7 +537,7 @@
 /* AT32F415RB, AT32F415RC.                                                   */
 /*===========================================================================*/
 
-#if defined(AT32F415R) || defined(__DOXYGEN__)
+#if defined(AT32F415Rx) || defined(__DOXYGEN__)
 
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
@@ -569,18 +570,6 @@
 /* EXINT attributes.*/
 #define AT32_EXINT_NUM_LINES               23
 #define AT32_EXINT_INTEN_MASK              0x00000000U
-
-/* FLASH attributes.*/
-#define AT32_FLASH_NUMBER_OF_BANKS         1
-#if defined(AT32F415RB) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTOR_SIZE             1024U
-#elif defined(AT32F415RC)
-#define AT32_FLASH_SECTOR_SIZE             2048U
-#endif
-
-#if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
-#endif
 
 /* GPIO attributes.*/
 #define AT32_HAS_GPIOA                     TRUE

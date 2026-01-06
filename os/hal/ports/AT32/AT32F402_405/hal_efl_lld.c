@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
-    ChibiOS - Copyright (C) 2024..2025 Maxjta
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
+    ChibiOS - Copyright (C) 2024..2026 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
 
-#define AT32_FLASH_LINE_SIZE               2U
+#define AT32_FLASH_LINE_SIZE               4U
 #define AT32_FLASH_LINE_MASK               (AT32_FLASH_LINE_SIZE - 1U)
 
 /*===========================================================================*/
@@ -274,18 +274,18 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
 
   /* Actual program implementation.*/
   while (n > 0U) {
-    volatile uint16_t *address;
+    volatile uint32_t *address;
 
     union {
-      uint16_t  hw[AT32_FLASH_LINE_SIZE / sizeof (uint16_t)];
+      uint32_t  w[AT32_FLASH_LINE_SIZE / sizeof (uint32_t)];
       uint8_t   b[AT32_FLASH_LINE_SIZE / sizeof (uint8_t)];
     } line;
 
     /* Unwritten bytes are initialized to all ones.*/
-    line.hw[0] = 0xFFFFU;
+    line.w[0] = 0xFFFFFFFFU;
 
     /* Programming address aligned to flash lines.*/
-    address = (volatile uint16_t *)(efl_lld_descriptor.address +
+    address = (volatile uint32_t *)(efl_lld_descriptor.address +
                                     (offset & ~AT32_FLASH_LINE_MASK));
 
     /* Copying data inside the prepared line.*/
@@ -298,16 +298,17 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
     while ((n > 0U) & ((offset & AT32_FLASH_LINE_MASK) != 0U));
 
     /* Programming line.*/
-    address[0] = line.hw[0];
+    address[0] = line.w[0];
     at32_flash_wait_busy(devp);
 
     err = at32_flash_check_errors(devp);
+
     if (err != FLASH_NO_ERROR) {
       break;
     }
 
     /* Check for flash error.*/
-    if (address[0] != line.hw[0]) {
+    if (address[0] != line.w[0]) {
       err = FLASH_ERROR_PROGRAM;
       break;
     }
