@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
-    ChibiOS - Copyright (C) 2024..2025 Maxjta
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
+    ChibiOS - Copyright (C) 2024..2026 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -271,7 +271,7 @@
 /** @} */
 
 /**
- * @name    ADC peripherals specific CRM operations
+ * @name    ADC peripheral specific CRM operations
  * @{
  */
 /**
@@ -327,7 +327,7 @@
 /** @} */
 
 /**
- * @name    CAN peripherals specific CRM operations
+ * @name    CAN peripheral specific CRM operations
  * @{
  */
 /**
@@ -531,7 +531,7 @@
 /** @} */
 
 /**
- * @name    QUADSPI peripherals specific CRM operations
+ * @name    QUADSPI peripheral specific CRM operations
  * @{
  */
 /**
@@ -1080,7 +1080,7 @@
 /** @} */
 
 /**
- * @name    ACC peripherals specific CRM operations
+ * @name    ACC peripheral specific CRM operations
  * @{
  */
 /**
@@ -1108,7 +1108,7 @@
 /** @} */
 
 /**
- * @name    CRC peripherals specific CRM operations
+ * @name    CRC peripheral specific CRM operations
  * @{
  */
 /**
