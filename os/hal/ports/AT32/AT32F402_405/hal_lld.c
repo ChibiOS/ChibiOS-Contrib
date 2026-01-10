@@ -320,4 +320,42 @@ void at32_clock_init(void) {
      among multiple drivers.*/
   crmEnableAPB2(CRM_APB2EN_SCFGEN, true);
 }
+
+#if HAL_USE_USB
+/*
+ * Reduce power consumption initialize for all series using OTGFS.
+ */
+void at32_reduce_power_consumption(void) {
+  volatile uint32_t delay = 0x34BC0;
+
+  if (CRM->CTRL & CRM_CTRL_HEXTSTBL) {
+    CRM->OTGHS = 0x00;
+  } else if (CRM->CTRL & CRM_CTRL_PLLSTBL) {
+    CRM->PLLCFG |= CRM_PLLCFG_PLLU_EN;
+    while ((!(CRM->CTRL & CRM_CTRL_PLLSTBL)) || (!(CRM->CTRL & CRM_CTRL_PLLUSTBL)))
+      ;
+    CRM->OTGHS = 0x10;
+  } else {
+    /* PLL or HEXT need to be enable.*/
+    return;
+  }
+
+  CRM->AHBEN1 |= CRM_AHBEN1_OTGHSEN;
+  OTG_HS->GCCFG = GCCFG_PWRDOWN | GCCFG_VBUSIG;
+  OTG_HS->GUSBCFG |= GUSBCFG_FDEVMODE;
+  OTG_HS->DCTL &= ~DCTL_SFTDISCON;
+
+  while (delay --) {
+    if (OTG_HS->DSTS & DSTS_SUSPSTS) {
+      break;
+    }
+  }
+
+  OTG_HS->GCCFG |= GCCFG_WAIT_CLK_RCV;
+  OTG_HS->PCGCCTL |= PCGCCTL_STOPPCLK;
+  OTG_HS->GCCFG &= ~GCCFG_PWRDOWN;
+
+  return;
+}
+#endif /* HAL_USE_USB */
 /** @} */
