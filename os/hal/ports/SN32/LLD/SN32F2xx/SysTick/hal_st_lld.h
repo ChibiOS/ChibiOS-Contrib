@@ -137,6 +137,16 @@ static inline systime_t st_lld_get_counter(void) {
 }
 
 /**
+ * @brief   Stops the alarm interrupt.
+ *
+ * @notapi
+ */
+static inline void st_lld_stop_alarm(void) {
+  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk;
+  SCB->ICSR = SCB_ICSR_PENDSTCLR_Msk;
+}
+
+/**
  * @brief   Starts the alarm.
  * @note    Makes sure that no spurious alarms are triggered after
  *          this call.
@@ -156,19 +166,24 @@ static inline void st_lld_start_alarm(systime_t abstime) {
    * TODO: Actually use (SN32_HCLK / OSAL_ST_FREQUENCY) instead of reading the
    * value from a hardware register (this requires making SN32_HCLK a compile
    * time constant). */
-  uint32_t prescale = (SN32_ST_TIM->config.PRE & UINT8_MAX) + 1;
+  uint32_t prescale = (SN32_ST_TIM->config.PRE & UINT8_MAX) + 1U;
 
   /* The requested delay in the SysTick clock ticks.  The maximum possible
    * value with prescale=256 is 0xFFFFFF, which just fits into the 24-bit
    * SysTick timer registers. */
-  uint32_t systick_delay = delay * prescale + (prescale - 1);
+  uint32_t systick_delay = delay * prescale + (prescale - 1U);
 
-  if (systick_delay > 0xFFFFFF) {
-    systick_delay = 0xFFFFFF;
+  if (systick_delay > 0xFFFFFFU) {
+    systick_delay = 0xFFFFFFU;
   }
+
+  st_lld_stop_alarm();
+
   /* Start SysTick to generate an interrupt after systick_delay. */
   SysTick->LOAD = systick_delay;
-  SysTick->VAL = 0;
+  SysTick->VAL = 0U;
+
+  SCB->ICSR = SCB_ICSR_PENDSTCLR_Msk;
   SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
                   SysTick_CTRL_ENABLE_Msk |
                   SysTick_CTRL_TICKINT_Msk;
@@ -183,16 +198,6 @@ static inline void st_lld_start_alarm(systime_t abstime) {
 }
 
 /**
- * @brief   Stops the alarm interrupt.
- *
- * @notapi
- */
-static inline void st_lld_stop_alarm(void) {
-  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk;
-  SCB->ICSR = SCB_ICSR_PENDSTCLR_Msk;
-}
-
-/**
  * @brief   Sets the alarm time.
  *
  * @param[in] abstime   the time to be set for the next alarm
@@ -200,7 +205,6 @@ static inline void st_lld_stop_alarm(void) {
  * @notapi
  */
 static inline void st_lld_set_alarm(systime_t abstime) {
-  st_lld_stop_alarm();
   st_lld_start_alarm(abstime);
 }
 
