@@ -638,8 +638,7 @@ struct GPTDriver {
  *
  * @notapi
  */
-#define gpt_lld_get_counter(gptp) (gptcnt_t)SN32_CT_GPT_GET((gptp), config.TC)
-
+#define gpt_lld_get_counter(gptp) (gptcnt_t)(SN32_CT_GPT_GET((gptp), config.TC) & SN32_CT16_TC_LIMIT)
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
