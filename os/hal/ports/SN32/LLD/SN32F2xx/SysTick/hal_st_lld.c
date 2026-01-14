@@ -44,6 +44,7 @@
 #endif
 
 #define ST_ENABLE_CLOCK()                   sys1EnableCT16B0()
+#define ST_RESET_CLOCK()                    sys1ResetCT16B0()
 #define ST_INIT_CLOCK()                     CT16B0_ResetTimer()
 
 #elif SN32_ST_USE_TIMER == SN32_TIM_CT16B1
@@ -53,6 +54,7 @@
 #endif
 
 #define ST_ENABLE_CLOCK()                   sys1EnableCT16B1()
+#define ST_RESET_CLOCK()                    sys1ResetCT16B1()
 #define ST_INIT_CLOCK()                     CT16B1_ResetTimer()
 
 #else
@@ -128,6 +130,7 @@ void st_lld_init(void) {
 
   /* Enabling timer clock.*/
   ST_ENABLE_CLOCK();
+  ST_RESET_CLOCK();
   ST_INIT_CLOCK();
   /* Initializing the counter in free running mode.*/
   SN32_ST_TIM->config.PRE    = (SYSTICK_CK / OSAL_ST_FREQUENCY) - 1;

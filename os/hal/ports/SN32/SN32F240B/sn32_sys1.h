@@ -88,6 +88,17 @@
 }
 
 /** @} */
+/**
+ * @name    Dummy peripherals specific SYS1 operations
+ * @{
+ */
+/**
+ * @brief   Resets the CT16 peripherals.
+ *
+ * @api
+ */
+#define sys1ResetCT16B0()
+#define sys1ResetCT16B1()
 
 /**
  * @name    GPIO0 peripherals specific SYS1 operations
