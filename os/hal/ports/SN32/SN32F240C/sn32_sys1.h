@@ -137,32 +137,36 @@
 #define sys1DisableGPIO3()
 
 /**
+ * @name    GPIO peripherals specific SYS1 operations
+ * @{
+ */
+/**
  * @brief   Resets the GPIO0 peripheral.
  *
  * @api
  */
-#define sys1ResetGPIO0() sys1Reset(0x01<<0)
+#define sys1ResetGPIO0() sys1Reset(0x1<<0)
 
 /**
  * @brief   Resets the GPIO1 peripheral.
  *
  * @api
  */
-#define sys1ResetGPIO1() sys1Reset(0x01<<1)
+#define sys1ResetGPIO1() sys1Reset(0x1<<1)
 
 /**
  * @brief   Resets the GPIO2 peripheral.
  *
  * @api
  */
-#define sys1ResetGPIO2() sys1Reset(0x01<<2)
+#define sys1ResetGPIO2() sys1Reset(0x1<<2)
 
 /**
  * @brief   Resets the GPIO3 peripheral.
  *
  * @api
  */
-#define sys1ResetGPIO3() sys1Reset(0x01<<3)
+#define sys1ResetGPIO3() sys1Reset(0x1<<3)
 
 /**
  * @name    USB peripherals specific SYS1 operations
@@ -187,7 +191,7 @@
  *
  * @api
  */
-#define sys1ResetUSB() sys1Reset(0x01<<27)
+#define sys1ResetUSB() sys1Reset(0x1<<27)
 
 /**
  * @name    CT16B0 peripherals specific SYS1 operations
@@ -212,7 +216,7 @@
  *
  * @api
  */
-#define sys1ResetCT16B0() sys1Reset(0x01<<6)
+#define sys1ResetCT16B0() sys1Reset(0x1<<6)
 
 /**
  * @name    CT16B1 peripherals specific SYS1 operations
@@ -237,7 +241,7 @@
  *
  * @api
  */
-#define sys1ResetCT16B1() sys1Reset(0x01<<7)
+#define sys1ResetCT16B1() sys1Reset(0x1<<7)
 
 /**
  * @name    ADC peripherals specific SYS1 operations
@@ -262,7 +266,7 @@
  *
  * @api
  */
-#define sys1ResetADC() sys1Reset(0x01<<11)
+#define sys1ResetADC() sys1Reset(0x1<<11)
 
 /**
  * @name    SPI0 peripherals specific SYS1 operations
@@ -287,7 +291,7 @@
  *
  * @api
  */
-#define sys1ResetSPI0() sys1Reset(0x01<<12)
+#define sys1ResetSPI0() sys1Reset(0x1<<12)
 
 /**
  * @name    SPI1 peripherals specific SYS1 operations
@@ -312,7 +316,7 @@
  *
  * @api
  */
-#define sys1ResetSPI1() sys1Reset(0x01<<13)
+#define sys1ResetSPI1() sys1Reset(0x1<<13)
 
 /**
  * @name    UART0 peripherals specific SYS1 operations
@@ -337,7 +341,7 @@
  *
  * @api
  */
-#define sys1ResetUART0() sys1Reset(0x01<<16)
+#define sys1ResetUART0() sys1Reset(0x1<<16)
 
 /**
  * @name    UART1 peripherals specific SYS1 operations
@@ -362,7 +366,7 @@
  *
  * @api
  */
-#define sys1ResetUART1() sys1Reset(0x01<<17)
+#define sys1ResetUART1() sys1Reset(0x1<<17)
 
 /**
  * @name    UART2 peripherals specific SYS1 operations
@@ -387,7 +391,7 @@
  *
  * @api
  */
-#define sys1ResetUART2() sys1Reset(0x01<<18)
+#define sys1ResetUART2() sys1Reset(0x1<<18)
 
 /**
  * @name    I2C0 peripherals specific SYS1 operations
@@ -412,7 +416,7 @@
  *
  * @api
  */
-#define sys1ResetI2C0() sys1Reset(0x01<<21)
+#define sys1ResetI2C0() sys1Reset(0x1<<21)
 
 /**
  * @name    I2C1 peripherals specific SYS1 operations
@@ -437,7 +441,7 @@
  *
  * @api
  */
-#define sys1ResetI2C1() sys1Reset(0x01<<20)
+#define sys1ResetI2C1() sys1Reset(0x1<<20)
 
 /**
  * @name    WDT peripherals specific SYS1 operations
@@ -462,7 +466,7 @@
  *
  * @api
  */
-#define sys1ResetWDT() sys1Reset(0x01<<24)
+#define sys1ResetWDT() sys1Reset(0x1<<24)
 
 /**
  * @name    CRC peripherals specific SYS1 operations
@@ -487,7 +491,7 @@
  *
  * @api
  */
-#define sys1ResetCRC() sys1Reset(0x01<<26)
+#define sys1ResetCRC() sys1Reset(0x1<<26)
 
 /**
  * @name    CLKOUT peripherals specific SYS1 operations
