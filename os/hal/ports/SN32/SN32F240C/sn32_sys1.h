@@ -114,7 +114,7 @@
 
 /** @} */
 /**
- * @name    Dummy GPIO peripherals specific SYS1 operations
+ * @name    Dummy peripherals specific SYS1 operations
  * @{
  */
 /**
@@ -122,19 +122,19 @@
  *
  * @api
  */
-#define sys1EnableP0()
-#define sys1EnableP1()
-#define sys1EnableP2()
-#define sys1EnableP3()
+#define sys1EnableGPIO0()
+#define sys1EnableGPIO1()
+#define sys1EnableGPIO2()
+#define sys1EnableGPIO3()
 /**
  * @brief   Disables the GPIO peripherals clock.
  *
  * @api
  */
-#define sys1DisableP0()
-#define sys1DisableP1()
-#define sys1DisableP2()
-#define sys1DisableP3()
+#define sys1DisableGPIO0()
+#define sys1DisableGPIO1()
+#define sys1DisableGPIO2()
+#define sys1DisableGPIO3()
 
 /**
  * @brief   Resets the GPIO0 peripheral.
