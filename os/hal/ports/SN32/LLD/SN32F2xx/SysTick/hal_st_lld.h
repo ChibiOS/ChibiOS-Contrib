@@ -157,24 +157,33 @@ static inline void st_lld_stop_alarm(void) {
  */
 static inline void st_lld_start_alarm(systime_t abstime) {
 
-  /* The requested delay in OSAL_ST_FREQUENCY ticks, decreased by 1 to bring it
-   * into the 0...0xFFFF range instead of 1...0x10000. */
-  uint32_t delay = ((uint32_t)abstime - SN32_ST_TIM->config.TC - 1U) & SN32_CT16_TC_LIMIT;
-
-  /* The conversion factor between the SN32_ST_TIM and SysTick clock
-   * frequencies (SN32_HCLK / OSAL_ST_FREQUENCY).
-   * TODO: Actually use (SN32_HCLK / OSAL_ST_FREQUENCY) instead of reading the
-   * value from a hardware register (this requires making SN32_HCLK a compile
-   * time constant). */
+  uint32_t now = SN32_ST_TIM->config.TC;
+  uint32_t delay = ((uint32_t)abstime - now) & SN32_CT16_TC_LIMIT;
   uint32_t prescale = (SN32_ST_TIM->config.PRE & UINT8_MAX) + 1U;
+
+  /* Minimum safe delay */
+  uint32_t min_delay_ticks = 4U;
+
+  /* Handle wrap-around */
+  if (delay > (SN32_CT16_TC_LIMIT >> 1)) {
+    delay = min_delay_ticks;
+  }
+
+  if (delay < min_delay_ticks) {
+    delay = min_delay_ticks;
+  }
 
   /* The requested delay in the SysTick clock ticks.  The maximum possible
    * value with prescale=256 is 0xFFFFFF, which just fits into the 24-bit
    * SysTick timer registers. */
-  uint32_t systick_delay = delay * prescale + (prescale - 1U);
+  uint32_t systick_delay = delay * prescale;
 
   if (systick_delay > 0xFFFFFFU) {
     systick_delay = 0xFFFFFFU;
+  }
+
+  if (systick_delay < prescale) {
+    systick_delay = prescale;
   }
 
   st_lld_stop_alarm();
