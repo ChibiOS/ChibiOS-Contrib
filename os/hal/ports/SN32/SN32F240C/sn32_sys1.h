@@ -99,6 +99,19 @@
   (void)SN_SYS1->APBCP1;                                                  \
 }
 
+/**
+ * @brief   Resets one or more peripheral.
+ *
+ * @param[in] mask      Reset peripherals mask
+ *
+ * @api
+ */
+#define sys1Reset(mask) {                                                   \
+  SN_SYS1->PRST |= (mask);                                                  \
+  SN_SYS1->PRST &= ~(mask);                                                 \
+  (void)SN_SYS1->PRST;                                                      \
+}
+
 /** @} */
 /**
  * @name    Dummy GPIO peripherals specific SYS1 operations
@@ -124,6 +137,34 @@
 #define sys1DisableP3()
 
 /**
+ * @brief   Resets the GPIO0 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetGPIO0() sys1Reset(0x01<<0)
+
+/**
+ * @brief   Resets the GPIO1 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetGPIO1() sys1Reset(0x01<<1)
+
+/**
+ * @brief   Resets the GPIO2 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetGPIO2() sys1Reset(0x01<<2)
+
+/**
+ * @brief   Resets the GPIO3 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetGPIO3() sys1Reset(0x01<<3)
+
+/**
  * @name    USB peripherals specific SYS1 operations
  * @{
  */
@@ -140,6 +181,13 @@
  * @api
  */
 #define sys1DisableUSB() sys1DisableAHB(0x1<<4)
+
+/**
+ * @brief   Resets the USB peripheral.
+ *
+ * @api
+ */
+#define sys1ResetUSB() sys1Reset(0x01<<27)
 
 /**
  * @name    CT16B0 peripherals specific SYS1 operations
@@ -160,6 +208,13 @@
 #define sys1DisableCT16B0() sys1DisableAHB(0x1<<6)
 
 /**
+ * @brief   Resets the CT16B0 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetCT16B0() sys1Reset(0x01<<6)
+
+/**
  * @name    CT16B1 peripherals specific SYS1 operations
  * @{
  */
@@ -176,6 +231,13 @@
  * @api
  */
 #define sys1DisableCT16B1() sys1DisableAHB(0x1<<7)
+
+/**
+ * @brief   Resets the CT16B1 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetCT16B1() sys1Reset(0x01<<7)
 
 /**
  * @name    ADC peripherals specific SYS1 operations
@@ -196,6 +258,13 @@
 #define sys1DisableADC() sys1DisableAHB(0x1<<11)
 
 /**
+ * @brief   Resets the ADC peripheral.
+ *
+ * @api
+ */
+#define sys1ResetADC() sys1Reset(0x01<<11)
+
+/**
  * @name    SPI0 peripherals specific SYS1 operations
  * @{
  */
@@ -214,6 +283,13 @@
 #define sys1DisableSPI0() sys1DisableAHB(0x1<<12)
 
 /**
+ * @brief   Resets the SPI0 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetSPI0() sys1Reset(0x01<<12)
+
+/**
  * @name    SPI1 peripherals specific SYS1 operations
  * @{
  */
@@ -230,6 +306,14 @@
  * @api
  */
 #define sys1DisableSPI1() sys1DisableAHB(0x1<<13)
+
+/**
+ * @brief   Resets the SPI1 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetSPI1() sys1Reset(0x01<<13)
+
 /**
  * @name    UART0 peripherals specific SYS1 operations
  * @{
@@ -247,6 +331,13 @@
  * @api
  */
 #define sys1DisableUART0() sys1DisableAHB(0x1<<16)
+
+/**
+ * @brief   Resets the UART0 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetUART0() sys1Reset(0x01<<16)
 
 /**
  * @name    UART1 peripherals specific SYS1 operations
@@ -267,6 +358,13 @@
 #define sys1DisableUART1() sys1DisableAHB(0x1<<17)
 
 /**
+ * @brief   Resets the UART1 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetUART1() sys1Reset(0x01<<17)
+
+/**
  * @name    UART2 peripherals specific SYS1 operations
  * @{
  */
@@ -283,6 +381,13 @@
  * @api
  */
 #define sys1DisableUART2() sys1DisableAHB(0x1<<18)
+
+/**
+ * @brief   Resets the UART2 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetUART2() sys1Reset(0x01<<18)
 
 /**
  * @name    I2C0 peripherals specific SYS1 operations
@@ -303,6 +408,13 @@
 #define sys1DisableI2C0() sys1DisableAHB(0x1<<21)
 
 /**
+ * @brief   Resets the I2C0 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetI2C0() sys1Reset(0x01<<21)
+
+/**
  * @name    I2C1 peripherals specific SYS1 operations
  * @{
  */
@@ -319,6 +431,13 @@
  * @api
  */
 #define sys1DisableI2C1() sys1DisableAHB(0x1<<20)
+
+/**
+ * @brief   Resets the I2C1 peripheral.
+ *
+ * @api
+ */
+#define sys1ResetI2C1() sys1Reset(0x01<<20)
 
 /**
  * @name    WDT peripherals specific SYS1 operations
@@ -339,6 +458,13 @@
 #define sys1DisableWDT() sys1DisableAHB(0x1<<24)
 
 /**
+ * @brief   Resets the WDT peripheral.
+ *
+ * @api
+ */
+#define sys1ResetWDT() sys1Reset(0x01<<24)
+
+/**
  * @name    CRC peripherals specific SYS1 operations
  * @{
  */
@@ -355,6 +481,13 @@
  * @api
  */
 #define sys1DisableCRC() sys1DisableAHB(0x1<<27)
+
+/**
+ * @brief   Resets the CRC peripheral.
+ *
+ * @api
+ */
+#define sys1ResetCRC() sys1Reset(0x01<<26)
 
 /**
  * @name    CLKOUT peripherals specific SYS1 operations
