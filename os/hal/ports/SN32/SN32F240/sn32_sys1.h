@@ -135,6 +135,10 @@
  * @api
  */
 #define sys1EnableGPIO() sys1EnableAHB(0x1<<0)
+#define sys1EnableGPIO0() sys1EnableGPIO()
+#define sys1EnableGPIO1() sys1EnableGPIO()
+#define sys1EnableGPIO2() sys1EnableGPIO()
+#define sys1EnableGPIO3() sys1EnableGPIO()
 
 /**
  * @brief   Disables the GPIO peripheral clock.
@@ -144,32 +148,32 @@
 #define sys1DisableGPIO() sys1DisableAHB(0x1<<0)
 
 /**
- * @brief   Resets the GPIOP0 peripheral.
+ * @brief   Resets the GPIO0 peripheral.
  *
  * @api
  */
-#define sys1ResetGPIOP0() sys1Reset(0x1<<0)
+#define sys1ResetGPIO0() sys1Reset(0x1<<0)
 
 /**
- * @brief   Resets the GPIOP1 peripheral.
+ * @brief   Resets the GPIO1 peripheral.
  *
  * @api
  */
-#define sys1ResetGPIOP1() sys1Reset(0x1<<1)
+#define sys1ResetGPIO1() sys1Reset(0x1<<1)
 
 /**
- * @brief   Resets the GPIOP2 peripheral.
+ * @brief   Resets the GPIO2 peripheral.
  *
  * @api
  */
-#define sys1ResetGPIOP2() sys1Reset(0x1<<2)
+#define sys1ResetGPIO2() sys1Reset(0x1<<2)
 
 /**
- * @brief   Resets the GPIOP3 peripheral.
+ * @brief   Resets the GPIO3 peripheral.
  *
  * @api
  */
-#define sys1ResetGPIOP3() sys1Reset(0x1<<3)
+#define sys1ResetGPIO3() sys1Reset(0x1<<3)
 
 /**
  * @name    USB peripherals specific SYS1 operations

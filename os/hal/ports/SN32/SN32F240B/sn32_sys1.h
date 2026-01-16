@@ -88,80 +88,91 @@
 }
 
 /** @} */
-
 /**
- * @name    P0 peripherals specific SYS1 operations
+ * @name    Dummy peripherals specific SYS1 operations
  * @{
  */
 /**
- * @brief   Enables the P0 peripheral clock.
- *
-
+ * @brief   Resets the CT16 peripherals.
  *
  * @api
  */
-#define sys1EnableP0() sys1EnableAHB(0x1<<0)
+#define sys1ResetCT16B0()
+#define sys1ResetCT16B1()
 
 /**
- * @brief   Disables the P0 peripheral clock.
- *
- * @api
- */
-#define sys1DisableP0() sys1DisableAHB(0x1<<0)
-
-/**
- * @name    P1 peripherals specific SYS1 operations
+ * @name    GPIO0 peripherals specific SYS1 operations
  * @{
  */
 /**
- * @brief   Enables the P1 peripheral clock.
+ * @brief   Enables the GPIO0 peripheral clock.
+ *
+
  *
  * @api
  */
-#define sys1EnableP1() sys1EnableAHB(0x1<<1)
+#define sys1EnableGPIO0() sys1EnableAHB(0x1<<0)
 
 /**
- * @brief   Disables the P1 peripheral clock.
+ * @brief   Disables the GPIO0 peripheral clock.
  *
  * @api
  */
-#define sys1DisableP1() sys1DisableAHB(0x1<<1)
+#define sys1DisableGPIO0() sys1DisableAHB(0x1<<0)
 
 /**
- * @name    P2 peripherals specific SYS1 operations
+ * @name    GPIO1 peripherals specific SYS1 operations
  * @{
  */
 /**
- * @brief   Enables the P2 peripheral clock.
+ * @brief   Enables the GPIO1 peripheral clock.
  *
  * @api
  */
-#define sys1EnableP2() sys1EnableAHB(0x1<<2)
+#define sys1EnableGPIO1() sys1EnableAHB(0x1<<1)
 
 /**
- * @brief   Disables the P2 peripheral clock.
+ * @brief   Disables the GPIO1 peripheral clock.
  *
  * @api
  */
-#define sys1DisableP2() sys1DisableAHB(0x1<<2)
+#define sys1DisableGPIO1() sys1DisableAHB(0x1<<1)
 
 /**
- * @name    P3 peripherals specific SYS1 operations
+ * @name    GPIO2 peripherals specific SYS1 operations
  * @{
  */
 /**
- * @brief   Enables the P3 peripheral clock.
+ * @brief   Enables the GPIO2 peripheral clock.
  *
  * @api
  */
-#define sys1EnableP3() sys1EnableAHB(0x1<<3)
+#define sys1EnableGPIO2() sys1EnableAHB(0x1<<2)
 
 /**
- * @brief   Disables the P3 peripheral clock.
+ * @brief   Disables the GPIO2 peripheral clock.
  *
  * @api
  */
-#define sys1DisableP3() sys1DisableAHB(0x1<<3)
+#define sys1DisableGPIO2() sys1DisableAHB(0x1<<2)
+
+/**
+ * @name    GPIO3 peripherals specific SYS1 operations
+ * @{
+ */
+/**
+ * @brief   Enables the GPIO3 peripheral clock.
+ *
+ * @api
+ */
+#define sys1EnableGPIO3() sys1EnableAHB(0x1<<3)
+
+/**
+ * @brief   Disables the GPIO3 peripheral clock.
+ *
+ * @api
+ */
+#define sys1DisableGPIO3() sys1DisableAHB(0x1<<3)
 
 /**
  * @name    USB peripherals specific SYS1 operations

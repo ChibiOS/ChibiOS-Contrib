@@ -266,6 +266,7 @@ void gpt_lld_start(GPTDriver *gptp) {
 #    if SN32_GPT_USE_CT16B0
         if (&GPTD1 == gptp) {
             sys1EnableCT16B0();
+            sys1ResetCT16B0();
             CT16B0_ResetTimer();
 #        if !defined(SN32_CT16B0_SUPPRESS_ISR)
             nvicEnableVector(SN32_CT16B0_NUMBER, SN32_GPT_CT16B0_IRQ_PRIORITY);
@@ -276,6 +277,7 @@ void gpt_lld_start(GPTDriver *gptp) {
 #    if SN32_GPT_USE_CT16B1
         if (&GPTD2 == gptp) {
             sys1EnableCT16B1();
+            sys1ResetCT16B1();
             CT16B1_ResetTimer();
 #        if !defined(SN32_CT16B1_SUPPRESS_ISR)
             nvicEnableVector(SN32_CT16B1_NUMBER, SN32_GPT_CT16B1_IRQ_PRIORITY);
@@ -286,6 +288,7 @@ void gpt_lld_start(GPTDriver *gptp) {
 #    if SN32_GPT_USE_CT16B2
         if (&GPTD3 == gptp) {
             sys1EnableCT16B2();
+            sys1ResetCT16B2();
             CT16B2_ResetTimer();
 #        if !defined(SN32_CT16B2_SUPPRESS_ISR)
             nvicEnableVector(SN32_CT16B2_NUMBER, SN32_GPT_CT16B2_IRQ_PRIORITY);
@@ -296,6 +299,7 @@ void gpt_lld_start(GPTDriver *gptp) {
 #    if SN32_GPT_USE_CT16B3
         if (&GPTD4 == gptp) {
             sys1EnableCT16B3();
+            sys1ResetCT16B3();
             CT16B3_ResetTimer();
 #        if !defined(SN32_CT16B3_SUPPRESS_ISR)
             nvicEnableVector(SN32_CT16B3_NUMBER, SN32_GPT_CT16B3_IRQ_PRIORITY);
@@ -306,6 +310,7 @@ void gpt_lld_start(GPTDriver *gptp) {
 #    if SN32_GPT_USE_CT16B4
         if (&GPTD5 == gptp) {
             sys1EnableCT16B4();
+            sys1ResetCT16B4();
             CT16B4_ResetTimer();
 #        if !defined(SN32_CT16B4_SUPPRESS_ISR)
             nvicEnableVector(SN32_CT16B4_NUMBER, SN32_GPT_CT16B4_IRQ_PRIORITY);
@@ -316,7 +321,8 @@ void gpt_lld_start(GPTDriver *gptp) {
 #    if SN32_GPT_USE_CT16B5
         if (&GPTD6 == gptp) {
             sys1EnableCT16B5();
-            CT16B6_ResetTimer();
+            sys1ResetCT16B5();
+            CT16B5_ResetTimer();
 #        if !defined(SN32_CT16B5_SUPPRESS_ISR)
             nvicEnableVector(SN32_CT16B5_NUMBER, SN32_GPT_CT16B5_IRQ_PRIORITY);
 #        endif
@@ -328,32 +334,38 @@ void gpt_lld_start(GPTDriver *gptp) {
         SN32_CT_GPT_SET(gptp, config.TMRCTRL, CT16_CEN_DIS); /* Timer disabled.*/
 #    if SN32_GPT_USE_CT16B0
         if (&GPTD1 == gptp) {
+            sys1ResetCT16B0();
             CT16B0_ResetTimer(); /* Counter reset to zero.*/
         }
 #    endif
 #    if SN32_GPT_USE_CT16B1
         if (&GPTD2 == gptp) {
+            sys1ResetCT16B1();
             CT16B1_ResetTimer(); /* Counter reset to zero.*/
         }
 #    endif
 #    if SN32_GPT_USE_CT16B2
         if (&GPTD3 == gptp) {
+            sys1ResetCT16B2();
             CT16B2_ResetTimer(); /* Counter reset to zero.*/
         }
 #    endif
 #    if SN32_GPT_USE_CT16B3
         if (&GPTD4 == gptp) {
+            sys1ResetCT16B3();
             CT16B3_ResetTimer(); /* Counter reset to zero.*/
         }
 #    endif
 #    if SN32_GPT_USE_CT16B4
         if (&GPTD5 == gptp) {
+            sys1ResetCT16B4();
             CT16B4_ResetTimer(); /* Counter reset to zero.*/
         }
 #    endif
 #    if SN32_GPT_USE_CT16B5
         if (&GPTD6 == gptp) {
-            CT16B4_ResetTimer(); /* Counter reset to zero.*/
+            sys1ResetCT16B5();
+            CT16B5_ResetTimer(); /* Counter reset to zero.*/
         }
 #    endif
     }
@@ -423,7 +435,7 @@ void gpt_lld_stop(GPTDriver *gptp) {
         }
 #    endif
 #    if SN32_GPT_USE_CT16B5
-        if (&GPTD5 == gptp) {
+        if (&GPTD6 == gptp) {
 #        if !defined(SN32_CT16B5_SUPPRESS_ISR)
             nvicDisableVector(SN32_CT16B5_NUMBER);
 #        endif

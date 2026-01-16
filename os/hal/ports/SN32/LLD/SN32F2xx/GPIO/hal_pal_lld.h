@@ -340,7 +340,7 @@ typedef uint32_t iopadid_t;
  *
  * @notapi
  */
-#define pal_lld_clearport(port, bits) ((port)->BCLR = ~(uint32_t)(bits))
+#define pal_lld_clearport(port, bits) ((port)->BCLR = (uint32_t)(bits))
 
 /**
  * @brief   Writes a group of bits.

@@ -147,19 +147,19 @@ void _pal_lld_init(const PALConfig *config) {
 
 #if (PAL_USE_WAIT == TRUE) || (PAL_USE_CALLBACKS == TRUE)
 #if SN32_HAS_GPIOA
-  sys1EnableP0();
+  sys1EnableGPIO0();
   nvicEnableVector(SN32_GPIOA_NUMBER, SN32_GPIOA_IRQ_PRIORITY);
 #endif
 #if SN32_HAS_GPIOB
-  sys1EnableP1();
+  sys1EnableGPIO1();
   nvicEnableVector(SN32_GPIOB_NUMBER, SN32_GPIOB_IRQ_PRIORITY);
 #endif
 #if SN32_HAS_GPIOC
-  sys1EnableP2();
+  sys1EnableGPIO2();
   nvicEnableVector(SN32_GPIOC_NUMBER, SN32_GPIOC_IRQ_PRIORITY);
 #endif
 #if SN32_HAS_GPIOD
-  sys1EnableP3();
+  sys1EnableGPIO3();
   nvicEnableVector(SN32_GPIOD_NUMBER, SN32_GPIOD_IRQ_PRIORITY);
 #endif
 
