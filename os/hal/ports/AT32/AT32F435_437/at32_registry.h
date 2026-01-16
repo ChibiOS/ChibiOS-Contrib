@@ -1,6 +1,8 @@
 /*
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
-    ChibiOS - Copyright (C) 2024 Maxjta
+    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
+    ChibiOS - Copyright (C) 2024..2026 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -99,6 +101,29 @@
 /*===========================================================================*/
 /* Platform capabilities.                                                    */
 /*===========================================================================*/
+
+/**
+ * @name    AT32F435_437 capabilities
+ * @{
+ */
+
+/* DEBUG helpers.*/
+#define AT32_DEBUG_TMR1_STOP()             DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR1_PAUSE
+#define AT32_DEBUG_TMR2_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR2_PAUSE
+#define AT32_DEBUG_TMR3_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR3_PAUSE
+#define AT32_DEBUG_TMR4_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR4_PAUSE
+#define AT32_DEBUG_TMR5_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR5_PAUSE
+#define AT32_DEBUG_TMR6_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR6_PAUSE
+#define AT32_DEBUG_TMR7_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR7_PAUSE
+#define AT32_DEBUG_TMR8_STOP()             DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR8_PAUSE
+#define AT32_DEBUG_TMR9_STOP()             DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR9_PAUSE
+#define AT32_DEBUG_TMR10_STOP()            DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR10_PAUSE
+#define AT32_DEBUG_TMR11_STOP()            DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR11_PAUSE
+#define AT32_DEBUG_TMR12_STOP()            DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR12_PAUSE
+#define AT32_DEBUG_TMR13_STOP()            DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR13_PAUSE
+#define AT32_DEBUG_TMR14_STOP()            DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR14_PAUSE
+#define AT32_DEBUG_TMR20_STOP()            DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR20_PAUSE
+
 #if defined(AT32F435_437Cx) || defined(__DOXYGEN__)
 /**
  * @name    AT32F435Cx capabilities
@@ -273,10 +298,10 @@
 /* USB attributes.*/
 #define AT32_OTG_STEPPING                   2
 #define AT32_HAS_OTG1                       TRUE
-#define AT32_OTG1_ENDPOINTS                 8
+#define AT32_OTG1_ENDPOINTS                 7
 
 #define AT32_HAS_OTG2                       TRUE
-#define AT32_OTG2_ENDPOINTS                 8
+#define AT32_OTG2_ENDPOINTS                 7
 #define AT32_OTG2_SUPPORTS_HS               FALSE
 
 #define AT32_HAS_USB                        FALSE
@@ -473,10 +498,10 @@
 /* USB attributes.*/
 #define AT32_OTG_STEPPING                   2
 #define AT32_HAS_OTG1                       TRUE
-#define AT32_OTG1_ENDPOINTS                 8
+#define AT32_OTG1_ENDPOINTS                 7
 
 #define AT32_HAS_OTG2                       TRUE
-#define AT32_OTG2_ENDPOINTS                 8
+#define AT32_OTG2_ENDPOINTS                 7
 #define AT32_OTG2_SUPPORTS_HS               FALSE
 
 #define AT32_HAS_USB                        FALSE
@@ -674,10 +699,10 @@
 /* USB attributes.*/
 #define AT32_OTG_STEPPING                   2
 #define AT32_HAS_OTG1                       TRUE
-#define AT32_OTG1_ENDPOINTS                 8
+#define AT32_OTG1_ENDPOINTS                 7
 
 #define AT32_HAS_OTG2                       TRUE
-#define AT32_OTG2_ENDPOINTS                 8
+#define AT32_OTG2_ENDPOINTS                 7
 #define AT32_OTG2_SUPPORTS_HS               FALSE
 
 #define AT32_HAS_USB                        FALSE
@@ -877,10 +902,10 @@
 /* USB attributes.*/
 #define AT32_OTG_STEPPING                   2
 #define AT32_HAS_OTG1                       TRUE
-#define AT32_OTG1_ENDPOINTS                 8
+#define AT32_OTG1_ENDPOINTS                 7
 
 #define AT32_HAS_OTG2                       TRUE
-#define AT32_OTG2_ENDPOINTS                 8
+#define AT32_OTG2_ENDPOINTS                 7
 #define AT32_OTG2_SUPPORTS_HS               FALSE
 
 #define AT32_HAS_USB                        FALSE

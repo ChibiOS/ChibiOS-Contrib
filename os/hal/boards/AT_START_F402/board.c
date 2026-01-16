@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2020 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -147,6 +147,9 @@ static void at32_gpio_init(void) {
 void __early_init(void) {
   at32_gpio_init();
   at32_clock_init();
+#if HAL_USE_USB || defined(__DOXYGEN__)
+  at32_reduce_power_consumption();
+#endif /* HAL_USE_USB */
 }
 
 /**

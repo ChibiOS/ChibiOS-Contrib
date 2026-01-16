@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
-    ChibiOS - Copyright (C) 2024..2025 Maxjta
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
+    ChibiOS - Copyright (C) 2024..2026 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -226,6 +226,11 @@
 #define AT32_TMR13_HANDLER           VectorF0
 #define AT32_TMR14_HANDLER           VectorF4
 
+/* Aliases.*/
+#define AT32_TMR9_HANDLER            AT32_TMR1_BRK_TMR9_HANDLER
+#define AT32_TMR10_HANDLER           AT32_TMR1_OVF_TMR10_HANDLER
+#define AT32_TMR11_HANDLER           AT32_TMR1_HALL_TMR11_HANDLER
+
 #define AT32_TMR1_BRK_TMR9_NUMBER    24
 #define AT32_TMR1_OVF_TMR10_NUMBER   25
 #define AT32_TMR1_HALL_TMR11_NUMBER  26
@@ -237,6 +242,11 @@
 #define AT32_TMR7_NUMBER             55
 #define AT32_TMR13_NUMBER            44
 #define AT32_TMR14_NUMBER            45
+
+/* Aliases.*/
+#define AT32_TMR9_NUMBER             AT32_TMR1_BRK_TMR9_NUMBER
+#define AT32_TMR10_NUMBER            AT32_TMR1_OVF_TMR10_NUMBER
+#define AT32_TMR11_NUMBER            AT32_TMR1_HALL_TMR11_NUMBER
 
 /*
  * USART units.

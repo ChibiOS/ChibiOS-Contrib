@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -724,10 +724,10 @@
  * @brief   PLL input and output clock frequency.
  */
 #if (AT32_PLLCFGEN == AT32_PLLCFGEN_SOLID) || defined(__DOXYGEN__)
-#define AT32_PLLCLKIN              AT32_PLLRCSCLK  
+#define AT32_PLLCLKIN              AT32_PLLRCSCLK
 #define AT32_PLLCLKOUT             (AT32_PLLCLKIN * AT32_PLLMULT_VALUE)
 #elif AT32_PLLCFGEN == AT32_PLLCFGEN_FLEX
-#define AT32_PLLCLKIN              (AT32_PLLRCSCLK / AT32_PLL_MS_VALUE) 
+#define AT32_PLLCLKIN              (AT32_PLLRCSCLK / AT32_PLL_MS_VALUE)
 #define AT32_PLLFRCLK              (AT32_PLLCLKIN * AT32_PLL_NS_VALUE)
 #define AT32_PLLCLKOUT             (AT32_PLLFRCLK / AT32_PLL_FR_VALUE)
 

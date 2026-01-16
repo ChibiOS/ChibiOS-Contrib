@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -278,21 +278,21 @@ static bool sdc_lld_wait_transaction_end(SDCDriver *sdcp, uint32_t n,
     osalThreadSuspendS(&sdcp->thread);
   }
 
-  /* Stopping operations, waiting for transfer completion at DMA level, then
-     the stream is disabled and cleared.*/
-  dmaWaitCompletion(sdcp->dma);
-  sdcp->sdio->INTEN  = 0U;
-  sdcp->sdio->DTCTRL = 0U;
+  /* Mask has now been set to zero by interrupt handler. */
+  osalSysUnlock();
 
+  /* Data transfer not complete, let error cleanup stop DMA.*/
   if ((sdcp->sdio->STS & SDIO_STS_DTCMPL) == 0) {
-    osalSysUnlock();
     return HAL_FAILED;
   }
 
+  /* Waiting for transfer completion at DMA level, then the stream is disabled
+     and cleared.*/
+  dmaWaitCompletion(sdcp->dma);
+  sdcp->sdio->DTCTRL = 0U;
+
   /* Clearing status.*/
   sdcp->sdio->INTCLR = SDIO_INTCLR_ALL_FLAGS;
-
-  osalSysUnlock();
 
   /* Finalize transaction.*/
   if (n > 1U)
@@ -766,15 +766,15 @@ bool sdc_lld_read_aligned(SDCDriver *sdcp, uint32_t startblk,
                        SDIO_INTEN_DTCMPLIEN;
   sdcp->sdio->DTLEN  = blocks * MMCSD_BLOCK_SIZE;
 
+  if (sdc_lld_prepare_read(sdcp, startblk, blocks, resp) == true)
+    goto error;
+
   /* Transaction starts just after TFREN bit setting.*/
   sdcp->sdio->DTCTRL = SDIO_DTCTRL_TFRDIR |
                        SDIO_DTCTRL_BLKSIZE_3 |
                        SDIO_DTCTRL_BLKSIZE_0 |
                        SDIO_DTCTRL_DMAEN |
                        SDIO_DTCTRL_TFREN;
-
-  if (sdc_lld_prepare_read(sdcp, startblk, blocks, resp) == true)
-    goto error;
 
   if (sdc_lld_wait_transaction_end(sdcp, blocks, resp) == true)
     goto error;

@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -105,10 +105,10 @@ OSAL_IRQ_HANDLER(AT32_DMA2_CH4_5_HANDLER) {
 
   OSAL_IRQ_PROLOGUE();
 
-  /* Check on channel 4 of DMA2. */
+  /* Check on channel 4 of DMA2.*/
   dmaServeInterrupt(AT32_DMA2_STREAM4);
 
-  /* Check on channel 5 of DMA2. */
+  /* Check on channel 5 of DMA2.*/
   dmaServeInterrupt(AT32_DMA2_STREAM5);
 
   OSAL_IRQ_EPILOGUE();
@@ -147,14 +147,14 @@ OSAL_IRQ_HANDLER(AT32_DMA2_CH6_7_HANDLER) {
  */
 void hal_lld_init(void) {
 
-  /* Reset of all peripherals. */
+  /* Reset of all peripherals.*/
   crmResetAPB1(0xFFFFFFFF);
   crmResetAPB2(0xFFFFFFFF);
 
-  /* PWC clocks enabled. */
+  /* PWC clocks enabled.*/
   crmEnablePWCInterface(true);
 
-  /* Initializes the backup domain.*/
+  /* Initializes the battery powered domain.*/
   hal_lld_battery_powered_domain_init();
 
   /* DMA subsystems initialization.*/
@@ -193,12 +193,12 @@ void at32_clock_init(void) {
 
   /* HICK is selected as new source without touching the other fields in
      CFGR. Clearing the register has to be postponed after HICK is the
-     new source. */
+     new source.*/
   CRM->CFG &= ~CRM_CFG_SCLKSEL;             /* Reset SCLKSEL, selecting HICK. */
   while ((CRM->CFG & CRM_CFG_SCLKSTS) != CRM_CFG_SCLKSTS_HICK)
     ;                                       /* Waits until HICK is selected.  */
 
-  /* Registers finally cleared to reset values. */
+  /* Registers finally cleared to reset values.*/
   CRM->CTRL &= ~(0x010D0000);               /* CTRL reset value.              */
   CRM->CFG = 0x00000000;                    /* CFG reset value.               */
   CRM->PLL = 0x00001F10;                    /* PLL reset value.               */
@@ -217,7 +217,7 @@ void at32_clock_init(void) {
   /* HEXT Bypass.*/
   CRM->CTRL |= CRM_CTRL_HEXTEN | CRM_CTRL_HEXTBYPS;
 #endif
-  /* HEXT activation. */
+  /* HEXT activation.*/
   CRM->CTRL |= CRM_CTRL_HEXTEN;
   while (!(CRM->CTRL & CRM_CTRL_HEXTSTBL))
     ;                                       /* Waits until HEXT is stable.    */
@@ -233,13 +233,13 @@ void at32_clock_init(void) {
 #if AT32_ACTIVATE_PLL
   /* PLL activation.*/
 #if (AT32_PLLCFGEN == AT32_PLLCFGEN_SOLID)
-  /* Solid PLL config. */
+  /* Solid PLL config.*/
   CRM->CFG |= AT32_PLLMULT | AT32_PLLHEXTDIV | AT32_PLLRCS;
 #ifdef AT32_PLLCLKREF
   CRM->PLL |= AT32_PLLCLKREF;
 #endif
 #else
-  /* Flexible PLL config. */
+  /* Flexible PLL config.*/
   CRM->CFG |= AT32_PLLHEXTDIV | AT32_PLLRCS;
   CRM->PLL  = AT32_PLL_FR | AT32_PLL_MS | AT32_PLL_NS | AT32_PLLCFGEN;
 #endif

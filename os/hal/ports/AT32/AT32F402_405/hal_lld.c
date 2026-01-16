@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
-    ChibiOS - Copyright (C) 2024..2025 Maxjta
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
+    ChibiOS - Copyright (C) 2024..2026 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -64,10 +64,11 @@ static void hal_lld_battery_powered_domain_init(void) {
     /* Battery powered domain reset.*/
     CRM->BPDC = CRM_BPDC_BPDRST;
 
-    /* Errata 1.2.1: Read/write ERTC occupies APB1 for 15 ERTC clock cycles.*/
+    /* Errata 1.2.1: Read/write ERTC occupies APB1 for 15 ERTC clock cycles
+       (one more clock cycle at the end for stable).*/
     {
       __NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
-      __NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+      __NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
     }
 
     CRM->BPDC = 0;
@@ -122,7 +123,7 @@ void hal_lld_init(void) {
   crmResetAPB1(~CRM_APB1RST_PWCRST);
   crmResetAPB2(~0);
 
-  /* Initializes the backup domain.*/
+  /* Initializes the battery powered domain.*/
   hal_lld_battery_powered_domain_init();
 
   /* DMA subsystems initialization.*/
@@ -140,7 +141,7 @@ void hal_lld_init(void) {
 }
 
 /*
- * HICK divider selection for all sub-families.
+ * HICK divider selection for all series.
  */
 static void at32_hick_divider(uint32_t div)
 {
@@ -167,7 +168,7 @@ static void at32_hick_divider(uint32_t div)
 }
 
 /*
- * HICK to SCLK selection for all sub-families.
+ * HICK to SCLK selection for all series.
  */
 static void at32_hick_to_sclk(uint32_t value)
 {
@@ -224,12 +225,12 @@ void at32_clock_init(void) {
 
   /* HICK is selected as new source without touching the other fields in
      CFGR. Clearing the register has to be postponed after HICK is the
-     new source. */
+     new source.*/
   CRM->CFG &= ~CRM_CFG_SCLKSEL;             /* Reset SCLKSEL, selecting HICK. */
   while ((CRM->CFG & CRM_CFG_SCLKSTS) != CRM_CFG_SCLKSTS_HICK)
     ;                                       /* Waits until HICK is selected.  */
 
-  /* Registers finally cleared to reset values. */
+  /* Registers finally cleared to reset values.*/
   CRM->CTRL &= ~(0x010D0000);               /* CTRL reset value.              */
   CRM->CFG = (0x40000000);                  /* CFG reset value.               */
   CRM->PLLCFG = 0x000007C1;                 /* PLLCFG reset value.            */
@@ -248,7 +249,7 @@ void at32_clock_init(void) {
   /* HEXT Bypass.*/
   CRM->CTRL |= CRM_CTRL_HEXTEN | CRM_CTRL_HEXTBYPS;
 #endif
-  /* HEXT activation. */
+  /* HEXT activation.*/
   CRM->CTRL |= CRM_CTRL_HEXTEN;
   while (!(CRM->CTRL & CRM_CTRL_HEXTSTBL))
     ;                                       /* Waits until HEXT is stable.    */
@@ -319,4 +320,42 @@ void at32_clock_init(void) {
      among multiple drivers.*/
   crmEnableAPB2(CRM_APB2EN_SCFGEN, true);
 }
+
+#if HAL_USE_USB
+/*
+ * Reduce power consumption initialize for all series using OTGFS.
+ */
+void at32_reduce_power_consumption(void) {
+  volatile uint32_t delay = 0x34BC0;
+
+  if (CRM->CTRL & CRM_CTRL_HEXTSTBL) {
+    CRM->OTGHS = 0x00;
+  } else if (CRM->CTRL & CRM_CTRL_PLLSTBL) {
+    CRM->PLLCFG |= CRM_PLLCFG_PLLU_EN;
+    while ((!(CRM->CTRL & CRM_CTRL_PLLSTBL)) || (!(CRM->CTRL & CRM_CTRL_PLLUSTBL)))
+      ;
+    CRM->OTGHS = 0x10;
+  } else {
+    /* PLL or HEXT need to be enable.*/
+    return;
+  }
+
+  CRM->AHBEN1 |= CRM_AHBEN1_OTGHSEN;
+  OTG_HS->GCCFG = GCCFG_PWRDOWN | GCCFG_VBUSIG;
+  OTG_HS->GUSBCFG |= GUSBCFG_FDEVMODE;
+  OTG_HS->DCTL &= ~DCTL_SFTDISCON;
+
+  while (delay --) {
+    if (OTG_HS->DSTS & DSTS_SUSPSTS) {
+      break;
+    }
+  }
+
+  OTG_HS->GCCFG |= GCCFG_WAIT_CLK_RCV;
+  OTG_HS->PCGCCTL |= PCGCCTL_STOPPCLK;
+  OTG_HS->GCCFG &= ~GCCFG_PWRDOWN;
+
+  return;
+}
+#endif /* HAL_USE_USB */
 /** @} */

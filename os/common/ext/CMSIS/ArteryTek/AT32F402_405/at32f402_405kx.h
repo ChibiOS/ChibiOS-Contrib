@@ -2,8 +2,8 @@
   **************************************************************************
   * @file    at32f402_405kx.h
   * @author  Artery Technology & HorrorTroll & Zhaqian & Maxjta
-  * @version v2.1.2
-  * @date    20-Jan-2025
+  * @version v2.1.4
+  * @date    24-Nov-2025
   * @brief   AT32F402_405Kx header file.
   *
   **************************************************************************
@@ -42,11 +42,11 @@
 #endif
 
 /**
-  * @brief CMSIS Device version number V2.1.2
+  * @brief CMSIS Device version number V2.1.4
   */
 #define __AT32F402_405_LIBRARY_VERSION_MAJOR  (0x02) /*!< [31:24] major version */
 #define __AT32F402_405_LIBRARY_VERSION_MIDDLE (0x01) /*!< [23:16] middle version */
-#define __AT32F402_405_LIBRARY_VERSION_MINOR  (0x02) /*!< [15:8]  minor version */
+#define __AT32F402_405_LIBRARY_VERSION_MINOR  (0x04) /*!< [15:8]  minor version */
 #define __AT32F402_405_LIBRARY_VERSION_RC     (0x00) /*!< [7:0]   release candidate */
 #define __AT32F402_405_LIBRARY_VERSION        ((__AT32F402_405_LIBRARY_VERSION_MAJOR  << 24)\
                                               |(__AT32F402_405_LIBRARY_VERSION_MIDDLE << 16)\
@@ -99,7 +99,7 @@ typedef enum
   SysTick_IRQn                = -1,     /*!< 15 Cortex-M4 System Tick Interrupt                   */
 
 /******  AT32 specific Interrupt Numbers **********************************************************/
-  WWDT_IRQn                   = 0,      /*!< Window WatchDog Timer Interrupt                      */
+  WWDT_IRQn                   = 0,      /*!< Window WATCHDOG Timer Interrupt                      */
   PVM_IRQn                    = 1,      /*!< PVM Interrupt linked to EXINT16                      */
   TAMPER_IRQn                 = 2,      /*!< Tamper Interrupt linked to EXINT21                   */
   ERTC_WKUP_IRQn              = 3,      /*!< ERTC Wake Up Interrupt linked to EXINT22             */
@@ -189,12 +189,12 @@ typedef enum
 
 typedef struct
 {
-  __IO uint32_t STS;      /*!< ACC Status register,                         Address offset: 0x00 */
-  __IO uint32_t CTRL1;    /*!< ACC Control register 1,                      Address offset: 0x04 */
-  __IO uint32_t CTRL2;    /*!< ACC Control register 2,                      Address offset: 0x08 */
-  __IO uint32_t CP1;      /*!< ACC Compare value 1,                         Address offset: 0x0C */
-  __IO uint32_t CP2;      /*!< ACC Compare value 2,                         Address offset: 0x10 */
-  __IO uint32_t CP3;      /*!< ACC Compare value 3,                         Address offset: 0x14 */
+  __IO uint32_t STS;      /*!< ACC status register,                         Address offset: 0x00 */
+  __IO uint32_t CTRL1;    /*!< ACC control register 1,                      Address offset: 0x04 */
+  __IO uint32_t CTRL2;    /*!< ACC control register 2,                      Address offset: 0x08 */
+  __IO uint32_t CP1;      /*!< ACC compare value 1,                         Address offset: 0x0C */
+  __IO uint32_t CP2;      /*!< ACC compare value 2,                         Address offset: 0x10 */
+  __IO uint32_t CP3;      /*!< ACC compare value 3,                         Address offset: 0x14 */
 } ACC_TypeDef;
 
 /**
@@ -281,8 +281,8 @@ typedef struct
   __IO uint32_t ESTS;                                /*!< CAN error status register,                   Address offset: 0x018         */
   __IO uint32_t BTMG;                                /*!< CAN bit timing register,                     Address offset: 0x01C         */
   uint32_t      RESERVED0[88];                       /*!< Reserved,                                    Address offset: 0x020 ~ 0x17C */
-  CAN_TxMailBox_TypeDef sTxMailBox[3];               /*!< CAN TX Mailbox registers,                    Address offset: 0x180 ~ 0x1AC */
-  CAN_FIFOMailBox_TypeDef sFIFOMailBox[2];           /*!< CAN FIFO Mailbox registers,                  Address offset: 0x1B0 ~ 0x1CC */
+  CAN_TxMailBox_TypeDef sTxMailBox[3];               /*!< CAN TX mailbox registers,                    Address offset: 0x180 ~ 0x1AC */
+  CAN_FIFOMailBox_TypeDef sFIFOMailBox[2];           /*!< CAN FIFO mailbox registers,                  Address offset: 0x1B0 ~ 0x1CC */
   uint32_t      RESERVED1[12];                       /*!< Reserved,                                    Address offset: 0x1D0 ~ 0x1FC */
   __IO uint32_t FCTRL;                               /*!< CAN filter control register,                 Address offset: 0x200         */
   __IO uint32_t FMCFG;                               /*!< CAN filter mode configuration register,      Address offset: 0x204         */
@@ -302,12 +302,12 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t DT;          /*!< CRC Data register,                           Address offset: 0x00 */
-  __IO uint32_t CDT;         /*!< CRC Common data register,                    Address offset: 0x04 */
-  __IO uint32_t CTRL;        /*!< CRC Control register,                        Address offset: 0x08 */
+  __IO uint32_t DT;          /*!< CRC data register,                           Address offset: 0x00 */
+  __IO uint32_t CDT;         /*!< CRC common data register,                    Address offset: 0x04 */
+  __IO uint32_t CTRL;        /*!< CRC control register,                        Address offset: 0x08 */
   uint32_t      RESERVED;    /*!< Reserved,                                    Address offset: 0x0C */
-  __IO uint32_t IDT;         /*!< CRC Initialization register,                 Address offset: 0x10 */
-  __IO uint32_t POLY;        /*!< CRC Polynomial register,                     Address offset: 0x14 */
+  __IO uint32_t IDT;         /*!< CRC initialization register,                 Address offset: 0x10 */
+  __IO uint32_t POLY;        /*!< CRC polynomial register,                     Address offset: 0x14 */
 } CRC_TypeDef;
 
 /**
@@ -316,10 +316,10 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CTRL;            /*!< CRM Clock control register,                  Address offset: 0x00        */
+  __IO uint32_t CTRL;            /*!< CRM clock control register,                  Address offset: 0x00        */
   __IO uint32_t PLLCFG;          /*!< CRM PLL clock configuration register,        Address offset: 0x04        */
-  __IO uint32_t CFG;             /*!< CRM Clock configuration register,            Address offset: 0x08        */
-  __IO uint32_t CLKINT;          /*!< CRM Clock interrupt register,                Address offset: 0x0C        */
+  __IO uint32_t CFG;             /*!< CRM clock configuration register,            Address offset: 0x08        */
+  __IO uint32_t CLKINT;          /*!< CRM clock interrupt register,                Address offset: 0x0C        */
   __IO uint32_t AHBRST1;         /*!< CRM AHB peripheral reset register 1,         Address offset: 0x10        */
   __IO uint32_t AHBRST2;         /*!< CRM AHB peripheral reset register 2,         Address offset: 0x14        */
   __IO uint32_t AHBRST3;         /*!< CRM AHB peripheral reset register 3,         Address offset: 0x18        */
@@ -341,12 +341,12 @@ typedef struct
   __IO uint32_t APB1LPEN;        /*!< CRM APB1 periph clk enable in LP mode reg,   Address offset: 0x60        */
   __IO uint32_t APB2LPEN;        /*!< CRM APB2 periph clk enable in LP mode reg,   Address offset: 0x64        */
   uint32_t      RESERVED5[2];    /*!< Reserved,                                    Address offset: 0x68 ~ 0x6C */
-  __IO uint32_t BPDC;            /*!< CRM Battery powered domain control register, Address offset: 0x70        */
-  __IO uint32_t CTRLSTS;         /*!< CRM Control/status register,                 Address offset: 0x74        */
+  __IO uint32_t BPDC;            /*!< CRM battery powered domain control register, Address offset: 0x70        */
+  __IO uint32_t CTRLSTS;         /*!< CRM control/status register,                 Address offset: 0x74        */
   __IO uint32_t OTGHS;           /*!< CRM OTGHS control register (F405 only),      Address offset: 0x78        */
   uint32_t      RESERVED6[9];    /*!< Reserved,                                    Address offset: 0x7C ~ 0x9C */
-  __IO uint32_t MISC1;           /*!< CRM Additional register 1,                   Address offset: 0xA0        */
-  __IO uint32_t MISC2;           /*!< CRM Additional register 2,                   Address offset: 0xA4        */
+  __IO uint32_t MISC1;           /*!< CRM additional register 1,                   Address offset: 0xA0        */
+  __IO uint32_t MISC2;           /*!< CRM additional register 2,                   Address offset: 0xA4        */
 } CRM_TypeDef;
 
 /**
@@ -459,12 +459,12 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t INTEN;      /*!< EXINT Interrupt enable register,             Address offset: 0x00 */
-  __IO uint32_t EVTEN;      /*!< EXINT Event enable register,                 Address offset: 0x04 */
-  __IO uint32_t POLCFG1;    /*!< EXINT Polarity configuration register 1,     Address offset: 0x08 */
-  __IO uint32_t POLCFG2;    /*!< EXINT Polarity configuration register 2,     Address offset: 0x0C */
-  __IO uint32_t SWTRG;      /*!< EXINT Software trigger register,             Address offset: 0x10 */
-  __IO uint32_t INTSTS;     /*!< EXINT Interrupt status register,             Address offset: 0x14 */
+  __IO uint32_t INTEN;      /*!< EXINT interrupt enable register,             Address offset: 0x00 */
+  __IO uint32_t EVTEN;      /*!< EXINT event enable register,                 Address offset: 0x04 */
+  __IO uint32_t POLCFG1;    /*!< EXINT polarity configuration register 1,     Address offset: 0x08 */
+  __IO uint32_t POLCFG2;    /*!< EXINT polarity configuration register 2,     Address offset: 0x0C */
+  __IO uint32_t SWTRG;      /*!< EXINT software trigger register,             Address offset: 0x10 */
+  __IO uint32_t INTSTS;     /*!< EXINT interrupt status register,             Address offset: 0x14 */
 } EXINT_TypeDef;
 
 /**
@@ -480,7 +480,7 @@ typedef struct
   __IO uint32_t CTRL;              /*!< FLASH control register,                      Address offset: 0x10         */
   __IO uint32_t ADDR;              /*!< FLASH address register,                      Address offset: 0x14         */
   uint32_t      RESERVED0;         /*!< Reserved,                                    Address offset: 0x18         */
-  __IO uint32_t USD;               /*!< FLASH user system data register,             Address offset: 0x1C         */
+  __IO uint32_t FUSD;              /*!< FLASH user system data register,             Address offset: 0x1C         */
   __IO uint32_t EPPS;              /*!< FLASH erase/program protection status reg,   Address offset: 0x20         */
   uint32_t      RESERVED1[20];     /*!< Reserved,                                    Address offset: 0x24 ~ 0x70  */
   __IO uint32_t SLIB_STS0;         /*!< FLASH security library status register 0,    Address offset: 0x74         */
@@ -504,25 +504,25 @@ typedef struct
 
 typedef struct
 {
-  __IO uint16_t FAP;               /*!< USD memory access protection,                Address offset: 0x1FFF_F800               */
-  __IO uint16_t SSB;               /*!< USD System configuration byte,               Address offset: 0x1FFF_F802               */
-  __IO uint16_t DATA0;             /*!< USD User data 0,                             Address offset: 0x1FFF_F804               */
-  __IO uint16_t DATA1;             /*!< USD User data 1,                             Address offset: 0x1FFF_F806               */
-  __IO uint16_t EPP0;              /*!< USD erase/write protection byte 0,           Address offset: 0x1FFF_F808               */
-  __IO uint16_t EPP1;              /*!< USD erase/write protection byte 1,           Address offset: 0x1FFF_F80A               */
-  __IO uint16_t EPP2;              /*!< USD erase/write protection byte 2,           Address offset: 0x1FFF_F80C               */
-  __IO uint16_t EPP3;              /*!< USD erase/write protection byte 3,           Address offset: 0x1FFF_F80E               */
-  uint32_t      RESERVED0[9];      /*!< Reserved,                                    Address offset: 0x1FFF_F810 ~ 0x1FFF_F830 */
-  __IO uint16_t QSPIKEY0;          /*!< USD QSPI ciphertext access area
-                                        encryption key byte 0,                       Address offset: 0x1FFF_F834               */
-  __IO uint16_t QSPIKEY1;          /*!< USD QSPI ciphertext access area
-                                        encryption key byte 1,                       Address offset: 0x1FFF_F836               */
-  __IO uint16_t QSPIKEY2;          /*!< USD QSPI ciphertext access area
-                                        encryption key byte 2,                       Address offset: 0x1FFF_F838               */
-  __IO uint16_t QSPIKEY3;          /*!< USD QSPI ciphertext access area
-                                        encryption key byte 3,                       Address offset: 0x1FFF_F83A               */
-  uint32_t      RESERVED1[4];      /*!< Reserved,                                    Address offset: 0x1FFF_F83C ~ 0x1FFF_F848 */
-  __IO uint16_t DATA[218];         /*!< USD User data 2 ~ 219,                       Address offset: 0x1FFF_F84C ~ 0x1FFF_F9FC */
+  __IO uint16_t FAP;             /*!< USD memory access protection,                Address offset: 0x1FFF_F800               */
+  __IO uint16_t SSB;             /*!< USD system configuration byte,               Address offset: 0x1FFF_F802               */
+  __IO uint16_t DATA0;           /*!< USD user data 0,                             Address offset: 0x1FFF_F804               */
+  __IO uint16_t DATA1;           /*!< USD user data 1,                             Address offset: 0x1FFF_F806               */
+  __IO uint16_t EPP0;            /*!< USD erase/write protection byte 0,           Address offset: 0x1FFF_F808               */
+  __IO uint16_t EPP1;            /*!< USD erase/write protection byte 1,           Address offset: 0x1FFF_F80A               */
+  __IO uint16_t EPP2;            /*!< USD erase/write protection byte 2,           Address offset: 0x1FFF_F80C               */
+  __IO uint16_t EPP3;            /*!< USD erase/write protection byte 3,           Address offset: 0x1FFF_F80E               */
+  uint32_t      RESERVED0[9];    /*!< Reserved,                                    Address offset: 0x1FFF_F810 ~ 0x1FFF_F830 */
+  __IO uint16_t QSPIKEY0;        /*!< USD QSPI ciphertext access area
+                                      encryption key byte 0,                       Address offset: 0x1FFF_F834               */
+  __IO uint16_t QSPIKEY1;        /*!< USD QSPI ciphertext access area
+                                      encryption key byte 1,                       Address offset: 0x1FFF_F836               */
+  __IO uint16_t QSPIKEY2;        /*!< USD QSPI ciphertext access area
+                                      encryption key byte 2,                       Address offset: 0x1FFF_F838               */
+  __IO uint16_t QSPIKEY3;        /*!< USD QSPI ciphertext access area
+                                      encryption key byte 3,                       Address offset: 0x1FFF_F83A               */
+  uint32_t      RESERVED1[4];    /*!< Reserved,                                    Address offset: 0x1FFF_F83C ~ 0x1FFF_F848 */
+  __IO uint16_t DATA[218];       /*!< USD user data 2 ~ 219,                       Address offset: 0x1FFF_F84C ~ 0x1FFF_F9FC */
 } USD_TypeDef;
 
 /**
@@ -545,7 +545,6 @@ typedef struct
   __IO uint32_t TOGR;           /*!< GPIO port bit toggle register,               Address offset: 0x2C        */
   uint32_t      RESERVED[3];    /*!< Reserved,                                    Address offset: 0x30 ~ 0x38 */
   __IO uint32_t HDRV;           /*!< GPIO huge current control register,          Address offset: 0x3C        */
-  __IO uint32_t SRCTR;          /*!< GPIO SRCTR register,                         Address offset: 0x40        */
 } GPIO_TypeDef;
 
 /**
@@ -554,17 +553,17 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CTRL1;      /*!< I2C Control register 1,                      Address offset: 0x00 */
-  __IO uint32_t CTRL2;      /*!< I2C Control register 2,                      Address offset: 0x04 */
-  __IO uint32_t OADDR1;     /*!< I2C Own address register 1,                  Address offset: 0x08 */
-  __IO uint32_t OADDR2;     /*!< I2C Own address register 2,                  Address offset: 0x0C */
-  __IO uint32_t CLKCTRL;    /*!< I2C Clock control register,                  Address offset: 0x10 */
-  __IO uint32_t TIMEOUT;    /*!< I2C Timeout register,                        Address offset: 0x14 */
-  __IO uint32_t STS;        /*!< I2C Status register,                         Address offset: 0x18 */
-  __IO uint32_t CLR;        /*!< I2C Status clear flag register,              Address offset: 0x1C */
+  __IO uint32_t CTRL1;      /*!< I2C control register 1,                      Address offset: 0x00 */
+  __IO uint32_t CTRL2;      /*!< I2C control register 2,                      Address offset: 0x04 */
+  __IO uint32_t OADDR1;     /*!< I2C own address register 1,                  Address offset: 0x08 */
+  __IO uint32_t OADDR2;     /*!< I2C own address register 2,                  Address offset: 0x0C */
+  __IO uint32_t CLKCTRL;    /*!< I2C clock control register,                  Address offset: 0x10 */
+  __IO uint32_t TIMEOUT;    /*!< I2C timeout register,                        Address offset: 0x14 */
+  __IO uint32_t STS;        /*!< I2C status register,                         Address offset: 0x18 */
+  __IO uint32_t CLR;        /*!< I2C status clear flag register,              Address offset: 0x1C */
   __IO uint32_t PEC;        /*!< I2C PEC register,                            Address offset: 0x20 */
-  __IO uint32_t RXDT;       /*!< I2C Receive data register,                   Address offset: 0x24 */
-  __IO uint32_t TXDT;       /*!< I2C Transmit data register,                  Address offset: 0x28 */
+  __IO uint32_t RXDT;       /*!< I2C receive data register,                   Address offset: 0x24 */
+  __IO uint32_t TXDT;       /*!< I2C transmit data register,                  Address offset: 0x28 */
 } I2C_TypeDef;
 
 /**
@@ -573,8 +572,8 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CTRL;           /*!< PWC Power control register,                  Address offset: 0x00        */
-  __IO uint32_t CTRLSTS;        /*!< PWC Power control/status register,           Address offset: 0x04        */
+  __IO uint32_t CTRL;           /*!< PWC power control register,                  Address offset: 0x00        */
+  __IO uint32_t CTRLSTS;        /*!< PWC power control/status register,           Address offset: 0x04        */
   uint32_t      RESERVED[2];    /*!< Reserved,                                    Address offset: 0x08 ~ 0x0C */
   __IO uint32_t LDOOV;          /*!< PWC LDO output voltage select register,      Address offset: 0x10        */
 } PWC_TypeDef;
@@ -585,29 +584,29 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CMD_W0;           /*!< QSPI Command word 0 register,                Address offset: 0x00        */
-  __IO uint32_t CMD_W1;           /*!< QSPI Command word 1 register,                Address offset: 0x04        */
-  __IO uint32_t CMD_W2;           /*!< QSPI Command word 2 register,                Address offset: 0x08        */
-  __IO uint32_t CMD_W3;           /*!< QSPI Command word 3 register,                Address offset: 0x0C        */
-  __IO uint32_t CTRL;             /*!< QSPI Control register,                       Address offset: 0x10        */
+  __IO uint32_t CMD_W0;           /*!< QSPI command word 0 register,                Address offset: 0x00        */
+  __IO uint32_t CMD_W1;           /*!< QSPI command word 1 register,                Address offset: 0x04        */
+  __IO uint32_t CMD_W2;           /*!< QSPI command word 2 register,                Address offset: 0x08        */
+  __IO uint32_t CMD_W3;           /*!< QSPI command word 3 register,                Address offset: 0x0C        */
+  __IO uint32_t CTRL;             /*!< QSPI control register,                       Address offset: 0x10        */
   uint32_t      RESERVED0;        /*!< Reserved,                                    Address offset: 0x14        */
   __IO uint32_t FIFOSTS;          /*!< QSPI FIFO status register,                   Address offset: 0x18        */
   uint32_t      RESERVED1;        /*!< Reserved,                                    Address offset: 0x1C        */
-  __IO uint32_t CTRL2;            /*!< QSPI Control register 2,                     Address offset: 0x20        */
-  __IO uint32_t CMDSTS;           /*!< QSPI Command status register,                Address offset: 0x24        */
-  __IO uint32_t RSTS;             /*!< QSPI Read status register,                   Address offset: 0x28        */
-  __IO uint32_t FSIZE;            /*!< QSPI Flash size register,                    Address offset: 0x2C        */
+  __IO uint32_t CTRL2;            /*!< QSPI control register 2,                     Address offset: 0x20        */
+  __IO uint32_t CMDSTS;           /*!< QSPI command status register,                Address offset: 0x24        */
+  __IO uint32_t RSTS;             /*!< QSPI read status register,                   Address offset: 0x28        */
+  __IO uint32_t FSIZE;            /*!< QSPI flash size register,                    Address offset: 0x2C        */
   __IO uint32_t XIP_CMD_W0;       /*!< QSPI XIP command word 0 register,            Address offset: 0x30        */
   __IO uint32_t XIP_CMD_W1;       /*!< QSPI XIP command word 1 register,            Address offset: 0x34        */
   __IO uint32_t XIP_CMD_W2;       /*!< QSPI XIP command word 2 register,            Address offset: 0x38        */
   __IO uint32_t XIP_CMD_W3;       /*!< QSPI XIP command word 3 register,            Address offset: 0x3C        */
-  __IO uint32_t CTRL3;            /*!< QSPI Control register 3,                     Address offset: 0x40        */
+  __IO uint32_t CTRL3;            /*!< QSPI control register 3,                     Address offset: 0x40        */
   uint32_t      RESERVED2[3];     /*!< Reserved,                                    Address offset: 0x44 ~ 0x4C */
-  __IO uint32_t REV;              /*!< QSPI Revision register,                      Address offset: 0x50        */
+  __IO uint32_t REV;              /*!< QSPI revision register,                      Address offset: 0x50        */
   uint32_t      RESERVED3[43];    /*!< Reserved,                                    Address offset: 0x54 ~ 0xFC */
-  __IO uint8_t  DT_U8;            /*!< QSPI Data port (8-bit) register,             Address offset: 0x100       */
-  __IO uint16_t DT_U16;           /*!< QSPI Data port (16-bit) register,            Address offset: 0x100       */
-  __IO uint32_t DT;               /*!< QSPI Data port register,                     Address offset: 0x100       */
+  __IO uint8_t  DT_U8;            /*!< QSPI data port (8-bit) register,             Address offset: 0x100       */
+  __IO uint16_t DT_U16;           /*!< QSPI data port (16-bit) register,            Address offset: 0x100       */
+  __IO uint32_t DT;               /*!< QSPI data port register,                     Address offset: 0x100       */
 } QSPI_TypeDef;
 
 /**
@@ -665,7 +664,7 @@ typedef struct
   __IO uint32_t C2DT;       /*!< TMR channel 2 data register,                 Address offset: 0x38 */
   __IO uint32_t C3DT;       /*!< TMR channel 3 data register,                 Address offset: 0x3C */
   __IO uint32_t C4DT;       /*!< TMR channel 4 data register,                 Address offset: 0x40 */
-  __IO uint32_t BRK;        /*!< TMR break register,                          Address offset: 0x44 */
+  __IO uint32_t BRK;        /*!< TMR brake register,                          Address offset: 0x44 */
   __IO uint32_t DMACTRL;    /*!< TMR DMA control register,                    Address offset: 0x48 */
   __IO uint32_t DMADT;      /*!< TMR DMA data register,                       Address offset: 0x4C */
   __IO uint32_t RMP;        /*!< TMR channel input remap register,            Address offset: 0x50 */
@@ -694,11 +693,11 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CMD;    /*!< WDT Command register,                        Address offset: 0x00 */
-  __IO uint32_t DIV;    /*!< WDT Divider register,                        Address offset: 0x04 */
-  __IO uint32_t RLD;    /*!< WDT Reload register,                         Address offset: 0x08 */
-  __IO uint32_t STS;    /*!< WDT Status register,                         Address offset: 0x0C */
-  __IO uint32_t WIN;    /*!< WDT Window register,                         Address offset: 0x10 */
+  __IO uint32_t CMD;    /*!< WDT command register,                        Address offset: 0x00 */
+  __IO uint32_t DIV;    /*!< WDT divider register,                        Address offset: 0x04 */
+  __IO uint32_t RLD;    /*!< WDT reload register,                         Address offset: 0x08 */
+  __IO uint32_t STS;    /*!< WDT status register,                         Address offset: 0x0C */
+  __IO uint32_t WIN;    /*!< WDT window register,                         Address offset: 0x10 */
 } WDT_TypeDef;
 
 /**
@@ -707,9 +706,9 @@ typedef struct
 
 typedef struct
 {
-  __IO uint32_t CTRL;    /*!< WWDT Control register,                       Address offset: 0x00 */
-  __IO uint32_t CFG;     /*!< WWDT Configuration register,                 Address offset: 0x04 */
-  __IO uint32_t STS;     /*!< WWDT Status register,                        Address offset: 0x08 */
+  __IO uint32_t CTRL;    /*!< WWDT control register,                       Address offset: 0x00 */
+  __IO uint32_t CFG;     /*!< WWDT configuration register,                 Address offset: 0x04 */
+  __IO uint32_t STS;     /*!< WWDT status register,                        Address offset: 0x08 */
 } WWDT_TypeDef;
 
 /**
@@ -969,7 +968,7 @@ typedef struct
 
 /******************************************************************************/
 /*                                                                            */
-/*                             Power Control (PWC)                            */
+/*                             Power control (PWC)                            */
 /*                                                                            */
 /******************************************************************************/
 
@@ -1040,7 +1039,7 @@ typedef struct
 #define PWC_CTRLSTS_SWPEN6                  PWC_CTRLSTS_SWPEN6_Msk                  /*!< Standby wake-up pin 6 enable */
 
 /******************  Bit definition for PWC_LDOOV register  *******************/
-/*!< LDOOVSEL congiguration */
+/*!< LDOOVSEL configuration */
 #define PWC_LDOOV_LDOOVSEL_Pos              (0U)
 #define PWC_LDOOV_LDOOVSEL_Msk              (0x3U << PWC_LDOOV_LDOOVSEL_Pos)        /*!< 0x00000003 */
 #define PWC_LDOOV_LDOOVSEL                  PWC_LDOOV_LDOOVSEL_Msk                  /*!< LDOOVSEL[1:0] bits (Voltage regulator output voltage select) */
@@ -1102,7 +1101,7 @@ typedef struct
 #define CRM_CTRL_PLLUSTBL                   CRM_CTRL_PLLUSTBL_Msk                   /*!< PLLU clock stable */
 
 /******************  Bit definition for CRM_PLLCFG register  ******************/
-/*!< PLL_MS congiguration */
+/*!< PLL_MS configuration */
 #define CRM_PLLCFG_PLL_MS_Pos               (0U)
 #define CRM_PLLCFG_PLL_MS_Msk               (0xFU << CRM_PLLCFG_PLL_MS_Pos)         /*!< 0x0000000F */
 #define CRM_PLLCFG_PLL_MS                   CRM_PLLCFG_PLL_MS_Msk                   /*!< PLL_MS[3:0] bits (PLL pre-division) */
@@ -1111,7 +1110,7 @@ typedef struct
 #define CRM_PLLCFG_PLL_MS_2                 (0x4U << CRM_PLLCFG_PLL_MS_Pos)         /*!< 0x00000004 */
 #define CRM_PLLCFG_PLL_MS_3                 (0x8U << CRM_PLLCFG_PLL_MS_Pos)         /*!< 0x00000008 */
 
-/*!< PLL_NS congiguration */
+/*!< PLL_NS configuration */
 #define CRM_PLLCFG_PLL_NS_Pos               (6U)
 #define CRM_PLLCFG_PLL_NS_Msk               (0x1FFU << CRM_PLLCFG_PLL_NS_Pos)       /*!< 0x00007FC0 */
 #define CRM_PLLCFG_PLL_NS                   CRM_PLLCFG_PLL_NS_Msk                   /*!< PLL_NS[8:0] bits (PLL multiplication factor) */
@@ -1125,7 +1124,7 @@ typedef struct
 #define CRM_PLLCFG_PLL_NS_7                 (0x080U << CRM_PLLCFG_PLL_NS_Pos)       /*!< 0x00002000 */
 #define CRM_PLLCFG_PLL_NS_8                 (0x100U << CRM_PLLCFG_PLL_NS_Pos)       /*!< 0x00004000 */
 
-/*!< PLL_FP congiguration */
+/*!< PLL_FP configuration */
 #define CRM_PLLCFG_PLL_FP_Pos               (16U)
 #define CRM_PLLCFG_PLL_FP_Msk               (0xFU << CRM_PLLCFG_PLL_FP_Pos)         /*!< 0x000F0000 */
 #define CRM_PLLCFG_PLL_FP                   CRM_PLLCFG_PLL_FP_Msk                   /*!< PLL_FP[3:0] bits (PLLP post-division) */
@@ -1134,7 +1133,7 @@ typedef struct
 #define CRM_PLLCFG_PLL_FP_2                 (0x4U << CRM_PLLCFG_PLL_FP_Pos)         /*!< 0x00040000 */
 #define CRM_PLLCFG_PLL_FP_3                 (0x8U << CRM_PLLCFG_PLL_FP_Pos)         /*!< 0x00080000 */
 
-/*!< PLL_FU congiguration */
+/*!< PLL_FU configuration */
 #define CRM_PLLCFG_PLL_FU_Pos               (20U)
 #define CRM_PLLCFG_PLL_FU_Msk               (0x7U << CRM_PLLCFG_PLL_FU_Pos)         /*!< 0x00700000 */
 #define CRM_PLLCFG_PLL_FU                   CRM_PLLCFG_PLL_FU_Msk                   /*!< PLL_FU[2:0] bits (PLLU post-division) */
@@ -1283,7 +1282,7 @@ typedef struct
 #define CRM_CFG_CLKOUTDIV1_1                (0x2U << CRM_CFG_CLKOUTDIV1_Pos)        /*!< 0x10000000 */
 #define CRM_CFG_CLKOUTDIV1_2                (0x4U << CRM_CFG_CLKOUTDIV1_Pos)        /*!< 0x20000000 */
 
-#define CRM_CFG_CLKOUTDIV1_DIV1             0x00000000U                             /*!< No clock output */
+#define CRM_CFG_CLKOUTDIV1_DIV1             0x00000000U                             /*!< No clock output division */
 #define CRM_CFG_CLKOUTDIV1_DIV2             0x20000000U                             /*!< Clock output divided by 2 */
 #define CRM_CFG_CLKOUTDIV1_DIV3             0x28000000U                             /*!< Clock output divided by 3 */
 #define CRM_CFG_CLKOUTDIV1_DIV4             0x30000000U                             /*!< Clock output divided by 4 */
@@ -1310,7 +1309,7 @@ typedef struct
 #define CRM_CFG_CLKSEL1_HEXT                CRM_CFG_CLKOUT_SEL1_HEXT
 #define CRM_CFG_CLKSEL1_PLL                 CRM_CFG_CLKOUT_SEL1_PLL
 
-/*!<***************  Bit definition for CRM_CLKINT register  ******************/
+/******************  Bit definition for CRM_CLKINT register  ******************/
 #define CRM_CLKINT_LICKSTBLF_Pos            (0U)
 #define CRM_CLKINT_LICKSTBLF_Msk            (0x1U << CRM_CLKINT_LICKSTBLF_Pos)      /*!< 0x00000001 */
 #define CRM_CLKINT_LICKSTBLF                CRM_CLKINT_LICKSTBLF_Msk                /*!< LICK stable interrupt flag */
@@ -1782,7 +1781,7 @@ typedef struct
 #define CRM_BPDC_LEXTBYPS_Msk               (0x1U << CRM_BPDC_LEXTBYPS_Pos)         /*!< 0x00000004 */
 #define CRM_BPDC_LEXTBYPS                   CRM_BPDC_LEXTBYPS_Msk                   /*!< External low-speed crystal bypass */
 
-/*!< ERTCSEL congiguration */
+/*!< ERTCSEL configuration */
 #define CRM_BPDC_ERTCSEL_Pos                (8U)
 #define CRM_BPDC_ERTCSEL_Msk                (0x3U << CRM_BPDC_ERTCSEL_Pos)          /*!< 0x00000300 */
 #define CRM_BPDC_ERTCSEL                    CRM_BPDC_ERTCSEL_Msk                    /*!< ERTCSEL[1:0] bits (ERTC clock selection) */
@@ -1849,7 +1848,7 @@ typedef struct
 #define CRM_MISC1_HICKRST_Msk               (0x1U << CRM_MISC1_HICKRST_Pos)         /*!< 0x00008000 */
 #define CRM_MISC1_HICKRST                   CRM_MISC1_HICKRST_Msk                   /*!< HICKRST */
 
-/*!< CLKOUT_SEL2 congiguration */
+/*!< CLKOUT_SEL2 configuration */
 #define CRM_MISC1_CLKOUT_SEL2_Pos           (16U)
 #define CRM_MISC1_CLKOUT_SEL2_Msk           (0xFU << CRM_MISC1_CLKOUT_SEL2_Pos)     /*!< 0x000F0000 */
 #define CRM_MISC1_CLKOUT_SEL2               CRM_MISC1_CLKOUT_SEL2_Msk               /*!< CLKOUT_SEL2[3:0] bits (Clock output selection 2) */
@@ -1876,7 +1875,7 @@ typedef struct
 #define CRM_MISC1_CLKSEL2_LICK              CRM_MISC1_CLKOUT_SEL2_LICK
 #define CRM_MISC1_CLKSEL2_LEXT              CRM_MISC1_CLKOUT_SEL2_LEXT
 
-/*!< CLKOUTDIV2 congiguration */
+/*!< CLKOUTDIV2 configuration */
 #define CRM_MISC1_CLKOUTDIV2_Pos            (28U)
 #define CRM_MISC1_CLKOUTDIV2_Msk            (0xFU << CRM_MISC1_CLKOUTDIV2_Pos)      /*!< 0xF0000000 */
 #define CRM_MISC1_CLKOUTDIV2                CRM_MISC1_CLKOUTDIV2_Msk                /*!< CLKOUTDIV2[3:0] bits (Clock output division 2) */
@@ -1885,7 +1884,7 @@ typedef struct
 #define CRM_MISC1_CLKOUTDIV2_2              (0x4U << CRM_MISC1_CLKOUTDIV2_Pos)      /*!< 0x40000000 */
 #define CRM_MISC1_CLKOUTDIV2_3              (0x8U << CRM_MISC1_CLKOUTDIV2_Pos)      /*!< 0x80000000 */
 
-#define CRM_MISC1_CLKOUTDIV2_DIV1           0x00000000U                             /*!< No clock output */
+#define CRM_MISC1_CLKOUTDIV2_DIV1           0x00000000U                             /*!< No clock output division */
 #define CRM_MISC1_CLKOUTDIV2_DIV2           0x80000000U                             /*!< Clock output divided by 2 */
 #define CRM_MISC1_CLKOUTDIV2_DIV4           0x90000000U                             /*!< Clock output divided by 4 */
 #define CRM_MISC1_CLKOUTDIV2_DIV8           0xA0000000U                             /*!< Clock output divided by 8 */
@@ -1896,7 +1895,7 @@ typedef struct
 #define CRM_MISC1_CLKOUTDIV2_DIV512         0xF0000000U                             /*!< Clock output divided by 512 */
 
 /******************  Bit definition for CRM_MISC2 register  *******************/
-/*!< AUTO_STEP_EN congiguration */
+/*!< AUTO_STEP_EN configuration */
 #define CRM_MISC2_AUTO_STEP_EN_Pos          (4U)
 #define CRM_MISC2_AUTO_STEP_EN_Msk          (0x3U << CRM_MISC2_AUTO_STEP_EN_Pos)    /*!< 0x00000030 */
 #define CRM_MISC2_AUTO_STEP_EN              CRM_MISC2_AUTO_STEP_EN_Msk              /*!< AUTO_STEP_EN[1:0] bits (Auto step-by-step SCLK switch enable) */
@@ -1907,7 +1906,7 @@ typedef struct
 #define CRM_MISC2_PLLU_USB48_SEL_Msk        (0x1U << CRM_MISC2_PLLU_USB48_SEL_Pos)  /*!< 0x00000400 */
 #define CRM_MISC2_PLLU_USB48_SEL            CRM_MISC2_PLLU_USB48_SEL_Msk            /*!< USBFS 48M clock source selection */
 
-/*!< HICK_TO_SCLK_DIV congiguration */
+/*!< HICK_TO_SCLK_DIV configuration */
 #define CRM_MISC2_HICK_TO_SCLK_DIV_Pos      (16U)
 #define CRM_MISC2_HICK_TO_SCLK_DIV_Msk      (0x7U << CRM_MISC2_HICK_TO_SCLK_DIV_Pos) /*!< 0x00070000 */
 #define CRM_MISC2_HICK_TO_SCLK_DIV          CRM_MISC2_HICK_TO_SCLK_DIV_Msk           /*!< HICK_TO_SCLK_DIV[2:0] bits (HICK as SCLK frequency division) */
@@ -1921,7 +1920,7 @@ typedef struct
 #define CRM_MISC2_HICK_TO_SCLK_DIV_DIV8     0x00030000U                              /*!< HICK/8 */
 #define CRM_MISC2_HICK_TO_SCLK_DIV_DIV16    0x00040000U                              /*!< HICK/16 */
 
-/*!< HEXT_TO_SCLK_DIV congiguration */
+/*!< HEXT_TO_SCLK_DIV configuration */
 #define CRM_MISC2_HEXT_TO_SCLK_DIV_Pos      (19U)
 #define CRM_MISC2_HEXT_TO_SCLK_DIV_Msk      (0x7U << CRM_MISC2_HEXT_TO_SCLK_DIV_Pos) /*!< 0x00380000 */
 #define CRM_MISC2_HEXT_TO_SCLK_DIV          CRM_MISC2_HEXT_TO_SCLK_DIV_Msk           /*!< HEXT_TO_SCLK_DIV[2:0] bits (HEXT as SCLK frequency division) */
@@ -1938,12 +1937,12 @@ typedef struct
 
 /******************************************************************************/
 /*                                                                            */
-/*                Flash and User System Data Registers (FLASH)                */
+/*                Flash and User System Data registers (FLASH)                */
 /*                                                                            */
 /******************************************************************************/
 
-/*******************  Bit definition for FLASH_PSR register  ******************/
-/*!< WTCYC congiguration */
+/******************  Bit definition for FLASH_PSR register  *******************/
+/*!< WTCYC configuration */
 #define FLASH_PSR_WTCYC_Pos                 (0U)
 #define FLASH_PSR_WTCYC_Msk                 (0x7U << FLASH_PSR_WTCYC_Pos)           /*!< 0x00000007 */
 #define FLASH_PSR_WTCYC                     FLASH_PSR_WTCYC_Msk                     /*!< WTCYC[2:0] bits (Wait cycle) */
@@ -2010,7 +2009,7 @@ typedef struct
 #define FLASH_CTRL_FPRGM                    FLASH_CTRL_FPRGM_Msk                    /*!< Flash program */
 #define FLASH_CTRL_SECERS_Pos               (1U)
 #define FLASH_CTRL_SECERS_Msk               (0x1U << FLASH_CTRL_SECERS_Pos)         /*!< 0x00000002 */
-#define FLASH_CTRL_SECERS                   FLASH_CTRL_SECERS_Msk                   /*!< Page erase */
+#define FLASH_CTRL_SECERS                   FLASH_CTRL_SECERS_Msk                   /*!< Sector erase */
 #define FLASH_CTRL_BANKERS_Pos              (2U)
 #define FLASH_CTRL_BANKERS_Msk              (0x1U << FLASH_CTRL_BANKERS_Pos)        /*!< 0x00000004 */
 #define FLASH_CTRL_BANKERS                  FLASH_CTRL_BANKERS_Msk                  /*!< Bank erase */
@@ -2049,7 +2048,7 @@ typedef struct
 #define FLASH_USD_FAP_Msk                   (0x1U << FLASH_USD_FAP_Pos)             /*!< 0x00000002 */
 #define FLASH_USD_FAP                       FLASH_USD_FAP_Msk                       /*!< Flash access protection */
 
-/*!< SSB congiguration */
+/*!< SSB configuration */
 #define FLASH_USD_WDT_ATO_EN_Pos            (2U)
 #define FLASH_USD_WDT_ATO_EN_Msk            (0x1U << FLASH_USD_WDT_ATO_EN_Pos)      /*!< 0x00000004 */
 #define FLASH_USD_WDT_ATO_EN                FLASH_USD_WDT_ATO_EN_Msk                /*!< nWDT_ATO_EN */
@@ -2090,7 +2089,7 @@ typedef struct
 #define FLASH_EPPS_EPPS_Msk                 (0xFFFFFFFFU << FLASH_EPPS_EPPS_Pos)    /*!< 0xFFFFFFFF */
 #define FLASH_EPPS_EPPS                     FLASH_EPPS_EPPS_Msk                     /*!< Erase/Program protection status */
 
-/*******************  Bit definition for SLIB_STS0 register *******************/
+/******************  Bit definition for SLIB_STS0 register  *******************/
 #define SLIB_STS0_BTM_AP_ENF_Pos            (0U)
 #define SLIB_STS0_BTM_AP_ENF_Msk            (0x1U << SLIB_STS0_BTM_AP_ENF_Pos)      /*!< 0x00000001 */
 #define SLIB_STS0_BTM_AP_ENF                SLIB_STS0_BTM_AP_ENF_Msk                /*!< Boot memory store application code enabled flag */
@@ -2100,27 +2099,27 @@ typedef struct
 #define SLIB_STS0_SLIB_ENF_Pos              (3U)
 #define SLIB_STS0_SLIB_ENF_Msk              (0x1U << SLIB_STS0_SLIB_ENF_Pos)        /*!< 0x00000008 */
 #define SLIB_STS0_SLIB_ENF                  SLIB_STS0_SLIB_ENF_Msk                  /*!< Security library enable flag */
-#define SLIB_STS0_EM_SLIB_INST_SS_Pos       (16U)                                   /*!< 0x00FF0000 */
-#define SLIB_STS0_EM_SLIB_INST_SS_Msk       (0xFFU << SLIB_STS0_EM_SLIB_INST_SS_Pos)
-#define SLIB_STS0_EM_SLIB_INST_SS           SLIB_STS0_EM_SLIB_INST_SS_Msk           /*!< Extension memory sLib instruction start page */
+#define SLIB_STS0_EM_SLIB_DAT_SS_Pos        (16U)
+#define SLIB_STS0_EM_SLIB_DAT_SS_Msk        (0xFFU << SLIB_STS0_EM_SLIB_DAT_SS_Pos) /*!< 0x00FF0000 */
+#define SLIB_STS0_EM_SLIB_DAT_SS            SLIB_STS0_EM_SLIB_DAT_SS_Msk            /*!< Extension memory sLib data start sector */
 
-/*******************  Bit definition for SLIB_STS1 register *******************/
+/******************  Bit definition for SLIB_STS1 register  *******************/
 #define SLIB_STS1_SLIB_SS_Pos               (0U)
 #define SLIB_STS1_SLIB_SS_Msk               (0x7FFU << SLIB_STS1_SLIB_SS_Pos)       /*!< 0x000007FF */
-#define SLIB_STS1_SLIB_SS                   SLIB_STS1_SLIB_SS_Msk                   /*!< Security library start page */
-#define SLIB_STS1_SLIB_INST_SS_Pos          (11U)
-#define SLIB_STS1_SLIB_INST_SS_Msk          (0x7FFU << SLIB_STS1_SLIB_INST_SS_Pos)  /*!< 0x003FF800 */
-#define SLIB_STS1_SLIB_INST_SS              SLIB_STS1_SLIB_INST_SS_Msk              /*!< Security library instruction start page */
+#define SLIB_STS1_SLIB_SS                   SLIB_STS1_SLIB_SS_Msk                   /*!< Security library start sector */
+#define SLIB_STS1_SLIB_DAT_SS_Pos           (11U)
+#define SLIB_STS1_SLIB_DAT_SS_Msk           (0x7FFU << SLIB_STS1_SLIB_DAT_SS_Pos)   /*!< 0x003FF800 */
+#define SLIB_STS1_SLIB_DAT_SS               SLIB_STS1_SLIB_DAT_SS_Msk               /*!< Security library data start sector */
 #define SLIB_STS1_SLIB_ES_Pos               (22U)
 #define SLIB_STS1_SLIB_ES_Msk               (0x3FFU << SLIB_STS1_SLIB_ES_Pos)       /*!< 0xFFC00000 */
-#define SLIB_STS1_SLIB_ES                   SLIB_STS1_SLIB_ES_Msk                   /*!< Security library end page */
+#define SLIB_STS1_SLIB_ES                   SLIB_STS1_SLIB_ES_Msk                   /*!< Security library end sector */
 
-/*****************  Bit definition for SLIB_PWD_CLR register ******************/
+/*****************  Bit definition for SLIB_PWD_CLR register  *****************/
 #define SLIB_PWD_CLR_SLIB_PCLR_VAL_Pos      (0U)                                    /*!< 0xFFFFFFFF */
 #define SLIB_PWD_CLR_SLIB_PCLR_VAL_Msk      (0xFFFFFFFFU << SLIB_PWD_CLR_SLIB_PCLR_VAL_Pos)
 #define SLIB_PWD_CLR_SLIB_PCLR_VAL          SLIB_PWD_CLR_SLIB_PCLR_VAL_Msk          /*!< Security library password clear value */
 
-/*****************  Bit definition for SLIB_MISC_STS register *****************/
+/****************  Bit definition for SLIB_MISC_STS register  *****************/
 #define SLIB_MISC_STS_SLIB_PWD_ERR_Pos      (0U)                                    /*!< 0x00000001 */
 #define SLIB_MISC_STS_SLIB_PWD_ERR_Msk      (0x1U << SLIB_MISC_STS_SLIB_PWD_ERR_Pos)
 #define SLIB_MISC_STS_SLIB_PWD_ERR          SLIB_MISC_STS_SLIB_PWD_ERR_Msk          /*!< Security library password error */
@@ -2131,54 +2130,54 @@ typedef struct
 #define SLIB_MISC_STS_SLIB_ULKF_Msk         (0x1U << SLIB_MISC_STS_SLIB_ULKF_Pos)   /*!< 0x00000004 */
 #define SLIB_MISC_STS_SLIB_ULKF             SLIB_MISC_STS_SLIB_ULKF_Msk             /*!< Security library unlock flag */
 
-/****************  Bit definition for FLASH_CRC_ADDR register *****************/
+/****************  Bit definition for FLASH_CRC_ADDR register  ****************/
 #define FLASH_CRC_ADDR_CRC_ADDR_Pos         (0U)                                    /*!< 0xFFFFFFFF */
 #define FLASH_CRC_ADDR_CRC_ADDR_Msk         (0xFFFFFFFFU << FLASH_CRC_ADDR_CRC_ADDR_Pos)
 #define FLASH_CRC_ADDR_CRC_ADDR             FLASH_CRC_ADDR_CRC_ADDR_Msk             /*!< CRC address */
 
-/****************  Bit definition for FLASH_CRC_CTRL register *****************/
+/****************  Bit definition for FLASH_CRC_CTRL register  ****************/
 #define FLASH_CRC_CTRL_CRC_SN_Pos           (0U)
 #define FLASH_CRC_CTRL_CRC_SN_Msk           (0xFFFFU << FLASH_CRC_CTRL_CRC_SN_Pos)  /*!< 0x0000FFFF */
-#define FLASH_CRC_CTRL_CRC_SN               FLASH_CRC_CTRL_CRC_SN_Msk               /*!< CRC page number */
+#define FLASH_CRC_CTRL_CRC_SN               FLASH_CRC_CTRL_CRC_SN_Msk               /*!< CRC sector number */
 #define FLASH_CRC_CTRL_CRC_STRT_Pos         (16U)
 #define FLASH_CRC_CTRL_CRC_STRT_Msk         (0x1U << FLASH_CRC_CTRL_CRC_STRT_Pos)   /*!< 0x00010000 */
 #define FLASH_CRC_CTRL_CRC_STRT             FLASH_CRC_CTRL_CRC_STRT_Msk             /*!< CRC start */
 
-/****************  Bit definition for FLASH_CRC_CHKR register *****************/
+/****************  Bit definition for FLASH_CRC_CHKR register  ****************/
 #define FLASH_CRC_CHKR_CRC_CHKR_Pos         (0U)                                    /*!< 0xFFFFFFFF */
 #define FLASH_CRC_CHKR_CRC_CHKR_Msk         (0xFFFFFFFFU << FLASH_CRC_CHKR_CRC_CHKR_Pos)
 #define FLASH_CRC_CHKR_CRC_CHKR             FLASH_CRC_CHKR_CRC_CHKR_Msk             /*!< CRC check result */
 
-/*****************  Bit definition for SLIB_SET_PWD register ******************/
+/*****************  Bit definition for SLIB_SET_PWD register  *****************/
 #define SLIB_SET_PWD_SLIB_PSET_VAL_Pos      (0U)                                    /*!< 0xFFFFFFFF */
 #define SLIB_SET_PWD_SLIB_PSET_VAL_Msk      (0xFFFFFFFFU << SLIB_SET_PWD_SLIB_PSET_VAL_Pos)
 #define SLIB_SET_PWD_SLIB_PSET_VAL          SLIB_SET_PWD_SLIB_PSET_VAL_Msk          /*!< Security library password setting value */
 
-/****************  Bit definition for SLIB_SET_RANGE register *****************/
+/****************  Bit definition for SLIB_SET_RANGE register  ****************/
 #define SLIB_SET_RANGE_SLIB_SS_SET_Pos      (0U)                                    /*!< 0x000007FF */
 #define SLIB_SET_RANGE_SLIB_SS_SET_Msk      (0x7FFU << SLIB_SET_RANGE_SLIB_SS_SET_Pos)
-#define SLIB_SET_RANGE_SLIB_SS_SET          SLIB_SET_RANGE_SLIB_SS_SET_Msk          /*!< Security library start page setting */
-#define SLIB_SET_RANGE_SLIB_ISS_SET_Pos     (11U)                                   /*!< 0x003FF800 */
-#define SLIB_SET_RANGE_SLIB_ISS_SET_Msk     (0x7FFU << SLIB_SET_RANGE_SLIB_ISS_SET_Pos)
-#define SLIB_SET_RANGE_SLIB_ISS_SET         SLIB_SET_RANGE_SLIB_ISS_SET_Msk         /*!< Security library instruction start page setting */
+#define SLIB_SET_RANGE_SLIB_SS_SET          SLIB_SET_RANGE_SLIB_SS_SET_Msk          /*!< Security library start sector setting */
+#define SLIB_SET_RANGE_SLIB_DSS_SET_Pos     (11U)                                   /*!< 0x003FF800 */
+#define SLIB_SET_RANGE_SLIB_DSS_SET_Msk     (0x7FFU << SLIB_SET_RANGE_SLIB_DSS_SET_Pos)
+#define SLIB_SET_RANGE_SLIB_DSS_SET         SLIB_SET_RANGE_SLIB_DSS_SET_Msk         /*!< Security library data start sector setting */
 #define SLIB_SET_RANGE_SLIB_ES_SET_Pos      (22U)                                   /*!< 0xFFC00000 */
 #define SLIB_SET_RANGE_SLIB_ES_SET_Msk      (0x3FFU << SLIB_SET_RANGE_SLIB_ES_SET_Pos)
-#define SLIB_SET_RANGE_SLIB_ES_SET          SLIB_SET_RANGE_SLIB_ES_SET_Msk          /*!< Security library end page setting */
+#define SLIB_SET_RANGE_SLIB_ES_SET          SLIB_SET_RANGE_SLIB_ES_SET_Msk          /*!< Security library end sector setting */
 
-/******************  Bit definition for EM_SLIB_SET register ******************/
+/*****************  Bit definition for EM_SLIB_SET register  ******************/
 #define EM_SLIB_SET_EM_SLIB_SET_Pos         (0U)                                    /*!< 0x0000FFFF */
 #define EM_SLIB_SET_EM_SLIB_SET_Msk         (0xFFFFU << EM_SLIB_SET_EM_SLIB_SET_Pos)
 #define EM_SLIB_SET_EM_SLIB_SET             EM_SLIB_SET_EM_SLIB_SET_Msk             /*!< Extension memory sLib setting */
-#define EM_SLIB_SET_EM_SLIB_ISS_SET_Pos     (16U)                                   /*!< 0x00FF0000 */
-#define EM_SLIB_SET_EM_SLIB_ISS_SET_Msk     (0xFFU << EM_SLIB_SET_EM_SLIB_ISS_SET_Pos)
-#define EM_SLIB_SET_EM_SLIB_ISS_SET         EM_SLIB_SET_EM_SLIB_ISS_SET_Msk         /*!< Extension memory sLib instruction start page setting */
+#define EM_SLIB_SET_EM_SLIB_DSS_SET_Pos     (16U)                                   /*!< 0x00FF0000 */
+#define EM_SLIB_SET_EM_SLIB_DSS_SET_Msk     (0xFFU << EM_SLIB_SET_EM_SLIB_DSS_SET_Pos)
+#define EM_SLIB_SET_EM_SLIB_DSS_SET         EM_SLIB_SET_EM_SLIB_DSS_SET_Msk         /*!< Extension memory sLib data start sector setting */
 
-/*****************  Bit definition for BTM_MODE_SET register ******************/
+/*****************  Bit definition for BTM_MODE_SET register  *****************/
 #define BTM_MODE_SET_BTM_MODE_SET_Pos       (0U)                                    /*!< 0x000000FF */
 #define BTM_MODE_SET_BTM_MODE_SET_Msk       (0xFFU << BTM_MODE_SET_BTM_MODE_SET_Pos)
 #define BTM_MODE_SET_BTM_MODE_SET           BTM_MODE_SET_BTM_MODE_SET_Msk           /*!< Boot memory mode setting */
 
-/*****************  Bit definition for SLIB_UNLOCK register ******************/
+/*****************  Bit definition for SLIB_UNLOCK register  ******************/
 #define SLIB_UNLOCK_SLIB_UKVAL_Pos          (0U)                                    /*!< 0xFFFFFFFF */
 #define SLIB_UNLOCK_SLIB_UKVAL_Msk          (0xFFFFFFFFU << SLIB_UNLOCK_SLIB_UKVAL_Pos)
 #define SLIB_UNLOCK_SLIB_UKVAL              SLIB_UNLOCK_SLIB_UKVAL_Msk              /*!< Security library unlock key value */
@@ -2508,7 +2507,7 @@ typedef struct
 #define GPIO_OMODE_OM15_Msk                 (0x1U << GPIO_OMODE_OM15_Pos)           /*!< 0x00008000 */
 #define GPIO_OMODE_OM15                     GPIO_OMODE_OM15_Msk                     /*!< GPIO x output mode configuration, pin 15 */
 
-/*!<***************  Bit definition for GPIO_ODRVR register  ******************/
+/******************  Bit definition for GPIO_ODRVR register  ******************/
 #define GPIO_ODRVR_ODRV_Pos                 (0U)
 #define GPIO_ODRVR_ODRV_Msk                 (0xFFFFFFFFU << GPIO_ODRVR_ODRV_Pos)    /*!< 0xFFFFFFFF */
 #define GPIO_ODRVR_ODRV                     GPIO_ODRVR_ODRV_Msk                     /*!< GPIO x drive capability */
@@ -2625,7 +2624,7 @@ typedef struct
 #define GPIO_ODRVR_ODRV15_0                 (0x1U << GPIO_ODRVR_ODRV15_Pos)         /*!< 0x40000000 */
 #define GPIO_ODRVR_ODRV15_1                 (0x2U << GPIO_ODRVR_ODRV15_Pos)         /*!< 0x80000000 */
 
-/*!<***************  Bit definition for GPIO_PULL register  *******************/
+/******************  Bit definition for GPIO_PULL register  *******************/
 #define GPIO_PULL_PULL_Pos                  (0U)
 #define GPIO_PULL_PULL_Msk                  (0xFFFFFFFFU << GPIO_PULL_PULL_Pos)     /*!< 0xFFFFFFFF */
 #define GPIO_PULL_PULL                      GPIO_PULL_PULL_Msk                      /*!< GPIO x pull-up/pull-down configuration */
@@ -2742,7 +2741,7 @@ typedef struct
 #define GPIO_PULL_PULL15_0                  (0x1U << GPIO_PULL_PULL15_Pos)          /*!< 0x40000000 */
 #define GPIO_PULL_PULL15_1                  (0x2U << GPIO_PULL_PULL15_Pos)          /*!< 0x80000000 */
 
-/*!<****************  Bit definition for GPIO_IDT register  *******************/
+/*******************  Bit definition for GPIO_IDT register  *******************/
 #define GPIO_IDT_IDT0_Pos                   (0U)
 #define GPIO_IDT_IDT0_Msk                   (0x1U << GPIO_IDT_IDT0_Pos)             /*!< 0x00000001 */
 #define GPIO_IDT_IDT0                       GPIO_IDT_IDT0_Msk                       /*!< GPIO x input data, pin 0 */
@@ -3297,56 +3296,6 @@ typedef struct
 #define GPIO_HDRV_HDRV15_Msk                (0x1U << GPIO_HDRV_HDRV15_Pos)          /*!< 0x00008000 */
 #define GPIO_HDRV_HDRV15                    GPIO_HDRV_HDRV15_Msk                    /*!< GPIO x huge sourcing/sinking strength control, pin 15 */
 
-/******************  Bit definition for GPIO_SRCTR register  ******************/
-#define GPIO_SRCTR_SRCTR0_Pos               (0U)
-#define GPIO_SRCTR_SRCTR0_Msk               (0x1U << GPIO_SRCTR_SRCTR0_Pos)           /*!< 0x00000001 */
-#define GPIO_SRCTR_SRCTR0                   GPIO_SRCTR_SRCTR0_Msk                     /*!< GPIO x SRCTR, pin 0 */
-#define GPIO_SRCTR_SRCTR1_Pos               (1U)
-#define GPIO_SRCTR_SRCTR1_Msk               (0x1U << GPIO_SRCTR_SRCTR1_Pos)           /*!< 0x00000002 */
-#define GPIO_SRCTR_SRCTR1                   GPIO_SRCTR_SRCTR1_Msk                     /*!< GPIO x SRCTR, pin 1 */
-#define GPIO_SRCTR_SRCTR2_Pos               (2U)
-#define GPIO_SRCTR_SRCTR2_Msk               (0x1U << GPIO_SRCTR_SRCTR2_Pos)           /*!< 0x00000004 */
-#define GPIO_SRCTR_SRCTR2                   GPIO_SRCTR_SRCTR2_Msk                     /*!< GPIO x SRCTR, pin 2 */
-#define GPIO_SRCTR_SRCTR3_Pos               (3U)
-#define GPIO_SRCTR_SRCTR3_Msk               (0x1U << GPIO_SRCTR_SRCTR3_Pos)           /*!< 0x00000008 */
-#define GPIO_SRCTR_SRCTR3                   GPIO_SRCTR_SRCTR3_Msk                     /*!< GPIO x SRCTR, pin 3 */
-#define GPIO_SRCTR_SRCTR4_Pos               (4U)
-#define GPIO_SRCTR_SRCTR4_Msk               (0x1U << GPIO_SRCTR_SRCTR4_Pos)           /*!< 0x00000010 */
-#define GPIO_SRCTR_SRCTR4                   GPIO_SRCTR_SRCTR4_Msk                     /*!< GPIO x SRCTR, pin 4 */
-#define GPIO_SRCTR_SRCTR5_Pos               (5U)
-#define GPIO_SRCTR_SRCTR5_Msk               (0x1U << GPIO_SRCTR_SRCTR5_Pos)           /*!< 0x00000020 */
-#define GPIO_SRCTR_SRCTR5                   GPIO_SRCTR_SRCTR5_Msk                     /*!< GPIO x SRCTR, pin 5 */
-#define GPIO_SRCTR_SRCTR6_Pos               (6U)
-#define GPIO_SRCTR_SRCTR6_Msk               (0x1U << GPIO_SRCTR_SRCTR6_Pos)           /*!< 0x00000040 */
-#define GPIO_SRCTR_SRCTR6                   GPIO_SRCTR_SRCTR6_Msk                     /*!< GPIO x SRCTR, pin 6 */
-#define GPIO_SRCTR_SRCTR7_Pos               (7U)
-#define GPIO_SRCTR_SRCTR7_Msk               (0x1U << GPIO_SRCTR_SRCTR7_Pos)           /*!< 0x00000080 */
-#define GPIO_SRCTR_SRCTR7                   GPIO_SRCTR_SRCTR7_Msk                     /*!< GPIO x SRCTR, pin 7 */
-#define GPIO_SRCTR_SRCTR8_Pos               (8U)
-#define GPIO_SRCTR_SRCTR8_Msk               (0x1U << GPIO_SRCTR_SRCTR8_Pos)           /*!< 0x00000100 */
-#define GPIO_SRCTR_SRCTR8                   GPIO_SRCTR_SRCTR8_Msk                     /*!< GPIO x SRCTR, pin 8 */
-#define GPIO_SRCTR_SRCTR9_Pos               (9U)
-#define GPIO_SRCTR_SRCTR9_Msk               (0x1U << GPIO_SRCTR_SRCTR9_Pos)           /*!< 0x00000200 */
-#define GPIO_SRCTR_SRCTR9                   GPIO_SRCTR_SRCTR9_Msk                     /*!< GPIO x SRCTR, pin 9 */
-#define GPIO_SRCTR_SRCTR10_Pos              (10U)
-#define GPIO_SRCTR_SRCTR10_Msk              (0x1U << GPIO_SRCTR_SRCTR10_Pos)          /*!< 0x00000400 */
-#define GPIO_SRCTR_SRCTR10                  GPIO_SRCTR_SRCTR10_Msk                    /*!< GPIO x SRCTR, pin 10 */
-#define GPIO_SRCTR_SRCTR11_Pos              (11U)
-#define GPIO_SRCTR_SRCTR11_Msk              (0x1U << GPIO_SRCTR_SRCTR11_Pos)          /*!< 0x00000800 */
-#define GPIO_SRCTR_SRCTR11                  GPIO_SRCTR_SRCTR11_Msk                    /*!< GPIO x SRCTR, pin 11 */
-#define GPIO_SRCTR_SRCTR12_Pos              (12U)
-#define GPIO_SRCTR_SRCTR12_Msk              (0x1U << GPIO_SRCTR_SRCTR12_Pos)          /*!< 0x00001000 */
-#define GPIO_SRCTR_SRCTR12                  GPIO_SRCTR_SRCTR12_Msk                    /*!< GPIO x SRCTR, pin 12 */
-#define GPIO_SRCTR_SRCTR13_Pos              (13U)
-#define GPIO_SRCTR_SRCTR13_Msk              (0x1U << GPIO_SRCTR_SRCTR13_Pos)          /*!< 0x00002000 */
-#define GPIO_SRCTR_SRCTR13                  GPIO_SRCTR_SRCTR13_Msk                    /*!< GPIO x SRCTR, pin 13 */
-#define GPIO_SRCTR_SRCTR14_Pos              (14U)
-#define GPIO_SRCTR_SRCTR14_Msk              (0x1U << GPIO_SRCTR_SRCTR14_Pos)          /*!< 0x00004000 */
-#define GPIO_SRCTR_SRCTR14                  GPIO_SRCTR_SRCTR14_Msk                    /*!< GPIO x SRCTR, pin 14 */
-#define GPIO_SRCTR_SRCTR15_Pos              (15U)
-#define GPIO_SRCTR_SRCTR15_Msk              (0x1U << GPIO_SRCTR_SRCTR15_Pos)          /*!< 0x00008000 */
-#define GPIO_SRCTR_SRCTR15                  GPIO_SRCTR_SRCTR15_Msk                    /*!< GPIO x SRCTR, pin 15 */
-
 /******************************************************************************/
 /*                                                                            */
 /*                   System configuration controller (SCFG)                   */
@@ -3503,7 +3452,7 @@ typedef struct
 #define SCFG_EXINTC2_EXINT4_GPF_Msk         (0x1U << SCFG_EXINTC2_EXINT4_GPF_Pos)   /*!< 0x00000004 */
 #define SCFG_EXINTC2_EXINT4_GPF             SCFG_EXINTC2_EXINT4_GPF_Msk             /*!< GPIOF pin 4 */
 
-/* EXINT5 configuration */
+/*!< EXINT5 configuration */
 #define SCFG_EXINTC2_EXINT5_Pos             (4U)
 #define SCFG_EXINTC2_EXINT5_Msk             (0xFU << SCFG_EXINTC2_EXINT5_Pos)       /*!< 0x000000F0 */
 #define SCFG_EXINTC2_EXINT5                 SCFG_EXINTC2_EXINT5_Msk                 /*!< EXINT5[3:0] bits (EXINT5 input source configuration) */
@@ -3638,7 +3587,7 @@ typedef struct
 #define SCFG_EXINTC3_EXINT11_GPF            SCFG_EXINTC3_EXINT11_GPF_Msk            /*!< GPIOF pin 11 */
 
 /*****************  Bit definition for SCFG_EXINTC4 register  *****************/
-/* EXINT12 configuration */
+/*!< EXINT12 configuration */
 #define SCFG_EXINTC4_EXINT12_Pos            (0U)
 #define SCFG_EXINTC4_EXINT12_Msk            (0xFU << SCFG_EXINTC4_EXINT12_Pos)      /*!< 0x0000000F */
 #define SCFG_EXINTC4_EXINT12                SCFG_EXINTC4_EXINT12_Msk                /*!< EXINT12[3:0] bits (EXINT12 input source configuration) */
@@ -3657,7 +3606,7 @@ typedef struct
 #define SCFG_EXINTC4_EXINT12_GPF_Msk        (0x1U << SCFG_EXINTC4_EXINT12_GPF_Pos)  /*!< 0x00000004 */
 #define SCFG_EXINTC4_EXINT12_GPF            SCFG_EXINTC4_EXINT12_GPF_Msk            /*!< GPIOF pin 12 */
 
-/* EXINT13 configuration */
+/*!< EXINT13 configuration */
 #define SCFG_EXINTC4_EXINT13_Pos            (4U)
 #define SCFG_EXINTC4_EXINT13_Msk            (0xFU << SCFG_EXINTC4_EXINT13_Pos)      /*!< 0x000000F0 */
 #define SCFG_EXINTC4_EXINT13                SCFG_EXINTC4_EXINT13_Msk                /*!< EXINT13[3:0] bits (EXINT13 input source configuration) */
@@ -3799,7 +3748,7 @@ typedef struct
 #define EXINT_INTEN_INTEN22_Msk             (0x1U << EXINT_INTEN_INTEN22_Pos)       /*!< 0x00400000 */
 #define EXINT_INTEN_INTEN22                 EXINT_INTEN_INTEN22_Msk                 /*!< Interrupt enable or disable on line 22 */
 
-/* References Defines */
+/* References defines */
 #define EXINT_INTEN_INT0                    EXINT_INTEN_INTEN0
 #define EXINT_INTEN_INT1                    EXINT_INTEN_INTEN1
 #define EXINT_INTEN_INT2                    EXINT_INTEN_INTEN2
@@ -3892,7 +3841,7 @@ typedef struct
 #define EXINT_EVTEN_EVTEN22_Msk             (0x1U << EXINT_EVTEN_EVTEN22_Pos)       /*!< 0x00400000 */
 #define EXINT_EVTEN_EVTEN22                 EXINT_EVTEN_EVTEN22_Msk                 /*!< Event enable or disable on line 22 */
 
-/* References Defines */
+/* References defines */
 #define EXINT_EVTEN_EVT0                    EXINT_EVTEN_EVTEN0
 #define EXINT_EVTEN_EVT1                    EXINT_EVTEN_EVTEN1
 #define EXINT_EVTEN_EVT2                    EXINT_EVTEN_EVTEN2
@@ -3984,7 +3933,7 @@ typedef struct
 #define EXINT_POLCFG1_RP22_Msk              (0x1U << EXINT_POLCFG1_RP22_Pos)        /*!< 0x00400000 */
 #define EXINT_POLCFG1_RP22                  EXINT_POLCFG1_RP22_Msk                  /*!< Rising edge event configuration bit on line 22 */
 
-/* References Defines */
+/* References defines */
 #define EXINT_POLCFG1_POL0                  EXINT_POLCFG1_RP0
 #define EXINT_POLCFG1_POL1                  EXINT_POLCFG1_RP1
 #define EXINT_POLCFG1_POL2                  EXINT_POLCFG1_RP2
@@ -4076,7 +4025,7 @@ typedef struct
 #define EXINT_POLCFG2_FP22_Msk              (0x1U << EXINT_POLCFG2_FP22_Pos)        /*!< 0x00400000 */
 #define EXINT_POLCFG2_FP22                  EXINT_POLCFG2_FP22_Msk                  /*!< Falling edge event configuration bit on line 22 */
 
-/* References Defines */
+/* References defines */
 #define EXINT_POLCFG2_POL0                  EXINT_POLCFG2_FP0
 #define EXINT_POLCFG2_POL1                  EXINT_POLCFG2_FP1
 #define EXINT_POLCFG2_POL2                  EXINT_POLCFG2_FP2
@@ -4168,7 +4117,7 @@ typedef struct
 #define EXINT_SWTRG_SWT22_Msk               (0x1U << EXINT_SWTRG_SWT22_Pos)         /*!< 0x00400000 */
 #define EXINT_SWTRG_SWT22                   EXINT_SWTRG_SWT22_Msk                   /*!< Software trigger on line 22 */
 
-/* References Defines */
+/* References defines */
 #define EXINT_SWTRG_SW0                     EXINT_SWTRG_SWT0
 #define EXINT_SWTRG_SW1                     EXINT_SWTRG_SWT1
 #define EXINT_SWTRG_SW2                     EXINT_SWTRG_SWT2
@@ -4260,7 +4209,7 @@ typedef struct
 #define EXINT_INTSTS_LINE22_Msk             (0x1U << EXINT_INTSTS_LINE22_Pos)       /*!< 0x00400000 */
 #define EXINT_INTSTS_LINE22                 EXINT_INTSTS_LINE22_Msk                 /*!< Status bit for line 22 */
 
-/* References Defines */
+/* References defines */
 #define EXINT_INTSTS_INT0                   EXINT_INTSTS_LINE0
 #define EXINT_INTSTS_INT1                   EXINT_INTSTS_LINE1
 #define EXINT_INTSTS_INT2                   EXINT_INTSTS_LINE2
@@ -4815,8 +4764,8 @@ typedef struct
 
 /******************  Bit definition for I2C_OADDR1 register  ******************/
 /*!< ADDR1 configuration */
-#define I2C_OADDR1_ADDR1_1_7                0x000000FEU                             /*!< Interface Address */
-#define I2C_OADDR1_ADDR1_8_9                0x00000300U                             /*!< Interface Address */
+#define I2C_OADDR1_ADDR1_1_7                0x000000FEU                             /*!< Interface address */
+#define I2C_OADDR1_ADDR1_8_9                0x00000300U                             /*!< Interface address */
 
 #define I2C_OADDR1_ADDR1_0_Pos              (0U)
 #define I2C_OADDR1_ADDR1_0_Msk              (0x1U << I2C_OADDR1_ADDR1_0_Pos)        /*!< 0x00000001 */
@@ -5298,7 +5247,7 @@ typedef struct
 #define SPI_CTRL1_NTC                       SPI_CTRL1_NTC_Msk                       /*!< Transmit CRC next */
 #define SPI_CTRL1_CCEN_Pos                  (13U)
 #define SPI_CTRL1_CCEN_Msk                  (0x1U << SPI_CTRL1_CCEN_Pos)            /*!< 0x00002000 */
-#define SPI_CTRL1_CCEN                      SPI_CTRL1_CCEN_Msk                      /*!< RC calculation enable */
+#define SPI_CTRL1_CCEN                      SPI_CTRL1_CCEN_Msk                      /*!< CRC calculation enable */
 #define SPI_CTRL1_SLBTD_Pos                 (14U)
 #define SPI_CTRL1_SLBTD_Msk                 (0x1U << SPI_CTRL1_SLBTD_Pos)           /*!< 0x00004000 */
 #define SPI_CTRL1_SLBTD                     SPI_CTRL1_SLBTD_Msk                     /*!< Single line bidirectional half-duplex transmission direction */
@@ -5369,7 +5318,7 @@ typedef struct
 #define SPI_DT_DT_Msk                       (0xFFFFU << SPI_DT_DT_Pos)              /*!< 0x0000FFFF */
 #define SPI_DT_DT                           SPI_DT_DT_Msk                           /*!< Data value */
 
-/*******************  Bit definition for SPI_CPOLY register  ******************/
+/******************  Bit definition for SPI_CPOLY register  *******************/
 #define SPI_CPOLY_CPOLY_Pos                 (0U)
 #define SPI_CPOLY_CPOLY_Msk                 (0xFFFFU << SPI_CPOLY_CPOLY_Pos)        /*!< 0x0000FFFF */
 #define SPI_CPOLY_CPOLY                     SPI_CPOLY_CPOLY_Msk                     /*!< CRC polynomial */
@@ -6605,12 +6554,12 @@ typedef struct
 #define ADC_PCDTO4_PCDTO4_Msk               (0xFFFU << ADC_PCDTO4_PCDTO4_Pos)       /*!< 0x00000FFF */
 #define ADC_PCDTO4_PCDTO4                   ADC_PCDTO4_PCDTO4_Msk                   /*!< Data offset for Preempted channel 4 */
 
-/*******************  Bit definition for ADC_VMHB register  ********************/
+/*******************  Bit definition for ADC_VMHB register  *******************/
 #define ADC_VMHB_VMHB_Pos                   (0U)
 #define ADC_VMHB_VMHB_Msk                   (0xFFFFU << ADC_VMHB_VMHB_Pos)          /*!< 0x0000FFFF */
 #define ADC_VMHB_VMHB                       ADC_VMHB_VMHB_Msk                       /*!< Voltage monitoring high boundary */
 
-/*******************  Bit definition for ADC_VMLB register  ********************/
+/*******************  Bit definition for ADC_VMLB register  *******************/
 #define ADC_VMLB_VMLB_Pos                   (0U)
 #define ADC_VMLB_VMLB_Msk                   (0xFFFFU << ADC_VMLB_VMLB_Pos)          /*!< 0x0000FFFF */
 #define ADC_VMLB_VMLB                       ADC_VMLB_VMLB_Msk                       /*!< Voltage monitoring low boundary */
@@ -7056,7 +7005,7 @@ typedef struct
 #define CAN_TSTS_TMNR_Msk                   (0x3U << CAN_TSTS_TMNR_Pos)             /*!< 0x03000000 */
 #define CAN_TSTS_TMNR                       CAN_TSTS_TMNR_Msk                       /*!< TMNR[1:0] bits (Transmit mailbox number record) */
 
-/*!< TMEF congiguration */
+/*!< TMEF configuration */
 #define CAN_TSTS_TMEF_Pos                   (26U)
 #define CAN_TSTS_TMEF_Msk                   (0x7U << CAN_TSTS_TMEF_Pos)             /*!< 0x1C000000 */
 #define CAN_TSTS_TMEF                       CAN_TSTS_TMEF_Msk                       /*!< TMEF[2:0] bits (Transmit mailbox empty flag) */
@@ -7070,7 +7019,7 @@ typedef struct
 #define CAN_TSTS_TM2EF_Msk                  (0x1U << CAN_TSTS_TM2EF_Pos)            /*!< 0x10000000 */
 #define CAN_TSTS_TM2EF                      CAN_TSTS_TM2EF_Msk                      /*!< Transmit mailbox 2 empty flag */
 
-/*!< TMLPF congiguration */
+/*!< TMLPF configuration */
 #define CAN_TSTS_TMLPF_Pos                  (29U)
 #define CAN_TSTS_TMLPF_Msk                  (0x7U << CAN_TSTS_TMLPF_Pos)            /*!< 0xE0000000 */
 #define CAN_TSTS_TMLPF                      CAN_TSTS_TMLPF_Msk                      /*!< TMLPF[2:0] bits (Transmit mailbox lowest priority flag) */
@@ -7167,7 +7116,7 @@ typedef struct
 #define CAN_ESTS_BOF_Msk                    (0x1U << CAN_ESTS_BOF_Pos)              /*!< 0x00000004 */
 #define CAN_ESTS_BOF                        CAN_ESTS_BOF_Msk                        /*!< Bus-off flag */
 
-/*!< ETR congiguration */
+/*!< ETR configuration */
 #define CAN_ESTS_ETR_Pos                    (4U)
 #define CAN_ESTS_ETR_Msk                    (0x7U << CAN_ESTS_ETR_Pos)              /*!< 0x00000070 */
 #define CAN_ESTS_ETR                        CAN_ESTS_ETR_Msk                        /*!< ETR[2:0] bits (Error type record) */
@@ -7187,7 +7136,7 @@ typedef struct
 #define CAN_BTMG_BRDIV_Msk                  (0xFFFU << CAN_BTMG_BRDIV_Pos)          /*!< 0x00000FFF */
 #define CAN_BTMG_BRDIV                      CAN_BTMG_BRDIV_Msk                      /*!< Baud rate division */
 
-/*!< BTS1 congiguration */
+/*!< BTS1 configuration */
 #define CAN_BTMG_BTS1_Pos                   (16U)
 #define CAN_BTMG_BTS1_Msk                   (0xFU << CAN_BTMG_BTS1_Pos)             /*!< 0x000F0000 */
 #define CAN_BTMG_BTS1                       CAN_BTMG_BTS1_Msk                       /*!< BTS1[3:0] bits (Bit time segment 1) */
@@ -7196,7 +7145,7 @@ typedef struct
 #define CAN_BTMG_BTS1_2                     (0x4U << CAN_BTMG_BTS1_Pos)             /*!< 0x00040000 */
 #define CAN_BTMG_BTS1_3                     (0x8U << CAN_BTMG_BTS1_Pos)             /*!< 0x00080000 */
 
-/*!< BTS2 congiguration */
+/*!< BTS2 configuration */
 #define CAN_BTMG_BTS2_Pos                   (20U)
 #define CAN_BTMG_BTS2_Msk                   (0x7U << CAN_BTMG_BTS2_Pos)             /*!< 0x00700000 */
 #define CAN_BTMG_BTS2                       CAN_BTMG_BTS2_Msk                       /*!< BTS2[2:0] bits (Bit time segment 2) */
@@ -7204,7 +7153,7 @@ typedef struct
 #define CAN_BTMG_BTS2_1                     (0x2U << CAN_BTMG_BTS2_Pos)             /*!< 0x00200000 */
 #define CAN_BTMG_BTS2_2                     (0x4U << CAN_BTMG_BTS2_Pos)             /*!< 0x00400000 */
 
-/*!< RSAW congiguration */
+/*!< RSAW configuration */
 #define CAN_BTMG_RSAW_Pos                   (24U)
 #define CAN_BTMG_RSAW_Msk                   (0x3U << CAN_BTMG_RSAW_Pos)             /*!< 0x03000000 */
 #define CAN_BTMG_RSAW                       CAN_BTMG_RSAW_Msk                       /*!< RSAW[1:0] bits (Resynchronization width) */
@@ -10665,7 +10614,7 @@ typedef struct
 #define QSPI_CMD_W0_SPIADR                  QSPI_CMD_W0_SPIADR_Msk                  /*!< SPI Flash address */
 
 /*****************  Bit definition for QSPI_CMD_W1 register  ******************/
-/*!< ADRLEN congiguration */
+/*!< ADRLEN configuration */
 #define QSPI_CMD_W1_ADRLEN_Pos              (0U)
 #define QSPI_CMD_W1_ADRLEN_Msk              (0x7U << QSPI_CMD_W1_ADRLEN_Pos)        /*!< 0x00000007 */
 #define QSPI_CMD_W1_ADRLEN                  QSPI_CMD_W1_ADRLEN_Msk                  /*!< ADRLEN[2:0] bits (SPI address length) */
@@ -10679,7 +10628,7 @@ typedef struct
 #define QSPI_CMD_W1_ADRLEN_3BYTE            0x00000003U                             /*!< 3-byte address */
 #define QSPI_CMD_W1_ADRLEN_4BYTE            0x00000004U                             /*!< 4-byte address */
 
-/*!< DUM2 congiguration */
+/*!< DUM2 configuration */
 #define QSPI_CMD_W1_DUM2_Pos                (16U)
 #define QSPI_CMD_W1_DUM2_Msk                (0xFFU << QSPI_CMD_W1_DUM2_Pos)         /*!< 0x00FF0000 */
 #define QSPI_CMD_W1_DUM2                    QSPI_CMD_W1_DUM2_Msk                    /*!< DUM2[7:0] bits (Second dummy state cycle) */
@@ -10692,7 +10641,7 @@ typedef struct
 #define QSPI_CMD_W1_DUM2_6                  (0x40U << QSPI_CMD_W1_DUM2_Pos)         /*!< 0x00400000 */
 #define QSPI_CMD_W1_DUM2_7                  (0x80U << QSPI_CMD_W1_DUM2_Pos)         /*!< 0x00800000 */
 
-/*!< INSLEN congiguration */
+/*!< INSLEN configuration */
 #define QSPI_CMD_W1_INSLEN_Pos              (24U)
 #define QSPI_CMD_W1_INSLEN_Msk              (0x3U << QSPI_CMD_W1_INSLEN_Pos)        /*!< 0x03000000 */
 #define QSPI_CMD_W1_INSLEN                  QSPI_CMD_W1_INSLEN_Msk                  /*!< INSLEN[1:0] bits (Instruction code length) */
@@ -10723,7 +10672,7 @@ typedef struct
 #define QSPI_CMD_W3_RSTSC_Msk               (0x1U << QSPI_CMD_W3_RSTSC_Pos)         /*!< 0x00000008 */
 #define QSPI_CMD_W3_RSTSC                   QSPI_CMD_W3_RSTSC_Msk                   /*!< Read SPI status configuration */
 
-/*!< OPMODE congiguration */
+/*!< OPMODE configuration */
 #define QSPI_CMD_W3_OPMODE_Pos              (5U)
 #define QSPI_CMD_W3_OPMODE_Msk              (0x7U << QSPI_CMD_W3_OPMODE_Pos)        /*!< 0x000000E0 */
 #define QSPI_CMD_W3_OPMODE                  QSPI_CMD_W3_OPMODE_Msk                  /*!< OPMODE[2:0] bits (SPI Operation mode) */
@@ -10747,7 +10696,7 @@ typedef struct
 #define QSPI_CMD_W3_INSC                    QSPI_CMD_W3_INSC_Msk                    /*!< Instruction code */
 
 /******************  Bit definition for QSPI_CTRL register  *******************/
-/*!< CLKDIV congiguration */
+/*!< CLKDIV configuration */
 #define QSPI_CTRL_CLKDIV_Pos                (0U)
 #define QSPI_CTRL_CLKDIV_Msk                (0x7U << QSPI_CTRL_CLKDIV_Pos)          /*!< 0x00000007 */
 #define QSPI_CTRL_CLKDIV                    QSPI_CTRL_CLKDIV_Msk                    /*!< CLKDIV[2:0] bits (Clock divider) */
@@ -10774,7 +10723,7 @@ typedef struct
 #define QSPI_CTRL_ABORT_Msk                 (0x1U << QSPI_CTRL_ABORT_Pos)           /*!< 0x00000100 */
 #define QSPI_CTRL_ABORT                     QSPI_CTRL_ABORT_Msk                     /*!< Refresh all commands/FIFOs and reset state machine */
 
-/*!< BUSY congiguration */
+/*!< BUSY configuration */
 #define QSPI_CTRL_BUSY_Pos                  (16U)
 #define QSPI_CTRL_BUSY_Msk                  (0x7U << QSPI_CTRL_BUSY_Pos)            /*!< 0x00070000 */
 #define QSPI_CTRL_BUSY                      QSPI_CTRL_BUSY_Msk                      /*!< BUSY[2:0] bits (Busy bit of SPI status) */
@@ -10817,7 +10766,7 @@ typedef struct
 #define QSPI_CTRL2_CMDIE_Msk                (0x1U << QSPI_CTRL2_CMDIE_Pos)          /*!< 0x00000002 */
 #define QSPI_CTRL2_CMDIE                    QSPI_CTRL2_CMDIE_Msk                    /*!< Command complete Interrupt enable */
 
-/*!< TXFIFO_THOD congiguration */
+/*!< TXFIFO_THOD configuration */
 #define QSPI_CTRL2_TXFIFO_THOD_Pos          (8U)
 #define QSPI_CTRL2_TXFIFO_THOD_Msk          (0x3U << QSPI_CTRL2_TXFIFO_THOD_Pos)    /*!< 0x00000300 */
 #define QSPI_CTRL2_TXFIFO_THOD              QSPI_CTRL2_TXFIFO_THOD_Msk              /*!< TXFIFO_THOD[1:0] bits (Program the level value to trigger TX FIFO threshold IRQ) */
@@ -10828,7 +10777,7 @@ typedef struct
 #define QSPI_CTRL2_TXFIFO_THOD_16WORD       0x00000100U                             /*!< 16 WORD */
 #define QSPI_CTRL2_TXFIFO_THOD_24WORD       0x00000200U                             /*!< 24 WORD */
 
-/*!< RXFIFO_THOD congiguration */
+/*!< RXFIFO_THOD configuration */
 #define QSPI_CTRL2_RXFIFO_THOD_Pos          (12U)
 #define QSPI_CTRL2_RXFIFO_THOD_Msk          (0x3U << QSPI_CTRL2_RXFIFO_THOD_Pos)    /*!< 0x00003000 */
 #define QSPI_CTRL2_RXFIFO_THOD              QSPI_CTRL2_RXFIFO_THOD_Msk              /*!< RXFIFO_THOD[1:0] bits (Program the level value to trigger RX FIFO threshold IRQ) */
@@ -10855,7 +10804,7 @@ typedef struct
 #define QSPI_FSIZE_SPIFSIZE                 QSPI_FSIZE_SPIFSIZE_Msk                 /*!< SPI flash size */
 
 /***************  Bit definition for QSPI_XIP_CMD_W0 register  ****************/
-/*!< XIPR_DUM2 congiguration */
+/*!< XIPR_DUM2 configuration */
 #define QSPI_XIP_CMD_W0_XIPR_DUM2_Pos       (0U)
 #define QSPI_XIP_CMD_W0_XIPR_DUM2_Msk       (0xFFU << QSPI_XIP_CMD_W0_XIPR_DUM2_Pos) /*!< 0x000000FF */
 #define QSPI_XIP_CMD_W0_XIPR_DUM2           QSPI_XIP_CMD_W0_XIPR_DUM2_Msk            /*!< XIPR_DUM2[7:0] bits (XIP read second dummy cycle) */
@@ -10868,7 +10817,7 @@ typedef struct
 #define QSPI_XIP_CMD_W0_XIPR_DUM2_6         (0x40U << QSPI_XIP_CMD_W0_XIPR_DUM2_Pos) /*!< 0x00000040 */
 #define QSPI_XIP_CMD_W0_XIPR_DUM2_7         (0x80U << QSPI_XIP_CMD_W0_XIPR_DUM2_Pos) /*!< 0x00000080 */
 
-/*!< XIPR_OPMODE congiguration */
+/*!< XIPR_OPMODE configuration */
 #define QSPI_XIP_CMD_W0_XIPR_OPMODE_Pos     (8U)                                      /*!< 0x00000700 */
 #define QSPI_XIP_CMD_W0_XIPR_OPMODE_Msk     (0x7U << QSPI_XIP_CMD_W0_XIPR_OPMODE_Pos)
 #define QSPI_XIP_CMD_W0_XIPR_OPMODE         QSPI_XIP_CMD_W0_XIPR_OPMODE_Msk           /*!< XIPR_OPMODE[2:0] bits (XIP read operation mode) */
@@ -10892,7 +10841,7 @@ typedef struct
 #define QSPI_XIP_CMD_W0_XIPR_INSC           QSPI_XIP_CMD_W0_XIPR_INSC_Msk           /*!< XIP read instruction code */
 
 /***************  Bit definition for QSPI_XIP_CMD_W1 register  ****************/
-/*!< XIPW_DUM2 congiguration */
+/*!< XIPW_DUM2 configuration */
 #define QSPI_XIP_CMD_W1_XIPW_DUM2_Pos       (0U)
 #define QSPI_XIP_CMD_W1_XIPW_DUM2_Msk       (0xFFU << QSPI_XIP_CMD_W1_XIPW_DUM2_Pos) /*!< 0x000000FF */
 #define QSPI_XIP_CMD_W1_XIPW_DUM2           QSPI_XIP_CMD_W1_XIPW_DUM2_Msk            /*!< XIPW_DUM2[7:0] bits (XIP write second dummy cycle) */
@@ -10905,7 +10854,7 @@ typedef struct
 #define QSPI_XIP_CMD_W1_XIPW_DUM2_6         (0x40U << QSPI_XIP_CMD_W1_XIPW_DUM2_Pos) /*!< 0x00000040 */
 #define QSPI_XIP_CMD_W1_XIPW_DUM2_7         (0x80U << QSPI_XIP_CMD_W1_XIPW_DUM2_Pos) /*!< 0x00000080 */
 
-/*!< XIPW_OPMODE congiguration */
+/*!< XIPW_OPMODE configuration */
 #define QSPI_XIP_CMD_W1_XIPW_OPMODE_Pos     (8U)                                      /*!< 0x00000700 */
 #define QSPI_XIP_CMD_W1_XIPW_OPMODE_Msk     (0x7U << QSPI_XIP_CMD_W1_XIPW_OPMODE_Pos)
 #define QSPI_XIP_CMD_W1_XIPW_OPMODE         QSPI_XIP_CMD_W1_XIPW_OPMODE_Msk           /*!< XIPW_OPMODE[2:0] bits (XIP write operation mode) */
@@ -10978,7 +10927,7 @@ typedef struct
 /******************************************************************************/
 
 /*****************  Bit definition for DEBUG_IDCODE register  *****************/
-/*!< PID congiguration */
+/*!< PID configuration */
 #define DEBUG_IDCODE_PID_Pos                (0U)
 #define DEBUG_IDCODE_PID_Msk                (0xFFFFFFFFU << DEBUG_IDCODE_PID_Pos)   /*!< 0xFFFFFFFF */
 #define DEBUG_IDCODE_PID                    DEBUG_IDCODE_PID_Msk                    /*!< PID[31:0] bits (PID information) */
@@ -11085,7 +11034,7 @@ typedef struct
 #define DEBUG_APB2_PAUSE_TMR11_PAUSE        DEBUG_APB2_PAUSE_TMR11_PAUSE_Msk        /*!< TMR11 pause control bit */
 
 /*****************  Bit definition for DEBUG_SER_ID register  *****************/
-/*!< REV_ID congiguration */
+/*!< REV_ID configuration */
 #define DEBUG_SER_ID_REV_ID_Pos             (0U)
 #define DEBUG_SER_ID_REV_ID_Msk             (0x7U << DEBUG_SER_ID_REV_ID_Pos)       /*!< 0x00000007 */
 #define DEBUG_SER_ID_REV_ID                 DEBUG_SER_ID_REV_ID_Msk                 /*!< REV_ID[2:0] bits (Revision ID) */
@@ -11093,7 +11042,7 @@ typedef struct
 #define DEBUG_SER_ID_REV_ID_1               (0x2U << DEBUG_SER_ID_REV_ID_Pos)       /*!< 0x00000002 */
 #define DEBUG_SER_ID_REV_ID_2               (0x4U << DEBUG_SER_ID_REV_ID_Pos)       /*!< 0x00000004 */
 
-/*!< SER_ID congiguration */
+/*!< SER_ID configuration */
 #define DEBUG_SER_ID_SER_ID_Pos             (8U)
 #define DEBUG_SER_ID_SER_ID_Msk             (0xFFU << DEBUG_SER_ID_SER_ID_Pos)      /*!< 0x0000FF00 */
 #define DEBUG_SER_ID_SER_ID                 DEBUG_SER_ID_SER_ID_Msk                 /*!< SER_ID[7:0] bits (Serial ID) */

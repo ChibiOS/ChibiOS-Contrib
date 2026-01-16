@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
-    ChibiOS - Copyright (C) 2024..2025 Maxjta
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
+    ChibiOS - Copyright (C) 2024..2026 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -273,6 +273,7 @@ void adc_lld_start_conversion(ADCDriver *adcp) {
          is enabled in order to allow streaming processing.*/
       mode |= AT32_DMA_CCTRL_HDTIEN;
     }
+    ctrl2 = 0U;
   }
   dmaStreamSetMemory0(adcp->dmastp, adcp->samples);
   dmaStreamSetTransactionSize(adcp->dmastp, (uint32_t)grpp->num_channels *
@@ -294,10 +295,12 @@ void adc_lld_start_conversion(ADCDriver *adcp) {
   adcp->adc->CTRL1 = grpp->ctrl1 | ADC_CTRL1_SQEN;
 
   /* Enforcing the mandatory bits in CTRL2.*/
-  ctrl2 = grpp->ctrl2 | ADC_CTRL2_OCDMAEN | ADC_CTRL2_ADCEN;
+  ctrl2 |= grpp->ctrl2 | ADC_CTRL2_OCDMAEN | ADC_CTRL2_ADCEN;
 
-  if ((ctrl2 & (ADC_CTRL2_OCTEN | ADC_CTRL2_PCTEN)) == 0)
+  if ((ctrl2 & (ADC_CTRL2_OCTEN | ADC_CTRL2_PCTEN)) == 0) {
     ctrl2 |= ADC_CTRL2_RPEN;
+  }
+
   adcp->adc->CTRL2 = grpp->ctrl2 | ctrl2;
 
   /* ADC start by writing ADC_CTRL2_ADCEN a second time.*/

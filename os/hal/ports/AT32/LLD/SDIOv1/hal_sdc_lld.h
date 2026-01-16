@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -121,18 +121,6 @@
 
 #if !defined(AT32_DMA_REQUIRED)
 #define AT32_DMA_REQUIRED
-#endif
-
-/*
- * SDIO clock divider.
- */
-#if AT32_HCLK > 48000000
-#define AT32_SDIO_DIV_HS                    1
-#define AT32_SDIO_DIV_LS                    178
-#else
-
-#define AT32_SDIO_DIV_HS                    0
-#define AT32_SDIO_DIV_LS                    118
 #endif
 
 /*===========================================================================*/

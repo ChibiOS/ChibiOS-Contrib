@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
-    ChibiOS - Copyright (C) 2024..2025 Maxjta
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
+    ChibiOS - Copyright (C) 2024..2026 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -28,20 +28,34 @@
 #ifndef AT32_REGISTRY_H
 #define AT32_REGISTRY_H
 
-#if defined(AT32F402KB) || defined(AT32F402KC) ||                           \
+/* Define by package size */
+#if defined(AT32F402KB) || defined(AT32F402KC) ||                          \
     defined(AT32F405KB) || defined(AT32F405KC)
-#define AT32F402_405K
+#define AT32F402_405Kx
 
-#elif defined(AT32F402CB) || defined(AT32F402CC) ||                         \
+#elif defined(AT32F402CB) || defined(AT32F402CC) ||                        \
       defined(AT32F405CB) || defined(AT32F405CC)
-#define AT32F402_405C
+#define AT32F402_405Cx
 
-#elif defined(AT32F402RB) || defined(AT32F402RC) ||                         \
+#elif defined(AT32F402RB) || defined(AT32F402RC) ||                        \
       defined(AT32F405RB) || defined(AT32F405RC)
-#define AT32F402_405R
+#define AT32F402_405Rx
 
 #else
-#error "unsupported or unrecognized AT32F402 or AT32F405 member"
+#error "unsupported or unrecognized AT32F402 or AT32F405 package size"
+#endif
+
+/* Define by flash size */
+#if defined(AT32F402KB) || defined(AT32F402CB) || defined(AT32F402RB) ||   \
+    defined(AT32F405KB) || defined(AT32F405CB) || defined(AT32F405RB)
+#define AT32F402_405xB
+
+#elif defined(AT32F402KC) || defined(AT32F402CC) || defined(AT32F402RC) || \
+      defined(AT32F405KC) || defined(AT32F405CC) || defined(AT32F405RC)
+#define AT32F402_405xC
+
+#else
+#error "unsupported or unrecognized AT32F402 or AT32F405 flash size"
 #endif
 
 /*===========================================================================*/
@@ -49,9 +63,40 @@
 /*===========================================================================*/
 
 /**
- * @name    Common capabilities
+ * @name    AT32F402_405 capabilities
  * @{
  */
+
+/* DEBUG helpers.*/
+#define AT32_DEBUG_TMR1_STOP()             DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR1_PAUSE
+#define AT32_DEBUG_TMR2_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR2_PAUSE
+#define AT32_DEBUG_TMR3_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR3_PAUSE
+#define AT32_DEBUG_TMR4_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR4_PAUSE
+#define AT32_DEBUG_TMR6_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR6_PAUSE
+#define AT32_DEBUG_TMR7_STOP()             DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR7_PAUSE
+#define AT32_DEBUG_TMR9_STOP()             DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR9_PAUSE
+#define AT32_DEBUG_TMR10_STOP()            DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR10_PAUSE
+#define AT32_DEBUG_TMR11_STOP()            DEBUG->APB2_PAUSE |= DEBUG_APB2_PAUSE_TMR11_PAUSE
+#define AT32_DEBUG_TMR13_STOP()            DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR13_PAUSE
+#define AT32_DEBUG_TMR14_STOP()            DEBUG->APB1_PAUSE |= DEBUG_APB1_PAUSE_TMR14_PAUSE
+
+/*===========================================================================*/
+/* Common.                                                                   */
+/*===========================================================================*/
+
+/* FLASH attributes.*/
+#define AT32_FLASH_NUMBER_OF_BANKS         1
+
+#if defined(AT32F402_405xB) || defined(__DOXYGEN__)
+#define AT32_FLASH_SECTOR_SIZE             1024U
+#elif defined(AT32F402_405xC)
+#define AT32_FLASH_SECTOR_SIZE             2048U
+#endif
+
+#if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
+#define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
+#endif
+
 /* GPIO attributes.*/
 #if defined(AT32_HAS_GPIOD)
 #define AT32_GPIO_EN_MASK                  (CRM_AHBEN1_GPIOAEN |           \
@@ -69,13 +114,13 @@
                                             CRM_AHBEN1_GPIOBEN |           \
                                             CRM_AHBEN1_GPIOFEN)
 #endif
-/** @} */
 
-#if defined(AT32F402_405K) || defined(__DOXYGEN__)
-/**
- * @name    AT32F402_405K capabilities
- * @{
- */
+/*===========================================================================*/
+/* AT32F402KB, AT32F402KC, AT32F405KB, AT32F405KC.                           */
+/*===========================================================================*/
+
+#if defined(AT32F402_405Kx) || defined(__DOXYGEN__)
+
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
 #define AT32_ADC_SUPPORTS_PRESCALER        TRUE
@@ -99,19 +144,8 @@
 #elif defined(AT32F405KB) || defined(AT32F405KC)
 #define AT32_EXINT_NUM_LINES               22
 #endif
+
 #define AT32_EXINT_INTEN_MASK              0x00000000U
-
-/* FLASH attributes.*/
-#define AT32_FLASH_NUMBER_OF_BANKS         1
-#if defined(AT32F402KB) || defined(AT32F405KB) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTOR_SIZE             1024U
-#elif defined(AT32F402KC) || defined(AT32F405KC)
-#define AT32_FLASH_SECTOR_SIZE             2048U
-#endif
-
-#if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
-#endif
 
 /* GPIO attributes.*/
 #define AT32_HAS_GPIOA                     TRUE
@@ -253,13 +287,13 @@
 #define AT32_OTG_STEPPING                  2
 
 #define AT32_HAS_OTG1                      TRUE
-#define AT32_OTG1_ENDPOINTS                8
+#define AT32_OTG1_ENDPOINTS                7
 
 #if defined(AT32F402KB) || defined(AT32F402KC) || defined(__DOXYGEN__)
 #define AT32_HAS_OTG2                      FALSE
 #elif defined(AT32F405KB) || defined(AT32F405KC)
 #define AT32_HAS_OTG2                      TRUE
-#define AT32_OTG2_ENDPOINTS                8
+#define AT32_OTG2_ENDPOINTS                7
 #endif
 
 /* WDT attributes.*/
@@ -275,14 +309,15 @@
 #else
 #define STM32_CRC_USE_CRC1                 FALSE
 #endif
-/** @} */
+
 #endif /* defined(AT32F402_405K) */
 
-#if defined(AT32F402_405C) || defined(__DOXYGEN__)
-/**
- * @name    AT32F402_405C capabilities
- * @{
- */
+/*===========================================================================*/
+/* AT32F402CB, AT32F402CC, AT32F405CB, AT32F405CC.                           */
+/*===========================================================================*/
+
+#if defined(AT32F402_405Cx) || defined(__DOXYGEN__)
+
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
 #define AT32_ADC_SUPPORTS_PRESCALER        TRUE
@@ -306,19 +341,8 @@
 #elif defined(AT32F405CB) || defined(AT32F405CC)
 #define AT32_EXINT_NUM_LINES               22
 #endif
+
 #define AT32_EXINT_INTEN_MASK              0x00000000U
-
-/* FLASH attributes.*/
-#define AT32_FLASH_NUMBER_OF_BANKS         1
-#if defined(AT32F402CB) || defined(AT32F405CB) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTOR_SIZE             1024U
-#elif defined(AT32F402CC) || defined(AT32F405CC)
-#define AT32_FLASH_SECTOR_SIZE             2048U
-#endif
-
-#if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
-#endif
 
 /* GPIO attributes.*/
 #define AT32_HAS_GPIOA                     TRUE
@@ -463,13 +487,13 @@
 #define AT32_OTG_STEPPING                  2
 
 #define AT32_HAS_OTG1                      TRUE
-#define AT32_OTG1_ENDPOINTS                8
+#define AT32_OTG1_ENDPOINTS                7
 
 #if defined(AT32F402CB) || defined(AT32F402CC) || defined(__DOXYGEN__)
 #define AT32_HAS_OTG2                      FALSE
 #elif defined(AT32F405CB) || defined(AT32F405CC)
 #define AT32_HAS_OTG2                      TRUE
-#define AT32_OTG2_ENDPOINTS                8
+#define AT32_OTG2_ENDPOINTS                7
 #endif
 
 /* WDT attributes.*/
@@ -485,14 +509,15 @@
 #else
 #define STM32_CRC_USE_CRC1                 FALSE
 #endif
-/** @} */
+
 #endif /* defined(AT32F402_405C) */
 
-#if defined(AT32F402_405R) || defined(__DOXYGEN__)
-/**
- * @name    AT32F402_405R capabilities
- * @{
- */
+/*===========================================================================*/
+/* AT32F402RB, AT32F402RC, AT32F405RB, AT32F405RC.                           */
+/*===========================================================================*/
+
+#if defined(AT32F402_405Rx) || defined(__DOXYGEN__)
+
 /* ADC attributes.*/
 #define AT32_HAS_ADC1                      TRUE
 #define AT32_ADC_SUPPORTS_PRESCALER        TRUE
@@ -516,19 +541,8 @@
 #elif defined(AT32F405RB) || defined(AT32F405RC)
 #define AT32_EXINT_NUM_LINES               22
 #endif
+
 #define AT32_EXINT_INTEN_MASK              0x00000000U
-
-/* FLASH attributes.*/
-#define AT32_FLASH_NUMBER_OF_BANKS         1
-#if defined(AT32F402RB) || defined(AT32F405RB) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTOR_SIZE             1024U
-#elif defined(AT32F402RC) || defined(AT32F405RC)
-#define AT32_FLASH_SECTOR_SIZE             2048U
-#endif
-
-#if !defined(AT32_FLASH_SECTORS_PER_BANK) || defined(__DOXYGEN__)
-#define AT32_FLASH_SECTORS_PER_BANK        128 /* Maximum, can be redefined.*/
-#endif
 
 /* GPIO attributes.*/
 #define AT32_HAS_GPIOA                     TRUE
@@ -673,13 +687,13 @@
 #define AT32_OTG_STEPPING                  2
 
 #define AT32_HAS_OTG1                      TRUE
-#define AT32_OTG1_ENDPOINTS                8
+#define AT32_OTG1_ENDPOINTS                7
 
 #if defined(AT32F402RB) || defined(AT32F402RC) || defined(__DOXYGEN__)
 #define AT32_HAS_OTG2                      FALSE
 #elif defined(AT32F405RB) || defined(AT32F405RC)
 #define AT32_HAS_OTG2                      TRUE
-#define AT32_OTG2_ENDPOINTS                8
+#define AT32_OTG2_ENDPOINTS                7
 #endif
 
 /* WDT attributes.*/
@@ -695,7 +709,7 @@
 #else
 #define STM32_CRC_USE_CRC1                 FALSE
 #endif
-/** @} */
+
 #endif /* defined(AT32F402_405R) */
 
 #endif /* AT32_REGISTRY_H */
