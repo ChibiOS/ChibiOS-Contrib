@@ -397,13 +397,27 @@ struct USBDriver {
  * @api
  */
 #if !defined(usb_lld_disconnect_bus)
-/* Writing to USB0->CONTROL causes an unhandled exception when USB module is not clocked. */
+
+/* Writing USB0->CONTROL with clock off causes hard fault on MK20 */
 #if KINETIS_USB0_IS_USBOTG
-#define usb_lld_disconnect_bus(usbp) if(SIM->SCGC4 & SIM_SCGC4_USBOTG) {USB0->CONTROL &= ~USBx_CONTROL_DPPULLUPNONOTG;} else {}
+#define usb_lld_disconnect_bus(usbp)                                   \
+  do {                                                                 \
+    (void)(usbp);                                                      \
+    if (SIM->SCGC4 & SIM_SCGC4_USBOTG) {                               \
+       USB0->CONTROL &= ~USBx_CONTROL_DPPULLUPNONOTG;                  \
+    }                                                                  \
+  } while (false)
 #else /* KINETIS_USB0_IS_USBOTG */
-#define usb_lld_disconnect_bus(usbp) if(SIM->SCGC4 & SIM_SCGC4_USBFS) {USB0->CONTROL &= ~USBx_CONTROL_DPPULLUPNONOTG;} else {}
+#define usb_lld_disconnect_bus(usbp)                                   \
+  do {                                                                 \
+    (void)(usbp);                                                      \
+    if (SIM->SCGC4 & SIM_SCGC4_USBFS) {                                \
+       USB0->CONTROL &= ~USBx_CONTROL_DPPULLUPNONOTG;                  \
+    }                                                                  \
+  } while (false)
 #endif /* KINETIS_USB0_IS_USBOTG */
 #endif
+
 
 /**
  * @brief   Start of host wake-up procedure.
