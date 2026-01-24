@@ -1,7 +1,6 @@
 /*
-    ChibiOS - Copyright (C) 2006..2020 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,6 +14,16 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+/*
+ * CRC driver system settings.
+ */
+#define AT32_CRC_USE_CRC1                   FALSE
+
+#define CRC_USE_DMA                         FALSE
+#define AT32_CRC_CRC1_DMA_PRIORITY          2
+#define AT32_CRC_CRC1_IRQ_PRIORITY          5
+#define AT32_CRC_CRC1_DMA_STREAM            AT32_DMA1_STREAM2
 
 /*
  * I2C fallback driver system settings.

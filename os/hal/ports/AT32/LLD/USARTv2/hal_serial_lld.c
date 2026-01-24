@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
-    ChibiOS - Copyright (C) 2023..2024 Maxjta
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2024..2025 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -32,6 +32,23 @@
 /*===========================================================================*/
 /* Driver local definitions.                                                 */
 /*===========================================================================*/
+
+/* Handling differences in frame size bits.*/
+#if !defined(USART_CTRL1_DBN_0)
+#define USART_CTRL1_DBN_0                   (1 << 12)
+#endif
+
+#if !defined(USART_CTRL1_DBN_1)
+#define USART_CTRL1_DBN_1                   (1 << 28)
+#endif
+
+/* Workarounds for those devices where UARTs are USARTs.*/
+#if defined(USART4)
+#define UART4 USART4
+#endif
+#if defined(USART5)
+#define UART5 USART5
+#endif
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -90,6 +107,70 @@ static const SerialConfig default_config =
   0
 };
 
+#if AT32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD1.*/
+static uint8_t sd_in_buf1[AT32_SERIAL_USART1_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD1.*/
+static uint8_t sd_out_buf1[AT32_SERIAL_USART1_OUT_BUF_SIZE];
+#endif
+
+#if AT32_SERIAL_USE_USART2 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD2.*/
+static uint8_t sd_in_buf2[AT32_SERIAL_USART2_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD2.*/
+static uint8_t sd_out_buf2[AT32_SERIAL_USART2_OUT_BUF_SIZE];
+#endif
+
+#if AT32_SERIAL_USE_USART3 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD3.*/
+static uint8_t sd_in_buf3[AT32_SERIAL_USART3_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD3.*/
+static uint8_t sd_out_buf3[AT32_SERIAL_USART3_OUT_BUF_SIZE];
+#endif
+
+#if AT32_SERIAL_USE_UART4 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD4.*/
+static uint8_t sd_in_buf4[AT32_SERIAL_UART4_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD4.*/
+static uint8_t sd_out_buf4[AT32_SERIAL_UART4_OUT_BUF_SIZE];
+#endif
+
+#if AT32_SERIAL_USE_UART5 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD5.*/
+static uint8_t sd_in_buf5[AT32_SERIAL_UART5_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD5.*/
+static uint8_t sd_out_buf5[AT32_SERIAL_UART5_OUT_BUF_SIZE];
+#endif
+
+#if AT32_SERIAL_USE_USART6 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD6.*/
+static uint8_t sd_in_buf6[AT32_SERIAL_USART6_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD6.*/
+static uint8_t sd_out_buf6[AT32_SERIAL_USART6_OUT_BUF_SIZE];
+#endif
+
+#if AT32_SERIAL_USE_UART7 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD7.*/
+static uint8_t sd_in_buf7[AT32_SERIAL_UART7_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD7.*/
+static uint8_t sd_out_buf7[AT32_SERIAL_UART7_OUT_BUF_SIZE];
+#endif
+
+#if AT32_SERIAL_USE_UART8 || defined(__DOXYGEN__)
+/** @brief Input buffer for SD8.*/
+static uint8_t sd_in_buf8[AT32_SERIAL_UART8_IN_BUF_SIZE];
+
+/** @brief Output buffer for SD8.*/
+static uint8_t sd_out_buf8[AT32_SERIAL_UART8_OUT_BUF_SIZE];
+#endif
+
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
@@ -101,13 +182,16 @@ static const SerialConfig default_config =
  * @param[in] sdp       pointer to a @p SerialDriver object
  * @param[in] config    the architecture-dependent serial driver configuration
  */
-static void usart_init(SerialDriver *sdp, const SerialConfig *config) {
-  uint32_t baudr;
+static void usart_init(SerialDriver *sdp,
+                       const SerialConfig *config) {
+  uint32_t baudr, clock;
   USART_TypeDef *u = sdp->usart;
 
-  baudr = (uint32_t)((sdp->clock + config->speed/2) / config->speed);
+  /* Baud rate setting.*/
+  clock = sdp->clock;
+    baudr = (uint32_t)((clock + config->speed / 2) / config->speed);
 
-  osalDbgAssert(baudr < 0x10000, "invalid BAUDR value");
+    osalDbgAssert(baudr < 0x10000, "invalid BAUDR value");
 
   u->BAUDR = baudr;
 
@@ -117,14 +201,23 @@ static void usart_init(SerialDriver *sdp, const SerialConfig *config) {
   u->CTRL1 = config->ctrl1 | USART_CTRL1_UEN | USART_CTRL1_PERRIEN |
                              USART_CTRL1_RDBFIEN | USART_CTRL1_TEN |
                              USART_CTRL1_REN;
-  u->STS = 0;
-  (void)u->STS; /* STS reset step 1.*/
-  (void)u->DT;  /* STS reset step 2.*/
+  #if !defined (AT32F435_437)
+  u->IFC = 0xFFFFFFFFU;
+  #endif
 
   /* Deciding mask to be applied on the data register on receive, this is
      required in order to mask out the parity bit.*/
-  if ((config->ctrl1 & (USART_CTRL1_DBN | USART_CTRL1_PEN)) == USART_CTRL1_PEN) {
-    sdp->rxmask = 0x7F;
+  if ((config->ctrl1 & USART_CTRL1_PEN) != 0U) {
+    switch (config->ctrl1 & (USART_CTRL1_DBN_1 | USART_CTRL1_DBN_0)) {
+    case 0:
+      sdp->rxmask = 0x7F;
+      break;
+    case USART_CTRL1_DBN_1:
+      sdp->rxmask = 0x3F;
+      break;
+    default:
+      sdp->rxmask = 0xFF;
+    }
   }
   else {
     sdp->rxmask = 0xFF;
@@ -161,7 +254,9 @@ static void set_error(SerialDriver *sdp, uint16_t sts) {
     status |= SD_FRAMING_ERROR;
   if (sts & USART_STS_NERR)
     status |= SD_NOISE_ERROR;
+  osalSysLockFromISR();
   chnAddFlagsI(sdp, status);
+  osalSysUnlockFromISR();
 }
 
 #if AT32_SERIAL_USE_USART1 || defined(__DOXYGEN__)
@@ -412,7 +507,9 @@ OSAL_IRQ_HANDLER(AT32_UART8_HANDLER) {
 void sd_lld_init(void) {
 
 #if AT32_SERIAL_USE_USART1
-  sdObjectInit(&SD1, NULL, notify1);
+  sdObjectInit(&SD1);
+  iqObjectInit(&SD1.iqueue, sd_in_buf1, sizeof sd_in_buf1, NULL, &SD1);
+  oqObjectInit(&SD1.oqueue, sd_out_buf1, sizeof sd_out_buf1, notify1, &SD1);
   SD1.usart = USART1;
   SD1.clock = AT32_PCLK2;
 #if !defined(AT32_USART1_SUPPRESS_ISR) && defined(AT32_USART1_NUMBER)
@@ -421,7 +518,9 @@ void sd_lld_init(void) {
 #endif
 
 #if AT32_SERIAL_USE_USART2
-  sdObjectInit(&SD2, NULL, notify2);
+  sdObjectInit(&SD2);
+  iqObjectInit(&SD2.iqueue, sd_in_buf2, sizeof sd_in_buf2, NULL, &SD2);
+  oqObjectInit(&SD2.oqueue, sd_out_buf2, sizeof sd_out_buf2, notify2, &SD2);
   SD2.usart = USART2;
   SD2.clock = AT32_PCLK1;
 #if !defined(AT32_USART2_SUPPRESS_ISR) && defined(AT32_USART2_NUMBER)
@@ -430,7 +529,9 @@ void sd_lld_init(void) {
 #endif
 
 #if AT32_SERIAL_USE_USART3
-  sdObjectInit(&SD3, NULL, notify3);
+  sdObjectInit(&SD3);
+  iqObjectInit(&SD3.iqueue, sd_in_buf3, sizeof sd_in_buf3, NULL, &SD3);
+  oqObjectInit(&SD3.oqueue, sd_out_buf3, sizeof sd_out_buf3, notify3, &SD3);
   SD3.usart = USART3;
   SD3.clock = AT32_PCLK1;
 #if !defined(AT32_USART3_SUPPRESS_ISR) && defined(AT32_USART3_NUMBER)
@@ -439,7 +540,9 @@ void sd_lld_init(void) {
 #endif
 
 #if AT32_SERIAL_USE_UART4
-  sdObjectInit(&SD4, NULL, notify4);
+  sdObjectInit(&SD4);
+  iqObjectInit(&SD4.iqueue, sd_in_buf4, sizeof sd_in_buf4, NULL, &SD4);
+  oqObjectInit(&SD4.oqueue, sd_out_buf4, sizeof sd_out_buf4, notify4, &SD4);
   SD4.usart = UART4;
   SD4.clock = AT32_PCLK1;
 #if !defined(AT32_UART4_SUPPRESS_ISR) && defined(AT32_UART4_NUMBER)
@@ -448,7 +551,9 @@ void sd_lld_init(void) {
 #endif
 
 #if AT32_SERIAL_USE_UART5
-  sdObjectInit(&SD5, NULL, notify5);
+  sdObjectInit(&SD5);
+  iqObjectInit(&SD5.iqueue, sd_in_buf5, sizeof sd_in_buf5, NULL, &SD5);
+  oqObjectInit(&SD5.oqueue, sd_out_buf5, sizeof sd_out_buf5, notify5, &SD5);
   SD5.usart = UART5;
   SD5.clock = AT32_PCLK1;
 #if !defined(AT32_UART5_SUPPRESS_ISR) && defined(AT32_UART5_NUMBER)
@@ -457,7 +562,9 @@ void sd_lld_init(void) {
 #endif
 
 #if AT32_SERIAL_USE_USART6
-  sdObjectInit(&SD6, NULL, notify3);
+  sdObjectInit(&SD6);
+  iqObjectInit(&SD6.iqueue, sd_in_buf6, sizeof sd_in_buf6, NULL, &SD6);
+  oqObjectInit(&SD6.oqueue, sd_out_buf6, sizeof sd_out_buf6, notify6, &SD6);
   SD6.usart = USART6;
   SD6.clock = AT32_PCLK2;
 #if !defined(AT32_USART6_SUPPRESS_ISR) && defined(AT32_USART6_NUMBER)
@@ -466,7 +573,9 @@ void sd_lld_init(void) {
 #endif
 
 #if AT32_SERIAL_USE_UART7
-  sdObjectInit(&SD7, NULL, notify4);
+  sdObjectInit(&SD7);
+  iqObjectInit(&SD7.iqueue, sd_in_buf7, sizeof sd_in_buf7, NULL, &SD7);
+  oqObjectInit(&SD7.oqueue, sd_out_buf7, sizeof sd_out_buf7, notify7, &SD7);
   SD7.usart = UART7;
   SD7.clock = AT32_PCLK1;
 #if !defined(AT32_UART7_SUPPRESS_ISR) && defined(AT32_UART7_NUMBER)
@@ -475,14 +584,15 @@ void sd_lld_init(void) {
 #endif
 
 #if AT32_SERIAL_USE_UART8
-  sdObjectInit(&SD8, NULL, notify5);
+  sdObjectInit(&SD8);
+  iqObjectInit(&SD8.iqueue, sd_in_buf8, sizeof sd_in_buf8, NULL, &SD8);
+  oqObjectInit(&SD8.oqueue, sd_out_buf8, sizeof sd_out_buf8, notify8, &SD8);
   SD8.usart = UART8;
   SD8.clock = AT32_PCLK1;
 #if !defined(AT32_UART8_SUPPRESS_ISR) && defined(AT32_UART8_NUMBER)
   nvicEnableVector(AT32_UART8_NUMBER, AT32_SERIAL_UART8_PRIORITY);
 #endif
 #endif
-
 }
 
 /**
@@ -557,7 +667,9 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
 void sd_lld_stop(SerialDriver *sdp) {
 
   if (sdp->state == SD_READY) {
+    /* UART is de-initialized then clocks are disabled.*/
     usart_deinit(sdp->usart);
+
 #if AT32_SERIAL_USE_USART1
     if (&SD1 == sdp) {
       crmDisableUSART1();
@@ -616,48 +728,64 @@ void sd_lld_stop(SerialDriver *sdp) {
  */
 void sd_lld_serve_interrupt(SerialDriver *sdp) {
   USART_TypeDef *u = sdp->usart;
-  uint16_t ctrl1;
-  uint16_t sts = u->STS;
+  uint32_t ctrl1;
+  uint32_t sts;
+
+  /* Reading and clearing status.*/
+  sts = u->STS;
+#if !defined (AT32F435_437)
+  u->IFC = sts;
+#endif
+  /* Error condition detection.*/
+  if (sts & (USART_STS_ROERR | USART_STS_NERR | USART_STS_FERR | USART_STS_PERR))
+    set_error(sdp, sts);
 
   /* Special case, LIN break detection.*/
   if (sts & USART_STS_BFF) {
     osalSysLockFromISR();
     chnAddFlagsI(sdp, SD_BREAK_DETECTED);
-    u->STS = ~USART_STS_BFF;
     osalSysUnlockFromISR();
   }
 
-  /* Data available.*/
-  osalSysLockFromISR();
-  while (sts & (USART_STS_RDBF | USART_STS_ROERR | USART_STS_NERR | USART_STS_FERR |
-                USART_STS_PERR)) {
-    uint8_t b;
+  /* Data available, note it is a while in order to handle two situations:
+     1) Another byte arrived after removing the previous one, this would cause
+        an extra interrupt to serve.
+     2) FIFO mode is enabled on devices that support it, we need to empty
+        the FIFO.*/
+  while (sts & USART_STS_RDBF) {
+    osalSysLockFromISR();
+    sdIncomingDataI(sdp, (uint8_t)u->DT & sdp->rxmask);
+    osalSysUnlockFromISR();
 
-    /* Error condition detection.*/
-    if (sts & (USART_STS_ROERR | USART_STS_NERR | USART_STS_FERR | USART_STS_PERR))
-      set_error(sdp, sts);
-    b = (uint8_t)u->DT & sdp->rxmask;
-    if (sts & USART_STS_RDBF)
-      sdIncomingDataI(sdp, b);
     sts = u->STS;
   }
-  osalSysUnlockFromISR();
 
   /* Caching CTRL1.*/
   ctrl1 = u->CTRL1;
 
-  /* Transmission buffer empty.*/
-  if ((ctrl1 & USART_CTRL1_TDBEIEN) && (sts & USART_STS_TDBE)) {
-    msg_t b;
-    osalSysLockFromISR();
-    b = oqGetI(&sdp->oqueue);
-    if (b < MSG_OK) {
-      chnAddFlagsI(sdp, CHN_OUTPUT_EMPTY);
-      ctrl1 &= ~USART_CTRL1_TDBEIEN;
-    }
-    else
+  /* Transmission buffer empty, note it is a while in order to handle two
+     situations:
+     1) The data registers has been emptied immediately after writing it, this
+        would cause an extra interrupt to serve.
+     2) FIFO mode is enabled on devices that support it, we need to fill
+        the FIFO.*/
+  if (ctrl1 & USART_CTRL1_TDBEIEN) {
+    while (sts & USART_STS_TDBE) {
+      msg_t b;
+
+      osalSysLockFromISR();
+      b = oqGetI(&sdp->oqueue);
+      if (b < MSG_OK) {
+        chnAddFlagsI(sdp, CHN_OUTPUT_EMPTY);
+        ctrl1 &= ~USART_CTRL1_TDBEIEN;
+        osalSysUnlockFromISR();
+        break;
+      }
       u->DT = b;
-    osalSysUnlockFromISR();
+      osalSysUnlockFromISR();
+
+      sts = u->STS;
+    }
   }
 
   /* Physical transmission end.*/

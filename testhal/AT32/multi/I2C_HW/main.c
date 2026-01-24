@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -31,9 +31,7 @@ static THD_FUNCTION(Thread1, arg) {
   (void)arg;
   chRegSetThreadName("blinker");
   while (true) {
-    palSetLine(PORTAB_BLINK_LED3);
-    chThdSleepMilliseconds(500);
-    palClearLine(PORTAB_BLINK_LED3);
+    palToggleLine(PORTAB_BLINK_LED3);
     chThdSleepMilliseconds(500);
   }
 }
@@ -66,7 +64,7 @@ int main(void) {
   /*
    * Starting the blinker thread.
    */
-  chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
+  chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO-1, Thread1, NULL);
 
   /*
    * Normal main() thread activity, in this demo it does nothing.
@@ -91,4 +89,6 @@ int main(void) {
     chThdSleepMilliseconds(500);
     palToggleLine(PORTAB_BLINK_LED2);
   }
+
+  return 0;
 }

@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -126,7 +126,6 @@
                                              AT32_TMR_IDEN_HALLIEN |        \
                                              AT32_TMR_IDEN_TIEN    |        \
                                              AT32_TMR_IDEN_BRKIE)
-
 /** @} */
 
 /**
@@ -285,6 +284,9 @@
 #define AT32_TMR_BRK_BRKV                   (1U << 13)
 #define AT32_TMR_BRK_AOEN                   (1U << 14)
 #define AT32_TMR_BRK_OEN                    (1U << 15)
+
+#define AT32_TMR_BRK_BKF_MASK               (15U << 16)
+#define AT32_TMR_BRK_BKF(n)                 ((n) << 16)
 /** @} */
 
 /**
@@ -307,9 +309,13 @@
 #define AT32_TMR3       ((at32_tmr_t *)TMR3_BASE)
 #define AT32_TMR4       ((at32_tmr_t *)TMR4_BASE)
 #define AT32_TMR5       ((at32_tmr_t *)TMR5_BASE)
+#define AT32_TMR6       ((at32_tmr_t *)TMR6_BASE)
+#define AT32_TMR7       ((at32_tmr_t *)TMR7_BASE)
 #define AT32_TMR9       ((at32_tmr_t *)TMR9_BASE)
 #define AT32_TMR10      ((at32_tmr_t *)TMR10_BASE)
 #define AT32_TMR11      ((at32_tmr_t *)TMR11_BASE)
+#define AT32_TMR13      ((at32_tmr_t *)TMR13_BASE)
+#define AT32_TMR14      ((at32_tmr_t *)TMR14_BASE)
 /** @} */
 
 /*===========================================================================*/
@@ -347,6 +353,7 @@ typedef struct {
   volatile uint32_t     BRK;
   volatile uint32_t     DMACTRL;
   volatile uint32_t     DMADT;
+  volatile uint32_t     RMP;
 } at32_tmr_t;
 
 /*===========================================================================*/

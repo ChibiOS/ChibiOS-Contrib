@@ -69,6 +69,15 @@
 #endif
 
 /**
+ * @brief   UART3 driver enable switch.
+ * @details If set to @p TRUE the support for UART3 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(SN32_SERIAL_USE_UART3) || defined(__DOXYGEN__)
+#define SN32_SERIAL_USE_UART3                  FALSE
+#endif
+
+/**
  * @brief   UART0 interrupt priority level setting.
  */
 #if !defined(SN32_SERIAL_UART0_PRIORITY) || defined(__DOXYGEN__)
@@ -89,6 +98,13 @@
 #define SN32_SERIAL_UART2_PRIORITY             3
 #endif
 
+/**
+ * @brief   UART3 interrupt priority level setting.
+ */
+#if !defined(SN32_SERIAL_UART3_PRIORITY) || defined(__DOXYGEN__)
+#define SN32_SERIAL_UART3_PRIORITY             3
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
@@ -105,8 +121,12 @@
 #error "UART2 not present in the selected device"
 #endif
 
+#if SN32_SERIAL_USE_UART3 && !SN32_HAS_UART3
+#error "UART3 not present in the selected device"
+#endif
+
 #if !SN32_SERIAL_USE_UART0 && !SN32_SERIAL_USE_UART1 &&                     \
-    !SN32_SERIAL_USE_UART2
+    !SN32_SERIAL_USE_UART2 && !SN32_SERIAL_USE_UART3
 #error "SERIAL driver activated but no UART/UART peripheral assigned"
 #endif
 
@@ -123,6 +143,11 @@
 #if SN32_SERIAL_USE_UART2 &&                                                \
     !OSAL_IRQ_IS_VALID_PRIORITY(SN32_SERIAL_UART2_PRIORITY)
 #error "Invalid IRQ priority assigned to UART2"
+#endif
+
+#if SN32_SERIAL_USE_UART3 &&                                                \
+    !OSAL_IRQ_IS_VALID_PRIORITY(SN32_SERIAL_UART3_PRIORITY)
+#error "Invalid IRQ priority assigned to UART3"
 #endif
 
 /*===========================================================================*/
@@ -142,6 +167,11 @@
 #if SN32_HAS_UART2
 #define SN32_UART2_BASE  SN_UART2_BASE
 #define SN32_UART2       ((sn32_uart_t *)SN_UART2_BASE)
+#endif
+
+#if SN32_HAS_UART3
+#define SN32_UART3_BASE  SN_UART3_BASE
+#define SN32_UART3       ((sn32_uart_t *)SN_UART3_BASE)
 #endif
 
 /**
@@ -226,6 +256,9 @@ extern SerialDriver SD1;
 #endif
 #if SN32_SERIAL_USE_UART2 && !defined(__DOXYGEN__)
 extern SerialDriver SD2;
+#endif
+#if SN32_SERIAL_USE_UART3 && !defined(__DOXYGEN__)
+extern SerialDriver SD3;
 #endif
 
 #ifdef __cplusplus

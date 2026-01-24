@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
-    ChibiOS - Copyright (C) 2024 Maxjta
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2024..2025 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -72,6 +72,15 @@
 #endif
 
 /**
+ * @brief   SPI3 driver enable switch.
+ * @details If set to @p TRUE the support for SPI3 is included.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(AT32_SPI_USE_SPI3) || defined(__DOXYGEN__)
+#define AT32_SPI_USE_SPI3                   FALSE
+#endif
+
+/**
  * @brief   Filler pattern used when there is nothing to transmit.
  */
 #if !defined(AT32_SPI_FILLER_PATTERN) || defined(__DOXYGEN__)
@@ -90,6 +99,13 @@
  */
 #if !defined(AT32_SPI_SPI2_IRQ_PRIORITY) || defined(__DOXYGEN__)
 #define AT32_SPI_SPI2_IRQ_PRIORITY          10
+#endif
+
+/**
+ * @brief   SPI3 interrupt priority level setting.
+ */
+#if !defined(AT32_SPI_SPI3_IRQ_PRIORITY) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI3_IRQ_PRIORITY          10
 #endif
 
 /**
@@ -113,17 +129,20 @@
 #endif
 
 /**
+ * @brief   SPI3 DMA priority (0..3|lowest..highest).
+ * @note    The priority level is used for both the TX and RX DMA streams but
+ *          because of the streams ordering the RX stream has always priority
+ *          over the TX stream.
+ */
+#if !defined(AT32_SPI_SPI3_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define AT32_SPI_SPI3_DMA_PRIORITY          1
+#endif
+
+/**
  * @brief   SPI DMA error hook.
  */
 #if !defined(AT32_SPI_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
 #define AT32_SPI_DMA_ERROR_HOOK(spip)      osalSysHalt("DMA failure")
-#endif
-
-/**
- * @brief   SPI DMA max transfer hook.
- */
-#if !defined(AT32_DMA_MAX_TRANSFER) || defined(__DOXYGEN__)
-#define AT32_DMA_MAX_TRANSFER              65536
 #endif
 /** @} */
 
@@ -139,7 +158,11 @@
 #error "SPI2 not present in the selected device"
 #endif
 
-#if !AT32_SPI_USE_SPI1 && !AT32_SPI_USE_SPI2
+#if AT32_SPI_USE_SPI3 && !AT32_HAS_SPI3
+#error "SPI3 not present in the selected device"
+#endif
+
+#if !AT32_SPI_USE_SPI1 && !AT32_SPI_USE_SPI2 && !AT32_SPI_USE_SPI3
 #error "SPI driver activated but no SPI peripheral assigned"
 #endif
 
@@ -152,6 +175,33 @@
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SPI_SPI2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to SPI2"
 #endif
+
+#if AT32_SPI_USE_SPI3 &&                                                    \
+    !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SPI_SPI3_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to SPI3"
+#endif
+
+/* The following checks are only required when there is a DMA able to
+   reassign streams to different channels.*/
+#if AT32_ADVANCED_DMA
+
+/* Check on the presence of the DMA streams settings in mcuconf.h.*/
+#if AT32_SPI_USE_SPI1 && (!defined(AT32_SPI_SPI1_RX_DMA_STREAM) ||          \
+                          !defined(AT32_SPI_SPI1_TX_DMA_STREAM))
+#error "SPI1 DMA streams not defined"
+#endif
+
+#if AT32_SPI_USE_SPI2 && (!defined(AT32_SPI_SPI2_RX_DMA_STREAM) ||          \
+                          !defined(AT32_SPI_SPI2_TX_DMA_STREAM))
+#error "SPI2 DMA streams not defined"
+#endif
+
+#if AT32_SPI_USE_SPI3 && (!defined(AT32_SPI_SPI3_RX_DMA_STREAM) ||          \
+                          !defined(AT32_SPI_SPI3_TX_DMA_STREAM))
+#error "SPI3 DMA streams not defined"
+#endif
+
+#endif /* AT32_ADVANCED_DMA */
 
 #if !defined(AT32_DMA_REQUIRED)
 #define AT32_DMA_REQUIRED
@@ -204,6 +254,10 @@ extern SPIDriver SPID1;
 
 #if AT32_SPI_USE_SPI2 && !defined(__DOXYGEN__)
 extern SPIDriver SPID2;
+#endif
+
+#if AT32_SPI_USE_SPI3 && !defined(__DOXYGEN__)
+extern SPIDriver SPID3;
 #endif
 
 #ifdef __cplusplus

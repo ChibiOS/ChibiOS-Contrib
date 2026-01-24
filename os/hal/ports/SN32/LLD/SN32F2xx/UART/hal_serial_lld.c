@@ -51,6 +51,11 @@ SerialDriver SD1;
 SerialDriver SD2;
 #endif
 
+/** @brief UART3 serial driver identifier.*/
+#if SN32_SERIAL_USE_UART3 || defined(__DOXYGEN__)
+SerialDriver SD3;
+#endif
+
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
@@ -362,6 +367,15 @@ static void notify2(io_queue_t *qp) {
   load(&SD2);
 }
 #endif
+
+#if SN32_SERIAL_USE_UART3 || defined(__DOXYGEN__)
+static void notify3(io_queue_t *qp) {
+
+  (void)qp;
+  load(&SD3);
+}
+#endif
+
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
@@ -423,6 +437,25 @@ OSAL_IRQ_HANDLER(SN32_UART2_HANDLER) {
 }
 #endif
 
+#if SN32_SERIAL_USE_UART3 || defined(__DOXYGEN__)
+#if !defined(SN32_UART3_HANDLER)
+#error "SN32_UART3_HANDLER not defined"
+#endif
+/**
+ * @brief   UART3 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(SN32_UART3_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  serve_interrupt(&SD3);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif
+
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -447,6 +480,11 @@ void sd_lld_init(void) {
 #if SN32_SERIAL_USE_UART2
   sdObjectInit(&SD2, NULL, notify2);
   SD2.uart = SN32_UART2;
+#endif
+
+#if SN32_SERIAL_USE_UART3
+  sdObjectInit(&SD3, NULL, notify3);
+  SD3.uart = SN32_UART3;
 #endif
 }
 
@@ -490,6 +528,14 @@ void sd_lld_start(SerialDriver *sdp, const SerialConfig *config) {
       nvicEnableVector(SN32_UART2_NUMBER, SN32_SERIAL_UART2_PRIORITY);
     }
 #endif
+#if SN32_SERIAL_USE_UART3
+    if (&SD3 == sdp) {
+      /* UART3 clock enable.*/
+      sys1EnableUART3();
+      uart_init(sdp, config);
+      nvicEnableVector(SN32_UART3_NUMBER, SN32_SERIAL_UART3_PRIORITY);
+    }
+#endif
   }
 }
 
@@ -527,6 +573,14 @@ void sd_lld_stop(SerialDriver *sdp) {
       /* UART2 DeInit.*/
       sys1DisableUART2();
       nvicDisableVector(SN32_UART2_NUMBER);
+      return;
+    }
+#endif
+#if SN32_SERIAL_USE_UART3
+    if (&SD3 == sdp) {
+      /* UART3 DeInit.*/
+      sys1DisableUART3();
+      nvicDisableVector(SN32_UART3_NUMBER);
       return;
     }
 #endif

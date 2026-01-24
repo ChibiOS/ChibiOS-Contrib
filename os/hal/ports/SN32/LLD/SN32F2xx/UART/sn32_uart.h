@@ -18,165 +18,153 @@
 #    define SN32_UART_H
 
 typedef struct {
-    union {
-        union {
-            __IM uint32_t RB;
-
-            struct {
-                __IM uint32_t RB : 8;
-            } RB_b;
-        };
-
-        union {
-            __OM uint32_t TH;
-
-            struct {
-                __OM uint32_t TH : 8;
-            } TH_b;
-        };
-
-        union {
-            __IOM uint32_t DLL;
-
-            struct {
-                __IOM uint32_t DLL : 8;
-            } DLL_b;
-        };
-    };
-
-    union {
-        union {
-            __IOM uint32_t DLM;
-
-            struct {
-                __IOM uint32_t DLM : 8;
-            } DLM_b;
-        };
-
-        union {
-            __IOM uint32_t IE;
-
-            struct {
-                __IOM uint32_t RDAIE : 1;
-                __IOM uint32_t THREIE : 1;
-                __IOM uint32_t RLSIE : 1;
-                __IM           uint32_t : 1;
-                __IOM uint32_t TEMTIE : 1;
-                __IM           uint32_t : 3;
-                __IOM uint32_t ABEOIE : 1;
-                __IOM uint32_t ABTOIE : 1;
-            } IE_b;
-        };
-    };
-
-    union {
-        union {
-            __IM uint32_t II;
-
-            struct {
-                __IM uint32_t INTSTATUS : 1;
-                __IM uint32_t INTID : 3;
-                __IM          uint32_t : 2;
-                __IM uint32_t FIFOEN : 2;
-                __IM uint32_t ABEOIF : 1;
-                __IM uint32_t ABTOIF : 1;
-            } II_b;
-        };
-
-        union {
-            __OM uint32_t FIFOCTRL;
-
-            struct {
-                __OM uint32_t FIFOEN : 1;
-                __IM          uint32_t : 5;
-                __OM uint32_t RXTL : 2;
-            } FIFOCTRL_b;
-        };
-    };
-
-    union {
-        __IOM uint32_t LC;
-
-        struct {
-            __IOM uint32_t WLS : 2;
-            __IOM uint32_t SBS : 1;
-            __IOM uint32_t PE : 1;
-            __IOM uint32_t PS : 2;
-            __IOM uint32_t BC : 1;
-            __IOM uint32_t DLAB : 1;
-        } LC_b;
-    };
-    __IM uint32_t RESERVED;
-
-    union {
-        __IM uint32_t LS;
-
-        struct {
-            __IM uint32_t RDR : 1;
-            __IM uint32_t OE : 1;
-            __IM uint32_t PE : 1;
-            __IM uint32_t FE : 1;
-            __IM uint32_t BI : 1;
-            __IM uint32_t THRE : 1;
-            __IM uint32_t TEMT : 1;
-            __IM uint32_t RXFE : 1;
-        } LS_b;
-    };
-    __IM uint32_t RESERVED1;
-
-    union {
-        __IOM uint32_t SP;
-
-        struct {
-            __IOM uint32_t PAD : 8;
-        } SP_b;
-    };
-
-    union {
-        __IOM uint32_t ABCTRL;
-
-        struct {
-            __IOM uint32_t START : 1;
-            __IOM uint32_t MODE : 1;
-            __IOM uint32_t AUTORESTART : 1;
-            __IM           uint32_t : 5;
-            __OM uint32_t  ABEOIFC : 1;
-            __OM uint32_t  ABTOIFC : 1;
-        } ABCTRL_b;
-    };
-    __IM uint32_t RESERVED2;
-
-    union {
-        __IOM uint32_t FD;
-
-        struct {
-            __IOM uint32_t DIVADDVAL : 4;
-            __IOM uint32_t MULVAL : 4;
-            __IOM uint32_t OVER8 : 1;
-        } FD_b;
-    };
-    __IM uint32_t RESERVED3;
-
-    union {
-        __IOM uint32_t CTRL;
-
-        struct {
-            __IOM uint32_t UARTEN : 1;
-            __IOM uint32_t MODE : 3;
-            __IM           uint32_t : 2;
-            __IOM uint32_t RXEN : 1;
-            __IOM uint32_t TXEN : 1;
-        } CTRL_b;
-    };
-
-    union {
-        __IOM uint32_t HDEN;
-
-        struct {
-            __IOM uint32_t HDEN : 1;
-        } HDEN_b;
-    };
+  union {
+      union {
+          volatile const uint32_t RB;                  /*!< (@ 0x00000000) Offset:0x00 UARTn Receiver Buffer Register */
+          struct {
+              volatile const uint32_t RB : 8;          /*!< [7..0] The received byte in UART RX FIFO */
+              uint32_t                  : 24;
+          } RB_b;
+      };
+      union {
+          volatile uint32_t TH;                        /*!< (@ 0x00000000) Offset:0x00 UARTn Transmit Holding Register */
+          struct {
+              volatile uint32_t TH : 8;                /*!< [7..0] The byte to be transmitted in UART TX FIFO when transmitter is available */
+              uint32_t            : 24;
+          } TH_b;
+      };
+      union {
+          volatile uint32_t DLL;                       /*!< (@ 0x00000000) Offset:0x00 UARTn Divisor Latch LSB Register */
+          struct {
+              volatile uint32_t DLL : 8;               /*!< [7..0] DLL and DLM register determines the baud rate of UARTn */
+              uint32_t             : 24;
+          } DLL_b;
+      };
+  };
+  union {
+      union {
+          volatile uint32_t DLM;                       /*!< (@ 0x00000004) Offset:0x04 UARTn Divisor Latch MSB Register */
+          struct {
+              volatile uint32_t DLM : 8;               /*!< [7..0] DLL and DLM register determines the baud rate of USARTn */
+              uint32_t             : 24;
+          } DLM_b;
+      };
+      union {
+          volatile uint32_t IE;                        /*!< (@ 0x00000004) Offset:0x04 UARTn Interrupt Enable Register */
+          struct {
+              volatile uint32_t RDAIE   : 1;           /*!< [0..0] RDA interrupt enable */
+              volatile uint32_t THREIE  : 1;           /*!< [1..1] THRE interrupt enable */
+              volatile uint32_t RLSIE   : 1;           /*!< [2..2] RLS interrupt enable */
+              uint32_t                  : 1;
+              volatile uint32_t TEMTIE  : 1;           /*!< [4..4] TEMT interrupt enable */
+              uint32_t                  : 3;
+              volatile uint32_t ABEOIE  : 1;           /*!< [8..8] ABE0 interrupt enable */
+              volatile uint32_t ABTOIE  : 1;           /*!< [9..9] ABT0 interrupt enable */
+              uint32_t                  : 22;
+          } IE_b;
+      };
+  };
+  union {
+      union {
+          volatile const uint32_t II;                  /*!< (@ 0x00000008) Offset:0x08 UARTn Interrupt Identification Register */
+          struct {
+              volatile const uint32_t INTSTATUS : 1;   /*!< [0..0] Interrupt status */
+              volatile const uint32_t INTID     : 3;   /*!< [3..1] Interrupt ID of RX FIFO */
+              uint32_t                          : 2;
+              volatile const uint32_t FIFOEN    : 2;   /*!< [7..6] Equal to FIFOEN bits in USARTn_FIFOCTRL register */
+              volatile const uint32_t ABEOIF    : 1;   /*!< [8..8] ABEO interrupt flag */
+              volatile const uint32_t ABTOIF    : 1;   /*!< [9..9] ABTO interrupt flag */
+              uint32_t                          : 22;
+          } II_b;
+      };
+      union {
+          volatile uint32_t FIFOCTRL;                 /*!< (@ 0x00000008) Offset:0x08 UARTn FIFO Control Register */
+          struct {
+              volatile uint32_t FIFOEN : 1;           /*!< [0..0] FIFO enable */
+              uint32_t                : 5;
+              volatile uint32_t RXTL  : 2;            /*!< [7..6] RX trigger level */
+              uint32_t                : 24;
+          } FIFOCTRL_b;
+      };
+  };
+  union {
+      volatile uint32_t LC;                            /*!< (@ 0x0000000C) Offset:0x0C UARTn Line Control Register */
+      struct {
+          volatile uint32_t WLS  : 2;                  /*!< [1..0] Word length selection */
+          volatile uint32_t SBS  : 1;                  /*!< [2..2] Stop bit selection */
+          volatile uint32_t PE   : 1;                  /*!< [3..3] Parity enable */
+          volatile uint32_t PS   : 2;                  /*!< [5..4] Parity selection */
+          volatile uint32_t BC   : 1;                  /*!< [6..6] Break control */
+          volatile uint32_t DLAB : 1;                  /*!< [7..7] Divisor Latch access */
+          uint32_t               : 24;
+      } LC_b;
+  };
+  volatile const uint32_t RESERVED;
+  union {
+      volatile const uint32_t LS;                      /*!< (@ 0x00000014) Offset:0x14 UARTn Line Status Register */
+      struct {
+          volatile const uint32_t RDR  : 1;            /*!< [0..0] Receiver data ready flag */
+          volatile const uint32_t OE   : 1;            /*!< [1..1] Overrun error flag */
+          volatile const uint32_t PE   : 1;            /*!< [2..2] Parity error flag */
+          volatile const uint32_t FE   : 1;            /*!< [3..3] Framing error flag */
+          volatile const uint32_t BI   : 1;            /*!< [4..4] Break interrupt flag */
+          volatile const uint32_t THRE : 1;            /*!< [5..5] THR empty flag */
+          volatile const uint32_t TEMT : 1;            /*!< [6..6] Transmitter empty flag */
+          volatile const uint32_t RXFE : 1;            /*!< [7..7] Receiver FIFO error flag */
+          uint32_t                    : 24;
+      } LS_b;
+  };
+  volatile const uint32_t RESERVED1;
+  union {
+      volatile uint32_t SP;                            /*!< (@ 0x0000001C) Offset:0x1C UARTn Scratch Pad Register */
+      struct {
+          volatile uint32_t PAD : 8;                   /*!< [7..0] Pad informaton */
+          uint32_t              : 24;
+      } SP_b;
+  };
+  union {
+      volatile uint32_t ABCTRL;                        /*!< (@ 0x00000020) Offset:0x20 UARTn Auto-baud Control Register */
+      struct {
+          volatile uint32_t START        : 1;          /*!< [0..0] Auto-baud run bit */
+          volatile uint32_t MODE         : 1;          /*!< [1..1] Auto-baud mode selection */
+          volatile uint32_t AUTORESTART  : 1;          /*!< [2..2] Restart mode selection */
+          uint32_t                       : 5;
+          volatile uint32_t ABEOIFC      : 1;          /*!< [8..8] Clear ABEOIF flag */
+          volatile uint32_t ABTOIFC      : 1;          /*!< [9..9] Clear ABTOIF flag */
+          uint32_t                       : 22;
+      } ABCTRL_b;
+  };
+  volatile const uint32_t RESERVED2;
+  union {
+      volatile uint32_t FD;                            /*!< (@ 0x00000028) Offset:0x28 UARTn Fractional Divider Register */
+      struct {
+          volatile uint32_t DIVADDVAL : 4;             /*!< [3..0] Baud rate generation prescaler divisor value */
+          volatile uint32_t MULVAL    : 4;             /*!< [7..4] Baud rate generation prescaler multiplier value */
+          volatile uint32_t OVER8     : 1;             /*!< [8..8] Oversampling value */
+          uint32_t                    : 23;
+      } FD_b;
+  };
+  volatile const uint32_t RESERVED3;
+  union {
+      volatile uint32_t CTRL;                          /*!< (@ 0x00000030) Offset:0x30 UARTn Control Register */
+      struct {
+          volatile uint32_t UARTEN : 1;                /*!< [0..0] USART enable */
+          volatile uint32_t MODE   : 3;                /*!< [3..1] UART mode */
+          uint32_t                 : 2;
+          volatile uint32_t RXEN   : 1;                /*!< [6..6] RX enable */
+          volatile uint32_t TXEN   : 1;                /*!< [7..7] TX enable */
+          uint32_t                 : 24;
+      } CTRL_b;
+  };
+  union {
+      volatile uint32_t HDEN;                          /*!< (@ 0x00000034) Offset:0x34 UARTn Control Register */
+      struct {
+          volatile uint32_t HDEN : 1;                  /*!< [0..0] Half-duplex mode enable */
+          uint32_t               : 31;
+      } HDEN_b;
+  };
 } sn32_uart_t;
+
 
 /** @defgroup UART_Exported_Constants
   * @{

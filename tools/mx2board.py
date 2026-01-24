@@ -214,7 +214,7 @@ def read_project(gpio, filename):
         tmp = mx_file.readlines()
     pads = {}
     mcu = 'Unknown'
-    
+
     for l in tmp:
         if l.startswith('Mcu.Name'):
             mcu = l.split('=')[-1].strip()
@@ -242,7 +242,8 @@ def read_project(gpio, filename):
 
                 if prop_value.startswith('ADC') \
                         or 'DAC' in prop_value \
-                        or 'OSC' in prop_value:
+                        or 'OSC' in prop_value \
+                        or 'UCPD' in prop_value:
                     pads[pad_port][pad_num]["MODER"] = PIN_MODE_ANALOG
                     pads[pad_port][pad_num]["SIGNAL"] = prop_value
                 elif 'GPIO_Output' == prop_value:

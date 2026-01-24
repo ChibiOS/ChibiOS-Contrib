@@ -1,5 +1,8 @@
 /*
-    COPYRIGHT(C) 2023, Artery
+    Copyright (C) 2023..2025 Artery Technology
+    Copyright (C) 2023..2025 HorrorTroll (https://github.com/HorrorTroll)
+    Copyright (C) 2023..2025 Zhaqian (https://github.com/zhaqian12)
+    Copyright (C) 2024..2025 Maxjta (https://github.com/Maxjta)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,7 +18,7 @@
 */
 
 /*
- * AT32F402_405xC memory setup.
+ * AT32F405xC memory setup.
  */
 MEMORY
 {
@@ -27,7 +30,7 @@ MEMORY
     flash5 (rx) : org = 0x00000000, len = 0
     flash6 (rx) : org = 0x00000000, len = 0
     flash7 (rx) : org = 0x00000000, len = 0
-    ram0   (wx) : org = 0x20000000, len = 96k
+    ram0   (wx) : org = 0x20000000, len = 102k
     ram1   (wx) : org = 0x00000000, len = 0
     ram2   (wx) : org = 0x00000000, len = 0
     ram3   (wx) : org = 0x00000000, len = 0

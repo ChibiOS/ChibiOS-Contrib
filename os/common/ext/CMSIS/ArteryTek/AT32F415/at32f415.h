@@ -90,17 +90,11 @@
   * @{
   */
 
-#if defined(AT32F415KB)
+#if defined(AT32F415KB) || defined(AT32F415KC)
    #include "at32f415kx.h"
-#elif defined(AT32F415KC)
-   #include "at32f415kx.h"
-#elif defined(AT32F415CB)
+#elif defined(AT32F415CB) || defined(AT32F415CC)
    #include "at32f415cx.h"
-#elif defined(AT32F415CC)
-   #include "at32f415cx.h"
-#elif defined(AT32F415RB)
-   #include "at32f415rx.h"
-#elif defined(AT32F415RC)
+#elif defined(AT32F415RB) || defined(AT32F415RC)
    #include "at32f415rx.h"
 #else
    #error "Please select first the target AT32F415 device used in your application (in at32f415.h file)"

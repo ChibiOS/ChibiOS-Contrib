@@ -30,6 +30,8 @@
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
+#define SN32_TIM_CT16B0 0
+#define SN32_TIM_CT16B1 1
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -53,7 +55,7 @@
  * @note    Timers CT16B0 and CT16B1 are supported.
  */
 #if !defined(SN32_ST_USE_TIMER) || defined(__DOXYGEN__)
-#define SN32_ST_USE_TIMER                  CT16B0
+#define SN32_ST_USE_TIMER                  SN32_TIM_CT16B0
 #endif
 /** @} */
 /*===========================================================================*/
@@ -68,7 +70,7 @@
 #endif
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
 
-#if SN32_ST_USE_TIMER == CT16B0
+#if SN32_ST_USE_TIMER == SN32_TIM_CT16B0
 
 #if defined(SN32_CT16B0_IS_USED)
 #error "ST requires CT16B0 but the timer is already used"
@@ -79,7 +81,7 @@
 #define SN32_ST_TIM                         SN32_CT16B0
 #define ST_LLD_NUM_ALARMS                   1
 
-#elif SN32_ST_USE_TIMER == CT16B1
+#elif SN32_ST_USE_TIMER == SN32_TIM_CT16B1
 
 #if defined(SN32_CT16B1_IS_USED)
 #error "ST requires CT16B1 but the timer is already used"
@@ -131,46 +133,7 @@ extern "C" {
  * @notapi
  */
 static inline systime_t st_lld_get_counter(void) {
-  return (systime_t)(SN32_ST_TIM->TC & 0x0000FFFF);
-}
-
-/**
- * @brief   Starts the alarm.
- * @note    Makes sure that no spurious alarms are triggered after
- *          this call.
- *
- * @param[in] abstime   the time to be set for the first alarm
- *
- * @notapi
- */
-static inline void st_lld_start_alarm(systime_t abstime) {
-
-  /* The requested delay in OSAL_ST_FREQUENCY ticks, decreased by 1 to bring it
-   * into the 0...0xFFFF range instead of 1...0x10000. */
-  uint32_t delay = ((uint32_t)abstime - SN32_ST_TIM->TC - 1U) & 0xFFFF;
-
-  /* The conversion factor between the SN32_ST_TIM and SysTick clock
-   * frequencies (SN32_HCLK / OSAL_ST_FREQUENCY).
-   * TODO: Actually use (SN32_HCLK / OSAL_ST_FREQUENCY) instead of reading the
-   * value from a hardware register (this requires making SN32_HCLK a compile
-   * time constant). */
-  uint32_t prescale = (SN32_ST_TIM->PRE & 0xFF) + 1;
-
-  /* The requested delay in the SysTick clock ticks.  The maximum possible
-   * value with prescale=256 is 0xFFFFFF, which just fits into the 24-bit
-   * SysTick timer registers. */
-  uint32_t systick_delay = delay * prescale + (prescale - 1);
-
-  /* Start SysTick to generate an interrupt after systick_delay. */
-  SysTick->LOAD = systick_delay;
-  SysTick->VAL = 0;
-  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
-                  SysTick_CTRL_ENABLE_Msk |
-                  SysTick_CTRL_TICKINT_Msk;
-
-  /* Save the alarm time in a timer register.  This is needed only to make
-   * st_lld_get_alarm() work. */
-  SN32_ST_TIM->MR0 = (uint32_t)abstime;
+  return (systime_t)(SN32_ST_TIM->config.TC & UINT16_MAX);
 }
 
 /**
@@ -184,6 +147,66 @@ static inline void st_lld_stop_alarm(void) {
 }
 
 /**
+ * @brief   Starts the alarm.
+ * @note    Makes sure that no spurious alarms are triggered after
+ *          this call.
+ *
+ * @param[in] abstime   the time to be set for the first alarm
+ *
+ * @notapi
+ */
+static inline void st_lld_start_alarm(systime_t abstime) {
+
+  uint32_t now = SN32_ST_TIM->config.TC;
+  uint32_t delay = ((uint32_t)abstime - now) & SN32_CT16_TC_LIMIT;
+  uint32_t prescale = (SN32_ST_TIM->config.PRE & UINT8_MAX) + 1U;
+
+  /* Minimum safe delay */
+  uint32_t min_delay_ticks = 4U;
+
+  /* Handle wrap-around */
+  if (delay > (SN32_CT16_TC_LIMIT >> 1)) {
+    delay = min_delay_ticks;
+  }
+
+  if (delay < min_delay_ticks) {
+    delay = min_delay_ticks;
+  }
+
+  /* The requested delay in the SysTick clock ticks.  The maximum possible
+   * value with prescale=256 is 0xFFFFFF, which just fits into the 24-bit
+   * SysTick timer registers. */
+  uint32_t systick_delay = delay * prescale;
+
+  if (systick_delay > 0xFFFFFFU) {
+    systick_delay = 0xFFFFFFU;
+  }
+
+  if (systick_delay < prescale) {
+    systick_delay = prescale;
+  }
+
+  st_lld_stop_alarm();
+
+  /* Start SysTick to generate an interrupt after systick_delay. */
+  SysTick->LOAD = systick_delay;
+  SysTick->VAL = 0U;
+
+  SCB->ICSR = SCB_ICSR_PENDSTCLR_Msk;
+  SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
+                  SysTick_CTRL_ENABLE_Msk |
+                  SysTick_CTRL_TICKINT_Msk;
+
+  /* Save the alarm time in a timer register.  This is needed only to make
+   * st_lld_get_alarm() work. */
+#if ((defined(SN32F280) || defined(SN32F290)) && SN32_ST_USE_TIMER == SN32_TIM_CT16B0)
+  SN32_ST_TIM->MR[0] = CT16_PWM_UNLOCK(((uint32_t)abstime & SN32_CT16_TC_LIMIT));
+#else
+  SN32_ST_TIM->MR[0] = ((uint32_t)abstime & SN32_CT16_TC_LIMIT);
+#endif
+}
+
+/**
  * @brief   Sets the alarm time.
  *
  * @param[in] abstime   the time to be set for the next alarm
@@ -191,7 +214,6 @@ static inline void st_lld_stop_alarm(void) {
  * @notapi
  */
 static inline void st_lld_set_alarm(systime_t abstime) {
-  st_lld_stop_alarm();
   st_lld_start_alarm(abstime);
 }
 
@@ -203,7 +225,7 @@ static inline void st_lld_set_alarm(systime_t abstime) {
  * @notapi
  */
 static inline systime_t st_lld_get_alarm(void) {
-  return (systime_t)(SN32_ST_TIM->MR0 & 0x0000FFFF);
+  return (systime_t)(SN32_ST_TIM->MR[0] & SN32_CT16_TC_LIMIT);
 }
 
 /**

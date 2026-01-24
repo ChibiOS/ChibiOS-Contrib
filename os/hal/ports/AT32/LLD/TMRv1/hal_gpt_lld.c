@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -77,6 +77,22 @@ GPTDriver GPTD5;
 #endif
 
 /**
+ * @brief   GPTD6 driver identifier.
+ * @note    The driver GPTD6 allocates the timer TMR6 when enabled.
+ */
+#if AT32_GPT_USE_TMR6 || defined(__DOXYGEN__)
+GPTDriver GPTD6;
+#endif
+
+/**
+ * @brief   GPTD7 driver identifier.
+ * @note    The driver GPTD7 allocates the timer TMR7 when enabled.
+ */
+#if AT32_GPT_USE_TMR7 || defined(__DOXYGEN__)
+GPTDriver GPTD7;
+#endif
+
+/**
  * @brief   GPTD9 driver identifier.
  * @note    The driver GPTD9 allocates the timer TMR9 when enabled.
  */
@@ -98,6 +114,22 @@ GPTDriver GPTD10;
  */
 #if AT32_GPT_USE_TMR11 || defined(__DOXYGEN__)
 GPTDriver GPTD11;
+#endif
+
+/**
+ * @brief   GPTD13 driver identifier.
+ * @note    The driver GPTD13 allocates the timer TMR13 when enabled.
+ */
+#if AT32_GPT_USE_TMR13 || defined(__DOXYGEN__)
+GPTDriver GPTD13;
+#endif
+
+/**
+ * @brief   GPTD14 driver identifier.
+ * @note    The driver GPTD14 allocates the timer TMR14 when enabled.
+ */
+#if AT32_GPT_USE_TMR14 || defined(__DOXYGEN__)
+GPTDriver GPTD14;
 #endif
 
 /*===========================================================================*/
@@ -217,6 +249,48 @@ OSAL_IRQ_HANDLER(AT32_TMR5_HANDLER) {
 #endif /* !defined(AT32_TMR5_SUPPRESS_ISR) */
 #endif /* AT32_GPT_USE_TMR5 */
 
+#if AT32_GPT_USE_TMR6 || defined(__DOXYGEN__)
+#if !defined(AT32_TMR6_SUPPRESS_ISR)
+#if !defined(AT32_TMR6_HANDLER)
+#error "AT32_TMR6_HANDLER not defined"
+#endif
+/**
+ * @brief   TMR6 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_TMR6_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  gpt_lld_serve_interrupt(&GPTD6);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* !defined(AT32_TMR6_SUPPRESS_ISR) */
+#endif /* AT32_GPT_USE_TMR6 */
+
+#if AT32_GPT_USE_TMR7 || defined(__DOXYGEN__)
+#if !defined(AT32_TMR7_SUPPRESS_ISR)
+#if !defined(AT32_TMR7_HANDLER)
+#error "AT32_TMR7_HANDLER not defined"
+#endif
+/**
+ * @brief   TMR7 interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AT32_TMR7_HANDLER) {
+
+  OSAL_IRQ_PROLOGUE();
+
+  gpt_lld_serve_interrupt(&GPTD7);
+
+  OSAL_IRQ_EPILOGUE();
+}
+#endif /* !defined(AT32_TMR7_SUPPRESS_ISR) */
+#endif /* AT32_GPT_USE_TMR7 */
+
 #if AT32_GPT_USE_TMR9 || defined(__DOXYGEN__)
 #if !defined(AT32_TMR9_SUPPRESS_ISR)
 #error "TMR9 ISR not defined by platform"
@@ -234,6 +308,18 @@ OSAL_IRQ_HANDLER(AT32_TMR5_HANDLER) {
 #error "TMR11 ISR not defined by platform"
 #endif /* !defined(AT32_TMR11_SUPPRESS_ISR) */
 #endif /* AT32_GPT_USE_TMR11 */
+
+#if AT32_GPT_USE_TMR13 || defined(__DOXYGEN__)
+#if !defined(AT32_TMR13_SUPPRESS_ISR)
+#error "TMR13 ISR not defined by platform"
+#endif /* !defined(AT32_TMR13_SUPPRESS_ISR) */
+#endif /* AT32_GPT_USE_TMR13 */
+
+#if AT32_GPT_USE_TMR14 || defined(__DOXYGEN__)
+#if !defined(AT32_TMR14_SUPPRESS_ISR)
+#error "TMR14 ISR not defined by platform"
+#endif /* !defined(AT32_TMR14_SUPPRESS_ISR) */
+#endif /* AT32_GPT_USE_TMR14 */
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -281,6 +367,20 @@ void gpt_lld_init(void) {
   gptObjectInit(&GPTD5);
 #endif
 
+#if AT32_GPT_USE_TMR6
+  /* Driver initialization.*/
+  GPTD6.tmr = AT32_TMR6;
+  GPTD6.has_plus_mode = (bool)AT32_TMR6_IS_32BITS;
+  gptObjectInit(&GPTD6);
+#endif
+
+#if AT32_GPT_USE_TMR7
+  /* Driver initialization.*/
+  GPTD7.tmr = AT32_TMR7;
+  GPTD7.has_plus_mode = (bool)AT32_TMR7_IS_32BITS;
+  gptObjectInit(&GPTD7);
+#endif
+
 #if AT32_GPT_USE_TMR9
   /* Driver initialization.*/
   GPTD9.tmr = AT32_TMR9;
@@ -300,6 +400,20 @@ void gpt_lld_init(void) {
   GPTD11.tmr = AT32_TMR11;
   GPTD11.has_plus_mode = (bool)AT32_TMR11_IS_32BITS;
   gptObjectInit(&GPTD11);
+#endif
+
+#if AT32_GPT_USE_TMR13
+  /* Driver initialization.*/
+  GPTD13.tmr = AT32_TMR13;
+  GPTD13.has_plus_mode = (bool)AT32_TMR13_IS_32BITS;
+  gptObjectInit(&GPTD13);
+#endif
+
+#if AT32_GPT_USE_TMR14
+  /* Driver initialization.*/
+  GPTD14.tmr = AT32_TMR14;
+  GPTD14.has_plus_mode = (bool)AT32_TMR14_IS_32BITS;
+  gptObjectInit(&GPTD14);
 #endif
 }
 
@@ -370,6 +484,28 @@ void gpt_lld_start(GPTDriver *gptp) {
     }
 #endif
 
+#if AT32_GPT_USE_TMR6
+    if (&GPTD6 == gptp) {
+      crmEnableTMR6(true);
+      crmResetTMR6();
+#if !defined(AT32_TMR6_SUPPRESS_ISR)
+      nvicEnableVector(AT32_TMR6_NUMBER, AT32_GPT_TMR6_IRQ_PRIORITY);
+#endif
+      gptp->clock = AT32_TMRCLK1;
+    }
+#endif
+
+#if AT32_GPT_USE_TMR7
+    if (&GPTD7 == gptp) {
+      crmEnableTMR7(true);
+      crmResetTMR7();
+#if !defined(AT32_TMR7_SUPPRESS_ISR)
+      nvicEnableVector(AT32_TMR7_NUMBER, AT32_GPT_TMR7_IRQ_PRIORITY);
+#endif
+      gptp->clock = AT32_TMRCLK1;
+    }
+#endif
+
 #if AT32_GPT_USE_TMR9
     if (&GPTD9 == gptp) {
       crmEnableTMR9(true);
@@ -400,6 +536,28 @@ void gpt_lld_start(GPTDriver *gptp) {
       nvicEnableVector(AT32_TMR11_NUMBER, AT32_GPT_TMR11_IRQ_PRIORITY);
 #endif
       gptp->clock = AT32_TMRCLK2;
+    }
+#endif
+
+#if AT32_GPT_USE_TMR13
+    if (&GPTD13 == gptp) {
+      crmEnableTMR13(true);
+      crmResetTMR13();
+#if !defined(AT32_TMR13_SUPPRESS_ISR)
+      nvicEnableVector(AT32_TMR13_NUMBER, AT32_GPT_TMR13_IRQ_PRIORITY);
+#endif
+      gptp->clock = AT32_TMRCLK1;
+    }
+#endif
+
+#if AT32_GPT_USE_TMR14
+    if (&GPTD14 == gptp) {
+      crmEnableTMR14(true);
+      crmResetTMR14();
+#if !defined(AT32_TMR14_SUPPRESS_ISR)
+      nvicEnableVector(AT32_TMR14_NUMBER, AT32_GPT_TMR14_IRQ_PRIORITY);
+#endif
+      gptp->clock = AT32_TMRCLK1;
     }
 #endif
   }
@@ -484,6 +642,24 @@ void gpt_lld_stop(GPTDriver *gptp) {
     }
 #endif
 
+#if AT32_GPT_USE_TMR6
+    if (&GPTD6 == gptp) {
+#if !defined(AT32_TMR6_SUPPRESS_ISR)
+      nvicDisableVector(AT32_TMR6_NUMBER);
+#endif
+      crmDisableTMR6();
+    }
+#endif
+
+#if AT32_GPT_USE_TMR7
+    if (&GPTD7 == gptp) {
+#if !defined(AT32_TMR7_SUPPRESS_ISR)
+      nvicDisableVector(AT32_TMR7_NUMBER);
+#endif
+      crmDisableTMR7();
+    }
+#endif
+
 #if AT32_GPT_USE_TMR9
     if (&GPTD9 == gptp) {
 #if !defined(AT32_TMR9_SUPPRESS_ISR)
@@ -510,11 +686,30 @@ void gpt_lld_stop(GPTDriver *gptp) {
       crmDisableTMR11();
     }
 #endif
+
+#if AT32_GPT_USE_TMR13
+    if (&GPTD13 == gptp) {
+#if !defined(AT32_TMR13_SUPPRESS_ISR)
+      nvicDisableVector(AT32_TMR13_NUMBER);
+#endif
+      crmDisableTMR13();
+    }
+#endif
+
+#if AT32_GPT_USE_TMR14
+    if (&GPTD14 == gptp) {
+#if !defined(AT32_TMR14_SUPPRESS_ISR)
+      nvicDisableVector(AT32_TMR14_NUMBER);
+#endif
+      crmDisableTMR14();
+    }
+#endif
   }
 }
 
 /**
  * @brief   Starts the timer in continuous mode.
+ * @note    Interval values 0 and 1 are invalid on this architecture.
  *
  * @param[in] gptp      pointer to the @p GPTDriver object
  * @param[in] interval  period in ticks
@@ -522,6 +717,8 @@ void gpt_lld_stop(GPTDriver *gptp) {
  * @notapi
  */
 void gpt_lld_start_timer(GPTDriver *gptp, gptcnt_t interval) {
+
+  osalDbgAssert(interval > (gptcnt_t)0, "invalid interval");
 
   gptp->tmr->PR    = (uint32_t)(interval - 1U); /* Time constant.           */
   gptp->tmr->SWEVT = AT32_TMR_SWEVT_OVFSWTR;    /* Update event.            */
@@ -557,6 +754,7 @@ void gpt_lld_stop_timer(GPTDriver *gptp) {
  * @details This function specifically polls the timer waiting for completion
  *          in order to not have extra delays caused by interrupt servicing,
  *          this function is only recommended for short delays.
+ * @note    Interval values 0 and 1 are invalid on this architecture.
  *
  * @param[in] gptp      pointer to the @p GPTDriver object
  * @param[in] interval  time interval in ticks
@@ -564,6 +762,8 @@ void gpt_lld_stop_timer(GPTDriver *gptp) {
  * @notapi
  */
 void gpt_lld_polled_delay(GPTDriver *gptp, gptcnt_t interval) {
+
+  osalDbgAssert(interval > (gptcnt_t)0, "invalid interval");
 
   gptp->tmr->CTRL1 = AT32_TMR_CTRL1_OVFEN;      /* Immediate update.        */
   gptp->tmr->PR    = (uint32_t)(interval - 1U); /* Time constant.           */

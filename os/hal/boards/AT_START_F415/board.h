@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -183,13 +183,13 @@
  *   6 - Open Drain output 2MHz.
  *   7 - Open Drain output 50MHz.
  *   8 - Digital input with Pull-Up or Pull-Down resistor depending on ODT.
- *   9 - Alternate Push Pull output 10MHz.
- *   A - Alternate Push Pull output 2MHz.
- *   B - Alternate Push Pull output 50MHz.
+ *   9 - Multiplexing Push Pull output 10MHz.
+ *   A - Multiplexing Push Pull output 2MHz.
+ *   B - Multiplexing Push Pull output 50MHz.
  *   C - Reserved.
- *   D - Alternate Open Drain output 10MHz.
- *   E - Alternate Open Drain output 2MHz.
- *   F - Alternate Open Drain output 50MHz.
+ *   D - Multiplexing Open Drain output 10MHz.
+ *   E - Multiplexing Open Drain output 2MHz.
+ *   F - Multiplexing Open Drain output 50MHz.
  * Please refer to the AT32 Reference Manual for details.
  */
 
@@ -197,7 +197,7 @@
  * Port A setup.
  * Everything input with pull-up except:
  * PA0  - Normal input              (GPIOA_BUTTON).
- * PA9  - Alternate output          (GPIOA_ARD_D8).
+ * PA9  - Multiplexing output       (GPIOA_ARD_D8).
  * PA10 - Normal input              (GPIOA_ARD_D2).
  */
 #define VAL_GPIOACFGLR          0x88888884      /*  PA7...PA0 */
@@ -217,10 +217,15 @@
  * PC2  - Push Pull output          (GPIOC_LED_RED).
  * PC3  - Push Pull output          (GPIOC_LED_YELLOW).
  * PC5  - Push Pull output          (GPIOC_LED_GREEN).
+ * PC8  - Multiplexing output       (GPIOC_PIN8).
+ * PC9  - Multiplexing output       (GPIOC_PIN9).
+ * PC10 - Multiplexing output       (GPIOC_PIN10).
+ * PC11 - Multiplexing output       (GPIOC_PIN11).
+ * PC12 - Multiplexing output       (GPIOC_PIN12).
  * PC13 - Normal input              (GPIOC_BUTTON).
  */
 #define VAL_GPIOCCFGLR          0x88383388      /*  PC7...PC0 */
-#define VAL_GPIOCCFGHR          0x88488888      /* PC15...PC8 */
+#define VAL_GPIOCCFGHR          0x884BBBBB      /* PC15...PC8 */
 #define VAL_GPIOCODT            0xFFFFFFFF
 
 /*
@@ -228,8 +233,9 @@
  * Everything input with pull-up except:
  * PD0  - Normal input              (GPIOD_HEXT_IN).
  * PD1  - Normal input              (GPIOD_HEXT_OUT).
+ * PD2  - Multiplexing output       (GPIOD_PIN2).
  */
-#define VAL_GPIODCFGLR          0x88888844      /*  PD7...PD0 */
+#define VAL_GPIODCFGLR          0x88888B44      /*  PD7...PD0 */
 #define VAL_GPIODCFGHR          0x88888888      /* PD15...PD8 */
 #define VAL_GPIODODT            0xFFFFFFFF
 

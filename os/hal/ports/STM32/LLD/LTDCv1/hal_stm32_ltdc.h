@@ -25,6 +25,8 @@
 #ifndef HAL_STM32_LTDC_H_
 #define HAL_STM32_LTDC_H_
 
+#include "hal.h"
+
 /**
  * @brief   Using the LTDC driver.
  */
@@ -111,8 +113,8 @@
 
 #define LTDC_MIN_SCREEN_WIDTH           (1)
 #define LTDC_MIN_SCREEN_HEIGHT          (1)
-#define LTDC_MAX_SCREEN_WIDTH           (800)
-#define LTDC_MAX_SCREEN_HEIGHT          (600)
+#define LTDC_MAX_SCREEN_WIDTH           (4096)
+#define LTDC_MAX_SCREEN_HEIGHT          (2048)
 
 #define LTDC_MIN_HSYNC_WIDTH            (1)
 #define LTDC_MIN_VSYNC_HEIGHT           (1)
@@ -285,7 +287,6 @@ typedef struct ltdc_window_t ltdc_window_t;
 typedef struct ltdc_frame_t ltdc_frame_t;
 typedef struct ltdc_laycfg_t ltdc_laycfg_t;
 typedef struct LTDCConfig LTDCConfig;
-typedef enum ltdc_state_t ltdc_state_t;
 typedef struct LTDCDriver LTDCDriver;
 
 /**
@@ -457,7 +458,7 @@ typedef struct LTDCConfig {
 /**
  * @brief   LTDC driver state.
  */
-typedef enum ltdc_state_t {
+typedef enum {
   LTDC_UNINIT   = (0),              /**< Not initialized.*/
   LTDC_STOP     = (1),              /**< Stopped.*/
   LTDC_READY    = (2),              /**< Ready.*/

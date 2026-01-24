@@ -74,9 +74,7 @@ typedef enum {
 
 #if STM32_CRC_USE_CRC1 == TRUE
 #include "hal_crc_lld.h"
-#endif
-
-#if CRCSW_USE_CRC1 == TRUE
+#else
 #include "crcsw.h" /* Include software LL driver */
 #endif
 

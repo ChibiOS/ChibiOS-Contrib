@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -108,20 +108,19 @@
 #error "Invalid DMA priority assigned to SDIO"
 #endif
 
-#if !defined(AT32_DMA_REQUIRED)
-#define AT32_DMA_REQUIRED
+/* The following checks are only required when there is a DMA able to
+   reassign streams to different channels.*/
+#if AT32_ADVANCED_DMA
+
+/* Check on the presence of the DMA streams settings in mcuconf.h.*/
+#if !defined(AT32_SDC_SDIO_DMA_STREAM)
+#error "SDIO DMA streams not defined"
 #endif
 
-/*
- * SDIO clock divider.
- */
-#if AT32_HCLK > 48000000
-#define AT32_SDIO_DIV_HS                    1
-#define AT32_SDIO_DIV_LS                    178
-#else
+#endif /* AT32_ADVANCED_DMA */
 
-#define AT32_SDIO_DIV_HS                    0
-#define AT32_SDIO_DIV_LS                    118
+#if !defined(AT32_DMA_REQUIRED)
+#define AT32_DMA_REQUIRED
 #endif
 
 /*===========================================================================*/

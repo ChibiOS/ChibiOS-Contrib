@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
-    ChibiOS - Copyright (C) 2023..2024 Maxjta
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2024..2025 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -41,6 +41,10 @@
 #define SPI_SPID2_MEMORY
 #endif
 
+#if !defined(SPI_SPID3_MEMORY)
+#define SPI_SPID3_MEMORY
+#endif
+
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -53,6 +57,11 @@ SPI_SPID1_MEMORY SPIDriver SPID1;
 /** @brief SPI2 driver identifier.*/
 #if AT32_SPI_USE_SPI2 || defined(__DOXYGEN__)
 SPI_SPID2_MEMORY SPIDriver SPID2;
+#endif
+
+/** @brief SPI3 driver identifier.*/
+#if AT32_SPI_USE_SPI3 || defined(__DOXYGEN__)
+SPI_SPID3_MEMORY SPIDriver SPID3;
 #endif
 
 /*===========================================================================*/
@@ -128,6 +137,12 @@ static msg_t spi_lld_stop_abort(SPIDriver *spip) {
 #if AT32_SPI_USE_SPI2
     else if (&SPID2 == spip) {
       crmResetSPI2();
+    }
+#endif
+
+#if AT32_SPI_USE_SPI3
+    else if (&SPID3 == spip) {
+      crmResetSPI3();
     }
 #endif
 
@@ -255,13 +270,13 @@ void spi_lld_init(void) {
   SPID1.spi       = SPI1;
   SPID1.dmarx     = NULL;
   SPID1.dmatx     = NULL;
-  SPID1.rxdmamode = AT32_DMA_CTRL_CHPL(AT32_SPI_SPI1_DMA_PRIORITY) |
-                    AT32_DMA_CTRL_DTD_P2M |
-                    AT32_DMA_CTRL_FDTIEN |
-                    AT32_DMA_CTRL_DTERRIEN;
-  SPID1.txdmamode = AT32_DMA_CTRL_CHPL(AT32_SPI_SPI1_DMA_PRIORITY) |
-                    AT32_DMA_CTRL_DTD_M2P |
-                    AT32_DMA_CTRL_DTERRIEN;
+  SPID1.rxdmamode = AT32_DMA_CCTRL_CHPL(AT32_SPI_SPI1_DMA_PRIORITY) |
+                    AT32_DMA_CCTRL_DTD_P2M |
+                    AT32_DMA_CCTRL_FDTIEN |
+                    AT32_DMA_CCTRL_DTERRIEN;
+  SPID1.txdmamode = AT32_DMA_CCTRL_CHPL(AT32_SPI_SPI1_DMA_PRIORITY) |
+                    AT32_DMA_CCTRL_DTD_M2P |
+                    AT32_DMA_CCTRL_DTERRIEN;
 #endif
 
 #if AT32_SPI_USE_SPI2
@@ -269,13 +284,27 @@ void spi_lld_init(void) {
   SPID2.spi       = SPI2;
   SPID2.dmarx     = NULL;
   SPID2.dmatx     = NULL;
-  SPID2.rxdmamode = AT32_DMA_CTRL_CHPL(AT32_SPI_SPI2_DMA_PRIORITY) |
-                    AT32_DMA_CTRL_DTD_P2M |
-                    AT32_DMA_CTRL_FDTIEN |
-                    AT32_DMA_CTRL_DTERRIEN;
-  SPID2.txdmamode = AT32_DMA_CTRL_CHPL(AT32_SPI_SPI2_DMA_PRIORITY) |
-                    AT32_DMA_CTRL_DTD_M2P |
-                    AT32_DMA_CTRL_DTERRIEN;
+  SPID2.rxdmamode = AT32_DMA_CCTRL_CHPL(AT32_SPI_SPI2_DMA_PRIORITY) |
+                    AT32_DMA_CCTRL_DTD_P2M |
+                    AT32_DMA_CCTRL_FDTIEN |
+                    AT32_DMA_CCTRL_DTERRIEN;
+  SPID2.txdmamode = AT32_DMA_CCTRL_CHPL(AT32_SPI_SPI2_DMA_PRIORITY) |
+                    AT32_DMA_CCTRL_DTD_M2P |
+                    AT32_DMA_CCTRL_DTERRIEN;
+#endif
+
+#if AT32_SPI_USE_SPI3
+  spiObjectInit(&SPID3);
+  SPID3.spi       = SPI3;
+  SPID3.dmarx     = NULL;
+  SPID3.dmatx     = NULL;
+  SPID3.rxdmamode = AT32_DMA_CCTRL_CHPL(AT32_SPI_SPI3_DMA_PRIORITY) |
+                    AT32_DMA_CCTRL_DTD_P2M |
+                    AT32_DMA_CCTRL_FDTIEN |
+                    AT32_DMA_CCTRL_DTERRIEN;
+  SPID3.txdmamode = AT32_DMA_CCTRL_CHPL(AT32_SPI_SPI3_DMA_PRIORITY) |
+                    AT32_DMA_CCTRL_DTD_M2P |
+                    AT32_DMA_CCTRL_DTERRIEN;
 #endif
 }
 
@@ -334,6 +363,24 @@ msg_t spi_lld_start(SPIDriver *spip) {
     }
 #endif
 
+#if AT32_SPI_USE_SPI3
+    else if (&SPID3 == spip) {
+      msg = spi_lld_get_dma(spip,
+                            AT32_SPI_SPI3_RX_DMA_STREAM,
+                            AT32_SPI_SPI3_TX_DMA_STREAM,
+                            AT32_SPI_SPI3_IRQ_PRIORITY);
+      if (msg != HAL_RET_SUCCESS) {
+        return msg;
+      }
+      crmEnableSPI3(true);
+      crmResetSPI3();
+#if AT32_DMA_SUPPORTS_DMAMUX
+      dmaSetRequestSource(spip->dmarx, AT32_DMAMUX_SPI3_RX);
+      dmaSetRequestSource(spip->dmatx, AT32_DMAMUX_SPI3_TX);
+#endif
+    }
+#endif
+
     else {
       osalDbgAssert(false, "invalid SPI instance");
     }
@@ -346,26 +393,26 @@ msg_t spi_lld_start(SPIDriver *spip) {
   /* Configuration-specific DMA setup.*/
   if ((spip->config->ctrl1 & SPI_CTRL1_FBN) == 0) {
     /* Frame width is 8 bits or smaller.*/
-    spip->rxdmamode = (spip->rxdmamode & ~AT32_DMA_CTRL_WIDTH_MASK) |
-                      AT32_DMA_CTRL_PWIDTH_BYTE | AT32_DMA_CTRL_MWIDTH_BYTE;
-    spip->txdmamode = (spip->txdmamode & ~AT32_DMA_CTRL_WIDTH_MASK) |
-                      AT32_DMA_CTRL_PWIDTH_BYTE | AT32_DMA_CTRL_MWIDTH_BYTE;
+    spip->rxdmamode = (spip->rxdmamode & ~AT32_DMA_CCTRL_SIZE_MASK) |
+                      AT32_DMA_CCTRL_PWIDTH_BYTE | AT32_DMA_CCTRL_MWIDTH_BYTE;
+    spip->txdmamode = (spip->txdmamode & ~AT32_DMA_CCTRL_SIZE_MASK) |
+                      AT32_DMA_CCTRL_PWIDTH_BYTE | AT32_DMA_CCTRL_MWIDTH_BYTE;
   }
   else {
     /* Frame width is larger than 8 bits.*/
-    spip->rxdmamode = (spip->rxdmamode & ~AT32_DMA_CTRL_WIDTH_MASK) |
-                      AT32_DMA_CTRL_PWIDTH_HWORD | AT32_DMA_CTRL_MWIDTH_HWORD;
-    spip->txdmamode = (spip->txdmamode & ~AT32_DMA_CTRL_WIDTH_MASK) |
-                      AT32_DMA_CTRL_PWIDTH_HWORD | AT32_DMA_CTRL_MWIDTH_HWORD;
+    spip->rxdmamode = (spip->rxdmamode & ~AT32_DMA_CCTRL_SIZE_MASK) |
+                      AT32_DMA_CCTRL_PWIDTH_HWORD | AT32_DMA_CCTRL_MWIDTH_HWORD;
+    spip->txdmamode = (spip->txdmamode & ~AT32_DMA_CCTRL_SIZE_MASK) |
+                      AT32_DMA_CCTRL_PWIDTH_HWORD | AT32_DMA_CCTRL_MWIDTH_HWORD;
   }
 
   if (spip->config->circular) {
-    spip->rxdmamode |= (AT32_DMA_CTRL_LM | AT32_DMA_CTRL_HDTIEN);
-    spip->txdmamode |= (AT32_DMA_CTRL_LM | AT32_DMA_CTRL_HDTIEN);
+    spip->rxdmamode |= (AT32_DMA_CCTRL_LM | AT32_DMA_CCTRL_HDTIEN);
+    spip->txdmamode |= (AT32_DMA_CCTRL_LM | AT32_DMA_CCTRL_HDTIEN);
   }
   else {
-    spip->rxdmamode &= ~(AT32_DMA_CTRL_LM | AT32_DMA_CTRL_HDTIEN);
-    spip->txdmamode &= ~(AT32_DMA_CTRL_LM | AT32_DMA_CTRL_HDTIEN);
+    spip->rxdmamode &= ~(AT32_DMA_CCTRL_LM | AT32_DMA_CCTRL_HDTIEN);
+    spip->txdmamode &= ~(AT32_DMA_CCTRL_LM | AT32_DMA_CCTRL_HDTIEN);
   }
 
   /* SPI setup.*/
@@ -412,6 +459,12 @@ void spi_lld_stop(SPIDriver *spip) {
 #if AT32_SPI_USE_SPI2
     else if (&SPID2 == spip) {
       crmDisableSPI2();
+    }
+#endif
+
+#if AT32_SPI_USE_SPI3
+    else if (&SPID3 == spip) {
+      crmDisableSPI3();
     }
 #endif
 
@@ -502,11 +555,11 @@ msg_t spi_lld_exchange(SPIDriver *spip, size_t n,
 
   dmaStreamSetMemory0(spip->dmarx, rxbuf);
   dmaStreamSetTransactionSize(spip->dmarx, n);
-  dmaStreamSetMode(spip->dmarx, spip->rxdmamode | AT32_DMA_CTRL_MINCM);
+  dmaStreamSetMode(spip->dmarx, spip->rxdmamode | AT32_DMA_CCTRL_MINCM);
 
   dmaStreamSetMemory0(spip->dmatx, txbuf);
   dmaStreamSetTransactionSize(spip->dmatx, n);
-  dmaStreamSetMode(spip->dmatx, spip->txdmamode | AT32_DMA_CTRL_MINCM);
+  dmaStreamSetMode(spip->dmatx, spip->txdmamode | AT32_DMA_CCTRL_MINCM);
 
   dmaStreamEnable(spip->dmarx);
   dmaStreamEnable(spip->dmatx);
@@ -538,7 +591,7 @@ msg_t spi_lld_send(SPIDriver *spip, size_t n, const void *txbuf) {
 
   dmaStreamSetMemory0(spip->dmatx, txbuf);
   dmaStreamSetTransactionSize(spip->dmatx, n);
-  dmaStreamSetMode(spip->dmatx, spip->txdmamode | AT32_DMA_CTRL_MINCM);
+  dmaStreamSetMode(spip->dmatx, spip->txdmamode | AT32_DMA_CCTRL_MINCM);
 
   dmaStreamEnable(spip->dmarx);
   dmaStreamEnable(spip->dmatx);
@@ -566,7 +619,7 @@ msg_t spi_lld_receive(SPIDriver *spip, size_t n, void *rxbuf) {
 
   dmaStreamSetMemory0(spip->dmarx, rxbuf);
   dmaStreamSetTransactionSize(spip->dmarx, n);
-  dmaStreamSetMode(spip->dmarx, spip->rxdmamode | AT32_DMA_CTRL_MINCM);
+  dmaStreamSetMode(spip->dmarx, spip->rxdmamode | AT32_DMA_CCTRL_MINCM);
 
   dmaStreamSetMemory0(spip->dmatx, &spip->txsource);
   dmaStreamSetTransactionSize(spip->dmatx, n);

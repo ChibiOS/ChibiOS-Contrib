@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -102,6 +102,22 @@ ICUDriver ICUD10;
  */
 #if AT32_ICU_USE_TMR11 || defined(__DOXYGEN__)
 ICUDriver ICUD11;
+#endif
+
+/**
+ * @brief   ICUD13 driver identifier.
+ * @note    The driver ICUD13 allocates the timer TMR13 when enabled.
+ */
+#if AT32_ICU_USE_TMR13 || defined(__DOXYGEN__)
+ICUDriver ICUD13;
+#endif
+
+/**
+ * @brief   ICUD14 driver identifier.
+ * @note    The driver ICUD14 allocates the timer TMR14 when enabled.
+ */
+#if AT32_ICU_USE_TMR14 || defined(__DOXYGEN__)
+ICUDriver ICUD14;
 #endif
 
 /*===========================================================================*/
@@ -292,6 +308,18 @@ OSAL_IRQ_HANDLER(AT32_TMR5_HANDLER) {
 #endif /* !defined(AT32_TMR11_SUPPRESS_ISR) */
 #endif /* AT32_ICU_USE_TMR11 */
 
+#if AT32_ICU_USE_TMR13 || defined(__DOXYGEN__)
+#if !defined(AT32_TMR13_SUPPRESS_ISR)
+#error "TMR13 ISR not defined by platform"
+#endif /* !defined(AT32_TMR13_SUPPRESS_ISR) */
+#endif /* AT32_ICU_USE_TMR13 */
+
+#if AT32_ICU_USE_TMR14 || defined(__DOXYGEN__)
+#if !defined(AT32_TMR14_SUPPRESS_ISR)
+#error "TMR14 ISR not defined by platform"
+#endif /* !defined(AT32_TMR14_SUPPRESS_ISR) */
+#endif /* AT32_ICU_USE_TMR14 */
+
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -358,6 +386,20 @@ void icu_lld_init(void) {
   ICUD11.tmr = AT32_TMR11;
   ICUD11.has_plus_mode = (bool)AT32_TMR11_IS_32BITS;
 #endif
+
+#if AT32_ICU_USE_TMR13
+  /* Driver initialization.*/
+  icuObjectInit(&ICUD13);
+  ICUD13.tmr = AT32_TMR13;
+  ICUD13.has_plus_mode = (bool)AT32_TMR13_IS_32BITS;
+#endif
+
+#if AT32_ICU_USE_TMR14
+  /* Driver initialization.*/
+  icuObjectInit(&ICUD14);
+  ICUD14.tmr = AT32_TMR14;
+  ICUD14.has_plus_mode = (bool)AT32_TMR14_IS_32BITS;
+#endif
 }
 
 /**
@@ -406,7 +448,7 @@ void icu_lld_start(ICUDriver *icup) {
 #if !defined(AT32_TMR3_SUPPRESS_ISR)
       nvicEnableVector(AT32_TMR3_NUMBER, AT32_ICU_TMR3_IRQ_PRIORITY);
 #endif
-     icup->clock = AT32_TMRCLK1;
+      icup->clock = AT32_TMRCLK1;
     }
 #endif
 
@@ -453,6 +495,22 @@ void icu_lld_start(ICUDriver *icup) {
       crmEnableTMR11(true);
       crmResetTMR11();
       icup->clock = AT32_TMRCLK2;
+    }
+#endif
+
+#if AT32_ICU_USE_TMR13
+    if (&ICUD13 == icup) {
+      crmEnableTMR13(true);
+      crmResetTMR13();
+      icup->clock = AT32_TMRCLK1;
+    }
+#endif
+
+#if AT32_ICU_USE_TMR14
+    if (&ICUD14 == icup) {
+      crmEnableTMR14(true);
+      crmResetTMR14();
+      icup->clock = AT32_TMRCLK1;
     }
 #endif
   }
@@ -615,6 +673,18 @@ void icu_lld_stop(ICUDriver *icup) {
 #if AT32_ICU_USE_TMR11
     if (&ICUD11 == icup) {
       crmDisableTMR11();
+    }
+#endif
+
+#if AT32_ICU_USE_TMR13
+    if (&ICUD13 == icup) {
+      crmDisableTMR13();
+    }
+#endif
+
+#if AT32_ICU_USE_TMR14
+    if (&ICUD14 == icup) {
+      crmDisableTMR14();
     }
 #endif
   }

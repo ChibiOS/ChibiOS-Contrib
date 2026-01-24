@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
-    ChibiOS - Copyright (C) 2023..2024 Maxjta
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2024..2025 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -30,9 +30,20 @@
 
 #if HAL_USE_SERIAL || defined(__DOXYGEN__)
 
+#include "at32_usart.h"
+
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
+
+/**
+ * @brief   Advanced buffering support switch.
+ * @details This constants enables the advanced buffering support in the
+ *          low level driver, the queue buffer is no more part of the
+ *          @p SerialDriver structure, each driver can have a different
+ *          queue size.
+ */
+#define SERIAL_ADVANCED_BUFFERING_SUPPORT   TRUE
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -170,6 +181,117 @@
 #define AT32_SERIAL_UART8_PRIORITY          12
 #endif
 
+/**
+ * @brief   Input buffer size for USART1.
+ */
+#if !defined(AT32_SERIAL_USART1_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USART1_IN_BUF_SIZE      SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for USART1.
+ */
+#if !defined(AT32_SERIAL_USART1_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USART1_OUT_BUF_SIZE     SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for USART2.
+ */
+#if !defined(AT32_SERIAL_USART2_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USART2_IN_BUF_SIZE      SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for USART2.
+ */
+#if !defined(AT32_SERIAL_USART2_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USART2_OUT_BUF_SIZE     SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for USART3.
+ */
+#if !defined(AT32_SERIAL_USART3_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USART3_IN_BUF_SIZE      SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for USART3.
+ */
+#if !defined(AT32_SERIAL_USART3_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USART3_OUT_BUF_SIZE     SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for UART4.
+ */
+#if !defined(AT32_SERIAL_UART4_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_UART4_IN_BUF_SIZE       SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART4.
+ */
+#if !defined(AT32_SERIAL_UART4_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_UART4_OUT_BUF_SIZE      SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for UART5.
+ */
+#if !defined(AT32_SERIAL_UART5_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_UART5_IN_BUF_SIZE       SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART5.
+ */
+#if !defined(AT32_SERIAL_UART5_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_UART5_OUT_BUF_SIZE      SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for USART6.
+ */
+#if !defined(AT32_SERIAL_USART6_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USART6_IN_BUF_SIZE      SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for USART6.
+ */
+#if !defined(AT32_SERIAL_USART6_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_USART6_OUT_BUF_SIZE     SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for UART7.
+ */
+#if !defined(AT32_SERIAL_UART7_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_UART7_IN_BUF_SIZE       SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART7.
+ */
+#if !defined(AT32_SERIAL_UART7_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_UART7_OUT_BUF_SIZE      SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Input buffer size for UART8.
+ */
+#if !defined(AT32_SERIAL_UART8_IN_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_UART8_IN_BUF_SIZE       SERIAL_BUFFERS_SIZE
+#endif
+
+/**
+ * @brief   Output buffer size for UART8.
+ */
+#if !defined(AT32_SERIAL_UART8_OUT_BUF_SIZE) || defined(__DOXYGEN__)
+#define AT32_SERIAL_UART8_OUT_BUF_SIZE      SERIAL_BUFFERS_SIZE
+#endif
 /** @} */
 
 /*===========================================================================*/
@@ -210,47 +332,55 @@
 
 #if !AT32_SERIAL_USE_USART1 && !AT32_SERIAL_USE_USART2 &&                   \
     !AT32_SERIAL_USE_USART3 && !AT32_SERIAL_USE_UART4  &&                   \
-    !AT32_SERIAL_USE_UART5 && !AT32_SERIAL_USE_USART6  &&                   \
-	!AT32_SERIAL_USE_UART7 && !AT32_SERIAL_USE_UART8
+    !AT32_SERIAL_USE_UART5  && !AT32_SERIAL_USE_USART6 &&                   \
+    !AT32_SERIAL_USE_UART7  && !AT32_SERIAL_USE_UART8
 #error "SERIAL driver activated but no USART/UART peripheral assigned"
 #endif
 
-#if AT32_SERIAL_USE_USART1 &&                                               \
+#if !defined(AT32_USART1_SUPPRESS_ISR) &&                                   \
+    AT32_SERIAL_USE_USART1 &&                                               \
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_USART1_PRIORITY)
 #error "Invalid IRQ priority assigned to USART1"
 #endif
 
-#if AT32_SERIAL_USE_USART2 &&                                               \
+#if !defined(AT32_USART2_SUPPRESS_ISR) &&                                   \
+    AT32_SERIAL_USE_USART2 &&                                               \
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_USART2_PRIORITY)
 #error "Invalid IRQ priority assigned to USART2"
 #endif
 
-#if AT32_SERIAL_USE_USART3 &&                                               \
+#if !defined(AT32_USART3_SUPPRESS_ISR) &&                                   \
+    AT32_SERIAL_USE_USART3 &&                                               \
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_USART3_PRIORITY)
 #error "Invalid IRQ priority assigned to USART3"
 #endif
 
-#if AT32_SERIAL_USE_UART4 &&                                                \
+#if !defined(AT32_UART4_SUPPRESS_ISR) &&                                    \
+    AT32_SERIAL_USE_UART4 &&                                                \
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_UART4_PRIORITY)
 #error "Invalid IRQ priority assigned to UART4"
 #endif
 
-#if AT32_SERIAL_USE_UART5 &&                                                \
+#if !defined(AT32_UART5_SUPPRESS_ISR) &&                                    \
+    AT32_SERIAL_USE_UART5 &&                                                \
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_UART5_PRIORITY)
 #error "Invalid IRQ priority assigned to UART5"
 #endif
 
-#if AT32_SERIAL_USE_USART6 &&                                               \
+#if !defined(AT32_USART6_SUPPRESS_ISR) &&                                   \
+    AT32_SERIAL_USE_USART6 &&                                               \
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_USART6_PRIORITY)
 #error "Invalid IRQ priority assigned to USART6"
 #endif
 
-#if AT32_SERIAL_USE_UART7 &&                                                \
+#if !defined(AT32_UART7_SUPPRESS_ISR) &&                                    \
+    AT32_SERIAL_USE_UART7 &&                                                \
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_UART7_PRIORITY)
 #error "Invalid IRQ priority assigned to UART7"
 #endif
 
-#if AT32_SERIAL_USE_UART8 &&                                                \
+#if !defined(AT32_UART8_SUPPRESS_ISR) &&                                    \
+    AT32_SERIAL_USE_UART8 &&                                                \
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_SERIAL_UART8_PRIORITY)
 #error "Invalid IRQ priority assigned to UART8"
 #endif
@@ -341,15 +471,15 @@ typedef struct hal_serial_config {
   /**
    * @brief Initialization value for the CTRL1 register.
    */
-  uint16_t                  ctrl1;
+  uint32_t                  ctrl1;
   /**
    * @brief Initialization value for the CTRL2 register.
    */
-  uint16_t                  ctrl2;
+  uint32_t                  ctrl2;
   /**
    * @brief Initialization value for the CTRL3 register.
    */
-  uint16_t                  ctrl3;
+  uint32_t                  ctrl3;
 } SerialConfig;
 
 /**
@@ -363,10 +493,6 @@ typedef struct hal_serial_config {
   input_queue_t             iqueue;                                         \
   /* Output queue.*/                                                        \
   output_queue_t            oqueue;                                         \
-  /* Input circular buffer.*/                                               \
-  uint8_t                   ib[SERIAL_BUFFERS_SIZE];                        \
-  /* Output circular buffer.*/                                              \
-  uint8_t                   ob[SERIAL_BUFFERS_SIZE];                        \
   /* End of the mandatory fields.*/                                         \
   /* Pointer to the USART registers block.*/                                \
   USART_TypeDef             *usart;                                         \
@@ -378,14 +504,6 @@ typedef struct hal_serial_config {
 /*===========================================================================*/
 /* Driver macros.                                                            */
 /*===========================================================================*/
-
-/*
- * Extra USARTs definitions here (missing from the AT header file).
- */
-#define USART_CTRL2_STOPBN1_BITS   (0 << 12) /**< @brief CTRL2 1 stop bit value.*/
-#define USART_CTRL2_STOPBN0P5_BITS (1 << 12) /**< @brief CTRL2 0.5 stop bit value.*/
-#define USART_CTRL2_STOPBN2_BITS   (2 << 12) /**< @brief CTRL2 2 stop bit value.*/
-#define USART_CTRL2_STOPBN1P5_BITS (3 << 12) /**< @brief CTRL2 1.5 stop bit value.*/
 
 /*===========================================================================*/
 /* External declarations.                                                    */

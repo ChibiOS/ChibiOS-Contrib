@@ -233,7 +233,11 @@ void ltdcInit(void) {
   rccResetLTDC();
 
   /* Enable the LTDC clock.*/
+#if defined(STM32H7)
+  RCC->APB3ENR |= RCC_APB3ENR_LTDCEN; /* Enable LTDC clock. */
+#else defined(STM32F4)
   RCC->DCKCFGR = (RCC->DCKCFGR & ~RCC_DCKCFGR_PLLSAIDIVR) | (2 << 16); /* /8 */
+#endif
   rccEnableLTDC(false);
 
   /* Driver struct initialization.*/
@@ -765,7 +769,11 @@ bool ltdcIsDitheringEnabledI(LTDCDriver *ltdcp) {
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
 
+#if defined(STM32H7)
+  return (LTDC->GCR & LTDC_GCR_DEN) != 0;
+#else
   return (LTDC->GCR & LTDC_GCR_DTEN) != 0;
+#endif
 }
 
 /**
@@ -801,8 +809,11 @@ void ltdcEnableDitheringI(LTDCDriver *ltdcp) {
   osalDbgCheckClassI();
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
-
+#if defined(STM32H7)
+  LTDC->GCR |= LTDC_GCR_DEN;
+#else
   LTDC->GCR |= LTDC_GCR_DTEN;
+#endif
 }
 
 /**
@@ -836,7 +847,11 @@ void ltdcDisableDitheringI(LTDCDriver *ltdcp) {
   osalDbgCheck(ltdcp == &LTDCD1);
   (void)ltdcp;
 
+#if defined(STM32H7)
+  LTDC->GCR &= ~LTDC_GCR_DEN;
+#else
   LTDC->GCR &= ~LTDC_GCR_DTEN;
+#endif
 }
 
 /**

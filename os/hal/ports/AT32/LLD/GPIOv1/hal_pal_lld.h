@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -38,14 +38,14 @@
  * @{
  */
 /**
- * @brief   AT32 specific alternate push-pull output mode.
+ * @brief   AT32 specific multiplexing push-pull output mode.
  */
-#define PAL_MODE_AT32_ALTERNATE_PUSHPULL   16
+#define PAL_MODE_AT32_MUX_PUSHPULL         16
 
 /**
- * @brief   AT32 specific alternate open-drain output mode.
+ * @brief   AT32 specific multiplexing open-drain output mode.
  */
-#define PAL_MODE_AT32_ALTERNATE_OPENDRAIN  17
+#define PAL_MODE_AT32_MUX_OPENDRAIN        17
 /** @} */
 
 /*===========================================================================*/

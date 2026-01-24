@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -92,7 +92,8 @@ ICUConfig icucfg = {
 /*===========================================================================*/
 
 void portab_setup(void) {
-
+  palSetLineMode(LINE_ARD_D7, PAL_MODE_AT32_MUX_PUSHPULL);
+  palSetLine(LINE_ARD_D12);
 }
 
 /** @} */

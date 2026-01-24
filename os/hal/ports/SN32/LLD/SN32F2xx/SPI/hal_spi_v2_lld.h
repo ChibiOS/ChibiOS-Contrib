@@ -163,8 +163,8 @@
  */
 #define spi_lld_config_fields                                               \
   uint32_t                  ctrl0;                                          \
-  uint32_t                  ctrl1;                                          \
-  uint32_t                  clkdiv;
+  uint8_t                   ctrl1;                                          \
+  uint8_t                   clkdiv;
 
 
 /*===========================================================================*/

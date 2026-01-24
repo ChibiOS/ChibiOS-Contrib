@@ -43,7 +43,7 @@
      defined(STM32F745xx) || defined(STM32F746xx) || \
      defined(STM32F756xx) || defined(STM32F767xx) || \
      defined(STM32F769xx) || defined(STM32F777xx) || \
-     defined(STM32F779xx))
+     defined(STM32F779xx) || defined(STM32H743xx))
   #if !defined(FSMC_Bank1_R_BASE)
   #define FSMC_Bank1_R_BASE               (FMC_R_BASE + 0x0000)
   #endif
@@ -89,7 +89,7 @@
 #define FSMC_Bank4_MAP_BASE               ((uint32_t) 0x90000000)
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
-     defined(STM32F7))
+     defined(STM32F7) || defined(STM32H743xx))
   #define FSMC_Bank5_MAP_BASE             ((uint32_t) 0xC0000000)
   #define FSMC_Bank6_MAP_BASE             ((uint32_t) 0xD0000000)
 #endif
@@ -167,7 +167,7 @@ typedef struct {
 
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
-     defined(STM32F7))
+     defined(STM32F7) || defined(STM32H743xx))
 
 typedef struct {
   __IO uint32_t SDCR1;              /**< SDRAM control register (bank 1) */
@@ -221,7 +221,7 @@ typedef struct {
 #define  FSMC_BCR_MWID_16         ((uint32_t)1 << 4)
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
-     defined(STM32F7))
+     defined(STM32F7) || defined(STM32H743xx))
 #define  FSMC_BCR_MWID_32         ((uint32_t)2 << 4)
 #else
 #define  FSMC_BCR_MWID_RESERVED1  ((uint32_t)2 << 4)
@@ -239,7 +239,7 @@ typedef struct {
 #define  FSMC_BCR_CBURSTRW        ((uint32_t)1 << 19)
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
-     defined(STM32F7))
+     defined(STM32F7) || defined(STM32H743xx))
 #define  FSMC_BCR_CCLKEN          ((uint32_t)1 << 20)
 #endif
 #if (defined(STM32F7))
@@ -330,7 +330,7 @@ struct FSMCDriver {
 
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
-     defined(STM32F7))
+     defined(STM32F7) || defined(STM32H743xx))
   #if HAL_USE_SDRAM
   FSMC_SDRAM_TypeDef        *sdram;
   #endif

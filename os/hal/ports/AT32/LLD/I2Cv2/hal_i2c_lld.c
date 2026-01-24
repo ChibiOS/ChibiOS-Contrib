@@ -1,6 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 Maxjta
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2024..2025 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -33,41 +35,9 @@
 
 #if AT32_I2C_USE_DMA == TRUE
 #define DMAMODE_COMMON                                                      \
-  (AT32_DMA_CTRL_PWIDTH_BYTE | AT32_DMA_CTRL_MWIDTH_BYTE |                  \
-   AT32_DMA_CTRL_MINCM       | AT32_DMA_CTRL_DMERRIEN    |                  \
-   AT32_DMA_CTRL_DTERRIEN    | AT32_DMA_CTRL_FDTIEN)
-
-#define I2C1_RX_DMA_CHANNEL                                                 \
-  AT32_DMA_GETCHANNEL(AT32_I2C_I2C1_RX_DMA_STREAM,                          \
-                       AT32_I2C1_RX_DMA_CHN)
-
-#define I2C1_TX_DMA_CHANNEL                                                 \
-  AT32_DMA_GETCHANNEL(AT32_I2C_I2C1_TX_DMA_STREAM,                          \
-                       AT32_I2C1_TX_DMA_CHN)
-
-#define I2C2_RX_DMA_CHANNEL                                                 \
-  AT32_DMA_GETCHANNEL(AT32_I2C_I2C2_RX_DMA_STREAM,                          \
-                       AT32_I2C2_RX_DMA_CHN)
-
-#define I2C2_TX_DMA_CHANNEL                                                 \
-  AT32_DMA_GETCHANNEL(AT32_I2C_I2C2_TX_DMA_STREAM,                          \
-                       AT32_I2C2_TX_DMA_CHN)
-
-#define I2C3_RX_DMA_CHANNEL                                                 \
-  AT32_DMA_GETCHANNEL(AT32_I2C_I2C3_RX_DMA_STREAM,                          \
-                       AT32_I2C3_RX_DMA_CHN)
-
-#define I2C3_TX_DMA_CHANNEL                                                 \
-  AT32_DMA_GETCHANNEL(AT32_I2C_I2C3_TX_DMA_STREAM,                          \
-                       AT32_I2C3_TX_DMA_CHN)
-
-#define I2C4_RX_DMA_CHANNEL                                                 \
-  AT32_DMA_GETCHANNEL(AT32_I2C_I2C4_RX_DMA_STREAM,                          \
-                       AT32_I2C4_RX_DMA_CHN)
-
-#define I2C4_TX_DMA_CHANNEL                                                 \
-  AT32_DMA_GETCHANNEL(AT32_I2C_I2C4_TX_DMA_STREAM,                          \
-                       AT32_I2C4_TX_DMA_CHN)
+  (AT32_DMA_CCTRL_PWIDTH_BYTE | AT32_DMA_CCTRL_MWIDTH_BYTE |                \
+   AT32_DMA_CCTRL_MINCM       | AT32_DMA_CCTRL_DTERRIEN    |                \
+   AT32_DMA_CCTRL_FDTIEN)
 #endif /* AT32_I2C_USE_DMA == TRUE */
 
 #if AT32_I2C_USE_DMA == TRUE
@@ -82,13 +52,14 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#define I2C_ERROR_MASK                                                          \
-  ((uint32_t)(I2C_STS_BUSERR | I2C_STS_ARLOST | I2C_STS_OUF | I2C_STS_PECERR |  \
-              I2C_STS_TMOUT  | I2C_STS_ALERTF))
+#define I2C_ERROR_MASK                                                      \
+  ((uint32_t)(I2C_STS_BUSERR | I2C_STS_ARLOST | I2C_STS_OUF |               \
+              I2C_STS_PECERR | I2C_STS_TMOUT  | I2C_STS_ALERTF))
 
-#define I2C_INT_MASK                                                            \
-  ((uint32_t)(I2C_STS_TCRLD | I2C_STS_TDC  | I2C_STS_STOPF | I2C_STS_ACKFAILF | \
-              I2C_STS_ADDRF | I2C_STS_RDBF | I2C_STS_TDIS))
+#define I2C_INT_MASK                                                        \
+  ((uint32_t)(I2C_STS_TCRLD    | I2C_STS_TDC   | I2C_STS_STOPF |            \
+              I2C_STS_ACKFAILF | I2C_STS_ADDRF | I2C_STS_RDBF  |            \
+              I2C_STS_TDIS))
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -107,11 +78,6 @@ I2CDriver I2CD2;
 /** @brief I2C3 driver identifier.*/
 #if AT32_I2C_USE_I2C3 || defined(__DOXYGEN__)
 I2CDriver I2CD3;
-#endif
-
-/** @brief I2C4 driver identifier.*/
-#if AT32_I2C_USE_I2C4 || defined(__DOXYGEN__)
-I2CDriver I2CD4;
 #endif
 
 /*===========================================================================*/
@@ -165,8 +131,8 @@ static void i2c_lld_setup_rx_transfer(I2CDriver *i2cp) {
 
   /* Configures the CTRL2 registers with both the calculated and static
      settings.*/
-  dp->CTRL2 = (dp->CTRL2 & ~(I2C_CTRL2_CNT_MASK | I2C_CTRL2_RLDEN)) | i2cp->config->ctrl2 |
-               I2C_CTRL2_DIR | (n << 16U) | rlden;
+  dp->CTRL2 = (dp->CTRL2 & ~(I2C_CTRL2_CNT | I2C_CTRL2_RLDEN)) | i2cp->config->ctrl2 |
+              I2C_CTRL2_DIR | (n << 16U) | rlden;
 }
 
 /**
@@ -186,14 +152,15 @@ static void i2c_lld_setup_tx_transfer(I2CDriver *i2cp) {
   if (n > 255U) {
     n = 255U;
     rlden = I2C_CTRL2_RLDEN;
-  } else {
+  }
+  else {
     rlden = 0U;
   }
 
   /* Configures the CTRL2 registers with both the calculated and static
      settings.*/
-  dp->CTRL2 = (dp->CTRL2 & ~(I2C_CTRL2_CNT_MASK | I2C_CTRL2_RLDEN)) | i2cp->config->ctrl2 |
-               (n << 16U) | rlden;
+  dp->CTRL2 = (dp->CTRL2 & ~(I2C_CTRL2_CNT | I2C_CTRL2_RLDEN)) | i2cp->config->ctrl2 |
+              (n << 16U) | rlden;
 }
 
 /**
@@ -224,7 +191,7 @@ static void i2c_lld_abort_operation(I2CDriver *i2cp) {
 }
 
 /**
- * @brief   I2C shared ISR code.
+ * @brief   I2C shared STS code.
  *
  * @param[in] i2cp      pointer to the @p I2CDriver object
  * @param[in] sts       content of the STS register to be decoded
@@ -234,7 +201,7 @@ static void i2c_lld_abort_operation(I2CDriver *i2cp) {
 static void i2c_lld_serve_interrupt(I2CDriver *i2cp, uint32_t sts) {
   I2C_TypeDef *dp = i2cp->i2c;
 
-  /* Special case of a received NACK, the transfer is aborted.*/
+  /* Special case of a received ACKFAIL, the transfer is aborted.*/
   if ((sts & I2C_STS_ACKFAILF) != 0U) {
 #if AT32_I2C_USE_DMA == TRUE
     /* Stops the associated DMA streams.*/
@@ -245,7 +212,7 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp, uint32_t sts) {
     /* Error flag.*/
     i2cp->errors |= I2C_ACK_FAILURE;
 
-    /* Transaction finished sending the STOP.*/
+    /* Transaction finished sending the GENSTOP.*/
     dp->CTRL2 |= I2C_CTRL2_GENSTOP;
 
     /* Make sure no more interrupts.*/
@@ -339,7 +306,7 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp, uint32_t sts) {
 #endif
     }
 
-    /* Transaction finished sending the STOP.*/
+    /* Transaction finished sending the GENSTOP.*/
     dp->CTRL2 |= I2C_CTRL2_GENSTOP;
 
     /* Make sure no more 'Transfer Complete' interrupts.*/
@@ -555,61 +522,6 @@ OSAL_IRQ_HANDLER(AT32_I2C3_ERROR_HANDLER) {
 #endif
 #endif /* AT32_I2C_USE_I2C3 */
 
-#if AT32_I2C_USE_I2C4 || defined(__DOXYGEN__)
-#if defined(AT32_I2C4_GLOBAL_HANDLER) || defined(__DOXYGEN__)
-/**
- * @brief   I2C4 event interrupt handler.
- *
- * @notapi
- */
-OSAL_IRQ_HANDLER(AT32_I2C4_GLOBAL_HANDLER) {
-  uint32_t sts = I2CD4.i2c->STS;
-
-  OSAL_IRQ_PROLOGUE();
-
-  /* Clearing IRQ bits.*/
-  I2CD4.i2c->CLR = sts;
-
-  if (sts & I2C_ERROR_MASK)
-    i2c_lld_serve_error_interrupt(&I2CD4, sts);
-  else if (sts & I2C_INT_MASK)
-    i2c_lld_serve_interrupt(&I2CD4, sts);
-
-  OSAL_IRQ_EPILOGUE();
-}
-
-#elif defined(AT32_I2C4_EVENT_HANDLER) && defined(AT32_I2C4_ERROR_HANDLER)
-OSAL_IRQ_HANDLER(AT32_I2C4_EVENT_HANDLER) {
-  uint32_t sts = I2CD4.i2c->STS;
-
-  OSAL_IRQ_PROLOGUE();
-
-  /* Clearing IRQ bits.*/
-  I2CD4.i2c->CLR = sts & I2C_INT_MASK;
-
-  i2c_lld_serve_interrupt(&I2CD4, sts);
-
-  OSAL_IRQ_EPILOGUE();
-}
-
-OSAL_IRQ_HANDLER(AT32_I2C4_ERROR_HANDLER) {
-  uint32_t sts = I2CD4.i2c->STS;
-
-  OSAL_IRQ_PROLOGUE();
-
-  /* Clearing IRQ bits.*/
-  I2CD4.i2c->CLR = sts & I2C_ERROR_MASK;
-
-  i2c_lld_serve_error_interrupt(&I2CD4, sts);
-
-  OSAL_IRQ_EPILOGUE();
-}
-
-#else
-#error "I2C4 interrupt handlers not defined"
-#endif
-#endif /* AT32_I2C_USE_I2C4 */
-
 /*===========================================================================*/
 /* Driver exported functions.                                                */
 /*===========================================================================*/
@@ -650,16 +562,6 @@ void i2c_lld_init(void) {
   I2CD3.dmatx  = NULL;
 #endif
 #endif /* AT32_I2C_USE_I2C3 */
-
-#if AT32_I2C_USE_I2C4
-  i2cObjectInit(&I2CD4);
-  I2CD4.thread = NULL;
-  I2CD4.i2c    = I2C4;
-#if AT32_I2C_USE_DMA == TRUE
-  I2CD4.dmarx  = NULL;
-  I2CD4.dmatx  = NULL;
-#endif
-#endif /* AT32_I2C_USE_I2C4 */
 }
 
 /**
@@ -680,8 +582,8 @@ void i2c_lld_start(I2CDriver *i2cp) {
 
 #if AT32_I2C_USE_DMA == TRUE
     /* Common DMA modes.*/
-    i2cp->txdmamode = DMAMODE_COMMON | AT32_DMA_CTRL_DTD_M2P;
-    i2cp->rxdmamode = DMAMODE_COMMON | AT32_DMA_CTRL_DTD_P2M;
+    i2cp->txdmamode = DMAMODE_COMMON | AT32_DMA_CCTRL_DTD_M2P;
+    i2cp->rxdmamode = DMAMODE_COMMON | AT32_DMA_CCTRL_DTD_P2M;
 #endif
 
 #if AT32_I2C_USE_I2C1
@@ -702,18 +604,11 @@ void i2c_lld_start(I2CDriver *i2cp) {
                                       (void *)i2cp);
         osalDbgAssert(i2cp->dmatx != NULL, "unable to allocate stream");
 
-        i2cp->rxdmamode |= AT32_DMA_CTRL_CHSEL(I2C1_RX_DMA_CHANNEL) |
-                           AT32_DMA_CTRL_CHPL(AT32_I2C_I2C1_DMA_PRIORITY);
-        i2cp->txdmamode |= AT32_DMA_CTRL_CHSEL(I2C1_TX_DMA_CHANNEL) |
-                           AT32_DMA_CTRL_CHPL(AT32_I2C_I2C1_DMA_PRIORITY);
+        i2cp->rxdmamode |= AT32_DMA_CCTRL_CHPL(AT32_I2C_I2C1_DMA_PRIORITY);
+        i2cp->txdmamode |= AT32_DMA_CCTRL_CHPL(AT32_I2C_I2C1_DMA_PRIORITY);
 #if AT32_DMA_SUPPORTS_DMAMUX
-#if AT32_USE_DMA_V1 && AT32_DMA_USE_DMAMUX
-        dmaSetRequestSource(i2cp->dmarx, AT32_I2C_I2C1_RX_DMAMUX_CHANNEL, AT32_DMAMUX_I2C1_RX);
-        dmaSetRequestSource(i2cp->dmatx, AT32_I2C_I2C1_TX_DMAMUX_CHANNEL, AT32_DMAMUX_I2C1_TX);
-#elif AT32_USE_DMA_V2 || AT32_USE_DMA_V3
         dmaSetRequestSource(i2cp->dmarx, AT32_DMAMUX_I2C1_RX);
         dmaSetRequestSource(i2cp->dmatx, AT32_DMAMUX_I2C1_TX);
-#endif
 #endif
       }
 #endif /* AT32_I2C_USE_DMA == TRUE */
@@ -747,18 +642,11 @@ void i2c_lld_start(I2CDriver *i2cp) {
                                       (void *)i2cp);
         osalDbgAssert(i2cp->dmatx != NULL, "unable to allocate stream");
 
-        i2cp->rxdmamode |= AT32_DMA_CTRL_CHSEL(I2C2_RX_DMA_CHANNEL) |
-                           AT32_DMA_CTRL_CHPL(AT32_I2C_I2C2_DMA_PRIORITY);
-        i2cp->txdmamode |= AT32_DMA_CTRL_CHSEL(I2C2_TX_DMA_CHANNEL) |
-                           AT32_DMA_CTRL_CHPL(AT32_I2C_I2C2_DMA_PRIORITY);
+        i2cp->rxdmamode |= AT32_DMA_CCTRL_CHPL(AT32_I2C_I2C2_DMA_PRIORITY);
+        i2cp->txdmamode |= AT32_DMA_CCTRL_CHPL(AT32_I2C_I2C2_DMA_PRIORITY);
 #if AT32_DMA_SUPPORTS_DMAMUX
-#if AT32_USE_DMA_V1 && AT32_DMA_USE_DMAMUX
-        dmaSetRequestSource(i2cp->dmarx, AT32_I2C_I2C2_RX_DMAMUX_CHANNEL, AT32_DMAMUX_I2C2_RX);
-        dmaSetRequestSource(i2cp->dmatx, AT32_I2C_I2C2_TX_DMAMUX_CHANNEL, AT32_DMAMUX_I2C2_TX);
-#elif AT32_USE_DMA_V2 || AT32_USE_DMA_V3
         dmaSetRequestSource(i2cp->dmarx, AT32_DMAMUX_I2C2_RX);
         dmaSetRequestSource(i2cp->dmatx, AT32_DMAMUX_I2C2_TX);
-#endif
 #endif
       }
 #endif /* AT32_I2C_USE_DMA == TRUE */
@@ -792,18 +680,11 @@ void i2c_lld_start(I2CDriver *i2cp) {
                                       (void *)i2cp);
         osalDbgAssert(i2cp->dmatx != NULL, "unable to allocate stream");
 
-        i2cp->rxdmamode |= AT32_DMA_CTRL_CHSEL(I2C3_RX_DMA_CHANNEL) |
-                           AT32_DMA_CTRL_CHPL(AT32_I2C_I2C3_DMA_PRIORITY);
-        i2cp->txdmamode |= AT32_DMA_CTRL_CHSEL(I2C3_TX_DMA_CHANNEL) |
-                           AT32_DMA_CTRL_CHPL(AT32_I2C_I2C3_DMA_PRIORITY);
+        i2cp->rxdmamode |= AT32_DMA_CCTRL_CHPL(AT32_I2C_I2C3_DMA_PRIORITY);
+        i2cp->txdmamode |= AT32_DMA_CCTRL_CHPL(AT32_I2C_I2C3_DMA_PRIORITY);
 #if AT32_DMA_SUPPORTS_DMAMUX
-#if AT32_USE_DMA_V1 && AT32_DMA_USE_DMAMUX
-        dmaSetRequestSource(i2cp->dmarx, AT32_I2C_I2C3_RX_DMAMUX_CHANNEL, AT32_DMAMUX_I2C3_RX);
-        dmaSetRequestSource(i2cp->dmatx, AT32_I2C_I2C3_TX_DMAMUX_CHANNEL, AT32_DMAMUX_I2C3_TX);
-#elif AT32_USE_DMA_V2 || AT32_USE_DMA_V3
         dmaSetRequestSource(i2cp->dmarx, AT32_DMAMUX_I2C3_RX);
         dmaSetRequestSource(i2cp->dmatx, AT32_DMAMUX_I2C3_TX);
-#endif
 #endif
       }
 #endif /* AT32_I2C_USE_DMA == TRUE */
@@ -818,51 +699,6 @@ void i2c_lld_start(I2CDriver *i2cp) {
 #endif
     }
 #endif /* AT32_I2C_USE_I2C3 */
-
-#if AT32_I2C_USE_I2C4
-    if (&I2CD4 == i2cp) {
-
-      crmResetI2C4();
-      crmEnableI2C4(true);
-#if AT32_I2C_USE_DMA == TRUE
-      {
-        i2cp->dmarx = dmaStreamAllocI(AT32_I2C_I2C4_RX_DMA_STREAM,
-                                      AT32_I2C_I2C4_IRQ_PRIORITY,
-                                      NULL,
-                                      (void *)i2cp);
-        osalDbgAssert(i2cp->dmarx != NULL, "unable to allocate stream");
-        i2cp->dmatx = dmaStreamAllocI(AT32_I2C_I2C4_TX_DMA_STREAM,
-                                      AT32_I2C_I2C4_IRQ_PRIORITY,
-                                      NULL,
-                                      (void *)i2cp);
-        osalDbgAssert(i2cp->dmatx != NULL, "unable to allocate stream");
-
-        i2cp->rxdmamode |= AT32_DMA_CTRL_CHSEL(I2C4_RX_DMA_CHANNEL) |
-                           AT32_DMA_CTRL_CHPL(AT32_I2C_I2C4_DMA_PRIORITY);
-        i2cp->txdmamode |= AT32_DMA_CTRL_CHSEL(I2C4_TX_DMA_CHANNEL) |
-                           AT32_DMA_CTRL_CHPL(AT32_I2C_I2C4_DMA_PRIORITY);
-#if AT32_DMA_SUPPORTS_DMAMUX
-#if AT32_USE_DMA_V1 && AT32_DMA_USE_DMAMUX
-        dmaSetRequestSource(i2cp->dmarx, AT32_I2C_I2C4_RX_DMAMUX_CHANNEL, AT32_DMAMUX_I2C4_RX);
-        dmaSetRequestSource(i2cp->dmatx, AT32_I2C_I2C4_TX_DMAMUX_CHANNEL, AT32_DMAMUX_I2C4_TX);
-#elif AT32_USE_DMA_V2 || AT32_USE_DMA_V3
-        dmaSetRequestSource(i2cp->dmarx, AT32_DMAMUX_I2C4_RX);
-        dmaSetRequestSource(i2cp->dmatx, AT32_DMAMUX_I2C4_TX);
-#endif
-#endif
-      }
-#endif /* AT32_I2C_USE_DMA == TRUE */
-
-#if defined(AT32_I2C4_GLOBAL_NUMBER) || defined(__DOXYGEN__)
-      nvicEnableVector(AT32_I2C4_GLOBAL_NUMBER, AT32_I2C_I2C4_IRQ_PRIORITY);
-#elif defined(AT32_I2C4_EVENT_NUMBER) && defined(AT32_I2C4_ERROR_NUMBER)
-      nvicEnableVector(AT32_I2C4_EVENT_NUMBER, AT32_I2C_I2C4_IRQ_PRIORITY);
-      nvicEnableVector(AT32_I2C4_ERROR_NUMBER, AT32_I2C_I2C4_IRQ_PRIORITY);
-#else
-#error "I2C4 interrupt numbers not defined"
-#endif
-    }
-#endif /* AT32_I2C_USE_I2C4 */
   }
 
 #if AT32_I2C_USE_DMA == TRUE
@@ -871,7 +707,7 @@ void i2c_lld_start(I2CDriver *i2cp) {
   dmaStreamSetPeripheral(i2cp->dmatx, &dp->TXDT);
 #endif
 
-  /* Reset i2c peripheral, the TCIE bit will be handled separately.*/
+  /* Reset i2c peripheral, the TDCIEN bit will be handled separately.*/
   dp->CTRL1 = i2cp->config->ctrl1 |
 #if AT32_I2C_USE_DMA == TRUE
               I2C_CTRL1_DMATEN | I2C_CTRL1_DMAREN | /* Enable only if using DMA */
@@ -950,21 +786,6 @@ void i2c_lld_stop(I2CDriver *i2cp) {
       crmDisableI2C3();
     }
 #endif
-
-#if AT32_I2C_USE_I2C4
-    if (&I2CD4 == i2cp) {
-#if defined(AT32_I2C4_GLOBAL_NUMBER) || defined(__DOXYGEN__)
-      nvicDisableVector(AT32_I2C4_GLOBAL_NUMBER);
-#elif defined(AT32_I2C4_EVENT_NUMBER) && defined(AT32_I2C4_ERROR_NUMBER)
-      nvicDisableVector(AT32_I2C4_EVENT_NUMBER);
-      nvicDisableVector(AT32_I2C4_ERROR_NUMBER);
-#else
-#error "I2C4 interrupt numbers not defined"
-#endif
-
-      crmDisableI2C4();
-    }
-#endif
   }
 }
 
@@ -1016,7 +837,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   start = osalOsGetSystemTimeX();
   end = osalTimeAddX(start, OSAL_MS2I(AT32_I2C_BUSY_TIMEOUT));
 
-  /* Waits until BUSY flag is reset or, alternatively, for a timeout
+  /* Waits until BUSYF flag is reset or, alternatively, for a timeout
      condition.*/
   while (true) {
     osalSysLock();
@@ -1059,7 +880,7 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
   /* Waits for the operation completion or a timeout.*/
   msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
 
-  /* In case of a software timeout a STOP is sent as an extreme attempt
+  /* In case of a software timeout a GENSTOP is sent as an extreme attempt
      to release the bus and DMA is forcibly disabled.*/
   if (msg == MSG_TIMEOUT) {
     dp->CTRL2 |= I2C_CTRL2_GENSTOP;
@@ -1171,7 +992,7 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
   /* Waits for the operation completion or a timeout.*/
   msg = osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
 
-  /* In case of a software timeout a STOP is sent as an extreme attempt
+  /* In case of a software timeout a GENSTOP is sent as an extreme attempt
      to release the bus and DMA is forcibly disabled.*/
   if (msg == MSG_TIMEOUT) {
     dp->CTRL2 |= I2C_CTRL2_GENSTOP;

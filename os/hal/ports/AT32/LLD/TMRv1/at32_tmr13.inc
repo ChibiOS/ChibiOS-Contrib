@@ -1,8 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
-    ChibiOS - Copyright (C) 2023..2024 Maxjta
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2024..2025 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -41,16 +41,16 @@
 /* Driver checks for robustness, undefined USE macros are defaulted to
    FALSE. This makes this module independent from drivers implementation.*/
 #if !defined(AT32_GPT_USE_TMR13)
-#define AT32_GPT_USE_TMR13                   FALSE
+#define AT32_GPT_USE_TMR13                  FALSE
 #endif
 #if !defined(AT32_ICU_USE_TMR13)
-#define AT32_ICU_USE_TMR13                   FALSE
+#define AT32_ICU_USE_TMR13                  FALSE
 #endif
 #if !defined(AT32_PWM_USE_TMR13)
-#define AT32_PWM_USE_TMR13                   FALSE
+#define AT32_PWM_USE_TMR13                  FALSE
 #endif
 #if !defined(AT32_ST_USE_TMR13)
-#define AT32_ST_USE_TMR13                    FALSE
+#define AT32_ST_USE_TMR13                   FALSE
 #endif
 
 #if AT32_HAS_TMR13

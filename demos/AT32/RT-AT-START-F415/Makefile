@@ -105,7 +105,7 @@ include $(CHIBIOS)/os/license/license.mk
 # Startup files.
 include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_at32f415.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/os/hal/hal.mk
+include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/AT32/AT32F415/platform.mk
 include $(CHIBIOS_CONTRIB)/os/hal/boards/AT_START_F415/board.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk

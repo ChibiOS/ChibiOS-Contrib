@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -65,6 +65,27 @@
  */
 #define AT32_DMA_IS_VALID_PRIORITY(prio) (((prio) >= 0U) && ((prio) <= 3U))
 
+#if (AT32_DMA_SUPPORTS_DMAMUX == FALSE) || defined(_DOXYGEN__)
+/**
+ * @brief   Checks if a DMA stream id is within the valid range.
+ *
+ * @param[in] id        DMA stream id
+ * @retval              The check result.
+ * @retval false        invalid DMA channel.
+ * @retval true         correct DMA channel.
+ */
+#define AT32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                       \
+                                       ((id) < AT32_DMA_STREAMS))
+#else /* AT32_DMA_SUPPORTS_DMAMUX == FALSE */
+#if AT32_DMA2_NUM_CHANNELS > 0
+#define AT32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                       \
+                                       ((id) <= (AT32_DMA_STREAMS + 2)))
+#else
+#define AT32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                       \
+                                       ((id) <= (AT32_DMA_STREAMS + 1)))
+#endif
+#endif /* AT32_DMA_SUPPORTS_DMAMUX == FALSE */
+
 /**
  * @brief   Returns an unique numeric identifier for a DMA stream.
  *
@@ -72,7 +93,7 @@
  * @param[in] stream    the stream number
  * @return              An unique numeric stream identifier.
  */
-#define AT32_DMA_STREAM_ID(dma, stream)                                    \
+#define AT32_DMA_STREAM_ID(dma, stream)                                     \
   ((((dma) - 1) * AT32_DMA1_NUM_CHANNELS) + ((stream) - 1))
 
 /**

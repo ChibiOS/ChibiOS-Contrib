@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -153,7 +153,8 @@ static void usart_start(UARTDriver *uartp) {
   usart_stop(uartp);
 
   /* Baud rate setting.*/
-  baudr = (uint32_t)((uartp->clock + uartp->config->speed/2) / uartp->config->speed);
+  baudr = (uint32_t)((uartp->clock + uartp->config->speed / 2) /
+                     uartp->config->speed);
   u->BAUDR = baudr;
 
   /* Resetting eventual pending status flags.*/
@@ -180,7 +181,7 @@ static void usart_start(UARTDriver *uartp) {
  * @brief   RX DMA common service routine.
  *
  * @param[in] uartp     pointer to the @p UARTDriver object
- * @param[in] flags     pre-shifted content of the ISR register
+ * @param[in] flags     pre-shifted content of the STS register
  */
 static void uart_lld_serve_rx_end_irq(UARTDriver *uartp, uint32_t flags) {
 
@@ -210,7 +211,7 @@ static void uart_lld_serve_rx_end_irq(UARTDriver *uartp, uint32_t flags) {
  * @brief   TX DMA common service routine.
  *
  * @param[in] uartp     pointer to the @p UARTDriver object
- * @param[in] flags     pre-shifted content of the ISR register
+ * @param[in] flags     pre-shifted content of the STS register
  */
 static void uart_lld_serve_tx_end_irq(UARTDriver *uartp, uint32_t flags) {
 
@@ -351,52 +352,52 @@ void uart_lld_init(void) {
 
 #if AT32_UART_USE_USART1
   uartObjectInit(&UARTD1);
-  UARTD1.usart   = USART1;
-  UARTD1.clock   = AT32_PCLK2;
+  UARTD1.usart = USART1;
+  UARTD1.clock = AT32_PCLK2;
   UARTD1.dmarxmode = AT32_DMA_CCTRL_DTERRIEN;
   UARTD1.dmatxmode = AT32_DMA_CCTRL_DTERRIEN;
-  UARTD1.dmarx   = NULL;
-  UARTD1.dmatx   = NULL;
+  UARTD1.dmarx = NULL;
+  UARTD1.dmatx = NULL;
 #endif
 
 #if AT32_UART_USE_USART2
   uartObjectInit(&UARTD2);
-  UARTD2.usart   = USART2;
-  UARTD2.clock   = AT32_PCLK1;
+  UARTD2.usart = USART2;
+  UARTD2.clock = AT32_PCLK1;
   UARTD2.dmarxmode = AT32_DMA_CCTRL_DTERRIEN;
   UARTD2.dmatxmode = AT32_DMA_CCTRL_DTERRIEN;
-  UARTD2.dmarx   = NULL;
-  UARTD2.dmatx   = NULL;
+  UARTD2.dmarx = NULL;
+  UARTD2.dmatx = NULL;
 #endif
 
 #if AT32_UART_USE_USART3
   uartObjectInit(&UARTD3);
-  UARTD3.usart   = USART3;
-  UARTD3.clock   = AT32_PCLK1;
+  UARTD3.usart = USART3;
+  UARTD3.clock = AT32_PCLK1;
   UARTD3.dmarxmode = AT32_DMA_CCTRL_DTERRIEN;
   UARTD3.dmatxmode = AT32_DMA_CCTRL_DTERRIEN;
-  UARTD3.dmarx   = NULL;
-  UARTD3.dmatx   = NULL;
+  UARTD3.dmarx = NULL;
+  UARTD3.dmatx = NULL;
 #endif
 
 #if AT32_UART_USE_UART4
   uartObjectInit(&UARTD4);
-  UARTD4.usart   = UART4;
-  UARTD4.clock   = AT32_PCLK1;
+  UARTD4.usart = UART4;
+  UARTD4.clock = AT32_PCLK1;
   UARTD4.dmarxmode = AT32_DMA_CCTRL_DTERRIEN;
   UARTD4.dmatxmode = AT32_DMA_CCTRL_DTERRIEN;
-  UARTD4.dmarx   = NULL;
-  UARTD4.dmatx   = NULL;
+  UARTD4.dmarx = NULL;
+  UARTD4.dmatx = NULL;
 #endif
 
 #if AT32_UART_USE_UART5
   uartObjectInit(&UARTD5);
-  UARTD5.usart   = UART5;
-  UARTD5.clock   = AT32_PCLK1;
+  UARTD5.usart = UART5;
+  UARTD5.clock = AT32_PCLK1;
   UARTD5.dmarxmode = AT32_DMA_CCTRL_DTERRIEN;
   UARTD5.dmatxmode = AT32_DMA_CCTRL_DTERRIEN;
-  UARTD5.dmarx   = NULL;
-  UARTD5.dmatx   = NULL;
+  UARTD5.dmarx = NULL;
+  UARTD5.dmatx = NULL;
 #endif
 }
 
@@ -548,7 +549,7 @@ void uart_lld_start(UARTDriver *uartp) {
 #endif
 
     /* Static DMA setup, the transfer size depends on the USART settings,
-       it is 16 bits if M=1 and PEN=0 else it is 8 bits.*/
+       it is 16 bits if DBN=1 and PEN=0 else it is 8 bits.*/
     if ((uartp->config->ctrl1 & (USART_CTRL1_DBN | USART_CTRL1_PEN)) == USART_CTRL1_DBN) {
       uartp->dmarxmode |= AT32_DMA_CCTRL_PWIDTH_HWORD | AT32_DMA_CCTRL_MWIDTH_HWORD;
       uartp->dmatxmode |= AT32_DMA_CCTRL_PWIDTH_HWORD | AT32_DMA_CCTRL_MWIDTH_HWORD;

@@ -33,6 +33,7 @@
     .global     usb_memcpy
 
 /* size_t usb_memcpy(volatile void* destination, const volatile void* source, size_t num); */
+.type usb_memcpy, %function
 usb_memcpy:
   cmp     r2, #0
   beq.n   zero_return

@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -38,9 +38,15 @@ static void ledoff(virtual_timer_t *vtp, void *p) {
   (void)vtp;
   (void)p;
 
+#if defined(AT32F415)
   palSetLine(PORTAB_BLINK_LED1);
   palSetLine(PORTAB_BLINK_LED2);
   palSetLine(PORTAB_BLINK_LED3);
+#else
+  palClearLine(PORTAB_BLINK_LED1);
+  palClearLine(PORTAB_BLINK_LED2);
+  palClearLine(PORTAB_BLINK_LED3);
+#endif
 }
 
 /*
@@ -51,9 +57,15 @@ void txend1(UARTDriver *uartp) {
 
   (void)uartp;
 
+#if defined(AT32F415)
   palClearLine(PORTAB_BLINK_LED1);
   palClearLine(PORTAB_BLINK_LED2);
   palClearLine(PORTAB_BLINK_LED3);
+#else
+  palSetLine(PORTAB_BLINK_LED1);
+  palSetLine(PORTAB_BLINK_LED2);
+  palSetLine(PORTAB_BLINK_LED3);
+#endif
 }
 
 /*
@@ -63,10 +75,15 @@ void txend2(UARTDriver *uartp) {
 
   (void)uartp;
 
+#if defined(AT32F415)
   palSetLine(PORTAB_BLINK_LED1);
   palSetLine(PORTAB_BLINK_LED2);
   palSetLine(PORTAB_BLINK_LED3);
-
+#else
+  palClearLine(PORTAB_BLINK_LED1);
+  palClearLine(PORTAB_BLINK_LED2);
+  palClearLine(PORTAB_BLINK_LED3);
+#endif
   chSysLockFromISR();
   chVTSetI(&vt1, TIME_MS2I(5000), restart, NULL);
   chSysUnlockFromISR();
@@ -92,9 +109,15 @@ void rxchar(UARTDriver *uartp, uint16_t c) {
   (void)c;
 
   /* Flashing the LED each time a character is received.*/
+#if defined(AT32F415)
   palClearLine(PORTAB_BLINK_LED1);
   palClearLine(PORTAB_BLINK_LED2);
   palClearLine(PORTAB_BLINK_LED3);
+#else
+  palSetLine(PORTAB_BLINK_LED1);
+  palSetLine(PORTAB_BLINK_LED2);
+  palSetLine(PORTAB_BLINK_LED3);
+#endif
 
   chSysLockFromISR();
   chVTSetI(&vt2, TIME_MS2I(200), ledoff, NULL);

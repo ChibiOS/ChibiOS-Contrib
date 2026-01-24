@@ -59,7 +59,8 @@ Note:
 #define EEPROM_I2C_CLOCK (i2cp->config->clock_speed)
 #endif
 */
-#define EEPROM_I2C_CLOCK 400000
+/* Fallback frequency if not provided via config and not detectable */
+#define EEPROM_I2C_CLOCK_DEFAULT 400000U
 
 /*
  ******************************************************************************
@@ -98,12 +99,13 @@ Note:
 /**
  * @brief     Calculates requred timeout.
  */
-static systime_t calc_timeout(I2CDriver *i2cp, size_t txbytes, size_t rxbytes) {
+static systime_t calc_timeout(I2CDriver *i2cp, size_t txbytes, size_t rxbytes, uint32_t bus_hz) {
   (void)i2cp;
   const uint32_t bitsinbyte = 10;
   uint32_t tmo;
+  uint32_t freq = bus_hz ? bus_hz : EEPROM_I2C_CLOCK_DEFAULT;
   tmo = ((txbytes + rxbytes + 1) * bitsinbyte * 1000);
-  tmo /= EEPROM_I2C_CLOCK;
+  tmo /= freq;
   tmo += 10; /* some additional milliseconds to be safer */
   return TIME_MS2I(tmo);
 }
@@ -120,19 +122,37 @@ static msg_t eeprom_read(const I2CEepromFileConfig *eepcfg,
                          uint32_t offset, uint8_t *data, size_t len) {
 
   msg_t status = MSG_RESET;
-  systime_t tmo = calc_timeout(eepcfg->i2cp, 2, len);
+  /* Determine addressing mode based on device size. Devices up to 16 Kbit (2 KB)
+     use a 1-byte word address with block select bits in the I2C address. Larger
+     devices use 2-byte word addresses. */
+  const bool one_byte_addr = (eepcfg->size <= 2048U);
+  const uint32_t eff_off = offset + eepcfg->barrier_low;
+  const size_t addr_bytes = one_byte_addr ? 1U : 2U;
+  systime_t tmo = calc_timeout(eepcfg->i2cp, addr_bytes, len, eepcfg->bus_hz);
 
   osalDbgAssert(((len <= eepcfg->size) && ((offset + len) <= eepcfg->size)),
              "out of device bounds");
 
-  eeprom_split_addr(eepcfg->write_buf, (offset + eepcfg->barrier_low));
+  /* Prepare address buffer */
+  if (one_byte_addr) {
+    eepcfg->write_buf[0] = (uint8_t)(eff_off & 0xFFU);
+  } else {
+    eeprom_split_addr(eepcfg->write_buf, eff_off);
+  }
+
+  /* Compute 7-bit I2C address, adding block select bits for small-density parts. */
+  i2caddr_t i2c_addr = eepcfg->addr;
+  if (one_byte_addr) {
+    /* Up to 8 blocks (24C16) use bits [10:8]; for 24C08 only [9:8] are used. */
+    i2c_addr = (i2caddr_t)(eepcfg->addr | ((eff_off >> 8U) & 0x07U));
+  }
 
 #if I2C_USE_MUTUAL_EXCLUSION
   i2cAcquireBus(eepcfg->i2cp);
 #endif
 
-  status = i2cMasterTransmitTimeout(eepcfg->i2cp, eepcfg->addr,
-                                    eepcfg->write_buf, 2, data, len, tmo);
+  status = i2cMasterTransmitTimeout(eepcfg->i2cp, i2c_addr,
+                                    eepcfg->write_buf, addr_bytes, data, len, tmo);
 
 #if I2C_USE_MUTUAL_EXCLUSION
   i2cReleaseBus(eepcfg->i2cp);
@@ -154,7 +174,10 @@ static msg_t eeprom_read(const I2CEepromFileConfig *eepcfg,
 static msg_t eeprom_write(const I2CEepromFileConfig *eepcfg, uint32_t offset,
                           const uint8_t *data, size_t len) {
   msg_t status = MSG_RESET;
-  systime_t tmo = calc_timeout(eepcfg->i2cp, (len + 2), 0);
+  const bool one_byte_addr = (eepcfg->size <= 2048U);
+  const uint32_t eff_off = offset + eepcfg->barrier_low;
+  const size_t addr_bytes = one_byte_addr ? 1U : 2U;
+  systime_t tmo = calc_timeout(eepcfg->i2cp, (len + addr_bytes), 0, eepcfg->bus_hz);
 
   osalDbgAssert(((len <= eepcfg->size) && ((offset + len) <= eepcfg->size)),
              "out of device bounds");
@@ -163,16 +186,26 @@ static msg_t eeprom_write(const I2CEepromFileConfig *eepcfg, uint32_t offset,
              "data can not be fitted in single page");
 
   /* write address bytes */
-  eeprom_split_addr(eepcfg->write_buf, (offset + eepcfg->barrier_low));
+  if (one_byte_addr) {
+    eepcfg->write_buf[0] = (uint8_t)(eff_off & 0xFFU);
+  } else {
+    eeprom_split_addr(eepcfg->write_buf, eff_off);
+  }
   /* write data bytes */
-  memcpy(&(eepcfg->write_buf[2]), data, len);
+  memcpy(&(eepcfg->write_buf[addr_bytes]), data, len);
+
+  /* Compute 7-bit I2C address, adding block select bits for small-density parts. */
+  i2caddr_t i2c_addr = eepcfg->addr;
+  if (one_byte_addr) {
+    i2c_addr = (i2caddr_t)(eepcfg->addr | ((eff_off >> 8U) & 0x07U));
+  }
 
 #if I2C_USE_MUTUAL_EXCLUSION
   i2cAcquireBus(eepcfg->i2cp);
 #endif
 
-  status = i2cMasterTransmitTimeout(eepcfg->i2cp, eepcfg->addr,
-                                    eepcfg->write_buf, (len + 2), NULL, 0, tmo);
+  status = i2cMasterTransmitTimeout(eepcfg->i2cp, i2c_addr,
+                                    eepcfg->write_buf, (len + addr_bytes), NULL, 0, tmo);
 
 #if I2C_USE_MUTUAL_EXCLUSION
   i2cReleaseBus(eepcfg->i2cp);
@@ -228,6 +261,7 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
   uint16_t pagesize;
   uint32_t firstpage;
   uint32_t lastpage;
+  bool     one_byte_addr;
 
   osalDbgCheck((ip != NULL) && (((EepromFileStream *)ip)->vmt != NULL));
 
@@ -239,6 +273,7 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
     return 0;
 
   pagesize  =  ((EepromFileStream *)ip)->cfg->pagesize;
+  one_byte_addr = (((EepromFileStream *)ip)->cfg->size <= 2048U);
   firstpage = (((EepromFileStream *)ip)->cfg->barrier_low +
                eepfs_getposition(ip, NULL)) / pagesize;
   lastpage  = (((EepromFileStream *)ip)->cfg->barrier_low +
@@ -247,6 +282,13 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
   /* data fits in single page */
   if (firstpage == lastpage) {
     len = n;
+    if (one_byte_addr) {
+      /* Do not cross 256-byte block address boundary in one transaction */
+      uint32_t pos     = eepfs_getposition(ip, NULL);
+      uint32_t eff_pos = ((EepromFileStream *)ip)->cfg->barrier_low + pos;
+      size_t block_rem = 256U - (eff_pos & 0xFFU);
+      if (len > block_rem) len = block_rem;
+    }
     __fitted_write(ip, bp, len, &written);
     return written;
   }
@@ -255,6 +297,12 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
     /* write first piece of data to first page boundary */
     len =  ((firstpage + 1) * pagesize) - eepfs_getposition(ip, NULL);
     len -= ((EepromFileStream *)ip)->cfg->barrier_low;
+    if (one_byte_addr) {
+      uint32_t pos     = eepfs_getposition(ip, NULL);
+      uint32_t eff_pos = ((EepromFileStream *)ip)->cfg->barrier_low + pos;
+      size_t block_rem = 256U - (eff_pos & 0xFFU);
+      if (len > block_rem) len = block_rem;
+    }
     if (__fitted_write(ip, bp, len, &written) != MSG_OK)
       return written;
     bp += len;
@@ -262,6 +310,12 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
     /* now write page sized blocks (zero or more) */
     while ((n - written) > pagesize) {
       len = pagesize;
+      if (one_byte_addr) {
+        uint32_t pos     = eepfs_getposition(ip, NULL);
+        uint32_t eff_pos = ((EepromFileStream *)ip)->cfg->barrier_low + pos;
+        size_t block_rem = 256U - (eff_pos & 0xFFU);
+        if (len > block_rem) len = block_rem;
+      }
       if (__fitted_write(ip, bp, len, &written) != MSG_OK)
         return written;
       bp += len;
@@ -272,6 +326,12 @@ static size_t write(void *ip, const uint8_t *bp, size_t n) {
     if (len == 0)
       return written;
     else {
+      if (one_byte_addr) {
+        uint32_t pos     = eepfs_getposition(ip, NULL);
+        uint32_t eff_pos = ((EepromFileStream *)ip)->cfg->barrier_low + pos;
+        size_t block_rem = 256U - (eff_pos & 0xFFU);
+        if (len > block_rem) len = block_rem;
+      }
       __fitted_write(ip, bp, len, &written);
     }
   }
@@ -324,15 +384,28 @@ static size_t read(void *ip, uint8_t *bp, size_t n) {
   }
 #endif /* defined(STM32F1XX_I2C) */
 
-  /* call low level function */
-  status  = eeprom_read(((I2CEepromFileStream *)ip)->cfg,
-                        eepfs_getposition(ip, NULL), bp, n);
-  if (status != MSG_OK)
-    return 0;
-  else {
-    eepfs_lseek(ip, (eepfs_getposition(ip, NULL) + n));
-    return n;
+  /* Perform reads, splitting at 256-byte block boundaries for small devices. */
+  size_t read_total = 0;
+  const bool one_byte_addr = (((I2CEepromFileStream *)ip)->cfg->size <= 2048U);
+  while (n > 0) {
+    size_t chunk = n;
+    if (one_byte_addr) {
+      uint32_t pos     = eepfs_getposition(ip, NULL);
+      uint32_t eff_pos = ((I2CEepromFileStream *)ip)->cfg->barrier_low + pos;
+      size_t block_rem = 256U - (eff_pos & 0xFFU);
+      if (chunk > block_rem) chunk = block_rem;
+    }
+    status = eeprom_read(((I2CEepromFileStream *)ip)->cfg,
+                         eepfs_getposition(ip, NULL), bp, chunk);
+    if (status != MSG_OK) {
+      return read_total; /* return bytes read so far */
+    }
+    eepfs_lseek(ip, (eepfs_getposition(ip, NULL) + chunk));
+    bp         += chunk;
+    n          -= chunk;
+    read_total += chunk;
   }
+  return read_total;
 }
 
 static const struct EepromFileStreamVMT vmt = {

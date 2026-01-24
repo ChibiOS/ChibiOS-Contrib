@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2026 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,12 +27,15 @@
  *          - AT32_HEXT_BYPASS (optionally).
  *          .
  *          One of the following macros must also be defined:
- *          - AT32F415KB for K Value Medium Density devices.
- *          - AT32F415CB for C Value Medium Density devices.
- *          - AT32F415RB for R Value Medium Density devices.
- *          - AT32F415KC for K Value High Density devices.
- *          - AT32F415CC for C Value High Density devices.
- *          - AT32F415RC for R Value High Density devices.
+ *          - AT32F415K8, AT32F415KB for 32 pin Value Line
+              Medium Density devices.
+ *          - AT32F415KC for 32 pin Value Line High Density devices.
+ *          - AT32F415C8, AT32F415CB for 48 pin Value Line
+              Medium Density devices.
+ *          - AT32F415CC for 48 pin Value Line High Density devices.
+ *          - AT32F415R8, AT32F415RB for 64 pin Value Line
+              Medium Density devices.
+ *          - AT32F415RC for 64 pin Value Line High Density devices.
  *          .
  *
  * @addtogroup HAL
@@ -60,22 +63,22 @@
 #if defined(__DOXYGEN__)
 #define PLATFORM_NAME               "AT32F415"
 
-#elif defined(AT32F415K_MD)
+#elif defined(AT32F415KB)
 #define PLATFORM_NAME               "AT32F415K Value Line Medium Density"
 
-#elif defined(AT32F415K_HD)
+#elif defined(AT32F415KC)
 #define PLATFORM_NAME               "AT32F415K Value Line High Density"
 
-#elif defined(AT32F415C_MD)
+#elif defined(AT32F415CB)
 #define PLATFORM_NAME               "AT32F415C Value Line Medium Density"
 
-#elif defined(AT32F415C_HD)
+#elif defined(AT32F415CC)
 #define PLATFORM_NAME               "AT32F415C Value Line High Density"
 
-#elif defined(AT32F415R_MD)
+#elif defined(AT32F415RB)
 #define PLATFORM_NAME               "AT32F415R Value Line Medium Density"
 
-#elif defined(AT32F415R_HD)
+#elif defined(AT32F415RC)
 #define PLATFORM_NAME               "AT32F415R Value Line High Density"
 
 #else
@@ -506,7 +509,7 @@
  * @brief   ERTC clock source.
  */
 #if !defined(AT32_ERTCSEL) || defined(__DOXYGEN__)
-#define AT32_ERTCSEL                AT32_ERTCSEL_LICK
+#define AT32_ERTCSEL                AT32_ERTCSEL_NOCLOCK
 #endif
 /** @} */
 
@@ -721,10 +724,10 @@
  * @brief   PLL input and output clock frequency.
  */
 #if (AT32_PLLCFGEN == AT32_PLLCFGEN_SOLID) || defined(__DOXYGEN__)
-#define AT32_PLLCLKIN              AT32_PLLRCSCLK  
+#define AT32_PLLCLKIN              AT32_PLLRCSCLK
 #define AT32_PLLCLKOUT             (AT32_PLLCLKIN * AT32_PLLMULT_VALUE)
 #elif AT32_PLLCFGEN == AT32_PLLCFGEN_FLEX
-#define AT32_PLLCLKIN              (AT32_PLLRCSCLK / AT32_PLL_MS_VALUE) 
+#define AT32_PLLCLKIN              (AT32_PLLRCSCLK / AT32_PLL_MS_VALUE)
 #define AT32_PLLFRCLK              (AT32_PLLCLKIN * AT32_PLL_NS_VALUE)
 #define AT32_PLLCLKOUT             (AT32_PLLFRCLK / AT32_PLL_FR_VALUE)
 

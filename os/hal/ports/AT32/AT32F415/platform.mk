@@ -20,11 +20,12 @@ ifeq ($(HALCONFDIR),)
   endif
 endif
 
-HALCONF := $(strip $(shell cat $(HALCONFDIR)/halconf.h | egrep -e "\#define"))
+HALCONF := $(strip $(shell cat $(HALCONFDIR)/halconf.h $(HALCONFDIR)/halconf_community.h | egrep -e "\#define"))
 endif
 
 # Drivers compatible with the platform.
 include $(CHIBIOS_CONTRIB)/os/hal/ports/AT32/LLD/ADCv1/driver.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/AT32/LLD/CRCv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/AT32/LLD/DMAv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/AT32/LLD/EXINTv1/driver.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/AT32/LLD/GPIOv1/driver.mk

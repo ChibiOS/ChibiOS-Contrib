@@ -32,7 +32,7 @@
      defined(STM32F745xx) || defined(STM32F746xx) || \
      defined(STM32F756xx) || defined(STM32F767xx) || \
      defined(STM32F769xx) || defined(STM32F777xx) || \
-     defined(STM32F779xx))
+     defined(STM32F779xx) || defined(STM32H743xx))
 
 #if (HAL_USE_SDRAM == TRUE) || defined(__DOXYGEN__)
 
@@ -78,10 +78,12 @@ SDRAMDriver SDRAMD1;
  *
  * @notapi
  */
+#if !defined(STM32H743xx) // H7xx has no busy flag
 static void sdram_lld_wait_ready(void) {
   /* Wait until the SDRAM controller is ready */
   while (SDRAMD1.sdram->SDSR & FMC_SDSR_BUSY);
 }
+#endif
 
 /**
  * @brief   Executes the SDRAM memory initialization sequence.
@@ -102,36 +104,50 @@ static void sdram_lld_init_sequence(const SDRAMConfig *cfgp) {
 #endif
 
   /* Step 3: Configure a clock configuration enable command.*/
+#if !defined(STM32H743xx)
   sdram_lld_wait_ready();
+#endif
   SDRAMD1.sdram->SDCMR = FMCCM_CLK_ENABLED | command_target;
 
   /* Step 4: Insert delay (tipically 100uS).*/
   osalSysPolledDelayX(OSAL_US2RTC(STM32_HCLK, 100));
 
   /* Step 5: Configure a PALL (precharge all) command.*/
+#if !defined(STM32H743xx)
   sdram_lld_wait_ready();
+#endif
   SDRAMD1.sdram->SDCMR = FMCCM_PALL | command_target;
 
   /* Step 6.1: Configure a Auto-Refresh command: send the first command.*/
+#if !defined(STM32H743xx)
   sdram_lld_wait_ready();
+#endif
   SDRAMD1.sdram->SDCMR = FMCCM_AUTO_REFRESH | command_target |
       (cfgp->sdcmr & FMC_SDCMR_NRFS);
 
   /* Step 6.2: Send the second command.*/
+#if !defined(STM32H743xx)
   sdram_lld_wait_ready();
+#endif
   SDRAMD1.sdram->SDCMR = FMCCM_AUTO_REFRESH | command_target |
       (cfgp->sdcmr & FMC_SDCMR_NRFS);
 
   /* Step 7: Program the external memory mode register.*/
+#if !defined(STM32H743xx)
   sdram_lld_wait_ready();
+#endif
   SDRAMD1.sdram->SDCMR = FMCCM_LOAD_MODE | command_target |
       (cfgp->sdcmr & FMC_SDCMR_MRD);
 
   /* Step 8: Set clock.*/
+#if !defined(STM32H743xx)
   sdram_lld_wait_ready();
+#endif
   SDRAMD1.sdram->SDRTR = cfgp->sdrtr & FMC_SDRTR_COUNT;
 
+#if !defined(STM32H743xx)
   sdram_lld_wait_ready();
+#endif
 }
 
 /*===========================================================================*/
@@ -148,6 +164,10 @@ void sdram_lld_start(SDRAMDriver *sdramp, const SDRAMConfig *cfgp)
   sdramp->sdram->SDTR1 = cfgp->sdtr;
   sdramp->sdram->SDCR2 = cfgp->sdcr;
   sdramp->sdram->SDTR2 = cfgp->sdtr;
+
+#if defined(STM32H743xx)
+  FMC_Bank1_R->BTCR[0] |= FMC_BCR1_FMCEN;
+#endif
 
   sdram_lld_init_sequence(cfgp);
 }

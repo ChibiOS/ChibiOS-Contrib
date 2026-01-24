@@ -1,7 +1,7 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2024 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2024 Zhaqian
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -154,8 +154,8 @@ void _pal_lld_setgroupmode(ioportid_t port,
     8,          /* Reserved.*/
     8,          /* Reserved.*/
     8,          /* Reserved.*/
-    0xB,        /* PAL_MODE_AT32_ALTERNATE_PUSHPULL, 50MHz.*/
-    0xF,        /* PAL_MODE_AT32_ALTERNATE_OPENDRAIN, 50MHz.*/
+    0xB,        /* PAL_MODE_AT32_MUX_PUSHPULL, 50MHz.*/
+    0xF,        /* PAL_MODE_AT32_MUX_OPENDRAIN, 50MHz.*/
   };
   uint32_t mh, ml, cfghr, cfglr, cfg;
   unsigned i;

@@ -96,16 +96,16 @@
 
 
 #ifndef SYS0_CLKCFG_VAL
-#define SYS0_CLKCFG_VAL		0
+#define SYS0_CLKCFG_VAL		4
 #endif
 #ifndef EHS_FREQ
 #define EHS_FREQ					16
 #endif
 #ifndef PLL_ENABLE
-#define PLL_ENABLE				0
+#define PLL_ENABLE				1
 #endif
 #ifndef PLL_MSEL
-#define PLL_MSEL					1
+#define PLL_MSEL					2
 #endif
 #ifndef PLL_PSEL
 #define PLL_PSEL					0
@@ -171,7 +171,7 @@ uint32_t SystemCoreClock;	/*!< System Clock Frequency (Core Clock)*/
  *----------------------------------------------------------------------------*/
 void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
 {
-	uint32_t AHB_prescaler;
+	uint32_t AHB_prescaler = 0;
 
 	switch (SN_SYS0->CLKCFG_b.SYSCLKST)
 	{
@@ -214,17 +214,41 @@ void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
 	
 	if (SN_SYS0->AHBCP_b.DIV1P5 == 1)
 		SystemCoreClock = SystemCoreClock*2/3;
+}
+
+/**
+ * Initialize the Flash controller
+ *
+ * @param  none
+ * @return none
+ *
+ * @brief  Update the Flash power control.
+ */
+void FlashClockUpdate (void)
+{
 
 	//;;;;;;;;; Need for SN32F780 Begin	;;;;;;;;;
 	if (SystemCoreClock > 48000000)
-		SN_FLASH->LPCTRL = 0x5AFA0031;
+		SN_FLASH->LPCTRL = 0x5AFA0039;
 	else if (SystemCoreClock > 24000000)
-		SN_FLASH->LPCTRL = 0x5AFA0011;
-	else
-		SN_FLASH->LPCTRL = 0x5AFA0000;
+		SN_FLASH->LPCTRL = 0x5AFA0029;
+	else  //Slow mode required for SystemCoreClock <= 24000000
+		SlowModeSwitch();
 	//;;;;;;;;; Need for SN32F780 End	;;;;;;;;;
+}
 
-	return;
+/**
+ * Switch System to Slow Mode
+ * @param  none
+ * @return none
+ *
+ * @brief  Special init required for SystemCoreClock <= 24000000
+ */
+void SlowModeSwitch (void)
+{
+	SN_SYS0->CLKCFG_b.SYSCLKSEL = 0; //Switch to IHRC
+	SystemCoreClockUpdate();
+	SN_FLASH->LPCTRL = 0x5AFA0000;
 }
 
 /**
@@ -251,7 +275,7 @@ void SystemInit (void)
 	#if (SYS0_CLKCFG_VAL == EHSXTAL)	//EHS XTAL
 	#if (EHS_FREQ > 12)
 	SN_SYS0->ANBCTRL_b.EHSFREQ = 1;
-	SN_FLASH->LPCTRL = 0x5AFA0011;
+	SN_FLASH->LPCTRL = 0x5AFA0039;
 	#else
 	SN_SYS0->ANBCTRL_b.EHSFREQ = 0;
 	#endif
@@ -269,6 +293,7 @@ void SystemInit (void)
 	#endif
 
 	#if (PLL_ENABLE == 1)
+	SN_FLASH->LPCTRL = 0x5AFA0039;
 	SN_SYS0->PLLCTRL = SYS0_PLLCTRL_VAL;
 	if (PLL_CLKIN == 0x1)	//EHS XTAL as F_CLKIN
 	{
@@ -283,7 +308,6 @@ void SystemInit (void)
 	}
 	while ((SN_SYS0->CSST & 0x40) != 0x40);
 	#if (SYS0_CLKCFG_VAL == PLL)		//PLL
-	SN_FLASH->LPCTRL = 0x5AFA0031;
 	SN_SYS0->CLKCFG = 0x4;
 	while ((SN_SYS0->CLKCFG & 0x70) != 0x40);
 	#endif

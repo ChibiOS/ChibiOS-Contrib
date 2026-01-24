@@ -1,6 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2024 Maxjta
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2024..2025 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -51,39 +53,39 @@
  * @name    AT32-specific I/O mode flags
  * @{
  */
-#define PAL_AT32_MODE_MASK             (3U << 0U)
-#define PAL_AT32_MODE_INPUT            (0U << 0U)
-#define PAL_AT32_MODE_OUTPUT           (1U << 0U)
-#define PAL_AT32_MODE_ALTERNATE        (2U << 0U)
-#define PAL_AT32_MODE_ANALOG           (3U << 0U)
+#define PAL_AT32_MODE_MASK              (3U << 0U)
+#define PAL_AT32_MODE_INPUT             (0U << 0U)
+#define PAL_AT32_MODE_OUTPUT            (1U << 0U)
+#define PAL_AT32_MODE_MUX               (2U << 0U)
+#define PAL_AT32_MODE_ANALOG            (3U << 0U)
 
-#define PAL_AT32_OMODE_MASK            (1U << 2U)
-#define PAL_AT32_OMODE_PUSHPULL        (0U << 2U)
-#define PAL_AT32_OMODE_OPENDRAIN       (1U << 2U)
+#define PAL_AT32_OMODE_MASK             (1U << 2U)
+#define PAL_AT32_OMODE_PUSHPULL         (0U << 2U)
+#define PAL_AT32_OMODE_OPENDRAIN        (1U << 2U)
 
-#define PAL_AT32_ODRV_MASK             (3U << 3U)
-#define PAL_AT32_ODRV_STRONGER         (1U << 3U)
-#define PAL_AT32_ODRV_MODERATE         (2U << 3U)
+#define PAL_AT32_ODRVR_MASK             (3U << 3U)
+#define PAL_AT32_ODRVR_STRONGER         (1U << 3U)
+#define PAL_AT32_ODRVR_MODERATE         (2U << 3U)
 
-#define PAL_AT32_PULL_MASK             (3U << 5U)
-#define PAL_AT32_PULL_FLOATING         (0U << 5U)
-#define PAL_AT32_PULL_PULLUP           (1U << 5U)
-#define PAL_AT32_PULL_PULLDOWN         (2U << 5U)
+#define PAL_AT32_PULL_MASK              (3U << 5U)
+#define PAL_AT32_PULL_FLOATING          (0U << 5U)
+#define PAL_AT32_PULL_PULLUP            (1U << 5U)
+#define PAL_AT32_PULL_PULLDOWN          (2U << 5U)
 
-#define PAL_AT32_ALTERNATE_MASK        (15U << 7U)
-#define PAL_AT32_ALTERNATE(n)          ((n) << 7U)
+#define PAL_AT32_MUX_MASK               (15U << 7U)
+#define PAL_AT32_MUX(n)                 ((n) << 7U)
 
-#define PAL_AT32_HDRV_MASK             (1U << 11U)
-#define PAL_AT32_HDRV_NORMAL           (0U << 11U)
-#define PAL_AT32_HDRV_HUGE             (1U << 11U)
+#define PAL_AT32_HDRV_MASK              (1U << 11U)
+#define PAL_AT32_HDRV_DISABLED          (0U << 11U)
+#define PAL_AT32_HDRV_ENABLED           (1U << 11U)
 
 /**
- * @brief   Alternate function.
+ * @brief   Multiplexing function.
  *
- * @param[in] n         alternate function selector
+ * @param[in] n         multiplexing function selector
  */
-#define PAL_MODE_ALTERNATE(n)           (PAL_AT32_MODE_ALTERNATE |         \
-                                         PAL_AT32_ALTERNATE(n))
+#define PAL_MODE_MUX(n)                 (PAL_AT32_MODE_MUX |                \
+                                         PAL_AT32_MUX(n))
 /** @} */
 
 /**
@@ -108,13 +110,13 @@
 /**
  * @brief   Input pad with weak pull up resistor.
  */
-#define PAL_MODE_INPUT_PULLUP           (PAL_AT32_MODE_INPUT |             \
+#define PAL_MODE_INPUT_PULLUP           (PAL_AT32_MODE_INPUT |              \
                                          PAL_AT32_PULL_PULLUP)
 
 /**
  * @brief   Input pad with weak pull down resistor.
  */
-#define PAL_MODE_INPUT_PULLDOWN         (PAL_AT32_MODE_INPUT |             \
+#define PAL_MODE_INPUT_PULLDOWN         (PAL_AT32_MODE_INPUT |              \
                                          PAL_AT32_PULL_PULLDOWN)
 
 /**
@@ -125,13 +127,13 @@
 /**
  * @brief   Push-pull output pad.
  */
-#define PAL_MODE_OUTPUT_PUSHPULL        (PAL_AT32_MODE_OUTPUT |            \
+#define PAL_MODE_OUTPUT_PUSHPULL        (PAL_AT32_MODE_OUTPUT |             \
                                          PAL_AT32_OMODE_PUSHPULL)
 
 /**
  * @brief   Open-drain output pad.
  */
-#define PAL_MODE_OUTPUT_OPENDRAIN       (PAL_AT32_MODE_OUTPUT |            \
+#define PAL_MODE_OUTPUT_OPENDRAIN       (PAL_AT32_MODE_OUTPUT |             \
                                          PAL_AT32_OMODE_OPENDRAIN)
 /** @} */
 
@@ -208,7 +210,7 @@ typedef uint32_t ioline_t;
 typedef uint32_t ioeventmode_t;
 
 /**
- * @brief   Type of a port Identifier.
+ * @brief   Type of a port identifier.
  * @details This type can be a scalar or some kind of pointer, do not make
  *          any assumption about it, use the provided macros when populating
  *          variables of this type.
@@ -222,7 +224,7 @@ typedef uint32_t iopadid_t;
 
 /*===========================================================================*/
 /* I/O Ports Identifiers.                                                    */
-/* The low level driver wraps the definitions already present in the AT32   */
+/* The low level driver wraps the definitions already present in the AT32    */
 /* firmware library.                                                         */
 /*===========================================================================*/
 
@@ -280,27 +282,6 @@ typedef uint32_t iopadid_t;
  */
 #if AT32_HAS_GPIOH || defined(__DOXYGEN__)
 #define IOPORT8         GPIOH
-#endif
-
-/**
- * @brief   GPIO port I identifier.
- */
-#if AT32_HAS_GPIOI || defined(__DOXYGEN__)
-#define IOPORT9         GPIOI
-#endif
-
-/**
- * @brief   GPIO port J identifier.
- */
-#if AT32_HAS_GPIOJ || defined(__DOXYGEN__)
-#define IOPORT10        GPIOJ
-#endif
-
-/**
- * @brief   GPIO port K identifier.
- */
-#if AT32_HAS_GPIOK || defined(__DOXYGEN__)
-#define IOPORT11        GPIOK
 #endif
 
 /*===========================================================================*/
@@ -407,7 +388,7 @@ typedef uint32_t iopadid_t;
 #define pal_lld_writegroup(port, mask, offset, bits) {                      \
   uint32_t w = ((~(uint32_t)(bits) & (uint32_t)(mask)) << (16U + (offset))) | \
                ((uint32_t)(bits) & (uint32_t)(mask)) << (offset);           \
-  (port)->SCR.W = w;                                                       \
+  (port)->SCR.W = w;                                                        \
 }
 
 /**

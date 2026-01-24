@@ -51,6 +51,9 @@
 #define PAL_MODE_INPUT_PULLUP       (MODE_DIR_IN | MODE_MODE_PULL_UP | MODE_AD_DIGITAL)
 #define PAL_MODE_INPUT_PULLDOWN     (MODE_DIR_IN | MODE_MODE_PULL_DOWN | MODE_AD_DIGITAL)
 #define PAL_MODE_OUTPUT_OPENDRAIN   (MODE_DIR_OUT | MODE_OD_ENABLE | MODE_AD_DIGITAL)
+/* LPC11Uxx does not support true pushpull output, but its non-opendrain output
+ * is sufficient in many use cases, so convenient to alias PUSHPULL to it. */
+#define PAL_MODE_OUTPUT_PUSHPULL    (MODE_DIR_OUT | MODE_AD_DIGITAL)
 
 /*===========================================================================*/
 /* I/O Ports Types and constants.                                            */

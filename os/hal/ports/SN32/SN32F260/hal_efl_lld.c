@@ -198,7 +198,7 @@ flash_error_t efl_lld_read(void *instance, flash_offset_t offset,
   sn32_flash_clear_status(devp);
 
   /* Actual read implementation.*/
-  memcpy((void *)rp, (const void *)efl_lld_descriptor.address + offset, n);
+  memcpy((void *)rp, (const void *)(efl_lld_descriptor.address + offset), n);
 
   /* Ready state again.*/
   devp->state = FLASH_READY;

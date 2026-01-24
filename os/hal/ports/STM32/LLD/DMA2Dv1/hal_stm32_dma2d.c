@@ -98,7 +98,11 @@ OSAL_IRQ_HANDLER(STM32_DMA2D_HANDLER) {
     if (dma2dp->config->cfgerr_isr != NULL)
       dma2dp->config->cfgerr_isr(dma2dp);
     job_done = true;
+#if defined(STM32H743xx)
+    DMA2D->IFCR |= DMA2D_IFCR_CCEIF;
+#else
     DMA2D->IFCR |= DMA2D_IFSR_CCEIF;
+#endif
   }
 
   /* Handle CLUT (Palette) Transfer Complete ISR.*/
@@ -106,7 +110,11 @@ OSAL_IRQ_HANDLER(STM32_DMA2D_HANDLER) {
     if (dma2dp->config->paltrfdone_isr != NULL)
       dma2dp->config->paltrfdone_isr(dma2dp);
     job_done = true;
+#if defined(STM32H743xx)
+    DMA2D->IFCR |= DMA2D_IFCR_CCTCIF;
+#else
     DMA2D->IFCR |= DMA2D_IFSR_CCTCIF;
+#endif
   }
 
   /* Handle CLUT (Palette) Access Error ISR.*/
@@ -114,14 +122,22 @@ OSAL_IRQ_HANDLER(STM32_DMA2D_HANDLER) {
     if (dma2dp->config->palacserr_isr != NULL)
       dma2dp->config->palacserr_isr(dma2dp);
     job_done = true;
+#if defined(STM32H743xx)
+    DMA2D->IFCR |= DMA2D_ISR_CAEIF;
+#else
     DMA2D->IFCR |= DMA2D_IFSR_CCAEIF;
+#endif
   }
 
   /* Handle Transfer Watermark ISR.*/
   if ((DMA2D->ISR & DMA2D_ISR_TWIF) && (DMA2D->CR & DMA2D_CR_TWIE)) {
     if (dma2dp->config->trfwmark_isr != NULL)
       dma2dp->config->trfwmark_isr(dma2dp);
+#if defined(STM32H743xx)
+    DMA2D->IFCR |= DMA2D_IFCR_CTWIF;
+#else
     DMA2D->IFCR |= DMA2D_IFSR_CTWIF;
+#endif
   }
 
   /* Handle Transfer Complete ISR.*/
@@ -129,7 +145,11 @@ OSAL_IRQ_HANDLER(STM32_DMA2D_HANDLER) {
     if (dma2dp->config->trfdone_isr != NULL)
       dma2dp->config->trfdone_isr(dma2dp);
     job_done = true;
+#if defined(STM32H743xx)
+    DMA2D->IFCR |= DMA2D_IFCR_CTCIF;
+#else
     DMA2D->IFCR |= DMA2D_IFSR_CTCIF;
+#endif
   }
 
   /* Handle Transfer Error ISR.*/
@@ -137,7 +157,11 @@ OSAL_IRQ_HANDLER(STM32_DMA2D_HANDLER) {
     if (dma2dp->config->trferr_isr != NULL)
       dma2dp->config->trferr_isr(dma2dp);
     job_done = true;
+#if defined(STM32H743xx)
+    DMA2D->IFCR |= DMA2D_IFCR_CTEIF;
+#else
     DMA2D->IFCR |= DMA2D_IFSR_CTEIF;
+#endif
   }
 
   if (job_done) {

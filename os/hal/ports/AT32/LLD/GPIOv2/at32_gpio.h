@@ -1,6 +1,8 @@
 /*
     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2024 Maxjta
+    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
+    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2024..2025 Maxjta
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,7 +20,7 @@
 /**
  * @file    GPIOv2/at32_gpio.h
  * @brief   AT32 GPIO units common header.
- * @note    This file requires definitions from the AT32 header file.
+ * @note    This file requires definitions from the Artery AT32 header file.
  *
  * @addtogroup AT32_GPIOv2
  * @{
@@ -43,9 +45,6 @@
 #undef GPIOF
 #undef GPIOG
 #undef GPIOH
-#undef GPIOI
-#undef GPIOJ
-#undef GPIOK
 
 /**
  * @name    GPIO ports definitions
@@ -57,21 +56,8 @@
 #define GPIOD                           ((at32_gpio_t *)GPIOD_BASE)
 #define GPIOE                           ((at32_gpio_t *)GPIOE_BASE)
 #define GPIOF                           ((at32_gpio_t *)GPIOF_BASE)
-#if AT32_HAS_GPIOG
 #define GPIOG                           ((at32_gpio_t *)GPIOG_BASE)
-#endif
-#if AT32_HAS_GPIOH
 #define GPIOH                           ((at32_gpio_t *)GPIOH_BASE)
-#endif
-#if AT32_HAS_GPIOI
-#define GPIOI                           ((at32_gpio_t *)GPIOI_BASE)
-#endif
-#if AT32_HAS_GPIOJ
-#define GPIOJ                           ((at32_gpio_t *)GPIOJ_BASE)
-#endif
-#if AT32_HAS_GPIOK
-#define GPIOK                           ((at32_gpio_t *)GPIOK_BASE)
-#endif
 /** @} */
 
 /*===========================================================================*/
@@ -91,26 +77,26 @@
  */
 typedef struct {
 
-  volatile uint32_t CFGR;
-  volatile uint32_t OMODE;
-  volatile uint32_t ODRVR;
-  volatile uint32_t PULL;
-  volatile uint32_t IDT;
-  volatile uint32_t ODT;
+  volatile uint32_t     CFGR;
+  volatile uint32_t     OMODE;
+  volatile uint32_t     ODRVR;
+  volatile uint32_t     PULL;
+  volatile uint32_t     IDT;
+  volatile uint32_t     ODT;
   volatile union {
-    uint32_t        W;
+    uint32_t            W;
     struct {
-      uint16_t      set;
-      uint16_t      clear;
+      uint16_t          set;
+      uint16_t          clear;
     } H;
   } SCR;
-  volatile uint32_t WPR;
-  volatile uint32_t MUXL;
-  volatile uint32_t MUXH;
-  volatile uint32_t CLR;
-  volatile uint32_t TOGR;
-  volatile uint32_t resvd30[3];
-  volatile uint32_t HDRV;
+  volatile uint32_t     WPR;
+  volatile uint32_t     MUXL;
+  volatile uint32_t     MUXH;
+  volatile uint32_t     CLR;
+  volatile uint32_t     TOGR;
+  volatile uint32_t     RESERVED[3];
+  volatile uint32_t     HDRV;
 } at32_gpio_t;
 
 /*===========================================================================*/
