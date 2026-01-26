@@ -211,6 +211,26 @@ void usb_packet_receive(USBDriver *usbp, usbep_t ep, size_t n)
  */
 OSAL_IRQ_HANDLER(KINETIS_USB_IRQ_VECTOR) {
   USBDriver *usbp = &USBD1;
+
+  /* Bail out if driver is stopped or being torn down */
+  if (usbp->state == USB_UNINIT || usbp->state == USB_STOP) {
+    uint8_t enabled =
+#if KINETIS_USB0_IS_USBOTG
+      (SIM->SCGC4 & SIM_SCGC4_USBOTG);
+#else
+      (SIM->SCGC4 & SIM_SCGC4_USBFS);
+#endif
+
+    if (enabled) {
+      /* Clear all pending USB IRQ flags */
+      USB0->ISTAT   = 0xFF;
+      USB0->ERRSTAT = 0xFF;
+    }
+    OSAL_IRQ_EPILOGUE();
+    return;
+  }
+
+
   uint8_t istat = USB0->ISTAT;
 
   OSAL_IRQ_PROLOGUE();
@@ -527,18 +547,50 @@ void usb_lld_start(USBDriver *usbp) {
  * @notapi
  */
 void usb_lld_stop(USBDriver *usbp) {
-  /* TODO: If in ready state then disables the USB clock.*/
-  if (usbp->state == USB_STOP) {
 #if KINETIS_USB_USE_USB0
-    if (&USBD1 == usbp) {
-#if KINETIS_USB0_IS_USBOTG
-      nvicDisableVector(USB_OTG_IRQn);
-#else /* KINETIS_USB0_IS_USBOTG */
-      nvicDisableVector(USB_IRQn);
-#endif /* KINETIS_USB0_IS_USBOTG */
+    if (&USBD1 != usbp) return;
+
+    /* If the driver was never started, bail out */
+    if (usbp->state == USB_UNINIT || usbp->state == USB_STOP) {
+        return;
     }
-#endif /* KINETIS_USB_USE_USB0 */
-  }
+
+    /* Mask all peripheral interrupts */
+    USB0->INTEN  = 0;
+    USB0->ERREN  = 0;
+
+    uint8_t enabled =
+#if KINETIS_USB0_IS_USBOTG
+    (SIM->SCGC4 & SIM_SCGC4_USBOTG);
+#else
+    (SIM->SCGC4 & SIM_SCGC4_USBFS);
+#endif
+    if (enabled) {
+      /* Disconnect pull-up while clock is still on */
+      usb_lld_disconnect_bus(usbp);
+
+      /* Only disable USB engine if the clock is enabled */
+      USB0->CTL = 0;
+      USB0->CTL = USBx_CTL_ODDRST;   /* reset odd/even PID */
+      USB0->ISTAT   = 0xFF;
+      USB0->ERRSTAT = 0xFF;
+    }
+
+    /* Disable NVIC IRQ */
+#if KINETIS_USB0_IS_USBOTG
+    nvicDisableVector(USB_OTG_IRQn);
+#else
+    nvicDisableVector(USB_IRQn);
+#endif
+
+    /* Gate the USB clock */
+#if KINETIS_USB0_IS_USBOTG
+    SIM->SCGC4 &= ~SIM_SCGC4_USBOTG;
+#else
+    SIM->SCGC4 &= ~SIM_SCGC4_USBFS;
+#endif
+
+#endif
 }
 
 /**
