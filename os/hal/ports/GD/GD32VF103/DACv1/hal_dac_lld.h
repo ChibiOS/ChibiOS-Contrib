@@ -248,7 +248,7 @@ typedef enum {
   /* DAC channel parameters.*/                                              \
   const dacparams_t         *params;                                        \
   /* Associated DMA.*/                                                      \
-  const gd32_dma_stream_t  *dma
+  const gd32_dma_stream_t  *dma;
 
 /**
  * @brief   Low level fields of the DAC configuration structure.
@@ -259,7 +259,7 @@ typedef enum {
   /* DAC data holding register mode.*/                                      \
   dacdhrmode_t              datamode;                                       \
   /* DAC control register lower 16 bits.*/                                  \
-  uint32_t                  ctl
+  uint32_t                  ctl;
 
 /**
  * @brief   Low level fields of the DAC group configuration structure.
@@ -268,7 +268,7 @@ typedef enum {
   /* DAC initialization data. This field contains the (not shifted) value   \
      to be put into the TSEL field of the DAC CR register during            \
      initialization. All other fields are handled internally.*/             \
-  uint32_t                  trigger
+  uint32_t                  trigger;
 
 /*===========================================================================*/
 /* External declarations.                                                    */

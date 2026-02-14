@@ -111,7 +111,7 @@ typedef uint8_t adc_channels_num_t;
  */
 #define adc_lld_config_fields                                               \
   /* Dummy configuration, it is not needed.*/                               \
-  uint32_t                  dummy
+  uint32_t                  dummy;
 
 #define adc_lld_configuration_group_fields                                  \
   /**                                                                       \

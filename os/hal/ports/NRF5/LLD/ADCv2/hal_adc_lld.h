@@ -117,14 +117,14 @@ struct adc_lld_channel_config {
   /* @brief Current sample counter.*/                                       \
   size_t                   counter;                                         \
   /* @brief Current channel counter.*/                                      \
-  size_t                   ch_counter
+  size_t                   ch_counter;
 
 /**
  * @brief   Low level fields of the ADC configuration structure.
  */
 #define adc_lld_config_fields                                               \
   /* Dummy configuration, it is not needed.*/                               \
-  uint32_t                  dummy
+  uint32_t                  dummy;
 
 /**
  * @brief   Low level fields of the ADC configuration structure.
@@ -139,7 +139,7 @@ struct adc_lld_channel_config {
   /* @brief ADC SAMPLERATE register details.*/                              \
   uint32_t                  samplerate;                                     \
   /* @brief ADC channel configurations.*/                                   \
-  struct adc_lld_channel_config channels[NRF5_ADC_MAX_CHANNELS]
+  struct adc_lld_channel_config channels[NRF5_ADC_MAX_CHANNELS];
 
 /*===========================================================================*/
 /* External declarations.                                                    */

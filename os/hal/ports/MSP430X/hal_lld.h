@@ -230,6 +230,18 @@
 #define DIVIDER(x) DIV_HELPER(x)
 #define DIV_HELPER(x) DIVM__ ## x
 
+/**
+ * @brief   Returns the frequency of a clock point in Hz.
+ * @note    Static implementation.
+ *
+ * @param[in] clkpt     clock point to be returned
+ * @return              The clock point frequency in Hz or zero if the
+ *                      frequency is unknown.
+ *
+ * @notapi
+ */
+#define hal_lld_get_clock_point(clkpt) 0U
+
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/

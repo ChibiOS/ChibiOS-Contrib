@@ -210,6 +210,8 @@ void usb_packet_receive(USBDriver *usbp, usbep_t ep, size_t n)
  * @isr
  */
 OSAL_IRQ_HANDLER(KINETIS_USB_IRQ_VECTOR) {
+  OSAL_IRQ_PROLOGUE();
+
   USBDriver *usbp = &USBD1;
 
   /* Bail out if driver is stopped or being torn down */
@@ -232,8 +234,6 @@ OSAL_IRQ_HANDLER(KINETIS_USB_IRQ_VECTOR) {
 
 
   uint8_t istat = USB0->ISTAT;
-
-  OSAL_IRQ_PROLOGUE();
 
   /* 04 - Bit2 - Start Of Frame token received */
   if(istat & USBx_ISTAT_SOFTOK) {
