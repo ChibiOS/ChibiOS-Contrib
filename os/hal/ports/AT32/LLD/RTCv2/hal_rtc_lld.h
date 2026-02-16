@@ -206,7 +206,7 @@ typedef struct hal_ertc_wakeup {
   /* Pointer to the ERTC registers block.*/                                 \
   ERTC_TypeDef              *ertc;                                          \
   /* Callback pointer.*/                                                    \
-  rtccb_t                   callback
+  rtccb_t                   callback;
 
 /*===========================================================================*/
 /* Driver macros.                                                            */

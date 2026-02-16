@@ -78,7 +78,7 @@
   size_t                                      size;                         \
   size_t                                      cnt;                          \
   void*                                       rxbuf;                        \
-  const void*                                 txbuf
+  const void*                                 txbuf;
 
 
 /**
@@ -89,7 +89,8 @@
   uint8_t                                     clock_divider;                \
   uint8_t                                     clock_prescaler;              \
   uint8_t                                     clock_rate;                   \
-  uint8_t                                     data_size
+  uint8_t                                     data_size;
+
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/

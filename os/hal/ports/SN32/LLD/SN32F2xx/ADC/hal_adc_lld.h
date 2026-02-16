@@ -194,14 +194,14 @@ typedef uint32_t adcerror_t;
   /* @brief Current position in the buffer. */                              \
   size_t                    current_index;                                  \
   /* @brief Current channel index into group channel_mask. */               \
-  size_t                    current_channel
+  size_t                    current_channel;
 
 /**
  * @brief   Low level fields of the ADC configuration structure.
  */
 #define adc_lld_config_fields                                               \
   /* Dummy configuration, it is not needed.*/                               \
-  uint32_t                  dummy
+  uint32_t                  dummy;
 
 /**
  * @brief   Low level fields of the ADC configuration structure.
@@ -216,7 +216,7 @@ typedef uint32_t adcerror_t;
   /* ADC CHS    register initialization data.                               \
      NOTE: The number of bits at logic level one in this register must      \
            be equal to the number in the @p num_channels field.*/           \
-  uint32_t                  chs
+  uint32_t                  chs;
 
 /*===========================================================================*/
 /* External declarations.                                                    */

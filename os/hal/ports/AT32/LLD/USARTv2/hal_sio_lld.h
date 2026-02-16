@@ -246,7 +246,7 @@
   /* Pointer to the USARTx registers block.*/                               \
   USART_TypeDef             *usart;                                         \
   /* Clock frequency for the associated USART/UART.*/                       \
-  uint32_t                  clock
+  uint32_t                  clock;
 
 /**
  * @brief   Low level fields of the SIO configuration structure.
@@ -259,7 +259,7 @@
   /* USART CTRL2 register initialization data.*/                            \
   uint32_t                  ctrl2;                                          \
   /* USART CTRL3 register initialization data.*/                            \
-  uint32_t                  ctrl3
+  uint32_t                  ctrl3;
 
 /**
  * @brief   Determines the state of the RX FIFO.

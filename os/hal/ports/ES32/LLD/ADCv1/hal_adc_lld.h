@@ -72,14 +72,14 @@ typedef uint32_t adcerror_t;
   /* Pointer to associated DMA channel.*/                                   \
   const void  *dmastp;                                        \
   /* DMA mode bit mask.*/                                                   \
-  uint32_t                  dmamode
+  uint32_t                  dmamode;
 
 /**
  * @brief   Low level fields of the ADC configuration structure.
  */
 #define adc_lld_config_fields                                               \
   /* Dummy configuration, it is not needed.*/                               \
-  uint32_t                  dummy
+  uint32_t                  dummy;
 
 /**
  * @brief   Low level fields of the ADC configuration structure.
@@ -99,7 +99,7 @@ typedef uint32_t adcerror_t;
   /* ADC CHSELR register initialization data.                               \
      NOTE: The number of bits at logic level one in this register must      \
            be equal to the number in the @p num_channels field.*/           \
-  uint32_t                  chselr
+  uint32_t                  chselr;
 
 
 /*===========================================================================*/

@@ -233,7 +233,7 @@
   /* Sink for discarded data.*/                                             \
   uint32_t                  rxsink;                                         \
   /* Source for default TX pattern.*/                                       \
-  uint32_t                  txsource
+  uint32_t                  txsource;
 
 /**
  * @brief   Low level fields of the SPI configuration structure.
@@ -242,7 +242,7 @@
   /* SPI CTRL1 register initialization data.*/                              \
   uint16_t                  ctrl1;                                          \
   /* SPI CTRL2 register initialization data.*/                              \
-  uint16_t                  ctrl2
+  uint16_t                  ctrl2;
 
 /*===========================================================================*/
 /* External declarations.                                                    */

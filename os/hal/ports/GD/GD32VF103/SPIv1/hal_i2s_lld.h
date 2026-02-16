@@ -225,7 +225,7 @@
   /* RX DMA mode bit mask.*/                                                \
   uint32_t                  rxdmamode;                                      \
   /* TX DMA mode bit mask.*/                                                \
-  uint32_t                  txdmamode
+  uint32_t                  txdmamode;
 
 /**
  * @brief   Low level fields of the I2S configuration structure.
@@ -243,7 +243,7 @@
   /* Configuration of the I2SPSC register.                                   \
      NOTE: See the GD32 reference manual, this register is used for        \
            the I2S clock setup.*/                                           \
-  int16_t                   i2spsc
+  int16_t                   i2spsc;
 
 /*===========================================================================*/
 /* External declarations.                                                    */

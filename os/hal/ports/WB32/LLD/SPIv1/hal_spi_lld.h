@@ -230,7 +230,7 @@ typedef struct {
   /* Pointer to the SPIx registers block.*/                                 \
   SPI_TypeDef               *spi ;                                          \
   spi_xfer_info_t           xfer;                                           \
-  uint16_t                  fifo_len
+  uint16_t                  fifo_len;
 
 /**
  * @brief   Low level fields of the SPI configuration structure.
