@@ -433,11 +433,13 @@ void pwm_lld_start(PWMDriver *pwmp) {
   /* DMA-related DIER settings. */
   pwmp->tim->DIER = pwmp->config->dier & ~WB32_TIM_DIER_IRQ_MASK;
 #if WB32_PWM_USE_TIM1
+  if (&PWMD1 == pwmp) {
 #if WB32_PWM_USE_ADVANCED
-  pwmp->tim->BDTR = pwmp->config->bdtr | WB32_TIM_BDTR_MOE;
+    pwmp->tim->BDTR = pwmp->config->bdtr | WB32_TIM_BDTR_MOE;
 #else
-  pwmp->tim->BDTR = WB32_TIM_BDTR_MOE;
+    pwmp->tim->BDTR = WB32_TIM_BDTR_MOE;
 #endif
+  }
 #endif
   /* Timer configured and started.*/
   pwmp->tim->CR1 = WB32_TIM_CR1_ARPE | WB32_TIM_CR1_URS | WB32_TIM_CR1_CEN;
@@ -460,8 +462,10 @@ void pwm_lld_stop(PWMDriver *pwmp) {
     pwmp->tim->DIER = 0;
     /* Clear eventual pending IRQs.*/
     pwmp->tim->SR = 0;
-#if WB32_PWM_USE_TIM1 || WB32_PWM_USE_TIM8 || WB32_PWM_USE_TIM20
-    pwmp->tim->BDTR = 0;
+#if WB32_PWM_USE_TIM1
+    if (&PWMD1 == pwmp) {
+      pwmp->tim->BDTR = 0;
+    }
 #endif
 
 #if WB32_PWM_USE_TIM1
