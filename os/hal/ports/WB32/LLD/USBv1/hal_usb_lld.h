@@ -35,8 +35,8 @@
  * @brief   Number of the available endpoints.
  * @details This value does not include the endpoint 0 which is always present.
  */
-#if !defined(USB_ENDOPOINTS_NUMBER) || defined(__DOXYGEN__)
-#define USB_ENDOPOINTS_NUMBER                  3
+#if !defined(USB_ENDPOINTS_NUMBER) || defined(__DOXYGEN__)
+#define USB_ENDPOINTS_NUMBER                  3
 #endif
 
 /**
@@ -48,7 +48,7 @@
 /**
  * @brief   Maximum endpoint address.
  */
-#define USB_MAX_ENDPOINTS                      USB_ENDOPOINTS_NUMBER
+#define USB_MAX_ENDPOINTS                      USB_ENDPOINTS_NUMBER
 
 /**
  * @brief   Status stage handling method.

@@ -110,7 +110,7 @@
 /** @} */
 
 /**
- * @brief   ADC usbed DMAC channel setting.
+ * @brief   ADC used DMAC channel setting.
  */
 #if !defined(WB32_ADC_ADC1_DMA_STREAM) || defined(__DOXYGEN__)
 #define WB32_ADC_ADC1_DMA_STREAM           WB32_DMA_STREAM_ID(1, 0)
@@ -118,7 +118,7 @@
 /** @} */
 
 /**
- * @brief   ADC usbed DMAC channel priority setting.
+ * @brief   ADC used DMAC channel priority setting.
  */
 #if !defined(WB32_ADC_ADC1_DMA_PRIORITY) || defined(__DOXYGEN__)
 #define WB32_ADC_ADC1_DMA_PRIORITY         2
