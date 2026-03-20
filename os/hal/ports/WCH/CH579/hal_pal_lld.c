@@ -31,40 +31,51 @@
  *
  * @notapi
  */
-void pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode) {
+/* ChibiOS calls pal_lld_setgroupmode with 4 args: (port, mask, offset, mode).
+ * offset is always 0 for single-pad calls; we accept and ignore it.
+ *
+ * CH579 GPIO control registers (DIR, PU, PD_DRV) are fully readable as 32-bit
+ * values — the original "write-only / bus fault" comment was incorrect; reads
+ * are confirmed working via the WCH EVT SDK (CH57x_gpio.c uses |= / &=).
+ * We therefore use direct read-modify-write and protect each register triplet
+ * with a critical section so that concurrent calls (e.g. from interrupt context)
+ * cannot interleave partial updates. */
+void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask,
+                           uint32_t offset, iomode_t mode) {
+  (void)offset;
+
+  syssts_t sts = osalSysGetStatusAndLockX();
+
   switch (mode) {
   case PAL_MODE_INPUT:
-    /* Floating input: DIR=0, PU=0, PD_DRV=0 */
-    port->DIR &= ~mask;
-    port->PU &= ~mask;
+    port->DIR    &= ~mask;
+    port->PU     &= ~mask;
     port->PD_DRV &= ~mask;
     break;
 
   case PAL_MODE_INPUT_PULLUP:
-    /* Input with pull-up: DIR=0, PU=1 */
-    port->DIR &= ~mask;
+    port->DIR    &= ~mask;
+    port->PU     |= mask;
     port->PD_DRV &= ~mask;
-    port->PU |= mask;
     break;
 
   case PAL_MODE_INPUT_PULLDOWN:
-    /* Input with pull-down: DIR=0, PD_DRV=1 (pull-down bit) */
-    port->DIR &= ~mask;
-    port->PU &= ~mask;
+    port->DIR    &= ~mask;
+    port->PU     &= ~mask;
     port->PD_DRV |= mask;
     break;
 
   case PAL_MODE_OUTPUT_PUSHPULL:
-    /* Push-pull output: DIR=1, PU=0 */
-    port->PU &= ~mask;
+    port->DIR    |= mask;
+    port->PU     &= ~mask;
     port->PD_DRV &= ~mask;
-    port->DIR |= mask;
     break;
 
   default:
-    /* Unsupported — leave unchanged */
     break;
   }
+
+  osalSysRestoreStatusX(sts);
 }
 
 #endif /* HAL_USE_PAL */

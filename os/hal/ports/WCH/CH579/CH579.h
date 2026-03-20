@@ -57,6 +57,28 @@ typedef enum {
 #define RB_CLK_PLL_PON    (1 << 4)   /* power on PLL (off at reset)           */
 #define RB_CLK_XT32M_PON  (1 << 2)   /* power on external 32 MHz oscillator   */
 
+/* ── External 32 MHz crystal tuning (safe-access protected, 0x4000104E) ─── */
+/* Reset value 0x31 = C_LOAD=011b (16 pF) | I_BIAS=01b (rated current).
+ *
+ * bits [6:4] RB_XT32M_C_LOAD: built-in load capacitor.
+ *   Capacitance = RB_XT32M_C_LOAD * 2 + 10 pF.  000b=10pF … 111b=24pF.
+ *   Use _10PF when the PCB has external load capacitors on the crystal pins
+ *   (otherwise total load = internal + external, shifting oscillation frequency).
+ *   Use _24PF when crystal pins connect directly to chip with no external caps.
+ *
+ * bits [1:0] RB_XT32M_I_BIAS: oscillator bias current.
+ *   00=75 %  01=rated (reset)  10=125 %  11=150 % */
+#define R8_XT32M_TUNE         (*((volatile uint8_t *)0x4000104E))
+#define RB_XT32M_C_LOAD_MASK  (0x7 << 4)
+#define RB_XT32M_C_LOAD_10PF  (0x0 << 4)  /* 000b → 10 pF (use with external load caps) */
+#define RB_XT32M_C_LOAD_16PF  (0x3 << 4)  /* 011b → 16 pF (reset default) */
+#define RB_XT32M_C_LOAD_24PF  (0x7 << 4)  /* 111b → 24 pF (no external load caps) */
+#define RB_XT32M_I_BIAS_MASK  (0x3)
+#define RB_XT32M_I_BIAS_75    (0x0)        /* 75%  rated                   */
+#define RB_XT32M_I_BIAS_100   (0x1)        /* 100% rated (reset default)   */
+#define RB_XT32M_I_BIAS_125   (0x2)        /* 125% rated                   */
+#define RB_XT32M_I_BIAS_150   (0x3)        /* 150% rated                   */
+
 /* ── PLL lock status (read-only, 0x40001053) ────────────────────── */
 #define R8_PLL_CONFIG     (*((volatile uint8_t *)0x40001053))
 #define RB_PLL_LOCKED     (1 << 7)   /* RO: 1 when PLL is locked      */
@@ -77,8 +99,155 @@ typedef struct {
   volatile uint32_t PD_DRV; /* pull-down / drive strength       */
 } GPIO_TypeDef;
 
-#define GPIOA ((GPIO_TypeDef *)0x400010A0)
-#define GPIOB ((GPIO_TypeDef *)0x400010C0)
+#define GPIOA_BASE 0x400010A0UL
+#define GPIOB_BASE 0x400010C0UL
+
+#define GPIOA ((GPIO_TypeDef *)GPIOA_BASE)
+#define GPIOB ((GPIO_TypeDef *)GPIOB_BASE)
+
+/* Datasheet register names (CH579DS1, GPIO chapter / register table). */
+#define R32_PA_DIR    (*((volatile uint32_t *)0x400010A0))
+#define R32_PA_PIN    (*((volatile uint32_t *)0x400010A4))
+#define R32_PA_OUT    (*((volatile uint32_t *)0x400010A8))
+#define R32_PA_CLR    (*((volatile uint32_t *)0x400010AC))
+#define R32_PA_PU     (*((volatile uint32_t *)0x400010B0))
+#define R32_PA_PD_DRV (*((volatile uint32_t *)0x400010B4))
+
+#define R32_PB_DIR    (*((volatile uint32_t *)0x400010C0))
+#define R32_PB_PIN    (*((volatile uint32_t *)0x400010C4))
+#define R32_PB_OUT    (*((volatile uint32_t *)0x400010C8))
+#define R32_PB_CLR    (*((volatile uint32_t *)0x400010CC))
+#define R32_PB_PU     (*((volatile uint32_t *)0x400010D0))
+#define R32_PB_PD_DRV (*((volatile uint32_t *)0x400010D4))
+
+#define GPIOA_VALID_PINS_MASK 0x0000FFFFUL
+#define GPIOB_VALID_PINS_MASK 0x00FFFFFFUL
+
+#define PA0  0U
+#define PA1  1U
+#define PA2  2U
+#define PA3  3U
+#define PA4  4U
+#define PA5  5U
+#define PA6  6U
+#define PA7  7U
+#define PA8  8U
+#define PA9  9U
+#define PA10 10U
+#define PA11 11U
+#define PA12 12U
+#define PA13 13U
+#define PA14 14U
+#define PA15 15U
+
+#define PB0  0U
+#define PB1  1U
+#define PB2  2U
+#define PB3  3U
+#define PB4  4U
+#define PB5  5U
+#define PB6  6U
+#define PB7  7U
+#define PB8  8U
+#define PB9  9U
+#define PB10 10U
+#define PB11 11U
+#define PB12 12U
+#define PB13 13U
+#define PB14 14U
+#define PB15 15U
+#define PB16 16U
+#define PB17 17U
+#define PB18 18U
+#define PB19 19U
+#define PB20 20U
+#define PB21 21U
+#define PB22 22U
+#define PB23 23U
+
+#define PA0_MASK  (1UL << 0)
+#define PA1_MASK  (1UL << 1)
+#define PA2_MASK  (1UL << 2)
+#define PA3_MASK  (1UL << 3)
+#define PA4_MASK  (1UL << 4)
+#define PA5_MASK  (1UL << 5)
+#define PA6_MASK  (1UL << 6)
+#define PA7_MASK  (1UL << 7)
+#define PA8_MASK  (1UL << 8)
+#define PA9_MASK  (1UL << 9)
+#define PA10_MASK (1UL << 10)
+#define PA11_MASK (1UL << 11)
+#define PA12_MASK (1UL << 12)
+#define PA13_MASK (1UL << 13)
+#define PA14_MASK (1UL << 14)
+#define PA15_MASK (1UL << 15)
+
+#define PB0_MASK  (1UL << 0)
+#define PB1_MASK  (1UL << 1)
+#define PB2_MASK  (1UL << 2)
+#define PB3_MASK  (1UL << 3)
+#define PB4_MASK  (1UL << 4)
+#define PB5_MASK  (1UL << 5)
+#define PB6_MASK  (1UL << 6)
+#define PB7_MASK  (1UL << 7)
+#define PB8_MASK  (1UL << 8)
+#define PB9_MASK  (1UL << 9)
+#define PB10_MASK (1UL << 10)
+#define PB11_MASK (1UL << 11)
+#define PB12_MASK (1UL << 12)
+#define PB13_MASK (1UL << 13)
+#define PB14_MASK (1UL << 14)
+#define PB15_MASK (1UL << 15)
+#define PB16_MASK (1UL << 16)
+#define PB17_MASK (1UL << 17)
+#define PB18_MASK (1UL << 18)
+#define PB19_MASK (1UL << 19)
+#define PB20_MASK (1UL << 20)
+#define PB21_MASK (1UL << 21)
+#define PB22_MASK (1UL << 22)
+#define PB23_MASK (1UL << 23)
+
+#define LINE_PA0  PAL_LINE(IOPORTA, PA0)
+#define LINE_PA1  PAL_LINE(IOPORTA, PA1)
+#define LINE_PA2  PAL_LINE(IOPORTA, PA2)
+#define LINE_PA3  PAL_LINE(IOPORTA, PA3)
+#define LINE_PA4  PAL_LINE(IOPORTA, PA4)
+#define LINE_PA5  PAL_LINE(IOPORTA, PA5)
+#define LINE_PA6  PAL_LINE(IOPORTA, PA6)
+#define LINE_PA7  PAL_LINE(IOPORTA, PA7)
+#define LINE_PA8  PAL_LINE(IOPORTA, PA8)
+#define LINE_PA9  PAL_LINE(IOPORTA, PA9)
+#define LINE_PA10 PAL_LINE(IOPORTA, PA10)
+#define LINE_PA11 PAL_LINE(IOPORTA, PA11)
+#define LINE_PA12 PAL_LINE(IOPORTA, PA12)
+#define LINE_PA13 PAL_LINE(IOPORTA, PA13)
+#define LINE_PA14 PAL_LINE(IOPORTA, PA14)
+#define LINE_PA15 PAL_LINE(IOPORTA, PA15)
+
+#define LINE_PB0  PAL_LINE(IOPORTB, PB0)
+#define LINE_PB1  PAL_LINE(IOPORTB, PB1)
+#define LINE_PB2  PAL_LINE(IOPORTB, PB2)
+#define LINE_PB3  PAL_LINE(IOPORTB, PB3)
+#define LINE_PB4  PAL_LINE(IOPORTB, PB4)
+#define LINE_PB5  PAL_LINE(IOPORTB, PB5)
+#define LINE_PB6  PAL_LINE(IOPORTB, PB6)
+#define LINE_PB7  PAL_LINE(IOPORTB, PB7)
+#define LINE_PB8  PAL_LINE(IOPORTB, PB8)
+#define LINE_PB9  PAL_LINE(IOPORTB, PB9)
+#define LINE_PB10 PAL_LINE(IOPORTB, PB10)
+#define LINE_PB11 PAL_LINE(IOPORTB, PB11)
+#define LINE_PB12 PAL_LINE(IOPORTB, PB12)
+#define LINE_PB13 PAL_LINE(IOPORTB, PB13)
+#define LINE_PB14 PAL_LINE(IOPORTB, PB14)
+#define LINE_PB15 PAL_LINE(IOPORTB, PB15)
+#define LINE_PB16 PAL_LINE(IOPORTB, PB16)
+#define LINE_PB17 PAL_LINE(IOPORTB, PB17)
+#define LINE_PB18 PAL_LINE(IOPORTB, PB18)
+#define LINE_PB19 PAL_LINE(IOPORTB, PB19)
+#define LINE_PB20 PAL_LINE(IOPORTB, PB20)
+#define LINE_PB21 PAL_LINE(IOPORTB, PB21)
+#define LINE_PB22 PAL_LINE(IOPORTB, PB22)
+#define LINE_PB23 PAL_LINE(IOPORTB, PB23)
 
 /* ── USB Device (base 0x40008000) ───────────────────────────────── */
 /*
@@ -118,6 +287,10 @@ typedef struct {
 /* R16_PIN_ANALOG_IE (0x4000101A): enable USB pin analog I/O */
 #define R16_PIN_ANALOG_IE (*((volatile uint16_t *)0x4000101A))
 #define RB_PIN_USB_IE     (1 << 7) /* bit 7 of the 16-bit register = 0x0080 */
+
+/* R8_USB_MIS_ST bits (read-only status, datasheet Table 17-1, p.76)
+ * Read this register when RB_UIF_SUSPEND fires to distinguish suspend from wakeup. */
+#define RB_UMS_SUSPEND   (1 << 2) /* 1 = bus currently suspended, 0 = bus active (wakeup) */
 
 /* R8_USB_INT_FG / R8_USB_INT_EN bits (datasheet Table 17-1, p.77)
  * INT_FG reset = 0x20 (bit5 RB_U_SIE_FREE set). */

@@ -35,6 +35,22 @@
  */
 USBDriver USBD1;
 
+/**
+ * @brief   Diagnostic counters — readable from matrix.c via extern.
+ *
+ *  usb_lld_ep1_start_count: incremented each time usb_lld_start_in() is
+ *                           called for EP1 (i.e. ChibiOS obqueue→TX chain
+ *                           reached the hardware layer).
+ *  usb_lld_ep1_irq_count:   incremented each time the SIE fires a
+ *                           UIS_TOKEN_IN interrupt for EP1 (i.e. the host
+ *                           polled EP1 and the SIE sent the packet).
+ */
+volatile uint32_t usb_lld_ep1_start_count = 0;
+volatile uint32_t usb_lld_ep1_irq_count   = 0;
+volatile uint32_t usb_lld_ep2_start_count = 0;
+volatile uint32_t usb_lld_ep2_irq_count   = 0;
+volatile uint32_t usb_lld_bus_reset_count = 0;
+
 /*===========================================================================*/
 /* Driver local variables.                                                   */
 /*===========================================================================*/
@@ -151,6 +167,18 @@ OSAL_IRQ_HANDLER(Vector58) {
         }
         _usb_ep0in(&USBD1, 0);
       } else {
+        /* Guard: epc[ep_num] may be NULL before SET_CONFIGURATION completes. */
+        if (USBD1.epc[ep_num] == NULL) break;
+        if (ep_num == 1) {
+          usb_lld_ep1_irq_count++;
+          /* NAK immediately so the SIE does not retransmit the same buffer on
+           * the next host poll.  _usb_isr_invoke_in_cb notifies QMK that the
+           * transfer completed; QMK will call usb_lld_start_in (which re-arms
+           * with ACK) only when it has a new report to send. */
+          R8_UEP1_CTRL = (R8_UEP1_CTRL & ~MASK_UEP_T_RES) | UEP_T_RES_NAK;
+        } else if (ep_num == 2) {
+          usb_lld_ep2_irq_count++;
+        }
         _usb_isr_invoke_in_cb(&USBD1, ep_num);
       }
       break;
@@ -168,12 +196,19 @@ OSAL_IRQ_HANDLER(Vector58) {
   }
 
   if (int_fg & RB_UIF_BUS_RST) {
+    usb_lld_bus_reset_count++;
     R8_USB_INT_FG = RB_UIF_BUS_RST; /* W1C before _usb_reset which re-enables */
     _usb_reset(&USBD1);
   }
 
   if (int_fg & RB_UIF_SUSPEND) {
-    _usb_suspend(&USBD1);
+    /* DIAGNOSTIC: ignore suspend/wakeup events entirely so USBD1.state
+     * stays USB_ACTIVE after enumeration.  This tests whether the suspend
+     * state machine is the reason no HID data ever reaches the host:
+     * if data flows after this change, the root cause is that
+     * _usb_wakeup was never being called on bus resume, leaving the
+     * driver permanently stuck in USB_SUSPENDED.
+     * TODO: re-enable proper suspend handling once TX is confirmed working. */
     R8_USB_INT_FG = RB_UIF_SUSPEND; /* W1C */
   }
 
@@ -221,7 +256,10 @@ void usb_lld_start(USBDriver *usbp) {
 
     /* Enable USB device mode + internal 1.5k D+ pull-up.
      * RB_UC_DEV_PU_EN (bit 5): device mode + internal D+ pull-up.
-     * RB_UC_INT_BUSY:  SIE auto-NAKs all tokens while interrupt is pending.
+     * RB_UC_INT_BUSY  (bit 3): SIE auto-NAKs all tokens while any bit in
+     *   R8_USB_INT_FG is set, serialising token handling.  Required for EP0
+     *   correctness: prevents the SIE from serving a new IN token with stale
+     *   data before the ISR has processed the previous SETUP and staged new data.
      * RB_UC_DMA_EN:    Required for SIE to use R16_UEPn_DMA registers to
      *                  locate endpoint buffers in SRAM. Without this bit the
      *                  SIE ignores the DMA address registers entirely. */
@@ -233,7 +271,7 @@ void usb_lld_start(USBDriver *usbp) {
     /* Enable physical port; disable internal D+/D- pull-downs. */
     R8_UDEV_CTRL = RB_UD_PD_DIS | RB_UD_PORT_EN;
 
-    /* Enable transfer, bus-reset, and suspend interrupts */
+    /* Enable transfer, bus-reset, and suspend interrupts. */
     R8_USB_INT_EN = RB_UIF_TRANSFER | RB_UIF_BUS_RST | RB_UIF_SUSPEND;
 
     nvicEnableVector(USB_IRQn, CH579_USB_IRQ_PRIORITY);
@@ -300,9 +338,16 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
     break;
   case 1:
     /* AUTO_TOG (bit4): hardware flips T_TOG after each successful IN.
-     * T_TOG starts at 0 → first report is DATA0, then DATA1, alternating. */
-    R8_UEP1_T_LEN = 0;
-    R8_UEP1_CTRL  = RB_UEP_AUTO_TOG | UEP_T_RES_NAK;
+     * T_TOG starts at 0 → first report is DATA0, then DATA1, alternating.
+     * Pre-arm with an 8-byte idle report so the very first IN token from the
+     * host gets an ACK immediately — no dependency on force_send/matrix scan
+     * timing.  Byte[7]=0xBB marks this as an init-time packet for diagnostics. */
+  { uint8_t _m = ep1_in_buf[6];  /* preserve phase marker across memset */
+    memset(ep1_in_buf, 0, 8);
+    ep1_in_buf[6] = _m; }
+    ep1_in_buf[7] = 0xBB;
+    R8_UEP1_T_LEN = 8;
+    R8_UEP1_CTRL  = RB_UEP_AUTO_TOG | UEP_T_RES_ACK;
     R8_UEP4_1_MOD |= RB_UEP1_TX_EN;
     break;
   case 2:
@@ -425,9 +470,11 @@ void usb_lld_start_in(USBDriver *usbp, usbep_t ep) {
     break;
   }
   case 1:
+    usb_lld_ep1_start_count++;
     R8_UEP1_CTRL = (R8_UEP1_CTRL & ~MASK_UEP_T_RES) | UEP_T_RES_ACK;
     break;
   case 2:
+    usb_lld_ep2_start_count++;
     R8_UEP2_CTRL = (R8_UEP2_CTRL & ~MASK_UEP_T_RES) | UEP_T_RES_ACK;
     break;
   default:
@@ -519,6 +566,83 @@ void usb_lld_clear_out(USBDriver *usbp, usbep_t ep) {
   if (ep == 0) {
     R8_UEP0_CTRL = (R8_UEP0_CTRL & ~MASK_UEP_R_RES) | UEP_R_RES_ACK;
   }
+}
+
+/**
+ * @brief   Write a phase-marker byte into ep1_in_buf[6].
+ *
+ * @details Called at key init checkpoints to record how far the firmware got.
+ *          The value is visible in every subsequent EP1 IN packet (byte[6]).
+ *          Does not re-arm EP1 — the ISR continues to re-send whatever is
+ *          already in ep1_in_buf.  Safe to call any time after chSysInit().
+ *
+ *          Marker values:
+ *            0x11 — protocol_pre_init() completed (past printf / wait_ms)
+ *            0x22 — keyboard_init() completed
+ *            0x33 — main loop started (first protocol_pre_task call)
+ *            0x44 — matrix_scan_custom() running (byte[7] also → 0xDD)
+ */
+void usb_lld_set_phase_marker(uint8_t v) {
+  osalSysLock();
+  ep1_in_buf[6] = v;
+  osalSysUnlock();
+}
+
+/**
+ * @brief   Raw hardware bypass: directly arm EP1 IN without any ChibiOS layer.
+ *
+ * @details Copies @p len bytes from @p data into ep1_in_buf, sets
+ *          R8_UEP1_T_LEN, then flips T_RES to ACK so the SIE will respond to
+ *          the next IN token from the host.  AUTO_TOG is kept; T_TOG is forced
+ *          to 0 (DATA0) on each call so the host always sees a fresh DATA0.
+ *
+ *          This bypasses obqueue, usbStartTransmitI, transmitting-bit tracking,
+ *          and the USB_ACTIVE state check — use ONLY for diagnostics to determine
+ *          whether the hardware SIE can TX independently of ChibiOS state.
+ *
+ *          Called from main-thread context; briefly disables interrupts to
+ *          prevent the USB ISR from racing on R8_UEP1_CTRL.
+ *
+ * @warning Do NOT W1C R8_USB_INT_FG inside this function.  INT_FG is shared
+ *          across all endpoints; clearing RB_UIF_TRANSFER here would steal a
+ *          pending EP0 event from the ISR, corrupting EP0 state.
+ */
+void usb_lld_ep1_force_send(const uint8_t *data, uint8_t len) {
+  if (len > 64) len = 64;
+  osalSysLock();
+  /* Ensure EP1 TX is enabled — may have been cleared by usb_lld_disable_endpoints
+   * following a bus reset, before usb_lld_init_endpoint(1) has run again. */
+  R8_UEP4_1_MOD |= RB_UEP1_TX_EN;
+  /* DO NOT W1C R8_USB_INT_FG here.  R8_USB_INT_FG is shared across ALL
+   * endpoints: clearing RB_UIF_TRANSFER steals a pending EP0 TRANSFER event
+   * from the ISR, corrupting the EP0 state machine mid-transaction.  This
+   * causes the host's HID probe (GET_HID_REPORT_DESCRIPTOR) to time out with
+   * -110, which in turn triggers bus resets that keep EP1 reset to NAK.
+   * The ISR already clears INT_FG correctly for each event; INT_BUSY ensures
+   * the SIE waits for the ISR before responding to new tokens. */
+  memcpy(ep1_in_buf, data, len);
+  R8_UEP1_T_LEN = len;
+  /* RB_UEP_AUTO_TOG(0x10) | T_TOG=0 | T_RES=ACK(0x00) = 0x10 */
+  R8_UEP1_CTRL  = RB_UEP_AUTO_TOG | UEP_T_RES_ACK;
+  osalSysUnlock();
+}
+
+/**
+ * @brief   Raw hardware bypass: directly arm EP2 IN without any ChibiOS layer.
+ *
+ * @details Identical to usb_lld_ep1_force_send but targets EP2 (console, 32 bytes max).
+ *          Use to verify EP2 hardware TX independently of the QMK console obqueue.
+ *
+ * @warning Same INT_FG warning as ep1_force_send — do NOT W1C INT_FG here.
+ */
+void usb_lld_ep2_force_send(const uint8_t *data, uint8_t len) {
+  if (len > 32) len = 32;
+  osalSysLock();
+  R8_UEP2_3_MOD |= RB_UEP2_TX_EN;
+  memcpy(ep2_in_buf, data, len);
+  R8_UEP2_T_LEN = len;
+  R8_UEP2_CTRL  = RB_UEP_AUTO_TOG | UEP_T_RES_ACK;
+  osalSysUnlock();
 }
 
 #endif /* HAL_USE_USB */

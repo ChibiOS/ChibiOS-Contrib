@@ -177,10 +177,15 @@ extern const PALConfig pal_default_config;
 #ifdef __cplusplus
 extern "C" {
 #endif
-void pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, iomode_t mode);
+void _pal_lld_setgroupmode(ioportid_t port, ioportmask_t mask, uint32_t offset, iomode_t mode);
 #ifdef __cplusplus
 }
 #endif
+
+/* Define the macro so hal_pal.h's #if !defined(pal_lld_setgroupmode) sees
+ * our implementation and does NOT fall back to the no-op stub. */
+#define pal_lld_setgroupmode(port, mask, offset, mode) \
+  _pal_lld_setgroupmode((port), (mask), (offset), (mode))
 
 #endif /* HAL_PAL_LLD_H */
 
