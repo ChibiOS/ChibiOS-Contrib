@@ -32,7 +32,7 @@
 /* Define to prevent recursive inclusion -------------------------------------*/ 
 
 #ifndef __SYSTEM_FS026_H__
-#define __SYSTEM_ES32F0283_H__
+#define __SYSTEM_FS026_H__
 
 #ifdef __cplusplus
  extern "C" {
