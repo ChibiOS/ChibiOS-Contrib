@@ -188,11 +188,11 @@ OSAL_IRQ_HANDLER(WB32_DMAC2_IRQ_VECTOR) {
   dmaServeInterrupt(WB32_DMA2_STREAM1);
 #endif
 
-#if WB32_DMAC2_NUM_CHANNELS > 0
+#if WB32_DMAC2_NUM_CHANNELS > 1
   dmaServeInterrupt(WB32_DMA2_STREAM2);
 #endif
 
-#if WB32_DMAC2_NUM_CHANNELS > 0
+#if WB32_DMAC2_NUM_CHANNELS > 2
   dmaServeInterrupt(WB32_DMA2_STREAM3);
 #endif
 
@@ -215,7 +215,7 @@ void dmaInit(void) {
   dma.allocated_mask = 0U;
   dma.isr_mask = 0U;
 
-#if WB32_DMAC2_NUM_CHANNELS > 0
+#if WB32_DMAC1_NUM_CHANNELS > 0
   rccResetDMAC1();
 #endif
 #if WB32_DMAC2_NUM_CHANNELS > 0

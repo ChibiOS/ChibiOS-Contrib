@@ -291,7 +291,7 @@
   * @{
   */
 #define WB32_DMAC_DST_AUTO_RELOAD_EN                         (0x1U << 31)
-#define WB32_DMAC_DST_AUTO_RELOAD_DIS                        (0x0U << 30)
+#define WB32_DMAC_DST_AUTO_RELOAD_DIS                        (0x0U << 31)
 /**
   * @}
   */
@@ -584,8 +584,9 @@ typedef struct {
  *
  * @special
  */
-#define dmaStreamSetTransactionSize(dmastp, size) {                          \
-    (dmastp)->dmac->Ch[(dmastp)->channel].CTLH = (uint32_t)((size) & 0x1FF); \
+#define dmaStreamSetTransactionSize(dmastp, size) {                                    \
+    osalDbgAssert((size) <= 511U, "DMA BLOCK_TS max 511");                              \
+    (dmastp)->dmac->Ch[(dmastp)->channel].CTLH = (uint32_t)((size) & WB32_DMA_CHCFG_SIZE_MASK); \
   }
 
 /**
@@ -858,7 +859,7 @@ typedef struct {
  * @param[in] dmastp    pointer to a wb32_dma_stream_t structure
  */
 #define dmaWaitCompletion(dmastp) {                                         \
-    while (((dmastp)->dmac->Ch[(dmastp)->channel].CTLH & 0x00000FFFU) > 0U) \
+    while (((dmastp)->dmac->Ch[(dmastp)->channel].CTLH & WB32_DMA_CHCFG_SIZE_MASK) > 0U) \
       ;                                                                     \
     dmaStreamDisable(dmastp);                                               \
   }
