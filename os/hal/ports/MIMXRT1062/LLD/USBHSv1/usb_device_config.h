@@ -154,11 +154,11 @@
 #define USB_DEVICE_CONFIG_BUFFER_PROPERTY_CACHEABLE (0U)
 #endif
 /*! @brief Whether the low power mode is enabled or not. */
-#define USB_DEVICE_CONFIG_LOW_POWER_MODE (0U)
+#define USB_DEVICE_CONFIG_LOW_POWER_MODE (1U)
 
 #if ((defined(USB_DEVICE_CONFIG_LOW_POWER_MODE)) && (USB_DEVICE_CONFIG_LOW_POWER_MODE > 0U))
 /*! @brief Whether device remote wakeup supported. 1U supported, 0U not supported */
-#define USB_DEVICE_CONFIG_REMOTE_WAKEUP (0U)
+#define USB_DEVICE_CONFIG_REMOTE_WAKEUP (1U)
 
 /*! @brief Whether LPM is supported. 1U supported, 0U not supported */
 #define USB_DEVICE_CONFIG_LPM_L1 (0U)
