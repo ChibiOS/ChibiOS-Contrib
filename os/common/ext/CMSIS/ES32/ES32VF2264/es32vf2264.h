@@ -32,6 +32,8 @@
 #ifndef __ES32VF2264_H__
 #define __ES32VF2264_H__
 
+#define ES32VF2264
+
 /* ToDo: set the defines according your Device */
 /* ToDo: define the correct core revision */
 #define __NUCLEI_N_REV            0x0100    /*!< Core Revision r1p0 */

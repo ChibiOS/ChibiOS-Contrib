@@ -52,21 +52,13 @@
 /*===========================================================================*/
 
 #if ES32_ADC_USE_ADC1 || defined(__DOXYGEN__)
-#if !defined(ES32_ADC1_HANDLER)
-    #error "ES32_ADC1_HANDLER not defined"
-#endif
+
 /**
  * @brief   ADC interrupt handler.
  *
  * @isr
  */
-OSAL_IRQ_HANDLER(ES32_ADC1_HANDLER)
-{
 
-    OSAL_IRQ_PROLOGUE();
-
-    OSAL_IRQ_EPILOGUE();
-}
 #endif
 
 /*===========================================================================*/

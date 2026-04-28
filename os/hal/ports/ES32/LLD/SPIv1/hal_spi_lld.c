@@ -37,12 +37,12 @@
 
 
 /** @brief SPI1 driver identifier.*/
-#if STM32_SPI_USE_SPI1 || defined(__DOXYGEN__)
+#if ES32_SPI_USE_SPI1 || defined(__DOXYGEN__)
 SPIDriver SPID1;
 #endif
 
 /** @brief SPI2 driver identifier.*/
-#if STM32_SPI_USE_SPI2 || defined(__DOXYGEN__)
+#if ES32_SPI_USE_SPI2 || defined(__DOXYGEN__)
 SPIDriver SPID2;
 #endif
 
@@ -56,75 +56,10 @@ SPIDriver SPID2;
 /*===========================================================================*/
 
 #if (ES32_SPI_USE_SPI1 == TRUE) || (ES32_SPI_USE_SPI2 == TRUE) || defined(__DOXYGEN__)
-static void spi_lld_rx(SPIDriver *const spip)
-{
-    uint32_t fd;
-    uint32_t sr;
-
-    while (spip->rxcnt)
-    {
-        sr = spip->SPI->SR;
-
-        if ((sr & SPI_SR_RXBNE) == 0)
-            return;
-
-        fd = spip->SPI->DR;
-
-        if (spip->rxptr)
-        {
-            *spip->rxptr++ = fd & 0xff;
-        }
-
-        spip->rxcnt--;
-    }
-}
-
-static void spi_lld_tx(SPIDriver *const spip)
-{
-    uint32_t fd;
-    uint32_t sr;
-
-    while (spip->txcnt)
-    {
-        sr = spip->SPI->SR;
-
-        // avoid write collision
-        if (spip->SPI->FCR & SPI_FCR_FIFOEN)
-        {
-            if ((sr & SPI_SR_TXBE) == 0)
-                return;
-        }
-        else
-        {
-            if ((sr & SPI_SR_TXE) == 0)
-                return;
-        }
-
-        if (spip->txptr)
-        {
-            fd = *spip->txptr++;
-        }
-        else
-        {
-            fd = '\xff';
-        }
-
-        spip->SPI->DR = fd;
-        spip->txcnt--;
-    }
-}
 
 static void spi_lld_handler(SPIDriver *const spip)
 {
-    //uint32_t sr = spip->SPI->SR; // & ((1U<<8)|spip->SPI->IER);
-    spi_lld_rx(spip);
-    spi_lld_tx(spip);
-
-    if (spip->rxcnt == 0)
-    {
-        spip->SPI->IER = 0;
-        _spi_isr_code(spip);
-    }
+	
 }
 #endif
 
@@ -183,35 +118,7 @@ void spi_lld_init(void)
  */
 void spi_lld_start(SPIDriver *spip)
 {
-    if (spip->state == SPI_STOP)
-    {
-        /* Enables the peripheral.*/
-#if ES32_SPI_USE_SPI1 == TRUE
-        if (&SPID1 == spip)
-        {
-            md_rcu_enable_spi1(RCU);
-            nvicEnableVector(SPI1_IRQn, ES32_SPI1_IRQ_PRIORITY);
-        }
-
-#endif
-#if ES32_SPI_USE_SPI2 == TRUE
-
-        if (&SPID2 == spip)
-        {
-            md_rcu_enable_spi2(RCU);
-            nvicEnableVector(SPI2_IRQn, ES32_SPI2_IRQ_PRIORITY);
-        }
-
-#endif
-    }
-
-    /* Configures the peripheral.*/
-    spip->SPI->CR0 = spip->config->cr0;
-    spip->SPI->CR1 = spip->config->cr1;
-    spip->SPI->CPR = spip->config->cpr;
-    //spip->SPI->FCR = 0; //SPI_FCR_FIFOEN | (1U << 4) | (1U << 0);
-    spip->SPI->FCR = spip->config->fcr;
-    spip->SPI->CR0 |= SPI_CR0_SPIEN;
+	
 }
 
 /**
@@ -223,25 +130,7 @@ void spi_lld_start(SPIDriver *spip)
  */
 void spi_lld_stop(SPIDriver *spip)
 {
-    if (spip->state == SPI_READY)
-    {
-        /* Disables the peripheral.*/
-#if ES32_SPI_USE_SPI1 == TRUE
-        if (&SPID1 == spip)
-        {
-            nvicDisableVector(SPI1_IRQn);
-        }
-
-#endif
-#if ES32_SPI_USE_SPI2 == TRUE
-
-        if (&SPID2 == spip)
-        {
-            nvicDisableVector(SPI2_IRQn);
-        }
-
-#endif
-    }
+	
 }
 
 /**
@@ -282,7 +171,7 @@ void spi_lld_unselect(SPIDriver *spip)
  */
 void spi_lld_ignore(SPIDriver *spip, size_t n)
 {
-    spi_lld_exchange(spip, n, NULL, NULL);
+	
 }
 
 /**
@@ -303,10 +192,7 @@ void spi_lld_ignore(SPIDriver *spip, size_t n)
 void spi_lld_exchange(SPIDriver *spip, size_t n,
                       const void *txbuf, void *rxbuf)
 {
-    spip->txptr = txbuf;
-    spip->rxptr = rxbuf;
-    spip->rxcnt = spip->txcnt = n;
-    spip->SPI->IER = SPI_IER_RXBNEIEN | SPI_IER_TXBEIEN | SPI_IER_TXEIEN;
+	
 }
 
 /**
@@ -324,7 +210,7 @@ void spi_lld_exchange(SPIDriver *spip, size_t n,
  */
 void spi_lld_send(SPIDriver *spip, size_t n, const void *txbuf)
 {
-    spi_lld_exchange(spip, n, txbuf, NULL);
+	
 }
 
 /**
@@ -342,7 +228,7 @@ void spi_lld_send(SPIDriver *spip, size_t n, const void *txbuf)
  */
 void spi_lld_receive(SPIDriver *spip, size_t n, void *rxbuf)
 {
-    spi_lld_exchange(spip, n, NULL, rxbuf);
+	
 }
 
 /**
@@ -359,12 +245,7 @@ void spi_lld_receive(SPIDriver *spip, size_t n, void *rxbuf)
  */
 uint16_t spi_lld_polled_exchange(SPIDriver *spip, uint16_t frame)
 {
-    spip->SPI->DR = frame;
-
-    while ((spip->SPI->SR & SPI_SR_RXBNE) == 0)
-        ;
-
-    return (spip->SPI->DR & 0xffff);
+    return 0;
 }
 
 #endif /* HAL_USE_SPI == TRUE */

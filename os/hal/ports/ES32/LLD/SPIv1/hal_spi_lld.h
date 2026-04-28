@@ -39,13 +39,33 @@
  * @name    ES32 configuration options
  * @{
  */
+#ifdef ES32VF2264
+
+#define SPI_CR1_LSBFIRST    SPI_CON1_LSBFST_MSK
+#define SPI_CR1_CPHA        SPI_CON1_CPHA_MSK
+#define SPI_CR1_CPOL        SPI_CON1_CPOL_MSK
+#define SPI_CR1_BR_0        0U
+#define SPI_CR1_BR_1        0U
+#define SPI_CR1_BR_2        0U
+
+#else
+
+#define SPI_CR1_LSBFIRST    SPI_CON1_LSBFST
+#define SPI_CR1_CPHA        SPI_CON1_CPHA
+#define SPI_CR1_CPOL        SPI_CON1_CPOL
+#define SPI_CR1_BR_0        0U
+#define SPI_CR1_BR_1        0U
+#define SPI_CR1_BR_2        0U
+
+#endif
+ 
 /**
  * @brief   SPI1 driver enable switch.
  * @details If set to @p TRUE the support for SPI0 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_SPI_USE_SPI1) || defined(__DOXYGEN__)
-#define STM32_SPI_USE_SPI1                  FALSE
+#if !defined(ES32_SPI_USE_SPI1) || defined(__DOXYGEN__)
+#define ES32_SPI_USE_SPI1                  FALSE
 #endif
 
 /**
@@ -53,8 +73,8 @@
  * @details If set to @p TRUE the support for SPI2 is included.
  * @note    The default is @p FALSE.
  */
-#if !defined(STM32_SPI_USE_SPI2) || defined(__DOXYGEN__)
-#define STM32_SPI_USE_SPI2                  FALSE
+#if !defined(ES32_SPI_USE_SPI2) || defined(__DOXYGEN__)
+#define ES32_SPI_USE_SPI2                  FALSE
 #endif
 /** @} */
 
@@ -70,6 +90,10 @@
 /**
  * @brief Low Level fields of the SPI driver structure.
  */
+#ifdef ES32VF2264
+#define SPI_TypeDef     SPI_I2S_TypeDef
+#endif
+
 #define spi_lld_driver_fields                                                  \
     SPI_TypeDef               *SPI;                                              \
     uint8_t                   *rxptr;                                            \
@@ -94,11 +118,11 @@
     /* External declarations.                                                    */
     /*===========================================================================*/
 
-#if STM32_SPI_USE_SPI1 && !defined(__DOXYGEN__)
+#if ES32_SPI_USE_SPI1 && !defined(__DOXYGEN__)
 extern SPIDriver SPID1;
 #endif
 
-#if STM32_SPI_USE_SPI2 && !defined(__DOXYGEN__)
+#if ES32_SPI_USE_SPI2 && !defined(__DOXYGEN__)
 extern SPIDriver SPID2;
 #endif
 

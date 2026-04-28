@@ -126,6 +126,11 @@
  */
 #define PAL_MODE_OUTPUT_OPENDRAIN       (PAL_ES32_MODE_OUTPUT |            \
                                          PAL_ES32_OT_OPENDRAIN)
+										 
+#define PAL_OUTPUT_TYPE_OPENDRAIN		PAL_MODE_OUTPUT_OPENDRAIN
+#define PAL_OUTPUT_TYPE_PUSHPULL        PAL_MODE_OUTPUT_PUSHPULL
+#define PAL_OUTPUT_SPEED_HIGHEST        0U								 
+										 
 /** @} */
 /*===========================================================================*/
 /* I/O Ports Types and constants.                                            */

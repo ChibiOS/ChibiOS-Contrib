@@ -57,7 +57,7 @@
  *
  * @isr
  */
-PORT_FAST_IRQ_HANDLER(vector7)
+OSAL_IRQ_HANDLER(vector7)
 {
     csi_coret_clr((md_cmu_get_sys_clock()) / 1000, 0);
     md_inc_tick();

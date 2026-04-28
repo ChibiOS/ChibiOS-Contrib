@@ -16,7 +16,7 @@
 */
 
 /*
- * GD32VF103x4 memory setup.
+ * ES32VF2264 memory setup.
  */
 
 OUTPUT_ARCH( "riscv" )

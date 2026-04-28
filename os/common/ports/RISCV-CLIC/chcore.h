@@ -299,14 +299,7 @@ struct port_context {
  * @details This macro must be inserted at the end of all IRQ handlers
  *          enabled to invoke system APIs.
  */
-#define PORT_IRQ_EPILOGUE() do {                                                                          \
-                            port_lock_from_isr();                                                         \
-                            /* Check if we are the tail of a possible interrupt chain. */                 \
-                            bool is_preemption_required = ((__RV_CSR_READ(CSR_MSUBM) & MSUBM_PTYP) == 0)  \
-                                  && chSchIsPreemptionRequired();                                         \
-                            port_unlock_from_isr();                                                       \
-                            return is_preemption_required;                                                \
-                            } while(0)
+#define PORT_IRQ_EPILOGUE()
 
 /**
  * @brief   IRQ handler function declaration.
@@ -314,9 +307,10 @@ struct port_context {
  *          port implementation.
  */
 #ifdef __cplusplus
-#define PORT_IRQ_HANDLER(id) extern "C" bool id(void)
+#define PORT_IRQ_HANDLER(id)                                              \
+  extern "C" __attribute__((interrupt)) void id(void)
 #else
-#define PORT_IRQ_HANDLER(id) bool id(void)
+#define PORT_IRQ_HANDLER(id) __attribute__((interrupt)) void id(void)
 #endif
 
 /**
@@ -426,7 +420,7 @@ static inline bool port_irq_enabled(syssts_t sts) { return sts & MSTATUS_MIE; }
  */
 static inline bool port_is_isr_context(void) {
   /* msubm.typ == 1 is interrupt handling mode. */
-  return __RV_CSR_READ(CSR_MSUBM) & (0x1 << 6);
+  return false;//change context in special isr, always reutrn false. //__RV_CSR_READ(CSR_MSUBM) & (0x1 << 6);
 }
 
 /**
