@@ -80,12 +80,9 @@ typedef enum {
  */
 struct hal_i2c_config {
   /* End of the mandatory fields.*/
-  i2copmode_t     op_mode;       /**< @brief Specifies the I2C mode.        */
   uint32_t        clock_speed;   /**< @brief Specifies the clock frequency.
                                       @note Must be set to a value lower
                                       than 400kHz.                          */
-  i2cdutycycle_t  duty_cycle;    /**< @brief Specifies the I2C fast mode
-                                      duty cycle.                           */
 };
 
 /**
@@ -170,6 +167,13 @@ struct hal_i2c_driver {
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
+
+#if !defined(__DOXYGEN__)
+
+extern I2CDriver I2CD1;
+extern I2CDriver I2CD2;
+
+#endif /* !defined(__DOXYGEN__) */
 
 #ifdef __cplusplus
 extern "C" {

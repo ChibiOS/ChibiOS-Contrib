@@ -25,11 +25,10 @@
 
 #include "hal.h"
 #include "ald_usb.h"
+#include "string.h"
 #include "md_utils.h"
 
 #if (HAL_USE_USB == TRUE) || defined(__DOXYGEN__)
-
-#define ES_USB_PERH_EP_MAX_INDEX     (6U)
 
 #define USB_CTRL_EP_MPS 64
 
@@ -442,7 +441,7 @@ int usbd_ep_start_write(const uint8_t ep, const uint8_t *data, uint32_t data_len
     old_ep_idx = musb_get_active_ep();
     musb_set_active_ep(ep_idx);
     
-    if((USB->CSR0L_TXCSRL) & USB_TXCSRL_TXRDY_MSK)
+    if(es_usbd_ep_tx_ready_state(ep_idx))
     {
         musb_set_active_ep(old_ep_idx);
         return -3;
@@ -549,6 +548,11 @@ void handle_ep0(void)
         USB->CSR0L_TXCSRL = ALD_USB_CSR0L_SETENDC;
     }
 
+    if (g_musb_udc.dev_addr > 0) {
+        USB->FADDR = g_musb_udc.dev_addr;
+        g_musb_udc.dev_addr = 0;
+    }
+
     switch (usb_ep0_state) {
         case USB_EP0_STATE_SETUP:
             if (ep0_status & ALD_USB_CSR0L_RXRDY) {
@@ -642,7 +646,11 @@ const uint8_t __lowest_bit_bitmap[] =
  * @brief USB interrupt handler.
  * @isr
  */
+#ifdef ES32VF2264
+PORT_FAST_IRQ_HANDLER(vector27)
+#else
 OSAL_IRQ_HANDLER(VectorBC)
+#endif
 {
     volatile uint32_t i;
     uint8_t old_ep_idx;
@@ -937,11 +945,11 @@ void usb_lld_reset(USBDriver *usbp)
  */
 void usb_lld_set_address(USBDriver *usbp)
 {
-    volatile uint32_t i;
-    
-    for(i = 0;i < 9999;i++){}
-    
-    USB->FADDR = usbp->address;
+    if (usbp->address == 0) {
+        ald_usb_dev_set_addr(0);
+    }
+
+    g_musb_udc.dev_addr = usbp->address;
 }
 
 /**

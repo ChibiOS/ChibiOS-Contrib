@@ -55,6 +55,8 @@
 /*===========================================================================*/
 
 #if ES32_I2C_USE_I2C1 || defined(__DOXYGEN__)
+I2CDriver I2CD1;
+
 /**
  * @brief   I2C1 event interrupt handler.
  *
@@ -64,8 +66,6 @@ OSAL_IRQ_HANDLER(ES32_I2C1_EVENT_HANDLER)
 {
 
     OSAL_IRQ_PROLOGUE();
-
-    i2c_lld_serve_event_interrupt(&I2CD1);
 
     OSAL_IRQ_EPILOGUE();
 }
@@ -91,8 +91,6 @@ OSAL_IRQ_HANDLER(ES32_I2C2_EVENT_HANDLER)
 {
 
     OSAL_IRQ_PROLOGUE();
-
-    i2c_lld_serve_event_interrupt(&I2CD2);
 
     OSAL_IRQ_EPILOGUE();
 }
@@ -120,8 +118,6 @@ OSAL_IRQ_HANDLER(ES32_I2C3_EVENT_HANDLER)
 {
 
     OSAL_IRQ_PROLOGUE();
-
-    i2c_lld_serve_event_interrupt(&I2CD3);
 
     OSAL_IRQ_EPILOGUE();
 }
