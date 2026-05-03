@@ -277,7 +277,7 @@ msg_t sio_lld_start(SIODriver *siop) {
 
   if (siop->state == SIO_STOP) {
 
-  /* Enables the peripheral.*/
+    /* Enables the peripheral.*/
     if (false) {
     }
 #if AT32_SIO_USE_USART1 == TRUE
@@ -330,6 +330,7 @@ msg_t sio_lld_start(SIODriver *siop) {
 #endif
     else {
       osalDbgAssert(false, "invalid SIO instance");
+      return HAL_RET_IS_INVALID;
     }
   }
 
@@ -707,6 +708,8 @@ void sio_lld_serve_interrupt(SIODriver *siop) {
      to the state of the various CRx registers.*/
   stsmask = __sio_reloc_field(ctrl1, USART_CTRL1_TDBEIEN, USART_CTRL1_TDBEIEN_Pos, USART_STS_TDBE_Pos)  |
             __sio_reloc_field(ctrl1, USART_CTRL1_RDBFIEN, USART_CTRL1_RDBFIEN_Pos, USART_STS_RDBF_Pos)  |
+            /* NOTE: ROERR interrupt also enabled by USART_CTRL1_RDBFIEN, not just USART_CTRL3_ERRIEN.*/
+            __sio_reloc_field(ctrl1, USART_CTRL1_RDBFIEN, USART_CTRL1_RDBFIEN_Pos, USART_STS_ROERR_Pos) |
             __sio_reloc_field(ctrl1, USART_CTRL1_IDLEIEN, USART_CTRL1_IDLEIEN_Pos, USART_STS_IDLEF_Pos) |
             __sio_reloc_field(ctrl1, USART_CTRL1_TDCIEN,  USART_CTRL1_TDCIEN_Pos,  USART_STS_TDC_Pos)   |
             __sio_reloc_field(ctrl1, USART_CTRL1_PERRIEN, USART_CTRL1_PERRIEN_Pos, USART_STS_PERR_Pos)  |
@@ -782,7 +785,8 @@ void sio_lld_serve_interrupt(SIODriver *siop) {
     __sio_callback(siop);
   }
   else {
-    osalDbgAssert(false, "spurious interrupt");
+    /* Shared STM32 USART vectors can dispatch multiple instances, ignore the
+       call if this peripheral has no pending enabled source.*/
   }
 }
 

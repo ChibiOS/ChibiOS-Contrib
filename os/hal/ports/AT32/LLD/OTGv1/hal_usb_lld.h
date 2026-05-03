@@ -147,6 +147,13 @@
 #define AT32_USB_HOST_WAKEUP_DURATION       2
 #endif
 
+/**
+ * @brief   Allowed deviation for the 48MHz clock.
+ */
+#if !defined(AT32_USB_48MHZ_DELTA) || defined(__DOXYGEN__)
+#define AT32_USB_48MHZ_DELTA                120000
+#endif
+
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
@@ -215,12 +222,12 @@
   #define USB_MAX_ENDPOINTS                 AT32_OTG2_ENDPOINTS
 #endif
 
-#if AT32_USB_USE_OTG1 &&                                                 \
+#if AT32_USB_USE_OTG1 &&                                                    \
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_USB_OTG1_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to OTG1"
 #endif
 
-#if AT32_USB_USE_OTG2 &&                                                 \
+#if AT32_USB_USE_OTG2 &&                                                    \
     !OSAL_IRQ_IS_VALID_PRIORITY(AT32_USB_OTG2_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to OTG2"
 #endif
@@ -233,13 +240,18 @@
 #error "OTG2 RX FIFO size must be a multiple of 4"
 #endif
 
-/* Allowing for a small tolerance.*/
-#if AT32_USBCLK < 47880000 || AT32_USBCLK > 48120000
-#error "the USB OTG driver requires a 48MHz clock"
-#endif
-
 #if (AT32_USB_HOST_WAKEUP_DURATION < 2) || (AT32_USB_HOST_WAKEUP_DURATION > 15)
 #error "invalid AT32_USB_HOST_WAKEUP_DURATION setting, it must be between 2 and 15"
+#endif
+
+/* Allowing for a small tolerance.*/
+#if (AT32_USB_48MHZ_DELTA < 0) || (AT32_USB_48MHZ_DELTA > 120000)
+#error "invalid AT32_USB_48MHZ_DELTA setting, it must not exceed 120000"
+#endif
+
+#if (AT32_USBCLK < (48000000 - AT32_USB_48MHZ_DELTA)) ||                    \
+    (AT32_USBCLK > (48000000 + AT32_USB_48MHZ_DELTA))
+#error "the USB OTGv1 driver requires a 48MHz clock"
 #endif
 
 /*===========================================================================*/
@@ -395,12 +407,14 @@ typedef struct {
    * @note    This callback is mandatory and cannot be set to @p NULL.
    */
   usbgetdescriptor_t            get_descriptor_cb;
+#if (USB_USE_EP0_THREAD == FALSE) || defined(__DOXYGEN__)
   /**
    * @brief   Requests hook callback.
    * @details This hook allows to be notified of standard requests or to
    *          handle non standard requests.
    */
   usbreqhandler_t               requests_hook_cb;
+#endif
   /**
    * @brief   Start Of Frame callback.
    */
@@ -462,6 +476,28 @@ struct USBDriver {
    * @brief   Endpoint 0 end transaction callback.
    */
   usbcallback_t                 ep0endcb;
+#if (USB_USE_EP0_THREAD == TRUE) || defined(__DOXYGEN__)
+  /**
+   * @brief   Waiting thread for EP0 operations.
+   */
+  thread_reference_t            ep0thread;
+  /**
+   * @brief   Current EP0 sequence number.
+   */
+  uint8_t                       ep0seq;
+  /**
+   * @brief   EP0 sequence number owned by the worker thread.
+   */
+  uint8_t                       ep0rseq;
+  /**
+   * @brief   Pending setup notification for the worker thread.
+   */
+  uint8_t                       ep0setup;
+  /**
+   * @brief   Pending reset notification for the worker thread.
+   */
+  uint8_t                       ep0reset;
+#endif
   /**
    * @brief   Setup packet buffer.
    */

@@ -183,16 +183,26 @@ static void otg_disable_ep(USBDriver *usbp) {
 
 static void otg_enable_ep(USBDriver *usbp) {
   at32_otg_t *otgp = usbp->otg;
+  uint32_t daintmsk = 0U;
   unsigned i;
 
+  /* Rebuild endpoint interrupt mask from the active endpoint
+     configurations, this avoids dereferencing not-yet initialized
+     endpoint entries during early SOF/WKUP handling. */
   for (i = 0; i <= usbp->otgparams->num_endpoints; i++) {
-    if (usbp->epc[i]->out_state != NULL) {
-      otgp->DAINTMSK |= DAINTMSK_OUTEPTMSK(i);
+    const USBEndpointConfig *epcp = usbp->epc[i];
+
+    if (epcp == NULL) {
+      continue;
     }
-    if (usbp->epc[i]->in_state != NULL) {
-      otgp->DAINTMSK |= DAINTMSK_INEPTMSK(i);
+    if (epcp->out_state != NULL) {
+      daintmsk |= DAINTMSK_OUTEPTMSK(i);
+    }
+    if (epcp->in_state != NULL) {
+      daintmsk |= DAINTMSK_INEPTMSK(i);
     }
   }
+  otgp->DAINTMSK = daintmsk;
 }
 
 static void otg_rxfifo_flush(USBDriver *usbp) {
@@ -260,14 +270,47 @@ static void otg_fifo_write_from_buffer(volatile uint32_t *fifop,
 
   osalDbgAssert(n > 0, "is zero");
 
+#if defined(OTG_USE_SIMPLIFIED_LOOPS)
   while (true) {
     *fifop = *((uint32_t *)buf);
-    if (n <= 4) {
+    if (n <= 4U) {
       break;
     }
-    n -= 4;
+    n -= 4U;
     buf += 4;
   }
+#else
+  while (n >= 4U) {
+    uint32_t w;
+
+    w  = (uint32_t)buf[0];
+    w |= (uint32_t)buf[1] << 8;
+    w |= (uint32_t)buf[2] << 16;
+    w |= (uint32_t)buf[3] << 24;
+    *fifop = w;
+    buf += 4;
+    n -= 4U;
+  }
+
+  if (n != 0U) {
+    uint32_t w = 0U;
+
+    switch (n) {
+    case 3:
+      w |= (uint32_t)buf[2] << 16;
+      /* Falls through.*/
+    case 2:
+      w |= (uint32_t)buf[1] << 8;
+      /* Falls through.*/
+    case 1:
+      w |= (uint32_t)buf[0];
+      break;
+    default:
+      break;
+    }
+    *fifop = w;
+  }
+#endif
 }
 
 /**
@@ -416,7 +459,8 @@ static void otg_epin_handler(USBDriver *usbp, usbep_t ep) {
   otgp->ie[ep].DIEPINT = epint;
 
   if (epint & DIEPINT_TIMEOUT) {
-    /* Timeouts not handled yet, not sure how to handle.*/
+    /* Timeout condition is intentionally masked out in DIEPMSK because
+       it does not represent transfer completion/failure for this driver.*/
   }
   if ((epint & DIEPINT_XFERC) && (otgp->DIEPMSK & DIEPMSK_XFERCMSK)) {
     /* Transmit transfer complete.*/
@@ -1037,7 +1081,7 @@ void usb_lld_reset(USBDriver *usbp) {
       otgp->GINTMSK &= ~GINTMSK_RXFLVLMSK;
     }
 #endif
-  otgp->DIEPMSK = DIEPMSK_TIMEOUTMSK | DIEPMSK_XFERCMSK;
+  otgp->DIEPMSK = /*DIEPMSK_TIMEOUTMSK |*/ DIEPMSK_XFERCMSK;
   otgp->DOEPMSK = DOEPMSK_SETUPMSK   | DOEPMSK_XFERCMSK;
 
   /* EP0 initialization, it is a special case.*/

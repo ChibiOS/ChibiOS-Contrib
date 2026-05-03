@@ -323,6 +323,8 @@ msg_t spi_lld_start(SPIDriver *spip) {
 
   /* If in stopped state then enables the SPI and DMA clocks.*/
   if (spip->state == SPI_STOP) {
+
+    /* Enables the peripheral.*/
     if (false) {
     }
 
@@ -382,6 +384,7 @@ msg_t spi_lld_start(SPIDriver *spip) {
 
     else {
       osalDbgAssert(false, "invalid SPI instance");
+      return HAL_RET_IS_INVALID;
     }
 
     /* DMA setup.*/
