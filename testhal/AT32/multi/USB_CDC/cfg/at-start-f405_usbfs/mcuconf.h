@@ -1,7 +1,7 @@
 /*
-    ChibiOS - Copyright (C) 2006..2020 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2006-2026 Giovanni Di Sirio.
+    ChibiOS - Copyright (C) 2023-2026 HorrorTroll.
+    ChibiOS - Copyright (C) 2023-2026 Zhaqian.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -260,6 +260,7 @@
 #define AT32_USB_OTG2_IRQ_PRIORITY          14
 #define AT32_USB_OTG1_RX_FIFO_SIZE          512
 #define AT32_USB_OTG2_RX_FIFO_SIZE          1024
+#define AT32_USE_USB_OTG2_HS_DMA            FALSE
 
 /*
  * WDG driver system settings.
