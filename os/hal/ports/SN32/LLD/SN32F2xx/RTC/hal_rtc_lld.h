@@ -30,11 +30,16 @@
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
-#define SN32_RTC_PERIOD_DEFAULT   0x8000U
 #define SN32_RTC_PERIOD_MAX       ((1U << 20) - 1U)
 #define SN32_RTC_CLK_SRC_ILRC     0U
 #define SN32_RTC_CLK_SRC_XTAL     1U
 #define SN32_RTC_CLK_SOURCE       SN32_RTC_CLK_SRC_ILRC
+
+#if SN32_RTC_CLK_SOURCE == SN32_RTC_CLK_SRC_ILRC
+#    define SN32_RTC_PERIOD_DEFAULT    (32000UL)
+#else
+#    define SN32_RTC_PERIOD_DEFAULT    (32768UL)
+#endif
 
 /**
  * @name    Implementation capabilities
