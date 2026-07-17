@@ -42,7 +42,7 @@ ADCDriver ADCD1;
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
-#define ADC_CHANNEL_MASK 0x0F
+#define ADC_CHANNEL_MASK 0x1F
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
@@ -172,7 +172,6 @@ void adc_lld_start_conversion(ADCDriver *adcp) {
   /* Apply ADC configuration.*/
   if(grpp->avrefhsel) adcSN32EnableAVREFHSEL(adcp);
   adcp->adc->ADM_b.VHS  = grpp->vhs;
-  adcSN32EnableGCHS(adcp->adc);
   adcp->adc->ADM_b.ADLEN  = grpp->adlen;
 
   adcp->number_of_samples = adcp->depth * grpp->num_channels;
@@ -191,6 +190,7 @@ void adc_lld_start_conversion(ADCDriver *adcp) {
   adcp->adc->RIS = 0U;
   adcp->adc->IE = ADC_IE_AIN(adcp->current_channel);
 
+  adcSN32EnableGCHS(adcp->adc);
   /* ADC conversion start.*/
   adcp->adc->ADM_b.ADS |= ADC_ADS_START;
 }
