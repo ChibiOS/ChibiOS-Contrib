@@ -94,6 +94,26 @@
 #include "sn32_ct.h"
 #include "sn32_sys1.h"
 
+/*===========================================================================*/
+/* LVD driver pre-compile time settings.                                     */
+/*===========================================================================*/
+
+#if !defined(SN32_LVD_ENABLE) || defined(__DOXYGEN__)
+#define SN32_LVD_ENABLE                 FALSE
+#endif
+
+#if !defined(SN32_LVDRSTLVL) || defined(__DOXYGEN__)
+#define SN32_LVDRSTLVL                  SN32_LVD_RSTLVL_2_40V
+#endif
+
+#if !defined(SN32_LVDINTLVL) || defined(__DOXYGEN__)
+#define SN32_LVDINTLVL                  SN32_LVD_INTLVL_2_40V
+#endif
+
+#if !defined(SN32_LVDRSTEN) || defined(__DOXYGEN__)
+#define SN32_LVDRSTEN                   TRUE
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
