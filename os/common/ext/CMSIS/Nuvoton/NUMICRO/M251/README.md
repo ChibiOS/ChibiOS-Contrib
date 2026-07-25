@@ -21,6 +21,12 @@ The files under `stddriver/` are retained unchanged. Consumers include the
 specific required header through its relocated path, for example
 `M251/stddriver/clk.h`; the ChibiOS port does not use the StdDriver functions.
 
+`M251.h` has one documented integration adaptation: its final aggregate
+StdDriver include block is commented out. This keeps the CMSIS device header
+usable without injecting the complete StdDriver API and avoids collisions
+with ChibiOS HAL identifiers. The original include list remains in the file
+as a comment for direct comparison with M251BSP.
+
 ## License
 
 Licensed under **Apache 2.0** by Nuvoton Technology Corp. See `LICENSE` and

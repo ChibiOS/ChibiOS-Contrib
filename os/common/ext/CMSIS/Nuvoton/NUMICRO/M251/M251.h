@@ -614,6 +614,13 @@ typedef volatile uint64_t vu64;       ///< Define 64-bit unsigned volatile data 
 /******************************************************************************/
 /*                         Peripheral header files                            */
 /******************************************************************************/
+/*
+ * ChibiOS keeps the vendor StdDriver headers as opt-in register-level
+ * references. Include a required header explicitly from the consumer instead
+ * of injecting the complete StdDriver API through this CMSIS device header.
+ * The original M251BSP include list is retained below for provenance.
+ */
+/*
 #include "bpwm.h"
 #include "sys.h"
 #include "clk.h"
@@ -647,5 +654,6 @@ typedef volatile uint64_t vu64;       ///< Define 64-bit unsigned volatile data 
 #include "scuart.h"
 #include "lcd.h"
 #include "tk.h"
+*/
 
 #endif  /* __M251_H__ */
