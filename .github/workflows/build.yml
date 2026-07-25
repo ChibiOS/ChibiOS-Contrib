@@ -73,3 +73,9 @@ jobs:
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/ES32
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/ES32
+    - name: build M251
+      run: |
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/NUMICRO/M251
+        I2C1_DISPLAY=SSD1306 \
+          $CHC_PATH/tools/chbuild.sh \
+          $CHC_PATH/testhal/NUMICRO/M251/NUMAKER_M252SD/I2C
