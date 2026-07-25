@@ -45,3 +45,4 @@ Microchip SAMD21
 Belonit
 https://github.com/Belonit
 ARMv8-M Baseline core port
+Nuvoton M251/M252 platform port
