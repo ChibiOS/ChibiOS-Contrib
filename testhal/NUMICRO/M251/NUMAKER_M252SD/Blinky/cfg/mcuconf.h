@@ -39,5 +39,6 @@
  * ST driver settings.
  */
 #define M251_ST_IRQ_PRIORITY                3
+#define M251_ST_USE_TIMER                   1
 
 #endif /* MCUCONF_H */

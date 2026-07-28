@@ -8,9 +8,10 @@ NuMaker-M252SD with an M252SD2AE MCU.
 
 ** The Test **
 
-The active-low on-board LED on PB.14 toggles once per second. Before the
-normal loop, the test verifies nested protected-register unlock/lock handling.
-The LED must blink at 0.5 Hz (one second on, one second off).
+The test runs ChibiOS in 16-bit free-running system-timer mode using TIMER1.
+The active-low on-board LED on PB.14 toggles once per second. Before the normal
+loop, the test verifies nested protected-register unlock/lock handling. The
+LED must blink at 0.5 Hz (one second on, one second off).
 
 ** Board Setup **
 

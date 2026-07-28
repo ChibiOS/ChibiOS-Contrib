@@ -7,7 +7,7 @@ the NuMaker-M252SD board.
 The port provides low-level drivers for:
 
 - system clocks and reset;
-- SysTick;
+- periodic SysTick and free-running TIMER system clocks;
 - GPIO and PAL events;
 - UART;
 - USB device;
@@ -25,7 +25,8 @@ Applications select clocks, peripheral instances, and interrupt priorities in
 `mcuconf.h`. The principal option groups are:
 
 - `M251_HCLK_*`, `M251_PLL_*`, and `M251_USB_*` for system and USB clocks;
-- `M251_ST_*` for the system timer;
+- `M251_ST_*` for the system timer; free-running mode uses the 16-bit PWM
+  counter of the selected `TIMER0` through `TIMER3` instance;
 - `M251_GPT_*`, `M251_PWM_*`, `M251_I2C_*`, `M251_SPI_*`, and
   `M251_SERIAL_*` for peripheral instances and interrupt priorities;
 - `M251_NO_INIT` when clock and system initialization is performed externally.
@@ -36,8 +37,9 @@ supported driver.
 
 ## Current limitations
 
-- The system timer supports periodic SysTick mode. Free-running mode is not
-  implemented.
+- Free-running system time is limited to 16-bit resolution. The selected
+  TIMER cannot also be enabled as a GPT driver. Its input clock is derived
+  from the selected PCLK divider during initialization.
 - SPI supports master mode only and does not support circular transfers.
 - The SERIAL driver currently requires the direct 48 MHz HIRC clock.
 - USB is available only on M252 devices containing the USBD peripheral.
