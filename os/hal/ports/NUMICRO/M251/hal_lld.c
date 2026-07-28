@@ -25,6 +25,7 @@
  */
 
 #include "hal.h"
+#include "M251/stddriver/fmc.h"
 
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
@@ -164,6 +165,88 @@ void m251_lld_lock(void) {
   if (primask == 0U) {
     __enable_irq();
   }
+}
+
+/**
+ * @brief   Reads the factory-programmed 96-bit unique identifier.
+ * @details The FMC read-UID command is serialized against other system
+ *          activity. Only ISP access is temporarily enabled; no Flash write
+ *          permission is enabled. A pre-existing FMC failure is preserved
+ *          and reported without starting another command.
+ *
+ * @param[out] uid      three-word destination buffer
+ * @return              @p true on success, @p false on timeout or FMC error
+ *
+ * @api
+ */
+bool m251_lld_read_unique_id(uint32_t uid[M251_UNIQUE_ID_WORDS]) {
+  bool isp_enabled;
+  bool success = true;
+  syssts_t sts;
+  unsigned index;
+
+  osalDbgCheck(uid != NULL);
+
+  for (index = 0U; index < M251_UNIQUE_ID_WORDS; index++) {
+    uid[index] = 0U;
+  }
+
+  sts = osalSysGetStatusAndLockX();
+  m251_lld_unlock();
+
+  isp_enabled = (FMC->ISPCTL & FMC_ISPCTL_ISPEN_Msk) != 0U;
+  if ((FMC->ISPCTL & FMC_ISPCTL_ISPFF_Msk) != 0U) {
+    success = false;
+  }
+  else {
+    /* ISPFF is write-one-to-clear, keep zero in all ISPCTL writes.*/
+    FMC->ISPCTL = (FMC->ISPCTL & ~FMC_ISPCTL_ISPFF_Msk) |
+                  FMC_ISPCTL_ISPEN_Msk;
+  }
+
+  for (index = 0U; success && (index < M251_UNIQUE_ID_WORDS); index++) {
+    uint32_t timeout = 0x100000U;
+
+    FMC->ISPCMD = FMC_ISPCMD_READ_UID;
+    FMC->ISPADDR = index * sizeof(uint32_t);
+    FMC->ISPDAT = 0U;
+    FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;
+    __ISB();
+
+    while ((FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk) != 0U) {
+      if (--timeout == 0U) {
+        success = false;
+        break;
+      }
+    }
+
+    if (!success) {
+      break;
+    }
+
+    if ((FMC->ISPCTL & FMC_ISPCTL_ISPFF_Msk) != 0U) {
+      success = false;
+      break;
+    }
+
+    uid[index] = FMC->ISPDAT;
+  }
+
+  if (!isp_enabled && ((FMC->ISPCTL & FMC_ISPCTL_ISPEN_Msk) != 0U)) {
+    /* Do not acknowledge a failure raised by the UID command.*/
+    FMC->ISPCTL &= ~(FMC_ISPCTL_ISPEN_Msk | FMC_ISPCTL_ISPFF_Msk);
+  }
+
+  m251_lld_lock();
+  osalSysRestoreStatusX(sts);
+
+  if (!success) {
+    for (index = 0U; index < M251_UNIQUE_ID_WORDS; index++) {
+      uid[index] = 0U;
+    }
+  }
+
+  return success;
 }
 
 /**

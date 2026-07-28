@@ -400,6 +400,11 @@
 #define SystemLockReg() m251_lld_lock()
 
 /**
+ * @brief   Size of the factory-programmed unique identifier in 32-bit words.
+ */
+#define M251_UNIQUE_ID_WORDS 3U
+
+/**
  * @brief   Returns the frequency of a clock point in Hz.
  * @note    Clock points are not currently exposed by this port.
  *
@@ -414,6 +419,7 @@ extern "C" {
 #endif
   void m251_lld_unlock(void);
   void m251_lld_lock(void);
+  bool m251_lld_read_unique_id(uint32_t uid[M251_UNIQUE_ID_WORDS]);
   void m251_lld_chip_reset(void) __attribute__((noreturn));
   void M251_clock_init(void);
   void hal_lld_init(void);
