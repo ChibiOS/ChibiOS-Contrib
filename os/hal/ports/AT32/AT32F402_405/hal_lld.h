@@ -194,9 +194,9 @@
  * @name    PWC_LDOOV register bits definitions
  * @{
  */
-#define AT32_LDOOVSEL_LEV0          (0 << 0)             /**< LDOOVSEL level 0.                  */
-#define AT32_LDOOVSEL_LEV2          (2 << 0)             /**< LDOOVSEL level 2.                  */
-#define AT32_LDOOVSEL_LEV3          (3 << 0)             /**< LDOOVSEL level 3.                  */
+#define AT32_LDOOVSEL_LEV1          (1 << 0)             /**< LDOOVSEL level 1.1V.                */
+#define AT32_LDOOVSEL_LEV2          (2 << 0)             /**< LDOOVSEL level 1.2V.                */
+#define AT32_LDOOVSEL_LEV3          (3 << 0)             /**< LDOOVSEL level 1.3V.                */
 /** @} */
 
 /**
@@ -1064,12 +1064,12 @@
 #error "AT32 bus clock exceeding maximum frequency when LDO is 1.2V"
 #endif
 
-#elif AT32_LDOOVSEL == AT32_LDOOVSEL_LEV0
+#elif AT32_LDOOVSEL == AT32_LDOOVSEL_LEV1
 
 #if (AT32_HCLK > 108000000) ||                                              \
     (AT32_PCLK1 > AT32_HCLK) ||                                             \
     (AT32_PCLK2 > AT32_HCLK)
-#error "AT32 bus clock exceeding maximum frequency when LDO is 1.0V"
+#error "AT32 bus clock exceeding maximum frequency when LDO is 1.1V"
 #endif
 
 #else
