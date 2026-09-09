@@ -1,0 +1,71 @@
+Compiling crt0_v6m.S
+Compiling vectors.S
+Compiling chcoreasm.S
+Compiling crt1.c
+Compiling oop_base_object.c
+Compiling hal.c
+Compiling hal_safety.c
+Compiling hal_st.c
+Compiling hal_buffered_serial.c
+Compiling hal_buffers.c
+Compiling hal_queues.c
+Compiling hal_mmcsd.c
+Compiling hal_pal.c
+Compiling hal_serial.c
+Compiling hal_usb.c
+Compiling hal_flash.c
+Compiling nvic.c
+Compiling sk32_isr.c
+Compiling hal_lld.c
+Compiling hal_efl_lld.c
+Compiling hal_st_lld.c
+Compiling hal_pal_lld.c
+Compiling hal_serial_lld.c
+Compiling sk32_dma.c
+Compiling hal_sled_lld.c
+In file included from ../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.c:49:
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.h:65:6: warning: "HAL_USE_SLED" is not defined, evaluates to 0 [-Wundef]
+   65 | #if (HAL_USE_SLED == TRUE) || defined(__DOXYGEN__)
+      |      ^~~~~~~~~~~~
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.c:51:5: warning: "HAL_USE_SLED" is not defined, evaluates to 0 [-Wundef]
+   51 | #if HAL_USE_SLED || defined(__DOXYGEN__)
+      |     ^~~~~~~~~~~~
+Compiling stm32_dma.c
+Compiling hal_usb_lld.c
+Compiling board.c
+Compiling osal.c
+Compiling chsys.c
+Compiling chrfcu.c
+Compiling chdebug.c
+Compiling chtrace.c
+Compiling chvt.c
+Compiling chschd.c
+Compiling chinstances.c
+Compiling chthreads.c
+Compiling chregistry.c
+Compiling chsem.c
+Compiling chmtx.c
+Compiling chcond.c
+Compiling chevents.c
+Compiling chmsg.c
+Compiling chdynamic.c
+Compiling chmboxes.c
+Compiling chmemcore.c
+Compiling chmemheaps.c
+Compiling chmempools.c
+Compiling chpipes.c
+Compiling chobjcaches.c
+Compiling chdelegates.c
+Compiling chfactory.c
+Compiling chcore.c
+Compiling main.c
+Linking build/gpio.elf
+Creating build/gpio.hex
+Creating build/gpio.bin
+Creating build/gpio.dmp
+
+   text	   data	    bss	    dec	    hex	filename
+   9752	      4	   8184	  17940	   4614	build/gpio.elf
+Creating build/gpio.list
+
+Done

@@ -1,0 +1,31 @@
+﻿Compiling hal_safety.c
+Compiling hal.c
+Compiling hal_st.c
+Compiling hal_buffered_serial.c
+Compiling hal_buffers.c
+Compiling hal_queues.c
+Compiling hal_mmcsd.c
+Compiling hal_pal.c
+Compiling hal_usb.c
+Compiling hal_flash.c
+Compiling nvic.c
+Compiling stm32_isr.c
+Compiling hal_lld.c
+Compiling hal_efl_lld.c
+Compiling stm32_dma.c
+Compiling stm32_exti.c
+Compiling hal_pal_lld.c
+Compiling hal_st_lld.c
+Compiling hal_usb_lld.c
+Compiling board.c
+Compiling main.c
+Linking build/ch.elf
+Creating build/ch.hex
+Creating build/ch.bin
+Creating build/ch.dmp
+Creating build/ch.list
+
+
+Done
+   text	   data	    bss	    dec	    hex	filename
+   8132	      4	   8184	  16320	   3fc0	build/ch.elf
