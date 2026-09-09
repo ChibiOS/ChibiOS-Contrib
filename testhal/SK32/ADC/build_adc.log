@@ -1,0 +1,73 @@
+Compiler Options
+arm-none-eabi-gcc -c -mcpu=cortex-m0 -mthumb -O2 -ggdb -fomit-frame-pointer -falign-functions=16 -ffunction-sections -fdata-sections -fno-common -Wall -Wextra -Wundef -Wstrict-prototypes -Wa,-alms=./build/lst/ -DCORTEX_USE_FPU=FALSE -DSK32F077xB -MD -MP -MF ./.dep/build.d -I. -I../../../../chibios-contrib/os/common/ext/CMSIS/SK32/SK32F0xx -I../../../../chibios-contrib/os/common/startup/ARMCMx/devices/SK32F0xx -I../../../../chibios-contrib/os/hal/boards/GENERIC_SK32_F077 -I../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx -I../../../../chibios/os/common/ext/ARM/CMSIS/Core/Include -I../../../../chibios/os/common/oop/include -I../../../../chibios/os/common/portability/GCC -I../../../../chibios/os/common/ports/ARM-common -I../../../../chibios/os/common/ports/ARMv6-M -I../../../../chibios/os/common/startup/ARMCMx/compilers/GCC -I../../../../chibios/os/common/startup/ARMCMx/compilers/GCC/ld -I../../../../chibios/os/hal/include -I../../../../chibios/os/hal/osal/rt-nil -I../../../../chibios/os/hal/ports/STM32/LLD/CANv1 -I../../../../chibios/os/hal/ports/STM32/LLD/DACv1 -I../../../../chibios/os/hal/ports/STM32/LLD/DMAv1 -I../../../../chibios/os/hal/ports/STM32/LLD/RTCv2 -I../../../../chibios/os/hal/ports/STM32/LLD/xWDGv1 -I../../../../chibios/os/hal/ports/common/ARMCMx -I../../../../chibios/os/license -I../../../../chibios/os/oslib/include -I../../../../chibios/os/rt/include -I./cfg main.c -o main.o
+
+Compiling crt0_v6m.S
+Compiling vectors.S
+Compiling chcoreasm.S
+Compiling crt1.c
+Compiling oop_base_object.c
+Compiling hal.c
+Compiling hal_safety.c
+Compiling hal_st.c
+Compiling hal_buffered_serial.c
+Compiling hal_buffers.c
+Compiling hal_queues.c
+Compiling hal_mmcsd.c
+Compiling hal_adc.c
+Compiling hal_pal.c
+Compiling hal_flash.c
+Compiling nvic.c
+Compiling sk32_isr.c
+Compiling hal_lld.c
+Compiling hal_efl_lld.c
+Compiling hal_st_lld.c
+Compiling hal_pal_lld.c
+Compiling sk32_dma.c
+Compiling hal_sled_lld.c
+In file included from ../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.c:49:
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.h:65:6: warning: "HAL_USE_SLED" is not defined, evaluates to 0 [-Wundef]
+   65 | #if (HAL_USE_SLED == TRUE) || defined(__DOXYGEN__)
+      |      ^~~~~~~~~~~~
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.c:51:5: warning: "HAL_USE_SLED" is not defined, evaluates to 0 [-Wundef]
+   51 | #if HAL_USE_SLED || defined(__DOXYGEN__)
+      |     ^~~~~~~~~~~~
+Compiling hal_adc_lld.c
+Compiling stm32_dma.c
+Compiling hal_usb_lld.c
+Compiling board.c
+Compiling osal.c
+Compiling chsys.c
+Compiling chrfcu.c
+Compiling chdebug.c
+Compiling chtrace.c
+Compiling chvt.c
+Compiling chschd.c
+Compiling chinstances.c
+Compiling chthreads.c
+Compiling chregistry.c
+Compiling chsem.c
+Compiling chmtx.c
+Compiling chcond.c
+Compiling chevents.c
+Compiling chmsg.c
+Compiling chdynamic.c
+Compiling chmboxes.c
+Compiling chmemcore.c
+Compiling chmemheaps.c
+Compiling chmempools.c
+Compiling chpipes.c
+Compiling chobjcaches.c
+Compiling chdelegates.c
+Compiling chfactory.c
+Compiling chcore.c
+Compiling main.c
+Linking build/adc.elf
+Creating build/adc.hex
+Creating build/adc.bin
+Creating build/adc.dmp
+
+   text	   data	    bss	    dec	    hex	filename
+   4680	      4	   8184	  12868	   3244	build/adc.elf
+Creating build/adc.list
+
+Done

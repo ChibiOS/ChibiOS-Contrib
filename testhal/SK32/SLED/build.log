@@ -1,0 +1,130 @@
+Compiling crt0_v6m.S
+Compiling vectors.S
+Compiling chcoreasm.S
+Compiling crt1.c
+Compiling oop_base_object.c
+Compiling hal.c
+Compiling hal_safety.c
+Compiling hal_st.c
+Compiling hal_buffered_serial.c
+Compiling hal_buffers.c
+Compiling hal_queues.c
+Compiling hal_mmcsd.c
+Compiling hal_pal.c
+Compiling hal_flash.c
+Compiling nvic.c
+Compiling sk32_isr.c
+Compiling hal_lld.c
+Compiling hal_efl_lld.c
+Compiling hal_st_lld.c
+Compiling hal_pal_lld.c
+Compiling sk32_dma.c
+In file included from ../../../../chibios/os/hal/include/hal.h:28,
+                 from ../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/sk32_dma.c:40:
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/sk32_dma.c: In function 'dmaStreamAllocI':
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/sk32_dma.h:86:45: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
+   86 | #define SK32_DMA_IS_VALID_STREAM(id) (((id) >= 0U) &&                       \
+      |                                             ^~
+../../../../chibios/os/common/portability/GCC/ccportab.h:136:49: note: in definition of macro 'CC_UNLIKELY'
+  136 | #define CC_UNLIKELY(x)      __builtin_expect(!!(x), 0)
+      |                                                 ^
+../../../../chibios/os/rt/include/chearly.h:191:25: note: in expansion of macro 'PORT_UNLIKELY'
+  191 | #define unlikely(x)     PORT_UNLIKELY(x)
+      |                         ^~~~~~~~~~~~~
+../../../../chibios/os/rt/include/chdebug.h:120:9: note: in expansion of macro 'unlikely'
+  120 |     if (unlikely(!(c))) {                                                   \
+      |         ^~~~~~~~
+../../../../chibios/os/hal/osal/rt-nil/osal.h:281:25: note: in expansion of macro 'chDbgCheck'
+  281 | #define osalDbgCheck(c) chDbgCheck(c)
+      |                         ^~~~~~~~~~
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/sk32_dma.c:249:3: note: in expansion of macro 'osalDbgCheck'
+  249 |   osalDbgCheck(SK32_DMA_IS_VALID_STREAM(id));
+      |   ^~~~~~~~~~~~
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/sk32_dma.c:249:16: note: in expansion of macro 'SK32_DMA_IS_VALID_STREAM'
+  249 |   osalDbgCheck(SK32_DMA_IS_VALID_STREAM(id));
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/sk32_dma.h:76:51: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
+   76 | #define SK32_DMA_IS_VALID_PRIORITY(prio) (((prio) >= 0U) && ((prio) <= 3U))
+      |                                                   ^~
+../../../../chibios/os/common/portability/GCC/ccportab.h:136:49: note: in definition of macro 'CC_UNLIKELY'
+  136 | #define CC_UNLIKELY(x)      __builtin_expect(!!(x), 0)
+      |                                                 ^
+../../../../chibios/os/rt/include/chearly.h:191:25: note: in expansion of macro 'PORT_UNLIKELY'
+  191 | #define unlikely(x)     PORT_UNLIKELY(x)
+      |                         ^~~~~~~~~~~~~
+../../../../chibios/os/rt/include/chdebug.h:120:9: note: in expansion of macro 'unlikely'
+  120 |     if (unlikely(!(c))) {                                                   \
+      |         ^~~~~~~~
+../../../../chibios/os/hal/osal/rt-nil/osal.h:281:25: note: in expansion of macro 'chDbgCheck'
+  281 | #define osalDbgCheck(c) chDbgCheck(c)
+      |                         ^~~~~~~~~~
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/sk32_dma.c:250:3: note: in expansion of macro 'osalDbgCheck'
+  250 |   osalDbgCheck(SK32_DMA_IS_VALID_PRIORITY(priority));
+      |   ^~~~~~~~~~~~
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/sk32_dma.c:250:16: note: in expansion of macro 'SK32_DMA_IS_VALID_PRIORITY'
+  250 |   osalDbgCheck(SK32_DMA_IS_VALID_PRIORITY(priority));
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling hal_sled_lld.c
+In file included from ../../../../chibios/os/hal/include/hal.h:28,
+                 from ../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.c:48:
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.c: In function 'sled_lld_send_bytes':
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.h:110:51: warning: comparison is always true due to limited range of data type [-Wtype-limits]
+  110 | #define SK32_SLED_IS_VALID_GROUP(group) (((group) >= 0) && ((group) <= 1))
+      |                                                   ^~
+../../../../chibios/os/common/portability/GCC/ccportab.h:136:49: note: in definition of macro 'CC_UNLIKELY'
+  136 | #define CC_UNLIKELY(x)      __builtin_expect(!!(x), 0)
+      |                                                 ^
+../../../../chibios/os/rt/include/chearly.h:191:25: note: in expansion of macro 'PORT_UNLIKELY'
+  191 | #define unlikely(x)     PORT_UNLIKELY(x)
+      |                         ^~~~~~~~~~~~~
+../../../../chibios/os/rt/include/chdebug.h:120:9: note: in expansion of macro 'unlikely'
+  120 |     if (unlikely(!(c))) {                                                   \
+      |         ^~~~~~~~
+../../../../chibios/os/hal/osal/rt-nil/osal.h:281:25: note: in expansion of macro 'chDbgCheck'
+  281 | #define osalDbgCheck(c) chDbgCheck(c)
+      |                         ^~~~~~~~~~
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.c:394:3: note: in expansion of macro 'osalDbgCheck'
+  394 |   osalDbgCheck(SK32_SLED_IS_VALID_GROUP(group));
+      |   ^~~~~~~~~~~~
+../../../../chibios-contrib/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.c:394:16: note: in expansion of macro 'SK32_SLED_IS_VALID_GROUP'
+  394 |   osalDbgCheck(SK32_SLED_IS_VALID_GROUP(group));
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~
+Compiling stm32_dma.c
+Compiling hal_usb_lld.c
+Compiling board.c
+Compiling osal.c
+Compiling chsys.c
+Compiling chrfcu.c
+Compiling chdebug.c
+Compiling chtrace.c
+Compiling chvt.c
+Compiling chschd.c
+Compiling chinstances.c
+Compiling chthreads.c
+Compiling chregistry.c
+Compiling chsem.c
+Compiling chmtx.c
+Compiling chcond.c
+Compiling chevents.c
+Compiling chmsg.c
+Compiling chdynamic.c
+Compiling chmboxes.c
+Compiling chmemcore.c
+Compiling chmemheaps.c
+Compiling chmempools.c
+Compiling chpipes.c
+Compiling chobjcaches.c
+Compiling chdelegates.c
+Compiling chfactory.c
+Compiling chcore.c
+Compiling main.c
+Linking build/sled.elf
+Creating build/sled.hex
+Creating build/sled.bin
+Creating build/sled.dmp
+
+   text	   data	    bss	    dec	    hex	filename
+   5644	      4	   8184	  13832	   3608	build/sled.elf
+Creating build/sled.list
+
+Done
