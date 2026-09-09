@@ -734,7 +734,7 @@ void usb_lld_disable_endpoints(USBDriver *usbp) {
   WB32_USB->INTROUTE = 0x00;
 
   /* Disabling all endpoints.*/
-  for (i = 1; i <= (USB_ENDOPOINTS_NUMBER & 0x0F); i++) {
+  for (i = 1; i <= (USB_ENDPOINTS_NUMBER & 0x0F); i++) {
     WB32_USB->INDEX = i;
     WB32_USB->INCSR2 = 0x00;
     WB32_USB->INCSR1 = USB_INCSR1_CLRDATATOG;

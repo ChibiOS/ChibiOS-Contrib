@@ -356,7 +356,7 @@
 
 #define WB32_TIM_CCMR3_OC5M_MASK               ((7U << 4) | (1U << 16))
 #define WB32_TIM_CCMR3_OC5M(n)                 ((((n) & 7) << 4) |          \
-                                                (((n) >> 2) << 16))
+                                                (((n) >> 3) << 16))
 
 #define WB32_TIM_CCMR3_OC5CE                   (1U << 7)
 
@@ -365,7 +365,7 @@
 
 #define WB32_TIM_CCMR3_OC6M_MASK               ((7U << 12) | (1U << 24))
 #define WB32_TIM_CCMR3_OC6M(n)                 ((((n) & 7) << 12) |         \
-                                                (((n) >> 2) << 24))
+                                                (((n) >> 3) << 24))
 
 #define WB32_TIM_CCMR3_OC6CE                   (1U << 15)
 /** @} */
