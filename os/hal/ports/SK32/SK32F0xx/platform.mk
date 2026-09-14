@@ -55,9 +55,11 @@ endif
 PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/SK32/SK32F0xx/sk32_dma.c
 
 # The SK32 SPI is a legacy CR1/CR2/SR/DR class unit (SPIv1 class), its
-# native interrupt-driven driver is used instead of the shared STM32 SPIv2
-# LLD (the latter would require the STM32 registry macros, e.g.
-# STM32_HAS_SPI1, which the SK32 platform does not define).
+# native driver is used instead of the shared STM32 SPIv2 LLD (the latter
+# would require the STM32 registry macros, e.g. STM32_HAS_SPI1, which the
+# SK32 platform does not define).  The driver is interrupt-driven by
+# default and can be switched to a DMA1 based transfer engine (SPI1 only)
+# with the SK32_SPI_USE_DMA option.
 ifeq ($(USE_SMART_BUILD),yes)
 ifneq ($(findstring HAL_USE_SPI TRUE,$(HALCONF)),)
 PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/SK32/SK32F0xx/hal_spi_lld.c
@@ -100,6 +102,14 @@ PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/SK32/SK32F0xx/hal_sled_lld.c
 # needed.
 PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/SK32/SK32F0xx/hal_kbcu_lld.c
 
+# The SK32 low power driver exposes a Cortex-M0 STOP (deep sleep) entry/restore
+# API used by the QMK suspend chain to actually halt the CPU while the USB bus
+# is suspended.  Like the SLED/KBCU drivers it is added unconditionally: its
+# body is self-gated on SK32_HAL_USE_LOWPOWER (no code is generated unless the
+# macro is TRUE), so the smart-build text scan of the keyboard halconf overrides
+# is not needed.
+PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/SK32/SK32F0xx/hal_low_power_lld.c
+
 # The SK32 general purpose timers (TIM3 on the APB1 bus and the basic
 # TIM16/TIM17 on the APB2 bus) are served by the native GPT driver added
 # below, the shared STM32 TIMv1 LLD is not used (it requires the STM32
@@ -119,6 +129,32 @@ PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/SK32/SK32F0xx/hal_gpt_lld.c
 PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/SK32/SK32F0xx/hal_adc_lld.c
 endif
 
+# The SK32 RTC is a calendar unit of the backup domain, register compatible
+# with the STM32F0 RTCv2 class but with a single alarm comparator, a TAFCR
+# register and one shared interrupt vector.  It is served by the native
+# hal_rtc_lld.c driver instead of the shared STM32 RTCv2 LLD (the latter
+# depends on the STM32 registry macros and on the EXTI driver for its
+# interrupt routing, neither of which applies to this platform).
+ifeq ($(USE_SMART_BUILD),yes)
+ifneq ($(findstring HAL_USE_RTC TRUE,$(HALCONF)),)
+PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/SK32/SK32F0xx/hal_rtc_lld.c
+endif
+else
+PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/SK32/SK32F0xx/hal_rtc_lld.c
+endif
+
+# The SK32 embeds both watchdog controllers of the family, the IWDG
+# (independent, LSI clocked, KR key sequenced) and the WWDG (window,
+# PCLK1 clocked).  Both are served by the native hal_wdg_lld.c driver
+# instead of the shared STM32 xWDGv1 LLD (IWDG only, STM32 registry based).
+ifeq ($(USE_SMART_BUILD),yes)
+ifneq ($(findstring HAL_USE_WDG TRUE,$(HALCONF)),)
+PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/SK32/SK32F0xx/hal_wdg_lld.c
+endif
+else
+PLATFORMSRC += $(CHIBIOS_CONTRIB)/os/hal/ports/SK32/SK32F0xx/hal_wdg_lld.c
+endif
+
 # This platform no longer pulls in any shared STM32 LLD.  Historically the
 # CANv1/DACv1/DMAv1/RTCv2/xWDGv1 driver.mk files were included here but every
 # one of them compiled to a stub because the associated generic HAL has its
@@ -134,10 +170,11 @@ endif
 # The shared STM32 USARTv2 LLD targets the ISR/ICR register set (STM32F0/F3/L4
 # class), the SK32 USART is instead a legacy SR/DR class unit handled by the
 # native serial driver added above.
-# Native stub headers (hal_can_lld.h/hal_dac_lld.h/hal_rtc_lld.h/hal_wdg_lld.h)
-# are provided in this port directory so the generic hal.h can resolve the
-# unconditional includes in hal_can.h/hal_dac.h/hal_rtc.h/hal_wdg.h without
-# referencing the shared STM32 header trees.
+# Native stub headers (hal_can_lld.h/hal_dac_lld.h) are provided in this port
+# directory so the generic hal.h can resolve the unconditional includes in
+# hal_can.h/hal_dac.h without referencing the shared STM32 header trees.  The
+# hal_rtc_lld.h/hal_wdg_lld.h headers are no longer stubs, they declare the
+# native RTC and WDG drivers added above.
 
 # SK32F077 uses a Mentor-MUSB-class USB FS controller (musbfsfc), which is NOT
 # compatible with the STM32 USBv1 LLD, so USBv1/driver.mk is not included here.

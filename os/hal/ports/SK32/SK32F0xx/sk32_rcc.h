@@ -1019,6 +1019,96 @@
 #define rccResetWWDG() rccResetAPB1(RCC_APB1RSTR_WWDGRST)
 /** @} */
 
+/**
+ * @name    RTC/backup domain specific RCC operations
+ * @details The RTC is part of the backup domain: its clock source is selected
+ *          through the RCC_BDCR register and the whole domain is write
+ *          protected until the PWR_CR.DBP bit is set.
+ * @{
+ */
+/**
+ * @brief   Enables the LSE oscillator.
+ * @note    The @p lp parameter is ignored in this family.
+ *
+ * @param[in] lp        low power enable flag
+ *
+ * @api
+ */
+#define rccEnableLSE(lp) {                                                  \
+  RCC->BDCR |= RCC_BDCR_LSEON;                                              \
+  (void)RCC->BDCR;                                                          \
+}
+
+/**
+ * @brief   Disables the LSE oscillator.
+ *
+ * @api
+ */
+#define rccDisableLSE() {                                                   \
+  RCC->BDCR &= ~RCC_BDCR_LSEON;                                             \
+  (void)RCC->BDCR;                                                          \
+}
+
+/**
+ * @brief   Enables the LSI oscillator.
+ * @note    The @p lp parameter is ignored in this family.
+ *
+ * @param[in] lp        low power enable flag
+ *
+ * @api
+ */
+#define rccEnableLSI(lp) {                                                  \
+  RCC->CSR |= RCC_CSR_LSION;                                                \
+  (void)RCC->CSR;                                                           \
+}
+
+/**
+ * @brief   Disables the LSI oscillator.
+ *
+ * @api
+ */
+#define rccDisableLSI() {                                                   \
+  RCC->CSR &= ~RCC_CSR_LSION;                                               \
+  (void)RCC->CSR;                                                           \
+}
+
+/**
+ * @brief   Enables the RTC clock.
+ * @note    The @p lp parameter is ignored in this family.
+ *
+ * @param[in] lp        low power enable flag
+ *
+ * @api
+ */
+#define rccEnableRTC(lp) {                                                  \
+  RCC->BDCR |= RCC_BDCR_RTCEN;                                              \
+  (void)RCC->BDCR;                                                          \
+}
+
+/**
+ * @brief   Disables the RTC clock.
+ *
+ * @api
+ */
+#define rccDisableRTC() {                                                   \
+  RCC->BDCR &= ~RCC_BDCR_RTCEN;                                             \
+  (void)RCC->BDCR;                                                          \
+}
+
+/**
+ * @brief   Resets the whole backup domain.
+ * @note    The RTC clock source selection is part of the reset, the RTC
+ *          configuration is lost.
+ *
+ * @api
+ */
+#define rccResetBackupDomain() {                                            \
+  RCC->BDCR |= RCC_BDCR_BDRST;                                              \
+  RCC->BDCR &= ~RCC_BDCR_BDRST;                                             \
+  (void)RCC->BDCR;                                                          \
+}
+/** @} */
+
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/

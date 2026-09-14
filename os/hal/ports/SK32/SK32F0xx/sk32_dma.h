@@ -140,6 +140,17 @@
 /** @} */
 
 /**
+ * @brief   Returns the physical DMA1 channel number of a stream.
+ * @note    This device has a single DMA1 unit, so the 0 based index of a
+ *          stream in @p _sk32_dma_streams plus one is also the physical
+ *          DMA1 channel number used by the SYSCFG remap slots.
+ *
+ * @param[in] dmastp    pointer to a sk32_dma_stream_t structure
+ * @return              The DMA1 channel number (1..6).
+ */
+#define SK32_DMA_STREAM_CHANNEL(dmastp) ((uint32_t)(dmastp)->selfindex + 1U)
+
+/**
  * @name    CCR register constants
  * @note    The bit values are the DMA_CCR_* constants from the vendor CMSIS
  *          device header (sk32f0xx.h), the same used by the vendor
@@ -171,6 +182,55 @@
 #define SK32_DMA_CR_PL_MASK         DMA_CCR_PL
 #define SK32_DMA_CR_PL(n)           ((n) << 12U)
 /** @} */
+
+/**
+ * @name    DMA request selection codes
+ * @details The peripheral request line served by a DMA1 channel is not
+ *          hardwired, it is selected by writing one of these codes into the
+ *          6 bits wide DMA_CHxREQ slot of the SYSCFG CFGR3 (channels 1-4)
+ *          or CFGR4 (channels 5-6) registers.  The codes are the same used
+ *          by the vendor SYSCFG_DMARemap_* constants and the "DMA request
+ *          mapping" table of the device user guide, only the requests
+ *          available on this device are listed here.
+ * @{
+ */
+#define SK32_DMA_REQ_TIM3_CH1       0x0DU
+#define SK32_DMA_REQ_TIM3_CH2       0x0EU
+#define SK32_DMA_REQ_TIM3_CH3       0x0FU
+#define SK32_DMA_REQ_TIM3_CH4       0x10U
+#define SK32_DMA_REQ_TIM3_UP        0x11U
+#define SK32_DMA_REQ_TIM3_TRIG      0x12U
+#define SK32_DMA_REQ_TIM6_UP        0x13U
+#define SK32_DMA_REQ_TIM16_CH1      0x14U
+#define SK32_DMA_REQ_TIM16_CH2      0x15U
+#define SK32_DMA_REQ_TIM16_UP       0x16U
+#define SK32_DMA_REQ_TIM16_TRIG     0x17U
+#define SK32_DMA_REQ_TIM16_COM      0x18U
+#define SK32_DMA_REQ_TIM17_CH1      0x19U
+#define SK32_DMA_REQ_TIM17_CH2      0x1AU
+#define SK32_DMA_REQ_TIM17_UP       0x1BU
+#define SK32_DMA_REQ_TIM17_TRIG     0x1CU
+#define SK32_DMA_REQ_TIM17_COM      0x1DU
+#define SK32_DMA_REQ_USART1_TX      0x1EU
+#define SK32_DMA_REQ_USART1_RX      0x1FU
+#define SK32_DMA_REQ_USART2_TX      0x20U
+#define SK32_DMA_REQ_USART2_RX      0x21U
+#define SK32_DMA_REQ_I2C1_TX        0x22U
+#define SK32_DMA_REQ_I2C1_RX        0x23U
+#define SK32_DMA_REQ_SPI1_TX        0x26U
+#define SK32_DMA_REQ_SPI1_RX        0x27U
+#define SK32_DMA_REQ_ADC1           0x2AU
+#define SK32_DMA_REQ_DAC_CH1        0x2CU
+#define SK32_DMA_REQ_DAC_CH2        0x2DU
+#define SK32_DMA_REQ_KBCU           0x2EU
+#define SK32_DMA_REQ_SLED_G1        0x2FU
+#define SK32_DMA_REQ_SLED_G2        0x30U
+/** @} */
+
+/**
+ * @brief   Mask of the request code bits inside a CFGR3/CFGR4 channel slot.
+ */
+#define SK32_DMA_REQ_MASK           0x3FU
 
 /**
  * @name    Status flags passed to the ISR callbacks
@@ -404,6 +464,7 @@ extern "C" {
                                           void *param);
   void dmaStreamFreeI(const sk32_dma_stream_t *dmastp);
   void dmaStreamFree(const sk32_dma_stream_t *dmastp);
+  void dmaStreamSetRequest(const sk32_dma_stream_t *dmastp, uint32_t req);
   void dmaServeInterrupt(const sk32_dma_stream_t *dmastp);
 #ifdef __cplusplus
 }

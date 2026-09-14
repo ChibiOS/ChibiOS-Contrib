@@ -28,7 +28,7 @@
  * USB IP, but the SK32 port provides native drivers for the entire core
  * platform and for every peripheral, so no shared STM32 low level driver
  * (TIMv1, USARTv2, ADCv1, SPIv2, I2Cv2, ..., nor the CANv1/DACv1/DMAv1/
- * RTCv2/xWDGv1 stubs) is linked in.  This mcuconf.h only needs to satisfy
+ * RTCv2/xWDGv1 LLDs) is linked in.  This mcuconf.h only needs to satisfy
  * the single SK32 naming scheme:
  *   - SK32F0xx_MCUCONF + the SK32_* clock/ST/peripheral settings consumed by
  *     the native SK32 HAL low level drivers.
@@ -73,9 +73,14 @@
  * SPI1 self-loopback test:
  *  - SPI1 master on PA7 (SPI1_MOSI, alternate 12) and PA6 (SPI1_MISO,
  *    alternate 12), the two pads are shorted on the board.
+ *
+ * The driver runs in interrupt driven mode by default, define
+ * SK32_SPI_USE_DMA as TRUE to use the DMA1 engine for both directions
+ * instead, which also enables the SPI_SUPPORTS_CIRCULAR capability.
  */
 #define SK32_SPI_USE_SPI1                   TRUE
 #define SK32_SPI_USE_SPI2                   FALSE
+#define SK32_SPI_USE_DMA                    FALSE
 #define SK32_SPI_SPI1_PRIORITY              3
 #define SK32_SPI_SPI2_PRIORITY              3
 

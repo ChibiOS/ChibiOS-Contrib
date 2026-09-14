@@ -20,9 +20,17 @@
  * @brief   SK32F0xx low level SPI driver header.
  * @details The SK32F0xx SPI is a legacy CR1/CR2/SR/DR unit (SPIv1 class, the
  *          same register set used by the STM32F1 family, no FIFO).  This
- *          driver is interrupt-driven (RXNE/TXE/ERRIE) and is written
- *          directly against the vendor CMSIS header (@p sk32f0xx.h), no
- *          STM32 port code and no DMA are involved.
+ *          driver is written directly against the vendor CMSIS header
+ *          (@p sk32f0xx.h), no STM32 port code is involved.
+ * @note    Two transfer engines are available, selected at compile time
+ *          through @p SK32_SPI_USE_DMA:
+ *          - interrupt driven (RXNE/TXE/ERRIE), this is the default,
+ *          - DMA driven, using two DMA1 channels whose request lines are
+ *            routed to the SPI1 RX/TX requests by writing the SYSCFG
+ *            CFGR3/CFGR4 remap slots, see @p dmaStreamSetRequest().
+ *          .
+ *          Only SPI1 has DMA request lines on this device, SPI2 is
+ *          interrupt-driven only.
  *
  * @addtogroup SPI
  * @{
@@ -39,8 +47,12 @@
 
 /**
  * @brief   Circular mode support flag.
+ * @note    Circular transfers are only supported by the DMA engine, the
+ *          interrupt driven engine cannot support them.  The switch is
+ *          resolved when this macro is used, after the DMA option has been
+ *          defined below.
  */
-#define SPI_SUPPORTS_CIRCULAR           FALSE
+#define SPI_SUPPORTS_CIRCULAR           SK32_SPI_USE_DMA
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -88,9 +100,61 @@
  * @brief   SPI error hook.
  * @details This hook is invoked from the ISR context when an overrun or a
  *          mode fault aborts an ongoing transfer.
+ * @note    Only used by the interrupt driven engine.
  */
 #if !defined(SK32_SPI_ERROR_HOOK) || defined(__DOXYGEN__)
 #define SK32_SPI_ERROR_HOOK(spip)           osalSysHalt("SPI failure")
+#endif
+
+/**
+ * @brief   DMA transfer engine enable switch.
+ * @details If set to @p TRUE the SPI1 driver moves the data through two
+ *          DMA1 channels instead of using the RXNE/TXE interrupts.  The
+ *          DMA1 channels are allocated at start time and their request
+ *          lines are routed to the SPI1 requests by @p dmaStreamSetRequest().
+ * @note    This switch also drives @p SPI_SUPPORTS_CIRCULAR, circular
+ *          transfers are only available in DMA mode.
+ * @note    The default is @p FALSE.
+ */
+#if !defined(SK32_SPI_USE_DMA) || defined(__DOXYGEN__)
+#define SK32_SPI_USE_DMA                    FALSE
+#endif
+
+/**
+ * @brief   DMA1 stream identifier used for the SPI1 RX channel.
+ * @note    DMA1 channel 5 by default, the freed channels not already taken
+ *          by the SLED (1, 2) and KBCU (4) drivers.
+ */
+#if !defined(SK32_SPI_SPI1_RX_DMA_STREAM) || defined(__DOXYGEN__)
+#define SK32_SPI_SPI1_RX_DMA_STREAM         SK32_DMA_STREAM_ID(1, 5)
+#endif
+
+/**
+ * @brief   DMA1 stream identifier used for the SPI1 TX channel.
+ * @note    DMA1 channel 6 by default.
+ */
+#if !defined(SK32_SPI_SPI1_TX_DMA_STREAM) || defined(__DOXYGEN__)
+#define SK32_SPI_SPI1_TX_DMA_STREAM         SK32_DMA_STREAM_ID(1, 6)
+#endif
+
+/**
+ * @brief   SPI DMA channels priority level setting.
+ * @note    ARMv6-M (Cortex-M0) implements only 2 priority bits, the valid
+ *          priority range is 0 (highest) .. 3 (lowest); this is the NVIC
+ *          priority of the DMA IRQ vector, not the CCR PL field.
+ */
+#if !defined(SK32_SPI_DMA_PRIORITY) || defined(__DOXYGEN__)
+#define SK32_SPI_DMA_PRIORITY               3
+#endif
+
+/**
+ * @brief   DMA error hook.
+ * @details This hook is invoked from the ISR context when the DMA reports a
+ *          transfer error.
+ * @note    Only used by the DMA engine.
+ */
+#if !defined(SK32_SPI_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
+#define SK32_SPI_DMA_ERROR_HOOK(spip)       osalSysHalt("SPI DMA failure")
 #endif
 /** @} */
 
@@ -140,6 +204,27 @@
 #if SPI_SELECT_MODE == SPI_SELECT_MODE_LLD
 #error "SPI_SELECT_MODE_LLD not supported by this driver"
 #endif
+
+/* Checks on the DMA transfer engine.*/
+#if SK32_SPI_USE_DMA
+
+#if !SK32_SPI_USE_SPI1 || SK32_SPI_USE_SPI2
+#error "the SPI DMA engine is only available on SPI1"
+#endif
+
+#if !SK32_DMA_IS_VALID_STREAM(SK32_SPI_SPI1_RX_DMA_STREAM)
+#error "invalid DMA stream assigned to SPI1 RX"
+#endif
+
+#if !SK32_DMA_IS_VALID_STREAM(SK32_SPI_SPI1_TX_DMA_STREAM)
+#error "invalid DMA stream assigned to SPI1 TX"
+#endif
+
+#if !SK32_DMA_IS_VALID_PRIORITY(SK32_SPI_DMA_PRIORITY)
+#error "invalid DMA priority assigned to SPI"
+#endif
+
+#endif /* SK32_SPI_USE_DMA */
 
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
@@ -206,6 +291,7 @@
  *          the frames read back; the transfer is complete when the last
  *          frame has been received.
  */
+#if !SK32_SPI_USE_DMA
 #define spi_lld_driver_fields                                               \
   /* Pointer to the SPIx registers block.*/                                 \
   SPI_TypeDef               *spi;                                           \
@@ -219,6 +305,19 @@
   size_t                    rxidx;                                          \
   /* Total number of frames of the current transfer.*/                      \
   size_t                    count;
+#else /* SK32_SPI_USE_DMA */
+#define spi_lld_driver_fields                                               \
+  /* Pointer to the SPIx registers block.*/                                 \
+  SPI_TypeDef               *spi;                                           \
+  /* Receive DMA stream, NULL when the driver is stopped.*/                 \
+  const sk32_dma_stream_t   *dmarx;                                         \
+  /* Transmit DMA stream, NULL when the driver is stopped.*/                \
+  const sk32_dma_stream_t   *dmatx;                                         \
+  /* RX DMA mode bit mask.*/                                                \
+  uint32_t                  rxdmamode;                                      \
+  /* TX DMA mode bit mask.*/                                                \
+  uint32_t                  txdmamode;
+#endif /* SK32_SPI_USE_DMA */
 
 /**
  * @brief   Low level fields of the SPI configuration structure.
@@ -257,6 +356,9 @@ extern "C" {
   void spi_lld_send(SPIDriver *spip, size_t n, const void *txbuf);
   void spi_lld_receive(SPIDriver *spip, size_t n, void *rxbuf);
   uint16_t spi_lld_polled_exchange(SPIDriver *spip, uint16_t frame);
+#if (SPI_SUPPORTS_CIRCULAR == TRUE) || defined(__DOXYGEN__)
+  void spi_lld_abort(SPIDriver *spip);
+#endif
 #ifdef __cplusplus
 }
 #endif

@@ -367,6 +367,49 @@ void dmaStreamFree(const sk32_dma_stream_t *dmastp) {
 }
 
 /**
+ * @brief   Selects the peripheral request served by a DMA stream.
+ * @details The DMA1 channel to peripheral request association is not
+ *          hardwired on this device: the request line served by a channel is
+ *          selected by writing a request code into the DMA_CHxREQ slot of
+ *          the SYSCFG CFGR3 (channels 1-4) and CFGR4 (channels 5-6)
+ *          registers, the same registers written by the vendor
+ *          SYSCFG_DMAChannelConfig() API.  Each slot is 8 bits wide and
+ *          holds a 6 bits request code.
+ * @note    The SYSCFG interface clock is enabled by this function.  The
+ *          remapping must be configured before the stream is enabled and
+ *          the function is not reentrant, do not call it concurrently on
+ *          two streams.
+ *
+ * @param[in] dmastp    pointer to a sk32_dma_stream_t structure
+ * @param[in] req       the request code, one of the @p SK32_DMA_REQ_*
+ *                      constants
+ *
+ * @api
+ */
+void dmaStreamSetRequest(const sk32_dma_stream_t *dmastp, uint32_t req) {
+  uint32_t channel;
+  uint32_t shift;
+
+  osalDbgCheck(dmastp != NULL);
+  osalDbgCheck((req & ~SK32_DMA_REQ_MASK) == 0U);
+
+  /* The SYSCFG interface clock is required to access the remap registers.*/
+  rccEnableAPB2(RCC_APB2ENR_SYSCFGEN, true);
+
+  channel = SK32_DMA_STREAM_CHANNEL(dmastp);
+  if (channel <= 4U) {
+    shift = (channel - 1U) * 8U;
+    SYSCFG->CFGR3 = (SYSCFG->CFGR3 & ~(SK32_DMA_REQ_MASK << shift)) |
+                    (req << shift);
+  }
+  else {
+    shift = (channel - 5U) * 8U;
+    SYSCFG->CFGR4 = (SYSCFG->CFGR4 & ~(SK32_DMA_REQ_MASK << shift)) |
+                    (req << shift);
+  }
+}
+
+/**
  * @brief   Serves a DMA IRQ.
  *
  * @param[in] dmastp    pointer to a sk32_dma_stream_t structure

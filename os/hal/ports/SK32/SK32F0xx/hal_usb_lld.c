@@ -676,6 +676,13 @@ OSAL_IRQ_HANDLER(SK32_USB_HANDLER) {
 #if defined(SK32_USB_TRACE)
     usb_trace_event('Z', is, (uint8_t)usbp->ep0state, 0U);
 #endif
+#if SK32_USB_LOW_POWER_ON_SUSPEND
+    /* Enter the peripheral suspend mode so the USB block drops into a low
+       power state while the device is suspended (mirrors the STM32 USBv1
+       LLD, which sets the low-power bit on CNTR on suspend).  The RESUME
+       interrupt stays armed and wakes it up again. */
+    SK32_USB->POWER |= SK32_POWER_SUSMOD;
+#endif
     _usb_suspend(usbp);
   }
 
@@ -683,6 +690,11 @@ OSAL_IRQ_HANDLER(SK32_USB_HANDLER) {
   if ((is & SK32_INTRUSB_RESUME) != 0U) {
 #if defined(SK32_USB_TRACE)
     usb_trace_event('W', is, (uint8_t)usbp->ep0state, 0U);
+#endif
+#if SK32_USB_LOW_POWER_ON_SUSPEND
+    /* Leave suspend mode: the peripheral must go back to full operation
+       before the resume is processed by the driver. */
+    SK32_USB->POWER &= (uint8_t)~SK32_POWER_SUSMOD;
 #endif
     _usb_wakeup(usbp);
   }

@@ -63,6 +63,8 @@
  */
 #define SK32_HSI_CLK            SK32_HSICLK     /**< High speed internal clock.*/
 #define SK32_PLL48_CLK          SK32_PLL48CLK   /**< USB dedicated 48MHz clock.*/
+#define SK32_LSE_CLK            SK32_LSECLK     /**< Low speed external clock. */
+#define SK32_LSI_CLK            SK32_LSICLK     /**< Low speed internal clock. */
 /** @} */
 
 /**
@@ -100,6 +102,24 @@
  */
 #if !defined(SK32_NO_INIT) || defined(__DOXYGEN__)
 #define SK32_NO_INIT                        FALSE
+#endif
+
+/**
+ * @brief   LSE oscillator frequency.
+ * @note    The default is the standard 32768Hz watch crystal.
+ */
+#if !defined(SK32_LSECLK) || defined(__DOXYGEN__)
+#define SK32_LSECLK                         32768UL
+#endif
+
+/**
+ * @brief   LSI oscillator frequency.
+ * @note    The default is the typical value of this family; override it if
+ *          the actual LSI frequency of the device differs, the RTC prescaler
+ *          and the IWDG timeout depend on it.
+ */
+#if !defined(SK32_LSICLK) || defined(__DOXYGEN__)
+#define SK32_LSICLK                         40000UL
 #endif
 
 /**
@@ -277,10 +297,12 @@
  * this platform that allocates DMA1 channels must cause the macro to be
  * defined.  The SLED (hal_sled_lld.c) and KBCU (hal_kbcu_lld.c) drivers are
  * the native DMA users, so the macro is tied to the HAL_USE_SLED and
- * HAL_USE_KBCU switches.
+ * HAL_USE_KBCU switches; the SPI driver also uses DMA1 when its optional
+ * DMA engine is enabled through SK32_SPI_USE_DMA (defined in mcuconf.h).
  */
 #if (defined(HAL_USE_SLED) && (HAL_USE_SLED == TRUE)) ||                     \
-    (defined(HAL_USE_KBCU) && (HAL_USE_KBCU == TRUE))
+    (defined(HAL_USE_KBCU) && (HAL_USE_KBCU == TRUE)) ||                     \
+    (defined(SK32_SPI_USE_DMA) && (SK32_SPI_USE_DMA == TRUE))
 #define SK32_DMA_REQUIRED
 #endif
 
