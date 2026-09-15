@@ -249,6 +249,15 @@
 #if !defined(STM32_FLASH_SECTORS_PER_BANK)
 #define STM32_FLASH_SECTORS_PER_BANK    64U
 #endif
+
+/**
+ * @brief   F_SIZE register: total internal flash size, in KByte.
+ * @details Factory-programmed memory-size register.  Reading it at runtime
+ *          lets firmware adapt to the different SK32 flash capacities (64 KB,
+ *          128 KB, ...) with a single binary instead of a build-time constant.
+ *          The value is in KByte, so << 10 yields bytes.
+ */
+#define SK32_FLASH_SIZE_REG   ((volatile uint32_t *)0x1FFFF7CCUL)
 /** @} */
 
 #endif /* SK32_REGISTRY_H */
