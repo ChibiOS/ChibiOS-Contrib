@@ -33,8 +33,11 @@
 int main(void) {
 
   /* The last flash sector is dedicated to the counter.  It sits at the very
-     end of the 128 KB flash (0x0801F800 on the SK32F077xB), far from the
-     bootloader (0x08004000 limit) and far from the application code. */
+     end of the flash, far from the bootloader (0x08004000 limit) and far from
+     the application code.  The exact end depends on the installed part: the
+     EFL descriptor gets its sectors_count/size from the F_SIZE register at
+     efl_lld_init(), so sector = sectors_count - 1 is the physical last 2 KB
+     page whether the chip is 64 KB, 128 KB, etc. */
   enum {
     BLINK_SPAN   = 40U,          /* blink count is shown modulo this          */
     BLINK_ON_MS  = 150U,         /* LED on time per blink                     */

@@ -245,8 +245,17 @@
  *          lets firmware adapt to the different SK32 flash capacities (64 KB,
  *          128 KB, ...) with a single binary instead of a build-time constant.
  *          The value is in KByte, so << 10 yields bytes.
+ * @note    Measured on silicon the KByte value occupies the LOW byte only, the
+ *          upper bits of the 32-bit read are not driven and come back as ones
+ *          (a 128 KB part reads 0xFF80 here).  Always mask with
+ *          @p SK32_FLASH_SIZE_MASK, never with 0xFFFF.
  */
 #define SK32_FLASH_SIZE_REG   ((volatile uint32_t *)0x1FFFF7CCUL)
+
+/**
+ * @brief   Bit mask selecting the KByte value out of @p SK32_FLASH_SIZE_REG.
+ */
+#define SK32_FLASH_SIZE_MASK  0x000000FFUL
 /** @} */
 
 #endif /* SK32_REGISTRY_H */

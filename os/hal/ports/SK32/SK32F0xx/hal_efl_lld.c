@@ -47,7 +47,15 @@ EFlashDriver EFLD1;
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
-static const flash_descriptor_t efl_lld_descriptor = {
+/**
+ * @note    @p sectors_count and @p size are filled in at run time by
+ *          @p efl_lld_init() from the F_SIZE register, so one binary reports
+ *          the real capacity of the part it runs on (64 KB, 128 KB, ...)
+ *          instead of a build-time constant.  The descriptor therefore lives
+ *          in RAM; the values below are the fallbacks used until
+ *          @p efl_lld_init() runs.
+ */
+static flash_descriptor_t efl_lld_descriptor = {
  .attributes        = FLASH_ATTR_ERASED_IS_ONE |
                       FLASH_ATTR_MEMORY_MAPPED,
  .page_size         = STM32_FLASH_LINE_SIZE,
@@ -134,6 +142,15 @@ void efl_lld_init(void) {
   /* Driver initialization.*/
   eflObjectInit(&EFLD1);
   EFLD1.flash = FLASH;
+
+  /* Report the real on-chip capacity (64 KB, 128 KB, ...) read from the
+     F_SIZE register instead of a build-time constant, so the EEPROM tail
+     page computed by efl users lands on the physical last 2 KB page of the
+     part actually installed. */
+  efl_lld_descriptor.size          = ((size_t)(*SK32_FLASH_SIZE_REG) &
+                                       SK32_FLASH_SIZE_MASK) << 10U;
+  efl_lld_descriptor.sectors_count = (uint32_t)(efl_lld_descriptor.size /
+                                        STM32_FLASH_SECTOR_SIZE);
 }
 
 /**
