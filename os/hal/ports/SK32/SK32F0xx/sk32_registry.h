@@ -52,20 +52,16 @@
  * @{
  */
 /* The AHB clock/reset registers expose enable bits for ports A..F on the
-   whole SK32F0xx family. The GPIOF port is present on the SK32F077 while the
-   GPIOE port is present on the SK32F072.*/
+   whole SK32F0xx family.  On the SK32F077X family the GPIOF port is present
+   (GPIOE is not); the GPIO set is the same across 64 KB (x8) and 128 KB (xB)
+   parts and across the QFN48/QFN64 packages. */
 #define SK32_NUM_GPIO           6
 #define SK32_HAS_GPIOA          TRUE
 #define SK32_HAS_GPIOB          TRUE
 #define SK32_HAS_GPIOC          TRUE
 #define SK32_HAS_GPIOD          TRUE
-#if defined(SK32F077xB)
 #define SK32_HAS_GPIOE          FALSE
 #define SK32_HAS_GPIOF          TRUE
-#else
-#define SK32_HAS_GPIOE          TRUE
-#define SK32_HAS_GPIOF          FALSE
-#endif
 /** @} */
 
 /**
@@ -90,19 +86,11 @@
 #define SK32_HAS_WWDG           TRUE
 #define SK32_HAS_RTC            TRUE
 
-#if defined(SK32F077xB)
 #define SK32_HAS_SPI2           FALSE
 #define SK32_HAS_I2C2           FALSE
 #define SK32_HAS_TIM1           FALSE
 #define SK32_HAS_TIM2           FALSE
 #define SK32_HAS_TIM3           TRUE
-#else
-#define SK32_HAS_SPI2           TRUE
-#define SK32_HAS_I2C2           TRUE
-#define SK32_HAS_TIM1           TRUE
-#define SK32_HAS_TIM2           TRUE
-#define SK32_HAS_TIM3           TRUE
-#endif
 /** @} */
 
 /**
@@ -145,7 +133,7 @@
 #define SK32_USART2_NUMBER              28
 #define SK32_USB_NUMBER                 31
 
-#if defined(SK32F077xB) || defined(__DOXYGEN__)
+#if defined(SK32F077) || defined(__DOXYGEN__)
 #define SK32_SLED_NUMBER                29
 #define SK32_KBCU_NUMBER                30
 #endif
@@ -178,7 +166,7 @@
 #define SK32_USART2_HANDLER             VectorB0
 #define SK32_USB_HANDLER                VectorBC
 
-#if defined(SK32F077xB) || defined(__DOXYGEN__)
+#if defined(SK32F077) || defined(__DOXYGEN__)
 #define SK32_SLED_HANDLER               VectorB4
 #define SK32_KBCU_HANDLER               VectorB8
 #endif
@@ -229,8 +217,9 @@
 
 /**
  * @name    Embedded Flash geometry.
- * @details The SK32F077 internal flash is single-bank, 128 KByte, organised in
- *          2 KByte pages (unlike the STM32F072 1 KByte pages).  The write line
+ * @details The SK32F077 internal flash is single-bank, 64..128 KByte (64 KByte
+ *          on x8 parts, 128 KByte on xB parts), organised in 2 KByte pages
+ *          (unlike the STM32F072 1 KByte pages).  The write line
  *          is a half-word (2 bytes) exactly like the STM32F0 family.  These
  *          macros are consumed by the EFL low level driver (hal_efl_lld.c)
  *          which derives its sector/count/size and the programming alignment

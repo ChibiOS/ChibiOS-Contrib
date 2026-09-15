@@ -961,7 +961,7 @@
 /**
  * @brief   Enables the KBCU peripheral clock.
  * @note    The KBCU (Keyboard Control Unit) is a 3Think peripheral on the
- *          APB1 bus, present on both the SK32F072 and SK32F077 variants.
+ *          APB1 bus, present on all SK32F077X family variants.
  *          The @p lp parameter is ignored in this family.
  *
  * @param[in] lp        low power enable flag

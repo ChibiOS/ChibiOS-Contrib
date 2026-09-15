@@ -149,7 +149,7 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS = -DSK32F077xB
+UDEFS = -DSK32F077
 
 # The SLED low level driver compiles the SLED1 group by default
 # (SK32_SLED_USE_SLED1=TRUE).  This test drives the PC0 pad, which is the
@@ -158,7 +158,7 @@ UDEFS = -DSK32F077xB
 UDEFS += -DSK32_SLED_USE_SLED2=TRUE
 
 # Define ASM defines here
-UADEFS = -DSK32F077xB
+UADEFS = -DSK32F077
 
 # List all user directories here
 UINCDIR =

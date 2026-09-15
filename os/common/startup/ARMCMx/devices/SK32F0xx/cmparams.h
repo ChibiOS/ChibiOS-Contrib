@@ -47,7 +47,7 @@
 /* If the device type is not externally defined, for example from the Makefile,
    then a file named board.h is included. This file must contain a device
    definition compatible with the vendor include file.*/
-#if !defined (SK32F072xB) && !defined (SK32F077xB)
+#if !defined (SK32F077)
 #include "board.h"
 #endif
 

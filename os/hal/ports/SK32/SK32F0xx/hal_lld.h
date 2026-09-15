@@ -19,7 +19,7 @@
  * @file    SK32F0xx/hal_lld.h
  * @brief   SK32F0xx HAL subsystem low level driver header.
  * @details This file is the platform specific part of the HAL for the
- *          3Think SK32F0xx family (SK32F072 / SK32F077).
+ *          3Think SK32F077X family.
  *
  * @addtogroup HAL
  * @{
@@ -48,10 +48,8 @@
  * @name    Platform identification macros
  * @{
  */
-#if defined(SK32F072xB) || defined(__DOXYGEN__)
-#define PLATFORM_NAME           "SK32F072xB devices"
-#elif defined(SK32F077xB)
-#define PLATFORM_NAME           "SK32F077xB devices"
+#if defined(SK32F077) || defined(__DOXYGEN__)
+#define PLATFORM_NAME           "SK32F077 devices"
 #else
 #error "SK32F0xx device unsupported or not specified"
 #endif

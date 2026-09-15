@@ -223,8 +223,8 @@ typedef uint32_t iopadid_t;
 
 /*===========================================================================*/
 /* I/O Ports Identifiers.                                                    */
-/* The ports presence depends on the selected device variant (SK32F072 has   */
-/* GPIOE, SK32F077 has GPIOF).                                               */
+/* The ports presence depends on the selected device variant (the SK32F077X
+   family exposes GPIOF; GPIOE is not fitted). */
 /*===========================================================================*/
 
 /**

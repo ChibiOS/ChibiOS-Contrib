@@ -149,10 +149,10 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS = -DSK32F077xB
+UDEFS = -DSK32F077
 
 # Define ASM defines here
-UADEFS = -DSK32F077xB
+UADEFS = -DSK32F077
 
 # List all user directories here
 UINCDIR =

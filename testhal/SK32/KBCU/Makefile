@@ -149,7 +149,7 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS = -DSK32F077xB
+UDEFS = -DSK32F077
 
 # The KBCU driver uses a single NVIC vector whose priority is selected through
 # the SK32_IRQ_KBCU_PRIORITY constant (default in hal_kbcu_lld.h = 3); it is
@@ -157,7 +157,7 @@ UDEFS = -DSK32F077xB
 UDEFS += -DSK32_IRQ_KBCU_PRIORITY=3
 
 # Define ASM defines here
-UADEFS = -DSK32F077xB
+UADEFS = -DSK32F077
 
 # List all user directories here
 UINCDIR =

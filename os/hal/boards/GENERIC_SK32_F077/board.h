@@ -56,8 +56,8 @@
 #define SK32_HSE_BYPASS
 
 /*
- * MCU device variant, selected by the project Makefile through the
- * -DSK32F077xB or -DSK32F072xB define (see sk32_registry.h).
+ * MCU device family, selected by the project Makefile through the
+ * -DSK32F077 define (see sk32_registry.h).
  */
 
 /*
