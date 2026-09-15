@@ -136,10 +136,16 @@ static void sk32_stop_wake_arm(void) {
   TIM6->DIER = TIM_DIER_UIE;
   TIM6->CR1 = TIM_CR1_CEN;
 
-  /* TIM6 update -> EXTI29 event, USB resume -> EXTI18 event. */
+  /* TIM6 update -> EXTI29 event, USB resume -> EXTI18 event.
+     The USB line is armed on BOTH edges, exactly like USBUSER_Init() in the
+     vendor reference (which sets EXTI->RTSR and EXTI->FTSR bit 18): the
+     wakeup pulse the USB controller emits when the host resumes the bus has
+     no documented polarity on this part, and arming a single edge silently
+     drops the wakeup whenever the pulse has the other polarity. */
   EXTI->IMR  |= SK32_STOP_WAKE_EXTI | SK32_STOP_USB_EXTI;
   EXTI->EMR  |= SK32_STOP_WAKE_EXTI | SK32_STOP_USB_EXTI;
   EXTI->RTSR |= SK32_STOP_WAKE_EXTI | SK32_STOP_USB_EXTI;
+  EXTI->FTSR |= SK32_STOP_USB_EXTI;
 
   sk32_stop_wake_armed = true;
 }

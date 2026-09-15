@@ -163,7 +163,10 @@ typedef struct {
 
 /* POWER register. */
 #define SK32_POWER_ENSUS        0x01U        /**< Enable suspend mode.       */
-#define SK32_POWER_SUSMOD       0x02U        /**< Suspend mode enable.       */
+#define SK32_POWER_SUSMOD       0x02U        /**< Suspend mode enable (set
+                                                  by the controller; software
+                                                  must not write it, see the
+                                                  suspend handler in the LLD).*/
 #define SK32_POWER_RESUME       0x04U        /**< Resume signaling.          */
 #define SK32_POWER_RESET        0x08U        /**< Bus reset in progress.     */
 #define SK32_POWER_ISOUP        0x80U        /**< Isochronous ups.           */

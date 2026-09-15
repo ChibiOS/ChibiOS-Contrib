@@ -691,11 +691,7 @@ OSAL_IRQ_HANDLER(SK32_USB_HANDLER) {
 #if defined(SK32_USB_TRACE)
     usb_trace_event('W', is, (uint8_t)usbp->ep0state, 0U);
 #endif
-#if SK32_USB_LOW_POWER_ON_SUSPEND
-    /* Leave suspend mode: the peripheral must go back to full operation
-       before the resume is processed by the driver. */
-    SK32_USB->POWER &= (uint8_t)~SK32_POWER_SUSMOD;
-#endif
+    /* Nothing to do on the PHY side, see the suspend handler above. */
     _usb_wakeup(usbp);
   }
 

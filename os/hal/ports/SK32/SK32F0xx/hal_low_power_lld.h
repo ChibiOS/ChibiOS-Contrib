@@ -22,8 +22,8 @@
  *          The CPU is a Cortex-M0 core on a STM32F0-compatible power
  *          controller, so entering Stop puts both the core and the
  *          peripherals into a low power state and wakes only on an
- *          interrupt event (e.g. the forced USB RESUME kept armed by the
- *          USB low level driver when SK32_USB_LOW_POWER_ON_SUSPEND is set).
+ *          interrupt event (the periodic TIM6 tick on EXTI29, or the USB
+ *          resume event the controller raises on EXTI18).
  *
  * @addtogroup LOWPOWER
  * @{
