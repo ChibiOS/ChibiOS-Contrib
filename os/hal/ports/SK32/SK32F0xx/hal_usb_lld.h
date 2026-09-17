@@ -511,7 +511,10 @@ struct USBDriver {
   do {                                                                      \
     (void)(usbp);                                                           \
     SK32_USB->POWER |= SK32_POWER_RESUME;                                   \
-    osalThreadSleepMilliseconds(10);                                        \
+    /* Busy-wait 10 ms without yielding, so the resume pulse cannot be       \
+       preempted by the scheduler (unlike chThdSleepMilliseconds). */        \
+    systime_t _sk32_rt_tmo = chVTGetSystemTimeX() + TIME_MS2I(10U);         \
+    while (chVTTimeElapsedSinceX(_sk32_rt_tmo) < 0) { /* wait */ }           \
     SK32_USB->POWER &= (uint8_t)~SK32_POWER_RESUME;                         \
   } while (false)
 
