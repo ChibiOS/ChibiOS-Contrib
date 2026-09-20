@@ -511,10 +511,14 @@ struct USBDriver {
   do {                                                                      \
     (void)(usbp);                                                           \
     SK32_USB->POWER |= SK32_POWER_RESUME;                                   \
-    /* Busy-wait 10 ms without yielding, so the resume pulse cannot be       \
-       preempted by the scheduler (unlike chThdSleepMilliseconds). */        \
-    systime_t _sk32_rt_tmo = chVTGetSystemTimeX() + TIME_MS2I(10U);         \
-    while (chVTTimeElapsedSinceX(_sk32_rt_tmo) < 0) { /* wait */ }           \
+    /* 纯 HCLK 忙等 ~10ms: 完全不依赖 SysTick/中断/调度, 用于排除软件时序    \
+       因素, 确认脉宽是否由 USB 核状态机自行结束而非软件延时决定。           \
+       ~4 cyc/iter @ SK32_HCLK, volatile 防优化。 */                        \
+    volatile uint32_t _sk32_res_hold = (uint32_t)(SK32_HCLK / 3200UL);      \
+    while (_sk32_res_hold != 0U) {                                         \
+      __asm volatile ("nop");                                              \
+      _sk32_res_hold--;                                                     \
+    }                                                                       \
     SK32_USB->POWER &= (uint8_t)~SK32_POWER_RESUME;                         \
   } while (false)
 
