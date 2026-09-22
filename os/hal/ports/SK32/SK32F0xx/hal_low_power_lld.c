@@ -169,6 +169,8 @@ void hal_low_power_lld_init(void);
 
 void sk32_lowpower_stop_enter(void) {
 
+   uint32_t temp;
+   temp = PWR->CR;
   /* Guardrail: keep the debug logic clocked while the core sits in STOP.
      Without DBG_STOP the SWD/AHB-AP loses its clock together with the
      system clock and the part can neither be halted nor interrogated until
@@ -182,13 +184,13 @@ void sk32_lowpower_stop_enter(void) {
   /* Clear the wakeup and standby flags so a residual flag cannot cause a
      spurious early wakeup on the next entry.  These are "write 1 to clear"
      bits on the STM32F0-class PWR. */
-  PWR->CR |= (uint16_t)(PWR_CR_CWUF | PWR_CR_CSBF);
+  PWR->CR |= (uint32_t)(PWR_CR_CWUF | PWR_CR_CSBF);
 
   /* Select Stop (deep sleep with regulator ON).  LPDS keeps the voltage
      regulator in low-power mode which is the lowest power Stop on the
      Cortex-M0 ST part; PDDS is cleared for Stop (not Standby). */
-  PWR->CR &= (uint16_t)~(uint16_t)PWR_CR_PDDS;
-  PWR->CR |= (uint16_t)PWR_CR_LPDS;
+  PWR->CR &= ~(uint32_t)PWR_CR_PDDS;
+  PWR->CR |= (uint32_t)PWR_CR_LPDS;
 
   /* Put the Cortex-M0 in deep-sleep on the next WFE. */
   SCB->SCR |= (uint32_t)SK32_SCR_SLEEPDEEP;
@@ -203,7 +205,8 @@ void sk32_lowpower_stop_enter(void) {
   __WFE();
   __WFE();
   SCB->SCR &= (uint32_t)~SK32_SCR_SLEEPDEEP;
-
+  PWR->CR = temp;
+  
   /* Consume the tick that woke us so the next entry can sleep again. */
   TIM6->SR = 0U;
   EXTI->PR = SK32_STOP_WAKE_EXTI | SK32_STOP_USB_EXTI;

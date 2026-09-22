@@ -782,7 +782,7 @@ void usb_lld_start(USBDriver *usbp) {
 
       /* Clocking the power interface to program the internal USB PHY.*/
       rccEnablePWRInterface(true);
-
+      
       /* Programming the internal USB PHY supply: 3.3V range, powered by the
          internal LDO. These PWR->CR bits are a SK32 extension.*/
       pwrcr = PWR->CR & ~((uint32_t)SK32_PWR_CR_LDO_VS_MASK |

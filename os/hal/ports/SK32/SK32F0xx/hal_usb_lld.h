@@ -520,6 +520,8 @@ struct USBDriver {
       _sk32_res_hold--;                                                     \
     }                                                                       \
     SK32_USB->POWER &= (uint8_t)~SK32_POWER_RESUME;                         \
+    (usbp)->state = (usbp)->saved_state;                                    \
+    _usb_isr_invoke_event_cb((usbp), USB_EVENT_WAKEUP);                    \
   } while (false)
 
 /*===========================================================================*/
