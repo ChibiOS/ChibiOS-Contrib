@@ -417,7 +417,10 @@ void usb_lld_start(USBDriver* usbp)
 
   /* Post reset initialization.*/
   /* Initial USB engine */
-  USBD->ATTR = USBD_ATTR_DPPUEN_Msk | USBD_ATTR_USBEN_Msk |
+  /* Bit 9 is PWRDN (PHY transceiver power, active low). The NUC126 header does
+     not name it, but the vendor BSP (ATTR = 0x7D0) and the NUC123 port set it;
+     without it the PHY stays powered down and the host never sees the device. */
+  USBD->ATTR = (1UL << 9) | USBD_ATTR_DPPUEN_Msk | USBD_ATTR_USBEN_Msk |
                USBD_ATTR_PHYEN_Msk;
 
   USBD->STBUFSEG = 0UL;
