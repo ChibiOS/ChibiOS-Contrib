@@ -88,9 +88,7 @@
 /*===========================================================================*/
 
 #if NUC126_HSI48_ENABLED
-// TODO Implement HSI48 usage for USB
-#error "HSI48 not yet supported for use with USB"
-// Use HSI48 for USB
+/* USB clocked directly from HIRC48 (CLKSEL3.USBDSEL = 0); USBDIV unused. */
 #define NUC126_USBD_CLKDIV (1)
 #else
 // Use PLL for USB

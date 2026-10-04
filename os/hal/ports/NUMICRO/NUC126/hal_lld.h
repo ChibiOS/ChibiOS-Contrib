@@ -213,6 +213,8 @@
 #if !defined(NUC126_HCLK) || defined(__DOXYGEN__)
 #if NUC126_PLL_ENABLED
 #define NUC126_HCLK 72000000UL
+#elif NUC126_HSI48_ENABLED
+#define NUC126_HCLK __HIRC48
 #else
 #define NUC126_HCLK __HIRC
 #endif

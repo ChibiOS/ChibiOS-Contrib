@@ -516,6 +516,9 @@ void NUC126_clock_init(void)
 
 #if NUC126_PLL_ENABLED
   CLK_SetCoreClock(NUC126_HCLK);
+#elif NUC126_HSI48_ENABLED
+  /* Crystal-less: run HCLK straight from HIRC48 (48 MHz). */
+  CLK_SetHCLK(NUC126_HCLKSRC_HSI48, CLK_CLKDIV0_HCLK(1));
 #endif /* NUC126_PLL_ENABLED */
 
   LOCKREG();

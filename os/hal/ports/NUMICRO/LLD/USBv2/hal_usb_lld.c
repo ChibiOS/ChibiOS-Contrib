@@ -378,8 +378,14 @@ OSAL_IRQ_HANDLER(NUC126_USB1_HANDLER)
  */
 void usb_lld_init(void)
 {
+#if NUC126_HSI48_ENABLED
+  UNLOCKREG();
+  CLK->CLKSEL3 &= ~CLK_CLKSEL3_USBDSEL_Msk;
+  LOCKREG();
+#else
   CLK->CLKDIV0 = (CLK->CLKDIV0 & (~CLK_CLKDIV0_USBDIV_Msk)) |
                 CLK_CLKDIV0_USB(NUC126_USBD_CLKDIV);
+#endif
 
 #if NUC126_USB_USE_USB1
   /* Driver initialization.*/
