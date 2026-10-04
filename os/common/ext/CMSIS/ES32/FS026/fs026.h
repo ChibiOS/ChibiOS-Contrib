@@ -298,6 +298,9 @@ typedef enum IRQn
 #define END_SIM     *MSG_END
 #define SIM_FAIL    0xFFFFAAAA
 #define SIM_PASS    0xFFFF5555
+
+#define ES_USB_PERH_EP_MAX_INDEX     (6U)
+
 /******************************************************************************/
 /*                                          macros                            */
 /******************************************************************************/
