@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2025 Dimitris Mantzouranis
+    Copyright (C) 2026 Dimitris Mantzouranis
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -30,6 +30,16 @@
 /*===========================================================================*/
 /* Driver constants.                                                         */
 /*===========================================================================*/
+#define SN32_RTC_PERIOD_MAX       ((1U << 20) - 1U)
+#define SN32_RTC_CLK_SRC_ILRC     0U
+#define SN32_RTC_CLK_SRC_XTAL     1U
+#define SN32_RTC_CLK_SOURCE       SN32_RTC_CLK_SRC_ILRC
+
+#if SN32_RTC_CLK_SOURCE == SN32_RTC_CLK_SRC_ILRC
+#    define SN32_RTC_PERIOD_DEFAULT    (32000UL)
+#else
+#    define SN32_RTC_PERIOD_DEFAULT    (32768UL)
+#endif
 
 /**
  * @name    Implementation capabilities
@@ -103,9 +113,11 @@ typedef struct hal_rtc_alarm {
  */
 #define rtc_lld_driver_fields                                               \
   /* Pointer to the RTC registers block.*/                                  \
-  RTC_TypeDef               *rtc;                                           \
+  SN_RTC_Type               *rtc;                                           \
   /* Callback pointer.*/                                                    \
-  rtccb_t           callback;
+  rtccb_t                   callback;                                       \
+  /* Reload value for the 1Hz second generator. */                          \
+  uint32_t                  period;
 
 /*===========================================================================*/
 /* Driver macros.                                                            */
@@ -125,8 +137,8 @@ extern "C" {
   void rtc_lld_set_time(RTCDriver *rtcp, const RTCDateTime *timespec);
   void rtc_lld_get_time(RTCDriver *rtcp, RTCDateTime *timespec);
   void rtc_lld_set_callback(RTCDriver *rtcp, rtccb_t callback);
-  void rtcSN32GetSec(RTCDriver *rtcp, uint32_t *tv_sec);
-  void rtcSN32SetSec(RTCDriver *rtcp, uint32_t tv_sec);
+  void rtc_lld_set_period(RTCDriver *rtcp, uint32_t period);
+  uint32_t rtc_lld_get_period(RTCDriver *rtcp);
 #ifdef __cplusplus
 }
 #endif
