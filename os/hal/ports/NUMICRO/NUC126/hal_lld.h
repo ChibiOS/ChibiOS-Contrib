@@ -326,6 +326,9 @@
 /* Alias for compatibility */
 #define SystemUnlockReg() UNLOCKREG()
 
+/* Required by newer ChibiOS hal.h (same static stub as the NUC123 port). */
+#define hal_lld_get_clock_point(clkpt) 0U
+
 /*===========================================================================*/
 /* External declarations.                                                    */
 /*===========================================================================*/
