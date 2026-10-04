@@ -104,7 +104,7 @@ LDSCRIPT= $(STARTUPLD_CONTRIB)/NRF52832.ld
 # setting.
 CSRC = $(ALLCSRC) \
        $(TESTSRC) \
-       $(CHIBIOS)/os/various/syscalls.c \
+       $(CHIBIOS)/os/various/newlib_bindings/syscalls.c \
        $(CHIBIOS)/os/hal/lib/streams/memstreams.c \
        $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
        main.c

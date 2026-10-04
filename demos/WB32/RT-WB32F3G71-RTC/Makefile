@@ -125,7 +125,7 @@ LDSCRIPT= $(STARTUPLD_CONTRIB)/WB32F3G71xC.ld
 # setting.
 CSRC = $(ALLCSRC) \
        $(TESTSRC) \
-       $(CHIBIOS)/os/various/syscalls.c \
+       $(CHIBIOS)/os/various/newlib_bindings/syscalls.c \
        $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
        debug.c \
        main.c
