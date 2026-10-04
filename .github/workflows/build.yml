@@ -73,3 +73,6 @@ jobs:
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/ES32
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/ES32
+    - name: build NUMICRO NUC126
+      run: |
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/NUMICRO/NUC126
