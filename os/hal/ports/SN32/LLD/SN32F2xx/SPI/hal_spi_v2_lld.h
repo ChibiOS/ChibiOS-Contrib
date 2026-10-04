@@ -85,7 +85,7 @@
  */
 /**
  * @brief   SPI0 driver enable switch.
- * @details If set to @p TRUE the support for SPI1 is included.
+ * @details If set to @p TRUE the support for SPI0 is included.
  * @note    The default is @p FALSE.
  */
 #if !defined(SN32_SPI_USE_SPI0) || defined(__DOXYGEN__)
