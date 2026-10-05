@@ -43,7 +43,9 @@
      defined(STM32F745xx) || defined(STM32F746xx) || \
      defined(STM32F756xx) || defined(STM32F767xx) || \
      defined(STM32F769xx) || defined(STM32F777xx) || \
-     defined(STM32F779xx) || defined(STM32H743xx))
+     defined(STM32F779xx) || defined(STM32H743xx) || \
+     defined(STM32G473xx) || defined(STM32G483xx) || \
+     defined(STM32G474xx) || defined(STM32G484xx))
   #if !defined(FSMC_Bank1_R_BASE)
   #define FSMC_Bank1_R_BASE               (FMC_R_BASE + 0x0000)
   #endif
@@ -239,7 +241,9 @@ typedef struct {
 #define  FSMC_BCR_CBURSTRW        ((uint32_t)1 << 19)
 #if (defined(STM32F427xx) || defined(STM32F437xx) || \
      defined(STM32F429xx) || defined(STM32F439xx) || \
-     defined(STM32F7) || defined(STM32H743xx))
+     defined(STM32F7) || defined(STM32H743xx) || \
+     defined(STM32G473xx) || defined(STM32G483xx) || \
+     defined(STM32G474xx) || defined(STM32G484xx))
 #define  FSMC_BCR_CCLKEN          ((uint32_t)1 << 20)
 #endif
 #if (defined(STM32F7))
