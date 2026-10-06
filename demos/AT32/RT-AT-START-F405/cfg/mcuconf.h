@@ -1,8 +1,8 @@
 /*
-    ChibiOS - Copyright (C) 2006..2020 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
-    ChibiOS - Copyright (C) 2024..2025 Maxjta
+    ChibiOS - Copyright (C) 2006-2026 Giovanni Di Sirio.
+    ChibiOS - Copyright (C) 2023-2026 HorrorTroll.
+    ChibiOS - Copyright (C) 2023-2026 Zhaqian.
+    ChibiOS - Copyright (C) 2024-2026 Maxjta.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -230,6 +230,7 @@
  */
 #define AT32_ST_IRQ_PRIORITY                8
 #define AT32_ST_USE_TIMER                   2
+#define AT32_ST_FREQUENCY_TOLERANCE         0
 
 /*
  * UART driver system settings.
