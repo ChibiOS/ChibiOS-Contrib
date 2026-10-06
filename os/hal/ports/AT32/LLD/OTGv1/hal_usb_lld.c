@@ -1081,7 +1081,7 @@ void usb_lld_reset(USBDriver *usbp) {
       otgp->GINTMSK &= ~GINTMSK_RXFLVLMSK;
     }
 #endif
-  otgp->DIEPMSK = /*DIEPMSK_TIMEOUTMSK |*/ DIEPMSK_XFERCMSK;
+  otgp->DIEPMSK = /* DIEPMSK_TIMEOUTMSK |*/ DIEPMSK_XFERCMSK;
   otgp->DOEPMSK = DOEPMSK_SETUPMSK   | DOEPMSK_XFERCMSK;
 
   /* EP0 initialization, it is a special case.*/

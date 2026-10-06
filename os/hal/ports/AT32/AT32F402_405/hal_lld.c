@@ -334,7 +334,7 @@ void at32_reduce_power_consumption(void) {
     CRM->PLLCFG |= CRM_PLLCFG_PLLU_EN;
     while ((!(CRM->CTRL & CRM_CTRL_PLLSTBL)) || (!(CRM->CTRL & CRM_CTRL_PLLUSTBL)))
       ;
-    CRM->OTGHS = 0x10;
+    CRM->OTGHS = CRM_OTGHS_USBHS_PHY12_SEL;
   } else {
     /* PLL or HEXT need to be enable.*/
     return;

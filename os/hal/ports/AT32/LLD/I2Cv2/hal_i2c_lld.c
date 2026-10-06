@@ -220,7 +220,7 @@ static void i2c_lld_serve_interrupt(I2CDriver *i2cp, uint32_t sts) {
       if (i2cp->state == I2C_ACTIVE_TX) {
         if (((sts & I2C_STS_SDIR) != 0U) && ((sts & I2C_STS_TDIS) != 0U)) {
           /* Next interrupt is GENSTOP.*/
-          return ;
+          return;
         }
       }
     }
