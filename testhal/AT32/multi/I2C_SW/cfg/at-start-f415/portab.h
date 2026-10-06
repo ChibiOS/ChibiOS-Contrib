@@ -1,7 +1,7 @@
 /*
-    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2006-2026 Giovanni Di Sirio.
+    ChibiOS - Copyright (C) 2023-2026 HorrorTroll.
+    ChibiOS - Copyright (C) 2023-2026 Zhaqian.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -34,13 +34,10 @@
 #define PORTAB_I2C1                 I2CD1
 
 #define PORTAB_SCL_PIN              PAL_LINE(GPIOB, 6U)
-
 #define PORTAB_SDA_PIN              PAL_LINE(GPIOB, 7U)
 
 #define PORTAB_BLINK_LED1           LINE_LED_RED
-
 #define PORTAB_BLINK_LED2           LINE_LED_YELLOW
-
 #define PORTAB_BLINK_LED3           LINE_LED_GREEN
 
 /*===========================================================================*/

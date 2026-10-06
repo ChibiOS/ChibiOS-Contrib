@@ -1,7 +1,8 @@
 /*
-    ChibiOS - Copyright (C) 2006..2020 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2006-2026 Giovanni Di Sirio.
+    ChibiOS - Copyright (C) 2023-2026 HorrorTroll.
+    ChibiOS - Copyright (C) 2023-2026 Zhaqian.
+    ChibiOS - Copyright (C) 2024-2026 Maxjta.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -51,6 +52,19 @@
 #define CH_CFG_SMP_MODE                     FALSE
 #endif
 
+/**
+ * @brief   Kernel hardening level.
+ * @details This option is the level of functional-safety checks enabled
+ *          in the kerkel. The meaning is:
+ *          - 0: No checks, maximum performance.
+ *          - 1: Reasonable checks.
+ *          - 2: All checks.
+ *          .
+ */
+#if !defined(CH_CFG_HARDENING_LEVEL)
+#define CH_CFG_HARDENING_LEVEL              0
+#endif
+
 /** @} */
 
 /*===========================================================================*/
@@ -63,6 +77,8 @@
 /**
  * @brief   System time counter resolution.
  * @note    Allowed values are 16, 32 or 64 bits.
+ * @note    In tick-less mode this value must match the physical system tick
+ *          timer counter width.
  */
 #if !defined(CH_CFG_ST_RESOLUTION)
 #define CH_CFG_ST_RESOLUTION                32
@@ -72,6 +88,8 @@
  * @brief   System tick frequency.
  * @details Frequency of the system timer that drives the system ticks. This
  *          setting also defines the system tick time unit.
+ * @note    This must be a frequency that is obtainable from the system tick
+ *          timer frequency.
  */
 #if !defined(CH_CFG_ST_FREQUENCY)
 #define CH_CFG_ST_FREQUENCY                 10000
@@ -139,19 +157,6 @@
  */
 #if !defined(CH_CFG_NO_IDLE_THREAD)
 #define CH_CFG_NO_IDLE_THREAD               FALSE
-#endif
-
-/**
- * @brief   Kernel hardening level.
- * @details This option is the level of functional-safety checks enabled
- *          in the kerkel. The meaning is:
- *          - 0: No checks, maximum performance.
- *          - 1: Reasonable checks.
- *          - 2: All checks.
- *          .
- */
-#if !defined(CH_CFG_HARDENING_LEVEL)
-#define CH_CFG_HARDENING_LEVEL              0
 #endif
 
 /** @} */
@@ -621,7 +626,7 @@
  * @note    The default is @p CH_DBG_TRACE_MASK_DISABLED.
  */
 #if !defined(CH_DBG_TRACE_MASK)
-#define CH_DBG_TRACE_MASK                   CH_DBG_TRACE_MASK_ALL
+#define CH_DBG_TRACE_MASK                   CH_DBG_TRACE_MASK_DISABLED
 #endif
 
 /**
@@ -644,7 +649,7 @@
  *          @p panic_msg variable set to @p NULL.
  */
 #if !defined(CH_DBG_ENABLE_STACK_CHECK)
-#define CH_DBG_ENABLE_STACK_CHECK           TRUE
+#define CH_DBG_ENABLE_STACK_CHECK           FALSE
 #endif
 
 /**
@@ -656,7 +661,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(CH_DBG_FILL_THREADS)
-#define CH_DBG_FILL_THREADS                 TRUE
+#define CH_DBG_FILL_THREADS                 FALSE
 #endif
 
 /**
@@ -693,9 +698,9 @@
  * @details User initialization code added to the @p chSysInit() function
  *          just before interrupts are enabled globally.
  */
-#define CH_CFG_SYSTEM_INIT_HOOK() {                                         \
+#define CH_CFG_SYSTEM_INIT_HOOK() do {                                      \
   /* Add system initialization code here.*/                                 \
-}
+} while (false)
 
 /**
  * @brief   OS instance structure extension.
@@ -709,9 +714,9 @@
  *
  * @param[in] oip       pointer to the @p os_instance_t structure
  */
-#define CH_CFG_OS_INSTANCE_INIT_HOOK(oip) {                                 \
+#define CH_CFG_OS_INSTANCE_INIT_HOOK(oip) do {                              \
   /* Add OS instance initialization code here.*/                            \
-}
+} while (false)
 
 /**
  * @brief   Threads descriptor structure extension.
@@ -729,9 +734,9 @@
  *
  * @param[in] tp        pointer to the @p thread_t structure
  */
-#define CH_CFG_THREAD_INIT_HOOK(tp) {                                       \
+#define CH_CFG_THREAD_INIT_HOOK(tp) do {                                    \
   /* Add threads initialization code here.*/                                \
-}
+} while (false)
 
 /**
  * @brief   Threads finalization hook.
@@ -739,9 +744,9 @@
  *
  * @param[in] tp        pointer to the @p thread_t structure
  */
-#define CH_CFG_THREAD_EXIT_HOOK(tp) {                                       \
+#define CH_CFG_THREAD_EXIT_HOOK(tp) do {                                    \
   /* Add threads finalization code here.*/                                  \
-}
+} while (false)
 
 /**
  * @brief   Context switch hook.
@@ -750,23 +755,23 @@
  * @param[in] ntp       thread being switched in
  * @param[in] otp       thread being switched out
  */
-#define CH_CFG_CONTEXT_SWITCH_HOOK(ntp, otp) {                              \
+#define CH_CFG_CONTEXT_SWITCH_HOOK(ntp, otp) do {                           \
   /* Context switch code here.*/                                            \
-}
+} while (false)
 
 /**
  * @brief   ISR enter hook.
  */
-#define CH_CFG_IRQ_PROLOGUE_HOOK() {                                        \
+#define CH_CFG_IRQ_PROLOGUE_HOOK() do {                                     \
   /* IRQ prologue code here.*/                                              \
-}
+} while (false)
 
 /**
  * @brief   ISR exit hook.
  */
-#define CH_CFG_IRQ_EPILOGUE_HOOK() {                                        \
+#define CH_CFG_IRQ_EPILOGUE_HOOK() do {                                     \
   /* IRQ epilogue code here.*/                                              \
-}
+} while (false)
 
 /**
  * @brief   Idle thread enter hook.
@@ -774,9 +779,9 @@
  *          should be invoked from here.
  * @note    This macro can be used to activate a power saving mode.
  */
-#define CH_CFG_IDLE_ENTER_HOOK() {                                          \
+#define CH_CFG_IDLE_ENTER_HOOK() do {                                       \
   /* Idle-enter code here.*/                                                \
-}
+} while (false)
 
 /**
  * @brief   Idle thread leave hook.
@@ -784,52 +789,62 @@
  *          should be invoked from here.
  * @note    This macro can be used to deactivate a power saving mode.
  */
-#define CH_CFG_IDLE_LEAVE_HOOK() {                                          \
+#define CH_CFG_IDLE_LEAVE_HOOK() do {                                       \
   /* Idle-leave code here.*/                                                \
-}
+} while (false)
 
 /**
  * @brief   Idle Loop hook.
  * @details This hook is continuously invoked by the idle thread loop.
  */
-#define CH_CFG_IDLE_LOOP_HOOK() {                                           \
+#define CH_CFG_IDLE_LOOP_HOOK() do {                                        \
   /* Idle loop code here.*/                                                 \
-}
+} while (false)
 
 /**
  * @brief   System tick event hook.
  * @details This hook is invoked in the system tick handler immediately
  *          after processing the virtual timers queue.
  */
-#define CH_CFG_SYSTEM_TICK_HOOK() {                                         \
+#define CH_CFG_SYSTEM_TICK_HOOK() do {                                      \
   /* System tick event code here.*/                                         \
-}
+} while (false)
 
 /**
  * @brief   System halt hook.
  * @details This hook is invoked in case to a system halting error before
  *          the system is halted.
  */
-#define CH_CFG_SYSTEM_HALT_HOOK(reason) {                                   \
+#define CH_CFG_SYSTEM_HALT_HOOK(reason) do {                                \
   /* System halt code here.*/                                               \
-}
+} while (false)
 
 /**
  * @brief   Trace hook.
  * @details This hook is invoked each time a new record is written in the
  *          trace buffer.
  */
-#define CH_CFG_TRACE_HOOK(tep) {                                            \
+#define CH_CFG_TRACE_HOOK(tep) do {                                         \
   /* Trace code here.*/                                                     \
-}
+} while (false)
 
 /**
  * @brief   Runtime Faults Collection Unit hook.
  * @details This hook is invoked each time new faults are collected and stored.
  */
-#define CH_CFG_RUNTIME_FAULTS_HOOK(mask) {                                  \
+#define CH_CFG_RUNTIME_FAULTS_HOOK(mask) do {                               \
   /* Faults handling code here.*/                                           \
-}
+} while (false)
+
+/**
+ * @brief   Safety checks hook.
+ * @details This hook is invoked when there is a safety violation and the
+ *          system is going to stop.
+ */
+#define CH_CFG_SAFETY_CHECK_HOOK(l, f) do {                                 \
+  /* Safety handling code here.*/                                           \
+  chSysHalt(f);                                                             \
+} while (false)
 
 /** @} */
 
