@@ -32,7 +32,6 @@
 /*===========================================================================*/
 
 #define PORTAB_SIO1                 SIOD1
-
 #define PORTAB_SIO2                 SIOD2
 
 #define PORTAB_LINE_BUTTON          LINE_BUTTON
