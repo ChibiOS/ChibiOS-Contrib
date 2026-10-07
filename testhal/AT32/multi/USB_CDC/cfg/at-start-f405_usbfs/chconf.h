@@ -2,6 +2,7 @@
     ChibiOS - Copyright (C) 2006-2026 Giovanni Di Sirio.
     ChibiOS - Copyright (C) 2023-2026 HorrorTroll.
     ChibiOS - Copyright (C) 2023-2026 Zhaqian.
+    ChibiOS - Copyright (C) 2024-2026 Maxjta.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -31,7 +32,7 @@
 #define CHCONF_H
 
 #define _CHIBIOS_RT_CONF_
-#define _CHIBIOS_RT_CONF_VER_8_0_
+#define _CHIBIOS_RT_CONF_VER_7_0_
 
 /*===========================================================================*/
 /**

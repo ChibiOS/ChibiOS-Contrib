@@ -208,6 +208,7 @@
  */
 #define AT32_ST_IRQ_PRIORITY                8
 #define AT32_ST_USE_TIMER                   2
+#define AT32_ST_FREQUENCY_TOLERANCE         0
 
 /*
  * UART driver system settings.
