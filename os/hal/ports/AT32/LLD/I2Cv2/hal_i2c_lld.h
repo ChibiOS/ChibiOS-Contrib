@@ -1,8 +1,8 @@
 /*
-    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
-    ChibiOS - Copyright (C) 2024..2025 Maxjta
+    ChibiOS - Copyright (C) 2006-2026 Giovanni Di Sirio.
+    ChibiOS - Copyright (C) 2023-2026 HorrorTroll.
+    ChibiOS - Copyright (C) 2023-2026 Zhaqian.
+    ChibiOS - Copyright (C) 2024-2026 Maxjta.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -39,6 +39,11 @@
 /*===========================================================================*/
 
 /**
+ * @brief   This I2C LLD supports slave mode.
+ */
+#define I2C_SUPPORTS_SLAVE_MODE             TRUE
+
+/**
  * @name    CLKCTRL register definitions
  * @{
  */
@@ -73,7 +78,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(AT32_I2C_USE_I2C1) || defined(__DOXYGEN__)
-#define AT32_I2C_USE_I2C1                  FALSE
+#define AT32_I2C_USE_I2C1                   FALSE
 #endif
 
 /**
@@ -82,7 +87,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(AT32_I2C_USE_I2C2) || defined(__DOXYGEN__)
-#define AT32_I2C_USE_I2C2                  FALSE
+#define AT32_I2C_USE_I2C2                   FALSE
 #endif
 
 /**
@@ -91,42 +96,42 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(AT32_I2C_USE_I2C3) || defined(__DOXYGEN__)
-#define AT32_I2C_USE_I2C3                  FALSE
+#define AT32_I2C_USE_I2C3                   FALSE
 #endif
 
 /**
  * @brief   I2C timeout on busy condition in milliseconds.
  */
 #if !defined(AT32_I2C_BUSY_TIMEOUT) || defined(__DOXYGEN__)
-#define AT32_I2C_BUSY_TIMEOUT              50
+#define AT32_I2C_BUSY_TIMEOUT               50
 #endif
 
 /**
  * @brief   I2C1 interrupt priority level setting.
  */
 #if !defined(AT32_I2C_I2C1_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define AT32_I2C_I2C1_IRQ_PRIORITY         10
+#define AT32_I2C_I2C1_IRQ_PRIORITY          10
 #endif
 
 /**
  * @brief   I2C2 interrupt priority level setting.
  */
 #if !defined(AT32_I2C_I2C2_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define AT32_I2C_I2C2_IRQ_PRIORITY         10
+#define AT32_I2C_I2C2_IRQ_PRIORITY          10
 #endif
 
 /**
  * @brief   I2C3 interrupt priority level setting.
  */
 #if !defined(AT32_I2C_I2C3_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define AT32_I2C_I2C3_IRQ_PRIORITY         10
+#define AT32_I2C_I2C3_IRQ_PRIORITY          10
 #endif
 
 /**
  * @brief   DMA use switch.
  */
 #if !defined(AT32_I2C_USE_DMA) || defined(__DOXYGEN__)
-#define AT32_I2C_USE_DMA                   TRUE
+#define AT32_I2C_USE_DMA                    TRUE
 #endif
 
 /**
@@ -136,7 +141,7 @@
  *          over the TX stream.
  */
 #if !defined(AT32_I2C_I2C1_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define AT32_I2C_I2C1_DMA_PRIORITY         1
+#define AT32_I2C_I2C1_DMA_PRIORITY          1
 #endif
 
 /**
@@ -146,7 +151,7 @@
  *          over the TX stream.
  */
 #if !defined(AT32_I2C_I2C2_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define AT32_I2C_I2C2_DMA_PRIORITY         1
+#define AT32_I2C_I2C2_DMA_PRIORITY          1
 #endif
 
 /**
@@ -156,7 +161,7 @@
  *          over the TX stream.
  */
 #if !defined(AT32_I2C_I2C3_DMA_PRIORITY) || defined(__DOXYGEN__)
-#define AT32_I2C_I2C3_DMA_PRIORITY         1
+#define AT32_I2C_I2C3_DMA_PRIORITY          1
 #endif
 
 /**
@@ -165,7 +170,7 @@
  *          error can only happen because programming errors.
  */
 #if !defined(AT32_I2C_DMA_ERROR_HOOK) || defined(__DOXYGEN__)
-#define AT32_I2C_DMA_ERROR_HOOK(i2cp)      osalSysHalt("DMA failure")
+#define AT32_I2C_DMA_ERROR_HOOK(i2cp)       osalSysHalt("DMA failure")
 #endif
 /** @} */
 
@@ -360,6 +365,16 @@ struct hal_i2c_driver {
    * @brief     Pointer to the I2Cx registers block.
    */
   I2C_TypeDef               *i2c;
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+  /**
+   * @brief     Master needed a reply.
+   */
+  bool                      reply_required;
+  /**
+   * @brief     Master/Slave mode.
+   */
+  bool                      isMaster;
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
 };
 
 /*===========================================================================*/
@@ -407,6 +422,13 @@ extern "C" {
   msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
                                        uint8_t *rxbuf, size_t rxbytes,
                                        sysinterval_t timeout);
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+  msg_t i2c_lld_match_address(I2CDriver *i2cp, i2caddr_t addr);
+  msg_t i2c_lld_slave_receive_timeout(I2CDriver *i2cp, uint8_t *rxbuf,
+                                      size_t rxbytes, sysinterval_t timeout);
+  msg_t i2c_lld_slave_transmit_timeout(I2CDriver *i2cp, const uint8_t *txbuf,
+                                       size_t txbytes, sysinterval_t timeout);
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
 #ifdef __cplusplus
 }
 #endif

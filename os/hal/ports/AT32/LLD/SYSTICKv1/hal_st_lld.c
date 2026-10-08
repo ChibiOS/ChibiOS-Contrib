@@ -1,7 +1,7 @@
 /*
-    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2026 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2026 Zhaqian
+    ChibiOS - Copyright (C) 2006-2026 Giovanni Di Sirio.
+    ChibiOS - Copyright (C) 2023-2026 HorrorTroll.
+    ChibiOS - Copyright (C) 2023-2026 Zhaqian.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -210,15 +210,18 @@
 #error "AT32_ST_USE_TIMER specifies an unsupported timer"
 #endif
 
-#if 0 /* TODO remove */
-#if ST_CLOCK_SRC % OSAL_ST_FREQUENCY != 0
-#error "the selected ST frequency is not obtainable because integer rounding"
-#endif
-
-#if (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1 > 0xFFFF
-#error "the selected ST frequency is not obtainable because TMR timer prescaler limits"
-#endif
-#endif
+/* Free running prescaler rounded to the nearest integer, the resulting tick
+   frequency and its absolute deviation from OSAL_ST_FREQUENCY. These are
+   expressions only (no objects): they fold to constants on static-clock
+   devices and, where used solely inside osalDbgAssert(), they fully vanish
+   when assertions are disabled.*/
+#define ST_PSC          ((((halfreq_t)ST_CLOCK_SRC +                         \
+                           ((halfreq_t)OSAL_ST_FREQUENCY / 2U)) /            \
+                          (halfreq_t)OSAL_ST_FREQUENCY) - 1U)
+#define ST_TICK         ((halfreq_t)ST_CLOCK_SRC / (ST_PSC + 1U))
+#define ST_TICK_ERROR   ((ST_TICK >= (halfreq_t)OSAL_ST_FREQUENCY) ?         \
+                         (ST_TICK - (halfreq_t)OSAL_ST_FREQUENCY) :          \
+                         ((halfreq_t)OSAL_ST_FREQUENCY - ST_TICK))
 
 #endif /* OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING */
 
@@ -290,11 +293,16 @@ OSAL_IRQ_HANDLER(ST_HANDLER) {
 void st_lld_init(void) {
 
 #if OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING
-  /* Free running counter mode.*/
-  osalDbgAssert((ST_CLOCK_SRC % OSAL_ST_FREQUENCY) == 0U,
+  /* Free running counter mode. The prescaler is rounded to the nearest
+     integer; the resulting tick frequency is required to be within
+     AT32_ST_FREQUENCY_TOLERANCE per-mille of OSAL_ST_FREQUENCY (a tolerance
+     of zero, the default, requires an exact integer divisor). The checks are
+     pure expressions confined to the assertions, so they leave no code
+     when assertions are disabled.*/
+  osalDbgAssert(ST_PSC < 0x10000U, "clock prescaler overflow");
+  osalDbgAssert((ST_TICK_ERROR * 1000U) <= ((halfreq_t)OSAL_ST_FREQUENCY *
+                                            (halfreq_t)AT32_ST_FREQUENCY_TOLERANCE),
                 "clock rounding error");
-  osalDbgAssert(((ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1U) < 0x10000,
-                "clock prescaler overflow");
 
   /* Enabling timer clock.*/
   ST_ENABLE_CLOCK();
@@ -304,7 +312,7 @@ void st_lld_init(void) {
 
   /* Initializing the counter in free running mode.*/
   AT32_ST_TMR->CTRL1  = ST_CTRL1_INIT;
-  AT32_ST_TMR->DIV    = (ST_CLOCK_SRC / OSAL_ST_FREQUENCY) - 1;
+  AT32_ST_TMR->DIV    = (uint32_t)ST_PSC;
   AT32_ST_TMR->PR     = ST_PR_INIT;
   AT32_ST_TMR->CM1    = 0;
   AT32_ST_TMR->CDT[0] = 0;
