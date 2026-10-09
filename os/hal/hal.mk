@@ -19,6 +19,9 @@ endif
 ifneq ($(findstring HAL_USE_SRAM TRUE,$(HALCONF)),)
 HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/hal_sram.c
 endif
+ifneq ($(findstring HAL_USE_BURAM,$(HALCONF)),)
+HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/hal_buram.c
+endif
 ifneq ($(findstring HAL_USE_SDRAM TRUE,$(HALCONF)),)
 HALSRC_CONTRIB += ${CHIBIOS_CONTRIB}/os/hal/src/hal_sdram.c
 endif

@@ -3,3 +3,10 @@
 *~
 .dep
 build
+*.vpj
+*.vpw
+*.vpwhistuxml
+*.vpwhistu
+*.vtg
+*.jdebug
+*.jdebug.user
