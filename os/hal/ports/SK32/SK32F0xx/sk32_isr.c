@@ -146,12 +146,18 @@ OSAL_IRQ_HANDLER(SK32_EXTI4_15_HANDLER) {
  *          shared EXTI handlers are implemented in this file.  Every other
  *          interrupt vector of the port is enabled by the low level driver
  *          owning the peripheral.
+ * @note    The enable must carry the same condition as the handlers above.
+ *          Enabling the vectors while their handlers are compiled out points
+ *          them at the default vector (_unhandled_exception, an infinite
+ *          branch), so any EXTI line later armed in EXTI->IMR would dispatch
+ *          into that spin loop and lock the core up for good - which is
+ *          exactly what a key press did to the LD7's STOP wake lines.
  *
  * @notapi
  */
 void irqInit(void) {
 
-#if HAL_USE_PAL
+#if (HAL_USE_PAL && (PAL_USE_WAIT || PAL_USE_CALLBACKS)) || defined(__DOXYGEN__)
   nvicEnableVector(SK32_EXTI0_1_NUMBER, SK32_IRQ_EXTI0_1_PRIORITY);
   nvicEnableVector(SK32_EXTI2_3_NUMBER, SK32_IRQ_EXTI2_3_PRIORITY);
   nvicEnableVector(SK32_EXTI4_15_NUMBER, SK32_IRQ_EXTI4_15_PRIORITY);
@@ -165,7 +171,7 @@ void irqInit(void) {
  */
 void irqDeinit(void) {
 
-#if HAL_USE_PAL
+#if (HAL_USE_PAL && (PAL_USE_WAIT || PAL_USE_CALLBACKS)) || defined(__DOXYGEN__)
   nvicDisableVector(SK32_EXTI0_1_NUMBER);
   nvicDisableVector(SK32_EXTI2_3_NUMBER);
   nvicDisableVector(SK32_EXTI4_15_NUMBER);
