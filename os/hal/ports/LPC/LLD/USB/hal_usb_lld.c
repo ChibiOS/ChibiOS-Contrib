@@ -161,10 +161,6 @@ static size_t usb_packet_receive(USBDriver *usbp, usbep_t ep) {
     // ReSetup for recieve
     USB_EPLIST->entry[4 * ep] |= EPLIST_ENTRY_NBYTES(epcp->out_maxsize) |
       EPLIST_ADDR(usbp->epn_buffer[ep * 2]) | EPLIST_ENTRY_ACTIVE;
-  } else {
-    if (ep != 0) {
-      USB_EPLIST->entry[4 * ep] |= EPLIST_ENTRY_STALL;
-    }
   }
 
   return n;
