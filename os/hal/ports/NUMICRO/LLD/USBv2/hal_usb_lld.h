@@ -391,15 +391,16 @@ struct USBDriver {
 
 /**
  * @brief   Start of host wake-up procedure.
+ * @note    The PHY is off since SUSPEND. The RESUME bus event ends suspend.
  *
  * @notapi
  */
 #define usb_lld_wakeup_host(usbp)                                           \
   do {                                                                      \
+    USBD->ATTR |= USBD_ATTR_PHYEN_Msk;                                      \
     USBD->ATTR |= USBD_ATTR_RWAKEUP_Msk;                                    \
     osalThreadSleepMilliseconds(10);                                        \
     USBD->ATTR &= ~USBD_ATTR_RWAKEUP_Msk;                                   \
-    _usb_wakeup(&USBD1);                                                    \
   } while (0)
 
 /*===========================================================================*/
