@@ -108,6 +108,10 @@
 #error "NUC126 USB subsystem enabled, but no driver configured"
 #endif
 
+#if NUC126_USB_USE_USB1 && !OSAL_IRQ_IS_VALID_PRIORITY(NUC126_USB_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to USB1"
+#endif
+
 /*===========================================================================*/
 /* Driver data structures and types.                                         */
 /*===========================================================================*/

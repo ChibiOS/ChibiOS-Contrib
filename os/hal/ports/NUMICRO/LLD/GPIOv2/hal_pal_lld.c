@@ -191,25 +191,35 @@ void _pal_lld_setgroupmode(ioportid_t port,
                            ioportmask_t mask,
                            iomode_t mode) {
 
-  uint32_t nucMode = 0;
+  uint32_t nucMode;
 
-  if (mode == PAL_MODE_INPUT)
-      nucMode = GPIO_MODE_INPUT;
-  else if (mode == PAL_MODE_OUTPUT_OPENDRAIN)
-      nucMode = GPIO_MODE_OPEN_DRAIN;
-  else if (mode == PAL_MODE_OUTPUT_PUSHPULL)
-      nucMode = GPIO_MODE_OUTPUT;
-  else /* mode == PAL_MODE_INPUT_PULLUP */
-      nucMode = GPIO_MODE_QUASI;
+  switch (mode) {
+  case PAL_MODE_INPUT:
+  case PAL_MODE_INPUT_ANALOG:
+    nucMode = GPIO_MODE_INPUT;
+    break;
+  case PAL_MODE_OUTPUT_PUSHPULL:
+    nucMode = GPIO_MODE_OUTPUT;
+    break;
+  case PAL_MODE_OUTPUT_OPENDRAIN:
+    nucMode = GPIO_MODE_OPEN_DRAIN;
+    break;
+  case PAL_MODE_RESET:
+  case PAL_MODE_UNCONNECTED:
+  case PAL_MODE_INPUT_PULLUP:
+    /* Quasi-bidirectional mode drives the pin low while DOUT is 0. */
+    port->DOUT |= (uint32_t)(uint16_t)mask;
+    nucMode = GPIO_MODE_QUASI;
+    break;
+  default:
+    /* PAL_MODE_INPUT_PULLDOWN (the chip has no pull-down) and unknown modes. */
+    return;
+  }
 
   for (uint32_t i = 0; i < PAL_IOPORTS_WIDTH; i++) {
     if (mask & (1 << i)) {
       port->MODE = (port->MODE & ~(0x03ul << (i << 1))) | (nucMode << (i << 1));
     }
-  }
-
-  if (nucMode == GPIO_MODE_QUASI) {
-    port->DOUT |= (uint32_t)(uint16_t)mask;
   }
 }
 

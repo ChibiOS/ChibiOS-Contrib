@@ -48,7 +48,7 @@
 
 #define CLK_PLLCTL_72MHz_HXT    CLK_PLLCTL(NUC126_PLLSRC_HSE, 4, 48, 2) /*!< Predefined PLLCTL setting for 72MHz PLL output with HXT(12MHz X'tal) */
 #define CLK_PLLCTL_144MHz_HXT    CLK_PLLCTL(NUC126_PLLSRC_HSE, 4, 48, 1) /*!< Predefined PLLCTL setting for 144MHz PLL output with HXT(12MHz X'tal) */
-#define CLK_PLLCTL_72MHz_HIRC    CLK_PLLCTL(NUC126_PLLSRC_HSE, 8, 52, 2) /*!< Predefined PLLCTL setting for 71.8848MHz PLL output with HIRC(22.1184MHz IRC) */
+#define CLK_PLLCTL_72MHz_HIRC    CLK_PLLCTL(NUC126_PLLSRC_HSI, 8, 52, 2) /*!< Predefined PLLCTL setting for 71.8848MHz PLL output with HIRC(22.1184MHz IRC) */
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -65,7 +65,11 @@ uint32_t CyclesPerUs      = (__HSI / 1000000);  /*!< Cycles per micro second    
 #if NUC126_PLL_ENABLED
 uint32_t PllClock         = __HSI;              /*!< PLL Output Clock Frequency          */
 #endif
+#if NUC126_HSE_ENABLED
+const uint32_t gau32ClkSrcTbl[] = {NUC126_HSECLK, __LXT, __HSI, __LIRC, __HIRC48, 0UL, 0UL, __HIRC};
+#else
 const uint32_t gau32ClkSrcTbl[] = {__HXT, __LXT, __HSI, __LIRC, __HIRC48, 0UL, 0UL, __HIRC};
+#endif
 
 #if (NUC126_CONFIG_ENABLED == TRUE)
 
@@ -351,7 +355,7 @@ uint32_t CLK_EnablePLL(uint32_t pllSrc, uint32_t pllFreq)
   }
 
   /* Enable and apply new PLL setting. */
-  CLK->PLLCTL = CLK_PLLCTL(pllSrc, NO, bestNR, bestNF);
+  CLK->PLLCTL = CLK_PLLCTL(pllSrc, bestNR, bestNF, NO);
 
   /* Wait for PLL clock stable */
   CLK_WaitClockReady(CLK_STATUS_PLLSTB_Msk);
@@ -406,7 +410,7 @@ uint32_t CLK_SetCoreClock(uint32_t u32Hclk)
     }
 
     /* Set HCLK clock source to PLL */
-    CLK_SetHCLK(NUC126_HCLKSRC_PLL, CLK_CLKDIV0_HCLK(1));
+    CLK_SetHCLK(NUC126_HCLKSRC_PLL, CLK_CLKDIV0_HCLK(2));
 
     /* Disable HIRC if HIRC was disabled before we started */
     if(u32HIRCSTB == 0) {
