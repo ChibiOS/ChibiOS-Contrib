@@ -1555,6 +1555,13 @@ usb_status_t USB_DeviceEhciCancel(usb_device_controller_handle ehciHandle, uint8
     return kStatus_USB_Success;
 }
 
+static uint32_t ms_to_cycles(const uint32_t val) {
+  // 600 cycles at 0.6 cycles/ns == 1μs
+  const uint32_t cycles_per_us = 600;
+  const uint32_t ms_to_us = 1000;
+  return val * ms_to_us * cycles_per_us;
+}
+
 /*!
  * @brief Control the status of the selected item.
  *
@@ -1696,8 +1703,11 @@ usb_status_t USB_DeviceEhciControl(usb_device_controller_handle ehciHandle, usb_
 #endif
             ehciState->registerBase->PORTSC1 &= ~USBHS_PORTSC1_PHCD_MASK;
             ehciState->registerBase->PORTSC1 |= USBHS_PORTSC1_FPR_MASK;
-            startTick = deviceHandle->hwTick;
-            while ((deviceHandle->hwTick - startTick) < 10U)
+            // For easier ChibiOS integration, directly query the (already
+            // enabled) CYCCNT register instead of the deviceHandle->hwTick
+            // variable, which ChibiOS currently does not update.
+            startTick = DWT->CYCCNT;
+            while ((DWT->CYCCNT - startTick) < ms_to_cycles(10U))
             {
                 __NOP();
             }

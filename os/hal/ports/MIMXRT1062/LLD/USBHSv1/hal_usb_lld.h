@@ -408,8 +408,10 @@ struct USBDriver {
  * @notapi
  */
 #define usb_lld_wakeup_host(usbp)                                     \
-  do{                                                                 \
-  } while (false)
+  do{ \
+    usb_device_struct_t *dev_handle = (usb_device_struct_t *)handle; \
+    (void)USB_DeviceSetStatus(dev_handle, kUSB_DeviceStatusBusResume, NULL); \
+  } while (0)
 
 
 /*===========================================================================*/
