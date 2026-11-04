@@ -1094,6 +1094,9 @@ typedef struct {
 /******** Bits definition for USBx_USBTRC0 register *************/
 #define USBx_USBTRC0_USB_CLK_RECOVERY_INT ((uint8_t)0x04) /* Combined USB Clock Recovery interrupt status */
 
+/******** Bits definition for USBx_CTL register *****************/
+#define USBx_CTL_RESUME              ((uint8_t)0x04) /*!< Executes resume signaling */
+
 /****** Bits definition for USBx_CLK_RECOVER_CTRL register ******/
 #define USBx_CLK_RECOVER_CTRL_CLOCK_RECOVER_EN      ((uint8_t)0x80) /*!< Crystal-less USB enable */
 #define USBx_CLK_RECOVER_CTRL_RESET_RESUME_ROUGH_EN ((uint8_t)0x40) /*!< Reset/resume to rough phase enable */
