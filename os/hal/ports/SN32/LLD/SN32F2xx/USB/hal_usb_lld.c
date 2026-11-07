@@ -391,15 +391,17 @@ void usb_serve_endpoints(USBDriver* usbp, usbep_t ep, bool in) {
         USBOutEndpointState *osp = epcp->out_state;
         
         if (n) {
-            /* Reads the packet into the defined buffer.*/
+            /* Reads up to rxsize bytes into the buffer and discards the rest.*/
+            size_t copy = (n < osp->rxsize) ? n : osp->rxsize;
+
             osalSysLockFromISR();
-            sn32_usb_read_fifo(ep, osp->rxbuf, n, true);
+            sn32_usb_read_fifo(ep, osp->rxbuf, copy, true);
             osalSysUnlockFromISR();
-            osp->rxbuf += n;
+            osp->rxbuf += copy;
 
             /* Transaction data updated.*/
-            osp->rxcnt  += n;
-            osp->rxsize -= n;
+            osp->rxcnt  += copy;
+            osp->rxsize -= copy;
             osp->rxpkts -= 1;
 
             /* The transaction is completed if the specified number of packets
