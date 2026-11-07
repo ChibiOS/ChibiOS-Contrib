@@ -402,33 +402,31 @@ void usb_serve_endpoints(USBDriver* usbp, usbep_t ep, bool in) {
     else {
         /* OUT endpoint, receive.*/
         USBOutEndpointState *osp = epcp->out_state;
-        
-        if (n) {
-            /* Reads up to rxsize bytes into the buffer and discards the rest.*/
-            size_t copy = (n < osp->rxsize) ? n : osp->rxsize;
 
-            osalSysLockFromISR();
-            sn32_usb_read_fifo(ep, osp->rxbuf, copy, true);
-            osalSysUnlockFromISR();
-            osp->rxbuf += copy;
+        /* Reads up to rxsize bytes into the buffer and discards the rest.*/
+        size_t copy = (n < osp->rxsize) ? n : osp->rxsize;
 
-            /* Transaction data updated.*/
-            osp->rxcnt  += copy;
-            osp->rxsize -= copy;
-            osp->rxpkts -= 1;
+        osalSysLockFromISR();
+        sn32_usb_read_fifo(ep, osp->rxbuf, copy, true);
+        osalSysUnlockFromISR();
+        osp->rxbuf += copy;
 
-            /* The transaction is completed if the specified number of packets
-               has been received or the current packet is a short packet.*/
-            if ((n < epcp->out_maxsize) || (epcp->out_state->rxpkts == 0))
-            {
-                /* Transfer complete, invokes the callback.*/
-                //EPCTL_SET_STAT_NAK(0); //useless mcu resets it anyways
-                _usb_isr_invoke_out_cb(usbp, ep);
-            }
-            else {
-                /* Transfer not complete, there are more packets to receive.*/
-                EPCTL_SET_STAT_ACK(ep, 0);
-            }
+        /* Transaction data updated.*/
+        osp->rxcnt  += copy;
+        osp->rxsize -= copy;
+        osp->rxpkts -= 1;
+
+        /* The transaction is completed if the specified number of packets
+           has been received or the current packet is a short packet.*/
+        if ((n < epcp->out_maxsize) || (epcp->out_state->rxpkts == 0))
+        {
+            /* Transfer complete, invokes the callback.*/
+            //EPCTL_SET_STAT_NAK(0); //useless mcu resets it anyways
+            _usb_isr_invoke_out_cb(usbp, ep);
+        }
+        else {
+            /* Transfer not complete, there are more packets to receive.*/
+            EPCTL_SET_STAT_ACK(ep, 0);
         }
     }
   
