@@ -258,22 +258,30 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
     /////////////////////////////////////////////////
     /* Device Status Interrupt (SETUP, IN, OUT)    */
     /////////////////////////////////////////////////
-    else if (iwIntFlag & mskERR_SETUP) {
-        SN32_USB->INSTSC = (mskERR_SETUP);
-        usb_lld_stall_in(usbp, 0);
-    }
     else if (iwIntFlag & (mskEP0_SETUP|mskEP0_IN|mskEP0_OUT|mskEP0_IN_STALL|mskEP0_OUT_STALL)) {
 
         if (iwIntFlag & mskEP0_SETUP) {
             /* SETUP */
+            /* EP0 stays in NAK after a SETUP until firmware changes its state, so an
+             * IN or OUT event read with a SETUP comes from the previous transfer. The
+             * EP0 buffer now holds the SETUP, so serve only a status stage that has ended.
+             */
+            if ((iwIntFlag & mskEP0_IN) && (usbp->ep0state == USB_EP0_IN_SENDING_STS)) {
+                _usb_isr_invoke_in_cb(usbp, 0);
+            }
             /* Clear receiving in the chibios state machine */
             (usbp)->receiving &= ~1;
-            SN32_USB->INSTSC = (mskEP0_PRESETUP);
-            /* Call SETUP function (ChibiOS core), which prepares
-             * for send or receive and releases the buffer
-             */
-            _usb_isr_invoke_setup_cb(usbp, 0);
-            SN32_USB->INSTSC = (mskEP0_SETUP);
+            SN32_USB->INSTSC = (mskEP0_SETUP|mskEP0_PRESETUP|mskEP0_IN|mskEP0_OUT|mskEP0_IN_STALL|mskEP0_OUT_STALL);
+            if (SN32_USB->INSTS & mskERR_SETUP) {
+                SN32_USB->INSTSC = (mskERR_SETUP);
+                usb_lld_stall_in(usbp, 0);
+            }
+            else {
+                /* Call SETUP function (ChibiOS core), which prepares
+                 * for send or receive and releases the buffer
+                 */
+                _usb_isr_invoke_setup_cb(usbp, 0);
+            }
         }
         else if (iwIntFlag & mskEP0_IN) {
             usb_serve_endpoints(usbp, 0, true);
