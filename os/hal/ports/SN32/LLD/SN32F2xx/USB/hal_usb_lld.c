@@ -104,6 +104,22 @@ static void usb_pm_reset(USBDriver *usbp) {
 }
 
 /**
+ * @brief   Resets the data toggle of an endpoint to DATA0.
+ * @note    The hardware does not reset the toggle of an OUT endpoint at
+ *          ClearFeature(HALT) or SET_CONFIGURATION. A 0 clears the toggle, and
+ *          a 1 returns it to hardware control.
+ *
+ * @param[in] ep        endpoint number
+ *
+ * @notapi
+ */
+static void usb_reset_toggle(usbep_t ep) {
+
+  SN32_USB->EPTOGGLE &= ~mskEPn_DATA_TOGGLE(ep);
+  SN32_USB->EPTOGGLE |= mskEPn_DATA_TOGGLE(ep);
+}
+
+/**
  * @brief   Sets the packet memory allocator.
  *
  * @param[in] usbp      pointer to the @p USBDriver object
@@ -652,6 +668,7 @@ void usb_lld_disable_endpoints(USBDriver *usbp) {
     for(usbep_t ep=1; ep <= USB_MAX_ENDPOINTS; ep++) {
         SN32_USB->EPCTL[ep] = 0;
         SN32_USB->CFG &= ~mskEPn_DIR(ep);
+        usb_reset_toggle(ep);
     }
 }
 
@@ -827,6 +844,7 @@ void usb_lld_clear_out(USBDriver *usbp, usbep_t ep) {
        transferring.*/
     if ((SN32_USB->EPCTL[ep] & mskEPn_ENDP_STATE) != mskEPn_ENDP_STATE_ACK)
         EPCTL_SET_STAT_NAK(ep);
+    usb_reset_toggle(ep);
 }
 
 /**
