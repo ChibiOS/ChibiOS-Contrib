@@ -555,8 +555,9 @@ void usb_lld_reset(USBDriver *usbp) {
     usbp->address = 0;
     SN32_USB->ADDR  = 0;
 
-    /* Resets the packet memory allocator.*/
-    usb_pm_reset(usbp);
+    /* The hardware keeps the endpoint state through a bus reset. This call
+       also resets the packet memory allocator.*/
+    usb_lld_disable_endpoints(usbp);
 
     /* EP0 initialization.*/
     usbp->epc[0] = &ep0config;
