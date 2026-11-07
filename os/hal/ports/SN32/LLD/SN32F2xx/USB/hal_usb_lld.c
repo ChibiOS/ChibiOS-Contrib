@@ -765,9 +765,7 @@ void usb_lld_start_in(USBDriver *usbp, usbep_t ep)
         n = (size_t)usbp->epc[ep]->in_maxsize;
 
     isp->txlast = n;
-    osalSysLockFromISR();
     sn32_usb_write_fifo(ep, isp->txbuf, n, false);
-    osalSysUnlockFromISR();
 
     EPCTL_SET_STAT_ACK(ep, n);
 
