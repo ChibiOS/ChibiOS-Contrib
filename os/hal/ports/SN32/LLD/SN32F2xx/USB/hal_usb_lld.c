@@ -247,6 +247,9 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
             /* Resume */
             SN32_USB->CFG |= (mskESD_EN|mskPHY_EN);
             SN32_USB->INSTSC = (mskBUS_RESUME);
+            /* Resume signaling can start long before a host that wakes from sleep
+             * sends SOF packets, so wait for the first SOF to end the suspend. */
+            SN32_USB->INTEN |= mskUSB_SOF_IE;
         }
         else if(iwIntFlag & mskBUS_WAKEUP) {
             /* Wakeup */
@@ -309,16 +312,22 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
     /* Device Status Interrupt (SOF)               */
     /////////////////////////////////////////////////
     if (iwIntFlag & mskUSB_SOF) {
-        /* SOF interrupt was used to detect resume of the USB bus after issuing a
-         * remote wake up of the host, therefore we disable it again. */
-        if (usbp->config->sof_cb == NULL) {
-          SN32_USB->INTEN &= ~mskUSB_SOF_IE;
+        /* The hardware sets this flag with the interrupt off too. A flag read with
+         * the interrupt off can be older than a bus suspend, so it does not mean
+         * that the bus has resumed. Clear it in every case, so that the interrupt
+         * reports only a SOF that arrives after the bus resumes. */
+        if (SN32_USB->INTEN & mskUSB_SOF_IE) {
+            /* SOF interrupt was used to detect resume of the USB bus, therefore we
+             * disable it again. */
+            if (usbp->config->sof_cb == NULL) {
+              SN32_USB->INTEN &= ~mskUSB_SOF_IE;
+            }
+            if (usbp->state == USB_SUSPENDED) {
+              _usb_wakeup(usbp);
+            }
+            /* SOF */
+            _usb_isr_invoke_sof_cb(usbp);
         }
-        if (usbp->state == USB_SUSPENDED) {
-          _usb_wakeup(usbp);
-        }
-        /* SOF */
-        _usb_isr_invoke_sof_cb(usbp);
         SN32_USB->INSTSC = (mskUSB_SOF);
     }
     /////////////////////////////////////////////////
