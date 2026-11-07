@@ -358,6 +358,10 @@ void usb_serve_endpoints(USBDriver* usbp, usbep_t ep, bool in) {
     // Get the endpoint config and state
     const USBEndpointConfig *epcp = usbp->epc[ep];
 
+    // The core clears epc at a bus reset and at SET_CONFIGURATION, and the ISR can
+    // still serve an event that arrived before that.
+    if (epcp == NULL) return;
+
     // Process based on endpoint direction
     if(in) {
         /* IN endpoint, transmission.*/
