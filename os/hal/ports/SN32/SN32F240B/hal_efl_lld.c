@@ -34,6 +34,7 @@
 /*===========================================================================*/
 
 #define SN32_FLASH_LINE_MASK               (SN32_FLASH_LINE_SIZE - 1U)
+#define SN32_FLASH_PAGE_MASK               (SN32_FLASH_SECTOR_SIZE - 1U)
 
 /*===========================================================================*/
 /* Driver exported variables.                                                */
@@ -229,6 +230,7 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
   EFlashDriver *devp = (EFlashDriver *)instance;
   flash_error_t err = FLASH_NO_ERROR;
   volatile uint32_t *address;
+  const uint8_t *end = pp + n;
 
   osalDbgCheck((instance != NULL) && (pp != NULL) && (n > 0U));
   osalDbgCheck((size_t)offset + n <= (size_t)efl_lld_descriptor.size);
@@ -246,45 +248,49 @@ flash_error_t efl_lld_program(void *instance, flash_offset_t offset,
   /* Clearing error status bits.*/
   sn32_flash_clear_status(devp);
 
-  /* Enabling PGM mode in the controller.*/
-  sn32_flash_enable_pgm(devp);
-
-  /* Calculate the address from the offset. */
-  address = (volatile uint32_t *)(efl_lld_descriptor.address +
-                         (offset & ~SN32_FLASH_LINE_MASK));
-
-  if (address < (volatile uint32_t *)SN32_JUMPLOADER_SIZE) {
-      return FLASH_ERROR_HW_FAILURE;
-  }
-
-  devp->flash->ADDR = (uint32_t)address;
-
-  sn32_flash_wait_busy(devp);
-
-  /* Actual program implementation.*/
+  /* One program cycle for each page.*/
   do {
-    // Programming line
-    devp->flash->DATA = *((uint32_t *)pp);
-    sn32_flash_wait_busy(devp);
-    
-    // Move to the next data and address
-     pp += SN32_FLASH_LINE_SIZE;
-     offset += SN32_FLASH_LINE_SIZE;
-     n -= SN32_FLASH_LINE_SIZE;
-    }
-    while ((n > 0U) & ((offset & SN32_FLASH_LINE_MASK) != 0U));
+    /* Enabling PGM mode in the controller. The hardware clears the PG bit
+       at the end of each program cycle.*/
+    sn32_flash_enable_pgm(devp);
 
-  err = sn32_flash_check_errors(devp);
-  if (err != FLASH_NO_ERROR) {
-    return err;
+    /* Calculate the address from the offset. */
+    address = (volatile uint32_t *)(efl_lld_descriptor.address +
+                           (offset & ~SN32_FLASH_LINE_MASK));
+
+    if (address < (volatile uint32_t *)SN32_JUMPLOADER_SIZE) {
+        return FLASH_ERROR_HW_FAILURE;
+    }
+
+    devp->flash->ADDR = (uint32_t)address;
+
+    sn32_flash_wait_busy(devp);
+
+    /* Actual program implementation.*/
+    do {
+      // Programming line
+      devp->flash->DATA = *((uint32_t *)pp);
+      sn32_flash_wait_busy(devp);
+
+      // Move to the next data and address
+      pp += SN32_FLASH_LINE_SIZE;
+      offset += SN32_FLASH_LINE_SIZE;
+    }
+    while ((pp < end) && ((offset & SN32_FLASH_PAGE_MASK) != 0U));
+
+    err = sn32_flash_check_errors(devp);
+    if (err != FLASH_NO_ERROR) {
+      return err;
+    }
+    // Programming start
+    sn32_flash_start_pgm(devp);
+    sn32_flash_wait_busy(devp);
+    err = sn32_flash_check_errors(devp);
+    if (err != FLASH_NO_ERROR) {
+      return err;
+    }
   }
-  // Programming start
-  sn32_flash_start_pgm(devp);
-  sn32_flash_wait_busy(devp);
-  err = sn32_flash_check_errors(devp);
-  if (err != FLASH_NO_ERROR) {
-    return err;
-  }
+  while (pp < end);
 
   /* Ready state again.*/
   devp->state = FLASH_READY;
