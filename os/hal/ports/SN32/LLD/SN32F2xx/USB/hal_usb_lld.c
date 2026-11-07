@@ -824,7 +824,7 @@ void usb_lld_clear_out(USBDriver *usbp, usbep_t ep) {
     (void)usbp;
     /* Makes sure to not put to NAK an endpoint that is already
        transferring.*/
-    if (!(SN32_USB->EPCTL[ep] & mskEPn_ENDP_STATE_NAK))
+    if ((SN32_USB->EPCTL[ep] & mskEPn_ENDP_STATE) != mskEPn_ENDP_STATE_ACK)
         EPCTL_SET_STAT_NAK(ep);
 }
 
@@ -840,7 +840,7 @@ void usb_lld_clear_in(USBDriver *usbp, usbep_t ep) {
     (void)usbp;
     /* Makes sure to not put to NAK an endpoint that is already
        transferring.*/
-    if (!(SN32_USB->EPCTL[ep] & mskEPn_ENDP_STATE_NAK))
+    if ((SN32_USB->EPCTL[ep] & mskEPn_ENDP_STATE) != mskEPn_ENDP_STATE_ACK)
         EPCTL_SET_STAT_NAK(ep);
 }
 
