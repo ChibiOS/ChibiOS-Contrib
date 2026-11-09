@@ -50,10 +50,9 @@ USBDriver USBD1;
 
 /**
  * @brief   EP0 state.
- * @note    It is an union because IN and OUT endpoints are never used at the
- *          same time for EP0.
+ * @note    IN completion and OUT status can be pending together.
  */
-static union {
+static struct {
     /**
    * @brief   IN EP0 state.
    */
@@ -63,6 +62,10 @@ static union {
    */
     USBOutEndpointState out;
 } ep0_state;
+
+/* Snapshot SETUP before acknowledging it, so callbacks never read stale SRAM
+   after a following SETUP has arrived. */
+static uint8_t ep0_setup[8];
 
 /**
  * @brief   EP0 initialization structure.
@@ -75,7 +78,9 @@ static const USBEndpointConfig ep0config = {
     0x40,
     0x40,
     &ep0_state.in,
-    &ep0_state.out
+    &ep0_state.out,
+    1,
+    ep0_setup
 };
 
 /*===========================================================================*/
@@ -91,9 +96,8 @@ static uint32_t usb_get_int_flags(void){
 }
 
 static void usb_clear_int_flags(uint32_t flags){
-    // flags are cleared by writing 1
-    // except ESOFIF, which is written normally
-    USB->ISR = flags ^ USBISR_ESOFIF;
+    /* Holtek USBD_ClearINT: interrupt status is acknowledged with ones. */
+    HT32_USB_WRITE_ISR(flags);
 }
 
 static uint32_t usb_get_ep_int_flags(int ep){
@@ -102,7 +106,15 @@ static uint32_t usb_get_ep_int_flags(int ep){
 
 static void usb_clear_ep_int_flags(int ep, uint32_t flags){
     // flags are cleared by writing 1
-    USB->EP[ep].ISR = flags;
+    HT32_USB_WRITE_EP_ISR(ep, flags);
+}
+
+/* A newer control transaction or bus reset must not be armed by an older
+   completion callback while this interrupt is being handled. */
+static bool usb_transfer_superseded(usbep_t ep) {
+    return (USB->ISR & USBISR_URSTIF) ||
+           ((ep == 0) && (USB->EP[0].ISR &
+            (USBEPnISR_SDRXIF | USBEPnISR_SDERIF)));
 }
 
 static size_t usb_epmem_alloc(USBDriver *usbp, size_t size) {
@@ -115,13 +127,15 @@ static size_t usb_epmem_alloc(USBDriver *usbp, size_t size) {
 
 static void usb_packet_transmit(USBDriver *usbp, usbep_t ep, size_t n)
 {
+    if (usb_transfer_superseded(ep))
+        return;
     const USBEndpointConfig * const epc = usbp->epc[ep];
     USBInEndpointState * const isp = epc->in_state;
 
     if (n > (size_t)epc->in_maxsize)
         n = (size_t)epc->in_maxsize;
 
-    if ((USB->EP[ep].TCR & 0xffffU) == 0) {
+    if ((USB->EP[ep].TCR & USBEPnTCR_TCNT) == 0) {
         const uint32_t cfgr = USB->EP[ep].CFGR;
         volatile uint32_t * const EPSRAM = (void *)(USB_SRAM_BASE + (cfgr & 0x3ff));
         for (size_t i = 0; i < n; i += 4) {
@@ -139,34 +153,43 @@ static void usb_packet_transmit(USBDriver *usbp, usbep_t ep, size_t n)
 
         USB->EP[ep].TCR = n;
         isp->txlastpktlen = n;
-        USB->EP[ep].CSR &= USBEPnCSR_NAKTX;
+        HT32_USB_WRITE_EP_CSR(ep, USB->EP[ep].CSR & USBEPnCSR_NAKTX);
     }
 }
 
 static size_t usb_packet_receive(USBDriver *usbp, usbep_t ep) {
-    USBOutEndpointState *osp = usbp->epc[ep]->out_state;
-    const size_t n = USB->EP[ep].TCR >> ((ep == 0) ? 16 : 0);
+    const USBEndpointConfig *epcp = usbp->epc[ep];
+    USBOutEndpointState *osp = epcp->out_state;
+    const size_t n = (USB->EP[ep].TCR >> ((ep == 0) ? 16 : 0)) &
+                     USBEPnTCR_TCNT;
+    size_t copied = n < osp->rxsize ? n : osp->rxsize;
+    if (copied > epcp->out_maxsize)
+        copied = epcp->out_maxsize;
+    if (osp->rxbuf == NULL)
+        copied = 0;
     const uint32_t cfgr = USB->EP[ep].CFGR;
-    volatile uint32_t *const EPSRAM = (void *)(USB_SRAM_BASE + (cfgr & 0x3ff) + ((ep == 0) ? ((cfgr >> 10) & 0x7f) : 0));
+    volatile uint32_t *const EPSRAM = (void *)(USB_SRAM_BASE +
+        (cfgr & USBEPnCFGR_EPBUFA) +
+        ((ep == 0) ? ((cfgr & USBEPnCFGR_EPLEN) >> 10) : 0));
 
-    for (size_t i = 0; i < n; i += 4) {
-        if(!osp->rxbuf)
-            break;
+    for (size_t i = 0; i < copied; i += 4) {
         const uint32_t word = EPSRAM[i/4];
-        if (i + 0 < n)
+        if (i + 0 < copied)
             osp->rxbuf[i + 0] = word >> 0;
-        if (i + 1 < n)
+        if (i + 1 < copied)
             osp->rxbuf[i + 1] = word >> 8;
-        if (i + 2 < n)
+        if (i + 2 < copied)
             osp->rxbuf[i + 2] = word >> 16;
-        if (i + 3 < n)
+        if (i + 3 < copied)
             osp->rxbuf[i + 3] = word >> 24;
     }
 
-    osp->rxbuf += n;
+    if (copied != 0)
+        osp->rxbuf += copied;
     osp->rxcnt += n;
-    osp->rxsize -= n;
-    osp->rxpkts--;
+    osp->rxsize -= copied;
+    if (osp->rxpkts != 0)
+        osp->rxpkts--;
     return n;
 }
 
@@ -174,184 +197,131 @@ static size_t usb_packet_receive(USBDriver *usbp, usbep_t ep) {
 /* Driver interrupt handlers and threads.                                    */
 /*===========================================================================*/
 
-#if (HT32_USB_USE_USB0 == TRUE) || defined(__DOXYGEN__) || 1
+#if (HT32_USB_USE_USB0 == TRUE) || defined(__DOXYGEN__)
 
 /**
  * @brief USB interrupt handler.
  * @isr
  */
-
 OSAL_IRQ_HANDLER(HT32_USB_IRQ_VECTOR) {
     OSAL_IRQ_PROLOGUE();
     USBDriver *usbp = &USBD1;
+    const uint32_t isr = usb_get_int_flags();
 
-    uint32_t isr = usb_get_int_flags();
-
-    // Start of Frame Interrupt
-    if(isr & USBISR_SOFIF){
-        // Start of Frame callback
-        _usb_isr_invoke_sof_cb(usbp);
-        usb_clear_int_flags(USBISR_SOFIF);
-    }
-
-    // Suspend Interrupt
-    if(isr & USBISR_SUSPIF){
-        usb_clear_int_flags(USBISR_SUSPIF);
-        // Suspend routine and event callback
-        _usb_suspend(usbp);
-#if 0
-        USB->CSR &= USBCSR_DPPUEN; /* POWER_ON */
-        USB->CSR |= USBCSR_GENRSM;
-#endif
-    }
-
-    // Reset Interrupt
-    if(isr & USBISR_URSTIF){
-        // Reset routine and event callback
-        _usb_reset(usbp);
+    /* A bus reset invalidates every endpoint event in this snapshot. */
+    if (isr & USBISR_URSTIF) {
         usb_clear_int_flags(USBISR_URSTIF);
+        _usb_reset(usbp);
+        OSAL_IRQ_EPILOGUE();
+        return;
     }
 
-    // Resume Interrupt
-    if(isr & USBISR_RSMIF){
-        // Resume/Wakeup routine and callback
-        _usb_wakeup(usbp);
+    if (isr & USBISR_SOFIF) {
+        usb_clear_int_flags(USBISR_SOFIF);
+        _usb_isr_invoke_sof_cb(usbp);
+    }
+    if (isr & USBISR_SUSPIF) {
+        usb_clear_int_flags(USBISR_SUSPIF);
+        _usb_suspend(usbp);
+    }
+    if (isr & USBISR_RSMIF) {
         usb_clear_int_flags(USBISR_RSMIF);
+        _usb_wakeup(usbp);
     }
 
-    // EP0 Interrupt
-    if(isr & USBISR_EP0IF){
-        uint32_t episr = usb_get_ep_int_flags(0);
+    for (usbep_t ep = 0; ep <= USB_MAX_ENDPOINTS; ++ep) {
+        const uint32_t mask = USBISR_EP0IF << ep;
+        if (USB->ISR & USBISR_URSTIF)
+            break;
+        if ((isr & mask) == 0)
+            continue;
+        uint32_t episr = usb_get_ep_int_flags(ep);
 
-#if 0
-        // SETUP Token Received
-        if(episr & USBEPnISR_STRXIF){
-            usb_clear_ep_int_flags(0, USBEPnISR_STRXIF);
-        }
-#endif
-
-        // SETUP Data Received
-        if(episr & USBEPnISR_SDRXIF){
-            // SETUP callback
-            _usb_isr_invoke_setup_cb(usbp, 0);
-            usb_clear_ep_int_flags(0, USBEPnISR_SDRXIF);
-        }
-
-#if 0
-        // OUT Token Received
-        if(episr & USBEPnISR_OTRXIF){
-            usb_clear_ep_int_flags(0, USBEPnISR_OTRXIF);
-        }
-#endif
-
-        // OUT Data Received
-        if(episr & USBEPnISR_ODRXIF){
-            USBOutEndpointState *osp = usbp->epc[0]->out_state;
-            size_t n = usb_packet_receive(usbp, 0);
-            if ((n < usbp->epc[0]->out_maxsize) || (osp->rxpkts == 0)) {
-                // OUT callback
-                _usb_isr_invoke_out_cb(usbp, 0);
-            } else {
-                USB->EP[0].CSR &= USBEPnCSR_NAKRX;
-            }
-            usb_clear_ep_int_flags(0, USBEPnISR_ODRXIF);
+        /* Acknowledge the old summary before callbacks can rearm hardware.
+           Endpoint flags are acknowledged individually, before rearming. */
+        usb_clear_int_flags(mask);
+        const USBEndpointConfig *epcp = usbp->epc[ep];
+        if ((epcp == NULL) ||
+            ((USB->EP[ep].CFGR & USBEPnCFGR_EPEN) == 0)) {
+            usb_clear_ep_int_flags(ep, episr);
+            continue;
         }
 
-#if 0
-        // IN Token Received
-        if(episr & USBEPnISR_ITRXIF){
-            usb_clear_ep_int_flags(0, USBEPnISR_ITRXIF);
-        }
-#endif
-
-        // IN Data Transmitted
-        if(episr & USBEPnISR_IDTXIF){
-            USBInEndpointState *isp = usbp->epc[0]->in_state;
-            size_t n = isp->txlastpktlen;
-            isp->txcnt += n;
-            if (isp->txcnt < isp->txsize) {
-                isp->txbuf += n;
-                osalSysLockFromISR();
-                usb_packet_transmit(usbp, 0, isp->txsize - isp->txcnt);
-                osalSysUnlockFromISR();
-            } else {
-                // IN callback
-                _usb_isr_invoke_in_cb(usbp, 0);
-            }
-            usb_clear_ep_int_flags(0, USBEPnISR_IDTXIF);
-        }
-
-#if 0
-        // STALL Transmitted
-        if(episr & USBEPnISR_STLIF){
-            usb_clear_ep_int_flags(0, USBEPnISR_STLIF);
-        }
-#endif
-
-        usb_clear_int_flags(USBISR_EP0IF);
-    }
-
-    // EP 1-7 Interrupt
-    uint32_t mask = USBISR_EP1IF;
-    for(int i = 1; i < 8; ++i){
-        // EPn Interrupt
-        if(isr & mask){
-            uint32_t episr = usb_get_ep_int_flags(i);
-
-            usb_clear_ep_int_flags(i, episr);
-            usb_clear_int_flags(mask);
-
-#if 0
-            // OUT Token Received
-            if(episr & USBEPnISR_OTRXIF){
-                usb_clear_ep_int_flags(i, USBEPnISR_OTRXIF);
-            }
-#endif
-
-            // OUT Data Received
-            if(episr & USBEPnISR_ODRXIF){
-                USBOutEndpointState *osp = usbp->epc[i]->out_state;
-                size_t n = usb_packet_receive(usbp, i);
-                if ((n < usbp->epc[i]->out_maxsize) || (osp->rxpkts == 0)) {
-                    // OUT callback
-                    _usb_isr_invoke_out_cb(usbp, i);
-                } else {
-                    USB->EP[i].CSR &= USBEPnCSR_NAKRX;
+        if ((ep == 0) &&
+            (episr & (USBEPnISR_SDRXIF | USBEPnISR_SDERIF))) {
+            /* SETUP supersedes both directions of the previous transfer.
+               Do not clear DATA toggles: hardware selects DATA1 on SETUP. */
+            const uint32_t csr = USB->EP[0].CSR;
+            HT32_USB_WRITE_EP_CSR(0,
+                csr & (USBEPnCSR_STLTX | USBEPnCSR_STLRX));
+            USB->EP[0].TCR = 0;
+            usbp->transmitting &= ~1U;
+            usbp->receiving &= ~1U;
+            usbp->ep0endcb = NULL;
+            if ((episr & USBEPnISR_SDERIF) == 0) {
+                volatile uint32_t *const sram = (void *)USB_SRAM_BASE;
+                for (size_t i = 0; i < 8; i += 4) {
+                    const uint32_t word = sram[i / 4];
+                    for (size_t j = 0; j < 4; ++j)
+                        ep0_setup[i + j] = word >> (j * 8);
                 }
             }
-
-#if 0
-            // IN Token Received
-            if(episr & USBEPnISR_ITRXIF){
-                usb_clear_ep_int_flags(i, USBEPnISR_ITRXIF);
+            usb_clear_ep_int_flags(0, USB->EP[0].ISR);
+            if (episr & USBEPnISR_SDERIF) {
+                usbp->ep0state = USB_EP0_ERROR;
+                usb_lld_stall_in(usbp, 0);
+                usb_lld_stall_out(usbp, 0);
+            } else {
+                _usb_isr_invoke_setup_cb(usbp, 0);
             }
-#endif
+            continue;
+        }
 
-            // IN Data Transmitted
-            if(episr & USBEPnISR_IDTXIF){
-                USBInEndpointState *isp = usbp->epc[i]->in_state;
-                size_t n = isp->txlastpktlen;
+        /* EP0's final IN and OUT status can be co-pending. IN must advance
+           the control state machine before the OUT status is delivered. */
+        if (episr & USBEPnISR_IDTXIF) {
+            usb_clear_ep_int_flags(ep, USBEPnISR_IDTXIF);
+            if (usb_transfer_superseded(ep))
+                break;
+            if ((epcp->in_state != NULL) &&
+                (usbp->transmitting & (1U << ep))) {
+                USBInEndpointState *isp = epcp->in_state;
+                const size_t n = isp->txlastpktlen;
                 isp->txcnt += n;
                 if (isp->txcnt < isp->txsize) {
                     isp->txbuf += n;
                     osalSysLockFromISR();
-                    usb_packet_transmit(usbp, i, isp->txsize - isp->txcnt);
+                    usb_packet_transmit(usbp, ep, isp->txsize - isp->txcnt);
                     osalSysUnlockFromISR();
                 } else {
-                    // IN callback
-                    _usb_isr_invoke_in_cb(usbp, i);
+                    if (!usb_transfer_superseded(ep)) {
+                        _usb_isr_invoke_in_cb(usbp, ep);
+                    }
                 }
             }
-
-#if 0
-            // STALL Transmitted
-            if(episr & USBEPnISR_STLIF){
-                usb_clear_ep_int_flags(i, USBEPnISR_STLIF);
-            }
-#endif
-
         }
-        mask = mask << 1;
+
+        /* An IN callback may have reconfigured/disabled the endpoints or
+           a new SETUP/reset may have arrived while it ran. */
+        epcp = usbp->epc[ep];
+        if (usb_transfer_superseded(ep))
+            break;
+        if (episr & USBEPnISR_ODRXIF) {
+            usb_clear_ep_int_flags(ep, USBEPnISR_ODRXIF);
+            if ((epcp != NULL) && (epcp->out_state != NULL) &&
+                (USB->EP[ep].CFGR & USBEPnCFGR_EPEN) &&
+                (usbp->receiving & (1U << ep))) {
+                USBOutEndpointState *osp = epcp->out_state;
+                const size_t n = usb_packet_receive(usbp, ep);
+                if ((n != epcp->out_maxsize) || (osp->rxpkts == 0) ||
+                    (osp->rxsize == 0)) {
+                    _usb_isr_invoke_out_cb(usbp, ep);
+                } else {
+                    HT32_USB_WRITE_EP_CSR(ep,
+                        USB->EP[ep].CSR & USBEPnCSR_NAKRX);
+                }
+            }
+        }
     }
 
     OSAL_IRQ_EPILOGUE();
@@ -397,7 +367,7 @@ void usb_lld_start(USBDriver *usbp){
             /* USBD_PowerUp */
             USB->CSR = USBCSR_DPWKEN | USBCSR_DPPUEN | USBCSR_LPMODE | USBCSR_PDWN;
             // enable usb interrupts
-            USB->ISR = ~0U;
+            HT32_USB_WRITE_ISR(~0U);
             USB->CSR &= ~USBCSR_DPWKEN;
             USB->IER = USBIER_UGIE | USBIER_SOFIE |
                 USBIER_URSTIE | USBIER_RSMIE | USBIER_SUSPIE |
@@ -417,13 +387,15 @@ void usb_lld_start(USBDriver *usbp){
  */
 void usb_lld_stop(USBDriver *usbp) {
 
-    if (usbp->state == USB_READY) {
+    if (usbp->state != USB_STOP) {
         /* Resets the peripheral.*/
 
         /* Disables the peripheral.*/
 #if HT32_USB_USE_USB0 == TRUE
         if (&USBD1 == usbp) {
             nvicDisableVector(USB_IRQn);
+            USB->IER = 0;
+            USB->CSR &= ~USBCSR_DPPUEN;
             /* Resets the peripheral.*/
             RSTCU->AHBPRSTR = RSTCU_AHBPRSTR_USBRST;
         }
@@ -439,9 +411,24 @@ void usb_lld_stop(USBDriver *usbp) {
  * @notapi
  */
 void usb_lld_reset(USBDriver *usbp) {
-    // USB Reset
-    // Clear CSR, except for DP pull up
-    USB->CSR &= USBCSR_DPPUEN;
+    /* Match Holtek's DeInit/PowerOn reset, preserving attachment. Bit 12
+       is the power-on control used by USBD_PowerOn in the vendor driver. */
+    const uint32_t pullup = USB->CSR & USBCSR_DPPUEN;
+    USB->IER = 0;
+    RSTCU->AHBPRSTR = RSTCU_AHBPRSTR_USBRST;
+    USB->CSR = (1U << 12) | pullup;
+    USB->DEVAR = 0;
+    for (usbep_t ep = 0; ep <= USB_MAX_ENDPOINTS; ++ep) {
+        USB->EP[ep].IER = 0;
+        USB->EP[ep].CFGR = 0;
+        USB->EP[ep].TCR = 0;
+        HT32_USB_WRITE_EP_CSR(ep, USB->EP[ep].CSR &
+            (USBEPnCSR_DTGTX | USBEPnCSR_DTGRX | USBEPnCSR_NAKRX |
+             USBEPnCSR_STLTX | USBEPnCSR_STLRX));
+        HT32_USB_WRITE_EP_ISR(ep, ~0U);
+    }
+    HT32_USB_WRITE_ISR(~0U);
+    usbp->ep0endcb = NULL;
 
     /* Post reset initialization.*/
     usbp->epmem_next = 8;
@@ -480,7 +467,36 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
         return;
 
     const USBEndpointConfig *epcp = usbp->epc[ep];
-    uint32_t cfgr = USBEPnCFGR_EPEN | ((uint32_t)ep<<24);
+    USB->EP[ep].IER = 0;
+    USB->EP[ep].CFGR = 0;
+    USB->IER &= ~(USBIER_EP0IE << ep);
+    HT32_USB_WRITE_EP_ISR(ep, ~0U);
+    usb_clear_int_flags(USBISR_EP0IF << ep);
+    if (epcp == NULL)
+        return;
+    const bool has_in = epcp->in_state != NULL;
+    const bool has_out = epcp->out_state != NULL;
+    if ((has_in != (epcp->in_maxsize != 0)) ||
+        (has_out != (epcp->out_maxsize != 0)) ||
+        (!has_in && !has_out) ||
+        (roundup2((size_t)epcp->in_maxsize, 4U) > (USBEPnCFGR_EPLEN >> 10)) ||
+        (roundup2((size_t)epcp->out_maxsize, 4U) > (USBEPnCFGR_EPLEN >> 10)))
+        return;
+    if (ep == 0) {
+        if (!has_in || !has_out ||
+            (epcp->in_maxsize != epcp->out_maxsize) ||
+            ((epcp->ep_mode & USB_EP_MODE_TYPE) != USB_EP_MODE_TYPE_CTRL))
+            return;
+    } else if ((has_in && has_out) ||
+               ((epcp->ep_mode & USB_EP_MODE_TYPE) == USB_EP_MODE_TYPE_CTRL)) {
+        /* Non-control hardware endpoints have one direction and one buffer. */
+        return;
+    }
+    const size_t allocation = roundup2(epcp->in_maxsize, 4) +
+                              roundup2(epcp->out_maxsize, 4);
+    if (usbp->epmem_next + allocation > 0x400)
+        return;
+    uint32_t cfgr = USBEPnCFGR_EPEN | ((uint32_t)ep << 24);
     size_t epmo;
 
     switch(epcp->ep_mode & USB_EP_MODE_TYPE){
@@ -512,10 +528,17 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
         }
     }
 
+    USB->EP[ep].TCR = 0;
+    /* Vendor EPTReset clears asserted toggles/NAKRX; halt bits also use
+       write-one-toggle. Never attempt to set NAK bits in software. */
+    HT32_USB_WRITE_EP_CSR(ep, USB->EP[ep].CSR &
+        (USBEPnCSR_DTGTX | USBEPnCSR_DTGRX | USBEPnCSR_NAKRX |
+         USBEPnCSR_STLTX | USBEPnCSR_STLRX));
     USB->EP[ep].CFGR = cfgr;
     USB->EP[ep].IER = (ep == 0) ?
-      (USBEPnIER_SDRXIE|USBEPnIER_IDTXIE|USBEPnIER_ODRXIE) :
-      (USBEPnIER_ODRXIE|USBEPnIER_IDTXIE);
+      (USBEPnIER_SDRXIE | USBEPnIER_SDERIE |
+       USBEPnIER_IDTXIE | USBEPnIER_ODRXIE) :
+      (has_in ? USBEPnIER_IDTXIE : USBEPnIER_ODRXIE);
     USB->IER |= (USBIER_EP0IE << ep);
 }
 
@@ -527,13 +550,21 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 void usb_lld_disable_endpoints(USBDriver *usbp) {
-    for(int i = 1; i < USB_MAX_ENDPOINTS; ++i) {
-        USB->EP[i].CFGR &= ~USBEPnCFGR_EPEN;
-        USB->IER &= ~(USBIER_EP0IE << i);
+    for (usbep_t ep = 1; ep <= USB_MAX_ENDPOINTS; ++ep) {
+        USB->EP[ep].CFGR = 0;
+        USB->EP[ep].IER = 0;
+        USB->EP[ep].TCR = 0;
+        HT32_USB_WRITE_EP_CSR(ep, USB->EP[ep].CSR &
+            (USBEPnCSR_DTGTX | USBEPnCSR_DTGRX | USBEPnCSR_NAKRX |
+             USBEPnCSR_STLTX | USBEPnCSR_STLRX));
+        HT32_USB_WRITE_EP_ISR(ep, ~0U);
+        USB->IER &= ~(USBIER_EP0IE << ep);
+        usb_clear_int_flags(USBISR_EP0IF << ep);
     }
 
     const uint32_t cfgr = USB->EP[0].CFGR;
-    usbp->epmem_next = (cfgr & 0x3ff) + ((cfgr >> 10) & 0x7f);
+    usbp->epmem_next = (cfgr & USBEPnCFGR_EPBUFA) +
+                      2 * ((cfgr & USBEPnCFGR_EPLEN) >> 10);
 }
 
 /**
@@ -550,11 +581,13 @@ void usb_lld_disable_endpoints(USBDriver *usbp) {
  */
 usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep)
 {
-    (void)usbp;
-
-    if (ep > USB_MAX_ENDPOINTS)
+    if ((ep > USB_MAX_ENDPOINTS) || (usbp->epc[ep] == NULL) ||
+        (usbp->epc[ep]->out_state == NULL))
         return EP_STATUS_DISABLED;
+
     if ((USB->EP[ep].CFGR & USBEPnCFGR_EPEN) == 0)
+        return EP_STATUS_DISABLED;
+    if ((ep != 0) && (USB->EP[ep].CFGR & USBEPnCFGR_EPDIR))
         return EP_STATUS_DISABLED;
     if ((USB->EP[ep].CSR & USBEPnCSR_STLRX) != 0)
         return EP_STATUS_STALLED;
@@ -575,13 +608,15 @@ usbepstatus_t usb_lld_get_status_out(USBDriver *usbp, usbep_t ep)
  */
 usbepstatus_t usb_lld_get_status_in(USBDriver *usbp, usbep_t ep) {
 
-  (void)usbp;
-
-  if (ep > USB_MAX_ENDPOINTS)
+  if ((ep > USB_MAX_ENDPOINTS) || (usbp->epc[ep] == NULL) ||
+      (usbp->epc[ep]->in_state == NULL))
     return EP_STATUS_DISABLED;
+
   if ((USB->EP[ep].CFGR & USBEPnCFGR_EPEN) == 0)
     return EP_STATUS_DISABLED;
-  if ((USB->EP[ep].CSR & USBEPnCSR_STLRX) != 0)
+  if ((ep != 0) && ((USB->EP[ep].CFGR & USBEPnCFGR_EPDIR) == 0))
+    return EP_STATUS_DISABLED;
+  if ((USB->EP[ep].CSR & USBEPnCSR_STLTX) != 0)
     return EP_STATUS_STALLED;
   return EP_STATUS_ACTIVE;
 }
@@ -601,14 +636,8 @@ usbepstatus_t usb_lld_get_status_in(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 void usb_lld_read_setup(USBDriver *usbp, usbep_t ep, uint8_t *buf) {
-    volatile uint32_t * const EPSRAM = (void *)(USB_SRAM_BASE + 0);
-    for (size_t i = 0; i < 8; i += 4) {
-        const uint32_t word = EPSRAM[i/4];
-        buf[i + 0] = (word>>0);
-        buf[i + 1] = (word>>8);
-        buf[i + 2] = (word>>16);
-        buf[i + 3] = (word>>24);
-    }
+    for (size_t i = 0; i < sizeof ep0_setup; ++i)
+        buf[i] = ep0_setup[i];
     (void)usbp;
     (void)ep;
 }
@@ -622,6 +651,9 @@ void usb_lld_read_setup(USBDriver *usbp, usbep_t ep, uint8_t *buf) {
  * @notapi
  */
 void usb_lld_start_out(USBDriver *usbp, usbep_t ep) {
+    if ((usb_lld_get_status_out(usbp, ep) == EP_STATUS_DISABLED) ||
+        usb_transfer_superseded(ep))
+        return;
     USBOutEndpointState * const osp = usbp->epc[ep]->out_state;
 
     if (osp->rxsize == 0)
@@ -629,7 +661,7 @@ void usb_lld_start_out(USBDriver *usbp, usbep_t ep) {
     else
         osp->rxpkts = (osp->rxsize + usbp->epc[ep]->out_maxsize - 1) /
             usbp->epc[ep]->out_maxsize;
-    USB->EP[ep].CSR &= USBEPnCSR_NAKRX;
+    HT32_USB_WRITE_EP_CSR(ep, USB->EP[ep].CSR & USBEPnCSR_NAKRX);
 }
 
 /**
@@ -641,6 +673,9 @@ void usb_lld_start_out(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 void usb_lld_start_in(USBDriver *usbp, usbep_t ep) {
+  if ((usb_lld_get_status_in(usbp, ep) == EP_STATUS_DISABLED) ||
+      usb_transfer_superseded(ep))
+    return;
   USBInEndpointState * const isp = usbp->epc[ep]->in_state;
 
   isp->txlastpktlen = 0;
@@ -657,9 +692,10 @@ void usb_lld_start_in(USBDriver *usbp, usbep_t ep) {
  */
 void usb_lld_stall_out(USBDriver *usbp, usbep_t ep) {
 
-  (void)usbp;
+  if (usb_lld_get_status_out(usbp, ep) == EP_STATUS_DISABLED)
+    return;
 
-  USB->EP[ep].CSR = USBEPnCSR_STLRX;
+  HT32_USB_WRITE_EP_CSR(ep, (~USB->EP[ep].CSR) & USBEPnCSR_STLRX);
 }
 
 /**
@@ -672,9 +708,10 @@ void usb_lld_stall_out(USBDriver *usbp, usbep_t ep) {
  */
 void usb_lld_stall_in(USBDriver *usbp, usbep_t ep) {
 
-  (void)usbp;
+  if (usb_lld_get_status_in(usbp, ep) == EP_STATUS_DISABLED)
+    return;
 
-  USB->EP[ep].CSR = USBEPnCSR_STLTX;
+  HT32_USB_WRITE_EP_CSR(ep, (~USB->EP[ep].CSR) & USBEPnCSR_STLTX);
 }
 
 /**
@@ -687,9 +724,11 @@ void usb_lld_stall_in(USBDriver *usbp, usbep_t ep) {
  */
 void usb_lld_clear_out(USBDriver *usbp, usbep_t ep) {
 
-  (void)usbp;
+  if (usb_lld_get_status_out(usbp, ep) == EP_STATUS_DISABLED)
+    return;
 
-  USB->EP[ep].CSR &= USBEPnCSR_STLRX;
+  HT32_USB_WRITE_EP_CSR(ep, USB->EP[ep].CSR &
+                       (USBEPnCSR_STLRX | USBEPnCSR_DTGRX));
 }
 
 /**
@@ -702,9 +741,11 @@ void usb_lld_clear_out(USBDriver *usbp, usbep_t ep) {
  */
 void usb_lld_clear_in(USBDriver *usbp, usbep_t ep) {
 
-  (void)usbp;
+  if (usb_lld_get_status_in(usbp, ep) == EP_STATUS_DISABLED)
+    return;
 
-  USB->EP[ep].CSR &= USBEPnCSR_STLTX;
+  HT32_USB_WRITE_EP_CSR(ep, USB->EP[ep].CSR &
+                       (USBEPnCSR_STLTX | USBEPnCSR_DTGTX));
 }
 
 #endif /* HAL_USE_USB == TRUE */

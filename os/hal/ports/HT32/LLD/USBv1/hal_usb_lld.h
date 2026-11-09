@@ -37,6 +37,18 @@
  */
 #define USB_MAX_ENDPOINTS                   7
 
+/* Narrow MMIO hooks permit host models to implement the peripheral's W1T
+   endpoint CSR and W1C interrupt registers. */
+#ifndef HT32_USB_WRITE_EP_CSR
+#define HT32_USB_WRITE_EP_CSR(ep, value) (USB->EP[ep].CSR = (value))
+#endif
+#ifndef HT32_USB_WRITE_EP_ISR
+#define HT32_USB_WRITE_EP_ISR(ep, value) (USB->EP[ep].ISR = (value))
+#endif
+#ifndef HT32_USB_WRITE_ISR
+#define HT32_USB_WRITE_ISR(value) (USB->ISR = (value))
+#endif
+
 /**
  * @brief   Status stage handling method.
  */
@@ -109,11 +121,11 @@ typedef struct {
  */
 typedef struct {
   /**
-   * @brief   Requested receive transfer size.
+   * @brief   Remaining receive buffer capacity, reduced by bytes copied.
    */
   size_t                        rxsize;
   /**
-   * @brief   Received bytes so far.
+   * @brief   Actual received byte count, including bytes beyond capacity.
    */
   size_t                        rxcnt;
   /**
