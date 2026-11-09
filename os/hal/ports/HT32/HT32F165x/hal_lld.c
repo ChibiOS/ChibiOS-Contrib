@@ -57,7 +57,8 @@ void ht32_clock_init(void) {
     while (PWRCU->BAKTEST != 0x27)
         ;
 
-#if HT32_CKCU_SW == CKCU_GCCR_SW_HSE
+#if HT32_CKCU_SW == CKCU_GCCR_SW_HSE || \
+    (HT32_CKCU_SW == CKCU_GCCR_SW_PLL && HT32_PLL_USE_HSE == TRUE)
     // Enable HSE
     CKCU->GCCR |= CKCU_GCCR_HSEEN;
     // wait for HSE ready
