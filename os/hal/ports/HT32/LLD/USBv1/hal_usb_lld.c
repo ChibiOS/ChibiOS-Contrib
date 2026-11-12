@@ -149,23 +149,26 @@ static size_t usb_packet_receive(USBDriver *usbp, usbep_t ep) {
     const uint32_t cfgr = USB->EP[ep].CFGR;
     volatile uint32_t *const EPSRAM = (void *)(USB_SRAM_BASE + (cfgr & 0x3ff) + ((ep == 0) ? ((cfgr >> 10) & 0x7f) : 0));
 
-    for (size_t i = 0; i < n; i += 4) {
+    // Reads the packet into the defined buffer. The host can send a full
+    // packet when less room is left, the excess is discarded.
+    const size_t m = n < osp->rxsize ? n : osp->rxsize;
+    for (size_t i = 0; i < m; i += 4) {
         if(!osp->rxbuf)
             break;
         const uint32_t word = EPSRAM[i/4];
-        if (i + 0 < n)
+        if (i + 0 < m)
             osp->rxbuf[i + 0] = word >> 0;
-        if (i + 1 < n)
+        if (i + 1 < m)
             osp->rxbuf[i + 1] = word >> 8;
-        if (i + 2 < n)
+        if (i + 2 < m)
             osp->rxbuf[i + 2] = word >> 16;
-        if (i + 3 < n)
+        if (i + 3 < m)
             osp->rxbuf[i + 3] = word >> 24;
     }
 
-    osp->rxbuf += n;
-    osp->rxcnt += n;
-    osp->rxsize -= n;
+    osp->rxbuf += m;
+    osp->rxcnt += m;
+    osp->rxsize -= m;
     osp->rxpkts--;
     return n;
 }
