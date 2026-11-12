@@ -298,7 +298,7 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
   const USBEndpointConfig *epcp = usbp->epc[ep];
   USBOutEndpointState *oesp;
   USBInEndpointState *iesp;
-  uint16_t n;
+  uint16_t n, m;
 
   if (is_in) {
     /* IN endpoint */
@@ -318,14 +318,17 @@ static void usb_serve_endpoint(USBDriver *usbp, usbep_t ep, bool is_in) {
     /* OUT endpoint */
     oesp = usbp->epc[ep]->out_state;
 
-    /* Length received */
+    /* Length received. The host can send a full
+       packet when less room is left, the excess is discarded. */
     n = BUF_CTRL(ep).OUT & USB_BUFFER_BUFFER0_TRANS_LENGTH_Msk;
+    m = n < oesp->rxsize ? n : oesp->rxsize;
 
     /* Copy received data into user buffer */
-    memcpy((void *)oesp->rxbuf, (void *)oesp->hw_buf, n);
-    oesp->rxbuf += n;
-    oesp->rxcnt += n;
-    oesp->rxsize -= n;
+    memcpy((void *)oesp->rxbuf, (void *)oesp->hw_buf, m);
+
+    oesp->rxbuf += m;
+    oesp->rxcnt += m;
+    oesp->rxsize -= m;
 
     oesp->rxpkts -= 1;
 
