@@ -76,3 +76,7 @@ jobs:
     - name: build NUMICRO NUC126
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/NUMICRO/NUC126
+    - name: build SK32
+      run: |
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/SK32
+        $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/SK32
