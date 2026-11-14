@@ -85,7 +85,7 @@ BOARDDIR := $(CHIBIOS_CONTRIB)/os/hal/boards/ES32VF2264
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
 # Startup files.
-include $(CHIBIOS_CONTRIB)/os/common/startup/RISCV-CLIC/compilers/GCC/mk/startup_ES32VF2264.mk
+include $(CHIBIOS_CONTRIB)/os/common/startup/RISCV-CLIC/compilers/GCC/mk/startup_es32vf2264.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS_CONTRIB)/os/hal/ports/ES32/ES32VF2264/platform.mk
