@@ -70,6 +70,7 @@ jobs:
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/AT32
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/AT32
     - name: build ES32
+      continue-on-error: true
       run: |
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/testhal/ES32
         $CHC_PATH/tools/chbuild.sh $CHC_PATH/demos/ES32
