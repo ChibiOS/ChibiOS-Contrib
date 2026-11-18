@@ -133,7 +133,7 @@ typedef enum IRQn
 
 #define FMC_BASE                ((uint32_t)0x40080000)
 #define CKCU_BASE               ((uint32_t)0x40088000)
-#define RSTCU_BASE              ((uint32_t)0x40088000)
+#define RSTCU_BASE              ((uint32_t)0x40088100)
 #define CRC_BASE                ((uint32_t)0x4008A000)
 #define PDMA_BASE               ((uint32_t)0x40090000)
 #define EBI_BASE                ((uint32_t)0x40098000)
