@@ -104,6 +104,22 @@ static void usb_pm_reset(USBDriver *usbp) {
 }
 
 /**
+ * @brief   Resets the data toggle of an endpoint to DATA0.
+ * @note    The hardware does not reset the toggle of an OUT endpoint at
+ *          ClearFeature(HALT) or SET_CONFIGURATION. A 0 clears the toggle, and
+ *          a 1 returns it to hardware control.
+ *
+ * @param[in] ep        endpoint number
+ *
+ * @notapi
+ */
+static void usb_reset_toggle(usbep_t ep) {
+
+  SN32_USB->EPTOGGLE &= ~mskEPn_DATA_TOGGLE(ep);
+  SN32_USB->EPTOGGLE |= mskEPn_DATA_TOGGLE(ep);
+}
+
+/**
  * @brief   Sets the packet memory allocator.
  *
  * @param[in] usbp      pointer to the @p USBDriver object
@@ -247,6 +263,9 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
             /* Resume */
             SN32_USB->CFG |= (mskESD_EN|mskPHY_EN);
             SN32_USB->INSTSC = (mskBUS_RESUME);
+            /* Resume signaling can start long before a host that wakes from sleep
+             * sends SOF packets, so wait for the first SOF to end the suspend. */
+            SN32_USB->INTEN |= mskUSB_SOF_IE;
         }
         else if(iwIntFlag & mskBUS_WAKEUP) {
             /* Wakeup */
@@ -258,22 +277,30 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
     /////////////////////////////////////////////////
     /* Device Status Interrupt (SETUP, IN, OUT)    */
     /////////////////////////////////////////////////
-    else if (iwIntFlag & mskERR_SETUP) {
-        SN32_USB->INSTSC = (mskERR_SETUP);
-        usb_lld_stall_in(usbp, 0);
-    }
     else if (iwIntFlag & (mskEP0_SETUP|mskEP0_IN|mskEP0_OUT|mskEP0_IN_STALL|mskEP0_OUT_STALL)) {
 
         if (iwIntFlag & mskEP0_SETUP) {
             /* SETUP */
+            /* EP0 stays in NAK after a SETUP until firmware changes its state, so an
+             * IN or OUT event read with a SETUP comes from the previous transfer. The
+             * EP0 buffer now holds the SETUP, so serve only a status stage that has ended.
+             */
+            if ((iwIntFlag & mskEP0_IN) && (usbp->ep0state == USB_EP0_IN_SENDING_STS)) {
+                _usb_isr_invoke_in_cb(usbp, 0);
+            }
             /* Clear receiving in the chibios state machine */
             (usbp)->receiving &= ~1;
-            SN32_USB->INSTSC = (mskEP0_PRESETUP);
-            /* Call SETUP function (ChibiOS core), which prepares
-             * for send or receive and releases the buffer
-             */
-            _usb_isr_invoke_setup_cb(usbp, 0);
-            SN32_USB->INSTSC = (mskEP0_SETUP);
+            SN32_USB->INSTSC = (mskEP0_SETUP|mskEP0_PRESETUP|mskEP0_IN|mskEP0_OUT|mskEP0_IN_STALL|mskEP0_OUT_STALL);
+            if (SN32_USB->INSTS & mskERR_SETUP) {
+                SN32_USB->INSTSC = (mskERR_SETUP);
+                usb_lld_stall_in(usbp, 0);
+            }
+            else {
+                /* Call SETUP function (ChibiOS core), which prepares
+                 * for send or receive and releases the buffer
+                 */
+                _usb_isr_invoke_setup_cb(usbp, 0);
+            }
         }
         else if (iwIntFlag & mskEP0_IN) {
             usb_serve_endpoints(usbp, 0, true);
@@ -301,16 +328,22 @@ static void usb_lld_serve_interrupt(USBDriver *usbp) {
     /* Device Status Interrupt (SOF)               */
     /////////////////////////////////////////////////
     if (iwIntFlag & mskUSB_SOF) {
-        /* SOF interrupt was used to detect resume of the USB bus after issuing a
-         * remote wake up of the host, therefore we disable it again. */
-        if (usbp->config->sof_cb == NULL) {
-          SN32_USB->INTEN &= ~mskUSB_SOF_IE;
+        /* The hardware sets this flag with the interrupt off too. A flag read with
+         * the interrupt off can be older than a bus suspend, so it does not mean
+         * that the bus has resumed. Clear it in every case, so that the interrupt
+         * reports only a SOF that arrives after the bus resumes. */
+        if (SN32_USB->INTEN & mskUSB_SOF_IE) {
+            /* SOF interrupt was used to detect resume of the USB bus, therefore we
+             * disable it again. */
+            if (usbp->config->sof_cb == NULL) {
+              SN32_USB->INTEN &= ~mskUSB_SOF_IE;
+            }
+            if (usbp->state == USB_SUSPENDED) {
+              _usb_wakeup(usbp);
+            }
+            /* SOF */
+            _usb_isr_invoke_sof_cb(usbp);
         }
-        if (usbp->state == USB_SUSPENDED) {
-          _usb_wakeup(usbp);
-        }
-        /* SOF */
-        _usb_isr_invoke_sof_cb(usbp);
         SN32_USB->INSTSC = (mskUSB_SOF);
     }
     /////////////////////////////////////////////////
@@ -340,6 +373,10 @@ void usb_serve_endpoints(USBDriver* usbp, usbep_t ep, bool in) {
 
     // Get the endpoint config and state
     const USBEndpointConfig *epcp = usbp->epc[ep];
+
+    // The core clears epc at a bus reset and at SET_CONFIGURATION, and the ISR can
+    // still serve an event that arrived before that.
+    if (epcp == NULL) return;
 
     // Process based on endpoint direction
     if(in) {
@@ -381,31 +418,31 @@ void usb_serve_endpoints(USBDriver* usbp, usbep_t ep, bool in) {
     else {
         /* OUT endpoint, receive.*/
         USBOutEndpointState *osp = epcp->out_state;
-        
-        if (n) {
-            /* Reads the packet into the defined buffer.*/
-            osalSysLockFromISR();
-            sn32_usb_read_fifo(ep, osp->rxbuf, n, true);
-            osalSysUnlockFromISR();
-            osp->rxbuf += n;
 
-            /* Transaction data updated.*/
-            osp->rxcnt  += n;
-            osp->rxsize -= n;
-            osp->rxpkts -= 1;
+        /* Reads up to rxsize bytes into the buffer and discards the rest.*/
+        size_t copy = (n < osp->rxsize) ? n : osp->rxsize;
 
-            /* The transaction is completed if the specified number of packets
-               has been received or the current packet is a short packet.*/
-            if ((n < epcp->out_maxsize) || (epcp->out_state->rxpkts == 0))
-            {
-                /* Transfer complete, invokes the callback.*/
-                //EPCTL_SET_STAT_NAK(0); //useless mcu resets it anyways
-                _usb_isr_invoke_out_cb(usbp, ep);
-            }
-            else {
-                /* Transfer not complete, there are more packets to receive.*/
-                EPCTL_SET_STAT_ACK(ep, 0);
-            }
+        osalSysLockFromISR();
+        sn32_usb_read_fifo(ep, osp->rxbuf, copy, true);
+        osalSysUnlockFromISR();
+        osp->rxbuf += copy;
+
+        /* Transaction data updated.*/
+        osp->rxcnt  += copy;
+        osp->rxsize -= copy;
+        osp->rxpkts -= 1;
+
+        /* The transaction is completed if the specified number of packets
+           has been received or the current packet is a short packet.*/
+        if ((n < epcp->out_maxsize) || (epcp->out_state->rxpkts == 0))
+        {
+            /* Transfer complete, invokes the callback.*/
+            //EPCTL_SET_STAT_NAK(0); //useless mcu resets it anyways
+            _usb_isr_invoke_out_cb(usbp, ep);
+        }
+        else {
+            /* Transfer not complete, there are more packets to receive.*/
+            EPCTL_SET_STAT_ACK(ep, 0);
         }
     }
   
@@ -532,8 +569,9 @@ void usb_lld_reset(USBDriver *usbp) {
     usbp->address = 0;
     SN32_USB->ADDR  = 0;
 
-    /* Resets the packet memory allocator.*/
-    usb_pm_reset(usbp);
+    /* The hardware keeps the endpoint state through a bus reset. This call
+       also resets the packet memory allocator.*/
+    usb_lld_disable_endpoints(usbp);
 
     /* EP0 initialization.*/
     usbp->epc[0] = &ep0config;
@@ -630,6 +668,7 @@ void usb_lld_disable_endpoints(USBDriver *usbp) {
     for(usbep_t ep=1; ep <= USB_MAX_ENDPOINTS; ep++) {
         SN32_USB->EPCTL[ep] = 0;
         SN32_USB->CFG &= ~mskEPn_DIR(ep);
+        usb_reset_toggle(ep);
     }
 }
 
@@ -741,9 +780,7 @@ void usb_lld_start_in(USBDriver *usbp, usbep_t ep)
         n = (size_t)usbp->epc[ep]->in_maxsize;
 
     isp->txlast = n;
-    osalSysLockFromISR();
     sn32_usb_write_fifo(ep, isp->txbuf, n, false);
-    osalSysUnlockFromISR();
 
     EPCTL_SET_STAT_ACK(ep, n);
 
@@ -805,8 +842,9 @@ void usb_lld_clear_out(USBDriver *usbp, usbep_t ep) {
     (void)usbp;
     /* Makes sure to not put to NAK an endpoint that is already
        transferring.*/
-    if (!(SN32_USB->EPCTL[ep] & mskEPn_ENDP_STATE_NAK))
+    if ((SN32_USB->EPCTL[ep] & mskEPn_ENDP_STATE) != mskEPn_ENDP_STATE_ACK)
         EPCTL_SET_STAT_NAK(ep);
+    usb_reset_toggle(ep);
 }
 
 /**
@@ -821,7 +859,7 @@ void usb_lld_clear_in(USBDriver *usbp, usbep_t ep) {
     (void)usbp;
     /* Makes sure to not put to NAK an endpoint that is already
        transferring.*/
-    if (!(SN32_USB->EPCTL[ep] & mskEPn_ENDP_STATE_NAK))
+    if ((SN32_USB->EPCTL[ep] & mskEPn_ENDP_STATE) != mskEPn_ENDP_STATE_ACK)
         EPCTL_SET_STAT_NAK(ep);
 }
 
