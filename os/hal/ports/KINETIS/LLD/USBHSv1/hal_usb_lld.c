@@ -185,9 +185,12 @@ void usb_packet_receive(USBDriver *usbp, usbep_t ep, size_t n)
   if (n > (size_t)epc->out_maxsize)
     n = (size_t)epc->out_maxsize;
 
-  /* Copy from _usbb[] to buf  */
+  /* Reads the packet into the defined buffer. The host can send a full
+     packet when less room is left, the excess is discarded.*/
+  const size_t m = n < osp->rxsize ? n : osp->rxsize;
+
   size_t i=0;
-  for(i=0;i<n;i++)
+  for(i=0;i<m;i++)
     osp->rxbuf[i] = bd->addr[i];
 
   /* Update the Buffer status

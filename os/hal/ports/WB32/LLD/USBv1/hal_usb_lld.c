@@ -180,11 +180,14 @@ static void _wbusb_ep0out(USBDriver *usbp, usbep_t ep) {
  *
  * @param[in] ep        endpoint number
  * @param[out] buf      buffer where to copy the packet data
- * @return              The size of the receivee packet.
+ * @param[in] max       maximum number of bytes to copy, the rest of the
+ *                      packet is discarded
+ * @return              The size of the received packet.
  *
  * @notapi
  */
-static size_t usb_packet_read_to_buffer(usbep_t ep, uint8_t *buf) {
+static size_t usb_packet_read_to_buffer(usbep_t ep, uint8_t *buf,
+                                        size_t max) {
   size_t rx_cnt, n;
   uint8_t ep_num;
   uint32_t ep_fifo_addr;
@@ -200,7 +203,7 @@ static size_t usb_packet_read_to_buffer(usbep_t ep, uint8_t *buf) {
     rx_cnt = WB32_USB->COUNT0;
   }
 
-  n = rx_cnt;
+  n = rx_cnt < max ? rx_cnt : max;
 
   while (n) {
     *buf++ = *((volatile uint8_t *)ep_fifo_addr);
@@ -238,7 +241,7 @@ static void usb_packet_write_from_buffer(usbep_t ep,
  * @notapi
  */
 static void usb_serve_ep0_handler(USBDriver *usbp) {
-  size_t n;
+  size_t n, m;
   uint8_t ControlReg;
   const USBEndpointConfig *epcp = usbp->epc[0];
 
@@ -315,12 +318,13 @@ static void usb_serve_ep0_handler(USBDriver *usbp) {
 
     if (ControlReg & USB_CSR0_OUTPKTRDY) {
       /* Reads the packet into the defined buffer.*/
-      n = usb_packet_read_to_buffer(0, osp->rxbuf);
-      osp->rxbuf += n;
+      n = usb_packet_read_to_buffer(0, osp->rxbuf, osp->rxsize);
+      m = n < osp->rxsize ? n : osp->rxsize;
+      osp->rxbuf += m;
 
       /* Transaction data updated.*/
-      osp->rxcnt += n;
-      osp->rxsize -= n;
+      osp->rxcnt += m;
+      osp->rxsize -= m;
       osp->rxpkts -= 1;
 
       /* The transaction is completed if the specified number of packets
@@ -393,7 +397,7 @@ static void usb_serve_epin_handler(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 static void usb_serve_epout_handler(USBDriver *usbp, usbep_t ep) {
-  size_t n;
+  size_t n, m;
   uint8_t ControlReg;
   const USBEndpointConfig *epcp = usbp->epc[ep];
   /* OUT endpoint, receive.*/
@@ -404,14 +408,16 @@ static void usb_serve_epout_handler(USBDriver *usbp, usbep_t ep) {
   ControlReg = WB32_USB->OUTCSR1;
 
   if (ControlReg & USB_OUTCSR1_OUTPKTRDY) {
-    /* Reads the packet into the defined buffer.*/
-    n = usb_packet_read_to_buffer(ep, osp->rxbuf);
+    /* Reads the packet into the defined buffer. The host can send a full
+       packet when less room is left, the excess is discarded.*/
+    n = usb_packet_read_to_buffer(ep, osp->rxbuf, osp->rxsize);
+    m = n < osp->rxsize ? n : osp->rxsize;
 
-    osp->rxbuf += n;
+    osp->rxbuf += m;
 
     /* Transaction data updated.*/
-    osp->rxcnt += n;
-    osp->rxsize -= n;
+    osp->rxcnt += m;
+    osp->rxsize -= m;
     osp->rxpkts -= 1;
 
     /* The transaction is completed if the specified number of packets
