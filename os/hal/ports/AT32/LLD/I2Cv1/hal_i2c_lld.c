@@ -1,7 +1,7 @@
 /*
-    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
+    ChibiOS - Copyright (C) 2006-2026 Giovanni Di Sirio.
+    ChibiOS - Copyright (C) 2023-2026 HorrorTroll.
+    ChibiOS - Copyright (C) 2023-2026 Zhaqian.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -41,37 +41,75 @@
 /* Driver constants.                                                         */
 /*===========================================================================*/
 
-#define I2C_EV5_MASTER_MODE_SELECT                                            \
-  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF) << 16) | I2C_STS1_STARTF))
+#define I2C_EV5_MASTER_MODE_SELECT                                          \
+  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF) << 16) |                  \
+              I2C_STS1_STARTF))
 
-#define I2C_EV5_MASTER_MODE_SELECT_NO_BUSY                                    \
+#define I2C_EV5_MASTER_MODE_SELECT_NO_BUSY                                  \
   ((uint32_t)((I2C_STS2_TRMODE << 16) | I2C_STS1_STARTF))
 
-#define I2C_EV6_MASTER_TRA_MODE_SELECTED                                      \
-  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF | I2C_STS2_DIRF) << 16) |    \
+#define I2C_EV6_MASTER_TRA_MODE_SELECTED                                    \
+  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF | I2C_STS2_DIRF) << 16) |  \
               I2C_STS1_ADDR7F | I2C_STS1_TDBE))
 
-#define I2C_EV6_MASTER_REC_MODE_SELECTED                                      \
-  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF) << 16) | I2C_STS1_ADDR7F))
+#define I2C_EV6_MASTER_REC_MODE_SELECTED                                    \
+  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF) << 16) |                  \
+              I2C_STS1_ADDR7F))
 
-#define I2C_EV8_2_MASTER_BYTE_TRANSMITTED                                     \
-  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF | I2C_STS2_DIRF) << 16) |    \
+#define I2C_EV8_2_MASTER_BYTE_TRANSMITTED                                   \
+  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF | I2C_STS2_DIRF) << 16) |  \
               I2C_STS1_TDC | I2C_STS1_TDBE))
 
-#define I2C_EV9_MASTER_ADD10                                                  \
-  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF) << 16) | I2C_STS1_ADDRHF))
+#define I2C_EV9_MASTER_ADD10                                                \
+  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF) << 16) |                  \
+              I2C_STS1_ADDRHF))
 
-#define I2C_EV5_MASTER_MODE_INVALID                                           \
-  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF) << 16) | (I2C_STS1_STARTF | \
-              I2C_STS1_STOPF)))
+#define I2C_EV5_MASTER_MODE_INVALID                                         \
+  ((uint32_t)(((I2C_STS2_TRMODE | I2C_STS2_BUSYF) << 16) |                  \
+              (I2C_STS1_STARTF | I2C_STS1_STOPF)))
 
 #define I2C_EV_MASK 0x00FF00FF
 
-#define I2C_ERROR_MASK                                                        \
-  ((uint16_t)(I2C_STS1_BUSERR | I2C_STS1_ARLOST | I2C_STS1_ACKFAIL |          \
-              I2C_STS1_OUF | I2C_STS1_PECERR | I2C_STS1_TMOUT |               \
+#define I2C_ERROR_MASK                                                      \
+  ((uint16_t)(I2C_STS1_BUSERR | I2C_STS1_ARLOST | I2C_STS1_ACKFAIL |        \
+              I2C_STS1_OUF | I2C_STS1_PECERR | I2C_STS1_TMOUT |             \
               I2C_STS1_ALERTF))
- 
+
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+#define  I2C_EV1_SLAVE_RECEIVER_ADDRESS_MATCHED                             \
+  ((uint32_t)(I2C_STS2_BUSYF << 16) | I2C_STS1_ADDR7F)
+
+#define I2C_EV1_SLAVE_TRANSMITTER_ADDRESS_MATCHED                           \
+  ((uint32_t)((I2C_STS2_DIRF | I2C_STS2_BUSYF) << 16) |                     \
+              I2C_STS1_TDBE | I2C_STS1_ADDR7F)
+
+#define  I2C_EV1_SLAVE_RECEIVER_SECONDADDRESS_MATCHED                       \
+  ((uint32_t)(I2C_STS2_ADDR2F | I2C_STS2_BUSYF) << 16)
+
+#define  I2C_EV1_SLAVE_TRANSMITTER_SECONDADDRESS_MATCHED                    \
+  ((uint32_t)((I2C_STS2_ADDR2F | I2C_STS2_DIRF | I2C_STS2_BUSYF) << 16) |   \
+              I2C_STS1_TDBE)
+
+#define  I2C_EV1_SLAVE_GENERALCALLADDRESS_MATCHED                           \
+  ((uint32_t)(I2C_STS2_GCADDRF | I2C_STS2_BUSYF) << 16)
+
+#define  I2C_EV2_SLAVE_BYTE_RECEIVED                                        \
+  ((uint32_t)(I2C_STS2_BUSYF << 16) | I2C_STS1_RDBF)
+
+#define I2C_EV4_SLAVE_STOP_DETECTED                                         \
+  ((uint32_t) I2C_STS1_STOPF)
+
+#define  I2C_EV3_SLAVE_BYTE_TRANSMITTED                                     \
+  ((uint32_t)((I2C_STS2_DIRF | I2C_STS2_BUSYF) << 16) | I2C_STS1_TDBE |     \
+              I2C_STS1_TDC)
+
+#define  I2C_EV3_SLAVE_BYTE_TRANSMITTING                                    \
+  ((uint32_t)((I2C_STS2_DIRF | I2C_STS2_BUSYF) << 16) | I2C_STS1_TDBE)
+
+#define  I2C_EV2_SLAVE_ACK_FAILURE                                          \
+  ((uint32_t) I2C_STS1_ACKFAIL)
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
+
 /*===========================================================================*/
 /* Driver exported variables.                                                */
 /*===========================================================================*/
@@ -218,7 +256,7 @@ static void i2c_lld_set_opmode(I2CDriver *i2cp) {
 }
 
 /**
- * @brief   I2C shared ISR code.
+ * @brief   I2C shared STS code.
  *
  * @param[in] i2cp      pointer to the @p I2CDriver object
  *
@@ -274,13 +312,49 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
     i2c_lld_abort_operation(i2cp);
     dp->CTRL2 &= ~I2C_CTRL2_EVTIEN;
     break;
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+  case I2C_EV1_SLAVE_RECEIVER_ADDRESS_MATCHED:
+    dmaStreamEnable(i2cp->dmarx);
+    break;
+  case I2C_EV1_SLAVE_TRANSMITTER_ADDRESS_MATCHED:
+    dp->CTRL1 &= ~I2C_CTRL1_ACKEN;
+    dp->CTRL2 &= ~I2C_CTRL2_EVTIEN;
+    i2cp->reply_required = true;
+    if (i2cp->state == I2C_ACTIVE_RX) {
+      if (dmaStreamGetTransactionSize(i2cp->dmarx)) {
+        dmaStreamDisable(i2cp->dmarx);
+      }
+      _i2c_wakeup_isr(i2cp);
+    }
+    break;
+ // case  I2C_EV1_SLAVE_RECEIVER_SECONDADDRESS_MATCHED:
+ // case  I2C_EV1_SLAVE_TRANSMITTER_SECONDADDRESS_MATCHED:
+ // case  I2C_EV1_SLAVE_GENERALCALLADDRESS_MATCHED:
+ // case  I2C_EV2_SLAVE_BYTE_RECEIVED:
+  case I2C_EV4_SLAVE_STOP_DETECTED:
+    if (dmaStreamGetTransactionSize(i2cp->dmarx)) {
+      dmaStreamDisable(i2cp->dmarx);
+    }
+    _i2c_wakeup_isr(i2cp);
+
+    dp->CTRL1 &= ~I2C_CTRL1_ACKEN;
+    dp->CTRL2 &= ~I2C_CTRL2_EVTIEN;
+    break;
+//  case  I2C_EV3_SLAVE_BYTE_TRANSMITTED:
+  case I2C_EV3_SLAVE_BYTE_TRANSMITTING:
+    dmaStreamEnable(i2cp->dmatx);
+    dp->CTRL2 &= ~I2C_CTRL2_EVTIEN;
+    break;
+//case  I2C_EV2_SLAVE_ACK_FAILURE:
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
   default:
     break;
   }
   /* Clear ADDR7F flag. */
   if (event & (I2C_STS1_ADDR7F | I2C_STS1_ADDRHF))
     (void)dp->STS2;
-  /* BUSERR flag doesnt happen anymore in event handling */
+
+  /* BUSERR flag doesn't happen anymore in event handling */
 #if 0
   /* Errata 1.14.2 for AT32F415, I2C communication error when BUSERR is detected on bus.*/
   /* Errata 1.4.4 for AT32F403A/7, BUSERR is detected by I2C before start of communication.*/
@@ -296,7 +370,7 @@ static void i2c_lld_serve_event_interrupt(I2CDriver *i2cp) {
  * @brief   DMA RX end IRQ handler.
  *
  * @param[in] i2cp      pointer to the @p I2CDriver object
- * @param[in] flags     pre-shifted content of the ISR register
+ * @param[in] flags     pre-shifted content of the STS register
  *
  * @notapi
  */
@@ -314,10 +388,23 @@ static void i2c_lld_serve_rx_end_irq(I2CDriver *i2cp, uint32_t flags) {
 
   dmaStreamDisable(i2cp->dmarx);
 
-  dp->CTRL2 &= ~I2C_CTRL2_DMAEND;
-  dp->CTRL1 &= ~I2C_CTRL1_ACKEN;
-  dp->CTRL1 |= I2C_CTRL1_GENSTOP;
-  _i2c_wakeup_isr(i2cp);
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+  /* If Slave: lines are released by hardware, do nothing
+     If Master: a Stop or repeated Start condition must be generated by software */
+  if (i2cp->isMaster)
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
+  {
+    dp->CTRL2 &= ~I2C_CTRL2_DMAEND;
+    dp->CTRL1 &= ~I2C_CTRL1_ACKEN;
+    dp->CTRL1 |= I2C_CTRL1_GENSTOP;
+    _i2c_wakeup_isr(i2cp);
+  }
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+  else {
+    dp->CTRL1 |= I2C_CTRL1_ACKEN;
+    dp->CTRL2 |= I2C_CTRL2_EVTIEN;
+  }
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
 }
 
 /**
@@ -382,9 +469,24 @@ static void i2c_lld_serve_error_interrupt(I2CDriver *i2cp, uint16_t sts) {
     i2cp->errors |= I2C_ARBITRATION_LOST;
 
   if (sts & I2C_STS1_ACKFAIL) {                     /* Acknowledge failure. */
-    i2cp->i2c->CTRL2 &= ~I2C_CTRL2_EVTIEN;
-    i2cp->i2c->CTRL1 |= I2C_CTRL1_GENSTOP;          /* Generate stop.       */
-    i2cp->errors |= I2C_ACK_FAILURE;
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+     /* If Slave: lines are released by hardware, do nothing
+        If Master: a Stop or repeated Start condition must be generated by software */
+    if (i2cp->isMaster)
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
+    {
+      i2cp->i2c->CTRL2 &= ~I2C_CTRL2_EVTIEN;
+      i2cp->i2c->CTRL1 |= I2C_CTRL1_GENSTOP;        /* Generate stop.       */
+      i2cp->errors |= I2C_ACK_FAILURE;
+    }
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+    else {
+      i2cp->i2c->STS1 &= ~I2C_STS1_ACKFAIL;
+      i2cp->i2c->CTRL2 &= ~I2C_CTRL2_DATAIEN;
+      i2cp->reply_required = false;
+      _i2c_wakeup_isr(i2cp);
+    }
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
   }
 
   if (sts & I2C_STS1_OUF)                           /* Overload.            */
@@ -544,6 +646,9 @@ void i2c_lld_start(I2CDriver *i2cp) {
 
       i2cp->rxdmamode |= AT32_DMA_CCTRL_CHPL(AT32_I2C_I2C1_DMA_PRIORITY);
       i2cp->txdmamode |= AT32_DMA_CCTRL_CHPL(AT32_I2C_I2C1_DMA_PRIORITY);
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+      i2cp->reply_required = false;
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
     }
 #endif /* AT32_I2C_USE_I2C1 */
 
@@ -573,6 +678,9 @@ void i2c_lld_start(I2CDriver *i2cp) {
 
       i2cp->rxdmamode |= AT32_DMA_CCTRL_CHPL(AT32_I2C_I2C2_DMA_PRIORITY);
       i2cp->txdmamode |= AT32_DMA_CCTRL_CHPL(AT32_I2C_I2C2_DMA_PRIORITY);
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+      i2cp->reply_required = false;
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
     }
 #endif /* AT32_I2C_USE_I2C2 */
   }
@@ -663,6 +771,10 @@ msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
   osalDbgCheck(rxbytes > 1);
 
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+  i2cp->isMaster = true;
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
+
   /* Resetting error flags for this transfer.*/
   i2cp->errors = I2C_NO_ERROR;
 
@@ -749,6 +861,10 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
   osalDbgCheck((rxbytes == 0) || ((rxbytes > 1) && (rxbuf != NULL)));
 
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+  i2cp->isMaster = true;
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
+
   /* Resetting error flags for this transfer.*/
   i2cp->errors = I2C_NO_ERROR;
 
@@ -806,6 +922,125 @@ msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
 
   return msg;
 }
+
+#if (I2C_ENABLE_SLAVE_MODE == TRUE)
+/**
+ * @brief   Listen I2C bus for address match.
+ * @details Use 7 bit address.
+ *
+ * @param[in] i2cp      pointer to the @p I2CDriver object
+ * @param[in] addr      slave device address
+ *                      .
+ * @return              The operation status.
+ * @retval MSG_OK       if the function succeeded.
+ * @retval MSG_RESET    if one or more I2C errors occurred, the errors can
+ *                      be retrieved using @p i2cGetErrors().
+ *
+ * @notapi
+ */
+msg_t i2c_lld_match_address(I2CDriver *i2cp, i2caddr_t addr) {
+  I2C_TypeDef *dp = i2cp->i2c;
+
+  /* Slave mode */
+  i2cp->isMaster = false;
+
+  uint16_t i2cadr = addr << 1;
+  uint16_t ownAdr = dp->OADDR1 & (0x7f << 1);
+
+  if (ownAdr == 0 || ownAdr == i2cadr)
+      /* 14 bit should always be kept at 1 by software */
+    dp->OADDR1 = i2cadr | 0x4000;
+  else
+    /* cannot add this address to set of those matched */
+    return MSG_RESET;
+
+  return MSG_OK;
+}
+
+/**
+ * @brief   Receive data via the I2C bus as slave and call handler.
+ *
+ * @param[in] i2cp      pointer to the @p I2CDriver object
+ * @param[out] rxbuf    pointer to the receive buffer
+ * @param[in] rxbytes   size of receive buffer
+ * @param[in] timeout   the number of ticks before the operation timeouts,
+ *                      the following special values are allowed:
+ *                      - @a TIME_INFINITE no timeout.
+ *                      .
+ * @return              The operation status.
+ * @retval MSG_OK       if the function succeeded.
+ * @retval MSG_RESET    if one or more I2C errors occurred, the errors can
+ *                      be retrieved using @p i2cGetErrors().
+ * @retval MSG_TIMEOUT  if a timeout occurred before operation end. <b>After a
+ *                      timeout the driver must be stopped and restarted
+ *                      because the bus is in an uncertain state</b>.
+ *
+ * @notapi
+ */
+msg_t i2c_lld_slave_receive_timeout(I2CDriver *i2cp, uint8_t *rxbuf, size_t rxbytes, sysinterval_t timeout) {
+  I2C_TypeDef *dp = i2cp->i2c;
+
+  /* Slave mode */
+  i2cp->isMaster = false;
+
+  /* Reset Reply flag */
+  i2cp->reply_required = false;
+
+  dp->CTRL1 |= I2C_CTRL1_ACKEN;
+  dp->CTRL2 |= I2C_CTRL2_EVTIEN;
+
+  /* RX DMA setup.*/
+  dmaStreamSetMode(i2cp->dmarx, i2cp->rxdmamode);
+  dmaStreamSetMemory0(i2cp->dmarx, rxbuf);
+  dmaStreamSetTransactionSize(i2cp->dmarx, rxbytes);
+
+  /* Waits for the operation completion or a timeout.*/
+  return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+}
+
+/**
+ * @brief   Transmits data via the I2C bus as slave.
+ * @details Call this function when Master request data (in request handler)
+ *
+ * @param[in] i2cp      pointer to the @p I2CDriver object
+ * @param[in] txbuf     pointer to the transmit buffer
+ * @param[in] txbytes   number of bytes to be transmitted
+ * @param[in] timeout   the number of ticks before the operation timeouts,
+ *                      the following special values are allowed:
+ *                      - @a TIME_INFINITE no timeout.
+ *                      .
+ * @return              The operation status.
+ * @retval MSG_OK       if the function succeeded.
+ * @retval MSG_RESET    if one or more I2C errors occurred, the errors can
+ *                      be retrieved using @p i2cGetErrors().
+ * @retval MSG_TIMEOUT  if a timeout occurred before operation end. <b>After a
+ *                      timeout the driver must be stopped and restarted
+ *                      because the bus is in an uncertain state</b>.
+ *
+ * @notapi
+ */
+msg_t i2c_lld_slave_transmit_timeout(I2CDriver *i2cp,
+                                     const uint8_t *txbuf,
+                                     size_t txbytes,
+                                     sysinterval_t timeout) {
+  I2C_TypeDef *dp = i2cp->i2c;
+
+  /* Slave mode */
+  i2cp->isMaster = false;
+
+  /* TX DMA setup.*/
+  dmaStreamSetMode(i2cp->dmatx, i2cp->txdmamode);
+  dmaStreamSetMemory0(i2cp->dmatx, txbuf);
+  dmaStreamSetTransactionSize(i2cp->dmatx, txbytes);
+
+  dp->CTRL1 &= ~I2C_CTRL1_ACKEN;
+  dp->CTRL2 |= I2C_CTRL2_EVTIEN | I2C_CTRL2_DATAIEN;
+
+  /* Waits for the operation completion or a timeout.*/
+  return osalThreadSuspendTimeoutS(&i2cp->thread, timeout);
+}
+
+#endif /* I2C_ENABLE_SLAVE_MODE == TRUE */
 
 #endif /* HAL_USE_I2C */
 

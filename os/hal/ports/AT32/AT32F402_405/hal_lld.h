@@ -1129,6 +1129,17 @@
 #error "invalid AT32_PLLU_USB48_SEL value specified"
 #endif
 
+#if (HAL_USE_USB && defined(AT32_USB_USE_OTG2) && AT32_USB_USE_OTG2) ||     \
+    defined(__DOXYGEN__)
+#if !AT32_HEXT_ENABLED
+#error "HEXT not enabled, required by OTGHS PHY"
+#endif
+
+#if AT32_HEXTCLK != 12000000
+#error "OTGHS PHY requires AT32_HEXTCLK == 12000000"
+#endif
+#endif
+
 /**
  * @brief   Timers 2, 3, 4, 6, 7, 13, 14 clock.
  */

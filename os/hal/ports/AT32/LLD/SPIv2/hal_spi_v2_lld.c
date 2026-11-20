@@ -1,8 +1,8 @@
 /*
-    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
-    ChibiOS - Copyright (C) 2024..2025 Maxjta
+    ChibiOS - Copyright (C) 2006-2026 Giovanni Di Sirio.
+    ChibiOS - Copyright (C) 2023-2026 HorrorTroll.
+    ChibiOS - Copyright (C) 2023-2026 Zhaqian.
+    ChibiOS - Copyright (C) 2024-2026 Maxjta.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -324,6 +324,8 @@ msg_t spi_lld_start(SPIDriver *spip) {
 
   /* If in stopped state then enables the SPI and DMA clocks.*/
   if (spip->state == SPI_STOP) {
+
+    /* Enables the peripheral.*/
     if (false) {
     }
 
@@ -383,6 +385,7 @@ msg_t spi_lld_start(SPIDriver *spip) {
 
     else {
       osalDbgAssert(false, "invalid SPI instance");
+      return HAL_RET_IS_INVALID;
     }
 
     /* DMA setup.*/

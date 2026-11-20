@@ -1,8 +1,8 @@
 /*
-    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
-    ChibiOS - Copyright (C) 2023..2025 HorrorTroll
-    ChibiOS - Copyright (C) 2023..2025 Zhaqian
-    ChibiOS - Copyright (C) 2024..2025 Maxjta
+    ChibiOS - Copyright (C) 2006-2026 Giovanni Di Sirio.
+    ChibiOS - Copyright (C) 2023-2026 HorrorTroll.
+    ChibiOS - Copyright (C) 2023-2026 Zhaqian.
+    ChibiOS - Copyright (C) 2024-2026 Maxjta.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -79,11 +79,11 @@ USBDriver USBD2;
 /*===========================================================================*/
 
 /**
- * @brief   EP0 state.
+ * @brief   EP0 transfer state type.
  * @note    It is an union because IN and OUT endpoints are never used at the
  *          same time for EP0.
  */
-static union {
+typedef union {
   /**
    * @brief   IN EP0 state.
    */
@@ -92,30 +92,31 @@ static union {
    * @brief   OUT EP0 state.
    */
   USBOutEndpointState out;
-} ep0_state;
+} otg_ep0_state_t;
+
+#if AT32_USB_USE_OTG1
+/**
+ * @brief   Private OTG1 EP0 storage, preserving the USBDriver layout.
+ */
+static otg_ep0_state_t ep0_state1;
+static uint8_t ep0setup_buffer1[8];
 
 /**
- * @brief   Buffer for the EP0 setup packets.
+ * @brief   OTG1 EP0 initialization structure.
  */
-static uint8_t ep0setup_buffer[8];
-
-/**
- * @brief   EP0 initialization structure.
- */
-static const USBEndpointConfig ep0config = {
+static const USBEndpointConfig ep0config1 = {
   USB_EP_MODE_TYPE_CTRL,
   _usb_ep0setup,
   _usb_ep0in,
   _usb_ep0out,
-  0x40,
-  0x40,
-  &ep0_state.in,
-  &ep0_state.out,
+  EP0_MAX_INSIZE,
+  EP0_MAX_OUTSIZE,
+  &ep0_state1.in,
+  &ep0_state1.out,
   1,
-  ep0setup_buffer
+  ep0setup_buffer1
 };
 
-#if AT32_USB_USE_OTG1
 static const at32_otg_params_t fsparams = {
   AT32_USB_OTG1_RX_FIFO_SIZE / 4,
   AT32_OTG1_FIFO_MEM_SIZE,
@@ -125,6 +126,28 @@ static const at32_otg_params_t fsparams = {
 #endif
 
 #if AT32_USB_USE_OTG2
+/**
+ * @brief   Private OTG2 EP0 storage, preserving the USBDriver layout.
+ */
+static otg_ep0_state_t ep0_state2;
+static uint8_t ep0setup_buffer2[8];
+
+/**
+ * @brief   OTG2 EP0 initialization structure.
+ */
+static const USBEndpointConfig ep0config2 = {
+  USB_EP_MODE_TYPE_CTRL,
+  _usb_ep0setup,
+  _usb_ep0in,
+  _usb_ep0out,
+  EP0_MAX_INSIZE,
+  EP0_MAX_OUTSIZE,
+  &ep0_state2.in,
+  &ep0_state2.out,
+  1,
+  ep0setup_buffer2
+};
+
 static const at32_otg_params_t hsparams = {
   AT32_USB_OTG2_RX_FIFO_SIZE / 4,
   AT32_OTG2_FIFO_MEM_SIZE,
@@ -148,13 +171,17 @@ static void otg_core_reset(USBDriver *usbp) {
   while ((otgp->GRSTCTL & GRSTCTL_AHBIDLE) == 0)
     ;
 
-  /* Core reset and delay of at least 3 PHY cycles.*/
+  /* Allow at least 10 PHY clocks after PHY selection before core reset.
+     One microsecond covers both the 48MHz FS and 60MHz HS interfaces.*/
+  osalSysPolledDelayX(OSAL_US2RTC(SystemCoreClock, 1U));
+
+  /* Core reset.*/
   otgp->GRSTCTL = GRSTCTL_CSFTRST;
-  osalSysPolledDelayX(12);
   while ((otgp->GRSTCTL & GRSTCTL_CSFTRST) != 0)
     ;
 
-  osalSysPolledDelayX(18);
+  /* Wait at least 3 PHY clocks before accessing the PHY clock domain.*/
+  osalSysPolledDelayX(OSAL_US2RTC(SystemCoreClock, 1U));
 
   /* Wait AHB idle condition again.*/
   while ((otgp->GRSTCTL & GRSTCTL_AHBIDLE) == 0)
@@ -183,16 +210,26 @@ static void otg_disable_ep(USBDriver *usbp) {
 
 static void otg_enable_ep(USBDriver *usbp) {
   at32_otg_t *otgp = usbp->otg;
+  uint32_t daintmsk = 0U;
   unsigned i;
 
+  /* Rebuild endpoint interrupt mask from the active endpoint
+     configurations, this avoids dereferencing not-yet initialized
+     endpoint entries during early SOF/WKUP handling. */
   for (i = 0; i <= usbp->otgparams->num_endpoints; i++) {
-    if (usbp->epc[i]->out_state != NULL) {
-      otgp->DAINTMSK |= DAINTMSK_OUTEPTMSK(i);
+    const USBEndpointConfig *epcp = usbp->epc[i];
+
+    if (epcp == NULL) {
+      continue;
     }
-    if (usbp->epc[i]->in_state != NULL) {
-      otgp->DAINTMSK |= DAINTMSK_INEPTMSK(i);
+    if (epcp->out_state != NULL) {
+      daintmsk |= DAINTMSK_OUTEPTMSK(i);
+    }
+    if (epcp->in_state != NULL) {
+      daintmsk |= DAINTMSK_INEPTMSK(i);
     }
   }
+  otgp->DAINTMSK = daintmsk;
 }
 
 static void otg_rxfifo_flush(USBDriver *usbp) {
@@ -201,8 +238,8 @@ static void otg_rxfifo_flush(USBDriver *usbp) {
   otgp->GRSTCTL = GRSTCTL_RXFFLSH;
   while ((otgp->GRSTCTL & GRSTCTL_RXFFLSH) != 0)
     ;
-  /* Wait for 3 PHY Clocks.*/
-  osalSysPolledDelayX(18);
+  /* Wait at least 3 PHY clocks, independently of the CPU frequency.*/
+  osalSysPolledDelayX(OSAL_US2RTC(SystemCoreClock, 1U));
 }
 
 static void otg_txfifo_flush(USBDriver *usbp, uint32_t fifo) {
@@ -211,8 +248,8 @@ static void otg_txfifo_flush(USBDriver *usbp, uint32_t fifo) {
   otgp->GRSTCTL = GRSTCTL_TXFNUM(fifo) | GRSTCTL_TXFFLSH;
   while ((otgp->GRSTCTL & GRSTCTL_TXFFLSH) != 0)
     ;
-  /* Wait for 3 PHY Clocks.*/
-  osalSysPolledDelayX(18);
+  /* Wait at least 3 PHY clocks, independently of the CPU frequency.*/
+  osalSysPolledDelayX(OSAL_US2RTC(SystemCoreClock, 1U));
 }
 
 /**
@@ -260,14 +297,47 @@ static void otg_fifo_write_from_buffer(volatile uint32_t *fifop,
 
   osalDbgAssert(n > 0, "is zero");
 
+#if defined(OTG_USE_SIMPLIFIED_LOOPS)
   while (true) {
     *fifop = *((uint32_t *)buf);
-    if (n <= 4) {
+    if (n <= 4U) {
       break;
     }
-    n -= 4;
+    n -= 4U;
     buf += 4;
   }
+#else
+  while (n >= 4U) {
+    uint32_t w;
+
+    w  = (uint32_t)buf[0];
+    w |= (uint32_t)buf[1] << 8;
+    w |= (uint32_t)buf[2] << 16;
+    w |= (uint32_t)buf[3] << 24;
+    *fifop = w;
+    buf += 4;
+    n -= 4U;
+  }
+
+  if (n != 0U) {
+    uint32_t w = 0U;
+
+    switch (n) {
+    case 3:
+      w |= (uint32_t)buf[2] << 16;
+      /* Falls through.*/
+    case 2:
+      w |= (uint32_t)buf[1] << 8;
+      /* Falls through.*/
+    case 1:
+      w |= (uint32_t)buf[0];
+      break;
+    default:
+      break;
+    }
+    *fifop = w;
+  }
+#endif
 }
 
 /**
@@ -360,6 +430,9 @@ static bool otg_txfifo_handler(USBDriver *usbp, usbep_t ep) {
   /* The TXFIFO is filled until there is space and data to be transmitted.*/
   while (true) {
     uint32_t n;
+#if AT32_USB_OTGFIFO_FILL_BASEPRI
+    uint32_t basepri;
+#endif
 
     /* Transaction end condition.*/
     if (usbp->epc[ep]->in_state->txcnt >= usbp->epc[ep]->in_state->txsize) {
@@ -380,7 +453,8 @@ static bool otg_txfifo_handler(USBDriver *usbp, usbep_t ep) {
       return false;
 
 #if AT32_USB_OTGFIFO_FILL_BASEPRI
-    __set_BASEPRI(CORTEX_PRIO_MASK(AT32_USB_OTGFIFO_FILL_BASEPRI));
+    basepri = __get_BASEPRI();
+    __set_BASEPRI_MAX(CORTEX_PRIO_MASK(AT32_USB_OTGFIFO_FILL_BASEPRI));
 #endif
 #if AT32_USE_USB_OTG2_HS_DMA
     if (usbp->otgparams->dma_en) {
@@ -396,7 +470,7 @@ static bool otg_txfifo_handler(USBDriver *usbp, usbep_t ep) {
     usbp->epc[ep]->in_state->txbuf += n;
     usbp->epc[ep]->in_state->txcnt += n;
 #if AT32_USB_OTGFIFO_FILL_BASEPRI
-  __set_BASEPRI(0);
+    __set_BASEPRI(basepri);
 #endif
   }
 }
@@ -416,7 +490,8 @@ static void otg_epin_handler(USBDriver *usbp, usbep_t ep) {
   otgp->ie[ep].DIEPINT = epint;
 
   if (epint & DIEPINT_TIMEOUT) {
-    /* Timeouts not handled yet, not sure how to handle.*/
+    /* Timeout condition is intentionally masked out in DIEPMSK because
+       it does not represent transfer completion/failure for this driver.*/
   }
   if ((epint & DIEPINT_XFERC) && (otgp->DIEPMSK & DIEPMSK_XFERCMSK)) {
     /* Transmit transfer complete.*/
@@ -1004,6 +1079,13 @@ void usb_lld_stop(USBDriver *usbp) {
 void usb_lld_reset(USBDriver *usbp) {
   unsigned i;
   at32_otg_t *otgp = usbp->otg;
+#if AT32_USB_USE_OTG1 && AT32_USB_USE_OTG2
+  const USBEndpointConfig *epcp = &USBD1 == usbp ? &ep0config1 : &ep0config2;
+#elif AT32_USB_USE_OTG1
+  const USBEndpointConfig *epcp = &ep0config1;
+#else
+  const USBEndpointConfig *epcp = &ep0config2;
+#endif
 
   /* Flush the Tx FIFO.*/
   otg_txfifo_flush(usbp, 0);
@@ -1037,31 +1119,31 @@ void usb_lld_reset(USBDriver *usbp) {
       otgp->GINTMSK &= ~GINTMSK_RXFLVLMSK;
     }
 #endif
-  otgp->DIEPMSK = DIEPMSK_TIMEOUTMSK | DIEPMSK_XFERCMSK;
+  otgp->DIEPMSK = /* DIEPMSK_TIMEOUTMSK |*/ DIEPMSK_XFERCMSK;
   otgp->DOEPMSK = DOEPMSK_SETUPMSK   | DOEPMSK_XFERCMSK;
 
   /* EP0 initialization, it is a special case.*/
-  usbp->epc[0] = &ep0config;
+  usbp->epc[0] = epcp;
   otgp->oe[0].DOEPTSIZ = DOEPTSIZ_SETUPCNT(3);
 #if AT32_USE_USB_OTG2_HS_DMA
   if (usbp->otgparams->dma_en) {
     otgp->oe[0].DOEPDMA = (uint32_t)(usbp->epc[0]->setup_buf);
     otgp->oe[0].DOEPCTL = DOEPCTL_SETD0PID | DOEPCTL_USBACEPT | DOEPCTL_EPTYPE_CTRL | DOEPCTL_EPTENA |
-                          DOEPCTL_MPS(ep0config.out_maxsize);
+                          DOEPCTL_MPS(epcp->out_maxsize);
   }
   else
 #endif
   {
     otgp->oe[0].DOEPCTL = DOEPCTL_SETD0PID | DOEPCTL_USBACEPT | DOEPCTL_EPTYPE_CTRL |
-                          DOEPCTL_MPS(ep0config.out_maxsize);
+                          DOEPCTL_MPS(epcp->out_maxsize);
   }
 
   otgp->ie[0].DIEPTSIZ = 0;
   otgp->ie[0].DIEPCTL = DIEPCTL_SETD0PID | DIEPCTL_USBACEPT | DIEPCTL_EPTYPE_CTRL |
-                        DIEPCTL_TXFNUM(0) | DIEPCTL_MPS(ep0config.in_maxsize);
-  otgp->DIEPTXF0 = DIEPTXF_INEPTXFDEP(ep0config.in_maxsize / 4) |
+                        DIEPCTL_TXFNUM(0) | DIEPCTL_MPS(epcp->in_maxsize);
+  otgp->DIEPTXF0 = DIEPTXF_INEPTXFDEP(epcp->in_maxsize / 4) |
                    DIEPTXF_INEPTXFSTADDR(otg_ram_alloc(usbp,
-                                                  ep0config.in_maxsize / 4));
+                                                       epcp->in_maxsize / 4));
 }
 
 /**
@@ -1121,10 +1203,14 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
   /* IN endpoint activation or deactivation.*/
   otgp->ie[ep].DIEPTSIZ = 0;
   if (usbp->epc[ep]->in_state != NULL) {
-    /* FIFO allocation for the IN endpoint.*/
-    fsize = usbp->epc[ep]->in_maxsize / 4;
-    if (usbp->epc[ep]->in_multiplier > 1)
+    /* Round each packet up to words and enforce the 16-word FIFO minimum.*/
+    fsize = (usbp->epc[ep]->in_maxsize + 3U) / 4U;
+    if (usbp->epc[ep]->in_multiplier > 1U) {
       fsize *= usbp->epc[ep]->in_multiplier;
+    }
+    if (fsize < 16U) {
+      fsize = 16U;
+    }
     otgp->DIEPTXF[ep - 1] = DIEPTXF_INEPTXFDEP(fsize) |
                             DIEPTXF_INEPTXFSTADDR(otg_ram_alloc(usbp, fsize));
     otg_txfifo_flush(usbp, ep);
@@ -1150,12 +1236,26 @@ void usb_lld_init_endpoint(USBDriver *usbp, usbep_t ep) {
  * @notapi
  */
 void usb_lld_disable_endpoints(USBDriver *usbp) {
+  at32_otg_t *otgp = usbp->otg;
+  unsigned ep;
 
-  /* Resets the FIFO memory allocator.*/
+  /* Preserve the RX FIFO and EP0 TX FIFO allocations and EP0 operation.*/
   otg_ram_reset(usbp);
-
-  /* Disabling all endpoints.*/
-  otg_disable_ep(usbp);
+  usbp->pmnext += EP0_MAX_INSIZE / 4U;
+  otgp->DIEPEMPMSK &= DIEPEMPMSK_INEPTXFEMSK(0);
+  otgp->DAINTMSK = DAINTMSK_OUTEPTMSK(0) | DAINTMSK_INEPTMSK(0);
+  for (ep = 1U; ep <= usbp->otgparams->num_endpoints; ep++) {
+    if ((otgp->ie[ep].DIEPCTL & DIEPCTL_EPTENA) != 0U) {
+      otgp->ie[ep].DIEPCTL |= DIEPCTL_EPTDIS | DIEPCTL_SNAK;
+    }
+    if ((otgp->oe[ep].DOEPCTL & DOEPCTL_EPTENA) != 0U) {
+      otgp->oe[ep].DOEPCTL |= DOEPCTL_EPTDIS | DOEPCTL_SNAK;
+    }
+    otgp->ie[ep].DIEPCTL &= ~DIEPCTL_USBACEPT;
+    otgp->oe[ep].DOEPCTL &= ~DOEPCTL_USBACEPT;
+    otgp->ie[ep].DIEPINT = 0xFFFFFFFFU;
+    otgp->oe[ep].DOEPINT = 0xFFFFFFFFU;
+  }
 }
 
 /**
