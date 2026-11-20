@@ -112,7 +112,9 @@ void sram_lld_stop(SRAMDriver *sramp) {
      defined(STM32F745xx) || defined(STM32F746xx) || \
      defined(STM32F756xx) || defined(STM32F767xx) || \
      defined(STM32F769xx) || defined(STM32F777xx) || \
-     defined(STM32F779xx))
+     defined(STM32F779xx) || defined(STM32G473xx) || \
+     defined(STM32G483xx) || defined(STM32G474xx) || \
+     defined(STM32G484xx))
     mask |= FSMC_BCR_CCLKEN;
 #endif
     sramp->sram->BCR &= ~mask;
@@ -121,4 +123,3 @@ void sram_lld_stop(SRAMDriver *sramp) {
 #endif /* STM32_SRAM_USE_SRAM */
 
 /** @} */
-
