@@ -61,7 +61,7 @@
  * @brief   SysTick timer IRQ priority.
  */
 #if !defined(NUC126_ST_IRQ_PRIORITY) || defined(__DOXYGEN__)
-#define NUC126_ST_IRQ_PRIORITY                     8
+#define NUC126_ST_IRQ_PRIORITY                     2
 #endif
 
 /**
@@ -78,6 +78,10 @@
 /*===========================================================================*/
 /* Derived constants and error checks.                                       */
 /*===========================================================================*/
+
+#if !OSAL_IRQ_IS_VALID_PRIORITY(NUC126_ST_IRQ_PRIORITY)
+#error "Invalid IRQ priority assigned to ST"
+#endif
 
 #if (NUC126_ST_USE_TIMER == 2)
 #if !NUC126_HAS_TIM2

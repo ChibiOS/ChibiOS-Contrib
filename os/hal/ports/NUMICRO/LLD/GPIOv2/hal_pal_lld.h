@@ -47,27 +47,6 @@
 #define GPIO_MODE_OPEN_DRAIN                               0x02ul          /*!< Open-Drain Mode */
 #define GPIO_MODE_QUASI                                    0x03ul          /*!< Quasi-bidirectional Mode */
 
-/**
- * @brief   NUC126 specific alternate input mode.
- */
-#define PAL_MODE_NUC126_ALTERNATE_INPUT                   GPIO_MODE_INPUT
-
-/**
- * @brief   NUC126 specific alternate push-pull output mode.
- */
-#define PAL_MODE_NUC126_ALTERNATE_OUTPUT                  GPIO_MODE_OUTPUT
-/** @} */
-
-/**
- * @brief   NUC126 specific alternate output mode.
- */
-#define PAL_MODE_NUC126_ALTERNATE_OPEN_DRAIN              GPIO_MODE_OPEN_DRAIN
-/** @} */
-
-/**
- * @brief   NUC126 specific alternate output mode.
- */
-#define PAL_MODE_NUC126_ALTERNATE_QUASI                   GPIO_MODE_QUASI
 /** @} */
 
 /**
@@ -907,8 +886,7 @@
  * @brief   Whole port mask.
  * @details This macro specifies all the valid bits into a port.
  */
-/* #define PAL_WHOLE_PORT              ((ioportmask_t)0xFFFFU) */
-#define PAL_WHOLE_PORT ((ioportmask_t)(2^PAL_IOPORTS_WIDTH) - 1)
+#define PAL_WHOLE_PORT              ((ioportmask_t)0xFFFFU)
 /** @} */
 
 /**
