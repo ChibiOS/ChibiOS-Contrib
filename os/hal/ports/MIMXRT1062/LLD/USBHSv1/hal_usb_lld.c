@@ -116,12 +116,16 @@ static usb_status_t usb_device_callback(usb_device_handle handle, uint32_t callb
     break;
 
   case kUSB_DeviceEventSuspend:
-    printf_debug("  suspend");
+    printf_debug("  suspend--nxp");
+    // Call USB_DeviceSetStatus() to enable the “detect resume” interrupt.
+    usb_device_struct_t *dev_handle = (usb_device_struct_t *)handle;
+    (void)USB_DeviceSetStatus(dev_handle, kUSB_DeviceStatusBusSuspend, NULL);
+    printf_debug("  suspend--chibi");
     _usb_suspend(usbp);
     break;
 
   case kUSB_DeviceEventResume:
-    printf_debug("  resume");
+    printf_debug("  resume--chibi");
     _usb_wakeup(usbp);
     break;
   }
