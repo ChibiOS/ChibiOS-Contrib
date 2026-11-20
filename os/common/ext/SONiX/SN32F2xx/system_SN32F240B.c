@@ -177,10 +177,10 @@ void FlashClockUpdate (void)
  */
 void SlowModeSwitch (void)
 {
-	SN_SYS0->CLKCFG_b.SYSCLKSEL = 1; //Switch to ILRC
-	SN_SYS0->AHBCP_b.AHBPRE =0x2; //8kHz only for now
+	SN_SYS0->CLKCFG_b.SYSCLKSEL = 1; //Switch to ILRC 32kHz
+	SN_SYS0->AHBCP_b.AHBPRE =0x2; // 32/4 = 8kHz only for now
 	SystemCoreClockUpdate();
-	SN_FLASH->LPCTRL = 0x5AFA0002;
+	SN_FLASH->LPCTRL = 0x5AFA0000;
 }
 /**
  * Initialize the system
@@ -197,6 +197,11 @@ void SystemInit (void)
 
 	#if SYS0_CLKCFG_VAL == IHRC48			//IHRC=48MHz
 
+        /* Configure flash wait-states for 48MHz BEFORE enabling IHRC,
+         * matching the factory firmware init sequence.  Writing LPCTRL
+         * at the reset clock rate (ILRC 32kHz) is safe regardless of
+         * LPMODE value — there is no race window later. */
+        SN_FLASH->LPCTRL = 0x5AFA0004;
         SN_FLASH->LPCTRL = 0x5AFA0005;
 
         SN_SYS0->ANBCTRL = 0x1;
@@ -205,7 +210,7 @@ void SystemInit (void)
         while ((SN_SYS0->CLKCFG & 0x70) != 0x0);
 	#endif
 
-        #if SYS0_CLKCFG_VAL == ILRC			//ILRC ON
+    #if SYS0_CLKCFG_VAL == ILRC			//ILRC ON
         SN_FLASH->LPCTRL = 0x5AFA0000;
         SN_SYS0->CLKCFG = 0x1;
         while ((SN_SYS0->CLKCFG & 0x70) != 0x10);

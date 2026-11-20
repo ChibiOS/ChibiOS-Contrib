@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2025 Dimitris Mantzouranis
+    Copyright (C) 2026 Dimitris Mantzouranis
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,14 +13,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-/*
-   Concepts and parts of this file have been contributed by Uladzimir Pylinsky
-   aka barthess.
- */
 
 /**
  * @file    RTC/hal_rtc_lld.c
- * @brief   SN32 RTC subsystem low level driver header.
+ * @brief   SN32 RTC subsystem low level driver source.
  *
  * @addtogroup RTC
  * @{
@@ -46,6 +42,13 @@ RTCDriver RTCD1;
 /*===========================================================================*/
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
+
+/**
+ * @brief   Software-maintained RTC time.
+ * @note    The SN32 RTC only provides a periodic second interrupt. Absolute
+ *          time is maintained entirely in software.
+ */
+static volatile time_t rtc_time;
 
 /*===========================================================================*/
 /* Driver local functions.                                                   */
@@ -75,20 +78,20 @@ static time_t rtc_encode(const RTCDateTime *timespec) {
  *
  * @notapi
  */
-static void rtc_decode(uint32_t tv_sec,
+static void rtc_decode(time_t tv_sec,
                        uint32_t tv_msec,
                        RTCDateTime *timespec) {
   struct tm tim;
   struct tm *t;
-  const time_t time = (const time_t)tv_sec;   /* Could be 64 bits.*/
 
   /* If the conversion is successful the function returns a pointer
      to the object the result was written into.*/
 #if defined(__GNUC__) || defined(__CC_ARM)
-  t = localtime_r(&time, &tim);
+  t = localtime_r(&tv_sec, &tim);
   osalDbgAssert(t != NULL, "conversion failed");
 #else
-  t = localtime(&time);
+  t = localtime(&tv_sec);
+  osalDbgAssert(t != NULL, "conversion failed");
   memcpy(&tim, t, sizeof(struct tm));
 #endif
 
@@ -112,8 +115,13 @@ OSAL_IRQ_HANDLER(SN32_RTC_HANDLER) {
   flags = RTCD1.rtc->RIS;
   RTCD1.rtc->IC = flags;
 
-  if (flags & mskRTC_SECIF)
-    RTCD1.callback(&RTCD1, RTC_EVENT_SECOND);
+  if (flags & mskRTC_SECIF) {
+    rtc_time++;
+
+    if (RTCD1.callback != NULL) {
+      RTCD1.callback(&RTCD1, RTC_EVENT_SECOND);
+    }
+  }
 
   OSAL_IRQ_EPILOGUE();
 }
@@ -134,12 +142,25 @@ void rtc_lld_init(void) {
 
   /* RTC pointer initialization.*/
   RTCD1.rtc = SN_RTC;
+  rtc_time = (time_t)0;
 
   /* Clock activation.*/
   sys1EnableRTC();
 
   /* All interrupts initially disabled.*/
   RTCD1.rtc->IE = 0;
+
+#if SN32_RTC_CLK_SOURCE == SN32_RTC_CLK_SRC_XTAL
+  RTCD1.rtc->CLKS |= 1U;
+#else
+  RTCD1.rtc->CLKS &= ~1U;
+#endif
+
+  /*
+   * Configure a 1 Hz period.
+   * The Sonix RTC is a periodic counter rather than a calendar RTC.
+   */
+  rtc_lld_set_period(&RTCD1, SN32_RTC_PERIOD_DEFAULT);
 
   /* Callback initially disabled.*/
   RTCD1.callback = NULL;
@@ -162,9 +183,13 @@ void rtc_lld_init(void) {
  * @notapi
  */
 void rtc_lld_set_time(RTCDriver *rtcp, const RTCDateTime *timespec) {
-  time_t tv_sec = rtc_encode(timespec);
+  syssts_t sts;
 
-  rtcSN32SetSec(rtcp, tv_sec);
+  (void)rtcp;
+
+  sts = osalSysGetStatusAndLockX();
+  rtc_time = rtc_encode(timespec);
+  osalSysRestoreStatusX(sts);
 }
 
 /**
@@ -177,11 +202,18 @@ void rtc_lld_set_time(RTCDriver *rtcp, const RTCDateTime *timespec) {
  * @notapi
  */
 void rtc_lld_get_time(RTCDriver *rtcp, RTCDateTime *timespec) {
-  uint32_t tv_sec;
+  syssts_t sts;
+  time_t t;
 
-  rtcSN32GetSec(rtcp, &tv_sec);
-  rtc_decode(tv_sec, 0, timespec);
+  (void)rtcp;
+
+  sts = osalSysGetStatusAndLockX();
+  t = rtc_time;
+  osalSysRestoreStatusX(sts);
+
+  rtc_decode(t, 0, timespec);
 }
+
 
 /**
  * @brief   Enables or disables RTC callbacks.
@@ -220,53 +252,53 @@ void rtc_lld_set_callback(RTCDriver *rtcp, rtccb_t callback) {
 }
 
 /**
- * @brief   Get seconds from RTC.
+ * @brief   Set RTC second counter period.
+ * @details The period value controls the number of RTC clock cycles before
+ *          a second event is generated.
+ * @note    The SN32 RTC period register is limited to 20 bits.
+ *          Values exceeding the maximum are silently clamped.
  * @note    The function can be called from any context.
  *
  * @param[in] rtcp      pointer to RTC driver structure
- * @param[out] tv_sec   pointer to seconds value
+ * @param[in] period    second counter reload value
  *
- * @api
+ * @notapi
  */
-void rtcSN32GetSec(RTCDriver *rtcp, uint32_t *tv_sec) {
-  uint32_t time_frac;
+void rtc_lld_set_period(RTCDriver *rtcp, uint32_t period) {
   syssts_t sts;
 
-  osalDbgCheck((NULL != tv_sec) && (NULL != rtcp));
+  if (period > SN32_RTC_PERIOD_MAX) {
+    period = SN32_RTC_PERIOD_MAX;
+  }
 
-  /* Entering a reentrant critical zone.*/
   sts = osalSysGetStatusAndLockX();
 
-  *tv_sec = rtcp->rtc->SECCNT;
+  rtcp->period = period;
+  rtcp->rtc->SECCNTV = period;
 
-  /* Leaving a reentrant critical zone.*/
   osalSysRestoreStatusX(sts);
 }
 
 /**
- * @brief   Set seconds in RTC.
- * @note    The function can be called from any context.
+ * @brief   Gets RTC second counter period.
  *
  * @param[in] rtcp      pointer to RTC driver structure
- * @param[in] tv_sec    seconds value
  *
- * @api
+ * @return              the current RTC period value.
+ *
+ * @notapi
  */
-void rtcSN32SetSec(RTCDriver *rtcp, uint32_t tv_sec) {
+uint32_t rtc_lld_get_period(RTCDriver *rtcp) {
+  uint32_t period;
   syssts_t sts;
 
-  osalDbgCheck(NULL != rtcp);
-
-  /* Entering a reentrant critical zone.*/
   sts = osalSysGetStatusAndLockX();
 
-  uint32_t reg_value = rtcp->rtc->SECCNTV;    // Read current value
-  reg_value &= ~0xFFFFF;                      // Clear the lower 20 bits
-  reg_value |= ((tv_sec >> 16) & 0xFFFFF);    // Set the new 20-bit value
-  rtcp->rtc->SECCNTV = reg_value;             // Write back the updated value
+  period = rtcp->period;
 
-  /* Leaving a reentrant critical zone.*/
   osalSysRestoreStatusX(sts);
+
+  return period;
 }
 
 #endif /* HAL_USE_RTC */

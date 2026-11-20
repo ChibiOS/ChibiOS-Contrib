@@ -115,7 +115,7 @@
 /**
  * @brief   ADC wake-up procedure duration.
  */
-#if !defined(SN32_USB_HOST_WAKEUP_DURATION) || defined(__DOXYGEN__)
+#if !defined(SN32_ADC_WAKEUP_DURATION) || defined(__DOXYGEN__)
 #define SN32_ADC_WAKEUP_DURATION        100
 #endif
 
@@ -139,7 +139,7 @@
 #endif
 
 /* ADC IRQ priority tests.*/
-#if !OSAL_IRQ_IS_VALID_PRIORITY(SN32_ADC_ADC_IRQ_PRIORITY)
+#if !OSAL_IRQ_IS_VALID_PRIORITY(SN32_ADC_IRQ_PRIORITY)
 #error "Invalid IRQ priority assigned to ADC"
 #endif
 

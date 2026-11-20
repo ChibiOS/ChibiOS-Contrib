@@ -311,7 +311,6 @@ static void serve_interrupt(SerialDriver *sdp) {
           break;
       }
           u->TH = b;
-          osalSysUnlockFromISR();
           ls = u->LS;
       }
     }

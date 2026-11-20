@@ -60,12 +60,32 @@ void sn32_clock_init(void) {
   SystemCoreClockUpdate();
 }
 
+#if SN32_LVD_ENABLE == TRUE
+
+/**
+ * @brief   LVD initialization.
+ *
+ * @notapi
+ */
+static void sn32_lvd_init(void) {
+  SN_SYS0->LVDCTRL_b.LVDRSTLVL = SN32_LVDRSTLVL;
+  SN_SYS0->LVDCTRL_b.LVDINTLVL = SN32_LVDINTLVL;
+  SN_SYS0->LVDCTRL_b.LVDRSTEN  = (SN32_LVDRSTEN) ? 1U : 0U;
+  SN_SYS0->LVDCTRL_b.LVDEN     = 1U;
+}
+
+#endif /* SN32_LVD_ENABLE */
+
 /**
  * @brief   Low level HAL driver initialization.
  *
  * @notapi
  */
 void hal_lld_init(void) {
+#if SN32_LVD_ENABLE == TRUE
+  sn32_lvd_init();
+#endif /* SN32_LVD_ENABLE */
+
   SystemInit();
   sn32_clock_init();
 }

@@ -144,6 +144,14 @@
 #define SN32_LVD_HANDLER          VectorA8
 #define SN32_LVD_NUMBER           LVD_IRQn
 
+/* LVD threshold levels (3-bit LVDRSTLVL / LVDINTLVL). */
+#define SN32_LVD_LEVEL_1_80V             0x0
+#define SN32_LVD_LEVEL_2_00V             0x1
+#define SN32_LVD_LEVEL_2_40V             0x2
+#define SN32_LVD_LEVEL_2_70V             0x3
+#define SN32_LVD_LEVEL_3_00V             0x4
+#define SN32_LVD_LEVEL_3_60V             0x5
+
 /*
  * GPIO units.
  */
@@ -172,6 +180,7 @@
 #define SN32_FLASH_SECTOR_SIZE 1024U
 #define SN32_FLASH_BASE 0x00000000UL
 #define FLASH_SIZE (SN32_FLASH_NUMBER_OF_BANKS * SN32_FLASH_SECTORS_PER_BANK * SN32_FLASH_SECTOR_SIZE)
+
 /*===========================================================================*/
 /* Common.                                                                   */
 /*===========================================================================*/

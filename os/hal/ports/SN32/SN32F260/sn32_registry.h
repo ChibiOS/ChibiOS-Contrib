@@ -102,6 +102,12 @@
 #define SN32_LVD_HANDLER          VectorA8
 #define SN32_LVD_NUMBER           LVD_IRQn
 
+/* LVD threshold levels. LVDRSTLVL (3-bit) and LVDINTLVL (2-bit) use different encodings. */
+#define SN32_LVD_RSTLVL_2_40V            0x2
+#define SN32_LVD_RSTLVL_3_30V            0x4
+#define SN32_LVD_INTLVL_2_40V            0x1
+#define SN32_LVD_INTLVL_3_30V            0x2
+
 /*
  * GPIO units.
  */
@@ -130,6 +136,7 @@
 #define SN32_FLASH_SECTOR_SIZE 64U
 #define SN32_FLASH_BASE 0x00000000UL
 #define FLASH_SIZE (SN32_FLASH_NUMBER_OF_BANKS * SN32_FLASH_SECTORS_PER_BANK * SN32_FLASH_SECTOR_SIZE)
+
 /** @} */
 
 #endif /* SN32_REGISTRY_H */
