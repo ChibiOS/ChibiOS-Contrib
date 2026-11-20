@@ -417,6 +417,7 @@ struct USBDriver {
   do {                                                                      \
     /* remote wakeup doesn't trigger the wakeup interrupt, therefore        \
      * we use the SOF interrupt to detect resume of the bus. */             \
+    (void)USB->SOFRD;                                                       \
     USB->INTE |= USB_INTE_DEV_SOF;                                          \
     USB->SET.SIECTRL = USB_SIE_CTRL_RESUME;                                 \
   } while (false)
