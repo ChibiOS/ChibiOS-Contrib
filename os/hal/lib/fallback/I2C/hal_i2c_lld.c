@@ -95,17 +95,10 @@ static inline void i2c_delay(I2CDriver *i2cp) {
 }
 
 static inline msg_t i2c_check_arbitration(I2CDriver *i2cp) {
-#if (SW_I2C_USE_OPENDRAIN == FALSE)
-  palSetLineMode(i2cp->config->sda, PAL_MODE_INPUT);
-#endif
-  i2c_delay(i2cp);
   if (palReadLine(i2cp->config->sda) == PAL_LOW) {
     i2cp->errors |= I2C_ARBITRATION_LOST;
     return MSG_RESET;
   }
-#if (SW_I2C_USE_OPENDRAIN == FALSE)
-  palSetLineMode(i2cp->config->sda, PAL_MODE_OUTPUT_PUSHPULL);
-#endif
   return MSG_OK;
 }
 
@@ -121,9 +114,6 @@ static inline msg_t i2c_check_timeout(I2CDriver *i2cp) {
 }
 
 static msg_t i2c_wait_clock(I2CDriver *i2cp) {
-#if (SW_I2C_USE_OPENDRAIN == FALSE)
-  palSetLineMode(i2cp->config->scl, PAL_MODE_INPUT);
-#endif
   i2c_delay(i2cp);
 
   while (palReadLine(i2cp->config->scl) == PAL_LOW) {
@@ -133,9 +123,6 @@ static msg_t i2c_wait_clock(I2CDriver *i2cp) {
     }
     i2c_delay(i2cp);
   }
-#if (SW_I2C_USE_OPENDRAIN == FALSE)
-  palSetLineMode(i2cp->config->scl, PAL_MODE_OUTPUT_PUSHPULL);
-#endif
   return MSG_OK;
 }
 
@@ -213,7 +200,9 @@ static msg_t i2c_write_bit(I2CDriver *i2cp, unsigned bit) {
 static msg_t i2c_read_bit(I2CDriver *i2cp) {
   msg_t bit;
 #if (SW_I2C_USE_OPENDRAIN == FALSE)
-  palSetLineMode(i2cp->config->sda, PAL_MODE_INPUT);
+  palSetLineMode(i2cp->config->sda, PAL_MODE_INPUT_PULLUP);
+#else
+  palSetLine(i2cp->config->sda);
 #endif
   i2c_delay(i2cp);
   palSetLine(i2cp->config->scl);
@@ -225,10 +214,12 @@ static msg_t i2c_read_bit(I2CDriver *i2cp) {
 
   bit = palReadLine(i2cp->config->sda);
 #if (SW_I2C_USE_OPENDRAIN == FALSE)
-  palSetLineMode(i2cp->config->sda, PAL_MODE_OUTPUT_PUSHPULL);
-#endif
   palClearLine(i2cp->config->scl);
-  i2c_delay(i2cp);
+  palClearLine(i2cp->config->sda);  /* Pre-set output register low */
+  palSetLineMode(i2cp->config->sda, PAL_MODE_OUTPUT_PUSHPULL);
+#else
+  palClearLine(i2cp->config->scl);
+#endif
 
   return bit;
 }
@@ -347,8 +338,18 @@ void i2c_lld_init(void) {
  */
 void i2c_lld_start(I2CDriver *i2cp) {
 
-  /* Does nothing.*/
-  (void)i2cp;
+#if (SW_I2C_USE_OPENDRAIN == FALSE)
+  /* Push-pull mode with INPUT switching */
+  palSetLine(i2cp->config->sda);
+  palSetLine(i2cp->config->scl);
+  palSetLineMode(i2cp->config->sda, PAL_MODE_OUTPUT_PUSHPULL);
+  palSetLineMode(i2cp->config->scl, PAL_MODE_OUTPUT_PUSHPULL);
+#else
+  palSetLine(i2cp->config->sda);
+  palSetLine(i2cp->config->scl);
+  palSetLineMode(i2cp->config->sda, PAL_MODE_OUTPUT_OPENDRAIN);
+  palSetLineMode(i2cp->config->scl, PAL_MODE_OUTPUT_OPENDRAIN);
+#endif
 }
 
 /**
